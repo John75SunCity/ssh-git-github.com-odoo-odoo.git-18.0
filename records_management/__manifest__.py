@@ -1,3 +1,5 @@
+from .. import models
+
 {
     'name': 'Records Management',
     'version': '1.0',
@@ -5,6 +7,9 @@
     'data': [
         'views/inventory_template.xml',
         'views/pickup_request_form.xml',
+        'views/your_view1.xml',
+        'views/your_view2.xml',
+        'security/ir.model.access.csv',
     ],
     'installable': True,
     'application': True,

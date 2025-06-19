@@ -1,0 +1,36 @@
+<odoo>
+    <!-- Box: tracked product with serial -->
+    <record id="product_box" model="product.product">
+        <field name="name">Box</field>
+        <field name="type">product</field>
+        <field name="tracking">serial</field>
+    </record>
+
+    <!-- File: tracked product with serial -->
+    <record id="product_file" model="product.product">
+        <field name="name">File</field>
+        <field name="type">product</field>
+        <field name="tracking">serial</field>
+    </record>
+
+    <!-- Shredding Bin: tracked product with serial -->
+    <record id="product_shredding_bin" model="product.product">
+        <field name="name">Shredding Bin</field>
+        <field name="type">product</field>
+        <field name="tracking">serial</field>
+    </record>
+
+    <!-- Retrieval Fee: service with price 10.0 -->
+    <record id="service_retrieval_fee" model="product.product">
+        <field name="name">Retrieval Fee</field>
+        <field name="type">service</field>
+        <field name="list_price">10.0</field>
+    </record>
+
+    <!-- Storage Fee: service with price 5.0 -->
+    <record id="service_storage_fee" model="product.product">
+        <field name="name">Storage Fee</field>
+        <field name="type">service</field>
+        <field name="list_price">5.0</field>
+    </record>
+</odoo>

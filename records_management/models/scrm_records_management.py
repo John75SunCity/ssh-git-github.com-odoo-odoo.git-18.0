@@ -1,4 +1,3 @@
-
 # (Odoo manifest dictionary removed from Python file. Place it in __manifest__.py instead.)
 from odoo import fields, models, api
 
@@ -6,13 +5,13 @@ class StockProductionLot(models.Model):
     _inherit = 'stock.production.lot'
 
     # Reference to the customer (res.rtner) associated with this lot.
-    customer_id = fields.Many2one('res.rtner', string='Customer')
+    customer_id = fields.Many2one('res.partner', string='Customer')
 
 class ShreddingService(models.Model):
     _name = 'shredding.service'
     _description = 'Document Shredding Service'
 
-    customer_id = fields.Many2one('res.rtner', string='Customer', required=True)
+    customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     service_date = fields.Date(string='Service Date', default=fields.Date.today)
     service_type = fields.Selection([
         ('bin', 'Bin Shredding'),
@@ -120,4 +119,3 @@ class InventoryPortal(http.Controller):
         # Render the pickup request form for GET requests
         serials = request.env['stock.production.lot'].search([('customer_id', '=', rtner.id)])
         return request.render('records_management.pickup_request_form', {'serials': serials})
-    
