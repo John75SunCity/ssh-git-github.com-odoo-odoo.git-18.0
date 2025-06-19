@@ -18,7 +18,6 @@ services:
       - ./records_management:/mnt/extra-addons/records_management
     environment:
       - HOST=db
-      - USER=
-      
+      - USER=odoo
       - PASSWORD=odoo
     restart: always
