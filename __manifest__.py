@@ -16,7 +16,6 @@ Features include custom models, views, demo data, and scheduled actions.
     'depends': [
         'stock',
         'web'
-        # Add any other required dependencies here, e.g. 'mail', 'base', etc.
     ],
     'data': [
         'views/inventory_template.xml',
