@@ -18,6 +18,7 @@ class StockProductionLot(models.Model):
 
 class ShreddingService(models.Model):
     _name = 'shredding.service'
+    _description = 'Document Shredding Service'
     service_date = fields.Date(string='Service Date', default=lambda self: fields.Date.today())
 
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)

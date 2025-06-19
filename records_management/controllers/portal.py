@@ -1,4 +1,5 @@
 from odoo import http
+from odoo.http import request
 
 class InventoryPortal(http.Controller):
     @http.route('/my/inventory', type='http', auth='user', website=True)
