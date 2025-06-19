@@ -1,0 +1,123 @@
+
+# (Odoo manifest dictionary removed from Python file. Place it in __manifest__.py instead.)
+from odoo import fields, models, api
+
+class StockProductionLot(models.Model):
+    _inherit = 'stock.production.lot'
+
+    # Reference to the customer (res.rtner) associated with this lot.
+    customer_id = fields.Many2one('res.rtner', string='Customer')
+
+class ShreddingService(models.Model):
+    _name = 'shredding.service'
+    _description = 'Document Shredding Service'
+
+    customer_id = fields.Many2one('res.rtner', string='Customer', required=True)
+    service_date = fields.Date(string='Service Date', default=fields.Date.today)
+    service_type = fields.Selection([
+        ('bin', 'Bin Shredding'),
+        ('box', 'Box Shredding')
+    ], string='Service Type', required=True)
+    bin_ids = fields.Many2many('stock.production.lot', string='Serviced Bins', 
+                               domain=[('product_id.name', '=', 'Shredding Bin')])
+    box_quantity = fields.Integer(string='Number of Boxes')
+    shredded_box_ids = fields.Many2many('stock.production.lot', string='Shredded Boxes', 
+                                        domain=[('customer_id', '!=', False)])
+    audit_barcodes = fields.Text(string='Audit Barcodes')
+    total_charge = fields.Float(string='Total Charge', compute='_compute_total_charge')
+    timestamp = fields.Datetime(string='Service Timestamp', default=fields.Datetime.now)
+    latitude = fields.Float(string='Latitude')
+    longitude = fields.Float(string='Longitude')
+    attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
+    map_display = fields.Char(compute='_compute_map_display', string='Map')
+
+    @api.depends('service_type', 'bin_ids', 'box_quantity', 'shredded_box_ids')
+    def _compute_total_charge(self):
+        for record in self:
+            if record.service_type == 'bin':
+                record.total_charge = len(record.bin_ids) * 10.0
+            else:
+                qty = record.box_quantity or len(record.shredded_box_ids)
+                record.total_charge = qty * 5.0
+
+    @api.depends('latitude', 'longitude')
+    def _compute_map_display(self):
+        for record in self:
+            record.map_display = f"{record.latitude},{record.longitude}"
+
+class PickupRequest(models.Model):
+    """
+    Represents a pickup request for items associated with a customer.
+
+    Model Fields:
+        customer_id (Many2one): Reference to the customer (res.rtner) making the pickup request. Required.
+        request_date (Date): The date the pickup request was created. Defaults to today's date.
+        state (Selection): The current status of the pickup request. Possible values are:
+            - 'draft': Draft
+            - 'confirmed': Confirmed
+            - 'done': Done
+          Defaults to 'draft'.
+        item_ids (Many2many): List of items (stock.production.lot) included in the pickup request.
+            Only items belonging to the selected customer can be chosen.
+    """
+    _name = 'pickup.request'
+    _description = 'Pickup Request'
+
+    customer_id = fields.Many2one('res.rtner', string='Customer', required=True)
+    request_date = fields.Date(string='Request Date', default=fields.Date.today)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
+    ], default='draft', string='Status')
+    item_ids = fields.Many2many('stock.production.lot', string='Items', 
+                                domain="[('customer_id', '=', customer_id)]")
+
+from odoo import http
+from odoo.http import request
+
+class InventoryPortal(http.Controller):
+    @http.route('/my/inventory', type='http', auth='user', website=True)
+    def inventory(self, **kw):
+        """
+        Retrieves and renders the inventory of stock quants associated with the current user's rtner.
+
+        This method performs the following steps:
+        1. Retrieves the current user's rtner record.
+        2. Searches for all stock production lots (serial numbers) linked to the rtner as a customer.
+        3. Searches for all stock quants associated with the found serials and located in internal locations.
+        4. Renders the 'records_management.inventory_template' template, ssing the filtered quants as context.
+
+        Keyword Args:
+            **kw: Arbitrary keyword arguments (not used).
+
+        Returns:
+            werkzeug.wrappers.Response: The rendered inventory template with the relevant stock quants.
+        """
+        rtner = request.env.user.rtner_id
+        serials = request.env['stock.production.lot'].search([('customer_id', '=', rtner.id)])
+        quants = request.env['stock.quant'].search([
+            ('lot_id', 'in', serials.ids), 
+            ('location_id.usage', '=', 'internal')
+        ])
+        return request.render('records_management.inventory_template', {'quants': quants})
+
+    @http.route('/my/request_pickup', type='http', auth='user', website=True)
+    def request_pickup(self, **post):
+        rtner = request.env.user.rtner_id
+        if request.httprequest.method == 'POST':
+            item_ids = [int(id) for id in request.httprequest.form.getlist('item_ids')]
+            items = request.env['stock.production.lot'].search([
+                ('id', 'in', item_ids),
+                ('customer_id', '=', rtner.id)
+            ])
+            if items:
+                request.env['pickup.request'].create({
+                    'customer_id': rtner.id,
+                    'item_ids': [(6, 0, items.ids)],
+                })
+            return request.redirect('/my/inventory')
+        # Render the pickup request form for GET requests
+        serials = request.env['stock.production.lot'].search([('customer_id', '=', rtner.id)])
+        return request.render('records_management.pickup_request_form', {'serials': serials})
+    
