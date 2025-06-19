@@ -37,4 +37,3 @@ class InventoryPortal(http.Controller):
                 'item_ids': [(6, 0, items.ids)],
             })
         return http.request.redirect('/my/inventory')
-        return request.redirect('/my/inventory')
