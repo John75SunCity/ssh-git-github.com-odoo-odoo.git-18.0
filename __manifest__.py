@@ -1,7 +1,7 @@
 {
     'name': 'Records Management',
     'version': '1.0',
-    'summary': 'Manage records efficiently within Odoo.',
+    'summary': 'Manage records efficiently within Odoo. Centralized storage, search, permissions, and audit trails.',
     'description': """
 Records Management
 ==================
@@ -11,9 +11,13 @@ Features include custom models, views, demo data, and scheduled actions.
     'author': 'Your Name or Company',
     'website': 'https://yourwebsite.com',
     'category': 'Tools',
-    'license': 'LGPL-3',
+    'license': 'OPL-1',  # Odoo Proprietary License v1.0
     'icon': 'records_management/static/description/records_management_icon.png',
-    'depends': ['stock', 'web'],
+    'depends': [
+        'stock',
+        'web'
+        # Add any other required dependencies here, e.g. 'mail', 'base', etc.
+    ],
     'data': [
         'views/inventory_template.xml',
         'views/pickup_request.xml',
@@ -26,4 +30,10 @@ Features include custom models, views, demo data, and scheduled actions.
     ],
     'installable': True,
     'application': True,
+    'live_test_url': 'https://probable-space-fishstick-x54pvrqvrwq9f6xp5-8069.app.github.dev/',  # Replace with your actual demo URL
+    'price': 2000,  # USD
+    'currency': 'USD',
+    'support': 'john@suncityshred.com',  # Replace with your support email
+    # Optional: To define a theme, add 'theme' or 'themes' to category, e.g. 'category': 'Tools,theme'
+    # Optional: To hide a module, add 'hidden' or 'setting' to category, e.g. 'category': 'Tools,hidden'
 } # type: ignore
