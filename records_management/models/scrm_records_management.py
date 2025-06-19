@@ -1,8 +1,14 @@
-# (Odoo manifest dictionary removed from Python file. Place it in __manifest__.py instead.)
+"""
+Odoo manifest dictionary has been removed from this Python file.
+Please place the manifest dictionary in a separate __manifest__.py file as required by Odoo module structure.
+"""
 from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError, AccessError
 from odoo import http
 from odoo.http import request
+
+# Constant for the pickup request form field name
+PICKUP_ITEM_IDS_FIELD = 'item_ids'
 
 class StockProductionLot(models.Model):
     _inherit = 'stock.production.lot'
@@ -12,7 +18,7 @@ class StockProductionLot(models.Model):
 
 class ShreddingService(models.Model):
     _name = 'shredding.service'
-    _description = 'Document Shredding Service'
+    service_date = fields.Date(string='Service Date', default=lambda self: fields.Date.today())
 
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     service_date = fields.Date(string='Service Date', default=fields.Date.today)
@@ -27,7 +33,7 @@ class ShreddingService(models.Model):
                                         domain=[('customer_id', '!=', False)])
     audit_barcodes = fields.Text(string='Audit Barcodes')
     total_charge = fields.Float(string='Total Charge', compute='_compute_total_charge')
-    timestamp = fields.Datetime(string='Service Timestamp', default=fields.Datetime.now)
+    timestamp = fields.Datetime(string='Service Timestamp', default=lambda self: fields.Datetime.now())
     latitude = fields.Float(string='Latitude')
     longitude = fields.Float(string='Longitude')
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
@@ -59,7 +65,10 @@ class ShreddingService(models.Model):
             if record.service_type == 'bin':
                 record.total_charge = len(record.bin_ids) * 10.0
             else:
-                qty = record.box_quantity or len(record.shredded_box_ids) or 0
+                if record.box_quantity is not None:
+                    qty = record.box_quantity
+                else:
+                    qty = len(record.shredded_box_ids) or 0
                 record.total_charge = qty * 5.0
 
     @api.depends('latitude', 'longitude')
@@ -90,8 +99,11 @@ class PickupRequest(models.Model):
     request_date = fields.Date(string='Request Date', default=fields.Date.today)
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done')
+    item_ids = fields.Many2many(
+        'stock.production.lot',
+        string='Items',
+        domain=lambda self: [('customer_id', '=', self.customer_id.id)] if self.customer_id else []
+    )
     ], default='draft', string='Status')
     item_ids = fields.Many2many('stock.production.lot', string='Items', 
                                 domain="[('customer_id', '=', customer_id)]")
@@ -180,7 +192,7 @@ class InventoryPortal(http.Controller):
         if request.httprequest.method == 'POST':
             try:
                 # Sanitize and validate item_ids
-                raw_ids = request.httprequest.form.getlist('item_ids')
+                raw_ids = request.httprequest.form.getlist(PICKUP_ITEM_IDS_FIELD)
                 item_ids = [int(id) for id in raw_ids if id.isdigit()]
                 if not item_ids:
                     error = _("Please select at least one item for pickup.")
@@ -190,6 +202,11 @@ class InventoryPortal(http.Controller):
             except (ValidationError, Exception) as e:
                 error = str(e)
         # Render the pickup request form for GET requests or on error
+        serials = self._get_serials(partner)
+        return request.render('records_management.pickup_request_form', {
+            'serials': serials,
+            'error': error
+        })
         serials = self._get_serials(partner)
         return request.render('records_management.pickup_request_form', {
             'serials': serials,

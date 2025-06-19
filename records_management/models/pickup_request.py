@@ -20,7 +20,7 @@ class PickupRequest(models.Model):
     )
     request_date = fields.Date(
         string='Request Date',
-        default=fields.Date.today,
+        default=lambda self: fields.Date.today(),
         required=True,
         help="The date when the pickup is requested. Cannot be in the past."
     )
@@ -32,7 +32,6 @@ class PickupRequest(models.Model):
     item_ids = fields.Many2many(
         'stock.production.lot',
         string='Items',
-        domain="[('customer_id', '=', customer_id)]",
         help="Items to be picked up. Only items belonging to the selected customer are allowed."
     )
 
@@ -43,8 +42,8 @@ class PickupRequest(models.Model):
         """
         for rec in self:
             if rec.request_date and rec.request_date < fields.Date.today():
+            if rec.request_date and fields.Date.from_string(rec.request_date) < fields.Date.from_string(fields.Date.today()):
                 raise ValidationError("The request date cannot be in the past.")
-
     @api.constrains('item_ids', 'customer_id')
     def _check_item_customer(self):
         """
@@ -52,7 +51,10 @@ class PickupRequest(models.Model):
         """
         for rec in self:
             if rec.customer_id and rec.item_ids:
-                invalid_items = rec.item_ids.filtered(lambda l: l.customer_id != rec.customer_id)
+                invalid_items = rec.item_ids.search([
+                    ('id', 'in', rec.item_ids.ids),
+                    ('customer_id', '!=', rec.customer_id.id)
+                ])
                 if invalid_items:
                     raise ValidationError("All items must belong to the selected customer.")
 
