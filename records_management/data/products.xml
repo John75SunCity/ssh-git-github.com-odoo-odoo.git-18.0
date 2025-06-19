@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Box: tracked product with serial -->
     <record id="product_box" model="product.product">
         <field name="name">Box</field>
         <field name="type">product</field>
         <field name="tracking">serial</field>
+        <!-- No list_price specified for product; add if pricing is required -->
     </record>
 
     <!-- File: tracked product with serial -->
@@ -11,6 +12,7 @@
         <field name="name">File</field>
         <field name="type">product</field>
         <field name="tracking">serial</field>
+        <!-- No list_price specified for product; add if pricing is required -->
     </record>
 
     <!-- Shredding Bin: tracked product with serial -->
@@ -18,6 +20,8 @@
         <field name="name">Shredding Bin</field>
         <field name="type">product</field>
         <field name="tracking">serial</field>
+        <!-- No list_price specified for product; add if pricing is required -->
+    </record>
     </record>
 
     <!-- Retrieval Fee: service with price 10.0 -->

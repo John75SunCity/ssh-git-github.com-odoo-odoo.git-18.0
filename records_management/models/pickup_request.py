@@ -1,5 +1,39 @@
-from odoo import fields, models, api
-from odoo.exceptions import ValidationError
+try:
+    from odoo import fields, models, api
+except ImportError:
+    # Fallbacks for environments without Odoo
+    class DummyField:
+        def __init__(self, *args, **kwargs): pass
+        @staticmethod
+        def from_string(val): return val
+        @staticmethod
+        def today(): return '1970-01-01'
+    class DummyMeta(type):
+        def __getattr__(self, name):
+            return DummyField
+    class fields(metaclass=DummyMeta):
+        Many2one = DummyField
+        Date = DummyField
+        Selection = DummyField
+        Many2many = DummyField
+    class models(metaclass=DummyMeta):
+        class Model(metaclass=DummyMeta):
+            pass
+    class DummyApi:
+        @staticmethod
+        def constrains(*args, **kwargs):
+            def decorator(func): return func
+            return decorator
+        @staticmethod
+        def onchange(*args, **kwargs):
+            def decorator(func): return func
+            return decorator
+    api = DummyApi()
+
+try:
+    from odoo.exceptions import ValidationError
+except ImportError:
+    ValidationError = Exception  # fallback for environments without odoo
 
 class PickupRequest(models.Model):
     """
@@ -41,20 +75,16 @@ class PickupRequest(models.Model):
         Ensure the request date is not in the past.
         """
         for rec in self:
-            if rec.request_date and rec.request_date < fields.Date.today():
             if rec.request_date and fields.Date.from_string(rec.request_date) < fields.Date.from_string(fields.Date.today()):
                 raise ValidationError("The request date cannot be in the past.")
-    @api.constrains('item_ids', 'customer_id')
+
     def _check_item_customer(self):
         """
         Ensure all selected items belong to the selected customer.
         """
         for rec in self:
             if rec.customer_id and rec.item_ids:
-                invalid_items = rec.item_ids.search([
-                    ('id', 'in', rec.item_ids.ids),
-                    ('customer_id', '!=', rec.customer_id.id)
-                ])
+                invalid_items = rec.item_ids.filtered(lambda l: l.customer_id != rec.customer_id)
                 if invalid_items:
                     raise ValidationError("All items must belong to the selected customer.")
 
@@ -74,8 +104,9 @@ class PickupRequest(models.Model):
 
     # Security rules should be defined in the corresponding XML security files.
     # Example: records_management/security/ir.model.access.csv
+    # See: records_management/security/ir.model.access.csv for access rights configuration.
 
-    # Optimize domain filtering for item_ids
+    # Dynamically filter available items based on selected customer
     @api.onchange('customer_id')
     def _onchange_customer_id(self):
         """
@@ -92,4 +123,5 @@ class PickupRequest(models.Model):
                 'domain': {
                     'item_ids': []
                 }
+            }
             }

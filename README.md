@@ -23,13 +23,26 @@ It is designed for use in a Dockerized development environment, such as GitHub C
 │   ├── __manifest__.py
 │   ├── models/
 │   │   ├── __init__.py
-│   │   └── scrm_records_management.py
+│   │   ├── scrm_records_management.py
+│   │   └── pickup_request.py
+│   ├── controllers/
+│   │   ├── __init__.py
+│   │   └── portal.py
 │   ├── views/
 │   │   ├── inventory_template.xml
-│   │   └── pickup_request.xml
+│   │   ├── pickup_request.xml
+│   │   ├── my_portal_inventory.xml
+│   │   └── shredding_views.xml
 │   ├── security/
+│   │   ├── groups.xml
 │   │   └── ir.model.access.csv
-│   └── (other module files)
+│   ├── data/
+│   │   ├── products.xml
+│   │   └── scheduled_actions.xml
+│   └── static/
+│       └── description/
+│           ├── icon.png
+│           └── description.rst
 ├── .devcontainer/
 │   ├── devcontainer.json
 │   └── .vscode/
@@ -51,12 +64,14 @@ It is designed for use in a Dockerized development environment, such as GitHub C
 ### Running Odoo with Docker
 
 1. **Clone this repository:**
+
    ```sh
    git clone https://github.com/<your-username>/ssh-git-github.com-odoo-odoo.git-8.0.git
    cd ssh-git-github.com-odoo-odoo.git-8.0
    ```
 
 2. **Start Odoo and PostgreSQL using Docker Compose:**
+
    ```sh
    docker-compose up
    ```
@@ -113,4 +128,4 @@ This project is licensed under the MIT License.
 
 ---
 
-*Happy
+*Happy coding!*

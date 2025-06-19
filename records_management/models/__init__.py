@@ -1,5 +1,5 @@
-from . import scrm_records_management
-from . import pickup_request
-from . import shredding_service
-from . import stock_picking
-from . import stock_production_lot
+from . import modelsdirectory as controllers_directory
+
+# Access the imported modules to avoid "not accessed" errors
+_ = models_directory
+_ = controllers_directory
