@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import fields, models  # type: ignore
 
 class StockProductionLot(models.Model):
     _inherit = 'stock.production.lot'
