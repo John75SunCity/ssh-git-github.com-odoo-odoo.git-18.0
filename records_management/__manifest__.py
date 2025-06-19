@@ -14,14 +14,14 @@ Features include custom models, views, demo data, and scheduled actions.
     'license': 'OPL-1',  # Odoo Proprietary License v1.0
     'icon': 'records_management/static/description/records_management_icon.png',
     'depends': [
-        'base',        # Core Odoo module, always required
-        'stock',       # Inventory/stock management
-        'web',         # Web client features
-        'mail',        # Messaging and chatter
-        'portal',      # Portal access for external users
-        'board',       # Dashboards (if you use them)
-        'product',     # Product management (if you use products)
-        'contacts',    # Partner/contact management
+        'base',
+        'stock',
+        'web',
+        'mail',
+        'portal',
+        'board',
+        'product',
+        'contacts'
     ],
     'data': [
         'views/inventory_template.xml',

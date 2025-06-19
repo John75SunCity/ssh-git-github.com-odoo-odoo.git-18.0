@@ -21,3 +21,4 @@ services:
       - USER=odoo
       - PASSWORD=odoo
     restart: always
+/mnt/extra-addons/records_management/__manifest__.py
