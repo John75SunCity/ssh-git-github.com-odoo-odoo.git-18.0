@@ -44,6 +44,5 @@ Features:
     ],
     'installable': True,
     'application': True,
-    'price': 2000,
     'support': 'john@suncityshred.com'
 }
