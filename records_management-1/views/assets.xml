@@ -1,0 +1,8 @@
+<assets>
+    <css>
+        <file>static/src/css/records_management.css</file>
+    </css>
+    <js>
+        <file>static/src/js/scrm_records_management.js</file>
+    </js>
+</assets>
