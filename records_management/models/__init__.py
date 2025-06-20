@@ -1,6 +1,7 @@
-from . import scrm_records_management
-from . import pickup_request
-from . import shredding_service
-from . import stock_picking
-from . import stock_production_lot
-from . import stock_move_sms_validation
+from . import scrm_records_management  # noqa: F401
+from . import pickup_request  # noqa: F401
+from . import shredding_service  # noqa: F401
+from . import stock_picking  # noqa: F401
+from . import stock_production_lot  # noqa: F401
+from . import stock_move_sms_validation  # noqa: F401
+from . import ir_module  # noqa: F401
