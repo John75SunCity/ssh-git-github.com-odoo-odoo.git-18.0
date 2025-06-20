@@ -1,22 +1,27 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 
-from . import product_label_layout
-from . import stock_picking_return
-from . import stock_change_product_qty
-from . import stock_inventory_conflict
-from . import stock_inventory_warning
-from . import stock_inventory_adjustment_name
-from . import stock_label_type
-from . import stock_lot_label_layout
-from . import stock_backorder_confirmation
-from . import stock_quantity_history
-from . import stock_rules_report
-from . import stock_warn_insufficient_qty
-from . import product_replenish
-from . import stock_track_confirmation
-from . import stock_package_destination
-from . import stock_orderpoint_snooze
-from . import stock_request_count
-from . import stock_replenishment_info
-from . import stock_quant_relocate
+import stock_move
+import stock_return_picking
+import stock_change_product_qty
+import make_procurement_product
+import orderpoint_procurement
+import stock_transfer_details

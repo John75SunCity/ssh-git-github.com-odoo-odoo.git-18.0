@@ -1,29 +1,31 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 
-from . import controllers
-from . import models
-from . import report
-from . import wizard
+from stock import *
+import partner
+import product
+import procurement
+import report
+import wizard
+import res_config
 
+import controllers
 
-# TODO: Apply proper fix & remove in master
-def pre_init_hook(env):
-    env['ir.model.data'].search([
-        ('model', 'like', 'stock'),
-        ('module', '=', 'stock')
-    ]).unlink()
-
-def _assign_default_mail_template_picking_id(env):
-    company_ids_without_default_mail_template_id = env['res.company'].search([
-        ('stock_mail_confirmation_template_id', '=', False)
-    ])
-    default_mail_template_id = env.ref('stock.mail_template_data_delivery_confirmation', raise_if_not_found=False)
-    if default_mail_template_id:
-        company_ids_without_default_mail_template_id.write({
-            'stock_mail_confirmation_template_id': default_mail_template_id.id,
-        })
-
-def uninstall_hook(env):
-    picking_type_ids = env["stock.picking.type"].with_context({"active_test": False}).search([])
-    picking_type_ids.sequence_id.unlink()
