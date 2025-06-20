@@ -75,12 +75,13 @@ class PickupRequest(models.Model):
         Ensure the request date is not in the past.
         """
         for rec in self:
-            if rec.request_date and fields.Date.from_string(rec.request_date) < fields.Date.from_string(fields.Date.today()):
+            if rec.request_date and rec.request_date < fields.Date.to_date(fields.Date.today()):
                 raise ValidationError("The request date cannot be in the past.")
 
+    @api.constrains('item_ids', 'customer_id')
     def _check_item_customer(self):
         """
-        Ensure all selected items belong to the selected customer.
+        Constraint: Ensure all selected items belong to the selected customer.
         """
         for rec in self:
             if rec.customer_id and rec.item_ids:
@@ -102,15 +103,14 @@ class PickupRequest(models.Model):
         for rec in self:
             rec.state = 'done'
 
-    # Security rules should be defined in the corresponding XML security files.
-    # Example: records_management/security/ir.model.access.csv
-    # See: records_management/security/ir.model.access.csv for access rights configuration.
+    # Security rules should be defined in the appropriate XML security files.
+    # See your module's security configuration for access rights setup.
 
-    # Dynamically filter available items based on selected customer
     @api.onchange('customer_id')
     def _onchange_customer_id(self):
         """
         Dynamically filter items based on the selected customer.
+        Also clears item_ids if no customer is selected.
         """
         if self.customer_id:
             return {
@@ -119,6 +119,7 @@ class PickupRequest(models.Model):
                 }
             }
         else:
+            self.item_ids = [(5, 0, 0)]  # Clear all selected items
             return {
                 'domain': {
                     'item_ids': []
