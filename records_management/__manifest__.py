@@ -35,7 +35,7 @@ Features include custom models, views, demo data, and scheduled actions.
     ],
     'installable': True,
     'application': True,
-    'live_test_url': 'https://probable-space-fishstick-x54pvrqvrwq9f6xp5-8069.app.github.dev/',  # Replace with your actual demo URL
+    'live_test_url': 'https://john75suncity-ssh-git-github-com-odoo-odoo-git-8-0--21364046.dev.odoo.com/web/login',  # Updated demo URL
     'price': 2000,  # USD
     'currency': 'USD',
     'support': 'john@suncityshred.com',  # Replace with your support email
