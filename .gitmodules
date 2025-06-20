@@ -1,0 +1,3 @@
+[submodule "design-themes"]
+    path = design-themes
+    url = https://github.com/odoo/design-themes.git
