@@ -44,8 +44,6 @@ Features:
     ],
     'installable': True,
     'application': True,
-    'live_test_url': 'https://your-demo-instance-url.com',
     'price': 2000,
-    'currency': 'USD',
     'support': 'john@suncityshred.com'
 }

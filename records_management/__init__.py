@@ -1,1 +1,2 @@
-from . import scrm_records_management
+from . import models
+from . import controllers

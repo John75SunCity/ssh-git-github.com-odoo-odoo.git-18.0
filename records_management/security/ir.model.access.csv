@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_pickup_request_user,pickup.request user,model_pickup_request,base.group_user,1,1,1,1
 access_shredding_service_manager,shredding.service manager,model_shredding_service,base.group_system,1,1,1,1
+access_stock_move_sms_validation_user,stock.move.sms.validation user,model_stock_move_sms_validation,base.group_user,1,1,1,1

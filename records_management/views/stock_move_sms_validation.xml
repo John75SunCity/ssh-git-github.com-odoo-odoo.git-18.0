@@ -1,0 +1,49 @@
+<odoo>
+  <data>
+    <!-- Tree view for stock.move.sms.validation -->
+    <record id="view_stock_move_sms_validation_tree" model="ir.ui.view">
+      <field name="name">stock.move.sms.validation.tree</field>
+      <field name="model">stock.move.sms.validation</field>
+      <field name="arch" type="xml">
+        <tree string="Stock Move SMS Validations">
+          <field name="name"/>
+          <field name="move_id"/>
+          <field name="sms_code"/>
+          <field name="validated"/>
+          <field name="date"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- Form view for stock.move.sms.validation -->
+    <record id="view_stock_move_sms_validation_form" model="ir.ui.view">
+      <field name="name">stock.move.sms.validation.form</field>
+      <field name="model">stock.move.sms.validation</field>
+      <field name="arch" type="xml">
+        <form string="Stock Move SMS Validation">
+          <sheet>
+            <group>
+              <field name="name"/>
+              <field name="move_id"/>
+              <field name="sms_code"/>
+              <field name="validated"/>
+              <field name="date"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- Action to open the views -->
+    <record id="action_stock_move_sms_validation" model="ir.actions.act_window">
+      <field name="name">Stock Move SMS Validations</field>
+      <field name="res_model">stock.move.sms.validation</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu item (optional, adjust parent as needed) -->
+    <menuitem id="menu_stock_move_sms_validation"
+              name="Stock Move SMS Validations"
+              action="action_stock_move_sms_validation"
+              parent="stock.menu_stock_warehouse_mgmt"/>
+</odoo>
