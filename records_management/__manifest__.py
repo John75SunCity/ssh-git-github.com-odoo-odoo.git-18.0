@@ -1,4 +1,5 @@
-{ 'name': 'Records Management',
+{
+    'name': 'Records Management',
     'version': '18.0.1.0.0',
     'license': 'OPL-1',
     'depends': [
@@ -41,5 +42,6 @@ Features:
         'data/scheduled_actions.xml',
         'data/scrm_records_management_data.xml'
     ],
-    'installable': True  # Ensure True, not true
+    'installable': True,
+    'application': True
 }
