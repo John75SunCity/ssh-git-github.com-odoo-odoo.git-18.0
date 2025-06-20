@@ -1,0 +1,34 @@
+records_management
+├── __init__.py
+├── __manifest__.py
+├── controllers
+│   ├── __init__.py
+│   ├── http_controller.py
+│   └── portal.py
+├── data
+│   ├── products.xml
+│   └── scheduled_actions.xml
+├── demo
+│   └── odoo.xml
+├── models
+│   ├── __init__.py
+│   ├── pickup_request.py
+│   ├── scrm_records_management.py
+│   ├── shredding_service.py
+│   ├── stock_picking.py
+│   └── stock_production_lot.py
+├── security
+│   ├── groups.xml
+│   └── ir.model.access.csv
+├── static
+│   ├── description
+│   │   ├── icon.png
+│   │   └── index.html
+│   └── src
+│       └── js
+│           └── map_widget.js
+└── views
+    ├── inventory_template.xml
+    ├── my_portal_inventory.xml
+    ├── pickup_request.xml
+    └── shredding_views.xml
