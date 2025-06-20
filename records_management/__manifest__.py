@@ -10,7 +10,7 @@
         'portal',
         'board',
         'product',
-        'contacts',
+        'contacts'
     ],
     'summary': 'Centralized records storage, search, permissions, and audit trails.',
     'description': """
