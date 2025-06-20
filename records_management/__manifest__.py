@@ -3,13 +3,13 @@
     'version': '18.0.1.0.0',
     'license': 'OPL-1',
     'depends': [
-        'base'
-        'stock'
-        'web'
-        'mail'
-        'portal'
-        'board'
-        'product'
+        'base',
+        'stock',
+        'web',
+        'mail',
+        'portal',
+        'board',
+        'product',
         'contacts'
     ],
     'summary': 'Centralized records storage, search, permissions, and audit trails.',
