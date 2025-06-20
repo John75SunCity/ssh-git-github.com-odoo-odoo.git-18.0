@@ -42,6 +42,6 @@ Features:
         'data/scheduled_actions.xml',
         'data/scrm_records_management_data.xml'
     ],
-    'installable': True,
-    'application': True
+    'installable': True,  # Ensure True, not true
+    'application': True   # Ensure True, not true
 }
