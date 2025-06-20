@@ -1,18 +1,8 @@
+# -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
     'version': '18.0.1.0.0',
-    'summary': 'Manage records efficiently within Odoo. Centralized storage, search, permissions, and audit trails.',
-    'description': """
-Records Management
-==================
-A comprehensive module for managing records, integrating with stock and web modules.
-Features include custom models, views, demo data, and scheduled actions.
-""",
-    'author': 'John Cope',
-    'website': 'https://suncityshred.com',
-    'category': 'Tools',
     'license': 'OPL-1',
-    'icon': 'records_management/static/description/records_management_icon.png',
     'depends': [
         'base',
         'stock',
@@ -23,6 +13,25 @@ Features include custom models, views, demo data, and scheduled actions.
         'product',
         'contacts'
     ],
+    'summary': 'Centralized records storage, search, permissions, and audit trails.',
+    'description': '''
+Records Management
+==================
+A comprehensive module for managing records in Odoo.
+
+Features:
+- Centralized record storage
+- Easy search and retrieval
+- Access control and permissions
+- Audit trails and history tracking
+- Integration with stock and web modules
+- Demo data and scheduled actions for testing
+
+**Note:** This app does not collect or transmit user data outside Odoo.
+''',
+    'website': 'https://suncityshred.com',
+    'category': 'Tools',
+    'icon': 'records_management/static/description/icon.png',
     'data': [
         'views/inventory_template.xml',
         'views/pickup_request.xml',
@@ -31,12 +40,9 @@ Features include custom models, views, demo data, and scheduled actions.
         'security/groups.xml',
         'security/ir.model.access.csv',
         'data/products.xml',
-        'data/scheduled_actions.xml'
+        'data/scheduled_actions.xml',
+        'data/scrm_records_management_data.xml'
     ],
     'installable': True,
-    'application': True,
-    'live_test_url': 'https://john75suncity-ssh-git-github-com-odoo-odoo-git-8-0--21364046.dev.odoo.com/web/login',
-    'price': 2000,
-    'currency': 'USD',
-    'support': 'john@suncityshred.com'
+    'application': True
 }

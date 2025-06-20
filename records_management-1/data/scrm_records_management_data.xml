@@ -1,0 +1,49 @@
+<record id="shredding_service_product" model="product.template">
+    <field name="name">Shredding Service</field>
+    <field name="type">service</field>
+    <field name="categ_id" ref="product.product_category_all"/>
+    <field name="list_price">50.0</field>
+    <field name="uom_id" ref="product.product_uom_hour"/>
+</record>
+
+<record id="shredding_bin_product" model="product.template">
+    <field name="name">Shredding Bin</field>
+    <field name="type">product</field>
+    <field name="categ_id" ref="product.product_category_all"/>
+    <field name="list_price">100.0</field>
+    <field name="uom_id" ref="product.product_uom_unit"/>
+</record>
+
+<record id="pickup_request_email_template" model="mail.template">
+    <field name="name">Pickup Request Notification</field>
+    <field name="model_id" ref="model_pickup_request"/>
+    <field name="email_from">${(object.customer_id.email or '')|safe}</field>
+    <field name="subject">Pickup Request Confirmation</field>
+    <field name="body_html"><![CDATA[
+        <p>Dear ${object.customer_id.name},</p>
+        <p>Your pickup request has been successfully created.</p>
+        <p>Request Date: ${object.request_date}</p>
+        <p>Items for Pickup: ${object.item_ids.mapped('name')}</p>
+        <p>Thank you!</p>
+    ]]></field>
+</record>
+
+<record id="shredding_service_action" model="ir.actions.server">
+    <field name="name">Send Pickup Request Email</field>
+    <field name="model_id" ref="model_pickup_request"/>
+    <field name="state">code</field>
+    <field name="code">
+        action = env['mail.template'].browse(ref('pickup_request_email_template')).send_mail(record.id, force_send=True)
+    </field>
+</record>
+
+<record id="shredding_service_cron" model="ir.cron">
+    <field name="name">Send Pickup Request Emails</field>
+    <field name="model_id" ref="model_pickup_request"/>
+    <field name="state">code</field>
+    <field name="code">model.send_pickup_request_emails()</field>
+    <field name="interval_number">1</field>
+    <field name="interval_type">days</field>
+    <field name="numbercall">-1</field>
+    <field name="doall" eval="False"/>
+</record>

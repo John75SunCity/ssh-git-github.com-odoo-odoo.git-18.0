@@ -1,0 +1,117 @@
+<record id="view_pickup_request_form" model="ir.ui.view">
+    <field name="name">pickup.request.form</field>
+    <field name="model">pickup.request</field>
+    <field name="arch" type="xml">
+        <form string="Pickup Request">
+            <sheet>
+                <group>
+                    <field name="customer_id"/>
+                    <field name="request_date"/>
+                    <field name="state" readonly="1"/>
+                    <field name="item_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button string="Submit" type="object" name="action_submit" class="btn-primary"/>
+                    <button string="Cancel" type="object" name="action_cancel" class="btn-secondary"/>
+                </footer>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<record id="view_pickup_request_tree" model="ir.ui.view">
+    <field name="name">pickup.request.tree</field>
+    <field name="model">pickup.request</field>
+    <field name="arch" type="xml">
+        <tree string="Pickup Requests">
+            <field name="customer_id"/>
+            <field name="request_date"/>
+            <field name="state"/>
+        </tree>
+    </field>
+</record>
+
+<record id="view_shredding_service_form" model="ir.ui.view">
+    <field name="name">shredding.service.form</field>
+    <field name="model">shredding.service</field>
+    <field name="arch" type="xml">
+        <form string="Shredding Service">
+            <sheet>
+                <group>
+                    <field name="customer_id"/>
+                    <field name="service_date"/>
+                    <field name="service_type"/>
+                    <field name="bin_ids" widget="many2many_tags"/>
+                    <field name="box_quantity"/>
+                    <field name="shredded_box_ids" widget="many2many_tags"/>
+                    <field name="audit_barcodes"/>
+                    <field name="total_charge" readonly="1"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<record id="view_shredding_service_tree" model="ir.ui.view">
+    <field name="name">shredding.service.tree</field>
+    <field name="model">shredding.service</field>
+    <field name="arch" type="xml">
+        <tree string="Shredding Services">
+            <field name="customer_id"/>
+            <field name="service_date"/>
+            <field name="service_type"/>
+            <field name="total_charge"/>
+        </tree>
+    </field>
+</record>
+
+<template id="inventory_template">
+    <t t-call="website.layout">
+        <div class="container">
+            <h1>Your Inventory</h1>
+            <t t-if="quants">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="quants" t-as="quant">
+                            <tr>
+                                <td><t t-esc="quant.product_id.name"/></td>
+                                <td><t t-esc="quant.quantity"/></td>
+                                <td><t t-esc="quant.location_id.name"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+            <t t-else="">
+                <p>No inventory items found.</p>
+            </t>
+        </div>
+    </t>
+</template>
+
+<template id="pickup_request_form">
+    <t t-call="website.layout">
+        <div class="container">
+            <h1>Request Pickup</h1>
+            <t t-if="error">
+                <div class="alert alert-danger"><t t-esc="error"/></div>
+            </t>
+            <form action="/my/request_pickup" method="post">
+                <t t-foreach="serials" t-as="serial">
+                    <div>
+                        <input type="checkbox" name="item_ids" value="<t t-esc='serial.id'/>"/>
+                        <label><t t-esc="serial.name"/></label>
+                    </div>
+                </t>
+                <button type="submit" class="btn btn-primary">Submit Request</button>
+            </form>
+        </div>
+    </t>
+</template>

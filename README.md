@@ -16,7 +16,7 @@ It is designed for use in a Dockerized development environment, such as GitHub C
 
 ## Project Structure
 
-```
+```text
 .
 ├── records_management/
 │   ├── __init__.py

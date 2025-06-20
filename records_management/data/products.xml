@@ -22,7 +22,6 @@
         <field name="tracking">serial</field>
         <!-- No list_price specified for product; add if pricing is required -->
     </record>
-    </record>
 
     <!-- Retrieval Fee: service with price 10.0 -->
     <record id="service_retrieval_fee" model="product.product">
@@ -36,5 +35,10 @@
         <field name="name">Storage Fee</field>
         <field name="type">service</field>
         <field name="list_price">5.0</field>
+    </record>
+
+    <record id="product_1" model="product.product">
+        <field name="name">Sample Product</field>
+        <!-- other fields -->
     </record>
 </odoo>

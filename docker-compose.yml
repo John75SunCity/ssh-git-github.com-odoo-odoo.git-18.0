@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   db:
     image: postgres:10
@@ -9,16 +9,16 @@ services:
     restart: always
 
   odoo:
-    image: odoo:8.0
+    image: odoo:16.0
     depends_on:
       - db
     ports:
       - "8069:8069"
     volumes:
+      # Ensure the 'records_management' directory exists at the project root or update the path below to an absolute path if needed
       - ./records_management:/mnt/extra-addons/records_management
     environment:
       - HOST=db
       - USER=odoo
-      - PASSWORD=odoo
-    restart: always
-/mnt/extra-addons/records_management/__manifest__.py
+restart: always
+# /mnt/extra-addons/records_management/__manifest__.py

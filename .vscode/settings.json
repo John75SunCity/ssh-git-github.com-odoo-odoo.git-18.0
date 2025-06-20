@@ -1,5 +1,4 @@
 {
-    "python.analysis.typeCheckingMode": "basic",
     "python.analysis.extraPaths": [
         "/workspaces/ssh-git-github.com-odoo-odoo.git-8.0"
     ]
