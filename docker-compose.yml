@@ -18,7 +18,7 @@ services:
       # Ensure the 'records_management' directory exists at the project root or update the path below to an absolute path if needed
       - ./records_management:/mnt/extra-addons/records_management
     environment:
-      - HOST=db
+      - DB_HOST=db
       - USER=odoo
-restart: always
+    restart: always
 # /mnt/extra-addons/records_management/__manifest__.py
