@@ -1,39 +1,4 @@
-try:
-    from odoo import fields, models, api
-except ImportError:
-    # Fallbacks for environments without Odoo
-    class DummyField:
-        def __init__(self, *args, **kwargs): pass
-        @staticmethod
-        def from_string(val): return val
-        @staticmethod
-        def today(): return '1970-01-01'
-    class DummyMeta(type):
-        def __getattr__(self, name):
-            return DummyField
-    class fields(metaclass=DummyMeta):
-        Many2one = DummyField
-        Date = DummyField
-        Selection = DummyField
-        Many2many = DummyField
-    class models(metaclass=DummyMeta):
-        class Model(metaclass=DummyMeta):
-            pass
-    class DummyApi:
-        @staticmethod
-        def constrains(*args, **kwargs):
-            def decorator(func): return func
-            return decorator
-        @staticmethod
-        def onchange(*args, **kwargs):
-            def decorator(func): return func
-            return decorator
-    api = DummyApi()
-
-try:
-    from odoo.exceptions import ValidationError
-except ImportError:
-    ValidationError = Exception  # fallback for environments without odoo
+from odoo import models, fields, api
 
 class PickupRequest(models.Model):
     """
@@ -54,7 +19,7 @@ class PickupRequest(models.Model):
     )
     request_date = fields.Date(
         string='Request Date',
-        default=lambda self: fields.Date.today(),
+        default=fields.Date.today,
         required=True,
         help="The date when the pickup is requested. Cannot be in the past."
     )
@@ -66,8 +31,34 @@ class PickupRequest(models.Model):
     item_ids = fields.Many2many(
         'stock.production.lot',
         string='Items',
+        domain="[('customer_id', '=', customer_id)]",
         help="Items to be picked up. Only items belonging to the selected customer are allowed."
     )
+    warehouse_id = fields.Many2one(
+        'stock.warehouse',
+        string='Warehouse',
+        compute='_compute_warehouse',
+        store=True
+    )
+    signature = fields.Binary(string='Signature')
+
+    @api.depends('item_ids')
+    def _compute_warehouse(self):
+        """
+        Compute the warehouse based on the selected items.
+        Sets the warehouse_id field to the warehouse containing all selected items,
+        if they are all located in the same warehouse.
+        """
+        for record in self:
+            quants = self.env['stock.quant'].search([
+                ('lot_id', 'in', record.item_ids.ids),
+                ('location_id.usage', '=', 'internal')
+            ])
+            warehouses = quants.mapped('location_id.warehouse_id')
+            if len(warehouses) == 1:
+                record.warehouse_id = warehouses[0]
+            else:
+                record.warehouse_id = False
 
     @api.constrains('request_date')
     def _check_request_date(self):
