@@ -1,4 +1,4 @@
-from odoo import api, models
+from odoo import api, models  # type: ignore
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
