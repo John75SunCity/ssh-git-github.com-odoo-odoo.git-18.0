@@ -21,4 +21,4 @@ services:
       - HOST=db
       - USER=odoo
 restart: always
-/mnt/extra-addons/records_management/__manifest__.py
+# /mnt/extra-addons/records_management/__manifest__.py

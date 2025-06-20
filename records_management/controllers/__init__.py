@@ -1,1 +1,1 @@
-from .directory import portal
+from . import portal
