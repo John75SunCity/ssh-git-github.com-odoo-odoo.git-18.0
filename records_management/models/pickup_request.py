@@ -124,4 +124,3 @@ class PickupRequest(models.Model):
                     'item_ids': []
                 }
             }
-            }
