@@ -1,6 +1,5 @@
 <odoo>
     <record id="group_warehouse_manager" model="res.groups">
-    <record id="group_warehouse_manager" model="res.groups">
         <field name="name">Warehouse Manager</field>
         <field name="category_id" ref="base.module_category_inventory"/>
     </record>

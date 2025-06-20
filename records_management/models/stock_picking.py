@@ -26,9 +26,4 @@ class StockPicking(models.Model):
                             'product_uom_qty': len(items),
                         })],
                     })
-                        })],
-                    })
-                        'product_uom_qty': len(customer_items),
-                    })],
-                })
         return res
