@@ -1,6 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_pickup_request,access_pickup_request,model_pickup_request,,1,1,1,1
-access_shredding_service,access_shredding_service,model_shredding_service,,1,1,1,1
-access_stock_production_lot,access_stock_production_lot,model_stock_production_lot,,1,1,1,1
-access_inventory_portal,access_inventory_portal,model_inventory_portal,,1,1,1,1
-access_audit_log,access_audit_log,model_audit_log,,1,1,1,1
