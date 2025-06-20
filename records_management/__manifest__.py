@@ -13,7 +13,7 @@
         'contacts'
     ],
     'summary': 'Centralized records storage, search, permissions, and audit trails.',
-    'description': """
+    'description': '''
 Records Management
 ==================
 A comprehensive module for managing records in Odoo.
@@ -27,8 +27,7 @@ Features:
 - Demo data and scheduled actions for testing
 
 **Note:** This app does not collect or transmit user data outside Odoo.
-""",
-    'author': 'John Cope',
+''',
     'website': 'https://suncityshred.com',
     'category': 'Tools',
     'icon': 'records_management/static/description/icon.png',
@@ -40,9 +39,9 @@ Features:
         'security/groups.xml',
         'security/ir.model.access.csv',
         'data/products.xml',
-        'data/scheduled_actions.xml'
+        'data/scheduled_actions.xml',
+        'data/scrm_records_management_data.xml'
     ],
     'installable': True,
-    'application': True,
-    'support': 'john@suncityshred.com'
+    'application': True
 }
