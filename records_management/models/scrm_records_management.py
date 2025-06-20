@@ -100,11 +100,10 @@ class PickupRequest(models.Model):
     request_date = fields.Date(string='Request Date', default=fields.Date.today)
     state = fields.Selection([
         ('draft', 'Draft'),
-    item_ids = fields.Many2many(
-        'stock.production.lot',
-        string='Items',
-        domain=lambda self: [('customer_id', '=', self.customer_id.id)] if self.customer_id else []
-    )
+        ('submitted', 'Submitted'),
+        ('approved', 'Approved'),
+        ('done', 'Done'),
+        ('cancel', 'Cancelled'),
     ], default='draft', string='Status')
     item_ids = fields.Many2many('stock.production.lot', string='Items', 
                                 domain="[('customer_id', '=', customer_id)]")
@@ -206,12 +205,26 @@ class InventoryPortal(http.Controller):
         serials = self._get_serials(partner)
         return request.render('records_management.pickup_request_form', {
             'serials': serials,
-            'error': error
-        })
-        serials = self._get_serials(partner)
-        return request.render('records_management.pickup_request_form', {
-            'serials': serials,
-            'error': error
+            'error': error,
+            'pickup_item_ids_field': PICKUP_ITEM_IDS_FIELD,
+            'partner': partner,
+            'pickup_request': request.env['pickup.request'].new({
+                'customer_id': partner.id,
+                PICKUP_ITEM_IDS_FIELD: [(6, 0, [])]  # Initialize with empty list
+            }),
+            'pickup_item_ids_field_name': PICKUP_ITEM_IDS_FIELD,
+            'pickup_item_ids_field_label': _('Items for Pickup'),
+            'pickup_item_ids_field_help': _('Select items to request for pickup.'),
+            'pickup_item_ids_field_required': True,
+            'pickup_item_ids_field_domain': [('customer_id', '=', partner.id)],         
+
+# --- Placeholders for test coverage (to be implemented in test modules) ---
+# def test_compute_total_charge(self): ...
+# def test_compute_map_display(self): ...
+# def test_inventory_route(self): ...
+# def test_request_pickup_route(self): ...
+# def test_inventory_route(self): ...
+# def test_request_pickup_route(self): ...
         })
 
 # --- Placeholders for test coverage (to be implemented in test modules) ---
