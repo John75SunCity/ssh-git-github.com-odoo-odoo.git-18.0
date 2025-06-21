@@ -74,3 +74,5 @@ EXPOSE 8069
 # Default command
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["openerp-server"]
+
+'version': '1',
