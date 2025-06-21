@@ -9,16 +9,18 @@ services:
     restart: always
 
   odoo:
-    image: odoo:8.0
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - db
     ports:
       - "8069:8069"
     volumes:
-      # Ensure the 'records_management' directory exists at the project root or update the path below to an absolute path if needed
+      - ./addons/8.0:/mnt/extra-addons/official_addons
       - ./records_management:/mnt/extra-addons/records_management
     environment:
       - HOST=db
       - USER=odoo
+    entrypoint: ["/entrypoint.sh"]
     restart: always
-# /mnt/extra-addons/records_management/__manifest__.py
