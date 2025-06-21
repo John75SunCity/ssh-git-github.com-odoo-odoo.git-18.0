@@ -1,5 +1,5 @@
-# Odoo 8.0 Dockerfile
-FROM python:3.8-slim
+# Odoo 8.0 Dockerfile (Python 2.7)
+FROM python:2.7-slim
 
 # Install system dependencies
 RUN apt-get update \
@@ -22,8 +22,7 @@ RUN apt-get update \
         ca-certificates \
         fonts-dejavu-core \
         fonts-dejavu-extra \
- && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apt/* \
- && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apt/*
 
 # Install Python dependencies
 RUN pip install --no-cache-dir \
@@ -58,28 +57,24 @@ RUN pip install --no-cache-dir \
     num2words==0.5.4 \
     pillow==2.6.1
 
-# Clone Odoo 8.0 from official repo
 # Clone Odoo 8.0 from official repo at a specific commit for reproducibility
 ARG ODOO_COMMIT=8c5e3c2c7e7c3e2e2b7e2d2e2c7e3c2e2b7e2d2e
 RUN git clone --branch 8.0 https://www.github.com/odoo/odoo /odoo \
     && cd /odoo \
     && git checkout ${ODOO_COMMIT}
+
 # Use bash as the default shell
 SHELL ["/bin/bash", "-c"]
 
 # Add entrypoint script
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-# Add entrypoint script
-COPY ./entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 
 # Expose Odoo port
 EXPOSE 8069
-CMD ["/odoo/openerp-server"]
-# Default command
+
+# Default command and entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["openerp-server"]
 
 # Odoo version
 LABEL version="8.0.1.0"
