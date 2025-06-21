@@ -6,7 +6,8 @@
     "vscode": {
       "extensions": [
         "tht13.python",
-        "GitHub.copilot"
+        "GitHub.copilot",
+        "ms-azuretools.vscode-docker"
       ]
     }
   }
