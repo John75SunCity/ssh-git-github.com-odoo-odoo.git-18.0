@@ -75,4 +75,5 @@ EXPOSE 8069
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["openerp-server"]
 
-'version': '1',
+# Odoo version
+LABEL version="8.0.1.0"
