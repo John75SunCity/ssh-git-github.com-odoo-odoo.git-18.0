@@ -1,25 +1,32 @@
+version: '3.8'
 
 services:
-  db:
+  odoo:
+    container_name: odoo-app
+    image: odoo:8.0
+    depends_on:
+      - postgres
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./:/mnt/odoo-src
+      - ./addons:/mnt/extra-addons
+      - ./odoo.conf:/etc/odoo/odoo.conf
+    environment:
+      - HOST=postgres
+      - USER=odoo
+      - PASSWORD=odoo
+    command: odoo --config=/etc/odoo/odoo.conf --addons-path=/mnt/odoo-src/addons,/mnt/extra-addons
+
+  postgres:
+    container_name: odoo-db
     image: postgres:10
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=odoo
       - POSTGRES_PASSWORD=odoo
-    restart: always
-
-  odoo:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - db
-    ports:
-      - "8069:8069"
     volumes:
-      - ./addons/8.0:/mnt/extra-addons/official_addons
-      - ./records_management:/mnt/extra-addons/records_management
-    environment:
-      - USER=odoo
-    entrypoint: ["/entrypoint.sh"]
-    restart: always
+      - odoo-db-data:/var/lib/postgresql/data
+
+volumes:
+  odoo-db-data:
