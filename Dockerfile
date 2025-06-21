@@ -15,6 +15,7 @@ RUN apt-get update \
         libssl-dev \
         libjpeg-dev \
         libpq-dev \
+        postgresql-client \
         node-less \
         npm \
         wget \
