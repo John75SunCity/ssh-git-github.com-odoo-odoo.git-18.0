@@ -22,7 +22,7 @@
 
 {
     'name': 'Portal Gamification',
-    'version': '1',
+    'version': '8.0.1.0',
     'category': 'Tools',
     'complexity': 'easy',
     'description': """
