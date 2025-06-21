@@ -23,6 +23,7 @@ RUN apt-get update \
         ca-certificates \
         fonts-dejavu-core \
         fonts-dejavu-extra \
+        gsfonts \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apt/*
 
 # Install Python dependencies
