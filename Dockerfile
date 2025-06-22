@@ -57,7 +57,8 @@ RUN pip install --no-cache-dir \
     xlrd==0.9.3 \
     xlutils==1.7.1 \
     num2words==0.5.4 \
-    pillow==2.6.1
+    pillow==2.6.1 \
+    simplejson==3.17.6
 
 # Clone Odoo 8.0 from the official repository
 ARG ODOO_COMMIT=9e8f70e4849b0eeaca8b5cf51372ecfa23dc561b
