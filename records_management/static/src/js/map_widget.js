@@ -11,8 +11,15 @@ odoo.define('records_management.map_widget', function (require) {
         _render: function () {
             // Clear previous content and add map container
             this.$el.html('<div class="map_container"></div>');
-            var latitude = this.recordData?.[this.options.latitude_field] ?? undefined;
-            var longitude = this.recordData?.[this.options.longitude_field] ?? undefined;
+
+            var latitude = this.recordData?.[this.options?.latitude_field] ?? undefined;
+            var longitude = this.recordData?.[this.options?.longitude_field] ?? undefined;
+
+            if (!this.recordData || !this.options) {
+                this.$('.map_container').html('<span>Invalid configuration: record data or options missing.</span>');
+                return;
+            }
+
             var hasLatitude = !!latitude;
             var hasLongitude = !!longitude;
             var hasGoogle = typeof google !== 'undefined';
@@ -28,8 +35,10 @@ odoo.define('records_management.map_widget', function (require) {
             } else if (!hasGoogleMaps) {
                 this.$('.map_container').html('<span>Google Maps API not loaded.</span>');
             }
-    });
+        }
+    }); // Close the MapWidget definition
 
     fieldRegistry.add('map_widget', MapWidget);
 
-return MapWidget;
+    return MapWidget;
+}); // Close the odoo.define block
