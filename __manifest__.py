@@ -1,6 +1,6 @@
 {
     'name': 'Records Management',
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.0',
     'summary': 'Manage records efficiently within Odoo. Centralized storage, search, permissions, and audit trails.',
     'description': """
 Records Management
@@ -11,7 +11,7 @@ Features include custom models, views, demo data, and scheduled actions.
     'author': 'John Cope',
     'website': 'https://suncityshred.com',
     'category': 'Tools',
-    'license': 'OPL-1',
+    'license': 'LGPL-3',
     'icon': 'records_management/static/description/records_management_icon.png',
     'depends': [
         'base',

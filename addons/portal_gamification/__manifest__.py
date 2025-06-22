@@ -38,5 +38,6 @@ This module adds security rules for gamification to allow portal users to partic
     'installable': True,
     'auto_install': True,
     'category': 'Hidden',
+    'license': 'LGPL-3',
 }
 
