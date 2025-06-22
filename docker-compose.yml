@@ -5,7 +5,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - "6069:8069"
+      - "8069:8069"
     volumes:
       - ./:/mnt/odoo-src
       - ./addons:/mnt/extra-addons

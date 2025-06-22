@@ -66,7 +66,7 @@ It is designed for use in a Dockerized development environment, such as GitHub C
 1. **Clone this repository:**
 
    ```sh
-   git clone https://github.com/<your-username>/ssh-git-github.com-odoo-odoo.git-8.0.git
+   git clone --recurse-submodules --branch 8.0 https://github.com/<your-username>/ssh-git-github.com-odoo-odoo.git-8.0.git
    cd ssh-git-github.com-odoo-odoo.git-8.0
    ```
 
