@@ -1,7 +1,7 @@
 services:
   odoo:
     container_name: odoo-app
-    image: odoo:8.0
+    build: .
     depends_on:
       - postgres
     ports:
