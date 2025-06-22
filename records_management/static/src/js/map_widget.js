@@ -12,13 +12,13 @@ odoo.define('records_management.map_widget', function (require) {
             // Clear previous content and add map container
             this.$el.html('<div class="map_container"></div>');
 
-            var latitude = this.recordData?.[this.options?.latitude_field] ?? undefined;
-            var longitude = this.recordData?.[this.options?.longitude_field] ?? undefined;
-
             if (!this.recordData || !this.options) {
                 this.$('.map_container').html('<span>Invalid configuration: record data or options missing.</span>');
                 return;
             }
+
+            var latitude = this.recordData[this.options.latitude_field];
+            var longitude = this.recordData[this.options.longitude_field];
 
             var hasLatitude = !!latitude;
             var hasLongitude = !!longitude;
