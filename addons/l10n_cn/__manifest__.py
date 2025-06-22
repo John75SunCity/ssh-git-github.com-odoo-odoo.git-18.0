@@ -22,7 +22,7 @@
 ##############################################################################
 {
     'name': '中国会计科目表',
-    'version': '1.8',
+    'version': '8.0.1.8',
     'category': 'Localization/Account Charts',
     'author': 'www.openerp-china.org',
     'maintainer':'jeff@osbzr.com',

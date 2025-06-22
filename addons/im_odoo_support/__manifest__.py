@@ -1,7 +1,7 @@
 {
     'name' : 'Odoo Live Support',
     'author': 'OpenERP SA',
-    'version': '1.0',
+    'version': '8.0.1.0',
     'summary': 'Chat with the Odoo collaborators',
     'category': 'Tools',
     'complexity': 'medium',

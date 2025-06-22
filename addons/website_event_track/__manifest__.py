@@ -33,4 +33,5 @@ Adds support for:
         'data/website_event_track_demo.xml'
     ],
     'installable': True,
+    'license': 'LGPL-3',
 }
