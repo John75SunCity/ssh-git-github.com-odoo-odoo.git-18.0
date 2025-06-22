@@ -60,7 +60,7 @@ RUN pip install --no-cache-dir \
     pillow==2.6.1
 
 # Clone Odoo 8.0 from the official repository
-ARG ODOO_COMMIT=8c5e3c2c7e7c3e2e2b7e2d2e2c7e3c2e2b7e2d2e
+ARG ODOO_COMMIT=9e8f70e4849b0eeaca8b5cf51372ecfa23dc561b
 RUN git clone --branch 8.0 https://www.github.com/odoo/odoo /odoo \
     && cd /odoo \
     && git checkout ${ODOO_COMMIT}
