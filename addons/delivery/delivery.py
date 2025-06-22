@@ -63,7 +63,7 @@ class delivery_carrier(osv.osv):
                   try:
                     price=grid_obj.get_price(cr, uid, carrier_grid, order, time.strftime('%Y-%m-%d'), context)
                     available = True
-                  except osv.except_osv, e:
+                  except osv.except_osv as e:
                     # no suitable delivery method found, probably configuration error
                     _logger.error("Carrier %s: %s\n%s" % (carrier.name, e.name, e.value))
                     price = 0.0
