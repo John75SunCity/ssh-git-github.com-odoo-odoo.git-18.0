@@ -35,8 +35,7 @@ Features include custom models, views, demo data, and scheduled actions.
     ],
     'installable': True,
     'application': True,
-    'live_test_url': 'https://john75suncity-ssh-git-github-com-odoo-odoo-git-8-0--21364046.dev.odoo.com/web/login',
-    'price': 2000,
+    'live_test_url': 'https://john75suncity-ssh-git-github-com-odoo-odoo-git-8-0.odoo.com',
     'currency': 'USD',
     'support': 'john@suncityshred.com'
 }
