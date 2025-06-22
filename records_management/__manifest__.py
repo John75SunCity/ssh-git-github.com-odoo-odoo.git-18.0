@@ -46,4 +46,3 @@ Features:
     'installable': True,
     'application': True
 }
-# type: ignore
