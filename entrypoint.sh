@@ -9,7 +9,7 @@ done
 
 # Set default Odoo command if none is provided
 if [ "$1" = "odoo" ] || [ "$1" = "./odoo.py" ] || [ -z "$1" ]; then
-  exec python ./odoo.py --addons-path=/mnt/extra-addons,/addons "$@"
+  exec python /odoo/odoo.py --addons-path=/mnt/extra-addons,/addons "$@"
 else
   exec "$@"
 fi
