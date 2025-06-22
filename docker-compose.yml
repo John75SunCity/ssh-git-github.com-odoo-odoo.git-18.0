@@ -10,6 +10,7 @@ services:
       - ./:/mnt/odoo-src
       - ./addons:/mnt/extra-addons
       - ./odoo.conf:/etc/odoo/odoo.conf
+      - ~/.ssh:/root/.ssh:ro
     environment:
       - HOST=postgres
       - USER=odoo
