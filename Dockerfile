@@ -73,11 +73,11 @@ SHELL ["/bin/bash", "-c"]
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# Set the entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+
 # Expose Odoo port
 EXPOSE 8069
-
-# Default command and entrypoint
-ENTRYPOINT ["/entrypoint.sh"]
 
 # Odoo version
 LABEL version="8.0.1.0"

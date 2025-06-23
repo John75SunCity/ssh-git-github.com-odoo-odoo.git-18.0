@@ -1,15 +1,11 @@
 #!/bin/bash
 set -e
 
-# Wait for the database to be available
+# Wait for PostgreSQL to be ready
 until pg_isready -h "$HOST" -U "$USER"; do
-  echo "Waiting for PostgreSQL at $HOST..."
+  echo "Waiting for PostgreSQL..."
   sleep 2
 done
 
-# Set default Odoo command if none is provided
-if [ "$1" = "odoo" ] || [ "$1" = "./odoo.py" ] || [ -z "$1" ]; then
-  exec python /odoo/odoo.py --addons-path=/mnt/extra-addons,/addons "$@"
-else
-  exec "$@"
-fi
+# Start Odoo
+exec "$@"
