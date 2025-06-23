@@ -81,3 +81,10 @@ EXPOSE 8069
 
 # Odoo version
 LABEL version="8.0.1.0"
+
+# Add SSH agent setup for persistent Git operations
+RUN apt-get update && apt-get install -y --no-install-recommends openssh-client \
+    && mkdir -p /root/.ssh && chmod 0700 /root/.ssh
+
+# Ensure SSH agent is started
+RUN echo 'eval $(ssh-agent -s)' >> /root/.bashrc
