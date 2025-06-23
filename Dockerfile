@@ -33,7 +33,17 @@ RUN apt-get update && apt-get install -y \
     libldap2-dev \
     libsasl2-dev \
     libpq-dev \
+    wget \
     && rm -rf /var/lib/apt/lists/*
+
+RUN wget http://ftp.gnu.org/gnu/libc/glibc-2.28.tar.gz && \
+    tar -xvzf glibc-2.28.tar.gz && \
+    cd glibc-2.28 && \
+    mkdir build && cd build && \
+    ../configure --prefix=/usr && \
+    make -j$(nproc) && \
+    make install && \
+    cd ../.. && rm -rf glibc-2.28 glibc-2.28.tar.gz
 
 # Clone the Odoo source code
 RUN git clone --depth=1 --branch=8.0 https://github.com/odoo/odoo.git /opt/odoo
