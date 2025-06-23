@@ -1,0 +1,8 @@
+# Example .gitmodules file
+[submodule "custom_addons"]
+	path = custom_addons
+	url = <repository-url>
+
+[submodule "odoo/addons"]
+	path = odoo/addons
+	url = <repository-url>

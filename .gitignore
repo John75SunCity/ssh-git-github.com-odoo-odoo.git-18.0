@@ -1,0 +1,61 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+
+# Odoo specific
+odoo/addons/*/__pycache__/
+odoo/addons/*/*.py[cod]
+odoo/addons/*/*$py.class
+odoo/addons/*/static/
+odoo/addons/*/tests/
+odoo/addons/*/migrations/
+
+# Custom development
+custom_addons/*/__pycache__/
+custom_addons/*/*.py[cod]
+custom_addons/*/*$py.class
+custom_addons/*/static/
+custom_addons/*/tests/
+custom_addons/*/migrations/
+
+# Ignore Docker-related files
+*.img
+*.dockerignore
