@@ -1,5 +1,0 @@
-[submodule "addons/design-themes"]
-    path = addons/design-themes
-    url = git@github.com:odoo/design-themes.git
-    branch = 8.0
-
