@@ -8,7 +8,15 @@
         "tht13.python",
         "GitHub.copilot",
         "ms-azuretools.vscode-docker"
-      ]
+      ],
+      "settings": {
+        "editor.formatOnSave": true
+      }
     }
-  }
+  },
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "docker --version",
+  "remoteUser": "vscode"
 }
