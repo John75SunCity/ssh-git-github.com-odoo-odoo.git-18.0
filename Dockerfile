@@ -19,15 +19,20 @@ RUN pip install flask==1.1.2 requests==2.25.1
 
 # Install Odoo dependencies
 RUN apt-get update && apt-get install -y \
+    gcc \
     git \
+    libjpeg-dev \
+    zlib1g-dev \
+    libfreetype6-dev \
+    liblcms2-dev \
+    libtiff5-dev \
+    libwebp-dev \
+    libopenjp2-7-dev \
     libxml2-dev \
     libxslt1-dev \
-    libevent-dev \
-    libsasl2-dev \
     libldap2-dev \
+    libsasl2-dev \
     libpq-dev \
-    libjpeg-dev \
-    libpng-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Clone the Odoo source code
