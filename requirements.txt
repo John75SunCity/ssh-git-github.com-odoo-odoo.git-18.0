@@ -1,5 +1,4 @@
 # Updated requirements for Odoo 8.0
-Odoo==8.0
 psycopg2==2.9.6
 flask==1.1.2
 requests==2.25.1

@@ -19,11 +19,17 @@ RUN apt-get install -y \
     libjpeg-dev \
     libpq-dev \
     build-essential \
+    libz-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+# Clone Odoo 8.0 source code
+RUN git clone --depth 1 --branch 8.0 https://github.com/odoo/odoo.git /odoo
+
+# Install Odoo dependencies
+RUN pip install --no-cache-dir -r /odoo/requirements.txt
+
+# Install Odoo from source
+RUN cd /odoo && python setup.py install
 
 # Set workdir
 WORKDIR /odoo
