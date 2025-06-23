@@ -21,6 +21,9 @@ RUN pip install flask==1.1.2 requests==2.25.1
 RUN apt-get update && apt-get install -y \
     gcc \
     git \
+    make \
+    gawk \
+    bison \
     libjpeg-dev \
     zlib1g-dev \
     libfreetype6-dev \
@@ -34,16 +37,12 @@ RUN apt-get update && apt-get install -y \
     libsasl2-dev \
     libpq-dev \
     wget \
+    libc6 \
+    libc6-dev \
+    build-essential \
+    manpages-dev \
+    perl \
     && rm -rf /var/lib/apt/lists/*
-
-RUN wget http://ftp.gnu.org/gnu/libc/glibc-2.28.tar.gz && \
-    tar -xvzf glibc-2.28.tar.gz && \
-    cd glibc-2.28 && \
-    mkdir build && cd build && \
-    ../configure --prefix=/usr && \
-    make -j$(nproc) && \
-    make install && \
-    cd ../.. && rm -rf glibc-2.28 glibc-2.28.tar.gz
 
 # Clone the Odoo source code
 RUN git clone --depth=1 --branch=8.0 https://github.com/odoo/odoo.git /opt/odoo
@@ -55,4 +54,4 @@ RUN pip install -r /opt/odoo/requirements.txt
 ENV PATH="/opt/odoo:${PATH}"
 
 # Set the default command to run your application
-CMD ["python", "your_script.py"]
+CMD ["python", "/opt/odoo/openerp-server", "--addons-path=/mnt/extra-addons,/opt/odoo/addons"]
