@@ -22,7 +22,7 @@
 
 {
     'name': 'Repairs Management',
-    'version': '1.0',
+    'version': '8.0.1.0',
     'category': 'Manufacturing',
     'description': """
 The aim is to have a complete module to manage all products repairs.
@@ -63,5 +63,6 @@ The following topics should be covered by this module:
     ],
     'installable': True,
     'auto_install': False,
+    'license': 'AGPL-3',
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

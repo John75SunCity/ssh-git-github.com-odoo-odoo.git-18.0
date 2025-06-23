@@ -26,7 +26,7 @@ Allow users to sign up and reset their password
 ===============================================
     """,
     'author': 'OpenERP SA',
-    'version': '1.0',
+    'version': '8.0.1.0',
     'category': 'Authentication',
     'website': 'https://www.odoo.com',
     'installable': True,

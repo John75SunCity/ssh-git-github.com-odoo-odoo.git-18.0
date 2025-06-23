@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Payroll Accounting',
-    'version': '1.0',
+    'version': '8.0.1.0',
     'category': 'Human Resources',
     'description': """
 Generic Payroll system Integrated with Accounting.
