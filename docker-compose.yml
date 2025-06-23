@@ -15,7 +15,7 @@ services:
       - HOST=postgres
       - USER=odoo
       - PASSWORD=odoo
-    command: odoo --config=/etc/odoo/odoo.conf --addons-path=/mnt/odoo-src/addons,/mnt/extra-addons --dev=all
+    command: python /opt/odoo/odoo.py --config=/etc/odoo/odoo.conf --addons-path=/mnt/odoo-src/addons,/mnt/extra-addons --dev=all
 
   postgres:
     container_name: odoo-db
