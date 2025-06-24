@@ -21,6 +21,18 @@ This repository contains the `records_management` module for Odoo 8.0. It is des
 - Ensure all dependencies in `requirements.txt` are installed.
 - Use the `custom_addons` directory for custom module development.
 
+## Additional Notes
+
+- The `entrypoint.sh` script is used to start the Odoo and PostgreSQL services. Ensure it is executable by running:
+  ```bash
+  chmod +x entrypoint.sh
+  ```
+
+- The `openerp_test.py` file contains test cases for the `records_management` module. Use it to validate the module's functionality:
+  ```bash
+  python openerp_test.py
+  ```
+
 ## License
 
 This project is licensed under the MIT License.

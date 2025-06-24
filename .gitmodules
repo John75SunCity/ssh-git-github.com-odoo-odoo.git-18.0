@@ -1,6 +1,6 @@
-[submodule "odoo"]
-	path = odoo
-	url = git@github.com:John75SunCity/ssh-git-github.com-odoo-odoo.git-8.0.git
 [submodule "records_management"]
 	path = records_management
+	url = git@github.com:John75SunCity/ssh-git-github.com-odoo-odoo.git-8.0.git
+[submodule "odoo"]
+	path = odoo
 	url = git@github.com:John75SunCity/ssh-git-github.com-odoo-odoo.git-8.0.git
