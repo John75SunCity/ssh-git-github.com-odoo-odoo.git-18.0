@@ -1,0 +1,22 @@
+# Ignore Python bytecode and cache files
+*.pyc
+__pycache__/
+
+# Ignore log files
+*.log
+
+# Ignore temporary files
+*.tmp
+*.swp
+
+# Ignore Docker-related files
+.env
+.dockerignore
+
+# Ignore Odoo-specific files
+*.zip
+*.bak
+*.old
+
+# Ignore test files
+test.txt
