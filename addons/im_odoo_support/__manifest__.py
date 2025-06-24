@@ -1,28 +1,15 @@
 {
-    'name' : 'Odoo Live Support',
-    'author': 'OpenERP SA',
-    'version': '8.0.1',
-    'summary': 'Chat with the Odoo collaborators',
-    'category': 'Tools',
-    'complexity': 'medium',
-    'website': 'https://www.odoo.com/',
-    'description':
-        """
-Odoo Live Support
-=================
-
-Ask your functionnal question directly to the Odoo Operators with the livechat support.
-
-        """,
+    'name': 'IM Odoo Support',
+    'version': '1.0',
+    'summary': 'Instant messaging support for Odoo',
+    'description': 'This module provides instant messaging support for Odoo users.',
+    'author': 'Odoo S.A.',
+    'website': 'https://www.odoo.com',
+    'category': 'Communication',
+    'depends': ['mail'],
     'data': [
-        "views/im_odoo_support.xml"
-    ],
-    'depends' : ["web", "im_chat"],
-    'qweb': [
-        'static/src/xml/im_odoo_support.xml'
+        'views/im_odoo_support_view.xml',
     ],
     'installable': True,
-    'auto_install': True,
-    'application': True,
-    'license': 'LGPL-3',
+    'application': False,
 }

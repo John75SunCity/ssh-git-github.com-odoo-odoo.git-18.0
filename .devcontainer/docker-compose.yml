@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  odoo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - ./custom_addons:/mnt/extra-addons
+    ports:
+      - "8069:8069"
+    environment:
+      - ODOO_DB_HOST=db
+      - ODOO_DB_PORT=5432
+      - ODOO_DB_USER=odoo
+      - ODOO_DB_PASSWORD=odoo
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+
+volumes:
+  odoo-db-data:

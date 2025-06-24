@@ -1,15 +1,16 @@
 {
+  "name": "Odoo Development Environment",
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
   },
   "customizations": {
     "vscode": {
       "extensions": [
-        "tht13.python",
-        "GitHub.copilot",
+        "ms-python.python",
         "ms-azuretools.vscode-docker"
       ],
       "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
         "editor.formatOnSave": true
       }
     }
@@ -17,6 +18,6 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "postCreateCommand": "docker --version",
-  "remoteUser": "vscode"
+  "postCreateCommand": "pip install -r /tmp/requirements.txt",
+  "remoteUser": "odoo"
 }

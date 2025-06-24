@@ -1,3 +1,6 @@
 [submodule "odoo"]
 	path = odoo
 	url = https://github.com/John75SunCity/odoo.git
+[submodule "records_management"]
+	path = records_management
+	url = https://github.com/John75SunCity/ssh-git-github.com-odoo-odoo.git-8.0.git

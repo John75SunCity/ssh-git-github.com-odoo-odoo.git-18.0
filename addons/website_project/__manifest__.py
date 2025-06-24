@@ -1,18 +1,15 @@
 {
-    'name': 'Public Projects',
-    'category': 'Website',
-    'summary': 'Publish Your Public Projects',
-    'version': '8.0.1.0',
-    'description': """
-OpenERP Projects
-================
-
-        """,
-    'author': 'OpenERP SA',
-    'depends': ['website_mail', 'project'],
+    'name': 'Website Project',
+    'version': '1.0',
+    'summary': 'Integrate projects with your website',
+    'description': 'This module integrates project management features with your website.',
+    'author': 'Odoo S.A.',
+    'website': 'https://www.odoo.com',
+    'category': 'Website/Website',
+    'depends': ['website', 'project'],
     'data': [
-        'views/website_project.xml',
+        'views/website_project_view.xml',
     ],
-    'qweb': ['static/src/xml/*.xml'],
     'installable': True,
+    'application': False,
 }
