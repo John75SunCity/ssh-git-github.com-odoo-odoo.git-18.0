@@ -1,4 +1,4 @@
-[submodule "main"]
+[submodule "records_management"]
 	path = main
 	url = git@github.com:John75SunCity/ssh-git-github.com-odoo-odoo.git-8.0.git
 [submodule "odoo"]
