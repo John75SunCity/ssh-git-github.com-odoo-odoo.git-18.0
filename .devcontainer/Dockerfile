@@ -43,6 +43,9 @@ USER root
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
+# Remove dpkg lock if it exists
+RUN rm -f /var/lib/dpkg/lock
+
 # Set workdir
 WORKDIR /home/odoo
 
