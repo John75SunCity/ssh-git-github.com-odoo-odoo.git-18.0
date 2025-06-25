@@ -1,7 +1,10 @@
-FROM python:3.10-slim
+FROM python:2.7-slim
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Ensure commands are run as root for apt-get
+USER root
+
+# Install system dependencies with sudo
+RUN apt-get update && sudo apt-get install -y \
     git \
     ssh \
     build-essential \
@@ -19,16 +22,17 @@ RUN apt-get update && apt-get install -y \
 # Create odoo user
 RUN useradd -m -d /home/odoo -U -r -s /bin/bash odoo
 
-# Set up SSH for GitHub
-RUN mkdir -p /home/odoo/.ssh && \
-    chown odoo:odoo /home/odoo/.ssh && \
-    chmod 700 /home/odoo/.ssh
+# Update odoo user to John75SunCity
+RUN usermod -l John75SunCity -d /home/John75SunCity -m odoo && \
+    groupmod -n John75SunCity odoo
 
-# (Optional) Add your public key for GitHub access
-# COPY id_rsa.pub /home/odoo/.ssh/authorized_keys
+# Set up SSH for GitHub
+RUN mkdir -p /home/John75SunCity/.ssh && \
+    chown John75SunCity:John75SunCity /home/John75SunCity/.ssh && \
+    chmod 700 /home/John75SunCity/.ssh
 
 # Set up git config for user John75SunCity
-USER odoo
+USER John75SunCity
 RUN git config --global user.name "John75SunCity" && \
     git config --global user.email "invoices@suncityboxes.com"
 
