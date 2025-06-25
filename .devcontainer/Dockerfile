@@ -3,8 +3,12 @@ FROM python:2.7-slim
 # Ensure commands are run as root for apt-get
 USER root
 
-# Install system dependencies with sudo
-RUN apt-get update && sudo apt-get install -y \
+# Clean up apt directories and remove stale locks
+RUN rm -rf /var/lib/apt/lists/* && mkdir -p /var/lib/apt/lists/partial
+RUN rm -f /var/lib/dpkg/lock
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
     git \
     ssh \
     build-essential \
