@@ -20,3 +20,4 @@ __pycache__/
 
 # Ignore test files
 test.txt
+node_modules
