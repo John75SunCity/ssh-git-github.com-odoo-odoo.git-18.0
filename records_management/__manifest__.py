@@ -40,8 +40,7 @@ Features:
         'security/groups.xml',
         'security/ir.model.access.csv',
         'data/products.xml',
-        'data/scheduled_actions.xml',
-        'data/scrm_records_management_data.xml'
+        'data/scheduled_actions.xml'
     ],
     'installable': True,
     'application': True

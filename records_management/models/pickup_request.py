@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 class PickupRequest(models.Model):
@@ -94,6 +94,33 @@ class PickupRequest(models.Model):
         """
         for rec in self:
             rec.state = 'done'
+
+    @api.model
+    def create_pickup_request(self, partner, item_ids):
+        """
+        Create a pickup request for the given partner and item_ids.
+
+        Args:
+            partner (res.partner): The customer.
+            item_ids (list): List of stock.production.lot ids.
+
+        Returns:
+            pickup.request record or None
+        Raises:
+            ValidationError: If no items are provided.
+        """
+        if not item_ids:
+            raise ValidationError(_("No items selected for pickup."))
+        items = self.env['stock.production.lot'].search([
+            ('id', 'in', item_ids),
+            ('customer_id', '=', partner.id)
+        ])
+        if not items:
+            raise ValidationError(_("Selected items are invalid or do not belong to you."))
+        return self.create({
+            'customer_id': partner.id,
+            'item_ids': [(6, 0, items.ids)],
+        })
 
     # Security rules should be defined in the appropriate XML security files.
     # See your module's security configuration for access rights setup.
