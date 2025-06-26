@@ -42,6 +42,12 @@ Features:
         'data/products.xml',
         'data/scheduled_actions.xml'
     ],
+    'test': [
+        'tests/test_records_management.py'
+    ],
+    'demo': [
+        'demo/odoo.xml'
+    ],
     'installable': True,
     'application': True
 }
