@@ -5,21 +5,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - ..:/workspace:cached
-      - ./custom_addons:/mnt/extra-addons
     ports:
       - "8069:8069"
+    volumes:
+      - ./custom_addons:/mnt/extra-addons
     environment:
-      - ODOO_DB_HOST=db
-      - ODOO_DB_PORT=5432
-      - ODOO_DB_USER=odoo
-      - ODOO_DB_PASSWORD=odoo
-  db:
+      - HOST=0.0.0.0
+      - PORT=8069
+
+  postgres:
     image: postgres:13
     environment:
       POSTGRES_USER: odoo
       POSTGRES_PASSWORD: odoo
+      POSTGRES_DB: odoo
     volumes:
       - odoo-db-data:/var/lib/postgresql/data
 

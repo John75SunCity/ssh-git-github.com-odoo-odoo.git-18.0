@@ -1,4 +1,9 @@
+# Use the official Python 2.7 image as the base image
 FROM python:2.7-slim
+
+# Set environment variables to prevent Python from writing .pyc files
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
 # Ensure commands are run as root for apt-get
 USER root
@@ -26,19 +31,15 @@ RUN apt-get update && apt-get install -y \
 # Create odoo user
 RUN useradd -m -d /home/odoo -U -r -s /bin/bash odoo
 
-# Update odoo user to John75SunCity
-RUN usermod -l John75SunCity -d /home/John75SunCity -m odoo && \
-    groupmod -n John75SunCity odoo
-
 # Set up SSH for GitHub
-RUN mkdir -p /home/John75SunCity/.ssh && \
-    chown John75SunCity:John75SunCity /home/John75SunCity/.ssh && \
-    chmod 700 /home/John75SunCity/.ssh
+RUN mkdir -p /home/odoo/.ssh && \
+    chown odoo:odoo /home/odoo/.ssh && \
+    chmod 700 /home/odoo/.ssh
 
-# Set up git config for user John75SunCity
-USER John75SunCity
-RUN git config --global user.name "John75SunCity" && \
-    git config --global user.email "invoices@suncityboxes.com"
+# Set up git config for user odoo
+USER odoo
+RUN git config --global user.name "odoo" && \
+    git config --global user.email "odoo@example.com"
 
 # Switch back to root to install Python dependencies
 USER root
@@ -46,9 +47,6 @@ USER root
 # Copy requirements.txt if you have one, or install Odoo dependencies directly
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
-
-# Remove dpkg lock if it exists
-RUN rm -f /var/lib/dpkg/lock
 
 # Set workdir
 WORKDIR /home/odoo
