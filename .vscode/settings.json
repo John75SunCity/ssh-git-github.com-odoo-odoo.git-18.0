@@ -1,3 +1,9 @@
 {
+    "python.analysis.extraPaths": [
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-8.0"
+    ],
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none"
+    },
     "git.ignoreLimitWarning": true
 }
