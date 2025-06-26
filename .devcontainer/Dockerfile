@@ -66,4 +66,4 @@ WORKDIR /home/odoo
 EXPOSE 8069
 
 # Default command (can be overridden by docker-compose)
-CMD ["bash"]
+CMD ["odoo", "--addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons"]
