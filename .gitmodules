@@ -1,8 +1,3 @@
-[submodule "records_management"]
-	path = custom_addons/records_management
-	url = git@github.com:John75SunCity/ssh-git-github.com-odoo-odoo.git-8.0.git
-	branch = main
-
 [submodule "odoo"]
 	path = odoo
 	url = git@github.com:John75SunCity/odoo.git
