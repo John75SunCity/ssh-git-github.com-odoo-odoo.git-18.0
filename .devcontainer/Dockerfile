@@ -1,5 +1,21 @@
-# Use the official Python 2.7 image as the base image
-FROM python:2.7-slim
+# Use an official Python image as the base
+FROM python:3.9-slim
+
+# Switch to root user to install system dependencies
+USER root
+
+# Install required system dependencies
+RUN apt-get update && apt-get install -y \
+    python-dev \
+    libxml2-dev \
+    libxslt1-dev \
+    libldap2-dev \
+    libsasl2-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Switch back to the odoo user
+USER odoo
 
 # Set environment variables to prevent Python from writing .pyc files
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -17,14 +33,9 @@ RUN apt-get update && apt-get install -y \
     git \
     ssh \
     build-essential \
-    libxml2-dev \
-    libxslt1-dev \
-    libldap2-dev \
-    libsasl2-dev \
-    libssl-dev \
     libpq-dev \
     wget \
-    node-less \
+    nodejs \
     npm \
     && rm -rf /var/lib/apt/lists/*
 
