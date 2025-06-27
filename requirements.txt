@@ -1,8 +1,8 @@
-# Python 2.7 compatible requirements for Odoo 8.0
+# Python 2.7 compatible requirements for Odoo 8.0 - Updated for Python 3.12 compatibility
 Babel==2.3.4
 Jinja2==2.10
 Mako==1.0.7
-MarkupSafe==1.0
+MarkupSafe>=2.0.1
 Pillow==6.2.2
 Pygments==2.5.2
 PyPDF2==1.26.0
