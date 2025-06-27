@@ -30,7 +30,7 @@ Features:
 **Note:** This app does not collect or transmit user data outside Odoo.
 """,
     'website': 'https://suncityshred.com',
-    'category': 'Tools',
+    'category': 'Customizations',
     'icon': 'records_management/static/description/icon.png',
     'data': [
         'views/inventory_template.xml',
