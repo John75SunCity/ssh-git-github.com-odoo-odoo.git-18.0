@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '8.0.1.0.0',
+    'version': '18.0.1.0.0',
     'license': 'OPL-1',
     'depends': [
         'base',
@@ -42,12 +42,10 @@ Features:
         'data/products.xml',
         'data/scheduled_actions.xml'
     ],
-    'test': [
-        'tests/test_records_management.py'
-    ],
     'demo': [
         'demo/odoo.xml'
     ],
     'installable': True,
-    'application': True
+    'application': True,
+    'auto_install': False,
 }

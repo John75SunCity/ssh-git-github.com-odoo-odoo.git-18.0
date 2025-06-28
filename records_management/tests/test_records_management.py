@@ -7,17 +7,17 @@ from odoo.exceptions import ValidationError
 class TestRecordsManagement(TransactionCase):
     """Test cases for Records Management module."""
 
-    def setUp(self):
-        super(TestRecordsManagement, self).setUp()
-        self.partner = self.env['res.partner'].create({
+    def setUpClass(cls):
+        super(TestRecordsManagement, cls).setUpClass()
+        cls.partner = cls.env['res.partner'].create({
             'name': 'Test Customer',
             'email': 'test@example.com',
         })
-        self.product_box = self.env.ref('records_management.product_box')
-        self.lot = self.env['stock.production.lot'].create({
+        cls.product_box = cls.env.ref('records_management.product_box')
+        cls.lot = cls.env['stock.production.lot'].create({
             'name': 'TEST001',
-            'product_id': self.product_box.id,
-            'customer_id': self.partner.id,
+            'product_id': cls.product_box.id,
+            'customer_id': cls.partner.id,
         })
 
     def test_pickup_request_creation(self):
