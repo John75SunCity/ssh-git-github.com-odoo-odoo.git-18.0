@@ -55,7 +55,7 @@ RUN git config --global user.name "odoo" && \
 # Switch back to root to install Python dependencies
 USER root
 
-# Copy requirements.txt if you have one, or install Odoo dependencies directly
+# Copy requirements.txt from the workspace root
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
