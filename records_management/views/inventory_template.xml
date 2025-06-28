@@ -1,45 +1,44 @@
 <odoo>
     <data>
-        <!-- Inventory Tree View -->
-        <record id="view_inventory_tree" model="ir.ui.view">
-            <field name="name">inventory.tree</field>
-            <field name="model">records.management.inventory</field>
+        <!-- Stock Production Lot Tree View -->
+        <record id="view_stock_production_lot_tree" model="ir.ui.view">
+            <field name="name">stock.production.lot.tree</field>
+            <field name="model">stock.production.lot</field>
             <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
-                    <field name="location"/>
-                    <field name="quantity"/>
+                    <field name="product_id"/>
+                    <field name="customer_id"/>
                 </tree>
             </field>
         </record>
 
-        <!-- Inventory Form View -->
-        <record id="view_inventory_form" model="ir.ui.view">
-            <field name="name">inventory.form</field>
-            <field name="model">records.management.inventory</field>
+        <!-- Stock Production Lot Form View -->
+        <record id="view_stock_production_lot_form" model="ir.ui.view">
+            <field name="name">stock.production.lot.form</field>
+            <field name="model">stock.production.lot</field>
             <field name="arch" type="xml">
                 <form>
                     <sheet>
                         <group>
                             <field name="name"/>
-                            <field name="location"/>
-                            <field name="quantity"/>
-                            <field name="description"/>
+                            <field name="product_id"/>
+                            <field name="customer_id"/>
                         </group>
                     </sheet>
                 </form>
             </field>
         </record>
 
-        <!-- Inventory Action -->
-        <record id="action_inventory" model="ir.actions.act_window">
-            <field name="name">Inventory</field>
-            <field name="res_model">records.management.inventory</field>
+        <!-- Stock Production Lot Action -->
+        <record id="action_stock_production_lot" model="ir.actions.act_window">
+            <field name="name">Stock Production Lots</field>
+            <field name="res_model">stock.production.lot</field>
             <field name="view_mode">tree,form</field>
         </record>
 
-        <!-- Inventory Menu -->
-        <menuitem id="menu_inventory_root" name="Inventory" sequence="10"/>
-        <menuitem id="menu_inventory" name="Inventory" parent="menu_inventory_root" action="action_inventory" sequence="10"/>
+        <!-- Records Management Menu -->
+        <menuitem id="menu_records_management_root" name="Records Management" sequence="10"/>
+        <menuitem id="menu_stock_lots" name="Stock Lots" parent="menu_records_management_root" action="action_stock_production_lot" sequence="10"/>
     </data>
 </odoo>
