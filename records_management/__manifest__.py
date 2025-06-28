@@ -33,6 +33,7 @@ Features:
     'category': 'Tools',
     'icon': 'records_management/static/description/icon.png',
     'data': [
+        'data/dependencies_check.xml',
         'views/inventory_template.xml',
         'views/pickup_request.xml',
         'views/my_portal_inventory.xml',

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- This file ensures that required modules are properly loaded -->
+        <!-- It will be processed after dependencies are loaded -->
+        
+        <!-- Verify stock module is loaded by checking if stock.production.lot exists -->
+        <function model="ir.model" name="search">
+            <value eval="[('model', '=', 'stock.production.lot')]"/>
+        </function>
+    </data>
+</odoo>
