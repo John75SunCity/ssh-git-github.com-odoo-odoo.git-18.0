@@ -1,0 +1,62 @@
+# Jekyll Configuration for GitHub Pages
+title: Odoo Records Management
+description: A comprehensive module for managing records in Odoo
+url: "https://john75suncity.github.io"
+baseurl: "/ssh-git-github.com-odoo-odoo.git-8.0"
+
+# Build settings
+markdown: kramdown
+theme: jekyll-theme-primer
+
+# Exclude from processing
+exclude:
+  - .devcontainer/
+  - .git/
+  - .github/
+  - .gitignore
+  - .gitmodules
+  - .vscode/
+  - addons/
+  - dist/
+  - node_modules/
+  - npm-debug.log*
+  - package*.json
+  - pip.log
+  - records_management/
+  - requirements.txt
+  - src/
+  - tests/
+  - tsconfig.json
+  - venv/
+  - "*.py"
+  - "*.pyc"
+  - __pycache__/
+  - entrypoint.sh
+  - jest.config.js
+  - Dockerfile
+  - docker-compose.yml
+
+# Include specific files for documentation
+include:
+  - README.md
+  - INSTALLATION.md
+  - ODOO_SH_QUALITY_MODULES.md
+  - REVIEW_SUMMARY.md
+
+# Plugins
+plugins:
+  - jekyll-github-metadata
+  - jekyll-seo-tag
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+  - jekyll-readme-index
+  - jekyll-default-layout
+  - jekyll-titles-from-headings
+
+# Optional front matter defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
