@@ -55,15 +55,19 @@ RUN git config --global user.name "odoo" && \
 # Switch back to root to install Python dependencies
 USER root
 
-# Copy requirements.txt from the workspace root
+# Copy and install requirements early for better Docker layer caching
 COPY requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt && \
+    rm /tmp/requirements.txt
 
 # Set workdir
 WORKDIR /home/odoo
+
+# Switch to odoo user for runtime
+USER odoo
 
 # Expose Odoo port
 EXPOSE 8069
 
 # Default command (can be overridden by docker-compose)
-CMD ["odoo", "--addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons"]
+CMD ["bash"]

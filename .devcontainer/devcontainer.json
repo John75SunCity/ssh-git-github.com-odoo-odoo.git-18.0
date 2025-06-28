@@ -1,31 +1,22 @@
 {
   "name": "Odoo Development Environment",
-  "features": {
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  "build": {
+    "dockerfile": "Dockerfile"
   },
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-python.python",
-        "ms-azuretools.vscode-docker",
-        "1YiB.vscode-bundle",
-        "GitHub.copilot-chat",
-        "GitHub.vscode-pull-request-github",
-        "ms-azuretools.vscode-containers",
-        "donjayamanne.githistory",
         "ms-python.vscode-pylance",
-        "ms-python.debugpy",
-        "ms-vscode-remote.remote-containers"
+        "GitHub.copilot-chat"
       ],
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash",
-        "editor.formatOnSave": true
+        "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
   },
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
-  "postCreateCommand": "pip install -r /tmp/requirements.txt",
-  "remoteUser": "odoo"
+  "remoteUser": "odoo",
+  "mounts": [
+    "source=${localWorkspaceFolder}/records_management,target=/workspace/records_management,type=bind"
+  ]
 }
