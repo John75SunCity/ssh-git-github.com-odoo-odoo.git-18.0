@@ -60,6 +60,10 @@ COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt && \
     rm /tmp/requirements.txt
 
+# Copy package.json and install npm dependencies
+COPY package*.json ./
+RUN npm install
+
 # Set workdir
 WORKDIR /home/odoo
 

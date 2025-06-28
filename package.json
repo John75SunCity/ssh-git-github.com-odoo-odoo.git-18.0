@@ -13,8 +13,9 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
-    "@types/mocha": "^10.0.0",
-    "@types/node": "^20.19.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.19.2",
+    "@types/ps-list": "^6.0.0",
     "jest": "^30.0.3",
     "ts-jest": "^29.4.0",
     "typescript": "^5.0.0",
@@ -23,6 +24,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.0.0",
-    "jquery": "^3.6.0"
+    "jquery": "^3.6.0",
+    "ps-list": "^8.1.1"
   }
 }
