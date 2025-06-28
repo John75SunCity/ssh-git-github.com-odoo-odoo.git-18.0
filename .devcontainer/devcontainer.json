@@ -14,7 +14,8 @@
         "ms-azuretools.vscode-containers",
         "donjayamanne.githistory",
         "ms-python.vscode-pylance",
-        "ms-python.debugpy"
+        "ms-python.debugpy",
+        "ms-vscode-remote.remote-containers"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
