@@ -1,37 +1,59 @@
 # Installation Instructions for Records Management Module
 
-## Prerequisites - Install Required Modules First
+## ⚠️ CRITICAL: Prerequisites - Install Required Modules First
 
-Before installing the Records Management module, ensure these modules are installed:
+**MANDATORY INSTALLATION ORDER:**
 
-1. **Stock Management (Inventory)** - This is CRITICAL
-   - Go to Apps → Search "Inventory" 
-   - Install "Inventory" module
-   - Wait for installation to complete
+### Step 1: Install Stock/Inventory Module (REQUIRED)
+1. **Go to Apps** in your Odoo.sh instance
+2. **Search "Inventory"** 
+3. **Install "Inventory" module**
+4. **Wait for installation to complete** ✅
+5. **Verify** it shows as "Installed"
 
-2. **Other dependencies** (usually auto-installed):
-   - Base (always installed)
-   - Web (always installed) 
-   - Mail (usually installed)
-   - Portal (install if needed)
-   - Board (install if needed)
-   - Product (install if needed)
-   - Contacts (usually installed)
+### Step 2: Install Records Management Module
+1. **Go to Apps → Update Apps List** (refresh module registry)
+2. **Search "Records Management"**
+3. **Click "Activate"**
 
-## Installation Steps
+## ❌ Common Error
 
-1. **First**: Install "Inventory" module from Apps
-2. **Then**: Install "Records Management" module
+If you see this error:
+```
+TypeError: Model 'stock.production.lot' does not exist in registry
+```
 
-## If you get the stock.production.lot error:
+**Solution:** You skipped Step 1. Install the Inventory module first!
 
-1. Go to Apps → Update Apps List
-2. Search for "Inventory" and install it
-3. After successful installation, go back and install "Records Management"
+## 🔧 Auto-Installation Option
 
-## Verification
+For advanced users, you can try installing dependencies automatically:
+1. Install Records Management module
+2. If it fails, go to Apps → More → Technical → Automated Actions
+3. Look for Records Management dependency installer
 
-After installation, you should have access to:
-- /my/inventory (customer portal)
-- /my/request_pickup (pickup requests)
-- Records Management features in the main menu
+## ✅ Verification
+
+After successful installation, you should have access to:
+- Records Management menu in main navigation
+- Stock lot management with customer relationships
+- Pickup request functionality
+- Shredding service features
+
+## 🆘 Troubleshooting
+
+**Problem:** "stock.production.lot does not exist"
+**Solution:** Install Inventory module first
+
+**Problem:** "Module not found"
+**Solution:** Go to Apps → Update Apps List
+
+**Problem:** Installation fails
+**Solution:** Check that all dependencies are installed:
+- base ✅ (always installed)
+- stock ✅ (install manually)
+- web ✅ (always installed)
+- mail ✅ (usually installed)
+- portal ✅ (install if needed)
+- product ✅ (install if needed)
+- contacts ✅ (usually installed)
