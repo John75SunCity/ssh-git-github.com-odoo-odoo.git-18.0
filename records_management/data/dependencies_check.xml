@@ -4,9 +4,9 @@
         <!-- This file ensures that required modules are properly loaded -->
         <!-- It will be processed after dependencies are loaded -->
         
-        <!-- Verify stock module is loaded by checking if stock.production.lot exists -->
+        <!-- Verify stock module is loaded by checking if stock.lot exists -->
         <function model="ir.model" name="search">
-            <value eval="[('model', '=', 'stock.production.lot')]"/>
+            <value eval="[('model', '=', 'stock.lot')]"/>
         </function>
     </data>
 </odoo>

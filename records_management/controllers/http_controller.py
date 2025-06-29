@@ -53,7 +53,7 @@ class MyController(http.Controller):
             stock.quant recordset.
         """
         try:
-            serials = http.request.env['stock.production.lot'].search([(CUSTOMER_FIELD, '=', partner.id)])
+            serials = http.request.env['stock.lot'].search([(CUSTOMER_FIELD, '=', partner.id)])
             if not serials:
                 _logger.info("No serials found for partner %s", partner.id)
                 return http.request.env['stock.quant'].browse([])

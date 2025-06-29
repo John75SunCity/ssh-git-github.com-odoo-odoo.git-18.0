@@ -30,7 +30,7 @@ class PickupRequest(models.Model):
         ('done', 'Done')
     ], default='draft', string='Status', help="Current status of the pickup request.")
     item_ids = fields.Many2many(
-        'stock.production.lot',
+        'stock.lot',
         string='Items',
         domain="[('customer_id', '=', customer_id)]",
         help="Items to be picked up. Only items belonging to the selected customer are allowed."
@@ -102,7 +102,7 @@ class PickupRequest(models.Model):
 
         Args:
             partner (res.partner): The customer.
-            item_ids (list): List of stock.production.lot ids.
+            item_ids (list): List of stock.lot ids.
 
         Returns:
             pickup.request record or None
@@ -111,7 +111,7 @@ class PickupRequest(models.Model):
         """
         if not item_ids:
             raise ValidationError(_("No items selected for pickup."))
-        items = self.env['stock.production.lot'].search([
+        items = self.env['stock.lot'].search([
             ('id', 'in', item_ids),
             ('customer_id', '=', partner.id)
         ])

@@ -10,7 +10,7 @@ class InventoryPortal(http.Controller):
         partner = http.request.env.user.partner_id
         if not partner:
             return http.request.redirect('/my/inventory?error=partner_not_found')
-        serials = http.request.env['stock.production.lot'].search([('customer_id', '=', partner.id)])
+        serials = http.request.env['stock.lot'].search([('customer_id', '=', partner.id)])
         quants = http.request.env['stock.quant'].search([
             ('lot_id', 'in', serials.ids), 
             ('location_id.usage', '=', 'internal')
@@ -28,7 +28,7 @@ class InventoryPortal(http.Controller):
         item_ids = [int(id) for id in http.request.httprequest.form.getlist('item_ids')]
         if not item_ids:
             return http.request.redirect('/my/inventory?error=no_items_selected')
-        items = http.request.env['stock.production.lot'].search([
+        items = http.request.env['stock.lot'].search([
             ('id', 'in', item_ids),
             ('customer_id', '=', partner.id)
         ])

@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 
 
 class StockProductionLot(models.Model):
-    _inherit = 'stock.production.lot'
+    _inherit = 'stock.lot'
 
     # Reference to the customer (res.partner) associated with this lot.
     customer_id = fields.Many2one('res.partner', string='Customer')
@@ -26,10 +26,10 @@ class ShreddingService(models.Model):
         ('bin', 'Bin Shredding'),
         ('box', 'Box Shredding')
     ], string='Service Type', required=True)
-    bin_ids = fields.Many2many('stock.production.lot', string='Serviced Bins', 
+    bin_ids = fields.Many2many('stock.lot', string='Serviced Bins', 
                                domain=[('product_id.name', '=', 'Shredding Bin')])
     box_quantity = fields.Integer(string='Number of Boxes', default=0)
-    shredded_box_ids = fields.Many2many('stock.production.lot', string='Shredded Boxes', 
+    shredded_box_ids = fields.Many2many('stock.lot', string='Shredded Boxes', 
                                         domain=[('customer_id', '!=', False)])
     audit_barcodes = fields.Text(string='Audit Barcodes')
     total_charge = fields.Float(string='Total Charge', compute='_compute_total_charge')

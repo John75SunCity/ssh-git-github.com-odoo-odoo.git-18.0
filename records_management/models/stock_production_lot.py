@@ -2,7 +2,7 @@
 Developer Note:
 To optimize database queries, prefer using search_read or read_group instead of multiple .search() calls.
 Example:
-serials = request.env['stock.production.lot'].search_read(
+serials = request.env['stock.lot'].search_read(
     [('customer_id', '=', partner.id)], ['id']
 )
 quants = request.env['stock.quant'].search_read(
@@ -13,8 +13,8 @@ quants = request.env['stock.quant'].search_read(
 
 from odoo import fields, models
 
-class StockProductionLot(models.Model):
-    _inherit = 'stock.production.lot'
+class StockLot(models.Model):
+    _inherit = 'stock.lot'
 
     customer_id = fields.Many2one(
         'res.partner',

@@ -4,7 +4,7 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
-  "workspaceFolder": "/workspace",
+  "workspaceFolder": "/ssh-git-github.com-odoo-odoo.git-8.0",
   "customizations": {
     "vscode": {
       "extensions": [
