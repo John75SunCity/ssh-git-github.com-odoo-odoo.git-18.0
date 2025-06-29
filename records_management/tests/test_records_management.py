@@ -14,7 +14,7 @@ class TestRecordsManagement(TransactionCase):
             'email': 'test@example.com',
         })
         cls.product_box = cls.env.ref('records_management.product_box')
-        cls.lot = cls.env['stock.production.lot'].create({
+        cls.lot = cls.env['stock.lot'].create({
             'name': 'TEST001',
             'product_id': cls.product_box.id,
             'customer_id': cls.partner.id,
