@@ -6,7 +6,7 @@ USER root
 
 # Install required system dependencies
 RUN apt-get update && apt-get install -y \
-    python-dev \
+    python3-dev \
     libxml2-dev \
     libxslt1-dev \
     libldap2-dev \

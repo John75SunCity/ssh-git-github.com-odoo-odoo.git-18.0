@@ -19,7 +19,10 @@
         "formulahendry.auto-rename-tag",
         "esbenp.prettier-vscode",
         "ms-vscode-remote.remote-containers",
-        "GitHub.copilot"
+        "GitHub.copilot",
+        "ms-vscode-remote.remote-ssh",
+        "ms-vscode.remote-server",
+        "ms-vscode-remote.remote-wsl"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
