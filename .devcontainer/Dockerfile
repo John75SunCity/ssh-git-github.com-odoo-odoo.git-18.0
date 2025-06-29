@@ -56,16 +56,23 @@ RUN git config --global user.name "odoo" && \
 USER root
 
 # Copy and install requirements early for better Docker layer caching
-COPY requirements.txt /tmp/requirements.txt
+COPY ../requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt && \
     rm /tmp/requirements.txt
 
 # Copy package.json and install npm dependencies
-COPY package*.json ./
-RUN npm install
+COPY ../package*.json /tmp/
+RUN cd /tmp && npm install && \
+    mkdir -p /home/odoo/node_modules && \
+    cp -r /tmp/node_modules/* /home/odoo/node_modules/ && \
+    rm -rf /tmp/package*.json /tmp/node_modules
+
+# Create workspace directory and set proper permissions
+RUN mkdir -p /workspace && \
+    chown odoo:odoo /workspace
 
 # Set workdir
-WORKDIR /home/odoo
+WORKDIR /workspace
 
 # Switch to odoo user for runtime
 USER odoo
