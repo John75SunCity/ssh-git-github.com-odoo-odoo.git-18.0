@@ -6,7 +6,8 @@ MarkupSafe>=2.0.1
 Pillow>=6.2.2
 Pygments>=2.5.2
 PyPDF2>=1.26.0
-Python-Chart>=1.39
+# Python-Chart>=1.39  # Disabled - incompatible with Python 3.12 (causes build errors in Odoo.sh)
+# TODO: Replace with matplotlib or find Python 3 compatible fork if chart functionality is needed
 PyYAML>=3.13
 Werkzeug>=0.11.15
 decorator>=4.0.11
