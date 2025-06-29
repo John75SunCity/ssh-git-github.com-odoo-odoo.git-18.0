@@ -17,7 +17,9 @@
         "ms-vscode.vscode-typescript-next",
         "bradlc.vscode-tailwindcss",
         "formulahendry.auto-rename-tag",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "ms-vscode-remote.remote-containers",
+        "GitHub.copilot"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
