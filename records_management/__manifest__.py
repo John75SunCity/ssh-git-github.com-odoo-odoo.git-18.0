@@ -27,6 +27,7 @@
         'data/mail_template_data.xml',
         'data/product_data.xml',
         'data/dependencies_check.xml',
+        'sales_management',
     ],
     'demo': [
         'demo/odoo.xml'
