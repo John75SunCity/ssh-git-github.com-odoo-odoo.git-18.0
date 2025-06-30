@@ -16,16 +16,20 @@
         'contacts'
     ],
     'data': [
+        'security/groups.xml', 
         'security/ir.model.access.csv',
         'security/security.xml',
-        'views/scrm_records_management_views.xml',
-        'views/pickup_request_views.xml',
-        'views/shredding_service_views.xml',
+        'views/customer_invetory_report.xml',
+        'views/pickup_request.xml',
+        'views/shredding_views.xml',
         'views/inventory_template.xml',
+        'views/my_portal_inventory.xml',
+        'views/portal_inventory_export_views.xml',
         'data/ir_sequence_data.xml',
         'data/mail_template_data.xml',
         'data/product_data.xml',
         'data/dependencies_check.xml',
+        'sales_management',
     ],
     'demo': [
         'demo/odoo.xml'
