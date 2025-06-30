@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
     'version': '18.0.1.0.0',
@@ -31,7 +30,7 @@ Features:
 """,
     'website': 'https://suncityshred.com',
     'category': 'Tools',
-    'icon': 'records_management/static/description/icon.png',
+    'icon': 'static/description/icon.png',
     'data': [
         'data/dependencies_check.xml',
         'views/inventory_template.xml',
@@ -46,7 +45,8 @@ Features:
     'demo': [
         'demo/odoo.xml'
     ],
-    'installable': True,
+        'demo/odoo.xml'
+    ],
     'application': True,
     'auto_install': False,
 }
