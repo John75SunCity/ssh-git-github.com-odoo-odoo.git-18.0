@@ -69,7 +69,7 @@ class TestRecordsManagement(TransactionCase):
                 'latitude': 91.0,  # Invalid latitude
             })
 
-    def test_stock_production_lot_customer(self):
+    def test_stock_lot_customer(self):
         """Test stock production lot customer relationship."""
         self.assertEqual(self.lot.customer_id, self.partner)
 

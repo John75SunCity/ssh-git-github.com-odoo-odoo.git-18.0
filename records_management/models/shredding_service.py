@@ -12,12 +12,18 @@ class ShreddingService(models.Model):
     ], string='Service Type', required=True)
     bin_ids = fields.Many2many(
         'stock.lot',
+        'shredding_service_bin_rel',
+        'service_id',
+        'lot_id',
         string='Serviced Bins',
         domain=[('product_id.name', '=', 'Shredding Bin')]
     )
     box_quantity = fields.Integer(string='Number of Boxes')
     shredded_box_ids = fields.Many2many(
         'stock.lot',
+        'shredding_service_box_rel',
+        'service_id',
+        'lot_id',
         string='Shredded Boxes',
         domain=[('customer_id', '!=', False)]
     )
