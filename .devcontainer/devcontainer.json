@@ -2,7 +2,7 @@
   "name": "Odoo Development Environment",
   "build": {
     "dockerfile": "Dockerfile",
-    "context": ".."
+    "context": ".." // Consider narrowing context if possible to reduce build time
   },
   "workspaceFolder": "/ssh-git-github.com-odoo-odoo.git-8.0",
   "customizations": {
@@ -24,10 +24,11 @@
         "ms-vscode.remote-server",
         "ms-vscode-remote.remote-wsl",
         "GitHub.codespaces"
+        // Add more Odoo-specific or Python QA/testing extensions as needed
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
-        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.defaultInterpreterPath": "/usr/local/bin/python", // Ensure Python version matches Odoo's requirements
         "python.linting.enabled": true,
         "python.linting.flake8Enabled": true,
         "python.formatting.provider": "black",
@@ -36,12 +37,44 @@
           "**/*.pyc": true,
           "**/node_modules": true,
           "**/dist": true,
-          "**/.git": false
+          "**/.git": false,
+          "**/.DS_Store": true,
+          "**/*.log": true
+          // Add more patterns if there are additional unwanted files
         }
       }
     }
   },
   "remoteUser": "odoo",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind"
+    // Add more mounts for logs or config files if needed
+  ],
+  "forwardPorts": [8069, 8071, 8072],
+  "portsAttributes": {
+    "8069": {
+      "label": "Odoo HTTP",
+      "onAutoForward": "notify"
+    },
+    "8071": {
+      "label": "Odoo HTTPS",
+      "onAutoForward": "notify"
+    },
+    "8072": {
+      "label": "Odoo Longpolling",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "bash -c 'cd /workspace && if [ -f package.json ]; then npm ci; fi && echo \"DevContainer setup complete!\"'",
+  "remoteEnv": {
+    "PYTHONPATH": "/workspace:/workspace/records_management",
+    "ODOO_RC": "/workspace/odoo.conf",
+    "PGHOST": "localhost",
+    "PGPORT": "5432"
+    // Consider using .env files or secrets management for sensitive values
+  }
+  // Add comments as needed to explain custom configuration
+}
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspace,type=bind"
   ],
