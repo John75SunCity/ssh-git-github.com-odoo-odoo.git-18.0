@@ -1,52 +1,36 @@
 {
     'name': 'Records Management',
     'version': '18.0.1.0.0',
-    'license': 'OPL-1',
+    'category': 'Industries',
+    'summary': 'Manages document boxes, storage, and retrieval processes',
+    'author': 'Odoo Inc.',
+    'website': 'https://www.odoo.com',
+    'license': 'LGPL-3',
     'depends': [
         'base',
         'stock',
-        'web',
         'mail',
         'portal',
         'board',
         'product',
         'contacts'
     ],
-    'summary': 'Centralized records storage, search, permissions, and audit trails.',
-    'description': """
-Records Management
-==================
-A comprehensive module for managing records in Odoo.
-
-Features:
-- Centralized record storage
-- Easy search and retrieval
-- Access control and permissions
-- Audit trails and history tracking
-- Integration with stock and web modules
-- Demo data and scheduled actions for testing
-
-**Note:** This app does not collect or transmit user data outside Odoo.
-""",
-    'website': 'https://suncityshred.com',
-    'category': 'Tools',
-    'icon': 'static/description/icon.png',
     'data': [
-        'data/dependencies_check.xml',
-        'views/inventory_template.xml',
-        'views/pickup_request.xml',
-        'views/my_portal_inventory.xml',
-        'views/shredding_views.xml',
-        'security/groups.xml',
         'security/ir.model.access.csv',
-        'data/products.xml',
-        'data/scheduled_actions.xml'
+        'security/security.xml',
+        'views/scrm_records_management_views.xml',
+        'views/pickup_request_views.xml',
+        'views/shredding_service_views.xml',
+        'views/inventory_template.xml',
+        'data/ir_sequence_data.xml',
+        'data/mail_template_data.xml',
+        'data/product_data.xml',
+        'data/dependencies_check.xml',
     ],
     'demo': [
         'demo/odoo.xml'
     ],
-        'demo/odoo.xml'
-    ],
+    'installable': True,
     'application': True,
     'auto_install': False,
 }
