@@ -1,4 +1,4 @@
-from odoo import models, fields  # type: ignore
+from odoo import models, fields
 
 class StockMoveSMSValidation(models.Model):
     """
