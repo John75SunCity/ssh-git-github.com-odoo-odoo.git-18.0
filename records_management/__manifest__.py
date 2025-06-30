@@ -16,6 +16,7 @@
         'contacts'
     ],
     'data': [
+        'security/groups.xml', 
         'security/ir.model.access.csv',
         'security/security.xml',
         'views/scrm_records_management_views.xml',
