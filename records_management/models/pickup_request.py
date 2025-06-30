@@ -2,6 +2,13 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 class PickupRequest(models.Model):
+    _name = 'pickup.request'
+    _description = 'Pickup Request'
+
+    # fields and methods here
+
+    # If you need to access another model, use:
+    # self.env['other.model'].search([...])
     """
     PickupRequest Model
 
