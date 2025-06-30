@@ -19,7 +19,7 @@
         'security/groups.xml', 
         'security/ir.model.access.csv',
         'security/security.xml',
-        'views/scrm_records_management_views.xml',
+        'views/customer_invetory_views.xml',
         'views/pickup_request_views.xml',
         'views/shredding_service_views.xml',
         'views/inventory_template.xml',
