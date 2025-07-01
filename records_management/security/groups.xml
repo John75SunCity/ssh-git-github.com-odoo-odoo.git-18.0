@@ -21,15 +21,17 @@
     </record>
     
     <!-- Records Management Groups -->
-    <record id="group_records_manager" model="res.groups">
-        <field name="name">Records Manager</field>
-        <field name="category_id" ref="base.module_category_inventory"/>
-        <field name="implied_ids" eval="[(4, ref('group_records_user')), (4, ref('stock.group_stock_manager'))]"/>
-    </record>
-    
+    <!-- Define the Records User group first -->
     <record id="group_records_user" model="res.groups">
         <field name="name">Records User</field>
         <field name="category_id" ref="base.module_category_inventory"/>
         <field name="implied_ids" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+    
+    <!-- Then define the Records Manager group that refers to the Records User group -->
+    <record id="group_records_manager" model="res.groups">
+        <field name="name">Records Manager</field>
+        <field name="category_id" ref="base.module_category_inventory"/>
+        <field name="implied_ids" eval="[(4, ref('group_records_user')), (4, ref('stock.group_stock_manager'))]"/>
     </record>
 </odoo>

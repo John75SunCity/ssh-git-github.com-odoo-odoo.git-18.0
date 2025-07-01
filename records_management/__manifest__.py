@@ -27,7 +27,7 @@
         'views/my_portal_inventory.xml',
         'views/portal_inventory_export_views.xml',
         'views/records_management_view.xml',
-        'views/views/customer_invetory_views.xml',
+        'views/views/customer_inventory_views.xml',
         'data/ir_sequence_data.xml',
         'data/mail_template_data.xml',
         'data/product_data.xml',
