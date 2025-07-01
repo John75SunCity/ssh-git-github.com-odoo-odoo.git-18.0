@@ -17,7 +17,8 @@
         'sale_management'
     ],
     'data': [
-        'security/groups.xml', 
+        'security/groups.xml',
+        'security/ir_rule.xml',
         'security/ir.model.access.csv',
         'security/security.xml',
         'customer_inventory_report.xml',
