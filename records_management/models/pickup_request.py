@@ -5,7 +5,7 @@ class PickupRequest(models.Model):
     _name = 'pickup.request'
     _description = 'Pickup Request'
 
-    name = fields.Char(string='Request Reference', required=True, default='New', readonly=True, copy=False)
+    request_item_ids = fields.One2many('pickup.request.item', 'pickup_id', string='Request Items')
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     request_date = fields.Date(string='Request Date', default=fields.Date.context_today, required=True)
     request_item_ids = fields.One2many('pickup.request.item', 'pickup_id', string='Request Items', copy=True)
