@@ -5,11 +5,15 @@
         <field name="arch" type="xml">
             <form string="Pickup Request">
                 <header>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,scheduled,completed,cancelled"/>
-                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                    <button name="action_schedule" string="Schedule" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'confirmed')]}"/>
-                    <button name="action_complete" string="Complete" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'scheduled')]}"/>
-                    <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible': [('state', 'not in', ['draft', 'confirmed', 'scheduled'])]}"/>
+                    <button name="action_confirm" string="Confirm" type="object" 
+                            states="draft" class="oe_highlight"/>
+                    <button name="action_schedule" string="Schedule" type="object" 
+                            states="confirmed" class="oe_highlight"/>
+                    <button name="action_complete" string="Complete" type="object" 
+                            states="scheduled" class="oe_highlight"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                            states="draft,confirmed,scheduled"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -19,29 +23,29 @@
                     </div>
                     <group>
                         <group>
-                            <field name="customer_id" required="1"/>
+                            <field name="customer_id"/>
                             <field name="request_date"/>
-                            <field name="scheduled_date" attrs="{'invisible': [('state', 'in', ['draft'])], 'required': [('state', 'in', ['scheduled', 'completed'])]}"/>
-                            <field name="completion_date" attrs="{'invisible': [('state', '!=', 'completed')], 'required': [('state', '=', 'completed')]}"/>
+                            <field name="scheduled_date" attrs="{'required': [('state', 'in', ['scheduled','completed'])]}"/>
+                            <field name="priority" widget="priority"/>
                         </group>
                         <group>
-                            <field name="warehouse_id" required="1"/>
-                            <field name="vehicle_id" attrs="{'invisible': [('state', 'in', ['draft'])], 'required': [('state', 'in', ['scheduled', 'completed'])]}"/>
-                            <field name="driver_id" attrs="{'invisible': [('state', 'in', ['draft'])], 'required': [('state', 'in', ['scheduled', 'completed'])]}"/>
-                            <field name="priority" widget="priority"/>
+                            <field name="warehouse_id"/>
+                            <field name="driver_id" attrs="{'required': [('state', 'in', ['scheduled','completed'])]}"/>
+                            <field name="vehicle_id" attrs="{'required': [('state', 'in', ['scheduled','completed'])]}"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Items">
                             <field name="request_item_ids">
                                 <tree editable="bottom">
-                                    <field name="product_id" required="1"/>
-                                    <field name="quantity" required="1"/>
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
                                     <field name="lot_id" domain="[('product_id', '=', product_id)]"/>
                                     <field name="notes"/>
                                 </tree>
                             </field>
                         </page>
+</odoo>
                         <page string="Notes">
                             <field name="notes"/>
                         </page>
@@ -75,6 +79,7 @@
             </tree>
         </field>
     </record>
+    
     
     <record id="model_pickup_request_search" model="ir.ui.view">
         <field name="name">pickup.request.search</field>
