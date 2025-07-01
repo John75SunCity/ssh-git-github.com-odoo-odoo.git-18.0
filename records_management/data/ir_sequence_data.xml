@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Pickup Requests -->
+        <record id="seq_pickup_request" model="ir.sequence">
+            <field name="name">Pickup Request</field>
+            <field name="code">pickup.request</field>
+            <field name="prefix">PR/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

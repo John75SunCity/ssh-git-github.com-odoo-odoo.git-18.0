@@ -34,7 +34,9 @@ class PickupRequest(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
-        ('done', 'Done')
+        ('scheduled', 'Scheduled'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
     ], default='draft', string='Status', help="Current status of the pickup request.")
     item_ids = fields.Many2many(
         'stock.lot',
@@ -49,6 +51,33 @@ class PickupRequest(models.Model):
         store=True
     )
     signature = fields.Binary(string='Signature')
+    
+    # Additional fields referenced in the view
+    scheduled_date = fields.Date(
+        string='Scheduled Date',
+        help="The date when the pickup is scheduled to occur."
+    )
+    completion_date = fields.Date(
+        string='Completion Date',
+        help="The date when the pickup was completed."
+    )
+    vehicle_id = fields.Many2one(
+        'fleet.vehicle',
+        string='Vehicle',
+        help="The vehicle used for this pickup."
+    )
+    driver_id = fields.Many2one(
+        'res.partner',
+        string='Driver',
+        domain="[('is_company', '=', False)]",
+        help="The driver assigned to this pickup."
+    )
+    name = fields.Char(
+        string='Reference',
+        readonly=True,
+        default='New',
+        copy=False
+    )
 
     @api.depends('item_ids')
     def _compute_warehouse(self):
@@ -95,12 +124,36 @@ class PickupRequest(models.Model):
         for rec in self:
             rec.state = 'confirmed'
 
-    def action_done(self):
+    def action_schedule(self):
         """
-        Mark the pickup request as done, moving it to the 'done' state.
+        Schedule the pickup request, moving it to the 'scheduled' state.
         """
         for rec in self:
-            rec.state = 'done'
+            if not rec.scheduled_date:
+                rec.scheduled_date = fields.Date.today()
+            rec.state = 'scheduled'
+
+    def action_complete(self):
+        """
+        Complete the pickup request, moving it to the 'completed' state.
+        """
+        for rec in self:
+            rec.completion_date = fields.Date.today()
+            rec.state = 'completed'
+
+    def action_cancel(self):
+        """
+        Cancel the pickup request, moving it to the 'cancelled' state.
+        """
+        for rec in self:
+            rec.state = 'cancelled'
+
+    def action_done(self):
+        """
+        Legacy method for backward compatibility.
+        Mark the pickup request as completed.
+        """
+        return self.action_complete()
 
     @api.model
     def create_pickup_request(self, partner, item_ids):
@@ -151,3 +204,12 @@ class PickupRequest(models.Model):
                     'item_ids': []
                 }
             }
+
+    @api.model
+    def create(self, vals):
+        """
+        Override create method to assign a sequence number.
+        """
+        if vals.get('name', 'New') == 'New':
+            vals['name'] = self.env['ir.sequence'].next_by_code('pickup.request') or 'New'
+        return super(PickupRequest, self).create(vals)
