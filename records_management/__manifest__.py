@@ -31,6 +31,7 @@
         'data/ir_sequence_data.xml',
         'data/products.xml',
         'data/dependencies_check.xml',
+        'data/scheduled_actions.xml',
     ],
     'demo': [
         'demo/odoo.xml'

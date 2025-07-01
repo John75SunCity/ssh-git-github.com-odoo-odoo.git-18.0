@@ -9,3 +9,4 @@ access_customer_inventory_report_user,customer.inventory.report user,model_custo
 access_customer_inventory_report_manager,customer.inventory.report manager,model_customer_inventory_report,records_management.group_records_manager,1,1,1,1
 access_pickup_request_item_user,pickup.request.item user,model_pickup_request_item,records_management.group_records_user,1,1,1,1
 access_pickup_request_item_manager,pickup.request.item manager,model_pickup_request_item,records_management.group_records_manager,1,1,1,1
+access_records_management_installer,records.management.installer,model_records_management_installer,records_management.group_records_manager,1,1,1,1
