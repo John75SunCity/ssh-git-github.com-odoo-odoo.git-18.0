@@ -8,7 +8,11 @@ class PickupRequestItem(models.Model):
     pickup_id = fields.Many2one('pickup.request', string='Pickup Request', required=True, ondelete='cascade')
     product_id = fields.Many2one('product.product', string='Product', required=True)
     quantity = fields.Float(string='Quantity', default=1.0, required=True)
-    lot_id = fields.Many2one('stock.lot', string='Lot/Serial Number')
+    lot_id = fields.Many2one(
+        'stock.lot',
+        string='Lot/Serial Number',
+        domain="[('product_id', '=', product_id)]"
+    )
     notes = fields.Text(string='Notes')
 
     @api.constrains('quantity')
