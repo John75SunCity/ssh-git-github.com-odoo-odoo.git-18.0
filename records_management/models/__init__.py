@@ -1,4 +1,5 @@
 from . import scrm_records_management
+from . import customer_inventory_report
 from . import pickup_request
 from . import shredding_service
 from . import stock_picking
