@@ -32,6 +32,7 @@
         'data/products.xml',
         'data/dependencies_check.xml',
         'data/scheduled_actions.xml',
+        'data/pickup_request_sequence.xml',
     ],
     'demo': [
         'demo/odoo.xml'
