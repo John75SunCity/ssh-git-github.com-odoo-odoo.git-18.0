@@ -1,6 +1,7 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
+# ---- PickupRequestItem model ----
 class PickupRequestItem(models.Model):
     _name = 'pickup.request.item'
     _description = 'Pickup Request Item'
@@ -22,7 +23,7 @@ class PickupRequestItem(models.Model):
         required=True
     )
     lot_id = fields.Many2one(
-        'stock.lot',
+        'stock.production.lot',
         string='Serial Number'
     )
     notes = fields.Text(string='Notes')
@@ -37,11 +38,8 @@ class PickupRequestItem(models.Model):
     def _onchange_product_id(self):
         if self.product_id and self.lot_id and self.lot_id.product_id != self.product_id:
             self.lot_id = False
-2. pickup.request Model (with correct One2many linkage)
-Python
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
 
+# ---- PickupRequest model ----
 class PickupRequest(models.Model):
     _name = 'pickup.request'
     _description = 'Pickup Request'
@@ -67,12 +65,12 @@ class PickupRequest(models.Model):
         ('cancelled', 'Cancelled')
     ], default='draft', string='Status', help="Current status of the pickup request.")
     item_ids = fields.Many2many(
-        'stock.lot',
+        'stock.production.lot',
         string='Items',
         domain="[('customer_id', '=', customer_id)]",
         help="Items to be picked up. Only items belonging to the selected customer are allowed."
     )
-    # --- The key linkage: ---
+    # The key linkage:
     request_item_ids = fields.One2many(
         'pickup.request.item',
         'pickup_id',  # Must match the field in PickupRequestItem
@@ -171,7 +169,7 @@ class PickupRequest(models.Model):
     def create_pickup_request(self, partner, item_ids):
         if not item_ids:
             raise ValidationError(_("No items selected for pickup."))
-        items = self.env['stock.lot'].search([
+        items = self.env['stock.production.lot'].search([
             ('id', 'in', item_ids),
             ('customer_id', '=', partner.id)
         ])
