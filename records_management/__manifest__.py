@@ -14,7 +14,7 @@
         'board',
         'product',
         'contacts',
-        'sales_management'
+        'sale_management'
     ],
     'data': [
         'security/groups.xml', 
