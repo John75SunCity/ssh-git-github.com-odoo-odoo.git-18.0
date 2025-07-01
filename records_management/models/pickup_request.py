@@ -14,7 +14,7 @@ class PickupRequest(models.Model):
     # New fields
     product_id = fields.Many2one('product.product', string='Product', required=True)
     quantity = fields.Float(string='Quantity', required=True)
-    lot_id = fields.Many2one('stock.production.lot', string='Lot', domain="[('product_id', '=', product_id)]")
+    lot_id = fields.Many2one('stock.lot', string='Lot', domain="[('product_id', '=', product_id)]")
 
     @api.model_create_multi
     def create(self, vals_list):
