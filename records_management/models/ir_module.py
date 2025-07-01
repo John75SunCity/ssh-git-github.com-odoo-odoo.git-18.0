@@ -19,7 +19,7 @@ from odoo.http import request
 from odoo.modules.module import adapt_version, MANIFEST_NAMES
 from odoo.osv.expression import is_leaf
 from odoo.release import major_version
-from odoo.tools import convert_csv_import, convert_sql_import, convert_xml_import, exception_to_unicode
+from odoo.tools import convert_csv_import, convert_sql_import, convert_xml_import
 from odoo.tools import file_open, file_open_temporary_directory, ormcache
 
 _logger = logging.getLogger(__name__)
@@ -314,7 +314,7 @@ class IrModule(models.Model):
                     except Exception as e:
                         raise UserError(_(
                             "Error while importing module '%(module)s'.\n\n %(error_message)s \n\n",
-                            module=mod_name, error_message=exception_to_unicode(e),
+                            module=mod_name, error_message=str(e),
                         ))
         return "", module_names
 
