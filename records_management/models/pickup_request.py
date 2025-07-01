@@ -162,5 +162,3 @@ class PickupRequest(models.Model):
             if vals.get('name', 'New') == 'New':
                 vals['name'] = self.env['ir.sequence'].next_by_code('pickup.request') or 'New'
         return super(PickupRequest, self).create(vals_list)
-                vals['name'] = self.env['ir.sequence'].next_by_code('pickup.request') or 'New'
-        return super(PickupRequest, self).create(vals_list)
