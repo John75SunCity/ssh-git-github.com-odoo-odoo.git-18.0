@@ -5,26 +5,10 @@ class PickupRequestItem(models.Model):
     _name = 'pickup.request.item'
     _description = 'Pickup Request Item'
 
-    pickup_id = fields.Many2one(
-        'pickup.request',
-        string='Pickup Request',
-        required=True,
-        ondelete='cascade'
-    )
-    product_id = fields.Many2one(
-        'product.product',
-        string='Product',
-        required=True
-    )
-    quantity = fields.Float(
-        string='Quantity',
-        default=1.0,
-        required=True
-    )
-    lot_id = fields.Many2one(
-        'stock.lot',
-        string='Serial Number'
-    )
+    pickup_id = fields.Many2one('pickup.request', string='Pickup Request', required=True, ondelete='cascade')
+    product_id = fields.Many2one('product.product', string='Product', required=True)
+    quantity = fields.Float(string='Quantity', default=1.0, required=True)
+    lot_id = fields.Many2one('stock.lot', string='Lot/Serial Number')
     notes = fields.Text(string='Notes')
 
     @api.constrains('quantity')
