@@ -4,6 +4,7 @@ from odoo.exceptions import ValidationError
 class PickupRequest(models.Model):
     _name = 'pickup.request'
     _description = 'Pickup Request'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # fields and methods here
 
@@ -44,6 +45,13 @@ class PickupRequest(models.Model):
         domain="[('customer_id', '=', customer_id)]",
         help="Items to be picked up. Only items belonging to the selected customer are allowed."
     )
+    
+    # One2many relationship with the pickup.request.item model
+    request_item_ids = fields.One2many(
+        'pickup.request.item',
+        'pickup_id',
+        string='Request Items'
+    )
     warehouse_id = fields.Many2one(
         'stock.warehouse',
         string='Warehouse',
@@ -78,6 +86,13 @@ class PickupRequest(models.Model):
         default='New',
         copy=False
     )
+    priority = fields.Selection([
+        ('0', 'Normal'),
+        ('1', 'High')
+    ], default='0', string='Priority')
+    notes = fields.Text(string='Notes')
+    signed_by = fields.Many2one('res.users', string='Signed By')
+    signature_date = fields.Datetime(string='Signature Date')
 
     @api.depends('item_ids')
     def _compute_warehouse(self):
