@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="product_1" model="product.product">
-        <field name="name">Sample Product</field>
-        <!-- other fields -->
+    <!-- Demo partner data -->
+    <record id="demo_customer_1" model="res.partner">
+        <field name="name">Demo Records Management Customer</field>
+        <field name="email">demo.customer@example.com</field>
+        <field name="phone">(123) 456-7890</field>
+        <field name="street">123 Storage Lane</field>
+        <field name="city">Records City</field>
+        <field name="zip">12345</field>
+        <field name="country_id" ref="base.us"/>
     </record>
-    <!-- more records -->
+
+    <!-- Demo lot data -->
+    <record id="demo_lot_1" model="stock.lot">
+        <field name="name">BOX00001</field>
+        <field name="product_id" ref="records_management.product_box"/>
+        <field name="customer_id" ref="records_management.demo_customer_1"/>
+    </record>
+    
+    <record id="demo_lot_2" model="stock.lot">
+        <field name="name">FILE00001</field>
+        <field name="product_id" ref="records_management.product_file"/>
+        <field name="customer_id" ref="records_management.demo_customer_1"/>
+    </record>
 </odoo>

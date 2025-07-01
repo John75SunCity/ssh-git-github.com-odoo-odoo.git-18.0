@@ -1,4 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_pickup_request_user,pickup.request user,model_pickup_request,base.group_user,1,1,1,1
-access_shredding_service_manager,shredding.service manager,model_shredding_service,base.group_system,1,1,1,1
-access_stock_move_sms_validation_user,stock.move.sms.validation user,model_stock_move_sms_validation,base.group_user,1,1,1,1
+access_pickup_request_user,pickup.request user,model_pickup_request,records_management.group_records_user,1,1,1,0
+access_pickup_request_manager,pickup.request manager,model_pickup_request,records_management.group_records_manager,1,1,1,1
+access_shredding_service_tech,shredding.service technician,model_shredding_service,records_management.group_shredding_technician,1,1,1,0
+access_shredding_service_manager,shredding.service manager,model_shredding_service,records_management.group_warehouse_manager,1,1,1,1
+access_stock_move_sms_validation_user,stock.move.sms.validation user,model_stock_move_sms_validation,records_management.group_customer_service,1,1,1,0
+access_stock_move_sms_validation_manager,stock.move.sms.validation manager,model_stock_move_sms_validation,records_management.group_records_manager,1,1,1,1

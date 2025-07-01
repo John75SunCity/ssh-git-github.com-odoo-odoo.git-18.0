@@ -5,11 +5,40 @@
             <field name="name">stock.lot.tree</field>
             <field name="model">stock.lot</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree decoration-info="state=='available'" decoration-warning="state=='reserved'" decoration-danger="state=='checkout'" decoration-muted="state=='inactive'">
                     <field name="name"/>
                     <field name="product_id"/>
                     <field name="customer_id"/>
+                    <field name="location_id"/>
+                    <field name="state"/>
+                    <field name="create_date"/>
+                    <field name="last_modified"/>
                 </tree>
+            </field>
+        </record>
+
+        <!-- Stock Lot Search View -->
+        <record id="view_stock_lot_search" model="ir.ui.view">
+            <field name="name">stock.lot.search</field>
+            <field name="model">stock.lot</field>
+            <field name="arch" type="xml">
+                <search string="Search Serial Numbers">
+                    <field name="name" string="Serial Number"/>
+                    <field name="product_id"/>
+                    <field name="customer_id"/>
+                    <field name="location_id"/>
+                    <separator/>
+                    <filter string="Available" name="available" domain="[('state','=','available')]"/>
+                    <filter string="Reserved" name="reserved" domain="[('state','=','reserved')]"/>
+                    <filter string="Checked Out" name="checkout" domain="[('state','=','checkout')]"/>
+                    <filter string="Inactive" name="inactive" domain="[('state','=','inactive')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Product" name="group_product" context="{'group_by':'product_id'}"/>
+                        <filter string="Customer" name="group_customer" context="{'group_by':'customer_id'}"/>
+                        <filter string="Location" name="group_location" context="{'group_by':'location_id'}"/>
+                        <filter string="Status" name="group_state" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
             </field>
         </record>
 
@@ -19,26 +48,82 @@
             <field name="model">stock.lot</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="available,reserved,checkout,inactive"/>
+                        <button name="action_reserve" string="Reserve" type="object" class="oe_highlight" 
+                                attrs="{'invisible': [('state', '!=', 'available')]}"/>
+                        <button name="action_checkout" string="Check Out" type="object" class="oe_highlight" 
+                                attrs="{'invisible': [('state', '!=', 'reserved')]}"/>
+                        <button name="action_checkin" string="Check In" type="object" class="oe_highlight" 
+                                attrs="{'invisible': [('state', '!=', 'checkout')]}"/>
+                        <button name="action_activate" string="Activate" type="object" 
+                                attrs="{'invisible': [('state', '!=', 'inactive')]}"/>
+                        <button name="action_deactivate" string="Deactivate" type="object" 
+                                attrs="{'invisible': [('state', '=', 'inactive')]}"/>
+                    </header>
                     <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Serial Number"/>
+                            </h1>
+                        </div>
                         <group>
-                            <field name="name"/>
-                            <field name="product_id"/>
-                            <field name="customer_id"/>
+                            <group>
+                                <field name="product_id" required="1"/>
+                                <field name="customer_id" required="1"/>
+                                <field name="barcode"/>
+                            </group>
+                            <group>
+                                <field name="location_id"/>
+                                <field name="create_date" readonly="1"/>
+                                <field name="last_modified" readonly="1"/>
+                            </group>
                         </group>
+                        <notebook>
+                            <page string="History">
+                                <field name="movement_history_ids">
+                                    <tree>
+                                        <field name="date"/>
+                                        <field name="action"/>
+                                        <field name="user_id"/>
+                                        <field name="source_location_id"/>
+                                        <field name="destination_location_id"/>
+                                        <field name="notes"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Notes">
+                                <field name="notes"/>
+                            </page>
+                        </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
 
         <!-- Stock Lot Action -->
         <record id="action_stock_lot" model="ir.actions.act_window">
-            <field name="name">Stock Production Lots</field>
+            <field name="name">Serial Numbers</field>
             <field name="res_model">stock.lot</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="search_view_id" ref="view_stock_lot_search"/>
+            <field name="context">{'search_default_available': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new serial number
+                </p>
+                <p>
+                    Manage your serial numbers for effective records management.
+                </p>
+            </field>
         </record>
 
         <!-- Records Management Menu -->
-        <menuitem id="menu_records_management_root" name="Records Management" sequence="10"/>
-        <menuitem id="menu_stock_lots" name="Stock Lots" parent="menu_records_management_root" action="action_stock_lot" sequence="10"/>
+        <menuitem id="menu_records_management_root" name="Records Management" sequence="10" groups="records_management.group_records_user"/>
+        <menuitem id="menu_stock_lots" name="Serial Numbers" parent="menu_records_management_root" action="action_stock_lot" sequence="10" groups="records_management.group_records_user"/>
     </data>
 </odoo>

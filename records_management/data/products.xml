@@ -23,22 +23,25 @@
         <!-- No list_price specified for product; add if pricing is required -->
     </record>
 
-    <!-- Retrieval Fee: service with price 10.0 -->
+    <!-- Retrieval Fee: service with price 10.0 USD -->
     <record id="service_retrieval_fee" model="product.product">
         <field name="name">Retrieval Fee</field>
         <field name="type">service</field>
         <field name="list_price">10.0</field>
+        <field name="default_code">RET001</field>
     </record>
 
-    <!-- Storage Fee: service with price 5.0 -->
+    <!-- Storage Fee: service with price 5.0 USD -->
     <record id="service_storage_fee" model="product.product">
         <field name="name">Storage Fee</field>
         <field name="type">service</field>
         <field name="list_price">5.0</field>
+        <field name="default_code">STO001</field>
     </record>
 
     <record id="product_1" model="product.product">
         <field name="name">Sample Product</field>
+        <field name="default_code">SP001</field>
         <!-- other fields -->
     </record>
 </odoo>
