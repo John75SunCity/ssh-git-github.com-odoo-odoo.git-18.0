@@ -1,0 +1,6 @@
+<record id="stock_quant_portal_rule" model="ir.rule">
+    <field name="name">Portal: see own quants</field>
+    <field name="model_id" ref="stock.model_stock_quant"/>
+    <field name="domain_force">[('lot_id.customer_id', '=', user.partner_id.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+</record>
