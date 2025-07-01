@@ -10,6 +10,11 @@ class PickupRequest(models.Model):
     request_date = fields.Date(string='Request Date', default=fields.Date.context_today, required=True)
     request_item_ids = fields.One2many('pickup.request.item', 'pickup_id', string='Request Items')  # canonical one2many
     notes = fields.Text(string='Notes')
+    
+    # New fields
+    product_id = fields.Many2one('product.product', string='Product', required=True)
+    quantity = fields.Float(string='Quantity', required=True)
+    lot_id = fields.Many2one('stock.production.lot', string='Lot', domain="[('product_id', '=', product_id)]")
 
     @api.model_create_multi
     def create(self, vals_list):
