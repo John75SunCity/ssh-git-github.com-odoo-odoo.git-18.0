@@ -36,16 +36,23 @@
                     </group>
                     <notebook>
                         <page string="Items">
-                            <field name="request_item_ids">
+                            <field name="request_item_ids" widget="one2many_list">
                                 <tree editable="bottom">
-                                    <field name="product_id"/>
-                                    <field name="quantity"/>
+                                    <field name="product_id" required="1"/>
+                                    <field name="quantity" required="1"/>
                                     <field name="lot_id" domain="[('product_id', '=', product_id)]"/>
                                     <field name="notes"/>
                                 </tree>
+                                <form>
+                                    <group>
+                                        <field name="product_id" required="1"/>
+                                        <field name="quantity" required="1"/>
+                                        <field name="lot_id" domain="[('product_id', '=', product_id)]"/>
+                                        <field name="notes"/>
+                                    </group>
+                                </form>
                             </field>
                         </page>
-</odoo>
                         <page string="Notes">
                             <field name="notes"/>
                         </page>
@@ -79,7 +86,6 @@
             </tree>
         </field>
     </record>
-    
     
     <record id="model_pickup_request_search" model="ir.ui.view">
         <field name="name">pickup.request.search</field>

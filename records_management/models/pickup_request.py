@@ -220,11 +220,13 @@ class PickupRequest(models.Model):
                 }
             }
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """
         Override create method to assign a sequence number.
+        Using model_create_multi to support batch creation.
         """
-        if vals.get('name', 'New') == 'New':
-            vals['name'] = self.env['ir.sequence'].next_by_code('pickup.request') or 'New'
-        return super(PickupRequest, self).create(vals)
+        for vals in vals_list:
+            if vals.get('name', 'New') == 'New':
+                vals['name'] = self.env['ir.sequence'].next_by_code('pickup.request') or 'New'
+        return super(PickupRequest, self).create(vals_list)
