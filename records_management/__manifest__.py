@@ -21,7 +21,7 @@
         'security/ir_rule.xml',
         'security/ir.model.access.csv',
         'security/security.xml',
-        'customer_inventory_report.xml',
+        'views/customer_inventory_report.xml',
         'views/pickup_request.xml',
         'views/shredding_views.xml',
         'views/inventory_template.xml',
