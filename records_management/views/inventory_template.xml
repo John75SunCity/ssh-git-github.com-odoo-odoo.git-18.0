@@ -54,27 +54,13 @@
                             <group>
                                 <field name="product_id" required="1"/>
                                 <field name="customer_id" required="1"/>
-                                <!-- barcode removed -->
                             </group>
                             <group>
                                 <field name="location_id"/>
                                 <field name="create_date" readonly="1"/>
-                                <!-- last_modified removed -->
                             </group>
                         </group>
                         <notebook>
-                            <page string="History">
-                                <field name="movement_history_ids">
-                                    <tree>
-                                        <field name="date"/>
-                                        <field name="action"/>
-                                        <field name="user_id"/>
-                                        <field name="source_location_id"/>
-                                        <field name="destination_location_id"/>
-                                        <field name="notes"/>
-                                    </tree>
-                                </field>
-                            </page>
                             <page string="Notes">
                                 <field name="notes"/>
                             </page>
