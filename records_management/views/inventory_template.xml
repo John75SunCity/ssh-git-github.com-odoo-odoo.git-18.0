@@ -60,11 +60,7 @@
                                 <field name="create_date" readonly="1"/>
                             </group>
                         </group>
-                        <notebook>
-                            <page string="Notes">
-                                <field name="notes"/>
-                            </page>
-                        </notebook>
+                        <!-- Removed notebook/pages for notes/history -->
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers"/>
