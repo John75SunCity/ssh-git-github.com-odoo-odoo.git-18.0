@@ -5,12 +5,16 @@
             <field name="name">stock.lot.tree</field>
             <field name="model">stock.lot</field>
             <field name="arch" type="xml">
-                <tree decoration-info="state=='available'" decoration-warning="state=='reserved'" decoration-danger="state=='checkout'" decoration-muted="state=='inactive'">
+                <tree>
                     <field name="name"/>
                     <field name="product_id"/>
                     <field name="customer_id"/>
                     <field name="location_id"/>
-                    <field name="state"/>
+                    <field name="state" 
+                           decoration-info="state=='available'" 
+                           decoration-warning="state=='reserved'" 
+                           decoration-danger="state=='checkout'" 
+                           decoration-muted="state=='inactive'"/>
                     <field name="create_date"/>
                     <field name="last_modified"/>
                 </tree>
