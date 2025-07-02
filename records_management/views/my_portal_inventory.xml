@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <template id="portal_my_inventory" name="My Inventory">
+        <template id="portal_my_inventory" name="Test Template">
             <t t-call="portal.portal_layout">
                 <div>Hello World</div>
             </t>
