@@ -54,7 +54,7 @@
                             <group>
                                 <field name="product_id" required="1"/>
                                 <field name="customer_id" required="1"/>
-                                <field name="barcode"/>
+                                <!-- barcode removed -->
                             </group>
                             <group>
                                 <field name="location_id"/>
