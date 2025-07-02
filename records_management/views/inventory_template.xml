@@ -1,23 +1,23 @@
 <odoo>
     <data>
-        <!-- Stock Lot Tree View -->
+        <!-- Stock Lot List View -->
         <record id="view_stock_lot_tree" model="ir.ui.view">
-            <field name="name">stock.lot.tree</field>
+            <field name="name">stock.lot.list</field>
             <field name="model">stock.lot</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="product_id"/>
                     <field name="customer_id"/>
                     <field name="location_id"/>
-                    <field name="state" 
-                           decoration-info="state=='available'" 
-                           decoration-warning="state=='reserved'" 
-                           decoration-danger="state=='checkout'" 
+                    <field name="state"
+                           decoration-info="state=='available'"
+                           decoration-warning="state=='reserved'"
+                           decoration-danger="state=='checkout'"
                            decoration-muted="state=='inactive'"/>
                     <field name="create_date"/>
                     <field name="last_modified"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -54,15 +54,15 @@
                 <form>
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="available,reserved,checkout,inactive"/>
-                        <button name="action_reserve" string="Reserve" type="object" class="oe_highlight" 
+                        <button name="action_reserve" string="Reserve" type="object" class="oe_highlight"
                                 attrs="{'invisible': [('state', '!=', 'available')]}"/>
-                        <button name="action_checkout" string="Check Out" type="object" class="oe_highlight" 
+                        <button name="action_checkout" string="Check Out" type="object" class="oe_highlight"
                                 attrs="{'invisible': [('state', '!=', 'reserved')]}"/>
-                        <button name="action_checkin" string="Check In" type="object" class="oe_highlight" 
+                        <button name="action_checkin" string="Check In" type="object" class="oe_highlight"
                                 attrs="{'invisible': [('state', '!=', 'checkout')]}"/>
-                        <button name="action_activate" string="Activate" type="object" 
+                        <button name="action_activate" string="Activate" type="object"
                                 attrs="{'invisible': [('state', '!=', 'inactive')]}"/>
-                        <button name="action_deactivate" string="Deactivate" type="object" 
+                        <button name="action_deactivate" string="Deactivate" type="object"
                                 attrs="{'invisible': [('state', '=', 'inactive')]}"/>
                     </header>
                     <sheet>
@@ -113,7 +113,7 @@
         <record id="action_stock_lot" model="ir.actions.act_window">
             <field name="name">Serial Numbers</field>
             <field name="res_model">stock.lot</field>
-            <field name="view_mode">tree,form,kanban</field>
+            <field name="view_mode">list,form,kanban</field>
             <field name="search_view_id" ref="view_stock_lot_search"/>
             <field name="context">{'search_default_available': 1}</field>
             <field name="help" type="html">
