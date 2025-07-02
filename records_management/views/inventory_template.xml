@@ -11,7 +11,6 @@
                     <field name="customer_id"/>
                     <field name="location_id"/>
                     <field name="create_date"/>
-                    <field name="last_modified"/>
                 </list>
             </field>
         </record>
@@ -27,7 +26,6 @@
                     <field name="customer_id"/>
                     <field name="location_id"/>
                     <separator/>
-                    <!-- Removed filters for state field since it doesn't exist -->
                     <group expand="0" string="Group By">
                         <filter string="Product" name="group_product" context="{'group_by':'product_id'}"/>
                         <filter string="Customer" name="group_customer" context="{'group_by':'customer_id'}"/>
@@ -44,7 +42,7 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <!-- Removed statusbar and action buttons depending on state -->
+                        <!-- No state/statusbar/actions -->
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -61,7 +59,7 @@
                             <group>
                                 <field name="location_id"/>
                                 <field name="create_date" readonly="1"/>
-                                <field name="last_modified" readonly="1"/>
+                                <!-- last_modified removed -->
                             </group>
                         </group>
                         <notebook>
