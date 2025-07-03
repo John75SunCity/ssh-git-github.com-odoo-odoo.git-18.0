@@ -1,47 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="product_box" model="product.product">
         <field name="name">Box</field>
-        <field name="type">product</field>
+        <field name="detailed_type">product</field>  <!-- Updated for Odoo 18.0 -->
         <field name="tracking">serial</field>
+        <field name="categ_id" ref="product.product_category_all"/>
         <!-- No list_price specified for product; add if pricing is required -->
-    </record>
-
-    <!-- File: tracked product with serial -->
-    <record id="product_file" model="product.product">
-        <field name="name">File</field>
-        <field name="type">product</field>
-        <field name="tracking">serial</field>
-        <!-- No list_price specified for product; add if pricing is required -->
-    </record>
-
-    <!-- Shredding Bin: tracked product with serial -->
-    <record id="product_shredding_bin" model="product.product">
-        <field name="name">Shredding Bin</field>
-        <field name="type">product</field>
-        <field name="tracking">serial</field>
-        <!-- No list_price specified for product; add if pricing is required -->
-    </record>
-
-    <!-- Retrieval Fee: service with price 10.0 USD -->
-    <record id="service_retrieval_fee" model="product.product">
-        <field name="name">Retrieval Fee</field>
-        <field name="type">service</field>
-        <field name="list_price">10.0</field>
-        <field name="default_code">RET001</field>
-    </record>
-
-    <!-- Storage Fee: service with price 5.0 USD -->
-    <record id="service_storage_fee" model="product.product">
-        <field name="name">Storage Fee</field>
-        <field name="type">service</field>
-        <field name="list_price">5.0</field>
-        <field name="default_code">STO001</field>
-    </record>
-
-    <record id="product_1" model="product.product">
-        <field name="name">Sample Product</field>
-        <field name="default_code">SP001</field>
-        <!-- other fields -->
     </record>
 </odoo>
