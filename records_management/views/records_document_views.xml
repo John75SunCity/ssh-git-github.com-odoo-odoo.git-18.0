@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_records_document_form" model="ir.ui.view">
+        <field name="name">records.document.form</field>
+        <field name="model">records.document</field>
+        <field name="arch" type="xml">
+            <form string="Document">
+                <header>
+                    <button name="action_store" string="Store" type="object" 
+                            states="draft" class="oe_highlight"/>
+                    <button name="action_retrieve" string="Retrieve" type="object" 
+                            states="stored,returned"/>
+                    <button name="action_return" string="Return" type="object" 
+                            states="retrieved"/>
+                    <button name="action_destroy" string="Destroy" type="object" 
+                            confirm="Are you sure you want to destroy this document?"
+                            states="stored,returned"/>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_attachments" type="object" class="oe_stat_button" icon="fa-paperclip" attrs="{'invisible': [('attachment_count', '=', 0)]}">
+                            <field name="attachment_count" string="Attachments" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Document Reference"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="document_type_id"/>
+                            <field name="box_id"/>
+                            <field name="location_id"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="retention_policy_id"/>
+                            <field name="retention_date"/>
+                            <field name="days_to_retention" attrs="{'invisible': [('retention_date', '=', False)]}"/>
+                            <field name="partner_id"/>
+                            <field name="user_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" placeholder="Document description..."/>
+                        </page>
+                        <page string="Attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                        <page string="Tags">
+                            <field name="tags" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_records_document_tree" model="ir.ui.view">
+        <field name="name">records.document.tree</field>
+        <field name="model">records.document</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state=='stored'" decoration-info="state=='retrieved'" decoration-danger="state=='destroyed'">
+                <field name="name"/>
+                <field name="document_type_id"/>
+                <field name="box_id"/>
+                <field name="location_id"/>
+                <field name="date"/>
+                <field name="retention_date"/>
+                <field name="partner_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="view_records_document_search" model="ir.ui.view">
+        <field name="name">records.document.search</field>
+        <field name="model">records.document</field>
+        <field name="arch" type="xml">
+            <search string="Search Documents">
+                <field name="name"/>
+                <field name="box_id"/>
+                <field name="location_id"/>
+                <field name="document_type_id"/>
+                <field name="partner_id"/>
+                <field name="description"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Stored" name="stored" domain="[('state','=','stored')]"/>
+                <filter string="Retrieved" name="retrieved" domain="[('state','=','retrieved')]"/>
+                <filter string="Returned" name="returned" domain="[('state','=','returned')]"/>
+                <filter string="Destroyed" name="destroyed" domain="[('state','=','destroyed')]"/>
+                <separator/>
+                <filter string="My Documents" name="my_docs" domain="[('user_id','=', uid)]"/>
+                <filter string="Expiring Soon" name="expiring" domain="[('days_to_retention','&lt;=', 30), ('days_to_retention','>', 0)]"/>
+                <filter string="Expired" name="expired" domain="[('retention_date','&lt;', context_today())]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Box" name="group_by_box" context="{'group_by': 'box_id'}"/>
+                    <filter string="Location" name="group_by_location" context="{'group_by': 'location_id'}"/>
+                    <filter string="Document Type" name="group_by_type" context="{'group_by': 'document_type_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Partner" name="group_by_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Document Date" name="group_by_date" context="{'group_by': 'date'}"/>
+                    <filter string="Retention Date" name="group_by_retention" context="{'group_by': 'retention_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <record id="action_records_document" model="ir.actions.act_window">
+        <field name="name">Documents</field>
+        <field name="res_model">records.document</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_stored': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new document record
+            </p>
+            <p>
+                Track your physical documents with detailed records.
+            </p>
+        </field>
+    </record>
+    
+    <!-- Document Type views -->
+    <record id="view_records_document_type_form" model="ir.ui.view">
+        <field name="name">records.document.type.form</field>
+        <field name="model">records.document.type</field>
+        <field name="arch" type="xml">
+            <form string="Document Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="retention_policy_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_records_document_type_tree" model="ir.ui.view">
+        <field name="name">records.document.type.tree</field>
+        <field name="model">records.document.type</field>
+        <field name="arch" type="xml">
+            <tree string="Document Types">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="retention_policy_id"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_records_document_type" model="ir.actions.act_window">
+        <field name="name">Document Types</field>
+        <field name="res_model">records.document.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>
