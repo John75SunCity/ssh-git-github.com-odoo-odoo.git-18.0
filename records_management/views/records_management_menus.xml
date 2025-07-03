@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_records_management_root"
+              name="Records Management"
+              web_icon="records_management,static/description/icon.png"
+              sequence="90"/>
+              
+    <menuitem id="menu_records_management_documents"
+              name="Documents"
+              parent="menu_records_management_root"
+              sequence="10"/>
+              
+    <menuitem id="menu_records_boxes"
+              name="Boxes"
+              parent="menu_records_management_root"
+              action="action_records_box"
+              sequence="20"/>
+              
+    <menuitem id="menu_records_documents"
+              name="Documents"
+              parent="menu_records_management_documents"
+              action="action_records_document"
+              sequence="10"/>
+              
+    <menuitem id="menu_records_retention"
+              name="Retention Policies"
+              parent="menu_records_management_documents"
+              action="action_records_retention_policy"
+              sequence="20"/>
+              
+    <menuitem id="menu_records_configuration"
+              name="Configuration"
+              parent="menu_records_management_root"
+              sequence="100"/>
+              
+    <menuitem id="menu_records_location"
+              name="Storage Locations"
+              parent="menu_records_configuration"
+              action="action_records_location"
+              sequence="10"/>
+              
+    <menuitem id="menu_records_document_type"
+              name="Document Types"
+              parent="menu_records_configuration"
+              action="action_records_document_type"
+              sequence="20"/>
+              
+    <menuitem id="menu_records_tags"
+              name="Tags"
+              parent="menu_records_configuration"
+              action="action_records_tag"
+              sequence="30"/>
+</odoo>
