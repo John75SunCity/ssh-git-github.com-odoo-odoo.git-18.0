@@ -8,6 +8,7 @@ from . import records_box
 from . import records_document
 from . import records_location
 from . import records_retention_policy
+from . import records_tag
 from . import res_partner
 from . import scrm_records_management
 from . import shredding_service
