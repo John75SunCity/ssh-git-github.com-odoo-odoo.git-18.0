@@ -1,3 +1,4 @@
+from . import pickup_request
 from . import records_box
 from . import records_document
 from . import records_location
