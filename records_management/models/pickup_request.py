@@ -69,9 +69,7 @@ class PickupRequest(models.Model):
     # --- CREATE OVERRIDE FOR SEQUENCE ---
     @api.model_create_multi
     def create(self, vals_list):
-        if not isinstance(vals_list, list):
-            vals_list = [vals_list]
         for vals in vals_list:
             if vals.get('name', 'New') == 'New':
                 vals['name'] = self.env['ir.sequence'].next_by_code('pickup.request') or 'New'
-        return super(PickupRequest, self).create(vals_list)
+        return super().create(vals_list)

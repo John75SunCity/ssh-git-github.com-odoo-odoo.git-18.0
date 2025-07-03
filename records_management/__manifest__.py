@@ -23,9 +23,12 @@ Advanced system for managing physical document boxes and their contents:
     ],
     'data': [
         'security/records_management_security.xml',
+        'data/tag_model.xml',
         'security/ir.model.access.csv',
+        'security/tag_access.csv',
         'data/products.xml',
         'data/sequence.xml',
+        'views/records_tag_views.xml',
         'views/records_box_views.xml',
         'views/records_document_views.xml',
         'views/records_location_views.xml',
