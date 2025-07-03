@@ -1,9 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <template id="portal_my_inventory" name="Test Template">
-            <t t-call="portal.portal_layout">
-                <div>Hello World</div>
-            </t>
-        </template>
-    </data>
+    <template id="portal_my_inventory" name="My Inventory">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="mt-4">My Inventory</h1>
+                        <t t-set="quants" t-value="env['stock.quant'].sudo().search([('lot_id.customer_id', '=', user.partner_id.id)])"/>
+                        <div t-if="not quants" class="alert alert-info">
+                            You currently have no items in inventory.
+                        </div>
+                        <table t-if="quants" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Lot/Serial Number</th>
+                                    <th>Location</th>
+                                    <th>Quantity</th>
+                                    <th>Available</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="quants" t-as="quant">
+                                    <tr>
+                                        <td><t t-esc="quant.product_id.name"/></td>
+                                        <td><t t-esc="quant.lot_id.name"/></td>
+                                        <td><t t-esc="quant.location_id.name"/></td>
+                                        <td><t t-esc="quant.quantity"/></td>
+                                        <td><t t-esc="quant.quantity - quant.reserved_quantity"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
 </odoo>

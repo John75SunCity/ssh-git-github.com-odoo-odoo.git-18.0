@@ -23,15 +23,15 @@
         'security/security.xml',
         'views/pickup_request.xml',
         'views/shredding_views.xml',
-        'views/stock_lot_views.xml',  # renamed from inventory_template.xml
+        'views/stock_lot_views.xml',
         'views/customer_inventory_views.xml',
-        'report/customer_inventory_report.xml',  # moved to report directory
-        'templates/my_portal_inventory.xml',  # moved to templates directory
+        'report/customer_inventory_report.xml',
+        'templates/my_portal_inventory.xml',
         'data/ir_sequence_data.xml',
         'data/products.xml',
         'data/dependencies_check.xml',
         'data/scheduled_actions.xml',
-        'data/pickup_request_sequence.xml',
+        'data/pickup_request_sequnce.xml',
     ],
     'demo': [
         'demo/odoo.xml'
