@@ -37,13 +37,11 @@ class PickupRequest(models.Model):
     signature_date = fields.Datetime(string='Signature Date')
     completion_date = fields.Date(string='Completion Date', tracking=True)
     
-    @api.multi
     def action_confirm(self):
         for record in self:
             record.state = 'confirmed'
         return True
     
-    @api.multi
     def action_schedule(self):
         for record in self:
             if not record.scheduled_date:
@@ -51,21 +49,21 @@ class PickupRequest(models.Model):
             record.state = 'scheduled'
         return True
     
-    @api.multi
     def action_complete(self):
         for record in self:
             record.completion_date = fields.Date.context_today(self)
             record.state = 'completed'
         return True
     
-    @api.multi
     def action_cancel(self):
         for record in self:
             record.state = 'cancelled'
         return True
 
-    @api.model_create_multi
+    @api.model
     def create(self, vals_list):
+        if not isinstance(vals_list, list):
+            vals_list = [vals_list]
         for vals in vals_list:
             if vals.get('name', 'New') == 'New':
                 vals['name'] = self.env['ir.sequence'].next_by_code('pickup.request') or 'New'
