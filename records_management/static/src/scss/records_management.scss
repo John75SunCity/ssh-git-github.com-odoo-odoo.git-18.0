@@ -1,0 +1,65 @@
+/* Records Management SCSS Styles */
+
+/* Box card styling */
+.o_box_card {
+    border-left: 5px solid #3498db;
+    margin-bottom: 10px;
+    
+    &.o_box_full {
+        border-left-color: #e74c3c;
+    }
+    
+    &.o_box_inactive {
+        border-left-color: #7f8c8d;
+        opacity: 0.7;
+    }
+}
+
+/* Document list styling */
+.o_document_list {
+    .o_document_row {
+        &.o_doc_stored {
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+        
+        &.o_doc_retrieved {
+            background-color: rgba(241, 196, 15, 0.1);
+        }
+        
+        &.o_doc_destroyed {
+            text-decoration: line-through;
+            color: #7f8c8d;
+        }
+    }
+}
+
+/* Tag styling */
+.o_records_tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    
+    &.o_tag_confidential {
+        background-color: #e74c3c;
+        color: white;
+    }
+    
+    &.o_tag_permanent {
+        background-color: #3498db;
+        color: white;
+    }
+}
+
+/* Location tree styling */
+.o_location_tree {
+    .o_location_parent {
+        font-weight: bold;
+    }
+    
+    .o_location_child {
+        margin-left: 20px;
+    }
+}

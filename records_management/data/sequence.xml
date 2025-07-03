@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
-    <record id="seq_records_box" model="ir.sequence">
-        <field name="name">Records Box</field>
-        <field name="code">records.box</field>
-        <field name="prefix">BOX/%(year)s/</field>
-        <field name="padding">5</field>
-        <field name="company_id" eval="False"/>
-    </record>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_records_box" model="ir.sequence">
+            <field name="name">Records Box</field>
+            <field name="code">records.box</field>
+            <field name="prefix">BOX/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
+        <record id="seq_pickup_request" model="ir.sequence">
+            <field name="name">Pickup Request</field>
+            <field name="code">pickup.request</field>
+            <field name="prefix">PICKUP/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
 </odoo>

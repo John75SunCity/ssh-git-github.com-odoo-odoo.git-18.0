@@ -35,7 +35,7 @@ class RecordsDocument(models.Model):
     
     # File management
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
-    attachment_count = fields.Integer('Attachment Count', compute='_compute_attachment_count')
+    attachment_count = fields.Integer('Document Attachments Count', compute='_compute_attachment_count')
     
     # Status fields
     state = fields.Selection([

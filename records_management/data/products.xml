@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
-    <record id="product_box" model="product.product">
-        <field name="name">Archive Box</field>
-        <field name="detailed_type">product</field>
-        <field name="tracking">serial</field>
-        <field name="categ_id" ref="product.product_category_all"/>
-        <field name="default_code">REC-BOX</field>
-        <field name="list_price">15.00</field>
-        <field name="standard_price">10.00</field>
-        <field name="weight">1.5</field>
-        <field name="description">Standard archive box for document storage and management.</field>
-        <field name="image_1920" type="base64" file="records_management/static/img/box.png"/>
-    </record>
+<odoo>
+    <data noupdate="1">
+        <record id="product_box" model="product.product">
+            <field name="name">Archive Box</field>
+            <field name="detailed_type">product</field>
+            <field name="tracking">serial</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-BOX</field>
+            <field name="list_price">15.00</field>
+            <field name="standard_price">10.00</field>
+            <field name="weight">1.5</field>
+            <field name="description">Standard archive box for document storage and management.</field>
+            <field name="image_1920" type="base64" file="records_management/static/img/box.png"/>
+        </record>
+        
+        <record id="product_file" model="product.product">
+            <field name="name">Document File</field>
+            <field name="detailed_type">product</field>
+            <field name="tracking">serial</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-FILE</field>
+            <field name="list_price">5.00</field>
+            <field name="standard_price">3.50</field>
+            <field name="weight">0.5</field>
+            <field name="description">Standard file folder for document storage and management.</field>
+            <field name="image_1920" type="base64" file="records_management/static/img/file.png"/>
+        </record>
+    </data>
 </odoo>

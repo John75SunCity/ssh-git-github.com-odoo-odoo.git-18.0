@@ -32,7 +32,6 @@ Advanced system for managing physical document boxes and their contents:
         'views/records_box_views.xml',
         'views/records_document_views.xml',
         'views/records_location_views.xml',
-        'views/records_tag_views.xml',
         'views/records_document_type_views.xml',
         'views/records_retention_policy_views.xml',
         'views/res_partner_views.xml',
@@ -40,7 +39,7 @@ Advanced system for managing physical document boxes and their contents:
         'reports/records_reports.xml',
     ],
     'demo': [
-        'data/demo_data.xml',
+        'demo/odoo.xml',
     ],
     'application': True,
     'installable': True,
