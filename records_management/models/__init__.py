@@ -6,6 +6,7 @@ from . import pickup_request
 from . import pickup_request_item
 from . import records_box
 from . import records_document
+from . import records_document_type
 from . import records_location
 from . import records_retention_policy
 from . import records_tag
