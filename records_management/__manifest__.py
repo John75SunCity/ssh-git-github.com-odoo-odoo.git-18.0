@@ -14,24 +14,24 @@
         'board',
         'product',
         'contacts',
-        'sale_management'
+        'sale_management',
+        'fleet'
     ],
     'data': [
         'security/groups.xml',
         'security/ir_rule.xml',
         'security/ir.model.access.csv',
         'security/security.xml',
+        'data/ir_sequence_data.xml',  # Keep only one sequence file
+        'data/products.xml',
+        'data/dependencies_check.xml',
+        'data/scheduled_actions.xml',
         'views/pickup_request.xml',
         'views/shredding_views.xml',
         'views/stock_lot_views.xml',
         'views/customer_inventory_views.xml',
         'report/customer_inventory_report.xml',
         'templates/my_portal_inventory.xml',
-        'data/ir_sequence_data.xml',
-        'data/products.xml',
-        'data/dependencies_check.xml',
-        'data/scheduled_actions.xml',
-        'data/pickup_request_sequnce.xml',
     ],
     'demo': [
         'demo/odoo.xml'
