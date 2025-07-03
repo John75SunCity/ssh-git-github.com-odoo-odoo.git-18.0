@@ -9,14 +9,14 @@ class PickupRequest(models.Model):
     name = fields.Char(string='Name', required=True, default='New', tracking=True)
     customer_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
     request_date = fields.Date(string='Request Date', default=fields.Date.context_today, required=True, tracking=True)
-    request_item_ids = fields.One2many('pickup.request.item', 'pickup_id', string='Request Items')  # canonical one2many
+    request_item_ids = fields.One2many('pickup.request.item', 'pickup_id', string='Request Items')
     notes = fields.Text(string='Notes')
-    
+
     # New fields
     product_id = fields.Many2one('product.product', string='Product', required=True, tracking=True)
     quantity = fields.Float(string='Quantity', required=True, tracking=True)
     lot_id = fields.Many2one('stock.lot', string='Lot', domain="[('product_id', '=', product_id)]")
-    
+
     # Status tracking
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -25,7 +25,7 @@ class PickupRequest(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
     ], default='draft', string='Status', tracking=True)
-    
+
     # Additional fields for the view
     scheduled_date = fields.Date(string='Scheduled Date', tracking=True)
     warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse', tracking=True)
@@ -36,30 +36,37 @@ class PickupRequest(models.Model):
     signed_by = fields.Many2one('res.users', string='Signed By')
     signature_date = fields.Datetime(string='Signature Date')
     completion_date = fields.Date(string='Completion Date', tracking=True)
-    
+
+    # --- ACTION METHODS FOR FORM BUTTONS ---
+
     def action_confirm(self):
+        """Set status to Confirmed"""
         for record in self:
             record.state = 'confirmed'
         return True
-    
+
     def action_schedule(self):
+        """Set status to Scheduled and set scheduled_date if not already set"""
         for record in self:
             if not record.scheduled_date:
                 record.scheduled_date = fields.Date.context_today(self)
             record.state = 'scheduled'
         return True
-    
+
     def action_complete(self):
+        """Set status to Completed and record completion_date"""
         for record in self:
             record.completion_date = fields.Date.context_today(self)
             record.state = 'completed'
         return True
-    
+
     def action_cancel(self):
+        """Set status to Cancelled"""
         for record in self:
             record.state = 'cancelled'
         return True
 
+    # --- CREATE OVERRIDE FOR SEQUENCE ---
     @api.model
     def create(self, vals_list):
         if not isinstance(vals_list, list):
