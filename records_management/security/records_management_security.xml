@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_records_management_category" model="ir.module.category">
+        <field name="name">Records Management</field>
+        <field name="sequence">20</field>
+    </record>
+    
+    <record id="group_records_management_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="category_id" ref="module_records_management_category"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_records_management_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_records_management_category"/>
+        <field name="implied_ids" eval="[(4, ref('group_records_management_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+    
+    <!-- Multi-company rules -->
+    <record id="records_box_comp_rule" model="ir.rule">
+        <field name="name">Records Box: multi-company</field>
+        <field name="model_id" ref="model_records_box"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+    </record>
+    
+    <record id="records_document_comp_rule" model="ir.rule">
+        <field name="name">Records Document: multi-company</field>
+        <field name="model_id" ref="model_records_document"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
