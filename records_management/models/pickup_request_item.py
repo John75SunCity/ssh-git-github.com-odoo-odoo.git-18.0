@@ -25,3 +25,7 @@ class PickupRequestItem(models.Model):
     def _onchange_product_id(self):
         if self.product_id and self.lot_id and self.lot_id.product_id != self.product_id:
             self.lot_id = False
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        return super().create(vals_list)

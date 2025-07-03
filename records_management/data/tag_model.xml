@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
-        <!-- Just force model registration before trying to grant access rights -->
+    <data>
+        <!-- Force model registration before trying to grant access rights -->
         <record id="model_records_tag_registration" model="ir.model">
             <field name="name">Records Tag</field>
             <field name="model">records.tag</field>
             <field name="state">base</field>
+        </record>
+        
+        <!-- Create some sample tags for easier testing -->
+        <record id="records_tag_confidential" model="records.tag">
+            <field name="name">Confidential</field>
+            <field name="color">1</field>
+            <field name="description">Documents with sensitive information that require special handling</field>
+        </record>
+        
+        <record id="records_tag_archived" model="records.tag">
+            <field name="name">Archived</field>
+            <field name="color">8</field>
+            <field name="description">Documents that have been permanently archived</field>
         </record>
     </data>
 </odoo>

@@ -20,3 +20,11 @@ class RecordsTag(models.Model):
     def create(self, vals_list):
         _logger.info('Creating records.tag with values: %s', vals_list)
         return super().create(vals_list)
+        
+    def write(self, vals):
+        _logger.info('Writing to records.tag with values: %s', vals)
+        return super().write(vals)
+        
+    def _register_hook(self):
+        _logger.info('Registering records.tag model hook')
+        return super()._register_hook()
