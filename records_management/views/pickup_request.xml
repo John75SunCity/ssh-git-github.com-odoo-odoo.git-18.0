@@ -4,23 +4,127 @@
         <field name="model">pickup.request</field>
         <field name="arch" type="xml">
             <form string="Pickup Request">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" 
+                            states="draft" class="oe_highlight"/>
+                    <button name="action_schedule" string="Schedule" type="object" 
+                            states="confirmed" class="oe_highlight"/>
+                    <button name="action_complete" string="Complete" type="object" 
+                            states="scheduled" class="oe_highlight"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                            states="draft,confirmed,scheduled"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
-                        <field name="customer_id"/>
-                        <field name="request_date"/>
-                        <field name="notes"/>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="request_date"/>
+                            <field name="scheduled_date" attrs="{'required': [('state', 'in', ['scheduled','completed'])]}"/>
+                            <field name="priority" widget="priority"/>
+                        </group>
+                        <group>
+                            <field name="warehouse_id"/>
+                            <field name="driver_id" attrs="{'required': [('state', 'in', ['scheduled','completed'])]}"/>
+                            <field name="vehicle_id" attrs="{'required': [('state', 'in', ['scheduled','completed'])]}"/>
+                        </group>
                     </group>
-                    <field name="request_item_ids">
-                        <tree editable="bottom">
-                            <field name="product_id" required="1"/>
-                            <field name="quantity" required="1"/>
-                            <field name="lot_id" domain="[('product_id', '=', product_id)]"/>
+                    <notebook>
+                        <page string="Items">
+                            <field name="request_item_ids">
+                                <tree editable="bottom">
+                                    <field name="product_id" required="1"/>
+                                    <field name="quantity" required="1"/>
+                                    <field name="lot_id" domain="[('product_id', '=', product_id)]"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes">
                             <field name="notes"/>
-                        </tree>
-                    </field>
+                        </page>
+                        <page string="Signature" attrs="{'invisible': [('state', '!=', 'completed')]}">
+                            <field name="signature" widget="signature"/>
+                            <field name="signed_by"/>
+                            <field name="signature_date"/>
+                        </page>
+                    </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>
+    
+    <record id="view_pickup_request_tree" model="ir.ui.view">
+        <field name="name">pickup.request.tree</field>
+        <field name="model">pickup.request</field>
+        <field name="arch" type="xml">
+            <tree string="Pickup Requests" decoration-info="state=='draft'" decoration-muted="state=='cancelled'" decoration-success="state=='completed'" decoration-warning="state=='scheduled'">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="request_date"/>
+                <field name="scheduled_date"/>
+                <field name="warehouse_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="view_pickup_request_search" model="ir.ui.view">
+        <field name="name">pickup.request.search</field>
+        <field name="model">pickup.request</field>
+        <field name="arch" type="xml">
+            <search string="Search Pickup Requests">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="warehouse_id"/>
+                <field name="driver_id"/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
+                <filter string="Scheduled" name="scheduled" domain="[('state','=','scheduled')]"/>
+                <filter string="Completed" name="completed" domain="[('state','=','completed')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('state','=','cancelled')]"/>
+                <filter string="High Priority" name="high_priority" domain="[('priority','=','1')]"/>
+                <separator/>
+                <filter string="My Requests" name="my_requests" domain="[('create_uid','=',uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="group_customer" context="{'group_by':'customer_id'}"/>
+                    <filter string="Warehouse" name="group_warehouse" context="{'group_by':'warehouse_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by':'state'}"/>
+                    <filter string="Request Date" name="group_request_date" context="{'group_by':'request_date:month'}"/>
+                    <filter string="Scheduled Date" name="group_scheduled_date" context="{'group_by':'scheduled_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <record id="action_pickup_request" model="ir.actions.act_window">
+        <field name="name">Pickup Requests</field>
+        <field name="res_model">pickup.request</field>
+        <field name="view_mode">tree,form,calendar</field>
+        <field name="search_view_id" ref="view_pickup_request_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new pickup request
+            </p>
+            <p>
+                Manage customer pickup requests for records and materials.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem id="menu_pickup_request" 
+              name="Pickup Requests" 
+              parent="stock.menu_stock_root" 
+              action="action_pickup_request"
+              groups="records_management.group_records_user"/>
 </odoo>

@@ -21,13 +21,12 @@
         'security/ir_rule.xml',
         'security/ir.model.access.csv',
         'security/security.xml',
-        'views/customer_inventory_report.xml',
         'views/pickup_request.xml',
         'views/shredding_views.xml',
-        'views/inventory_template.xml',
-        'views/my_portal_inventory.xml',
-        'views/records_management_view.xml',
+        'views/stock_lot_views.xml',  # renamed from inventory_template.xml
         'views/customer_inventory_views.xml',
+        'report/customer_inventory_report.xml',  # moved to report directory
+        'templates/my_portal_inventory.xml',  # moved to templates directory
         'data/ir_sequence_data.xml',
         'data/products.xml',
         'data/dependencies_check.xml',
