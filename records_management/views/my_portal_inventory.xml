@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Portal view for customer inventory -->
+        <template id="portal_my_home_inventory" name="Portal My Home : Inventory" inherit_id="portal.portal_my_home" priority="40">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">My Inventory</t>
+                    <t t-set="url" t-value="'/my/inventory'"/>
+                    <t t-set="placeholder_count" t-value="'inventory_count'"/>
+                </t>
+            </xpath>
+        </template>
+
+        <template id="portal_my_inventory" name="My Inventory">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">My Inventory</t>
+                </t>
+                
+                <t t-if="not inventory_records">
+                    <p>There are currently no records in your inventory.</p>
+                </t>
+                <t t-if="inventory_records" t-call="portal.portal_table">
+                    <thead>
+                        <tr class="active">
+                            <th>Document</th>
+                            <th>Box</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="inventory_records" t-as="record">
+                            <tr>
+                                <td><t t-esc="record.name"/></td>
+                                <td><t t-esc="record.box_id.name"/></td>
+                                <td><t t-esc="record.location_id.complete_name"/></td>
+                                <td><t t-esc="record.state"/></td>
+                                <td><t t-esc="record.create_date"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

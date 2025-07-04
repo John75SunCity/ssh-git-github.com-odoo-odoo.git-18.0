@@ -20,10 +20,11 @@ Advanced system for managing physical document boxes and their contents:
         'stock',
         'mail',
         'web',
+        'sale',  # Added for scheduled actions that create sale orders
     ],
     'data': [
         'security/records_management_security.xml',
-        'data/tag_model.xml',
+        'data/tag_data.xml',
         'security/ir.model.access.csv',
         'security/tag_access.csv',
         'data/dependencies_check.xml',
