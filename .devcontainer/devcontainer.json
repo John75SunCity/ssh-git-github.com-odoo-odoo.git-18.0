@@ -24,6 +24,11 @@
         "ms-vscode.remote-server",
         "ms-vscode-remote.remote-wsl",
         "GitHub.codespaces"
+        // To add more extensions, simply add their IDs here:
+        // "ms-vscode.vscode-xml",           // XML support
+        // "ms-toolsai.jupyter",            // Jupyter notebooks
+        // "redhat.vscode-yaml",            // YAML support
+        // "odoo.odoo-snippets"             // Odoo-specific snippets (if available)
         // Add more Odoo-specific or Python QA/testing extensions as needed
       ],
       "settings": {
@@ -66,34 +71,6 @@
     }
   },
   "postCreateCommand": "bash -c 'cd /workspace && if [ -f package.json ]; then npm ci; fi && echo \"DevContainer setup complete!\"'",
-  "remoteEnv": {
-    "PYTHONPATH": "/workspace:/workspace/records_management",
-    "ODOO_RC": "/workspace/odoo.conf",
-    "PGHOST": "localhost",
-    "PGPORT": "5432"
-    // Consider using .env files or secrets management for sensitive values
-  }
-  // Add comments as needed to explain custom configuration
-}
-  "mounts": [
-    "source=${localWorkspaceFolder},target=/workspace,type=bind"
-  ],
-  "forwardPorts": [8069, 8071, 8072],
-  "portsAttributes": {
-    "8069": {
-      "label": "Odoo HTTP",
-      "onAutoForward": "notify"
-    },
-    "8071": {
-      "label": "Odoo HTTPS",
-      "onAutoForward": "ignore"
-    },
-    "8072": {
-      "label": "Odoo Longpolling",
-      "onAutoForward": "ignore"
-    }
-  },
-  "postCreateCommand": "bash -c 'cd /workspace && npm install && echo \"DevContainer setup complete!\"'",
   "remoteEnv": {
     "PYTHONPATH": "/workspace:/workspace/records_management",
     "ODOO_RC": "/workspace/odoo.conf",
