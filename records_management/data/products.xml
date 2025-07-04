@@ -4,7 +4,7 @@
         <!-- Product Template for Document Storage Box -->
         <record id="product_template_box" model="product.template">
             <field name="name">Document Storage Box</field>
-            <field name="type">product</field>
+            <field name="type">storable</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-BOX</field>
             <field name="list_price">15.00</field>
@@ -27,7 +27,7 @@
         <!-- Product Template for Document File -->
         <record id="product_template_file" model="product.template">
             <field name="name">Document File</field>
-            <field name="type">product</field>
+            <field name="type">storable</field>
             <field name="tracking">serial</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-FILE</field>
