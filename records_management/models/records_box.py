@@ -47,7 +47,7 @@ class RecordsBox(models.Model):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.box') or _('New')
-        return super(RecordsBox, self).create(vals_list)
+        return super().create(vals_list)
     
     @api.depends('document_ids')
     def _compute_document_count(self):

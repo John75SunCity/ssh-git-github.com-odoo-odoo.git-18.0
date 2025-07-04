@@ -4,7 +4,7 @@
         <!-- Service product for monthly storage fees -->
         <record id="service_storage_fee" model="product.product">
             <field name="name">Monthly Storage Fee</field>
-            <field name="detailed_type">service</field>
+            <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-STORAGE</field>
             <field name="list_price">2.50</field>
