@@ -63,11 +63,4 @@
             </p>
         </field>
     </record>
-
-    <!-- Menu Item -->
-    <menuitem id="menu_records_retention_policy"
-              name="Retention Policies"
-              parent="records_management_configuration_menu"
-              action="action_records_retention_policy"
-              sequence="40"/>
 </odoo>

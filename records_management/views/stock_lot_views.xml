@@ -88,8 +88,12 @@
             </field>
         </record>
 
-        <!-- Records Management Menu -->
-        <menuitem id="menu_records_management_root" name="Records Management" sequence="10" groups="records_management.group_records_user"/>
-        <menuitem id="menu_stock_lots" name="Serial Numbers" parent="menu_records_management_root" action="action_stock_lot" sequence="10" groups="records_management.group_records_user"/>
+        <!-- Serial Numbers Menu (under Operations) -->
+        <menuitem id="menu_stock_lots" 
+                  name="Serial Numbers" 
+                  parent="records_management.menu_records_operations" 
+                  action="action_stock_lot" 
+                  sequence="50" 
+                  groups="records_management.group_records_user"/>
     </data>
 </odoo>

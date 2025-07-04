@@ -17,6 +17,4 @@
         <field name="view_id" ref="view_stock_quant_graph_customer"/>
         <field name="domain">[('customer_id', '!=', False)]</field>
     </record>
-    <menuitem id="menu_customer_inventory" name="Inventory Dashboard" 
-              parent="stock.menu_stock_root" action="action_customer_inventory_graph"/>
 </odoo>
