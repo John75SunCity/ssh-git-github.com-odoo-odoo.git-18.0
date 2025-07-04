@@ -51,6 +51,8 @@ Advanced system for managing physical document boxes and their contents:
     'assets': {
         'web.assets_backend': [
             'records_management/static/src/scss/records_management.scss',
+            'records_management/static/src/js/map_widget.js',
+            'records_management/static/src/xml/map_widget.xml',
         ],
     },
 }

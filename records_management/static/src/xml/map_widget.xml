@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="records_management.MapWidget">
+        <div class="map_widget">
+            <div class="map_container" t-ref="mapContainer"></div>
+        </div>
+    </t>
+</templates>

@@ -1,38 +1,41 @@
-odoo.define('records_management.map_widget', function (require) {
-    "use strict";
+/** @odoo-module **/
 
-    var AbstractField = require('web.AbstractField');
-    var fieldRegistry = require('web.field_registry');
-    var core = require('web.core');
-    var _t = core._t;
+import { registry } from "@web/core/registry";
+import { standardFieldProps } from "@web/views/fields/standard_field_props";
+import { Component, useRef, onMounted } from "@odoo/owl";
 
-    var MapWidget = AbstractField.extend({
-        className: 'map_widget',
-        _render: function () {
-            // Clear previous content and add map container
-            this.$el.html('<div class="map_container"></div>');
-            var latitude = this.recordData?.[this.options.latitude_field] ?? undefined;
-            var longitude = this.recordData?.[this.options.longitude_field] ?? undefined;
-            var hasLatitude = !!latitude;
-            var hasLongitude = !!longitude;
-            var hasGoogle = typeof google !== 'undefined';
-            var hasGoogleMaps = hasGoogle && google.maps;
+export class MapWidget extends Component {
+    static template = "records_management.MapWidget";
+    static props = {
+        ...standardFieldProps,
+        latitudeField: { type: String, optional: true },
+        longitudeField: { type: String, optional: true },
+    };
 
-            if (hasLatitude && hasLongitude && hasGoogleMaps) {
-                var map = new google.maps.Map(this.$('.map_container')[0], {
-                    center: { lat: latitude, lng: longitude },
-                    zoom: 15
-                });
-            } else if (!hasLatitude || !hasLongitude) {
-                this.$('.map_container').html('<span>No location set: latitude or longitude missing.</span>');
-            } else if (!hasGoogleMaps) {
-                this.$('.map_container').html('<span>Google Maps API not loaded.</span>');
-            }
+    setup() {
+        this.mapContainer = useRef("mapContainer");
+        onMounted(() => this.renderMap());
+    }
+
+    renderMap() {
+        const latitude = this.props.record.data[this.props.latitudeField];
+        const longitude = this.props.record.data[this.props.longitudeField];
+        const hasLatitude = !!latitude;
+        const hasLongitude = !!longitude;
+        const hasGoogle = typeof google !== 'undefined';
+        const hasGoogleMaps = hasGoogle && google.maps;
+
+        if (hasLatitude && hasLongitude && hasGoogleMaps) {
+            new google.maps.Map(this.mapContainer.el, {
+                center: { lat: latitude, lng: longitude },
+                zoom: 15
+            });
+        } else if (!hasLatitude || !hasLongitude) {
+            this.mapContainer.el.innerHTML = '<span>No location set: latitude or longitude missing.</span>';
+        } else if (!hasGoogleMaps) {
+            this.mapContainer.el.innerHTML = '<span>Google Maps API not loaded.</span>';
         }
-    });
+    }
+}
 
-    fieldRegistry.add('map_widget', MapWidget);
-
-    return MapWidget;
-
-});
+registry.category("fields").add("map_widget", MapWidget);
