@@ -102,13 +102,3 @@ class RecordsDocument(models.Model):
             'domain': [('id', 'in', self.attachment_ids.ids)],
             'context': {'default_res_model': 'records.document', 'default_res_id': self.id},
         }
-
-
-class RecordsDocumentType(models.Model):
-    _name = 'records.document.type'
-    _description = 'Document Type'
-    
-    name = fields.Char('Type Name', required=True)
-    code = fields.Char('Code')
-    retention_policy_id = fields.Many2one('records.retention.policy', string='Default Retention Policy')
-    active = fields.Boolean(default=True)
