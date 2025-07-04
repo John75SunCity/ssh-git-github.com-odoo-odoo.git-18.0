@@ -63,11 +63,4 @@
             </p>
         </field>
     </record>
-
-    <!-- Menu Item -->
-    <menuitem id="menu_records_document_type"
-              name="Document Types"
-              parent="records_management_configuration_menu"
-              action="action_records_document_type"
-              sequence="20"/>
 </odoo>

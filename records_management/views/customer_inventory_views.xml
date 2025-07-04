@@ -17,4 +17,22 @@
         <field name="view_id" ref="view_stock_quant_graph_customer"/>
         <field name="domain">[('customer_id', '!=', False)]</field>
     </record>
+
+    <!-- Main Customer Inventory Action for Menu -->
+    <record id="action_customer_inventory_report" model="ir.actions.act_window">
+        <field name="name">Customer Inventory</field>
+        <field name="res_model">stock.quant</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="domain">[('customer_id', '!=', False)]</field>
+        <field name="context">{'search_default_customer_id': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No customer inventory found!
+            </p>
+            <p>
+                Customer inventory will appear here once you have stored items for customers.
+            </p>
+        </field>
+    </record>
+
 </odoo>

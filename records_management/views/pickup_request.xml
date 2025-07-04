@@ -123,9 +123,4 @@
         </field>
     </record>
     
-    <menuitem id="menu_pickup_request" 
-              name="Pickup Requests" 
-              parent="stock.menu_stock_root" 
-              action="action_pickup_request"
-              groups="records_management.group_records_user"/>
 </odoo>
