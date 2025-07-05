@@ -12,7 +12,6 @@
                 <field name="status"/>
                 <field name="total_boxes"/>
                 <field name="total_cost"/>
-                <field name="company_id" groups="base.group_multi_company"/>
             </list>
         </field>
     </record>
@@ -25,13 +24,13 @@
             <form string="Shredding Service">
                 <header>
                     <button name="action_confirm" string="Confirm Service" type="object" 
-                            class="oe_highlight" invisible="state != 'draft'"/>
+                            class="oe_highlight" invisible="status != 'draft'"/>
                     <button name="action_start" string="Start Service" type="object" 
-                            class="oe_highlight" invisible="state != 'confirmed'"/>
+                            class="oe_highlight" invisible="status != 'confirmed'"/>
                     <button name="action_complete" string="Complete Service" type="object" 
-                            class="oe_highlight" invisible="state not in ('in_progress')"/>
+                            class="oe_highlight" invisible="status != 'in_progress'"/>
                     <button name="action_cancel" string="Cancel" type="object" 
-                            invisible="state not in ('draft,confirmed')"/>
+                            invisible="status in ('completed', 'cancelled')"/>
                     <field name="status" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
                 </header>
                 <sheet>
@@ -45,23 +44,35 @@
                             <field name="customer_id"/>
                             <field name="service_date"/>
                             <field name="scheduled_date"/>
+                            <field name="service_type"/>
                         </group>
                         <group>
                             <field name="total_boxes"/>
+                            <field name="unit_cost"/>
                             <field name="total_cost"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Box Details">
-                            <field name="box_ids">
-                                <list editable="bottom">
-                                    <field name="box_id"/>
-                                    <field name="quantity"/>
-                                    <field name="unit_cost"/>
-                                    <field name="total_cost"/>
-                                </list>
-                            </field>
+                        <page string="Bin Details" invisible="service_type != 'bin'">
+                            <field name="bin_ids"/>
+                        </page>
+                        <page string="Box Details" invisible="service_type != 'box'">
+                            <group>
+                                <field name="box_quantity"/>
+                                <field name="shredded_box_ids"/>
+                            </group>
+                        </page>
+                        <page string="Audit &amp; Location">
+                            <group>
+                                <field name="audit_barcodes"/>
+                                <field name="latitude"/>
+                                <field name="longitude"/>
+                                <field name="map_display"/>
+                            </group>
+                        </page>
+                        <page string="Attachments">
+                            <field name="attachment_ids"/>
                         </page>
                         <page string="Notes">
                             <field name="notes"/>
@@ -69,9 +80,9 @@
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
         </field>
@@ -83,6 +94,7 @@
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column">
+                <field name="name"/>
                 <field name="customer_id"/>
                 <field name="service_date"/>
                 <field name="total_cost"/>
