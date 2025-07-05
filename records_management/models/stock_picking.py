@@ -1,4 +1,5 @@
-from odoo import api, models  # type: ignore
+from odoo import models  # type: ignore
+
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -11,7 +12,9 @@ class StockPicking(models.Model):
         res = super().button_validate()
         if self.state == 'done' and self.picking_type_id.code == 'outgoing':
             # Filter move lines that have a lot with a customer
-            customer_items = self.move_line_ids.filtered(lambda l: l.lot_id and l.lot_id.customer_id)
+            customer_items = self.move_line_ids.filtered(
+                lambda line: line.lot_id and line.lot_id.customer_id
+            )
             if customer_items:
                 # Group items by customer
                 customers = {}
@@ -22,7 +25,9 @@ class StockPicking(models.Model):
                     self.env['sale.order'].create({
                         'partner_id': customer.id,
                         'order_line': [(0, 0, {
-                            'product_id': self.env.ref('records_management.retrieval_fee_product').id,
+                            'product_id': self.env.ref(
+                                'records_management.retrieval_fee_product'
+                            ).id,
                             'product_uom_qty': len(items),
                         })],
                     })

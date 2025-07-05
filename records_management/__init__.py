@@ -18,8 +18,9 @@ def _post_init_hook(env):
             import logging
             _logger = logging.getLogger(__name__)
             _logger.warning(
-                f"Required module '{module_name}' is not installed. "
-                f"Please install it for full functionality."
+                "Required module '%s' is not installed. "
+                "Please install it for full functionality.",
+                module_name
             )
 
     # Initialize sequences if needed

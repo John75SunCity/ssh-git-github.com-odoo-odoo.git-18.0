@@ -1,7 +1,8 @@
-from odoo import models, fields, api, _
+from odoo import models, fields, api
 import logging
 
 _logger = logging.getLogger(__name__)
+
 
 class RecordsTag(models.Model):
     _name = 'records.tag'

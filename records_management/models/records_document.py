@@ -1,6 +1,5 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
-from datetime import datetime, timedelta
+
 
 class RecordsDocument(models.Model):
     _name = 'records.document'
@@ -9,14 +8,18 @@ class RecordsDocument(models.Model):
     _order = 'date desc, name'
 
     name = fields.Char('Document Reference', required=True, tracking=True)
-    box_id = fields.Many2one('records.box', string='Box', required=True,
-                            tracking=True, index=True,
-                            domain="[('state', '=', 'active')]")
-    location_id = fields.Many2one(related='box_id.location_id',
-                                 string='Storage Location', store=True)
+    box_id = fields.Many2one(
+        'records.box', string='Box', required=True, tracking=True,
+        index=True, domain="[('state', '=', 'active')]"
+    )
+    location_id = fields.Many2one(
+        related='box_id.location_id', string='Storage Location', store=True
+    )
 
     # Document metadata
-    document_type_id = fields.Many2one('records.document.type', string='Document Type')
+    document_type_id = fields.Many2one(
+        'records.document.type', string='Document Type'
+    )
     date = fields.Date('Document Date', default=fields.Date.context_today)
     description = fields.Html('Description')
     tags = fields.Many2many('records.tag', string='Tags')
