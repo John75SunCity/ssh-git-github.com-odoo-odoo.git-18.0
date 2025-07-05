@@ -27,6 +27,7 @@ Features:
         'web',
         'portal',
         'base_setup',
+        'fleet',
     ],
     'data': [
         'security/records_management_security.xml',

@@ -49,7 +49,7 @@
                         <page string="Notes">
                             <field name="notes"/>
                         </page>
-                        <page string="Signature" invisible="state != \'completed\'">
+                        <page string="Signature" invisible="state != 'completed'">
                             <field name="signature" widget="signature"/>
                             <field name="signed_by"/>
                             <field name="signature_date"/>
