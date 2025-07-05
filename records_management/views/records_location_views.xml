@@ -6,11 +6,11 @@
         <field name="model">records.location</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
-                <field name="location_type"/>
-                <field name="capacity"/>
-                <field name="used_capacity"/>
+                <field name="complete_name"/>
                 <field name="parent_id"/>
+                <field name="capacity"/>
+                <field name="box_count"/>
+                <field name="used_capacity"/>
                 <field name="active"/>
             </list>
         </field>
@@ -29,19 +29,18 @@
                     </div>
                     <group>
                         <group>
-                            <field name="location_type"/>
                             <field name="parent_id"/>
-                            <field name="address"/>
+                            <field name="capacity"/>
                         </group>
                         <group>
-                            <field name="capacity"/>
+                            <field name="box_count"/>
                             <field name="used_capacity"/>
                             <field name="active"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Description">
-                            <field name="description"/>
+                        <page string="Notes">
+                            <field name="note"/>
                         </page>
                     </notebook>
                 </sheet>
