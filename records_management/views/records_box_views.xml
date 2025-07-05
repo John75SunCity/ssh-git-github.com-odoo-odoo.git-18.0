@@ -42,7 +42,7 @@
                     </group>
                     <notebook>
                         <page string="Documents">
-                            <field name="document_ids" nolabel="1" context="{'default_box_id': active_id}">
+                            <field name="document_ids" nolabel="1" context="{'default_box_id': id}">
                                 <list editable="bottom">
                                     <field name="name"/>
                                     <field name="document_type_id"/>
