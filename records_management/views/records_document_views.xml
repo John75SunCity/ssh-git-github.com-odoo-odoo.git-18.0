@@ -100,7 +100,7 @@
                 <filter string="Destroyed" name="destroyed" domain="[('state','=','destroyed')]"/>
                 <separator/>
                 <filter string="My Documents" name="my_docs" domain="[('user_id','=', uid)]"/>
-                <filter string="Expiring Soon" name="expiring" domain="[('days_to_retention','&lt;=', 30), ('days_to_retention','>', 0)]"/>
+                <filter string="Has Retention Date" name="has_retention" domain="[('retention_date','!=', False)]"/>
                 <filter string="Expired" name="expired" domain="[('retention_date','&lt;', context_today())]"/>
                 <group expand="0" string="Group By">
                     <filter string="Box" name="group_by_box" context="{'group_by': 'box_id'}"/>
