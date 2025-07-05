@@ -4,7 +4,7 @@
         <!-- Product Template for Document Storage Box -->
         <record id="product_template_box" model="product.template">
             <field name="name">Document Storage Box</field>
-            <field name="type">product</field>
+            <field name="detailed_type">product</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-BOX</field>
             <field name="list_price">15.00</field>
@@ -27,7 +27,7 @@
         <!-- Product Template for Document File -->
         <record id="product_template_file" model="product.template">
             <field name="name">Document File</field>
-            <field name="type">product</field>
+            <field name="detailed_type">product</field>
             <field name="tracking">serial</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-FILE</field>
@@ -51,7 +51,7 @@
         <!-- Storage Service Product -->
         <record id="product_template_storage_service" model="product.template">
             <field name="name">Document Storage Service</field>
-            <field name="type">service</field>
+            <field name="detailed_type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-STOR-SVC</field>
             <field name="list_price">25.00</field>
@@ -72,7 +72,7 @@
         <!-- Shredding Service Product -->
         <record id="product_template_shredding_service" model="product.template">
             <field name="name">Document Shredding Service</field>
-            <field name="type">service</field>
+            <field name="detailed_type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-SHRED-SVC</field>
             <field name="list_price">50.00</field>
