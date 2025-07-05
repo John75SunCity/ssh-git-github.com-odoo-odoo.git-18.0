@@ -91,7 +91,7 @@
         <!-- Serial Numbers Menu (under Operations) -->
         <menuitem id="menu_stock_lots" 
                   name="Serial Numbers" 
-                  parent="records_management.menu_records_operations" 
+                  parent="menu_records_operations" 
                   action="action_stock_lot" 
                   sequence="50" 
                   groups="records_management.group_records_user"/>
