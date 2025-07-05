@@ -5,14 +5,14 @@
         <field name="name">records.location.tree</field>
         <field name="model">records.location</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="location_type"/>
                 <field name="capacity"/>
                 <field name="used_capacity"/>
                 <field name="parent_id"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 

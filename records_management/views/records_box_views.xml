@@ -43,14 +43,14 @@
                     <notebook>
                         <page string="Documents">
                             <field name="document_ids" nolabel="1" context="{'default_box_id': active_id}">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="name"/>
                                     <field name="document_type_id"/>
                                     <field name="date"/>
                                     <field name="retention_date"/>
                                     <field name="partner_id"/>
                                     <field name="state"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Notes">
@@ -71,14 +71,14 @@
         <field name="name">records.box.tree</field>
         <field name="model">records.box</field>
         <field name="arch" type="xml">
-            <tree decoration-info="state=='draft'" decoration-muted="state=='archived'" decoration-danger="state=='destroyed'">
+            <list decoration-info="state=='draft'" decoration-muted="state=='archived'" decoration-danger="state=='destroyed'">
                 <field name="name"/>
                 <field name="location_id"/>
                 <field name="document_count"/>
                 <field name="used_capacity" widget="percentage"/>
                 <field name="user_id"/>
                 <field name="state"/>
-            </tree>
+            </list>
         </field>
     </record>
     

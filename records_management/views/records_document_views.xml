@@ -68,7 +68,7 @@
         <field name="name">records.document.tree</field>
         <field name="model">records.document</field>
         <field name="arch" type="xml">
-            <tree decoration-success="state=='stored'" decoration-info="state=='retrieved'" decoration-danger="state=='destroyed'">
+            <list decoration-success="state=='stored'" decoration-info="state=='retrieved'" decoration-danger="state=='destroyed'">
                 <field name="name"/>
                 <field name="document_type_id"/>
                 <field name="box_id"/>
@@ -77,7 +77,7 @@
                 <field name="retention_date"/>
                 <field name="partner_id"/>
                 <field name="state"/>
-            </tree>
+            </list>
         </field>
     </record>
     
@@ -156,11 +156,11 @@
         <field name="name">records.document.type.tree</field>
         <field name="model">records.document.type</field>
         <field name="arch" type="xml">
-            <tree string="Document Types">
+            <list string="Document Types">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="retention_policy_id"/>
-            </tree>
+            </list>
         </field>
     </record>
     
