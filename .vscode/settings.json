@@ -34,5 +34,6 @@
         "addons": true,
         "venv": true,
         "node_modules": true
-    }
+    },
+    "github.copilot.nextEditSuggestions.enabled": true
 }
