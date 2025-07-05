@@ -45,7 +45,6 @@ try:
 except Exception as e:
     _logger.error('Error computing monthly storage fees: %s' % str(e))
 </field>
-            <field name="numbercall">-1</field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
