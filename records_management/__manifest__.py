@@ -26,16 +26,16 @@ Features:
         'mail',
         'web',
         'portal',
+        'base_setup',
     ],
     'data': [
         'security/records_management_security.xml',
         'security/ir.model.access.csv',
-        'data/dependencies_check.xml',
         'data/ir_sequence_data.xml',
+        'data/sequence.xml',
         'data/tag_data.xml',
         'data/products.xml',
         'data/storage_fee.xml',
-        'data/sequence.xml',
         'data/scheduled_actions.xml',
         'views/records_tag_views.xml',
         'views/records_location_views.xml',
@@ -63,7 +63,6 @@ Features:
     'application': True,
     'installable': True,
     'auto_install': False,
-    'post_init_hook': '_post_init_hook',
     'license': 'LGPL-3',
     'assets': {
         'web.assets_backend': [
