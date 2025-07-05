@@ -12,7 +12,7 @@ class InventoryPortal(http.Controller):
             return http.request.redirect('/my/inventory?error=partner_not_found')
         serials = http.request.env['stock.lot'].search([('customer_id', '=', partner.id)])
         quants = http.request.env['stock.quant'].search([
-            ('lot_id', 'in', serials.ids), 
+            ('lot_id', 'in', serials.ids),
             ('location_id.usage', '=', 'internal')
         ])
         return http.request.render('records_management.inventory_template', {'quants': quants})

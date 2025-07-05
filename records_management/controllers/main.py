@@ -7,7 +7,7 @@ class RecordsManagementController(http.Controller):
         boxes = request.env['records.box'].search([])
         documents = request.env['records.document'].search([])
         locations = request.env['records.location'].search([])
-        
+
         return request.render('records_management.dashboard', {
             'boxes': boxes,
             'documents': documents,

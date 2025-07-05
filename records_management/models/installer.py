@@ -13,13 +13,13 @@ class RecordsManagementInstaller(models.TransientModel):
             ('name', '=', 'stock'),
             ('state', '=', 'installed')
         ])
-        
+
         if not stock_module:
             raise UserError(_(
                 'The Stock/Inventory module must be installed before installing Records Management.\n'
                 'Please go to Apps, search for "Inventory", install it, and then try again.'
             ))
-        
+
         return True
 
     def install_required_modules(self):
@@ -28,10 +28,10 @@ class RecordsManagementInstaller(models.TransientModel):
             ('name', '=', 'stock'),
             ('state', 'in', ['uninstalled', 'to install'])
         ])
-        
+
         if stock_module:
             stock_module.button_immediate_install()
-            
+
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',

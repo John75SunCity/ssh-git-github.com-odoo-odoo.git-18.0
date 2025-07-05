@@ -91,11 +91,11 @@ class TestRecordsManagement(TransactionCase):
             'customer_id': self.partner.id,
             'item_ids': [(6, 0, [self.lot.id])],
         })
-        
+
         # Test confirm action
         pickup_request.action_confirm()
         self.assertEqual(pickup_request.state, 'confirmed')
-        
+
         # Test done action
         pickup_request.action_done()
         self.assertEqual(pickup_request.state, 'done')
