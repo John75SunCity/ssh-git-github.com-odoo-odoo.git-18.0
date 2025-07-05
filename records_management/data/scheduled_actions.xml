@@ -10,7 +10,7 @@
 from collections import defaultdict
 import logging
 
-_logger = logging.getLogger(__name__)
+_logger = logging.getLogger('records_management.cron')
 
 try:
     # Search for all internal stock quants
