@@ -49,7 +49,7 @@ except Exception as e:
             <field name="active">True</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
-            <field name="nextcall" eval="(datetime.now() + relativedelta(months=1)).strftime('%Y-%m-%d 00:00:00')"/>
+            <field name="nextcall" eval="(datetime.datetime.now() + datetime.timedelta(days=30)).strftime('%Y-%m-%d 00:00:00')"/>
         </record>
     </data>
 </odoo>
