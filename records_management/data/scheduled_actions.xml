@@ -3,7 +3,7 @@
     <data noupdate="1">
         <record id="ir_cron_compute_monthly_storage_fees" model="ir.cron">
             <field name="name">Compute Monthly Storage Fees</field>
-            <field name="model_id" ref="model_stock_quant"/>
+            <field name="model_id" ref="stock.model_stock_quant"/>
             <field name="state">code</field>
             <field name="code">
 # Import defaultdict to aggregate quantities per customer
@@ -39,17 +39,17 @@ try:
                     'order_line': [(0, 0, {
                         'product_id': product.id,
                         'product_uom_qty': qty,
-                        'name': f'Monthly Storage Fee for {qty} items',
+                        'name': 'Monthly Storage Fee for %s items' % qty,
                     })],
                 })
 except Exception as e:
-    _logger.error(f'Error computing monthly storage fees: {str(e)}')
+    _logger.error('Error computing monthly storage fees: %s' % str(e))
 </field>
             <field name="numbercall">-1</field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
-            <field name="nextcall" eval="(DateTime.now() + relativedelta(months=1)).strftime('%Y-%m-%d 00:00:00')"/>
+            <field name="nextcall" eval="(datetime.now() + relativedelta(months=1)).strftime('%Y-%m-%d 00:00:00')"/>
         </record>
     </data>
 </odoo>

@@ -55,6 +55,6 @@ class ShreddingService(models.Model):
     def _compute_map_display(self):
         for record in self:
             if record.latitude and record.longitude:
-                record.map_display = f"{record.latitude},{record.longitude}"
+                record.map_display = "%s,%s" % (record.latitude, record.longitude)
             else:
                 record.map_display = ''
