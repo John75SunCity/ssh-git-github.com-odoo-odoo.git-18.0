@@ -7,19 +7,19 @@
             <form string="Document">
                 <header>
                     <button name="action_store" string="Store" type="object" 
-                            states="draft" class="oe_highlight"/>
+                            invisible="state != 'draft'" class="oe_highlight"/>
                     <button name="action_retrieve" string="Retrieve" type="object" 
-                            states="stored,returned"/>
+                            invisible="state not in ('stored','returned')"/>
                     <button name="action_return" string="Return" type="object" 
-                            states="retrieved"/>
+                            invisible="state != 'retrieved'"/>
                     <button name="action_destroy" string="Destroy" type="object" 
                             confirm="Are you sure you want to destroy this document?"
-                            states="stored,returned"/>
+                            invisible="state not in ('stored','returned')"/>
                     <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_attachments" type="object" class="oe_stat_button" icon="fa-paperclip" attrs="{'invisible': [('attachment_count', '=', 0)]}">
+                        <button name="action_view_attachments" type="object" class="oe_stat_button" icon="fa-paperclip" invisible="attachment_count == 0">>
                             <field name="attachment_count" string="Attachments" widget="statinfo"/>
                         </button>
                     </div>
@@ -38,7 +38,7 @@
                         <group>
                             <field name="retention_policy_id"/>
                             <field name="retention_date"/>
-                            <field name="days_to_retention" attrs="{'invisible': [('retention_date', '=', False)]}"/>
+                            <field name="days_to_retention" invisible="not retention_date"/>
                             <field name="partner_id"/>
                             <field name="user_id"/>
                         </group>
