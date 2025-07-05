@@ -119,7 +119,7 @@
                 <field name="used_capacity"/>
                 <field name="user_id"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div t-attf-class="oe_kanban_global_click oe_kanban_card 
                                            #{record.color.raw_value ? 'oe_kanban_color_' + record.color.raw_value : ''}">
                             <div class="oe_kanban_details">
