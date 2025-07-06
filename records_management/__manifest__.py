@@ -49,7 +49,6 @@ Features:
         'views/stock_lot_views.xml',
         'views/res_partner_views.xml',
         'views/customer_inventory_views.xml',
-        'report/records_reports.xml',
         'views/records_management_menus.xml',
         'templates/my_portal_inventory.xml',
     ],
