@@ -36,6 +36,8 @@
                             <field name="date"/>
                         </group>
                         <group>
+                            <field name="customer_id"/>
+                            <field name="department_id"/>
                             <field name="retention_policy_id"/>
                             <field name="retention_date"/>
                             <field name="days_to_retention" invisible="not retention_date"/>
@@ -70,6 +72,8 @@
         <field name="arch" type="xml">
             <list decoration-success="state=='stored'" decoration-info="state=='retrieved'" decoration-danger="state=='destroyed'">
                 <field name="name"/>
+                <field name="customer_id"/>
+                <field name="department_id"/>
                 <field name="document_type_id"/>
                 <field name="box_id"/>
                 <field name="location_id"/>
@@ -87,6 +91,8 @@
         <field name="arch" type="xml">
             <search string="Search Documents">
                 <field name="name"/>
+                <field name="customer_id"/>
+                <field name="department_id"/>
                 <field name="box_id"/>
                 <field name="location_id"/>
                 <field name="document_type_id"/>
@@ -103,6 +109,8 @@
                 <filter string="Has Retention Date" name="has_retention" domain="[('retention_date','!=', False)]"/>
                 <filter string="Expired" name="expired" domain="[('retention_date','&lt;', context_today())]"/>
                 <group expand="0" string="Group By">
+                    <filter string="Customer" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
                     <filter string="Box" name="group_by_box" context="{'group_by': 'box_id'}"/>
                     <filter string="Location" name="group_by_location" context="{'group_by': 'location_id'}"/>
                     <filter string="Document Type" name="group_by_type" context="{'group_by': 'document_type_id'}"/>

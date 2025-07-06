@@ -34,6 +34,8 @@
                         </group>
                         <group>
                             <field name="location_id"/>
+                            <field name="customer_id"/>
+                            <field name="department_id"/>
                             <field name="user_id"/>
                             <field name="destruction_date" invisible="state != 'destroyed'"/>
                             <field name="color" invisible="1"/>
@@ -73,6 +75,8 @@
         <field name="arch" type="xml">
             <list decoration-info="state=='draft'" decoration-muted="state=='archived'" decoration-danger="state=='destroyed'">
                 <field name="name"/>
+                <field name="customer_id"/>
+                <field name="department_id"/>
                 <field name="location_id"/>
                 <field name="document_count"/>
                 <field name="used_capacity" widget="percentage"/>
@@ -88,6 +92,8 @@
         <field name="arch" type="xml">
             <search string="Search Boxes">
                 <field name="name"/>
+                <field name="customer_id"/>
+                <field name="department_id"/>
                 <field name="location_id"/>
                 <field name="barcode"/>
                 <field name="user_id"/>

@@ -43,6 +43,14 @@ class RecordsBox(models.Model):
     company_id = fields.Many2one(
         'res.company', string='Company',
         default=lambda self: self.env.company)
+    # Hierarchical access fields
+    customer_id = fields.Many2one(
+        'res.partner', string='Customer',
+        domain="[('is_company', '=', True)]",
+        tracking=True, index=True)
+    department_id = fields.Many2one(
+        'records.department', string='Department',
+        tracking=True, index=True)
     user_id = fields.Many2one(
         'res.users', string='Responsible',
         default=lambda self: self.env.user, tracking=True)
@@ -103,3 +111,16 @@ class RecordsBox(models.Model):
                 raise ValidationError(
                     _("Box %s is over capacity! Maximum is %s documents.") %
                     (box.name, box.capacity))
+
+    def write(self, vals):
+        """Update documents when box customer/department changes"""
+        result = super().write(vals)
+        if 'customer_id' in vals or 'department_id' in vals:
+            for box in self:
+                box.document_ids.write({
+                    'customer_id': (box.customer_id.id
+                                    if box.customer_id else False),
+                    'department_id': (box.department_id.id
+                                      if box.department_id else False),
+                })
+        return result

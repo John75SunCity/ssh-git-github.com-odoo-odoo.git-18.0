@@ -25,20 +25,33 @@ class RecordsDocument(models.Model):
     tags = fields.Many2many('records.tag', string='Tags')
 
     # Retention details
-    retention_policy_id = fields.Many2one('records.retention.policy', string='Retention Policy')
-    retention_date = fields.Date('Retention Date', tracking=True,
-                                compute='_compute_retention_date', store=True)
-    days_to_retention = fields.Integer('Days until destruction', compute='_compute_days_to_retention')
+    retention_policy_id = fields.Many2one(
+        'records.retention.policy', string='Retention Policy')
+    retention_date = fields.Date(
+        'Retention Date', tracking=True,
+        compute='_compute_retention_date', store=True)
+    days_to_retention = fields.Integer(
+        'Days until destruction', compute='_compute_days_to_retention')
 
     # Relations
     partner_id = fields.Many2one('res.partner', string='Related Partner')
-    user_id = fields.Many2one('res.users', string='Responsible', tracking=True)
+    # Hierarchical access fields
+    customer_id = fields.Many2one(
+        'res.partner', string='Customer',
+        domain="[('is_company', '=', True)]",
+        tracking=True, index=True)
+    department_id = fields.Many2one(
+        'records.department', string='Department',
+        tracking=True, index=True)
+    user_id = fields.Many2one('res.users', string='Responsible',
+                              tracking=True)
     company_id = fields.Many2one('res.company', string='Company',
-                                default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company)
 
     # File management
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
-    attachment_count = fields.Integer('Document Attachments Count', compute='_compute_attachment_count')
+    attachment_count = fields.Integer(
+        'Document Attachments Count', compute='_compute_attachment_count')
 
     # Status fields
     state = fields.Selection([
@@ -50,10 +63,12 @@ class RecordsDocument(models.Model):
     ], string='Status', default='draft', tracking=True)
     active = fields.Boolean(default=True)
 
-    @api.depends('date', 'retention_policy_id', 'retention_policy_id.retention_years')
+    @api.depends('date', 'retention_policy_id',
+                 'retention_policy_id.retention_years')
     def _compute_retention_date(self):
         for doc in self:
-            if doc.date and doc.retention_policy_id and doc.retention_policy_id.retention_years:
+            if (doc.date and doc.retention_policy_id and
+                    doc.retention_policy_id.retention_years):
                 years = doc.retention_policy_id.retention_years
                 doc.retention_date = fields.Date.add(doc.date, years=years)
             else:
@@ -79,9 +94,14 @@ class RecordsDocument(models.Model):
             return {
                 'warning': {
                     'title': _("Box is at capacity"),
-                    'message': _("This box is already at or exceeding its capacity.")
+                    'message': _(
+                        "This box is already at or exceeding its capacity.")
                 }
             }
+        # Auto-assign customer and department from box
+        if self.box_id:
+            self.customer_id = self.box_id.customer_id
+            self.department_id = self.box_id.department_id
 
     def action_store(self):
         self.write({'state': 'stored'})
@@ -103,5 +123,8 @@ class RecordsDocument(models.Model):
             'res_model': 'ir.attachment',
             'view_mode': 'kanban,tree,form',
             'domain': [('id', 'in', self.attachment_ids.ids)],
-            'context': {'default_res_model': 'records.document', 'default_res_id': self.id},
+            'context': {
+                'default_res_model': 'records.document',
+                'default_res_id': self.id
+            },
         }
