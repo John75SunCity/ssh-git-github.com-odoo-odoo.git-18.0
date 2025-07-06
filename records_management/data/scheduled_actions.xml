@@ -48,5 +48,24 @@ except Exception as e:
             <field name="interval_type">months</field>
             <field name="nextcall" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d 00:00:00')"/>
         </record>
+
+        <!-- Monthly Customer Inventory Reports -->
+        <record id="ir_cron_generate_monthly_inventory_reports" model="ir.cron">
+            <field name="name">Generate Monthly Customer Inventory Reports</field>
+            <field name="model_id" ref="model_customer_inventory_report"/>
+            <field name="state">code</field>
+            <field name="code">
+# Generate monthly inventory reports for all customers
+try:
+    model.generate_monthly_reports()
+    log('Monthly customer inventory reports generated successfully.')
+except Exception as e:
+    log('Error generating monthly inventory reports: %s' % str(e))
+</field>
+            <field name="active">True</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=32)).replace(day=1).strftime('%Y-%m-%d 09:00:00')"/>
+        </record>
     </data>
 </odoo>

@@ -1,30 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Customer Inventory Report List View -->
     <record id="view_customer_inventory_report_list" model="ir.ui.view">
         <field name="name">customer.inventory.report.list</field>
         <field name="model">customer.inventory.report</field>
         <field name="arch" type="xml">
-            <list string="Customer Inventory Reports">
+            <list string="Customer Inventory Reports" decoration-info="status=='draft'" decoration-success="status=='confirmed'" decoration-warning="status=='sent'">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="report_date"/>
+                <field name="total_boxes"/>
+                <field name="total_documents"/>
+                <field name="active_locations"/>
+                <field name="status"/>
             </list>
         </field>
     </record>
 
+    <!-- Customer Inventory Report Form View -->
     <record id="view_customer_inventory_report_form" model="ir.ui.view">
         <field name="name">customer.inventory.report.form</field>
         <field name="model">customer.inventory.report</field>
         <field name="arch" type="xml">
             <form string="Customer Inventory Report">
+                <header>
+                    <button name="action_confirm_report" type="object" string="Confirm Report" 
+                            class="btn-primary" invisible="status != 'draft'"/>
+                    <button name="action_send_to_customer" type="object" string="Send to Customer" 
+                            class="btn-primary" invisible="status != 'confirmed'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,confirmed,sent"/>
+                </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Report Name..."/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
-                        <field name="customer_id"/>
-                        <field name="report_date"/>
+                        <group>
+                            <field name="customer_id" options="{'no_create': True}"/>
+                            <field name="report_date"/>
+                        </group>
+                        <group>
+                            <field name="total_boxes" readonly="1"/>
+                            <field name="total_documents" readonly="1"/>
+                            <field name="active_locations" readonly="1"/>
+                        </group>
                     </group>
+                    <notebook>
+                        <page string="Customer Boxes">
+                            <field name="box_ids" mode="tree" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="location_id"/>
+                                    <field name="state"/>
+                                    <field name="create_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Customer Documents">
+                            <field name="document_ids" mode="tree" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="document_type_id"/>
+                                    <field name="box_id"/>
+                                    <field name="create_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" placeholder="Additional notes about this inventory report..."/>
+                        </page>
+                    </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
+        </field>
+    </record>
+
+    <!-- Customer Inventory Report Search View -->
+    <record id="view_customer_inventory_report_search" model="ir.ui.view">
+        <field name="name">customer.inventory.report.search</field>
+        <field name="model">customer.inventory.report</field>
+        <field name="arch" type="xml">
+            <search string="Search Customer Inventory">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="report_date"/>
+                <separator/>
+                <filter string="Draft" name="filter_draft" domain="[('status', '=', 'draft')]"/>
+                <filter string="Confirmed" name="filter_confirmed" domain="[('status', '=', 'confirmed')]"/>
+                <filter string="Sent" name="filter_sent" domain="[('status', '=', 'sent')]"/>
+                <separator/>
+                <filter string="This Month" name="filter_current_month" 
+                        domain="[('report_date', '>=', datetime.datetime.now().replace(day=1))]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="group_customer" context="{'group_by':'customer_id'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by':'status'}"/>
+                    <filter string="Report Date" name="group_date" context="{'group_by':'report_date'}"/>
+                </group>
+            </search>
         </field>
     </record>
 
@@ -33,13 +112,16 @@
         <field name="name">Customer Inventory</field>
         <field name="res_model">customer.inventory.report</field>
         <field name="view_mode">list,form</field>
-        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_customer_inventory_report_search"/>
+        <field name="context">{'search_default_filter_current_month': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                No customer inventory found!
+                Create your first customer inventory report!
             </p>
             <p>
-                Customer inventory will appear here once you have stored items for customers.
+                Customer inventory reports help you track what documents and boxes 
+                are stored for each customer. Generate reports to send to customers 
+                or for internal record keeping.
             </p>
         </field>
     </record>

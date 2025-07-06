@@ -59,6 +59,13 @@
                   sequence="20"
                   groups="records_management.group_records_user"/>
 
+        <menuitem id="menu_customer_inventory"
+                  name="Customer Inventory"
+                  parent="menu_records_inventory"
+                  action="action_customer_inventory_report"
+                  sequence="10"
+                  groups="records_management.group_records_user"/>
+
         <menuitem id="menu_records_retention"
                   name="Retention Policies"
                   parent="menu_records_inventory"
@@ -78,6 +85,13 @@
                   parent="menu_records_reporting"
                   action="report_box_contents"
                   sequence="10"
+                  groups="records_management.group_records_user"/>
+
+        <menuitem id="menu_inventory_reports"
+                  name="Inventory Reports"
+                  parent="menu_records_reporting"
+                  action="action_customer_inventory_report"
+                  sequence="20"
                   groups="records_management.group_records_user"/>
 
         <!-- ==== CONFIGURATION SECTION ==== -->

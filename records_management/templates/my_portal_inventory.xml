@@ -1,37 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="portal_my_inventory" name="My Inventory">
+    <template id="portal_my_inventory" name="My Records Inventory">
         <t t-call="portal.portal_layout">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h1 class="mt-4">My Inventory</h1>
-                        <t t-set="quants" t-value="env['stock.quant'].sudo().search([('lot_id.customer_id', '=', user.partner_id.id)])"/>
-                        <div t-if="not quants" class="alert alert-info">
-                            You currently have no items in inventory.
+                        <h1 class="mt-4">My Records Inventory</h1>
+                        
+                        <!-- Summary Cards -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Storage Boxes</h5>
+                                        <h2 t-esc="boxes_count"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Documents</h5>
+                                        <h2 t-esc="documents_count"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Locations</h5>
+                                        <h2 t-esc="locations_count"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-warning text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Active Requests</h5>
+                                        <h2 t-esc="requests_count"/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <table t-if="quants" class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Lot/Serial Number</th>
-                                    <th>Location</th>
-                                    <th>Quantity</th>
-                                    <th>Available</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="quants" t-as="quant">
-                                    <tr>
-                                        <td><t t-esc="quant.product_id.name"/></td>
-                                        <td><t t-esc="quant.lot_id.name"/></td>
-                                        <td><t t-esc="quant.location_id.name"/></td>
-                                        <td><t t-esc="quant.quantity"/></td>
-                                        <td><t t-esc="quant.quantity - quant.reserved_quantity"/></td>
-                                    </tr>
-                                </t>
-                            </tbody>
-                        </table>
+
+                        <!-- Storage Boxes Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h3>My Storage Boxes</h3>
+                            </div>
+                            <div class="card-body">
+                                <div t-if="not boxes" class="alert alert-info">
+                                    You currently have no storage boxes.
+                                </div>
+                                <div t-if="boxes" class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Box ID</th>
+                                                <th>Location</th>
+                                                <th>Status</th>
+                                                <th>Document Count</th>
+                                                <th>Storage Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="boxes" t-as="box">
+                                                <tr>
+                                                    <td><strong t-esc="box.name"/></td>
+                                                    <td t-esc="box.location_id.name"/>
+                                                    <td>
+                                                        <span t-if="box.state == 'stored'" class="badge badge-success">Stored</span>
+                                                        <span t-if="box.state == 'retrieved'" class="badge badge-warning">Retrieved</span>
+                                                        <span t-if="box.state == 'destroyed'" class="badge badge-danger">Destroyed</span>
+                                                    </td>
+                                                    <td t-esc="len(box.document_ids)"/>
+                                                    <td t-esc="box.create_date.strftime('%Y-%m-%d')" t-options="{'widget': 'date'}"/>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Documents Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h3>Recent Documents</h3>
+                            </div>
+                            <div class="card-body">
+                                <div t-if="not recent_documents" class="alert alert-info">
+                                    You currently have no documents.
+                                </div>
+                                <div t-if="recent_documents" class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Document Name</th>
+                                                <th>Type</th>
+                                                <th>Box</th>
+                                                <th>Added Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="recent_documents" t-as="doc">
+                                                <tr>
+                                                    <td t-esc="doc.name"/>
+                                                    <td t-esc="doc.document_type_id.name"/>
+                                                    <td t-esc="doc.box_id.name"/>
+                                                    <td t-esc="doc.create_date.strftime('%Y-%m-%d')" t-options="{'widget': 'date'}"/>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active Requests Section -->
+                        <div class="card" t-if="requests">
+                            <div class="card-header">
+                                <h3>My Active Requests</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Request Type</th>
+                                                <th>Request Date</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="requests" t-as="req">
+                                                <tr>
+                                                    <td>
+                                                        <span t-if="req._name == 'pickup.request'">Pickup Request</span>
+                                                        <span t-if="req._name == 'shredding.service'">Shredding Service</span>
+                                                    </td>
+                                                    <td t-esc="req.request_date or req.scheduled_date" t-options="{'widget': 'date'}"/>
+                                                    <td>
+                                                        <span t-if="req.state == 'draft'" class="badge badge-secondary">Draft</span>
+                                                        <span t-if="req.state == 'confirmed'" class="badge badge-primary">Confirmed</span>
+                                                        <span t-if="req.state == 'scheduled'" class="badge badge-info">Scheduled</span>
+                                                        <span t-if="req.state == 'completed'" class="badge badge-success">Completed</span>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
