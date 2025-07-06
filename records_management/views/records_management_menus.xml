@@ -156,6 +156,5 @@
                   parent="menu_records_configuration"
                   sequence="90"
                   groups="records_management.group_records_manager"/>
-
     </data>
 </odoo>
