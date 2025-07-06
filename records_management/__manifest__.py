@@ -47,10 +47,10 @@ Features:
         'views/pickup_request.xml',
         'views/shredding_views.xml',
         'views/stock_lot_views.xml',
-        'views/records_management_menus.xml',
         'views/res_partner_views.xml',
-        'report/records_reports.xml',
         'views/customer_inventory_views.xml',
+        'report/records_reports.xml',
+        'views/records_management_menus.xml',
         'templates/my_portal_inventory.xml',
     ],
     'demo': [
