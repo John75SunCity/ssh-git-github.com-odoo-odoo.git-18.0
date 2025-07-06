@@ -89,3 +89,4 @@
         </record>
     </data>
 </odoo>
+<!-- Menu moved to records_management_menus.xml for proper loading order -->
