@@ -45,11 +45,11 @@
                   sequence="40"
                   groups="records_management.group_records_user"/>
 
-        <menuitem id="menu_stock_lots" 
-                  name="Serial Numbers" 
-                  parent="menu_records_operations" 
-                  action="action_stock_lot" 
-                  sequence="50" 
+        <menuitem id="menu_stock_lots"
+                  name="Serial Numbers"
+                  parent="menu_records_operations"
+                  action="action_stock_lot"
+                  sequence="50"
                   groups="records_management.group_records_user"/>
 
         <!-- ==== INVENTORY & MANAGEMENT SECTION ==== -->
@@ -131,7 +131,7 @@
 
         <!-- Product Configuration -->
         <menuitem id="menu_records_products"
-                  name="Products &amp; Services"
+                  name="Products and Services"
                   parent="menu_records_configuration"
                   sequence="20"
                   groups="records_management.group_records_manager"/>
