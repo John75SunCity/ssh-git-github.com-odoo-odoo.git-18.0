@@ -6,14 +6,14 @@
                   name="Records Management"
                   web_icon="records_management,static/description/icon.png"
                   sequence="50"
-                  groups="records_management.group_records_user"/>
+                  groups="records_management.group_records_management_user"/>
 
         <!-- ==== OPERATIONS SECTION ==== -->
         <menuitem id="menu_records_operations"
                   name="Operations"
                   parent="menu_records_management_root"
                   sequence="10"
-                  groups="records_management.group_records_user"/>
+                  groups="records_management.group_records_management_user"/>
 
         <!-- Records and Documents -->
         <menuitem id="menu_records_boxes"
