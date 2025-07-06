@@ -87,13 +87,5 @@
                 </p>
             </field>
         </record>
-
-        <!-- Serial Numbers Menu (under Operations) -->
-        <menuitem id="menu_stock_lots" 
-                  name="Serial Numbers" 
-                  parent="menu_records_operations" 
-                  action="action_stock_lot" 
-                  sequence="50" 
-                  groups="records_management.group_records_user"/>
     </data>
 </odoo>
