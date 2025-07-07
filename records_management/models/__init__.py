@@ -1,4 +1,3 @@
-from . import customer_inventory_report
 from . import installer
 from . import ir_actions_report
 from . import ir_module
@@ -16,3 +15,4 @@ from . import shredding_service
 from . import stock_lot
 from . import stock_move_sms_validation
 from . import stock_picking
+from . import customer_inventory_report
