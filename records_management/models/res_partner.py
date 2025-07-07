@@ -151,10 +151,10 @@ class ResPartnerDepartmentBilling(models.Model):
     partner_id = fields.Many2one(
         'res.partner', string='Company', required=True, ondelete='cascade')
     department_id = fields.Many2one(
-        'customer.department',
+        'records.department',
         string='Department',
         required=True,
-        domain="[('customer_id', '=', partner_id)]"
+        domain="[('company_id', '=', partner_id)]"
     )
     department_name = fields.Char(
         related='department_id.name', string='Department Name', readonly=True)

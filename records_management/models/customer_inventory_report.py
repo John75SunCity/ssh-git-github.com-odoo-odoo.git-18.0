@@ -1354,3 +1354,144 @@ class RecordsBillingPeriod(models.Model):
             }
             
             self.env['account.move.line'].create(invoice_line_vals)
+        
+
+class RecordsBillingLine(models.Model):
+    _name = 'records.billing.line'
+    _description = 'Billing Line Item'
+    _rec_name = 'description'
+
+    billing_period_id = fields.Many2one(
+        'records.billing.period', string='Billing Period', 
+        required=True, ondelete='cascade')
+    customer_id = fields.Many2one(
+        'res.partner', string='Customer', required=True)
+    department_id = fields.Many2one(
+        'records.department', string='Department')
+    service_request_id = fields.Many2one(
+        'records.service.request', string='Service Request')
+    
+    line_type = fields.Selection([
+        ('storage', 'Storage Fee'),
+        ('service', 'Service Fee'),
+        ('product', 'Product Sale'),
+        ('adjustment', 'Adjustment')
+    ], string='Line Type', required=True)
+    
+    description = fields.Text(string='Description', required=True)
+    quantity = fields.Float(string='Quantity', default=1.0, digits=(12, 2))
+    unit_price = fields.Float(string='Unit Price', digits=(12, 4))
+    amount = fields.Float(
+        string='Amount', compute='_compute_amount', store=True, 
+        digits=(12, 2))
+    
+    # Additional Information
+    notes = fields.Text(string='Notes')
+    
+    @api.depends('quantity', 'unit_price')
+    def _compute_amount(self):
+        for line in self:
+            line.amount = line.quantity * line.unit_price
+
+
+class RecordsServicePricing(models.Model):
+    _name = 'records.service.pricing'
+    _description = 'Comprehensive Service Pricing Configuration'
+    _rec_name = 'name'
+
+    name = fields.Char(string='Service Name', required=True)
+    service_code = fields.Char(string='Service Code', required=True)
+    action_code = fields.Char(string='Action Code', help="STORE, SELL, ADD, etc.")
+    object_code = fields.Char(string='Object Code', help="01, BX, CONTAINER, etc.")
+    
+    service_category = fields.Selection([
+        ('storage', 'Storage Services'),
+        ('product', 'Product Sales'),
+        ('box_management', 'Box Management'),
+        ('transportation', 'Transportation & Delivery'),
+        ('destruction', 'Destruction Services'),
+        ('retrieval', 'Retrieval Services'),
+        ('shred_bin', 'Shred Bin Services'),
+        ('special', 'Special Services')
+    ], string='Service Category', required=True)
+    
+    # Pricing
+    base_price = fields.Float(string='Base Price', digits=(12, 2))
+    per_unit_price = fields.Float(
+        string='Per Unit Price', digits=(12, 4),
+        help="Additional cost per unit/box/mile etc.")
+    minimum_charge = fields.Float(
+        string='Minimum Charge', digits=(12, 2))
+    
+    # Billing Type
+    billing_type = fields.Selection([
+        ('invoice', 'Direct Invoice'),
+        ('workorder', 'Workorder Required'),
+        ('recurring', 'Recurring Monthly')
+    ], string='Billing Type', default='invoice')
+    
+    requires_approval = fields.Boolean(string='Requires Approval', default=False)
+    accumulate = fields.Boolean(string='Accumulate Charges', default=False)
+    
+    # Quantity Breaks
+    quantity_breaks = fields.One2many(
+        'records.service.pricing.break', 'pricing_id', 
+        string='Quantity Breaks')
+    
+    active = fields.Boolean(string='Active', default=True)
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        default=lambda self: self.env.company)
+
+
+class RecordsServicePricingBreak(models.Model):
+    _name = 'records.service.pricing.break'
+    _description = 'Service Pricing Quantity Breaks'
+    _rec_name = 'min_quantity'
+
+    pricing_id = fields.Many2one(
+        'records.service.pricing', string='Pricing', 
+        required=True, ondelete='cascade')
+    min_quantity = fields.Float(string='Minimum Quantity', required=True)
+    max_quantity = fields.Float(string='Maximum Quantity')
+    unit_price = fields.Float(string='Unit Price', digits=(12, 4))
+    discount_percent = fields.Float(string='Discount %', digits=(5, 2))
+
+
+# Add billing period reference to account.move (invoices)
+class AccountMove(models.Model):
+    _inherit = 'account.move'
+    
+    billing_period_id = fields.Many2one(
+        'records.billing.period', string='Billing Period',
+        help="The billing period this invoice was generated from")
+
+
+# Enhanced the existing RecordsServiceRequest model
+class RecordsServiceRequestEnhanced(models.Model):
+    _inherit = 'records.service.request'
+
+    # Enhanced pricing fields
+    actual_cost = fields.Float(
+        string='Actual Cost', digits=(12, 2),
+        help="Final billed amount for this service")
+    cost_breakdown = fields.Text(
+        string='Cost Breakdown',
+        help="Detailed breakdown of how the cost was calculated")
+    
+    # Billing integration
+    billing_period_id = fields.Many2one(
+        'records.billing.period', string='Billing Period')
+    billing_line_id = fields.Many2one(
+        'records.billing.line', string='Billing Line')
+    invoiced = fields.Boolean(string='Invoiced', default=False)
+    completion_date = fields.Datetime(string='Completion Date')
+    
+    # Additional service details for pricing
+    distance_miles = fields.Float(
+        string='Distance (Miles)', digits=(8, 2),
+        help="Distance for transportation cost calculation")
+    boxes_count = fields.Integer(
+        string='Number of Boxes', default=1)
+    hard_drives_count = fields.Integer(
+        string='Number of Hard Drives', default=0)
