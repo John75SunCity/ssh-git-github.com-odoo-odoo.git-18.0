@@ -9,18 +9,32 @@
         <field name="city">Records City</field>
         <field name="zip">12345</field>
         <field name="country_id" ref="base.us"/>
+        <field name="is_company">True</field>
+        <field name="customer_rank">1</field>
     </record>
 
-    <!-- Demo lot data -->
-    <record id="demo_lot_1" model="stock.lot">
-        <field name="name">BOX00001</field>
-        <field name="product_id" ref="records_management.product_box"/>
-        <field name="customer_id" ref="records_management.demo_customer_1"/>
+    <!-- Demo department -->
+    <record id="demo_department_1" model="records.department">
+        <field name="name">Demo Department</field>
+        <field name="code">DEMO</field>
+        <field name="company_id" ref="demo_customer_1"/>
     </record>
-    
-    <record id="demo_lot_2" model="stock.lot">
-        <field name="name">FILE00001</field>
-        <field name="product_id" ref="records_management.product_file"/>
-        <field name="customer_id" ref="records_management.demo_customer_1"/>
+
+    <!-- Demo location -->
+    <record id="demo_location_1" model="records.location">
+        <field name="name">Demo Warehouse A</field>
+        <field name="code">DEMO-A</field>
+        <field name="location_type">warehouse</field>
+        <field name="capacity">100</field>
+    </record>
+
+    <!-- Demo box -->
+    <record id="demo_box_1" model="records.box">
+        <field name="name">DEMO-BOX-001</field>
+        <field name="customer_id" ref="demo_customer_1"/>
+        <field name="department_id" ref="demo_department_1"/>
+        <field name="location_id" ref="demo_location_1"/>
+        <field name="capacity">50</field>
+        <field name="state">active</field>
     </record>
 </odoo>
