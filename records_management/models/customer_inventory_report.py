@@ -328,79 +328,128 @@ class RecordsServiceRequest(models.Model):
     name = fields.Char(string='Request Reference', required=True, copy=False,
                        readonly=True, default=lambda self: 'New')
     
-    # Request Details
+    # Request Details - Enhanced with O'Neil Stratus service types
     service_type = fields.Selection([
-        # Storage Services
-        ('store_box', 'Box Storage'),
-        ('store_map', 'Map Box Storage'),
-        ('store_pallet', 'Pallet Storage'),
-        ('store_specialty', 'Specialty Box Storage'),
+        # Access Services
+        ('access', 'Access - Retrieve file/folder from container'),
+        ('access_box', 'Access - Retrieve entire box'),
+        ('access_rush', 'Access - Rush retrieval service'),
+        ('access_emergency', 'Access - Emergency retrieval service'),
         
-        # Product Sales
-        ('sell_boxes', 'New Boxes (10 Pack) with Delivery'),
+        # Add Services
+        ('add', 'Add - Add new container/box to storage'),
+        ('add_box', 'Add - New Box Setup'),
+        ('add_file', 'Add - Add file/folder to existing container'),
+        ('add_pallet', 'Add - Add pallet to storage'),
         
-        # Box Management
-        ('add_box', 'New Box Setup'),
-        ('refile_box', 'Refile Box'),
-        ('refile_file', 'Refile File/Folder'),
-        ('permanent_removal', 'Permanent Removal of Box'),
+        # Content Validation
+        ('content_val', 'Content Validation - Verify container contents'),
+        ('content_inventory', 'Content Inventory - Complete container audit'),
         
-        # Transportation & Delivery
-        ('delivery', 'Delivery Service'),
-        ('pickup', 'Pickup Service'),
-        ('trip_charge', 'Trip Charge'),
+        # Delivery Services
+        ('delivery', 'Delivery - Standard delivery service'),
+        ('delivery_rush', 'Delivery - Rush delivery service'),
+        ('delivery_same_day', 'Delivery - Same day delivery'),
+        ('delivery_emergency', 'Delivery - Emergency delivery'),
         
         # Destruction Services
-        ('shredding', 'Shredding per Box'),
-        ('hard_drive_destruction', 'Hard Drive Destruction'),
-        ('uniform_destruction', 'Uniform Destruction'),
+        ('destroy', 'Destroy - Secure destruction of records'),
+        ('destroy_box', 'Destroy - Shred entire box'),
+        ('destroy_file', 'Destroy - Shred specific files'),
+        ('destroy_hard_drive', 'Destroy - Hard drive destruction'),
+        ('destroy_uniform', 'Destroy - Uniform destruction'),
         
-        # Retrieval Services - Regular
-        ('retrieval_box_regular', 'Regular Retrieval - Box'),
-        ('retrieval_file_regular', 'Regular Retrieval - File'),
+        # Imaging Services
+        ('image', 'Image - Scan/photograph documents'),
+        ('image_box', 'Image - Scan entire box contents'),
+        ('image_file', 'Image - Scan specific files'),
         
-        # Retrieval Services - Rush
-        ('retrieval_box_rush', 'Rush Retrieval - Box (4hr)'),
-        ('retrieval_file_rush', 'Rush Retrieval - File (4hr)'),
-        ('rush_service_4hr', 'Rush Service 4HR'),
+        # Inventory Services
+        ('inventory', 'Inventory - Physical inventory check'),
+        ('inventory_full', 'Inventory - Complete facility inventory'),
+        ('inventory_partial', 'Inventory - Partial inventory by criteria'),
         
-        # Retrieval Services - Emergency
-        ('retrieval_box_emergency', 'Emergency Retrieval - Box (1hr)'),
-        ('retrieval_file_emergency', 'Emergency Retrieval - File (1hr)'),
-        ('emergency_service_1hr', 'Emergency Service 1HR'),
-        ('same_day_service', 'Same Day Service'),
+        # Pending Services
+        ('pending', 'Pending - Hold for further action'),
+        ('pending_approval', 'Pending - Awaiting approval'),
+        ('pending_destruction', 'Pending - Scheduled for destruction'),
+        
+        # Permanent Out
+        ('permanent_out', 'Permanent Out - Remove from active storage'),
+        ('permanent_checkout', 'Permanent Out - Permanent checkout'),
+        
+        # Pickup Services
+        ('pickup', 'Pickup - Standard pickup service'),
+        ('pickup_rush', 'Pickup - Rush pickup service'),
+        ('pickup_scheduled', 'Pickup - Scheduled pickup'),
+        
+        # Pull Services
+        ('pull', 'Pull - Remove from storage temporarily'),
+        ('pull_box', 'Pull - Remove entire box'),
+        ('pull_file', 'Pull - Remove specific files'),
+        
+        # Receive Services
+        ('receive', 'Receive - Process incoming materials'),
+        ('receive_box', 'Receive - Process new box'),
+        ('receive_pallet', 'Receive - Process pallet'),
+        
+        # Refile Services
+        ('refile', 'Refile - Return items to storage'),
+        ('refile_box', 'Refile - Return box to storage'),
+        ('refile_file', 'Refile - Return file/folder to container'),
+        
+        # Storage Services
+        ('store_box', 'Storage - Standard box storage'),
+        ('store_map', 'Storage - Map box storage'),
+        ('store_pallet', 'Storage - Pallet storage'),
+        ('store_specialty', 'Storage - Specialty box storage'),
+        
+        # Transportation Services
+        ('transport', 'Transport - General transportation'),
+        ('trip_charge', 'Transport - Trip charge'),
         
         # Shred Bin Services
-        ('shred_bin_32', '32 Gallon Bin Service'),
-        ('shred_bin_64', '64 Gallon Bin Service'),
-        ('shred_bin_96', '96 Gallon Bin Service'),
-        ('shred_bin_console', 'Shred Console Service'),
-        ('shred_bin_mobile_32', '32 Gallon Mobile Console'),
-        ('shred_bin_mobile_64', '64 Gallon Mobile'),
-        ('shred_bin_mobile_96', '96 Gallon Mobile'),
-        ('shredinator_23', '23 Gallon Shredinator'),
-        
-        # Shred Box Services
-        ('shred_box_standard', 'Shred Box - Standard Size'),
-        ('shred_box_double', 'Shred Box - Double Size'),
-        ('shred_box_large', 'Shred Box - Odd/Large'),
+        ('shred_bin_32', 'Shred Bin - 32 Gallon service'),
+        ('shred_bin_64', 'Shred Bin - 64 Gallon service'),
+        ('shred_bin_96', 'Shred Bin - 96 Gallon service'),
+        ('shred_bin_console', 'Shred Bin - Console service'),
+        ('shred_bin_mobile_32', 'Shred Bin - 32 Gallon mobile'),
+        ('shred_bin_mobile_64', 'Shred Bin - 64 Gallon mobile'),
+        ('shred_bin_mobile_96', 'Shred Bin - 96 Gallon mobile'),
+        ('shredinator_23', 'Shredinator - 23 Gallon service'),
         
         # One-Time Services
-        ('one_time_64g_bin', 'One Time 64G Bin Service'),
-        ('one_time_96g_bin', 'One Time 96G Bin Service'),
+        ('one_time_64g_bin', 'One Time - 64G Bin service'),
+        ('one_time_96g_bin', 'One Time - 96G Bin service'),
+        
+        # Product Sales
+        ('sell_boxes', 'Product - New boxes (10 pack) with delivery'),
+        ('sell_supplies', 'Product - Office supplies'),
         
         # Special Services
-        ('labor', 'Labor'),
-        ('indexing', 'Indexing per Box'),
-        ('file_not_found', 'File Not Found'),
-        ('unlock_bin', 'Unlock Shred Bin'),
-        ('key_delivery', 'Key Delivery'),
-        ('shred_a_thon', 'Shred-A-Thon'),
-        ('damaged_bin', 'Damaged Property - Bin'),
+        ('labor', 'Special - Labor service'),
+        ('indexing', 'Special - Indexing per box'),
+        ('file_not_found', 'Special - File not found research'),
+        ('unlock_bin', 'Special - Unlock shred bin'),
+        ('key_delivery', 'Special - Key delivery'),
+        ('shred_a_thon', 'Special - Shred-A-Thon event'),
+        ('damaged_bin', 'Special - Damaged property - bin'),
         
         # Other
-        ('other', 'Other Service')
+        ('other', 'Other - Custom service type')
     ], string='Service Type', required=True, tracking=True)
+    
+    # Enhanced action codes from O'Neil Stratus
+    action_code = fields.Char('Action Code', 
+                             help="Action code for billing/tracking")
+    object_code = fields.Char('Object Code',
+                             help="Object code for billing/tracking")
+    
+    # Work order vs invoice distinction
+    transaction_type = fields.Selection([
+        ('workorder', 'Work Order'),
+        ('invoice', 'Invoice')
+    ], string='Transaction Type', default='workorder', tracking=True)
     
     priority = fields.Selection([
         ('low', 'Low'),
@@ -442,10 +491,34 @@ class RecordsServiceRequest(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft', tracking=True)
-    
-    # Costs and Billing
+     # Costs and Billing - Enhanced with O'Neil Stratus features
     estimated_cost = fields.Float(string='Estimated Cost')
     actual_cost = fields.Float(string='Actual Cost')
+    
+    # Enhanced billing fields from O'Neil Stratus
+    base_rate = fields.Float(string='Base Rate',
+                             help="Base rate for this service")
+    additional_amount = fields.Float(string='Additional Amount',
+                                     help="Additional charges")
+    discount_rate = fields.Float(string='Discount Rate %',
+                                 help="Discount percentage applied")
+    discount_amount = fields.Float(string='Discount Amount',
+                                   compute='_compute_discount_amount',
+                                   store=True)
+    
+    # Quantity break support
+    quantity_break_target = fields.Integer(
+        string='Quantity Break Target',
+        help="Target qty for quantity break")
+    quantity_break_rate = fields.Float(
+        string='Quantity Break Rate',
+        help="Rate when quantity break achieved")
+    
+    # Final calculated amounts
+    line_total = fields.Float(string='Line Total',
+                              compute='_compute_line_total',
+                              store=True)
+    
     billing_notes = fields.Text(string='Billing Notes')
     
     # Approval
@@ -1495,3 +1568,229 @@ class RecordsServiceRequestEnhanced(models.Model):
         string='Number of Boxes', default=1)
     hard_drives_count = fields.Integer(
         string='Number of Hard Drives', default=0)
+
+    @api.depends('base_rate', 'discount_rate', 'quantity')
+    def _compute_discount_amount(self):
+        """Calculate discount amount based on base rate and discount rate"""
+        for record in self:
+            if record.base_rate and record.discount_rate:
+                record.discount_amount = (
+                    record.base_rate * record.quantity *
+                    (record.discount_rate / 100))
+            else:
+                record.discount_amount = 0.0
+    
+    @api.depends('base_rate', 'quantity', 'discount_amount',
+                 'additional_amount', 'quantity_break_target',
+                 'quantity_break_rate')
+    def _compute_line_total(self):
+        """Calculate line total with quantity breaks and discounts"""
+        for record in self:
+            # Determine rate (base or quantity break)
+            rate = record.base_rate
+            if (record.quantity_break_target and record.quantity_break_rate and
+                    record.quantity >= record.quantity_break_target):
+                rate = record.quantity_break_rate
+            
+            # Calculate subtotal
+            subtotal = rate * record.quantity
+            
+            # Apply discount and add additional charges
+            total = subtotal - record.discount_amount + record.additional_amount
+            record.line_total = max(0, total)  # Ensure non-negative
+
+
+class RecordsBarcodeConfig(models.Model):
+    _name = 'records.barcode.config'
+    _description = 'Barcode Configuration'
+    _rec_name = 'barcode_type'
+    _order = 'barcode_type'
+
+    barcode_type = fields.Selection([
+        ('box', 'Box Barcode'),
+        ('document', 'Document Barcode'),
+        ('location', 'Location Barcode'),
+        ('pallet', 'Pallet Barcode'),
+        ('bin', 'Bin Barcode'),
+        ('other', 'Other')
+    ], string='Barcode Type', required=True)
+    
+    # Barcode format configuration
+    barcode_format = fields.Selection([
+        ('code128', 'Code 128'),
+        ('code39', 'Code 39'),
+        ('upc', 'UPC'),
+        ('ean13', 'EAN-13'),
+        ('ean8', 'EAN-8'),
+        ('qr', 'QR Code'),
+        ('datamatrix', 'Data Matrix'),
+        ('other', 'Other')
+    ], string='Barcode Format', default='code128', required=True)
+    
+    # Length configuration
+    min_length = fields.Integer(string='Minimum Length', default=6)
+    max_length = fields.Integer(string='Maximum Length', default=20)
+    fixed_length = fields.Boolean(string='Fixed Length', default=False,
+                                  help="Enforce exact length")
+    exact_length = fields.Integer(string='Exact Length', default=12,
+                                  help="Required length when fixed length enabled")
+    
+    # Prefix/suffix configuration
+    prefix = fields.Char(string='Prefix', size=10,
+                         help="Fixed prefix for barcodes")
+    suffix = fields.Char(string='Suffix', size=10,
+                         help="Fixed suffix for barcodes")
+    
+    # Validation rules
+    allow_letters = fields.Boolean(string='Allow Letters', default=True)
+    allow_numbers = fields.Boolean(string='Allow Numbers', default=True)
+    allow_special = fields.Boolean(string='Allow Special Characters',
+                                   default=False)
+    special_chars = fields.Char(string='Allowed Special Characters', size=20,
+                               help="Specific special characters allowed")
+    
+    # Check digit configuration
+    use_check_digit = fields.Boolean(string='Use Check Digit', default=False)
+    check_digit_algorithm = fields.Selection([
+        ('mod10', 'Modulo 10'),
+        ('mod11', 'Modulo 11'),
+        ('mod43', 'Modulo 43'),
+        ('custom', 'Custom Algorithm')
+    ], string='Check Digit Algorithm', default='mod10')
+    
+    # Usage settings
+    active = fields.Boolean(string='Active', default=True)
+    auto_generate = fields.Boolean(string='Auto Generate', default=False,
+                                   help="Automatically generate barcodes")
+    sequence_id = fields.Many2one('ir.sequence', string='Sequence',
+                                  help="Sequence for auto-generated barcodes")
+    
+    # Description and notes
+    description = fields.Text(string='Description')
+    notes = fields.Text(string='Notes')
+    
+    @api.constrains('min_length', 'max_length', 'exact_length')
+    def _check_length_constraints(self):
+        """Validate length constraints"""
+        for config in self:
+            if config.min_length <= 0:
+                raise ValidationError(_("Minimum length must be > 0"))
+            if config.max_length <= 0:
+                raise ValidationError(_("Maximum length must be > 0"))
+            if config.min_length > config.max_length:
+                raise ValidationError(
+                    _("Minimum length cannot be greater than maximum length"))
+            if config.fixed_length and config.exact_length <= 0:
+                raise ValidationError(
+                    _("Exact length must be > 0 when fixed length enabled"))
+            if (config.fixed_length and 
+                (config.exact_length < config.min_length or 
+                 config.exact_length > config.max_length)):
+                raise ValidationError(
+                    _("Exact length must be between minimum and maximum"))
+    
+    @api.constrains('allow_letters', 'allow_numbers')
+    def _check_character_types(self):
+        """Ensure at least one character type is allowed"""
+        for config in self:
+            if not config.allow_letters and not config.allow_numbers:
+                raise ValidationError(
+                    _("At least letters or numbers must be allowed"))
+    
+    def validate_barcode(self, barcode):
+        """Validate a barcode against this configuration"""
+        if not barcode:
+            return False, _("Barcode cannot be empty")
+        
+        # Check length
+        if self.fixed_length:
+            if len(barcode) != self.exact_length:
+                return False, _("Barcode must be exactly %d characters") % \
+                       self.exact_length
+        else:
+            if len(barcode) < self.min_length:
+                return False, _("Barcode must be at least %d characters") % \
+                       self.min_length
+            if len(barcode) > self.max_length:
+                return False, _("Barcode must be at most %d characters") % \
+                       self.max_length
+        
+        # Check prefix/suffix
+        if self.prefix and not barcode.startswith(self.prefix):
+            return False, _("Barcode must start with '%s'") % self.prefix
+        if self.suffix and not barcode.endswith(self.suffix):
+            return False, _("Barcode must end with '%s'") % self.suffix
+        
+        # Check character types
+        for char in barcode:
+            if char.isalpha() and not self.allow_letters:
+                return False, _("Letters are not allowed in barcode")
+            if char.isdigit() and not self.allow_numbers:
+                return False, _("Numbers are not allowed in barcode")
+            if not char.isalnum():
+                if not self.allow_special:
+                    return False, _("Special characters not allowed")
+                if self.special_chars and char not in self.special_chars:
+                    return False, _("Character '%s' is not allowed") % char
+        
+        return True, _("Barcode is valid")
+    
+    def generate_barcode(self):
+        """Generate a new barcode based on configuration"""
+        if not self.auto_generate or not self.sequence_id:
+            return False
+        
+        # Generate base code from sequence
+        base_code = self.sequence_id.next_by_id()
+        
+        # Add prefix/suffix
+        if self.prefix:
+            base_code = self.prefix + base_code
+        if self.suffix:
+            base_code = base_code + self.suffix
+        
+        # Pad to exact length if needed
+        if self.fixed_length:
+            if len(base_code) < self.exact_length:
+                # Pad with zeros after prefix but before suffix
+                padding_needed = self.exact_length - len(base_code)
+                if self.suffix:
+                    base_code = (base_code[:-len(self.suffix)] + 
+                                '0' * padding_needed + self.suffix)
+                else:
+                    base_code = base_code + '0' * padding_needed
+            elif len(base_code) > self.exact_length:
+                # Truncate if too long
+                base_code = base_code[:self.exact_length]
+        
+        return base_code
+
+
+class RecordsBarcodeHistory(models.Model):
+    _name = 'records.barcode.history'
+    _description = 'Barcode History'
+    _order = 'create_date desc'
+    
+    barcode = fields.Char(string='Barcode', required=True)
+    barcode_config_id = fields.Many2one('records.barcode.config', 
+                                       string='Barcode Configuration')
+    
+    # Related object
+    model_name = fields.Char(string='Model Name', required=True)
+    res_id = fields.Integer(string='Record ID', required=True)
+    res_name = fields.Char(string='Record Name')
+    
+    # Tracking
+    action = fields.Selection([
+        ('created', 'Created'),
+        ('updated', 'Updated'),
+        ('scanned', 'Scanned'),
+        ('printed', 'Printed'),
+        ('deleted', 'Deleted')
+    ], string='Action', required=True)
+    
+    user_id = fields.Many2one('res.users', string='User', 
+                             default=lambda self: self.env.user)
+    create_date = fields.Datetime(string='Date/Time', readonly=True)
+    
+    notes = fields.Text(string='Notes')

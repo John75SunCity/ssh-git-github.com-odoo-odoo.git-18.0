@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Barcode Configuration Views -->
+    <record id="view_barcode_config_form" model="ir.ui.view">
+        <field name="name">records.barcode.config.form</field>
+        <field name="model">records.barcode.config</field>
+        <field name="arch" type="xml">
+            <form string="Barcode Configuration">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="barcode_type" placeholder="Barcode Type"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Basic Configuration">
+                            <field name="barcode_format"/>
+                            <field name="active"/>
+                            <field name="auto_generate"/>
+                            <field name="sequence_id" invisible="not auto_generate"/>
+                        </group>
+                        <group string="Length Settings">
+                            <field name="fixed_length"/>
+                            <field name="exact_length" invisible="not fixed_length"/>
+                            <field name="min_length" invisible="fixed_length"/>
+                            <field name="max_length" invisible="fixed_length"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Prefix/Suffix">
+                            <field name="prefix"/>
+                            <field name="suffix"/>
+                        </group>
+                        <group string="Character Rules">
+                            <field name="allow_letters"/>
+                            <field name="allow_numbers"/>
+                            <field name="allow_special"/>
+                            <field name="special_chars" invisible="not allow_special"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Check Digit">
+                            <field name="use_check_digit"/>
+                            <field name="check_digit_algorithm" invisible="not use_check_digit"/>
+                        </group>
+                        <group string="Description">
+                            <field name="description" nolabel="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" nolabel="1" placeholder="Additional notes..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_barcode_config_tree" model="ir.ui.view">
+        <field name="name">records.barcode.config.tree</field>
+        <field name="model">records.barcode.config</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="barcode_type"/>
+                <field name="barcode_format"/>
+                <field name="fixed_length"/>
+                <field name="exact_length" invisible="parent.fixed_length != True"/>
+                <field name="min_length" invisible="parent.fixed_length == True"/>
+                <field name="max_length" invisible="parent.fixed_length == True"/>
+                <field name="prefix"/>
+                <field name="suffix"/>
+                <field name="auto_generate"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_barcode_config_search" model="ir.ui.view">
+        <field name="name">records.barcode.config.search</field>
+        <field name="model">records.barcode.config</field>
+        <field name="arch" type="xml">
+            <search string="Search Barcode Configurations">
+                <field name="barcode_type"/>
+                <field name="barcode_format"/>
+                <field name="prefix"/>
+                <field name="suffix"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active','=',True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active','=',False)]"/>
+                <filter string="Auto Generate" name="auto_generate" domain="[('auto_generate','=',True)]"/>
+                <filter string="Fixed Length" name="fixed_length" domain="[('fixed_length','=',True)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Barcode Type" name="group_by_type" context="{'group_by': 'barcode_type'}"/>
+                    <filter string="Format" name="group_by_format" context="{'group_by': 'barcode_format'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Barcode History Views -->
+    <record id="view_barcode_history_form" model="ir.ui.view">
+        <field name="name">records.barcode.history.form</field>
+        <field name="model">records.barcode.history</field>
+        <field name="arch" type="xml">
+            <form string="Barcode History" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="barcode"/>
+                            <field name="barcode_config_id"/>
+                            <field name="action"/>
+                            <field name="user_id"/>
+                            <field name="create_date"/>
+                        </group>
+                        <group>
+                            <field name="model_name"/>
+                            <field name="res_id"/>
+                            <field name="res_name"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" nolabel="1" placeholder="Notes..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_barcode_history_tree" model="ir.ui.view">
+        <field name="name">records.barcode.history.tree</field>
+        <field name="model">records.barcode.history</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false">
+                <field name="create_date"/>
+                <field name="barcode"/>
+                <field name="action"/>
+                <field name="model_name"/>
+                <field name="res_name"/>
+                <field name="user_id"/>
+                <field name="barcode_config_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_barcode_history_search" model="ir.ui.view">
+        <field name="name">records.barcode.history.search</field>
+        <field name="model">records.barcode.history</field>
+        <field name="arch" type="xml">
+            <search string="Search Barcode History">
+                <field name="barcode"/>
+                <field name="model_name"/>
+                <field name="res_name"/>
+                <field name="user_id"/>
+                <field name="barcode_config_id"/>
+                <separator/>
+                <filter string="Created" name="created" domain="[('action','=','created')]"/>
+                <filter string="Updated" name="updated" domain="[('action','=','updated')]"/>
+                <filter string="Scanned" name="scanned" domain="[('action','=','scanned')]"/>
+                <filter string="Printed" name="printed" domain="[('action','=','printed')]"/>
+                <filter string="Deleted" name="deleted" domain="[('action','=','deleted')]"/>
+                <separator/>
+                <filter string="Today" name="today" domain="[('create_date','&gt;=', datetime.datetime.now().strftime('%Y-%m-%d'))]"/>
+                <filter string="Last 7 Days" name="last_7_days" domain="[('create_date','&gt;=', (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Last 30 Days" name="last_30_days" domain="[('create_date','&gt;=', (datetime.datetime.now() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Action" name="group_by_action" context="{'group_by': 'action'}"/>
+                    <filter string="Model" name="group_by_model" context="{'group_by': 'model_name'}"/>
+                    <filter string="User" name="group_by_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Configuration" name="group_by_config" context="{'group_by': 'barcode_config_id'}"/>
+                    <filter string="Date" name="group_by_date" context="{'group_by': 'create_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_barcode_config" model="ir.actions.act_window">
+        <field name="name">Barcode Configuration</field>
+        <field name="res_model">records.barcode.config</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new barcode configuration
+            </p>
+            <p>
+                Configure barcode formats, lengths, and validation rules for different types of records.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_barcode_history" model="ir.actions.act_window">
+        <field name="name">Barcode History</field>
+        <field name="res_model">records.barcode.history</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No barcode history found
+            </p>
+            <p>
+                This view shows the history of all barcode-related actions in the system.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_barcode_config" name="Barcode Configuration" parent="records_management.menu_records_management_config" action="action_barcode_config" sequence="30"/>
+    <menuitem id="menu_barcode_history" name="Barcode History" parent="records_management.menu_records_management_reports" action="action_barcode_history" sequence="40"/>
+</odoo>

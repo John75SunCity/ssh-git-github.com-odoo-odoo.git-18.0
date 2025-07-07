@@ -19,25 +19,76 @@
                         <button name="action_view_documents" type="object" class="oe_stat_button" icon="fa-files-o">
                             <field name="document_count" string="Documents" widget="statinfo"/>
                         </button>
+                        <button name="action_increment_access" type="object" class="oe_stat_button" icon="fa-eye">
+                            <field name="access_count" string="Access Count" widget="statinfo"/>
+                        </button>
                     </div>
                     <div class="oe_title">
                         <h1>
                             <field name="name" placeholder="Box Reference"/>
                         </h1>
+                        <h2>
+                            <field name="description" placeholder="Box Description"/>
+                        </h2>
                     </div>
                     <group>
-                        <group>
-                            <field name="product_id"/>
+                        <group string="Basic Information">
+                            <field name="alternate_code"/>
+                            <field name="container_type"/>
                             <field name="barcode" readonly="state != 'draft'"/>
+                            <field name="barcode_type"/>
+                            <field name="barcode_length"/>
+                            <field name="product_id"/>
                             <field name="capacity"/>
                             <field name="used_capacity" widget="progressbar"/>
                         </group>
-                        <group>
+                        <group string="Location &amp; Assignment">
                             <field name="location_id"/>
+                            <field name="location_code"/>
                             <field name="customer_id"/>
                             <field name="department_id"/>
                             <field name="user_id"/>
-                            <field name="destruction_date" invisible="state != 'destroyed'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Status &amp; Tracking">
+                            <field name="item_status"/>
+                            <field name="status_date"/>
+                            <field name="add_date"/>
+                            <field name="destroy_date"/>
+                            <field name="perm_flag"/>
+                        </group>
+                        <group string="Classification">
+                            <field name="security_code"/>
+                            <field name="category_code"/>
+                            <field name="record_series"/>
+                            <field name="object_code"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Account Hierarchy">
+                            <field name="account_level1"/>
+                            <field name="account_level2"/>
+                            <field name="account_level3"/>
+                        </group>
+                        <group string="Sequence &amp; Date Ranges">
+                            <field name="sequence_from"/>
+                            <field name="sequence_to"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="User Defined Fields">
+                            <field name="user_field1"/>
+                            <field name="user_field2"/>
+                            <field name="user_field3"/>
+                            <field name="user_field4"/>
+                            <field name="custom_date"/>
+                        </group>
+                        <group string="Billing Options">
+                            <field name="charge_for_storage"/>
+                            <field name="charge_for_add"/>
                             <field name="color" invisible="1"/>
                             <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                         </group>
@@ -75,13 +126,26 @@
         <field name="arch" type="xml">
             <list decoration-info="state=='draft'" decoration-muted="state=='archived'" decoration-danger="state=='destroyed'">
                 <field name="name"/>
+                <field name="alternate_code"/>
+                <field name="description"/>
+                <field name="container_type"/>
                 <field name="customer_id"/>
                 <field name="department_id"/>
                 <field name="location_id"/>
+                <field name="item_status"/>
                 <field name="document_count"/>
+                <field name="access_count"/>
                 <field name="used_capacity" widget="percentage"/>
                 <field name="user_id"/>
                 <field name="state"/>
+                <field name="barcode" optional="hide"/>
+                <field name="security_code" optional="hide"/>
+                <field name="category_code" optional="hide"/>
+                <field name="record_series" optional="hide"/>
+                <field name="object_code" optional="hide"/>
+                <field name="account_level1" optional="hide"/>
+                <field name="account_level2" optional="hide"/>
+                <field name="account_level3" optional="hide"/>
             </list>
         </field>
     </record>
@@ -92,22 +156,50 @@
         <field name="arch" type="xml">
             <search string="Search Boxes">
                 <field name="name"/>
+                <field name="alternate_code"/>
+                <field name="description"/>
                 <field name="customer_id"/>
                 <field name="department_id"/>
                 <field name="location_id"/>
                 <field name="barcode"/>
                 <field name="user_id"/>
+                <field name="security_code"/>
+                <field name="category_code"/>
+                <field name="record_series"/>
+                <field name="object_code"/>
+                <field name="account_level1"/>
+                <field name="account_level2"/>
+                <field name="account_level3"/>
                 <separator/>
                 <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
                 <filter string="Active" name="active" domain="[('state','=','active')]"/>
                 <filter string="Archived" name="archived" domain="[('state','=','archived')]"/>
                 <filter string="Destroyed" name="destroyed" domain="[('state','=','destroyed')]"/>
                 <separator/>
+                <filter string="Active Items" name="active_items" domain="[('item_status','=','active')]"/>
+                <filter string="Pending Items" name="pending_items" domain="[('item_status','=','pending')]"/>
+                <filter string="Permanent Out" name="permanent_out" domain="[('item_status','=','permanent_out')]"/>
+                <separator/>
+                <filter string="Standard Boxes" name="standard_boxes" domain="[('container_type','=','standard')]"/>
+                <filter string="Map Boxes" name="map_boxes" domain="[('container_type','=','map_box')]"/>
+                <filter string="Specialty Boxes" name="specialty_boxes" domain="[('container_type','=','specialty')]"/>
+                <filter string="Pallets" name="pallets" domain="[('container_type','=','pallet')]"/>
+                <separator/>
+                <filter string="Charge for Storage" name="charge_storage" domain="[('charge_for_storage','=',True)]"/>
+                <filter string="Permanent Flag" name="permanent_flag" domain="[('perm_flag','=',True)]"/>
+                <separator/>
                 <filter string="My Boxes" name="my_boxes" domain="[('user_id','=', uid)]"/>
                 <group expand="0" string="Group By">
                     <filter string="Location" name="group_by_location" context="{'group_by': 'location_id'}"/>
                     <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Item Status" name="group_by_item_status" context="{'group_by': 'item_status'}"/>
+                    <filter string="Container Type" name="group_by_container_type" context="{'group_by': 'container_type'}"/>
+                    <filter string="Customer" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
                     <filter string="Responsible" name="group_by_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Security Code" name="group_by_security" context="{'group_by': 'security_code'}"/>
+                    <filter string="Category Code" name="group_by_category" context="{'group_by': 'category_code'}"/>
+                    <filter string="Account Level 1" name="group_by_account1" context="{'group_by': 'account_level1'}"/>
                 </group>
             </search>
         </field>
