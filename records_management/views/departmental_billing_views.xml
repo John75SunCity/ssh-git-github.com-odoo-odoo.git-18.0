@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Enhanced Customer Form View with Billing Preferences -->
+    <record id="view_partner_records_billing_form" model="ir.ui.view">
+        <field name="name">res.partner.records.billing.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Records Management Billing" 
+                      attrs="{'invisible': [('is_company', '=', False)]}">
+                    <group>
+                        <group string="Customer Configuration">
+                            <field name="is_records_customer"/>
+                            <field name="billing_method" 
+                                   attrs="{'invisible': [('is_records_customer', '=', False)]}"/>
+                            <field name="billing_contact_id"
+                                   attrs="{'invisible': [('is_records_customer', '=', False)]}"/>
+                        </group>
+                        <group string="Delivery Preferences">
+                            <field name="invoice_delivery_method"
+                                   attrs="{'invisible': [('is_records_customer', '=', False)]}"/>
+                            <field name="payment_terms_override"
+                                   attrs="{'invisible': [('is_records_customer', '=', False)]}"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Multi-Department Billing" 
+                           attrs="{'invisible': [('is_records_customer', '=', False)]}">
+                        <group>
+                            <field name="billing_preference"/>
+                            <field name="minimum_fee_per_department"/>
+                            <field name="total_departments" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="departments_with_storage" readonly="1"/>
+                            <field name="monthly_storage_total" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <field name="department_billing_contacts" 
+                           attrs="{'invisible': [('is_records_customer', '=', False)]}">
+                        <list>
+                            <field name="department_id"/>
+                            <field name="contact_id"/>
+                            <field name="receives_invoices"/>
+                            <field name="delivery_method"/>
+                            <field name="active"/>
+                        </list>
+                    </field>
+                    
+                    <field name="department_billing_contact_ids" 
+                           attrs="{'invisible': [('is_records_customer', '=', False)]}">
+                        <tree editable="bottom">
+                            <field name="department_id"/>
+                            <field name="department_name" readonly="1"/>
+                            <field name="billing_contact_id"/>
+                            <field name="billing_email" readonly="1"/>
+                            <field name="use_separate_po_numbers"/>
+                            <field name="default_po_number" 
+                                   attrs="{'invisible': [('use_separate_po_numbers', '=', False)]}"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="department_name" readonly="1"/>
+                                <field name="billing_contact_id"/>
+                                <field name="billing_email" readonly="1"/>
+                                <field name="use_separate_po_numbers"/>
+                                <field name="default_po_number" 
+                                       attrs="{'invisible': [('use_separate_po_numbers', '=', False)]}"/>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <!-- Department Billing Contact Form View -->
+    <record id="view_department_billing_contact_form" model="ir.ui.view">
+        <field name="name">records.department.billing.contact.form</field>
+        <field name="model">records.department.billing.contact</field>
+        <field name="arch" type="xml">
+            <form string="Department Billing Contact">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="contact_id" placeholder="Select Contact"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Basic Information">
+                            <field name="customer_id"/>
+                            <field name="department_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Billing Preferences">
+                            <field name="receives_invoices"/>
+                            <field name="receives_statements"/>
+                            <field name="receives_notifications"/>
+                            <field name="delivery_method"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Enhanced Billing Period Form View -->
+    <record id="view_records_billing_period_enhanced_form" model="ir.ui.view">
+        <field name="name">records.billing.period.enhanced.form</field>
+        <field name="model">records.billing.period</field>
+        <field name="inherit_id" ref="records_management.view_records_billing_period_form"/>
+        <field name="arch" type="xml">
+            <field name="billing_line_ids" position="replace">
+                <field name="billing_line_ids">
+                    <list>
+                        <field name="customer_id"/>
+                        <field name="department_id"/>
+                        <field name="line_type"/>
+                        <field name="description"/>
+                        <field name="quantity"/>
+                        <field name="unit_price"/>
+                        <field name="amount"/>
+                    </list>
+                </field>
+            </field>
+            
+            <page string="Summary" position="after">
+                <page string="Department Breakdown">
+                    <group>
+                        <field name="billing_line_ids" 
+                               context="{'group_by': 'department_id'}"
+                               readonly="1">
+                            <list>
+                                <field name="department_id"/>
+                                <field name="line_type"/>
+                                <field name="description"/>
+                                <field name="amount" sum="Total"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+                <page string="Customer Billing Methods">
+                    <field name="billing_line_ids" 
+                           context="{'group_by': 'customer_id'}"
+                           readonly="1">
+                        <list>
+                            <field name="customer_id"/>
+                            <field name="department_id"/>
+                            <field name="amount" sum="Customer Total"/>
+                        </list>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <!-- Enhanced Department Form View -->
+    <record id="view_records_department_enhanced_form" model="ir.ui.view">
+        <field name="name">records.department.enhanced.form</field>
+        <field name="model">records.department</field>
+        <field name="inherit_id" ref="records_management.view_records_department_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Billing Configuration">
+                    <group>
+                        <group string="Billing Contact">
+                            <field name="company_id" invisible="1"/>
+                            <button name="action_setup_billing_contact" 
+                                    string="Setup Billing Contact" 
+                                    type="object" 
+                                    class="btn-primary"
+                                    icon="fa-user-plus"/>
+                        </group>
+                        <group string="Monthly Costs">
+                            <field name="monthly_cost" readonly="1"/>
+                            <field name="total_boxes" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Billing History">
+                        <field name="box_ids" 
+                               context="{'group_by': 'state'}"
+                               readonly="1">
+                            <list>
+                                <field name="name"/>
+                                <field name="state"/>
+                                <field name="location_id"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <!-- Action for Department Billing Contacts -->
+    <record id="action_department_billing_contacts" model="ir.actions.act_window">
+        <field name="name">Department Billing Contacts</field>
+        <field name="res_model">records.department.billing.contact</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Set up billing contacts for departments
+            </p>
+            <p>
+                Configure which contacts receive invoices for each department
+                when using separate department billing.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item for Department Billing Contacts -->
+    <menuitem id="menu_department_billing_contacts" 
+              name="Department Billing Contacts" 
+              parent="records_management.menu_records_billing"
+              action="action_department_billing_contacts"
+              sequence="25"/>
+
+</odoo>

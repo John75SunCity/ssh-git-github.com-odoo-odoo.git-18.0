@@ -1,5 +1,7 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError, UserError
 from dateutil.relativedelta import relativedelta
+from datetime import timedelta
 
 
 class CustomerInventoryReport(models.Model):
@@ -328,11 +330,75 @@ class RecordsServiceRequest(models.Model):
     
     # Request Details
     service_type = fields.Selection([
-        ('pickup', 'Pickup New Files'),
-        ('return', 'Return Boxes to Warehouse'),
-        ('delivery', 'Deliver New File Boxes'),
-        ('shredding', 'Shredding Service'),
-        ('retrieval', 'Document Retrieval'),
+        # Storage Services
+        ('store_box', 'Box Storage'),
+        ('store_map', 'Map Box Storage'),
+        ('store_pallet', 'Pallet Storage'),
+        ('store_specialty', 'Specialty Box Storage'),
+        
+        # Product Sales
+        ('sell_boxes', 'New Boxes (10 Pack) with Delivery'),
+        
+        # Box Management
+        ('add_box', 'New Box Setup'),
+        ('refile_box', 'Refile Box'),
+        ('refile_file', 'Refile File/Folder'),
+        ('permanent_removal', 'Permanent Removal of Box'),
+        
+        # Transportation & Delivery
+        ('delivery', 'Delivery Service'),
+        ('pickup', 'Pickup Service'),
+        ('trip_charge', 'Trip Charge'),
+        
+        # Destruction Services
+        ('shredding', 'Shredding per Box'),
+        ('hard_drive_destruction', 'Hard Drive Destruction'),
+        ('uniform_destruction', 'Uniform Destruction'),
+        
+        # Retrieval Services - Regular
+        ('retrieval_box_regular', 'Regular Retrieval - Box'),
+        ('retrieval_file_regular', 'Regular Retrieval - File'),
+        
+        # Retrieval Services - Rush
+        ('retrieval_box_rush', 'Rush Retrieval - Box (4hr)'),
+        ('retrieval_file_rush', 'Rush Retrieval - File (4hr)'),
+        ('rush_service_4hr', 'Rush Service 4HR'),
+        
+        # Retrieval Services - Emergency
+        ('retrieval_box_emergency', 'Emergency Retrieval - Box (1hr)'),
+        ('retrieval_file_emergency', 'Emergency Retrieval - File (1hr)'),
+        ('emergency_service_1hr', 'Emergency Service 1HR'),
+        ('same_day_service', 'Same Day Service'),
+        
+        # Shred Bin Services
+        ('shred_bin_32', '32 Gallon Bin Service'),
+        ('shred_bin_64', '64 Gallon Bin Service'),
+        ('shred_bin_96', '96 Gallon Bin Service'),
+        ('shred_bin_console', 'Shred Console Service'),
+        ('shred_bin_mobile_32', '32 Gallon Mobile Console'),
+        ('shred_bin_mobile_64', '64 Gallon Mobile'),
+        ('shred_bin_mobile_96', '96 Gallon Mobile'),
+        ('shredinator_23', '23 Gallon Shredinator'),
+        
+        # Shred Box Services
+        ('shred_box_standard', 'Shred Box - Standard Size'),
+        ('shred_box_double', 'Shred Box - Double Size'),
+        ('shred_box_large', 'Shred Box - Odd/Large'),
+        
+        # One-Time Services
+        ('one_time_64g_bin', 'One Time 64G Bin Service'),
+        ('one_time_96g_bin', 'One Time 96G Bin Service'),
+        
+        # Special Services
+        ('labor', 'Labor'),
+        ('indexing', 'Indexing per Box'),
+        ('file_not_found', 'File Not Found'),
+        ('unlock_bin', 'Unlock Shred Bin'),
+        ('key_delivery', 'Key Delivery'),
+        ('shred_a_thon', 'Shred-A-Thon'),
+        ('damaged_bin', 'Damaged Property - Bin'),
+        
+        # Other
         ('other', 'Other Service')
     ], string='Service Type', required=True, tracking=True)
     
@@ -645,3 +711,646 @@ class RecordsBulkUserImport(models.TransientModel):
                 'sticky': False,
             }
         }
+
+
+class RecordsBillingConfig(models.Model):
+    _name = 'records.billing.config'
+    _description = 'Billing Configuration for Records Management'
+    _rec_name = 'name'
+
+    name = fields.Char(string='Configuration Name', required=True)
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        default=lambda self: self.env.company)
+    
+    # Storage Pricing (Monthly Recurring)
+    storage_rate_per_box = fields.Float(
+        string='Box Storage Rate (Monthly)',
+        default=0.32, digits=(12, 4),
+        help="Monthly storage fee per standard box")
+    map_box_storage_rate = fields.Float(
+        string='Map Box Storage Rate (Monthly)',
+        default=0.45, digits=(12, 4),
+        help="Monthly storage fee per map box")
+    pallet_storage_rate = fields.Float(
+        string='Pallet Storage Rate (Monthly)', 
+        default=2.50, digits=(12, 4),
+        help="Monthly storage fee per pallet")
+    specialty_box_storage_rate = fields.Float(
+        string='Specialty Box Storage Rate (Monthly)',
+        default=0.50, digits=(12, 4),
+        help="Monthly storage fee per specialty box")
+    monthly_minimum_fee = fields.Float(
+        string='Monthly Minimum Storage Fee',
+        default=45.00, digits=(12, 2),
+        help="Minimum monthly storage charge")
+    
+    # Transportation & Delivery
+    pickup_base_fee = fields.Float(
+        string='Pickup Base Fee', default=25.00, digits=(12, 2))
+    delivery_base_fee = fields.Float(
+        string='Delivery Base Fee', default=25.00, digits=(12, 2))
+    trip_charge = fields.Float(
+        string='Trip Charge', default=15.00, digits=(12, 2))
+    transportation_rate_per_mile = fields.Float(
+        string='Transportation Rate per Mile', default=0.75, digits=(12, 2))
+    
+    # Box Management Services
+    new_box_fee = fields.Float(
+        string='New Box Setup Fee', default=2.50, digits=(12, 2))
+    refile_box_fee = fields.Float(
+        string='Refile Box Fee', default=3.00, digits=(12, 2))
+    refile_filefolder_fee = fields.Float(
+        string='Refile File/Folder Fee', default=1.50, digits=(12, 2))
+    permanent_removal_fee = fields.Float(
+        string='Permanent Removal Fee', default=2.00, digits=(12, 2))
+    
+    # Destruction Services
+    shredding_per_box_fee = fields.Float(
+        string='Shredding per Box Fee', default=3.50, digits=(12, 2))
+    hard_drive_destruction_fee = fields.Float(
+        string='Hard Drive Destruction Fee', default=15.00, digits=(12, 2))
+    uniform_destruction_fee = fields.Float(
+        string='Uniform Destruction Fee', default=25.00, digits=(12, 2))
+    
+    # Retrieval Services - Regular
+    regular_retrieval_box_fee = fields.Float(
+        string='Regular Retrieval - Box', default=8.50, digits=(12, 2))
+    regular_retrieval_file_fee = fields.Float(
+        string='Regular Retrieval - File', default=3.50, digits=(12, 2))
+    
+    # Retrieval Services - Rush (4 hour)
+    rush_retrieval_box_fee = fields.Float(
+        string='Rush Retrieval - Box (4hr)', default=15.00, digits=(12, 2))
+    rush_retrieval_file_fee = fields.Float(
+        string='Rush Retrieval - File (4hr)', default=8.50, digits=(12, 2))
+    rush_service_4hr_fee = fields.Float(
+        string='Rush Service 4HR Fee', default=25.00, digits=(12, 2))
+    
+    # Retrieval Services - Emergency (1 hour)
+    emergency_retrieval_box_fee = fields.Float(
+        string='Emergency Retrieval - Box (1hr)', default=25.00, digits=(12, 2))
+    emergency_retrieval_file_fee = fields.Float(
+        string='Emergency Retrieval - File (1hr)', default=15.00, digits=(12, 2))
+    emergency_service_1hr_fee = fields.Float(
+        string='Emergency Service 1HR Fee', default=50.00, digits=(12, 2))
+    same_day_service_fee = fields.Float(
+        string='Same Day Service Fee', default=35.00, digits=(12, 2))
+    
+    # Shred Bin Services - Container Sizes
+    shred_bin_32_gallon_fee = fields.Float(
+        string='32 Gallon Bin Service', default=25.00, digits=(12, 2))
+    shred_bin_64_gallon_fee = fields.Float(
+        string='64 Gallon Bin Service', default=35.00, digits=(12, 2))
+    shred_bin_96_gallon_fee = fields.Float(
+        string='96 Gallon Bin Service', default=45.00, digits=(12, 2))
+    shred_bin_console_fee = fields.Float(
+        string='Shred Console Service', default=30.00, digits=(12, 2))
+    shred_bin_mobile_fee = fields.Float(
+        string='Mobile Bin Service', default=40.00, digits=(12, 2))
+    shredinator_23_gallon_fee = fields.Float(
+        string='23 Gallon Shredinator', default=20.00, digits=(12, 2))
+    
+    # Shred Box Services
+    shred_box_standard_fee = fields.Float(
+        string='Shred Box - Standard Size', default=15.00, digits=(12, 2))
+    shred_box_double_fee = fields.Float(
+        string='Shred Box - Double Size', default=25.00, digits=(12, 2))
+    shred_box_large_fee = fields.Float(
+        string='Shred Box - Odd/Large', default=35.00, digits=(12, 2))
+    
+    # One-Time Bin Services
+    one_time_64g_bin_fee = fields.Float(
+        string='One Time 64G Bin Service', default=45.00, digits=(12, 2))
+    one_time_96g_bin_fee = fields.Float(
+        string='One Time 96G Bin Service', default=55.00, digits=(12, 2))
+    
+    # Special Services
+    labor_hourly_rate = fields.Float(
+        string='Labor Hourly Rate', default=35.00, digits=(12, 2))
+    indexing_per_box_fee = fields.Float(
+        string='Indexing per Box Fee', default=12.50, digits=(12, 2))
+    file_not_found_fee = fields.Float(
+        string='File Not Found Fee', default=5.00, digits=(12, 2))
+    unlock_shred_bin_fee = fields.Float(
+        string='Unlock Shred Bin Fee', default=15.00, digits=(12, 2))
+    key_delivery_fee = fields.Float(
+        string='Key Delivery Fee', default=10.00, digits=(12, 2))
+    shred_a_thon_fee = fields.Float(
+        string='Shred-A-Thon Fee', default=250.00, digits=(12, 2))
+    damaged_property_bin_fee = fields.Float(
+        string='Damaged Property - Bin Fee', default=75.00, digits=(12, 2))
+    
+    # Product Sales
+    file_box_10_pack_price = fields.Float(
+        string='File Box 10-Pack Price (with delivery)', default=45.00, digits=(12, 2))
+    
+    active = fields.Boolean(string='Active', default=True)
+
+
+class RecordsBillingPeriod(models.Model):
+    _name = 'records.billing.period'
+    _description = 'Monthly Billing Period'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _rec_name = 'name'
+    _order = 'period_start desc'
+
+    name = fields.Char(string='Period Name', required=True)
+    period_start = fields.Date(string='Period Start', required=True)
+    period_end = fields.Date(string='Period End', required=True)
+    
+    # Status
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('calculating', 'Calculating'),
+        ('ready', 'Ready for Review'),
+        ('approved', 'Approved'),
+        ('invoiced', 'Invoiced'),
+        ('closed', 'Closed')
+    ], string='Status', default='draft', tracking=True)
+    
+    # Billing Lines
+    billing_line_ids = fields.One2many(
+        'records.billing.line', 'billing_period_id',
+        string='Billing Lines')
+    
+    # Totals
+    total_storage_boxes = fields.Integer(
+        string='Total Storage Boxes', compute='_compute_totals', store=True)
+    total_storage_amount = fields.Float(
+        string='Total Storage Amount', compute='_compute_totals', store=True)
+    total_services_amount = fields.Float(
+        string='Total Services Amount', compute='_compute_totals', store=True)
+    total_products_amount = fields.Float(
+        string='Total Products Amount', compute='_compute_totals', store=True)
+    total_amount = fields.Float(
+        string='Total Amount', compute='_compute_totals', store=True)
+    
+    # Invoice Integration
+    invoice_ids = fields.One2many(
+        'account.move', 'billing_period_id', string='Generated Invoices')
+    invoice_count = fields.Integer(
+        string='Invoice Count', compute='_compute_invoice_count')
+    
+    @api.depends('billing_line_ids', 'billing_line_ids.amount')
+    def _compute_totals(self):
+        for period in self:
+            storage_lines = period.billing_line_ids.filtered(
+                lambda line: line.line_type == 'storage')
+            service_lines = period.billing_line_ids.filtered(
+                lambda line: line.line_type == 'service')
+            product_lines = period.billing_line_ids.filtered(
+                lambda line: line.line_type == 'product')
+            
+            period.total_storage_boxes = sum(storage_lines.mapped('quantity'))
+            period.total_storage_amount = sum(storage_lines.mapped('amount'))
+            period.total_services_amount = sum(service_lines.mapped('amount'))
+            period.total_products_amount = sum(product_lines.mapped('amount'))
+            period.total_amount = (period.total_storage_amount + 
+                                   period.total_services_amount + 
+                                   period.total_products_amount)
+    
+    @api.depends('invoice_ids')
+    def _compute_invoice_count(self):
+        for period in self:
+            period.invoice_count = len(period.invoice_ids)
+    
+    def action_calculate_billing(self):
+        """Calculate billing for all customers for this period"""
+        self.ensure_one()
+        self.state = 'calculating'
+        
+        # Clear existing billing lines
+        self.billing_line_ids.unlink()
+        
+        billing_config = self.env['records.billing.config'].search([
+            ('active', '=', True)
+        ], limit=1)
+        
+        if not billing_config:
+            raise ValidationError("No active billing configuration found.")
+        
+        # Get all customers with boxes during this period
+        customers_with_boxes = self.env['records.box'].search([
+            ('customer_id', '!=', False),
+            ('state', '!=', 'destroyed')
+        ]).mapped('customer_id')
+        
+        for customer in customers_with_boxes:
+            self._calculate_customer_billing(customer, billing_config)
+        
+        # Calculate service billing
+        self._calculate_service_billing(billing_config)
+        
+        self.state = 'ready'
+    
+    def _calculate_customer_billing(self, customer, config):
+        """Calculate storage billing for a specific customer"""
+        # Count different types of storage containers for this customer
+        boxes = self.env['records.box'].search([
+            ('customer_id', '=', customer.id),
+            ('state', '!=', 'destroyed'),
+        ])
+        
+        # Group boxes by department for department-level billing
+        departments = boxes.mapped('department_id')
+        if not departments:
+            # Customer has no departments, bill at company level
+            self._calculate_company_level_billing(customer, boxes, config)
+        else:
+            # Customer has departments, calculate billing per department
+            self._calculate_department_level_billing(customer, departments, config)
+    
+    def _calculate_company_level_billing(self, customer, boxes, config):
+        """Calculate billing for company without departments"""
+        # Group boxes by storage type (you may need to add storage_type field to records.box)
+        storage_types = {
+            'standard': boxes.filtered(lambda b: not hasattr(b, 'storage_type') or b.storage_type == 'standard'),
+            'map': boxes.filtered(lambda b: hasattr(b, 'storage_type') and b.storage_type == 'map'),
+            'specialty': boxes.filtered(lambda b: hasattr(b, 'storage_type') and b.storage_type == 'specialty'),
+        }
+        
+        # Count pallets (you may need to add pallet tracking)
+        pallet_count = 0  # TODO: Implement pallet counting logic
+        
+        total_storage_cost = 0.0
+        billing_lines = []
+        
+        # Calculate storage for each type
+        for storage_type, box_list in storage_types.items():
+            if not box_list:
+                continue
+                
+            box_count = len(box_list)
+            if storage_type == 'standard':
+                rate = config.storage_rate_per_box
+                description = f'Storage for {box_count} standard boxes'
+            elif storage_type == 'map':
+                rate = config.map_box_storage_rate
+                description = f'Storage for {box_count} map boxes'
+            elif storage_type == 'specialty':
+                rate = config.specialty_box_storage_rate
+                description = f'Storage for {box_count} specialty boxes'
+            
+            storage_amount = box_count * rate
+            total_storage_cost += storage_amount
+            
+            # Create billing line for this storage type
+            billing_lines.append({
+                'billing_period_id': self.id,
+                'customer_id': customer.id,
+                'line_type': 'storage',
+                'description': description,
+                'quantity': box_count,
+                'unit_price': rate,
+                'amount': storage_amount,
+            })
+        
+        # Add pallet storage if any
+        if pallet_count > 0:
+            pallet_amount = pallet_count * config.pallet_storage_rate
+            total_storage_cost += pallet_amount
+            billing_lines.append({
+                'billing_period_id': self.id,
+                'customer_id': customer.id,
+                'line_type': 'storage',
+                'description': f'Pallet storage for {pallet_count} pallets',
+                'quantity': pallet_count,
+                'unit_price': config.pallet_storage_rate,
+                'amount': pallet_amount,
+            })
+        
+        # Create all storage billing lines
+        for line_data in billing_lines:
+            self.env['records.billing.line'].create(line_data)
+        
+        # Check if monthly minimum applies
+        if total_storage_cost > 0 and total_storage_cost < config.monthly_minimum_fee:
+            minimum_adjustment = config.monthly_minimum_fee - total_storage_cost
+            self.env['records.billing.line'].create({
+                'billing_period_id': self.id,
+                'customer_id': customer.id,
+                'line_type': 'storage',
+                'description': 'Monthly Storage Minimum Fee',
+                'quantity': 1,
+                'unit_price': minimum_adjustment,
+                'amount': minimum_adjustment,
+            })
+            
+        return True
+    
+    def _calculate_department_level_billing(self, customer, departments, config):
+        """Calculate billing broken down by department"""
+        customer_total = 0.0
+        department_totals = {}
+        
+        for department in departments:
+            dept_boxes = self.env['records.box'].search([
+                ('customer_id', '=', customer.id),
+                ('department_id', '=', department.id),
+                ('state', '!=', 'destroyed'),
+            ])
+            
+            # Group boxes by storage type for this department
+            storage_types = {
+                'standard': dept_boxes.filtered(lambda b: not hasattr(b, 'storage_type') or b.storage_type == 'standard'),
+                'map': dept_boxes.filtered(lambda b: hasattr(b, 'storage_type') and b.storage_type == 'map'),
+                'specialty': dept_boxes.filtered(lambda b: hasattr(b, 'storage_type') and b.storage_type == 'specialty'),
+            }
+            
+            dept_total = 0.0
+            
+            # Calculate storage for each type in this department
+            for storage_type, box_list in storage_types.items():
+                if not box_list:
+                    continue
+                    
+                box_count = len(box_list)
+                if storage_type == 'standard':
+                    rate = config.storage_rate_per_box
+                    description = f'{department.name} - Storage for {box_count} standard boxes'
+                elif storage_type == 'map':
+                    rate = config.map_box_storage_rate
+                    description = f'{department.name} - Storage for {box_count} map boxes'
+                elif storage_type == 'specialty':
+                    rate = config.specialty_box_storage_rate
+                    description = f'{department.name} - Storage for {box_count} specialty boxes'
+                
+                storage_amount = box_count * rate
+                dept_total += storage_amount
+                
+                # Create billing line for this department's storage
+                self.env['records.billing.line'].create({
+                    'billing_period_id': self.id,
+                    'customer_id': customer.id,
+                    'department_id': department.id,
+                    'line_type': 'storage',
+                    'description': description,
+                    'quantity': box_count,
+                    'unit_price': rate,
+                    'amount': storage_amount,
+                })
+            
+            department_totals[department.id] = dept_total
+            customer_total += dept_total
+        
+        # Handle minimum fee logic - check customer's billing preference
+        billing_preference = customer.billing_preference or 'consolidated'
+        minimum_fee_per_dept = customer.minimum_fee_per_department or False
+        
+        if minimum_fee_per_dept:
+            # Apply minimum fee per department
+            for department in departments:
+                dept_total = department_totals.get(department.id, 0.0)
+                if dept_total > 0 and dept_total < config.monthly_minimum_fee:
+                    minimum_adjustment = config.monthly_minimum_fee - dept_total
+                    self.env['records.billing.line'].create({
+                        'billing_period_id': self.id,
+                        'customer_id': customer.id,
+                        'department_id': department.id,
+                        'line_type': 'storage',
+                        'description': f'{department.name} - Monthly Storage Minimum Fee',
+                        'quantity': 1,
+                        'unit_price': minimum_adjustment,
+                        'amount': minimum_adjustment,
+                    })
+        else:
+            # Apply minimum fee at company level, distribute proportionally
+            if customer_total > 0 and customer_total < config.monthly_minimum_fee:
+                minimum_adjustment = config.monthly_minimum_fee - customer_total
+                
+                # Distribute minimum fee proportionally across departments
+                for department in departments:
+                    dept_total = department_totals.get(department.id, 0.0)
+                    if dept_total > 0:
+                        dept_proportion = dept_total / customer_total
+                        dept_minimum = minimum_adjustment * dept_proportion
+                        
+                        self.env['records.billing.line'].create({
+                            'billing_period_id': self.id,
+                            'customer_id': customer.id,
+                            'department_id': department.id,
+                            'line_type': 'storage',
+                            'description': f'{department.name} - Monthly Minimum Fee (Proportional)',
+                            'quantity': 1,
+                            'unit_price': dept_minimum,
+                            'amount': dept_minimum,
+                        })
+        
+        return True
+    
+    def _calculate_service_billing(self, config):
+        """Calculate billing for services completed during this period"""
+        # Get completed service requests during this period
+        service_requests = self.env['records.service.request'].search([
+            ('state', '=', 'completed'),
+            ('completion_date', '>=', self.period_start),
+            ('completion_date', '<=', self.period_end),
+        ])
+        
+        for service in service_requests:
+            if service.actual_cost > 0:
+                self.env['records.billing.line'].create({
+                    'billing_period_id': self.id,
+                    'customer_id': service.customer_id.id,
+                    'service_request_id': service.id,
+                    'line_type': 'service',
+                    'description': service.name,
+                    'quantity': 1,
+                    'unit_price': service.actual_cost,
+                    'amount': service.actual_cost,
+                })
+    
+    def action_generate_invoices(self):
+        """Generate invoices based on customer billing preferences"""
+        if self.state != 'approved':
+            raise UserError("Only approved billing periods can generate invoices")
+        
+        # Get all customers with billing lines
+        customers = self.billing_line_ids.mapped('customer_id')
+        
+        for customer in customers:
+            self._generate_customer_invoices(customer)
+        
+        self.state = 'invoiced'
+        return True
+    
+    def _generate_customer_invoices(self, customer):
+        """Generate invoices for a customer based on their billing preference"""
+        billing_preference = customer.billing_preference or 'consolidated'
+        customer_lines = self.billing_line_ids.filtered(
+            lambda l: l.customer_id.id == customer.id)
+        
+        if billing_preference == 'consolidated':
+            self._generate_consolidated_invoice(customer, customer_lines)
+        elif billing_preference == 'separate':
+            self._generate_separate_invoices(customer, customer_lines)
+        elif billing_preference == 'hybrid':
+            self._generate_hybrid_invoices(customer, customer_lines)
+    
+    def _generate_consolidated_invoice(self, customer, billing_lines):
+        """Generate one invoice with department breakdown"""
+        if not billing_lines:
+            return
+        
+        # Create invoice header
+        invoice_vals = {
+            'partner_id': customer.id,
+            'move_type': 'out_invoice',
+            'invoice_date': self.period_end,
+            'billing_period_id': self.id,
+            'narration': f'Records Management Services for {self.name}',
+        }
+        
+        invoice = self.env['account.move'].create(invoice_vals)
+        
+        # Group lines by department for better organization
+        departments = billing_lines.mapped('department_id')
+        
+        if departments:
+            # Customer has departments - group by department
+            for department in departments:
+                dept_lines = billing_lines.filtered(
+                    lambda l: l.department_id.id == department.id)
+                if dept_lines:
+                    self._add_department_section_to_invoice(
+                        invoice, department, dept_lines)
+            
+            # Add lines without department (company-level charges)
+            company_lines = billing_lines.filtered(lambda l: not l.department_id)
+            if company_lines:
+                self._add_department_section_to_invoice(
+                    invoice, None, company_lines)
+        else:
+            # Customer has no departments - add all lines directly
+            self._add_billing_lines_to_invoice(invoice, billing_lines)
+        
+        # Finalize the invoice
+        invoice.action_post()
+        return invoice
+    
+    def _generate_separate_invoices(self, customer, billing_lines):
+        """Generate separate invoices per department"""
+        departments = billing_lines.mapped('department_id')
+        invoices = []
+        
+        for department in departments:
+            dept_lines = billing_lines.filtered(
+                lambda l: l.department_id.id == department.id)
+            if not dept_lines:
+                continue
+            
+            # Get department billing contact if configured
+            dept_billing = customer.department_billing_contact_ids.filtered(
+                lambda dbc: dbc.department_id.id == department.id)
+            
+            billing_partner = (dept_billing.billing_contact_id.id 
+                             if dept_billing else customer.id)
+            
+            # Create separate invoice for this department
+            invoice_vals = {
+                'partner_id': billing_partner,
+                'move_type': 'out_invoice',
+                'invoice_date': self.period_end,
+                'billing_period_id': self.id,
+                'narration': f'Records Management Services for '
+                           f'{department.name} - {self.name}',
+            }
+            
+            # Add PO number if configured
+            if dept_billing and dept_billing.default_po_number:
+                invoice_vals['ref'] = dept_billing.default_po_number
+            
+            invoice = self.env['account.move'].create(invoice_vals)
+            self._add_billing_lines_to_invoice(invoice, dept_lines)
+            invoice.action_post()
+            invoices.append(invoice)
+        
+        # Handle company-level charges (lines without department)
+        company_lines = billing_lines.filtered(lambda l: not l.department_id)
+        if company_lines:
+            invoice_vals = {
+                'partner_id': customer.id,
+                'move_type': 'out_invoice',
+                'invoice_date': self.period_end,
+                'billing_period_id': self.id,
+                'narration': f'Records Management Services (Company) - '
+                           f'{self.name}',
+            }
+            
+            invoice = self.env['account.move'].create(invoice_vals)
+            self._add_billing_lines_to_invoice(invoice, company_lines)
+            invoice.action_post()
+            invoices.append(invoice)
+        
+        return invoices
+    
+    def _generate_hybrid_invoices(self, customer, billing_lines):
+        """Generate consolidated storage, separate service invoices"""
+        storage_lines = billing_lines.filtered(
+            lambda l: l.line_type == 'storage')
+        service_lines = billing_lines.filtered(
+            lambda l: l.line_type in ['service', 'product'])
+        
+        invoices = []
+        
+        # Consolidated storage invoice
+        if storage_lines:
+            invoices.append(
+                self._generate_consolidated_invoice(customer, storage_lines))
+        
+        # Separate service invoices by department
+        if service_lines:
+            invoices.extend(
+                self._generate_separate_invoices(customer, service_lines))
+        
+        return invoices
+    
+    def _add_department_section_to_invoice(self, invoice, department, lines):
+        """Add a department section with subtotal to invoice"""
+        if department:
+            # Add department header as a display line
+            self.env['account.move.line'].create({
+                'move_id': invoice.id,
+                'name': f'\n=== {department.name} ===',
+                'display_type': 'line_section',
+            })
+        
+        # Add the actual billing lines
+        self._add_billing_lines_to_invoice(invoice, lines)
+        
+        # Add department subtotal if there are multiple departments
+        if department and len(lines.mapped('department_id')) > 1:
+            dept_total = sum(lines.mapped('amount'))
+            self.env['account.move.line'].create({
+                'move_id': invoice.id,
+                'name': f'{department.name} Subtotal: ${dept_total:,.2f}',
+                'display_type': 'line_note',
+            })
+    
+    def _add_billing_lines_to_invoice(self, invoice, billing_lines):
+        """Add billing lines to invoice as invoice lines"""
+        # Get default product and account (you may need to configure these)
+        default_product = self.env['product.product'].search([
+            ('name', '=', 'Records Management Services')], limit=1)
+        
+        if not default_product:
+            # Create default product if it doesn't exist
+            default_product = self.env['product.product'].create({
+                'name': 'Records Management Services',
+                'type': 'service',
+                'categ_id': self.env.ref('product.product_category_all').id,
+            })
+        
+        for line in billing_lines:
+            invoice_line_vals = {
+                'move_id': invoice.id,
+                'product_id': default_product.id,
+                'name': line.description,
+                'quantity': line.quantity,
+                'price_unit': line.unit_price,
+                'account_id': default_product.property_account_income_id.id or
+                            default_product.categ_id.property_account_income_categ_id.id,
+            }
+            
+            self.env['account.move.line'].create(invoice_line_vals)
