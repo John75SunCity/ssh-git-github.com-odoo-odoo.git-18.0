@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 from dateutil.relativedelta import relativedelta
 from datetime import timedelta
@@ -1794,3 +1794,159 @@ class RecordsBarcodeHistory(models.Model):
     create_date = fields.Datetime(string='Date/Time', readonly=True)
     
     notes = fields.Text(string='Notes')
+
+
+class RecordsProduct(models.Model):
+    _name = 'records.product'
+    _description = 'Records Management Products'
+    _rec_name = 'name'
+    _order = 'name'
+
+    name = fields.Char(string='Product Name', required=True)
+    code = fields.Char(string='Product Code', required=True)
+    
+    # Product details
+    product_type = fields.Selection([
+        ('box', 'Storage Box'),
+        ('supplies', 'Office Supplies'),
+        ('equipment', 'Equipment'),
+        ('service', 'Service Item'),
+        ('other', 'Other')
+    ], string='Product Type', required=True, default='box')
+    
+    description = fields.Text(string='Description')
+    
+    # Pricing
+    list_price = fields.Float(string='List Price', digits=(12, 2), required=True)
+    cost_price = fields.Float(string='Cost Price', digits=(12, 2))
+    
+    # Inventory
+    qty_available = fields.Integer(string='Quantity Available', default=0)
+    qty_reserved = fields.Integer(string='Quantity Reserved', default=0)
+    reorder_point = fields.Integer(string='Reorder Point', default=0)
+    
+    # Billing
+    taxable = fields.Boolean(string='Taxable', default=True)
+    tax_category = fields.Char(string='Tax Category')
+    
+    # Status
+    active = fields.Boolean(string='Active', default=True)
+    
+    # Tracking
+    create_date = fields.Datetime(string='Created On', readonly=True)
+    create_uid = fields.Many2one('res.users', string='Created By', readonly=True)
+    write_date = fields.Datetime(string='Last Modified On', readonly=True)
+    write_uid = fields.Many2one('res.users', string='Last Modified By', readonly=True)
+    
+    @api.constrains('list_price', 'cost_price')
+    def _check_prices(self):
+        """Validate prices are not negative"""
+        for product in self:
+            if product.list_price < 0:
+                raise ValidationError(_("List price cannot be negative"))
+            if product.cost_price < 0:
+                raise ValidationError(_("Cost price cannot be negative"))
+
+
+class RecordsBillingAutomation(models.Model):
+    _name = 'records.billing.automation'
+    _description = 'Billing Automation Rules'
+    _rec_name = 'name'
+    _order = 'sequence, name'
+
+    name = fields.Char(string='Rule Name', required=True)
+    sequence = fields.Integer(string='Sequence', default=10)
+    
+    # Trigger conditions
+    trigger_type = fields.Selection([
+        ('monthly', 'Monthly Recurring'),
+        ('service_complete', 'Service Completion'),
+        ('box_added', 'Box Added'),
+        ('box_removed', 'Box Removed'),
+        ('manual', 'Manual Trigger')
+    ], string='Trigger Type', required=True)
+    
+    # Billing configuration
+    billing_config_id = fields.Many2one(
+        'records.billing.config', string='Billing Configuration', required=True)
+    
+    # Conditions
+    customer_ids = fields.Many2many(
+        'res.partner', string='Customers',
+        domain="[('is_company', '=', True)]",
+        help="Leave empty to apply to all customers")
+    department_ids = fields.Many2many(
+        'records.department', string='Departments',
+        help="Leave empty to apply to all departments")
+    
+    # Service type conditions
+    service_types = fields.Text(
+        string='Service Types',
+        help="Comma-separated list of service types to trigger billing")
+    
+    # Timing
+    day_of_month = fields.Integer(
+        string='Day of Month', default=1,
+        help="For monthly triggers, which day to generate billing")
+    
+    # Processing
+    auto_approve = fields.Boolean(
+        string='Auto Approve', default=False,
+        help="Automatically approve generated billing")
+    auto_invoice = fields.Boolean(
+        string='Auto Invoice', default=False,
+        help="Automatically create invoices")
+    
+    # Status
+    active = fields.Boolean(string='Active', default=True)
+    
+    # Tracking
+    last_run_date = fields.Datetime(string='Last Run Date', readonly=True)
+    next_run_date = fields.Datetime(string='Next Run Date')
+    run_count = fields.Integer(string='Run Count', default=0, readonly=True)
+    
+    # Notifications
+    notify_users = fields.Many2many(
+        'res.users', string='Notify Users',
+        help="Users to notify when billing is generated")
+    
+    # Rules and logic
+    notes = fields.Text(string='Notes')
+    
+    @api.constrains('day_of_month')
+    def _check_day_of_month(self):
+        """Validate day of month is valid"""
+        for rule in self:
+            if rule.day_of_month < 1 or rule.day_of_month > 31:
+                raise ValidationError(_("Day of month must be between 1 and 31"))
+    
+    def execute_billing_rule(self):
+        """Execute this billing automation rule"""
+        self.ensure_one()
+        
+        if not self.active:
+            return False
+            
+        # Log the execution
+        self.write({
+            'last_run_date': fields.Datetime.now(),
+            'run_count': self.run_count + 1
+        })
+        
+        # TODO: Implement actual billing logic based on trigger_type
+        if self.trigger_type == 'monthly':
+            return self._process_monthly_billing()
+        elif self.trigger_type == 'service_complete':
+            return self._process_service_billing()
+        
+        return True
+    
+    def _process_monthly_billing(self):
+        """Process monthly recurring billing"""
+        # TODO: Implement monthly billing logic
+        return True
+    
+    def _process_service_billing(self):
+        """Process service completion billing"""
+        # TODO: Implement service billing logic
+        return True
