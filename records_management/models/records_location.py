@@ -9,6 +9,7 @@ class RecordsLocation(models.Model):
     _rec_name = 'complete_name'
     _order = 'complete_name'
 
+    code = fields.Char('Location Code', required=False, index=True, help='Short code for this location (for barcode, reference, etc.)')
     name = fields.Char('Location Name', required=True, tracking=True)
     complete_name = fields.Char('Complete Name', compute='_compute_complete_name', recursive=True, store=True)
     parent_id = fields.Many2one('records.location', 'Parent Location', index=True, ondelete='cascade')
