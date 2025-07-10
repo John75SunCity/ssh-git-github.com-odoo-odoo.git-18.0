@@ -21,3 +21,21 @@ __pycache__/
 # Ignore test files
 test.txt
 node_modules
+
+# Ignore development and utility files
+COPILOT .PY FILES/
+COPILOT SUMMARIES/
+
+# Ignore virtual environments
+venv/
+env/
+.venv/
+
+# Ignore IDE files
+.vscode/settings.json
+.idea/
+
+# Ignore CSV and analysis files
+*.csv
+missing_invoices.txt
+expected_invoices.txt
