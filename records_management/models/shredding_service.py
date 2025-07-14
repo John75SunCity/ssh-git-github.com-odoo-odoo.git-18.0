@@ -1,9 +1,13 @@
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
 from odoo import fields, models, api
 
+
 class ShreddingService(models.Model):
+    """Document Shredding Service with enhanced workflow."""
     _name = 'shredding.service'
     _description = 'Document Shredding Service'
-    _inherit = ['mail.thread', 'mail.activity.mixin']  # Add mail threading for chatter
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'service_date desc, name'
 
     # Basic identification

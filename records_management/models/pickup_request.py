@@ -1,37 +1,57 @@
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+from typing import List
 from odoo import models, fields, api
 
 
 class PickupRequest(models.Model):
+    """Model for pickup requests with workflow enhancements."""
     _name = 'pickup.request'
     _description = 'Pickup Request'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'name desc'
 
     name = fields.Char(
-        string='Name', required=True, default='New', tracking=True
+        string='Name',
+        required=True,
+        default='New',
+        tracking=True
     )
     customer_id = fields.Many2one(
-        'res.partner', string='Customer', required=True, tracking=True
+        'res.partner',
+        string='Customer',
+        required=True,
+        tracking=True
     )
     request_date = fields.Date(
-        string='Request Date', default=fields.Date.context_today,
-        required=True, tracking=True
+        string='Request Date',
+        default=fields.Date.context_today,
+        required=True,
+        tracking=True
     )
     request_item_ids = fields.One2many(
-        'pickup.request.item', 'pickup_id', string='Request Items'
+        'pickup.request.item',
+        'pickup_id',
+        string='Request Items'
     )
     notes = fields.Text(string='Notes')
-
-    # New fields
     product_id = fields.Many2one(
-        'product.product', string='Product', required=True, tracking=True
+        'product.product',
+        string='Product',
+        required=True,
+        tracking=True
     )
-    quantity = fields.Float(string='Quantity', required=True, tracking=True)
+    quantity = fields.Float(
+        string='Quantity',
+        required=True,
+        tracking=True,
+        digits=(16, 2)
+    )
     lot_id = fields.Many2one(
-        'stock.lot', string='Lot',
+        'stock.lot',
+        string='Lot',
         domain="[('product_id', '=', product_id)]"
     )
-
-    # Status tracking
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -39,64 +59,65 @@ class PickupRequest(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
     ], default='draft', string='Status', tracking=True)
-
-    # Additional fields for the view
     scheduled_date = fields.Date(string='Scheduled Date', tracking=True)
     warehouse_id = fields.Many2one(
-        'stock.warehouse', string='Warehouse', tracking=True
+        'stock.warehouse',
+        string='Warehouse',
+        tracking=True
     )
     driver_id = fields.Many2one(
-        'res.partner', string='Driver',
-        domain="[('is_company', '=', False)]", tracking=True
+        'res.partner',
+        string='Driver',
+        domain="[('is_company', '=', False)]",
+        tracking=True
     )
     vehicle_id = fields.Many2one(
-        'fleet.vehicle', string='Vehicle', tracking=True
+        'fleet.vehicle',
+        string='Vehicle',
+        tracking=True
     )
-    priority = fields.Selection(
-        [('0', 'Normal'), ('1', 'High')], default='0',
-        string='Priority', tracking=True
-    )
+    priority = fields.Selection([
+        ('0', 'Normal'),
+        ('1', 'High')
+    ], default='0', string='Priority', tracking=True)
     signature = fields.Binary(string='Signature')
     signed_by = fields.Many2one('res.users', string='Signed By')
     signature_date = fields.Datetime(string='Signature Date')
     completion_date = fields.Date(string='Completion Date', tracking=True)
 
-    # --- ACTION METHODS FOR FORM BUTTONS ---
-
-    def action_confirm(self):
-        """Set status to Confirmed"""
-        for record in self:
-            record.state = 'confirmed'
-        return True
-
-    def action_schedule(self):
-        """Set status to Scheduled and set scheduled_date if not already set"""
-        for record in self:
-            if not record.scheduled_date:
-                record.scheduled_date = fields.Date.context_today(self)
-            record.state = 'scheduled'
-        return True
-
-    def action_complete(self):
-        """Set status to Completed and record completion_date"""
-        for record in self:
-            record.completion_date = fields.Date.context_today(self)
-            record.state = 'completed'
-        return True
-
-    def action_cancel(self):
-        """Set status to Cancelled"""
-        for record in self:
-            record.state = 'cancelled'
-        return True
-
-    # --- CREATE OVERRIDE FOR SEQUENCE ---
     @api.model_create_multi
-    def create(self, vals_list):
+    def create(self, vals_list: List[dict]) -> 'PickupRequest':
         for vals in vals_list:
             if vals.get('name', 'New') == 'New':
-                vals['name'] = (
-                    self.env['ir.sequence'].next_by_code('pickup.request')
-                    or 'New'
+                sequence = self.env['ir.sequence'].next_by_code(
+                    'pickup.request'
                 )
+                vals['name'] = sequence or 'New'
         return super().create(vals_list)
+
+    def action_confirm(self) -> bool:
+        return self.write({'state': 'confirmed'})
+
+    def action_schedule(self) -> bool:
+        if not self.scheduled_date:
+            self.scheduled_date = fields.Date.context_today(self)
+        return self.write({'state': 'scheduled'})
+
+    def action_complete(self) -> bool:
+        self.completion_date = fields.Date.context_today(self)
+        return self.write({'state': 'completed'})
+
+    def action_cancel(self) -> bool:
+        return self.write({'state': 'cancelled'})
+
+    @api.onchange('customer_id')
+    def _onchange_customer_id(self) -> None:
+        """
+        Update domain for driver and vehicle based on customer
+        for better UI.
+        """
+        return {
+            'domain': {
+                'driver_id': [('parent_id', '=', self.customer_id.id)]
+            }
+        }

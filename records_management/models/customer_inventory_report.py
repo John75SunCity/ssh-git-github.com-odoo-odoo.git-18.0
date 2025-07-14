@@ -1,65 +1,75 @@
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+from typing import List
+from dateutil.relativedelta import relativedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from dateutil.relativedelta import relativedelta
-from datetime import timedelta
 
 
 class CustomerInventoryReport(models.Model):
+    """Model for customer inventory reports."""
     _name = 'customer.inventory.report'
     _description = 'Customer Inventory Report'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _rec_name = 'name'
     _order = 'report_date desc, customer_id'
 
     name = fields.Char(string='Report Name', required=True)
     customer_id = fields.Many2one(
-        'res.partner', string='Customer', required=True,
-        domain=[('is_company', '=', True)])
+        'res.partner',
+        string='Customer',
+        required=True,
+        domain=[('is_company', '=', True)]
+    )
     report_date = fields.Date(
-        string='Report Date', default=fields.Date.today, required=True)
-    
-    # Inventory Summary Fields
+        string='Report Date',
+        default=fields.Date.today,
+        required=True
+    )
     total_boxes = fields.Integer(
-        string='Total Boxes', compute='_compute_inventory_totals', store=True)
+        string='Total Boxes',
+        compute='_compute_inventory_totals',
+        store=True
+    )
     total_documents = fields.Integer(
-        string='Total Documents', compute='_compute_inventory_totals',
-        store=True)
+        string='Total Documents',
+        compute='_compute_inventory_totals',
+        store=True
+    )
     active_locations = fields.Integer(
-        string='Active Locations', compute='_compute_inventory_totals',
-        store=True)
-    
-    # Related Records
+        string='Active Locations',
+        compute='_compute_inventory_totals',
+        store=True
+    )
     box_ids = fields.One2many(
-        'records.box', 'customer_id', string='Customer Boxes', readonly=True)
+        'records.box',
+        'customer_id',
+        string='Customer Boxes',
+        readonly=True
+    )
     document_ids = fields.One2many(
-        'records.document', 'customer_id', string='Customer Documents',
-        readonly=True)
-    
-    # Status and Notes
+        'records.document',
+        'customer_id',
+        string='Customer Documents',
+        readonly=True
+    )
     status = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('sent', 'Sent to Customer')
     ], default='draft', string='Status')
     notes = fields.Text(string='Notes')
-    
+
     @api.depends('customer_id')
-    def _compute_inventory_totals(self):
+    def _compute_inventory_totals(self) -> None:
         for record in self:
             if record.customer_id:
-                # Count active boxes for this customer
                 record.total_boxes = self.env['records.box'].search_count([
                     ('customer_id', '=', record.customer_id.id),
                     ('state', '!=', 'destroyed')
                 ])
-                
-                # Count documents for this customer
-                document_count = self.env['records.document'].search_count([
+                record.total_documents = self.env['records.document'].search_count([
                     ('customer_id', '=', record.customer_id.id)
                 ])
-                record.total_documents = document_count
-                
-                # Count unique locations used by this customer
                 locations = self.env['records.box'].search([
                     ('customer_id', '=', record.customer_id.id),
                     ('state', '!=', 'destroyed')
@@ -69,116 +79,116 @@ class CustomerInventoryReport(models.Model):
                 record.total_boxes = 0
                 record.total_documents = 0
                 record.active_locations = 0
-    
-    def action_confirm_report(self):
-        """Confirm the inventory report"""
-        self.status = 'confirmed'
-    
-    def action_send_to_customer(self):
-        """Mark report as sent to customer"""
-        self.status = 'sent'
-    
+
+    def action_confirm_report(self) -> bool:
+        return self.write({'status': 'confirmed'})
+
+    def action_send_to_customer(self) -> bool:
+        return self.write({'status': 'sent'})
+
     @api.model
-    def generate_monthly_reports(self):
-        """Generate monthly inventory reports for all customers"""
+    def generate_monthly_reports(self) -> bool:
         customers_with_boxes = self.env['records.box'].search([
             ('state', '!=', 'destroyed')
         ]).mapped('customer_id')
-        
         today = fields.Date.today()
         report_name = f"Monthly Inventory Report - {today.strftime('%B %Y')}"
         
         for customer in customers_with_boxes:
-            # Check if report already exists for this month
             existing_report = self.search([
                 ('customer_id', '=', customer.id),
                 ('report_date', '>=', today.replace(day=1)),
-                ('report_date', '<', (today.replace(day=1) +
-                                      relativedelta(months=1)))
+                ('report_date', '<', today.replace(day=1) + relativedelta(months=1))
             ])
-            
             if not existing_report:
-                # Create new monthly report
                 self.create({
                     'name': f"{report_name} - {customer.name}",
                     'customer_id': customer.id,
                     'report_date': today,
                     'status': 'draft',
                 })
-        
         return True
-    
-    def action_generate_pdf_report(self):
-        """Generate PDF report for customer inventory"""
+
+    def action_generate_pdf_report(self) -> dict:
         report_ref = 'records_management.action_customer_inventory_report_pdf'
         return self.env.ref(report_ref).report_action(self)
 
 
 class RecordsDepartment(models.Model):
+    """Model for customer departments."""
     _name = 'records.department'
     _description = 'Customer Department'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _rec_name = 'name'
     _order = 'company_id, name'
 
     name = fields.Char(string='Department Name', required=True, tracking=True)
     code = fields.Char(string='Department Code', size=10)
     company_id = fields.Many2one(
-        'res.partner', string='Company', required=True,
-        domain=[('is_company', '=', True)], tracking=True)
-    
-    # Department Admin
+        'res.partner',
+        string='Company',
+        required=True,
+        domain=[('is_company', '=', True)],
+        tracking=True
+    )
     admin_id = fields.Many2one(
-        'res.partner', string='Department Admin',
-        domain="[('parent_id', '=', company_id), ('is_company', '=', False)]")
-    
-    # Statistics
+        'res.partner',
+        string='Department Admin',
+        domain="[('parent_id', '=', company_id), ('is_company', '=', False)]"
+    )
     total_boxes = fields.Integer(
-        string='Total Boxes', compute='_compute_department_stats', store=True)
+        string='Total Boxes',
+        compute='_compute_department_stats',
+        store=True
+    )
     total_documents = fields.Integer(
-        string='Total Documents', compute='_compute_department_stats', 
-        store=True)
+        string='Total Documents',
+        compute='_compute_department_stats',
+        store=True
+    )
     monthly_cost = fields.Float(
-        string='Monthly Cost', compute='_compute_department_stats', store=True)
-    
-    # Users and Access
+        string='Monthly Cost',
+        compute='_compute_department_stats',
+        store=True
+    )
     user_ids = fields.One2many(
-        'records.department.user', 'department_id', string='Department Users')
+        'records.department.user',
+        'department_id',
+        string='Department Users'
+    )
     active_users_count = fields.Integer(
-        string='Active Users', compute='_compute_user_stats')
-    
-    # Related Records
+        string='Active Users',
+        compute='_compute_user_stats'
+    )
     box_ids = fields.One2many(
-        'records.box', 'department_id', string='Department Boxes')
+        'records.box',
+        'department_id',
+        string='Department Boxes'
+    )
     document_ids = fields.One2many(
-        'records.document', 'department_id', string='Department Documents')
-    
-    # Status
+        'records.document',
+        'department_id',
+        string='Department Documents'
+    )
     active = fields.Boolean(string='Active', default=True)
-    
+
     @api.depends('box_ids', 'box_ids.state', 'document_ids')
-    def _compute_department_stats(self):
+    def _compute_department_stats(self) -> None:
         for dept in self:
-            # Count active boxes
-            dept.total_boxes = len(dept.box_ids.filtered(
-                lambda x: x.state != 'destroyed'))
-            
-            # Count documents
+            dept.total_boxes = len(
+                dept.box_ids.filtered(lambda x: x.state != 'destroyed')
+            )
             dept.total_documents = len(dept.document_ids)
-            
-            # Calculate monthly storage cost (placeholder - adjust pricing)
-            dept.monthly_cost = dept.total_boxes * 15.0  # $15 per box/month
-    
+            dept.monthly_cost = dept.total_boxes * 15.0  # Placeholder rate
+
     @api.depends('user_ids', 'user_ids.active')
-    def _compute_user_stats(self):
+    def _compute_user_stats(self) -> None:
         for dept in self:
             dept.active_users_count = len(dept.user_ids.filtered('active'))
-    
-    def action_invite_user(self):
-        """Open wizard to invite new user to department"""
+
+    def action_invite_user(self) -> dict:
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Invite User to Department',
+            'name': _('Invite User to Department'),
             'res_model': 'records.user.invitation.wizard',
             'view_mode': 'form',
             'target': 'new',
