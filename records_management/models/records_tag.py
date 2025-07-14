@@ -11,6 +11,7 @@ class RecordsTag(models.Model):
 
     name = fields.Char(string='Name', required=True, translate=True)
     color = fields.Integer(string='Color Index')
+    description = fields.Text(string='Description')
 
     _sql_constraints = [
         ('name_uniq', 'unique (name)', _("Tag name already exists!"))
