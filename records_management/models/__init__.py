@@ -16,3 +16,5 @@ from . import stock_lot
 from . import stock_move_sms_validation
 from . import stock_picking
 from . import customer_inventory_report
+from . import paper_bale  # New: Model for paper bales
+from . import trailer_load  # New: Model for trailer loads

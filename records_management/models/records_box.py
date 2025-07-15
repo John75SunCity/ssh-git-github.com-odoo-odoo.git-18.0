@@ -78,10 +78,10 @@ class RecordsBox(models.Model):
     sequence_to = fields.Integer(string='Sequence To')
     date_from = fields.Date(string='Date From')
     date_to = fields.Date(string='Date To')
-    user_field1 = fields.Char(string='User Field 1')
-    user_field2 = fields.Char(string='User Field 2')
-    user_field3 = fields.Char(string='User Field 3')
-    user_field4 = fields.Char(string='User Field 4')
+    custom_metadata_1 = fields.Char(string='Custom Metadata 1')
+    custom_metadata_2 = fields.Char(string='Custom Metadata 2')
+    custom_metadata_3 = fields.Char(string='Custom Metadata 3')
+    custom_metadata_4 = fields.Char(string='Custom Metadata 4')
     custom_date = fields.Date(string='Custom Date')
     charge_for_storage = fields.Boolean(
         string='Charge for Storage',
@@ -94,7 +94,7 @@ class RecordsBox(models.Model):
         compute='_compute_used_capacity',
         store=False
     )
-    barcode = fields.Char(string='Barcode', copy=False)
+    barcode = fields.Char(string='Barcode', copy=False, index=True)
     barcode_length = fields.Integer(string='Barcode Length', default=12)
     barcode_type = fields.Selection([
         ('code128', 'Code 128'),
@@ -273,4 +273,4 @@ class RecordsBox(models.Model):
         elif self.container_type == 'map_box':
             self.capacity = 50
         elif self.container_type == 'pallet':
-            self.capacity = 500
+            self.capacity = 48
