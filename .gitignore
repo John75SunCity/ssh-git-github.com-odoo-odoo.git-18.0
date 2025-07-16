@@ -1,41 +1,17 @@
-# Ignore Python bytecode and cache files
-*.pyc
 __pycache__/
-
-# Ignore log files
-*.log
-
-# Ignore temporary files
-*.tmp
+*.pyc
+*.pyo
 *.swp
-
-# Ignore Docker-related files
-.env
-.dockerignore
-
-# Ignore Odoo-specific files
-*.zip
-*.bak
-*.old
-
-# Ignore test files
-test.txt
-node_modules
-
-# Ignore development and utility files
-COPILOT .PY FILES/
-COPILOT SUMMARIES/
-
-# Ignore virtual environments
-venv/
-env/
-.venv/
-
-# Ignore IDE files
-.vscode/settings.json
+*.log
+*.db
+*.sql
+*.conf
+*.pid
+*.dump
+node_modules/
+static/lib/
+temp_labels/  # For generated bale PDFs
+.DS_Store
+.vscode/
 .idea/
-
-# Ignore CSV and analysis files
-*.csv
-missing_invoices.txt
-expected_invoices.txt
+odoo.sh/
