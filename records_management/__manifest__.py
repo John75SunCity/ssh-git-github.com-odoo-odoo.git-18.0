@@ -1,64 +1,56 @@
+# Updated file: Added 'survey' dependency for feedback forms (built-in Odoo tool for suggestions/concerns). Included new templates for feedback and centralized views. This enables structured feedback collection (with NAID-compliant logging) and a dashboard for invoices/quotes/certificates/comms, while ensuring granular access via security updates. Enhances portal modernity with clean tabs/cards.
+
 {
     'name': 'Records Management',
-    'version': '18.0.2.0.0',  # Bumped for comprehensive improvements
-    'category': 'Industry',
-    'summary': 'Enterprise DMS for Shredding, Destruction, and Recycling',
+    'version': '18.0.6.0.0',  # Comprehensive portal templates with modern UI, multi-select, and enhanced navigation
+    'category': 'Document Management',
+    'summary': 'Manage physical document boxes, records, shredding, and recycling services',
     'description': """
-Enterprise Records Management System
-==================================
-Track document shredding, HDD/uniform destruction, POS walk-ins, paper baling, loads, invoices, and sales.
+Records Management System
+========================
+Advanced system for managing physical document boxes, records, shredding, hard drive destruction, uniform shredding, walk-in services, and paper recycling:
 
-🏭 **Industry Features:**
-• Physical document box tracking with QR codes
-• HDD, uniform, and document destruction services  
-• Paper baling with weight tracking and trailer visualization
-• Auto-invoicing with market rate integration
-• POS integration for walk-in shredding services
-
-📊 **Modern UI & Analytics:**
-• Interactive truck loading progress (OWL-powered SVG)
-• Real-time dashboards and pivot reports
-• QR code chain-of-custody tracking
-• Customer portal with self-service quotes
-
-🔒 **Compliance & Security:**
-• ISO 15489-1:2016 records management standards
-• NAID AAA shredding compliance
-• GDPR/CCPA data protection features
-• Complete audit trails and destruction certificates
-
-⚡ **Advanced Integrations:**
-• Stock/Inventory management
-• Account/Invoicing automation  
-• Sales quote generation
-• Fleet/Vehicle tracking
-• HR technician signatures
+Features:
+- Track box locations and contents
+- Manage document retention policies
+- Link documents to partners and other Odoo records
+- Generate reports on document status
+- Pickup request management
+- Shredding service functionality (documents, hard drives, uniforms)
+- Customer inventory tracking
+- Paper baling, weighing, and trailer load management
+- Auto-invoicing on bale pickup
+- Customer portal with certificates, PO updates, and self-quotes
+- POS integration for walk-in services
+- Modern UI with tractor trailer loading visualization
+- Advanced customer portal: Billing updates, self-quotes, inventory management, destruction/service requests with signatures, user imports, temp barcodes for additions, FSM integration
+- Compliance: NAID AAA audit trails, timestamps, signatures
+- Notifications: Email/SMS for requests
+- Customer feedback system with NAID-compliant logging
+- Centralized document dashboard for invoices, quotes, certificates, and communications
     """,
     'author': 'John75SunCity',
     'website': 'https://github.com/John75SunCity',
     'depends': [
-        # Essential Core (always installed)
         'base',
-        'product', 
+        'product',
         'stock',
         'mail',
         'web',
         'portal',
-        
-        # Business Critical (per review recommendations)
-        'account',         # For auto-invoicing and financial integration
-        'sale',           # For quotes and sales orders
-        'hr',             # For technician signatures & NAID employee screening
-        
-        # NAID AAA Compliance Requirements
-        'barcodes',       # For chain of custody scanning
-        
-        # Modern Features (uncomment as needed)
-        'website',        # For customer portal and self-quotes  
-        'point_of_sale',  # For walk-in services
-        # 'fleet',        # For vehicle tracking
-        # 'iot',          # For scale integration & facility security
-        # 'quality',      # For quality control
+        'base_setup',
+        'fleet',
+        'account',  # For invoicing/billing
+        'sale',  # For quotes
+        'website',  # For website forms and quoting
+        'point_of_sale',  # For walk-ins
+        'industry_fsm',  # Added: Field service management for requests
+        'sign',  # Added: Electronic signatures for requests/compliance
+        'sms',  # Added: SMS notifications
+        'hr',  # Added: For user imports and access management
+        'barcodes',  # For temp/physical barcode handling
+        'web_tour',  # Added: For portal app tours
+        'survey',  # Added: For customer feedback forms/suggestions
     ],
     'data': [
         'security/records_management_security.xml',
@@ -69,9 +61,10 @@ Track document shredding, HDD/uniform destruction, POS walk-ins, paper baling, l
         'data/products.xml',
         'data/storage_fee.xml',
         'data/scheduled_actions.xml',
-        'data/paper_products.xml',  # Optimized: Add bale/paper types as products
-        'data/naid_compliance_data.xml',  # New: NAID compliance sequences and policies
-        'security/naid_security.xml',  # New: NAID compliance security groups
+        'data/paper_products.xml',
+        'data/portal_mail_templates.xml',  # New: Email/SMS templates for notifications
+        'data/naid_compliance_data.xml',  # Existing/updated for signatures
+        'data/feedback_survey_data.xml',  # New: Default feedback survey form
         'views/records_tag_views.xml',
         'views/records_location_views.xml',
         'views/records_retention_policy_views.xml',
@@ -86,25 +79,32 @@ Track document shredding, HDD/uniform destruction, POS walk-ins, paper baling, l
         'views/billing_views.xml',
         'views/departmental_billing_views.xml',
         'views/barcode_views.xml',
-        'views/paper_bale_views.xml',  # Optimized: Add OWL for modern bale list
-        'views/trailer_load_views.xml',  # Optimized: OWL truck visualization
-        'views/naid_compliance_views.xml',  # New: NAID AAA compliance views
-        'views/pos_config_views.xml',  # Optimized: POS for walk-in shredding
+        'views/paper_bale_views.xml',
+        'views/trailer_load_views.xml',
+        'views/pos_config_views.xml',
+        'views/portal_request_views.xml',  # New: Views for portal requests (destruction, services)
+        'views/fsm_task_views.xml',  # New: FSM integration views
+        'views/hr_employee_views.xml',  # Updated for user imports/access
+        'views/portal_feedback_views.xml',  # New: Views for feedback management
         'report/records_reports.xml',
-        'report/destruction_certificate_report.xml',  # Optimized: Add QR for chain-of-custody
-        'report/bale_label_report.xml',  # Optimized: Include tech signature/date
+        'report/destruction_certificate_report.xml',
+        'report/bale_label_report.xml',
+        'report/portal_audit_report.xml',  # New: Audit trail reports
         'views/records_management_menus.xml',
-        'templates/my_portal_inventory.xml',  # Optimized: Add self-quotes/cert downloads
+        'templates/my_portal_inventory.xml',  # Updated: Enhanced portal templates
+        'templates/portal_quote_template.xml',  # New: Quote generation
+        'templates/portal_billing_template.xml',  # New: Billing updates
+        'templates/portal_inventory_template.xml',  # New: Modern inventory views
+        'templates/portal_overview.xml',  # New: Portal overview/tour template
+        'templates/portal_feedback_template.xml',  # New: Feedback form
+        'templates/portal_centralized_docs.xml',  # New: Centralized views for invoices/quotes/certs/comms
     ],
     'demo': [
         'demo/odoo.xml',
     ],
-    'qweb': [
-        'static/src/xml/trailer_visualization.xml',  # Added for OWL QWeb
-        'static/src/xml/map_widget.xml',  # Kept/optimized if for location tracking
-    ],
+    'qweb': [],
     'external_dependencies': {
-        'python': ['qrcode'],  # Added: For QR in labels/certs (pip in Dockerfile if needed)
+        'python': [],
         'bin': [],
     },
     'application': True,
@@ -115,11 +115,21 @@ Track document shredding, HDD/uniform destruction, POS walk-ins, paper baling, l
         'web.assets_backend': [
             'records_management/static/src/scss/records_management.scss',
             'records_management/static/src/js/map_widget.js',
-            'records_management/static/src/js/trailer_visualization.js',  # Optimized: JS for interactive truck
-            'records_management/static/src/js/truck_widget.js',  # New: OWL truck progress widget
+            'records_management/static/src/xml/map_widget.xml',
+            'records_management/static/src/js/trailer_visualization.js',
+            'records_management/static/src/xml/trailer_visualization.xml',
+            'records_management/static/src/js/portal_inventory_highlights.js',  # New: JS for modern inventory UI (highlights, multi-select)
+            'records_management/static/src/js/naid_compliance_widget.js',  # Existing
         ],
-        'web.assets_frontend': [  # For portal
-            'records_management/static/src/js/portal_quote_generator.js',
+        'web.assets_frontend': [
+            'records_management/static/src/css/portal_tour.css',  # New: CSS for enhanced tour styling
+            'records_management/static/src/js/portal_quote_generator.js',  # Existing
+            'records_management/static/src/js/portal_user_import.js',  # New: JS for user imports
+            'records_management/static/src/js/portal_signature.js',  # New: JS for signatures
+            'records_management/static/src/js/portal_inventory_search.js',  # New: JS for advanced search/filters
+            'records_management/static/src/js/portal_tour.js',  # New: JS for portal app tour
+            'records_management/static/src/js/portal_feedback.js',  # New: JS for feedback submission
+            'records_management/static/src/js/portal_docs.js',  # New: JS for centralized document center
         ],
     },
 }

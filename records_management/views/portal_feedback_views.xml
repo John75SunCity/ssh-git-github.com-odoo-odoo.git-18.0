@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Backend views for managing feedback responses (survey answers). Modern kanban for quick reviews, innovative sentiment field (future AI). Accomplishes admin oversight of suggestions/concerns for improvements. -->
+
+    <!-- Enhanced Tree View for Feedback Management -->
+    <record id="view_feedback_tree" model="ir.ui.view">
+        <field name="name">survey.user_input.tree.feedback</field>
+        <field name="model">survey.user_input</field>
+        <field name="arch" type="xml">
+            <tree string="Portal Feedback Responses" decoration-success="sentiment_score >= 0.7" decoration-warning="sentiment_score >= 0.4 and sentiment_score &lt; 0.7" decoration-danger="sentiment_score &lt; 0.4">
+                <field name="partner_id" string="Customer"/>
+                <field name="create_date" string="Submitted"/>
+                <field name="survey_id" string="Feedback Type"/>
+                <field name="state" string="Status"/>
+                <field name="scoring_percentage" string="Satisfaction %" widget="percentage"/>
+                <field name="sentiment_score" string="Sentiment" widget="progressbar" options="{'current_value': 'sentiment_score', 'max_value': 1.0, 'editable': false}"/>
+                <field name="priority_level" string="Priority" widget="badge" decoration-danger="priority_level=='urgent'" decoration-warning="priority_level=='high'" decoration-info="priority_level=='normal'"/>
+                <field name="response_count" string="Responses" sum="Total Responses"/>
+                <field name="follow_up_required" string="Follow-up" widget="boolean_toggle"/>
+                <button name="action_review_feedback" string="Review" type="object" icon="fa-eye" class="btn-primary" attrs="{'invisible': [('state', '!=', 'done')]}"/>
+                <button name="action_mark_follow_up" string="Follow-up" type="object" icon="fa-flag" class="btn-warning" attrs="{'invisible': [('follow_up_required', '=', True)]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Modern Kanban View for Quick Reviews -->
+    <record id="view_feedback_kanban" model="ir.ui.view">
+        <field name="name">survey.user_input.kanban.feedback</field>
+        <field name="model">survey.user_input</field>
+        <field name="arch" type="xml">
+            <kanban string="Feedback Dashboard" default_group_by="priority_level" quick_create="false" class="o_kanban_small_column">
+                <field name="partner_id"/>
+                <field name="create_date"/>
+                <field name="state"/>
+                <field name="scoring_percentage"/>
+                <field name="sentiment_score"/>
+                <field name="priority_level"/>
+                <field name="feedback_category"/>
+                <field name="follow_up_required"/>
+                <field name="assigned_to"/>
+                <field name="response_summary"/>
+                
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <!-- Card Header with Customer Info -->
+                            <div class="oe_kanban_header">
+                                <div class="oe_kanban_header_left">
+                                    <div class="oe_kanban_record_title">
+                                        <strong><field name="partner_id"/></strong>
+                                    </div>
+                                    <div class="oe_kanban_record_subtitle text-muted">
+                                        <field name="create_date"/>
+                                    </div>
+                                </div>
+                                <div class="oe_kanban_header_right">
+                                    <!-- Sentiment Indicator -->
+                                    <div class="oe_kanban_sentiment">
+                                        <t t-if="record.sentiment_score.raw_value >= 0.7">
+                                            <i class="fa fa-smile-o text-success" title="Positive Sentiment"/>
+                                        </t>
+                                        <t t-elif="record.sentiment_score.raw_value >= 0.4">
+                                            <i class="fa fa-meh-o text-warning" title="Neutral Sentiment"/>
+                                        </t>
+                                        <t t-else="">
+                                            <i class="fa fa-frown-o text-danger" title="Negative Sentiment"/>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Content -->
+                            <div class="oe_kanban_content">
+                                <!-- Satisfaction Score -->
+                                <div class="oe_kanban_details">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="oe_kanban_gauge_wrapper">
+                                                <field name="scoring_percentage" widget="gauge" 
+                                                       options="{'max_field': 100, 'style': 'width:60px; height: 60px;', 'needle': false}"/>
+                                                <div class="oe_gauge_value text-center">
+                                                    <small>Satisfaction</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <!-- Category Badge -->
+                                            <span class="badge badge-info mb-1">
+                                                <field name="feedback_category"/>
+                                            </span>
+                                            <br/>
+                                            <!-- Follow-up Flag -->
+                                            <t t-if="record.follow_up_required.raw_value">
+                                                <span class="badge badge-warning">
+                                                    <i class="fa fa-flag"/> Follow-up Required
+                                                </span>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Response Preview -->
+                                <div class="oe_kanban_response_preview mt-2">
+                                    <div class="text-muted">
+                                        <small><field name="response_summary" widget="truncate_char" options="{'limit': 100}"/></small>
+                                    </div>
+                                </div>
+
+                                <!-- Key Insights Tags -->
+                                <div class="oe_kanban_tags mt-2">
+                                    <t t-if="record.scoring_percentage.raw_value >= 90">
+                                        <span class="badge badge-success">Excellent</span>
+                                    </t>
+                                    <t t-elif="record.scoring_percentage.raw_value >= 70">
+                                        <span class="badge badge-primary">Good</span>
+                                    </t>
+                                    <t t-elif="record.scoring_percentage.raw_value >= 50">
+                                        <span class="badge badge-warning">Needs Attention</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="badge badge-danger">Critical</span>
+                                    </t>
+
+                                    <!-- AI-Ready Sentiment Badges -->
+                                    <t t-if="record.sentiment_score.raw_value >= 0.8">
+                                        <span class="badge badge-outline-success">😊 Very Positive</span>
+                                    </t>
+                                    <t t-elif="record.sentiment_score.raw_value >= 0.6">
+                                        <span class="badge badge-outline-primary">😐 Positive</span>
+                                    </t>
+                                    <t t-elif="record.sentiment_score.raw_value >= 0.4">
+                                        <span class="badge badge-outline-warning">😕 Neutral</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="badge badge-outline-danger">😞 Negative</span>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <!-- Card Footer with Actions -->
+                            <div class="oe_kanban_footer">
+                                <div class="oe_kanban_footer_left">
+                                    <div class="oe_kanban_record_bottom">
+                                        <t t-if="record.assigned_to.raw_value">
+                                            <img t-att-src="kanban_image('res.users', 'avatar_128', record.assigned_to.raw_value)" 
+                                                 alt="Assigned To" class="oe_kanban_avatar" width="24" height="24"/>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="oe_kanban_footer_right">
+                                    <div class="btn-group" role="group">
+                                        <button name="action_review_feedback" type="object" 
+                                                class="btn btn-primary btn-sm" title="Review Feedback">
+                                            <i class="fa fa-eye"/>
+                                        </button>
+                                        <button name="action_assign_follow_up" type="object" 
+                                                class="btn btn-outline-secondary btn-sm" title="Assign Follow-up">
+                                            <i class="fa fa-user-plus"/>
+                                        </button>
+                                        <button name="action_create_improvement_task" type="object" 
+                                                class="btn btn-success btn-sm" title="Create Improvement Task">
+                                            <i class="fa fa-tasks"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Enhanced Form View for Detailed Feedback Analysis -->
+    <record id="view_feedback_form" model="ir.ui.view">
+        <field name="name">survey.user_input.form.feedback</field>
+        <field name="model">survey.user_input</field>
+        <field name="arch" type="xml">
+            <form string="Feedback Analysis" create="false" edit="false">
+                <header>
+                    <button name="action_mark_reviewed" string="Mark as Reviewed" type="object" 
+                            class="btn-primary" attrs="{'invisible': [('admin_reviewed', '=', True)]}"/>
+                    <button name="action_create_improvement_plan" string="Create Improvement Plan" type="object" 
+                            class="btn-success"/>
+                    <button name="action_schedule_follow_up" string="Schedule Follow-up" type="object" 
+                            class="btn-warning" attrs="{'invisible': [('follow_up_required', '=', False)]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                
+                <sheet>
+                    <!-- Alert for Critical Feedback -->
+                    <div class="alert alert-danger" role="alert" attrs="{'invisible': [('priority_level', '!=', 'urgent')]}">
+                        <strong>Critical Feedback Alert!</strong> This feedback requires immediate attention from management.
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="partner_id" readonly="1"/>
+                        </h1>
+                        <h2 class="text-muted">
+                            Feedback Analysis Dashboard
+                        </h2>
+                    </div>
+
+                    <!-- Key Metrics Row -->
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="oe_stat_box">
+                                <field name="scoring_percentage" widget="statinfo" 
+                                       string="Overall Satisfaction"/>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="oe_stat_box">
+                                <field name="sentiment_score" widget="statinfo" 
+                                       string="AI Sentiment Score"/>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="oe_stat_box">
+                                <field name="response_count" widget="statinfo" 
+                                       string="Total Responses"/>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="oe_stat_box">
+                                <field name="completion_time" widget="statinfo" 
+                                       string="Completion Time (min)"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group name="feedback_analysis">
+                            <field name="create_date" string="Submitted On"/>
+                            <field name="survey_id" string="Survey Type"/>
+                            <field name="feedback_category" string="Category"/>
+                            <field name="priority_level" widget="badge"/>
+                            <field name="follow_up_required" widget="boolean_toggle"/>
+                        </group>
+                        <group name="admin_oversight">
+                            <field name="admin_reviewed" string="Reviewed by Admin" widget="boolean_toggle"/>
+                            <field name="reviewed_by" string="Reviewed By"/>
+                            <field name="review_date" string="Review Date"/>
+                            <field name="assigned_to" string="Assigned To"/>
+                            <field name="improvement_actions_created" string="Improvement Actions"/>
+                        </group>
+                    </group>
+
+                    <!-- AI-Enhanced Analysis Section -->
+                    <group string="AI-Powered Insights" name="ai_analysis">
+                        <field name="sentiment_analysis" string="Sentiment Analysis" widget="text"/>
+                        <field name="key_themes" string="Key Themes" widget="many2many_tags"/>
+                        <field name="improvement_suggestions" string="AI Improvement Suggestions" widget="text"/>
+                        <field name="predicted_churn_risk" string="Churn Risk Score" widget="progressbar"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Detailed Responses" name="responses">
+                            <field name="user_input_line_ids" readonly="1">
+                                <tree string="Survey Responses" decoration-danger="suggested_answer_id.score &lt; 3">
+                                    <field name="question_id" string="Question"/>
+                                    <field name="question_sequence" string="Order"/>
+                                    <field name="answer_type"/>
+                                    <field name="value_char_box" string="Text Response" optional="show"/>
+                                    <field name="value_numerical_box" string="Rating" optional="show"/>
+                                    <field name="suggested_answer_id" string="Selected Answer" optional="show"/>
+                                    <field name="answer_score" string="Score"/>
+                                    <field name="skipped" string="Skipped"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Action Items" name="actions">
+                            <group>
+                                <group string="Immediate Actions">
+                                    <field name="requires_manager_attention" widget="boolean_toggle"/>
+                                    <field name="escalation_level" widget="selection"/>
+                                    <field name="estimated_resolution_time" string="Est. Resolution Time"/>
+                                </group>
+                                <group string="Follow-up Planning">
+                                    <field name="follow_up_date" string="Follow-up Due Date"/>
+                                    <field name="follow_up_method" string="Follow-up Method"/>
+                                    <field name="customer_contact_preference"/>
+                                </group>
+                            </group>
+
+                            <separator string="Improvement Actions"/>
+                            <field name="improvement_action_ids" widget="one2many_list">
+                                <tree string="Improvement Actions" editable="bottom">
+                                    <field name="action_type"/>
+                                    <field name="description"/>
+                                    <field name="priority" widget="badge"/>
+                                    <field name="responsible_user_id"/>
+                                    <field name="due_date"/>
+                                    <field name="status" widget="badge"/>
+                                    <field name="estimated_effort"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Trends &amp; Analytics" name="analytics">
+                            <group>
+                                <group string="Historical Context">
+                                    <field name="customer_previous_feedback_count"/>
+                                    <field name="customer_avg_satisfaction"/>
+                                    <field name="satisfaction_trend" widget="trend_selection"/>
+                                </group>
+                                <group string="Comparative Analysis">
+                                    <field name="industry_benchmark_comparison"/>
+                                    <field name="peer_satisfaction_ranking"/>
+                                    <field name="improvement_opportunity_score"/>
+                                </group>
+                            </group>
+
+                            <!-- Visual Analytics Charts -->
+                            <separator string="Satisfaction Trends"/>
+                            <div class="oe_form_field_plotly">
+                                <!-- Placeholder for future chart integration -->
+                                <p class="text-muted">Advanced analytics charts will be integrated here for trend analysis.</p>
+                            </div>
+                        </page>
+
+                        <page string="NAID Compliance" name="compliance">
+                            <group string="Compliance Tracking">
+                                <field name="compliance_logged" widget="boolean_toggle"/>
+                                <field name="compliance_log_date"/>
+                                <field name="compliance_reference"/>
+                                <field name="audit_trail_complete" widget="boolean_toggle"/>
+                            </group>
+                            
+                            <separator string="Data Privacy &amp; Retention"/>
+                            <group>
+                                <field name="data_retention_policy_applied"/>
+                                <field name="anonymization_date"/>
+                                <field name="gdpr_compliant" widget="boolean_toggle"/>
+                            </group>
+
+                            <separator string="Audit Log"/>
+                            <field name="compliance_audit_log" widget="text" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Advanced Search View -->
+    <record id="view_feedback_search" model="ir.ui.view">
+        <field name="name">survey.user_input.search.feedback</field>
+        <field name="model">survey.user_input</field>
+        <field name="arch" type="xml">
+            <search string="Feedback Analysis">
+                <field name="partner_id" string="Customer"/>
+                <field name="survey_id" string="Survey Type"/>
+                <field name="feedback_category"/>
+                <field name="assigned_to"/>
+                <field name="create_date"/>
+
+                <!-- Quick Filters -->
+                <filter name="needs_review" string="Needs Review" domain="[('admin_reviewed', '=', False)]"/>
+                <filter name="follow_up_required" string="Follow-up Required" domain="[('follow_up_required', '=', True)]"/>
+                <filter name="critical" string="Critical" domain="[('priority_level', '=', 'urgent')]"/>
+                <filter name="high_satisfaction" string="High Satisfaction (≥80%)" domain="[('scoring_percentage', '>=', 80)]"/>
+                <filter name="low_satisfaction" string="Low Satisfaction (≤60%)" domain="[('scoring_percentage', '<=', 60)]"/>
+                <filter name="negative_sentiment" string="Negative Sentiment" domain="[('sentiment_score', '&lt;', 0.4)]"/>
+
+                <separator/>
+                <filter name="today" string="Today" domain="[('create_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <filter name="this_week" string="This Week" domain="[('create_date', '>=', (context_today() - datetime.timedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_month" string="This Month" domain="[('create_date', '>=', datetime.datetime.combine(context_today().replace(day=1), datetime.time(0,0,0)))]"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_category" string="Category" context="{'group_by': 'feedback_category'}"/>
+                    <filter name="group_priority" string="Priority Level" context="{'group_by': 'priority_level'}"/>
+                    <filter name="group_satisfaction" string="Satisfaction Level" context="{'group_by': 'satisfaction_level_group'}"/>
+                    <filter name="group_assigned" string="Assigned To" context="{'group_by': 'assigned_to'}"/>
+                    <filter name="group_date" string="Submission Date" context="{'group_by': 'create_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Dashboard Action -->
+    <record id="action_feedback_responses" model="ir.actions.act_window">
+        <field name="name">Portal Feedback Management</field>
+        <field name="res_model">survey.user_input</field>
+        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="domain">[('survey_id', '=', ref('records_management.survey_feedback_portal'))]</field>
+        <field name="context">{
+            'default_survey_id': ref('records_management.survey_feedback_portal'),
+            'search_default_needs_review': 1,
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No customer feedback yet!
+            </p>
+            <p>
+                Portal feedback will appear here as customers submit responses through the feedback system.
+                Use the modern kanban view for quick reviews and sentiment analysis.
+            </p>
+            <p>
+                <strong>Admin Features:</strong>
+                <ul>
+                    <li>🎯 AI-powered sentiment analysis</li>
+                    <li>📊 Quick satisfaction scoring</li>
+                    <li>🚨 Priority-based feedback triage</li>
+                    <li>📋 Automated improvement action items</li>
+                    <li>🔍 Advanced filtering and grouping</li>
+                </ul>
+            </p>
+        </field>
+    </record>
+
+    <!-- Analytics Dashboard Action -->
+    <record id="action_feedback_analytics" model="ir.actions.act_window">
+        <field name="name">Feedback Analytics Dashboard</field>
+        <field name="res_model">survey.user_input</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="domain">[('survey_id', '=', ref('records_management.survey_feedback_portal'))]</field>
+        <field name="context">{
+            'pivot_measures': ['scoring_percentage', 'sentiment_score'],
+            'pivot_column_groupby': ['create_date:month'],
+            'pivot_row_groupby': ['feedback_category'],
+            'graph_measure': 'scoring_percentage',
+            'graph_mode': 'line',
+            'graph_groupbys': ['create_date:month'],
+        }</field>
+    </record>
+
+    <!-- Main Menu -->
+    <menuitem id="menu_portal_feedback" 
+              name="Portal Feedback" 
+              parent="records_management.menu_records_management_root" 
+              action="action_feedback_responses"
+              sequence="60"
+              groups="records_management.group_records_manager"/>
+
+    <!-- Analytics Submenu -->
+    <menuitem id="menu_feedback_analytics" 
+              name="Analytics Dashboard" 
+              parent="menu_portal_feedback" 
+              action="action_feedback_analytics"
+              sequence="10"/>
+</odoo>
+
+    <!-- Form View for Portal Feedback -->
+    <record id="view_portal_feedback_form" model="ir.ui.view">
+        <field name="name">Portal Feedback Form</field>
+        <field name="model">survey.user_input</field>
+        <field name="arch" type="xml">
+            <form string="Portal Feedback Details" create="false" edit="false">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="survey_id" readonly="1"/>
+                        </h1>
+                        <h2>
+                            Feedback from <field name="partner_id" readonly="1" class="oe_inline"/>
+                        </h2>
+                    </div>
+                    
+                    <group>
+                        <group name="feedback_info">
+                            <field name="create_date" string="Submitted On"/>
+                            <field name="email"/>
+                            <field name="scoring_percentage" widget="percentage" string="Overall Satisfaction"/>
+                            <field name="quizz_score" string="Total Score"/>
+                        </group>
+                        <group name="technical_info">
+                            <field name="create_uid" string="Created By"/>
+                            <field name="start_datetime" string="Started"/>
+                            <field name="deadline" string="Deadline"/>
+                            <field name="is_session_answer" string="Session Answer"/>
+                        </group>
+                    </group>
+
+                    <!-- Detailed Responses -->
+                    <notebook>
+                        <page string="Survey Responses" name="responses">
+                            <field name="user_input_line_ids" readonly="1">
+                                <tree string="Responses" create="false" edit="false">
+                                    <field name="question_id" string="Question"/>
+                                    <field name="answer_type"/>
+                                    <field name="value_char_box" string="Text Answer" optional="show"/>
+                                    <field name="value_numerical_box" string="Numerical Answer" optional="show"/>
+                                    <field name="suggested_answer_id" string="Selected Option" optional="show"/>
+                                    <field name="matrix_row_id" string="Matrix Row" optional="hide"/>
+                                    <field name="skipped" string="Skipped"/>
+                                </tree>
+                                <form string="Response Detail">
+                                    <group>
+                                        <field name="question_id"/>
+                                        <field name="answer_type"/>
+                                        <field name="skipped"/>
+                                    </group>
+                                    <group string="Answer" attrs="{'invisible': [('skipped', '=', True)]}">
+                                        <field name="value_char_box" attrs="{'invisible': [('answer_type', 'not in', ['char_box', 'text_box'])]}"/>
+                                        <field name="value_text_box" widget="text" attrs="{'invisible': [('answer_type', '!=', 'text_box')]}"/>
+                                        <field name="value_numerical_box" attrs="{'invisible': [('answer_type', '!=', 'numerical_box')]}"/>
+                                        <field name="value_date" attrs="{'invisible': [('answer_type', '!=', 'date')]}"/>
+                                        <field name="value_datetime" attrs="{'invisible': [('answer_type', '!=', 'datetime')]}"/>
+                                        <field name="suggested_answer_id" attrs="{'invisible': [('answer_type', 'not in', ['suggestion', 'simple_choice', 'multiple_choice'])]}"/>
+                                        <field name="matrix_row_id" attrs="{'invisible': [('answer_type', '!=', 'matrix')]}"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        
+                        <page string="Analysis" name="analysis">
+                            <group>
+                                <group string="Satisfaction Metrics">
+                                    <field name="scoring_percentage" widget="gauge" 
+                                           options="{'max_field': 100, 'style': 'width:160px; height: 120px;'}"
+                                           string="Overall Satisfaction"/>
+                                </group>
+                                <group string="Response Summary">
+                                    <label for="response_summary" string="Key Insights"/>
+                                    <div name="response_summary">
+                                        <!-- This would be computed based on responses -->
+                                        <p class="text-muted">Response analysis will be displayed here based on survey answers.</p>
+                                    </div>
+                                </group>
+                            </group>
+                            
+                            <!-- Action Items based on feedback -->
+                            <separator string="Recommended Actions"/>
+                            <field name="portal_feedback_actions" widget="one2many_list" readonly="1" nolabel="1">
+                                <tree string="Action Items" create="false" edit="false">
+                                    <field name="action_type"/>
+                                    <field name="description"/>
+                                    <field name="priority"/>
+                                    <field name="assigned_user_id"/>
+                                    <field name="due_date"/>
+                                    <field name="status"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Customer Info" name="customer">
+                            <group>
+                                <group string="Customer Details">
+                                    <field name="partner_id" readonly="1"/>
+                                    <field name="email" readonly="1"/>
+                                </group>
+                                <group string="Account Information">
+                                    <!-- Additional customer context -->
+                                    <label string="Account Status"/>
+                                    <div>
+                                        <span class="badge badge-success">Active</span>
+                                    </div>
+                                    <label string="Service Level"/>
+                                    <div>
+                                        <span class="badge badge-info">Premium</span>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="NAID Compliance" name="compliance">
+                            <group string="Compliance Tracking">
+                                <field name="compliance_logged" string="Logged for Compliance" widget="boolean"/>
+                                <field name="compliance_log_date" string="Log Date" readonly="1"/>
+                                <field name="compliance_reference" string="Compliance Reference" readonly="1"/>
+                            </group>
+                            
+                            <separator string="Audit Trail"/>
+                            <field name="compliance_audit_log" widget="text" readonly="1" 
+                                   placeholder="Compliance audit trail will be recorded here..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View for Portal Feedback -->
+    <record id="view_portal_feedback_search" model="ir.ui.view">
+        <field name="name">Portal Feedback Search</field>
+        <field name="model">survey.user_input</field>
+        <field name="arch" type="xml">
+            <search string="Portal Feedback Search">
+                <field name="partner_id" string="Customer"/>
+                <field name="survey_id" string="Survey"/>
+                <field name="email"/>
+                <field name="create_date" string="Submission Date"/>
+                
+                <filter name="completed" string="Completed" domain="[('state', '=', 'done')]"/>
+                <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="high_satisfaction" string="High Satisfaction (≥80%)" domain="[('scoring_percentage', '>=', 80)]"/>
+                <filter name="low_satisfaction" string="Low Satisfaction (≤60%)" domain="[('scoring_percentage', '<=', 60)]"/>
+                
+                <separator/>
+                <filter name="this_month" string="This Month" 
+                        domain="[('create_date', '>=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                <filter name="this_quarter" string="This Quarter" 
+                        domain="[('create_date', '>=', (context_today() - relativedelta(months=3)).strftime('%Y-%m-01'))]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter name="group_survey" string="Survey Type" context="{'group_by': 'survey_id'}"/>
+                    <filter name="group_customer" string="Customer" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_month" string="Month" context="{'group_by': 'create_date:month'}"/>
+                    <filter name="group_satisfaction" string="Satisfaction Level" context="{'group_by': 'satisfaction_level'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Kanban View for Feedback Overview -->
+    <record id="view_portal_feedback_kanban" model="ir.ui.view">
+        <field name="name">Portal Feedback Kanban</field>
+        <field name="model">survey.user_input</field>
+        <field name="arch" type="xml">
+            <kanban string="Portal Feedback" default_group_by="satisfaction_level">
+                <field name="partner_id"/>
+                <field name="survey_id"/>
+                <field name="scoring_percentage"/>
+                <field name="create_date"/>
+                <field name="state"/>
+                <field name="satisfaction_level"/>
+                
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_header">
+                                <div class="oe_kanban_header_left">
+                                    <div class="oe_kanban_record_title">
+                                        <field name="partner_id"/>
+                                    </div>
+                                    <div class="oe_kanban_record_subtitle">
+                                        <field name="survey_id"/>
+                                    </div>
+                                </div>
+                                <div class="oe_kanban_header_right">
+                                    <span class="badge badge-pill" 
+                                          t-att-class="record.scoring_percentage.raw_value >= 80 ? 'badge-success' : 
+                                                      record.scoring_percentage.raw_value >= 60 ? 'badge-warning' : 'badge-danger'">
+                                        <field name="scoring_percentage"/>%
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="oe_kanban_content">
+                                <div class="oe_kanban_details">
+                                    <ul>
+                                        <li><strong>Submitted:</strong> <field name="create_date"/></li>
+                                        <li><strong>Status:</strong> <field name="state"/></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="oe_kanban_footer">
+                                <div class="oe_kanban_footer_left">
+                                    <span class="oe_kanban_record_date">
+                                        <field name="create_date"/>
+                                    </span>
+                                </div>
+                                <div class="oe_kanban_footer_right">
+                                    <button name="view_feedback_details" type="object" class="btn btn-primary btn-sm">
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action for Portal Feedback -->
+    <record id="action_portal_feedback" model="ir.actions.act_window">
+        <field name="name">Portal Feedback</field>
+        <field name="res_model">survey.user_input</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('survey_id.category', '=', 'portal_feedback')]</field>
+        <field name="context">{'default_survey_id': ref('portal_feedback_survey')}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No feedback submissions yet!
+            </p>
+            <p>
+                Customer feedback will appear here once they start using the portal feedback system.
+                You can analyze satisfaction levels, response patterns, and compliance tracking.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item for Feedback Management -->
+    <record id="menu_portal_feedback" model="ir.ui.menu">
+        <field name="name">Customer Feedback</field>
+        <field name="parent_id" ref="records_management.menu_records_management_root"/>
+        <field name="action" ref="action_portal_feedback"/>
+        <field name="sequence">60</field>
+        <field name="groups_id" eval="[(6, 0, [ref('records_management.group_records_manager')])]"/>
+    </record>
+
+    <!-- Dashboard/Analytics Action -->
+    <record id="action_feedback_dashboard" model="ir.actions.act_window">
+        <field name="name">Feedback Dashboard</field>
+        <field name="res_model">survey.user_input</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="domain">[('survey_id.category', '=', 'portal_feedback')]</field>
+        <field name="context">{
+            'pivot_measures': ['scoring_percentage'],
+            'pivot_column_groupby': ['create_date:month'],
+            'pivot_row_groupby': ['survey_id'],
+        }</field>
+    </record>
+
+    <!-- Pivot View for Analytics -->
+    <record id="view_portal_feedback_pivot" model="ir.ui.view">
+        <field name="name">Portal Feedback Pivot</field>
+        <field name="model">survey.user_input</field>
+        <field name="arch" type="xml">
+            <pivot string="Feedback Analysis">
+                <field name="create_date" type="row" interval="month"/>
+                <field name="survey_id" type="row"/>
+                <field name="partner_id" type="col"/>
+                <field name="scoring_percentage" type="measure"/>
+                <field name="quizz_score" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Graph View for Analytics -->
+    <record id="view_portal_feedback_graph" model="ir.ui.view">
+        <field name="name">Portal Feedback Graph</field>
+        <field name="model">survey.user_input</field>
+        <field name="arch" type="xml">
+            <graph string="Satisfaction Trends" type="line">
+                <field name="create_date" type="row" interval="month"/>
+                <field name="scoring_percentage" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Submenu for Analytics -->
+    <record id="menu_feedback_analytics" model="ir.ui.menu">
+        <field name="name">Feedback Analytics</field>
+        <field name="parent_id" ref="menu_portal_feedback"/>
+        <field name="action" ref="action_feedback_dashboard"/>
+        <field name="sequence">10</field>
+    </record>
+</odoo>

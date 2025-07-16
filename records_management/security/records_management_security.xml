@@ -82,4 +82,253 @@
         <field name="global" eval="True"/>
         <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
     </record>
+
+    <!-- Enhanced Portal Security Groups for Granular Access -->
+    <record id="group_records_company_admin" model="res.groups">
+        <field name="name">Company Administrator</field>
+        <field name="category_id" ref="module_records_management_category"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+
+    <record id="group_records_dept_admin" model="res.groups">
+        <field name="name">Department Administrator</field>
+        <field name="category_id" ref="module_records_management_category"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+
+    <record id="group_records_viewer" model="res.groups">
+        <field name="name">Document Viewer</field>
+        <field name="category_id" ref="module_records_management_category"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+
+    <!-- Granular Inventory Document Access Rules (NAID AAA/ISO 15489 Compliance) -->
+    <record id="rule_inventory_docs_granular" model="ir.rule">
+        <field name="name">Granular Inventory Document Access</field>
+        <field name="model_id" ref="model_records_document"/>
+        <field name="domain_force">[
+            ('partner_id', '=', user.partner_id.id),
+            '|', '|',
+            ('department_id', 'in', user.partner_id.x_department_ids.ids),
+            ('created_by_user_id', '=', user.id),
+            ('assigned_user_ids', 'in', [user.id])
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Company Admin - Full Access to Company Documents -->
+    <record id="rule_company_admin_documents" model="ir.rule">
+        <field name="name">Company Admin: Full Document Access</field>
+        <field name="model_id" ref="model_records_document"/>
+        <field name="domain_force">[
+            '|',
+            ('partner_id', '=', user.partner_id.id),
+            ('partner_id.parent_id', '=', user.partner_id.id)
+        ]</field>
+        <field name="groups" eval="[(4, ref('group_records_company_admin'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Department Admin - Department-Level Document Access -->
+    <record id="rule_dept_admin_documents" model="ir.rule">
+        <field name="name">Department Admin: Department Document Access</field>
+        <field name="model_id" ref="model_records_document"/>
+        <field name="domain_force">[
+            ('partner_id', '=', user.partner_id.id),
+            ('department_id', 'in', user.partner_id.x_managed_department_ids.ids)
+        ]</field>
+        <field name="groups" eval="[(4, ref('group_records_dept_admin'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Records Box Granular Access -->
+    <record id="rule_inventory_boxes_granular" model="ir.rule">
+        <field name="name">Granular Inventory Box Access</field>
+        <field name="model_id" ref="model_records_box"/>
+        <field name="domain_force">[
+            ('partner_id', '=', user.partner_id.id),
+            '|', '|',
+            ('department_id', 'in', user.partner_id.x_department_ids.ids),
+            ('created_by_user_id', '=', user.id),
+            ('responsible_user_id', '=', user.id)
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Sensitive Document Classifications (ISO 15489 Compliance) -->
+    <record id="rule_confidential_documents" model="ir.rule">
+        <field name="name">Confidential Documents: Restricted Access</field>
+        <field name="model_id" ref="model_records_document"/>
+        <field name="domain_force">[
+            ('confidentiality_level', 'in', ['public', 'internal']),
+            '|',
+            ('confidentiality_level', '!=', 'confidential'),
+            ('authorized_user_ids', 'in', [user.id])
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- NAID AAA Audit Access Control -->
+    <record id="rule_audit_log_access" model="ir.rule">
+        <field name="name">NAID Audit Log: Customer Access Only</field>
+        <field name="model_id" ref="model_audit_log"/>
+        <field name="domain_force">[
+            '|',
+            ('partner_id', '=', user.partner_id.id),
+            ('user_id', '=', user.id)
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Portal Request Access (User's Own Requests Only) -->
+    <record id="rule_portal_requests_user" model="ir.rule">
+        <field name="name">Portal Requests: User Access Only</field>
+        <field name="model_id" ref="model_portal_request"/>
+        <field name="domain_force">[
+            '|',
+            ('partner_id', '=', user.partner_id.id),
+            ('created_by_user_id', '=', user.id)
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Temporary Inventory Access (Department-Based) -->
+    <record id="rule_temp_inventory_dept" model="ir.rule">
+        <field name="name">Temporary Inventory: Department Access</field>
+        <field name="model_id" ref="model_temp_inventory"/>
+        <field name="domain_force">[
+            ('partner_id', '=', user.partner_id.id),
+            '|',
+            ('department_id', 'in', user.partner_id.x_department_ids.ids),
+            ('created_by_user_id', '=', user.id)
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Communications Access (B2B Level - Customer Wide) -->
+    <record id="rule_communications_customer" model="ir.rule">
+        <field name="name">Communications: Customer Level Access</field>
+        <field name="model_id" ref="mail.model_mail_message"/>
+        <field name="domain_force">[
+            '|',
+            ('partner_ids', 'in', [user.partner_id.id]),
+            ('author_id', '=', user.partner_id.id)
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Data Isolation Rules (NAID AAA Compliance) -->
+    <record id="rule_data_isolation_inventory" model="ir.rule">
+        <field name="name">Data Isolation: Inventory vs Communications</field>
+        <field name="model_id" ref="model_records_document"/>
+        <field name="domain_force">[
+            '|',
+            ('document_type', '!=', 'communication'),
+            ('is_public_communication', '=', True)
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Cross-Department Document Sharing (Admin Override) -->
+    <record id="rule_cross_dept_sharing" model="ir.rule">
+        <field name="name">Cross-Department Sharing: Admin Access</field>
+        <field name="model_id" ref="model_records_document"/>
+        <field name="domain_force">[
+            '|', '|',
+            ('is_shared_across_departments', '=', True),
+            ('sharing_approval_user_id', '=', user.id),
+            ('department_id', 'in', user.partner_id.x_department_ids.ids)
+        ]</field>
+        <field name="groups" eval="[(4, ref('group_records_company_admin')), (4, ref('group_records_dept_admin'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Retention Policy Access Control -->
+    <record id="rule_retention_policy_access" model="ir.rule">
+        <field name="name">Retention Policy: Customer Access</field>
+        <field name="model_id" ref="model_records_retention_policy"/>
+        <field name="domain_force">[
+            '|',
+            ('customer_id', '=', user.partner_id.id),
+            ('is_default_policy', '=', True)
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Document Tag Access (Customer-Specific) -->
+    <record id="rule_document_tags_customer" model="ir.rule">
+        <field name="name">Document Tags: Customer Access</field>
+        <field name="model_id" ref="model_records_tag"/>
+        <field name="domain_force">[
+            '|',
+            ('customer_id', '=', user.partner_id.id),
+            ('is_global_tag', '=', True)
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Location Access (Customer-Specific) -->
+    <record id="rule_locations_customer" model="ir.rule">
+        <field name="name">Locations: Customer Access Only</field>
+        <field name="model_id" ref="model_records_location"/>
+        <field name="domain_force">[
+            '|',
+            ('customer_id', '=', user.partner_id.id),
+            ('is_public_location', '=', True)
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
 </odoo>

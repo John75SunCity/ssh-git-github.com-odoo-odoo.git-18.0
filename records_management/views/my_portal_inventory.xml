@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Portal view for customer inventory -->
+        <!-- Enhanced Portal Navigation with Feedback and Centralized Documents -->
         <template id="portal_my_home_inventory" name="Portal My Home : Inventory" inherit_id="portal.portal_my_home" priority="40">
             <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
                 <t t-call="portal.portal_docs_entry">
@@ -9,42 +9,228 @@
                     <t t-set="url" t-value="'/my/inventory'"/>
                     <t t-set="placeholder_count" t-value="'inventory_count'"/>
                 </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Billing</t>
+                    <t t-set="url" t-value="'/my/billing'"/>
+                    <t t-set="placeholder_count" t-value="'billing_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Quotes</t>
+                    <t t-set="url" t-value="'/my/quotes'"/>
+                    <t t-set="placeholder_count" t-value="'quotes_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Requests</t>
+                    <t t-set="url" t-value="'/my/requests'"/>
+                    <t t-set="placeholder_count" t-value="'requests_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">User Management</t>
+                    <t t-set="url" t-value="'/my/users'"/>
+                    <t t-set="placeholder_count" t-value="'users_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Portal Overview</t>
+                    <t t-set="url" t-value="'/my/overview'"/>
+                    <t t-set="placeholder_count" t-value="'overview_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Feedback &amp; Suggestions</t>
+                    <t t-set="url" t-value="'/my/feedback'"/>
+                    <t t-set="placeholder_count" t-value="'feedback_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Document Center</t>
+                    <t t-set="url" t-value="'/my/docs'"/>
+                    <t t-set="placeholder_count" t-value="'docs_count'"/>
+                </t>
             </xpath>
         </template>
 
+        <!-- Modern Customer Inventory with Multi-select and Advanced Search -->
         <template id="portal_my_inventory" name="My Inventory">
             <t t-call="portal.portal_layout">
                 <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-set="title">My Inventory</t>
 
-                <t t-call="portal.portal_searchbar">
-                    <t t-set="title">My Inventory</t>
-                </t>
-                
-                <t t-if="not inventory_records">
-                    <p>There are currently no records in your inventory.</p>
-                </t>
-                <t t-if="inventory_records" t-call="portal.portal_table">
-                    <thead>
-                        <tr class="active">
-                            <th>Document</th>
-                            <th>Box</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                            <th>Created Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <t t-foreach="inventory_records" t-as="record">
-                            <tr>
-                                <td><t t-esc="record.name"/></td>
-                                <td><t t-esc="record.box_id.name"/></td>
-                                <td><t t-esc="record.location_id.complete_name"/></td>
-                                <td><t t-esc="record.state"/></td>
-                                <td><t t-esc="record.create_date"/></td>
-                            </tr>
-                        </t>
-                    </tbody>
-                </t>
+                <div class="o_portal_inventory highlight-modern">
+                    <!-- Enhanced Search and Filter Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fa fa-search"></i>
+                                Search &amp; Filter Inventory
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="search-container row">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="inventory_search" class="form-label">Search Inventory</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                        <input type="text" id="inventory_search" class="form-control" 
+                                               placeholder="Search any text, field, or action (e.g., 'active boxes' or 'destroy document')"
+                                               onkeyup="performSearch(this.value)"/>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="filter_type" class="form-label">Filter by Type</label>
+                                    <select id="filter_type" class="form-control" onchange="applyFilters()">
+                                        <option value="">All Types</option>
+                                        <option value="box">Box</option>
+                                        <option value="document">Document</option>
+                                        <option value="file">File</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="filter_status" class="form-label">Filter by Status</label>
+                                    <select id="filter_status" class="form-control" onchange="applyFilters()">
+                                        <option value="">All Statuses</option>
+                                        <option value="active">Active</option>
+                                        <option value="archived">Archived</option>
+                                        <option value="destroyed">Destroyed</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Results Section -->
+                    <t t-if="not inventory_records">
+                        <div class="alert alert-info text-center">
+                            <i class="fa fa-info-circle fa-2x mb-3"></i>
+                            <h4>No Inventory Records Found</h4>
+                            <p>There are currently no records in your inventory matching the selected criteria.</p>
+                            <button class="btn btn-primary" onclick="addTempInventory()">
+                                <i class="fa fa-plus"></i> Add New Inventory
+                            </button>
+                        </div>
+                    </t>
+
+                    <t t-if="inventory_records">
+                        <!-- Multi-select Action Bar -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span id="selected_count" class="badge badge-primary">0 selected</span>
+                                        <span class="text-muted ml-2">Total: <t t-esc="len(inventory_records)"/> items</span>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button class="btn btn-success" onclick="addTempInventory()">
+                                            <i class="fa fa-plus"></i> Add New Inventory
+                                        </button>
+                                        <button class="btn btn-warning" onclick="batchToPickup()" disabled id="batch_pickup_btn">
+                                            <i class="fa fa-truck"></i> Add Selected to Pickup
+                                        </button>
+                                        <button class="btn btn-danger" onclick="batchAction('destruction')" disabled id="batch_destroy_btn">
+                                            <i class="fa fa-trash"></i> Request Destruction
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Inventory Table -->
+                        <div class="card">
+                            <div class="table-responsive">
+                                <table class="table table-striped multi-select-table mb-0" id="inventory_table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th width="50">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="select_all" onclick="selectAll()"/>
+                                                    <label class="custom-control-label" for="select_all"></label>
+                                                </div>
+                                            </th>
+                                            <th>Reference</th>
+                                            <th>Type</th>
+                                            <th>Box</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                            <th>Created Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="inventory_records" t-as="record">
+                                            <tr t-att-class="'inventory-row ' + ('bg-light-success' if record.state == 'active' else 'bg-light-warning' if record.state == 'archived' else 'bg-light-danger' if record.state == 'destroyed' else '')"
+                                                t-att-data-id="record.id" t-att-data-type="record._name" t-att-data-status="record.state">
+                                                <td>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input item-checkbox" 
+                                                               t-att-id="'item_' + str(record.id)" 
+                                                               t-att-value="record.id" 
+                                                               onchange="updateSelection()"/>
+                                                        <label class="custom-control-label" t-att-for="'item_' + str(record.id)"></label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <strong t-esc="record.name"/>
+                                                    <br/>
+                                                    <small class="text-muted" t-esc="record.reference or ''"/>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-info" t-esc="record._description or record._name"/>
+                                                </td>
+                                                <td>
+                                                    <t t-if="hasattr(record, 'box_id') and record.box_id">
+                                                        <span t-esc="record.box_id.name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted">N/A</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="hasattr(record, 'location_id') and record.location_id">
+                                                        <span t-esc="record.location_id.complete_name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted">N/A</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <span t-att-class="'badge badge-' + ('success' if record.state == 'active' else 'warning' if record.state == 'archived' else 'danger' if record.state == 'destroyed' else 'secondary')"
+                                                          t-esc="record.state.replace('_', ' ').title()"/>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="record.create_date" t-options="{'widget': 'datetime'}"/>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary btn-sm" 
+                                                                t-att-onclick="'viewDetails(' + str(record.id) + ')'">
+                                                            <i class="fa fa-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-warning btn-sm" 
+                                                                t-att-onclick="'requestPickup(' + str(record.id) + ')'">
+                                                            <i class="fa fa-truck"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-danger btn-sm" 
+                                                                t-att-onclick="'requestDestruction(' + str(record.id) + ')'"
+                                                                t-if="record.state != 'destroyed'">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- JavaScript for Enhanced Functionality -->
+                <script type="text/javascript">
+                    // Initialize inventory management functionality
+                    $(document).ready(function() {
+                        initializeInventoryManagement();
+                    });
+                </script>
             </t>
         </template>
     </data>

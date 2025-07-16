@@ -1,161 +1,569 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="portal_my_inventory" name="My Records Inventory">
-        <t t-call="portal.portal_layout">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h1 class="mt-4">My Records Inventory</h1>
-                        
-                        <!-- Summary Cards -->
-                        <div class="row mb-4">
-                            <div class="col-md-3">
-                                <div class="card bg-primary text-white">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Storage Boxes</h5>
-                                        <h2 t-esc="boxes_count"/>
+    <data>
+        <!-- Enhanced Portal Navigation with Feedback and Centralized Documents -->
+        <template id="portal_my_home_inventory" name="Portal My Home : Inventory" inherit_id="portal.portal_my_home" priority="40">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">My Inventory</t>
+                    <t t-set="url" t-value="'/my/inventory'"/>
+                    <t t-set="placeholder_count" t-value="'inventory_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Billing</t>
+                    <t t-set="url" t-value="'/my/billing'"/>
+                    <t t-set="placeholder_count" t-value="'billing_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Quotes</t>
+                    <t t-set="url" t-value="'/my/quotes'"/>
+                    <t t-set="placeholder_count" t-value="'quotes_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Requests</t>
+                    <t t-set="url" t-value="'/my/requests'"/>
+                    <t t-set="placeholder_count" t-value="'requests_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">User Management</t>
+                    <t t-set="url" t-value="'/my/users'"/>
+                    <t t-set="placeholder_count" t-value="'users_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Portal Overview</t>
+                    <t t-set="url" t-value="'/my/overview'"/>
+                    <t t-set="placeholder_count" t-value="'overview_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Feedback &amp; Suggestions</t>
+                    <t t-set="url" t-value="'/my/feedback'"/>
+                    <t t-set="placeholder_count" t-value="'feedback_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Document Center</t>
+                    <t t-set="url" t-value="'/my/docs'"/>
+                    <t t-set="placeholder_count" t-value="'docs_count'"/>
+                </t>
+            </xpath>
+        </template>
+
+        <!-- Modern Customer Inventory with Multi-select and Advanced Search -->
+        <template id="portal_my_inventory" name="My Inventory">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-set="title">My Inventory</t>
+
+                <div class="o_portal_inventory highlight-modern">
+                    <!-- Enhanced Search and Filter Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fa fa-search"></i>
+                                Search &amp; Filter Inventory
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="search-container row">
+                                <div class="col-lg-6 mb-3">
+                                    <label for="inventory_search" class="form-label">Search Inventory</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                        <input type="text" id="inventory_search" class="form-control" 
+                                               placeholder="Search any text, field, or action (e.g., 'active boxes' or 'destroy document')"
+                                               onkeyup="performSearch(this.value)"/>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card bg-success text-white">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Documents</h5>
-                                        <h2 t-esc="documents_count"/>
-                                    </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="filter_type" class="form-label">Filter by Type</label>
+                                    <select id="filter_type" class="form-control" onchange="applyFilters()">
+                                        <option value="">All Types</option>
+                                        <option value="box">Box</option>
+                                        <option value="document">Document</option>
+                                        <option value="file">File</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label for="filter_status" class="form-label">Filter by Status</label>
+                                    <select id="filter_status" class="form-control" onchange="applyFilters()">
+                                        <option value="">All Statuses</option>
+                                        <option value="active">Active</option>
+                                        <option value="archived">Archived</option>
+                                        <option value="destroyed">Destroyed</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="card bg-info text-white">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Locations</h5>
-                                        <h2 t-esc="locations_count"/>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Results Section -->
+                    <t t-if="not inventory_records">
+                        <div class="alert alert-info text-center">
+                            <i class="fa fa-info-circle fa-2x mb-3"></i>
+                            <h4>No Inventory Records Found</h4>
+                            <p>There are currently no records in your inventory matching the selected criteria.</p>
+                            <button class="btn btn-primary" onclick="addTempInventory()">
+                                <i class="fa fa-plus"></i> Add New Inventory
+                            </button>
+                        </div>
+                    </t>
+
+                    <t t-if="inventory_records">
+                        <!-- Multi-select Action Bar -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span id="selected_count" class="badge badge-primary">0 selected</span>
+                                        <span class="text-muted ml-2">Total: <t t-esc="len(inventory_records)"/> items</span>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card bg-warning text-white">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Active Requests</h5>
-                                        <h2 t-esc="requests_count"/>
+                                    <div class="btn-group">
+                                        <button class="btn btn-success" onclick="addTempInventory()">
+                                            <i class="fa fa-plus"></i> Add New Inventory
+                                        </button>
+                                        <button class="btn btn-warning" onclick="batchToPickup()" disabled id="batch_pickup_btn">
+                                            <i class="fa fa-truck"></i> Add Selected to Pickup
+                                        </button>
+                                        <button class="btn btn-danger" onclick="batchAction('destruction')" disabled id="batch_destroy_btn">
+                                            <i class="fa fa-trash"></i> Request Destruction
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Storage Boxes Section -->
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h3>My Storage Boxes</h3>
-                            </div>
-                            <div class="card-body">
-                                <div t-if="not boxes" class="alert alert-info">
-                                    You currently have no storage boxes.
-                                </div>
-                                <div t-if="boxes" class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Box ID</th>
-                                                <th>Location</th>
-                                                <th>Status</th>
-                                                <th>Document Count</th>
-                                                <th>Storage Date</th>
+                        <!-- Enhanced Inventory Table -->
+                        <div class="card">
+                            <div class="table-responsive">
+                                <table class="table table-striped multi-select-table mb-0" id="inventory_table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th width="50">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="select_all" onclick="selectAll()"/>
+                                                    <label class="custom-control-label" for="select_all"></label>
+                                                </div>
+                                            </th>
+                                            <th>Reference</th>
+                                            <th>Type</th>
+                                            <th>Box</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                            <th>Created Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="inventory_records" t-as="record">
+                                            <tr t-att-class="'inventory-row ' + ('bg-light-success' if record.state == 'active' else 'bg-light-warning' if record.state == 'archived' else 'bg-light-danger' if record.state == 'destroyed' else '')"
+                                                t-att-data-id="record.id" t-att-data-type="record._name" t-att-data-status="record.state">
+                                                <td>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input item-checkbox" 
+                                                               t-att-id="'item_' + str(record.id)" 
+                                                               t-att-value="record.id" 
+                                                               onchange="updateSelection()"/>
+                                                        <label class="custom-control-label" t-att-for="'item_' + str(record.id)"></label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <strong t-esc="record.name"/>
+                                                    <br/>
+                                                    <small class="text-muted" t-esc="record.reference or ''"/>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-info" t-esc="record._description or record._name"/>
+                                                </td>
+                                                <td>
+                                                    <t t-if="hasattr(record, 'box_id') and record.box_id">
+                                                        <span t-esc="record.box_id.name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted">N/A</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="hasattr(record, 'location_id') and record.location_id">
+                                                        <span t-esc="record.location_id.complete_name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted">N/A</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <span t-att-class="'badge badge-' + ('success' if record.state == 'active' else 'warning' if record.state == 'archived' else 'danger' if record.state == 'destroyed' else 'secondary')"
+                                                          t-esc="record.state.replace('_', ' ').title()"/>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="record.create_date" t-options="{'widget': 'datetime'}"/>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary btn-sm" 
+                                                                t-att-onclick="'viewDetails(' + str(record.id) + ')'">
+                                                            <i class="fa fa-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-warning btn-sm" 
+                                                                t-att-onclick="'requestPickup(' + str(record.id) + ')'">
+                                                            <i class="fa fa-truck"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-danger btn-sm" 
+                                                                t-att-onclick="'requestDestruction(' + str(record.id) + ')'"
+                                                                t-if="record.state != 'destroyed'">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            <t t-foreach="boxes" t-as="box">
-                                                <tr>
-                                                    <td><strong t-esc="box.name"/></td>
-                                                    <td t-esc="box.location_id.name"/>
-                                                    <td>
-                                                        <span t-if="box.state == 'stored'" class="badge badge-success">Stored</span>
-                                                        <span t-if="box.state == 'retrieved'" class="badge badge-warning">Retrieved</span>
-                                                        <span t-if="box.state == 'destroyed'" class="badge badge-danger">Destroyed</span>
-                                                    </td>
-                                                    <td t-esc="len(box.document_ids)"/>
-                                                    <td t-esc="box.create_date.strftime('%Y-%m-%d')" t-options="{'widget': 'date'}"/>
-                                                </tr>
-                                            </t>
-                                        </tbody>
-                                    </table>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- JavaScript for Enhanced Functionality -->
+                <script type="text/javascript">
+                    // Initialize inventory management functionality
+                    $(document).ready(function() {
+                        initializeInventoryManagement();
+                    });
+                </script>
+            </t>
+        </template>
+
+        <!-- Enhanced Billing Template with PO Updates -->
+        <template id="portal_billing" name="My Billing">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">My Billing</t>
+                
+                <div class="o_portal_billing">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="fa fa-credit-card"></i>
+                                Invoice Management
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Invoice #</th>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                            <th>PO Number</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="invoices" t-as="inv">
+                                            <tr>
+                                                <td>
+                                                    <strong t-esc="inv.name"/>
+                                                    <br/>
+                                                    <small class="text-muted" t-esc="inv.reference or ''"/>
+                                                </td>
+                                                <td t-esc="inv.invoice_date" t-options="{'widget': 'date'}"/>
+                                                <td>
+                                                    <span t-esc="inv.amount_total" t-options="{'widget': 'monetary'}"/>
+                                                </td>
+                                                <td>
+                                                    <div class="input-group input-group-sm">
+                                                        <input type="text" class="form-control" 
+                                                               placeholder="Update PO#" 
+                                                               t-att-value="inv.ref or ''"
+                                                               t-att-data-invoice-id="inv.id"/>
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-outline-primary" 
+                                                                    t-att-onclick="'updatePO(' + str(inv.id) + ')'">
+                                                                <i class="fa fa-save"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span t-att-class="'badge badge-' + ('success' if inv.payment_state == 'paid' else 'warning')"
+                                                          t-esc="inv.payment_state.replace('_', ' ').title()"/>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a t-attf-href="/my/invoices/#{inv.id}" class="btn btn-outline-primary">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                        <button class="btn btn-outline-warning" 
+                                                                t-att-onclick="'requestChange(' + str(inv.id) + ')'">
+                                                            <i class="fa fa-edit"></i> Request Change
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Enhanced Quotes Template -->
+        <template id="portal_quotes" name="Generate Quotes">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Generate Quote</t>
+                
+                <div class="o_portal_quotes">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-calculator"></i>
+                                        Quote Generator
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="quote_form" method="post" action="/my/quotes/generate">
+                                        <div id="quote_lines">
+                                            <!-- Dynamic quote lines will be added here -->
+                                        </div>
+                                        <div class="text-center mt-4">
+                                            <button type="button" class="btn btn-secondary" onclick="addQuoteLine()">
+                                                <i class="fa fa-plus"></i> Add Line
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-file-pdf-o"></i> Generate PDF Quote
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Recent Documents Section -->
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h3>Recent Documents</h3>
-                            </div>
-                            <div class="card-body">
-                                <div t-if="not recent_documents" class="alert alert-info">
-                                    You currently have no documents.
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Recent Quotes</h6>
                                 </div>
-                                <div t-if="recent_documents" class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Document Name</th>
-                                                <th>Type</th>
-                                                <th>Box</th>
-                                                <th>Added Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <t t-foreach="recent_documents" t-as="doc">
-                                                <tr>
-                                                    <td t-esc="doc.name"/>
-                                                    <td t-esc="doc.document_type_id.name"/>
-                                                    <td t-esc="doc.box_id.name"/>
-                                                    <td t-esc="doc.create_date.strftime('%Y-%m-%d')" t-options="{'widget': 'date'}"/>
-                                                </tr>
-                                            </t>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Active Requests Section -->
-                        <div class="card" t-if="requests">
-                            <div class="card-header">
-                                <h3>My Active Requests</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Request Type</th>
-                                                <th>Request Date</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <t t-foreach="requests" t-as="req">
-                                                <tr>
-                                                    <td>
-                                                        <span t-if="req._name == 'pickup.request'">Pickup Request</span>
-                                                        <span t-if="req._name == 'shredding.service'">Shredding Service</span>
-                                                    </td>
-                                                    <td t-esc="req.request_date or req.scheduled_date" t-options="{'widget': 'date'}"/>
-                                                    <td>
-                                                        <span t-if="req.state == 'draft'" class="badge badge-secondary">Draft</span>
-                                                        <span t-if="req.state == 'confirmed'" class="badge badge-primary">Confirmed</span>
-                                                        <span t-if="req.state == 'scheduled'" class="badge badge-info">Scheduled</span>
-                                                        <span t-if="req.state == 'completed'" class="badge badge-success">Completed</span>
-                                                    </td>
-                                                </tr>
-                                            </t>
-                                        </tbody>
-                                    </table>
+                                <div class="card-body">
+                                    <t t-foreach="recent_quotes" t-as="quote">
+                                        <div class="mb-2">
+                                            <a t-attf-href="/my/quotes/#{quote.id}" class="text-decoration-none">
+                                                <small t-esc="quote.name"/>
+                                            </a>
+                                        </div>
+                                    </t>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </t>
-    </template>
+            </t>
+        </template>
+
+        <!-- Enhanced Requests Template with Signatures -->
+        <template id="portal_requests" name="My Requests">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">My Requests</t>
+                
+                <div class="o_portal_requests">
+                    <div class="card mb-4">
+                        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fa fa-tasks"></i>
+                                Service Requests
+                            </h5>
+                            <button class="btn btn-dark" onclick="createRequest()">
+                                <i class="fa fa-plus"></i> New Request
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Request #</th>
+                                            <th>Type</th>
+                                            <th>Status</th>
+                                            <th>Created</th>
+                                            <th>Signature</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="requests" t-as="req">
+                                            <tr>
+                                                <td>
+                                                    <strong t-esc="req.name"/>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-info" t-esc="req.request_type.replace('_', ' ').title()"/>
+                                                </td>
+                                                <td>
+                                                    <span t-att-class="'badge badge-' + ('success' if req.state == 'completed' else 'warning' if req.state == 'in_progress' else 'secondary')"
+                                                          t-esc="req.state.replace('_', ' ').title()"/>
+                                                </td>
+                                                <td t-esc="req.create_date" t-options="{'widget': 'date'}"/>
+                                                <td>
+                                                    <t t-if="req.sign_request_id">
+                                                        <a href="#" t-att-onclick="'signRequest(' + str(req.sign_request_id.id) + ')'" 
+                                                           class="btn btn-sm btn-outline-primary">
+                                                            <i class="fa fa-signature"></i> Sign
+                                                        </a>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted">N/A</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a t-attf-href="/my/requests/#{req.id}" class="btn btn-outline-primary">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                        <button class="btn btn-outline-info" 
+                                                                t-att-onclick="'trackRequest(' + str(req.id) + ')'"
+                                                                t-if="req.state in ['submitted', 'in_progress']">
+                                                            <i class="fa fa-map-marker"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Enhanced User Management Template -->
+        <template id="portal_users" name="User Management">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Manage Users</t>
+                
+                <div class="o_portal_users">
+                    <!-- Bulk Import Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fa fa-upload"></i>
+                                Bulk User Import
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="/my/users/import" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label for="user_file">CSV File</label>
+                                            <input type="file" name="file" id="user_file" class="form-control-file" accept=".csv" required/>
+                                            <small class="form-text text-muted">
+                                                Upload a CSV file with columns: name, email, department, access_level
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>&amp;nbsp;</label>
+                                            <button type="submit" class="btn btn-primary btn-block">
+                                                <i class="fa fa-upload"></i> Import Users
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- User Management Table -->
+                    <div class="card">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0">
+                                <i class="fa fa-users"></i>
+                                Current Users
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Access Level</th>
+                                            <th>Department</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="users" t-as="user">
+                                            <tr>
+                                                <td>
+                                                    <strong t-esc="user.name"/>
+                                                </td>
+                                                <td t-esc="user.email"/>
+                                                <td>
+                                                    <select class="form-control form-control-sm" 
+                                                            t-att-onchange="'updateAccess(' + str(user.id) + ', this.value)'">
+                                                        <option value="viewer" 
+                                                                t-att-selected="'selected' if user.access_level == 'viewer' else None">
+                                                            Viewer
+                                                        </option>
+                                                        <option value="editor" 
+                                                                t-att-selected="'selected' if user.access_level == 'editor' else None">
+                                                            Editor
+                                                        </option>
+                                                        <option value="admin" 
+                                                                t-att-selected="'selected' if user.access_level == 'admin' else None">
+                                                            Admin
+                                                        </option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control form-control-sm" 
+                                                            t-att-onchange="'updateDept(' + str(user.id) + ', this.value)'">
+                                                        <option value="">Select Department</option>
+                                                        <t t-foreach="departments" t-as="dept">
+                                                            <option t-att-value="dept.id" 
+                                                                    t-att-selected="'selected' if user.department_id and user.department_id.id == dept.id else None"
+                                                                    t-esc="dept.name"/>
+                                                        </t>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <span t-att-class="'badge badge-' + ('success' if user.active else 'secondary')"
+                                                          t-esc="'Active' if user.active else 'Inactive'"/>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-info" 
+                                                                t-att-onclick="'editUser(' + str(user.id) + ')'">
+                                                            <i class="fa fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-danger" 
+                                                                t-att-onclick="'deactivateUser(' + str(user.id) + ')'"
+                                                                t-if="user.active">
+                                                            <i class="fa fa-ban"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
 </odoo>

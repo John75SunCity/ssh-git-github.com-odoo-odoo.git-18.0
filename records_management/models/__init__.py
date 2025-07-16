@@ -1,3 +1,5 @@
+# Updated file: Added imports for new models (portal_request, temp_inventory, fsm extensions).
+
 from . import installer
 from . import ir_actions_report
 from . import ir_module
@@ -16,8 +18,9 @@ from . import stock_lot
 from . import stock_move_sms_validation
 from . import stock_picking
 from . import customer_inventory_report
-from . import bale  # New: Model for paper bales
-from . import load  # New: Model for trailer loads
-from . import naid_audit  # New: NAID audit logging
-from . import hr_employee_naid  # New: HR employee NAID extensions
-from . import naid_custody  # New: NAID chain of custody
+from . import paper_bale
+from . import trailer_load
+from . import portal_request  # New: Model for portal requests (destruction, services)
+from . import temp_inventory  # New: Model for temporary inventory additions
+from . import fsm_task  # New: Extension for FSM tasks from portal
+from . import hr_employee  # Updated: For user access imports
