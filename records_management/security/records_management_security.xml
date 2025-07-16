@@ -46,4 +46,40 @@
         <field name="global" eval="True"/>
         <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
     </record>
+
+    <!-- New group for technicians (e.g., signing bales during weighing/shredding) -->
+    <record id="group_technician" model="res.groups">
+        <field name="name">Technician</field>
+        <field name="category_id" ref="module_records_management_category"/>
+        <field name="implied_ids" eval="[(4, ref('group_records_management_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>  <!-- Add admin for testing; adjust in production -->
+    </record>
+
+    <!-- New rule for bale signing (technicians can only edit their assigned bales) -->
+    <record id="rule_bale_sign" model="ir.rule">
+        <field name="name">Bale: Technician Signing</field>
+        <field name="model_id" ref="model_records_management_bale"/>
+        <field name="groups" eval="[(4, ref('records_management.group_technician'))]"/>
+        <field name="domain_force">[('technician_id.user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Multi-company rule for bales -->
+    <record id="records_bale_comp_rule" model="ir.rule">
+        <field name="name">Records Bale: multi-company</field>
+        <field name="model_id" ref="model_records_management_bale"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Multi-company rule for loads -->
+    <record id="records_load_comp_rule" model="ir.rule">
+        <field name="name">Records Load: multi-company</field>
+        <field name="model_id" ref="model_records_management_load"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+    </record>
 </odoo>
