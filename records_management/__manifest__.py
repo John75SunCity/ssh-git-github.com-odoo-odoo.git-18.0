@@ -48,13 +48,16 @@ Track document shredding, HDD/uniform destruction, POS walk-ins, paper baling, l
         # Business Critical (per review recommendations)
         'account',         # For auto-invoicing and financial integration
         'sale',           # For quotes and sales orders
-        'hr',             # For technician signatures
+        'hr',             # For technician signatures & NAID employee screening
+        
+        # NAID AAA Compliance Requirements
+        'barcodes',       # For chain of custody scanning
         
         # Modern Features (uncomment as needed)
         'website',        # For customer portal and self-quotes  
         'point_of_sale',  # For walk-in services
         # 'fleet',        # For vehicle tracking
-        # 'iot',          # For scale integration
+        # 'iot',          # For scale integration & facility security
         # 'quality',      # For quality control
     ],
     'data': [
@@ -67,6 +70,8 @@ Track document shredding, HDD/uniform destruction, POS walk-ins, paper baling, l
         'data/storage_fee.xml',
         'data/scheduled_actions.xml',
         'data/paper_products.xml',  # Optimized: Add bale/paper types as products
+        'data/naid_compliance_data.xml',  # New: NAID compliance sequences and policies
+        'security/naid_security.xml',  # New: NAID compliance security groups
         'views/records_tag_views.xml',
         'views/records_location_views.xml',
         'views/records_retention_policy_views.xml',
@@ -83,6 +88,7 @@ Track document shredding, HDD/uniform destruction, POS walk-ins, paper baling, l
         'views/barcode_views.xml',
         'views/paper_bale_views.xml',  # Optimized: Add OWL for modern bale list
         'views/trailer_load_views.xml',  # Optimized: OWL truck visualization
+        'views/naid_compliance_views.xml',  # New: NAID AAA compliance views
         'views/pos_config_views.xml',  # Optimized: POS for walk-in shredding
         'report/records_reports.xml',
         'report/destruction_certificate_report.xml',  # Optimized: Add QR for chain-of-custody

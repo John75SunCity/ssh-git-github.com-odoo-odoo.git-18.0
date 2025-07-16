@@ -18,3 +18,6 @@ from . import stock_picking
 from . import customer_inventory_report
 from . import bale  # New: Model for paper bales
 from . import load  # New: Model for trailer loads
+from . import naid_audit  # New: NAID audit logging
+from . import hr_employee_naid  # New: HR employee NAID extensions
+from . import naid_custody  # New: NAID chain of custody

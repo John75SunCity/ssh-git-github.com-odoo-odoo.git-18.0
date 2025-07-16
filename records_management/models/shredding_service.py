@@ -9,10 +9,142 @@ class ShreddingService(models.Model):
     """Document Shredding Service with enhanced workflow - Odoo 18.0 optimized."""
     _name = 'shredding.service'
     _description = 'Document Shredding Service'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'service_date desc, name'
+    
+    # NAID AAA Compliance Methods
+    def action_start_destruction(self):
+        """Start the destruction process with NAID compliance tracking"""
+        self.write({
+            'status': 'in_progress',
+            'destruction_start_time': fields.Datetime.now()
+        })
+        
+        # Log the start of destruction
+        self.env['naid.audit.log'].log_event(
+            'destruction_start',
+            f'Destruction process started for service {self.name}',
+            employee_id=self.env.user.employee_id.id,
+            partner_id=self.customer_id.id,
+            risk_level='high',
+            compliance_status='compliant'
+        )
+        
+        return True
 
-    # Core Fields (cleaned and optimized)
+    def action_complete_destruction(self):
+        """Complete destruction with full NAID compliance verification"""
+        # Ensure required fields are filled
+        if not self.destruction_method:
+            raise ValidationError(_("Destruction method must be specified for compliance."))
+        
+        if not self.witness_employee_ids:
+            raise ValidationError(_("At least one witness is required for NAID compliance."))
+        
+        self.write({
+            'status': 'completed',
+            'destruction_end_time': fields.Datetime.now()
+        })
+        
+        # Create chain of custody record
+        self._create_chain_of_custody()
+        
+        # Log the completion
+        self.env['naid.audit.log'].log_event(
+            'destruction_complete',
+            f'Destruction process completed for service {self.name}. '
+            f'Method: {self.destruction_method}, Duration: {self.destruction_duration:.2f} hours',
+            employee_id=self.env.user.employee_id.id,
+            partner_id=self.customer_id.id,
+            risk_level='medium',
+            compliance_status='compliant',
+            witness_employee_ids=[(6, 0, self.witness_employee_ids.ids)]
+        )
+        
+        return True
+
+    def action_verify_compliance(self):
+        """Verify NAID AAA compliance"""
+        # Check all compliance requirements
+        compliance_issues = self._check_compliance_requirements()
+        
+        if compliance_issues:
+            raise ValidationError(_("Compliance verification failed:\n%s") % '\n'.join(compliance_issues))
+        
+        self.write({
+            'compliance_verified': True,
+            'verification_employee_id': self.env.user.employee_id.id,
+            'verification_date': fields.Datetime.now()
+        })
+        
+        # Log compliance verification
+        self.env['naid.audit.log'].log_event(
+            'audit_review',
+            f'NAID AAA compliance verified for service {self.name}',
+            employee_id=self.env.user.employee_id.id,
+            partner_id=self.customer_id.id,
+            risk_level='low',
+            compliance_status='compliant'
+        )
+        
+        return True
+
+    def _create_chain_of_custody(self):
+        """Create chain of custody record for NAID compliance"""
+        if not self.chain_of_custody_id:
+            custody_vals = {
+                'name': f'COC-{self.name}',
+                'service_id': self.id,
+                'customer_id': self.customer_id.id,
+                'start_date': self.destruction_start_time,
+                'end_date': self.destruction_end_time,
+                'custody_events': [(0, 0, {
+                    'event_type': 'destruction',
+                    'timestamp': self.destruction_end_time,
+                    'employee_id': self.env.user.employee_id.id,
+                    'description': f'Materials destroyed using {self.destruction_method}',
+                    'witness_employee_ids': [(6, 0, self.witness_employee_ids.ids)]
+                })]
+            }
+            
+            custody = self.env['naid.chain.custody'].create(custody_vals)
+            self.chain_of_custody_id = custody.id
+
+    def _check_compliance_requirements(self):
+        """Check all NAID AAA compliance requirements"""
+        issues = []
+        
+        # Check basic requirements
+        if not self.destruction_method:
+            issues.append("Destruction method not specified")
+        
+        if not self.security_level:
+            issues.append("Security level not specified")
+        
+        if not self.equipment_used:
+            issues.append("Equipment used not documented")
+        
+        if not self.witness_employee_ids:
+            issues.append("No witnesses documented")
+        
+        # Check employee compliance
+        for witness in self.witness_employee_ids:
+            if witness.compliance_status != 'compliant':
+                issues.append(f"Witness {witness.name} is not NAID compliant")
+        
+        # Check destruction times
+        if not self.destruction_start_time or not self.destruction_end_time:
+            issues.append("Destruction times not properly documented")
+        
+        # Check weight documentation
+        if not self.pre_destruction_weight:
+            issues.append("Pre-destruction weight not documented")
+        
+        return issues
+
+
+class ShreddingService(models.Model):
+    """Document Shredding Service with enhanced workflow - Odoo 18.0 optimized."""
+    _name = 'shredding.service'
+    _description = 'Document Shredding Service'
     name = fields.Char(string='Service Reference', required=True, default='New', tracking=True)
     status = fields.Selection([
         ('draft', 'Draft'), ('confirmed', 'Confirmed'), ('in_progress', 'In Progress'),
@@ -48,6 +180,107 @@ class ShreddingService(models.Model):
     
     # Integration Fields (new per review)
     pos_session_id = fields.Many2one('pos.session', string='POS Session')  # Walk-in services
+    
+    # NAID AAA Compliance Fields
+    chain_of_custody_id = fields.Many2one(
+        'naid.chain.custody', 
+        string='Chain of Custody',
+        help='NAID chain of custody record'
+    )
+    
+    witness_employee_ids = fields.Many2many(
+        'hr.employee',
+        'shredding_witness_rel',
+        'service_id',
+        'employee_id',
+        string='Witnesses',
+        help='Employees who witnessed the destruction process'
+    )
+    
+    destruction_method = fields.Selection([
+        ('cross_cut', 'Cross-Cut Shredding'),
+        ('micro_cut', 'Micro-Cut Shredding'),
+        ('pulverization', 'Pulverization'),
+        ('incineration', 'Incineration'),
+        ('degaussing', 'Degaussing (Magnetic Media)'),
+        ('physical_destruction', 'Physical Destruction')
+    ], string='Destruction Method', help='Method used for destruction')
+    
+    security_level = fields.Selection([
+        ('p1', 'P-1 (General Documents)'),
+        ('p2', 'P-2 (Internal Documents)'),
+        ('p3', 'P-3 (Confidential Documents)'),
+        ('p4', 'P-4 (Secret Documents)'),
+        ('p5', 'P-5 (Top Secret Documents)'),
+        ('p6', 'P-6 (Highly Classified Documents)'),
+        ('p7', 'P-7 (Maximum Security Documents)')
+    ], string='Security Level', help='DIN 66399 security level')
+    
+    particle_size = fields.Char(
+        string='Particle Size',
+        help='Maximum particle size after destruction (e.g., 2x15mm)'
+    )
+    
+    equipment_used = fields.Char(
+        string='Equipment Used',
+        help='Specific equipment used for destruction'
+    )
+    
+    equipment_serial_number = fields.Char(
+        string='Equipment Serial Number',
+        help='Serial number of destruction equipment'
+    )
+    
+    pre_destruction_weight = fields.Float(
+        string='Pre-Destruction Weight (lbs)',
+        help='Weight of materials before destruction'
+    )
+    
+    post_destruction_weight = fields.Float(
+        string='Post-Destruction Weight (lbs)',
+        help='Weight of materials after destruction'
+    )
+    
+    destruction_start_time = fields.Datetime(
+        string='Destruction Start Time',
+        help='When destruction process began'
+    )
+    
+    destruction_end_time = fields.Datetime(
+        string='Destruction End Time',
+        help='When destruction process completed'
+    )
+    
+    destruction_duration = fields.Float(
+        string='Destruction Duration (Hours)',
+        compute='_compute_destruction_duration',
+        store=True,
+        help='Total time for destruction process'
+    )
+    
+    compliance_verified = fields.Boolean(
+        string='Compliance Verified',
+        default=False,
+        help='Whether NAID compliance has been verified'
+    )
+    
+    verification_employee_id = fields.Many2one(
+        'hr.employee',
+        string='Verified By',
+        help='Employee who verified compliance'
+    )
+    
+    verification_date = fields.Datetime(
+        string='Verification Date',
+        help='When compliance was verified'
+    )
+    
+    # Audit trail
+    audit_log_ids = fields.One2many(
+        'naid.audit.log',
+        compute='_compute_audit_logs',
+        string='Related Audit Logs'
+    )
     bale_ids = fields.One2many('records_management.bale', 'service_id', string='Generated Bales')  # Link to bales
     
     # Audit and Compliance
@@ -100,6 +333,29 @@ class ShreddingService(models.Model):
                 record.map_display = f"https://www.google.com/maps?q={record.latitude},{record.longitude}"
             else:
                 record.map_display = False
+
+    @api.depends('destruction_start_time', 'destruction_end_time')
+    def _compute_destruction_duration(self):
+        """Compute destruction process duration in hours"""
+        for record in self:
+            if record.destruction_start_time and record.destruction_end_time:
+                delta = record.destruction_end_time - record.destruction_start_time
+                record.destruction_duration = delta.total_seconds() / 3600.0
+            else:
+                record.destruction_duration = 0.0
+
+    def _compute_audit_logs(self):
+        """Compute related audit logs for this service"""
+        for record in self:
+            # Get audit logs that reference this service or its components
+            logs = self.env['naid.audit.log'].search([
+                '|', '|', '|',
+                ('service_id', '=', record.id),
+                ('box_id', 'in', record.shredded_box_ids.ids),
+                ('bale_id', 'in', record.bale_ids.ids),
+                ('partner_id', '=', record.customer_id.id)
+            ])
+            record.audit_log_ids = logs
 
     # Validation & Constraints
     @api.constrains('service_date', 'scheduled_date')
