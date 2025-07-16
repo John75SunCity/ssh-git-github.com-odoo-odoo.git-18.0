@@ -1,39 +1,37 @@
 {
-  "name": "Odoo Development Environment",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": ".." // Consider narrowing context if possible to reduce build time
-  },
-  "workspaceFolder": "/ssh-git-github.com-odoo-odoo.git-8.0",
+  "name": "Odoo 18 Development Environment",
+  "image": "odoo:18.0",  // Pre-built official Odoo 18 image for optimized build time in Codespaces; switch back to "build" if custom Dockerfile is required
+  //"build": {
+  //  "dockerfile": "Dockerfile",
+  //  "context": "."  // Narrowed to "." for faster builds; assume your Dockerfile installs Odoo 18 deps (Python 3.10, psycopg2, etc.)
+  //},
+  "workspaceFolder": "/workspace",
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "ms-python.black-formatter",
+        "python.black-formatter",
         "ms-python.flake8",
         "GitHub.copilot-chat",
+        "GitHub.copilot",  // Ensures Copilot is installed
         "ms-vscode.vscode-json",
-        "ms-vscode.vscode-typescript-next",
-        "bradlc.vscode-tailwindcss",
-        "formulahendry.auto-rename-tag",
+        "ms-vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",  // For modern UI elements in Odoo views
+        "formulahendry": "auto-rename-tag",
         "esbenp.prettier-vscode",
         "ms-vscode-remote.remote-containers",
-        "GitHub.copilot",
         "ms-vscode-remote.remote-ssh",
         "ms-vscode.remote-server",
         "ms-vscode-remote.remote-wsl",
-        "GitHub.codespaces"
-        // To add more extensions, simply add their IDs here:
-        // "ms-vscode.vscode-xml",           // XML support
-        // "ms-toolsai.jupyter",            // Jupyter notebooks
-        // "redhat.vscode-yaml",            // YAML support
-        // "odoo.odoo-snippets"             // Odoo-specific snippets (if available)
-        // Add more Odoo-specific or Python QA/testing extensions as needed
+        "GitHub.codespaces",  // For seamless Codespaces integration
+        "redhat.vscode-xml",  // Added for Odoo views/models (XML support)
+        "redhat.vscode-yaml",  // Added for manifests and configs
+        "odoo.odoo-snippets"  // Added for Odoo-specific code snippets (if available; enhances productivity for module dev)
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
-        "python.defaultInterpreterPath": "/usr/local/bin/python", // Ensure Python version matches Odoo's requirements
+        "settings": "python.defaultInterpreterPath": "/usr/bin/python3",  // Odoo 18 uses Python 3.10; confirm in image
         "python.linting.enabled": true,
         "python.linting.flake8Enabled": true,
         "python.formatting.provider": "black",
@@ -45,17 +43,13 @@
           "**/.git": false,
           "**/.DS_Store": true,
           "**/*.log": true
-          // Add more patterns if there are additional unwanted files
         }
       }
     }
   },
   "remoteUser": "odoo",
-  "mounts": [
-    "source=${localWorkspaceFolder},target=/workspace,type=bind"
-    // Add more mounts for logs or config files if needed
-  ],
-  "forwardPorts": [8069, 8071, 8072],
+  // Removed bind mount—redundant in Codespaces as repo is at /workspace
+  "forwardPorts": [8069, 8071, 8072, 5432],  // Added 5432 for Postgres access
   "portsAttributes": {
     "8069": {
       "label": "Odoo HTTP",
@@ -68,13 +62,12 @@
     "8072": {
       "label": "Odoo Longpolling",
       "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "Postgres DB",
+      "onAutoForward": "silent"  // Silent for background
     }
   },
-  "postCreateCommand": "bash -c 'cd /workspace && if [ -f package.json ]; then npm ci; fi && echo \"DevContainer setup complete!\"'",
+  "postCreateCommand": "apt-get update && apt-get install -y postgresql postgresql-client && su - postgres -c 'pg_ctlcluster start && createuser -s odoo' && pip install black flake8 && if [ -f /workspace/package.json ]; then npm ci; fi && echo 'Odoo 18 Codespaces setup complete! Run Odoo with: odoo -c /workspace/odoo.conf --addons-path=/workspace/records_management'",  // Enhanced for Odoo 18 dev (installs PG in-container, linters, suggests start command for your module)
   "remoteEnv": {
     "PYTHONPATH": "/workspace:/workspace/records_management",
-    "ODOO_RC": "/workspace/odoo.conf",
-    "PGHOST": "localhost",
-    "PGPORT": "5432"
-  }
-}
