@@ -1,7 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Paper baling and recycling products will be defined here -->
+        <!-- Paper baling and recycling products -->
+        
+        <!-- Paper Type Products for Baling -->
+        <record id="product_paper_white" model="product.product">
+            <field name="name">White Paper Bale</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="uom_id" ref="uom.product_uom_lb"/>
+            <field name="uom_po_id" ref="uom.product_uom_lb"/>
+            <field name="list_price">0.08</field>  <!-- $ per lb for white paper -->
+            <field name="standard_price">0.05</field>
+            <field name="default_code">PAPER-WHITE</field>
+            <field name="description">High-grade white paper suitable for recycling</field>
+        </record>
+        
+        <record id="product_paper_mixed" model="product.product">
+            <field name="name">Mixed Paper Bale</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="uom_id" ref="uom.product_uom_lb"/>
+            <field name="uom_po_id" ref="uom.product_uom_lb"/>
+            <field name="list_price">0.06</field>  <!-- $ per lb for mixed paper -->
+            <field name="standard_price">0.03</field>
+            <field name="default_code">PAPER-MIXED</field>
+            <field name="description">Mixed office paper and documents</field>
+        </record>
+        
+        <record id="product_paper_cardboard" model="product.product">
+            <field name="name">Cardboard Bale</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="uom_id" ref="uom.product_uom_lb"/>
+            <field name="uom_po_id" ref="uom.product_uom_lb"/>
+            <field name="list_price">0.04</field>  <!-- $ per lb for cardboard -->
+            <field name="standard_price">0.02</field>
+            <field name="default_code">PAPER-CARDBOARD</field>
+            <field name="description">Corrugated cardboard and heavy paper products</field>
+        </record>
+        
+        <!-- Service Products -->
+        <record id="product_baling_service" model="product.product">
+            <field name="name">Paper Baling Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="list_price">25.00</field>  <!-- $ per bale -->
+            <field name="standard_price">15.00</field>
+            <field name="default_code">SVC-BALING</field>
+            <field name="description">Professional paper baling and compression service</field>
+        </record>
+        
+        <record id="product_load_transport" model="product.product">
+            <field name="name">Load Transportation</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="list_price">150.00</field>  <!-- $ per load -->
+            <field name="standard_price">100.00</field>
+            <field name="default_code">SVC-TRANSPORT</field>
+            <field name="description">Trailer load pickup and transportation service</field>
+        </record>
         
     </data>
 </odoo>

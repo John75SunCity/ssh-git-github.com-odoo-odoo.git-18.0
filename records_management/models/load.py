@@ -6,6 +6,7 @@ class Load(models.Model):
     _description = 'Paper Load'
     _inherit = ['stock.picking', 'mail.thread']
 
+    name = fields.Char(default=lambda self: self.env['ir.sequence'].next_by_code('records_management.load'))
     bale_ids = fields.One2many('records_management.bale', 'load_id')
     bale_count = fields.Integer(compute='_compute_bale_count')
     weight_total = fields.Float(compute='_compute_weight_total')

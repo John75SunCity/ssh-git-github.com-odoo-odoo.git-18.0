@@ -25,5 +25,13 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
+        
+        <record id="seq_records_load" model="ir.sequence">
+            <field name="name">Paper Load</field>
+            <field name="code">records_management.load</field>
+            <field name="prefix">LOAD/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>

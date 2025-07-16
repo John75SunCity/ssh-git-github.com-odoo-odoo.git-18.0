@@ -1,17 +1,30 @@
+# Optimized .gitignore for Odoo Records Management
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.swp
+
+# Odoo
 *.log
 *.db
 *.sql
 *.conf
 *.pid
 *.dump
+odoo.sh/
+
+# Development
 node_modules/
 static/lib/
 temp_labels/  # For generated bale PDFs
 .DS_Store
 .vscode/
 .idea/
-odoo.sh/
+
+# Project-specific (per review recommendations)
+COPILOT .PY FILES/
+COPILOT SUMMARIES/
+*.csv  # Analysis files
+missing_invoices.txt
+expected_invoices.txt

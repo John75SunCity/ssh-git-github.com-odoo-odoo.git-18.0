@@ -1,26 +1,38 @@
 {
     'name': 'Records Management',
-    'version': '18.0.3.0.0',  # Bumped for optimizations and additions
-    'category': 'Document Management',
-    'summary': 'Manage physical document boxes, records, shredding, and recycling services',
+    'version': '18.0.1.0.0',  # Aligned with review recommendations
+    'category': 'Industry',  # Changed from Document Management for broader appeal
+    'summary': 'Enterprise DMS for Shredding, Destruction, and Recycling',  # Optimized for App Store
     'description': """
-Records Management System
-========================
-Advanced system for managing physical document boxes, records, shredding, hard drive destruction, uniform shredding, walk-in services, and paper recycling:
+Enterprise Records Management System
+==================================
+Track document shredding, HDD/uniform destruction, POS walk-ins, paper baling, loads, invoices, and sales.
 
-Features:
-- Track box locations and contents
-- Manage document retention policies
-- Link documents to partners and other Odoo records
-- Generate reports on document status
-- Pickup request management
-- Shredding service functionality (documents, hard drives, uniforms)
-- Customer inventory tracking
-- Paper baling, weighing, and trailer load management
-- Auto-invoicing on bale pickup
-- Customer portal with certificates, PO updates, and self-quotes
-- POS integration for walk-in services
-- Modern UI with tractor trailer loading visualization
+🏭 **Industry Features:**
+• Physical document box tracking with QR codes
+• HDD, uniform, and document destruction services  
+• Paper baling with weight tracking and trailer visualization
+• Auto-invoicing with market rate integration
+• POS integration for walk-in shredding services
+
+📊 **Modern UI & Analytics:**
+• Interactive truck loading progress (OWL-powered SVG)
+• Real-time dashboards and pivot reports
+• QR code chain-of-custody tracking
+• Customer portal with self-service quotes
+
+🔒 **Compliance & Security:**
+• ISO 15489-1:2016 records management standards
+• NAID AAA shredding compliance
+• GDPR/CCPA data protection features
+• Complete audit trails and destruction certificates
+
+⚡ **Advanced Integrations:**
+• Stock/Inventory management
+• Account/Invoicing automation  
+• Sales quote generation
+• Fleet/Vehicle tracking
+• HR technician signatures
     """,
     'author': 'John75SunCity',
     'website': 'https://github.com/John75SunCity',
