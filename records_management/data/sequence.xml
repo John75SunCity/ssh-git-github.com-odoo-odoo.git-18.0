@@ -17,5 +17,13 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
+        
+        <record id="seq_records_bale" model="ir.sequence">
+            <field name="name">Paper Bale</field>
+            <field name="code">records_management.bale</field>
+            <field name="prefix">BALE/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>

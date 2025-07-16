@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="load_kanban_view" model="ir.ui.view">
+            <field name="name">records_management.load_kanban</field>
+            <field name="model">records_management.load</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state">
+                    <field name="bale_count"/>
+                    <field name="weight_total"/>
+                    <field name="state"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="o_kanban_record">
+                                <div class="truck-widget">
+                                    <!-- OWL-integrated SVG for modern, interactive truck -->
+                                    <t t-component="TruckProgressWidget" t-props="{'bale_count': record.bale_count.raw_value, 'max': 28}"/>
+                                </div>
+                                <div>Weight: <field name="weight_total"/> lbs | Status: <field name="state" widget="badge" decoration-success="state=='done'"/></div>
+                                <div>Invoice: <field name="invoice_id" widget="monetary" decoration-danger="invoice_id.state != 'posted'"/></div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+    </data>
+</odoo>

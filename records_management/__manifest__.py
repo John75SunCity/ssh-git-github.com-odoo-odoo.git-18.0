@@ -94,6 +94,7 @@ Features:
             'records_management/static/src/scss/records_management.scss',
             'records_management/static/src/js/map_widget.js',
             'records_management/static/src/js/trailer_visualization.js',  # Optimized: JS for interactive truck
+            'records_management/static/src/js/truck_widget.js',  # New: OWL truck progress widget
         ],
         'web.assets_frontend': [  # For portal
             'records_management/static/src/js/portal_quote_generator.js',

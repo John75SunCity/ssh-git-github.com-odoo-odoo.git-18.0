@@ -1,7 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Bale label report with technician signatures and dates will be defined here -->
+        <!-- Bale label report with technician signatures and dates -->
+        <report id="bale_label_report" 
+                model="records_management.bale" 
+                string="Bale Label" 
+                report_type="qweb-pdf" 
+                name="records_management.bale_label_template"
+                file="records_management.bale_label"
+                print_report_name="'Bale_Label_%s' % (object.name)"/>
+        
+        <!-- Print action for easy access -->
+        <record id="action_print_bale_label" model="ir.actions.report">
+            <field name="name">Print Bale Label</field>
+            <field name="model">records_management.bale</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">records_management.bale_label_template</field>
+            <field name="report_file">records_management.bale_label</field>
+            <field name="binding_model_id" ref="model_records_management_bale"/>
+            <field name="binding_type">report</field>
+        </record>
+        
+        <template id="bale_label_template">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <div class="bale-label" style="border: 2px solid #000; padding: 20px; max-width: 400px; margin: auto;">
+                        <div class="header" style="text-align: center; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 15px;">
+                            <h2 style="margin: 0; font-size: 24px;">BALE LABEL</h2>
+                            <h3 style="margin: 5px 0; font-size: 20px; color: #333;">
+                                <span t-field="doc.name"/>
+                            </h3>
+                        </div>
+                        
+                        <div class="bale-info" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                            <div>
+                                <strong>Type:</strong><br/>
+                                <span t-field="doc.paper_type" style="text-transform: uppercase; font-weight: bold;"/>
+                            </div>
+                            <div>
+                                <strong>Weight:</strong><br/>
+                                <span t-field="doc.weight"/> lbs
+                            </div>
+                            <div>
+                                <strong>Date:</strong><br/>
+                                <span t-field="doc.date"/>
+                            </div>
+                            <div>
+                                <strong>Technician:</strong><br/>
+                                <span t-field="doc.technician_id.name"/>
+                            </div>
+                        </div>
+                        
+                        <div class="signatures" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <div class="tech-signature" style="text-align: center;">
+                                <div style="border: 1px solid #ccc; min-height: 60px; width: 120px; display: flex; align-items: center; justify-content: center;">
+                                    <img t-if="doc.signature" t-att-src="'data:image/png;base64,%s' % to_text(doc.signature)" style="max-width:100px; max-height:50px;"/>
+                                    <span t-if="not doc.signature" style="color: #999;">No Signature</span>
+                                </div>
+                                <small>Technician Signature</small>
+                            </div>
+                            
+                            <div class="qr-code" style="text-align: center;">
+                                <img t-if="doc.qr_code" t-att-src="'data:image/png;base64,%s' % to_text(doc.qr_code)" style="width:80px; height:80px;"/>
+                                <br/>
+                                <small>Scan for Details</small>
+                            </div>
+                        </div>
+                        
+                        <div class="footer" style="border-top: 1px solid #ccc; padding-top: 10px; text-align: center; font-size: 10px; color: #666;">
+                            <t t-if="doc.load_id">
+                                Load: <span t-field="doc.load_id.name"/> | 
+                            </t>
+                            Generated: <span t-esc="datetime.datetime.now().strftime('%Y-%m-%d %H:%M')"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
         
     </data>
 </odoo>

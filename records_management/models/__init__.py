@@ -16,6 +16,5 @@ from . import stock_lot
 from . import stock_move_sms_validation
 from . import stock_picking
 from . import customer_inventory_report
-# TODO: Move paper_bale.py from root to models/ directory
-# from . import paper_bale  # New: Model for paper bales
-from . import trailer_load  # New: Model for trailer loads
+from . import bale  # New: Model for paper bales
+from . import load  # New: Model for trailer loads
