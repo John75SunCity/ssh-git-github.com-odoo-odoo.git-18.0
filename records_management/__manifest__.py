@@ -1,6 +1,6 @@
 {
     'name': 'Records Management',
-    'version': '18.0.2.0.0',  # Bumped version for improvements
+    'version': '18.0.3.0.0',  # Bumped for optimizations and additions
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, and recycling services',
     'description': """
@@ -33,10 +33,13 @@ Features:
         'portal',
         'base_setup',
         'fleet',
-        'account',  # Added for invoicing
-        'sale',  # Added for quotes
-        'website',  # Added for potential quoting via website
-        'point_of_sale',  # Added for walk-in services
+        'account',  # For invoicing
+        'sale',  # For quotes
+        'website',  # For quoting via website
+        'point_of_sale',  # For walk-in services
+        'hr',  # Added: For technician signatures in baling/shredding
+        'report_xlsx',  # Added: For exportable reports/dashboards (e.g., load weights)
+        #'iot',  # Optional: For scale weighing integration in baling
     ],
     'data': [
         'security/records_management_security.xml',
@@ -47,7 +50,7 @@ Features:
         'data/products.xml',
         'data/storage_fee.xml',
         'data/scheduled_actions.xml',
-        'data/paper_products.xml',  # New: Products for bales, trailers
+        'data/paper_products.xml',  # Optimized: Add bale/paper types as products
         'views/records_tag_views.xml',
         'views/records_location_views.xml',
         'views/records_retention_policy_views.xml',
@@ -62,21 +65,24 @@ Features:
         'views/billing_views.xml',
         'views/departmental_billing_views.xml',
         'views/barcode_views.xml',
-        'views/paper_bale_views.xml',  # New: Bale management views
-        'views/trailer_load_views.xml',  # New: Trailer load views with visualization
-        'views/pos_config_views.xml',  # New: POS integration views
+        'views/paper_bale_views.xml',  # Optimized: Add OWL for modern bale list
+        'views/trailer_load_views.xml',  # Optimized: OWL truck visualization
+        'views/pos_config_views.xml',  # Optimized: POS for walk-in shredding
         'report/records_reports.xml',
-        'report/destruction_certificate_report.xml',  # New: Certificate report
-        'report/bale_label_report.xml',  # New: Bale label report
+        'report/destruction_certificate_report.xml',  # Optimized: Add QR for chain-of-custody
+        'report/bale_label_report.xml',  # Optimized: Include tech signature/date
         'views/records_management_menus.xml',
-        'templates/my_portal_inventory.xml',  # Enhanced with new features
+        'templates/my_portal_inventory.xml',  # Optimized: Add self-quotes/cert downloads
     ],
     'demo': [
         'demo/odoo.xml',
     ],
-    'qweb': [],
+    'qweb': [
+        'static/src/xml/trailer_visualization.xml',  # Added for OWL QWeb
+        'static/src/xml/map_widget.xml',  # Kept/optimized if for location tracking
+    ],
     'external_dependencies': {
-        'python': [],
+        'python': ['qrcode'],  # Added: For QR in labels/certs (pip in Dockerfile if needed)
         'bin': [],
     },
     'application': True,
@@ -87,12 +93,10 @@ Features:
         'web.assets_backend': [
             'records_management/static/src/scss/records_management.scss',
             'records_management/static/src/js/map_widget.js',
-            'records_management/static/src/xml/map_widget.xml',
-            'records_management/static/src/js/trailer_visualization.js',  # New: JS for tractor trailer visualization
-            'records_management/static/src/xml/trailer_visualization.xml',  # New: QWeb for visualization
+            'records_management/static/src/js/trailer_visualization.js',  # Optimized: JS for interactive truck
         ],
-        'web.assets_frontend': [  # Added for portal enhancements
-            'records_management/static/src/js/portal_quote_generator.js',
+        'web.assets_frontend': [  # For portal
+            'records_management/static/src/js/ gurportal_quote_generator.js',
         ],
     },
 }
