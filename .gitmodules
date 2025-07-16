@@ -1,0 +1,38 @@
+# External module links for Records Management  
+# Links to repos without copying files - keeps branch lean & dynamic
+
+# Uncomment modules as needed for specific features:
+
+# [submodule "addons/queue_job"]
+#     path = addons/queue_job
+#     url = https://github.com/OCA/queue.git  
+#     branch = 18.0
+#     # Use for: Async baling, background invoicing
+
+# [submodule "addons/document_retention"] 
+#     path = addons/document_retention
+#     url = https://github.com/OCA/server-tools.git
+#     branch = 18.0  
+#     # Use for: Advanced retention policies
+[submodule "addons/server_tools"]
+	path = addons/server_tools
+	url = https://github.com/OCA/server-tools.git
+	branch = 18.0
+
+# OCA Reporting Engine - Advanced reporting capabilities
+[submodule "addons/reporting_engine"]
+	path = addons/reporting_engine
+	url = https://github.com/OCA/reporting-engine.git
+	branch = 18.0
+
+# OCA Stock Logistics - Enhanced inventory features
+[submodule "addons/stock_logistics"]
+	path = addons/stock_logistics
+	url = https://github.com/OCA/stock-logistics-workflow.git
+	branch = 18.0
+
+# Optional: OCA Web modules for enhanced UI
+[submodule "addons/web"]
+	path = addons/web
+	url = https://github.com/OCA/web.git
+	branch = 18.0

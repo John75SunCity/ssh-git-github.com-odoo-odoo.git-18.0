@@ -1,0 +1,74 @@
+{
+  "name": "Odoo 18 Records Management Development",
+  "image": "odoo:18.0",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "ms-python.flake8",
+        "GitHub.copilot-chat",
+        "GitHub.copilot",
+        "ms-vscode.vscode-json",
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "formulahendry.auto-rename-tag",
+        "esbenp.prettier-vscode",
+        "ms-vscode-remote.remote-containers",
+        "ms-vscode-remote.remote-ssh",
+        "ms-vscode.remote-server",
+        "ms-vscode-remote.remote-wsl",
+        "GitHub.codespaces",
+        "redhat.vscode-xml",
+        "redhat.vscode-yaml",
+        "odoo.odoo-snippets",
+        "ms-vscode.hexeditor",
+        "ms-toolsai.jupyter"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "python.defaultInterpreterPath": "/usr/bin/python3",
+        "python.linting.enabled": true,
+        "python.linting.flake8Enabled": true,
+        "python.formatting.provider": "black",
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/*.pyc": true,
+          "**/node_modules": true,
+          "**/dist": true,
+          "**/.git": false,
+          "**/.DS_Store": true,
+          "**/*.log": true,
+          "**/addons/*/.*": true
+        },
+        "python.analysis.extraPaths": [
+          "/workspace",
+          "/workspace/records_management",
+          "/workspace/addons"
+        ]
+      }
+    }
+  },
+  "remoteUser": "odoo",
+  "forwardPorts": [8069, 8071, 8072, 5432],
+  "portsAttributes": {
+    "8069": { "label": "Odoo HTTP", "onAutoForward": "notify" },
+    "8071": { "label": "Odoo HTTPS", "onAutoForward": "notify" },
+    "8072": { "label": "Odoo Longpolling", "onAutoForward": "notify" },
+    "5432": { "label": "Postgres DB", "onAutoForward": "silent" }
+  },
+  "postCreateCommand": "git submodule update --init --recursive && apt-get update && apt-get install -y postgresql postgresql-client python3-dev libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev && su - postgres -c 'pg_ctlcluster 14 main start && createuser -s odoo' || echo 'DB setup skipped' && pip install -r requirements.txt && echo 'Setup complete! Run Odoo with: odoo -c /workspace/odoo.conf --addons-path=/workspace/records_management,/workspace/addons/queue_job,/workspace/addons/server_tools,/workspace/addons/reporting_engine,/workspace/addons/stock_logistics,/workspace/addons/web'",
+  "remoteEnv": {
+    "PYTHONPATH": "/workspace:/workspace/records_management:/workspace/addons",
+    "ODOO_RC": "/workspace/odoo.conf",
+    "PGHOST": "localhost",
+    "PGPORT": "5432",
+    "PGUSER": "odoo",
+    "PGPASSWORD": "odoo"
+  },
+  "mounts": [
+    "source=odoo-addons,target=/workspace/addons,type=volume"
+  ]
+}

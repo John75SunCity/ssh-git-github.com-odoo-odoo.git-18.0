@@ -37,21 +37,25 @@ Track document shredding, HDD/uniform destruction, POS walk-ins, paper baling, l
     'author': 'John75SunCity',
     'website': 'https://github.com/John75SunCity',
     'depends': [
+        # Essential Core (always installed)
         'base',
-        'product',
+        'product', 
         'stock',
         'mail',
         'web',
         'portal',
-        'base_setup',
-        'fleet',
-        'account',  # For invoicing
-        'sale',  # For quotes
-        'website',  # For quoting via website
-        'point_of_sale',  # For walk-in services
-        'hr',  # Added: For technician signatures in baling/shredding
-        'report_xlsx',  # Added: For exportable reports/dashboards (e.g., load weights)
-        #'iot',  # Optional: For scale weighing integration in baling
+        
+        # Business Critical
+        'account',         # For auto-invoicing
+        'sale',           # For quotes  
+        'hr',             # For technician signatures
+        
+        # Optional Advanced (install in Odoo.sh as needed)
+        # 'website',       # Uncomment for customer portal
+        # 'point_of_sale', # Uncomment for walk-in services
+        # 'fleet',         # Uncomment for vehicle tracking
+        # 'iot',           # Uncomment for scale integration
+        # 'quality',       # Uncomment for quality control
     ],
     'data': [
         'security/records_management_security.xml',

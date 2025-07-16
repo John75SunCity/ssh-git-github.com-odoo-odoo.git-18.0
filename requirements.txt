@@ -1,0 +1,24 @@
+# Essential Python dependencies for Records Management
+# Keep minimal for fast loading and dynamic updates
+
+qrcode[pil]==7.4.2  # For bale QR codes and chain-of-custody
+Pillow>=10.0.0      # Image processing for QR codes
+
+# Optional: Uncomment as needed for advanced features
+# web3>=6.20.0      # For blockchain custody tracking  
+# requests>=2.31.0  # For external API integrations (market rates)
+# web3==6.20.0
+
+# Optional: Advanced cryptography for compliance
+# cryptography==41.0.3
+
+# Optional: Async task processing (if using OCA queue_job)
+# kombu==5.3.1
+
+# Optional: Advanced reporting
+# xlsxwriter==3.1.2
+# reportlab==4.0.4
+
+# Optional: API integrations for market rates
+# requests==2.31.0  # Usually included in Odoo
+# python-dateutil==2.8.2  # Usually included in Odoo
