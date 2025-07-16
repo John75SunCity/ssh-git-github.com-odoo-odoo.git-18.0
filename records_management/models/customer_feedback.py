@@ -101,23 +101,24 @@ class CustomerFeedback(models.Model):
             else:
                 rec.sentiment_category = 'neutral'
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Create feedback with NAID audit logging"""
-        res = super().create(vals)
+        res = super().create(vals_list)
         
         # NAID audit logging
-        self.env['naid.audit.log'].sudo().create({
-            'user_id': self.env.user.id,
-            'partner_id': res.partner_id.id,
-            'action': 'feedback_submission',
-            'resource_type': 'customer_feedback',
-            'resource_id': res.id,
-            'access_date': fields.Datetime.now(),
-            'ip_address': self.env.context.get('ip_address'),
-            'user_agent': self.env.context.get('user_agent'),
-            'details': f'Feedback submitted: {res.feedback_type} - Rating: {res.rating}'
-        })
+        for record in res:
+            self.env['naid.audit.log'].sudo().create({
+                'user_id': self.env.user.id,
+                'partner_id': record.partner_id.id,
+                'action': 'feedback_submission',
+                'resource_type': 'customer_feedback',
+                'resource_id': record.id,
+                'access_date': fields.Datetime.now(),
+                'ip_address': self.env.context.get('ip_address'),
+                'user_agent': self.env.context.get('user_agent'),
+                'details': f'Feedback submitted: {record.feedback_type} - Rating: {record.rating}'
+            })
         
         # Post message for tracking
         res.message_post(

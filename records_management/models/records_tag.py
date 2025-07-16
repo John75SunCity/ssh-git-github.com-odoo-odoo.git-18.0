@@ -1,6 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import models, fields, _
+from odoo import models, fields
 
 
 class RecordsTag(models.Model):
@@ -13,5 +13,5 @@ class RecordsTag(models.Model):
     color = fields.Integer(string='Color Index')
 
     _sql_constraints = [
-        ('name_uniq', 'unique (name)', _("Tag name already exists!"))
+        ('name_uniq', 'unique (name)', "Tag name already exists!")
     ]

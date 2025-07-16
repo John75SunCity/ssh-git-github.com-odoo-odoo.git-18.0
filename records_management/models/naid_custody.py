@@ -114,12 +114,13 @@ class NAIDChainOfCustody(models.Model):
             else:
                 record.current_custodian_id = False
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Auto-generate sequence number"""
-        if vals.get('name', 'New') == 'New':
-            vals['name'] = self.env['ir.sequence'].next_by_code('naid.chain.custody') or 'New'
-        return super().create(vals)
+        for vals in vals_list:
+            if vals.get('name', 'New') == 'New':
+                vals['name'] = self.env['ir.sequence'].next_by_code('naid.chain.custody') or 'New'
+        return super().create(vals_list)
 
     def action_transfer_custody(self):
         """Transfer custody to another employee"""
@@ -224,20 +225,21 @@ class NAIDCustodyEvent(models.Model):
     
     notes = fields.Text(string='Additional Notes')
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Auto-log custody event in audit log"""
-        event = super().create(vals)
+        events = super().create(vals_list)
         
-        # Create corresponding audit log
-        self.env['naid.audit.log'].log_event(
-            'document_handling',
-            f"Custody event: {event.event_type} - {event.description}",
-            employee_id=event.employee_id.id,
-            partner_id=event.custody_id.customer_id.id,
-            risk_level='medium',
-            compliance_status='compliant',
-            custody_chain=f"Chain of Custody: {event.custody_id.name}"
-        )
+        # Create corresponding audit log for each event
+        for event in events:
+            self.env['naid.audit.log'].log_event(
+                'document_handling',
+                f"Custody event: {event.event_type} - {event.description}",
+                employee_id=event.employee_id.id,
+                partner_id=event.custody_id.customer_id.id,
+                risk_level='medium',
+                compliance_status='compliant',
+                custody_chain=f"Chain of Custody: {event.custody_id.name}"
+            )
         
-        return event
+        return events

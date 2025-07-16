@@ -63,7 +63,7 @@ class NAIDAuditLog(models.Model):
     )
     
     bale_id = fields.Many2one(
-        'records.bale',
+        'records_management.bale',
         string='Bale',
         help='Related bale if applicable'
     )

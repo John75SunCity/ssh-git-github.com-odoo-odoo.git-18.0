@@ -26,13 +26,14 @@ class TempInventory(models.Model):
     audit_log = fields.Html(string='Audit Trail', readonly=True)
     pickup_request_id = fields.Many2one('pickup.request', string='Pickup Request')
 
-    @api.model
-    def create(self, vals):
-        res = super().create(vals)
-        if res.name == 'New':
-            res.name = self.env['ir.sequence'].next_by_code('temp.inventory') or 'New'
-        res.temp_barcode = f'TEMP-{res.inventory_type.upper()}-{res.name}'
-        res._append_audit_log(_('Created by customer on %s.', fields.Datetime.now()))
+    @api.model_create_multi
+    def create(self, vals_list):
+        res = super().create(vals_list)
+        for record in res:
+            if record.name == 'New':
+                record.name = self.env['ir.sequence'].next_by_code('temp.inventory') or 'New'
+            record.temp_barcode = f'TEMP-{record.inventory_type.upper()}-{record.name}'
+            record._append_audit_log(_('Created by customer on %s.', fields.Datetime.now()))
         return res
 
     def action_add_to_pickup(self):

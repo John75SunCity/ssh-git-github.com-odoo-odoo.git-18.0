@@ -73,7 +73,7 @@ class ResPartner(models.Model):
     department_billing_contact_ids = fields.One2many(
         'res.partner.department.billing',
         'partner_id',
-        string='Department Billing Contacts',
+        string='Department Billing Contact Assignments',
         help="Specific billing contacts for departments "
              "(used with separate billing)"
     )

@@ -33,13 +33,14 @@ class PortalRequest(models.Model):
     invoice_id = fields.Many2one('account.move', string='Related Invoice')  # For billing updates
     temp_inventory_ids = fields.Many2many('temp.inventory', string='Temporary Inventory Items')  # For new inventory additions
 
-    @api.model
-    def create(self, vals):
-        res = super().create(vals)
-        if res.name == 'New':
-            res.name = self.env['ir.sequence'].next_by_code('portal.request') or 'REQ-001'
-        res._generate_signature_request()
-        res._append_audit_log(_('Request created by %s.', res.partner_id.name))
+    @api.model_create_multi
+    def create(self, vals_list):
+        res = super().create(vals_list)
+        for record in res:
+            if record.name == 'New':
+                record.name = self.env['ir.sequence'].next_by_code('portal.request') or 'REQ-001'
+            record._generate_signature_request()
+            record._append_audit_log(_('Request created by %s.', record.partner_id.name))
         return res
 
     def action_submit(self):
