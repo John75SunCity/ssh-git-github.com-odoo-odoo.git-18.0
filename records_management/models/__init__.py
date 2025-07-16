@@ -24,3 +24,11 @@ from . import portal_request  # New: Model for portal requests (destruction, ser
 from . import temp_inventory  # New: Model for temporary inventory additions
 from . import fsm_task  # New: Extension for FSM tasks from portal
 from . import hr_employee  # Updated: For user access imports
+from . import customer_feedback  # New: Model for customer feedback with sentiment analysis
+# NAID Compliance Models
+from . import naid_audit  # NAID audit logging and compliance tracking
+from . import naid_custody  # NAID chain of custody management
+from . import hr_employee_naid  # NAID employee certification and training
+# Additional Core Models
+from . import bale  # Bale management for paper records
+from . import load  # Load management for transportation

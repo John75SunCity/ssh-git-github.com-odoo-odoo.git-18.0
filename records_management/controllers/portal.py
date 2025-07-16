@@ -159,9 +159,10 @@ class CustomerPortalExtended(CustomerPortal):
             if not survey:
                 # Fallback to creating a simple feedback record
                 feedback_vals = {
+                    'name': kw.get('subject', f'Feedback from {partner.name}'),
                     'partner_id': partner.id,
                     'feedback_type': kw.get('feedback_type', 'general'),
-                    'rating': int(kw.get('rating', 3)),
+                    'rating': kw.get('rating', '3'),
                     'comments': kw.get('comments', ''),
                     'service_area': kw.get('service_area', 'portal'),
                     'submitted_date': fields.Datetime.now(),
@@ -216,7 +217,7 @@ class CustomerPortalExtended(CustomerPortal):
             partner = request.env.user.partner_id
             
             # Log document access for NAID audit
-            request.env['audit.log'].sudo().create({
+            request.env['naid.audit.log'].sudo().create({
                 'user_id': request.env.user.id,
                 'partner_id': partner.id,
                 'action': 'document_access',
@@ -306,7 +307,7 @@ class CustomerPortalExtended(CustomerPortal):
             
         except Exception as e:
             # Log access error for NAID audit
-            request.env['audit.log'].sudo().create({
+            request.env['naid.audit.log'].sudo().create({
                 'user_id': request.env.user.id,
                 'action': 'document_access_error',
                 'resource_type': 'portal_documents',
@@ -328,7 +329,7 @@ class CustomerPortalExtended(CustomerPortal):
             user = request.env.user
             
             # Log inventory document access for NAID audit
-            request.env['audit.log'].sudo().create({
+            request.env['naid.audit.log'].sudo().create({
                 'user_id': user.id,
                 'partner_id': partner.id,
                 'action': 'inventory_document_access',
@@ -446,7 +447,7 @@ class CustomerPortalExtended(CustomerPortal):
             
         except Exception as e:
             # Log inventory access error for NAID audit
-            request.env['audit.log'].sudo().create({
+            request.env['naid.audit.log'].sudo().create({
                 'user_id': request.env.user.id,
                 'action': 'inventory_document_access_error',
                 'resource_type': 'inventory_documents',
@@ -851,7 +852,7 @@ class CustomerPortalExtended(CustomerPortal):
             partner = user.partner_id
             
             # Log document center access for NAID audit
-            request.env['audit.log'].sudo().create({
+            request.env['naid.audit.log'].sudo().create({
                 'user_id': user.id,
                 'partner_id': partner.id,
                 'action': 'document_center_access',
@@ -887,7 +888,7 @@ class CustomerPortalExtended(CustomerPortal):
             
         except Exception as e:
             # Log error for NAID audit
-            request.env['audit.log'].sudo().create({
+            request.env['naid.audit.log'].sudo().create({
                 'user_id': request.env.user.id,
                 'action': 'document_center_access_error',
                 'resource_type': 'document_center',
