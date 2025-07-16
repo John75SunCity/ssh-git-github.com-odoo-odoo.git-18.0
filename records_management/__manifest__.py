@@ -96,7 +96,7 @@ Features:
             'records_management/static/src/js/trailer_visualization.js',  # Optimized: JS for interactive truck
         ],
         'web.assets_frontend': [  # For portal
-            'records_management/static/src/js/ gurportal_quote_generator.js',
+            'records_management/static/src/js/portal_quote_generator.js',
         ],
     },
 }
