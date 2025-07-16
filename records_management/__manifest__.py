@@ -1,8 +1,8 @@
 {
     'name': 'Records Management',
-    'version': '18.0.1.0.0',  # Aligned with review recommendations
-    'category': 'Industry',  # Changed from Document Management for broader appeal
-    'summary': 'Enterprise DMS for Shredding, Destruction, and Recycling',  # Optimized for App Store
+    'version': '18.0.2.0.0',  # Bumped for comprehensive improvements
+    'category': 'Industry',
+    'summary': 'Enterprise DMS for Shredding, Destruction, and Recycling',
     'description': """
 Enterprise Records Management System
 ==================================
@@ -45,17 +45,17 @@ Track document shredding, HDD/uniform destruction, POS walk-ins, paper baling, l
         'web',
         'portal',
         
-        # Business Critical
-        'account',         # For auto-invoicing
-        'sale',           # For quotes  
+        # Business Critical (per review recommendations)
+        'account',         # For auto-invoicing and financial integration
+        'sale',           # For quotes and sales orders
         'hr',             # For technician signatures
         
-        # Optional Advanced (install in Odoo.sh as needed)
-        # 'website',       # Uncomment for customer portal
-        # 'point_of_sale', # Uncomment for walk-in services
-        # 'fleet',         # Uncomment for vehicle tracking
-        # 'iot',           # Uncomment for scale integration
-        # 'quality',       # Uncomment for quality control
+        # Modern Features (uncomment as needed)
+        'website',        # For customer portal and self-quotes  
+        'point_of_sale',  # For walk-in services
+        # 'fleet',        # For vehicle tracking
+        # 'iot',          # For scale integration
+        # 'quality',      # For quality control
     ],
     'data': [
         'security/records_management_security.xml',
