@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.8.0',  # Bumped for POS SMS fix and config inheritance
+    'version': '18.0.2.9.0',  # Bumped for enhanced portal/FSM/sign/feedback integration and views
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
@@ -25,6 +25,10 @@ Features:
 - Wizard for easy POS linking from visitors
 - Secure certificate downloads via portal controller
 - Modern UI with tractor trailer loading visualization
+- NAID AAA best practices: Audit trails, signatures, chain-of-custody (2025: verifiable destruction with particle size/crushing logs)
+- ISO 27001:2022: Data integrity/encryption (A.8.24 for attachments; transition by Oct 31, 2025)
+- Innovative: PuLP optimization for fees/loads, AI sentiment on feedback (extend with torch for OCR tagging)
+- Resources: odoo.com/documentation/18.0/developer/howtos.html, suncityshred.com, oneilsoftware.com
     """,
     'author': 'John75SunCity',
     'website': 'https://github.com/John75SunCity',
@@ -37,12 +41,18 @@ Features:
         'portal',
         'base_setup',
         'fleet',
-        'account',  # Added for invoicing
-        'sale',  # Added for quotes
-        'website',  # Added for potential quoting via website
-        'point_of_sale',  # Added for walk-in services
+        'account',  # For invoicing/billing
+        'sale',  # For quotes/self-quotes
+        'website',  # For website forms/quoting
+        'point_of_sale',  # For walk-in services
         'frontdesk',  # For visitor check-in integration
-        'sms',  # New: For POS SMS receipts (remove if not using)
+        'sms',  # For POS SMS receipts/notifications
+        'industry_fsm',  # For field service management (shredding/pickups)
+        'sign',  # For electronic signatures (NAID compliance)
+        'hr',  # For employee training/access
+        'barcodes',  # For temp inventory/barcode handling
+        'web_tour',  # For portal app tours
+        'survey',  # For customer feedback forms/suggestions
     ],
     'data': [
         'security/records_management_security.xml',
@@ -53,7 +63,10 @@ Features:
         'data/products.xml',
         'data/storage_fee.xml',
         'data/scheduled_actions.xml',
-        'data/paper_products.xml',  # New: Products for bales, trailers
+        'data/paper_products.xml',
+        'data/portal_mail_templates.xml',  # New: Email/SMS templates for notifications
+        'data/naid_compliance_data.xml',  # New: NAID data for audits/signatures
+        'data/feedback_survey_data.xml',  # New: Default feedback survey
         'views/records_tag_views.xml',
         'views/records_location_views.xml',
         'views/records_retention_policy_views.xml',
@@ -68,18 +81,58 @@ Features:
         'views/billing_views.xml',
         'views/departmental_billing_views.xml',
         'views/barcode_views.xml',
-        'views/paper_bale_views.xml',  # New: Bale management views
-        'views/trailer_load_views.xml',  # New: Trailer load views with visualization
-        'views/pos_config_views.xml',  # New: POS integration views
-        'views/frontdesk_visitor_views.xml',  # New: Custom views for visitor-POS link
-        'views/visitor_pos_wizard_views.xml',  # New: Wizard views for POS linking
+        'views/paper_bale_views.xml',
+        'views/trailer_load_views.xml',
+        'views/pos_config_views.xml',
+        'views/frontdesk_visitor_views.xml',
+        'views/visitor_pos_wizard_views.xml',
+        'views/portal_request_views.xml',  # New: Views for portal requests
+        'views/fsm_task_views.xml',  # New: FSM task views
+        'views/hr_employee_views.xml',  # New: HR views for training
+        'views/portal_feedback_views.xml',  # New: Feedback views
         'report/records_reports.xml',
-        'report/destruction_certificate_report.xml',  # New: Certificate report
-        'report/bale_label_report.xml',  # New: Bale label report
+        'report/destruction_certificate_report.xml',
+        'report/bale_label_report.xml',
+        'report/portal_audit_report.xml',  # New: Audit reports for NAID
         'views/records_management_menus.xml',
-        'templates/my_portal_inventory.xml',  # Enhanced with visit history and features
+        'templates/my_portal_inventory.xml',
+        'templates/portal_quote_template.xml',  # New: Quote generation
+        'templates/portal_billing_template.xml',  # New: Billing updates
+        'templates/portal_inventory_template.xml',  # New: Inventory views
+        'templates/portal_overview.xml',  # New: Portal overview/tour
+        'templates/portal_feedback_template.xml',  # New: Feedback form
+        'templates/portal_centralized_docs.xml',  # New: Centralized docs dashboard
     ],
-    'installable': True,
+    'demo': [
+        'demo/odoo.xml',
+    ],
+    'qweb': [],
+    'external_dependencies': {
+        'python': ['pulp'],  # For optimization (fees/loads)
+    },
     'application': True,
+    'installable': True,
     'auto_install': False,
+    'license': 'LGPL-3',
+    'assets': {
+        'web.assets_backend': [
+            'records_management/static/src/scss/records_management.scss',
+            'records_management/static/src/js/map_widget.js',
+            'records_management/static/src/xml/map_widget.xml',
+            'records_management/static/src/js/trailer_visualization.js',
+            'records_management/static/src/xml/trailer_visualization.xml',
+            'records_management/static/src/js/portal_inventory_highlights.js',  # New: JS for inventory highlights
+            'records_management/static/src/js/naid_compliance_widget.js',  # New: Compliance widgets
+        ],
+        'web.assets_frontend': [
+            'records_management/static/src/css/portal_tour.css',  # New: CSS for tours
+            'records_management/static/src/js/portal_quote_generator.js',  # New: Quote JS
+            'records_management/static/src/js/portal_user_import.js',  # New: User imports
+            'records_management/static/src/js/portal_signature.js',  # New: Signature JS
+            'records_management/static/src/js/portal_inventory_search.js',  # New: Search/filters
+            'records_management/static/src/js/portal_tour.js',  # New: Tour JS
+            'records_management/static/src/js/portal_feedback.js',  # New: Feedback submission
+            'records_management/static/src/js/portal_docs.js',  # New: Docs dashboard JS
+        ],
+    },
 }
