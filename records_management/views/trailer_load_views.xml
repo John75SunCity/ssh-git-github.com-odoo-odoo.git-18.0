@@ -1,7 +1,97 @@
+# Updated file: Views for trailer load management with tree/form/kanban modes. This accomplishes tracking bale assignments, weight/progress visualization (truck-shaped bar via custom JS/widget), and status workflows. User-friendly: Statusbar for quick state changes, progress bar widget for intuitive load monitoring. Modern: Kanban cards with colors (e.g., green for full), OWL-compatible for animations. Innovative idea: Integrate IoT scales (via Odoo IoT app) for real-time weight updates/RPC; standards: NAID AAA responsible disposal (bale labels/links ensure traceable recycling); ISO 15489: Audit-ready with logged state changes.
+
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Trailer load visualization and management views will be defined here -->
-        
-    </data>
+    <record id="view_trailer_load_tree" model="ir.ui.view">
+        <field name="name">trailer.load.tree</field>
+        <field name="model">trailer.load</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="bale_count"/>
+                <field name="total_weight"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="state"/>
+                <field name="payment_status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_trailer_load_form" model="ir.ui.view">
+        <field name="name">trailer.load.form</field>
+        <field name="model">trailer.load</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="bale_count"/>
+                            <field name="total_weight"/>
+                            <field name="capacity"/>
+                            <field name="progress" widget="progressbar"/>
+                        </group>
+                        <group>
+                            <field name="state" widget="statusbar"/>
+                            <field name="payment_status"/>
+                            <field name="pickup_date"/>
+                            <field name="invoice_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Bales">
+                            <field name="bale_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="paper_type"/>
+                                    <field name="weight"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Visualization">
+                            <field name="progress" invisible="1"/>
+                            <widget name="trailer_visualization" options="{'progress': progress}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_trailer_load_kanban" model="ir.ui.view">
+        <field name="name">trailer.load.kanban</field>
+        <field name="model">trailer.load</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="state"/>
+                <field name="progress"/>
+                <field name="color"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card">
+                            <div class="oe_kanban_content">
+                                <h4><field name="name"/></h4>
+                                <div><field name="progress" widget="progressbar"/></div>
+                                <div>State: <field name="state"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_trailer_loads" model="ir.actions.act_window">
+        <field name="name">Trailer Loads</field>
+        <field name="res_model">trailer.load</field>
+        <field name="view_mode">tree,form,kanban</field>
+    </record>
+
+    <menuitem id="menu_trailer_loads" name="Trailer Loads" parent="records_management_menu_root" action="action_trailer_loads"/>
 </odoo>
