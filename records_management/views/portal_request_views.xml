@@ -11,6 +11,8 @@
                 <field name="request_type"/>
                 <field name="state"/>
                 <field name="create_date"/>
+                <field name="is_walk_in" widget="badge" decoration-success="is_walk_in == True" decoration-muted="is_walk_in == False" attrs="{'column_invisible': [('parent', '=', False)]}" string="Walk-in"/>
+                <field name="linked_visitor_id" options="{'no_create': True}"/>
             </tree>
         </field>
     </record>
@@ -37,12 +39,17 @@
                         <field name="requestor_signature_date"/>
                         <field name="admin_signature_date"/>
                     </group>
+                    <group string="Visitor Integration (Walk-in Services)">
+                        <field name="is_walk_in" help="Flag for walk-in shred/destruction; links to POS for auditing."/>
+                        <field name="linked_visitor_id" options="{'no_create': True}" help="Linked frontdesk visit (NAID traceable)."/>
+                    </group>
                     <group string="Links">
                         <field name="fsm_task_id"/>
                         <field name="invoice_id"/>
                         <field name="quote_id"/>
                     </group>
-                    <group string="Audit Log">
+                    <group string="Audit Log (ISO Compliant)">
+                        <field name="hashed_partner_ref" readonly="1" help="Hashed customer reference for secure auditing (no PII exposure)."/>
                         <field name="audit_log" widget="html" readonly="1"/>
                     </group>
                 </sheet>
@@ -63,12 +70,14 @@
                 <field name="name"/>
                 <field name="state"/>
                 <field name="request_type"/>
+                <field name="is_walk_in"/>
                 <templates>
                     <t t-name="card">
-                        <div class="oe_kanban_content">
+                        <div class="oe_kanban_content" t-attf-class="oe_kanban_color_#{kanban_getcolor(record.state.raw_value)}">
                             <strong><field name="name"/></strong>
                             <div><field name="request_type"/></div>
                             <div><field name="partner_id"/></div>
+                            <div t-if="record.is_walk_in.raw_value"><span class="badge bg-success">Walk-in</span></div>
                         </div>
                     </t>
                 </templates>
