@@ -13,8 +13,10 @@
                     <button name="action_return" string="Return" type="object" 
                             invisible="state != 'retrieved'"/>
                     <button name="action_destroy" string="Destroy" type="object" 
-                            confirm="Are you sure you want to destroy this document?"
+                            confirm="Are you sure you want to destroy this document? (NAID compliance required)"
                             invisible="state not in ('stored','returned')"/>
+                    <button name="action_preview" string="Preview" type="object" class="oe_highlight" invisible="not attachment_id"/>
+                    <button name="action_schedule_destruction" string="Schedule Destruction" type="object" class="oe_highlight" invisible="state not in ('archived')"/>
                     <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
                 </header>
                 <sheet>
@@ -34,6 +36,7 @@
                             <field name="box_id"/>
                             <field name="location_id"/>
                             <field name="date"/>
+                            <field name="storage_fee"/>
                         </group>
                         <group>
                             <field name="customer_id"/>
@@ -43,6 +46,8 @@
                             <field name="days_to_retention" invisible="not retention_date"/>
                             <field name="partner_id"/>
                             <field name="user_id"/>
+                            <field name="destruction_method" invisible="state != 'destroyed'"/>
+                            <field name="hashed_content" readonly="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -81,6 +86,7 @@
                 <field name="retention_date"/>
                 <field name="partner_id"/>
                 <field name="state"/>
+                <field name="destruction_method"/>
             </list>
         </field>
     </record>
@@ -104,10 +110,11 @@
                 <filter string="Retrieved" name="retrieved" domain="[('state','=','retrieved')]"/>
                 <filter string="Returned" name="returned" domain="[('state','=','returned')]"/>
                 <filter string="Destroyed" name="destroyed" domain="[('state','=','destroyed')]"/>
+                <filter string="Expired" name="expired" domain="[('retention_date','<', context_today())]"/>
+                <filter string="Has Destruction Method" name="has_destruction" domain="[('destruction_method','!=', False)]"/>
                 <separator/>
                 <filter string="My Documents" name="my_docs" domain="[('user_id','=', uid)]"/>
                 <filter string="Has Retention Date" name="has_retention" domain="[('retention_date','!=', False)]"/>
-                <filter string="Expired" name="expired" domain="[('retention_date','&lt;', context_today())]"/>
                 <group expand="0" string="Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
                     <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
@@ -118,22 +125,55 @@
                     <filter string="Partner" name="group_by_partner" context="{'group_by': 'partner_id'}"/>
                     <filter string="Document Date" name="group_by_date" context="{'group_by': 'date'}"/>
                     <filter string="Retention Date" name="group_by_retention" context="{'group_by': 'retention_date'}"/>
+                    <filter string="Destruction Method" name="group_by_destruction" context="{'group_by': 'destruction_method'}"/>
                 </group>
             </search>
+        </field>
+    </record>
+
+    <record id="view_records_document_kanban" model="ir.ui.view">
+        <field name="name">records.document.kanban</field>
+        <field name="model">records.document</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="expiry_date"/>
+                <field name="destruction_method"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_content">
+                            <strong><field name="name"/></strong>
+                            <div>Partner: <field name="partner_id"/></div>
+                            <div>Expiry: <field name="expiry_date"/></div>
+                            <div>Method: <field name="destruction_method"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_records_document_gantt" model="ir.ui.view">
+        <field name="name">records.document.gantt</field>
+        <field name="model">records.document</field>
+        <field name="arch" type="xml">
+            <gantt date_start="date" date_stop="retention_date" default_group_by="department_id" color="state" string="Document Timeline">
+            </gantt>
         </field>
     </record>
     
     <record id="action_records_document" model="ir.actions.act_window">
         <field name="name">Documents</field>
         <field name="res_model">records.document</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">kanban,tree,form,gantt</field>
         <field name="context">{'search_default_stored': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create a new document record
             </p>
             <p>
-                Track your physical documents with detailed records.
+                Track your physical documents with detailed records. Use Gantt for retention planning and Kanban for status management.
             </p>
         </field>
     </record>
