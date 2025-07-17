@@ -13,7 +13,7 @@ class ResPartner(models.Model):
         string='Departments',
         help='Departments for access control and billing (fixes domain errors in security rules).'
     )
-    document_ids = fields.One2many('records.document', 'partner_id', string='Related Documents')
+    document_ids = fields.One2many('records.document', 'partner_id', string='Related Documents')  # Now valid with inverse in records.document
     document_count = fields.Integer(compute='_compute_document_count', store=True)
 
     # Billing Preferences (Streamlined for multi-department)
