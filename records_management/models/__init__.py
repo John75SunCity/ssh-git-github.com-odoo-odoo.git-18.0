@@ -2,19 +2,26 @@
 # Grouped for clarity: Core/base, compliance, extensions.
 
 # Base/Core Models (Many2one first for inverses)
-from . import records_tag  # Basic tags
+from . import barcode  # Barcode management for boxes/bales
+from . import billing  # Billing views/models
+from . import customer_inventory  # Customer inventory tracking
+from . import departmental_billing  # Departmental billing
+from . import paper_bale  # Paper baling models
+from . import pickup_request  # Pickup requests
+from . import portal_request  # Portal requests (destruction, services)
+# from . import pos_config  # Commented to fix circular import; uncomment after resolving cycles in pos_config.py (e.g., move imports inside methods)
+from . import records_box  # Box management
+from . import records_document  # Document management
+from . import records_document_type  # Document types
 from . import records_location  # Locations
-from . import records_retention_policy  # Policies (used in documents)
-from . import records_document_type  # Types (used in documents)
-from . import records_document  # Key: Has partner_id, department_id (Many2one) - load early
-from . import records_box  # Boxes (links to documents)
-from . import pickup_request_item  # Items (for requests)
-from . import pickup_request  # Requests (links to items)
-from . import temp_inventory  # Temporary inventory
-from . import bale  # Bale management for recycling
-from . import load  # Load management for transportation
-from . import trailer_load  # Trailer loads (suggest PuLP optimization for efficiency)
-from . import paper_bale  # Paper bales
+from . import records_retention_policy  # Retention policies
+from . import records_tag  # Tags
+from . import res_partner  # Partner extensions
+from . import shredding  # Shredding services
+from . import stock_lot  # Stock lots for traceability
+from . import trailer_load  # Trailer loading
+from . import visitor  # Visitor models (from frontdesk integration)
+from . import visitor_pos_wizard  # POS wizard for visitors
 
 # Shredding and Services
 from . import shredding_service  # Shredding (documents/hard drives/uniforms - NAID compliant)
