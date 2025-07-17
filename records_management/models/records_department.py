@@ -3,7 +3,12 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 import hashlib
-from pulp import LpMinimize, LpProblem, LpVariable, lpSum, value  # For optimization
+
+try:
+    from pulp import LpMinimize, LpProblem, LpVariable, lpSum, value
+    PULP_AVAILABLE = True
+except ImportError:
+    PULP_AVAILABLE = False  # Fallback if not installed
 
 class RecordsDepartment(models.Model):
     _name = 'records.department'
@@ -20,7 +25,7 @@ class RecordsDepartment(models.Model):
     notes = fields.Text(string='Notes', tracking=True)
     hashed_code = fields.Char(compute='_compute_hashed_code', store=True)
     active = fields.Boolean(default=True, tracking=True)
-    monthly_cost = fields.Float(compute='_compute_monthly_cost', store=True, help='Optimized with PuLP.')
+    monthly_cost = fields.Float(compute='_compute_monthly_cost', store=True, help='Optimized with PuLP if available.')
 
     # Links
     box_ids = fields.One2many('records.box', 'department_id', string='Boxes')
@@ -37,7 +42,17 @@ class RecordsDepartment(models.Model):
     @api.depends('box_ids')
     def _compute_monthly_cost(self):
         for rec in self:
-            rec.monthly_cost = sum(rec.box_ids.mapped('storage_fee'))  # Base; optimize below
+            base_cost = sum(rec.box_ids.mapped('storage_fee'))  # Simple sum
+            if PULP_AVAILABLE:
+                # PuLP optimization (e.g., minimize with min fees)
+                prob = LpProblem("Fee_Optim", LpMinimize)
+                fee = LpVariable("Fee", lowBound=0)
+                prob += fee, "Total"
+                prob += fee >= rec.partner_id.minimum_fee_per_department or 0, "Min_Fee"
+                prob.solve()
+                rec.monthly_cost = value(fee) + base_cost
+            else:
+                rec.monthly_cost = base_cost  # Fallback without PuLP
 
     @api.constrains('parent_id')
     def _check_hierarchy(self):
@@ -63,12 +78,12 @@ class RecordsDepartment(models.Model):
         }
 
     def action_optimize_fees(self):
-        """Innovative: Use PuLP to minimize costs across depts (e.g., allocate min fees)."""
-        prob = LpProblem("Fee_Optimization", LpMinimize)
-        fees = LpVariable.dicts("Fee", self.ids, lowBound=0)
-        prob += lpSum([fees[d.id] for d in self]), "Total_Fees"
-        for d in self:
-            prob += fees[d.id] >= d.partner_id.minimum_fee_per_department or 0, f"Min_Fee_{d.id}"
-        prob.solve()
-        for d in self:
-            d.monthly_cost = value(fees[d.id])  # Update; in practice, write to field
+        """Run optimization; user-friendly wizard trigger."""
+        if not PULP_AVAILABLE:
+            raise ValidationError(_("PuLP not installed; add to requirements.txt for advanced optimization."))
+        self._compute_monthly_cost()  # Recompute
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {'title': _('Optimized'), 'message': _('Fees updated with PuLP.'), 'sticky': False},
+        }
