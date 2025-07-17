@@ -29,7 +29,7 @@ class RecordsDepartment(models.Model):
 
     # Links
     box_ids = fields.One2many('records.box', 'department_id', string='Boxes')
-    document_ids = fields.One2many('records.document', 'department_id', string='Documents')
+    document_ids = fields.One2many('records.document', 'department_id', string='Documents')  # Now valid with inverse
     shredding_ids = fields.One2many('shredding.service', 'department_id', string='Shredding Services')
     invoice_ids = fields.One2many('account.move', 'department_id', string='Invoices')
     portal_request_ids = fields.One2many('portal.request', 'department_id', string='Portal Requests')
@@ -39,12 +39,11 @@ class RecordsDepartment(models.Model):
         for rec in self:
             rec.hashed_code = hashlib.sha256(rec.code.encode()).hexdigest() if rec.code else False
 
-    @api.depends('box_ids')
+    @api.depends('box_ids', 'document_ids')
     def _compute_monthly_cost(self):
         for rec in self:
-            base_cost = sum(rec.box_ids.mapped('storage_fee'))  # Simple sum
+            base_cost = sum(rec.box_ids.mapped('storage_fee')) + sum(rec.document_ids.mapped('storage_fee') or [0])  # Include docs if fee added
             if PULP_AVAILABLE:
-                # PuLP optimization (e.g., minimize with min fees)
                 prob = LpProblem("Fee_Optim", LpMinimize)
                 fee = LpVariable("Fee", lowBound=0)
                 prob += fee, "Total"
@@ -52,7 +51,7 @@ class RecordsDepartment(models.Model):
                 prob.solve()
                 rec.monthly_cost = value(fee) + base_cost
             else:
-                rec.monthly_cost = base_cost  # Fallback without PuLP
+                rec.monthly_cost = base_cost  # Fallback
 
     @api.constrains('parent_id')
     def _check_hierarchy(self):
@@ -78,10 +77,9 @@ class RecordsDepartment(models.Model):
         }
 
     def action_optimize_fees(self):
-        """Run optimization; user-friendly wizard trigger."""
         if not PULP_AVAILABLE:
             raise ValidationError(_("PuLP not installed; add to requirements.txt for advanced optimization."))
-        self._compute_monthly_cost()  # Recompute
+        self._compute_monthly_cost()
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
