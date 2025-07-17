@@ -17,6 +17,7 @@ class ResPartner(models.Model):
     )
     document_ids = fields.One2many('records.document', 'partner_id', string='Related Documents')  # Now valid with inverse in records.document
     document_count = fields.Integer(compute='_compute_document_count', store=True)
+    portal_request_ids = fields.One2many('portal.request', 'partner_id', string='Portal Requests')  # One2many with inverse 'partner_id' for NAID linking
 
     # Billing Preferences (Streamlined for multi-department)
     billing_method = fields.Selection([
@@ -52,7 +53,7 @@ class ResPartner(models.Model):
     total_departments = fields.Integer(compute='_compute_department_stats', store=True)
     departments_with_storage = fields.Integer(compute='_compute_department_stats', store=True)
     monthly_storage_total = fields.Float(compute='_compute_department_stats', store=True)
-    hashed_storage_hash = fields.Char(compute='_compute_department_stats', store=True, help='Hashed storage total for ISO 27001 secure auditing.')
+    hashed_request_hash = fields.Char(compute='_compute_request_hash', store=True, help='Hashed request summary for ISO 27001 secure auditing.')
 
     @api.depends('x_department_ids', 'x_department_ids.box_ids')
     def _compute_department_stats(self):
@@ -61,15 +62,22 @@ class ResPartner(models.Model):
             partner.total_departments = len(depts)
             depts_with_storage = depts.filtered(lambda d: d.box_ids)
             partner.departments_with_storage = len(depts_with_storage)
-            total = sum(d.monthly_cost for d in depts_with_storage)  # Assume monthly_cost in department
-            partner.monthly_storage_total = total
-            # ISO-compliant hashing for integrity (no PII exposure in reports)
-            partner.hashed_storage_hash = hashlib.sha256(str(total).encode()).hexdigest() if total else False
+            partner.monthly_storage_total = sum(d.monthly_cost for d in depts_with_storage)  # Assume monthly_cost in department
 
     @api.depends('document_ids')
     def _compute_document_count(self):
         for partner in self:
             partner.document_count = len(partner.document_ids)
+
+    @api.depends('portal_request_ids')
+    def _compute_request_hash(self):
+        """Compute hashed request summary for data integrity/encryption (ISO 27001)."""
+        for rec in self:
+            if rec.portal_request_ids:
+                request_ids_str = ','.join(str(id) for id in rec.portal_request_ids.ids)
+                rec.hashed_request_hash = hashlib.sha256(request_ids_str.encode()).hexdigest()
+            else:
+                rec.hashed_request_hash = False
 
     def action_view_documents(self):
         return {
@@ -87,16 +95,6 @@ class ResPartner(models.Model):
             'name': _('Departments'),
             'view_mode': 'tree,form,kanban',
             'res_model': 'records.department',
-            'domain': [('partner_id', '=', self.id)],
-            'context': {'default_partner_id': self.id},
-        }
-
-    def action_view_requests(self):
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Related Requests'),
-            'view_mode': 'kanban,tree,form',
-            'res_model': 'portal.request',
             'domain': [('partner_id', '=', self.id)],
             'context': {'default_partner_id': self.id},
         }
