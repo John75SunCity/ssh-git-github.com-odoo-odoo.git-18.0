@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.6.1.1',  # Bumped for PuLP integration fix
+    'version': '18.0.2.2.0',  # Bumped version for wizard and portal extensions
     'category': 'Document Management',
-    'summary': 'Manage physical document boxes, records, shredding, and recycling services',
+    'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
 Records Management System
 ========================
@@ -18,22 +19,28 @@ Features:
 - Customer inventory tracking
 - Paper baling, weighing, and trailer load management
 - Auto-invoicing on bale pickup
-- Customer portal with certificates, PO updates, and self-quotes
+- Customer portal with certificates, PO updates, self-quotes, and visit history
 - POS integration for walk-in services
+- Frontdesk visitor check-in linked to POS for auditing (e.g., NAID compliance) and walk-in shred transactions
+- Wizard for easy POS linking from visitors
 - Modern UI with tractor trailer loading visualization
-- Advanced customer portal: Billing updates, self-quotes, inventory management, destruction/service requests with signatures, user imports, temp barcodes for additions, FSM integration
-- Compliance: NAID AAA audit trails, timestamps, signatures
-- Notifications: Email/SMS for requests
-- Customer feedback system with NAID-compliant logging
-- Centralized document dashboard for invoices, quotes, certificates, and communications
-- Optimization: PuLP for fee/load efficiency (requires requirements.txt setup)
     """,
     'author': 'John75SunCity',
     'website': 'https://github.com/John75SunCity',
     'depends': [
-        'base', 'product', 'stock', 'mail', 'web', 'portal', 'base_setup', 'fleet',
-        'account', 'sale', 'website', 'point_of_sale', 'industry_fsm', 'sign',
-        'sms', 'hr', 'barcodes', 'web_tour', 'survey',
+        'base',
+        'product',
+        'stock',
+        'mail',
+        'web',
+        'portal',
+        'base_setup',
+        'fleet',
+        'account',  # Added for invoicing
+        'sale',  # Added for quotes
+        'website',  # Added for potential quoting via website
+        'point_of_sale',  # Added for walk-in services
+        'frontdesk',  # For visitor check-in integration
     ],
     'data': [
         'security/records_management_security.xml',
@@ -44,10 +51,7 @@ Features:
         'data/products.xml',
         'data/storage_fee.xml',
         'data/scheduled_actions.xml',
-        'data/paper_products.xml',
-        'data/portal_mail_templates.xml',
-        'data/naid_compliance_data.xml',
-        'data/feedback_survey_data.xml',
+        'data/paper_products.xml',  # New: Products for bales, trailers
         'views/records_tag_views.xml',
         'views/records_location_views.xml',
         'views/records_retention_policy_views.xml',
@@ -62,52 +66,18 @@ Features:
         'views/billing_views.xml',
         'views/departmental_billing_views.xml',
         'views/barcode_views.xml',
-        'views/paper_bale_views.xml',
-        'views/trailer_load_views.xml',
-        'views/pos_config_views.xml',
-        'views/portal_request_views.xml',
-        'views/fsm_task_views.xml',
-        'views/hr_employee_views.xml',
-        'views/portal_feedback_views.xml',
+        'views/paper_bale_views.xml',  # New: Bale management views
+        'views/trailer_load_views.xml',  # New: Trailer load views with visualization
+        'views/pos_config_views.xml',  # New: POS integration views
+        'views/frontdesk_visitor_views.xml',  # New: Custom views for visitor-POS link
+        'views/visitor_pos_wizard_views.xml',  # New: Wizard views for POS linking
         'report/records_reports.xml',
-        'report/destruction_certificate_report.xml',
-        'report/bale_label_report.xml',
-        'report/portal_audit_report.xml',
+        'report/destruction_certificate_report.xml',  # New: Certificate report
+        'report/bale_label_report.xml',  # New: Bale label report
         'views/records_management_menus.xml',
-        'templates/my_portal_inventory.xml',
-        'templates/portal_quote_template.xml',
-        'templates/portal_billing_template.xml',
-        'templates/portal_inventory_template.xml',
-        'templates/portal_overview.xml',
-        'templates/portal_feedback_template.xml',
-        'templates/portal_centralized_docs.xml',
+        'templates/my_portal_inventory.xml',  # Enhanced with visit history and features
     ],
-    'demo': ['demo/odoo.xml'],
-    'qweb': [],
-    'external_dependencies': {'python': ['pulp']},  # Kept; install via requirements.txt
-    'application': True,
     'installable': True,
+    'application': True,
     'auto_install': False,
-    'license': 'LGPL-3',
-    'assets': {
-        'web.assets_backend': [
-            'records_management/static/src/scss/records_management.scss',
-            'records_management/static/src/js/map_widget.js',
-            'records_management/static/src/xml/map_widget.xml',
-            'records_management/static/src/js/trailer_visualization.js',
-            'records_management/static/src/xml/trailer_visualization.xml',
-            'records_management/static/src/js/portal_inventory_highlights.js',
-            'records_management/static/src/js/naid_compliance_widget.js',
-        ],
-        'web.assets_frontend': [
-            'records_management/static/src/css/portal_tour.css',
-            'records_management/static/src/js/portal_quote_generator.js',
-            'records_management/static/src/js/portal_user_import.js',
-            'records_management/static/src/js/portal_signature.js',
-            'records_management/static/src/js/portal_inventory_search.js',
-            'records_management/static/src/js/portal_tour.js',
-            'records_management/static/src/js/portal_feedback.js',
-            'records_management/static/src/js/portal_docs.js',
-        ],
-    },
 }
