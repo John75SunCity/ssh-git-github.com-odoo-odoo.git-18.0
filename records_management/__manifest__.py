@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.6.0',  # Bumped for project dependency fix (FSM tasks)
+    'version': '18.0.2.7.0',  # Bumped for POS SMS fix and config inheritance
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
@@ -42,7 +42,7 @@ Features:
         'website',  # Added for potential quoting via website
         'point_of_sale',  # Added for walk-in services
         'frontdesk',  # For visitor check-in integration
-        'project',  # New: For FSM tasks (e.g., shred pickups as project.task)
+        'sms',  # New: For POS SMS receipts (optional; remove if not using)
     ],
     'data': [
         'security/records_management_security.xml',
