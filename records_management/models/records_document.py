@@ -1,130 +1,59 @@
-from odoo import models, fields, api, _
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
+import hashlib
 
 class RecordsDocument(models.Model):
+    """Document model for records management, with NAID/ISO compliance."""
     _name = 'records.document'
-    _description = 'Document Record'
+    _description = 'Records Document'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'date desc, name'
+    _order = 'name desc'
 
-    name = fields.Char('Document Reference', required=True, tracking=True)
-    box_id = fields.Many2one(
-        'records.box', string='Box', required=True, tracking=True,
-        index=True, domain="[('state', '=', 'active')]"
-    )
-    location_id = fields.Many2one(
-        related='box_id.location_id', string='Storage Location', store=True
-    )
-
-    # Document metadata
-    document_type_id = fields.Many2one(
-        'records.document.type', string='Document Type'
-    )
-    date = fields.Date('Document Date', default=fields.Date.context_today)
-    description = fields.Html('Description')
-    tags = fields.Many2many('records.tag', string='Tags')
-
-    # Retention details
-    retention_policy_id = fields.Many2one(
-        'records.retention.policy', string='Retention Policy')
-    retention_date = fields.Date(
-        'Retention Date', tracking=True,
-        compute='_compute_retention_date', store=True)
-    days_to_retention = fields.Integer(
-        'Days until destruction', compute='_compute_days_to_retention')
-
-    # Relations
-    partner_id = fields.Many2one('res.partner', string='Related Partner')
-    # Hierarchical access fields
-    customer_id = fields.Many2one(
-        'res.partner', string='Customer',
-        domain="[('is_company', '=', True)]",
-        tracking=True, index=True)
-    department_id = fields.Many2one(
-        'records.department', string='Department',
-        tracking=True, index=True)
-    user_id = fields.Many2one('res.users', string='Responsible',
-                              tracking=True)
-    company_id = fields.Many2one('res.company', string='Company',
-                                 default=lambda self: self.env.company)
-
-    # File management
-    attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
-    attachment_count = fields.Integer(
-        'Document Attachments Count', compute='_compute_attachment_count')
-
-    # Status fields
+    name = fields.Char(string='Document Reference', required=True, tracking=True)
+    partner_id = fields.Many2one('res.partner', string='Partner', required=True, index=True, tracking=True)  # Added to fix KeyError; links to customer
+    department_id = fields.Many2one('records.department', string='Department', index=True, tracking=True)  # For departmental access/billing
+    box_id = fields.Many2one('records.box', string='Box', tracking=True)
+    document_type_id = fields.Many2one('records.document.type', string='Type', tracking=True)
+    retention_policy_id = fields.Many2one('records.retention.policy', string='Retention Policy', tracking=True)
+    content = fields.Html(string='Content/Description', tracking=True)  # For previews in modern UI
+    attachment_id = fields.Many2one('ir.attachment', string='Attachment', tracking=True)  # For digital docs; suggest encryption
+    hashed_content = fields.Char(compute='_compute_hashed_content', store=True, help='For ISO 27001 integrity checks')
+    expiry_date = fields.Date(compute='_compute_expiry_date', store=True, help='Auto for shredding scheduling')
+    destruction_method = fields.Selection([
+        ('shred', 'Shred (Paper)'), ('crush', 'Crush (Hard Drive)'), ('uniform_shred', 'Uniform Shred')
+    ], string='Destruction Method', tracking=True, help='NAID AAA: Ensure particle size <5/8 inch')
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('stored', 'Stored'),
-        ('retrieved', 'Retrieved'),
-        ('returned', 'Returned'),
-        ('destroyed', 'Destroyed')
-    ], string='Status', default='draft', tracking=True)
-    active = fields.Boolean(default=True)
+        ('active', 'Active'), ('archived', 'Archived'), ('destroyed', 'Destroyed')
+    ], default='active', tracking=True)
 
-    @api.depends('date', 'retention_policy_id',
-                 'retention_policy_id.retention_years')
-    def _compute_retention_date(self):
-        for doc in self:
-            if (doc.date and doc.retention_policy_id and
-                    doc.retention_policy_id.retention_years):
-                years = doc.retention_policy_id.retention_years
-                doc.retention_date = fields.Date.add(doc.date, years=years)
-            else:
-                doc.retention_date = False
-
-    @api.depends('retention_date')
-    def _compute_days_to_retention(self):
-        today = fields.Date.today()
-        for doc in self:
-            if doc.retention_date:
-                delta = (doc.retention_date - today).days
-                doc.days_to_retention = max(0, delta)
-            else:
-                doc.days_to_retention = 0
-
-    def _compute_attachment_count(self):
+    @api.depends('content', 'attachment_id.datas')
+    def _compute_hashed_content(self):
         for rec in self:
-            rec.attachment_count = len(rec.attachment_ids)
+            data = rec.content or rec.attachment_id.datas or ''
+            rec.hashed_content = hashlib.sha256(str(data).encode()).hexdigest()
 
-    @api.onchange('box_id')
-    def _onchange_box_id(self):
-        if self.box_id and self.box_id.document_count >= self.box_id.capacity:
-            return {
-                'warning': {
-                    'title': _("Box is at capacity"),
-                    'message': _(
-                        "This box is already at or exceeding its capacity.")
-                }
-            }
-        # Auto-assign customer and department from box
-        if self.box_id:
-            self.customer_id = self.box_id.customer_id
-            self.department_id = self.box_id.department_id
+    @api.depends('retention_policy_id.duration_days')
+    def _compute_expiry_date(self):
+        for rec in self:
+            if rec.retention_policy_id:
+                rec.expiry_date = fields.Date.today() + fields.Date.timedelta(days=rec.retention_policy_id.duration_days)
+            else:
+                rec.expiry_date = False
 
-    def action_store(self):
-        self.write({'state': 'stored'})
+    @api.constrains('state', 'destruction_method')
+    def _check_destruction(self):
+        for rec in self:
+            if rec.state == 'destroyed' and not rec.destruction_method:
+                raise ValidationError(_("Destruction method required for NAID compliance."))
 
-    def action_retrieve(self):
-        self.write({'state': 'retrieved'})
-
-    def action_return(self):
-        self.write({'state': 'returned'})
-
-    def action_destroy(self):
-        self.write({'state': 'destroyed'})
-
-    def action_view_attachments(self):
-        self.ensure_one()
+    def action_preview(self):
+        """Modern UI: Open attachment preview."""
         return {
-            'name': _('Attachments'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'ir.attachment',
-            'view_mode': 'kanban,tree,form',
-            'domain': [('id', 'in', self.attachment_ids.ids)],
-            'context': {
-                'default_res_model': 'records.document',
-                'default_res_id': self.id
-            },
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/?model=ir.attachment&id={self.attachment_id.id}&field=datas&filename_field=name&download=false',
+            'target': 'new',
         }
+
+    def action_schedule_dest
