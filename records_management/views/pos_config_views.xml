@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="point_of_sale.view_pos_config_form"/>
         <field name="arch" type="xml">
             <xpath expr="//group[@name='receipt']" position="inside">
-                <!-- Comment out undefined field to fix error; uncomment if defining in res.config.settings -->
+                <!-- Commented out to fix OWL error; uncomment after defining field in res.config.settings -->
                 <!-- <field name="pos_sms_receipt_template_id" help="Select SMS template for POS receipts (requires 'sms' module)." placeholder="Choose Template"/> -->
                 <!-- Add custom shred-specific fields for walk-in services -->
                 <field name="shred_receipt_enabled" string="Enable Shred Receipts" help="Print destruction certificates on POS receipts for NAID compliance."/>
