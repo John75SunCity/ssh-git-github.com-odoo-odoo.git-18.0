@@ -1,6 +1,6 @@
 {
     'name': 'Records Management',
-    'version': '18.0.6.1.0',  # Updated for fixes/enhancements
+    'version': '18.0.6.1.1',  # Bumped for PuLP integration fix
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, and recycling services',
     'description': """
@@ -26,6 +26,7 @@ Features:
 - Notifications: Email/SMS for requests
 - Customer feedback system with NAID-compliant logging
 - Centralized document dashboard for invoices, quotes, certificates, and communications
+- Optimization: PuLP for fee/load efficiency (requires requirements.txt setup)
     """,
     'author': 'John75SunCity',
     'website': 'https://github.com/John75SunCity',
@@ -83,7 +84,7 @@ Features:
     ],
     'demo': ['demo/odoo.xml'],
     'qweb': [],
-    'external_dependencies': {'python': ['pulp']},  # For optimization
+    'external_dependencies': {'python': ['pulp']},  # Kept; install via requirements.txt
     'application': True,
     'installable': True,
     'auto_install': False,
