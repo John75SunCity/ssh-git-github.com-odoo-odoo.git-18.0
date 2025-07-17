@@ -1,4 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Portal request views for destruction and service requests will go here -->
+    <record id="portal_request_tree_view" model="ir.ui.view">
+        <field name="name">portal.request.tree</field>
+        <field name="model">portal.request</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="department_id"/>
+                <field name="request_type"/>
+                <field name="state"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="portal_request_form_view" model="ir.ui.view">
+        <field name="name">portal.request.form</field>
+        <field name="model">portal.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="partner_id"/>
+                        <field name="department_id"/>
+                        <field name="request_type"/>
+                        <field name="state"/>
+                    </group>
+                    <group>
+                        <field name="description" widget="html"/>
+                        <field name="suggested_date"/>
+                    </group>
+                    <group string="Signatures (NAID Compliant)">
+                        <field name="sign_request_id" widget="sign_request"/>
+                        <field name="requestor_signature_date"/>
+                        <field name="admin_signature_date"/>
+                    </group>
+                    <group string="Links">
+                        <field name="fsm_task_id"/>
+                        <field name="invoice_id"/>
+                        <field name="quote_id"/>
+                    </group>
+                    <group string="Audit Log">
+                        <field name="audit_log" widget="html" readonly="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="portal_request_kanban_view" model="ir.ui.view">
+        <field name="name">portal.request.kanban</field>
+        <field name="model">portal.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="request_type"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_content">
+                            <strong><field name="name"/></strong>
+                            <div><field name="request_type"/></div>
+                            <div><field name="partner_id"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="portal_request_action" model="ir.actions.act_window">
+        <field name="name">Portal Requests</field>
+        <field name="res_model">portal.request</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a new request</p>
+        </field>
+    </record>
+
+    <menuitem id="portal_request_menu" name="Portal Requests" parent="records_management_menus.menu_records_management" action="portal_request_action" sequence="10"/>
 </odoo>
