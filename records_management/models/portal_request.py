@@ -8,7 +8,7 @@ class PortalRequest(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']  # For tracking and notifications
 
     name = fields.Char(string='Request Reference', required=True, readonly=True, default=lambda self: _('New'))
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, 
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True, domain="[('is_company', '=', True)]", 
                                  help='Linked customer for NAID auditing and ownership checks.')
     request_type = fields.Selection([
         ('destruction', 'Document Destruction'),
@@ -51,6 +51,19 @@ class PortalRequest(models.Model):
         if self.env.context.get('visitor_id'):
             res.linked_visitor_id = self.env.context['visitor_id']
             res.is_walk_in = True
+        return res
+
+    def write(self, vals):
+        """Override write to log changes for auditing (NAID compliance)."""
+        res = super(PortalRequest, self).write(vals)
+        if 'status' in vals or 'request_type' in vals:
+            self.env['mail.activity'].create({
+                'res_id': self.id,
+                'res_model': self._name,
+                'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
+                'summary': _('Request Updated'),
+                'note': _('Status or type changed; NAID audit trail updated.'),
+            })
         return res
 
     def action_submit(self):
