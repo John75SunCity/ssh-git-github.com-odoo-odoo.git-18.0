@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+import hashlib
 from odoo import api, fields, models
 
 class ResPartner(models.Model):
@@ -50,6 +52,7 @@ class ResPartner(models.Model):
     total_departments = fields.Integer(compute='_compute_department_stats', store=True)
     departments_with_storage = fields.Integer(compute='_compute_department_stats', store=True)
     monthly_storage_total = fields.Float(compute='_compute_department_stats', store=True)
+    hashed_storage_hash = fields.Char(compute='_compute_department_stats', store=True, help='Hashed storage total for ISO 27001 secure auditing.')
 
     @api.depends('x_department_ids', 'x_department_ids.box_ids')
     def _compute_department_stats(self):
@@ -58,7 +61,10 @@ class ResPartner(models.Model):
             partner.total_departments = len(depts)
             depts_with_storage = depts.filtered(lambda d: d.box_ids)
             partner.departments_with_storage = len(depts_with_storage)
-            partner.monthly_storage_total = sum(d.monthly_cost for d in depts_with_storage)  # Assume monthly_cost in department
+            total = sum(d.monthly_cost for d in depts_with_storage)  # Assume monthly_cost in department
+            partner.monthly_storage_total = total
+            # ISO-compliant hashing for integrity (no PII exposure in reports)
+            partner.hashed_storage_hash = hashlib.sha256(str(total).encode()).hexdigest() if total else False
 
     @api.depends('document_ids')
     def _compute_document_count(self):
@@ -81,6 +87,16 @@ class ResPartner(models.Model):
             'name': _('Departments'),
             'view_mode': 'tree,form,kanban',
             'res_model': 'records.department',
+            'domain': [('partner_id', '=', self.id)],
+            'context': {'default_partner_id': self.id},
+        }
+
+    def action_view_requests(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Related Requests'),
+            'view_mode': 'kanban,tree,form',
+            'res_model': 'portal.request',
             'domain': [('partner_id', '=', self.id)],
             'context': {'default_partner_id': self.id},
         }
