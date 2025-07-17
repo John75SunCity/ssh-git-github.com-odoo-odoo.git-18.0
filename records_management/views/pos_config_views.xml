@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- POS configuration for walk-in shredding services will be defined here -->
-        
-    </data>
+    <!-- Inherit POS Config Form View -->
+    <record id="pos_config_view_form_inherit" model="ir.ui.view">
+        <field name="name">pos.config.form.inherit.records</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_config_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='receipt']" position="inside">
+                <!-- Comment out undefined field to fix error; uncomment if defining in res.config.settings -->
+                <!-- <field name="pos_sms_receipt_template_id" help="Select SMS template for POS receipts (requires 'sms' module)." placeholder="Choose Template"/> -->
+                <!-- Add custom shred-specific fields for walk-in services -->
+                <field name="shred_receipt_enabled" string="Enable Shred Receipts" help="Print destruction certificates on POS receipts for NAID compliance."/>
+            </xpath>
+        </field>
+    </record>
 </odoo>
