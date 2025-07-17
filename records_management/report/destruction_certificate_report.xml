@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Destruction certificate report template with QR codes will be defined here -->
-        
-    </data>
+    <template id="report_destruction_certificate">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <h2>Destruction Certificate</h2>
+                    <p>Customer: <span t-field="o.partner_id.name"/></p>
+                    <p>Transaction: <span t-field="o.name"/></p>
+                    <p>Date: <span t-field="o.date_order" t-options="{'widget': 'date'}"/></p>
+                    <!-- Add visitor details for integration -->
+                    <t t-if="o.visitor_id">  <!-- Assume pos.order has visitor_id; add if needed -->
+                        <p>Visit Check-In: <span t-field="o.visitor_id.check_in"/></p>
+                        <p>Visit Purpose: Walk-in Shredding</p>
+                    </t>
+                    <p>Certified destruction of sensitive materials per NAID standards.</p>
+                    <!-- Innovative: Add QR code (extend with external library if needed, or Odoo widget) -->
+                    <img src="/report/barcode/QR/?value=https://yourdomain.com/verify/{o.id}&amp;size=100" alt="Verification QR"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <report
+        id="action_report_destruction_certificate"
+        model="pos.order"  <!-- Adjust to frontdesk.visitor if report is for visitors -->
+        string="Destruction Certificate"
+        report_type="qweb-pdf"
+        name="records_management.report_destruction_certificate"
+        file="records_management.report_destruction_certificate"
+    />
 </odoo>
