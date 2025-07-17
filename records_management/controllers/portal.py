@@ -1,8 +1,8 @@
-# Updated file: Added routes for feedback submission (using survey) and centralized docs data fetching. Ensures granular access: Inventory docs filtered by user/dept via domain; comms/docs public within customer. Logs views for NAID audits. Modern: JSON for dynamic loading.
-
+# -*- coding: utf-8 -*-
 from odoo import http, fields, _
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.http import request
+from odoo.exceptions import AccessError
 import csv
 import io
 import json
@@ -1147,3 +1147,43 @@ class CustomerPortalExtended(CustomerPortal):
             return request.render("portal.portal_error", {
                 'error_message': 'Unable to export documents. Please try again.'
             })
+
+
+class PortalCertificateController(http.Controller):
+
+    @http.route(['/my/certificates/<int:visit_id>'], type='http', auth='user', website=True)
+    def download_certificate(self, visit_id, **kw):
+        """Download destruction certificate for a visitor's linked transaction.
+        
+        - Checks ownership for security (NAID/ISO compliance).
+        - Renders PDF report; innovative extension: could add QR code in report for verification.
+        - Logs download for NAID auditing.
+        """
+        visitor = request.env['frontdesk.visitor'].sudo().browse(visit_id)
+        if not visitor.exists() or visitor.partner_id != request.env.user.partner_id:
+            raise AccessError("You do not have access to this certificate.")
+        
+        if not visitor.pos_order_id:
+            return request.not_found()  # Or redirect with message
+        
+        # Render the report (adjust action ID if your report is for a different model, e.g., frontdesk.visitor)
+        pdf_content, _ = request.env.ref('records_management.action_report_destruction_certificate')._render_qweb_pdf([visitor.pos_order_id.id])
+        
+        # NAID audit logging for certificate download
+        request.env['naid.audit.log'].sudo().create({
+            'user_id': request.env.user.id,
+            'partner_id': request.env.user.partner_id.id,
+            'action': 'certificate_download',
+            'resource_type': 'destruction_certificate',
+            'access_date': fields.Datetime.now(),
+            'resource_id': visit_id,
+            'ip_address': request.httprequest.environ.get('REMOTE_ADDR'),
+            'user_agent': request.httprequest.environ.get('HTTP_USER_AGENT'),
+        })
+        
+        headers = [
+            ('Content-Type', 'application/pdf'),
+            ('Content-Disposition', f'attachment; filename="Destruction_Certificate_{visitor.name}.pdf"'),
+            ('Content-Length', len(pdf_content)),
+        ]
+        return request.make_response(pdf_content, headers=headers)
