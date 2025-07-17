@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.3.0',  # Bumped for error fix, certificate controller, and portal_request enhancements
+    'version': '18.0.2.5.0',  # Bumped for PuLP dependency fix
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
@@ -43,6 +43,9 @@ Features:
         'point_of_sale',  # Added for walk-in services
         'frontdesk',  # For visitor check-in integration
     ],
+    'external_dependencies': {
+        'python': ['pulp'],  # New: For linear programming in optimizations (e.g., trailer loading)
+    },
     'data': [
         'security/records_management_security.xml',
         'security/ir.model.access.csv',
