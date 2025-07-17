@@ -27,6 +27,7 @@ class RecordsDocument(models.Model):
     state = fields.Selection([
         ('active', 'Active'), ('archived', 'Archived'), ('destroyed', 'Destroyed')
     ], default='active', tracking=True)
+    storage_fee = fields.Float(string='Storage Fee', default=0.0, tracking=True)  # Added for billing computes
 
     @api.depends('content', 'attachment_id.datas')
     def _compute_hashed_content(self):
@@ -56,4 +57,13 @@ class RecordsDocument(models.Model):
             'target': 'new',
         }
 
-    def action_schedule_dest
+    def action_schedule_destruction(self):
+        """Innovative: Auto-create shredding request."""
+        shredding = self.env['shredding.service'].create({
+            'customer_id': self.partner_id.id,
+            'department_id': self.department_id.id,
+            'service_type': 'box' if self.box_id else 'hard_drive',
+            'shredded_box_ids': [(6, 0, [self.box_id.id])] if self.box_id else False,
+        })
+        self.message_post(body=_('Destruction scheduled: %s' % shredding.name))
+        return shredding
