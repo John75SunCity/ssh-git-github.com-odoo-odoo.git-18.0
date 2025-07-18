@@ -2,6 +2,7 @@
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
+from datetime import timedelta
 import hashlib
 
 class RecordsDocument(models.Model):
@@ -39,7 +40,7 @@ class RecordsDocument(models.Model):
     def _compute_expiry_date(self):
         for rec in self:
             if rec.retention_policy_id:
-                rec.expiry_date = fields.Date.today() + fields.Date.timedelta(days=rec.retention_policy_id.duration_days)
+                rec.expiry_date = fields.Date.today() + timedelta(days=rec.retention_policy_id.duration_days)
             else:
                 rec.expiry_date = False
 
