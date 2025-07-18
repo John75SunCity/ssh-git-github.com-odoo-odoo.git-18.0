@@ -62,10 +62,10 @@ class ResPartner(models.Model):
     )
     
     # Department Statistics
-    department_ids = fields.One2many(
-        'records.department', 'partner_id', 
-        string='Departments',
-        help="Departments managed by this customer")
+    # department_ids = fields.One2many(
+    #     'records.department', 'partner_id', 
+    #     string='Departments',
+    #     help="Departments managed by this customer")
     total_departments = fields.Integer(
         string='Total Departments', compute='_compute_department_stats')
     departments_with_storage = fields.Integer(
@@ -82,11 +82,14 @@ class ResPartner(models.Model):
              "(used with separate billing)"
     )
 
-    @api.depends('department_ids', 'department_ids.total_boxes', 'department_ids.monthly_storage_fee')
+    @api.depends('is_company')  # Simplified dependencies
     def _compute_department_stats(self):
         for partner in self:
             if partner.is_company:
-                departments = partner.department_ids
+                # Search for departments instead of using direct relationship
+                departments = self.env['records.department'].search([
+                    ('partner_id', '=', partner.id)
+                ])
                 partner.total_departments = len(departments)
                 
                 # Count departments with active storage

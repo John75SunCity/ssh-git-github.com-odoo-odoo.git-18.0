@@ -94,7 +94,11 @@ class RecordsDepartmentBillingContact(models.Model):
         """Compute statistics about contact's departments"""
         for rec in self:
             if rec.customer_id:
-                rec.total_departments = len(rec.customer_id.department_ids)
+                # Search for departments instead of using direct relationship
+                departments = self.env['records.department'].search([
+                    ('partner_id', '=', rec.customer_id.id)
+                ])
+                rec.total_departments = len(departments)
             else:
                 rec.total_departments = 0
 
