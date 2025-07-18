@@ -205,7 +205,7 @@ class ResPartnerDepartmentBilling(models.Model):
         string='Last Invoice Date'
     )
 
-    @api.depends('department_id', 'department_id.monthly_storage_fee', 'department_id.total_boxes')
+    @api.depends('department_id', 'department_id.box_ids', 'department_id.box_ids.state')
     def _compute_billing_totals(self):
         """Compute billing totals from department"""
         for rec in self:
