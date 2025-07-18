@@ -205,17 +205,19 @@ class ResPartnerDepartmentBilling(models.Model):
         string='Last Invoice Date'
     )
 
-    @api.depends('department_id', 'department_id.box_ids', 'department_id.box_ids.state')
+    @api.depends('customer_id', 'department_id', 'department_id.box_ids', 'department_id.box_ids.state')
     def _compute_billing_totals(self):
         """Compute billing totals from department"""
         for rec in self:
             if rec.department_id:
-                rec.monthly_storage_fee = rec.department_id.monthly_storage_fee or 0.0
-                rec.total_boxes = rec.department_id.total_boxes or 0
+                # Calculate directly from source data instead of computed fields
+                active_boxes = rec.department_id.box_ids.filtered(lambda b: b.state == 'active')
+                rec.total_boxes = len(active_boxes)
+                rec.monthly_storage_fee = len(active_boxes) * 10.0  # $10 per box per month
                 
                 # Find latest invoice for this partner/department
                 invoices = self.env['account.move'].search([
-                    ('partner_id', '=', rec.partner_id.id),
+                    ('partner_id', '=', rec.customer_id.id),
                     ('move_type', '=', 'out_invoice'),
                     ('state', '=', 'posted')
                 ], order='invoice_date desc', limit=1)
@@ -225,13 +227,13 @@ class ResPartnerDepartmentBilling(models.Model):
                 rec.total_boxes = 0
                 rec.last_invoice_date = False
 
-    @api.constrains('partner_id', 'department_id')
+    @api.constrains('customer_id', 'department_id')
     def _check_department_belongs_to_partner(self):
         """Ensure department belongs to the selected partner"""
         for rec in self:
-            if rec.department_id and rec.department_id.partner_id != rec.partner_id:
+            if rec.department_id and rec.department_id.partner_id != rec.customer_id:
                 raise ValidationError(_("Department '%s' does not belong to partner '%s'") % 
-                                    (rec.department_id.name, rec.partner_id.name))
+                                    (rec.department_id.name, rec.customer_id.name))
 
     def action_generate_invoice(self):
         """Action to generate invoice for this department billing"""
