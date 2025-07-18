@@ -202,7 +202,8 @@ class ResPartnerDepartmentBilling(models.Model):
     
     last_invoice_date = fields.Date(
         compute='_compute_billing_totals',
-        string='Last Invoice Date'
+        string='Last Invoice Date',
+        store=True
     )
 
     @api.depends('customer_id', 'department_id', 'department_id.box_ids', 'department_id.box_ids.state')

@@ -26,7 +26,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
     <record id="rule_inventory_docs_granular" model="ir.rule">
         <field name="name">Granular Inventory Document Access</field>
         <field name="model_id" ref="model_records_document"/>
-        <field name="domain_force">[('customer_id', '=', user.partner_id.id), '|', '|', ('department_id', 'in', user.partner_id.department_ids.ids), ('created_by_user_id', '=', user.id), ('assigned_user_ids', 'in', [user.id])]</field>
+        <field name="domain_force">[('customer_id', '=', user.partner_id.id), '|', '|', ('department_id', 'in', user.partner_id.department_ids.ids), ('created_by_user_id', '=', user.id), ('assigned_user_ids', 'in', [user.id])]</field>  <!-- Updated: 'x_department_ids' -> 'department_ids' -->
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="False"/>
@@ -51,7 +51,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
     <record id="rule_feedback_admin" model="ir.rule">
         <field name="name">Admin Access to Feedback</field>
         <field name="model_id" ref="model_survey_user_input"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="domain_force">[(1, '=', 1)]</field>  <!-- Full access -->
         <field name="groups" eval="[(4, ref('records_management.group_naid_compliance_officer'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="True"/>
@@ -67,7 +67,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="False"/>
-        <field name="perm_create" eval="True"/>
+        <field name="perm_create" eval="True"/>  <!-- Allow submission -->
         <field name="perm_unlink" eval="False"/>
     </record>
 
@@ -78,7 +78,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
         <field name="domain_force">[('partner_id', '=', user.partner_id.id), ('move_type', '=', 'out_invoice')]</field>
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
         <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="False"/>
+        <field name="perm_write" eval="False"/>  <!-- Updates via requests only -->
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
@@ -89,7 +89,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
         <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
         <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
+        <field name="perm_write" eval="True"/>  <!-- Allow self-generation edits -->
         <field name="perm_create" eval="True"/>
         <field name="perm_unlink" eval="False"/>
     </record>

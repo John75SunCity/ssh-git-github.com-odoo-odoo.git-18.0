@@ -29,7 +29,7 @@ class ResPartner(models.Model):
     
     department_billing_contacts = fields.One2many(
         'records.department.billing.contact', 'customer_id',
-        string='Department Billing Contacts')
+        string='Department Billing Contacts (New Model)')
     
     # Billing Preferences
     invoice_delivery_method = fields.Selection([
@@ -69,11 +69,11 @@ class ResPartner(models.Model):
     monthly_storage_total = fields.Float(
         string='Monthly Storage Total', compute='_compute_department_stats')
     
-    # Department billing contacts
+    # Department billing contacts  
     department_billing_contact_ids = fields.One2many(
         'res.partner.department.billing',
         'partner_id',
-        string='Department Billing Contacts',
+        string='Department Billing Contacts (Legacy)',
         help="Specific billing contacts for departments "
              "(used with separate billing)"
     )
