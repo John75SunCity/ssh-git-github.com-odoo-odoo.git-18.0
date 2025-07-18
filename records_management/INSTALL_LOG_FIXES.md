@@ -1,6 +1,6 @@
 # Records Management Module - Install Log Fixes
 
-## Summary of Issues Fixed
+## Summary of Issues Fixed 
 
 This document outlines all the fixes applied to resolve the Odoo.sh install log errors dated 2025-07-16 23:10:34.
 
