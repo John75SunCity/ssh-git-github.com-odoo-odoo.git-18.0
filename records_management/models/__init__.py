@@ -36,15 +36,5 @@ from . import naid_custody  # Chain of custody (timestamps/hashes per NAID 2025)
 
 # Extensions (One2many after bases)
 from . import department_billing  # Department billing contacts (fixes missing models)
-from . import res_partner  # Partner extensions (One2many to documents/departments)
-from . import stock_lot  # Stock lots (barcodes/inventory)
-from . import stock_move_sms_validation  # SMS validations for moves
-from . import stock_picking  # Pickings (integrate with fleet for trucks)
-from . import account_move  # Invoices (department_id Many2one for billing inverse)
-from . import customer_inventory_report  # Inventory reports
-# from . import pos_config  # Commented to fix circular import; uncomment after resolving cycles in pos_config.py (e.g., move imports inside methods like def some_method: from . import other_model)
-
-# Wizards/Installers (last, as they depend on models)
-from . import installer  # Module installer
-from . import ir_actions_report  # Custom reports
-from . import ir_module  # Module overrides if needed
+from . import res_partner  # Partner extensions (
+
