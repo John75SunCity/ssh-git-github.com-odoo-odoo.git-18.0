@@ -12,7 +12,7 @@ class ResPartner(models.Model):
         string='Records Management Customer', default=False,
         help="Flag if this partner uses records/shredding services (NAID compliant tracking)."
     )
-    x_department_ids = fields.One2many(
+    department_ids = fields.One2many(
         'records.department', 'partner_id',
         string='Departments',
         help='Departments for access control and billing (fixes domain errors in security rules).'
