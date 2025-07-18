@@ -12,7 +12,7 @@ class PortalRequest(models.Model):
 
     name = fields.Char(string='Request Reference', default='New', readonly=True)
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, readonly=True)
-    department_id = fields.Many2one('records.department', string='Department')
+    department_id = fields.Many2one('records.department', string='Department', domain="[('partner_id', '=', partner_id)]")  # Added for granular requests
     request_type = fields.Selection([
         ('destruction', 'Destruction Request'),
         ('service', 'Service Request'),

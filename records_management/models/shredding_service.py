@@ -19,7 +19,7 @@ class ShreddingService(models.Model):
         ('completed', 'Completed'), ('invoiced', 'Invoiced'), ('cancelled', 'Cancelled')
     ], default='draft', string='Status', tracking=True)
     customer_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    department_id = fields.Many2one('records.department', string='Department')
+    department_id = fields.Many2one('records.department', string='Department', domain="[('partner_id', '=', customer_id)]")  # Added for granular
     service_date = fields.Date(string='Service Date', default=fields.Date.context_today, required=True, tracking=True)
     scheduled_date = fields.Date(string='Scheduled Date', tracking=True)
     service_type = fields.Selection([
