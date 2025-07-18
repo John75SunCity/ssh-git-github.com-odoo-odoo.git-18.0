@@ -17,7 +17,6 @@ class ResPartnerDepartmentBilling(models.Model):
     )
 
     # Add other fields as needed
-    # Example:
     # billing_date = fields.Date(string='Billing Date')
     # amount_due = fields.Float(string='Amount Due')
 
