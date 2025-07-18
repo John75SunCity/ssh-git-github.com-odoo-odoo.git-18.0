@@ -94,3 +94,8 @@ class ResPartner(models.Model):
                 
                 # Calculate monthly storage total
                 partner.monthly_storage_total = sum(departments.mapped('monthly_storage_fee'))
+            else:
+                # For non-company partners, set defaults
+                partner.total_departments = 0
+                partner.departments_with_storage = 0
+                partner.monthly_storage_total = 0.0
