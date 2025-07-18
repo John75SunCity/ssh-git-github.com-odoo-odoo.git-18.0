@@ -206,7 +206,7 @@ class ResPartnerDepartmentBilling(models.Model):
         store=True
     )
 
-    @api.depends('customer_id', 'department_id', 'department_id.box_ids', 'department_id.box_ids.state')
+    @api.depends('partner_id', 'department_id', 'department_id.box_ids', 'department_id.box_ids.state')
     def _compute_billing_totals(self):
         """Compute billing totals from department"""
         for rec in self:
@@ -218,7 +218,7 @@ class ResPartnerDepartmentBilling(models.Model):
                 
                 # Find latest invoice for this partner/department
                 invoices = self.env['account.move'].search([
-                    ('partner_id', '=', rec.customer_id.id),
+                    ('partner_id', '=', rec.partner_id.id),
                     ('move_type', '=', 'out_invoice'),
                     ('state', '=', 'posted')
                 ], order='invoice_date desc', limit=1)
@@ -228,13 +228,13 @@ class ResPartnerDepartmentBilling(models.Model):
                 rec.total_boxes = 0
                 rec.last_invoice_date = False
 
-    @api.constrains('customer_id', 'department_id')
+    @api.constrains('partner_id', 'department_id')
     def _check_department_belongs_to_partner(self):
         """Ensure department belongs to the selected partner"""
         for rec in self:
-            if rec.department_id and rec.department_id.partner_id != rec.customer_id:
+            if rec.department_id and rec.department_id.partner_id != rec.partner_id:
                 raise ValidationError(_("Department '%s' does not belong to partner '%s'") % 
-                                    (rec.department_id.name, rec.customer_id.name))
+                                    (rec.department_id.name, rec.partner_id.name))
 
     def action_generate_invoice(self):
         """Action to generate invoice for this department billing"""
