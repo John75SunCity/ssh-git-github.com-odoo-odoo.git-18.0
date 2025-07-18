@@ -1,0 +1,9 @@
+class ResPartnerDepartmentBilling(models.Model):
+    _name = 'res.partner.department.billing'
+
+    monthly_storage_fee = fields.Float(
+        compute='_compute_billing_totals',
+        string='Monthly Storage Fee'
+    )
+
+    # customer_id = fields.Many2one('res.partner', string='Customer')  # Uncomment or add if needed
