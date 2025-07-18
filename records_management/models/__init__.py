@@ -16,8 +16,6 @@ from . import bale  # Bale management for recycling
 from . import load  # Load management for transportation
 from . import trailer_load  # Trailer loads (suggest PuLP optimization for efficiency)
 from . import paper_bale  # Paper bales
-
-# IMPORTANT: This import must come after all models it references via Many2one fields.
 from . import res_partner_department_billing  # Department billing model (adds customer_id for billing logic)
 
 # Shredding and Services
