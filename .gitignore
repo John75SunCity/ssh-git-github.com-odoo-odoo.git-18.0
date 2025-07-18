@@ -25,6 +25,6 @@ temp_labels/  # For generated bale PDFs
 # Project-specific (per review recommendations)
 COPILOT .PY FILES/
 COPILOT SUMMARIES/
-*.csv  # Analysis files
+CODESPACE/
 missing_invoices.txt
 expected_invoices.txt
