@@ -1,5 +1,7 @@
-# Updated file: Fixed invalid domain in ir.rule for granular inventory access (changed 'x_department_ids' to 'department_ids' per res.partner model extension—typo caused ParseError/AttributeError in log during module update/XML evaluation). This accomplishes secure, department-based access to sensitive docs (e.g., inventory uploads not portal-wide, aligning with NAID AAA chain-of-custody and ISO 15489 data segregation). Clean/simple: No extra fields; leverages existing One2many. User-friendly: Ensures portal views load without errors, modern UI unaffected. Innovative idea: Add dynamic rule computation via computed domain for AI-driven access (e.g., based on user behavior logs via torch sentiment analysis on feedback); standards: NAID AAA requires audited access controls—log rule evaluations in message_post for compliance audits.
-
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+Updated file: Fixed invalid domain in ir.rule for granular inventory access (changed 'x_department_ids' to 'department_ids' per res.partner model extension—typo caused ParseError/AttributeError in log during module update/XML evaluation). This accomplishes secure, department-based access to sensitive docs (e.g., inventory uploads not portal-wide, aligning with NAID AAA chain-of-custody and ISO 15489 data segregation). Clean/simple: No extra fields; leverages existing One2many. User-friendly: Ensures portal views load without errors, modern UI unaffected. Innovative idea: Add dynamic rule computation via computed domain for AI-driven access (e.g., based on user behavior logs via torch sentiment analysis on feedback); standards: NAID AAA requires audited access controls—log rule evaluations in message_post for compliance audits.
+-->
 <odoo>
     <!-- Existing security groups/rules -->
 

@@ -35,7 +35,7 @@
                     <t t-set="placeholder_count" t-value="'overview_count'"/>
                 </t>
                 <t t-call="portal.portal_docs_entry">
-                    <t t-set="title">Feedback & Suggestions</t>
+                    <t t-set="title">Feedback &amp; Suggestions</t>
                     <t t-set="url" t-value="'/my/feedback'"/>
                     <t t-set="placeholder_count" t-value="'feedback_count'"/>
                 </t>
@@ -59,7 +59,7 @@
                         <div class="card-header bg-primary text-white">
                             <h5 class="mb-0">
                                 <i class="fa fa-search"></i>
-                                Search & Filter Inventory
+                                Search &amp; Filter Inventory
                             </h5>
                         </div>
                         <div class="card-body">
@@ -122,10 +122,10 @@
                                         <button class="btn btn-success" onclick="addTempInventory()">
                                             <i class="fa fa-plus"></i> Add New Inventory
                                         </button>
-                                        <button class="btn btn-warning" onclick="batchToPickup()" disabled id="batch_pickup_btn">
+                                        <button class="btn btn-warning" onclick="batchToPickup()" disabled="disabled" id="batch_pickup_btn">
                                             <i class="fa fa-truck"></i> Add Selected to Pickup
                                         </button>
-                                        <button class="btn btn-danger" onclick="batchAction('destruction')" disabled id="batch_destroy_btn">
+                                        <button class="btn btn-danger" onclick="batchAction('destruction')" disabled="disabled" id="batch_destroy_btn">
                                             <i class="fa fa-trash"></i> Request Destruction
                                         </button>
                                     </div>
@@ -536,7 +536,7 @@
                                     <div class="col-md-8">
                                         <div class="form-group">
                                             <label for="user_file">CSV File</label>
-                                            <input type="file" name="file" id="user_file" class="form-control-file" accept=".csv" required/>
+                                            <input type="file" name="file" id="user_file" class="form-control-file" accept=".csv" required="required"/>
                                             <small class="form-text text-muted">
                                                 Upload a CSV file with columns: name, email, department, access_level
                                             </small>
@@ -544,7 +544,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>&nbsp;</label>
+                                            <label>&#160;</label>
                                             <button type="submit" class="btn btn-primary btn-block">
                                                 <i class="fa fa-upload"></i> Import Users
                                             </button>

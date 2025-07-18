@@ -21,9 +21,10 @@
         </t>
     </template>
 
+    <!-- Adjust model to frontdesk.visitor if report is for visitors -->
     <report
         id="action_report_destruction_certificate"
-        model="pos.order"  <!-- Adjust to frontdesk.visitor if report is for visitors -->
+        model="pos.order"
         string="Destruction Certificate"
         report_type="qweb-pdf"
         name="records_management.report_destruction_certificate"

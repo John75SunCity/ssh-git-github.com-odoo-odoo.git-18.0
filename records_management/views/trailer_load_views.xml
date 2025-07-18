@@ -1,6 +1,7 @@
-# Updated file: Views for trailer load management with tree/form/kanban modes. This accomplishes tracking bale assignments, weight/progress visualization (truck-shaped bar via custom JS/widget), and status workflows. User-friendly: Statusbar for quick state changes, progress bar widget for intuitive load monitoring. Modern: Kanban cards with colors (e.g., green for full), OWL-compatible for animations. Innovative idea: Integrate IoT scales (via Odoo IoT app) for real-time weight updates/RPC; standards: NAID AAA responsible disposal (bale labels/links ensure traceable recycling); ISO 15489: Audit-ready with logged state changes.
-
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+Updated file: Views for trailer load management with tree/form/kanban modes. This accomplishes tracking bale assignments, weight/progress visualization (truck-shaped bar via custom JS/widget), and status workflows. User-friendly: Statusbar for quick state changes, progress bar widget for intuitive load monitoring. Modern: Kanban cards with colors (e.g., green for full), OWL-compatible for animations. Innovative idea: Integrate IoT scales (via Odoo IoT app) for real-time weight updates/RPC; standards: NAID AAA responsible disposal (bale labels/links ensure traceable recycling); ISO 15489: Audit-ready with logged state changes.
+-->
 <odoo>
     <record id="view_trailer_load_tree" model="ir.ui.view">
         <field name="name">trailer.load.tree</field>
