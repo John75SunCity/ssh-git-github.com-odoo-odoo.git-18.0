@@ -34,6 +34,18 @@ class RecordsDepartment(models.Model):
     invoice_ids = fields.One2many('account.move', 'department_id', string='Invoices')
     portal_request_ids = fields.One2many('portal.request', 'department_id', string='Portal Requests')
 
+    # Computed fields
+    total_boxes = fields.Integer(string='Total Boxes', compute='_compute_totals')
+    monthly_storage_fee = fields.Float(string='Monthly Storage Fee', compute='_compute_totals')
+
+    @api.depends('box_ids', 'box_ids.state')
+    def _compute_totals(self):
+        for rec in self:
+            active_boxes = rec.box_ids.filtered(lambda b: b.state == 'active')
+            rec.total_boxes = len(active_boxes)
+            # Simple calculation - could be enhanced with pricing rules
+            rec.monthly_storage_fee = len(active_boxes) * 10.0  # $10 per box per month
+
     @api.depends('code')
     def _compute_hashed_code(self):
         for rec in self:

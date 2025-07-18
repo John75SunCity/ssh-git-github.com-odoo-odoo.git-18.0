@@ -91,3 +91,6 @@ class ResPartner(models.Model):
                 depts_with_storage = departments.filtered(
                     lambda d: d.total_boxes > 0)
                 partner.departments_with_storage = len(depts_with_storage)
+                
+                # Calculate monthly storage total
+                partner.monthly_storage_total = sum(departments.mapped('monthly_storage_fee'))

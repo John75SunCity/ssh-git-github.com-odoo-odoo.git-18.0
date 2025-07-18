@@ -34,6 +34,7 @@ from . import naid_audit  # Audit logging (ISO 27001 integrity)
 from . import naid_custody  # Chain of custody (timestamps/hashes per NAID 2025)
 
 # Extensions (One2many after bases)
+from . import department_billing  # Department billing contacts (fixes missing models)
 from . import res_partner  # Partner extensions (One2many to documents/departments)
 from . import stock_lot  # Stock lots (barcodes/inventory)
 from . import stock_move_sms_validation  # SMS validations for moves
