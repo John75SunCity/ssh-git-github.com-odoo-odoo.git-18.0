@@ -296,7 +296,7 @@ class RecordsUserInvitationWizard(models.TransientModel):
         # Create or find the user
         user = self.env['res.partner'].search([
             ('email', '=', self.email),
-            ('parent_id', '=', self.department_id.company_id.id)
+            ('parent_id', '=', self.department_id.partner_id.id)
         ], limit=1)
         
         if not user:
@@ -305,7 +305,7 @@ class RecordsUserInvitationWizard(models.TransientModel):
                 'email': self.email,
                 'phone': self.phone,
                 'function': self.job_title,
-                'parent_id': self.department_id.company_id.id,
+                'parent_id': self.department_id.partner_id.id,
                 'is_company': False,
                 'customer_rank': 1,
             })

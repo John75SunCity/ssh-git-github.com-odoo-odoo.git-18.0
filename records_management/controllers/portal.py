@@ -682,7 +682,7 @@ class CustomerPortalExtended(CustomerPortal):
     def _get_company_billing(self, customer):
         """Get billing information for entire company"""
         departments = request.env['records.department'].search([
-            ('company_id', '=', customer.id)
+            ('partner_id', '=', customer.id)
         ])
         
         total_cost = sum(dept.monthly_cost for dept in departments)
@@ -831,7 +831,7 @@ class CustomerPortalExtended(CustomerPortal):
         departments = []
         if access_info['access_level'] == 'company_admin':
             departments = request.env['records.department'].search([
-                ('company_id', '=', access_info['customer'].id)
+                ('partner_id', '=', access_info['customer'].id)
             ])
         elif access_info['department']:
             departments = [access_info['department']]

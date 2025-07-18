@@ -22,7 +22,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
 
     <!-- Access rules for models (excerpt; add all from ir.model.access.csv) -->
 
-    <!-- Granular rule for inventory documents: Fixed domain to use 'department_ids' -->
+    <!-- Granular rule for inventory documents: Access control for departments -->
     <record id="rule_inventory_docs_granular" model="ir.rule">
         <field name="name">Granular Inventory Document Access</field>
         <field name="model_id" ref="model_records_document"/>
