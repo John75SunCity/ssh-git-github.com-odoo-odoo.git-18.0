@@ -447,7 +447,6 @@
               parent="menu_portal_feedback" 
               action="action_feedback_analytics"
               sequence="10"/>
-</odoo>
 
     <!-- Form View for Portal Feedback -->
     <record id="view_portal_feedback_form" model="ir.ui.view">
@@ -601,7 +600,7 @@
                 <filter name="completed" string="Completed" domain="[('state', '=', 'done')]"/>
                 <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
                 <filter name="high_satisfaction" string="High Satisfaction (≥80%)" domain="[('scoring_percentage', '>=', 80)]"/>
-                <filter name="low_satisfaction" string="Low Satisfaction (≤60%)" domain="[('scoring_percentage', '<=', 60)]"/>
+                <filter name="low_satisfaction" string="Low Satisfaction (≤60%)" domain="[('scoring_percentage', '&lt;=', 60)]"/>
                 
                 <separator/>
                 <filter name="this_month" string="This Month" 
