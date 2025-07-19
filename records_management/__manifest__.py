@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.49.5',  # CRITICAL: Complete tree->list migration for Odoo 18.0 compatibility
+            'version': '18.0.2.49.6',  # FIX: Calendar view XML schema compatibility for Odoo 18.0
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
