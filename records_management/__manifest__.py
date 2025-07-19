@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.49.3',  # CRITICAL: Fixed view type 'tree' -> 'list' for Odoo 18.0 deployment compatibility
+            'version': '18.0.2.49.5',  # CRITICAL: Complete tree->list migration for Odoo 18.0 compatibility
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
