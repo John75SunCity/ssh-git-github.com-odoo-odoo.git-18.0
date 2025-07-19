@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.28.0',  # FIXED: View action references - removed buttons calling non-existent methods in records_document_views.xml
+    'version': '18.0.2.29.0',  # FIXED: Added missing action methods to records.document model and restored all workflow buttons
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

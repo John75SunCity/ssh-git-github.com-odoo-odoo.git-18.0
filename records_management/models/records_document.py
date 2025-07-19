@@ -73,6 +73,7 @@ class RecordsDocument(models.Model):
         ('stored', 'Stored'),
         ('retrieved', 'Retrieved'),
         ('returned', 'Returned'),
+        ('archived', 'Archived'),
         ('destroyed', 'Destroyed')
     ], string='Status', default='draft', tracking=True)
     active = fields.Boolean(default=True)
@@ -113,3 +114,52 @@ class RecordsDocument(models.Model):
         else:
             self.customer_id = False
             self.department_id = False
+
+    # Action methods for workflow buttons
+    def action_store(self):
+        """Store the document in the designated location."""
+        for record in self:
+            if record.state == 'draft':
+                record.state = 'stored'
+        return True
+
+    def action_retrieve(self):
+        """Retrieve the document from storage."""
+        for record in self:
+            if record.state in ('stored', 'returned'):
+                record.state = 'retrieved'
+        return True
+
+    def action_return(self):
+        """Return the document to storage."""
+        for record in self:
+            if record.state == 'retrieved':
+                record.state = 'returned'
+        return True
+
+    def action_destroy(self):
+        """Mark the document as destroyed (NAID compliance)."""
+        for record in self:
+            if record.state in ('stored', 'returned'):
+                record.state = 'destroyed'
+        return True
+
+    def action_preview(self):
+        """Preview the document attachment if available."""
+        self.ensure_one()
+        if self.attachment_ids:
+            return {
+                'type': 'ir.actions.act_url',
+                'url': f'/web/content/{self.attachment_ids[0].id}?download=false',
+                'target': 'new',
+            }
+        return False
+
+    def action_schedule_destruction(self):
+        """Schedule the document for destruction."""
+        for record in self:
+            if record.state == 'archived':
+                # Set retention date for destruction scheduling
+                if not record.retention_date:
+                    record.retention_date = fields.Date.today()
+        return True
