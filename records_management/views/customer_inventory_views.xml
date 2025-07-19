@@ -30,7 +30,7 @@
         <field name="model">customer.inventory.report</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree string="Customer Inventory Reports" 
+            <list string="Customer Inventory Reports" 
                   decoration-info="status=='draft'" 
                   decoration-success="status=='confirmed'" 
                   decoration-warning="status=='sent'"
@@ -44,7 +44,7 @@
                 <field name="total_documents" widget="integer" optional="hide"/>
                 <field name="active_locations" optional="hide"/>
                 <field name="status" widget="selection"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -124,7 +124,7 @@
                             </div>
                             <field name="box_ids" mode="tree" readonly="1" 
                                    context="{'tree_view_ref': 'records_management.view_records_box_inventory_tree'}">
-                                <tree decoration-success="state=='active'" 
+                                <list decoration-success="state=='active'" 
                                       decoration-warning="state=='pending'" 
                                       decoration-danger="state=='destroyed'"
                                       decoration-muted="state=='archived'"
@@ -133,7 +133,7 @@
                                     <field name="location_id" optional="show"/>
                                     <field name="state" widget="badge"/>
                                     <field name="create_date" optional="hide" widget="datetime"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Customer Documents" name="documents_page">
@@ -149,7 +149,7 @@
                                 </div>
                             </div>
                             <field name="document_ids" mode="tree" readonly="1">
-                                <tree decoration-success="state=='active'" 
+                                <list decoration-success="state=='active'" 
                                       decoration-warning="state=='pending'" 
                                       decoration-danger="state=='destroyed'"
                                       decoration-muted="state=='archived'">
@@ -157,7 +157,7 @@
                                     <field name="box_id" optional="show"/>
                                     <field name="state" widget="badge"/>
                                     <field name="create_date" optional="hide" widget="datetime"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Notes &amp; Comments" name="notes_page">
