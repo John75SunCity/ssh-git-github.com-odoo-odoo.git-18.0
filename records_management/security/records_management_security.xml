@@ -76,7 +76,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
     <!-- Additional rules for centralized docs: Invoices/quotes/certs linked to customer -->
     <record id="rule_invoice_portal" model="ir.rule">
         <field name="name">Portal Access to Invoices</field>
-        <field name="model_id" ref="model_account_move"/>
+        <field name="model_id" ref="account.model_account_move"/>
         <field name="domain_force">[('partner_id', '=', user.partner_id.id), ('move_type', '=', 'out_invoice')]</field>
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
         <field name="perm_read" eval="True"/>
@@ -87,7 +87,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
 
     <record id="rule_quote_portal" model="ir.rule">
         <field name="name">Portal Access to Quotes</field>
-        <field name="model_id" ref="model_sale_order"/>
+        <field name="model_id" ref="sale.model_sale_order"/>
         <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
         <field name="perm_read" eval="True"/>
@@ -109,7 +109,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
 
     <record id="rule_comms_portal" model="ir.rule">
         <field name="name">Portal Access to Communications</field>
-        <field name="model_id" ref="model_mail_message"/>
+        <field name="model_id" ref="mail.model_mail_message"/>
         <field name="domain_force">[('res_id', '=', user.partner_id.id), ('model', '=', 'res.partner')]</field>
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
         <field name="perm_read" eval="True"/>
