@@ -28,6 +28,7 @@
     <record id="view_customer_inventory_tree" model="ir.ui.view">
         <field name="name">customer.inventory.tree</field>
         <field name="model">customer.inventory.report</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Customer Inventory Reports" 
                   decoration-info="status=='draft'" 
@@ -51,6 +52,7 @@
     <record id="view_customer_inventory_report_form" model="ir.ui.view">
         <field name="name">customer.inventory.report.form</field>
         <field name="model">customer.inventory.report</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Customer Inventory Report" js_class="customer_inventory_form_view">
                 <header>
@@ -176,6 +178,7 @@
     <record id="view_customer_inventory_report_search" model="ir.ui.view">
         <field name="name">customer.inventory.report.search</field>
         <field name="model">customer.inventory.report</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Search Customer Inventory">
                 <field name="name" string="Report Name" filter_domain="[('name', 'ilike', self)]"/>
@@ -231,6 +234,7 @@
     <record id="view_customer_inventory_report_kanban" model="ir.ui.view">
         <field name="name">customer.inventory.report.kanban</field>
         <field name="model">customer.inventory.report</field>
+        <field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column" quick_create="false" 
                     sample="1" js_class="customer_inventory_kanban">
@@ -337,6 +341,7 @@
     <record id="view_customer_inventory_report_pivot" model="ir.ui.view">
         <field name="name">customer.inventory.report.pivot</field>
         <field name="model">customer.inventory.report</field>
+        <field name="type">pivot</field>
         <field name="arch" type="xml">
             <pivot string="Inventory Analytics" sample="1">
                 <field name="customer_id" type="row"/>
@@ -352,6 +357,7 @@
     <record id="view_customer_inventory_report_graph" model="ir.ui.view">
         <field name="name">customer.inventory.report.graph</field>
         <field name="model">customer.inventory.report</field>
+        <field name="type">graph</field>
         <field name="arch" type="xml">
             <graph string="Inventory Trends" sample="1" type="line">
                 <field name="report_date" type="row" interval="month"/>
@@ -365,6 +371,7 @@
     <record id="view_customer_inventory_report_calendar" model="ir.ui.view">
         <field name="name">customer.inventory.report.calendar</field>
         <field name="model">customer.inventory.report</field>
+        <field name="type">calendar</field>
         <field name="arch" type="xml">
             <calendar string="Inventory Reports Calendar" 
                       date_start="report_date" 
