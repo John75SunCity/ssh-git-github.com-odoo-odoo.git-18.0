@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.19.0',  # CRITICAL: Fixed external ID references causing deployment failures
+    'version': '18.0.2.20.0',  # FIXED: Portal centralized docs template XML structure validation
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
