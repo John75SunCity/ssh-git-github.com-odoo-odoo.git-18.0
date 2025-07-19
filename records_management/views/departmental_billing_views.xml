@@ -177,9 +177,7 @@
                     </group>
                     
                     <group string="Billing History">
-                        <field name="box_ids" 
-                               context="{'group_by': 'state'}"
-                               readonly="1">
+                        <field name="box_ids" readonly="1">
                             <list>
                                 <field name="name"/>
                                 <field name="state"/>
