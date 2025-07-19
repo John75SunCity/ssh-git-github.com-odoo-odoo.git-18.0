@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.49.8',  # FIX: Add missing action_view_invoices method for billing views
+            'version': '18.0.2.49.9',  # FIX: Correct field reference in departmental billing views
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
