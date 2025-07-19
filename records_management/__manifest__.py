@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.49.11',  # FIX: Add missing computed fields to res.partner.department.billing model
+            'version': '18.0.2.49.12',  # FIX: Migrate attrs to modern invisible syntax for Odoo 18.0 compatibility
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

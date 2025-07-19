@@ -8,25 +8,25 @@
         <field name="arch" type="xml">
             <notebook position="inside">
                 <page string="Records Management Billing" 
-                      attrs="{'invisible': [('is_company', '=', False)]}">
+                      invisible="not is_company">
                     <group>
                         <group string="Customer Configuration">
                             <field name="is_records_customer"/>
                             <field name="billing_method" 
-                                   attrs="{'invisible': [('is_records_customer', '=', False)]}"/>
+                                   invisible="not is_records_customer"/>
                             <field name="billing_contact_id"
-                                   attrs="{'invisible': [('is_records_customer', '=', False)]}"/>
+                                   invisible="not is_records_customer"/>
                         </group>
                         <group string="Delivery Preferences">
                             <field name="invoice_delivery_method"
-                                   attrs="{'invisible': [('is_records_customer', '=', False)]}"/>
+                                   invisible="not is_records_customer"/>
                             <field name="payment_terms_override"
-                                   attrs="{'invisible': [('is_records_customer', '=', False)]}"/>
+                                   invisible="not is_records_customer"/>
                         </group>
                     </group>
                     
                     <group string="Multi-Department Billing" 
-                           attrs="{'invisible': [('is_records_customer', '=', False)]}">
+                           invisible="not is_records_customer">
                         <group>
                             <field name="billing_preference"/>
                             <field name="minimum_fee_per_department"/>
@@ -39,7 +39,7 @@
                     </group>
                     
                     <field name="department_billing_contacts" 
-                           attrs="{'invisible': [('is_records_customer', '=', False)]}">
+                           invisible="not is_records_customer">
                         <list>
                             <field name="department_id"/>
                             <field name="contact_name"/>
@@ -50,7 +50,7 @@
                     </field>
                     
                     <field name="department_billing_contact_ids" 
-                           attrs="{'invisible': [('is_records_customer', '=', False)]}">
+                           invisible="not is_records_customer">
                         <list editable="bottom">
                             <field name="department_id"/>
                             <field name="department_name" readonly="1"/>
@@ -58,7 +58,7 @@
                             <field name="billing_email" readonly="1"/>
                             <field name="use_separate_po_numbers"/>
                             <field name="default_po_number" 
-                                   attrs="{'invisible': [('use_separate_po_numbers', '=', False)]}"/>
+                                   invisible="not use_separate_po_numbers"/>
                         </list>
                         <form>
                             <group>
@@ -68,7 +68,7 @@
                                 <field name="billing_email" readonly="1"/>
                                 <field name="use_separate_po_numbers"/>
                                 <field name="default_po_number" 
-                                       attrs="{'invisible': [('use_separate_po_numbers', '=', False)]}"/>
+                                       invisible="not use_separate_po_numbers"/>
                             </group>
                         </form>
                     </field>
