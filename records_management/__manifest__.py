@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.23.0',  # FIXED: Survey.survey 'state' field deprecation - removed from feedback_survey_data.xml
+    'version': '18.0.2.24.0',  # FIXED: Survey.survey 'session_answer_deadline' field deprecation - removed from feedback_survey_data.xml
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

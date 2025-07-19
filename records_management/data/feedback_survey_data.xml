@@ -11,7 +11,6 @@
             <field name="is_time_limited">False</field>
             <field name="certification">False</field>
             <field name="scoring_type">no_scoring</field>
-            <field name="session_answer_deadline">False</field>
         </record>
 
         <!-- Survey Page: General Feedback -->
