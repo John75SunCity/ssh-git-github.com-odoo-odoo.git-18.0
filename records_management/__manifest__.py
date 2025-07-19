@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.11.0',  # Bumped for temporary description field workaround
+    'version': '18.0.2.14.0',  # Added essential products to products.xml
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

@@ -1,7 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <!-- Product data temporarily removed to resolve database constraint issues -->
-        <!-- Will be re-added after database cleanup -->
+        <!-- Essential Records Management Products -->
+        
+        <!-- Document Storage Box - Basic -->
+        <record id="product_storage_box" model="product.product">
+            <field name="name">Document Storage Box</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-BOX</field>
+            <field name="list_price">15.00</field>
+            <field name="standard_price">10.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">Standard archive box for document storage</field>
+        </record>
+
+        <!-- Document Storage Service - Basic -->
+        <record id="product_storage_service" model="product.product">
+            <field name="name">Monthly Storage Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-STORAGE</field>
+            <field name="list_price">25.00</field>
+            <field name="standard_price">15.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">Monthly document storage service</field>
+        </record>
+
+        <!-- Document Shredding Service - Basic -->
+        <record id="product_shredding_service" model="product.product">
+            <field name="name">Document Shredding Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-SHRED</field>
+            <field name="list_price">50.00</field>
+            <field name="standard_price">30.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">Secure document destruction service</field>
+        </record>
     </data>
 </odoo>
