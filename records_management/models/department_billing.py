@@ -66,6 +66,36 @@ class RecordsDepartmentBillingContact(models.Model):
         tracking=True
     )
     
+    # Billing Preferences
+    receives_invoices = fields.Boolean(
+        string='Receives Invoices',
+        default=True,
+        tracking=True,
+        help='This contact receives invoices for the department'
+    )
+    
+    receives_statements = fields.Boolean(
+        string='Receives Statements',
+        default=False,
+        tracking=True,
+        help='This contact receives monthly statements'
+    )
+    
+    receives_notifications = fields.Boolean(
+        string='Receives Notifications',
+        default=True,
+        tracking=True,
+        help='This contact receives billing notifications'
+    )
+    
+    delivery_method = fields.Selection([
+        ('email', 'Email'),
+        ('portal', 'Customer Portal'),
+        ('mail', 'Postal Mail'),
+        ('both', 'Email + Portal')
+    ], string='Delivery Method', default='email', tracking=True,
+       help='How this contact prefers to receive documents')
+    
     hashed_email = fields.Char(
         compute='_compute_hashed_email',
         store=True,
