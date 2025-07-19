@@ -67,6 +67,13 @@ class RecordsDocument(models.Model):
         'Document Attachments Count', compute='_compute_attachment_count'
     )
 
+    # Billing fields
+    storage_fee = fields.Float(
+        string='Storage Fee',
+        digits='Product Price',
+        help='Monthly storage fee for this document'
+    )
+
     # Status fields
     state = fields.Selection([
         ('draft', 'Draft'),
