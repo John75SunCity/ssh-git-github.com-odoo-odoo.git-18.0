@@ -153,6 +153,72 @@
         </field>
     </record>
 
+    <!-- Base Department Form View -->
+    <record id="view_records_department_form" model="ir.ui.view">
+        <field name="name">records.department.form</field>
+        <field name="model">records.department</field>
+        <field name="arch" type="xml">
+            <form string="Department">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Department Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Basic Information">
+                            <field name="code"/>
+                            <field name="parent_id"/>
+                        </group>
+                        <group string="Contact Information">
+                            <field name="manager_id"/>
+                            <field name="phone"/>
+                            <field name="email"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Department description..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Department Tree View -->
+    <record id="view_records_department_tree" model="ir.ui.view">
+        <field name="name">records.department.tree</field>
+        <field name="model">records.department</field>
+        <field name="arch" type="xml">
+            <list string="Departments">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="parent_id"/>
+                <field name="manager_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Department Action -->
+    <record id="action_records_department" model="ir.actions.act_window">
+        <field name="name">Departments</field>
+        <field name="res_model">records.department</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_records_department_tree"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new department
+            </p>
+            <p>
+                Departments help organize your records management operations
+                by customer divisions or business units.
+            </p>
+        </field>
+    </record>
+
     <!-- Enhanced Department Form View -->
     <record id="view_records_department_enhanced_form" model="ir.ui.view">
         <field name="name">records.department.enhanced.form</field>

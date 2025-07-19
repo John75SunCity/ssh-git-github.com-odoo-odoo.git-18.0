@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.49.20',  # FIX: Remove problematic group_by context in department enhanced form view
+            'version': '18.0.2.49.21',  # FIX: Add missing base department form view for proper inheritance
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
