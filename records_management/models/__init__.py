@@ -29,6 +29,9 @@ from . import hr_employee  # Employee access/training (NAID certifications)
 from . import hr_employee_naid  # NAID-specific employee tracking
 from . import customer_feedback  # Feedback with sentiment (innovative: Integrate torch for AI analysis via code_execution)
 
+# Business Logic
+from . import scrm_records_management  # Core SCRM business logic
+
 # NAID Compliance Models
 from . import naid_audit  # Audit logging (ISO 27001 integrity)
 from . import naid_custody  # Chain of custody (timestamps/hashes per NAID 2025)
