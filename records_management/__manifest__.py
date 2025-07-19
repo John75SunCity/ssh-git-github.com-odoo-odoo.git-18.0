@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.49.16',  # FIX: Fix view inheritance structure for billing period enhanced view
+            'version': '18.0.2.49.18',  # FIX: Use proper separator elements instead of labels for section headers
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
