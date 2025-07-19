@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.49.10',  # FIX: Add missing billing preference fields to department billing contact model
+            'version': '18.0.2.49.11',  # FIX: Add missing computed fields to res.partner.department.billing model
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

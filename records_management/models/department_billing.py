@@ -216,9 +216,38 @@ class ResPartnerDepartmentBilling(models.Model):
         ('mail', 'Postal Mail'),
     ], string='Billing Method', default='inherit', tracking=True)
     
+    # PO Number Configuration
+    use_separate_po_numbers = fields.Boolean(
+        string='Use Separate PO Numbers',
+        default=False,
+        tracking=True,
+        help='Use separate PO numbers for this department'
+    )
+    
+    default_po_number = fields.Char(
+        string='Default PO Number',
+        tracking=True,
+        help='Default PO number for this department invoices'
+    )
+    
     active = fields.Boolean(
         default=True,
         tracking=True
+    )
+    
+    # Computed fields
+    department_name = fields.Char(
+        related='department_id.name',
+        string='Department Name',
+        readonly=True,
+        store=True
+    )
+    
+    billing_email = fields.Char(
+        related='billing_contact_id.email',
+        string='Billing Email',
+        readonly=True,
+        store=True
     )
     
     # Enhanced computed fields
