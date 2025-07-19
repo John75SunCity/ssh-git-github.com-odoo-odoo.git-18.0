@@ -10,34 +10,16 @@
                   decoration-info="status=='draft'" 
                   decoration-success="status=='confirmed'" 
                   decoration-warning="status=='sent'"
-                  decoration-danger="total_boxes > 500"
-                  multi_edit="1"
-                  sample="1"
-                  js_class="customer_inventory_list_view">
-                <header>
-                    <button name="action_batch_confirm" type="object" string="Batch Confirm" 
-                            class="btn-primary" invisible="context.get('active_ids') == False"/>
-                    <button name="action_batch_send" type="object" string="Batch Send" 
-                            class="btn-success" invisible="context.get('active_ids') == False"/>
-                    <button name="action_batch_archive" type="object" string="Batch Archive" 
-                            class="btn-warning" invisible="context.get('active_ids') == False"/>
-                    <button name="action_create_destruction_request" type="object" string="Create Destruction Request" 
-                            class="btn-danger" invisible="context.get('active_ids') == False"/>
-                </header>
-                <field name="name" class="fw-bold"/>
-                <field name="customer_id" optional="show"/>
-                <field name="report_date" optional="show"/>
-                <field name="total_boxes" class="text-end" 
-                       t-att-class="{'text-danger fw-bold': total_boxes > 500, 'text-warning': total_boxes > 100, 'text-success': total_boxes &lt;= 100}"/>
-                <field name="total_documents" class="text-end" optional="hide"/>
-                <field name="active_locations" optional="hide"/>
-                <field name="status" widget="badge" 
-                       decoration-info="status=='draft'" 
-                       decoration-success="status=='confirmed'" 
-                       decoration-warning="status=='sent'"
-                       decoration-muted="status=='archived'"/>
-                <field name="create_date" optional="hide"/>
-                <field name="write_date" optional="hide"/>
+                  decoration-danger="total_boxes > 500">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="report_date"/>
+                <field name="total_boxes"/>
+                <field name="total_documents"/>
+                <field name="active_locations"/>
+                <field name="status" widget="badge"/>
+                <field name="create_date"/>
+                <field name="write_date"/>
             </list>
         </field>
     </record>
@@ -47,31 +29,21 @@
         <field name="name">customer.inventory.tree</field>
         <field name="model">customer.inventory.report</field>
         <field name="arch" type="xml">
-            <list string="Customer Inventory Reports" 
+            <tree string="Customer Inventory Reports" 
                   decoration-info="status=='draft'" 
                   decoration-success="status=='confirmed'" 
                   decoration-warning="status=='sent'"
                   decoration-danger="total_boxes > 500"
                   multi_edit="1"
-                  editable="top"
-                  js_class="customer_inventory_highlight_tree">
+                  editable="top">
                 <field name="name" required="1"/>
-                <field name="customer_id" options="{'no_create': True}"/>
+                <field name="customer_id"/>
                 <field name="report_date"/>
-                <field name="total_boxes" 
-                       t-att-class="{'bg-danger text-white': total_boxes > 500, 'bg-warning': total_boxes > 100, 'bg-success text-white': total_boxes &lt;= 50}"
-                       widget="integer"/>
+                <field name="total_boxes" widget="integer"/>
                 <field name="total_documents" widget="integer" optional="hide"/>
                 <field name="active_locations" optional="hide"/>
                 <field name="status" widget="selection"/>
-                <button name="action_confirm_report" type="object" string="Confirm" 
-                        class="btn btn-sm btn-primary" icon="fa-check" invisible="status != 'draft'"/>
-                <button name="action_send_to_customer" type="object" string="Send" 
-                        class="btn btn-sm btn-success" icon="fa-paper-plane" invisible="status != 'confirmed'"/>
-                <button name="action_create_destruction_request" type="object" string="Destroy" 
-                        class="btn btn-sm btn-danger" icon="fa-trash" 
-                        confirm="Are you sure you want to create a destruction request for this inventory?"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -123,11 +95,14 @@
                         <group>
                             <field name="customer_id" options="{'no_create': True}" widget="many2one_avatar"/>
                             <field name="report_date" widget="date"/>
+                            <field name="volume_category" readonly="1" widget="badge"/>
                         </group>
                         <group>
-                            <field name="total_boxes" readonly="1" class="o_field_integer" 
+                            <field name="total_boxes" readonly="1" 
                                    widget="integer" 
-                                   t-att-class="{'text-danger': total_boxes > 500, 'text-warning': total_boxes > 100}"/>
+                                   class="o_field_integer"
+                                   attrs="{'class': [('box_count_css_class', '!=', False)]}"/>
+                            <field name="box_count_css_class" invisible="1"/>
                             <field name="total_documents" readonly="1" widget="integer"/>
                             <field name="active_locations" readonly="1" widget="integer"/>
                             <field name="write_date" readonly="1" widget="datetime" string="Last Updated"/>
@@ -148,19 +123,16 @@
                             </div>
                             <field name="box_ids" mode="tree" readonly="1" 
                                    context="{'tree_view_ref': 'records_management.view_records_box_inventory_tree'}">
-                                <list decoration-success="state=='active'" 
+                                <tree decoration-success="state=='active'" 
                                       decoration-warning="state=='pending'" 
                                       decoration-danger="state=='destroyed'"
                                       decoration-muted="state=='archived'"
-                                      multi_edit="1"
                                       editable="bottom">
-                                    <field name="name" class="fw-bold"/>
+                                    <field name="name"/>
                                     <field name="location_id" optional="show"/>
                                     <field name="state" widget="badge"/>
-                                    <field name="box_type" optional="hide"/>
-                                    <field name="retention_date" optional="hide" widget="date"/>
                                     <field name="create_date" optional="hide" widget="datetime"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Customer Documents" name="documents_page">
@@ -176,48 +148,19 @@
                                 </div>
                             </div>
                             <field name="document_ids" mode="tree" readonly="1">
-                                <list decoration-success="state=='active'" 
+                                <tree decoration-success="state=='active'" 
                                       decoration-warning="state=='pending'" 
                                       decoration-danger="state=='destroyed'"
-                                      decoration-muted="state=='archived'"
-                                      multi_edit="1">
-                                    <field name="name" class="fw-bold"/>
-                                    <field name="document_type_id" optional="show"/>
+                                      decoration-muted="state=='archived'">
+                                    <field name="name"/>
                                     <field name="box_id" optional="show"/>
                                     <field name="state" widget="badge"/>
-                                    <field name="retention_date" optional="hide" widget="date"/>
                                     <field name="create_date" optional="hide" widget="datetime"/>
-                                </list>
+                                </tree>
                             </field>
-                        </page>
-                        <page string="Analytics &amp; Statistics" name="analytics_page">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h5>Storage Statistics</h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <field name="storage_analytics" widget="json_viewer" readonly="1"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h5>Retention Analysis</h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <field name="retention_summary" widget="json_viewer" readonly="1"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </page>
                         <page string="Notes &amp; Comments" name="notes_page">
                             <field name="notes" placeholder="Additional notes about this inventory report..." widget="html"/>
-                            <field name="internal_notes" placeholder="Internal notes (not visible to customer)" 
-                                   widget="html" groups="records_management.group_records_manager"/>
                         </page>
                     </notebook>
                 </sheet>

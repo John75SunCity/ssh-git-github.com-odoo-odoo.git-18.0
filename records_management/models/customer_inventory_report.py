@@ -59,6 +59,58 @@ class CustomerInventoryReport(models.Model):
         ('archived', 'Archived')
     ], default='draft', string='Status')
     notes = fields.Text(string='Notes')
+    
+    # Computed fields for UI styling
+    volume_category = fields.Selection([
+        ('small', 'Small (≤50 boxes)'),
+        ('medium', 'Medium (51-100 boxes)'),
+        ('large', 'Large (101-500 boxes)'),
+        ('very_large', 'Very Large (>500 boxes)')
+    ], string='Volume Category', compute='_compute_volume_category', store=True)
+    
+    box_count_css_class = fields.Char(
+        string='Box Count CSS Class',
+        compute='_compute_box_count_css_class'
+    )
+    
+    color = fields.Integer(string='Color Index', compute='_compute_color', store=True)
+
+    @api.depends('total_boxes')
+    def _compute_volume_category(self) -> None:
+        for record in self:
+            if record.total_boxes <= 50:
+                record.volume_category = 'small'
+            elif record.total_boxes <= 100:
+                record.volume_category = 'medium'
+            elif record.total_boxes <= 500:
+                record.volume_category = 'large'
+            else:
+                record.volume_category = 'very_large'
+    
+    @api.depends('total_boxes')
+    def _compute_box_count_css_class(self) -> None:
+        for record in self:
+            if record.total_boxes > 500:
+                record.box_count_css_class = 'text-danger'
+            elif record.total_boxes > 100:
+                record.box_count_css_class = 'text-warning'
+            else:
+                record.box_count_css_class = 'text-success'
+    
+    @api.depends('customer_id', 'status')
+    def _compute_color(self) -> None:
+        for record in self:
+            # Color based on status and volume
+            if record.status == 'draft':
+                record.color = 1  # Light blue
+            elif record.status == 'confirmed':
+                record.color = 3  # Green
+            elif record.status == 'sent':
+                record.color = 5  # Orange
+            elif record.total_boxes > 500:
+                record.color = 9  # Red for high volume
+            else:
+                record.color = 0  # Default
 
     @api.depends('customer_id')
     def _compute_inventory_totals(self) -> None:
