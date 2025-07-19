@@ -372,16 +372,10 @@
         <field name="name">customer.inventory.report.calendar</field>
         <field name="model">customer.inventory.report</field>
         <field name="arch" type="xml">
-            <calendar string="Inventory Reports Calendar" 
-                      date_start="report_date" 
-                      color="customer_id"
-                      quick_add="false"
-                      event_open_popup="true"
-                      mode="month">
+            <calendar string="Inventory Reports Calendar" date_start="report_date" color="customer_id">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="status"/>
-                <field name="total_boxes"/>
             </calendar>
         </field>
     </record>
