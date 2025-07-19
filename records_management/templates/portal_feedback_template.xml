@@ -142,7 +142,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="feedback_type">Feedback Type</label>
-                                        <select name="feedback_type" id="feedback_type" class="form-control" required="required">>
+                                        <select name="feedback_type" id="feedback_type" class="form-control" required="required">
                                             <option value="">Select type...</option>
                                             <option value="suggestion">Suggestion</option>
                                             <option value="bug_report">Bug Report</option>
@@ -156,7 +156,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="priority">Priority Level</label>
-                                        <select name="priority" id="priority" class="form-control" required="required">>
+                                        <select name="priority" id="priority" class="form-control" required="required">
                                             <option value="">Select priority...</option>
                                             <option value="low">Low - General feedback</option>
                                             <option value="medium">Medium - Important but not urgent</option>
