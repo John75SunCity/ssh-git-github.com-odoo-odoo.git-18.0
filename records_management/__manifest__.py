@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.49.15',  # FIX: Add required class attribute to label tags in billing period views
+            'version': '18.0.2.49.16',  # FIX: Fix view inheritance structure for billing period enhanced view
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

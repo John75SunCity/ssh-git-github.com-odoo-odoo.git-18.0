@@ -113,7 +113,7 @@
         <field name="model">records.billing.period</field>
         <field name="inherit_id" ref="records_management.view_records_billing_period_form"/>
         <field name="arch" type="xml">
-            <group position="after">
+            <sheet position="inside">
                 <group string="Totals">
                     <group>
                         <field name="total_storage_boxes" readonly="1"/>
@@ -150,7 +150,7 @@
                         </group>
                     </page>
                 </notebook>
-            </group>
+            </sheet>
         </field>
     </record>
 
