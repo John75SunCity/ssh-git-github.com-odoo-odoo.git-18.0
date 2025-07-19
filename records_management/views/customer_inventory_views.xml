@@ -4,6 +4,7 @@
     <record id="view_customer_inventory_report_list" model="ir.ui.view">
         <field name="name">customer.inventory.report.list</field>
         <field name="model">customer.inventory.report</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Customer Inventory Reports" 
                   decoration-info="status=='draft'" 
