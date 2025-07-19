@@ -6,7 +6,7 @@ All notable changes to the Records Management module will be documented in this 
 
 ### 🎉 Major Release: Enterprise-Grade Portal & AI Features
 
-This release represents a complete transformation of the Records Management module from basic functionality to enterprise-grade DMS with AI-ready features.
+This release represents a complete transformation of the Records Management module from basic functionality to enterprise-grade DMS with AI-ready features. 
 
 ---
 
