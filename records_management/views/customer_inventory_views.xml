@@ -100,8 +100,7 @@
                         <group>
                             <field name="total_boxes" readonly="1" 
                                    widget="integer" 
-                                   class="o_field_integer"
-                                   attrs="{'class': [('box_count_css_class', '!=', False)]}"/>
+                                   class="o_field_integer"/>
                             <field name="box_count_css_class" invisible="1"/>
                             <field name="total_documents" readonly="1" widget="integer"/>
                             <field name="active_locations" readonly="1" widget="integer"/>
