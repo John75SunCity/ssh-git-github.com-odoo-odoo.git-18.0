@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.44.0',  # FIXED: Updated all <tree> elements to <list> for complete Odoo 18.0 view compatibility
+            'version': '18.0.2.45.0',  # FIXED: Added missing action methods to CustomerInventoryReport model and removed invalid field references
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

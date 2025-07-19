@@ -123,7 +123,6 @@
                         <group>
                             <field name="customer_id" options="{'no_create': True}" widget="many2one_avatar"/>
                             <field name="report_date" widget="date"/>
-                            <field name="report_type" widget="radio" options="{'horizontal': true}"/>
                         </group>
                         <group>
                             <field name="total_boxes" readonly="1" class="o_field_integer" 
@@ -131,7 +130,7 @@
                                    t-att-class="{'text-danger': total_boxes > 500, 'text-warning': total_boxes > 100}"/>
                             <field name="total_documents" readonly="1" widget="integer"/>
                             <field name="active_locations" readonly="1" widget="integer"/>
-                            <field name="last_update_date" readonly="1" widget="datetime"/>
+                            <field name="write_date" readonly="1" widget="datetime" string="Last Updated"/>
                         </group>
                     </group>
                     <notebook>
@@ -161,8 +160,6 @@
                                     <field name="box_type" optional="hide"/>
                                     <field name="retention_date" optional="hide" widget="date"/>
                                     <field name="create_date" optional="hide" widget="datetime"/>
-                                    <button name="action_view_box_details" type="object" string="Details" 
-                                            class="btn btn-sm btn-link" icon="fa-eye"/>
                                 </list>
                             </field>
                         </page>
@@ -190,8 +187,6 @@
                                     <field name="state" widget="badge"/>
                                     <field name="retention_date" optional="hide" widget="date"/>
                                     <field name="create_date" optional="hide" widget="datetime"/>
-                                    <button name="action_view_document_details" type="object" string="Details" 
-                                            class="btn btn-sm btn-link" icon="fa-eye"/>
                                 </list>
                             </field>
                         </page>

@@ -114,6 +114,80 @@ class CustomerInventoryReport(models.Model):
         report_ref = 'records_management.action_customer_inventory_report_pdf'
         return self.env.ref(report_ref).report_action(self)
 
+    def action_view_boxes(self) -> dict:
+        """View related boxes for this customer."""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'Boxes for {self.customer_id.name}',
+            'res_model': 'records.box',
+            'view_mode': 'tree,form',
+            'domain': [('customer_id', '=', self.customer_id.id)],
+            'context': {'default_customer_id': self.customer_id.id}
+        }
+
+    def action_view_documents(self) -> dict:
+        """View related documents for this customer."""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'Documents for {self.customer_id.name}',
+            'res_model': 'records.document',
+            'view_mode': 'tree,form',
+            'domain': [('customer_id', '=', self.customer_id.id)],
+            'context': {'default_customer_id': self.customer_id.id}
+        }
+
+    def action_view_locations(self) -> dict:
+        """View active locations for this customer."""
+        locations = self.env['records.box'].search([
+            ('customer_id', '=', self.customer_id.id),
+            ('state', '!=', 'destroyed')
+        ]).mapped('location_id')
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'Locations for {self.customer_id.name}',
+            'res_model': 'records.location',
+            'view_mode': 'tree,form',
+            'domain': [('id', 'in', locations.ids)],
+        }
+
+    def action_refresh_boxes(self) -> bool:
+        """Refresh box data by recomputing totals."""
+        self._compute_inventory_totals()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': 'Box data refreshed successfully',
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+
+    def action_refresh_documents(self) -> bool:
+        """Refresh document data by recomputing totals."""
+        self._compute_inventory_totals()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': 'Document data refreshed successfully',
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+
+    def action_export_to_excel(self) -> dict:
+        """Export inventory report to Excel."""
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': 'Excel export functionality to be implemented',
+                'type': 'info',
+                'sticky': False,
+            }
+        }
+
     # Batch action methods for list view operations
     def action_batch_confirm(self):
         """Batch confirm multiple inventory reports."""
