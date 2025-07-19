@@ -30,7 +30,6 @@
             <field name="page_id" ref="feedback_page_general"/>
             <field name="question_type">simple_choice</field>
             <field name="constr_mandatory">True</field>
-            <field name="display_type">radio</field>
         </record>
 
         <record id="satisfaction_excellent" model="survey.question.answer">
@@ -117,7 +116,6 @@
             <field name="page_id" ref="feedback_page_general"/>
             <field name="question_type">simple_choice</field>
             <field name="constr_mandatory">True</field>
-            <field name="display_type">radio</field>
         </record>
 
         <record id="ease_very_easy" model="survey.question.answer">
@@ -161,7 +159,6 @@
             <field name="page_id" ref="feedback_page_features"/>
             <field name="question_type">simple_choice</field>
             <field name="constr_mandatory">False</field>
-            <field name="display_type">radio</field>
         </record>
 
         <record id="search_excellent" model="survey.question.answer">
@@ -196,7 +193,6 @@
             <field name="page_id" ref="feedback_page_features"/>
             <field name="question_type">simple_choice</field>
             <field name="constr_mandatory">True</field>
-            <field name="display_type">radio</field>
         </record>
 
         <record id="security_very_confident" model="survey.question.answer">
@@ -260,7 +256,6 @@
             <field name="page_id" ref="feedback_page_improvements"/>
             <field name="question_type">simple_choice</field>
             <field name="constr_mandatory">False</field>
-            <field name="display_type">radio</field>
         </record>
 
         <record id="contact_yes" model="survey.question.answer">
@@ -305,7 +300,6 @@
             <field name="page_id" ref="service_feedback_page"/>
             <field name="question_type">simple_choice</field>
             <field name="constr_mandatory">True</field>
-            <field name="display_type">radio</field>
         </record>
 
         <record id="service_excellent" model="survey.question.answer">
@@ -340,7 +334,6 @@
             <field name="page_id" ref="service_feedback_page"/>
             <field name="question_type">simple_choice</field>
             <field name="constr_mandatory">True</field>
-            <field name="display_type">radio</field>
         </record>
 
         <record id="timeliness_excellent" model="survey.question.answer">
