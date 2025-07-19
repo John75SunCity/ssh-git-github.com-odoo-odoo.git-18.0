@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.22.0',  # FIXED: Odoo 18.0 compatibility - numbercall → number_calls in cron fields
+    'version': '18.0.2.23.0',  # FIXED: Survey.survey 'state' field deprecation - removed from feedback_survey_data.xml
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

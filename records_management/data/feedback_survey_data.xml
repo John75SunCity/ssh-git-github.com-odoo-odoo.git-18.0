@@ -5,7 +5,6 @@
         <record id="portal_feedback_survey" model="survey.survey">
             <field name="title">Records Management Portal Feedback</field>
             <field name="description">Help us improve your portal experience with your valuable feedback</field>
-            <field name="state">open</field>
             <field name="access_mode">public</field>
             <field name="users_login_required">False</field>
             <field name="attempts_limit">0</field>
