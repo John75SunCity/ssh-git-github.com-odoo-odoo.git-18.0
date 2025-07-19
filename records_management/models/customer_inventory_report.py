@@ -402,7 +402,8 @@ class RecordsDepartmentUser(models.Model):
     # Portal-specific fields
     portal_user_id = fields.Many2one('res.users', string='Portal User Account',
                                     help='Linked portal user account for login')
-    customer_company_id = fields.Many2one(related='department_id.partner_id', string='Customer Company', readonly=True)
+    customer_company_id = fields.Many2one('res.partner', string='Customer Company', 
+                                         compute='_compute_customer_company', readonly=True, store=True)
     department_hierarchy_access = fields.Text(compute='_compute_hierarchy_access', 
                                              string='Accessible Departments',
                                              help='List of departments this user can access')
@@ -417,6 +418,12 @@ class RecordsDepartmentUser(models.Model):
         ('declined', 'Invitation Declined'),
         ('active', 'Active User')
     ], string='Status', default='pending')
+
+    @api.depends('department_id', 'department_id.partner_id')
+    def _compute_customer_company(self):
+        """Compute customer company from department"""
+        for rec in self:
+            rec.customer_company_id = rec.department_id.partner_id.id if rec.department_id else False
 
     @api.depends('department_id', 'access_level')
     def _compute_hierarchy_access(self):
