@@ -76,6 +76,8 @@
     <record id="view_records_document_tree" model="ir.ui.view">
         <field name="name">records.document.tree</field>
         <field name="model">records.document</field>
+        
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list decoration-success="state=='stored'" decoration-info="state=='retrieved'" decoration-danger="state=='destroyed'">
                 <field name="name"/>

@@ -13,7 +13,7 @@
                 <field name="create_date"/>
                 <field name="is_walk_in" widget="badge" decoration-success="is_walk_in == True" decoration-muted="is_walk_in == False" attrs="{'column_invisible': [('parent', '=', False)]}" string="Walk-in"/>
                 <field name="linked_visitor_id" options="{'no_create': True}"/>
-            </tree>
+            </list>
         </field>
     </record>
 

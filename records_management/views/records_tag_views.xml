@@ -3,6 +3,8 @@
     <record id="view_records_tag_tree" model="ir.ui.view">
         <field name="name">records.tag.tree</field>
         <field name="model">records.tag</field>
+        
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Tags" editable="bottom">
                 <field name="name"/>

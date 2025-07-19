@@ -126,6 +126,8 @@
     <record id="view_records_billing_config_tree" model="ir.ui.view">
         <field name="name">records.billing.config.tree</field>
         <field name="model">records.billing.config</field>
+        
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Billing Configurations">
                 <field name="name"/>

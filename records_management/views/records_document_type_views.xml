@@ -22,6 +22,8 @@
     <record id="view_records_document_type_tree" model="ir.ui.view">
         <field name="name">records.document.type.tree</field>
         <field name="model">records.document.type</field>
+        
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Document Types" editable="bottom">
                 <field name="name"/>

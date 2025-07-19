@@ -67,6 +67,8 @@
     <record id="view_pickup_request_tree" model="ir.ui.view">
         <field name="name">pickup.request.tree</field>
         <field name="model">pickup.request</field>
+        
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Pickup Requests" decoration-info="state=='draft'" decoration-muted="state=='cancelled'" decoration-success="state=='completed'" decoration-warning="state=='scheduled'">
                 <field name="name"/>

@@ -22,6 +22,8 @@
     <record id="view_records_retention_policy_tree" model="ir.ui.view">
         <field name="name">records.retention.policy.tree</field>
         <field name="model">records.retention.policy</field>
+        
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Retention Policies">
                 <field name="name"/>

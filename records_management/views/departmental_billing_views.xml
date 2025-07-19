@@ -51,7 +51,7 @@
                     
                     <field name="department_billing_contact_ids" 
                            attrs="{'invisible': [('is_records_customer', '=', False)]}">
-                        <tree editable="bottom">
+                        <list editable="bottom">
                             <field name="department_id"/>
                             <field name="department_name" readonly="1"/>
                             <field name="billing_contact_id"/>
@@ -59,7 +59,7 @@
                             <field name="use_separate_po_numbers"/>
                             <field name="default_po_number" 
                                    attrs="{'invisible': [('use_separate_po_numbers', '=', False)]}"/>
-                        </tree>
+                        </list>
                         <form>
                             <group>
                                 <field name="department_id"/>

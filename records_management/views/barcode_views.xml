@@ -58,6 +58,8 @@
     <record id="view_barcode_config_tree" model="ir.ui.view">
         <field name="name">records.barcode.config.tree</field>
         <field name="model">records.barcode.config</field>
+        
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="barcode_type"/>
@@ -128,6 +130,8 @@
     <record id="view_barcode_history_tree" model="ir.ui.view">
         <field name="name">records.barcode.history.tree</field>
         <field name="model">records.barcode.history</field>
+        
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list create="false" edit="false">
                 <field name="create_date"/>

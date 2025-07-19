@@ -4,6 +4,8 @@
     <record id="view_records_location_tree" model="ir.ui.view">
         <field name="name">records.location.tree</field>
         <field name="model">records.location</field>
+        
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="complete_name"/>

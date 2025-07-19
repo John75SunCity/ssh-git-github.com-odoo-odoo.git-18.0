@@ -223,13 +223,13 @@
                     <notebook>
                         <page string="Custody Events">
                             <field name="custody_events">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="timestamp"/>
                                     <field name="event_type"/>
                                     <field name="employee_id"/>
                                     <field name="location"/>
                                     <field name="description"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Compliance">

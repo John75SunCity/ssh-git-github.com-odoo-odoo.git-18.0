@@ -123,6 +123,8 @@
     <record id="view_records_box_tree" model="ir.ui.view">
         <field name="name">records.box.tree</field>
         <field name="model">records.box</field>
+        
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list decoration-info="state=='draft'" decoration-muted="state=='archived'" decoration-danger="state=='destroyed'">
                 <field name="name"/>

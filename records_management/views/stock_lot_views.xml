@@ -5,7 +5,9 @@
         <record id="view_stock_lot_tree" model="ir.ui.view">
             <field name="name">stock.lot.list</field>
             <field name="model">stock.lot</field>
-            <field name="arch" type="xml">
+            
+        <field name="type">list</field>
+        <field name="arch" type="xml">
                 <list>
                     <field name="name"/>
                     <field name="product_id"/>

@@ -4,6 +4,8 @@
     <record id="view_shredding_service_tree" model="ir.ui.view">
         <field name="name">shredding.service.tree</field>
         <field name="model">shredding.service</field>
+        
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
