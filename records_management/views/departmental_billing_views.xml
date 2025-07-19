@@ -142,10 +142,10 @@
                     <page string="Summary">
                         <group>
                             <group string="Summary by Type">
-                                <label string="View billing lines grouped by line type in the main tab"/>
+                                <label string="View billing lines grouped by line type in the main tab" class="o_form_label"/>
                             </group>
                             <group string="Instructions">
-                                <label string="Use the billing lines tab to view all charges for this period"/>
+                                <label string="Use the billing lines tab to view all charges for this period" class="o_form_label"/>
                             </group>
                         </group>
                     </page>
