@@ -6,7 +6,7 @@
         <field name="model">customer.inventory.report</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree string="Customer Inventory Reports" 
+            <list string="Customer Inventory Reports" 
                   decoration-info="status=='draft'" 
                   decoration-success="status=='confirmed'" 
                   decoration-warning="status=='sent'"
@@ -38,7 +38,7 @@
                        decoration-muted="status=='archived'"/>
                 <field name="create_date" optional="hide"/>
                 <field name="write_date" optional="hide"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -47,7 +47,7 @@
         <field name="name">customer.inventory.tree</field>
         <field name="model">customer.inventory.report</field>
         <field name="arch" type="xml">
-            <tree string="Customer Inventory Reports" 
+            <list string="Customer Inventory Reports" 
                   decoration-info="status=='draft'" 
                   decoration-success="status=='confirmed'" 
                   decoration-warning="status=='sent'"
@@ -71,7 +71,7 @@
                 <button name="action_create_destruction_request" type="object" string="Destroy" 
                         class="btn btn-sm btn-danger" icon="fa-trash" 
                         confirm="Are you sure you want to create a destruction request for this inventory?"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -149,7 +149,7 @@
                             </div>
                             <field name="box_ids" mode="tree" readonly="1" 
                                    context="{'tree_view_ref': 'records_management.view_records_box_inventory_tree'}">
-                                <tree decoration-success="state=='active'" 
+                                <list decoration-success="state=='active'" 
                                       decoration-warning="state=='pending'" 
                                       decoration-danger="state=='destroyed'"
                                       decoration-muted="state=='archived'"
@@ -163,7 +163,7 @@
                                     <field name="create_date" optional="hide" widget="datetime"/>
                                     <button name="action_view_box_details" type="object" string="Details" 
                                             class="btn btn-sm btn-link" icon="fa-eye"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Customer Documents" name="documents_page">
@@ -179,7 +179,7 @@
                                 </div>
                             </div>
                             <field name="document_ids" mode="tree" readonly="1">
-                                <tree decoration-success="state=='active'" 
+                                <list decoration-success="state=='active'" 
                                       decoration-warning="state=='pending'" 
                                       decoration-danger="state=='destroyed'"
                                       decoration-muted="state=='archived'"
@@ -192,7 +192,7 @@
                                     <field name="create_date" optional="hide" widget="datetime"/>
                                     <button name="action_view_document_details" type="object" string="Details" 
                                             class="btn btn-sm btn-link" icon="fa-eye"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Analytics &amp; Statistics" name="analytics_page">

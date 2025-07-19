@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.43.0',  # FIXED: Updated view type from 'tree' to 'list' for Odoo 18.0 compatibility in customer_inventory_views.xml
+            'version': '18.0.2.44.0',  # FIXED: Updated all <tree> elements to <list> for complete Odoo 18.0 view compatibility
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
