@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+import hashlib
 
 
 class RecordsDocument(models.Model):
@@ -83,7 +84,16 @@ class RecordsDocument(models.Model):
         ('archived', 'Archived'),
         ('destroyed', 'Destroyed')
     ], string='Status', default='draft', tracking=True)
+    destruction_method = fields.Selection([
+        ('shredding', 'Shredding'),
+        ('pulping', 'Pulping'),
+        ('incineration', 'Incineration'),
+        ('disintegration', 'Disintegration')
+    ], string='Destruction Method', tracking=True)
     active = fields.Boolean(default=True)
+
+    # Security fields
+    hashed_content = fields.Char('Content Hash', readonly=True)
 
     # Compute methods
     @api.depends('date', 'retention_policy_id',
@@ -110,6 +120,19 @@ class RecordsDocument(models.Model):
     def _compute_attachment_count(self):
         for rec in self:
             rec.attachment_count = len(rec.attachment_ids)
+
+    @api.model
+    def create(self, vals):
+        """Override create to generate content hash."""
+        record = super().create(vals)
+        record._generate_content_hash()
+        return record
+
+    def _generate_content_hash(self):
+        """Generate a hash of the document content for security tracking."""
+        for record in self:
+            content_str = f"{record.name}_{record.description or ''}_{record.date or ''}"
+            record.hashed_content = hashlib.sha256(content_str.encode()).hexdigest()[:16]
 
     # Onchange methods
     @api.onchange('box_id')
@@ -149,6 +172,9 @@ class RecordsDocument(models.Model):
         for record in self:
             if record.state in ('stored', 'returned'):
                 record.state = 'destroyed'
+                # Set default destruction method if not already set
+                if not record.destruction_method:
+                    record.destruction_method = 'shredding'
         return True
 
     def action_preview(self):
