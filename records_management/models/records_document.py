@@ -34,6 +34,10 @@ class RecordsDocument(models.Model):
         'Retention Date', tracking=True,
         compute='_compute_retention_date', store=True
     )
+    expiry_date = fields.Date(
+        'Expiry Date', tracking=True,
+        help='Date when the document expires and should be reviewed for destruction'
+    )
     days_to_retention = fields.Integer(
         'Days until destruction', compute='_compute_days_to_retention'
     )
