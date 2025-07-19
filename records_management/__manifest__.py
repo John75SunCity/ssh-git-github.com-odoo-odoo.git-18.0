@@ -54,6 +54,14 @@ Features:
         'web_tour',  # For portal app tours
         'survey',  # For customer feedback forms/suggestions
     ],
+    'external_dependencies': {
+        'python': [
+            'qrcode',
+            'Pillow',
+            'cryptography',
+            # 'pulp',  # Commented out for development - uncomment when ready for production
+        ],
+    },
     'data': [
         'security/records_management_security.xml',
         'security/ir.model.access.csv',
@@ -107,7 +115,6 @@ Features:
         'demo/odoo.xml',
     ],
     'qweb': [],
-    },
     'application': True,
     'installable': True,
     'auto_install': False,
