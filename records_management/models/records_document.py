@@ -125,12 +125,13 @@ class RecordsDocument(models.Model):
         for rec in self:
             rec.attachment_count = len(rec.attachment_ids)
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to generate content hash."""
-        record = super().create(vals)
-        record._generate_content_hash()
-        return record
+        records = super().create(vals_list)
+        for record in records:
+            record._generate_content_hash()
+        return records
 
     def _generate_content_hash(self):
         """Generate a hash of the document content for security tracking."""

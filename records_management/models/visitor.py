@@ -21,24 +21,25 @@ class FrontdeskVisitor(models.Model):
             else:
                 rec.hashed_email = False
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to auto-match or create partner for walk-in customers."""
-        res = super(FrontdeskVisitor, self).create(vals)
-        if vals.get('phone') or vals.get('email'):
-            partner = self.env['res.partner'].search([
-                '|', ('phone', '=', vals.get('phone')), ('email', '=', vals.get('email'))
-            ], limit=1)
-            if not partner:
-                partner = self.env['res.partner'].create({
-                    'name': vals.get('name'),
-                    'phone': vals.get('phone'),
-                    'email': vals.get('email'),
-                    'company_id': vals.get('company_id'),
-                })
-            # Link to partner for POS compatibility (optional extension)
-            res.write({'partner_id': partner.id})  # Assuming visitor has or can have partner_id; extend if needed
-        return res
+        records = super(FrontdeskVisitor, self).create(vals_list)
+        for record, vals in zip(records, vals_list):
+            if vals.get('phone') or vals.get('email'):
+                partner = self.env['res.partner'].search([
+                    '|', ('phone', '=', vals.get('phone')), ('email', '=', vals.get('email'))
+                ], limit=1)
+                if not partner:
+                    partner = self.env['res.partner'].create({
+                        'name': vals.get('name'),
+                        'phone': vals.get('phone'),
+                        'email': vals.get('email'),
+                        'company_id': vals.get('company_id'),
+                    })
+                # Link to partner for POS compatibility (optional extension)
+                record.write({'partner_id': partner.id})  # Assuming visitor has or can have partner_id; extend if needed
+        return records
 
     def action_link_pos(self):
         """Action to open wizard for linking/creating POS order from visitor."""
