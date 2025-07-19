@@ -1421,6 +1421,42 @@ class RecordsBillingPeriod(models.Model):
         self.state = 'invoiced'
         return True
     
+    def action_view_invoices(self):
+        """View generated invoices for this billing period"""
+        self.ensure_one()
+        
+        if not self.invoice_ids:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'message': 'No invoices have been generated for this billing period yet.',
+                    'type': 'warning',
+                    'sticky': False,
+                }
+            }
+        
+        if len(self.invoice_ids) == 1:
+            # Single invoice - open form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Invoice',
+                'res_model': 'account.move',
+                'res_id': self.invoice_ids.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+        else:
+            # Multiple invoices - open list view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': f'Invoices for {self.name}',
+                'res_model': 'account.move',
+                'view_mode': 'list,form',
+                'domain': [('id', 'in', self.invoice_ids.ids)],
+                'context': {'default_billing_period_id': self.id},
+            }
+    
     def _generate_customer_invoices(self, customer):
         """Generate invoices for a customer based on their billing preference"""
         billing_preference = customer.billing_preference or 'consolidated'
