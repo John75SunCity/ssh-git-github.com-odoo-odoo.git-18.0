@@ -107,8 +107,6 @@ Features:
         'demo/odoo.xml',
     ],
     'qweb': [],
-    'external_dependencies': {
-        'python': ['pulp'],  # For optimization (fees/loads)
     },
     'application': True,
     'installable': True,
