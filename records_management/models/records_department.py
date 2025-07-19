@@ -82,7 +82,7 @@ class RecordsDepartment(models.Model):
         }
 
     def action_optimize_fees(self):
-        if not PULP_AVAILABLE:
+        if not PuLP_AVAILABLE:
             raise ValidationError(_("PuLP not installed; add to requirements.txt for advanced optimization."))
         self._compute_monthly_cost()
         return {
