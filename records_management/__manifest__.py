@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.49.0',  # ENHANCED: Added computed fields for proper Odoo 18.0 compatibility with preserved advanced features
+            'version': '18.0.2.49.1',  # FIXED: Removed invalid attrs attribute for Odoo 18.0 RelaxNG schema compatibility
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
