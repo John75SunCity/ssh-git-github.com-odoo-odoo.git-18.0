@@ -419,11 +419,11 @@ class RecordsDepartmentUser(models.Model):
         ('active', 'Active User')
     ], string='Status', default='pending')
 
-    @api.depends('department_id', 'department_id.partner_id')
+    @api.depends('department_id')
     def _compute_customer_company(self):
         """Compute customer company from department"""
         for rec in self:
-            rec.customer_company_id = rec.department_id.partner_id.id if rec.department_id else False
+            rec.customer_company_id = rec.department_id.partner_id.id if rec.department_id and rec.department_id.partner_id else False
 
     @api.depends('department_id', 'access_level')
     def _compute_hierarchy_access(self):
@@ -577,7 +577,7 @@ class RecordsUserInvitationWizard(models.TransientModel):
     def _compute_customer_company_wizard(self):
         """Compute customer company for wizard"""
         for rec in self:
-            rec.customer_company = rec.department_id.partner_id if rec.department_id else False
+            rec.customer_company = rec.department_id.partner_id if (rec.department_id and rec.department_id.partner_id) else False
 
     @api.depends('access_level', 'department_id')
     def _compute_access_description(self):
