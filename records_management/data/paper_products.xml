@@ -1,4 +1,10 @@
-<?xml         <record id="product_paper_white" model="product.product">
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Paper baling and recycling products -->
+        
+        <!-- Paper Type Products for Baling -->
+        <record id="product_paper_white" model="product.product">
             <field name="name">White Paper Bale</field>
             <field name="type">consu</field>
             <field name="categ_id" ref="product.product_category_all"/>
@@ -12,27 +18,7 @@
         
         <record id="product_paper_mixed" model="product.product">
             <field name="name">Mixed Paper Bale</field>
-            <field name="type">consu</field>ncoding="utf-8"?>
-<odoo>
-    <data>
-        <!-- Paper baling and recycling products -->
-        
-        <!-- Paper Type Products for Baling -->
-        <record id="product_paper_white" model="product.product">
-            <field name="name">White Paper Bale</field>
-            <field name="type">product</field>
-            <field name="categ_id" ref="product.product_category_all"/>
-            <field name="uom_id" ref="uom.product_uom_lb"/>
-            <field name="uom_po_id" ref="uom.product_uom_lb"/>
-            <field name="list_price">0.08</field>  <!-- $ per lb for white paper -->
-            <field name="standard_price">0.05</field>
-            <field name="default_code">PAPER-WHITE</field>
-            <field name="description">High-grade white paper suitable for recycling</field>
-        </record>
-        
-        <record id="product_paper_mixed" model="product.product">
-            <field name="name">Mixed Paper Bale</field>
-            <field name="type">product</field>
+            <field name="type">consu</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="uom_id" ref="uom.product_uom_lb"/>
             <field name="uom_po_id" ref="uom.product_uom_lb"/>
