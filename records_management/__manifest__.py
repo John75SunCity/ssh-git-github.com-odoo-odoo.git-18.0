@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.21.0',  # FIXED: Corrected external ID reference model_naid_audit → model_naid_audit_log
+    'version': '18.0.2.22.0',  # FIXED: Odoo 18.0 compatibility - numbercall → number_calls in cron fields
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
