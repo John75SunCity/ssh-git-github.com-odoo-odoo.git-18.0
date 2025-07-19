@@ -120,7 +120,6 @@
             <field name="code">model.check_expiring_credentials()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-            <field name="number_calls">-1</field>
             <field name="active">True</field>
         </record>
         
@@ -131,7 +130,6 @@
             <field name="code">model.cleanup_old_logs()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
-            <field name="number_calls">-1</field>
             <field name="active">True</field>
         </record>
         
@@ -142,7 +140,6 @@
             <field name="code">model.check_compliance()</field>
             <field name="interval_number">4</field>
             <field name="interval_type">hours</field>
-            <field name="number_calls">-1</field>
             <field name="active">True</field>
         </record>
         
