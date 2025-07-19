@@ -1960,3 +1960,25 @@ class RecordsBillingAutomation(models.Model):
         """Process service completion billing"""
         # TODO: Implement service billing logic
         return True
+
+    # Batch action methods for list view operations
+    def action_batch_confirm(self):
+        """Batch confirm multiple inventory reports."""
+        for record in self:
+            if record.status == 'draft':
+                record.status = 'confirmed'
+        return True
+
+    def action_batch_send(self):
+        """Batch send multiple inventory reports."""
+        for record in self:
+            if record.status == 'confirmed':
+                record.status = 'sent'
+        return True
+
+    def action_batch_archive(self):
+        """Batch archive multiple inventory reports."""
+        for record in self:
+            if record.status in ('sent', 'confirmed'):
+                record.status = 'archived'
+        return True
