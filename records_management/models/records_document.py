@@ -163,3 +163,18 @@ class RecordsDocument(models.Model):
                 if not record.retention_date:
                     record.retention_date = fields.Date.today()
         return True
+
+    def action_view_attachments(self):
+        """View all attachments for this document."""
+        self.ensure_one()
+        return {
+            'name': _('Attachments'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'ir.attachment',
+            'view_mode': 'tree,form',
+            'domain': [('res_model', '=', self._name), ('res_id', '=', self.id)],
+            'context': {
+                'default_res_model': self._name,
+                'default_res_id': self.id,
+            },
+        }
