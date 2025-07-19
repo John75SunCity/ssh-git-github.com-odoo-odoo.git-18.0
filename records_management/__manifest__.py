@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.42.0',  # FIXED: Added action_view_attachments method to records.document model for attachment management
+            'version': '18.0.2.43.0',  # FIXED: Updated view type from 'tree' to 'list' for Odoo 18.0 compatibility in customer_inventory_views.xml
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
