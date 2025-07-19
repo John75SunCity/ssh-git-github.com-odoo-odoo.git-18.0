@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.27.0',  # FIXED: View field references - corrected user_field* to custom_metadata* in records_box_views.xml
+    'version': '18.0.2.28.0',  # FIXED: View action references - removed buttons calling non-existent methods in records_document_views.xml
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
