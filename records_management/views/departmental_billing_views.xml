@@ -169,7 +169,9 @@
                         <group string="Basic Information">
                             <field name="code"/>
                             <field name="partner_id"/>
-                            <field name="parent_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="parent_id" options="{'no_create': True, 'no_create_edit': True}" domain="[('partner_id', '=', partner_id), ('id', '!=', id)]"/>
+                            <field name="level" readonly="1"/>
+                            <field name="complete_name" readonly="1"/>
                         </group>
                         <group string="Contact Information">
                             <field name="manager_id"/>
@@ -177,6 +179,7 @@
                             <field name="email"/>
                             <field name="active"/>
                             <field name="company_id"/>
+                            <field name="user_count" readonly="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -184,14 +187,45 @@
                             <field name="description" placeholder="Department description..."/>
                         </page>
                         <page string="Sub-Departments" name="hierarchy">
+                            <div class="oe_button_box" name="button_box">
+                                <button name="action_view_hierarchy" type="object" class="oe_stat_button" icon="fa-sitemap">
+                                    <div class="o_field_widget o_stat_info">
+                                        <span class="o_stat_text">View</span>
+                                        <span class="o_stat_text">Hierarchy</span>
+                                    </div>
+                                </button>
+                            </div>
                             <field name="child_ids">
                                 <tree>
                                     <field name="name"/>
                                     <field name="code"/>
                                     <field name="manager_id"/>
-                                    <field name="phone"/>
-                                    <field name="email"/>
+                                    <field name="level"/>
+                                    <field name="user_count"/>
+                                    <field name="total_boxes"/>
                                     <field name="active"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Users" name="users">
+                            <div class="oe_button_box" name="button_box">
+                                <button name="action_add_user" type="object" class="oe_stat_button" icon="fa-user-plus">
+                                    <div class="o_field_widget o_stat_info">
+                                        <span class="o_stat_text">Add</span>
+                                        <span class="o_stat_text">User</span>
+                                    </div>
+                                </button>
+                            </div>
+                            <field name="user_ids">
+                                <tree>
+                                    <field name="user_id"/>
+                                    <field name="email"/>
+                                    <field name="access_level"/>
+                                    <field name="can_view_inventory"/>
+                                    <field name="can_add_boxes"/>
+                                    <field name="can_request_services"/>
+                                    <field name="active"/>
+                                    <field name="last_login"/>
                                 </tree>
                             </field>
                         </page>
@@ -201,11 +235,90 @@
                                     <field name="total_boxes"/>
                                     <field name="monthly_cost"/>
                                 </group>
+                                <group string="Hierarchy Information">
+                                    <field name="level"/>
+                                    <field name="user_count"/>
+                                    <field name="all_child_ids" widget="many2many_tags"/>
+                                </group>
                             </group>
                         </page>
                     </notebook>
                 </sheet>
             </form>
+        </field>
+    </record>
+
+    <!-- Department Tree View with Hierarchy -->
+    <record id="view_records_department_tree" model="ir.ui.view">
+        <field name="name">records.department.tree</field>
+        <field name="model">records.department</field>
+        <field name="arch" type="xml">
+            <tree string="Department Hierarchy" expand="1">
+                <field name="complete_name"/>
+                <field name="code"/>
+                <field name="partner_id"/>
+                <field name="manager_id"/>
+                <field name="level"/>
+                <field name="user_count"/>
+                <field name="total_boxes"/>
+                <field name="monthly_cost"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Department Kanban View -->
+    <record id="view_records_department_kanban" model="ir.ui.view">
+        <field name="name">records.department.kanban</field>
+        <field name="model">records.department</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="partner_id"/>
+                <field name="level"/>
+                <field name="user_count"/>
+                <field name="total_boxes"/>
+                <field name="complete_name"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="row">
+                                <div class="col-12">
+                                    <strong><field name="complete_name"/></strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <span class="text-muted">Customer:</span><br/>
+                                    <field name="partner_id"/>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-muted">Level:</span> <field name="level"/><br/>
+                                    <span class="text-muted">Users:</span> <field name="user_count"/><br/>
+                                    <span class="text-muted">Boxes:</span> <field name="total_boxes"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Department Action -->
+    <record id="action_records_department" model="ir.actions.act_window">
+        <field name="name">Departments</field>
+        <field name="res_model">records.department</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new department
+            </p>
+            <p>
+                Departments help organize your records management by customer and hierarchy levels.
+                You can create multi-level department structures with sub-departments and assign users with different access levels.
+            </p>
         </field>
     </record>
 

@@ -372,97 +372,339 @@ class RecordsDepartmentUser(models.Model):
         domain="[('is_company', '=', False)]")
     email = fields.Char(related='user_id.email', readonly=True)
     
-    # Access Levels
+    # Access Levels for Customer Portal
     access_level = fields.Selection([
-        ('viewer', 'Viewer - View Only + Basic Services'),
-        ('user', 'User - View + Add/Edit + Request Services'),
-        ('dept_admin', 'Department Admin - Full Department Access'),
-        ('company_admin', 'Company Admin - Full Company Access')
-    ], string='Access Level', required=True, default='viewer')
+        ('viewer', 'Viewer - View Department Records Only'),
+        ('user', 'User - View + Request Services for Department'),
+        ('dept_admin', 'Department Admin - Full Department + Sub-Departments'),
+        ('company_admin', 'Company Admin - Full Company Access (All Departments)')
+    ], string='Portal Access Level', required=True, default='viewer',
+       help='Access level determines what the customer can see and do in the portal')
     
-    # Permissions
-    can_view_inventory = fields.Boolean(string='View Inventory', default=True)
-    can_add_boxes = fields.Boolean(string='Add Boxes/Documents')
-    can_request_services = fields.Boolean(string='Request Services',
-                                          default=True)
-    can_request_deletion = fields.Boolean(string='Request Deletion')
-    can_approve_deletion = fields.Boolean(string='Approve Deletion')
-    can_view_billing = fields.Boolean(string='View Department Billing')
+    # Hierarchy-aware permissions
+    can_view_inventory = fields.Boolean(string='View Inventory', default=True,
+                                       help='View boxes and documents in assigned departments')
+    can_view_subdepartments = fields.Boolean(string='View Sub-Departments', 
+                                            help='Access to sub-department records (admin levels only)')
+    can_add_boxes = fields.Boolean(string='Add Boxes/Documents',
+                                  help='Add new storage boxes and documents')
+    can_request_services = fields.Boolean(string='Request Services', default=True,
+                                         help='Request pickup, delivery, shredding services')
+    can_request_deletion = fields.Boolean(string='Request Deletion',
+                                         help='Request permanent deletion of records')
+    can_approve_deletion = fields.Boolean(string='Approve Deletion',
+                                         help='Approve deletion requests for department')
+    can_view_billing = fields.Boolean(string='View Department Billing',
+                                     help='Access to billing information and invoices')
+    can_manage_users = fields.Boolean(string='Manage Department Users',
+                                     help='Invite and manage other department users')
+    
+    # Portal-specific fields
+    portal_user_id = fields.Many2one('res.users', string='Portal User Account',
+                                    help='Linked portal user account for login')
+    customer_company_id = fields.Many2one(related='department_id.partner_id', string='Customer Company', readonly=True)
+    department_hierarchy_access = fields.Text(compute='_compute_hierarchy_access', 
+                                             string='Accessible Departments',
+                                             help='List of departments this user can access')
     
     # Status
     active = fields.Boolean(string='Active', default=True)
-    invited_date = fields.Datetime(string='Invited Date',
-                                   default=fields.Datetime.now)
+    invited_date = fields.Datetime(string='Invited Date', default=fields.Datetime.now)
     last_login = fields.Datetime(string='Last Login')
+    invitation_status = fields.Selection([
+        ('pending', 'Invitation Pending'),
+        ('accepted', 'Invitation Accepted'),
+        ('declined', 'Invitation Declined'),
+        ('active', 'Active User')
+    ], string='Status', default='pending')
+
+    @api.depends('department_id', 'access_level')
+    def _compute_hierarchy_access(self):
+        """Compute which departments this user can access based on hierarchy and access level"""
+        for rec in self:
+            accessible_depts = []
+            if rec.department_id:
+                # Always include assigned department
+                accessible_depts.append(rec.department_id.complete_name)
+                
+                if rec.access_level in ['dept_admin', 'company_admin']:
+                    # Include all sub-departments
+                    for child in rec.department_id.all_child_ids:
+                        accessible_depts.append(child.complete_name)
+                
+                if rec.access_level == 'company_admin':
+                    # Include all departments of the same customer
+                    all_customer_depts = self.env['records.department'].search([
+                        ('partner_id', '=', rec.department_id.partner_id.id)
+                    ])
+                    for dept in all_customer_depts:
+                        if dept.complete_name not in accessible_depts:
+                            accessible_depts.append(dept.complete_name)
+            
+            rec.department_hierarchy_access = '\n'.join(sorted(accessible_depts))
     
     @api.onchange('access_level')
     def _onchange_access_level(self):
-        """Set permissions based on access level"""
+        """Set permissions based on customer portal access level"""
         if self.access_level == 'viewer':
+            # Basic viewing only - customers can see their department's records
             self.can_view_inventory = True
+            self.can_view_subdepartments = False
             self.can_add_boxes = False
-            self.can_request_services = True  # Basic services only
+            self.can_request_services = True  # Basic service requests
             self.can_request_deletion = False
             self.can_approve_deletion = False
             self.can_view_billing = False
+            self.can_manage_users = False
         elif self.access_level == 'user':
+            # Standard user - can request services and add items
             self.can_view_inventory = True
+            self.can_view_subdepartments = False
             self.can_add_boxes = True
             self.can_request_services = True
             self.can_request_deletion = True
             self.can_approve_deletion = False
             self.can_view_billing = False
+            self.can_manage_users = False
         elif self.access_level == 'dept_admin':
+            # Department admin - full department control including sub-departments
             self.can_view_inventory = True
+            self.can_view_subdepartments = True
             self.can_add_boxes = True
             self.can_request_services = True
             self.can_request_deletion = True
             self.can_approve_deletion = True  # Can approve for department
-            self.can_view_billing = True  # Department billing only
+            self.can_view_billing = True  # Department billing
+            self.can_manage_users = True  # Manage department users
         elif self.access_level == 'company_admin':
+            # Company admin - full company access across all departments
             self.can_view_inventory = True
+            self.can_view_subdepartments = True
             self.can_add_boxes = True
             self.can_request_services = True
             self.can_request_deletion = True
-            self.can_approve_deletion = True  # Can approve for company
+            self.can_approve_deletion = True  # Can approve for entire company
             self.can_view_billing = True  # Full company billing
+            self.can_manage_users = True  # Manage all company users
+
+    def get_accessible_departments(self):
+        """Get list of departments this user can access based on hierarchy"""
+        accessible = self.department_id
+        
+        if self.access_level in ['dept_admin', 'company_admin']:
+            # Include sub-departments
+            accessible |= self.department_id.all_child_ids
+        
+        if self.access_level == 'company_admin':
+            # Include all departments for this customer
+            accessible = self.env['records.department'].search([
+                ('partner_id', '=', self.department_id.partner_id.id)
+            ])
+        
+        return accessible
+
+    def action_send_portal_invitation(self):
+        """Send portal invitation to user"""
+        if not self.user_id.email:
+            raise ValidationError(_("User must have an email address to send portal invitation"))
+        
+        # Create or link portal user
+        portal_user = self.env['res.users'].search([('partner_id', '=', self.user_id.id)], limit=1)
+        if not portal_user:
+            # Create portal user
+            portal_user = self.env['res.users'].create({
+                'name': self.user_id.name,
+                'login': self.user_id.email,
+                'email': self.user_id.email,
+                'partner_id': self.user_id.id,
+                'groups_id': [(6, 0, [self.env.ref('base.group_portal').id])]
+            })
+        
+        self.portal_user_id = portal_user.id
+        self.invitation_status = 'pending'
+        
+        # Send invitation email (implement email template)
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Invitation Sent'),
+                'message': _('Portal invitation sent to %s') % self.user_id.email,
+                'sticky': False,
+            }
+        }
 
 
 class RecordsUserInvitationWizard(models.TransientModel):
     _name = 'records.user.invitation.wizard'
-    _description = 'User Invitation Wizard'
+    _description = 'Customer Portal User Invitation Wizard'
 
-    department_id = fields.Many2one(
-        'records.department', string='Department', required=True)
+    department_id = fields.Many2one('records.department', string='Department', required=True)
+    customer_company = fields.Many2one(related='department_id.partner_id', string='Customer Company', readonly=True)
     
     # User Information
-    name = fields.Char(string='Full Name', required=True)
-    email = fields.Char(string='Email', required=True)
-    phone = fields.Char(string='Phone')
-    job_title = fields.Char(string='Job Title')
+    name = fields.Char(string='Full Name', required=True,
+                      help='Full name of the person to invite to the customer portal')
+    email = fields.Char(string='Email', required=True,
+                       help='Email address for portal login and notifications')
+    phone = fields.Char(string='Phone', help='Contact phone number')
+    job_title = fields.Char(string='Job Title', help='Job title within the customer organization')
     
-    # Access Level
+    # Portal Access Configuration
     access_level = fields.Selection([
-        ('viewer', 'Viewer - View Only'),
+        ('viewer', 'Viewer - View Department Records Only'),
         ('user', 'User - View + Request Services'),
-        ('admin', 'Admin - Full Department Access')
-    ], string='Access Level', required=True, default='viewer')
+        ('dept_admin', 'Department Admin - Full Department Access'),
+        ('company_admin', 'Company Admin - All Company Departments')
+    ], string='Portal Access Level', required=True, default='viewer',
+       help='Determines what the user can access in the customer portal')
+    
+    # Preview of permissions
+    access_description = fields.Html(compute='_compute_access_description', 
+                                   string='Access Description')
+    accessible_departments = fields.Text(compute='_compute_accessible_departments',
+                                       string='Will Have Access To')
+
+    @api.depends('access_level', 'department_id')
+    def _compute_access_description(self):
+        """Compute description of what this access level provides"""
+        descriptions = {
+            'viewer': """
+                <ul>
+                    <li>View inventory and documents in assigned department</li>
+                    <li>Request basic services (pickup, delivery)</li>
+                    <li>View service request status</li>
+                </ul>
+            """,
+            'user': """
+                <ul>
+                    <li>All Viewer permissions</li>
+                    <li>Add new boxes and documents</li>
+                    <li>Request all services including shredding</li>
+                    <li>Request deletion of records</li>
+                </ul>
+            """,
+            'dept_admin': """
+                <ul>
+                    <li>All User permissions</li>
+                    <li>Access to sub-departments</li>
+                    <li>Approve deletion requests for department</li>
+                    <li>View department billing information</li>
+                    <li>Manage department users</li>
+                </ul>
+            """,
+            'company_admin': """
+                <ul>
+                    <li>All Department Admin permissions</li>
+                    <li>Access to ALL company departments</li>
+                    <li>Approve deletion requests company-wide</li>
+                    <li>View all company billing</li>
+                    <li>Manage all company users</li>
+                </ul>
+            """
+        }
+        for rec in self:
+            rec.access_description = descriptions.get(rec.access_level, '')
+
+    @api.depends('access_level', 'department_id')
+    def _compute_accessible_departments(self):
+        """Show which departments will be accessible"""
+        for rec in self:
+            if not rec.department_id:
+                rec.accessible_departments = ''
+                continue
+                
+            accessible = [rec.department_id.complete_name]
+            
+            if rec.access_level in ['dept_admin', 'company_admin']:
+                # Add sub-departments
+                for child in rec.department_id.all_child_ids:
+                    accessible.append(f"  └─ {child.complete_name}")
+            
+            if rec.access_level == 'company_admin':
+                # Add all customer departments
+                all_depts = self.env['records.department'].search([
+                    ('partner_id', '=', rec.department_id.partner_id.id),
+                    ('id', '!=', rec.department_id.id)
+                ])
+                for dept in all_depts:
+                    if dept.complete_name not in accessible:
+                        accessible.append(dept.complete_name)
+            
+            rec.accessible_departments = '\n'.join(accessible)
     
     # Message
     invitation_message = fields.Text(
         string='Invitation Message',
-        default="You have been invited to access our Records Management "
-                "portal.")
+        default="You have been invited to access our Records Management portal to view and manage your offsite records.",
+        help='Custom message to include in the invitation email')
     
     def action_send_invitation(self):
-        """Send invitation email and create user"""
-        # Create or find the user
+        """Send invitation email and create department user"""
+        # Create or find the user contact
         user = self.env['res.partner'].search([
             ('email', '=', self.email),
             ('parent_id', '=', self.department_id.partner_id.id)
         ], limit=1)
         
         if not user:
+            # Create new contact under customer company
+            user = self.env['res.partner'].create({
+                'name': self.name,
+                'email': self.email,
+                'phone': self.phone,
+                'function': self.job_title,
+                'parent_id': self.department_id.partner_id.id,
+                'is_company': False,
+                'customer_rank': 0,
+                'supplier_rank': 0,
+            })
+        
+        # Check if department user already exists
+        existing_dept_user = self.env['records.department.user'].search([
+            ('user_id', '=', user.id),
+            ('department_id', '=', self.department_id.id)
+        ])
+        
+        if existing_dept_user:
+            raise ValidationError(_("User %s already has access to department %s") % 
+                                (user.name, self.department_id.name))
+        
+        # Create department user record
+        dept_user = self.env['records.department.user'].create({
+            'user_id': user.id,
+            'department_id': self.department_id.id,
+            'access_level': self.access_level,
+            'invitation_status': 'pending',
+        })
+        
+        # Trigger onchange to set permissions
+        dept_user._onchange_access_level()
+        
+        # Send portal invitation
+        dept_user.action_send_portal_invitation()
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Invitation Sent'),
+                'message': _('Portal invitation sent to %s for %s access to %s') % 
+                          (self.email, self.access_level, self.department_id.complete_name),
+                'sticky': False,
+            }
+        }
+
+    def action_preview_access(self):
+        """Preview what access this user will have"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Access Preview'),
+            'view_mode': 'form',
+            'res_model': 'records.user.invitation.wizard',
+            'res_id': self.id,
+            'target': 'new',
+        }
             user = self.env['res.partner'].create({
                 'name': self.name,
                 'email': self.email,

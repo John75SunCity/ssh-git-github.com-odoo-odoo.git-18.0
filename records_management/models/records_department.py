@@ -44,6 +44,15 @@ class RecordsDepartment(models.Model):
     
     # Computed fields for billing views
     total_boxes = fields.Integer(compute='_compute_box_stats', string='Total Boxes', store=True)
+    
+    # Hierarchy fields
+    level = fields.Integer(compute='_compute_hierarchy_level', string='Level', store=True, help='Hierarchy level (0=root, 1=department, 2=sub-department, etc.)')
+    complete_name = fields.Char(compute='_compute_complete_name', string='Complete Name', store=True, help='Full hierarchical name')
+    all_child_ids = fields.Many2many('records.department', compute='_compute_all_children', string='All Child Departments')
+    
+    # User management
+    user_ids = fields.One2many('records.department.user', 'department_id', string='Department Users')
+    user_count = fields.Integer(compute='_compute_user_count', string='User Count', store=True)
 
     # Links
     box_ids = fields.One2many('records.box', 'department_id', string='Boxes')
@@ -62,6 +71,41 @@ class RecordsDepartment(models.Model):
         """Compute statistics about boxes for this department"""
         for rec in self:
             rec.total_boxes = len(rec.box_ids.filtered(lambda b: b.state == 'active'))
+
+    @api.depends('parent_id')
+    def _compute_hierarchy_level(self):
+        """Compute the hierarchy level of each department"""
+        for rec in self:
+            level = 0
+            parent = rec.parent_id
+            while parent:
+                level += 1
+                parent = parent.parent_id
+            rec.level = level
+
+    @api.depends('name', 'parent_id.complete_name')
+    def _compute_complete_name(self):
+        """Compute the complete hierarchical name"""
+        for rec in self:
+            if rec.parent_id:
+                rec.complete_name = f"{rec.parent_id.complete_name} / {rec.name}"
+            else:
+                rec.complete_name = rec.name
+
+    @api.depends('child_ids', 'child_ids.child_ids')
+    def _compute_all_children(self):
+        """Compute all child departments recursively"""
+        for rec in self:
+            all_children = rec.child_ids
+            for child in rec.child_ids:
+                all_children |= child.all_child_ids
+            rec.all_child_ids = all_children
+
+    @api.depends('user_ids')
+    def _compute_user_count(self):
+        """Compute the number of users in this department"""
+        for rec in self:
+            rec.user_count = len(rec.user_ids)
 
     @api.depends('box_ids', 'document_ids')
     def _compute_monthly_cost(self):
@@ -82,6 +126,16 @@ class RecordsDepartment(models.Model):
         for rec in self:
             if rec._has_cycle(rec.parent_id):
                 raise ValidationError(_("No recursive hierarchies (data integrity)."))
+            # Ensure department and parent belong to same customer
+            if rec.parent_id and rec.parent_id.partner_id != rec.partner_id:
+                raise ValidationError(_("Department and parent department must belong to the same customer."))
+
+    @api.constrains('parent_id', 'partner_id')
+    def _check_customer_consistency(self):
+        """Ensure all departments in hierarchy belong to same customer"""
+        for rec in self:
+            if rec.parent_id and rec.parent_id.partner_id != rec.partner_id:
+                raise ValidationError(_("All departments in hierarchy must belong to the same customer: %s") % rec.partner_id.name)
 
     def _has_cycle(self, parent):
         if not parent:
@@ -112,6 +166,121 @@ class RecordsDepartment(models.Model):
                 'default_department_id': self.id,
             },
             'target': 'new',
+        }
+
+    def action_view_users(self):
+        """Action to view department users"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Department Users'),
+            'view_mode': 'tree,form',
+            'res_model': 'records.department.user',
+            'domain': [('department_id', '=', self.id)],
+            'context': {'default_department_id': self.id},
+        }
+
+    def action_add_user(self):
+        """Action to add user to department"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Add User to Department'),
+            'view_mode': 'form',
+            'res_model': 'records.department.user',
+            'context': {
+                'default_department_id': self.id,
+                'default_access_level': 'viewer',
+            },
+            'target': 'new',
+        }
+
+    def action_view_hierarchy(self):
+        """Action to view department hierarchy"""
+        # Find root department
+        root = self
+        while root.parent_id:
+            root = root.parent_id
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Department Hierarchy'),
+            'view_mode': 'tree',
+            'res_model': 'records.department',
+            'domain': [('id', 'child_of', root.id)],
+            'context': {'expand_all': True},
+        }
+
+    def get_all_parent_departments(self):
+        """Get all parent departments up to root"""
+        parents = self.browse()
+        current = self.parent_id
+        while current:
+            parents |= current
+            current = current.parent_id
+        return parents
+
+    def get_all_child_departments(self):
+        """Get all child departments recursively"""
+        return self.all_child_ids
+
+    def is_child_of(self, department):
+        """Check if this department is a child of given department"""
+        return department in self.get_all_parent_departments()
+
+    def is_parent_of(self, department):
+        """Check if this department is a parent of given department"""
+        return self in department.get_all_parent_departments()
+
+    # Customer Portal Methods
+    def get_portal_accessible_records(self, user):
+        """Get records accessible to a portal user based on their department access"""
+        department_user = self.env['records.department.user'].search([
+            ('user_id', '=', user.partner_id.id),
+            ('department_id', '=', self.id),
+            ('active', '=', True)
+        ], limit=1)
+        
+        if not department_user:
+            return self.env['records.box'].browse()
+        
+        accessible_departments = department_user.get_accessible_departments()
+        return self.env['records.box'].search([
+            ('department_id', 'in', accessible_departments.ids)
+        ])
+
+    def can_user_access_department(self, user):
+        """Check if a portal user can access this department"""
+        department_user = self.env['records.department.user'].search([
+            ('user_id', '=', user.partner_id.id),
+            ('active', '=', True)
+        ])
+        
+        for du in department_user:
+            accessible_depts = du.get_accessible_departments()
+            if self in accessible_depts:
+                return True
+        return False
+
+    def get_user_permissions(self, user):
+        """Get user permissions for this department"""
+        department_user = self.env['records.department.user'].search([
+            ('user_id', '=', user.partner_id.id),
+            ('department_id', '=', self.id),
+            ('active', '=', True)
+        ], limit=1)
+        
+        if not department_user:
+            return {}
+        
+        return {
+            'can_view_inventory': department_user.can_view_inventory,
+            'can_view_subdepartments': department_user.can_view_subdepartments,
+            'can_add_boxes': department_user.can_add_boxes,
+            'can_request_services': department_user.can_request_services,
+            'can_request_deletion': department_user.can_request_deletion,
+            'can_approve_deletion': department_user.can_approve_deletion,
+            'can_view_billing': department_user.can_view_billing,
+            'can_manage_users': department_user.can_manage_users,
+            'access_level': department_user.access_level,
         }
 
     def action_optimize_fees(self):
