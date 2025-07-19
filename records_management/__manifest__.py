@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-            'version': '18.0.2.49.7',  # FIX: Simplified calendar view for Odoo 18.0 compatibility
+            'version': '18.0.2.49.8',  # FIX: Add missing action_view_invoices method for billing views
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
