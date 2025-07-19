@@ -22,6 +22,8 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
     <!-- Access rules for models (excerpt; add all from ir.model.access.csv) -->
 
     <!-- Granular rule for inventory documents: Access control for departments -->
+    <!-- TEMPORARILY DISABLED: rule_inventory_docs_granular due to parsing issues -->
+    <!--
     <record id="rule_inventory_docs_granular" model="ir.rule">
         <field name="name">Granular Inventory Document Access</field>
         <field name="model_id" ref="model_records_document"/>
@@ -32,6 +34,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
     </record>
+    -->
 
     <!-- Similar rules for other models (boxes, services) to enforce dept/user access -->
 
