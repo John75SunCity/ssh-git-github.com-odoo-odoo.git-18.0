@@ -79,11 +79,11 @@
                         </group>
                     </group>
                     <group>
-                        <group string="User Defined Fields">
-                            <field name="user_field1"/>
-                            <field name="user_field2"/>
-                            <field name="user_field3"/>
-                            <field name="user_field4"/>
+                        <group string="Custom Metadata">
+                            <field name="custom_metadata_1"/>
+                            <field name="custom_metadata_2"/>
+                            <field name="custom_metadata_3"/>
+                            <field name="custom_metadata_4"/>
                             <field name="custom_date"/>
                         </group>
                         <group string="Billing Options">

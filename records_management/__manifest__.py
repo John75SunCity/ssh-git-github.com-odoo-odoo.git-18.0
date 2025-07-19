@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.26.0',  # FIXED: Removed all remaining 'state' fields from survey.survey records (3 total surveys)
+    'version': '18.0.2.27.0',  # FIXED: View field references - corrected user_field* to custom_metadata* in records_box_views.xml
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
