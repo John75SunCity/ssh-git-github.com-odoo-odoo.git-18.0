@@ -239,7 +239,7 @@
     <!-- NAID Compliance Audit Notification -->
     <record id="naid_audit_notification_email" model="mail.template">
         <field name="name">NAID Compliance Audit Notification</field>
-        <field name="model_id" ref="records_management.model_naid_audit"/>
+        <field name="model_id" ref="records_management.model_naid_audit_log"/>
         <field name="email_from">compliance@suncityshred.com</field>
         <field name="email_to">${object.partner_id.email}</field>
         <field name="subject">NAID Audit Scheduled: ${object.name} - ${object.audit_date}</field>

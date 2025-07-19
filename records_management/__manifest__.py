@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.20.0',  # FIXED: Portal centralized docs template XML structure validation
+    'version': '18.0.2.21.0',  # FIXED: Corrected external ID reference model_naid_audit → model_naid_audit_log
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
