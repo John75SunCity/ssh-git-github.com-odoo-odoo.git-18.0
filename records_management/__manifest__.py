@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.25.0',  # FIXED: Survey.question 'display_type' field deprecation - removed all instances from feedback_survey_data.xml
+    'version': '18.0.2.26.0',  # FIXED: Removed all remaining 'state' fields from survey.survey records (3 total surveys)
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

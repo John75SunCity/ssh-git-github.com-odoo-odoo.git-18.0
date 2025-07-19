@@ -274,7 +274,6 @@
         <record id="service_request_feedback_survey" model="survey.survey">
             <field name="title">Service Request Feedback</field>
             <field name="description">Rate your experience with our destruction and service requests</field>
-            <field name="state">open</field>
             <field name="access_mode">public</field>
             <field name="users_login_required">False</field>
             <field name="attempts_limit">1</field>
@@ -374,7 +373,6 @@
         <record id="survey_feedback_portal" model="survey.survey">
             <field name="title">Portal Feedback &amp; Suggestions</field>
             <field name="description">Quick feedback form for suggestions and concerns</field>
-            <field name="state">open</field>
             <field name="access_mode">public</field>
             <field name="users_login_required">True</field>
             <field name="is_attempts_limited">False</field>
