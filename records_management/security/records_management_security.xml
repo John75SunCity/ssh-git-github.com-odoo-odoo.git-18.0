@@ -52,7 +52,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
     <!-- Rule for feedback/survey responses: Admin/compliance officer full access -->
     <record id="rule_feedback_admin" model="ir.rule">
         <field name="name">Admin Access to Feedback</field>
-        <field name="model_id" ref="model_survey_user_input"/>
+        <field name="model_id" ref="survey.model_survey_user_input"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('records_management.group_naid_compliance_officer'))]"/>
         <field name="perm_read" eval="True"/>
@@ -64,7 +64,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
     <!-- Portal users: Read-only own feedback -->
     <record id="rule_feedback_portal" model="ir.rule">
         <field name="name">Portal User Feedback Access</field>
-        <field name="model_id" ref="model_survey_user_input"/>
+        <field name="model_id" ref="survey.model_survey_user_input"/>
         <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
         <field name="perm_read" eval="True"/>
