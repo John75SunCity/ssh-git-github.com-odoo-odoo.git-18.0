@@ -26,11 +26,24 @@ class RecordsDepartment(models.Model):
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True, index=True)
     parent_id = fields.Many2one('records.department', string='Parent Department', index=True, tracking=True)
     child_ids = fields.One2many('records.department', 'parent_id', string='Sub-Departments')
+    
+    # Contact Information
+    manager_id = fields.Many2one('res.partner', string='Manager', tracking=True)
+    phone = fields.Char(string='Phone', tracking=True)
+    email = fields.Char(string='Email', tracking=True)
+    
+    # Additional Information
+    description = fields.Text(string='Description', tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, tracking=True)
+    
     retention_policy_id = fields.Many2one('records.retention.policy', string='Retention Policy', tracking=True)
     notes = fields.Text(string='Notes', tracking=True)
     hashed_code = fields.Char(compute='_compute_hashed_code', store=True)
     active = fields.Boolean(default=True, tracking=True)
     monthly_cost = fields.Float(compute='_compute_monthly_cost', store=True, help='Optimized with PuLP if available.')
+    
+    # Computed fields for billing views
+    total_boxes = fields.Integer(compute='_compute_box_stats', string='Total Boxes', store=True)
 
     # Links
     box_ids = fields.One2many('records.box', 'department_id', string='Boxes')
@@ -43,6 +56,12 @@ class RecordsDepartment(models.Model):
     def _compute_hashed_code(self):
         for rec in self:
             rec.hashed_code = hashlib.sha256(rec.code.encode()).hexdigest() if rec.code else False
+
+    @api.depends('box_ids', 'box_ids.state')
+    def _compute_box_stats(self):
+        """Compute statistics about boxes for this department"""
+        for rec in self:
+            rec.total_boxes = len(rec.box_ids.filtered(lambda b: b.state == 'active'))
 
     @api.depends('box_ids', 'document_ids')
     def _compute_monthly_cost(self):
@@ -79,6 +98,20 @@ class RecordsDepartment(models.Model):
             'res_model': 'records.box',
             'domain': [('department_id', 'in', self.ids)],
             'context': {'default_department_id': self.id},
+        }
+
+    def action_setup_billing_contact(self):
+        """Action to setup billing contact for this department"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Setup Billing Contact'),
+            'view_mode': 'form',
+            'res_model': 'records.department.billing.contact',
+            'context': {
+                'default_customer_id': self.partner_id.id,
+                'default_department_id': self.id,
+            },
+            'target': 'new',
         }
 
     def action_optimize_fees(self):
