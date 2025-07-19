@@ -136,6 +136,20 @@ class CustomerInventoryReport(models.Model):
                 record.status = 'archived'
         return True
 
+    def action_create_destruction_request(self):
+        """Create destruction request for selected inventory reports."""
+        # For now, this is a placeholder action that will open a wizard
+        # to create destruction requests for the customer's boxes/documents
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': 'Destruction request functionality to be implemented',
+                'type': 'info',
+                'sticky': False,
+            }
+        }
+
 
 class RecordsDepartment(models.Model):
     """Model for customer departments."""
