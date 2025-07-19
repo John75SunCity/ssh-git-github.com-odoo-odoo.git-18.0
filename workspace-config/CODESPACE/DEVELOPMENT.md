@@ -28,7 +28,7 @@ odoo -d test_db -i records_management --addons-path=.
 ## Dynamic Module Loading
 - Core dependencies auto-install in Odoo.sh
 - Optional modules: Enable in Odoo Apps as needed
-- No need to include heavy files in branch
+- No need to include heavy files in branch 
 
 ## Fast Development Tips
 1. Edit files directly in Codespaces/Odoo.sh
