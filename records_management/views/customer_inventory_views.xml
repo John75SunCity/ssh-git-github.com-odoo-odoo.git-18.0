@@ -35,14 +35,13 @@
                   decoration-success="status=='confirmed'" 
                   decoration-warning="status=='sent'"
                   decoration-danger="total_boxes > 500"
-                  multi_edit="1"
                   editable="top">
                 <field name="name" required="1"/>
                 <field name="customer_id"/>
                 <field name="report_date"/>
                 <field name="total_boxes" widget="integer"/>
-                <field name="total_documents" widget="integer" optional="hide"/>
-                <field name="active_locations" optional="hide"/>
+                <field name="total_documents" widget="integer"/>
+                <field name="active_locations"/>
                 <field name="status" widget="selection"/>
             </list>
         </field>
@@ -54,7 +53,7 @@
         <field name="model">customer.inventory.report</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
-            <form string="Customer Inventory Report" js_class="customer_inventory_form_view">
+            <form string="Customer Inventory Report">
                 <header>
                     <button name="action_confirm_report" type="object" string="Confirm Report" 
                             class="btn-primary" invisible="status != 'draft'"/>
@@ -130,9 +129,9 @@
                                       decoration-muted="state=='archived'"
                                       editable="bottom">
                                     <field name="name"/>
-                                    <field name="location_id" optional="show"/>
+                                    <field name="location_id"/>
                                     <field name="state" widget="badge"/>
-                                    <field name="create_date" optional="hide" widget="datetime"/>
+                                    <field name="create_date" widget="datetime"/>
                                 </list>
                             </field>
                         </page>
@@ -154,9 +153,9 @@
                                       decoration-danger="state=='destroyed'"
                                       decoration-muted="state=='archived'">
                                     <field name="name"/>
-                                    <field name="box_id" optional="show"/>
+                                    <field name="box_id"/>
                                     <field name="state" widget="badge"/>
-                                    <field name="create_date" optional="hide" widget="datetime"/>
+                                    <field name="create_date" widget="datetime"/>
                                 </list>
                             </field>
                         </page>
@@ -237,7 +236,7 @@
         <field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column" quick_create="false" 
-                    sample="1" js_class="customer_inventory_kanban">
+                    sample="1">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="total_boxes"/>
@@ -247,8 +246,7 @@
                 <field name="color"/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_card oe_kanban_global_click 
-                             #{total_boxes > 500 ? 'border-danger' : total_boxes > 100 ? 'border-warning' : 'border-success'}">
+                        <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="oe_kanban_content">
                                 <div class="row">
                                     <div class="col-6">
@@ -257,8 +255,7 @@
                                         </strong>
                                     </div>
                                     <div class="col-6 text-right">
-                                        <span t-attf-class="badge badge-pill 
-                                              #{total_boxes > 500 ? 'badge-danger' : total_boxes > 100 ? 'badge-warning' : 'badge-success'}">
+                                        <span class="badge badge-pill badge-info">
                                             <field name="total_boxes"/> boxes
                                         </span>
                                     </div>
@@ -279,8 +276,8 @@
                                 <div class="row mt-2">
                                     <div class="col-12">
                                         <div class="o_kanban_tags">
-                                            <span t-if="total_boxes > 500" class="badge badge-danger">High Volume</span>
-                                            <span t-elif="total_boxes > 100" class="badge badge-warning">Medium Volume</span>
+                                            <span t-if="record.total_boxes.raw_value > 500" class="badge badge-danger">High Volume</span>
+                                            <span t-elif="record.total_boxes.raw_value > 100" class="badge badge-warning">Medium Volume</span>
                                             <span t-else="" class="badge badge-success">Standard</span>
                                         </div>
                                     </div>
@@ -289,11 +286,11 @@
                             <div class="oe_kanban_bottom_right">
                                 <div class="btn-group" role="group">
                                     <button type="object" name="action_confirm_report" 
-                                            class="btn btn-primary btn-sm" t-if="status == 'draft'" title="Confirm">
+                                            class="btn btn-primary btn-sm" t-if="record.status.raw_value == 'draft'" title="Confirm">
                                         <i class="fa fa-check"/>
                                     </button>
                                     <button type="object" name="action_send_to_customer" 
-                                            class="btn btn-success btn-sm" t-if="status == 'confirmed'" title="Send">
+                                            class="btn btn-success btn-sm" t-if="record.status.raw_value == 'confirmed'" title="Send">
                                         <i class="fa fa-paper-plane"/>
                                     </button>
                                     <button type="object" name="action_create_destruction_request" 
