@@ -168,17 +168,40 @@
                     <group>
                         <group string="Basic Information">
                             <field name="code"/>
-                            <field name="parent_id"/>
+                            <field name="partner_id"/>
+                            <field name="parent_id" options="{'no_create': True, 'no_create_edit': True}"/>
                         </group>
                         <group string="Contact Information">
                             <field name="manager_id"/>
                             <field name="phone"/>
                             <field name="email"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Description" name="description">
                             <field name="description" placeholder="Department description..."/>
+                        </page>
+                        <page string="Sub-Departments" name="hierarchy">
+                            <field name="child_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="manager_id"/>
+                                    <field name="phone"/>
+                                    <field name="email"/>
+                                    <field name="active"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Statistics" name="stats">
+                            <group>
+                                <group string="Department Statistics">
+                                    <field name="total_boxes"/>
+                                    <field name="monthly_cost"/>
+                                </group>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
