@@ -7,7 +7,7 @@ Updated file: Views for trailer load management with tree/form/kanban modes. Thi
         <field name="name">trailer.load.tree</field>
         <field name="model">trailer.load</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="bale_count"/>
                 <field name="total_weight"/>
