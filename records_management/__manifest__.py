@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.23',  # FIX: Enhanced customer portal hierarchy with user access management for offsite records
+        'version': '18.0.2.49.24',  # FIX: Corrected indentation error in customer_inventory_report.py line 708
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

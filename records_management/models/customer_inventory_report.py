@@ -705,32 +705,6 @@ class RecordsUserInvitationWizard(models.TransientModel):
             'res_id': self.id,
             'target': 'new',
         }
-            user = self.env['res.partner'].create({
-                'name': self.name,
-                'email': self.email,
-                'phone': self.phone,
-                'function': self.job_title,
-                'parent_id': self.department_id.partner_id.id,
-                'is_company': False,
-                'customer_rank': 1,
-            })
-        
-        # Create department user record
-        self.env['records.department.user'].create({
-            'department_id': self.department_id.id,
-            'user_id': user.id,
-            'access_level': self.access_level,
-        })
-        
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'message': f'Invitation sent to {self.email}',
-                'type': 'success',
-                'sticky': False,
-            }
-        }
 
 
 class RecordsServiceRequest(models.Model):
