@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 
 class ResPartner(models.Model):
@@ -104,3 +104,25 @@ class ResPartner(models.Model):
                 partner.total_departments = 0
                 partner.departments_with_storage = 0
                 partner.monthly_storage_total = 0.0
+
+    @api.depends('document_ids')
+    def _compute_document_count(self):
+        """Compute the number of documents related to this partner."""
+        for partner in self:
+            partner.document_count = len(partner.document_ids)
+
+    def action_view_documents(self):
+        """Action to view documents related to this partner."""
+        self.ensure_one()
+        return {
+            'name': _('Documents'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document',
+            'view_mode': 'kanban,tree,form',
+            'domain': [('partner_id', '=', self.id)],
+            'context': {
+                'default_partner_id': self.id,
+                'search_default_partner_id': self.id,
+            },
+            'target': 'current',
+        }
