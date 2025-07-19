@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!-- 
-Updated file: Fixed invalid domain in ir.rule for granular inventory access (changed 'x_department_ids' to 'department_ids' per res.partner model extension—typo caused ParseError/AttributeError in log during module update/XML evaluation). This accomplishes secure, department-based access to sensitive docs (e.g., inventory uploads not portal-wide, aligning with NAID AAA chain-of-custody and ISO 15489 data segregation). Clean/simple: No extra fields; leverages existing One2many. User-friendly: Ensures portal views load without errors, modern UI unaffected. Innovative idea: Add dynamic rule computation via computed domain for AI-driven access (e.g., based on user behavior logs via torch sentiment analysis on feedback); standards: NAID AAA requires audited access controls—log rule evaluations in message_post for compliance audits.
+Updated file: Fixed invalid domain in ir.rule for granular inventory access (changed 'department_id.partner_id' to 'department_id.partner_id.id' for correct leaf evaluation—typo caused ParseError/Invalid field per log/Odoo docs). This accomplishes secure, department-based access to sensitive docs (e.g., inventory uploads not portal-wide, aligning with NAID AAA chain-of-custody and ISO 15489 data segregation). Clean/simple: Used proper domain syntax (dotted notation for related fields). User-friendly: Ensures portal views load without errors, modern UI unaffected. Innovative idea: Add dynamic rule computation via computed domain for AI-driven access (e.g., based on user behavior logs via torch sentiment analysis on feedback); standards: NAID AAA requires audited access controls—log rule evaluations in message_post for compliance audits.
 -->
 <odoo>
     <!-- Existing security groups/rules -->
@@ -26,7 +25,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
     <record id="rule_inventory_docs_granular" model="ir.rule">
         <field name="name">Granular Inventory Document Access</field>
         <field name="model_id" ref="model_records_document"/>
-        <field name="domain_force">[('customer_id', '=', user.partner_id.id), '|', '|', ('department_id.partner_id', '=', user.partner_id.id), ('created_by_user_id', '=', user.id), ('assigned_user_ids', 'in', [user.id])]</field>
+        <field name="domain_force">[('customer_id', '=', user.partner_id.id), '|', '|', ('department_id.partner_id.id', '=', user.partner_id.id), ('created_by_user_id', '=', user.id), ('assigned_user_ids', 'in', [user.id])]</field>
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="False"/>
