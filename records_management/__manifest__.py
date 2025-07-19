@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.25',  # FIX: Fixed related field error in records.department.user.customer_company_id
+        'version': '18.0.2.49.26',  # FIX: Fixed wizard related field error and checked all computed fields for KeyError issues
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

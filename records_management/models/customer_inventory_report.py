@@ -547,7 +547,8 @@ class RecordsUserInvitationWizard(models.TransientModel):
     _description = 'Customer Portal User Invitation Wizard'
 
     department_id = fields.Many2one('records.department', string='Department', required=True)
-    customer_company = fields.Many2one(related='department_id.partner_id', string='Customer Company', readonly=True)
+    customer_company = fields.Many2one('res.partner', string='Customer Company', 
+                                      compute='_compute_customer_company_wizard', readonly=True, store=True)
     
     # User Information
     name = fields.Char(string='Full Name', required=True,
@@ -571,6 +572,12 @@ class RecordsUserInvitationWizard(models.TransientModel):
                                    string='Access Description')
     accessible_departments = fields.Text(compute='_compute_accessible_departments',
                                        string='Will Have Access To')
+
+    @api.depends('department_id')
+    def _compute_customer_company_wizard(self):
+        """Compute customer company for wizard"""
+        for rec in self:
+            rec.customer_company = rec.department_id.partner_id if rec.department_id else False
 
     @api.depends('access_level', 'department_id')
     def _compute_access_description(self):
