@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.18.0',  # FIX: Completed portal_feedback_template.xml syntax validation
+    'version': '18.0.2.19.0',  # CRITICAL: Fixed external ID references causing deployment failures
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

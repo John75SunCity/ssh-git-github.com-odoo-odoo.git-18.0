@@ -3,7 +3,7 @@
     <!-- Portal Request Submission Email Template -->
     <record id="portal_request_submitted_email" model="mail.template">
         <field name="name">Portal Request Submitted</field>
-        <field name="model_id" ref="model_portal_request"/>
+        <field name="model_id" ref="records_management.model_portal_request"/>
         <field name="email_from">${object.env.user.email or 'noreply@suncityshred.com'}</field>
         <field name="email_to">admin@suncityshred.com</field>
         <field name="subject">New Portal Submission: ${object.name} - ${object.request_type}</field>
@@ -66,7 +66,7 @@
     <!-- Portal Request Status Update Email Template -->
     <record id="portal_request_status_update_email" model="mail.template">
         <field name="name">Portal Request Status Update</field>
-        <field name="model_id" ref="model_portal_request"/>
+        <field name="model_id" ref="records_management.model_portal_request"/>
         <field name="email_from">noreply@suncityshred.com</field>
         <field name="email_to">${object.partner_id.email}</field>
         <field name="subject">Request ${object.name} Status Update - ${object.state.title()}</field>
@@ -127,7 +127,7 @@
     <!-- Website Form Submission Email Template -->
     <record id="website_form_submission_email" model="mail.template">
         <field name="name">Website Contact Form Submission</field>
-        <field name="model_id" ref="base.model_mail_message"/>
+        <field name="model_id" ref="mail.model_mail_mail"/>
         <field name="email_from">${object.email_from or 'noreply@suncityshred.com'}</field>
         <field name="email_to">admin@suncityshred.com</field>
         <field name="subject">New Website Inquiry - ${object.subject or 'Contact Form'}</field>
@@ -173,7 +173,7 @@
     <!-- SMS Template for Portal Request Updates -->
     <record id="portal_request_sms_notification" model="sms.template">
         <field name="name">Portal Request SMS Update</field>
-        <field name="model_id" ref="model_portal_request"/>
+        <field name="model_id" ref="records_management.model_portal_request"/>
         <field name="body">Sun City Shred: Your request ${object.name} is now ${object.state.replace('_', ' ').title()}. View details: ${ctx.get('base_url', '')}/my/requests/${object.id}</field>
         <field name="lang">${object.partner_id.lang}</field>
     </record>
@@ -181,7 +181,7 @@
     <!-- Pickup Request Confirmation Email -->
     <record id="pickup_request_confirmation_email" model="mail.template">
         <field name="name">Pickup Request Confirmation</field>
-        <field name="model_id" ref="model_pickup_request"/>
+        <field name="model_id" ref="records_management.model_pickup_request"/>
         <field name="email_from">noreply@suncityshred.com</field>
         <field name="email_to">${object.partner_id.email}</field>
         <field name="subject">Pickup Scheduled: ${object.name} - ${object.pickup_date}</field>
@@ -239,7 +239,7 @@
     <!-- NAID Compliance Audit Notification -->
     <record id="naid_audit_notification_email" model="mail.template">
         <field name="name">NAID Compliance Audit Notification</field>
-        <field name="model_id" ref="model_naid_audit"/>
+        <field name="model_id" ref="records_management.model_naid_audit"/>
         <field name="email_from">compliance@suncityshred.com</field>
         <field name="email_to">${object.partner_id.email}</field>
         <field name="subject">NAID Audit Scheduled: ${object.name} - ${object.audit_date}</field>
