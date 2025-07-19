@@ -139,30 +139,15 @@
                             </list>
                         </field>
                     </page>
-                    <page string="Department Breakdown">
+                    <page string="Summary">
                         <group>
-                            <field name="billing_line_ids" 
-                                   context="{'group_by': 'department_id'}"
-                                   readonly="1">
-                                <list>
-                                    <field name="department_id"/>
-                                    <field name="line_type"/>
-                                    <field name="description"/>
-                                    <field name="amount" sum="Department Total"/>
-                                </list>
-                            </field>
+                            <group string="Summary by Type">
+                                <label string="View billing lines grouped by line type in the main tab"/>
+                            </group>
+                            <group string="Instructions">
+                                <label string="Use the billing lines tab to view all charges for this period"/>
+                            </group>
                         </group>
-                    </page>
-                    <page string="Customer Summary">
-                        <field name="billing_line_ids" 
-                               context="{'group_by': 'customer_id'}"
-                               readonly="1">
-                            <list>
-                                <field name="customer_id"/>
-                                <field name="department_id"/>
-                                <field name="amount" sum="Customer Total"/>
-                            </list>
-                        </field>
                     </page>
                 </notebook>
             </group>
