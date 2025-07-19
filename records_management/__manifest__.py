@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Records Management',
-    'version': '18.0.2.16.0',  # CRITICAL: Fixed corrupted XML syntax and verified product types
+    'version': '18.0.2.17.0',  # MAJOR: Fixed critical XML syntax errors across templates and views
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

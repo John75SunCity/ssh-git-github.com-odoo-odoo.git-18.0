@@ -244,7 +244,7 @@
                                     </ul>
                                 </div>
                                 <div class="card-footer bg-transparent">
-                                    <button class="btn btn-dark btn-block" disabled>
+                                    <button class="btn btn-dark btn-block" disabled="disabled">>
                                         <i class="fa fa-rocket"></i> Coming Soon
                                     </button>
                                 </div>
@@ -321,7 +321,7 @@
                                     Portal Video Tutorial
                                 </h5>
                                 <button type="button" class="close" data-dismiss="modal">
-                                    <span>&times;</span>
+                                    <span>&#215;</span>
                                 </button>
                             </div>
                             <div class="modal-body text-center">

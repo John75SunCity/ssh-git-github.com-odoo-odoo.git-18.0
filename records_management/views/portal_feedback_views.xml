@@ -367,7 +367,7 @@
                 <filter name="follow_up_required" string="Follow-up Required" domain="[('follow_up_required', '=', True)]"/>
                 <filter name="critical" string="Critical" domain="[('priority_level', '=', 'urgent')]"/>
                 <filter name="high_satisfaction" string="High Satisfaction (≥80%)" domain="[('scoring_percentage', '>=', 80)]"/>
-                <filter name="low_satisfaction" string="Low Satisfaction (≤60%)" domain="[('scoring_percentage', '<=', 60)]"/>
+                <filter name="low_satisfaction" string="Low Satisfaction (≤60%)" domain="[('scoring_percentage', '&lt;=', 60)]"/>
                 <filter name="negative_sentiment" string="Negative Sentiment" domain="[('sentiment_score', '&lt;', 0.4)]"/>
 
                 <separator/>

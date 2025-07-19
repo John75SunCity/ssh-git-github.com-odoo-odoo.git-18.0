@@ -170,4 +170,13 @@
                             <field name="period_start"/>
                             <field name="period_end"/>
                         </group>
-                        <group
+                        <group>
+                            <field name="state"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+</odoo>

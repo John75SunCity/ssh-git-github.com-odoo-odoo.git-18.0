@@ -142,7 +142,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="feedback_type">Feedback Type</label>
-                                        <select name="feedback_type" id="feedback_type" class="form-control" required>
+                                        <select name="feedback_type" id="feedback_type" class="form-control" required="required">>
                                             <option value="">Select type...</option>
                                             <option value="suggestion">Suggestion</option>
                                             <option value="bug_report">Bug Report</option>
@@ -156,7 +156,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="priority">Priority Level</label>
-                                        <select name="priority" id="priority" class="form-control" required>
+                                        <select name="priority" id="priority" class="form-control" required="required">>
                                             <option value="">Select priority...</option>
                                             <option value="low">Low - General feedback</option>
                                             <option value="medium">Medium - Important but not urgent</option>
@@ -171,7 +171,7 @@
                                 <textarea name="feedback_content" id="feedback_content" 
                                           class="form-control" rows="4" 
                                           placeholder="Please describe your feedback in detail..."
-                                          required></textarea>
+                                          required="required"></textarea>
                                 <small class="form-text text-muted">
                                     <i class="fa fa-shield text-success"></i>
                                     All feedback is logged for NAID AAA compliance and quality assurance.
@@ -179,7 +179,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="contact_back" name="contact_back">
+                                    <input type="checkbox" class="form-check-input" id="contact_back" name="contact_back"/>
                                     <label class="form-check-label" for="contact_back">
                                         I would like to be contacted about this feedback
                                     </label>
@@ -294,7 +294,7 @@
                         </div>
                         <div class="col-md-4 text-center">
                             <img src="/records_management/static/img/naid-aaa-logo.png" 
-                                 alt="NAID AAA Certified" class="img-fluid" style="max-height: 60px;">
+                                 alt="NAID AAA Certified" class="img-fluid" style="max-height: 60px;"/>
                         </div>
                     </div>
                 </div>

@@ -110,7 +110,7 @@
                 <filter string="Retrieved" name="retrieved" domain="[('state','=','retrieved')]"/>
                 <filter string="Returned" name="returned" domain="[('state','=','returned')]"/>
                 <filter string="Destroyed" name="destroyed" domain="[('state','=','destroyed')]"/>
-                <filter string="Expired" name="expired" domain="[('retention_date','<', context_today())]"/>
+                <filter string="Expired" name="expired" domain="[('retention_date','&lt;', context_today())]"/>
                 <filter string="Has Destruction Method" name="has_destruction" domain="[('destruction_method','!=', False)]"/>
                 <separator/>
                 <filter string="My Documents" name="my_docs" domain="[('user_id','=', uid)]"/>
