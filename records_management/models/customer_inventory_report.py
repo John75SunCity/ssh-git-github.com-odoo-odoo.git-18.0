@@ -55,7 +55,8 @@ class CustomerInventoryReport(models.Model):
     status = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
-        ('sent', 'Sent to Customer')
+        ('sent', 'Sent to Customer'),
+        ('archived', 'Archived')
     ], default='draft', string='Status')
     notes = fields.Text(string='Notes')
 
@@ -112,6 +113,28 @@ class CustomerInventoryReport(models.Model):
     def action_generate_pdf_report(self) -> dict:
         report_ref = 'records_management.action_customer_inventory_report_pdf'
         return self.env.ref(report_ref).report_action(self)
+
+    # Batch action methods for list view operations
+    def action_batch_confirm(self):
+        """Batch confirm multiple inventory reports."""
+        for record in self:
+            if record.status == 'draft':
+                record.status = 'confirmed'
+        return True
+
+    def action_batch_send(self):
+        """Batch send multiple inventory reports."""
+        for record in self:
+            if record.status == 'confirmed':
+                record.status = 'sent'
+        return True
+
+    def action_batch_archive(self):
+        """Batch archive multiple inventory reports."""
+        for record in self:
+            if record.status in ('sent', 'confirmed'):
+                record.status = 'archived'
+        return True
 
 
 class RecordsDepartment(models.Model):
@@ -1959,26 +1982,4 @@ class RecordsBillingAutomation(models.Model):
     def _process_service_billing(self):
         """Process service completion billing"""
         # TODO: Implement service billing logic
-        return True
-
-    # Batch action methods for list view operations
-    def action_batch_confirm(self):
-        """Batch confirm multiple inventory reports."""
-        for record in self:
-            if record.status == 'draft':
-                record.status = 'confirmed'
-        return True
-
-    def action_batch_send(self):
-        """Batch send multiple inventory reports."""
-        for record in self:
-            if record.status == 'confirmed':
-                record.status = 'sent'
-        return True
-
-    def action_batch_archive(self):
-        """Batch archive multiple inventory reports."""
-        for record in self:
-            if record.status in ('sent', 'confirmed'):
-                record.status = 'archived'
         return True
