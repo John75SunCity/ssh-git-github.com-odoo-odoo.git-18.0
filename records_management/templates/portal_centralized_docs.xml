@@ -879,9 +879,10 @@
                     color: white;
                     transform: scale(1.05);
                 }
-            }
+            </style>
             
-            // Enhanced JavaScript for Document Center
+            <!-- Enhanced JavaScript for Document Center -->
+            <script>
             function toggleView(viewType) {
                 const tabsView = document.getElementById('tabsViewContainer');
                 const accordionView = document.getElementById('accordionViewContainer');
@@ -985,7 +986,7 @@
                     URL.revokeObjectURL(url);
                 }, 2000);
             }
-            </style>
+            </script>
         </t>
     </template>
 </odoo>
