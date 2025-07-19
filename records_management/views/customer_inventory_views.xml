@@ -6,7 +6,7 @@
         <field name="model">customer.inventory.report</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree string="Customer Inventory Reports" 
+            <list string="Customer Inventory Reports" 
                   decoration-info="status=='draft'" 
                   decoration-success="status=='confirmed'" 
                   decoration-warning="status=='sent'"
@@ -38,7 +38,7 @@
                        decoration-muted="status=='archived'"/>
                 <field name="create_date" optional="hide"/>
                 <field name="write_date" optional="hide"/>
-            </tree>
+            </list>
         </field>
     </record>
 
