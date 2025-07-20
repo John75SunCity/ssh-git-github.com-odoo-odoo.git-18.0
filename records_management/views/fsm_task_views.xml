@@ -3,6 +3,11 @@
 New file: Extension for Field Service Management (FSM) task views to integrate with portal requests. This accomplishes linking portal-submitted requests (e.g., destruction/services) to FSM tasks for field execution, ensuring seamless workflow from customer portal to on-site completion. User-friendly: Adds a simple field in the form for quick navigation to the originating request. Modern: Leverages Odoo's statusbar/widget for clean UI. Innovative idea: Add a map widget (extend with geolocation) for task locations if fleet integrated; standards: NAID AAA chain-of-custody via traceable links (audit trails on task completion message_post request details); ISO 15489: Ensures verifiable process flow with timestamps.
 -->
 <odoo>
+    <!-- Note: FSM task inheritance temporarily disabled due to potential External ID issues -->
+    <!-- TODO: Verify industry_fsm External IDs are available in deployment environment -->
+    
+    <!-- Temporarily commented out to fix deployment -->
+    <!--
     <record id="view_fsm_task_form_inherit" model="ir.ui.view">
         <field name="name">project.task.form.inherit.records</field>
         <field name="model">project.task</field>
@@ -26,4 +31,5 @@ New file: Extension for Field Service Management (FSM) task views to integrate w
             </xpath>
         </field>
     </record>
+    -->
 </odoo>

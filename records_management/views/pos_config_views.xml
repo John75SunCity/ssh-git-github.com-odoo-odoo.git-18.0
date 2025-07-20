@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Inherit POS Config Form View -->
+    <!-- Note: POS Config inheritance temporarily disabled due to External ID issues -->
+    <!-- This view extends POS configuration for shredding services but needs proper External ID -->
+    <!-- TODO: Verify correct point_of_sale External ID for view inheritance -->
+    
+    <!-- Temporarily commented out to fix deployment -->
+    <!--
     <record id="pos_config_view_form_inherit" model="ir.ui.view">
         <field name="name">pos.config.form.inherit.records</field>
         <field name="model">pos.config</field>
         <field name="inherit_id" ref="point_of_sale.view_pos_config_form"/>
         <field name="arch" type="xml">
             <xpath expr="//group[@name='receipt']" position="inside">
-                <!-- Commented out to fix OWL error; uncomment after defining field in res.config.settings -->
-                <!-- <field name="pos_sms_receipt_template_id" help="Select SMS template for POS receipts (requires 'sms' module)." placeholder="Choose Template"/> -->
-                <!-- Add custom shred-specific fields for walk-in services -->
                 <field name="shred_receipt_enabled" string="Enable Shred Receipts" help="Print destruction certificates on POS receipts for NAID compliance."/>
             </xpath>
         </field>
     </record>
+    -->
 </odoo>
