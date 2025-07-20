@@ -24,12 +24,18 @@ from . import shredding_service  # Shredding (documents/hard drives/uniforms - N
 
 # Portal and FSM
 from . import portal_request  # Portal requests (destruction/services)
+from . import portal_request_fixed  # Fixed portal request model
 from . import fsm_task  # FSM extensions for field actions
 
 # HR and Feedback
 from . import hr_employee  # Employee access/training (NAID certifications)
 from . import hr_employee_naid  # NAID-specific employee tracking
 from . import customer_feedback  # Feedback with sentiment (innovative: Integrate torch for AI analysis via code_execution)
+
+# Products and Configuration
+from . import product  # Product extensions
+from . import res_config_settings  # Configuration settings
+from . import visitor  # Visitor management
 
 # Business Logic
 from . import scrm_records_management  # Core SCRM business logic
