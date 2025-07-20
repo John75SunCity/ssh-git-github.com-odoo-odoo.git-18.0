@@ -47,7 +47,7 @@ class RecordsDepartment(models.Model):
     
     # Hierarchy fields
     level = fields.Integer(compute='_compute_hierarchy_level', string='Level', store=True, help='Hierarchy level (0=root, 1=department, 2=sub-department, etc.)')
-    complete_name = fields.Char(compute='_compute_complete_name', string='Complete Name', store=True, help='Full hierarchical name')
+    complete_name = fields.Char(compute='_compute_complete_name', string='Complete Name', store=True, recursive=True, help='Full hierarchical name')
     all_child_ids = fields.Many2many('records.department', compute='_compute_all_children', string='All Child Departments')
     
     # User management
