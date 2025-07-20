@@ -13,10 +13,10 @@ class ProductTemplate(models.Model):
     retention_note = fields.Text(string='Retention Note', compute='_compute_retention_note', store=True, 
                                  help='Computed note for ISO data integrity (e.g., retention policies).')
 
-    @api.depends('detailed_type')
+    @api.depends('type')
     def _compute_retention_note(self):
         for rec in self:
-            if rec.detailed_type == 'service' and rec.shred_type:
+            if rec.type == 'service' and rec.shred_type:
                 rec.retention_note = f"Service: {rec.shred_type}. Retain logs for 7 years per NAID standards."
             else:
                 rec.retention_note = ""
