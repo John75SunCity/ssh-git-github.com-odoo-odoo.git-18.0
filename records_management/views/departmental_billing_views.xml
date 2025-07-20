@@ -216,18 +216,14 @@
                                     </div>
                                 </button>
                             </div>
+                            <!-- TEMP COMMENTED OUT - debugging user_ids field issue
                             <field name="user_ids">
                                 <tree>
                                     <field name="user_id"/>
-                                    <field name="email"/>
-                                    <field name="access_level"/>
-                                    <field name="can_view_inventory"/>
-                                    <field name="can_add_boxes"/>
-                                    <field name="can_request_services"/>
-                                    <field name="active"/>
-                                    <field name="last_login"/>
                                 </tree>
                             </field>
+                            -->
+                            <p>User management temporarily disabled for debugging</p>
                         </page>
                         <page string="Statistics" name="stats">
                             <group>
