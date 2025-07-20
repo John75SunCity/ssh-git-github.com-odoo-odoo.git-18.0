@@ -51,7 +51,7 @@ class RecordsDepartment(models.Model):
     all_child_ids = fields.Many2many('records.department', compute='_compute_all_children', string='All Child Departments')
     
     # User management
-    user_ids = fields.One2many('records.department.user', 'department_id', string='Department Users')
+    user_ids = fields.One2many('records.storage.department.user', 'department_id', string='Department Users')
     user_count = fields.Integer(compute='_compute_user_count', string='User Count', store=True)
 
     # Links
@@ -174,7 +174,7 @@ class RecordsDepartment(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Department Users'),
             'view_mode': 'tree,form',
-            'res_model': 'records.department.user',
+            'res_model': 'records.storage.department.user',
             'domain': [('department_id', '=', self.id)],
             'context': {'default_department_id': self.id},
         }
@@ -185,7 +185,7 @@ class RecordsDepartment(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Add User to Department'),
             'view_mode': 'form',
-            'res_model': 'records.department.user',
+            'res_model': 'records.storage.department.user',
             'context': {
                 'default_department_id': self.id,
                 'default_access_level': 'viewer',
@@ -233,7 +233,7 @@ class RecordsDepartment(models.Model):
     # Customer Portal Methods
     def get_portal_accessible_records(self, user):
         """Get records accessible to a portal user based on their department access"""
-        department_user = self.env['records.department.user'].search([
+        department_user = self.env['records.storage.department.user'].search([
             ('user_id', '=', user.partner_id.id),
             ('department_id', '=', self.id),
             ('active', '=', True)
@@ -249,7 +249,7 @@ class RecordsDepartment(models.Model):
 
     def can_user_access_department(self, user):
         """Check if a portal user can access this department"""
-        department_user = self.env['records.department.user'].search([
+        department_user = self.env['records.storage.department.user'].search([
             ('user_id', '=', user.partner_id.id),
             ('active', '=', True)
         ])
@@ -262,7 +262,7 @@ class RecordsDepartment(models.Model):
 
     def get_user_permissions(self, user):
         """Get user permissions for this department"""
-        department_user = self.env['records.department.user'].search([
+        department_user = self.env['records.storage.department.user'].search([
             ('user_id', '=', user.partner_id.id),
             ('department_id', '=', self.id),
             ('active', '=', True)

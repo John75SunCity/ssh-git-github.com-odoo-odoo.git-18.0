@@ -277,9 +277,9 @@ class CustomerInventoryReport(models.Model):
         }
 
 
-class RecordsDepartmentUser(models.Model):
-    _name = 'records.department.user'
-    _description = 'Department User Access'
+class RecordsStorageDepartmentUser(models.Model):
+    _name = 'records.storage.department.user'
+    _description = 'Storage Department User Access'
     _rec_name = 'user_id'
 
     department_id = fields.Many2one(
@@ -593,7 +593,7 @@ class RecordsUserInvitationWizard(models.TransientModel):
             })
         
         # Check if department user already exists
-        existing_dept_user = self.env['records.department.user'].search([
+        existing_dept_user = self.env['records.storage.department.user'].search([
             ('user_id', '=', user.id),
             ('department_id', '=', self.department_id.id)
         ])
@@ -603,7 +603,7 @@ class RecordsUserInvitationWizard(models.TransientModel):
                                 (user.name, self.department_id.name))
         
         # Create department user record
-        dept_user = self.env['records.department.user'].create({
+        dept_user = self.env['records.storage.department.user'].create({
             'user_id': user.id,
             'department_id': self.department_id.id,
             'access_level': self.access_level,

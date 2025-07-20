@@ -813,7 +813,7 @@ class CustomerPortalExtended(CustomerPortal):
                                         access_info['department'].id 
                                         if access_info['department'] else 0))
                     if dept_id:
-                        request.env['records.department.user'].create({
+                        request.env['records.storage.department.user'].create({
                             'department_id': dept_id,
                             'user_id': user.id,
                             'access_level': row.get('access_level', 'viewer'),
