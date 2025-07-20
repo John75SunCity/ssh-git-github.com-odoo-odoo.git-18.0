@@ -220,7 +220,7 @@
                                     </div>
                                 </button>
                             </div>
-                            <field name="user_ids" context="{'default_department_id': active_id}">
+                            <field name="user_ids" context="{'default_department_id': id}">
                                 <list editable="bottom">
                                     <field name="user_id"/>
                                     <field name="email"/>

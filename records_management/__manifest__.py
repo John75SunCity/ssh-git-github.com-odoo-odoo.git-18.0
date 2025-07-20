@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.46',  # FIX: Updated view types from deprecated 'tree' to 'list' for Odoo 18.0 compatibility
+        'version': '18.0.2.49.47',  # FIX: Context variable active_id → id for proper view access
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
