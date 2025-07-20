@@ -94,5 +94,6 @@
         </field>
     </record>
 
-    <menuitem id="portal_request_menu" name="Portal Requests" parent="records_management_menus.menu_records_management" action="portal_request_action" sequence="10"/>
+    <!-- Note: Menu moved to separate file to ensure proper loading order -->
+    <!-- See views/portal_request_menus.xml -->
 </odoo>

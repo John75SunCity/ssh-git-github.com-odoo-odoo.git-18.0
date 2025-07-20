@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portal Feedback Menus - Loaded after main menu structure -->
+    
+    <!-- Main Menu -->
+    <menuitem id="menu_portal_feedback" 
+              name="Portal Feedback" 
+              parent="records_management.menu_records_management_root" 
+              action="action_feedback_responses"
+              sequence="60"
+              groups="records_management.group_records_manager"/>
+
+    <!-- Analytics Submenu -->
+    <menuitem id="menu_feedback_analytics" 
+              name="Analytics Dashboard" 
+              parent="menu_portal_feedback" 
+              action="action_feedback_analytics"
+              sequence="10"
+              groups="records_management.group_records_manager"/>
+              
+</odoo>
