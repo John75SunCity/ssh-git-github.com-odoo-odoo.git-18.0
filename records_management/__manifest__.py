@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.63',  # FIX: Complete menu loading order solution - barcode + departmental
+        'version': '18.0.2.49.64',  # FIX: AttributeError detailed_type → type field correction in product.py
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
