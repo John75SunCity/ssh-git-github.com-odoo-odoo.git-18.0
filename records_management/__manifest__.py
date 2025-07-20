@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.37',  # CRITICAL FIX: Removed duplicate view definitions causing XML parsing conflicts
+        'version': '18.0.2.49.38',  # CRITICAL FIX: Removed duplicate view definitions causing XML parsing conflicts
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
