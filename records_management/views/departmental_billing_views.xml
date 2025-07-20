@@ -216,16 +216,10 @@
                                     </div>
                                 </button>
                             </div>
-                            <field name="user_ids">
-                                <tree>
-                                    <field name="user_id"/>
-                                    <field name="email"/>
+                            <field name="user_ids" context="{'default_department_id': active_id}">
+                                <tree editable="bottom">
                                     <field name="access_level"/>
-                                    <field name="can_view_inventory"/>
-                                    <field name="can_add_boxes"/>
-                                    <field name="can_request_services"/>
                                     <field name="active"/>
-                                    <field name="last_login"/>
                                 </tree>
                             </field>
                         </page>

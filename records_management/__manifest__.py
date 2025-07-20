@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.41',  # MAJOR: Renamed records.department.user to records.storage.department.user to avoid model name confusion
+        'version': '18.0.2.49.42',  # FIX: Simplified user_ids tree view to resolve field parsing issues
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
