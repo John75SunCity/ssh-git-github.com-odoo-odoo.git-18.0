@@ -7,6 +7,7 @@ from . import records_tag  # Basic tags
 from . import records_location  # Locations
 from . import records_retention_policy  # Policies (used in documents)
 from . import records_document_type  # Types (used in documents)
+from . import customer_inventory_report  # MOVED EARLY: Contains records.department.user model needed by records_department
 from . import records_department  # Department hierarchy (Many2one partner_id, parent_id)
 from . import records_document  # Key: Has partner_id, department_id (Many2one) - load early
 from . import records_box  # Boxes (links to documents)
@@ -44,7 +45,7 @@ from . import stock_lot  # Stock lots (barcodes/inventory)
 from . import stock_move_sms_validation  # SMS validations for moves
 from . import stock_picking  # Pickings (integrate with fleet for trucks)
 from . import account_move  # Invoices (department_id Many2one for billing inverse)
-from . import customer_inventory_report  # Inventory reports
+# customer_inventory_report MOVED EARLIER in loading order
 # from . import pos_config  # Commented to fix circular import; uncomment after resolving cycles in pos_config.py (e.g., move imports inside methods like def some_method: from . import other_model)
 
 # Wizards/Installers (last, as they depend on models)
