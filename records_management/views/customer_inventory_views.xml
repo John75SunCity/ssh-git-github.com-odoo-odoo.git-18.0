@@ -245,7 +245,7 @@
                 <field name="report_date"/>
                 <field name="color"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="oe_kanban_content">
                                 <div class="row">
@@ -262,15 +262,15 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-12">
-                                        <i class="fa fa-user"/> <field name="customer_id"/>
+                                        <i class="fa fa-user" title="Customer"/> <field name="customer_id"/>
                                     </div>
                                 </div>
                                 <div class="row mt-1">
                                     <div class="col-6">
-                                        <i class="fa fa-calendar"/> <field name="report_date"/>
+                                        <i class="fa fa-calendar" title="Report Date"/> <field name="report_date"/>
                                     </div>
                                     <div class="col-6 text-right">
-                                        <i class="fa fa-file-text-o"/> <field name="total_documents"/>
+                                        <i class="fa fa-file-text-o" title="Documents"/> <field name="total_documents"/>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -286,16 +286,16 @@
                             <div class="oe_kanban_bottom_right">
                                 <div class="btn-group" role="group">
                                     <button type="object" name="action_confirm_report" 
-                                            class="btn btn-primary btn-sm" t-if="record.status.raw_value == 'draft'" title="Confirm">
-                                        <i class="fa fa-check"/>
+                                            class="btn btn-primary btn-sm" t-if="record.status.raw_value == 'draft'" title="Confirm Report">
+                                        <i class="fa fa-check" title="Confirm"/>
                                     </button>
                                     <button type="object" name="action_send_to_customer" 
-                                            class="btn btn-success btn-sm" t-if="record.status.raw_value == 'confirmed'" title="Send">
-                                        <i class="fa fa-paper-plane"/>
+                                            class="btn btn-success btn-sm" t-if="record.status.raw_value == 'confirmed'" title="Send to Customer">
+                                        <i class="fa fa-paper-plane" title="Send"/>
                                     </button>
                                     <button type="object" name="action_create_destruction_request" 
-                                            class="btn btn-danger btn-sm" title="Destroy">
-                                        <i class="fa fa-trash"/>
+                                            class="btn btn-danger btn-sm" title="Create Destruction Request">
+                                        <i class="fa fa-trash" title="Destroy"/>
                                     </button>
                                 </div>
                             </div>
