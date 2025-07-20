@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.54',  # FIX: Restore department billing menu + fix barcode menu references
+        'version': '18.0.2.49.55',  # FIX: Separate menu file for proper loading order dependency
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
@@ -103,6 +103,7 @@ Features:
         'report/bale_label_report.xml',
         'report/portal_audit_report.xml',  # New: Audit reports for NAID
         'views/records_management_menus.xml',
+        'views/departmental_billing_menus.xml',  # Loaded after main menus for proper dependencies
         'templates/my_portal_inventory.xml',
         'templates/portal_quote_template.xml',  # New: Quote generation
         'templates/portal_billing_template.xml',  # New: Billing updates

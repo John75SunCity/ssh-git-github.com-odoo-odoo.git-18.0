@@ -377,13 +377,7 @@
         </field>
     </record>
 
-    <!-- Menu Item for Department Billing Contacts -->
-    <!-- Using menu_records_configuration which is defined in records_management_menus.xml -->
-    <menuitem id="menu_department_billing_contacts" 
-              name="Department Billing Contacts" 
-              parent="records_management.menu_records_configuration"
-              action="action_department_billing_contacts"
-              sequence="26"
-              groups="records_management.group_records_manager"/>
+    <!-- Note: Menu moved to separate file to ensure proper loading order -->
+    <!-- See views/departmental_billing_menus.xml -->
 
 </odoo>
