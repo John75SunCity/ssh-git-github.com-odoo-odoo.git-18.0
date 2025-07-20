@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.48',  # DEPLOY: Force rebuild trigger - Context variable active_id → id fix
+        'version': '18.0.2.49.49',  # DEPLOY: Retry after PostgreSQL concurrency error resolution
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
