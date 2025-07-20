@@ -9,11 +9,9 @@ Updated file: Views for trailer load management with tree/form/kanban modes. Thi
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
-                <field name="bale_count"/>
+                <field name="trailer_id"/>
                 <field name="total_weight"/>
-                <field name="progress" widget="progressbar"/>
-                <field name="state"/>
-                <field name="payment_status"/>
+                <field name="status"/>
             </list>
         </field>
     </record>
@@ -31,34 +29,13 @@ Updated file: Views for trailer load management with tree/form/kanban modes. Thi
                     </div>
                     <group>
                         <group>
-                            <field name="bale_count"/>
+                            <field name="trailer_id"/>
                             <field name="total_weight"/>
-                            <field name="capacity"/>
-                            <field name="progress" widget="progressbar"/>
                         </group>
                         <group>
-                            <field name="state" widget="statusbar"/>
-                            <field name="payment_status"/>
-                            <field name="pickup_date"/>
-                            <field name="invoice_id"/>
+                            <field name="status" widget="statusbar"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Bales">
-                            <field name="bale_ids">
-                                <list editable="bottom">
-                                    <field name="name"/>
-                                    <field name="paper_type"/>
-                                    <field name="weight"/>
-                                    <field name="state"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Visualization">
-                            <field name="progress" invisible="1"/>
-                            <widget name="trailer_visualization" options="{'progress': progress}"/>
-                        </page>
-                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -70,16 +47,15 @@ Updated file: Views for trailer load management with tree/form/kanban modes. Thi
         <field name="arch" type="xml">
             <kanban>
                 <field name="name"/>
-                <field name="state"/>
-                <field name="progress"/>
-                <field name="color"/>
+                <field name="status"/>
+                <field name="total_weight"/>
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_card">
                             <div class="oe_kanban_content">
                                 <h4><field name="name"/></h4>
-                                <div><field name="progress" widget="progressbar"/></div>
-                                <div>State: <field name="state"/></div>
+                                <div>Weight: <field name="total_weight"/> lbs</div>
+                                <div>Status: <field name="status"/></div>
                             </div>
                         </div>
                     </t>
@@ -94,5 +70,6 @@ Updated file: Views for trailer load management with tree/form/kanban modes. Thi
         <field name="view_mode">tree,form,kanban</field>
     </record>
 
-    <menuitem id="menu_trailer_loads" name="Trailer Loads" parent="records_management_menu_root" action="action_trailer_loads"/>
+    <!-- Note: Menu moved to separate file to ensure proper loading order -->
+    <!-- See views/trailer_load_menus.xml -->
 </odoo>

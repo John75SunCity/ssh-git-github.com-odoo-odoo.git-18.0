@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Trailer Load Menus - Loaded after main menu structure -->
+    
+    <menuitem id="menu_trailer_loads" 
+              name="Trailer Loads" 
+              parent="records_management.menu_records_configuration" 
+              action="action_trailer_loads"
+              groups="records_management.group_records_manager"/>
+              
+</odoo>

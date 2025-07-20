@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.56',  # FIX: Complete menu loading order solution - barcode + departmental
+        'version': '18.0.2.49.57',  # FIX: Complete menu loading order solution - barcode + departmental
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
@@ -105,6 +105,7 @@ Features:
         'views/records_management_menus.xml',
         'views/departmental_billing_menus.xml',  # Loaded after main menus for proper dependencies
         'views/barcode_menus.xml',  # Loaded after main menus for proper dependencies
+        'views/trailer_load_menus.xml',  # Loaded after main menus for proper dependencies
         'templates/my_portal_inventory.xml',
         'templates/portal_quote_template.xml',  # New: Quote generation
         'templates/portal_billing_template.xml',  # New: Billing updates
