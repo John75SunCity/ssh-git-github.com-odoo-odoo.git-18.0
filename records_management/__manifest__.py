@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.50',  # FIX: Menu parent reference - records_billing → records_configuration
+        'version': '18.0.2.49.51',  # FIX: Menu parent to root + action view_mode tree→list compatibility
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
