@@ -7,6 +7,7 @@ from . import records_tag  # Basic tags
 from . import records_location  # Locations
 from . import records_retention_policy  # Policies (used in documents)
 from . import records_document_type  # Types (used in documents)
+from . import records_department  # Department hierarchy (Many2one partner_id, parent_id)
 from . import records_document  # Key: Has partner_id, department_id (Many2one) - load early
 from . import records_box  # Boxes (links to documents)
 from . import pickup_request_item  # Items (for requests)

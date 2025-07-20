@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.29',  # FIX: Removed duplicate entries in ir.model.access.csv causing SQL constraint violation
+        'version': '18.0.2.49.30',  # CRITICAL FIX: Added missing records_department import in models/__init__.py
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
