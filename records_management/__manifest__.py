@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.30',  # CRITICAL FIX: Added missing records_department import in models/__init__.py
+        'version': '18.0.2.49.31',  # CRITICAL FIX: Removed duplicate view definitions causing XML parsing conflicts
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

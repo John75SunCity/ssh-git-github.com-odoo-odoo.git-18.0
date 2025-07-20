@@ -281,7 +281,7 @@
                 <field name="total_boxes"/>
                 <field name="complete_name"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click">
                             <div class="row">
                                 <div class="col-12">
@@ -318,39 +318,6 @@
             <p>
                 Departments help organize your records management by customer and hierarchy levels.
                 You can create multi-level department structures with sub-departments and assign users with different access levels.
-            </p>
-        </field>
-    </record>
-
-    <!-- Department Tree View -->
-    <record id="view_records_department_tree" model="ir.ui.view">
-        <field name="name">records.department.tree</field>
-        <field name="model">records.department</field>
-        <field name="arch" type="xml">
-            <list string="Departments">
-                <field name="name"/>
-                <field name="code"/>
-                <field name="parent_id"/>
-                <field name="manager_id"/>
-                <field name="active"/>
-            </list>
-        </field>
-    </record>
-
-    <!-- Department Action -->
-    <record id="action_records_department" model="ir.actions.act_window">
-        <field name="name">Departments</field>
-        <field name="res_model">records.department</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_records_department_tree"/>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Create a new department
-            </p>
-            <p>
-                Departments help organize your records management operations
-                by customer divisions or business units.
             </p>
         </field>
     </record>
