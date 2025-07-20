@@ -18,12 +18,12 @@ PULP_AVAILABLE = False  # Fallback if not installed
 class RecordsDepartment(models.Model):
     _name = 'records.department'
     _description = 'Records Department'
-    # _inherit = ['mail.thread', 'mail.activity.mixin']  # TEMP COMMENTED - test basic model loading
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
 
     name = fields.Char(string='Department Name', required=True, tracking=True)
     code = fields.Char(string='Code', tracking=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True)  # SIMPLIFIED - removed tracking and index
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True, index=True)
     parent_id = fields.Many2one('records.department', string='Parent Department', index=True, tracking=True)
     child_ids = fields.One2many('records.department', 'parent_id', string='Sub-Departments')
     
