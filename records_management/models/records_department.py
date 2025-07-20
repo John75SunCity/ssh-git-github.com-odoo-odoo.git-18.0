@@ -51,7 +51,7 @@ class RecordsDepartment(models.Model):
     all_child_ids = fields.Many2many('records.department', compute='_compute_all_children', string='All Child Departments')
     
     # User management
-    # user_ids = fields.One2many('records.storage.department.user', 'department_id', string='Department Users')  # Temporarily disabled for debugging
+    user_ids = fields.One2many('records.storage.department.user', 'department_id', string='Department Users')
     user_count = fields.Integer(compute='_compute_user_count', string='User Count', store=True)
 
     # Links
@@ -101,12 +101,11 @@ class RecordsDepartment(models.Model):
                 all_children |= child.all_child_ids
             rec.all_child_ids = all_children
 
-    # @api.depends('user_ids')  # Temporarily disabled for debugging
+    @api.depends('user_ids')
     def _compute_user_count(self):
         """Compute the number of users in this department"""
         for rec in self:
-            # rec.user_count = len(rec.user_ids)  # Temporarily disabled
-            rec.user_count = 0  # Placeholder
+            rec.user_count = len(rec.user_ids)
 
     @api.depends('box_ids', 'document_ids')
     def _compute_monthly_cost(self):

@@ -213,8 +213,25 @@
                                         <span class="o_stat_text">User</span>
                                     </div>
                                 </button>
+                                <button name="action_view_users" type="object" class="oe_stat_button" icon="fa-users">
+                                    <div class="o_field_widget o_stat_info">
+                                        <span class="o_stat_value"><field name="user_count"/></span>
+                                        <span class="o_stat_text">Users</span>
+                                    </div>
+                                </button>
                             </div>
-                            <p>User management functionality will be added once the base model loads successfully.</p>
+                            <field name="user_ids" context="{'default_department_id': active_id}">
+                                <tree editable="bottom">
+                                    <field name="user_id"/>
+                                    <field name="email"/>
+                                    <field name="access_level"/>
+                                    <field name="can_view_inventory"/>
+                                    <field name="can_add_boxes"/>
+                                    <field name="can_request_services"/>
+                                    <field name="active"/>
+                                    <field name="last_login"/>
+                                </tree>
+                            </field>
                         </page>
                         <page string="Statistics" name="stats">
                             <group>
@@ -222,8 +239,9 @@
                                     <field name="total_boxes"/>
                                     <field name="monthly_cost"/>
                                 </group>
-                                <group string="Hierarchy Information">
+                                <group string="Administrative Information">
                                     <field name="level"/>
+                                    <field name="user_count" string="Total Users"/>
                                     <field name="all_child_ids" widget="many2many_tags"/>
                                 </group>
                             </group>
