@@ -195,14 +195,14 @@
                                 </button>
                             </div>
                             <field name="child_ids">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="code"/>
                                     <field name="manager_id"/>
                                     <field name="level"/>
                                     <field name="total_boxes"/>
                                     <field name="active"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Users" name="users">
@@ -221,7 +221,7 @@
                                 </button>
                             </div>
                             <field name="user_ids" context="{'default_department_id': active_id}">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="user_id"/>
                                     <field name="email"/>
                                     <field name="access_level"/>
@@ -230,7 +230,7 @@
                                     <field name="can_request_services"/>
                                     <field name="active"/>
                                     <field name="last_login"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Statistics" name="stats">
@@ -253,11 +253,11 @@
     </record>
 
     <!-- Department Tree View with Hierarchy -->
-    <record id="view_records_department_tree" model="ir.ui.view">
-        <field name="name">records.department.tree</field>
+    <record id="view_records_department_list" model="ir.ui.view">
+        <field name="name">records.department.list</field>
         <field name="model">records.department</field>
         <field name="arch" type="xml">
-            <tree string="Department Hierarchy" expand="1">
+            <list string="Department Hierarchy" expand="1">
                 <field name="complete_name"/>
                 <field name="code"/>
                 <field name="partner_id"/>
@@ -266,7 +266,7 @@
                 <field name="total_boxes"/>
                 <field name="monthly_cost"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -311,7 +311,7 @@
     <record id="action_records_department" model="ir.actions.act_window">
         <field name="name">Departments</field>
         <field name="res_model">records.department</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create a new department

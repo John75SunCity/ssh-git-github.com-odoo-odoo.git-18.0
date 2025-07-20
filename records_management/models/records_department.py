@@ -173,7 +173,7 @@ class RecordsDepartment(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': _('Department Users'),
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'records.storage.department.user',
             'domain': [('department_id', '=', self.id)],
             'context': {'default_department_id': self.id},
@@ -203,7 +203,7 @@ class RecordsDepartment(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': _('Department Hierarchy'),
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'records.department',
             'domain': [('id', 'child_of', root.id)],
             'context': {'expand_all': True},
