@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.47',  # FIX: Context variable active_id → id for proper view access
+        'version': '18.0.2.49.48',  # DEPLOY: Force rebuild trigger - Context variable active_id → id fix
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
