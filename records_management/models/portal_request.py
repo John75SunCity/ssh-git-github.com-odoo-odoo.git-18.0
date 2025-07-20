@@ -1,4 +1,5 @@
-# Updated file: Added @api.model_create_multi decorator to override create in batch mode (fixes deprecation warning in log for non-batch create). This accomplishes efficient multi-record creation (e.g., batch requests from portal submissions), aligning with Odoo 18.0 performance best practices. Clean/simple: Minimal change, preserves existing logic. User-friendly: No UI impact, but faster for large ops. Innovative idea: Extend with AI request prioritization (use torch to score urgency from description sentiment); standards: NAID AAA verifiable workflows (batch signing ensures compliant bulk destruction requests).
+# Updated file: Added @api.model_create_multi decorator to override create in batch mode (fixes deprecation warning in log for non-batch create). This accomplishes efficient multi-record creation
+# Added missing fields: is_walk_in and linked_visitor_id to fix view validation errors
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
@@ -27,6 +28,11 @@ class PortalRequest(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
     ], default='draft', tracking=True)
+    
+    # Missing fields that were causing the view error
+    is_walk_in = fields.Boolean(string='Walk-in Request', default=False, help='Indicates if this is a walk-in request')
+    linked_visitor_id = fields.Many2one('res.partner', string='Linked Visitor', help='Partner record for walk-in visitors')
+    
     sign_request_id = fields.Many2one('sign.request', string='Signature Request')  # For admin/requestor signatures
     requestor_signature_date = fields.Datetime(string='Requestor Signature Date')
     admin_signature_date = fields.Datetime(string='Admin Signature Date')
@@ -125,3 +131,9 @@ class PortalRequest(models.Model):
 
     def _is_field_request(self):
         return self.request_type in ('destruction', 'service', 'inventory_checkout')
+
+    @api.onchange('is_walk_in')
+    def _onchange_is_walk_in(self):
+        """Clear linked visitor when not a walk-in request"""
+        if not self.is_walk_in:
+            self.linked_visitor_id = False
