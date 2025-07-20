@@ -49,6 +49,7 @@ from . import account_move  # Invoices (department_id Many2one for billing inver
 # from . import pos_config  # Commented to fix circular import; uncomment after resolving cycles in pos_config.py (e.g., move imports inside methods like def some_method: from . import other_model)
 
 # Wizards/Installers (last, as they depend on models)
+from . import visitor_pos_wizard  # POS wizard for visitor transactions
 from . import installer  # Module installer
 from . import ir_actions_report  # Custom reports
 from . import ir_module  # Module overrides if needed
