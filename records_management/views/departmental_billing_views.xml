@@ -216,12 +216,7 @@
                                     </div>
                                 </button>
                             </div>
-                            <field name="user_ids" context="{'default_department_id': active_id}">
-                                <tree editable="bottom">
-                                    <field name="access_level"/>
-                                    <field name="active"/>
-                                </tree>
-                            </field>
+                            <p>User management functionality will be added once the base model loads successfully.</p>
                         </page>
                         <page string="Statistics" name="stats">
                             <group>
