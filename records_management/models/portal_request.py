@@ -22,6 +22,7 @@ class PortalRequest(models.Model):
         ('quote_generate', 'Quote Generation'),
     ], string='Request Type', required=True)
     description = fields.Html(string='Description')
+    suggested_date = fields.Date(string='Suggested Date', help='Customer suggested date for service/request')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.66',  # FIX: Odoo 18.0 tree→list compatibility in portal_request_views.xml
+        'version': '18.0.2.49.67',  # FIX: Add missing suggested_date field to portal.request model
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
