@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.59',  # FIX: Complete menu loading order solution - barcode + departmental
+        'version': '18.0.2.49.60',  # FIX: Complete menu loading order solution - barcode + departmental
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
@@ -92,11 +92,9 @@ Features:
         'views/paper_bale_views.xml',
         'views/trailer_load_views.xml',
         'views/pos_config_views.xml',
-        'views/frontdesk_visitor_views.xml',
         'views/visitor_pos_wizard_views.xml',
         'views/portal_request_views.xml',  # New: Views for portal requests
         'views/fsm_task_views.xml',  # New: FSM task views
-        'views/hr_employee_views.xml',  # New: HR views for training
         'views/portal_feedback_views.xml',  # New: Feedback views
         'report/records_reports.xml',
         'report/destruction_certificate_report.xml',
