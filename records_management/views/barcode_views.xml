@@ -207,7 +207,6 @@
         </field>
     </record>
 
-    <!-- Menu Items -->
-    <menuitem id="menu_barcode_config" name="Barcode Configuration" parent="records_management.menu_records_configuration" action="action_barcode_config" sequence="30"/>
-    <menuitem id="menu_barcode_history" name="Barcode History" parent="records_management.menu_records_reporting" action="action_barcode_history" sequence="40"/>
+    <!-- Note: Menu items moved to separate file to ensure proper loading order -->
+    <!-- See views/barcode_menus.xml -->
 </odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Barcode Menus - Loaded after main menu structure -->
+    
+    <!-- Menu Items for Barcode Configuration and History -->
+    <menuitem id="menu_barcode_config" 
+              name="Barcode Configuration" 
+              parent="records_management.menu_records_configuration" 
+              action="action_barcode_config" 
+              sequence="30"/>
+              
+    <menuitem id="menu_barcode_history" 
+              name="Barcode History" 
+              parent="records_management.menu_records_reporting" 
+              action="action_barcode_history" 
+              sequence="40"/>
+
+</odoo>
