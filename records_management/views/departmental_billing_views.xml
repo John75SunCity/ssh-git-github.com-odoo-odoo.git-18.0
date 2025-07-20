@@ -179,7 +179,6 @@
                             <field name="email"/>
                             <field name="active"/>
                             <field name="company_id"/>
-                            <field name="user_count" readonly="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -201,7 +200,6 @@
                                     <field name="code"/>
                                     <field name="manager_id"/>
                                     <field name="level"/>
-                                    <field name="user_count"/>
                                     <field name="total_boxes"/>
                                     <field name="active"/>
                                 </tree>
@@ -226,7 +224,6 @@
                                 </group>
                                 <group string="Hierarchy Information">
                                     <field name="level"/>
-                                    <field name="user_count"/>
                                     <field name="all_child_ids" widget="many2many_tags"/>
                                 </group>
                             </group>
@@ -248,7 +245,6 @@
                 <field name="partner_id"/>
                 <field name="manager_id"/>
                 <field name="level"/>
-                <field name="user_count"/>
                 <field name="total_boxes"/>
                 <field name="monthly_cost"/>
                 <field name="active"/>
@@ -266,7 +262,6 @@
                 <field name="code"/>
                 <field name="partner_id"/>
                 <field name="level"/>
-                <field name="user_count"/>
                 <field name="total_boxes"/>
                 <field name="complete_name"/>
                 <templates>
@@ -284,7 +279,6 @@
                                 </div>
                                 <div class="col-6">
                                     <span class="text-muted">Level:</span> <field name="level"/><br/>
-                                    <span class="text-muted">Users:</span> <field name="user_count"/><br/>
                                     <span class="text-muted">Boxes:</span> <field name="total_boxes"/>
                                 </div>
                             </div>

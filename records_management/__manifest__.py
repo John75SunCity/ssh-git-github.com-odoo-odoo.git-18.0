@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.43',  # DEBUG: Temporarily disabled user_ids One2many relationship to isolate issue
+        'version': '18.0.2.49.44',  # DEBUG: Removed user_count field from all views to match disabled user_ids relationship
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
