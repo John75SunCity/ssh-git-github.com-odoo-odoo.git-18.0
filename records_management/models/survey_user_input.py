@@ -39,6 +39,8 @@ class SurveyUserInput(models.Model):
     response_count = fields.Integer(string='Response Count', compute='_compute_response_count', store=True)
     completion_time = fields.Float(string='Completion Time (minutes)', compute='_compute_completion_time', store=True)
     response_summary = fields.Text(string='Response Summary', compute='_compute_response_summary', store=True)
+    total_score = fields.Float(string='Total Score', compute='_compute_total_score', store=True,
+                              help='Calculated total score based on survey responses')
     
     # Improvement Tracking
     improvement_actions_created = fields.Boolean(string='Improvement Actions Created', default=False)
@@ -221,6 +223,27 @@ class SurveyUserInput(models.Model):
                     record.response_summary += f" (and {len(text_responses) - 3} more responses)"
             else:
                 record.response_summary = "No text responses"
+
+    @api.depends('user_input_line_ids', 'scoring_percentage')
+    def _compute_total_score(self):
+        """Compute total score based on survey responses"""
+        for record in self:
+            total = 0.0
+            count = 0
+            
+            for line in record.user_input_line_ids:
+                if hasattr(line, 'value_numerical') and line.value_numerical:
+                    total += line.value_numerical
+                    count += 1
+                elif hasattr(line, 'scoring_value') and line.scoring_value:
+                    total += line.scoring_value
+                    count += 1
+            
+            # If no numerical values, use scoring_percentage as base
+            if count == 0 and record.scoring_percentage:
+                record.total_score = record.scoring_percentage
+            else:
+                record.total_score = total
 
     @api.depends('partner_id')
     def _compute_customer_history(self):

@@ -461,7 +461,7 @@
                             <field name="create_date" string="Submitted On"/>
                             <field name="email"/>
                             <field name="scoring_percentage" widget="percentage" string="Overall Satisfaction"/>
-                            <field name="quizz_score" string="Total Score"/>
+                            <field name="total_score" string="Total Score"/>
                         </group>
                         <group name="technical_info">
                             <field name="create_uid" string="Created By"/>
@@ -719,7 +719,7 @@
                 <field name="survey_id" type="row"/>
                 <field name="partner_id" type="col"/>
                 <field name="scoring_percentage" type="measure"/>
-                <field name="quizz_score" type="measure"/>
+                <field name="total_score" type="measure"/>
             </pivot>
         </field>
     </record>
