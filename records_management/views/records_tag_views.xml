@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_records_tag_tree" model="ir.ui.view">
-        <field name="name">records.tag.tree</field>
+    <record id="view_records_tag_list" model="ir.ui.view">
+        <field name="name">records.tag.list</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
             <tree string="Tags" editable="bottom">
@@ -32,6 +32,7 @@
         <field name="name">Tags</field>
         <field name="res_model">records.tag</field>
         <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_records_tag_list"/>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

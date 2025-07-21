@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-            'version': '18.0.2.49.89',  # FIX: Add missing access rules for 8 models - comprehensive security coverage
+            'version': '18.0.2.49.90',  # FIX: Records tag view type error - use tree view without explicit type field
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
