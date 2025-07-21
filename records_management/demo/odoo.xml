@@ -17,7 +17,7 @@
     <record id="demo_department_1" model="records.department">
         <field name="name">Demo Department</field>
         <field name="code">DEMO</field>
-        <field name="company_id" ref="demo_customer_1"/>
+        <field name="partner_id" ref="demo_customer_1"/>
     </record>
 
     <!-- Demo location -->
