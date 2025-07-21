@@ -102,6 +102,15 @@ class SurveyUserInput(models.Model):
     anonymization_date = fields.Datetime(string='Anonymization Date')
     gdpr_compliant = fields.Boolean(string='GDPR Compliant', default=True)
     compliance_audit_log = fields.Text(string='Compliance Audit Log')
+    
+    # Improvement Actions Relationship
+    improvement_action_ids = fields.One2many('survey.improvement.action', 'feedback_id', 
+                                           string='Improvement Actions',
+                                           help='Actions created based on this feedback')
+    portal_feedback_actions = fields.One2many('survey.improvement.action', 'feedback_id',
+                                            string='Portal Feedback Actions',
+                                            domain=[('action_type', 'in', ['service', 'communication', 'process'])],
+                                            help='Customer-facing improvement actions')
 
     @api.depends('user_input_line_ids')
     def _compute_sentiment_score(self):

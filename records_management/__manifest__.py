@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.74',  # FIX: Add comprehensive missing fields for portal_feedback_views.xml (key_themes, AI analysis, compliance, historical context)
+        'version': '18.0.2.49.75',  # FIX: Add improvement_action_ids and portal_feedback_actions fields with complete survey.improvement.action model
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

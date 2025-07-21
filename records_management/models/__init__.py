@@ -33,6 +33,7 @@ from . import hr_employee_naid  # NAID-specific employee tracking
 from . import customer_feedback  # Feedback with sentiment (innovative: Integrate torch for AI analysis via code_execution)
 from . import survey_user_input  # Survey user input extensions for feedback management
 from . import survey_feedback_theme  # Feedback theme categorization for AI analysis
+from . import survey_improvement_action  # Improvement actions based on feedback
 
 # Products and Configuration
 from . import product  # Product extensions
@@ -53,6 +54,7 @@ from . import stock_lot  # Stock lots (barcodes/inventory)
 from . import stock_move_sms_validation  # SMS validations for moves
 from . import stock_picking  # Pickings (integrate with fleet for trucks)
 from . import account_move  # Invoices (department_id Many2one for billing inverse)
+from . import project_task  # Project task extensions for improvement actions
 # customer_inventory_report MOVED EARLIER in loading order
 # from . import pos_config  # Commented to fix circular import; uncomment after resolving cycles in pos_config.py (e.g., move imports inside methods like def some_method: from . import other_model)
 
