@@ -10,6 +10,22 @@
             </tree>
         </field>
     </record>
+
+    <!-- Form view for tags -->
+    <record id="view_records_tag_form" model="ir.ui.view">
+        <field name="name">records.tag.form</field>
+        <field name="model">records.tag</field>
+        <field name="arch" type="xml">
+            <form string="Tag">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color" widget="color_picker"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
     
         <!-- Action to open tags -->
     <record id="action_records_tag" model="ir.actions.act_window">
