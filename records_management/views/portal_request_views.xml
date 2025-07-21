@@ -4,7 +4,7 @@
         <field name="name">portal.request.tree</field>
         <field name="model">portal.request</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="department_id"/>
@@ -13,7 +13,7 @@
                 <field name="create_date"/>
                 <field name="is_walk_in" widget="badge" decoration-success="is_walk_in == True" decoration-muted="is_walk_in == False" string="Walk-in"/>
                 <field name="linked_visitor_id" options="{'no_create': True}"/>
-            </list>
+            </tree>
         </field>
     </record>
 
