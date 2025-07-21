@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_records_tag_list" model="ir.ui.view">
-        <field name="name">records.tag.list</field>
+    <!-- Tree/List view for tags -->
+    <record id="records_tag_view_tree" model="ir.ui.view">
+        <field name="name">records.tag.tree</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
             <tree string="Tags" editable="bottom">
@@ -12,7 +13,7 @@
     </record>
 
     <!-- Form view for tags -->
-    <record id="view_records_tag_form" model="ir.ui.view">
+    <record id="records_tag_view_form" model="ir.ui.view">
         <field name="name">records.tag.form</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
@@ -27,14 +28,11 @@
         </field>
     </record>
     
-        <!-- Action to open tags -->
+    <!-- Action to open tags -->
     <record id="action_records_tag" model="ir.actions.act_window">
         <field name="name">Tags</field>
         <field name="res_model">records.tag</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_records_tag_list"/>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create a tag
