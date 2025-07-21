@@ -511,8 +511,9 @@
                                            string="Overall Satisfaction"/>
                                 </group>
                                 <group string="Response Summary">
-                                    <label string="Key Insights" class="o_form_label"/>
-                                    <div name="response_summary">
+                                    <field name="response_summary" string="Key Insights" readonly="1" invisible="1"/>
+                                    <div name="response_summary" class="o_form_label">
+                                        <strong>Key Insights:</strong>
                                         <!-- This would be computed based on responses -->
                                         <p class="text-muted">Response analysis will be displayed here based on survey answers.</p>
                                     </div>
@@ -541,12 +542,14 @@
                                 </group>
                                 <group string="Account Information">
                                     <!-- Additional customer context -->
-                                    <label string="Account Status" class="o_form_label"/>
-                                    <div>
+                                    <field name="partner_id" string="Account Status" readonly="1" invisible="1"/>
+                                    <div class="o_form_label">
+                                        <strong>Account Status:</strong>
                                         <span class="badge badge-success">Active</span>
                                     </div>
-                                    <label string="Service Level" class="o_form_label"/>
-                                    <div>
+                                    <field name="partner_id" string="Service Level" readonly="1" invisible="1"/>
+                                    <div class="o_form_label">
+                                        <strong>Service Level:</strong>
                                         <span class="badge badge-info">Premium</span>
                                     </div>
                                 </group>
