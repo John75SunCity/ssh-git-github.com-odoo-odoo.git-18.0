@@ -40,7 +40,9 @@ class PortalRequest(models.Model):
     audit_log = fields.Html(string='Audit Trail', readonly=True)  # Auto-populated log
     fsm_task_id = fields.Many2one('project.task', string='FSM Task')  # Link to FSM for field actions
     invoice_id = fields.Many2one('account.move', string='Related Invoice')  # For billing updates
+    quote_id = fields.Many2one('sale.order', string='Related Quote')  # For quote generation requests
     temp_inventory_ids = fields.Many2many('temp.inventory', string='Temporary Inventory Items')  # For new inventory additions
+    hashed_partner_ref = fields.Char(string='Hashed Partner Reference', compute='_compute_hashed_partner_ref', store=True, help='Hashed customer reference for secure auditing (no PII exposure)')
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -138,3 +140,15 @@ class PortalRequest(models.Model):
         """Clear linked visitor when not a walk-in request"""
         if not self.is_walk_in:
             self.linked_visitor_id = False
+
+    @api.depends('partner_id')
+    def _compute_hashed_partner_ref(self):
+        """Compute hashed partner reference for secure auditing"""
+        import hashlib
+        for rec in self:
+            if rec.partner_id:
+                # Create hash from partner ID and name for consistent hashing
+                hash_input = f"{rec.partner_id.id}-{rec.partner_id.name or ''}"
+                rec.hashed_partner_ref = hashlib.sha256(hash_input.encode()).hexdigest()[:12]
+            else:
+                rec.hashed_partner_ref = False
