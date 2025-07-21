@@ -60,12 +60,18 @@ class SurveyUserInput(models.Model):
             response_count = 0
             
             for line in record.user_input_line_ids:
-                if line.value_text:
-                    text = line.value_text.lower()
+                # Check for text responses using correct field names
+                text_value = None
+                if hasattr(line, 'value_text_box') and line.value_text_box:
+                    text_value = line.value_text_box.lower()
+                elif hasattr(line, 'value_char_box') and line.value_char_box:
+                    text_value = line.value_char_box.lower()
+                
+                if text_value:
                     score = 0.5  # neutral
                     
-                    positive_count = sum(1 for word in positive_keywords if word in text)
-                    negative_count = sum(1 for word in negative_keywords if word in text)
+                    positive_count = sum(1 for word in positive_keywords if word in text_value)
+                    negative_count = sum(1 for word in negative_keywords if word in text_value)
                     
                     if positive_count > negative_count:
                         score = min(1.0, 0.5 + (positive_count * 0.1))
@@ -74,7 +80,7 @@ class SurveyUserInput(models.Model):
                     
                     total_score += score
                     response_count += 1
-                elif line.value_numerical:
+                elif hasattr(line, 'value_numerical') and line.value_numerical:
                     # Normalize numerical responses (assuming 1-5 scale)
                     normalized = (line.value_numerical - 1) / 4.0
                     total_score += normalized
@@ -104,8 +110,17 @@ class SurveyUserInput(models.Model):
         for record in self:
             text_responses = []
             for line in record.user_input_line_ids:
-                if line.value_text and len(line.value_text.strip()) > 0:
-                    text_responses.append(line.value_text.strip())
+                # Check for different text field types in survey.user_input.line
+                text_value = None
+                if hasattr(line, 'value_text_box') and line.value_text_box:
+                    text_value = line.value_text_box.strip()
+                elif hasattr(line, 'value_char_box') and line.value_char_box:
+                    text_value = line.value_char_box.strip()
+                elif hasattr(line, 'suggested_answer_id') and line.suggested_answer_id:
+                    text_value = line.suggested_answer_id.value
+                
+                if text_value and len(text_value) > 0:
+                    text_responses.append(text_value)
             
             if text_responses:
                 # Create a summary of first 100 characters of each response

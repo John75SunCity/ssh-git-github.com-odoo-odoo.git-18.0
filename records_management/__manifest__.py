@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.69',  # FIX: Add comprehensive survey.user_input field extensions for portal_feedback_views.xml
+        'version': '18.0.2.49.70',  # FIX: Correct survey.user_input.line field names (value_text_box instead of value_text)
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
