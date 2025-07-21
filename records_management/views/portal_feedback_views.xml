@@ -690,15 +690,6 @@
         </field>
     </record>
 
-    <!-- Menu Item for Feedback Management -->
-    <record id="menu_portal_feedback" model="ir.ui.menu">
-        <field name="name">Customer Feedback</field>
-        <field name="parent_id" ref="menu_records_management_root"/>
-        <field name="action" ref="action_portal_feedback"/>
-        <field name="sequence">60</field>
-        <field name="groups_id" ref="records_management.group_records_manager"/>
-    </record>
-
     <!-- Dashboard/Analytics Action -->
     <record id="action_feedback_dashboard" model="ir.actions.act_window">
         <field name="name">Feedback Dashboard</field>
@@ -737,13 +728,5 @@
                 <field name="scoring_percentage" type="measure"/>
             </graph>
         </field>
-    </record>
-
-    <!-- Submenu for Analytics -->
-    <record id="menu_feedback_analytics" model="ir.ui.menu">
-        <field name="name">Feedback Analytics</field>
-        <field name="parent_id" ref="menu_portal_feedback"/>
-        <field name="action" ref="action_feedback_dashboard"/>
-        <field name="sequence">10</field>
     </record>
 </odoo>
