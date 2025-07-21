@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.70',  # FIX: Correct survey.user_input.line field names (value_text_box instead of value_text)
+        'version': '18.0.2.49.71',  # FIX: Add missing action methods (action_review_feedback, action_mark_follow_up) for portal_feedback_views.xml
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

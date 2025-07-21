@@ -155,3 +155,37 @@ class SurveyUserInput(models.Model):
             'target': 'new',
             'context': {'default_feedback_id': self.id}
         }
+
+    def action_review_feedback(self):
+        """Action to review feedback - marks as reviewed and opens detailed view"""
+        self.write({
+            'admin_reviewed': True,
+            'reviewed_by': self.env.user.id,
+            'review_date': fields.Datetime.now()
+        })
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Review Feedback',
+            'res_model': 'survey.user_input',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+    def action_mark_follow_up(self):
+        """Mark feedback as requiring follow-up"""
+        self.write({
+            'follow_up_required': True,
+            'follow_up_date': fields.Datetime.now()
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Follow-up Marked',
+                'message': f'Feedback has been marked for follow-up.',
+                'type': 'success'
+            }
+        }
