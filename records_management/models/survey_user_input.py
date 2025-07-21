@@ -1,0 +1,142 @@
+# -*- coding: utf-8 -*-
+from odoo import fields, models, api, _
+
+class SurveyUserInput(models.Model):
+    _inherit = 'survey.user_input'
+
+    # Sentiment Analysis Fields
+    sentiment_score = fields.Float(
+        string='Sentiment Score', 
+        compute='_compute_sentiment_score', 
+        store=True,
+        help='Sentiment score from 0.0 (negative) to 1.0 (positive)'
+    )
+    
+    # Priority and Categorization
+    priority_level = fields.Selection([
+        ('normal', 'Normal'),
+        ('high', 'High'),
+        ('urgent', 'Urgent'),
+    ], string='Priority Level', default='normal')
+    
+    feedback_category = fields.Selection([
+        ('service', 'Service Quality'),
+        ('staff', 'Staff Performance'),
+        ('facility', 'Facility'),
+        ('process', 'Process Improvement'),
+        ('billing', 'Billing'),
+        ('other', 'Other'),
+    ], string='Feedback Category')
+    
+    # Follow-up and Review Fields
+    follow_up_required = fields.Boolean(string='Follow-up Required', default=False)
+    admin_reviewed = fields.Boolean(string='Admin Reviewed', default=False)
+    reviewed_by = fields.Many2one('res.users', string='Reviewed By')
+    review_date = fields.Datetime(string='Review Date')
+    assigned_to = fields.Many2one('res.users', string='Assigned To')
+    
+    # Analytics Fields
+    response_count = fields.Integer(string='Response Count', compute='_compute_response_count', store=True)
+    completion_time = fields.Float(string='Completion Time (minutes)', compute='_compute_completion_time', store=True)
+    response_summary = fields.Text(string='Response Summary', compute='_compute_response_summary', store=True)
+    
+    # Improvement Tracking
+    improvement_actions_created = fields.Boolean(string='Improvement Actions Created', default=False)
+    sentiment_analysis = fields.Text(string='Sentiment Analysis Details')
+
+    @api.depends('user_input_line_ids')
+    def _compute_sentiment_score(self):
+        """Compute sentiment score based on survey responses"""
+        for record in self:
+            if not record.user_input_line_ids:
+                record.sentiment_score = 0.5
+                continue
+                
+            # Simple sentiment analysis based on text responses
+            positive_keywords = ['excellent', 'great', 'good', 'satisfied', 'happy', 'pleased', 'amazing', 'perfect']
+            negative_keywords = ['poor', 'bad', 'terrible', 'unsatisfied', 'disappointed', 'awful', 'horrible']
+            
+            total_score = 0
+            response_count = 0
+            
+            for line in record.user_input_line_ids:
+                if line.value_text:
+                    text = line.value_text.lower()
+                    score = 0.5  # neutral
+                    
+                    positive_count = sum(1 for word in positive_keywords if word in text)
+                    negative_count = sum(1 for word in negative_keywords if word in text)
+                    
+                    if positive_count > negative_count:
+                        score = min(1.0, 0.5 + (positive_count * 0.1))
+                    elif negative_count > positive_count:
+                        score = max(0.0, 0.5 - (negative_count * 0.1))
+                    
+                    total_score += score
+                    response_count += 1
+                elif line.value_numerical:
+                    # Normalize numerical responses (assuming 1-5 scale)
+                    normalized = (line.value_numerical - 1) / 4.0
+                    total_score += normalized
+                    response_count += 1
+            
+            record.sentiment_score = total_score / response_count if response_count > 0 else 0.5
+
+    @api.depends('user_input_line_ids')
+    def _compute_response_count(self):
+        """Count the number of responses"""
+        for record in self:
+            record.response_count = len(record.user_input_line_ids)
+
+    @api.depends('create_date', 'state')
+    def _compute_completion_time(self):
+        """Calculate completion time in minutes"""
+        for record in self:
+            if record.state == 'done' and record.create_date:
+                # If we had a finish date, we'd use that. For now, estimate based on response count
+                record.completion_time = record.response_count * 0.5  # Estimate 30 seconds per response
+            else:
+                record.completion_time = 0.0
+
+    @api.depends('user_input_line_ids')
+    def _compute_response_summary(self):
+        """Create a summary of text responses"""
+        for record in self:
+            text_responses = []
+            for line in record.user_input_line_ids:
+                if line.value_text and len(line.value_text.strip()) > 0:
+                    text_responses.append(line.value_text.strip())
+            
+            if text_responses:
+                # Create a summary of first 100 characters of each response
+                summary_parts = []
+                for response in text_responses[:3]:  # First 3 responses
+                    if len(response) > 100:
+                        summary_parts.append(response[:97] + "...")
+                    else:
+                        summary_parts.append(response)
+                
+                record.response_summary = " | ".join(summary_parts)
+                if len(text_responses) > 3:
+                    record.response_summary += f" (and {len(text_responses) - 3} more responses)"
+            else:
+                record.response_summary = "No text responses"
+
+    def action_mark_reviewed(self):
+        """Mark feedback as reviewed by current user"""
+        self.write({
+            'admin_reviewed': True,
+            'reviewed_by': self.env.user.id,
+            'review_date': fields.Datetime.now()
+        })
+
+    def action_assign_to_user(self):
+        """Open wizard to assign feedback to a user"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Assign Feedback',
+            'res_model': 'survey.feedback.assign.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_feedback_id': self.id}
+        }

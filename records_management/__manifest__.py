@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.68',  # FIX: Add missing quote_id and hashed_partner_ref fields to portal.request model
+        'version': '18.0.2.49.69',  # FIX: Add comprehensive survey.user_input field extensions for portal_feedback_views.xml
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
