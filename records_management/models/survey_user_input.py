@@ -189,3 +189,71 @@ class SurveyUserInput(models.Model):
                 'type': 'success'
             }
         }
+
+    def action_assign_follow_up(self):
+        """Action to assign follow-up to a specific user"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Assign Follow-up',
+            'res_model': 'survey.feedback.assign.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_feedback_id': self.id,
+                'default_assign_type': 'follow_up',
+                'default_follow_up_required': True
+            }
+        }
+
+    def action_create_quick_task(self):
+        """Create a quick improvement task based on feedback"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Create Quick Task',
+            'res_model': 'project.task',
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {
+                'default_name': f'Quick Fix: {self.partner_id.name or "Anonymous"} Feedback',
+                'default_description': f'Quick improvement task based on feedback from {self.partner_id.name or "Anonymous"}:\n\n{self.response_summary or "No summary available"}',
+                'default_priority': '1' if self.priority_level == 'urgent' else '0',
+                'default_tag_ids': [(6, 0, [])],  # Add improvement tags if available
+            }
+        }
+
+    def action_create_strategic_improvement_plan(self):
+        """Create comprehensive strategic improvement plan"""
+        self.write({
+            'improvement_actions_created': True,
+        })
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Create Strategic Improvement Plan',
+            'res_model': 'survey.improvement.plan.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_feedback_id': self.id,
+                'default_feedback_summary': self.response_summary,
+                'default_sentiment_score': self.sentiment_score,
+                'default_priority_level': self.priority_level,
+                'default_plan_type': 'strategic'
+            }
+        }
+
+    def action_schedule_follow_up(self):
+        """Schedule follow-up action with calendar event"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Schedule Follow-up',
+            'res_model': 'calendar.event',
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {
+                'default_name': f'Follow-up: {self.partner_id.name or "Anonymous"} Feedback',
+                'default_description': f'Follow-up on feedback:\n\n{self.response_summary or "No summary available"}',
+                'default_partner_ids': [(6, 0, [self.partner_id.id] if self.partner_id else [])],
+                'default_duration': 1.0,  # 1 hour default
+            }
+        }

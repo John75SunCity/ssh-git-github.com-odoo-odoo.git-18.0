@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.72',  # FIX: Replace ALL deprecated attrs with invisible attribute across entire module for Odoo 18.0 compatibility
+        'version': '18.0.2.49.73',  # FIX: Add distinctly named action methods - action_create_quick_task, action_create_strategic_improvement_plan, action_schedule_follow_up, action_assign_follow_up
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

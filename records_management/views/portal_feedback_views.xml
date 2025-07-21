@@ -158,8 +158,8 @@
                                                 class="btn btn-outline-secondary btn-sm" title="Assign Follow-up">
                                             <i class="fa fa-user-plus"/>
                                         </button>
-                                        <button name="action_create_improvement_task" type="object" 
-                                                class="btn btn-success btn-sm" title="Create Improvement Task">
+                                        <button name="action_create_quick_task" type="object" 
+                                                class="btn btn-success btn-sm" title="Create Quick Task">
                                             <i class="fa fa-tasks"/>
                                         </button>
                                     </div>
@@ -181,7 +181,7 @@
                 <header>
                     <button name="action_mark_reviewed" string="Mark as Reviewed" type="object" 
                             class="btn-primary" invisible="admin_reviewed == True"/>
-                    <button name="action_create_improvement_plan" string="Create Improvement Plan" type="object" 
+                    <button name="action_create_strategic_improvement_plan" string="Create Strategic Plan" type="object" 
                             class="btn-success"/>
                     <button name="action_schedule_follow_up" string="Schedule Follow-up" type="object" 
                             class="btn-warning" invisible="follow_up_required == False"/>
