@@ -1,46 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- List view for tags (Odoo 18.0 compatible) -->
-    <record id="view_records_tag_list" model="ir.ui.view">
-        <field name="name">records.tag.list</field>
+    <!-- Tree view for tags (Odoo 18.0 minimal approach) -->
+    <record id="view_records_tag_tree_new" model="ir.ui.view">
+        <field name="name">records.tag.tree.new</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
-            <list string="Tags" editable="bottom" sample="1">
-                <field name="name" required="1"/>
+            <tree editable="bottom" sample="1">
+                <field name="name"/>
                 <field name="color" widget="color"/>
                 <field name="description" optional="show"/>
-                <field name="active" column_invisible="1"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- Form view for tags (Odoo 18.0 compatible) -->
-    <record id="view_records_tag_form" model="ir.ui.view">
-        <field name="name">records.tag.form</field>
+    <!-- Form view for tags (Odoo 18.0 minimal approach) -->
+    <record id="view_records_tag_form_new" model="ir.ui.view">
+        <field name="name">records.tag.form.new</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
-            <form string="Tag">
-                <header>
-                    <button name="toggle_active" type="object" string="Archive" 
-                            class="btn-secondary" invisible="not active"/>
-                    <button name="toggle_active" type="object" string="Unarchive" 
-                            class="btn-secondary" invisible="active"/>
-                </header>
+            <form>
                 <sheet>
-                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" 
-                            invisible="active"/>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" placeholder="Tag Name..." required="1"/>
+                            <field name="name" placeholder="Tag Name..."/>
                         </h1>
                     </div>
                     <group>
-                        <group>
-                            <field name="color" widget="color"/>
-                            <field name="active" invisible="1"/>
-                        </group>
+                        <field name="color" widget="color"/>
+                        <field name="active"/>
                     </group>
-                    <group string="Description">
+                    <group>
                         <field name="description" nolabel="1" 
                                placeholder="Describe what this tag represents..."/>
                     </group>
@@ -50,10 +39,10 @@
     </record>
     
     <!-- Window action for tags -->
-    <record id="action_records_tag_list" model="ir.actions.act_window">
+    <record id="action_records_tag_new" model="ir.actions.act_window">
         <field name="name">Records Tags</field>
         <field name="res_model">records.tag</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
@@ -67,21 +56,16 @@
         </field>
     </record>
 
-    <!-- Search view for tags -->
-    <record id="view_records_tag_search" model="ir.ui.view">
-        <field name="name">records.tag.search</field>
+    <!-- Search view for tags (Odoo 18.0 minimal approach) -->
+    <record id="view_records_tag_search_new" model="ir.ui.view">
+        <field name="name">records.tag.search.new</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
-            <search string="Tags">
-                <field name="name" string="Tag Name"/>
+            <search>
+                <field name="name"/>
                 <field name="description"/>
-                <separator/>
-                <filter string="Active Tags" name="active" domain="[('active', '=', True)]"/>
-                <filter string="Archived Tags" name="inactive" domain="[('active', '=', False)]"/>
-                <separator/>
-                <group expand="0" string="Group By">
-                    <filter string="Color" name="group_by_color" context="{'group_by': 'color'}"/>
-                </group>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
             </search>
         </field>
     </record>
