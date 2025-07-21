@@ -660,7 +660,7 @@
                                     </span>
                                 </div>
                                 <div class="oe_kanban_footer_right">
-                                    <a type="open" class="btn btn-primary btn-sm">
+                                    <a type="open" class="btn btn-primary btn-sm" role="button">
                                         View Details
                                     </a>
                                 </div>
@@ -678,7 +678,7 @@
         <field name="res_model">survey.user_input</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="domain">[('survey_id.category', '=', 'portal_feedback')]</field>
-        <field name="context">{'default_survey_id': ref('portal_feedback_survey')}</field>
+        <field name="context">{'default_survey_id': ref('records_management.portal_feedback_survey')}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No feedback submissions yet!
