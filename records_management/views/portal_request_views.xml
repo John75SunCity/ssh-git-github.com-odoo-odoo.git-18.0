@@ -72,7 +72,7 @@
                 <field name="request_type"/>
                 <field name="is_walk_in"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_content" t-attf-class="oe_kanban_color_#{kanban_getcolor(record.state.raw_value)}">
                             <strong><field name="name"/></strong>
                             <div><field name="request_type"/></div>
