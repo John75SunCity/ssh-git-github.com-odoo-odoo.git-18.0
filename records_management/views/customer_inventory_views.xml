@@ -4,9 +4,9 @@
     <record id="view_customer_inventory_report_list" model="ir.ui.view">
         <field name="name">customer.inventory.report.list</field>
         <field name="model">customer.inventory.report</field>
-        <field name="type">list</field>
+        
         <field name="arch" type="xml">
-            <list string="Customer Inventory Reports" 
+            <tree string="Customer Inventory Reports" 
                   decoration-info="status=='draft'" 
                   decoration-success="status=='confirmed'" 
                   decoration-warning="status=='sent'"
@@ -20,7 +20,7 @@
                 <field name="status" widget="badge"/>
                 <field name="create_date"/>
                 <field name="write_date"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -28,9 +28,9 @@
     <record id="view_customer_inventory_tree" model="ir.ui.view">
         <field name="name">customer.inventory.tree</field>
         <field name="model">customer.inventory.report</field>
-        <field name="type">list</field>
+        
         <field name="arch" type="xml">
-            <list string="Customer Inventory Reports" 
+            <tree string="Customer Inventory Reports" 
                   decoration-info="status=='draft'" 
                   decoration-success="status=='confirmed'" 
                   decoration-warning="status=='sent'"
@@ -43,7 +43,7 @@
                 <field name="total_documents" widget="integer"/>
                 <field name="active_locations"/>
                 <field name="status" widget="selection"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -123,7 +123,7 @@
                             </div>
                             <field name="box_ids" mode="tree" readonly="1" 
                                    context="{'tree_view_ref': 'records_management.view_records_box_inventory_tree'}">
-                                <list decoration-success="state=='active'" 
+                                <tree decoration-success="state=='active'" 
                                       decoration-warning="state=='pending'" 
                                       decoration-danger="state=='destroyed'"
                                       decoration-muted="state=='archived'"
@@ -132,7 +132,7 @@
                                     <field name="location_id"/>
                                     <field name="state" widget="badge"/>
                                     <field name="create_date" widget="datetime"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Customer Documents" name="documents_page">
@@ -148,7 +148,7 @@
                                 </div>
                             </div>
                             <field name="document_ids" mode="tree" readonly="1">
-                                <list decoration-success="state=='active'" 
+                                <tree decoration-success="state=='active'" 
                                       decoration-warning="state=='pending'" 
                                       decoration-danger="state=='destroyed'"
                                       decoration-muted="state=='archived'">
@@ -156,7 +156,7 @@
                                     <field name="box_id"/>
                                     <field name="state" widget="badge"/>
                                     <field name="create_date" widget="datetime"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Notes &amp; Comments" name="notes_page">

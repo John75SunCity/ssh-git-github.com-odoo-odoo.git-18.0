@@ -6,9 +6,8 @@
     <record id="view_feedback_tree" model="ir.ui.view">
         <field name="name">survey.user_input.tree.feedback</field>
         <field name="model">survey.user_input</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
-            <list string="Portal Feedback Responses" decoration-success="sentiment_score >= 0.7" decoration-warning="sentiment_score >= 0.4 and sentiment_score &lt; 0.7" decoration-danger="sentiment_score &lt; 0.4">
+            <tree string="Portal Feedback Responses" decoration-success="sentiment_score >= 0.7" decoration-warning="sentiment_score >= 0.4 and sentiment_score &lt; 0.7" decoration-danger="sentiment_score &lt; 0.4">
                 <field name="partner_id" string="Customer"/>
                 <field name="create_date" string="Submitted"/>
                 <field name="survey_id" string="Feedback Type"/>
@@ -20,7 +19,7 @@
                 <field name="follow_up_required" string="Follow-up" widget="boolean_toggle"/>
                 <button name="action_review_feedback" string="Review" type="object" icon="fa-eye" class="btn-primary" invisible="state != 'done'"/>
                 <button name="action_mark_follow_up" string="Follow-up" type="object" icon="fa-flag" class="btn-warning" invisible="follow_up_required == True"/>
-            </list>
+            </tree>
         </field>
     </record>
 

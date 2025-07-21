@@ -59,9 +59,8 @@
         <field name="name">records.barcode.config.tree</field>
         <field name="model">records.barcode.config</field>
         
-        <field name="type">list</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="barcode_type"/>
                 <field name="barcode_format"/>
                 <field name="fixed_length"/>
@@ -72,7 +71,7 @@
                 <field name="suffix"/>
                 <field name="auto_generate"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -131,9 +130,8 @@
         <field name="name">records.barcode.history.tree</field>
         <field name="model">records.barcode.history</field>
         
-        <field name="type">list</field>
         <field name="arch" type="xml">
-            <list create="false" edit="false">
+            <tree create="false" edit="false">
                 <field name="create_date"/>
                 <field name="barcode"/>
                 <field name="action"/>
@@ -141,7 +139,7 @@
                 <field name="res_name"/>
                 <field name="user_id"/>
                 <field name="barcode_config_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 

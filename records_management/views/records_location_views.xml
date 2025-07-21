@@ -5,16 +5,16 @@
         <field name="name">records.location.tree</field>
         <field name="model">records.location</field>
         
-        <field name="type">list</field>
+        
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="complete_name"/>
                 <field name="parent_id"/>
                 <field name="capacity"/>
                 <field name="box_count"/>
                 <field name="used_capacity"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 

@@ -23,14 +23,14 @@
         <field name="name">records.retention.policy.tree</field>
         <field name="model">records.retention.policy</field>
         
-        <field name="type">list</field>
+        
         <field name="arch" type="xml">
-            <list string="Retention Policies">
+            <tree string="Retention Policies">
                 <field name="name"/>
                 <field name="retention_years"/>
                 <field name="document_count"/>
                 <field name="active" widget="boolean_toggle"/>
-            </list>
+            </tree>
         </field>
     </record>
 

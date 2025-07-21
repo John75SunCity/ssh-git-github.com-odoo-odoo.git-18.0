@@ -77,9 +77,9 @@
         <field name="name">records.document.tree</field>
         <field name="model">records.document</field>
         
-        <field name="type">list</field>
+        
         <field name="arch" type="xml">
-            <list decoration-success="state=='stored'" decoration-info="state=='retrieved'" decoration-danger="state=='destroyed'">
+            <tree decoration-success="state=='stored'" decoration-info="state=='retrieved'" decoration-danger="state=='destroyed'">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="department_id"/>
@@ -92,7 +92,7 @@
                 <field name="partner_id"/>
                 <field name="state"/>
                 <field name="destruction_method"/>
-            </list>
+            </tree>
         </field>
     </record>
     

@@ -96,14 +96,14 @@
                     <notebook>
                         <page string="Documents">
                             <field name="document_ids" nolabel="1" context="{'default_box_id': id}">
-                                <list editable="bottom">
+                                <tree editable="bottom">
                                     <field name="name"/>
                                     <field name="document_type_id"/>
                                     <field name="date"/>
                                     <field name="retention_date"/>
                                     <field name="partner_id"/>
                                     <field name="state"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Notes">
@@ -124,9 +124,9 @@
         <field name="name">records.box.tree</field>
         <field name="model">records.box</field>
         
-        <field name="type">list</field>
+        
         <field name="arch" type="xml">
-            <list decoration-info="state=='draft'" decoration-muted="state=='archived'" decoration-danger="state=='destroyed'">
+            <tree decoration-info="state=='draft'" decoration-muted="state=='archived'" decoration-danger="state=='destroyed'">
                 <field name="name"/>
                 <field name="alternate_code"/>
                 <field name="description"/>
@@ -148,7 +148,7 @@
                 <field name="account_level1" optional="hide"/>
                 <field name="account_level2" optional="hide"/>
                 <field name="account_level3" optional="hide"/>
-            </list>
+            </tree>
         </field>
     </record>
     

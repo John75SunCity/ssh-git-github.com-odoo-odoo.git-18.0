@@ -5,9 +5,8 @@
     <record id="view_naid_audit_log_tree" model="ir.ui.view">
         <field name="name">naid.audit.log.tree</field>
         <field name="model">naid.audit.log</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
-            <list string="NAID Audit Logs" decoration-danger="compliance_status=='violation'" decoration-warning="compliance_status=='warning'">
+            <tree string="NAID Audit Logs" decoration-danger="compliance_status=='violation'" decoration-warning="compliance_status=='warning'">
                 <field name="timestamp"/>
                 <field name="event_type"/>
                 <field name="employee_id"/>
@@ -16,7 +15,7 @@
                 <field name="compliance_status"/>
                 <field name="remediation_required"/>
                 <field name="is_overdue"/>
-            </list>
+            </tree>
         </field>
     </record>
     
@@ -116,9 +115,8 @@
     <record id="view_naid_compliance_policy_tree" model="ir.ui.view">
         <field name="name">naid.compliance.policy.tree</field>
         <field name="model">naid.compliance.policy</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
-            <list string="NAID Compliance Policies" editable="bottom">
+            <tree string="NAID Compliance Policies" editable="bottom">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="policy_type"/>
@@ -126,7 +124,7 @@
                 <field name="automated_check"/>
                 <field name="check_frequency"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
     
@@ -177,9 +175,8 @@
     <record id="view_naid_chain_custody_tree" model="ir.ui.view">
         <field name="name">naid.chain.custody.tree</field>
         <field name="model">naid.chain.custody</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
-            <list string="Chain of Custody">
+            <tree string="Chain of Custody">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="current_custodian_id"/>
@@ -187,7 +184,7 @@
                 <field name="end_date"/>
                 <field name="status"/>
                 <field name="compliance_verified"/>
-            </list>
+            </tree>
         </field>
     </record>
     

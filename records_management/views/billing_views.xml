@@ -127,15 +127,15 @@
         <field name="name">records.billing.config.tree</field>
         <field name="model">records.billing.config</field>
         
-        <field name="type">list</field>
+        
         <field name="arch" type="xml">
-            <list string="Billing Configurations">
+            <tree string="Billing Configurations">
                 <field name="name"/>
                 <field name="storage_rate_per_box"/>
                 <field name="monthly_minimum_fee"/>
                 <field name="company_id"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 

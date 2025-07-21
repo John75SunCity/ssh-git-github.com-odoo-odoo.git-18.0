@@ -38,12 +38,12 @@
                     <notebook>
                         <page string="Items">
                             <field name="request_item_ids">
-                                <list editable="bottom">
+                                <tree editable="bottom">
                                     <field name="product_id" required="1"/>
                                     <field name="quantity" required="1"/>
                                     <field name="lot_id" domain="[('product_id', '=', product_id)]"/>
                                     <field name="notes"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Notes">
@@ -68,9 +68,9 @@
         <field name="name">pickup.request.tree</field>
         <field name="model">pickup.request</field>
         
-        <field name="type">list</field>
+        
         <field name="arch" type="xml">
-            <list string="Pickup Requests" decoration-info="state=='draft'" decoration-muted="state=='cancelled'" decoration-success="state=='completed'" decoration-warning="state=='scheduled'">
+            <tree string="Pickup Requests" decoration-info="state=='draft'" decoration-muted="state=='cancelled'" decoration-success="state=='completed'" decoration-warning="state=='scheduled'">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="request_date"/>
@@ -78,7 +78,7 @@
                 <field name="warehouse_id"/>
                 <field name="priority" widget="priority"/>
                 <field name="state"/>
-            </list>
+            </tree>
         </field>
     </record>
     

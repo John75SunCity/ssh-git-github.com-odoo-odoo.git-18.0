@@ -5,16 +5,16 @@
         <field name="name">shredding.service.tree</field>
         <field name="model">shredding.service</field>
         
-        <field name="type">list</field>
+        
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="service_date"/>
                 <field name="status"/>
                 <field name="total_boxes"/>
                 <field name="total_cost"/>
-            </list>
+            </tree>
         </field>
     </record>
 

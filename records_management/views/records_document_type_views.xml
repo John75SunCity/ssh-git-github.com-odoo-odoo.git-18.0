@@ -23,14 +23,14 @@
         <field name="name">records.document.type.tree</field>
         <field name="model">records.document.type</field>
         
-        <field name="type">list</field>
+        
         <field name="arch" type="xml">
-            <list string="Document Types" editable="bottom">
+            <tree string="Document Types" editable="bottom">
                 <field name="name"/>
                 <field name="description"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="active" widget="boolean_toggle"/>
-            </list>
+            </tree>
         </field>
     </record>
 
