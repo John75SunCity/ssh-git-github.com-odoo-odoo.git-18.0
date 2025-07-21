@@ -42,7 +42,7 @@
                 <field name="response_summary"/>
                 
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <!-- Card Header with Customer Info -->
                             <div class="oe_kanban_header">
@@ -624,7 +624,7 @@
                 <field name="satisfaction_level"/>
                 
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="oe_kanban_header">
                                 <div class="oe_kanban_header_left">
@@ -693,7 +693,7 @@
     <!-- Menu Item for Feedback Management -->
     <record id="menu_portal_feedback" model="ir.ui.menu">
         <field name="name">Customer Feedback</field>
-        <field name="parent_id" ref="records_management.menu_records_management_root"/>
+        <field name="parent_id" ref="menu_records_management_root"/>
         <field name="action" ref="action_portal_feedback"/>
         <field name="sequence">60</field>
         <field name="groups_id" ref="records_management.group_records_manager"/>

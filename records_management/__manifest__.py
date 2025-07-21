@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-            'version': '18.0.2.49.84',  # FIX: Button role attribute, survey reference prefix, portal feedback systematic fixes
+            'version': '18.0.2.49.85',  # FIX: Batch create, duplicate labels, deprecated templates, menu references - systematic deployment fixes
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

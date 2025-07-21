@@ -39,7 +39,7 @@ class SurveyUserInput(models.Model):
     response_count = fields.Integer(string='Response Count', compute='_compute_response_count', store=True)
     completion_time = fields.Float(string='Completion Time (minutes)', compute='_compute_completion_time', store=True)
     response_summary = fields.Text(string='Response Summary', compute='_compute_response_summary', store=True)
-    total_score = fields.Float(string='Total Score', compute='_compute_total_score', store=True,
+    total_score = fields.Float(string='Computed Score', compute='_compute_total_score', store=True,
                               help='Calculated total score based on survey responses')
     
     # Improvement Tracking

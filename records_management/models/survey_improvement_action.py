@@ -162,12 +162,13 @@ class SurveyImprovementAction(models.Model):
         else:
             self.audit_trail = new_entry
     
-    @api.model
-    def create(self, vals):
-        """Override create to add audit trail entry"""
-        record = super().create(vals)
-        record._update_audit_trail('Action created')
-        return record
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to add audit trail entry (batch compliant)"""
+        records = super().create(vals_list)
+        for record in records:
+            record._update_audit_trail('Action created')
+        return records
     
     def write(self, vals):
         """Override write to track changes"""
