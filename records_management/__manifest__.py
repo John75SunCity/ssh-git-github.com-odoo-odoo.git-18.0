@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-            'version': '18.0.2.49.86',  # FIX: Data loading order - menus before views, systematic external ID resolution
+            'version': '18.0.2.49.87',  # FIX: Data loading order - reports before menus that reference them
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
@@ -93,7 +93,6 @@ Features:
         'views/trailer_load_views.xml',
         'views/pos_config_views.xml',
         'views/visitor_pos_wizard_views.xml',
-        'views/records_management_menus.xml',  # Load menus first before views that reference them
         'views/portal_request_views.xml',  # New: Views for portal requests
         'views/fsm_task_views.xml',  # New: FSM task views
         'views/portal_feedback_views.xml',  # New: Feedback views
@@ -101,6 +100,7 @@ Features:
         'report/destruction_certificate_report.xml',
         'report/bale_label_report.xml',
         'report/portal_audit_report.xml',  # New: Audit reports for NAID
+        'views/records_management_menus.xml',  # Load menus after reports they reference
         'views/departmental_billing_menus.xml',  # Loaded after main menus for proper dependencies
         'views/barcode_menus.xml',  # Loaded after main menus for proper dependencies
         'views/trailer_load_menus.xml',  # Loaded after main menus for proper dependencies
