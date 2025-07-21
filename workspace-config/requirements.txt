@@ -1,7 +1,7 @@
 # Essential Python dependencies for Records Management
 # Keep minimal for fast loading and dynamic updates
 
-qrcode[pil]==7.4.2  # For bale QR codes and chain-of-custody (stable version for Pillow compat)
+qrcode[pil]==8.2  # For bale QR codes and chain-of-custody (stable version for Pillow compat)
 Pillow>=10.0.0  # Image processing for QR codes (LTS version for security fixes)
 PuLP==2.9.0  # For optimization (e.g., billing/load efficiency; pinned to tested version with GLPK solver support)
 cryptography==42.0.8  # For ISO-compliant encryption (e.g., AES for visitor data/notes; advanced beyond hashlib)
