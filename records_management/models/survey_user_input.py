@@ -93,6 +93,23 @@ class SurveyUserInput(models.Model):
     peer_satisfaction_ranking = fields.Integer(string='Peer Satisfaction Ranking')
     improvement_opportunity_score = fields.Float(string='Improvement Opportunity Score')
     
+    # Grouping and Classification Fields
+    satisfaction_level_group = fields.Selection([
+        ('excellent', 'Excellent (90-100%)'),
+        ('good', 'Good (70-89%)'),
+        ('average', 'Average (50-69%)'),
+        ('poor', 'Poor (30-49%)'),
+        ('critical', 'Critical (0-29%)')
+    ], string='Satisfaction Level Group', compute='_compute_satisfaction_level_group', store=True)
+    
+    satisfaction_level = fields.Selection([
+        ('very_high', 'Very High'),
+        ('high', 'High'),
+        ('medium', 'Medium'),
+        ('low', 'Low'),
+        ('very_low', 'Very Low')
+    ], string='Satisfaction Level', compute='_compute_satisfaction_level', store=True)
+    
     # Compliance Fields
     compliance_logged = fields.Boolean(string='Compliance Logged', default=False)
     compliance_log_date = fields.Datetime(string='Compliance Log Date')
@@ -244,6 +261,38 @@ class SurveyUserInput(models.Model):
                     record.satisfaction_trend = 'stable'
             else:
                 record.satisfaction_trend = 'stable'
+
+    @api.depends('scoring_percentage')
+    def _compute_satisfaction_level_group(self):
+        """Compute satisfaction level group for filtering and analytics"""
+        for record in self:
+            score = record.scoring_percentage or 0
+            if score >= 90:
+                record.satisfaction_level_group = 'excellent'
+            elif score >= 70:
+                record.satisfaction_level_group = 'good'
+            elif score >= 50:
+                record.satisfaction_level_group = 'average'
+            elif score >= 30:
+                record.satisfaction_level_group = 'poor'
+            else:
+                record.satisfaction_level_group = 'critical'
+
+    @api.depends('scoring_percentage')
+    def _compute_satisfaction_level(self):
+        """Compute satisfaction level for kanban grouping"""
+        for record in self:
+            score = record.scoring_percentage or 0
+            if score >= 85:
+                record.satisfaction_level = 'very_high'
+            elif score >= 70:
+                record.satisfaction_level = 'high'
+            elif score >= 50:
+                record.satisfaction_level = 'medium'
+            elif score >= 30:
+                record.satisfaction_level = 'low'
+            else:
+                record.satisfaction_level = 'very_low'
 
     def action_mark_reviewed(self):
         """Mark feedback as reviewed by current user"""
