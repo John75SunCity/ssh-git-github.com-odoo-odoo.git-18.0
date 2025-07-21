@@ -511,7 +511,7 @@
                                            string="Overall Satisfaction"/>
                                 </group>
                                 <group string="Response Summary">
-                                    <label for="response_summary" string="Key Insights"/>
+                                    <label string="Key Insights" class="o_form_label"/>
                                     <div name="response_summary">
                                         <!-- This would be computed based on responses -->
                                         <p class="text-muted">Response analysis will be displayed here based on survey answers.</p>
