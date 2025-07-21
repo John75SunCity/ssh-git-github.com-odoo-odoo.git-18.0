@@ -46,7 +46,7 @@
                     <group string="Links">
                         <field name="fsm_task_id"/>
                         <field name="invoice_id"/>
-                        <field name="quote_id"/>
+                        <!-- field name="quote_id"/ Temporarily disabled - field validation issue -->
                     </group>
                     <group string="Audit Log (ISO Compliant)">
                         <field name="hashed_partner_ref" readonly="1" help="Hashed customer reference for secure auditing (no PII exposure)."/>
