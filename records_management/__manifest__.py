@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-            'version': '18.0.2.49.92',  # ENHANCE: Upgrade records tag model and views to Odoo 18.0 standards
+        'version': '18.0.2.49.93',  # REBUILD: Complete rebuild of records.tag views with new IDs for Odoo 18.0 compatibility
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

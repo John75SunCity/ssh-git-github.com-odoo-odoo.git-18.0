@@ -35,6 +35,12 @@ class RecordsTag(models.Model):
         for record in self:
             record.display_name = record.name
 
+    def toggle_active(self):
+        """Toggle the active state of the tag."""
+        for record in self:
+            record.active = not record.active
+        return True
+
     _sql_constraints = [
         ('name_uniq', 'unique (name)', "Tag name already exists!")
     ]
