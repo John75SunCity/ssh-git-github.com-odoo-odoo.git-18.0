@@ -27,9 +27,9 @@
             <form string="NAID Audit Log">
                 <header>
                     <button name="action_mark_reviewed" string="Mark Reviewed" type="object" 
-                            attrs="{'invisible': [('reviewed_by', '!=', False)]}" class="btn-primary"/>
+                            invisible="reviewed_by != False" class="btn-primary"/>
                     <button name="action_complete_remediation" string="Complete Remediation" type="object"
-                            attrs="{'invisible': ['|', ('remediation_required', '=', False), ('remediation_completed', '=', True)]}" class="btn-success"/>
+                            invisible="not remediation_required or remediation_completed == True" class="btn-success"/>
                     <field name="compliance_status" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -62,7 +62,7 @@
                         <page string="Evidence">
                             <field name="evidence_attachment_ids"/>
                         </page>
-                        <page string="Remediation" attrs="{'invisible': [('remediation_required', '=', False)]}">
+                        <page string="Remediation" invisible="remediation_required == False">
                             <group>
                                 <field name="remediation_required"/>
                                 <field name="remediation_deadline"/>
@@ -199,7 +199,7 @@
                 <header>
                     <button name="action_transfer_custody" string="Transfer Custody" type="object" class="btn-primary"/>
                     <button name="action_complete_custody" string="Complete Custody" type="object" 
-                            attrs="{'invisible': [('status', '=', 'completed')]}" class="btn-success"/>
+                            invisible="status == 'completed'" class="btn-success"/>
                     <field name="status" widget="statusbar"/>
                 </header>
                 <sheet>

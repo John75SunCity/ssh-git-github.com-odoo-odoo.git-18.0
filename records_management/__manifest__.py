@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.71',  # FIX: Add missing action methods (action_review_feedback, action_mark_follow_up) for portal_feedback_views.xml
+        'version': '18.0.2.49.72',  # FIX: Replace ALL deprecated attrs with invisible attribute across entire module for Odoo 18.0 compatibility
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
