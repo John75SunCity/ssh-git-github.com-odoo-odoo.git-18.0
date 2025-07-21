@@ -43,6 +43,65 @@ class SurveyUserInput(models.Model):
     # Improvement Tracking
     improvement_actions_created = fields.Boolean(string='Improvement Actions Created', default=False)
     sentiment_analysis = fields.Text(string='Sentiment Analysis Details')
+    
+    # AI-Powered Analysis Fields
+    key_themes = fields.Many2many('survey.feedback.theme', string='Key Themes', 
+                                  help='Identified themes from feedback analysis')
+    improvement_suggestions = fields.Text(string='AI Improvement Suggestions',
+                                         help='AI-generated suggestions for improvement')
+    predicted_churn_risk = fields.Float(string='Predicted Churn Risk', 
+                                       help='AI prediction of customer churn risk (0-1 scale)')
+    
+    # Additional Analytics Fields for View
+    requires_manager_attention = fields.Boolean(string='Requires Manager Attention', default=False)
+    escalation_level = fields.Selection([
+        ('low', 'Low'),
+        ('medium', 'Medium'), 
+        ('high', 'High'),
+        ('critical', 'Critical')
+    ], string='Escalation Level', default='low')
+    estimated_resolution_time = fields.Float(string='Estimated Resolution Time (hours)')
+    
+    # Follow-up Planning
+    follow_up_date = fields.Datetime(string='Follow-up Date')
+    follow_up_method = fields.Selection([
+        ('email', 'Email'),
+        ('phone', 'Phone Call'),
+        ('meeting', 'In-Person Meeting'),
+        ('portal', 'Portal Message')
+    ], string='Follow-up Method', default='email')
+    customer_contact_preference = fields.Selection([
+        ('email', 'Email'),
+        ('phone', 'Phone'),
+        ('mail', 'Mail'),
+        ('portal', 'Portal Only')
+    ], string='Customer Contact Preference', default='email')
+    
+    # Historical Context Fields
+    customer_previous_feedback_count = fields.Integer(string='Previous Feedback Count', 
+                                                     compute='_compute_customer_history')
+    customer_avg_satisfaction = fields.Float(string='Customer Average Satisfaction',
+                                           compute='_compute_customer_history')
+    satisfaction_trend = fields.Selection([
+        ('improving', 'Improving'),
+        ('stable', 'Stable'),
+        ('declining', 'Declining')
+    ], string='Satisfaction Trend', compute='_compute_satisfaction_trend')
+    
+    # Comparative Analysis
+    industry_benchmark_comparison = fields.Float(string='Industry Benchmark Comparison')
+    peer_satisfaction_ranking = fields.Integer(string='Peer Satisfaction Ranking')
+    improvement_opportunity_score = fields.Float(string='Improvement Opportunity Score')
+    
+    # Compliance Fields
+    compliance_logged = fields.Boolean(string='Compliance Logged', default=False)
+    compliance_log_date = fields.Datetime(string='Compliance Log Date')
+    compliance_reference = fields.Char(string='Compliance Reference')
+    audit_trail_complete = fields.Boolean(string='Audit Trail Complete', default=False)
+    data_retention_policy_applied = fields.Boolean(string='Data Retention Policy Applied', default=False)
+    anonymization_date = fields.Datetime(string='Anonymization Date')
+    gdpr_compliant = fields.Boolean(string='GDPR Compliant', default=True)
+    compliance_audit_log = fields.Text(string='Compliance Audit Log')
 
     @api.depends('user_input_line_ids')
     def _compute_sentiment_score(self):
@@ -136,6 +195,46 @@ class SurveyUserInput(models.Model):
                     record.response_summary += f" (and {len(text_responses) - 3} more responses)"
             else:
                 record.response_summary = "No text responses"
+
+    @api.depends('partner_id')
+    def _compute_customer_history(self):
+        """Compute customer feedback history"""
+        for record in self:
+            if record.partner_id:
+                # Count previous feedback from same customer
+                previous_feedback = self.search([
+                    ('partner_id', '=', record.partner_id.id),
+                    ('id', '!=', record.id),
+                    ('state', '=', 'done')
+                ])
+                record.customer_previous_feedback_count = len(previous_feedback)
+                
+                # Calculate average satisfaction
+                if previous_feedback:
+                    total_satisfaction = sum(feedback.scoring_percentage for feedback in previous_feedback)
+                    record.customer_avg_satisfaction = total_satisfaction / len(previous_feedback)
+                else:
+                    record.customer_avg_satisfaction = 0.0
+            else:
+                record.customer_previous_feedback_count = 0
+                record.customer_avg_satisfaction = 0.0
+
+    @api.depends('scoring_percentage', 'customer_avg_satisfaction')
+    def _compute_satisfaction_trend(self):
+        """Compute satisfaction trend based on historical data"""
+        for record in self:
+            if record.customer_avg_satisfaction > 0:
+                current_score = record.scoring_percentage or 0
+                avg_score = record.customer_avg_satisfaction
+                
+                if current_score > avg_score + 10:
+                    record.satisfaction_trend = 'improving'
+                elif current_score < avg_score - 10:
+                    record.satisfaction_trend = 'declining'
+                else:
+                    record.satisfaction_trend = 'stable'
+            else:
+                record.satisfaction_trend = 'stable'
 
     def action_mark_reviewed(self):
         """Mark feedback as reviewed by current user"""

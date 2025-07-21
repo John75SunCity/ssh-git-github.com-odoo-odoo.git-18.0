@@ -32,6 +32,7 @@ from . import hr_employee  # Employee access/training (NAID certifications)
 from . import hr_employee_naid  # NAID-specific employee tracking
 from . import customer_feedback  # Feedback with sentiment (innovative: Integrate torch for AI analysis via code_execution)
 from . import survey_user_input  # Survey user input extensions for feedback management
+from . import survey_feedback_theme  # Feedback theme categorization for AI analysis
 
 # Products and Configuration
 from . import product  # Product extensions
