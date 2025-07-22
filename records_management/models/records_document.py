@@ -189,6 +189,29 @@ class RecordsDocument(models.Model):
         help="Date and time when permanent flag was set"
     )
 
+    # Related One2many fields for document tracking
+    chain_of_custody_ids = fields.One2many(
+        'records.chain.of.custody', 'document_id',
+        string='Chain of Custody Records'
+    )
+    audit_trail_ids = fields.One2many(
+        'records.audit.trail', 'document_id',
+        string='Audit Trail Records'
+    )
+    digital_copy_ids = fields.One2many(
+        'records.digital.copy', 'document_id',
+        string='Digital Copies'
+    )
+
+    # Destruction related fields (referenced in views)
+    destruction_date = fields.Date('Destruction Date')
+    destruction_certificate_id = fields.Many2one('ir.attachment', string='Destruction Certificate')
+    naid_destruction_verified = fields.Boolean('NAID Destruction Verified', default=False)
+    destruction_authorized_by = fields.Many2one('res.users', string='Destruction Authorized By')
+    destruction_witness = fields.Many2one('res.users', string='Destruction Witness')
+    destruction_facility = fields.Char('Destruction Facility')
+    destruction_notes = fields.Text('Destruction Notes')
+
     # Compute methods
     @api.depends('date', 'retention_policy_id',
                  'retention_policy_id.retention_years')

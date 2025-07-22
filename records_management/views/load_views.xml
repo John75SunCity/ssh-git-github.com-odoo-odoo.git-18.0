@@ -164,8 +164,7 @@
                             <field name="sale_contract_number" states="shipped,sold"/>
                         </group>
                     </group>
-                        </group>
-                        <group name="tracking" string="Tracking & Status">
+                    <group name="tracking" string="Tracking and Status">
                             <field name="priority" widget="priority"/>
                             <field name="temperature_controlled" widget="boolean_toggle"/>
                             <field name="hazmat_required" widget="boolean_toggle"/>
@@ -177,8 +176,6 @@
                     
                     <notebook>
                         <page string="Load Items" name="load_items">
-                    <notebook>
-                        <page string="Paper Bales" name="paper_bales">
                             <field name="bale_ids" mode="list,kanban">
                                 <list string="Paper Bales" editable="bottom">
                                     <field name="bale_number"/>
@@ -211,7 +208,7 @@
                                 </kanban>
                             </field>
                         </page>
-                        <page string="Shipping & Transport" name="shipping">
+                        <page string="Shipping and Transport" name="shipping">
                             <group>
                                 <group string="🚛 Transport Details">
                                     <field name="shipping_date" widget="date"/>

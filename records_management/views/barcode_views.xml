@@ -1,6 +1,7 @@
+==> barcode_views.xml <==
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- � ENTERPRISE BARCODE MANAGEMENT - Storage Box Types & Shred Bin Configuration -->
+    <!-- ENTERPRISE BARCODE MANAGEMENT - Storage Box Types and Shred Bin Configuration -->
     
     <!-- KANBAN VIEW: Barcode Product Configuration Dashboard -->
     <record id="view_barcode_product_kanban" model="ir.ui.view">
@@ -307,46 +308,7 @@
             </form>
         </field>
     </record>
-                                <span class="o_stat_text">Total Scans</span>
-                            </div>
-                        </button>
-                        <button name="action_view_error_logs" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
-                                    <field name="error_count"/>
-                                </span>
-                                <span class="o_stat_text">Errors</span>
-                            </div>
-                        </button>
-                        <button name="action_view_performance" type="object" class="oe_stat_button" icon="fa-chart-line">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
-                                    <field name="success_rate" widget="percentage"/>
-                                </span>
-                                <span class="o_stat_text">Success Rate</span>
-                            </div>
-                        </button>
-                    </div>
-                    
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Scanner Name"/>
-                        </h1>
-                        <div class="o_row">
-                            <field name="device_id" placeholder="Device Serial/ID"/>
-                            <label for="operator_id" string="Operator:"/>
-                            <field name="operator_id" placeholder="Assigned Operator"/>
-                        </div>
-                    </div>
-                    
-                    <group>
-                        <group name="scanner_info" string="Scanner Information">
-                            <field name="manufacturer"/>
-                            <field name="model"/>
-                            <field name="serial_number"/>
-                            <field name="firmware_version"/>
-                            <field name="battery_level" widget="progressbar"/>
-                            <field name="connection_type"/>
+
     <!-- SEARCH VIEW: Advanced Barcode Product Search -->
     <record id="view_barcode_product_search" model="ir.ui.view">
         <field name="name">barcode.product.search</field>
@@ -433,164 +395,6 @@
                 • Volume-based pricing tiers and discounts<br/>
                 • NAID compliance tracking for shred services<br/>
                 • Revenue analytics and utilization reporting
-            </p>
-        </field>
-    </record>
-</odoo>
-                                    <field name="successful_scans_today"/>
-                                    <field name="failed_scans_today"/>
-                                    <field name="average_scan_time"/>
-                                </group>
-                                <group string="Weekly Performance">
-                                    <field name="scans_this_week"/>
-                                    <field name="weekly_success_rate" widget="percentage"/>
-                                    <field name="uptime_percentage" widget="percentage"/>
-                                    <field name="maintenance_hours"/>
-                                </group>
-                            </group>
-                            <separator string="Performance Trends"/>
-                            <field name="performance_data_ids" mode="list">
-                                <list string="Performance Data">
-                                    <field name="date"/>
-                                    <field name="total_scans"/>
-                                    <field name="successful_scans"/>
-                                    <field name="success_rate" widget="percentage"/>
-                                    <field name="average_scan_time"/>
-                                    <field name="error_count"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Maintenance" name="maintenance">
-                            <group>
-                                <group string="Maintenance Schedule">
-                                    <field name="last_maintenance_date" widget="date"/>
-                                    <field name="next_maintenance_date" widget="date"/>
-                                    <field name="maintenance_interval_days"/>
-                                    <field name="maintenance_technician"/>
-                                </group>
-                                <group string="Status Indicators">
-                                    <field name="needs_calibration" widget="boolean_toggle"/>
-                                    <field name="battery_replacement_needed" widget="boolean_toggle"/>
-                                    <field name="cleaning_required" widget="boolean_toggle"/>
-                                    <field name="firmware_update_available" widget="boolean_toggle"/>
-                                </group>
-                            </group>
-                            <separator string="Maintenance History"/>
-                            <field name="maintenance_history_ids" mode="list">
-                                <list string="Maintenance Records">
-                                    <field name="maintenance_date" widget="date"/>
-                                    <field name="maintenance_type"/>
-                                    <field name="technician_id"/>
-                                    <field name="description"/>
-                                    <field name="cost" widget="monetary"/>
-                                    <field name="downtime_hours"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-    <!-- SEARCH VIEW: Advanced Barcode Scanner Search -->
-    <record id="view_barcode_scanner_search" model="ir.ui.view">
-        <field name="name">barcode.scanner.search</field>
-        <field name="model">barcode.scanner</field>
-        <field name="arch" type="xml">
-            <search string="Search Barcode Scanners">
-                <field name="name" string="Scanner Name" filter_domain="[('name', 'ilike', self)]"/>
-                <field name="device_id" string="Device ID"/>
-                <field name="operator_id" string="Operator"/>
-                <field name="location_id" string="Location"/>
-                <field name="manufacturer" string="Manufacturer"/>
-                
-                <filter string="My Scanners" name="my_scanners" domain="[('operator_id.user_id', '=', uid)]"/>
-                <filter string="Active Session" name="active_session" domain="[('scan_session_active', '=', True)]"/>
-                <filter string="Online" name="online" domain="[('scanner_status', 'in', ['idle', 'scanning'])]"/>
-                
-                <separator/>
-                <filter string="Idle" name="idle" domain="[('scanner_status', '=', 'idle')]"/>
-                <filter string="Scanning" name="scanning" domain="[('scanner_status', '=', 'scanning')]"/>
-                <filter string="Error" name="error" domain="[('scanner_status', '=', 'error')]"/>
-                <filter string="Offline" name="offline" domain="[('scanner_status', '=', 'offline')]"/>
-                <filter string="Maintenance" name="maintenance" domain="[('scanner_status', '=', 'maintenance')]"/>
-                
-                <separator/>
-                <filter string="Low Battery" name="low_battery" domain="[('battery_level', '&lt;', 20)]"/>
-                <filter string="Needs Calibration" name="needs_calibration" domain="[('needs_calibration', '=', True)]"/>
-                <filter string="Maintenance Due" name="maintenance_due" domain="[('next_maintenance_date', '&lt;=', context_today())]"/>
-                <filter string="High Error Rate" name="high_error_rate" domain="[('success_rate', '&lt;', 90)]"/>
-                
-                <group expand="0" string="Group By">
-                    <filter string="Status" name="group_status" context="{'group_by': 'scanner_status'}"/>
-                    <filter string="Location" name="group_location" context="{'group_by': 'location_id'}"/>
-                    <filter string="Operator" name="group_operator" context="{'group_by': 'operator_id'}"/>
-                    <filter string="Manufacturer" name="group_manufacturer" context="{'group_by': 'manufacturer'}"/>
-                    <filter string="Connection Type" name="group_connection" context="{'group_by': 'connection_type'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <!-- GRAPH VIEW: Scanner Performance Analytics -->
-    <record id="view_barcode_scanner_graph" model="ir.ui.view">
-        <field name="name">barcode.scanner.graph</field>
-        <field name="model">barcode.scanner</field>
-        <field name="arch" type="xml">
-            <graph string="Scanner Performance" type="bar" sample="1">
-                <field name="operator_id" type="row"/>
-                <field name="scanner_status" type="col"/>
-                <field name="scan_count" type="measure"/>
-            </graph>
-        </field>
-    </record>
-
-    <!-- PIVOT VIEW: Scanner Analytics -->
-    <record id="view_barcode_scanner_pivot" model="ir.ui.view">
-        <field name="name">barcode.scanner.pivot</field>
-        <field name="model">barcode.scanner</field>
-        <field name="arch" type="xml">
-            <pivot string="Scanner Analytics" sample="1">
-                <field name="location_id" type="row"/>
-                <field name="scanner_status" type="col"/>
-                <field name="scan_count" type="measure"/>
-                <field name="success_rate" type="measure"/>
-            </pivot>
-        </field>
-    </record>
-
-    <!-- ACTION: Barcode Scanner Management -->
-    <record id="action_barcode_scanner" model="ir.actions.act_window">
-        <field name="name">📱 Barcode Scanner Management</field>
-        <field name="res_model">barcode.scanner</field>
-        <field name="view_mode">kanban,list,form,graph,pivot</field>
-        <field name="search_view_id" ref="view_barcode_scanner_search"/>
-        <field name="context">{
-            'search_default_online': 1,
-            'search_default_my_scanners': 1
-        }</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                📱 Set up your first barcode scanner!
-            </p>
-            <p>
-                Manage enterprise barcode scanning operations with real-time tracking, performance monitoring, and comprehensive device management. 
-                Support for 1D/2D barcodes, QR codes, and RFID with mobile-optimized interfaces.
-            </p>
-            <p>
-                <strong>Key Features:</strong><br/>
-                • Real-time scanner status and battery monitoring<br/>
-                • Comprehensive scan history and audit trails<br/>
-                • Multi-format barcode support (Code128, QR, EAN13, etc.)<br/>
-                • Performance analytics and success rate tracking<br/>
-                • Maintenance scheduling and calibration management<br/>
-                • Mobile-first interface for warehouse operations
             </p>
         </field>
     </record>

@@ -19,6 +19,12 @@ from . import bale
 from . import load
 from . import paper_bale
 
+# Document Related Models (custody, audit, digital copies)
+from . import records_chain_of_custody
+
+# Box Related Models (movements, service requests)
+from . import records_box_movement
+
 # Shredding and Services
 from . import shredding_service
 

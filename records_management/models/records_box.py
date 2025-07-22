@@ -175,6 +175,16 @@ class RecordsBox(models.Model):
     color = fields.Integer(string='Color Index')
     tag_ids = fields.Many2many('records.tag', string='Tags')
 
+    # One2many relations referenced in views
+    movement_ids = fields.One2many(
+        'records.box.movement', 'box_id',
+        string='Movement History'
+    )
+    service_request_ids = fields.One2many(
+        'records.service.request', 'box_id',
+        string='Service Requests'
+    )
+
     @api.model_create_multi
     def create(self, vals_list: List[dict]) -> 'RecordsBox':
         for vals in vals_list:

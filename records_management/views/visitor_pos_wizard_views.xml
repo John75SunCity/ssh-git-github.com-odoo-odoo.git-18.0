@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 🎯 ENTERPRISE VISITOR POS WIZARD - Advanced Walk-In Customer Processing & Audit Integration -->
+    <!-- ENTERPRISE VISITOR POS WIZARD - Advanced Walk-In Customer Proces                        <page string="Audit and Compliance" name="audit_compliance">
+                            <group>
+                                <group string="Audit Trail Configuration">g & Audit Integration -->
     
     <!-- FORM VIEW: Visitor POS Processing Wizard -->
     <record id="view_visitor_pos_wizard_form" model="ir.ui.view">
@@ -17,7 +19,7 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            🎯 Visitor POS Processing
+                            Visitor POS Processing
                         </h1>
                         <div class="o_row">
                             <span>Link visitor check-ins with POS transactions for comprehensive audit trails</span>
@@ -43,7 +45,7 @@
                     </group>
                     
                     <group>
-                        <group name="customer_data" string="📋 Customer Data Management">
+                        <group name="customer_data" string="Customer Data Management">
                             <field name="existing_customer_id" options="{'no_create': True}"/>
                             <field name="create_new_customer" widget="boolean_toggle"/>
                             <field name="customer_category" states="create_new_customer=True"/>
@@ -92,16 +94,16 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Pricing & Payment" name="pricing_payment">
+                        <page string="Pricing and Payment" name="pricing_payment">
                             <group>
-                                <group string="💰 Pricing Information">
+                                <group string="Pricing Information">
                                     <field name="base_amount" widget="monetary" readonly="1"/>
                                     <field name="express_surcharge" widget="monetary" readonly="1"/>
                                     <field name="total_discount" widget="monetary" readonly="1"/>
                                     <field name="tax_amount" widget="monetary" readonly="1"/>
                                     <field name="total_amount" widget="monetary" readonly="1"/>
                                 </group>
-                                <group string="💳 Payment Configuration">
+                                <group string="Payment Configuration">
                                     <field name="payment_method_id" required="1"/>
                                     <field name="payment_reference"/>
                                     <field name="payment_terms"/>
@@ -120,22 +122,22 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Audit & Compliance" name="audit_compliance">
+                        <page string="Audit and Compliance" name="audit_compliance">
                             <group>
-                                <group string="🔍 Audit Trail Configuration">
+                                <group string="Audit Trail Configuration">
                                     <field name="audit_required" widget="boolean_toggle"/>
                                     <field name="audit_level" states="audit_required=True"/>
                                     <field name="compliance_officer" states="audit_required=True"/>
                                     <field name="audit_notes" states="audit_required=True"/>
                                 </group>
-                                <group string="📊 NAID Compliance">
+                                <group string="NAID Compliance">
                                     <field name="naid_certificate_required" widget="boolean_toggle"/>
                                     <field name="witness_verification" widget="boolean_toggle" states="naid_certificate_required=True"/>
                                     <field name="chain_of_custody" widget="boolean_toggle"/>
                                     <field name="compliance_documentation"/>
                                 </group>
                             </group>
-                            <separator string="📋 Required Documentation"/>
+                            <separator string="Required Documentation"/>
                             <field name="required_document_ids" mode="list">
                                 <list string="Required Documents" editable="bottom">
                                     <field name="document_type"/>
@@ -184,7 +186,7 @@
                                     <field name="invoice_generated" widget="boolean_toggle" readonly="1"/>
                                     <field name="invoice_id" readonly="1" states="invoice_generated=True"/>
                                 </group>
-                                <group string="📊 Records Management Link">
+                                <group string="Records Management Link">
                                     <field name="records_request_created" widget="boolean_toggle" readonly="1"/>
                                     <field name="records_request_id" readonly="1" states="records_request_created=True"/>
                                     <field name="naid_audit_created" widget="boolean_toggle" readonly="1"/>
@@ -304,7 +306,7 @@
 
     <!-- ACTION: Visitor POS Wizard Management -->
     <record id="action_visitor_pos_wizard" model="ir.actions.act_window">
-        <field name="name">🎯 Visitor POS Processing</field>
+        <field name="name">Visitor POS Processing</field>
         <field name="res_model">visitor.pos.wizard</field>
         <field name="view_mode">list,form,graph,pivot</field>
         <field name="search_view_id" ref="view_visitor_pos_wizard_search"/>
@@ -314,7 +316,7 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                🎯 Process your first walk-in visitor!
+                Process your first walk-in visitor!
             </p>
             <p>
                 Streamline walk-in customer processing with integrated POS transactions and comprehensive audit trails. 
@@ -334,7 +336,7 @@
 
     <!-- ACTION: Visitor POS Processing Wizard (Wizard Mode) -->
     <record id="action_visitor_pos_processing_wizard" model="ir.actions.act_window">
-        <field name="name">🎯 Process Walk-In Visitor</field>
+        <field name="name">Process Walk-In Visitor</field>
         <field name="res_model">visitor.pos.wizard</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_visitor_pos_wizard_form"/>
