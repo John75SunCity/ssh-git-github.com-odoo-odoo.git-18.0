@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-            'version': '18.0.2.49.95',  # SYSTEMATIC: Apply minimal view approach to records.location, preparing for systematic fix
+            'version': '18.0.2.49.96',  # BATCH: Core view fixes - retention policies, document types, boxes, documents
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

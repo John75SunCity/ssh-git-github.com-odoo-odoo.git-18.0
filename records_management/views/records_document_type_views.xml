@@ -1,5 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Minimal action - let Odoo auto-generate views for records.document.type -->
+    <record id="action_records_document_type" model="ir.actions.act_window">
+        <field name="name">Document Types</field>
+        <field name="res_model">records.document.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first document type
+            </p>
+            <p>
+                Categorize documents by type for better organization.
+            </p>
+        </field>
+    </record>
+</odoo>
     <!-- Document Type Form View -->
     <record id="view_records_document_type_form" model="ir.ui.view">
         <field name="name">records.document.type.form</field>

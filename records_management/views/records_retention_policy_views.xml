@@ -1,67 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Retention Policy Form View -->
-    <record id="view_records_retention_policy_form" model="ir.ui.view">
-        <field name="name">records.retention.policy.form</field>
-        <field name="model">records.retention.policy</field>
-        <field name="arch" type="xml">
-            <form string="Retention Policy">
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="retention_years"/>
-                        <field name="description"/>
-                        <field name="active" widget="boolean_toggle"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- Retention Policy Tree View -->
-    <record id="view_records_retention_policy_tree" model="ir.ui.view">
-        <field name="name">records.retention.policy.tree</field>
-        <field name="model">records.retention.policy</field>
-        
-        
-        <field name="arch" type="xml">
-            <tree string="Retention Policies">
-                <field name="name"/>
-                <field name="retention_years"/>
-                <field name="document_count"/>
-                <field name="active" widget="boolean_toggle"/>
-            </tree>
-        </field>
-    </record>
-
-    <!-- Retention Policy Search View -->
-    <record id="view_records_retention_policy_search" model="ir.ui.view">
-        <field name="name">records.retention.policy.search</field>
-        <field name="model">records.retention.policy</field>
-        <field name="arch" type="xml">
-            <search string="Search Retention Policies">
-                <field name="name"/>
-                <field name="description"/>
-                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Retention Years" name="retention_years" context="{'group_by': 'retention_years'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <!-- Retention Policy Action -->
+    <!-- Minimal action - let Odoo auto-generate views for records.retention.policy -->
     <record id="action_records_retention_policy" model="ir.actions.act_window">
         <field name="name">Retention Policies</field>
         <field name="res_model">records.retention.policy</field>
-        <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_records_retention_policy_search"/>
+        <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first retention policy
             </p>
             <p>
-                Retention policies define how long documents should be kept before destruction.
+                Define how long documents should be retained before disposal.
             </p>
         </field>
     </record>
