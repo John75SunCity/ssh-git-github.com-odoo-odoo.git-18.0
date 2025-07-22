@@ -1,141 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Shredding Service Tree View -->
-    <record id="view_shredding_service_tree" model="ir.ui.view">
-        <field name="name">shredding.service.tree</field>
-        <field name="model">shredding.service</field>
-        
-        
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="customer_id"/>
-                <field name="service_date"/>
-                <field name="status"/>
-                <field name="total_boxes"/>
-                <field name="total_cost"/>
-            </tree>
-        </field>
-    </record>
-
-    <!-- Shredding Service Form View -->
-    <record id="view_shredding_service_form" model="ir.ui.view">
-        <field name="name">shredding.service.form</field>
-        <field name="model">shredding.service</field>
-        <field name="arch" type="xml">
-            <form string="Shredding Service">
-                <header>
-                    <button name="action_confirm" string="Confirm Service" type="object" 
-                            class="oe_highlight" invisible="status != 'draft'"/>
-                    <button name="action_start" string="Start Service" type="object" 
-                            class="oe_highlight" invisible="status != 'confirmed'"/>
-                    <button name="action_complete" string="Complete Service" type="object" 
-                            class="oe_highlight" invisible="status != 'in_progress'"/>
-                    <button name="action_cancel" string="Cancel" type="object" 
-                            invisible="status in ('completed', 'cancelled')"/>
-                    <field name="status" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Shredding Service Reference"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="customer_id"/>
-                            <field name="service_date"/>
-                            <field name="scheduled_date"/>
-                            <field name="service_type"/>
-                        </group>
-                        <group>
-                            <field name="total_boxes"/>
-                            <field name="unit_cost"/>
-                            <field name="total_cost"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Bin Details" invisible="service_type != 'bin'">
-                            <field name="bin_ids"/>
-                        </page>
-                        <page string="Box Details" invisible="service_type != 'box'">
-                            <group>
-                                <field name="box_quantity"/>
-                                <field name="shredded_box_ids"/>
-                            </group>
-                        </page>
-                        <page string="Audit &amp; Location">
-                            <group>
-                                <field name="audit_barcodes"/>
-                                <field name="latitude"/>
-                                <field name="longitude"/>
-                                <field name="map_display"/>
-                            </group>
-                        </page>
-                        <page string="Attachments">
-                            <field name="attachment_ids"/>
-                        </page>
-                        <page string="Notes">
-                            <field name="notes"/>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="activity_ids" widget="mail_activity"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-    <!-- Shredding Service Kanban View -->
-    <record id="view_shredding_service_kanban" model="ir.ui.view">
-        <field name="name">shredding.service.kanban</field>
-        <field name="model">shredding.service</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="status" class="o_kanban_small_column">
-                <field name="name"/>
-                <field name="customer_id"/>
-                <field name="service_date"/>
-                <field name="total_cost"/>
-                <field name="status"/>
-                <templates>
-                    <t t-name="card">
-                        <div class="oe_kanban_global_click">
-                            <div class="o_kanban_record_top">
-                                <div class="o_kanban_record_headings">
-                                    <strong class="o_kanban_record_title">
-                                        <field name="name"/>
-                                    </strong>
-                                </div>
-                                <div class="o_kanban_record_body">
-                                    <field name="customer_id"/>
-                                    <br/>
-                                    Date: <field name="service_date"/>
-                                    <br/>
-                                    Cost: <field name="total_cost"/>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <!-- Shredding Service Action -->
+    <!-- Minimal action - let Odoo auto-generate views for shredding.service -->
     <record id="action_shredding_service" model="ir.actions.act_window">
         <field name="name">Shredding Services</field>
         <field name="res_model">shredding.service</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first shredding service!
+                Create your first shredding service
             </p>
             <p>
-                Manage document shredding services for secure document destruction.
+                Manage document and hard drive destruction services efficiently.
             </p>
         </field>
     </record>
