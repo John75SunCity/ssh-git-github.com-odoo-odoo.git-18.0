@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-            'version': '18.0.3.1.0',   # � PHASE 1 MINIMAL: Basic Tag Model Deployment
+            'version': '18.0.3.1.1',   # 🔧 PHASE 1 MINIMAL: Enhanced Tag Views with Proper Odoo 18.0 Structure
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

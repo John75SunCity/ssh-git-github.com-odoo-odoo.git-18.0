@@ -7,9 +7,9 @@
         <field name="name">records.tag.tree.minimal</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="color" widget="color"/>
+            <tree string="Records Tags" editable="bottom">
+                <field name="name" required="1"/>
+                <field name="color" widget="color_picker"/>
             </tree>
         </field>
     </record>
@@ -19,14 +19,28 @@
         <field name="name">records.tag.form.minimal</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Record Tag">
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="color" widget="color"/>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="color" widget="color_picker"/>
+                        </group>
                     </group>
                 </sheet>
             </form>
+        </field>
+    </record>
+
+    <!-- Simple Search View -->
+    <record id="view_records_tag_search_minimal" model="ir.ui.view">
+        <field name="name">records.tag.search.minimal</field>
+        <field name="model">records.tag</field>
+        <field name="arch" type="xml">
+            <search string="Search Records Tags">
+                <field name="name"/>
+                <filter string="All Tags" name="all_tags" domain="[]"/>
+            </search>
         </field>
     </record>
 
@@ -35,9 +49,14 @@
         <field name="name">Records Tags</field>
         <field name="res_model">records.tag</field>
         <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_records_tag_tree_minimal"/>
+        <field name="search_view_id" ref="view_records_tag_search_minimal"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first record tag!
+            </p>
+            <p>
+                Tags help organize and categorize your records for better management.
             </p>
         </field>
     </record>
