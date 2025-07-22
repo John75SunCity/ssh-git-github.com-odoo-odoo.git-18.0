@@ -61,3 +61,95 @@ class RecordsRetentionPolicy(models.Model):
     def _compute_document_count(self):
         for policy in self:
             policy.document_count = len(policy.document_ids)
+    
+    def action_apply_policy(self):
+        """Apply this retention policy to selected documents or document types."""
+        self.ensure_one()
+        return {
+            'name': _('Apply Retention Policy: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.retention.policy.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_policy_id': self.id,
+                'default_policy_name': self.name,
+            }
+        }
+
+    def action_review_policy(self):
+        """Review and update retention policy"""
+        self.ensure_one()
+        return {
+            'name': _('Review Policy: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.retention.policy',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'form_view_initial_mode': 'edit'},
+        }
+
+    def action_activate_policy(self):
+        """Activate the retention policy"""
+        self.ensure_one()
+        self.policy_status = 'active'
+        return True
+
+    def action_deactivate_policy(self):
+        """Deactivate the retention policy"""
+        self.ensure_one()
+        self.policy_status = 'inactive'
+        return True
+
+    def action_view_documents(self):
+        """View documents using this policy"""
+        self.ensure_one()
+        return {
+            'name': _('Documents with Policy: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document',
+            'view_mode': 'tree,form',
+            'domain': [('retention_policy_id', '=', self.id)],
+            'context': {'default_retention_policy_id': self.id},
+        }
+
+    def action_compliance_check(self):
+        """Check compliance for this policy"""
+        self.ensure_one()
+        return {
+            'name': _('Compliance Check'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'policy.compliance.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_policy_id': self.id},
+        }
+
+    def action_schedule_review(self):
+        """Schedule policy review"""
+        self.ensure_one()
+        return {
+            'name': _('Schedule Review'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'policy.review.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_policy_id': self.id},
+        }
+
+    def action_duplicate_policy(self):
+        """Duplicate this retention policy"""
+        self.ensure_one()
+        new_policy = self.copy({
+            'name': _('%s (Copy)') % self.name,
+            'policy_status': 'pending',
+        })
+        return {
+            'name': _('Duplicated Policy'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.retention.policy',
+            'res_id': new_policy.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }

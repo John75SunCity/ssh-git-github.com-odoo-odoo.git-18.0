@@ -322,3 +322,72 @@ class ResPartnerDepartmentBilling(models.Model):
             'view_mode': 'form',
             'target': 'current',
         }
+
+    def action_view_invoices(self):
+        """View invoices for this department billing"""
+        self.ensure_one()
+        return {
+            'name': _('Invoices - %s') % self.department_id.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'view_mode': 'tree,form',
+            'domain': [
+                ('partner_id', '=', self.partner_id.id),
+                ('move_type', '=', 'out_invoice'),
+            ],
+            'context': {'default_partner_id': self.partner_id.id},
+        }
+
+    def action_update_billing_method(self):
+        """Update billing method"""
+        self.ensure_one()
+        return {
+            'name': _('Update Billing Method'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'billing.method.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_billing_id': self.id},
+        }
+
+    def action_view_boxes(self):
+        """View boxes for this department"""
+        self.ensure_one()
+        return {
+            'name': _('Boxes - %s') % self.department_id.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.box',
+            'view_mode': 'tree,form',
+            'domain': [('department_id', '=', self.department_id.id)],
+            'context': {'default_department_id': self.department_id.id},
+        }
+
+    def action_send_statement(self):
+        """Send billing statement"""
+        self.ensure_one()
+        return {
+            'name': _('Send Statement'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'billing.statement.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_billing_id': self.id},
+        }
+
+    def action_calculate_fees(self):
+        """Calculate storage fees"""
+        self.ensure_one()
+        self._compute_billing_totals()
+        return True
+
+    def action_print_statement(self):
+        """Print billing statement"""
+        self.ensure_one()
+        return {
+            'name': _('Print Statement'),
+            'type': 'ir.actions.report',
+            'report_name': 'records_management.billing_statement_report',
+            'report_type': 'qweb-pdf',
+            'report_file': 'records_management.billing_statement_report',
+            'context': {'active_ids': [self.id]},
+        }

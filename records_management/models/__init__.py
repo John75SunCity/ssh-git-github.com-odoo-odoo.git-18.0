@@ -63,6 +63,7 @@ from . import project_task
 
 # Wizards/Installers (last, as they depend on models)
 from . import visitor_pos_wizard
+from . import barcode_product
 from . import installer
 from . import ir_actions_report
 from . import ir_module

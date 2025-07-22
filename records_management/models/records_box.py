@@ -379,6 +379,90 @@ class RecordsBox(models.Model):
             'status_date': fields.Datetime.now()
         })
 
+    def action_generate_barcode(self):
+        """Generate and print barcode for this box."""
+        self.ensure_one()
+        return {
+            'name': _('Generate Barcode: %s') % self.name,
+            'type': 'ir.actions.report',
+            'report_name': 'records_management.box_barcode_report',
+            'report_type': 'qweb-pdf',
+            'report_file': 'records_management.box_barcode_report',
+            'context': {'active_ids': [self.id]},
+        }
+
+    def action_move_box(self):
+        """Move box to a different location."""
+        self.ensure_one()
+        return {
+            'name': _('Move Box: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.box.movement.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_box_id': self.id},
+        }
+
+    def action_schedule_destruction(self):
+        """Schedule this box for destruction."""
+        self.ensure_one()
+        return {
+            'name': _('Schedule Destruction: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.destruction.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_box_ids': [(6, 0, [self.id])]},
+        }
+
+    def action_store_box(self):
+        """Store box in warehouse."""
+        self.ensure_one()
+        self.write({
+            'state': 'stored',
+            'storage_date': fields.Date.today(),
+        })
+        return True
+
+    def action_view_movements(self):
+        """View movement history for this box."""
+        self.ensure_one()
+        return {
+            'name': _('Box Movements: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.box.movement',
+            'view_mode': 'tree,form',
+            'domain': [('box_id', '=', self.id)],
+            'context': {'default_box_id': self.id},
+        }
+
+    def action_view_requests(self):
+        """View service requests for this box."""
+        self.ensure_one()
+        return {
+            'name': _('Service Requests: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.service.request',
+            'view_mode': 'tree,form',
+            'domain': [('box_id', '=', self.id)],
+            'context': {'default_box_id': self.id},
+        }
+
+    def action_view_document(self):
+        """View a specific document in this box."""
+        # This would be called from a context with document_id
+        document_id = self.env.context.get('document_id')
+        if document_id:
+            return {
+                'name': _('Document Details'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'records.document',
+                'res_id': document_id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+        return False
+
     @api.constrains('barcode', 'barcode_length')
     def _check_barcode_length(self) -> None:
         for box in self:

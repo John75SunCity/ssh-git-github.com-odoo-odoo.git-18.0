@@ -245,6 +245,66 @@ class NAIDAuditLog(models.Model):
             'remediation_completed_date': fields.Datetime.now()
         })
 
+    def action_start_audit(self):
+        """Start NAID audit process"""
+        self.ensure_one()
+        return {
+            'name': _('Start Audit'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'naid.audit.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_audit_id': self.id},
+        }
+
+    def action_view_findings(self):
+        """View audit findings"""
+        self.ensure_one()
+        return {
+            'name': _('Audit Findings'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'naid.audit.finding',
+            'view_mode': 'tree,form',
+            'domain': [('audit_id', '=', self.id)],
+            'context': {'default_audit_id': self.id},
+        }
+
+    def action_generate_report(self):
+        """Generate audit report"""
+        self.ensure_one()
+        return {
+            'name': _('Generate Report'),
+            'type': 'ir.actions.report',
+            'report_name': 'records_management.naid_audit_report',
+            'report_type': 'qweb-pdf',
+            'report_file': 'records_management.naid_audit_report',
+            'context': {'active_ids': [self.id]},
+        }
+
+    def action_create_remediation_plan(self):
+        """Create remediation plan"""
+        self.ensure_one()
+        return {
+            'name': _('Create Remediation Plan'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'remediation.plan.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_audit_id': self.id},
+        }
+
+    def action_schedule_followup(self):
+        """Schedule follow-up audit"""
+        self.ensure_one()
+        return {
+            'name': _('Schedule Follow-up'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'audit.followup.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_parent_audit_id': self.id},
+        }
+
     @api.model
     def cleanup_old_logs(self, days=2555):  # 7 years default
         """

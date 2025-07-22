@@ -14,3 +14,43 @@ class ProjectTask(models.Model):
                                  string='Related Feedback', 
                                  store=True, readonly=True,
                                  help='Original feedback that led to this improvement task')
+
+    def action_view_improvement_action(self):
+        """View related improvement action"""
+        self.ensure_one()
+        if self.improvement_action_id:
+            return {
+                'name': _('Improvement Action'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'survey.improvement.action',
+                'res_id': self.improvement_action_id.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+        return False
+
+    def action_view_feedback(self):
+        """View original feedback"""
+        self.ensure_one()
+        if self.feedback_id:
+            return {
+                'name': _('Original Feedback'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'survey.user_input',
+                'res_id': self.feedback_id.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+        return False
+
+    def action_complete_improvement(self):
+        """Complete improvement task"""
+        self.ensure_one()
+        return {
+            'name': _('Complete Improvement'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'improvement.completion.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_task_id': self.id},
+        }

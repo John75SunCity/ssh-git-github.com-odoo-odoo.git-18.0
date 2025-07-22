@@ -149,6 +149,66 @@ class NAIDChainOfCustody(models.Model):
             'description': 'Chain of custody completed'
         })
 
+    def action_view_events(self):
+        """View custody events"""
+        self.ensure_one()
+        return {
+            'name': _('Custody Events'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'naid.custody.event',
+            'view_mode': 'tree,form',
+            'domain': [('custody_id', '=', self.id)],
+            'context': {'default_custody_id': self.id},
+        }
+
+    def action_add_event(self):
+        """Add custody event"""
+        self.ensure_one()
+        return {
+            'name': _('Add Event'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'naid.custody.event',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_custody_id': self.id},
+        }
+
+    def action_print_custody_form(self):
+        """Print custody form"""
+        self.ensure_one()
+        return {
+            'name': _('Print Custody Form'),
+            'type': 'ir.actions.report',
+            'report_name': 'records_management.custody_form_report',
+            'report_type': 'qweb-pdf',
+            'report_file': 'records_management.custody_form_report',
+            'context': {'active_ids': [self.id]},
+        }
+
+    def action_verify_chain(self):
+        """Verify chain of custody"""
+        self.ensure_one()
+        return {
+            'name': _('Verify Chain'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'custody.verification.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_custody_id': self.id},
+        }
+
+    def action_breach_report(self):
+        """Report custody breach"""
+        self.ensure_one()
+        return {
+            'name': _('Report Breach'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'custody.breach.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_custody_id': self.id},
+        }
+
 
 class NAIDCustodyEvent(models.Model):
     """

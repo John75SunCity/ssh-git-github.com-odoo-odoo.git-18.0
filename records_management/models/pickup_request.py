@@ -110,6 +110,66 @@ class PickupRequest(models.Model):
     def action_cancel(self) -> bool:
         return self.write({'state': 'cancelled'})
 
+    def action_view_items(self):
+        """View pickup request items"""
+        self.ensure_one()
+        return {
+            'name': _('Pickup Items'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'pickup.request.item',
+            'view_mode': 'tree,form',
+            'domain': [('pickup_request_id', '=', self.id)],
+            'context': {'default_pickup_request_id': self.id},
+        }
+
+    def action_reschedule(self):
+        """Reschedule pickup request"""
+        self.ensure_one()
+        return {
+            'name': _('Reschedule Pickup'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'pickup.reschedule.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_pickup_id': self.id},
+        }
+
+    def action_assign_driver(self):
+        """Assign driver to pickup request"""
+        self.ensure_one()
+        return {
+            'name': _('Assign Driver'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'pickup.driver.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_pickup_id': self.id},
+        }
+
+    def action_print_route(self):
+        """Print pickup route"""
+        self.ensure_one()
+        return {
+            'name': _('Print Route'),
+            'type': 'ir.actions.report',
+            'report_name': 'records_management.pickup_route_report',
+            'report_type': 'qweb-pdf',
+            'report_file': 'records_management.pickup_route_report',
+            'context': {'active_ids': [self.id]},
+        }
+
+    def action_send_notification(self):
+        """Send pickup notification"""
+        self.ensure_one()
+        return {
+            'name': _('Send Notification'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'pickup.notification.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_pickup_id': self.id},
+        }
+
     @api.onchange('customer_id')
     def _onchange_customer_id(self) -> None:
         """

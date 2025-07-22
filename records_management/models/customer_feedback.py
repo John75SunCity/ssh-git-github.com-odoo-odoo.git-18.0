@@ -156,6 +156,52 @@ class CustomerFeedback(models.Model):
         self.write({'state': 'closed'})
         self.message_post(body=_('Feedback closed by %s', self.env.user.name))
 
+    def action_escalate(self):
+        """Escalate feedback to management"""
+        self.write({'state': 'escalated'})
+        self.message_post(body=_('Feedback escalated by %s', self.env.user.name))
+
+    def action_reopen(self):
+        """Reopen closed feedback"""
+        self.write({'state': 'new'})
+        self.message_post(body=_('Feedback reopened by %s', self.env.user.name))
+
+    def action_view_customer_history(self):
+        """View customer's feedback history"""
+        self.ensure_one()
+        return {
+            'name': _('Customer Feedback History'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'customer.feedback',
+            'view_mode': 'tree,form',
+            'domain': [('partner_id', '=', self.partner_id.id)],
+            'context': {'default_partner_id': self.partner_id.id},
+        }
+
+    def action_view_related_tickets(self):
+        """View related tickets/requests"""
+        self.ensure_one()
+        return {
+            'name': _('Related Tickets'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'portal.request',
+            'view_mode': 'tree,form',
+            'domain': [('customer_id', '=', self.partner_id.id)],
+            'context': {'default_customer_id': self.partner_id.id},
+        }
+
+    def action_view_improvement_actions(self):
+        """View improvement actions related to this feedback"""
+        self.ensure_one()
+        return {
+            'name': _('Improvement Actions'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'project.task',
+            'view_mode': 'tree,form',
+            'domain': [('name', 'ilike', self.name)],
+            'context': {'default_name': 'Improvement: %s' % self.name},
+        }
+
     @api.constrains('rating')
     def _check_rating(self):
         """Validate rating values"""

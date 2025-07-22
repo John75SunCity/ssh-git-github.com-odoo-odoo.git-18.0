@@ -108,3 +108,53 @@ class RecordsLocation(models.Model):
                 'default_include_child_locations': True,
             }
         }
+
+    def action_relocate_boxes(self):
+        """Relocate boxes from this location"""
+        self.ensure_one()
+        return {
+            'name': _('Relocate Boxes'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'box.relocation.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_source_location_id': self.id},
+        }
+
+    def action_check_capacity(self):
+        """Check location capacity"""
+        self.ensure_one()
+        self._compute_utilization_percentage()
+        return True
+
+    def action_view_child_locations(self):
+        """View child locations"""
+        self.ensure_one()
+        return {
+            'name': _('Child Locations'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.location',
+            'view_mode': 'tree,form',
+            'domain': [('parent_id', '=', self.id)],
+            'context': {'default_parent_id': self.id},
+        }
+
+    def action_archive_location(self):
+        """Archive this location"""
+        self.ensure_one()
+        if self.box_count > 0:
+            raise ValidationError(_("Cannot archive location with boxes. Please relocate boxes first."))
+        self.active = False
+        return True
+
+    def action_print_location_label(self):
+        """Print location label"""
+        self.ensure_one()
+        return {
+            'name': _('Print Location Label'),
+            'type': 'ir.actions.report',
+            'report_name': 'records_management.location_label_report',
+            'report_type': 'qweb-pdf',
+            'report_file': 'records_management.location_label_report',
+            'context': {'active_ids': [self.id]},
+        }

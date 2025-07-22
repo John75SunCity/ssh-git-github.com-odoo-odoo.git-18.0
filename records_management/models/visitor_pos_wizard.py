@@ -78,3 +78,64 @@ class VisitorPosWizard(models.TransientModel):
             'res_id': self.pos_order_id.id,
             'target': 'current',
         }
+
+    def action_process_visitor(self):
+        """Process visitor without creating POS order."""
+        self.ensure_one()
+        self.visitor_id.write({
+            'state': 'processed',
+            'notes': self.notes,
+        })
+        return {'type': 'ir.actions.act_window_close'}
+
+    def action_create_pos_order(self):
+        """Create new POS order."""
+        self.ensure_one()
+        pos_config = self.env['pos.config'].search([], limit=1)
+        if not pos_config:
+            raise UserError(_('No POS configuration found. Please set up POS first.'))
+        
+        session = self.env['pos.session'].search([
+            ('config_id', '=', pos_config.id), 
+            ('state', '=', 'opened')
+        ], limit=1)
+        
+        if not session:
+            session = pos_config.open_session_cb()
+        
+        pos_order = self.env['pos.order'].create({
+            'partner_id': self.partner_id.id,
+            'session_id': session.id,
+            'amount_total': 0.0,
+            'note': self.notes,
+        })
+        
+        self.visitor_id.write({'pos_order_id': pos_order.id})
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'pos.order',
+            'view_mode': 'form',
+            'res_id': pos_order.id,
+            'target': 'current',
+        }
+
+    def action_link_existing_order(self):
+        """Link existing POS order."""
+        self.ensure_one()
+        if not self.pos_order_id:
+            raise UserError(_('Please select a POS order to link.'))
+        
+        self.visitor_id.write({'pos_order_id': self.pos_order_id.id})
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'pos.order',
+            'view_mode': 'form',
+            'res_id': self.pos_order_id.id,
+            'target': 'current',
+        }
+
+    def action_cancel(self):
+        """Cancel wizard."""
+        return {'type': 'ir.actions.act_window_close'}

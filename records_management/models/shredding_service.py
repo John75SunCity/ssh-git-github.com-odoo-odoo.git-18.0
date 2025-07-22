@@ -150,6 +150,93 @@ class ShreddingService(models.Model):
         self.write({'status': 'cancelled'})
         return True
 
+    def action_start_destruction(self):
+        """Start the destruction process"""
+        self.write({'status': 'in_progress'})
+        self.message_post(body=_('Destruction started by %s') % self.env.user.name)
+
+    def action_generate_certificate(self):
+        """Generate destruction certificate"""
+        self.ensure_one()
+        return {
+            'name': _('Destruction Certificate'),
+            'type': 'ir.actions.report',
+            'report_name': 'records_management.destruction_certificate',
+            'report_type': 'qweb-pdf',
+            'report_file': 'records_management.destruction_certificate',
+            'context': {'active_ids': [self.id]},
+        }
+
+    def action_view_items(self):
+        """View items in this shredding service"""
+        self.ensure_one()
+        return {
+            'name': _('Shredding Items'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document',
+            'view_mode': 'tree,form',
+            'domain': [('shredding_service_id', '=', self.id)],
+            'context': {'default_shredding_service_id': self.id},
+        }
+
+    def action_witness_verification(self):
+        """Witness verification for destruction"""
+        self.ensure_one()
+        return {
+            'name': _('Witness Verification'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'shredding.witness.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_shredding_service_id': self.id},
+        }
+
+    def action_compliance_check(self):
+        """NAID compliance check"""
+        self.ensure_one()
+        return {
+            'name': _('NAID Compliance Check'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'naid.compliance.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_shredding_service_id': self.id},
+        }
+
+    def action_view_witnesses(self):
+        """View witnesses for this destruction"""
+        self.ensure_one()
+        return {
+            'name': _('Witnesses'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'shredding.witness',
+            'view_mode': 'tree,form',
+            'domain': [('shredding_service_id', '=', self.id)],
+            'context': {'default_shredding_service_id': self.id},
+        }
+
+    def action_view_certificates(self):
+        """View certificates for this destruction"""
+        self.ensure_one()
+        return {
+            'name': _('Certificates'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'destruction.certificate',
+            'view_mode': 'tree,form',
+            'domain': [('shredding_service_id', '=', self.id)],
+            'context': {'default_shredding_service_id': self.id},
+        }
+
+    def action_verify_witness(self):
+        """Verify witness signature"""
+        # This would be called from context with witness_id
+        witness_id = self.env.context.get('witness_id')
+        if witness_id:
+            witness = self.env['shredding.witness'].browse(witness_id)
+            witness.write({'verified': True, 'verified_date': fields.Datetime.now()})
+            return True
+        return False
+
     @api.model_create_multi
     def create(self, vals_list: List[dict]) -> 'ShreddingService':
         for vals in vals_list:

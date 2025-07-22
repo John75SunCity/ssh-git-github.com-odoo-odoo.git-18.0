@@ -491,6 +491,46 @@ class RecordsDocument(models.Model):
             }
         }
 
+    def action_view_chain_of_custody(self):
+        """View chain of custody records for this document."""
+        self.ensure_one()
+        return {
+            'name': _('Chain of Custody: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.chain.of.custody',
+            'view_mode': 'tree,form',
+            'domain': [('document_id', '=', self.id)],
+            'context': {'default_document_id': self.id},
+        }
+
+    def action_scan_document(self):
+        """Action to scan or upload images of documents."""
+        self.ensure_one()
+        return {
+            'name': _('Scan/Image Document: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'ir.attachment',
+            'view_mode': 'tree,form',
+            'domain': [('res_model', '=', 'records.document'), ('res_id', '=', self.id)],
+            'context': {
+                'default_res_model': 'records.document',
+                'default_res_id': self.id,
+                'default_name': 'Scan - %s' % self.name,
+            },
+        }
+
+    def action_audit_trail(self):
+        """View audit trail for this document."""
+        self.ensure_one()
+        return {
+            'name': _('Audit Trail: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.audit.trail',
+            'view_mode': 'tree,form',
+            'domain': [('document_id', '=', self.id)],
+            'context': {'default_document_id': self.id},
+        }
+
     @api.model
     def get_documents_eligible_for_destruction(self, exclude_permanent=True):
         """Get documents that are eligible for destruction, excluding permanent ones by default."""
