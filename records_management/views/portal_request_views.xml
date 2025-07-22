@@ -76,10 +76,10 @@
 
     <!-- 📋 Enhanced Tree with SLA Tracking -->
     <record id="view_portal_request_tree" model="ir.ui.view">
-        <field name="name">portal.request.tree</field>
+        <field name="name">portal.request.list</field>
         <field name="model">portal.request</field>
         <field name="arch" type="xml">
-            <tree decoration-success="request_status == 'completed'" 
+            <list decoration-success="request_status == 'completed'" 
                   decoration-warning="request_status == 'in_progress'"
                   decoration-danger="priority == 'high'"
                   decoration-info="request_status == 'pending_approval'">
@@ -98,7 +98,7 @@
                 <button name="action_escalate" type="object" string="Escalate" 
                         icon="fa-arrow-up" class="btn-link" 
                         attrs="{'invisible': [('priority', '=', 'high')]}"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -189,8 +189,8 @@
                             </group>
                         </page>
                         <page string="📎 Attachments &amp; Documents" name="attachments">
-                            <field name="attachment_ids" mode="tree">
-                                <tree>
+                            <field name="attachment_ids" mode="list">
+                                <list>
                                     <field name="name"/>
                                     <field name="file_type"/>
                                     <field name="file_size"/>
@@ -198,12 +198,12 @@
                                     <field name="uploaded_by"/>
                                     <field name="confidential"/>
                                     <button name="action_download" type="object" string="Download" icon="fa-download" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="💬 Communications" name="communications">
-                            <field name="communication_log_ids" mode="tree">
-                                <tree>
+                            <field name="communication_log_ids" mode="list">
+                                <list>
                                     <field name="communication_date"/>
                                     <field name="communication_type"/>
                                     <field name="from_person"/>
@@ -211,7 +211,7 @@
                                     <field name="subject"/>
                                     <field name="response_required"/>
                                     <button name="action_view_details" type="object" string="View" icon="fa-eye" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📋 Approval Workflow" name="approval">
@@ -229,15 +229,15 @@
                                     <field name="escalation_approver"/>
                                 </group>
                             </group>
-                            <field name="approval_history_ids" mode="tree">
-                                <tree>
+                            <field name="approval_history_ids" mode="list">
+                                <list>
                                     <field name="approval_date"/>
                                     <field name="approver"/>
                                     <field name="approval_action"/>
                                     <field name="approval_level"/>
                                     <field name="comments"/>
                                     <field name="time_taken"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="💰 Billing &amp; Pricing" name="billing">
@@ -271,15 +271,15 @@
                                     <field name="quality_score" readonly="1"/>
                                 </group>
                             </group>
-                            <field name="sla_milestone_ids" mode="tree">
-                                <tree>
+                            <field name="sla_milestone_ids" mode="list">
+                                <list>
                                     <field name="milestone_name"/>
                                     <field name="target_date"/>
                                     <field name="actual_date"/>
                                     <field name="status"/>
                                     <field name="variance"/>
                                     <field name="notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📊 Analytics" name="analytics">
@@ -385,7 +385,7 @@
     <record id="action_portal_request" model="ir.actions.act_window">
         <field name="name">🌐 Portal Requests</field>
         <field name="res_model">portal.request</field>
-        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
         <field name="search_view_id" ref="view_portal_request_search"/>
         <field name="context">{
             'search_default_in_progress': 1,

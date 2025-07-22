@@ -71,10 +71,10 @@
 
     <!-- 📈 Advanced Tree View with Analytics -->
     <record id="view_customer_inventory_tree" model="ir.ui.view">
-        <field name="name">customer.inventory.report.tree</field>
+        <field name="name">customer.inventory.report.list</field>
         <field name="model">customer.inventory.report</field>
         <field name="arch" type="xml">
-            <tree decoration-success="status == 'confirmed'" 
+            <list decoration-success="status == 'confirmed'" 
                   decoration-warning="status == 'sent'"
                   decoration-info="status == 'draft'">
                 <field name="name" string="📋 Report"/>
@@ -89,7 +89,7 @@
                         icon="fa-cube" class="btn-link"/>
                 <button name="action_generate_pdf_report" type="object" string="PDF" 
                         icon="fa-file-pdf-o" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -137,23 +137,23 @@
                     
                     <notebook>
                         <page string="📦 Boxes Overview" name="boxes">
-                            <field name="box_ids" mode="tree">
-                                <tree>
+                            <field name="box_ids" mode="list">
+                                <list>
                                     <field name="name"/>
                                     <field name="location_id"/>
                                     <field name="state"/>
                                     <field name="storage_date"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📄 Documents Overview" name="documents">
-                            <field name="document_ids" mode="tree">
-                                <tree>
+                            <field name="document_ids" mode="list">
+                                <list>
                                     <field name="name"/>
                                     <field name="document_type_id"/>
                                     <field name="state"/>
                                     <field name="created_date"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📝 Notes &amp; Comments" name="notes">
@@ -222,7 +222,7 @@
     <record id="action_customer_inventory_report" model="ir.actions.act_window">
         <field name="name">📊 Customer Inventory Dashboard</field>
         <field name="res_model">customer.inventory.report</field>
-        <field name="view_mode">kanban,tree,form,graph</field>
+        <field name="view_mode">kanban,list,form,graph</field>
         <field name="search_view_id" ref="view_customer_inventory_search"/>
         <field name="context">{
             'search_default_this_month': 1,

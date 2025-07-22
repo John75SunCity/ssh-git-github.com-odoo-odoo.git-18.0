@@ -76,10 +76,10 @@
 
     <!-- 📋 Enhanced Tree with Compliance Tracking -->
     <record id="view_records_document_type_tree" model="ir.ui.view">
-        <field name="name">records.document.type.tree</field>
+        <field name="name">records.document.type.list</field>
         <field name="model">records.document.type</field>
         <field name="arch" type="xml">
-            <tree decoration-success="active == True and requires_approval == True" 
+            <list decoration-success="active == True and requires_approval == True" 
                   decoration-warning="retention_period &gt; 7"
                   decoration-info="confidentiality_level in ('high', 'confidential')">
                 <field name="name" string="📋 Document Type"/>
@@ -93,7 +93,7 @@
                         icon="fa-file-text-o" class="btn-link"/>
                 <button name="action_retention_policy" type="object" string="Policy" 
                         icon="fa-clock-o" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -161,25 +161,25 @@
                     
                     <notebook>
                         <page string="📄 Document Templates" name="templates">
-                            <field name="template_ids" mode="tree">
-                                <tree editable="bottom">
+                            <field name="template_ids" mode="list">
+                                <list editable="bottom">
                                     <field name="name"/>
                                     <field name="template_type"/>
                                     <field name="file_format"/>
                                     <field name="is_default"/>
                                     <field name="active"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🏷️ Classification Rules" name="classification">
-                            <field name="classification_rule_ids" mode="tree">
-                                <tree editable="bottom">
+                            <field name="classification_rule_ids" mode="list">
+                                <list editable="bottom">
                                     <field name="rule_name"/>
                                     <field name="keyword"/>
                                     <field name="rule_type"/>
                                     <field name="confidence_threshold"/>
                                     <field name="auto_apply"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="✅ Approval Workflow" name="approval">
@@ -197,25 +197,25 @@
                                     <field name="reminder_frequency"/>
                                 </group>
                             </group>
-                            <field name="approval_rule_ids" mode="tree">
-                                <tree>
+                            <field name="approval_rule_ids" mode="list">
+                                <list>
                                     <field name="approver_id"/>
                                     <field name="approval_type"/>
                                     <field name="sequence"/>
                                     <field name="is_required"/>
                                     <field name="delegation_allowed"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🔍 Metadata Fields" name="metadata">
-                            <field name="metadata_field_ids" mode="tree">
-                                <tree editable="bottom">
+                            <field name="metadata_field_ids" mode="list">
+                                <list editable="bottom">
                                     <field name="field_name"/>
                                     <field name="field_type"/>
                                     <field name="is_required"/>
                                     <field name="is_indexed"/>
                                     <field name="default_value"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📊 Analytics" name="analytics">
@@ -288,7 +288,7 @@
     <record id="action_records_document_type" model="ir.actions.act_window">
         <field name="name">📋 Document Types</field>
         <field name="res_model">records.document.type</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_records_document_type_search"/>
         <field name="context">{
             'search_default_active': 1

@@ -79,10 +79,10 @@
 
     <!-- 📋 Enhanced Tree with Lifecycle Tracking -->
     <record id="view_records_retention_policy_tree" model="ir.ui.view">
-        <field name="name">records.retention.policy.tree</field>
+        <field name="name">records.retention.policy.list</field>
         <field name="model">records.retention.policy</field>
         <field name="arch" type="xml">
-            <tree decoration-success="policy_status == 'active' and compliance_required == True" 
+            <list decoration-success="policy_status == 'active' and compliance_required == True" 
                   decoration-warning="policy_status == 'pending_review'"
                   decoration-danger="policy_status == 'expired'"
                   decoration-info="auto_destroy == True">
@@ -100,7 +100,7 @@
                         attrs="{'invisible': [('policy_status', '!=', 'active')]}"/>
                 <button name="action_compliance_audit" type="object" string="Audit" 
                         icon="fa-shield" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -170,26 +170,26 @@
                     
                     <notebook>
                         <page string="🎯 Applicable Document Types" name="document_types">
-                            <field name="applicable_document_type_ids" mode="tree">
-                                <tree>
+                            <field name="applicable_document_type_ids" mode="list">
+                                <list>
                                     <field name="name"/>
                                     <field name="category"/>
                                     <field name="confidentiality_level"/>
                                     <field name="current_retention_period"/>
                                     <button name="action_apply_to_type" type="object" string="Apply" icon="fa-check" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📋 Policy Rules" name="rules">
-                            <field name="policy_rule_ids" mode="tree">
-                                <tree editable="bottom">
+                            <field name="policy_rule_ids" mode="list">
+                                <list editable="bottom">
                                     <field name="rule_name"/>
                                     <field name="condition"/>
                                     <field name="action"/>
                                     <field name="trigger_days"/>
                                     <field name="priority"/>
                                     <field name="active"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📅 Review Schedule" name="schedule">
@@ -207,14 +207,14 @@
                                     <field name="stakeholder_notification"/>
                                 </group>
                             </group>
-                            <field name="review_history_ids" mode="tree">
-                                <tree>
+                            <field name="review_history_ids" mode="list">
+                                <list>
                                     <field name="review_date"/>
                                     <field name="reviewer"/>
                                     <field name="review_outcome"/>
                                     <field name="changes_made"/>
                                     <field name="next_review_scheduled"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🔔 Notifications" name="notifications">
@@ -232,26 +232,26 @@
                                     <field name="compliance_notification"/>
                                 </group>
                             </group>
-                            <field name="notification_template_ids" mode="tree">
-                                <tree>
+                            <field name="notification_template_ids" mode="list">
+                                <list>
                                     <field name="template_name"/>
                                     <field name="trigger_event"/>
                                     <field name="days_before"/>
                                     <field name="notification_method"/>
                                     <field name="active"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🔍 Audit Trail" name="audit">
-                            <field name="audit_log_ids" mode="tree">
-                                <tree>
+                            <field name="audit_log_ids" mode="list">
+                                <list>
                                     <field name="timestamp"/>
                                     <field name="action"/>
                                     <field name="user_id"/>
                                     <field name="affected_documents"/>
                                     <field name="compliance_impact"/>
                                     <field name="notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📊 Analytics" name="analytics">
@@ -340,7 +340,7 @@
     <record id="action_records_retention_policy" model="ir.actions.act_window">
         <field name="name">⏰ Retention Policies</field>
         <field name="res_model">records.retention.policy</field>
-        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
         <field name="search_view_id" ref="view_records_retention_policy_search"/>
         <field name="context">{
             'search_default_active': 1

@@ -82,10 +82,10 @@
 
     <!-- 📋 Enhanced Tree with Compliance Columns -->
     <record id="view_records_document_tree" model="ir.ui.view">
-        <field name="name">records.document.tree</field>
+        <field name="name">records.document.list</field>
         <field name="model">records.document</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="destruction_eligible_date &lt;= context_today()" 
+            <list decoration-danger="destruction_eligible_date &lt;= context_today()" 
                   decoration-warning="destruction_eligible_date &lt;= (context_today() + relativedelta(days=30))"
                   decoration-success="naid_compliant == True">
                 <field name="name" string="📄 Document"/>
@@ -102,7 +102,7 @@
                 <button name="action_schedule_destruction" type="object" string="Destroy" 
                         icon="fa-trash" class="btn-link" 
                         attrs="{'invisible': [('destruction_eligible_date', '=', False)]}"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -172,26 +172,26 @@
                             <field name="description" placeholder="Document description, contents, and special handling notes..."/>
                         </page>
                         <page string="🔗 Chain of Custody" name="custody_chain">
-                            <field name="chain_of_custody_ids" mode="tree">
-                                <tree>
+                            <field name="chain_of_custody_ids" mode="list">
+                                <list>
                                     <field name="event_date"/>
                                     <field name="event_type"/>
                                     <field name="responsible_person"/>
                                     <field name="location"/>
                                     <field name="signature_verified"/>
                                     <field name="notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📋 Audit Trail" name="audit">
-                            <field name="audit_trail_ids" mode="tree">
-                                <tree>
+                            <field name="audit_trail_ids" mode="list">
+                                <list>
                                     <field name="timestamp"/>
                                     <field name="action_type"/>
                                     <field name="user_id"/>
                                     <field name="description"/>
                                     <field name="compliance_verified"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="💥 Destruction Record" name="destruction" 
@@ -212,15 +212,15 @@
                             <field name="destruction_notes" placeholder="Destruction process notes and compliance verification..."/>
                         </page>
                         <page string="📷 Digital Copies" name="digital">
-                            <field name="digital_copy_ids" mode="tree">
-                                <tree>
+                            <field name="digital_copy_ids" mode="list">
+                                <list>
                                     <field name="scan_date"/>
                                     <field name="file_format"/>
                                     <field name="resolution"/>
                                     <field name="file_size"/>
                                     <field name="storage_location"/>
                                     <button name="action_download" type="object" string="Download" icon="fa-download" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -295,7 +295,7 @@
     <record id="action_records_document" model="ir.actions.act_window">
         <field name="name">📄 Document Management</field>
         <field name="res_model">records.document</field>
-        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
         <field name="search_view_id" ref="view_records_document_search"/>
         <field name="context">{
             'search_default_active': 1,

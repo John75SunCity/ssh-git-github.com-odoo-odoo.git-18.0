@@ -4,7 +4,7 @@
     
     <!-- Simple List View (was Tree in older Odoo versions) -->
     <record id="records_tag_tree_view_simple" model="ir.ui.view">
-        <field name="name">records.tag.tree.simple</field>
+        <field name="name">records.tag.list.simple</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
             <list string="Records Tags">

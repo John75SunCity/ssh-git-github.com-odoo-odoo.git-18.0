@@ -62,10 +62,10 @@
 
     <!-- 📋 Enhanced Tree with Smart Analytics -->
     <record id="view_records_tag_tree" model="ir.ui.view">
-        <field name="name">records.tag.tree</field>
+        <field name="name">records.tag.list</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
-            <tree decoration-success="active == True and auto_assign == True" 
+            <list decoration-success="active == True and auto_assign == True" 
                   decoration-warning="tag_usage_count == 0"
                   decoration-info="category == 'system'">
                 <field name="name" string="🏷️ Tag Name"/>
@@ -80,7 +80,7 @@
                         icon="fa-file-text" class="btn-link"/>
                 <button name="action_bulk_tag" type="object" string="Bulk Tag" 
                         icon="fa-tags" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -157,14 +157,14 @@
                             </group>
                         </page>
                         <page string="👥 Child Tags" name="child_tags">
-                            <field name="child_tag_ids" mode="tree">
-                                <tree>
+                            <field name="child_tag_ids" mode="list">
+                                <list>
                                     <field name="name"/>
                                     <field name="category"/>
                                     <field name="color" widget="color"/>
                                     <field name="active"/>
                                     <button name="action_view_tagged_records" type="object" string="View" icon="fa-eye" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -216,7 +216,7 @@
     <record id="action_records_tag" model="ir.actions.act_window">
         <field name="name">🏷️ Enterprise Tags</field>
         <field name="res_model">records.tag</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_records_tag_search"/>
         <field name="context">{'search_default_active': 1}</field>
         <field name="domain">[]</field>

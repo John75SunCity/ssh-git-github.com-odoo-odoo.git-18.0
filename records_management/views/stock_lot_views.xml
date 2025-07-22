@@ -71,10 +71,10 @@
 
     <!-- 📋 Enhanced Tree with Inventory Analytics -->
     <record id="view_stock_lot_tree" model="ir.ui.view">
-        <field name="name">stock.lot.tree</field>
+        <field name="name">stock.lot.list</field>
         <field name="model">stock.lot</field>
         <field name="arch" type="xml">
-            <tree decoration-success="product_qty &gt; 0" 
+            <list decoration-success="product_qty &gt; 0" 
                   decoration-warning="expiration_date &lt; context_today()"
                   decoration-info="ref != False">
                 <field name="name" string="📦 Serial/Lot Number"/>
@@ -89,7 +89,7 @@
                         icon="fa-exchange" class="btn-link"/>
                 <button name="action_print_label" type="object" string="Label" 
                         icon="fa-print" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -142,8 +142,8 @@
                     
                     <notebook>
                         <page string="📋 Stock Movements" name="movements">
-                            <field name="stock_move_ids" mode="tree">
-                                <tree>
+                            <field name="stock_move_ids" mode="list">
+                                <list>
                                     <field name="date"/>
                                     <field name="reference"/>
                                     <field name="location_id"/>
@@ -151,24 +151,24 @@
                                     <field name="product_uom_qty"/>
                                     <field name="state"/>
                                     <button name="action_view_move_details" type="object" string="Details" icon="fa-eye" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📦 Stock Locations" name="locations">
-                            <field name="quant_ids" mode="tree">
-                                <tree>
+                            <field name="quant_ids" mode="list">
+                                <list>
                                     <field name="location_id"/>
                                     <field name="quantity"/>
                                     <field name="reserved_quantity"/>
                                     <field name="available_quantity"/>
                                     <field name="in_date"/>
                                     <field name="inventory_date"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🔍 Quality Control" name="quality">
-                            <field name="quality_check_ids" mode="tree">
-                                <tree>
+                            <field name="quality_check_ids" mode="list">
+                                <list>
                                     <field name="check_date"/>
                                     <field name="quality_point_id"/>
                                     <field name="quality_state"/>
@@ -176,7 +176,7 @@
                                     <field name="test_type"/>
                                     <field name="measure"/>
                                     <button name="action_view_quality_details" type="object" string="Details" icon="fa-eye" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📊 Traceability" name="traceability">
@@ -194,27 +194,27 @@
                                     <field name="final_customer"/>
                                 </group>
                             </group>
-                            <field name="traceability_log_ids" mode="tree">
-                                <tree>
+                            <field name="traceability_log_ids" mode="list">
+                                <list>
                                     <field name="timestamp"/>
                                     <field name="action_type"/>
                                     <field name="location_from"/>
                                     <field name="location_to"/>
                                     <field name="user_id"/>
                                     <field name="notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📋 Attributes &amp; Properties" name="attributes">
-                            <field name="attribute_ids" mode="tree">
-                                <tree editable="bottom">
+                            <field name="attribute_ids" mode="list">
+                                <list editable="bottom">
                                     <field name="attribute_name"/>
                                     <field name="attribute_value"/>
                                     <field name="attribute_type"/>
                                     <field name="measurement_unit"/>
                                     <field name="quality_verified"/>
                                     <field name="verification_date"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📈 Analytics &amp; Reports" name="analytics">
@@ -289,7 +289,7 @@
     <record id="action_stock_lot" model="ir.actions.act_window">
         <field name="name">📦 Serial Numbers / Lots</field>
         <field name="res_model">stock.lot</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_stock_lot_search"/>
         <field name="context">{
             'search_default_in_stock': 1

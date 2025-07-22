@@ -83,10 +83,10 @@
 
     <!-- 📋 Enhanced Tree View for Customer Management -->
     <record id="view_res_partner_records_tree" model="ir.ui.view">
-        <field name="name">res.partner.records.tree</field>
+        <field name="name">res.partner.records.list</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <tree decoration-primary="is_company == True" 
+            <list decoration-primary="is_company == True" 
                   decoration-success="total_boxes &gt; 0"
                   decoration-muted="customer_rank == 0">
                 <field name="name" string="👤 Customer Name"/>
@@ -102,7 +102,7 @@
                         icon="fa-cube" class="btn-link"/>
                 <button name="action_generate_customer_report" type="object" string="Report" 
                         icon="fa-bar-chart" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -201,25 +201,25 @@
                             </group>
                         </page>
                         <page string="🏢 Departments" name="departments">
-                            <field name="department_ids" mode="tree">
-                                <tree>
+                            <field name="department_ids" mode="list">
+                                <list>
                                     <field name="name"/>
                                     <field name="department_head"/>
                                     <field name="box_count"/>
                                     <field name="active"/>
                                     <button name="action_view_department_boxes" type="object" string="View Boxes" icon="fa-cube" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🎯 Service History" name="services">
-                            <field name="service_request_ids" mode="tree">
-                                <tree>
+                            <field name="service_request_ids" mode="list">
+                                <list>
                                     <field name="name"/>
                                     <field name="service_type"/>
                                     <field name="state"/>
                                     <field name="requested_date"/>
                                     <field name="completed_date"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="💰 Billing &amp; Contracts" name="billing">
@@ -302,7 +302,7 @@
     <record id="action_res_partner_records" model="ir.actions.act_window">
         <field name="name">👥 Customer Management</field>
         <field name="res_model">res.partner</field>
-        <field name="view_mode">kanban,tree,form,graph</field>
+        <field name="view_mode">kanban,list,form,graph</field>
         <field name="search_view_id" ref="view_res_partner_records_search"/>
         <field name="domain">[('customer_rank', '>', 0)]</field>
         <field name="context">{

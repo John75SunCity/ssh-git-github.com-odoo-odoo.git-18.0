@@ -80,8 +80,8 @@
                                 </group>
                             </group>
                             <separator string="Service Items"/>
-                            <field name="service_item_ids" mode="tree">
-                                <tree string="Service Items" editable="bottom">
+                            <field name="service_item_ids" mode="list">
+                                <list string="Service Items" editable="bottom">
                                     <field name="product_id" required="1"/>
                                     <field name="quantity" required="1"/>
                                     <field name="unit_price" widget="monetary"/>
@@ -89,7 +89,7 @@
                                     <field name="subtotal" widget="monetary" sum="Total"/>
                                     <field name="tax_id" widget="many2many_tags"/>
                                     <field name="notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Pricing & Payment" name="pricing_payment">
@@ -110,14 +110,14 @@
                                 </group>
                             </group>
                             <separator string="💵 Payment Split" states="payment_method_id"/>
-                            <field name="payment_split_ids" mode="tree" states="payment_method_id">
-                                <tree string="Payment Methods" editable="bottom">
+                            <field name="payment_split_ids" mode="list" states="payment_method_id">
+                                <list string="Payment Methods" editable="bottom">
                                     <field name="payment_method_id"/>
                                     <field name="amount" widget="monetary" sum="Total"/>
                                     <field name="payment_reference"/>
                                     <field name="transaction_id"/>
                                     <field name="authorization_code"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Audit & Compliance" name="audit_compliance">
@@ -136,15 +136,15 @@
                                 </group>
                             </group>
                             <separator string="📋 Required Documentation"/>
-                            <field name="required_document_ids" mode="tree">
-                                <tree string="Required Documents" editable="bottom">
+                            <field name="required_document_ids" mode="list">
+                                <list string="Required Documents" editable="bottom">
                                     <field name="document_type"/>
                                     <field name="document_name"/>
                                     <field name="required" widget="boolean_toggle"/>
                                     <field name="collected" widget="boolean_toggle"/>
                                     <field name="collection_date" widget="datetime"/>
                                     <field name="notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Processing History" name="processing_history">
@@ -163,15 +163,15 @@
                                 </group>
                             </group>
                             <separator string="📝 Processing Log"/>
-                            <field name="processing_log_ids" mode="tree" readonly="1">
-                                <tree string="Processing Steps">
+                            <field name="processing_log_ids" mode="list" readonly="1">
+                                <list string="Processing Steps">
                                     <field name="step_time" widget="datetime"/>
                                     <field name="step_name"/>
                                     <field name="step_description"/>
                                     <field name="processed_by"/>
                                     <field name="step_status"/>
                                     <field name="duration_seconds"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Integration Status" name="integration_status">
@@ -193,15 +193,15 @@
                                 </group>
                             </group>
                             <separator string="⚠️ Integration Errors" states="integration_errors"/>
-                            <field name="integration_error_ids" mode="tree" readonly="1" states="integration_errors">
-                                <tree string="Integration Errors">
+                            <field name="integration_error_ids" mode="list" readonly="1" states="integration_errors">
+                                <list string="Integration Errors">
                                     <field name="error_time" widget="datetime"/>
                                     <field name="error_type"/>
                                     <field name="error_message"/>
                                     <field name="error_details"/>
                                     <field name="resolved" widget="boolean_toggle"/>
                                     <field name="resolution_notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -217,10 +217,10 @@
 
     <!-- TREE VIEW: Visitor POS Processing History -->
     <record id="view_visitor_pos_wizard_tree" model="ir.ui.view">
-        <field name="name">visitor.pos.wizard.tree</field>
+        <field name="name">visitor.pos.wizard.list</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
-            <tree string="Visitor POS Processing History" decoration-success="pos_order_created=True" decoration-info="customer_record_created=True" decoration-warning="audit_required=True" sample="1">
+            <list string="Visitor POS Processing History" decoration-success="pos_order_created=True" decoration-info="customer_record_created=True" decoration-warning="audit_required=True" sample="1">
                 <field name="wizard_start_time" string="Processing Date" widget="datetime"/>
                 <field name="visitor_name" string="Visitor"/>
                 <field name="service_type" string="Service Type"/>
@@ -232,7 +232,7 @@
                 <field name="customer_record_created" string="Customer Created" widget="boolean_toggle"/>
                 <field name="naid_compliance_required" string="NAID Required" widget="boolean_toggle"/>
                 <field name="total_processing_time" string="Processing Time" widget="float"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -306,7 +306,7 @@
     <record id="action_visitor_pos_wizard" model="ir.actions.act_window">
         <field name="name">🎯 Visitor POS Processing</field>
         <field name="res_model">visitor.pos.wizard</field>
-        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="view_mode">list,form,graph,pivot</field>
         <field name="search_view_id" ref="view_visitor_pos_wizard_search"/>
         <field name="context">{
             'search_default_today': 1,

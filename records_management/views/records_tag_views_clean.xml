@@ -45,15 +45,15 @@
 
     <!-- 📋 Records Tag Tree View -->
     <record id="view_records_tag_tree" model="ir.ui.view">
-        <field name="name">records.tag.tree</field>
+        <field name="name">records.tag.list</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
-            <tree decoration-success="active == True">
+            <list decoration-success="active == True">
                 <field name="name" string="🏷️ Tag Name"/>
                 <field name="color" string="🎨 Color" widget="color"/>
                 <field name="description" string="📝 Description"/>
                 <field name="active" string="🎯 Status" widget="boolean_toggle"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -101,7 +101,7 @@
     <record id="action_records_tag" model="ir.actions.act_window">
         <field name="name">Tags</field>
         <field name="res_model">records.tag</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_records_tag_search"/>
         <field name="domain">[]</field>
         <field name="context">{}</field>

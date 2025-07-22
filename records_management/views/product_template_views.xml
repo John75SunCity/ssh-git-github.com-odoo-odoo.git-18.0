@@ -86,10 +86,10 @@
 
     <!-- 📋 Enhanced Tree with Service Analytics -->
     <record id="view_product_template_records_tree" model="ir.ui.view">
-        <field name="name">product.template.records.tree</field>
+        <field name="name">product.template.records.list</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
-            <tree decoration-success="sale_ok == True and active == True" 
+            <list decoration-success="sale_ok == True and active == True" 
                   decoration-warning="type == 'service'"
                   decoration-info="purchase_ok == True">
                 <field name="name" string="💼 Product Name"/>
@@ -106,7 +106,7 @@
                         icon="fa-line-chart" class="btn-link"/>
                 <button name="action_configure_pricing" type="object" string="Pricing" 
                         icon="fa-money" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -246,20 +246,20 @@
                             <field name="sla_terms" placeholder="Detailed Service Level Agreement terms and conditions..."/>
                         </page>
                         <page string="🎯 Product Variants" name="variants">
-                            <field name="product_variant_ids" mode="tree">
-                                <tree>
+                            <field name="product_variant_ids" mode="list">
+                                <list>
                                     <field name="default_code"/>
                                     <field name="display_name"/>
                                     <field name="lst_price"/>
                                     <field name="standard_price"/>
                                     <field name="qty_available" attrs="{'invisible': [('parent.type', '!=', 'product')]}"/>
                                     <field name="active"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="💰 Pricing Rules" name="pricing_rules">
-                            <field name="pricing_rule_ids" mode="tree">
-                                <tree editable="bottom">
+                            <field name="pricing_rule_ids" mode="list">
+                                <list editable="bottom">
                                     <field name="rule_name"/>
                                     <field name="rule_type"/>
                                     <field name="min_quantity"/>
@@ -267,7 +267,7 @@
                                     <field name="effective_date"/>
                                     <field name="expiry_date"/>
                                     <field name="active"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📊 Analytics" name="analytics">
@@ -285,15 +285,15 @@
                                     <field name="customer_retention_rate" readonly="1"/>
                                 </group>
                             </group>
-                            <field name="sales_analytics_ids" mode="tree">
-                                <tree>
+                            <field name="sales_analytics_ids" mode="list">
+                                <list>
                                     <field name="period"/>
                                     <field name="sales_count"/>
                                     <field name="revenue"/>
                                     <field name="profit"/>
                                     <field name="customer_count"/>
                                     <field name="avg_deal_size"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🔧 Configuration" name="configuration">
@@ -368,7 +368,7 @@
     <record id="action_product_template_records" model="ir.actions.act_window">
         <field name="name">💼 Records Management Products</field>
         <field name="res_model">product.template</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_product_template_records_search"/>
         <field name="context">{
             'search_default_active': 1,

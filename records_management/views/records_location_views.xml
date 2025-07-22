@@ -66,12 +66,12 @@
         </field>
     </record>
 
-    <!-- 📋 Enhanced Tree View with Smart Columns -->
+    <!-- 📋 Enhanced List View with Smart Columns -->
     <record id="view_records_location_tree" model="ir.ui.view">
-        <field name="name">records.location.tree</field>
+        <field name="name">records.location.list</field>
         <field name="model">records.location</field>
         <field name="arch" type="xml">
-            <tree decoration-success="current_occupancy &lt; capacity * 0.8" 
+            <list decoration-success="current_occupancy &lt; capacity * 0.8" 
                   decoration-warning="current_occupancy &gt;= capacity * 0.8 and current_occupancy &lt; capacity" 
                   decoration-danger="current_occupancy &gt;= capacity">
                 <field name="name" string="🏢 Location Name"/>
@@ -83,7 +83,7 @@
                 <field name="active" string="✅ Active"/>
                 <button name="action_view_boxes" type="object" string="View Boxes" 
                         icon="fa-cube" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -128,13 +128,13 @@
                     
                     <notebook>
                         <page string="📦 Stored Boxes" name="boxes">
-                            <field name="box_ids" mode="tree">
-                                <tree>
+                            <field name="box_ids" mode="list">
+                                <list>
                                     <field name="name"/>
                                     <field name="customer_id"/>
                                     <field name="state"/>
                                     <field name="storage_date"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📋 Details &amp; Notes" name="details">
@@ -192,7 +192,7 @@
     <record id="action_records_location" model="ir.actions.act_window">
         <field name="name">🏢 Storage Locations</field>
         <field name="res_model">records.location</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_records_location_search"/>
         <field name="context">{
             'search_default_active': 1,

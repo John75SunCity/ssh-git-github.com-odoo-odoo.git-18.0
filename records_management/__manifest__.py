@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
                 'name': 'Records Management',
-            'version': '18.0.3.3.0',   # 🚀 BARCODE CLASSIFICATION: Intelligent scanning & bulk conversion tools
+            'version': '18.0.3.3.1',   # � COMPATIBILITY FIX: Complete tree→list view conversion for Odoo 18.0
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

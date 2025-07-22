@@ -69,10 +69,10 @@
 
     <!-- TREE VIEW: Paper Bale Load List -->
     <record id="view_load_tree" model="ir.ui.view">
-        <field name="name">load.tree</field>
+        <field name="name">load.list</field>
         <field name="model">load</field>
         <field name="arch" type="xml">
-            <tree string="Paper Bale Load Management" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'" decoration-muted="state=='cancelled'" multi_edit="1" sample="1">
+            <list string="Paper Bale Load Management" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'" decoration-muted="state=='cancelled'" multi_edit="1" sample="1">
                 <header>
                     <button name="action_prepare_load" type="object" string="Prepare Load"/>
                     <button name="action_start_loading" type="object" string="Start Loading"/>
@@ -89,7 +89,7 @@
                 <field name="shipping_date" string="Ship Date" widget="date"/>
                 <field name="state" string="Status" widget="badge" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -179,8 +179,8 @@
                         <page string="Load Items" name="load_items">
                     <notebook>
                         <page string="Paper Bales" name="paper_bales">
-                            <field name="bale_ids" mode="tree,kanban">
-                                <tree string="Paper Bales" editable="bottom">
+                            <field name="bale_ids" mode="list,kanban">
+                                <list string="Paper Bales" editable="bottom">
                                     <field name="bale_number"/>
                                     <field name="weight" sum="Total Weight"/>
                                     <field name="quality_grade"/>
@@ -188,7 +188,7 @@
                                     <field name="contamination_notes"/>
                                     <field name="production_date" widget="date"/>
                                     <field name="value_per_ton" widget="monetary"/>
-                                </tree>
+                                </list>
                                 <kanban>
                                     <field name="bale_number"/>
                                     <field name="weight"/>
@@ -267,13 +267,13 @@
                             </field>
                         </page>
                         <page string="Communication" name="communication">
-                            <field name="message_ids" mode="tree">
-                                <tree string="Communications">
+                            <field name="message_ids" mode="list">
+                                <list string="Communications">
                                     <field name="date"/>
                                     <field name="author_id"/>
                                     <field name="subject"/>
                                     <field name="message_type"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -377,7 +377,7 @@
     <record id="action_load" model="ir.actions.act_window">
         <field name="name">� Paper Bale Load Management</field>
         <field name="res_model">load</field>
-        <field name="view_mode">kanban,tree,form,calendar,graph,pivot</field>
+        <field name="view_mode">kanban,list,form,calendar,graph,pivot</field>
         <field name="search_view_id" ref="view_load_search"/>
         <field name="context">{
             'search_default_today': 1,

@@ -79,10 +79,10 @@
 
     <!-- 📋 Enhanced Tree with NAID Compliance Tracking -->
     <record id="view_shredding_service_tree" model="ir.ui.view">
-        <field name="name">shredding.service.tree</field>
+        <field name="name">shredding.service.list</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
-            <tree decoration-success="service_state == 'completed' and naid_compliance_verified == True" 
+            <list decoration-success="service_state == 'completed' and naid_compliance_verified == True" 
                   decoration-warning="service_state == 'in_progress'"
                   decoration-danger="scheduled_date &lt; context_today() and service_state == 'scheduled'"
                   decoration-info="certificate_required == True">
@@ -101,7 +101,7 @@
                         attrs="{'invisible': [('service_state', '!=', 'scheduled')]}"/>
                 <button name="action_generate_certificate" type="object" string="Certificate" 
                         icon="fa-certificate" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -175,8 +175,8 @@
                     
                     <notebook>
                         <page string="📄 Items for Destruction" name="items">
-                            <field name="destruction_item_ids" mode="tree">
-                                <tree editable="bottom">
+                            <field name="destruction_item_ids" mode="list">
+                                <list editable="bottom">
                                     <field name="item_type"/>
                                     <field name="description"/>
                                     <field name="confidentiality_level"/>
@@ -184,12 +184,12 @@
                                     <field name="unit_of_measure"/>
                                     <field name="verified_by_customer"/>
                                     <field name="chain_of_custody_number"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="👁️ Witness Verification" name="witnesses">
-                            <field name="witness_verification_ids" mode="tree">
-                                <tree>
+                            <field name="witness_verification_ids" mode="list">
+                                <list>
                                     <field name="witness_name"/>
                                     <field name="witness_title"/>
                                     <field name="company"/>
@@ -197,7 +197,7 @@
                                     <field name="signature_verified"/>
                                     <field name="photo_id_verified"/>
                                     <button name="action_verify_witness" type="object" string="Verify" icon="fa-check" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🛡️ Destruction Process" name="process">
@@ -235,20 +235,20 @@
                             <field name="certificate_notes" placeholder="Certification notes and compliance verification details..."/>
                         </page>
                         <page string="🔍 Audit Trail" name="audit">
-                            <field name="audit_trail_ids" mode="tree">
-                                <tree>
+                            <field name="audit_trail_ids" mode="list">
+                                <list>
                                     <field name="timestamp"/>
                                     <field name="action"/>
                                     <field name="user_id"/>
                                     <field name="location"/>
                                     <field name="compliance_status"/>
                                     <field name="notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📋 Chain of Custody" name="custody">
-                            <field name="chain_of_custody_ids" mode="tree">
-                                <tree>
+                            <field name="chain_of_custody_ids" mode="list">
+                                <list>
                                     <field name="transfer_date"/>
                                     <field name="from_person"/>
                                     <field name="to_person"/>
@@ -256,7 +256,7 @@
                                     <field name="seal_number"/>
                                     <field name="signature_required"/>
                                     <field name="verified"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -351,7 +351,7 @@
     <record id="action_shredding_service" model="ir.actions.act_window">
         <field name="name">💥 NAID Shredding Services</field>
         <field name="res_model">shredding.service</field>
-        <field name="view_mode">kanban,tree,form,calendar,graph</field>
+        <field name="view_mode">kanban,list,form,calendar,graph</field>
         <field name="search_view_id" ref="view_shredding_service_search"/>
         <field name="context">{
             'search_default_naid_verified': 1,

@@ -85,10 +85,10 @@
 
     <!-- TREE VIEW: Customer Feedback List -->
     <record id="view_portal_feedback_tree" model="ir.ui.view">
-        <field name="name">portal.feedback.tree</field>
+        <field name="name">portal.feedback.list</field>
         <field name="model">portal.feedback</field>
         <field name="arch" type="xml">
-            <tree string="Customer Feedback Management" decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="status=='responded'" decoration-muted="status=='closed'" multi_edit="1" sample="1">
+            <list string="Customer Feedback Management" decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="status=='responded'" decoration-muted="status=='closed'" multi_edit="1" sample="1">
                 <header>
                     <button name="action_mark_reviewed" type="object" string="Mark Reviewed"/>
                     <button name="action_respond" type="object" string="Respond"/>
@@ -107,7 +107,7 @@
                 <field name="assigned_to" string="Assigned To"/>
                 <field name="status" string="Status" widget="badge" decoration-success="status=='responded'" decoration-info="status=='reviewed'" decoration-warning="status=='escalated'"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -247,15 +247,15 @@
                                 </group>
                             </group>
                             <separator string="Follow-up Activities"/>
-                            <field name="followup_activity_ids" mode="tree">
-                                <tree string="Follow-up Activities" editable="bottom">
+                            <field name="followup_activity_ids" mode="list">
+                                <list string="Follow-up Activities" editable="bottom">
                                     <field name="activity_date" widget="date"/>
                                     <field name="activity_type"/>
                                     <field name="assigned_to"/>
                                     <field name="description"/>
                                     <field name="completed" widget="boolean_toggle"/>
                                     <field name="completion_date" widget="date"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Analysis" name="analysis">
@@ -409,7 +409,7 @@
     <record id="action_portal_feedback" model="ir.actions.act_window">
         <field name="name">📊 Customer Feedback Management</field>
         <field name="res_model">portal.feedback</field>
-        <field name="view_mode">kanban,tree,form,calendar,graph,pivot</field>
+        <field name="view_mode">kanban,list,form,calendar,graph,pivot</field>
         <field name="search_view_id" ref="view_portal_feedback_search"/>
         <field name="context">{
             'search_default_my_feedback': 1,
