@@ -227,23 +227,3 @@
               action="action_records_tag" 
               sequence="50"/>
 </odoo>
-              name="🏷️ Smart Tags" 
-              parent="records_management.menu_records_management" 
-              action="action_records_tag" 
-              sequence="50"/>
-</odoo>
-                <li>📱 <b>Mobile-friendly</b> kanban interface</li>
-            </ul>
-            <p>
-                Start building your smart classification system now! 🚀
-            </p>
-        </field>
-    </record>
-
-    <!-- 📂 Menu Item -->
-    <menuitem id="menu_records_tag" 
-              name="🏷️ Smart Tags" 
-              parent="records_management.menu_records_management" 
-              action="action_records_tag" 
-              sequence="50"/>
-</odoo>
