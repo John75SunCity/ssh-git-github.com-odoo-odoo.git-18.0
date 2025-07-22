@@ -90,7 +90,6 @@ Features:
         'views/departmental_billing_views.xml',
         'views/barcode_views.xml',
         'views/paper_bale_views.xml',
-        'views/trailer_load_views.xml',
         'views/pos_config_views.xml',
         'views/visitor_pos_wizard_views.xml',
         'views/portal_request_views.xml',  # New: Views for portal requests
@@ -103,7 +102,6 @@ Features:
         'views/records_management_menus.xml',  # Load menus after reports they reference
         'views/departmental_billing_menus.xml',  # Loaded after main menus for proper dependencies
         'views/barcode_menus.xml',  # Loaded after main menus for proper dependencies
-        'views/trailer_load_menus.xml',  # Loaded after main menus for proper dependencies
         'views/portal_request_menus.xml',  # Loaded after main menus for proper dependencies
         'views/portal_feedback_menus.xml',  # Loaded after main menus for proper dependencies
         'templates/my_portal_inventory.xml',

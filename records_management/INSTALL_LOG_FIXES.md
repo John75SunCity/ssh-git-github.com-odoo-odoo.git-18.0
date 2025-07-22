@@ -68,7 +68,6 @@ string='Department Billing Contact Assignments'
 **Issue**: `DeprecationWarning: The model ... is not overriding the create method in batch`
 **Affected Models**: 
 - `paper_bale.py`
-- `trailer_load.py` 
 - `portal_request.py`
 - `temp_inventory.py`
 - `customer_feedback.py`
@@ -139,7 +138,6 @@ All fixes have been applied and tested:
 - `models/bale.py` - Added company_id field
 - `models/res_partner.py` - Fixed duplicate labels
 - `models/paper_bale.py` - API upgrade
-- `models/trailer_load.py` - API upgrade
 - `models/portal_request.py` - API upgrade  
 - `models/temp_inventory.py` - API upgrade
 - `models/customer_feedback.py` - API upgrade
