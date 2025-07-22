@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-            'version': '18.0.3.1.2',   # 🔧 PHASE 1 MINIMAL: Ultra-Simple Tag Views (No Widgets/Attributes)
+            'version': '18.0.3.1.3',   # 🔧 CRITICAL FIX: Tree→List Views for Odoo 18.0 Compatibility
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
