@@ -96,6 +96,7 @@ Features:
         'views/fsm_task_views.xml',  # New: FSM task views
         'views/portal_feedback_views.xml',  # New: Feedback views
         'views/box_type_converter_views.xml',  # New: Box type conversion wizard
+        'views/permanent_flag_wizard_views.xml',  # New: Permanent flag security wizard
         'report/records_reports.xml',
         'report/destruction_certificate_report.xml',
         'report/bale_label_report.xml',

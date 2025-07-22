@@ -99,6 +99,24 @@ class RecordsDocument(models.Model):
 
     # Security fields
     hashed_content = fields.Char('Content Hash', readonly=True)
+    permanent_flag = fields.Boolean(
+        'Permanent Record', 
+        default=False, 
+        tracking=True,
+        help="When checked, this document is marked as permanent and excluded from destruction schedules. "
+             "Only administrators can remove this flag."
+    )
+    permanent_flag_set_by = fields.Many2one(
+        'res.users', 
+        string='Permanent Flag Set By',
+        readonly=True,
+        help="User who marked this document as permanent"
+    )
+    permanent_flag_set_date = fields.Datetime(
+        'Permanent Flag Set Date',
+        readonly=True,
+        help="Date and time when permanent flag was set"
+    )
 
     # Compute methods
     @api.depends('date', 'retention_policy_id',
@@ -133,6 +151,51 @@ class RecordsDocument(models.Model):
         for record in records:
             record._generate_content_hash()
         return records
+
+    def write(self, vals):
+        """Override write to protect permanent flag security."""
+        # Check if someone is trying to modify permanent_flag directly
+        if 'permanent_flag' in vals:
+            # Only allow through internal _set_permanent_flag method or if user is admin
+            frame = self.env.context.get('_permanent_flag_internal_call', False)
+            if not frame and not self.env.user.has_group('base.group_system'):
+                # For non-admins trying to unset permanent flag
+                if any(record.permanent_flag and not vals['permanent_flag'] for record in self):
+                    raise ValidationError(_(
+                        'Only administrators can remove the permanent flag from documents. '
+                        'Use the "Remove Permanent Flag" action with password verification.'
+                    ))
+        
+        return super().write(vals)
+
+    def _set_permanent_flag(self, permanent=True):
+        """Internal method to set/unset permanent flag with audit trail."""
+        # Set context flag to allow write override
+        self_with_context = self.with_context(_permanent_flag_internal_call=True)
+        
+        for record in self_with_context:
+            if permanent:
+                record.write({
+                    'permanent_flag': True,
+                    'permanent_flag_set_by': self.env.user.id,
+                    'permanent_flag_set_date': fields.Datetime.now()
+                })
+                # Log the action
+                record.message_post(
+                    body=_('Document marked as PERMANENT by %s. This document is now excluded from destruction schedules.') % self.env.user.name,
+                    message_type='notification'
+                )
+            else:
+                record.write({
+                    'permanent_flag': False,
+                    'permanent_flag_set_by': False,
+                    'permanent_flag_set_date': False
+                })
+                # Log the action
+                record.message_post(
+                    body=_('PERMANENT flag removed by administrator %s. Document can now be included in destruction schedules.') % self.env.user.name,
+                    message_type='notification'
+                )
 
     def _generate_content_hash(self):
         """Generate a hash of the document content for security tracking."""
@@ -245,6 +308,13 @@ class RecordsDocument(models.Model):
     def action_schedule_destruction(self):
         """Schedule the document for destruction."""
         for record in self:
+            # Check if document is marked as permanent
+            if record.permanent_flag:
+                raise ValidationError(_(
+                    'Document "%s" is marked as PERMANENT and cannot be scheduled for destruction. '
+                    'Only administrators can remove the permanent flag.'
+                ) % record.name)
+            
             if record.state == 'archived':
                 # Set retention date for destruction scheduling
                 if not record.retention_date:
@@ -265,3 +335,72 @@ class RecordsDocument(models.Model):
                 'default_res_id': self.id,
             },
         }
+
+    def action_mark_permanent(self):
+        """Mark documents as permanent with password verification."""
+        if not self:
+            return
+            
+        # Open wizard for password verification
+        return {
+            'name': _('Mark as Permanent - Security Verification'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.permanent.flag.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_document_ids': [(6, 0, self.ids)],
+                'default_action_type': 'mark'
+            }
+        }
+
+    def action_unmark_permanent(self):
+        """Remove permanent flag - admin only with password verification."""
+        if not self:
+            return
+            
+        # Check if user is admin
+        if not self.env.user.has_group('base.group_system'):
+            raise ValidationError(_(
+                'Only administrators can remove the permanent flag from documents.'
+            ))
+            
+        # Open wizard for password verification
+        return {
+            'name': _('Remove Permanent Flag - Admin Security Verification'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.permanent.flag.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_document_ids': [(6, 0, self.ids)],
+                'default_action_type': 'unmark'
+            }
+        }
+
+    @api.model
+    def get_documents_eligible_for_destruction(self, exclude_permanent=True):
+        """Get documents that are eligible for destruction, excluding permanent ones by default."""
+        domain = [
+            ('state', 'in', ['stored', 'archived']),
+            ('retention_date', '<=', fields.Date.today())
+        ]
+        
+        if exclude_permanent:
+            domain.append(('permanent_flag', '=', False))
+        
+        return self.search(domain)
+
+    @api.model
+    def get_shred_rotation_documents(self, customer_id=None):
+        """Get documents for customer shred rotation, excluding permanent documents."""
+        domain = [
+            ('permanent_flag', '=', False),  # Always exclude permanent documents
+            ('state', 'in', ['stored', 'archived']),
+            ('retention_date', '<=', fields.Date.today())
+        ]
+        
+        if customer_id:
+            domain.append(('customer_id', '=', customer_id))
+        
+        return self.search(domain)
