@@ -98,6 +98,13 @@ class RecordsDocument(models.Model):
         'Expiry Date', tracking=True,
         help='Date when the document expires and should be reviewed for destruction'
     )
+    destruction_eligible_date = fields.Date(
+        'Destruction Eligible Date', 
+        tracking=True,
+        compute='_compute_destruction_eligible_date',
+        store=True,
+        help='Date when the document becomes eligible for destruction based on retention policy'
+    )
     days_to_retention = fields.Integer(
         'Days until destruction', compute='_compute_days_to_retention'
     )
@@ -193,6 +200,14 @@ class RecordsDocument(models.Model):
                 doc.retention_date = fields.Date.add(doc.date, years=years)
             else:
                 doc.retention_date = False
+
+    @api.depends('retention_date')
+    def _compute_destruction_eligible_date(self):
+        """Calculate destruction eligible date - typically same as retention date."""
+        for doc in self:
+            # Destruction eligible date is typically the same as retention date
+            # unless there are special business rules
+            doc.destruction_eligible_date = doc.retention_date
 
     @api.depends('retention_date')
     def _compute_days_to_retention(self):
