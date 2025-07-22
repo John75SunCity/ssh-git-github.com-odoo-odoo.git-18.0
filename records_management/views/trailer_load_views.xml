@@ -1,16 +1,468 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Minimal action - let Odoo auto-generate views for trailer.load -->
+    <!-- 🚚 ENTERPRISE TRAILER LOAD MANAGEMENT - Advanced Capacity & Weight Distribution -->
+    
+    <!-- KANBAN VIEW: Visual Trailer Load Dashboard -->
+    <record id="view_trailer_load_kanban" model="ir.ui.view">
+        <field name="name">trailer.load.kanban</field>
+        <field name="model">trailer.load</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="load_status" sample="1" quick_create="false" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="load_status"/>
+                <field name="trailer_number"/>
+                <field name="current_weight"/>
+                <field name="max_capacity"/>
+                <field name="weight_utilization"/>
+                <field name="load_efficiency"/>
+                <field name="departure_time"/>
+                <field name="driver_name"/>
+                <field name="route_destination"/>
+                <field name="activity_ids"/>
+                <field name="activity_state"/>
+                <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <span class="float-end">
+                                        <field name="load_status" widget="label_selection" options="{'classes': {'empty': 'secondary', 'loading': 'warning', 'loaded': 'info', 'in_transit': 'primary', 'delivered': 'success', 'maintenance': 'danger'}}"/>
+                                    </span>
+                                </div>
+                                <span class="o_kanban_record_subtitle text-muted">
+                                    🚚 <field name="trailer_number"/> | <field name="driver_name"/>
+                                </span>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong>Weight:</strong> <field name="current_weight" widget="float"/> / <field name="max_capacity" widget="float"/> kg<br/>
+                                        <strong>Utilization:</strong> <field name="weight_utilization" widget="percentage"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Efficiency:</strong> <field name="load_efficiency" widget="percentage"/><br/>
+                                        <strong>Destination:</strong> <field name="route_destination"/>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar" role="progressbar" t-att-style="'width: ' + record.weight_utilization.raw_value + '%'" t-att-aria-valuenow="record.weight_utilization.raw_value" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="activity_ids" widget="kanban_activity"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <span class="badge badge-pill badge-info">
+                                        ⏰ <field name="departure_time" widget="datetime"/>
+                                    </span>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="activity_state" widget="kanban_activity"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- TREE VIEW: Trailer Load Operations List -->
+    <record id="view_trailer_load_tree" model="ir.ui.view">
+        <field name="name">trailer.load.tree</field>
+        <field name="model">trailer.load</field>
+        <field name="arch" type="xml">
+            <tree string="Trailer Load Management" decoration-success="load_status=='delivered'" decoration-info="load_status=='in_transit'" decoration-warning="load_status=='loading'" decoration-muted="load_status=='maintenance'" multi_edit="1" sample="1">
+                <header>
+                    <button name="action_start_loading" type="object" string="Start Loading"/>
+                    <button name="action_complete_loading" type="object" string="Complete Loading"/>
+                    <button name="action_dispatch_trailer" type="object" string="Dispatch"/>
+                    <button name="action_mark_delivered" type="object" string="Mark Delivered"/>
+                </header>
+                <field name="name" string="Load ID"/>
+                <field name="trailer_number" string="Trailer #"/>
+                <field name="driver_name" string="Driver"/>
+                <field name="route_destination" string="Destination"/>
+                <field name="current_weight" string="Current Weight (kg)" widget="float" sum="Total Weight"/>
+                <field name="max_capacity" string="Max Capacity (kg)" widget="float"/>
+                <field name="weight_utilization" string="Weight %" widget="percentage" avg="Avg Utilization"/>
+                <field name="load_efficiency" string="Efficiency %" widget="percentage" avg="Avg Efficiency"/>
+                <field name="departure_time" string="Departure" widget="datetime"/>
+                <field name="load_status" string="Status" widget="badge" decoration-success="load_status=='delivered'" decoration-info="load_status=='in_transit'" decoration-warning="load_status=='loading'"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- FORM VIEW: Detailed Trailer Load Management -->
+    <record id="view_trailer_load_form" model="ir.ui.view">
+        <field name="name">trailer.load.form</field>
+        <field name="model">trailer.load</field>
+        <field name="arch" type="xml">
+            <form string="Trailer Load Management">
+                <header>
+                    <button name="action_start_loading" string="Start Loading" type="object" class="btn-primary" states="empty"/>
+                    <button name="action_complete_loading" string="Complete Loading" type="object" class="btn-primary" states="loading"/>
+                    <button name="action_dispatch_trailer" string="Dispatch Trailer" type="object" class="btn-success" states="loaded"/>
+                    <button name="action_mark_delivered" string="Mark Delivered" type="object" class="btn-success" states="in_transit"/>
+                    <button name="action_return_empty" string="Return Empty" type="object" states="delivered"/>
+                    <button name="action_maintenance_mode" string="Maintenance" type="object" states="empty,delivered"/>
+                    <field name="load_status" widget="statusbar" statusbar_visible="empty,loading,loaded,in_transit,delivered"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_load_items" type="object" class="oe_stat_button" icon="fa-cubes">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="item_count"/>
+                                </span>
+                                <span class="o_stat_text">Load Items</span>
+                            </div>
+                        </button>
+                        <button name="action_view_weight_tickets" type="object" class="oe_stat_button" icon="fa-balance-scale">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="weight_ticket_count"/>
+                                </span>
+                                <span class="o_stat_text">Weight Tickets</span>
+                            </div>
+                        </button>
+                        <button name="action_view_inspections" type="object" class="oe_stat_button" icon="fa-search">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="inspection_count"/>
+                                </span>
+                                <span class="o_stat_text">Inspections</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Load ID"/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="trailer_number" placeholder="Trailer Number"/>
+                            <label for="driver_name" string="Driver:"/>
+                            <field name="driver_name" placeholder="Driver Name"/>
+                        </div>
+                    </div>
+                    
+                    <group>
+                        <group name="load_details" string="Load Details">
+                            <field name="current_weight" widget="float"/>
+                            <field name="max_capacity" widget="float"/>
+                            <field name="weight_utilization" widget="percentage"/>
+                            <field name="load_efficiency" widget="percentage"/>
+                            <field name="volume_utilization" widget="percentage"/>
+                            <field name="axle_weight_distribution"/>
+                        </group>
+                        <group name="schedule" string="Schedule & Route">
+                            <field name="route_destination"/>
+                            <field name="departure_time" widget="datetime"/>
+                            <field name="estimated_arrival" widget="datetime"/>
+                            <field name="actual_arrival" widget="datetime" states="delivered"/>
+                            <field name="total_distance" widget="float"/>
+                            <field name="fuel_consumption_estimate" widget="float"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="trailer_specs" string="Trailer Specifications">
+                            <field name="trailer_type"/>
+                            <field name="trailer_length" widget="float"/>
+                            <field name="trailer_width" widget="float"/>
+                            <field name="trailer_height" widget="float"/>
+                            <field name="door_type"/>
+                            <field name="temperature_controlled" widget="boolean_toggle"/>
+                            <field name="refrigeration_unit" states="temperature_controlled"/>
+                        </group>
+                        <group name="safety_compliance" string="Safety & Compliance">
+                            <field name="hazmat_certified" widget="boolean_toggle"/>
+                            <field name="overweight_permit" widget="boolean_toggle"/>
+                            <field name="special_equipment_required" widget="boolean_toggle"/>
+                            <field name="dot_inspection_date" widget="date"/>
+                            <field name="insurance_coverage"/>
+                            <field name="cdl_endorsements_required"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Load Configuration" name="load_config">
+                            <field name="load_item_ids" mode="tree,kanban">
+                                <tree string="Load Items" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="weight_per_unit"/>
+                                    <field name="total_weight" sum="Total Weight"/>
+                                    <field name="load_position"/>
+                                    <field name="stacking_height"/>
+                                    <field name="fragile" widget="boolean_toggle"/>
+                                    <field name="hazardous" widget="boolean_toggle"/>
+                                    <field name="temperature_range"/>
+                                </tree>
+                                <kanban>
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="total_weight"/>
+                                    <field name="load_position"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div class="oe_kanban_global_click">
+                                                <div class="o_kanban_record_top">
+                                                    <strong><field name="product_id"/></strong>
+                                                </div>
+                                                <div class="o_kanban_record_body">
+                                                    Qty: <field name="quantity"/> | Weight: <field name="total_weight"/>kg<br/>
+                                                    📍 Position: <field name="load_position"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Weight Distribution" name="weight_distribution">
+                            <group>
+                                <group string="Axle Weights">
+                                    <field name="front_axle_weight" widget="float"/>
+                                    <field name="rear_axle_weight" widget="float"/>
+                                    <field name="trailer_axle_weight" widget="float"/>
+                                    <field name="gross_vehicle_weight" widget="float"/>
+                                </group>
+                                <group string="Weight Limits">
+                                    <field name="front_axle_limit" widget="float"/>
+                                    <field name="rear_axle_limit" widget="float"/>
+                                    <field name="trailer_axle_limit" widget="float"/>
+                                    <field name="gross_weight_limit" widget="float"/>
+                                </group>
+                            </group>
+                            <separator string="Weight Distribution Chart"/>
+                            <field name="weight_chart_ids" mode="kanban">
+                                <kanban>
+                                    <field name="axle_position"/>
+                                    <field name="current_weight"/>
+                                    <field name="weight_limit"/>
+                                    <field name="weight_percentage"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div class="oe_kanban_global_click">
+                                                <div class="o_kanban_record_top">
+                                                    <strong><field name="axle_position"/></strong>
+                                                    <span class="float-end">
+                                                        <field name="weight_percentage" widget="percentage"/>
+                                                    </span>
+                                                </div>
+                                                <div class="o_kanban_record_body">
+                                                    <field name="current_weight"/> / <field name="weight_limit"/> kg
+                                                    <div class="progress mt-1" style="height: 6px;">
+                                                        <div class="progress-bar" role="progressbar" t-att-style="'width: ' + record.weight_percentage.raw_value + '%'"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Documentation" name="documentation">
+                            <group>
+                                <group string="Load Documentation">
+                                    <field name="bill_of_lading_number"/>
+                                    <field name="seal_number"/>
+                                    <field name="loading_supervisor"/>
+                                    <field name="loading_completion_time" widget="datetime"/>
+                                </group>
+                                <group string="Compliance Documents">
+                                    <field name="weight_certificate"/>
+                                    <field name="hazmat_placards"/>
+                                    <field name="special_permits"/>
+                                    <field name="insurance_certificate"/>
+                                </group>
+                            </group>
+                            <separator string="Load Photos"/>
+                            <field name="photo_ids" mode="kanban">
+                                <kanban>
+                                    <field name="name"/>
+                                    <field name="image"/>
+                                    <field name="photo_type"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div class="oe_kanban_global_click">
+                                                <div class="o_kanban_image">
+                                                    <img t-att-src="kanban_image('trailer.load.photo', 'image', record.id.raw_value)" alt="Load Photo"/>
+                                                </div>
+                                                <div class="oe_kanban_details">
+                                                    <field name="name"/><br/>
+                                                    <small><field name="photo_type"/></small>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Performance" name="performance">
+                            <group>
+                                <group string="Loading Performance">
+                                    <field name="loading_start_time" widget="datetime"/>
+                                    <field name="loading_end_time" widget="datetime"/>
+                                    <field name="loading_duration" widget="float"/>
+                                    <field name="loading_crew_size"/>
+                                </group>
+                                <group string="Delivery Performance">
+                                    <field name="on_time_delivery" widget="boolean_toggle"/>
+                                    <field name="delivery_quality_score" widget="float"/>
+                                    <field name="customer_satisfaction" widget="float"/>
+                                    <field name="damage_incidents"/>
+                                </group>
+                            </group>
+                            <separator string="Performance Metrics"/>
+                            <field name="performance_metrics_ids" mode="tree">
+                                <tree string="Performance Metrics">
+                                    <field name="metric_name"/>
+                                    <field name="target_value"/>
+                                    <field name="actual_value"/>
+                                    <field name="variance_percentage" widget="percentage"/>
+                                    <field name="status" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- SEARCH VIEW: Advanced Trailer Load Search -->
+    <record id="view_trailer_load_search" model="ir.ui.view">
+        <field name="name">trailer.load.search</field>
+        <field name="model">trailer.load</field>
+        <field name="arch" type="xml">
+            <search string="Search Trailer Loads">
+                <field name="name" string="Load ID" filter_domain="[('name', 'ilike', self)]"/>
+                <field name="trailer_number" string="Trailer"/>
+                <field name="driver_name" string="Driver"/>
+                <field name="route_destination" string="Destination"/>
+                <field name="departure_time" string="Departure Time"/>
+                
+                <filter string="My Loads" name="my_loads" domain="[('driver_name', '=', uid)]"/>
+                <filter string="Today's Loads" name="today" domain="[('departure_time', '&gt;=', datetime.datetime.combine(context_today(), datetime.time.min)), ('departure_time', '&lt;=', datetime.datetime.combine(context_today(), datetime.time.max))]"/>
+                <filter string="This Week" name="week" domain="[('departure_time', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('departure_time', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                
+                <separator/>
+                <filter string="Empty" name="empty" domain="[('load_status', '=', 'empty')]"/>
+                <filter string="Loading" name="loading" domain="[('load_status', '=', 'loading')]"/>
+                <filter string="Loaded" name="loaded" domain="[('load_status', '=', 'loaded')]"/>
+                <filter string="In Transit" name="in_transit" domain="[('load_status', '=', 'in_transit')]"/>
+                <filter string="Delivered" name="delivered" domain="[('load_status', '=', 'delivered')]"/>
+                <filter string="Maintenance" name="maintenance" domain="[('load_status', '=', 'maintenance')]"/>
+                
+                <separator/>
+                <filter string="Temperature Controlled" name="temp_controlled" domain="[('temperature_controlled', '=', True)]"/>
+                <filter string="Hazmat Certified" name="hazmat" domain="[('hazmat_certified', '=', True)]"/>
+                <filter string="Overweight" name="overweight" domain="[('overweight_permit', '=', True)]"/>
+                <filter string="High Utilization" name="high_utilization" domain="[('weight_utilization', '&gt;=', 90)]"/>
+                
+                <separator/>
+                <filter string="Overdue Departure" name="overdue_departure" domain="[('departure_time', '&lt;', datetime.datetime.now()), ('load_status', 'in', ['empty', 'loading', 'loaded'])]"/>
+                <filter string="Delayed Delivery" name="delayed_delivery" domain="[('estimated_arrival', '&lt;', datetime.datetime.now()), ('load_status', '=', 'in_transit')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_status" context="{'group_by': 'load_status'}"/>
+                    <filter string="Driver" name="group_driver" context="{'group_by': 'driver_name'}"/>
+                    <filter string="Trailer" name="group_trailer" context="{'group_by': 'trailer_number'}"/>
+                    <filter string="Destination" name="group_destination" context="{'group_by': 'route_destination'}"/>
+                    <filter string="Departure Date" name="group_departure" context="{'group_by': 'departure_time'}"/>
+                    <filter string="Trailer Type" name="group_trailer_type" context="{'group_by': 'trailer_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- CALENDAR VIEW: Trailer Load Schedule -->
+    <record id="view_trailer_load_calendar" model="ir.ui.view">
+        <field name="name">trailer.load.calendar</field>
+        <field name="model">trailer.load</field>
+        <field name="arch" type="xml">
+            <calendar string="Trailer Load Schedule" date_start="departure_time" date_stop="estimated_arrival" color="driver_name" quick_add="False" mode="month">
+                <field name="name"/>
+                <field name="trailer_number"/>
+                <field name="driver_name"/>
+                <field name="load_status"/>
+                <field name="route_destination"/>
+                <field name="weight_utilization"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- GRAPH VIEW: Trailer Load Analytics -->
+    <record id="view_trailer_load_graph" model="ir.ui.view">
+        <field name="name">trailer.load.graph</field>
+        <field name="model">trailer.load</field>
+        <field name="arch" type="xml">
+            <graph string="Trailer Load Analytics" type="bar" sample="1">
+                <field name="departure_time" type="row" interval="week"/>
+                <field name="trailer_type" type="col"/>
+                <field name="weight_utilization" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- PIVOT VIEW: Trailer Performance Analysis -->
+    <record id="view_trailer_load_pivot" model="ir.ui.view">
+        <field name="name">trailer.load.pivot</field>
+        <field name="model">trailer.load</field>
+        <field name="arch" type="xml">
+            <pivot string="Trailer Performance" sample="1">
+                <field name="driver_name" type="row"/>
+                <field name="load_status" type="col"/>
+                <field name="weight_utilization" type="measure"/>
+                <field name="load_efficiency" type="measure"/>
+                <field name="current_weight" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ACTION: Trailer Load Management -->
     <record id="action_trailer_load" model="ir.actions.act_window">
-        <field name="name">Trailer Loads</field>
+        <field name="name">🚚 Trailer Load Management</field>
         <field name="res_model">trailer.load</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form,calendar,graph,pivot</field>
+        <field name="search_view_id" ref="view_trailer_load_search"/>
+        <field name="context">{
+            'search_default_today': 1,
+            'search_default_my_loads': 1
+        }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first record
+                🚚 Create your first trailer load!
             </p>
             <p>
-                Track trailer loading operations and capacity management.
+                Manage trailer loading operations with advanced capacity optimization, weight distribution analysis, and real-time tracking. 
+                Optimize load efficiency while ensuring safety compliance and regulatory adherence.
+            </p>
+            <p>
+                <strong>Key Features:</strong><br/>
+                • Advanced weight distribution and axle load management<br/>
+                • Real-time capacity utilization and efficiency tracking<br/>
+                • Temperature control and hazmat compliance<br/>
+                • DOT inspection and safety documentation<br/>
+                • Performance analytics and delivery optimization<br/>
+                • Comprehensive load documentation and photo management
             </p>
         </field>
     </record>
