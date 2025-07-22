@@ -86,6 +86,8 @@ access_portal_request_manager,portal.request.manager,model_portal_request,record
 access_portal_request_portal,portal.request.portal,model_portal_request,base.group_portal,1,1,1,0
 access_shredding_hard_drive_user,shredding.hard.drive.user,model_shredding_hard_drive,records_management.group_records_user,1,1,1,0
 access_shredding_hard_drive_manager,shredding.hard.drive.manager,model_shredding_hard_drive,records_management.group_records_manager,1,1,1,1
+access_hard_drive_scan_wizard_user,hard.drive.scan.wizard.user,model_hard_drive_scan_wizard,records_management.group_records_user,1,1,1,1
+access_hard_drive_scan_wizard_manager,hard.drive.scan.wizard.manager,model_hard_drive_scan_wizard,records_management.group_records_manager,1,1,1,1
 access_survey_feedback_theme_user,survey.feedback.theme.user,model_survey_feedback_theme,records_management.group_records_user,1,0,0,0
 access_survey_feedback_theme_manager,survey.feedback.theme.manager,model_survey_feedback_theme,records_management.group_records_manager,1,1,1,1
 access_survey_improvement_action_user,survey.improvement.action.user,model_survey_improvement_action,records_management.group_records_user,1,1,1,0

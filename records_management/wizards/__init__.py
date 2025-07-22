@@ -13,6 +13,9 @@ from . import permanent_flag_wizard  # Permanent flag security wizard
 # Reporting wizards
 from . import location_report_wizard  # Location utilization report wizard
 
+# Shredding and destruction wizards
+from . import hard_drive_scan_wizard  # Hard drive serial number scanner
+
 # Future wizard imports will be added here as they are developed:
 # from . import invoice_wizard        # Automated invoicing wizard
 # from . import adjustment_wizard     # Inventory adjustment wizard

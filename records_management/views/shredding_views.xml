@@ -174,7 +174,55 @@
                     </group>
                     
                     <notebook>
-                        <page string="📄 Items for Destruction" name="items">
+                        <page string="� Hard Drive Scanning" name="hard_drives" attrs="{'invisible': [('service_type', '!=', 'hard_drive')]}">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="alert alert-info">
+                                        <h4>📊 Scanning Progress</h4>
+                                        <p><strong>Scanned at Customer:</strong> <field name="hard_drive_scanned_count" readonly="1"/> drives</p>
+                                        <p><strong>Verified at Facility:</strong> <field name="hard_drive_verified_count" readonly="1"/> drives</p>
+                                        <p><strong>Manual Quantity:</strong> <field name="quantity" readonly="1"/> (for billing)</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="btn-group" role="group">
+                                        <button name="action_scan_hard_drives_customer" type="object" 
+                                                string="📱 Scan at Customer" class="btn btn-primary"/>
+                                        <button name="action_scan_hard_drives_facility" type="object" 
+                                                string="🏭 Verify at Facility" class="btn btn-warning"
+                                                attrs="{'invisible': [('hard_drive_scanned_count', '=', 0)]}"/>
+                                        <button name="action_view_hard_drives" type="object" 
+                                                string="👁️ View All Drives" class="btn btn-secondary"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <separator string="Hard Drive Details"/>
+                            <field name="hard_drive_ids" mode="list">
+                                <list decoration-success="destroyed" 
+                                      decoration-warning="verified_before_destruction and not destroyed"
+                                      decoration-info="scanned_at_customer and not verified_before_destruction">
+                                    <field name="serial_number"/>
+                                    <field name="scanned_at_customer" widget="boolean_toggle"/>
+                                    <field name="scanned_at_customer_date"/>
+                                    <field name="verified_before_destruction" widget="boolean_toggle"/>
+                                    <field name="verified_at_facility_date"/>
+                                    <field name="destroyed" widget="boolean_toggle"/>
+                                    <field name="destruction_method"/>
+                                    <field name="included_in_certificate" widget="boolean_toggle"/>
+                                    <button name="action_mark_customer_scanned" type="object" 
+                                            string="📱 Mark Scanned" icon="fa-qrcode" class="btn-link"
+                                            attrs="{'invisible': [('scanned_at_customer', '=', True)]}"/>
+                                    <button name="action_mark_facility_verified" type="object" 
+                                            string="🏭 Mark Verified" icon="fa-check" class="btn-link"
+                                            attrs="{'invisible': ['|', ('verified_before_destruction', '=', True), ('scanned_at_customer', '=', False)]}"/>
+                                    <button name="action_mark_destroyed" type="object" 
+                                            string="💥 Mark Destroyed" icon="fa-times" class="btn-link"
+                                            attrs="{'invisible': ['|', ('destroyed', '=', True), ('verified_before_destruction', '=', False)]}"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="�📄 Items for Destruction" name="items">
                             <field name="destruction_item_ids" mode="list">
                                 <list editable="bottom">
                                     <field name="item_type"/>

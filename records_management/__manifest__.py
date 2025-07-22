@@ -85,6 +85,7 @@ Features:
         'views/records_document_views.xml',
         'views/pickup_request.xml',
         'views/shredding_views.xml',
+        'views/hard_drive_scan_views.xml',  # New: Hard drive scanning views
         'views/stock_lot_views.xml',
         'views/res_partner_views.xml',
         'views/customer_inventory_views.xml',

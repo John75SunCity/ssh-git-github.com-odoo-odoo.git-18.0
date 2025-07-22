@@ -37,6 +37,9 @@ class ShreddingService(models.Model):
     box_quantity = fields.Integer(string='Number of Boxes', tracking=True)
     shredded_box_ids = fields.Many2many('stock.lot', string='Shredded Boxes', domain="[('customer_id', '!=', False)]", tracking=True)
     hard_drive_quantity = fields.Integer(string='Number of Hard Drives', tracking=True)  # New
+    hard_drive_ids = fields.One2many('shredding.hard_drive', 'service_id', string='Hard Drive Details', tracking=True)
+    hard_drive_scanned_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Scanned Count')
+    hard_drive_verified_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Verified Count')
     uniform_quantity = fields.Integer(string='Number of Uniforms', tracking=True)  # New
     total_boxes = fields.Integer(compute='_compute_total_boxes', store=True, tracking=True)
     unit_cost = fields.Float(string='Unit Cost', default=5.0, tracking=True)
@@ -56,7 +59,14 @@ class ShreddingService(models.Model):
     pos_session_id = fields.Many2one('pos.session', string='POS Session (Walk-in)', tracking=True)  # New for walk-in
     estimated_bale_weight = fields.Float(compute='_compute_estimated_bale_weight', store=True, help='Predictive weight for recycling efficiency')
 
-    @api.depends('service_type', 'bin_ids', 'shredded_box_ids', 'box_quantity', 'hard_drive_quantity', 'uniform_quantity')
+    @api.depends('hard_drive_ids', 'hard_drive_ids.scanned_at_customer', 'hard_drive_ids.verified_before_destruction')
+    def _compute_hard_drive_counts(self):
+        """Compute scanned and verified hard drive counts"""
+        for rec in self:
+            rec.hard_drive_scanned_count = len(rec.hard_drive_ids.filtered('scanned_at_customer'))
+            rec.hard_drive_verified_count = len(rec.hard_drive_ids.filtered('verified_before_destruction'))
+
+    @api.depends('service_type', 'bin_ids', 'shredded_box_ids', 'box_quantity', 'hard_drive_quantity', 'uniform_quantity', 'hard_drive_ids')
     def _compute_total_charge(self):
         for rec in self:
             if rec.service_type == 'bin':
@@ -65,8 +75,9 @@ class ShreddingService(models.Model):
                 qty = rec.box_quantity or len(rec.shredded_box_ids)
                 rec.total_charge = qty * 5.0
             elif rec.service_type == 'hard_drive':
-                qty = rec.hard_drive_ids or rec.hard_drive_quantity  # Use detailed if available
-                rec.total_charge = len(qty) * 15.0 if isinstance(qty, models.BaseModel) else qty * 15.0
+                # Use actual scanned drives count if available, otherwise use manual quantity
+                qty = len(rec.hard_drive_ids) if rec.hard_drive_ids else (rec.hard_drive_quantity or 0)
+                rec.total_charge = qty * 15.0
             elif rec.service_type == 'uniform':
                 rec.total_charge = rec.uniform_quantity * 8.0
             else:
@@ -96,7 +107,8 @@ class ShreddingService(models.Model):
             elif rec.service_type == 'box':
                 rec.total_cost = rec.total_boxes * rec.unit_cost
             elif rec.service_type == 'hard_drive':
-                qty = len(rec.hard_drive_ids) if rec.hard_drive_ids else rec.hard_drive_quantity
+                # Use actual scanned drives count if available, otherwise use manual quantity
+                qty = len(rec.hard_drive_ids) if rec.hard_drive_ids else (rec.hard_drive_quantity or 0)
                 rec.total_cost = qty * 15.0
             elif rec.service_type == 'uniform':
                 rec.total_cost = rec.uniform_quantity * 8.0
@@ -119,7 +131,7 @@ class ShreddingService(models.Model):
             elif rec.service_type == 'box' and not (rec.box_quantity or rec.shredded_box_ids):
                 raise ValidationError(_("Box service requires quantity or boxes."))
             elif rec.service_type == 'hard_drive' and not (rec.hard_drive_quantity or rec.hard_drive_ids):
-                raise ValidationError(_("Hard drive service requires quantity or details."))
+                raise ValidationError(_("Hard drive service requires quantity or scanned drives."))
             elif rec.service_type == 'uniform' and not rec.uniform_quantity:
                 raise ValidationError(_("Uniform service requires quantity."))
 
@@ -236,6 +248,48 @@ class ShreddingService(models.Model):
             return True
         return False
 
+    def action_scan_hard_drives_customer(self):
+        """Scan hard drives at customer location"""
+        self.ensure_one()
+        return {
+            'name': _('Scan Hard Drives at Customer'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'hard_drive.scan.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_shredding_service_id': self.id,
+                'scan_location': 'customer',
+            },
+        }
+
+    def action_scan_hard_drives_facility(self):
+        """Scan hard drives before destruction at facility"""
+        self.ensure_one()
+        return {
+            'name': _('Verify Hard Drives at Facility'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'hard_drive.scan.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_shredding_service_id': self.id,
+                'scan_location': 'facility',
+            },
+        }
+
+    def action_view_hard_drives(self):
+        """View scanned hard drives"""
+        self.ensure_one()
+        return {
+            'name': _('Hard Drive Serial Numbers'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'shredding.hard_drive',
+            'view_mode': 'tree,form',
+            'domain': [('service_id', '=', self.id)],
+            'context': {'default_service_id': self.id},
+        }
+
     @api.model_create_multi
     def create(self, vals_list: List[dict]) -> 'ShreddingService':
         for vals in vals_list:
@@ -272,7 +326,7 @@ class ShreddingService(models.Model):
         qty = {
             'bin': len(self.bin_ids),
             'box': self.total_boxes,
-            'hard_drive': len(self.hard_drive_ids) if self.hard_drive_ids else self.hard_drive_quantity,
+            'hard_drive': len(self.hard_drive_ids) if self.hard_drive_ids else (self.hard_drive_quantity or 0),
             'uniform': self.uniform_quantity,
         }.get(self.service_type, 1)
         invoice_vals = {
@@ -306,10 +360,49 @@ class ShreddingHardDrive(models.Model):
     _name = 'shredding.hard_drive'
     _description = 'Hard Drive Details for Shredding'
     _rec_name = 'serial_number'
+    _order = 'scanned_at_customer_date desc, serial_number'
 
-    service_id = fields.Many2one('shredding.service', required=True)
-    serial_number = fields.Char(string='Serial Number', required=True, help='For NAID tracking')
+    service_id = fields.Many2one('shredding.service', required=True, ondelete='cascade')
+    serial_number = fields.Char(string='Serial Number', required=True, help='Scanned serial number for NAID tracking')
     hashed_serial = fields.Char(compute='_compute_hashed_serial', store=True, help='Hashed for integrity (ISO 27001)')
+    
+    # Customer location scanning
+    scanned_at_customer = fields.Boolean(string='Scanned at Customer', default=False)
+    scanned_at_customer_date = fields.Datetime(string='Customer Scan Date')
+    scanned_at_customer_by = fields.Many2one('res.users', string='Scanned by (Customer)')
+    customer_location_notes = fields.Text(string='Customer Location Notes')
+    
+    # Facility verification scanning
+    verified_before_destruction = fields.Boolean(string='Verified Before Destruction', default=False)
+    verified_at_facility_date = fields.Datetime(string='Facility Verification Date')
+    verified_at_facility_by = fields.Many2one('res.users', string='Verified by (Facility)')
+    facility_verification_notes = fields.Text(string='Facility Verification Notes')
+    
+    # Destruction tracking
+    destroyed = fields.Boolean(string='Destroyed', default=False)
+    destruction_date = fields.Datetime(string='Destruction Date')
+    destruction_method = fields.Selection([
+        ('shred', 'Physical Shredding'),
+        ('crush', 'Crushing'),
+        ('degauss', 'Degaussing'),
+        ('wipe', 'Data Wiping'),
+    ], string='Destruction Method')
+    
+    # Certificate generation fields
+    included_in_certificate = fields.Boolean(string='Included in Certificate', default=True)
+    certificate_line_text = fields.Char(compute='_compute_certificate_line', store=True, 
+                                       help='Text line for certificate')
+
+    @api.depends('serial_number', 'destruction_method', 'destruction_date')
+    def _compute_certificate_line(self):
+        """Generate certificate line text for each drive"""
+        for rec in self:
+            if rec.serial_number and rec.destruction_method:
+                method_text = dict(rec._fields['destruction_method'].selection)[rec.destruction_method]
+                date_text = rec.destruction_date.strftime('%Y-%m-%d %H:%M') if rec.destruction_date else 'Pending'
+                rec.certificate_line_text = f"Serial: {rec.serial_number} | Method: {method_text} | Date: {date_text}"
+            else:
+                rec.certificate_line_text = f"Serial: {rec.serial_number or 'Unknown'} | Status: Pending"
 
     @api.depends('serial_number')
     def _compute_hashed_serial(self):
@@ -318,3 +411,52 @@ class ShreddingHardDrive(models.Model):
                 rec.hashed_serial = hashlib.sha256(rec.serial_number.encode()).hexdigest()
             else:
                 rec.hashed_serial = False
+
+    def action_mark_customer_scanned(self):
+        """Mark as scanned at customer location"""
+        self.write({
+            'scanned_at_customer': True,
+            'scanned_at_customer_date': fields.Datetime.now(),
+            'scanned_at_customer_by': self.env.user.id,
+        })
+        return True
+
+    def action_mark_facility_verified(self):
+        """Mark as verified at facility before destruction"""
+        self.write({
+            'verified_before_destruction': True,
+            'verified_at_facility_date': fields.Datetime.now(),
+            'verified_at_facility_by': self.env.user.id,
+        })
+        return True
+
+    def action_mark_destroyed(self):
+        """Mark as destroyed"""
+        self.write({
+            'destroyed': True,
+            'destruction_date': fields.Datetime.now(),
+        })
+        return True
+
+    @api.model
+    def create_from_scan(self, service_id, serial_number, scan_location='customer'):
+        """Create hard drive record from barcode scan"""
+        vals = {
+            'service_id': service_id,
+            'serial_number': serial_number,
+        }
+        
+        if scan_location == 'customer':
+            vals.update({
+                'scanned_at_customer': True,
+                'scanned_at_customer_date': fields.Datetime.now(),
+                'scanned_at_customer_by': self.env.user.id,
+            })
+        elif scan_location == 'facility':
+            vals.update({
+                'verified_before_destruction': True,
+                'verified_at_facility_date': fields.Datetime.now(),
+                'verified_at_facility_by': self.env.user.id,
+            })
+        
+        return self.create(vals)
