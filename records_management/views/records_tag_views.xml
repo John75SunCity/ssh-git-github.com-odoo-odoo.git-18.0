@@ -14,8 +14,9 @@
                 <field name="active"/>
                 <field name="tag_usage_count"/>
                 <field name="auto_assign"/>
+                <field name="description"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
@@ -33,7 +34,7 @@
                             <div class="o_kanban_card_content">
                                 <div class="row">
                                     <div class="col-8">
-                                        <div><i class="fa fa-tag"/> Color: <span t-att-style="'color: ' + record.color.raw_value">●</span> <field name="color"/></div>
+                                        <div><i class="fa fa-tag"/> Color: <span t-att-style="'color: ' + record.color.raw_value">●</span></div>
                                         <div><i class="fa fa-bar-chart"/> Usage: <field name="tag_usage_count"/> records</div>
                                     </div>
                                     <div class="col-4">
@@ -46,26 +47,11 @@
                                         </span>
                                     </div>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-6">
-                                        <button class="btn btn-primary btn-sm" type="object" name="action_view_tagged_records">
-                                            📄 Records
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <button class="btn btn-success btn-sm" type="object" name="action_bulk_tag">
-                                            🏷️ Bulk Tag
-                                        </button>
+                                <div class="row mt-2" t-if="record.description.raw_value">
+                                    <div class="col-12">
+                                        <small class="text-muted"><field name="description"/></small>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Tag</a>
-                                <a role="menuitem" type="object" name="action_view_tagged_records" class="dropdown-item">📄 View Records</a>
-                                <a role="menuitem" type="object" name="action_configure_rules" class="dropdown-item">⚙️ Configure Rules</a>
-                                <a role="menuitem" type="object" name="action_analytics" class="dropdown-item">📊 Analytics</a>
-                                <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item">📋 Duplicate</a>
                             </div>
                         </div>
                     </t>
@@ -116,10 +102,10 @@
                         <button class="oe_stat_button" type="object" name="action_view_tagged_records" icon="fa-file-text">
                             <field string="Tagged Records" name="tag_usage_count" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" type="object" name="action_view_auto_rules" icon="fa-cogs">
+                        <button class="oe_stat_button" type="object" name="action_configure_rules" icon="fa-cogs">
                             <field string="Auto Rules" name="auto_rule_count" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" type="object" name="action_view_related_tags" icon="fa-tags">
+                        <button class="oe_stat_button" icon="fa-tags">
                             <field string="Related Tags" name="related_tag_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-trending-up" 
@@ -162,112 +148,24 @@
                     </group>
                     
                     <notebook>
-                        <page string="⚙️ Auto-Assignment Rules" name="auto_rules">
-                            <field name="auto_assignment_rule_ids" mode="tree">
-                                <tree editable="bottom">
-                                    <field name="rule_name"/>
-                                    <field name="rule_type"/>
-                                    <field name="field_name"/>
-                                    <field name="operator"/>
-                                    <field name="value"/>
-                                    <field name="confidence_threshold"/>
-                                    <field name="active"/>
-                                </tree>
-                            </field>
+                        <page string="🎨 Display Settings" name="display">
+                            <group>
+                                <group string="Visual Appearance">
+                                    <field name="icon"/>
+                                    <field name="display_order"/>
+                                </group>
+                            </group>
                         </page>
-                        <page string="🏷️ Related Tags" name="related_tags">
-                            <field name="related_tag_ids" mode="tree">
+                        <page string="👥 Child Tags" name="child_tags">
+                            <field name="child_tag_ids" mode="tree">
                                 <tree>
                                     <field name="name"/>
                                     <field name="category"/>
-                                    <field name="relationship_type"/>
-                                    <field name="strength"/>
-                                    <field name="mutual_exclusion"/>
-                                    <button name="action_view_tag" type="object" string="View" icon="fa-eye" class="btn-link"/>
+                                    <field name="color" widget="color"/>
+                                    <field name="active"/>
+                                    <button name="action_view_tagged_records" type="object" string="View" icon="fa-eye" class="btn-link"/>
                                 </tree>
                             </field>
-                        </page>
-                        <page string="📄 Tagged Records" name="tagged_records">
-                            <field name="tagged_record_ids" mode="tree">
-                                <tree>
-                                    <field name="record_type"/>
-                                    <field name="record_name"/>
-                                    <field name="tagged_date"/>
-                                    <field name="tagged_by"/>
-                                    <field name="auto_tagged"/>
-                                    <field name="confidence_score"/>
-                                    <button name="action_view_record" type="object" string="View" icon="fa-eye" class="btn-link"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="📝 Tag History" name="history">
-                            <field name="tag_history_ids" mode="tree">
-                                <tree>
-                                    <field name="timestamp"/>
-                                    <field name="action"/>
-                                    <field name="user_id"/>
-                                    <field name="record_affected"/>
-                                    <field name="old_value"/>
-                                    <field name="new_value"/>
-                                    <field name="notes"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="📊 Analytics Dashboard" name="analytics">
-                            <group>
-                                <group string="📈 Usage Statistics">
-                                    <field name="total_usage_this_month" readonly="1"/>
-                                    <field name="usage_growth_rate" readonly="1"/>
-                                    <field name="peak_usage_date" readonly="1"/>
-                                    <field name="average_daily_usage" readonly="1"/>
-                                </group>
-                                <group string="🎯 Performance Metrics">
-                                    <field name="auto_assignment_accuracy" readonly="1"/>
-                                    <field name="user_satisfaction_score" readonly="1"/>
-                                    <field name="search_frequency" readonly="1"/>
-                                    <field name="tag_effectiveness_score" readonly="1"/>
-                                </group>
-                            </group>
-                            <field name="usage_analytics_ids" mode="tree">
-                                <tree>
-                                    <field name="measurement_date"/>
-                                    <field name="metric_type"/>
-                                    <field name="value"/>
-                                    <field name="period"/>
-                                    <field name="comparison_value"/>
-                                    <field name="trend"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="⚙️ Advanced Settings" name="advanced">
-                            <group>
-                                <group string="🔍 Search &amp; Discovery">
-                                    <field name="search_weight"/>
-                                    <field name="boost_factor"/>
-                                    <field name="searchable"/>
-                                    <field name="suggest_in_autocomplete"/>
-                                </group>
-                                <group string="🎨 Display Settings">
-                                    <field name="icon"/>
-                                    <field name="display_order"/>
-                                    <field name="group_with_similar"/>
-                                    <field name="show_in_filters"/>
-                                </group>
-                            </group>
-                            <group>
-                                <group string="🔐 Security &amp; Permissions">
-                                    <field name="restricted_access"/>
-                                    <field name="allowed_user_groups"/>
-                                    <field name="audit_trail_enabled"/>
-                                    <field name="data_retention_period"/>
-                                </group>
-                                <group string="🌐 Integration">
-                                    <field name="external_system_sync"/>
-                                    <field name="api_accessible"/>
-                                    <field name="webhook_enabled"/>
-                                    <field name="export_allowed"/>
-                                </group>
-                            </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -280,71 +178,72 @@
         </field>
     </record>
 
-    <!-- 🔍 Enhanced Search with Smart Filters -->
+    <!-- 🔍 Advanced Search with Smart Filters -->
     <record id="view_records_tag_search" model="ir.ui.view">
         <field name="name">records.tag.search</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" string="Tag"/>
-                <field name="category"/>
+                <field name="name" string="Tag Name" filter_domain="[('name', 'ilike', self)]"/>
                 <field name="description"/>
-                <field name="color"/>
-                
+                <field name="category"/>
+                <separator/>
                 <filter string="🟢 Active" name="active" domain="[('active', '=', True)]"/>
-                <filter string="⭕ Archived" name="archived" domain="[('active', '=', False)]"/>
-                
-                <separator/>
+                <filter string="⭕ Archived" name="inactive" domain="[('active', '=', False)]"/>
                 <filter string="🤖 Auto Assign" name="auto_assign" domain="[('auto_assign', '=', True)]"/>
-                <filter string="🏷️ Manual Only" name="manual_only" domain="[('auto_assign', '=', False)]"/>
-                <filter string="🔒 System Tags" name="system_tags" domain="[('is_system_tag', '=', True)]"/>
-                
+                <filter string="📊 Popular Tags" name="popular" domain="[('tag_usage_count', '>', 5)]"/>
+                <filter string="🔥 Trending Up" name="trending" domain="[('trend_direction', '=', 'up')]"/>
                 <separator/>
-                <filter string="📈 Frequently Used" name="frequently_used" domain="[('tag_usage_count', '&gt;', 10)]"/>
-                <filter string="📊 Trending" name="trending" domain="[('trend_direction', '=', 'up')]"/>
-                <filter string="💤 Unused" name="unused" domain="[('tag_usage_count', '=', 0)]"/>
-                
+                <filter string="📂 System Tags" name="system_tags" domain="[('category', '=', 'system')]"/>
+                <filter string="👤 User Tags" name="user_tags" domain="[('category', '=', 'user')]"/>
+                <filter string="⚡ Auto Tags" name="auto_tags" domain="[('category', '=', 'auto')]"/>
+                <filter string="📋 Compliance" name="compliance" domain="[('category', '=', 'compliance')]"/>
                 <separator/>
-                <filter string="📄 Document Tags" name="document_tags" domain="[('applies_to_documents', '=', True)]"/>
-                <filter string="📦 Box Tags" name="box_tags" domain="[('applies_to_boxes', '=', True)]"/>
-                <filter string="🔍 Searchable" name="searchable" domain="[('searchable', '=', True)]"/>
-                
+                <filter string="📄 For Documents" name="for_documents" domain="[('applies_to_documents', '=', True)]"/>
+                <filter string="📦 For Boxes" name="for_boxes" domain="[('applies_to_boxes', '=', True)]"/>
                 <group expand="0" string="📊 Group By">
                     <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
-                    <filter string="Color" name="group_by_color" context="{'group_by': 'color'}"/>
+                    <filter string="Status" name="group_by_active" context="{'group_by': 'active'}"/>
                     <filter string="Auto Assign" name="group_by_auto" context="{'group_by': 'auto_assign'}"/>
-                    <filter string="Usage Count" name="group_by_usage" context="{'group_by': 'tag_usage_count'}"/>
-                    <filter string="Last Used" name="group_by_last_used" context="{'group_by': 'last_used_date:month'}"/>
+                    <filter string="Parent Tag" name="group_by_parent" context="{'group_by': 'parent_tag_id'}"/>
+                    <filter string="Trend" name="group_by_trend" context="{'group_by': 'trend_direction'}"/>
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- 🚀 ENTERPRISE ACTION - Records Tag Management -->
-    <record id="action_records_tag_simple" model="ir.actions.act_window">
-        <field name="name">🏷️ Records Tags</field>
+    <!-- 🎯 Enhanced Action with Multiple Views -->
+    <record id="action_records_tag" model="ir.actions.act_window">
+        <field name="name">🏷️ Enterprise Tags</field>
         <field name="res_model">records.tag</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="search_view_id" ref="view_records_tag_search"/>
-        <field name="context">{
-            'search_default_active': 1
-        }</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="domain">[]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                🏷️ Create your first smart tag classification!
+                🎯 Create your first enterprise tag!
             </p>
             <p>
-                <b>Enterprise Tag Management System:</b><br/>
-                • 🤖 AI-powered auto-assignment rules<br/>
-                • 🎨 Visual color-coded organization<br/>
-                • 📊 Advanced usage analytics and trending<br/>
-                • 🔗 Smart tag relationships and hierarchies<br/>
-                • 🔍 Enhanced search and discovery features<br/>
-                • 📱 Bulk tagging and mass operations<br/>
-                • 🏷️ Multi-category classification system<br/>
-                • 📈 Performance metrics and optimization<br/>
-                • 🔐 Security controls and access management
+                <b>🏷️ Smart Tags</b> help you categorize and organize records with:
+            </p>
+            <ul>
+                <li>🤖 <b>Auto-assignment</b> based on intelligent rules</li>
+                <li>📊 <b>Usage analytics</b> and trend tracking</li>
+                <li>🎨 <b>Visual organization</b> with colors and icons</li>
+                <li>🔗 <b>Hierarchical structure</b> with parent-child relationships</li>
+                <li>📱 <b>Mobile-friendly</b> kanban interface</li>
+            </ul>
+            <p>
+                Start building your smart classification system now! 🚀
             </p>
         </field>
     </record>
+
+    <!-- 📂 Menu Item -->
+    <menuitem id="menu_records_tag" 
+              name="🏷️ Smart Tags" 
+              parent="records_management.menu_records_management" 
+              action="action_records_tag" 
+              sequence="50"/>
 </odoo>
