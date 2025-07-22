@@ -17,7 +17,6 @@ from . import pickup_request
 from . import temp_inventory
 from . import bale
 from . import load
-from . import trailer_load
 from . import paper_bale
 
 # Shredding and Services
