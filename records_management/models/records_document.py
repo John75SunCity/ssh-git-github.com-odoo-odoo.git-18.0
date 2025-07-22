@@ -27,6 +27,65 @@ class RecordsDocument(models.Model):
     description = fields.Html('Description')
     tags = fields.Many2many('records.tag', string='Tags')
 
+    # Date tracking fields
+    created_date = fields.Date(
+        'Created Date', 
+        default=fields.Date.context_today,
+        help='Date when the document was originally created'
+    )
+    received_date = fields.Date(
+        'Received Date',
+        help='Date when the document was received by the organization'
+    )
+    storage_date = fields.Date(
+        'Storage Date',
+        help='Date when the document was placed in storage'
+    )
+    last_access_date = fields.Date(
+        'Last Access Date',
+        help='Date when the document was last accessed'
+    )
+
+    # Document classification fields
+    document_category = fields.Selection([
+        ('financial', 'Financial Records'),
+        ('legal', 'Legal Documents'),
+        ('personnel', 'Personnel Files'),
+        ('operational', 'Operational Records'),
+        ('compliance', 'Compliance Documents'),
+        ('contracts', 'Contracts & Agreements'),
+        ('correspondence', 'Correspondence'),
+        ('other', 'Other')
+    ], string='Document Category', default='other')
+
+    media_type = fields.Selection([
+        ('paper', 'Paper'),
+        ('digital', 'Digital'),
+        ('microfilm', 'Microfilm'),
+        ('microfiche', 'Microfiche'),
+        ('magnetic_tape', 'Magnetic Tape'),
+        ('optical_disc', 'Optical Disc'),
+        ('other', 'Other')
+    ], string='Media Type', default='paper')
+
+    original_format = fields.Selection([
+        ('letter', 'Letter Size (8.5x11)'),
+        ('legal', 'Legal Size (8.5x14)'),
+        ('ledger', 'Ledger Size (11x17)'),
+        ('a4', 'A4 Size'),
+        ('a3', 'A3 Size'),
+        ('custom', 'Custom Size'),
+        ('digital_file', 'Digital File'),
+        ('bound_volume', 'Bound Volume'),
+        ('other', 'Other')
+    ], string='Original Format', default='letter')
+
+    digitized = fields.Boolean(
+        'Digitized',
+        default=False,
+        help='Whether this document has been digitized'
+    )
+
     # Retention details
     retention_policy_id = fields.Many2one(
         'records.retention.policy', string='Retention Policy'
@@ -41,6 +100,11 @@ class RecordsDocument(models.Model):
     )
     days_to_retention = fields.Integer(
         'Days until destruction', compute='_compute_days_to_retention'
+    )
+    days_until_destruction = fields.Integer(
+        'Days Until Destruction', 
+        compute='_compute_days_until_destruction',
+        help='Number of days until the document is eligible for destruction'
     )
 
     # Relations
@@ -139,6 +203,17 @@ class RecordsDocument(models.Model):
                 doc.days_to_retention = max(0, delta)
             else:
                 doc.days_to_retention = 0
+
+    @api.depends('destruction_eligible_date')
+    def _compute_days_until_destruction(self):
+        """Calculate days until destruction eligible date."""
+        today = fields.Date.today()
+        for doc in self:
+            if doc.destruction_eligible_date:
+                delta = (doc.destruction_eligible_date - today).days
+                doc.days_until_destruction = max(0, delta)
+            else:
+                doc.days_until_destruction = 0
 
     def _compute_attachment_count(self):
         for rec in self:

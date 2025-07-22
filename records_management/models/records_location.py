@@ -3,7 +3,7 @@ from odoo import models, fields, api, _
 class RecordsLocation(models.Model):
     _name = 'records.location'
     _description = 'Records Storage Location'
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _parent_name = "parent_id"
     _parent_store = True
     _rec_name = 'complete_name'
