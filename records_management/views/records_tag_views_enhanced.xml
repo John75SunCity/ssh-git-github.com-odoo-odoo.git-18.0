@@ -7,8 +7,10 @@
         <field name="name">records.tag.kanban</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
-            <kanban class="o_kanban_tag_dashboard">
+            <kanban default_group_by="category" class="o_kanban_tag_dashboard">
                 <field name="name"/>
+                <field name="category"/>
+                <field name="color"/>
                 <field name="active"/>
                 <field name="tag_usage_count"/>
                 <field name="auto_assign"/>
@@ -21,6 +23,9 @@
                                     <div class="o_primary">
                                         <strong>🏷️ <field name="name"/></strong>
                                     </div>
+                                    <div class="o_secondary">
+                                        📂 <field name="category"/>
+                                    </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
                                     <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v"/></a>
@@ -29,6 +34,7 @@
                             <div class="o_kanban_card_content">
                                 <div class="row">
                                     <div class="col-8">
+                                        <div><i class="fa fa-tag"/> Color: <span t-att-style="'color: ' + record.color.raw_value">●</span></div>
                                         <div><i class="fa fa-bar-chart"/> Usage: <field name="tag_usage_count"/> records</div>
                                     </div>
                                     <div class="col-4">
@@ -60,8 +66,11 @@
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
             <tree decoration-success="active == True and auto_assign == True" 
-                  decoration-warning="tag_usage_count == 0">
+                  decoration-warning="tag_usage_count == 0"
+                  decoration-info="category == 'system'">
                 <field name="name" string="🏷️ Tag Name"/>
+                <field name="category" string="📂 Category"/>
+                <field name="color" string="🎨 Color" widget="color"/>
                 <field name="description" string="📝 Description"/>
                 <field name="tag_usage_count" string="📊 Usage Count"/>
                 <field name="auto_assign" string="🤖 Auto Assign" widget="boolean_toggle"/>
@@ -111,7 +120,9 @@
                     <group>
                         <group string="🏷️ Tag Definition">
                             <field name="name" placeholder="e.g., Financial Records"/>
+                            <field name="category"/>
                             <field name="description"/>
+                            <field name="color" widget="color"/>
                         </group>
                         <group string="🤖 Automation Settings">
                             <field name="auto_assign"/>
@@ -149,6 +160,8 @@
                             <field name="child_tag_ids" mode="tree">
                                 <tree>
                                     <field name="name"/>
+                                    <field name="category"/>
+                                    <field name="color" widget="color"/>
                                     <field name="active"/>
                                     <button name="action_view_tagged_records" type="object" string="View" icon="fa-eye" class="btn-link"/>
                                 </tree>
@@ -173,6 +186,7 @@
             <search>
                 <field name="name" string="Tag Name" filter_domain="[('name', 'ilike', self)]"/>
                 <field name="description"/>
+                <field name="category"/>
                 <separator/>
                 <filter string="🟢 Active" name="active" domain="[('active', '=', True)]"/>
                 <filter string="⭕ Archived" name="inactive" domain="[('active', '=', False)]"/>
@@ -180,9 +194,15 @@
                 <filter string="📊 Popular Tags" name="popular" domain="[('tag_usage_count', '>', 5)]"/>
                 <filter string="🔥 Trending Up" name="trending" domain="[('trend_direction', '=', 'up')]"/>
                 <separator/>
+                <filter string="📂 System Tags" name="system_tags" domain="[('category', '=', 'system')]"/>
+                <filter string="👤 User Tags" name="user_tags" domain="[('category', '=', 'user')]"/>
+                <filter string="⚡ Auto Tags" name="auto_tags" domain="[('category', '=', 'auto')]"/>
+                <filter string="📋 Compliance" name="compliance" domain="[('category', '=', 'compliance')]"/>
+                <separator/>
                 <filter string="📄 For Documents" name="for_documents" domain="[('applies_to_documents', '=', True)]"/>
                 <filter string="📦 For Boxes" name="for_boxes" domain="[('applies_to_boxes', '=', True)]"/>
                 <group expand="0" string="📊 Group By">
+                    <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
                     <filter string="Status" name="group_by_active" context="{'group_by': 'active'}"/>
                     <filter string="Auto Assign" name="group_by_auto" context="{'group_by': 'auto_assign'}"/>
                     <filter string="Parent Tag" name="group_by_parent" context="{'group_by': 'parent_tag_id'}"/>
@@ -212,26 +232,6 @@
                 <li>📊 <b>Usage analytics</b> and trend tracking</li>
                 <li>🎨 <b>Visual organization</b> with colors and icons</li>
                 <li>🔗 <b>Hierarchical structure</b> with parent-child relationships</li>
-                <li>📱 <b>Mobile-friendly</b> kanban interface</li>
-            </ul>
-            <p>
-                Start building your smart classification system now! 🚀
-            </p>
-        </field>
-    </record>
-
-    <!-- 📂 Menu Item -->
-    <menuitem id="menu_records_tag" 
-              name="🏷️ Smart Tags" 
-              parent="records_management.menu_records_management" 
-              action="action_records_tag" 
-              sequence="50"/>
-</odoo>
-              name="🏷️ Smart Tags" 
-              parent="records_management.menu_records_management" 
-              action="action_records_tag" 
-              sequence="50"/>
-</odoo>
                 <li>📱 <b>Mobile-friendly</b> kanban interface</li>
             </ul>
             <p>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 🏷️ Records Tag Kanban View -->
+    <record id="view_records_tag_kanban" model="ir.ui.view">
+        <field name="name">records.tag.kanban</field>
+        <field name="model">records.tag</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_tag_dashboard">
+                <field name="name"/>
+                <field name="color"/>
+                <field name="active"/>
+                <field name="description"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <strong>🏷️ <field name="name"/></strong>
+                                    </div>
+                                    <div class="o_secondary">
+                                        📝 <field name="description"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div><i class="fa fa-tag"/> Color: <span t-att-style="'color: ' + record.color.raw_value">●</span></div>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="badge" t-att-class="record.active.raw_value ? 'badge-primary' : 'badge-secondary'">
+                                            <t t-if="record.active.raw_value">🟢 Active</t>
+                                            <t t-else="">⭕ Inactive</t>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- 📋 Records Tag Tree View -->
+    <record id="view_records_tag_tree" model="ir.ui.view">
+        <field name="name">records.tag.tree</field>
+        <field name="model">records.tag</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="active == True">
+                <field name="name" string="🏷️ Tag Name"/>
+                <field name="color" string="🎨 Color" widget="color"/>
+                <field name="description" string="📝 Description"/>
+                <field name="active" string="🎯 Status" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- 📝 Records Tag Form View -->
+    <record id="view_records_tag_form" model="ir.ui.view">
+        <field name="name">records.tag.form</field>
+        <field name="model">records.tag</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="active" widget="boolean_button" options="{'terminology': {'string_true': '🟢 Active', 'string_false': '⭕ Archived'}}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="🏷️ Tag Definition">
+                            <field name="name" placeholder="e.g., Financial Records"/>
+                            <field name="description"/>
+                            <field name="color" widget="color"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- 🔍 Records Tag Search View -->
+    <record id="view_records_tag_search" model="ir.ui.view">
+        <field name="name">records.tag.search</field>
+        <field name="model">records.tag</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Tag Name"/>
+                <field name="description"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_by_active" context="{'group_by': 'active'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- 🎯 Records Tag Action -->
+    <record id="action_records_tag" model="ir.actions.act_window">
+        <field name="name">Tags</field>
+        <field name="res_model">records.tag</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="view_records_tag_search"/>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a tag
+            </p>
+            <p>
+                Tags can be used to categorize and organize records.
+            </p>
+        </field>
+    </record>
+
+    <!-- 📂 Menu Item -->
+    <menuitem id="menu_records_tag" 
+              name="Tags" 
+              parent="records_management.menu_records_management" 
+              action="action_records_tag" 
+              sequence="50"/>
+</odoo>
