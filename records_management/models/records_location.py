@@ -77,3 +77,19 @@ class RecordsLocation(models.Model):
             'domain': [('location_id', '=', self.id)],
             'context': {'default_location_id': self.id},
         }
+
+    def action_location_report(self):
+        """Generate a utilization and capacity report for this location."""
+        self.ensure_one()
+        return {
+            'name': _('Location Report: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.location.report.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_location_id': self.id,
+                'default_location_name': self.name,
+                'default_include_child_locations': True,
+            }
+        }

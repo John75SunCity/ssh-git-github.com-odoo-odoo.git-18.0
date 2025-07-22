@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 📊 LOCATION UTILIZATION REPORT WIZARD -->
+    
+    <!-- Wizard Form View -->
+    <record id="view_location_report_wizard_form" model="ir.ui.view">
+        <field name="name">records.location.report.wizard.form</field>
+        <field name="model">records.location.report.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <h1>📊 Location Utilization Report</h1>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        <strong>📍 Location Analysis</strong><br/>
+                        Generate detailed utilization and capacity reports for storage locations.
+                    </div>
+                    
+                    <group>
+                        <group string="📍 Location Selection">
+                            <field name="location_id" readonly="1"/>
+                            <field name="location_name" readonly="1"/>
+                            <field name="include_child_locations"/>
+                            <field name="report_date"/>
+                        </group>
+                        
+                        <group string="📊 Current Statistics">
+                            <field name="total_capacity" readonly="1"/>
+                            <field name="current_occupancy" readonly="1"/>
+                            <field name="utilization_percentage" widget="percentage" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <div class="mt-3">
+                        <h4>📋 Report Options:</h4>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-table fa-2x text-primary mb-2"></i>
+                                        <h6>Interactive Report</h6>
+                                        <p class="text-muted">View detailed location data with filters and grouping</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-file-pdf-o fa-2x text-danger mb-2"></i>
+                                        <h6>PDF Report</h6>
+                                        <p class="text-muted">Print or save a formatted PDF report</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-file-excel-o fa-2x text-success mb-2"></i>
+                                        <h6>CSV Export</h6>
+                                        <p class="text-muted">Export data for analysis in spreadsheet applications</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_generate_report" type="object" string="📊 View Interactive Report" 
+                            class="btn-primary"/>
+                    <button name="action_print_report" type="object" string="🖨️ Print PDF Report" 
+                            class="btn-secondary"/>
+                    <button name="action_export_csv" type="object" string="📁 Export CSV" 
+                            class="btn-success"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

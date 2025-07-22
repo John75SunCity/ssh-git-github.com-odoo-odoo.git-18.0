@@ -10,6 +10,9 @@ from . import box_type_converter  # Bulk box type conversion wizard
 # Security wizards
 from . import permanent_flag_wizard  # Permanent flag security wizard
 
+# Reporting wizards
+from . import location_report_wizard  # Location utilization report wizard
+
 # Future wizard imports will be added here as they are developed:
 # from . import invoice_wizard        # Automated invoicing wizard
 # from . import adjustment_wizard     # Inventory adjustment wizard
