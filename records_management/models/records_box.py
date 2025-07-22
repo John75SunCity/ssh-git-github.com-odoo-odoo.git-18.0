@@ -379,17 +379,12 @@ class RecordsBox(models.Model):
             'status_date': fields.Datetime.now()
         })
 
-    def action_generate_barcode(self):
-        """Generate and print barcode for this box."""
+    def action_generate_box_barcode(self):
+        """Generate barcode for this box"""
         self.ensure_one()
-        return {
-            'name': _('Generate Barcode: %s') % self.name,
-            'type': 'ir.actions.report',
-            'report_name': 'records_management.box_barcode_report',
-            'report_type': 'qweb-pdf',
-            'report_file': 'records_management.box_barcode_report',
-            'context': {'active_ids': [self.id]},
-        }
+        if not self.barcode:
+            self.barcode = self.env['ir.sequence'].next_by_code('records.box.barcode') or 'BOX-' + str(self.id)
+        return True
 
     def action_move_box(self):
         """Move box to a different location."""

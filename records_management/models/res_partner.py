@@ -111,18 +111,14 @@ class ResPartner(models.Model):
         for partner in self:
             partner.document_count = len(partner.document_ids)
 
-    def action_view_documents(self):
-        """Action to view documents related to this partner."""
+    def action_view_customer_documents(self):
+        """View all documents for this customer"""
         self.ensure_one()
         return {
-            'name': _('Documents'),
+            'name': _('Customer Documents'),
             'type': 'ir.actions.act_window',
             'res_model': 'records.document',
-            'view_mode': 'kanban,tree,form',
-            'domain': [('partner_id', '=', self.id)],
-            'context': {
-                'default_partner_id': self.id,
-                'search_default_partner_id': self.id,
-            },
-            'target': 'current',
+            'view_mode': 'tree,form',
+            'domain': [('customer_id', '=', self.id)],
+            'context': {'default_customer_id': self.id},
         }

@@ -102,7 +102,7 @@ class RecordsRetentionPolicy(models.Model):
         self.policy_status = 'inactive'
         return True
 
-    def action_view_documents(self):
+    def action_view_policy_documents(self):
         """View documents using this policy"""
         self.ensure_one()
         return {

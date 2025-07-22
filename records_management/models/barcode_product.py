@@ -72,16 +72,18 @@ class BarcodeProduct(models.Model):
             'context': {'form_view_initial_mode': 'edit'},
         }
 
-    def action_generate_barcodes(self):
-        """Generate barcode labels"""
+    def action_generate_product_barcodes(self):
+        """Generate barcodes for all variants of this product"""
         self.ensure_one()
+        variants_without_barcode = self.product_variant_ids.filtered(lambda v: not v.barcode)
+        for variant in variants_without_barcode:
+            variant.barcode = self.env['ir.sequence'].next_by_code('product.barcode') or f'PROD-{variant.id}'
         return {
-            'name': _('Generate Barcode Labels'),
-            'type': 'ir.actions.report',
-            'report_name': 'records_management.barcode_product_labels',
-            'report_type': 'qweb-pdf',
-            'report_file': 'records_management.barcode_product_labels',
-            'context': {'active_ids': [self.id]},
+            'name': _('Generated Barcodes'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'product.product',
+            'view_mode': 'tree,form',
+            'domain': [('id', 'in', variants_without_barcode.ids)],
         }
 
     def action_view_storage_boxes(self):

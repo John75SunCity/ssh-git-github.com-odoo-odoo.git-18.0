@@ -269,7 +269,7 @@ class NAIDAuditLog(models.Model):
             'context': {'default_audit_id': self.id},
         }
 
-    def action_generate_report(self):
+    def action_generate_audit_report(self):
         """Generate audit report"""
         self.ensure_one()
         return {

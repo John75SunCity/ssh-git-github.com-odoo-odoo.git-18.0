@@ -33,13 +33,14 @@ class RecordsDocumentType(models.Model):
             ])
             record.document_count = count
 
-    def action_view_documents(self) -> dict:
-        """Action to view related documents for better UI navigation."""
+    def action_view_type_documents(self) -> dict:
+        """View all documents of this type"""
         self.ensure_one()
         return {
-            'name': _('Related Documents'),
+            'name': _('Documents of Type: %s') % self.name,
             'type': 'ir.actions.act_window',
             'res_model': 'records.document',
             'view_mode': 'tree,form',
             'domain': [('document_type_id', '=', self.id)],
+            'context': {'default_document_type_id': self.id},
         }

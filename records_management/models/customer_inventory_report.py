@@ -177,7 +177,7 @@ class CustomerInventoryReport(models.Model):
             'context': {'default_customer_id': self.customer_id.id}
         }
 
-    def action_view_documents(self) -> dict:
+    def action_view_inventory_documents(self) -> dict:
         """View related documents for this customer."""
         return {
             'type': 'ir.actions.act_window',
