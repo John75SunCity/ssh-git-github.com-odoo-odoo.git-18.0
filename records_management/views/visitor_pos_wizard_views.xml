@@ -1,26 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_visitor_pos_wizard_form" model="ir.ui.view">
-        <field name="name">visitor.pos.wizard.form</field>
-        <field name="model">visitor.pos.wizard</field>
-        <field name="arch" type="xml">
-            <form string="Link Shred Transaction">
-                <sheet>
-                    <group string="Visitor Details">
-                        <field name="visitor_id"/>
-                        <field name="partner_id"/>
-                    </group>
-                    <group string="Transaction Details">
-                        <field name="pos_order_id" options="{'no_create': True}" help="Select existing or create new below."/>
-                        <field name="service_type" widget="selection" help="Auto-suggested based on notes."/>
-                        <field name="notes"/>
-                    </group>
-                    <footer>
-                        <button name="action_confirm" type="object" string="Confirm Link" class="btn-primary"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel"/>
-                    </footer>
-                </sheet>
-            </form>
+    <!-- Minimal action - let Odoo auto-generate views for visitor.pos.wizard -->
+    <record id="action_visitor_pos_wizard" model="ir.actions.act_window">
+        <field name="name">Visitor POS Wizard</field>
+        <field name="res_model">visitor.pos.wizard</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first record
+            </p>
+            <p>
+                Link visitor check-ins with POS transactions for audit trails.
+            </p>
         </field>
     </record>
 </odoo>

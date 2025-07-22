@@ -1,75 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
-Updated file: Views for trailer load management with tree/form/kanban modes. This accomplishes tracking bale assignments, weight/progress visualization (truck-shaped bar via custom JS/widget), and status workflows. User-friendly: Statusbar for quick state changes, progress bar widget for intuitive load monitoring. Modern: Kanban cards with colors (e.g., green for full), OWL-compatible for animations. Innovative idea: Integrate IoT scales (via Odoo IoT app) for real-time weight updates/RPC; standards: NAID AAA responsible disposal (bale labels/links ensure traceable recycling); ISO 15489: Audit-ready with logged state changes.
--->
 <odoo>
-    <record id="view_trailer_load_tree" model="ir.ui.view">
-        <field name="name">trailer.load.tree</field>
-        <field name="model">trailer.load</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="trailer_id"/>
-                <field name="total_weight"/>
-                <field name="status"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="view_trailer_load_form" model="ir.ui.view">
-        <field name="name">trailer.load.form</field>
-        <field name="model">trailer.load</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" readonly="1"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="trailer_id"/>
-                            <field name="total_weight"/>
-                        </group>
-                        <group>
-                            <field name="status" widget="statusbar"/>
-                        </group>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <record id="view_trailer_load_kanban" model="ir.ui.view">
-        <field name="name">trailer.load.kanban</field>
-        <field name="model">trailer.load</field>
-        <field name="arch" type="xml">
-            <kanban>
-                <field name="name"/>
-                <field name="status"/>
-                <field name="total_weight"/>
-                <templates>
-                    <t t-name="card">
-                        <div class="oe_kanban_card">
-                            <div class="oe_kanban_content">
-                                <h4><field name="name"/></h4>
-                                <div>Weight: <field name="total_weight"/> lbs</div>
-                                <div>Status: <field name="status"/></div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <record id="action_trailer_loads" model="ir.actions.act_window">
+    <!-- Minimal action - let Odoo auto-generate views for trailer.load -->
+    <record id="action_trailer_load" model="ir.actions.act_window">
         <field name="name">Trailer Loads</field>
         <field name="res_model">trailer.load</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first record
+            </p>
+            <p>
+                Track trailer loading operations and capacity management.
+            </p>
+        </field>
     </record>
-
-    <!-- Note: Menu moved to separate file to ensure proper loading order -->
-    <!-- See views/trailer_load_menus.xml -->
 </odoo>

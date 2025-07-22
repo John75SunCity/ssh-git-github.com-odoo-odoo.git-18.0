@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Note: POS Config inheritance temporarily disabled due to External ID issues -->
-    <!-- This view extends POS configuration for shredding services but needs proper External ID -->
-    <!-- TODO: Verify correct point_of_sale External ID for view inheritance -->
-    
-    <!-- Temporarily commented out to fix deployment -->
-    <!--
-    <record id="pos_config_view_form_inherit" model="ir.ui.view">
-        <field name="name">pos.config.form.inherit.records</field>
-        <field name="model">pos.config</field>
-        <field name="inherit_id" ref="point_of_sale.view_pos_config_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//group[@name='receipt']" position="inside">
-                <field name="shred_receipt_enabled" string="Enable Shred Receipts" help="Print destruction certificates on POS receipts for NAID compliance."/>
-            </xpath>
+    <!-- Minimal action - let Odoo auto-generate views for pos.config -->
+    <record id="action_pos_config_records" model="ir.actions.act_window">
+        <field name="name">POS Configuration</field>
+        <field name="res_model">pos.config</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first record
+            </p>
+            <p>
+                Configure point-of-sale integration for walk-in services.
+            </p>
         </field>
     </record>
-    -->
 </odoo>

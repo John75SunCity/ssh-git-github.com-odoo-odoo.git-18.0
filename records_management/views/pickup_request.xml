@@ -1,128 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_pickup_request_form" model="ir.ui.view">
-        <field name="name">pickup.request.form</field>
-        <field name="model">pickup.request</field>
-        <field name="arch" type="xml">
-            <form string="Pickup Request">
-                <header>
-                    <button name="action_confirm" string="Confirm" type="object" 
-                            invisible="state != 'draft'" class="oe_highlight"/>
-                    <button name="action_schedule" string="Schedule" type="object" 
-                            invisible="state != 'confirmed'" class="oe_highlight"/>
-                    <button name="action_complete" string="Complete" type="object" 
-                            invisible="state != 'scheduled'" class="oe_highlight"/>
-                    <button name="action_cancel" string="Cancel" type="object" 
-                            invisible="state not in ('draft','confirmed','scheduled')"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,scheduled,completed,cancelled"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" readonly="1"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="customer_id"/>
-                            <field name="request_date"/>
-                            <field name="scheduled_date" required="state in ('scheduled','completed')"/>
-                            <field name="priority" widget="priority"/>
-                        </group>
-                        <group>
-                            <field name="warehouse_id"/>
-                            <field name="driver_id" required="state in ('scheduled','completed')"/>
-                            <field name="vehicle_id" required="state in ('scheduled','completed')"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Items">
-                            <field name="request_item_ids">
-                                <tree editable="bottom">
-                                    <field name="product_id" required="1"/>
-                                    <field name="quantity" required="1"/>
-                                    <field name="lot_id" domain="[('product_id', '=', product_id)]"/>
-                                    <field name="notes"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="Notes">
-                            <field name="notes"/>
-                        </page>
-                        <page string="Signature" invisible="state != 'completed'">
-                            <field name="signature" widget="signature"/>
-                            <field name="signed_by"/>
-                            <field name="signature_date"/>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
-            </form>
-        </field>
-    </record>
-    
-    <record id="view_pickup_request_tree" model="ir.ui.view">
-        <field name="name">pickup.request.tree</field>
-        <field name="model">pickup.request</field>
-        
-        
-        <field name="arch" type="xml">
-            <tree string="Pickup Requests" decoration-info="state=='draft'" decoration-muted="state=='cancelled'" decoration-success="state=='completed'" decoration-warning="state=='scheduled'">
-                <field name="name"/>
-                <field name="customer_id"/>
-                <field name="request_date"/>
-                <field name="scheduled_date"/>
-                <field name="warehouse_id"/>
-                <field name="priority" widget="priority"/>
-                <field name="state"/>
-            </tree>
-        </field>
-    </record>
-    
-    <record id="view_pickup_request_search" model="ir.ui.view">
-        <field name="name">pickup.request.search</field>
-        <field name="model">pickup.request</field>
-        <field name="arch" type="xml">
-            <search string="Search Pickup Requests">
-                <field name="name"/>
-                <field name="customer_id"/>
-                <field name="warehouse_id"/>
-                <field name="driver_id"/>
-                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
-                <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
-                <filter string="Scheduled" name="scheduled" domain="[('state','=','scheduled')]"/>
-                <filter string="Completed" name="completed" domain="[('state','=','completed')]"/>
-                <filter string="Cancelled" name="cancelled" domain="[('state','=','cancelled')]"/>
-                <filter string="High Priority" name="high_priority" domain="[('priority','=','1')]"/>
-                <separator/>
-                <filter string="My Requests" name="my_requests" domain="[('create_uid','=',uid)]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Customer" name="group_customer" context="{'group_by':'customer_id'}"/>
-                    <filter string="Warehouse" name="group_warehouse" context="{'group_by':'warehouse_id'}"/>
-                    <filter string="Status" name="group_state" context="{'group_by':'state'}"/>
-                    <filter string="Request Date" name="group_request_date" context="{'group_by':'request_date:month'}"/>
-                    <filter string="Scheduled Date" name="group_scheduled_date" context="{'group_by':'scheduled_date:day'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-    
+    <!-- Minimal action - let Odoo auto-generate views for pickup.request -->
     <record id="action_pickup_request" model="ir.actions.act_window">
         <field name="name">Pickup Requests</field>
         <field name="res_model">pickup.request</field>
-        <field name="view_mode">list,form,calendar</field>
-        <field name="search_view_id" ref="view_pickup_request_search"/>
+        <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create a new pickup request
+                Create your first record
             </p>
             <p>
-                Manage customer pickup requests for records and materials.
+                Schedule and manage document pickup services.
             </p>
         </field>
     </record>
-    
 </odoo>

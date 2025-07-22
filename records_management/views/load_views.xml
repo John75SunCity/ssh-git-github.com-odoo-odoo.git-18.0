@@ -1,28 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="load_kanban_view" model="ir.ui.view">
-            <field name="name">records_management.load_kanban</field>
-            <field name="model">records_management.load</field>
-            <field name="arch" type="xml">
-                <kanban default_group_by="state">
-                    <field name="bale_count"/>
-                    <field name="weight_total"/>
-                    <field name="state"/>
-                    <templates>
-                        <t t-name="card">
-                            <div class="o_kanban_record">
-                                <div class="truck-widget">
-                                    <!-- OWL-integrated SVG for modern, interactive truck -->
-                                    <t t-component="TruckProgressWidget" t-props="{'bale_count': record.bale_count.raw_value, 'max': 28}"/>
-                                </div>
-                                <div>Weight: <field name="weight_total"/> lbs | Status: <field name="state" widget="badge" decoration-success="state=='done'"/></div>
-                                <div>Invoice: <field name="invoice_id" widget="monetary" decoration-danger="invoice_id.state != 'posted'"/></div>
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-        </record>
-    </data>
+    <!-- Minimal action - let Odoo auto-generate views for load -->
+    <record id="action_load" model="ir.actions.act_window">
+        <field name="name">Load Management</field>
+        <field name="res_model">load</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first record
+            </p>
+            <p>
+                Manage loading operations and capacity optimization.
+            </p>
+        </field>
+    </record>
 </odoo>

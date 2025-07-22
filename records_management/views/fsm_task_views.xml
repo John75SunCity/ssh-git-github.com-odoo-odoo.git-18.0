@@ -1,35 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
-New file: Extension for Field Service Management (FSM) task views to integrate with portal requests. This accomplishes linking portal-submitted requests (e.g., destruction/services) to FSM tasks for field execution, ensuring seamless workflow from customer portal to on-site completion. User-friendly: Adds a simple field in the form for quick navigation to the originating request. Modern: Leverages Odoo's statusbar/widget for clean UI. Innovative idea: Add a map widget (extend with geolocation) for task locations if fleet integrated; standards: NAID AAA chain-of-custody via traceable links (audit trails on task completion message_post request details); ISO 15489: Ensures verifiable process flow with timestamps.
--->
 <odoo>
-    <!-- Note: FSM task inheritance temporarily disabled due to potential External ID issues -->
-    <!-- TODO: Verify industry_fsm External IDs are available in deployment environment -->
-    
-    <!-- Temporarily commented out to fix deployment -->
-    <!--
-    <record id="view_fsm_task_form_inherit" model="ir.ui.view">
-        <field name="name">project.task.form.inherit.records</field>
-        <field name="model">project.task</field>
-        <field name="inherit_id" ref="industry_fsm.project_task_view_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//sheet/group" position="inside">
-                <group string="Portal Integration">
-                    <field name="portal_request_id" readonly="1"/>
-                </group>
-            </xpath>
+    <!-- Minimal action - let Odoo auto-generate views for fsm.task -->
+    <record id="action_fsm_task_records" model="ir.actions.act_window">
+        <field name="name">Field Service Tasks</field>
+        <field name="res_model">fsm.task</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first record
+            </p>
+            <p>
+                Manage field service operations and task scheduling.
+            </p>
         </field>
     </record>
-
-    <record id="view_fsm_task_tree_inherit" model="ir.ui.view">
-        <field name="name">project.task.tree.inherit.records</field>
-        <field name="model">project.task</field>
-        <field name="inherit_id" ref="industry_fsm.project_task_view_tree"/>
-        <field name="arch" type="xml">
-            <xpath expr="//tree/field[@name='name']" position="after">
-                <field name="portal_request_id" readonly="1"/>
-            </xpath>
-        </field>
-    </record>
-    -->
 </odoo>

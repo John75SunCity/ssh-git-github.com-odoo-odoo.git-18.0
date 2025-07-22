@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Paper bale views and forms will be defined here -->
-        
-    </data>
+    <!-- Minimal action - let Odoo auto-generate views for paper.bale -->
+    <record id="action_paper_bale" model="ir.actions.act_window">
+        <field name="name">Paper Bales</field>
+        <field name="res_model">paper.bale</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first record
+            </p>
+            <p>
+                Manage paper bale weighing and trailer loading operations.
+            </p>
+        </field>
+    </record>
 </odoo>
