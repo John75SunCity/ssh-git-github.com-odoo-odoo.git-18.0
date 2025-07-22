@@ -45,6 +45,11 @@ class RecordsBox(models.Model):
         default=fields.Datetime.now,
         readonly=True
     )
+    storage_date = fields.Date(
+        string='Storage Date',
+        help='Date when the box was placed in storage location',
+        tracking=True
+    )
     destroy_date = fields.Date(string='Destroy Date')
     access_count = fields.Integer(string='Access Count', default=0)
     perm_flag = fields.Boolean(string='Permanent Flag', default=False)
