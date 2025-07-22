@@ -15,8 +15,6 @@
                 <field name="state"/>
                 <field name="retention_policy_id"/>
                 <field name="destruction_eligible_date"/>
-                <field name="confidentiality_level"/>
-                <field name="naid_compliant"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_card oe_kanban_global_click">
@@ -43,12 +41,7 @@
                                         </div>
                                     </div>
                                     <div class="col-4">
-                                        <span class="badge" t-att-class="record.confidentiality_level.raw_value === 'highly_confidential' ? 'badge-danger' : record.confidentiality_level.raw_value === 'confidential' ? 'badge-warning' : 'badge-info'">
-                                            <field name="confidentiality_level"/>
-                                        </span>
-                                        <span class="badge badge-success" t-if="record.naid_compliant.raw_value">
-                                            🏆 NAID
-                                        </span>
+                                        <!-- Certified NAID AAA facility - all records confidential by default -->
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -86,16 +79,13 @@
         <field name="model">records.document</field>
         <field name="arch" type="xml">
             <list decoration-danger="destruction_eligible_date &lt;= context_today()" 
-                  decoration-warning="destruction_eligible_date &lt;= (context_today() + relativedelta(days=30))"
-                  decoration-success="naid_compliant == True">
+                  decoration-warning="destruction_eligible_date &lt;= (context_today() + relativedelta(days=30))">
                 <field name="name" string="📄 Document"/>
                 <field name="document_type_id" string="📂 Type"/>
                 <field name="customer_id" string="👤 Customer"/>
                 <field name="box_id" string="📦 Box"/>
-                <field name="confidentiality_level" string="🔒 Confidentiality" widget="badge"/>
                 <field name="retention_policy_id" string="📅 Retention Policy"/>
                 <field name="destruction_eligible_date" string="💥 Destruction Date"/>
-                <field name="naid_compliant" string="🏆 NAID" widget="boolean_toggle"/>
                 <field name="state" string="🎯 Status" widget="badge"/>
                 <button name="action_view_chain_of_custody" type="object" string="Chain" 
                         icon="fa-link" class="btn-link"/>
@@ -145,11 +135,10 @@
                             <field name="box_id"/>
                         </group>
                         <group string="🔒 Security &amp; Compliance">
-                            <field name="confidentiality_level"/>
-                            <field name="naid_compliant" widget="boolean_toggle"/>
                             <field name="retention_policy_id"/>
                             <field name="destruction_eligible_date"/>
                             <field name="state"/>
+                            <label string="🏆 NAID AAA Certified Facility" colspan="2" style="font-weight: bold; color: #28a745;"/>
                         </group>
                     </group>
                     
@@ -241,11 +230,10 @@
         <field name="arch" type="xml">
             <calendar string="📅 Document Destruction Schedule" 
                       date_start="destruction_eligible_date"
-                      color="confidentiality_level">
+                      color="state">
                 <field name="name"/>
                 <field name="customer_id"/>
-                <field name="confidentiality_level"/>
-                <field name="naid_compliant"/>
+                <field name="state"/>
             </calendar>
         </field>
     </record>
@@ -267,11 +255,6 @@
                 <filter string="🗑️ Destroyed" name="destroyed" domain="[('state', '=', 'destroyed')]"/>
                 
                 <separator/>
-                <filter string="🏆 NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
-                <filter string="🔴 Highly Confidential" name="highly_confidential" domain="[('confidentiality_level', '=', 'highly_confidential')]"/>
-                <filter string="🟡 Confidential" name="confidential" domain="[('confidentiality_level', '=', 'confidential')]"/>
-                
-                <separator/>
                 <filter string="⚠️ Destruction Due" name="destruction_due" 
                         domain="[('destruction_eligible_date', '&lt;=', context_today())]"/>
                 <filter string="📅 Destruction This Month" name="destruction_this_month" 
@@ -283,7 +266,6 @@
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
                     <filter string="Document Type" name="group_by_type" context="{'group_by': 'document_type_id'}"/>
                     <filter string="Box" name="group_by_box" context="{'group_by': 'box_id'}"/>
-                    <filter string="Confidentiality" name="group_by_confidentiality" context="{'group_by': 'confidentiality_level'}"/>
                     <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                     <filter string="Destruction Date" name="group_by_destruction" context="{'group_by': 'destruction_eligible_date:month'}"/>
                 </group>
@@ -298,8 +280,7 @@
         <field name="view_mode">kanban,list,form,calendar</field>
         <field name="search_view_id" ref="view_records_document_search"/>
         <field name="context">{
-            'search_default_active': 1,
-            'search_default_naid_compliant': 1
+            'search_default_active': 1
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
