@@ -1,16 +1,406 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Minimal action - let Odoo auto-generate views for barcode.scanner -->
+    <!-- 📱 ENTERPRISE BARCODE SCANNER - Advanced Mobile Scanning & Real-Time Tracking -->
+    
+    <!-- KANBAN VIEW: Mobile-First Barcode Scanner Dashboard -->
+    <record id="view_barcode_scanner_kanban" model="ir.ui.view">
+        <field name="name">barcode.scanner.kanban</field>
+        <field name="model">barcode.scanner</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="scanner_status" sample="1" quick_create="false" class="o_kanban_mobile o_kanban_small_column">
+                <field name="name"/>
+                <field name="scanner_status"/>
+                <field name="device_id"/>
+                <field name="operator_id"/>
+                <field name="scan_count"/>
+                <field name="success_rate"/>
+                <field name="last_scan_time"/>
+                <field name="battery_level"/>
+                <field name="location_id"/>
+                <field name="scan_session_active"/>
+                <field name="activity_ids"/>
+                <field name="activity_state"/>
+                <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <span class="float-end">
+                                        <field name="scanner_status" widget="label_selection" options="{'classes': {'offline': 'secondary', 'idle': 'primary', 'scanning': 'success', 'error': 'danger', 'maintenance': 'warning'}}"/>
+                                    </span>
+                                </div>
+                                <span class="o_kanban_record_subtitle text-muted">
+                                    📱 <field name="device_id"/> | <field name="operator_id"/>
+                                </span>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong>Scans:</strong> <field name="scan_count"/><br/>
+                                        <strong>Success:</strong> <field name="success_rate" widget="percentage"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Battery:</strong> <field name="battery_level"/>%<br/>
+                                        <strong>Location:</strong> <field name="location_id"/>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="progress" style="height: 4px;">
+                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + record.battery_level.raw_value + '%'" t-att-aria-valuenow="record.battery_level.raw_value" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <small class="text-muted">Battery Level</small>
+                                </div>
+                                <div class="mt-2" t-if="record.scan_session_active.raw_value">
+                                    <span class="badge badge-success">🔄 Active Session</span>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="activity_ids" widget="kanban_activity"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <span class="badge badge-pill badge-info">
+                                        ⏱️ <field name="last_scan_time" widget="datetime"/>
+                                    </span>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="activity_state" widget="kanban_activity"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- TREE VIEW: Barcode Scanner Management List -->
+    <record id="view_barcode_scanner_tree" model="ir.ui.view">
+        <field name="name">barcode.scanner.tree</field>
+        <field name="model">barcode.scanner</field>
+        <field name="arch" type="xml">
+            <tree string="Barcode Scanner Management" decoration-success="scanner_status=='scanning'" decoration-info="scanner_status=='idle'" decoration-danger="scanner_status=='error'" decoration-warning="scanner_status=='maintenance'" multi_edit="1" sample="1">
+                <header>
+                    <button name="action_start_session" type="object" string="Start Session"/>
+                    <button name="action_end_session" type="object" string="End Session"/>
+                    <button name="action_sync_data" type="object" string="Sync Data"/>
+                    <button name="action_calibrate" type="object" string="Calibrate"/>
+                </header>
+                <field name="name" string="Scanner Name"/>
+                <field name="device_id" string="Device ID"/>
+                <field name="operator_id" string="Operator"/>
+                <field name="location_id" string="Current Location"/>
+                <field name="scan_count" string="Scans Today" sum="Total Scans"/>
+                <field name="success_rate" string="Success Rate %" widget="percentage" avg="Avg Success"/>
+                <field name="battery_level" string="Battery %" widget="progressbar"/>
+                <field name="last_scan_time" string="Last Scan" widget="datetime"/>
+                <field name="scanner_status" string="Status" widget="badge" decoration-success="scanner_status=='scanning'" decoration-info="scanner_status=='idle'" decoration-danger="scanner_status=='error'"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- FORM VIEW: Detailed Barcode Scanner Configuration -->
+    <record id="view_barcode_scanner_form" model="ir.ui.view">
+        <field name="name">barcode.scanner.form</field>
+        <field name="model">barcode.scanner</field>
+        <field name="arch" type="xml">
+            <form string="Barcode Scanner Management">
+                <header>
+                    <button name="action_start_session" string="Start Scan Session" type="object" class="btn-primary" states="idle"/>
+                    <button name="action_end_session" string="End Session" type="object" class="btn-warning" states="scanning"/>
+                    <button name="action_sync_data" string="Sync Data" type="object" class="btn-info"/>
+                    <button name="action_calibrate" string="Calibrate Scanner" type="object" class="btn-secondary"/>
+                    <button name="action_maintenance_mode" string="Maintenance" type="object" states="idle,error"/>
+                    <button name="action_reset_scanner" string="Reset" type="object" states="error,maintenance"/>
+                    <field name="scanner_status" widget="statusbar" statusbar_visible="offline,idle,scanning,error,maintenance"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_scan_history" type="object" class="oe_stat_button" icon="fa-history">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="total_scans"/>
+                                </span>
+                                <span class="o_stat_text">Total Scans</span>
+                            </div>
+                        </button>
+                        <button name="action_view_error_logs" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="error_count"/>
+                                </span>
+                                <span class="o_stat_text">Errors</span>
+                            </div>
+                        </button>
+                        <button name="action_view_performance" type="object" class="oe_stat_button" icon="fa-chart-line">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="success_rate" widget="percentage"/>
+                                </span>
+                                <span class="o_stat_text">Success Rate</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Scanner Name"/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="device_id" placeholder="Device Serial/ID"/>
+                            <label for="operator_id" string="Operator:"/>
+                            <field name="operator_id" placeholder="Assigned Operator"/>
+                        </div>
+                    </div>
+                    
+                    <group>
+                        <group name="scanner_info" string="Scanner Information">
+                            <field name="manufacturer"/>
+                            <field name="model"/>
+                            <field name="serial_number"/>
+                            <field name="firmware_version"/>
+                            <field name="battery_level" widget="progressbar"/>
+                            <field name="connection_type"/>
+                            <field name="ip_address" states="connection_type=='wifi'"/>
+                        </group>
+                        <group name="current_status" string="Current Status">
+                            <field name="location_id"/>
+                            <field name="scan_session_active" widget="boolean_toggle"/>
+                            <field name="last_sync_time" widget="datetime"/>
+                            <field name="last_scan_time" widget="datetime"/>
+                            <field name="scan_count"/>
+                            <field name="success_rate" widget="percentage"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="capabilities" string="Scanner Capabilities">
+                            <field name="supports_1d_barcodes" widget="boolean_toggle"/>
+                            <field name="supports_2d_barcodes" widget="boolean_toggle"/>
+                            <field name="supports_qr_codes" widget="boolean_toggle"/>
+                            <field name="supports_rfid" widget="boolean_toggle"/>
+                            <field name="camera_scanner" widget="boolean_toggle"/>
+                            <field name="laser_scanner" widget="boolean_toggle"/>
+                        </group>
+                        <group name="settings" string="Scanner Settings">
+                            <field name="scan_mode"/>
+                            <field name="trigger_mode"/>
+                            <field name="beep_enabled" widget="boolean_toggle"/>
+                            <field name="vibration_enabled" widget="boolean_toggle"/>
+                            <field name="auto_prefix"/>
+                            <field name="auto_suffix"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Scan History" name="scan_history">
+                            <field name="scan_history_ids" mode="tree">
+                                <tree string="Recent Scans" create="false">
+                                    <field name="scan_time" widget="datetime"/>
+                                    <field name="barcode_data"/>
+                                    <field name="barcode_type"/>
+                                    <field name="scan_result"/>
+                                    <field name="product_id"/>
+                                    <field name="location_id"/>
+                                    <field name="operation_type"/>
+                                    <field name="success" widget="boolean_toggle"/>
+                                    <field name="error_message" states="success=False"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Configuration" name="configuration">
+                            <group>
+                                <group string="Barcode Format Settings">
+                                    <field name="code128_enabled" widget="boolean_toggle"/>
+                                    <field name="code39_enabled" widget="boolean_toggle"/>
+                                    <field name="ean13_enabled" widget="boolean_toggle"/>
+                                    <field name="upca_enabled" widget="boolean_toggle"/>
+                                    <field name="qr_code_enabled" widget="boolean_toggle"/>
+                                    <field name="data_matrix_enabled" widget="boolean_toggle"/>
+                                </group>
+                                <group string="Validation Rules">
+                                    <field name="validate_check_digit" widget="boolean_toggle"/>
+                                    <field name="min_barcode_length"/>
+                                    <field name="max_barcode_length"/>
+                                    <field name="allowed_characters"/>
+                                    <field name="duplicate_scan_prevention" widget="boolean_toggle"/>
+                                    <field name="duplicate_timeout_seconds"/>
+                                </group>
+                            </group>
+                            <separator string="Custom Prefix/Suffix Rules"/>
+                            <field name="prefix_suffix_rules_ids" mode="tree">
+                                <tree string="Prefix/Suffix Rules" editable="bottom">
+                                    <field name="rule_name"/>
+                                    <field name="barcode_pattern"/>
+                                    <field name="prefix_to_add"/>
+                                    <field name="suffix_to_add"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Performance" name="performance">
+                            <group>
+                                <group string="Daily Statistics">
+                                    <field name="scans_today"/>
+                                    <field name="successful_scans_today"/>
+                                    <field name="failed_scans_today"/>
+                                    <field name="average_scan_time"/>
+                                </group>
+                                <group string="Weekly Performance">
+                                    <field name="scans_this_week"/>
+                                    <field name="weekly_success_rate" widget="percentage"/>
+                                    <field name="uptime_percentage" widget="percentage"/>
+                                    <field name="maintenance_hours"/>
+                                </group>
+                            </group>
+                            <separator string="Performance Trends"/>
+                            <field name="performance_data_ids" mode="tree">
+                                <tree string="Performance Data">
+                                    <field name="date"/>
+                                    <field name="total_scans"/>
+                                    <field name="successful_scans"/>
+                                    <field name="success_rate" widget="percentage"/>
+                                    <field name="average_scan_time"/>
+                                    <field name="error_count"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Maintenance" name="maintenance">
+                            <group>
+                                <group string="Maintenance Schedule">
+                                    <field name="last_maintenance_date" widget="date"/>
+                                    <field name="next_maintenance_date" widget="date"/>
+                                    <field name="maintenance_interval_days"/>
+                                    <field name="maintenance_technician"/>
+                                </group>
+                                <group string="Status Indicators">
+                                    <field name="needs_calibration" widget="boolean_toggle"/>
+                                    <field name="battery_replacement_needed" widget="boolean_toggle"/>
+                                    <field name="cleaning_required" widget="boolean_toggle"/>
+                                    <field name="firmware_update_available" widget="boolean_toggle"/>
+                                </group>
+                            </group>
+                            <separator string="Maintenance History"/>
+                            <field name="maintenance_history_ids" mode="tree">
+                                <tree string="Maintenance Records">
+                                    <field name="maintenance_date" widget="date"/>
+                                    <field name="maintenance_type"/>
+                                    <field name="technician_id"/>
+                                    <field name="description"/>
+                                    <field name="cost" widget="monetary"/>
+                                    <field name="downtime_hours"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- SEARCH VIEW: Advanced Barcode Scanner Search -->
+    <record id="view_barcode_scanner_search" model="ir.ui.view">
+        <field name="name">barcode.scanner.search</field>
+        <field name="model">barcode.scanner</field>
+        <field name="arch" type="xml">
+            <search string="Search Barcode Scanners">
+                <field name="name" string="Scanner Name" filter_domain="[('name', 'ilike', self)]"/>
+                <field name="device_id" string="Device ID"/>
+                <field name="operator_id" string="Operator"/>
+                <field name="location_id" string="Location"/>
+                <field name="manufacturer" string="Manufacturer"/>
+                
+                <filter string="My Scanners" name="my_scanners" domain="[('operator_id.user_id', '=', uid)]"/>
+                <filter string="Active Session" name="active_session" domain="[('scan_session_active', '=', True)]"/>
+                <filter string="Online" name="online" domain="[('scanner_status', 'in', ['idle', 'scanning'])]"/>
+                
+                <separator/>
+                <filter string="Idle" name="idle" domain="[('scanner_status', '=', 'idle')]"/>
+                <filter string="Scanning" name="scanning" domain="[('scanner_status', '=', 'scanning')]"/>
+                <filter string="Error" name="error" domain="[('scanner_status', '=', 'error')]"/>
+                <filter string="Offline" name="offline" domain="[('scanner_status', '=', 'offline')]"/>
+                <filter string="Maintenance" name="maintenance" domain="[('scanner_status', '=', 'maintenance')]"/>
+                
+                <separator/>
+                <filter string="Low Battery" name="low_battery" domain="[('battery_level', '&lt;', 20)]"/>
+                <filter string="Needs Calibration" name="needs_calibration" domain="[('needs_calibration', '=', True)]"/>
+                <filter string="Maintenance Due" name="maintenance_due" domain="[('next_maintenance_date', '&lt;=', context_today())]"/>
+                <filter string="High Error Rate" name="high_error_rate" domain="[('success_rate', '&lt;', 90)]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_status" context="{'group_by': 'scanner_status'}"/>
+                    <filter string="Location" name="group_location" context="{'group_by': 'location_id'}"/>
+                    <filter string="Operator" name="group_operator" context="{'group_by': 'operator_id'}"/>
+                    <filter string="Manufacturer" name="group_manufacturer" context="{'group_by': 'manufacturer'}"/>
+                    <filter string="Connection Type" name="group_connection" context="{'group_by': 'connection_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- GRAPH VIEW: Scanner Performance Analytics -->
+    <record id="view_barcode_scanner_graph" model="ir.ui.view">
+        <field name="name">barcode.scanner.graph</field>
+        <field name="model">barcode.scanner</field>
+        <field name="arch" type="xml">
+            <graph string="Scanner Performance" type="bar" sample="1">
+                <field name="operator_id" type="row"/>
+                <field name="scanner_status" type="col"/>
+                <field name="scan_count" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- PIVOT VIEW: Scanner Analytics -->
+    <record id="view_barcode_scanner_pivot" model="ir.ui.view">
+        <field name="name">barcode.scanner.pivot</field>
+        <field name="model">barcode.scanner</field>
+        <field name="arch" type="xml">
+            <pivot string="Scanner Analytics" sample="1">
+                <field name="location_id" type="row"/>
+                <field name="scanner_status" type="col"/>
+                <field name="scan_count" type="measure"/>
+                <field name="success_rate" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ACTION: Barcode Scanner Management -->
     <record id="action_barcode_scanner" model="ir.actions.act_window">
-        <field name="name">Barcode Scanner</field>
+        <field name="name">📱 Barcode Scanner Management</field>
         <field name="res_model">barcode.scanner</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form,graph,pivot</field>
+        <field name="search_view_id" ref="view_barcode_scanner_search"/>
+        <field name="context">{
+            'search_default_online': 1,
+            'search_default_my_scanners': 1
+        }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first record
+                📱 Set up your first barcode scanner!
             </p>
             <p>
-                Scan and track items with barcode technology.
+                Manage enterprise barcode scanning operations with real-time tracking, performance monitoring, and comprehensive device management. 
+                Support for 1D/2D barcodes, QR codes, and RFID with mobile-optimized interfaces.
+            </p>
+            <p>
+                <strong>Key Features:</strong><br/>
+                • Real-time scanner status and battery monitoring<br/>
+                • Comprehensive scan history and audit trails<br/>
+                • Multi-format barcode support (Code128, QR, EAN13, etc.)<br/>
+                • Performance analytics and success rate tracking<br/>
+                • Maintenance scheduling and calibration management<br/>
+                • Mobile-first interface for warehouse operations
             </p>
         </field>
     </record>
