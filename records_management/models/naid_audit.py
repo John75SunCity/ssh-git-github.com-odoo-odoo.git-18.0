@@ -4,7 +4,7 @@ NAID AAA Compliance Audit Model
 Tracks all security-relevant events and maintains compliance audit trail
 """
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from datetime import timedelta
 import logging
 
@@ -63,7 +63,7 @@ class NAIDAuditLog(models.Model):
     )
     
     bale_id = fields.Many2one(
-        'records_management.bale',
+        'paper.bale',
         string='Bale',
         help='Related bale if applicable'
     )

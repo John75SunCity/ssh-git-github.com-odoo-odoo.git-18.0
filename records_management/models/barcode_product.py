@@ -31,9 +31,6 @@ class BarcodeProduct(models.Model):
     usage_count = fields.Integer('Usage Count', default=0)
     last_used = fields.Datetime('Last Used')
     
-    # Relations
-    box_ids = fields.One2many('records.box', 'barcode_product_id', string='Storage Boxes')
-    
     @api.constrains('barcode')
     def _check_barcode_unique(self):
         """Ensure barcode is unique"""

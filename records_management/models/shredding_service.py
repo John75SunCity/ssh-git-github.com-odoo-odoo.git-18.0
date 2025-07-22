@@ -37,7 +37,6 @@ class ShreddingService(models.Model):
     box_quantity = fields.Integer(string='Number of Boxes', tracking=True)
     shredded_box_ids = fields.Many2many('stock.lot', string='Shredded Boxes', domain="[('customer_id', '!=', False)]", tracking=True)
     hard_drive_quantity = fields.Integer(string='Number of Hard Drives', tracking=True)  # New
-    hard_drive_ids = fields.One2many('shredding.hard_drive', 'service_id', string='Hard Drives', tracking=True)  # New: Detailed tracking for NAID compliance
     uniform_quantity = fields.Integer(string='Number of Uniforms', tracking=True)  # New
     total_boxes = fields.Integer(compute='_compute_total_boxes', store=True, tracking=True)
     unit_cost = fields.Float(string='Unit Cost', default=5.0, tracking=True)
@@ -57,7 +56,7 @@ class ShreddingService(models.Model):
     pos_session_id = fields.Many2one('pos.session', string='POS Session (Walk-in)', tracking=True)  # New for walk-in
     estimated_bale_weight = fields.Float(compute='_compute_estimated_bale_weight', store=True, help='Predictive weight for recycling efficiency')
 
-    @api.depends('service_type', 'bin_ids', 'shredded_box_ids', 'box_quantity', 'hard_drive_quantity', 'uniform_quantity', 'hard_drive_ids')
+    @api.depends('service_type', 'bin_ids', 'shredded_box_ids', 'box_quantity', 'hard_drive_quantity', 'uniform_quantity')
     def _compute_total_charge(self):
         for rec in self:
             if rec.service_type == 'bin':
