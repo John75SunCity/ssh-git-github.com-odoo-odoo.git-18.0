@@ -4,6 +4,9 @@
 # Template and example wizards
 from . import wizard_template  # Template for creating new wizards
 
+# Box management wizards
+from . import box_type_converter  # Bulk box type conversion wizard
+
 # Future wizard imports will be added here as they are developed:
 # from . import invoice_wizard        # Automated invoicing wizard
 # from . import adjustment_wizard     # Inventory adjustment wizard

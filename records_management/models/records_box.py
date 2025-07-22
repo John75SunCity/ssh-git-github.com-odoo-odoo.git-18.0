@@ -217,6 +217,74 @@ class RecordsBox(models.Model):
             }
             box.monthly_rate = rate_mapping.get(box.box_type_code, 0.32)
 
+    @api.model
+    def classify_barcode_type(self, barcode):
+        """Classify object type based on barcode length according to business rules."""
+        if not barcode:
+            return None
+            
+        length = len(str(barcode))
+        classification = {
+            5: 'location',
+            15: 'location',
+            6: 'container',  # File boxes - default to type 01
+            7: 'filefolder',
+            10: 'shred_bin',
+            14: 'temp_filefolder'  # Portal-created, needs reassignment
+        }
+        return classification.get(length)
+
+    @api.model
+    def create_from_barcode_scan(self, barcode, location_id=None):
+        """Create box from barcode scan with intelligent type detection."""
+        barcode_type = self.classify_barcode_type(barcode)
+        
+        if barcode_type != 'container':
+            raise ValidationError(_(
+                'Barcode %s (%d digits) is not a container barcode. '
+                'Only 6-digit barcodes can create boxes.'
+            ) % (barcode, len(str(barcode))))
+        
+        # Check if box already exists
+        existing_box = self.search([('barcode', '=', barcode)])
+        if existing_box:
+            raise ValidationError(_(
+                'Box with barcode %s already exists: %s'
+            ) % (barcode, existing_box.name))
+        
+        # Auto-detect box type based on location if provided
+        box_type_code = '01'  # Default to standard
+        if location_id:
+            location = self.env['records.location'].browse(location_id)
+            if location.location_type == 'map':
+                box_type_code = '03'
+            elif location.location_type == 'vault':
+                box_type_code = '06'
+            elif location.location_type == 'oversize':
+                box_type_code = '04'
+        
+        return self.create({
+            'barcode': barcode,
+            'box_type_code': box_type_code,
+            'location_id': location_id,
+            'description': f'Box scanned from barcode {barcode}',
+            'state': 'active'
+        })
+
+    def action_bulk_convert_box_type(self):
+        """Open wizard for bulk box type conversion."""
+        return {
+            'name': _('Bulk Convert Box Types'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.box.type.converter',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_box_ids': [(6, 0, self.ids)],
+                'default_current_type': self[0].box_type_code if len(self) == 1 else False,
+            }
+        }
+
     @api.constrains('box_type_code', 'location_id')
     def _check_box_type_location_compatibility(self):
         """Validate that box types are placed in appropriate location types."""

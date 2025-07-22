@@ -79,15 +79,21 @@
         </field>
     </record>
 
-    <!-- 📋 Enhanced Tree View with Smart Columns -->
+    <!-- 📋 Enhanced List View with Smart Columns and Bulk Actions -->
     <record id="view_records_box_tree" model="ir.ui.view">
-        <field name="name">records.box.tree</field>
+        <field name="name">records.box.list</field>
         <field name="model">records.box</field>
         <field name="arch" type="xml">
-            <tree decoration-success="state == 'stored'" 
+            <list decoration-success="state == 'stored'" 
                   decoration-warning="state == 'in_transit'" 
                   decoration-danger="state == 'destroyed'"
-                  decoration-muted="state == 'pending'">
+                  decoration-muted="state == 'pending'"
+                  multi_edit="1">
+                <header>
+                    <button name="action_bulk_convert_box_type" type="object" 
+                            string="🔄 Bulk Convert Types" 
+                            class="btn-primary"/>
+                </header>
                 <field name="name" string="📦 Box ID"/>
                 <field name="box_type_code" string="📊 Type"/>
                 <field name="box_type_display" string="📦 Box Type"/>
@@ -104,7 +110,7 @@
                         icon="fa-file-text-o" class="btn-link"/>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" 
                         icon="fa-barcode" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -157,36 +163,36 @@
                     
                     <notebook>
                         <page string="📄 Documents" name="documents">
-                            <field name="document_ids" mode="tree">
-                                <tree>
+                            <field name="document_ids" mode="list">
+                                <list>
                                     <field name="name"/>
                                     <field name="document_type_id"/>
                                     <field name="state"/>
                                     <field name="created_date"/>
                                     <button name="action_view_document" type="object" string="View" icon="fa-eye" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🚚 Movement History" name="movements">
-                            <field name="movement_ids" mode="tree">
-                                <tree>
+                            <field name="movement_ids" mode="list">
+                                <list>
                                     <field name="movement_date"/>
                                     <field name="from_location_id"/>
                                     <field name="to_location_id"/>
                                     <field name="movement_type"/>
                                     <field name="responsible_user_id"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🎯 Service Requests" name="requests">
-                            <field name="service_request_ids" mode="tree">
-                                <tree>
+                            <field name="service_request_ids" mode="list">
+                                <list>
                                     <field name="name"/>
                                     <field name="service_type"/>
                                     <field name="priority"/>
                                     <field name="state"/>
                                     <field name="requested_date"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📝 Notes &amp; Details" name="details">
@@ -276,7 +282,7 @@
     <record id="action_records_box" model="ir.actions.act_window">
         <field name="name">📦 Storage Boxes</field>
         <field name="res_model">records.box</field>
-        <field name="view_mode">kanban,tree,form,calendar,graph</field>
+        <field name="view_mode">kanban,list,form,calendar,graph</field>
         <field name="search_view_id" ref="view_records_box_search"/>
         <field name="context">{
             'search_default_stored': 1,

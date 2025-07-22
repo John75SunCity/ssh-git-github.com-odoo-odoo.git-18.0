@@ -94,3 +94,5 @@ access_temp_inventory_user,temp.inventory.user,model_temp_inventory,records_mana
 access_temp_inventory_manager,temp.inventory.manager,model_temp_inventory,records_management.group_records_manager,1,1,1,1
 access_visitor_pos_wizard_user,visitor.pos.wizard.user,model_visitor_pos_wizard,records_management.group_records_user,1,1,1,1
 access_visitor_pos_wizard_manager,visitor.pos.wizard.manager,model_visitor_pos_wizard,records_management.group_records_manager,1,1,1,1
+access_records_box_type_converter_user,records.box.type.converter.user,model_records_box_type_converter,records_management.group_records_user,1,1,1,1
+access_records_box_type_converter_manager,records.box.type.converter.manager,model_records_box_type_converter,records_management.group_records_manager,1,1,1,1

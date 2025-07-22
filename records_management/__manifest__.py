@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
                 'name': 'Records Management',
-            'version': '18.0.3.2.0',   # 🚀 BUSINESS LOGIC: Box Type Classification & Pricing System
+            'version': '18.0.3.3.0',   # 🚀 BARCODE CLASSIFICATION: Intelligent scanning & bulk conversion tools
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
@@ -95,6 +95,7 @@ Features:
         'views/portal_request_views.xml',  # New: Views for portal requests
         'views/fsm_task_views.xml',  # New: FSM task views
         'views/portal_feedback_views.xml',  # New: Feedback views
+        'views/box_type_converter_views.xml',  # New: Box type conversion wizard
         'report/records_reports.xml',
         'report/destruction_certificate_report.xml',
         'report/bale_label_report.xml',

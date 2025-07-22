@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 import hashlib
 
 
@@ -149,6 +150,54 @@ class RecordsDocument(models.Model):
         else:
             self.customer_id = False
             self.department_id = False
+
+    # Constraint methods
+    @api.constrains('box_id', 'barcode')
+    def _check_refiles_restriction(self):
+        """Ensure only file folders can be placed in refiles locations."""
+        for document in self:
+            if document.box_id and document.box_id.location_id and document.barcode:
+                location = document.box_id.location_id
+                if location.location_type == 'refiles':
+                    # Only 7-digit and 14-digit barcodes allowed in refiles
+                    barcode_length = len(str(document.barcode))
+                    if barcode_length not in [7, 14]:
+                        raise ValidationError(_(
+                            'Only file folders (7-digit or 14-digit barcodes) can be '
+                            'placed in refiles locations. Document barcode %s (%d digits) '
+                            'is not allowed in location %s.'
+                        ) % (document.barcode, barcode_length, location.name))
+
+    @api.model
+    def classify_document_type(self, barcode):
+        """Classify document type based on barcode length."""
+        if not barcode:
+            return None
+            
+        length = len(str(barcode))
+        classification = {
+            7: 'permanent_filefolder',
+            10: 'shred_bin_item',
+            14: 'temporary_filefolder'  # Portal-created, needs reassignment
+        }
+        return classification.get(length)
+
+    def action_reassign_temp_folders(self):
+        """Action to reassign temporary file folders to permanent locations."""
+        temp_folders = self.filtered(lambda d: len(str(d.barcode)) == 14 if d.barcode else False)
+        if not temp_folders:
+            raise ValidationError(_('No temporary file folders (14-digit barcodes) found in selection'))
+        
+        return {
+            'name': _('Reassign Temporary File Folders'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document.reassign.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_document_ids': [(6, 0, temp_folders.ids)],
+            }
+        }
 
     # Action methods for workflow buttons
     def action_store(self):
