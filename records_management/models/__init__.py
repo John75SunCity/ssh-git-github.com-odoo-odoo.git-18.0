@@ -24,7 +24,6 @@ from . import shredding_service
 
 # Portal and FSM
 from . import portal_request
-from . import portal_request_fixed
 from . import fsm_task
 
 # HR and Feedback
