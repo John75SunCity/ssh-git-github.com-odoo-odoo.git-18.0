@@ -53,6 +53,8 @@ Features:
         'barcodes',  # For temp inventory/barcode handling
         'web_tour',  # For portal app tours
         'survey',  # For customer feedback forms/suggestions
+        'project',  # For project tasks and FSM integration
+        'calendar',  # For meeting/event scheduling
     ],
     'external_dependencies': {
         'python': [
