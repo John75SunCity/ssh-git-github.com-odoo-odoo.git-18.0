@@ -44,7 +44,9 @@ class RecordsRetentionPolicy(models.Model):
     
     # Additional Policy Details
     legal_basis = fields.Text('Legal Basis', help='Legal or regulatory basis for this retention policy')
-    review_date = fields.Date('Next Review Date')
+    review_date = fields.Date('Review Date')
+    next_review_date = fields.Date('Next Review Date', compute='_compute_next_review_date', store=True,
+                                   help='Automatically calculated next review date based on review cycle')
     created_by = fields.Many2one('res.users', string='Created By', default=lambda self: self.env.user)
     approved_by = fields.Many2one('res.users', string='Approved By')
     
@@ -95,6 +97,18 @@ class RecordsRetentionPolicy(models.Model):
         self.ensure_one()
         self.policy_status = 'active'
         return True
+
+    @api.depends('review_date', 'name')
+    def _compute_next_review_date(self):
+        """Compute next review date based on review cycle"""
+        for record in self:
+            if record.review_date:
+                # If review_date is set, use it as next_review_date
+                record.next_review_date = record.review_date
+            else:
+                # Default to one year from today if no review_date set
+                from datetime import date, timedelta
+                record.next_review_date = date.today() + timedelta(days=365)
 
     def action_deactivate_policy(self):
         """Deactivate the retention policy"""
