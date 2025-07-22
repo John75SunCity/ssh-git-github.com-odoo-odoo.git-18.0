@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Minimal action - let Odoo auto-generate views for billing -->
-    <record id="action_billing" model="ir.actions.act_window">
-        <field name="name">Billing</field>
-        <field name="res_model">billing</field>
+    <!-- Minimal action - let Odoo auto-generate views for billing configuration -->
+    <record id="action_billing_config" model="ir.actions.act_window">
+        <field name="name">Billing Configuration</field>
+        <field name="res_model">records.billing.config</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first record
+                Create your first billing configuration!
             </p>
             <p>
-                Manage Billing with auto-generated views.
+                Manage billing settings and configurations.
             </p>
         </field>
     </record>
