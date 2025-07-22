@@ -1,16 +1,320 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Minimal action - let Odoo auto-generate views for records.document -->
+    <!-- 📄 ENTERPRISE DOCUMENT MANAGEMENT - NAID AAA Compliant -->
+    
+    <!-- 🎨 Document Kanban with Retention & Compliance Tracking -->
+    <record id="view_records_document_kanban" model="ir.ui.view">
+        <field name="name">records.document.kanban</field>
+        <field name="model">records.document</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_document_dashboard">
+                <field name="name"/>
+                <field name="document_type_id"/>
+                <field name="customer_id"/>
+                <field name="box_id"/>
+                <field name="state"/>
+                <field name="retention_policy_id"/>
+                <field name="destruction_eligible_date"/>
+                <field name="confidentiality_level"/>
+                <field name="naid_compliant"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <strong>📄 <field name="name"/></strong>
+                                    </div>
+                                    <div class="o_secondary">
+                                        👤 <field name="customer_id"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_manage_button_section">
+                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v"/></a>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div><i class="fa fa-folder"/> <field name="document_type_id"/></div>
+                                        <div><i class="fa fa-cube"/> <field name="box_id"/></div>
+                                        <div t-if="record.destruction_eligible_date.raw_value">
+                                            <i class="fa fa-calendar-times"/> <field name="destruction_eligible_date"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="badge" t-att-class="record.confidentiality_level.raw_value === 'highly_confidential' ? 'badge-danger' : record.confidentiality_level.raw_value === 'confidential' ? 'badge-warning' : 'badge-info'">
+                                            <field name="confidentiality_level"/>
+                                        </span>
+                                        <span class="badge badge-success" t-if="record.naid_compliant.raw_value">
+                                            🏆 NAID
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <button class="btn btn-primary btn-sm" type="object" name="action_view_chain_of_custody">
+                                            🔗 Chain
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-warning btn-sm" type="object" name="action_schedule_destruction" 
+                                                t-if="record.destruction_eligible_date.raw_value">
+                                            🗑️ Destroy
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Document</a>
+                                <a role="menuitem" type="object" name="action_view_chain_of_custody" class="dropdown-item">🔗 Chain of Custody</a>
+                                <a role="menuitem" type="object" name="action_scan_document" class="dropdown-item">📷 Scan/Image</a>
+                                <a role="menuitem" type="object" name="action_audit_trail" class="dropdown-item">📋 Audit Trail</a>
+                                <div class="dropdown-divider"/>
+                                <a role="menuitem" type="object" name="action_schedule_destruction" class="dropdown-item">💥 Schedule Destruction</a>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- 📋 Enhanced Tree with Compliance Columns -->
+    <record id="view_records_document_tree" model="ir.ui.view">
+        <field name="name">records.document.tree</field>
+        <field name="model">records.document</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="destruction_eligible_date &lt;= context_today()" 
+                  decoration-warning="destruction_eligible_date &lt;= (context_today() + relativedelta(days=30))"
+                  decoration-success="naid_compliant == True">
+                <field name="name" string="📄 Document"/>
+                <field name="document_type_id" string="📂 Type"/>
+                <field name="customer_id" string="👤 Customer"/>
+                <field name="box_id" string="📦 Box"/>
+                <field name="confidentiality_level" string="🔒 Confidentiality" widget="badge"/>
+                <field name="retention_policy_id" string="📅 Retention Policy"/>
+                <field name="destruction_eligible_date" string="💥 Destruction Date"/>
+                <field name="naid_compliant" string="🏆 NAID" widget="boolean_toggle"/>
+                <field name="state" string="🎯 Status" widget="badge"/>
+                <button name="action_view_chain_of_custody" type="object" string="Chain" 
+                        icon="fa-link" class="btn-link"/>
+                <button name="action_schedule_destruction" type="object" string="Destroy" 
+                        icon="fa-trash" class="btn-link" 
+                        attrs="{'invisible': [('destruction_eligible_date', '=', False)]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- 📝 Enhanced Form with NAID Compliance Features -->
+    <record id="view_records_document_form" model="ir.ui.view">
+        <field name="name">records.document.form</field>
+        <field name="model">records.document</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_view_chain_of_custody" type="object" string="🔗 View Chain of Custody" class="btn-primary"/>
+                    <button name="action_scan_document" type="object" string="📷 Scan/Image Document" class="btn-secondary"/>
+                    <button name="action_schedule_destruction" type="object" string="💥 Schedule Destruction" 
+                            class="btn-warning" attrs="{'invisible': [('destruction_eligible_date', '=', False)]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="active,pending_destruction,destroyed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_chain_of_custody" icon="fa-link">
+                            <field string="Chain Events" name="chain_of_custody_count" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_audit_trail" icon="fa-history">
+                            <field string="Audit Events" name="audit_trail_count" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-calendar-times" 
+                                attrs="{'invisible': [('destruction_eligible_date', '=', False)]}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="days_until_destruction"/></span>
+                                <span class="o_stat_text">Days to Destroy</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <group>
+                        <group string="📄 Document Information">
+                            <field name="name" placeholder="e.g., Invoice-2024-001"/>
+                            <field name="document_type_id"/>
+                            <field name="customer_id"/>
+                            <field name="department_id"/>
+                            <field name="box_id"/>
+                        </group>
+                        <group string="🔒 Security &amp; Compliance">
+                            <field name="confidentiality_level"/>
+                            <field name="naid_compliant" widget="boolean_toggle"/>
+                            <field name="retention_policy_id"/>
+                            <field name="destruction_eligible_date"/>
+                            <field name="state"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="📋 Document Details" name="details">
+                            <group>
+                                <group string="📅 Dates &amp; Timeline">
+                                    <field name="created_date"/>
+                                    <field name="received_date"/>
+                                    <field name="storage_date"/>
+                                    <field name="last_access_date"/>
+                                </group>
+                                <group string="📊 Classification">
+                                    <field name="document_category"/>
+                                    <field name="media_type"/>
+                                    <field name="original_format"/>
+                                    <field name="digitized"/>
+                                </group>
+                            </group>
+                            <field name="description" placeholder="Document description, contents, and special handling notes..."/>
+                        </page>
+                        <page string="🔗 Chain of Custody" name="custody_chain">
+                            <field name="chain_of_custody_ids" mode="tree">
+                                <tree>
+                                    <field name="event_date"/>
+                                    <field name="event_type"/>
+                                    <field name="responsible_person"/>
+                                    <field name="location"/>
+                                    <field name="signature_verified"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="📋 Audit Trail" name="audit">
+                            <field name="audit_trail_ids" mode="tree">
+                                <tree>
+                                    <field name="timestamp"/>
+                                    <field name="action_type"/>
+                                    <field name="user_id"/>
+                                    <field name="description"/>
+                                    <field name="compliance_verified"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="💥 Destruction Record" name="destruction" 
+                              attrs="{'invisible': [('state', '!=', 'destroyed')]}">
+                            <group>
+                                <group string="🗑️ Destruction Details">
+                                    <field name="destruction_date"/>
+                                    <field name="destruction_method"/>
+                                    <field name="destruction_certificate_id"/>
+                                    <field name="naid_destruction_verified"/>
+                                </group>
+                                <group string="👤 Authorized Personnel">
+                                    <field name="destruction_authorized_by"/>
+                                    <field name="destruction_witness"/>
+                                    <field name="destruction_facility"/>
+                                </group>
+                            </group>
+                            <field name="destruction_notes" placeholder="Destruction process notes and compliance verification..."/>
+                        </page>
+                        <page string="📷 Digital Copies" name="digital">
+                            <field name="digital_copy_ids" mode="tree">
+                                <tree>
+                                    <field name="scan_date"/>
+                                    <field name="file_format"/>
+                                    <field name="resolution"/>
+                                    <field name="file_size"/>
+                                    <field name="storage_location"/>
+                                    <button name="action_download" type="object" string="Download" icon="fa-download" class="btn-link"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- 📅 Calendar View for Destruction Scheduling -->
+    <record id="view_records_document_calendar" model="ir.ui.view">
+        <field name="name">records.document.calendar</field>
+        <field name="model">records.document</field>
+        <field name="arch" type="xml">
+            <calendar string="📅 Document Destruction Schedule" 
+                      date_start="destruction_eligible_date"
+                      color="confidentiality_level">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="confidentiality_level"/>
+                <field name="naid_compliant"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- 🔍 Enhanced Search with Compliance Filters -->
+    <record id="view_records_document_search" model="ir.ui.view">
+        <field name="name">records.document.search</field>
+        <field name="model">records.document</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Document" 
+                       filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
+                <field name="customer_id"/>
+                <field name="document_type_id"/>
+                <field name="box_id"/>
+                
+                <filter string="📋 Active Documents" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="💥 Pending Destruction" name="pending_destruction" domain="[('state', '=', 'pending_destruction')]"/>
+                <filter string="🗑️ Destroyed" name="destroyed" domain="[('state', '=', 'destroyed')]"/>
+                
+                <separator/>
+                <filter string="🏆 NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
+                <filter string="🔴 Highly Confidential" name="highly_confidential" domain="[('confidentiality_level', '=', 'highly_confidential')]"/>
+                <filter string="🟡 Confidential" name="confidential" domain="[('confidentiality_level', '=', 'confidential')]"/>
+                
+                <separator/>
+                <filter string="⚠️ Destruction Due" name="destruction_due" 
+                        domain="[('destruction_eligible_date', '&lt;=', context_today())]"/>
+                <filter string="📅 Destruction This Month" name="destruction_this_month" 
+                        domain="[('destruction_eligible_date', '&lt;=', (context_today() + relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="📆 Recent Activity" name="recent_access" 
+                        domain="[('last_access_date', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                
+                <group expand="0" string="📊 Group By">
+                    <filter string="Customer" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Document Type" name="group_by_type" context="{'group_by': 'document_type_id'}"/>
+                    <filter string="Box" name="group_by_box" context="{'group_by': 'box_id'}"/>
+                    <filter string="Confidentiality" name="group_by_confidentiality" context="{'group_by': 'confidentiality_level'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Destruction Date" name="group_by_destruction" context="{'group_by': 'destruction_eligible_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- 🚀 ENTERPRISE ACTION - NAID Compliant Document Management -->
     <record id="action_records_document" model="ir.actions.act_window">
-        <field name="name">Documents</field>
+        <field name="name">📄 Document Management</field>
         <field name="res_model">records.document</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="search_view_id" ref="view_records_document_search"/>
+        <field name="context">{
+            'search_default_active': 1,
+            'search_default_naid_compliant': 1
+        }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first document
+                📄 Create your first document record!
             </p>
             <p>
-                Manage individual documents and track their details.
+                <b>NAID AAA Compliant Document Management:</b><br/>
+                • 🔗 Complete chain of custody tracking<br/>
+                • 📋 Comprehensive audit trails for compliance<br/>
+                • 🔒 Multi-level confidentiality classification<br/>
+                • 📅 Automated retention policy enforcement<br/>
+                • 💥 Secure destruction scheduling and verification<br/>
+                • 🏆 NAID AAA certification compliance<br/>
+                • 📷 Digital imaging and document scanning<br/>
+                • 📱 Mobile access for field operations
             </p>
         </field>
     </record>
