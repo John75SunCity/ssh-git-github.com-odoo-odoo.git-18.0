@@ -3,29 +3,27 @@
     <!-- Minimal Records Tag Views - Phase 1 Deployment -->
     
     <!-- Simple Tree View -->
-    <record id="view_records_tag_tree_minimal" model="ir.ui.view">
-        <field name="name">records.tag.tree.minimal</field>
+    <record id="records_tag_tree_view_simple" model="ir.ui.view">
+        <field name="name">records.tag.tree.simple</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
-            <tree string="Records Tags" editable="bottom">
-                <field name="name" required="1"/>
-                <field name="color" widget="color_picker"/>
+            <tree string="Records Tags">
+                <field name="name"/>
+                <field name="color"/>
             </tree>
         </field>
     </record>
 
     <!-- Simple Form View -->
-    <record id="view_records_tag_form_minimal" model="ir.ui.view">
-        <field name="name">records.tag.form.minimal</field>
+    <record id="records_tag_form_view_simple" model="ir.ui.view">
+        <field name="name">records.tag.form.simple</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
             <form string="Record Tag">
                 <sheet>
                     <group>
-                        <group>
-                            <field name="name" required="1"/>
-                            <field name="color" widget="color_picker"/>
-                        </group>
+                        <field name="name"/>
+                        <field name="color"/>
                     </group>
                 </sheet>
             </form>
@@ -33,30 +31,26 @@
     </record>
 
     <!-- Simple Search View -->
-    <record id="view_records_tag_search_minimal" model="ir.ui.view">
-        <field name="name">records.tag.search.minimal</field>
+    <record id="records_tag_search_view_simple" model="ir.ui.view">
+        <field name="name">records.tag.search.simple</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
             <search string="Search Records Tags">
                 <field name="name"/>
-                <filter string="All Tags" name="all_tags" domain="[]"/>
             </search>
         </field>
     </record>
 
     <!-- Simple Action -->
-    <record id="action_records_tag_minimal" model="ir.actions.act_window">
+    <record id="action_records_tag_simple" model="ir.actions.act_window">
         <field name="name">Records Tags</field>
         <field name="res_model">records.tag</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_records_tag_tree_minimal"/>
-        <field name="search_view_id" ref="view_records_tag_search_minimal"/>
+        <field name="view_id" ref="records_tag_tree_view_simple"/>
+        <field name="search_view_id" ref="records_tag_search_view_simple"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first record tag!
-            </p>
-            <p>
-                Tags help organize and categorize your records for better management.
             </p>
         </field>
     </record>
