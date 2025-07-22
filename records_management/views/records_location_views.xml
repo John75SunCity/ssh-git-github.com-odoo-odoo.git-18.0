@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 🏢 ENTERPRISE STORAGE LOCATIONS - Advanced Warehouse Management -->
+    <!-- 🏢 ENTERPRISE STORAGE LOCATIONS - Hierarchical Location Management -->
     
     <!-- 🎨 Enhanced Kanban View for Visual Location Management -->
     <record id="view_records_location_kanban" model="ir.ui.view">
@@ -112,7 +112,7 @@
                     
                     <group>
                         <group string="🏢 Location Information">
-                            <field name="name" placeholder="e.g., Warehouse A - Section 1"/>
+                            <field name="name" placeholder="e.g., Building A - Section 1"/>
                             <field name="location_type"/>
                             <field name="parent_id" string="Parent Location"/>
                         </group>
@@ -200,8 +200,8 @@
                 • 📦 Track box locations with visual kanban boards<br/>
                 • 📊 Monitor capacity utilization in real-time<br/>
                 • 🔍 Smart search with advanced filters<br/>
-                • 📱 Mobile-optimized for warehouse operations<br/>
-                • 🏭 Multi-warehouse support for enterprise scale
+                • 🏢 Hierarchical location organization<br/>
+                • 📱 Mobile-optimized for facility operations
             </p>
         </field>
     </record>
