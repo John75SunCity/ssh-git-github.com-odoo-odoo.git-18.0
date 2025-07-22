@@ -386,6 +386,25 @@ class RecordsBox(models.Model):
             self.barcode = self.env['ir.sequence'].next_by_code('records.box.barcode') or 'BOX-' + str(self.id)
         return True
 
+    def action_generate_barcode(self):
+        """Generate barcode for this box (alias for action_generate_box_barcode)"""
+        return self.action_generate_box_barcode()
+
+    def action_bulk_convert_box_type(self):
+        """Bulk convert box types"""
+        active_ids = self.env.context.get('active_ids', [])
+        if not active_ids:
+            active_ids = self.ids
+        
+        return {
+            'name': _('Bulk Convert Box Types'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.box.type.converter',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_box_ids': [(6, 0, active_ids)]},
+        }
+
     def action_move_box(self):
         """Move box to a different location."""
         self.ensure_one()

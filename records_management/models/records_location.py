@@ -158,3 +158,27 @@ class RecordsLocation(models.Model):
             'report_file': 'records_management.location_label_report',
             'context': {'active_ids': [self.id]},
         }
+
+    def action_view_boxes(self):
+        """View boxes in this location"""
+        self.ensure_one()
+        return {
+            'name': _('Boxes in %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.box',
+            'view_mode': 'tree,form',
+            'domain': [('location_id', '=', self.id)],
+            'context': {'default_location_id': self.id},
+        }
+
+    def action_location_report(self):
+        """Generate location report"""
+        self.ensure_one()
+        return {
+            'name': _('Location Report: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'location.report.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_location_id': self.id},
+        }

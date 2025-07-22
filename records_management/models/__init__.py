@@ -28,6 +28,10 @@ from . import records_box_movement
 # Shredding and Services
 from . import shredding_service
 
+# Billing
+from . import billing
+from . import department_billing
+
 # Portal and FSM
 from . import portal_request
 from . import fsm_task
@@ -42,6 +46,7 @@ from . import survey_improvement_action
 
 # Products and Configuration
 from . import product
+from . import barcode_product
 from . import res_config_settings
 from . import visitor
 

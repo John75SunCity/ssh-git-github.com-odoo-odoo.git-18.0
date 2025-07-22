@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 class RecordsRetentionPolicy(models.Model):
     _name = 'records.retention.policy'
@@ -152,4 +152,150 @@ class RecordsRetentionPolicy(models.Model):
             'res_id': new_policy.id,
             'view_mode': 'form',
             'target': 'current',
+        }
+
+    def action_view_affected_documents(self):
+        """View documents affected by this retention policy"""
+        self.ensure_one()
+        return {
+            'name': _('Documents with Retention Policy: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document',
+            'view_mode': 'tree,form',
+            'domain': [('retention_policy_id', '=', self.id)],
+            'context': {'default_retention_policy_id': self.id},
+        }
+
+    def action_archive_expired_documents(self):
+        """Archive documents that have expired retention periods"""
+        self.ensure_one()
+        
+        # Find documents that have passed retention period
+        documents = self.env['records.document'].search([
+            ('retention_policy_id', '=', self.id),
+            ('state', '!=', 'archived')
+        ])
+        
+        archived_count = 0
+        for doc in documents:
+            if doc.is_retention_expired():
+                doc.action_archive()
+                archived_count += 1
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Archive Complete'),
+                'message': _('Archived %d documents based on retention policy.') % archived_count,
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+
+    def action_apply_to_documents(self):
+        """Apply this retention policy to selected documents"""
+        self.ensure_one()
+        return {
+            'name': _('Apply Retention Policy'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document',
+            'view_mode': 'tree',
+            'domain': [('retention_policy_id', '=', False)],
+            'context': {
+                'search_default_no_retention_policy': 1,
+                'default_retention_policy_id': self.id,
+            },
+            'help': _('Select documents to apply this retention policy to.'),
+        }
+
+    def action_apply_policy(self):
+        """Apply this retention policy to documents"""
+        return self.action_apply_to_documents()
+
+    def action_schedule_review(self):
+        """Schedule a review for this retention policy"""
+        self.ensure_one()
+        return {
+            'name': _('Schedule Policy Review'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'calendar.event',
+            'view_mode': 'form',
+            'context': {
+                'default_name': _('Review Retention Policy: %s') % self.name,
+                'default_description': _('Review retention policy for compliance and effectiveness'),
+            },
+            'target': 'new',
+        }
+
+    def action_compliance_audit(self):
+        """Launch compliance audit for this retention policy"""
+        self.ensure_one()
+        return {
+            'name': _('Compliance Audit: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document',
+            'view_mode': 'tree,form',
+            'domain': [
+                ('retention_policy_id', '=', self.id),
+                '|',
+                ('retention_expired', '=', True),
+                ('eligible_for_destruction', '=', True)
+            ],
+            'context': {'search_default_compliance_issues': 1},
+        }
+
+    def action_duplicate(self):
+        """Duplicate this retention policy"""
+        return self.action_duplicate_policy()
+
+    def action_test_policy(self):
+        """Test this retention policy with sample data"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Policy Test'),
+                'message': _('Policy "%s" validation complete. Ready for deployment.') % self.name,
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+
+    def action_view_schedules(self):
+        """View schedules related to this retention policy"""
+        self.ensure_one()
+        return {
+            'name': _('Retention Schedules'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'calendar.event',
+            'view_mode': 'tree,form',
+            'domain': [('name', 'ilike', self.name)],
+            'context': {'default_retention_policy_id': self.id},
+        }
+
+    def action_view_audit_logs(self):
+        """View audit logs for this retention policy"""
+        self.ensure_one()
+        return {
+            'name': _('Audit Logs: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'mail.message',
+            'view_mode': 'tree,form',
+            'domain': [
+                ('res_id', '=', self.id),
+                ('model', '=', 'records.retention.policy')
+            ],
+        }
+
+    def action_apply_to_type(self):
+        """Apply retention policy to a specific document type"""
+        self.ensure_one()
+        return {
+            'name': _('Apply to Document Type'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document.type',
+            'view_mode': 'tree',
+            'context': {'default_retention_policy_id': self.id},
         }

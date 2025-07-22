@@ -391,3 +391,80 @@ class ResPartnerDepartmentBilling(models.Model):
             'report_file': 'records_management.billing_statement_report',
             'context': {'active_ids': [self.id]},
         }
+
+    def action_view_department_charges(self):
+        """View charges for this department"""
+        self.ensure_one()
+        return {
+            'name': _('Department Charges: %s') % self.department_id.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move.line',
+            'view_mode': 'tree,form',
+            'domain': [('department_id', '=', self.department_id.id)],
+            'context': {'default_department_id': self.department_id.id},
+        }
+
+    def action_view_approvals(self):
+        """View approval requests for this department"""
+        self.ensure_one()
+        return {
+            'name': _('Approval Requests: %s') % self.department_id.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'approval.request',
+            'view_mode': 'tree,form',
+            'domain': [('department_id', '=', self.department_id.id)],
+            'context': {'default_department_id': self.department_id.id},
+        }
+
+    def action_budget_report(self):
+        """Generate budget report"""
+        self.ensure_one()
+        return {
+            'name': _('Budget Report: %s') % self.department_id.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'budget.report.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_department_id': self.department_id.id},
+        }
+
+    def action_send_bill_notification(self):
+        """Send bill notification to contacts"""
+        self.ensure_one()
+        contacts = self.env['records.department.billing.contact'].search([
+            ('department_id', '=', self.department_id.id),
+            ('receives_notifications', '=', True),
+            ('active', '=', True)
+        ])
+        
+        for contact in contacts:
+            # Send notification logic here
+            self.message_post(
+                body=_('Bill notification sent to %s') % contact.contact_name,
+                partner_ids=[contact.customer_id.id] if contact.customer_id else []
+            )
+        
+        return True
+
+    def action_approve_charges(self):
+        """Approve pending charges"""
+        self.ensure_one()
+        pending_charges = self.env['account.move.line'].search([
+            ('department_id', '=', self.department_id.id),
+            ('state', '=', 'draft')
+        ])
+        
+        for charge in pending_charges:
+            charge.write({'state': 'approved'})
+        
+        self.message_post(body=_('Charges approved by %s') % self.env.user.name)
+        return True
+
+    def action_approve_charge(self):
+        """Approve a single charge (called from context)"""
+        charge_id = self.env.context.get('charge_id')
+        if charge_id:
+            charge = self.env['account.move.line'].browse(charge_id)
+            charge.write({'state': 'approved'})
+            return True
+        return False
