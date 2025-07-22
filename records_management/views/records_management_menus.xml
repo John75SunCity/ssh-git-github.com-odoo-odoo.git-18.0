@@ -125,7 +125,7 @@
         <menuitem id="menu_records_tags"
                   name="Classification Tags"
                   parent="menu_records_master_data"
-                  action="action_records_tag_new"
+                  action="action_records_tag_simple"
                   sequence="30"
                   groups="records_management.group_records_manager"/>
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-        'version': '18.0.2.49.93',  # REBUILD: Complete rebuild of records.tag views with new IDs for Odoo 18.0 compatibility
+            'version': '18.0.2.49.94',  # MINIMAL: Remove all custom views, let Odoo auto-generate for records.tag model
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
