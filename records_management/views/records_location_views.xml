@@ -79,7 +79,6 @@
                 <field name="capacity" string="🔢 Capacity"/>
                 <field name="current_occupancy" string="📦 Current Usage"/>
                 <field name="utilization_percentage" string="📊 Utilization %" widget="percentage"/>
-                <field name="warehouse_id" string="🏭 Warehouse"/>
                 <field name="active" string="✅ Active"/>
                 <button name="action_view_boxes" type="object" string="View Boxes" 
                         icon="fa-cube" class="btn-link"/>
@@ -115,14 +114,12 @@
                         <group string="🏢 Location Information">
                             <field name="name" placeholder="e.g., Warehouse A - Section 1"/>
                             <field name="location_type"/>
-                            <field name="warehouse_id"/>
-                            <field name="parent_location_id"/>
+                            <field name="parent_id" string="Parent Location"/>
                         </group>
                         <group string="📊 Capacity &amp; Usage">
                             <field name="capacity"/>
                             <field name="current_occupancy"/>
                             <field name="utilization_percentage" widget="percentage"/>
-                            <field name="climate_controlled"/>
                         </group>
                     </group>
                     
@@ -164,7 +161,6 @@
                 <field name="name" string="Location" 
                        filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
                 <field name="location_type"/>
-                <field name="warehouse_id"/>
                 
                 <filter string="🟢 Available Space" name="available_space" 
                         domain="[('current_occupancy', '&lt;', 'capacity')]"/>
@@ -172,8 +168,6 @@
                         domain="[('current_occupancy', '&gt;=', 'capacity * 0.8')]"/>
                 <filter string="🔴 At Capacity" name="at_capacity" 
                         domain="[('current_occupancy', '&gt;=', 'capacity')]"/>
-                <filter string="❄️ Climate Controlled" name="climate_controlled" 
-                        domain="[('climate_controlled', '=', True)]"/>
                 
                 <separator/>
                 <filter string="📦 Active Locations" name="active" domain="[('active', '=', True)]"/>
@@ -181,8 +175,7 @@
                 
                 <group expand="0" string="📊 Group By">
                     <filter string="Type" name="group_by_type" context="{'group_by': 'location_type'}"/>
-                    <filter string="Warehouse" name="group_by_warehouse" context="{'group_by': 'warehouse_id'}"/>
-                    <filter string="Utilization" name="group_by_utilization" context="{'group_by': 'utilization_category'}"/>
+                    <filter string="Parent Location" name="group_by_parent" context="{'group_by': 'parent_id'}"/>
                 </group>
             </search>
         </field>
