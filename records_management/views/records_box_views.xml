@@ -15,6 +15,9 @@
                 <field name="storage_date"/>
                 <field name="destruction_date"/>
                 <field name="barcode"/>
+                <field name="box_type_code"/>
+                <field name="box_type_display"/>
+                <field name="monthly_rate"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_card oe_kanban_global_click">
@@ -34,6 +37,8 @@
                             <div class="o_kanban_card_content">
                                 <div class="row">
                                     <div class="col-8">
+                                        <div><i class="fa fa-cube"/> <field name="box_type_display"/> (<field name="box_type_code"/>)</div>
+                                        <div><i class="fa fa-dollar"/> $<field name="monthly_rate"/>/month</div>
                                         <div><i class="fa fa-map-marker"/> <field name="location_id"/></div>
                                         <div><i class="fa fa-calendar"/> <field name="storage_date"/></div>
                                         <div t-if="record.barcode.raw_value">
@@ -84,6 +89,9 @@
                   decoration-danger="state == 'destroyed'"
                   decoration-muted="state == 'pending'">
                 <field name="name" string="📦 Box ID"/>
+                <field name="box_type_code" string="📊 Type"/>
+                <field name="box_type_display" string="📦 Box Type"/>
+                <field name="monthly_rate" string="💰 Rate/Mo" widget="monetary"/>
                 <field name="customer_id" string="👤 Customer"/>
                 <field name="department_id" string="🏢 Department"/>
                 <field name="location_id" string="📍 Location"/>
@@ -132,6 +140,9 @@
                     <group>
                         <group string="📦 Box Information">
                             <field name="name" placeholder="e.g., BOX-2024-001"/>
+                            <field name="box_type_code" required="1"/>
+                            <field name="box_type_display" readonly="1"/>
+                            <field name="monthly_rate" readonly="1" widget="monetary"/>
                             <field name="customer_id"/>
                             <field name="department_id"/>
                             <field name="barcode" placeholder="Auto-generated on save"/>

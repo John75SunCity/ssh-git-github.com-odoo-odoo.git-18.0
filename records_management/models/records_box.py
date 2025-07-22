@@ -67,6 +67,31 @@ class RecordsBox(models.Model):
         ('pallet', 'Pallet'),
         ('other', 'Other')
     ], string='Container Type', default='standard', tracking=True)
+    
+    # Business-specific box type codes for pricing and location management
+    box_type_code = fields.Selection([
+        ('01', 'Type 01 - Standard File Box'),
+        ('03', 'Type 03 - Map Box'),
+        ('04', 'Type 04 - Oversize/Odd-shaped Box'),
+        ('06', 'Type 06 - Specialty/Vault Box'),
+    ], string='Box Type Code', default='01', required=True, tracking=True,
+       help="Box type determines pricing, storage location, and handling requirements")
+    
+    # Computed field for customer-friendly display
+    box_type_display = fields.Char(
+        string='Box Type',
+        compute='_compute_box_type_display',
+        store=True,
+        help="Customer-friendly display name for invoicing and reports"
+    )
+    
+    # Pricing related to box type
+    monthly_rate = fields.Float(
+        string='Monthly Storage Rate',
+        compute='_compute_monthly_rate',
+        store=True,
+        help="Monthly storage rate based on box type"
+    )
     security_code = fields.Char(string='Security Code')
     category_code = fields.Char(string='Category Code')
     record_series = fields.Char(string='Record Series')
@@ -166,6 +191,75 @@ class RecordsBox(models.Model):
                 box.used_capacity = percentage
             else:
                 box.used_capacity = 0
+
+    @api.depends('box_type_code')
+    def _compute_box_type_display(self) -> None:
+        """Compute customer-friendly display name for box type."""
+        for box in self:
+            type_mapping = {
+                '01': 'Standard File Box',
+                '03': 'Map Box',
+                '04': 'Oversize Box',
+                '06': 'Specialty Box',
+            }
+            box.box_type_display = type_mapping.get(box.box_type_code, 'Unknown Type')
+
+    @api.depends('box_type_code')
+    def _compute_monthly_rate(self) -> None:
+        """Compute monthly storage rate based on box type."""
+        for box in self:
+            # Standard pricing structure - can be made configurable later
+            rate_mapping = {
+                '01': 0.32,  # Standard file boxes
+                '03': 0.45,  # Map boxes (larger)
+                '04': 0.50,  # Oversize boxes (special handling)
+                '06': 0.40,  # Specialty boxes (vault storage)
+            }
+            box.monthly_rate = rate_mapping.get(box.box_type_code, 0.32)
+
+    @api.constrains('box_type_code', 'location_id')
+    def _check_box_type_location_compatibility(self):
+        """Validate that box types are placed in appropriate location types."""
+        for box in self:
+            if not box.location_id:
+                continue
+                
+            location_type = box.location_id.location_type
+            box_type = box.box_type_code
+            
+            # Define allowed combinations
+            incompatible_combinations = [
+                # Standard boxes (01) should not be in vault, map, or oversize areas
+                ('01', 'vault'),
+                ('01', 'map'), 
+                ('01', 'oversize'),
+                # Map boxes (03) should only be in map areas
+                ('03', 'aisles'),
+                ('03', 'pallets'),
+                ('03', 'vault'),
+                ('03', 'oversize'),
+                ('03', 'refiles'),
+                # Oversize boxes (04) should only be in oversize areas
+                ('04', 'aisles'),
+                ('04', 'pallets'),
+                ('04', 'vault'),
+                ('04', 'map'),
+                ('04', 'refiles'),
+                # Specialty boxes (06) should only be in vault
+                ('06', 'aisles'),
+                ('06', 'pallets'),
+                ('06', 'map'),
+                ('06', 'oversize'),
+                ('06', 'refiles'),
+            ]
+            
+            if (box_type, location_type) in incompatible_combinations:
+                box_type_name = dict(box._fields['box_type_code'].selection)[box_type]
+                location_type_name = dict(box.location_id._fields['location_type'].selection)[location_type]
+                raise ValidationError(_(
+                    'Box type mismatch: %s cannot be stored in %s location.\n'
+                    'Please move this box to an appropriate location type.'
+                ) % (box_type_name, location_type_name))
 
     def action_view_documents(self) -> dict:
         self.ensure_one()

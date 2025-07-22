@@ -16,10 +16,28 @@ class RecordsLocation(models.Model):
     parent_path = fields.Char(index=True)
     child_ids = fields.One2many('records.location', 'parent_id', 'Child Locations')
 
+    # Location Type for Business Operations
+    location_type = fields.Selection([
+        ('aisles', 'Aisles - Standard File Boxes (Type 01)'),
+        ('pallets', 'Pallets - Standard File Boxes (Type 01)'),
+        ('vault', 'Vault - Specialty Boxes (Type 06)'),
+        ('map', 'Map Storage - Map Boxes (Type 03)'),
+        ('oversize', 'Oversize - Odd-Shaped Boxes (Type 04)'),
+        ('refiles', 'Refiles - Staging for Returns/Put-Away'),
+    ], string='Location Type', required=True, default='aisles', tracking=True,
+       help="""Location type determines what kind of boxes can be stored:
+       • Aisles/Pallets: Standard file boxes (Type 01) - monthly rent
+       • Vault: Specialty boxes (Type 06) - secure storage
+       • Map: Map boxes (Type 03) - oversized maps/plans
+       • Oversize: Odd-shaped boxes (Type 04) - temporary storage during split
+       • Refiles: Staging area for returned files before put-away""")
+
     box_ids = fields.One2many('records.box', 'location_id', string='Boxes')
     box_count = fields.Integer('Box Count', compute='_compute_box_count')
     capacity = fields.Integer('Maximum Box Capacity')
     used_capacity = fields.Float('Used Capacity (%)', compute='_compute_used_capacity')
+    current_occupancy = fields.Integer('Current Occupancy', compute='_compute_box_count', store=True,
+                                      help="Current number of boxes stored in this location")
 
     active = fields.Boolean(default=True)
     note = fields.Text('Notes')
@@ -35,7 +53,9 @@ class RecordsLocation(models.Model):
     @api.depends('box_ids')
     def _compute_box_count(self):
         for location in self:
-            location.box_count = len(location.box_ids)
+            count = len(location.box_ids)
+            location.box_count = count
+            location.current_occupancy = count  # Set both fields
 
     @api.depends('box_count', 'capacity')
     def _compute_used_capacity(self):

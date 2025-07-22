@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
-        'name': 'Records Management',
-            'version': '18.0.3.1.3',   # 🔧 CRITICAL FIX: Tree→List Views for Odoo 18.0 Compatibility
+                'name': 'Records Management',
+            'version': '18.0.3.2.0',   # 🚀 BUSINESS LOGIC: Box Type Classification & Pricing System
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
