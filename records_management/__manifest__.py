@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
         'name': 'Records Management',
-            'version': '18.0.2.49.96',  # BATCH: Core view fixes - retention policies, document types, boxes, documents
+            'version': '18.0.2.49.97',  # CRITICAL: Fix XML syntax errors in document_type, box, and document views
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
