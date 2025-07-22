@@ -28,3 +28,12 @@ COPILOT SUMMARIES/
 CODESPACE/
 missing_invoices.txt
 expected_invoices.txt
+
+# Development backups and temporary files
+*_backup.py
+*_backup.xml
+*_minimal.py
+*_enhanced.py
+*_temp.py
+*_old.py
+development-tools/backups/
