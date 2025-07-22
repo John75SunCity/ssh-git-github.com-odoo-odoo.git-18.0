@@ -1,16 +1,394 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Minimal action - let Odoo auto-generate views for naid.compliance -->
+    <!-- 🏆 ENTERPRISE NAID COMPLIANCE - AAA Certification Management -->
+    
+    <!-- 🎨 NAID Compliance Kanban Dashboard -->
+    <record id="view_naid_compliance_kanban" model="ir.ui.view">
+        <field name="name">naid.compliance.kanban</field>
+        <field name="model">naid.compliance</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="compliance_status" class="o_kanban_naid_dashboard">
+                <field name="name"/>
+                <field name="naid_level"/>
+                <field name="compliance_status"/>
+                <field name="certification_date"/>
+                <field name="expiry_date"/>
+                <field name="audit_required"/>
+                <field name="certificate_valid"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <strong>🏆 <field name="name"/></strong>
+                                    </div>
+                                    <div class="o_secondary">
+                                        🎖️ NAID <field name="naid_level"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_manage_button_section">
+                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v"/></a>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div><i class="fa fa-calendar"/> Certified: <field name="certification_date"/></div>
+                                        <div><i class="fa fa-clock-o"/> Expires: <field name="expiry_date"/></div>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="badge" t-att-class="record.certificate_valid.raw_value ? 'badge-success' : 'badge-danger'">
+                                            <t t-if="record.certificate_valid.raw_value">✅ Valid</t>
+                                            <t t-else="">❌ Invalid</t>
+                                        </span>
+                                        <span class="badge badge-warning" t-if="record.audit_required.raw_value">
+                                            🔍 Audit Due
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <button class="btn btn-primary btn-sm" type="object" name="action_conduct_audit">
+                                            🔍 Audit
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-success btn-sm" type="object" name="action_renew_certificate">
+                                            🔄 Renew
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Compliance</a>
+                                <a role="menuitem" type="object" name="action_view_audit_history" class="dropdown-item">📋 Audit History</a>
+                                <a role="menuitem" type="object" name="action_generate_certificate" class="dropdown-item">📜 Generate Certificate</a>
+                                <a role="menuitem" type="object" name="action_compliance_report" class="dropdown-item">📊 Compliance Report</a>
+                                <div class="dropdown-divider"/>
+                                <a role="menuitem" type="object" name="action_schedule_audit" class="dropdown-item">📅 Schedule Audit</a>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- 📋 Enhanced Tree with Certification Tracking -->
+    <record id="view_naid_compliance_tree" model="ir.ui.view">
+        <field name="name">naid.compliance.tree</field>
+        <field name="model">naid.compliance</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="compliance_status == 'certified' and certificate_valid == True" 
+                  decoration-warning="compliance_status == 'pending_audit'"
+                  decoration-danger="certificate_valid == False or expiry_date &lt; context_today()"
+                  decoration-info="naid_level == 'AAA'">
+                <field name="name" string="🏆 Compliance Record"/>
+                <field name="facility_name" string="🏢 Facility"/>
+                <field name="naid_level" string="🎖️ NAID Level" widget="badge"/>
+                <field name="compliance_status" string="📊 Status" widget="badge"/>
+                <field name="certification_date" string="📅 Certified"/>
+                <field name="expiry_date" string="⏰ Expires"/>
+                <field name="certificate_valid" string="✅ Valid" widget="boolean_toggle"/>
+                <field name="audit_required" string="🔍 Audit Due" widget="boolean_toggle"/>
+                <field name="last_audit_date" string="📋 Last Audit"/>
+                <button name="action_conduct_audit" type="object" string="Audit" 
+                        icon="fa-search" class="btn-link" 
+                        attrs="{'invisible': [('audit_required', '=', False)]}"/>
+                <button name="action_renew_certificate" type="object" string="Renew" 
+                        icon="fa-refresh" class="btn-link"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- 📝 Enhanced Form with Complete NAID AAA Management -->
+    <record id="view_naid_compliance_form" model="ir.ui.view">
+        <field name="name">naid.compliance.form</field>
+        <field name="model">naid.compliance</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_conduct_audit" type="object" string="🔍 Conduct Audit" 
+                            class="btn-primary" attrs="{'invisible': [('audit_required', '=', False)]}"/>
+                    <button name="action_generate_certificate" type="object" string="📜 Generate Certificate" class="btn-secondary"/>
+                    <button name="action_renew_certificate" type="object" string="🔄 Renew Certificate" class="btn-info"/>
+                    <button name="action_compliance_report" type="object" string="📊 Compliance Report" class="btn-success"/>
+                    <field name="compliance_status" widget="statusbar" statusbar_visible="draft,pending_audit,certified,non_compliant,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_audit_history" icon="fa-history">
+                            <field string="Audit History" name="audit_count" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_view_certificates" icon="fa-certificate">
+                            <field string="Certificates" name="certificate_count" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_view_destruction_records" icon="fa-shredder">
+                            <field string="Destructions" name="destruction_count" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-shield" 
+                                attrs="{'invisible': [('naid_level', '!=', 'AAA')]}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">🏆</span>
+                                <span class="o_stat_text">NAID AAA</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <group>
+                        <group string="🏆 NAID Certification">
+                            <field name="name" placeholder="e.g., NAID-2024-AAA-001"/>
+                            <field name="naid_level"/>
+                            <field name="naid_member_id"/>
+                            <field name="facility_name"/>
+                        </group>
+                        <group string="📅 Certification Timeline">
+                            <field name="certification_date"/>
+                            <field name="expiry_date"/>
+                            <field name="certificate_valid"/>
+                            <field name="auto_renewal"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group string="🔍 Audit Requirements">
+                            <field name="audit_required"/>
+                            <field name="last_audit_date"/>
+                            <field name="next_audit_date"/>
+                            <field name="audit_frequency"/>
+                        </group>
+                        <group string="👥 Compliance Team">
+                            <field name="compliance_officer"/>
+                            <field name="facility_manager"/>
+                            <field name="security_officer"/>
+                            <field name="third_party_auditor"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="🎖️ NAID Standards" name="standards">
+                            <group>
+                                <group string="🛡️ Physical Security">
+                                    <field name="physical_security_score"/>
+                                    <field name="access_control_verified"/>
+                                    <field name="surveillance_system"/>
+                                    <field name="secure_storage"/>
+                                </group>
+                                <group string="👥 Personnel Security">
+                                    <field name="personnel_screening"/>
+                                    <field name="background_checks"/>
+                                    <field name="training_completed"/>
+                                    <field name="security_clearance"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="📄 Information Security">
+                                    <field name="information_handling"/>
+                                    <field name="chain_of_custody"/>
+                                    <field name="destruction_verification"/>
+                                    <field name="certificate_tracking"/>
+                                </group>
+                                <group string="🔧 Operational Security">
+                                    <field name="equipment_certification"/>
+                                    <field name="process_verification"/>
+                                    <field name="quality_control"/>
+                                    <field name="incident_management"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="🔍 Audit History" name="audits">
+                            <field name="audit_history_ids" mode="tree">
+                                <tree>
+                                    <field name="audit_date"/>
+                                    <field name="auditor_name"/>
+                                    <field name="audit_type"/>
+                                    <field name="audit_scope"/>
+                                    <field name="findings_count"/>
+                                    <field name="compliance_score"/>
+                                    <field name="audit_result"/>
+                                    <button name="action_view_audit_details" type="object" string="Details" icon="fa-eye" class="btn-link"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="📜 Certificates" name="certificates">
+                            <field name="certificate_ids" mode="tree">
+                                <tree>
+                                    <field name="certificate_number"/>
+                                    <field name="certificate_type"/>
+                                    <field name="issue_date"/>
+                                    <field name="expiry_date"/>
+                                    <field name="issuing_authority"/>
+                                    <field name="certificate_status"/>
+                                    <button name="action_download_certificate" type="object" string="Download" icon="fa-download" class="btn-link"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="🛡️ Destruction Records" name="destructions">
+                            <field name="destruction_record_ids" mode="tree">
+                                <tree>
+                                    <field name="destruction_date"/>
+                                    <field name="client_name"/>
+                                    <field name="material_type"/>
+                                    <field name="destruction_method"/>
+                                    <field name="witness_present"/>
+                                    <field name="certificate_issued"/>
+                                    <field name="compliance_verified"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="📋 Compliance Checklist" name="checklist">
+                            <field name="compliance_checklist_ids" mode="tree">
+                                <tree editable="bottom">
+                                    <field name="requirement_name"/>
+                                    <field name="requirement_type"/>
+                                    <field name="compliance_status"/>
+                                    <field name="last_verified"/>
+                                    <field name="verification_method"/>
+                                    <field name="responsible_person"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="📊 Performance Metrics" name="metrics">
+                            <group>
+                                <group string="📈 Compliance Metrics">
+                                    <field name="overall_compliance_score" readonly="1"/>
+                                    <field name="security_score" readonly="1"/>
+                                    <field name="operational_score" readonly="1"/>
+                                    <field name="documentation_score" readonly="1"/>
+                                </group>
+                                <group string="📅 Timeline Metrics">
+                                    <field name="days_since_last_audit" readonly="1"/>
+                                    <field name="days_until_expiry" readonly="1"/>
+                                    <field name="compliance_trend" readonly="1"/>
+                                    <field name="risk_level" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="performance_history_ids" mode="tree">
+                                <tree>
+                                    <field name="measurement_date"/>
+                                    <field name="metric_type"/>
+                                    <field name="score"/>
+                                    <field name="benchmark"/>
+                                    <field name="variance"/>
+                                    <field name="trend"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="🔔 Notifications" name="notifications">
+                            <group>
+                                <group string="📱 Alert Settings">
+                                    <field name="expiry_notification"/>
+                                    <field name="audit_reminder"/>
+                                    <field name="compliance_alerts"/>
+                                    <field name="renewal_reminder"/>
+                                </group>
+                                <group string="👥 Recipients">
+                                    <field name="notification_recipients"/>
+                                    <field name="escalation_contacts"/>
+                                    <field name="management_alerts"/>
+                                    <field name="regulatory_notifications"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- 📅 Calendar View for Audit Schedule -->
+    <record id="view_naid_compliance_calendar" model="ir.ui.view">
+        <field name="name">naid.compliance.calendar</field>
+        <field name="model">naid.compliance</field>
+        <field name="arch" type="xml">
+            <calendar string="📅 NAID Audit Schedule" 
+                      date_start="next_audit_date" 
+                      date_stop="expiry_date"
+                      color="naid_level">
+                <field name="name"/>
+                <field name="facility_name"/>
+                <field name="compliance_officer"/>
+                <field name="naid_level"/>
+                <field name="audit_required"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- 🔍 Enhanced Search with NAID Filters -->
+    <record id="view_naid_compliance_search" model="ir.ui.view">
+        <field name="name">naid.compliance.search</field>
+        <field name="model">naid.compliance</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Compliance Record"/>
+                <field name="facility_name"/>
+                <field name="naid_member_id"/>
+                <field name="compliance_officer"/>
+                
+                <filter string="✅ Certified" name="certified" domain="[('compliance_status', '=', 'certified')]"/>
+                <filter string="📋 Pending Audit" name="pending_audit" domain="[('compliance_status', '=', 'pending_audit')]"/>
+                <filter string="❌ Non-Compliant" name="non_compliant" domain="[('compliance_status', '=', 'non_compliant')]"/>
+                <filter string="⏰ Expired" name="expired" domain="[('compliance_status', '=', 'expired')]"/>
+                
+                <separator/>
+                <filter string="🏆 NAID AAA" name="naid_aaa" domain="[('naid_level', '=', 'AAA')]"/>
+                <filter string="🥈 NAID AA" name="naid_aa" domain="[('naid_level', '=', 'AA')]"/>
+                <filter string="🥉 NAID A" name="naid_a" domain="[('naid_level', '=', 'A')]"/>
+                
+                <separator/>
+                <filter string="✅ Valid Certificates" name="valid_certs" domain="[('certificate_valid', '=', True)]"/>
+                <filter string="🔍 Audit Required" name="audit_required" domain="[('audit_required', '=', True)]"/>
+                <filter string="🔄 Auto Renewal" name="auto_renewal" domain="[('auto_renewal', '=', True)]"/>
+                
+                <separator/>
+                <filter string="📅 Expiring Soon (30 days)" name="expiring_soon" 
+                        domain="[('expiry_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiry_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="⚠️ Overdue Audit" name="overdue_audit" 
+                        domain="[('next_audit_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                
+                <group expand="0" string="📊 Group By">
+                    <filter string="NAID Level" name="group_by_naid_level" context="{'group_by': 'naid_level'}"/>
+                    <filter string="Compliance Status" name="group_by_status" context="{'group_by': 'compliance_status'}"/>
+                    <filter string="Facility" name="group_by_facility" context="{'group_by': 'facility_name'}"/>
+                    <filter string="Compliance Officer" name="group_by_officer" context="{'group_by': 'compliance_officer'}"/>
+                    <filter string="Expiry Date" name="group_by_expiry" context="{'group_by': 'expiry_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- 🚀 ENTERPRISE ACTION - NAID Compliance Management -->
     <record id="action_naid_compliance" model="ir.actions.act_window">
-        <field name="name">NAID Compliance</field>
+        <field name="name">🏆 NAID Compliance</field>
         <field name="res_model">naid.compliance</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="search_view_id" ref="view_naid_compliance_search"/>
+        <field name="context">{
+            'search_default_certified': 1,
+            'search_default_valid_certs': 1
+        }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first record
+                🏆 Set up your first NAID compliance certification!
             </p>
             <p>
-                Ensure NAID compliance with audit trails and certifications.
+                <b>Enterprise NAID AAA Compliance Management:</b><br/>
+                • 🎖️ Complete NAID AAA/AA/A certification tracking<br/>
+                • 🔍 Automated audit scheduling and management<br/>
+                • 📜 Digital certificate generation and tracking<br/>
+                • 🛡️ Comprehensive security standards compliance<br/>
+                • 👥 Multi-level personnel security verification<br/>
+                • 📊 Real-time performance metrics and analytics<br/>
+                • 🔔 Proactive expiry and renewal notifications<br/>
+                • 📋 Detailed compliance checklists and workflows<br/>
+                • 🔗 Integration with destruction and shredding services
             </p>
         </field>
     </record>
