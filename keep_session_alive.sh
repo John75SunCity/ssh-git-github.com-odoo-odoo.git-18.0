@@ -19,7 +19,10 @@ keep_alive() {
         # Auto-save current work (if git repo)
         if [ -d ".git" ]; then
             git add . 2>/dev/null || true
-            git commit -m "AUTO: Session keepalive save $(date)" 2>/dev/null || true
+            if git commit -m "AUTO: Session keepalive save $(date)" 2>/dev/null; then
+                echo "📤 Auto-pushing changes to GitHub..."
+                git push origin $(git branch --show-current) 2>/dev/null || echo "⚠️  Push failed - will retry later"
+            fi
         fi
         
         # Wait 5 minutes
