@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 🚚 ENTERPRISE TRAILER LOAD MANAGEMENT - Advanced Capacity & Weight Distribution -->
+    <!-- � PAPER BALE TRAILER LOAD MANAGEMENT - Post-Shredding Paper Market Sales -->
     
     <!-- KANBAN VIEW: Visual Trailer Load Dashboard -->
     <record id="view_trailer_load_kanban" model="ir.ui.view">

@@ -70,84 +70,243 @@
             </kanban>
         </field>
     </record>
-                                <div class="mt-2">
-                                    <div class="progress" style="height: 4px;">
-                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + record.battery_level.raw_value + '%'" t-att-aria-valuenow="record.battery_level.raw_value" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <small class="text-muted">Battery Level</small>
-                                </div>
-                                <div class="mt-2" t-if="record.scan_session_active.raw_value">
-                                    <span class="badge badge-success">🔄 Active Session</span>
-                                </div>
-                                <div class="mt-2">
-                                    <field name="activity_ids" widget="kanban_activity"/>
-                                </div>
-                            </div>
-                            <div class="o_kanban_record_bottom">
-                                <div class="oe_kanban_bottom_left">
-                                    <span class="badge badge-pill badge-info">
-                                        ⏱️ <field name="last_scan_time" widget="datetime"/>
-                                    </span>
-                                </div>
-                                <div class="oe_kanban_bottom_right">
-                                    <field name="activity_state" widget="kanban_activity"/>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <!-- TREE VIEW: Barcode Scanner Management List -->
-    <record id="view_barcode_scanner_tree" model="ir.ui.view">
-        <field name="name">barcode.scanner.tree</field>
-        <field name="model">barcode.scanner</field>
+    <!-- TREE VIEW: Barcode Product Management List -->
+    <record id="view_barcode_product_tree" model="ir.ui.view">
+        <field name="name">barcode.product.tree</field>
+        <field name="model">barcode.product</field>
         <field name="arch" type="xml">
-            <tree string="Barcode Scanner Management" decoration-success="scanner_status=='scanning'" decoration-info="scanner_status=='idle'" decoration-danger="scanner_status=='error'" decoration-warning="scanner_status=='maintenance'" multi_edit="1" sample="1">
+            <tree string="Barcode Product Management" decoration-success="active==True" decoration-muted="active==False" multi_edit="1" sample="1">
                 <header>
-                    <button name="action_start_session" type="object" string="Start Session"/>
-                    <button name="action_end_session" type="object" string="End Session"/>
-                    <button name="action_sync_data" type="object" string="Sync Data"/>
-                    <button name="action_calibrate" type="object" string="Calibrate"/>
+                    <button name="action_activate" type="object" string="Activate"/>
+                    <button name="action_deactivate" type="object" string="Deactivate"/>
+                    <button name="action_update_pricing" type="object" string="Update Pricing"/>
+                    <button name="action_generate_barcodes" type="object" string="Generate Barcodes"/>
                 </header>
-                <field name="name" string="Scanner Name"/>
-                <field name="device_id" string="Device ID"/>
-                <field name="operator_id" string="Operator"/>
-                <field name="location_id" string="Current Location"/>
-                <field name="scan_count" string="Scans Today" sum="Total Scans"/>
-                <field name="success_rate" string="Success Rate %" widget="percentage" avg="Avg Success"/>
-                <field name="battery_level" string="Battery %" widget="progressbar"/>
-                <field name="last_scan_time" string="Last Scan" widget="datetime"/>
-                <field name="scanner_status" string="Status" widget="badge" decoration-success="scanner_status=='scanning'" decoration-info="scanner_status=='idle'" decoration-danger="scanner_status=='error'"/>
+                <field name="name" string="Product Name"/>
+                <field name="product_category" string="Category"/>
+                <field name="box_size" string="Box Size"/>
+                <field name="barcode_pattern" string="Barcode Pattern"/>
+                <field name="barcode_length" string="Length"/>
+                <field name="storage_rate" string="Storage Rate" widget="monetary"/>
+                <field name="shred_rate" string="Shred Rate" widget="monetary"/>
+                <field name="capacity" string="Capacity (cu.ft)" widget="float"/>
+                <field name="monthly_volume" string="Monthly Volume" sum="Total Volume"/>
+                <field name="active" string="Active" widget="boolean_toggle"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
             </tree>
         </field>
     </record>
 
-    <!-- FORM VIEW: Detailed Barcode Scanner Configuration -->
-    <record id="view_barcode_scanner_form" model="ir.ui.view">
-        <field name="name">barcode.scanner.form</field>
-        <field name="model">barcode.scanner</field>
+    <!-- FORM VIEW: Detailed Barcode Product Configuration -->
+    <record id="view_barcode_product_form" model="ir.ui.view">
+        <field name="name">barcode.product.form</field>
+        <field name="model">barcode.product</field>
         <field name="arch" type="xml">
-            <form string="Barcode Scanner Management">
+            <form string="Barcode Product Configuration">
                 <header>
-                    <button name="action_start_session" string="Start Scan Session" type="object" class="btn-primary" states="idle"/>
-                    <button name="action_end_session" string="End Session" type="object" class="btn-warning" states="scanning"/>
-                    <button name="action_sync_data" string="Sync Data" type="object" class="btn-info"/>
-                    <button name="action_calibrate" string="Calibrate Scanner" type="object" class="btn-secondary"/>
-                    <button name="action_maintenance_mode" string="Maintenance" type="object" states="idle,error"/>
-                    <button name="action_reset_scanner" string="Reset" type="object" states="error,maintenance"/>
-                    <field name="scanner_status" widget="statusbar" statusbar_visible="offline,idle,scanning,error,maintenance"/>
+                    <button name="action_activate" string="Activate" type="object" class="btn-primary" states="active=False"/>
+                    <button name="action_deactivate" string="Deactivate" type="object" class="btn-warning" states="active=True"/>
+                    <button name="action_generate_barcodes" string="Generate Barcodes" type="object" class="btn-success"/>
+                    <button name="action_update_pricing" string="Update Pricing" type="object" class="btn-info"/>
+                    <field name="active" widget="statusbar" statusbar_visible="False,True" options="{'clickable': '1'}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_scan_history" type="object" class="oe_stat_button" icon="fa-history">
+                        <button name="action_view_storage_boxes" type="object" class="oe_stat_button" icon="fa-archive">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
-                                    <field name="total_scans"/>
+                                    <field name="storage_box_count"/>
                                 </span>
+                                <span class="o_stat_text">Storage Boxes</span>
+                            </div>
+                        </button>
+                        <button name="action_view_shred_bins" type="object" class="oe_stat_button" icon="fa-trash">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="shred_bin_count"/>
+                                </span>
+                                <span class="o_stat_text">Shred Bins</span>
+                            </div>
+                        </button>
+                        <button name="action_view_revenue" type="object" class="oe_stat_button" icon="fa-dollar">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="monthly_revenue" widget="monetary"/>
+                                </span>
+                                <span class="o_stat_text">Monthly Revenue</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Product Name (e.g., Standard Storage Box)"/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="product_category" placeholder="Storage Box / Shred Bin"/>
+                            <label for="box_size" string="Size:"/>
+                            <field name="box_size" placeholder="Box Dimensions"/>
+                        </div>
+                    </div>
+                    
+                    <group>
+                        <group name="product_details" string="📦 Product Details">
+                            <field name="product_code"/>
+                            <field name="capacity" widget="float"/>
+                            <field name="dimensions"/>
+                            <field name="weight_limit" widget="float"/>
+                            <field name="material_type"/>
+                            <field name="color"/>
+                        </group>
+                        <group name="barcode_config" string="🏷️ Barcode Configuration">
+                            <field name="barcode_pattern" required="1"/>
+                            <field name="barcode_length" required="1"/>
+                            <field name="barcode_prefix"/>
+                            <field name="barcode_suffix"/>
+                            <field name="check_digit_required" widget="boolean_toggle"/>
+                            <field name="auto_generate" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="pricing" string="💰 Pricing Configuration">
+                            <field name="storage_rate" widget="monetary"/>
+                            <field name="shred_rate" widget="monetary"/>
+                            <field name="setup_fee" widget="monetary"/>
+                            <field name="rush_service_rate" widget="monetary"/>
+                            <field name="volume_discount_threshold"/>
+                            <field name="volume_discount_rate" widget="percentage"/>
+                        </group>
+                        <group name="analytics" string="📊 Analytics">
+                            <field name="monthly_volume"/>
+                            <field name="monthly_revenue" widget="monetary"/>
+                            <field name="average_storage_duration" widget="float"/>
+                            <field name="utilization_rate" widget="percentage"/>
+                            <field name="profit_margin" widget="percentage"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Storage Box Configuration" name="storage_config" states="product_category=='storage_box'">
+                            <group>
+                                <group string="📦 Storage Specifications">
+                                    <field name="climate_controlled" widget="boolean_toggle"/>
+                                    <field name="fireproof_rating"/>
+                                    <field name="security_level"/>
+                                    <field name="stackable" widget="boolean_toggle"/>
+                                    <field name="max_stack_height"/>
+                                </group>
+                                <group string="📄 Document Types">
+                                    <field name="suitable_document_types" widget="many2many_tags"/>
+                                    <field name="max_file_folders"/>
+                                    <field name="recommended_retention_years"/>
+                                    <field name="access_frequency"/>
+                                </group>
+                            </group>
+                            <separator string="📋 Storage Box Inventory"/>
+                            <field name="storage_box_ids" mode="tree">
+                                <tree string="Storage Boxes" editable="bottom">
+                                    <field name="barcode"/>
+                                    <field name="location_id"/>
+                                    <field name="customer_id"/>
+                                    <field name="box_status"/>
+                                    <field name="fill_percentage" widget="percentage"/>
+                                    <field name="last_access_date" widget="date"/>
+                                    <field name="monthly_rate" widget="monetary"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Shred Bin Configuration" name="shred_config" states="product_category=='shred_bin'">
+                            <group>
+                                <group string="🗂️ Shredding Specifications">
+                                    <field name="shred_security_level"/>
+                                    <field name="naid_compliant" widget="boolean_toggle"/>
+                                    <field name="witness_destruction" widget="boolean_toggle"/>
+                                    <field name="certificate_provided" widget="boolean_toggle"/>
+                                    <field name="pickup_frequency"/>
+                                </group>
+                                <group string="📏 Bin Specifications">
+                                    <field name="bin_volume" widget="float"/>
+                                    <field name="lockable" widget="boolean_toggle"/>
+                                    <field name="mobile" widget="boolean_toggle"/>
+                                    <field name="indoor_outdoor"/>
+                                    <field name="weight_capacity" widget="float"/>
+                                </group>
+                            </group>
+                            <separator string="🗑️ Shred Bin Inventory"/>
+                            <field name="shred_bin_ids" mode="tree">
+                                <tree string="Shred Bins" editable="bottom">
+                                    <field name="barcode"/>
+                                    <field name="customer_location_id"/>
+                                    <field name="bin_status"/>
+                                    <field name="fill_level" widget="percentage"/>
+                                    <field name="last_pickup_date" widget="date"/>
+                                    <field name="next_pickup_date" widget="date"/>
+                                    <field name="service_rate" widget="monetary"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Pricing Rules" name="pricing_rules">
+                            <separator string="💰 Pricing Tier Configuration"/>
+                            <field name="pricing_tier_ids" mode="tree">
+                                <tree string="Pricing Tiers" editable="bottom">
+                                    <field name="tier_name"/>
+                                    <field name="min_quantity"/>
+                                    <field name="max_quantity"/>
+                                    <field name="unit_price" widget="monetary"/>
+                                    <field name="discount_percentage" widget="percentage"/>
+                                    <field name="effective_date" widget="date"/>
+                                    <field name="expiry_date" widget="date"/>
+                                </tree>
+                            </field>
+                            <separator string="📅 Seasonal Pricing"/>
+                            <field name="seasonal_pricing_ids" mode="tree">
+                                <tree string="Seasonal Rates" editable="bottom">
+                                    <field name="season_name"/>
+                                    <field name="start_date" widget="date"/>
+                                    <field name="end_date" widget="date"/>
+                                    <field name="price_multiplier" widget="float"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Barcode Generation" name="barcode_generation">
+                            <group>
+                                <group string="🔢 Generation Settings">
+                                    <field name="next_sequence_number"/>
+                                    <field name="last_generated_barcode"/>
+                                    <field name="total_generated"/>
+                                    <field name="generation_batch_size"/>
+                                </group>
+                                <group string="📋 Validation Rules">
+                                    <field name="validate_format" widget="boolean_toggle"/>
+                                    <field name="validate_uniqueness" widget="boolean_toggle"/>
+                                    <field name="validate_check_digit" widget="boolean_toggle"/>
+                                    <field name="allowed_characters"/>
+                                </group>
+                            </group>
+                            <separator string="📝 Generation History"/>
+                            <field name="generation_history_ids" mode="tree" readonly="1">
+                                <tree string="Generation History">
+                                    <field name="generation_date" widget="datetime"/>
+                                    <field name="batch_id"/>
+                                    <field name="quantity_generated"/>
+                                    <field name="start_barcode"/>
+                                    <field name="end_barcode"/>
+                                    <field name="generated_by"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
                                 <span class="o_stat_text">Total Scans</span>
                             </div>
                         </button>
@@ -188,87 +347,96 @@
                             <field name="firmware_version"/>
                             <field name="battery_level" widget="progressbar"/>
                             <field name="connection_type"/>
-                            <field name="ip_address" states="connection_type=='wifi'"/>
-                        </group>
-                        <group name="current_status" string="Current Status">
-                            <field name="location_id"/>
-                            <field name="scan_session_active" widget="boolean_toggle"/>
-                            <field name="last_sync_time" widget="datetime"/>
-                            <field name="last_scan_time" widget="datetime"/>
-                            <field name="scan_count"/>
-                            <field name="success_rate" widget="percentage"/>
-                        </group>
-                    </group>
-                    
-                    <group>
-                        <group name="capabilities" string="Scanner Capabilities">
-                            <field name="supports_1d_barcodes" widget="boolean_toggle"/>
-                            <field name="supports_2d_barcodes" widget="boolean_toggle"/>
-                            <field name="supports_qr_codes" widget="boolean_toggle"/>
-                            <field name="supports_rfid" widget="boolean_toggle"/>
-                            <field name="camera_scanner" widget="boolean_toggle"/>
-                            <field name="laser_scanner" widget="boolean_toggle"/>
-                        </group>
-                        <group name="settings" string="Scanner Settings">
-                            <field name="scan_mode"/>
-                            <field name="trigger_mode"/>
-                            <field name="beep_enabled" widget="boolean_toggle"/>
-                            <field name="vibration_enabled" widget="boolean_toggle"/>
-                            <field name="auto_prefix"/>
-                            <field name="auto_suffix"/>
-                        </group>
-                    </group>
-                    
-                    <notebook>
-                        <page string="Scan History" name="scan_history">
-                            <field name="scan_history_ids" mode="tree">
-                                <tree string="Recent Scans" create="false">
-                                    <field name="scan_time" widget="datetime"/>
-                                    <field name="barcode_data"/>
-                                    <field name="barcode_type"/>
-                                    <field name="scan_result"/>
-                                    <field name="product_id"/>
-                                    <field name="location_id"/>
-                                    <field name="operation_type"/>
-                                    <field name="success" widget="boolean_toggle"/>
-                                    <field name="error_message" states="success=False"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="Configuration" name="configuration">
-                            <group>
-                                <group string="Barcode Format Settings">
-                                    <field name="code128_enabled" widget="boolean_toggle"/>
-                                    <field name="code39_enabled" widget="boolean_toggle"/>
-                                    <field name="ean13_enabled" widget="boolean_toggle"/>
-                                    <field name="upca_enabled" widget="boolean_toggle"/>
-                                    <field name="qr_code_enabled" widget="boolean_toggle"/>
-                                    <field name="data_matrix_enabled" widget="boolean_toggle"/>
-                                </group>
-                                <group string="Validation Rules">
-                                    <field name="validate_check_digit" widget="boolean_toggle"/>
-                                    <field name="min_barcode_length"/>
-                                    <field name="max_barcode_length"/>
-                                    <field name="allowed_characters"/>
-                                    <field name="duplicate_scan_prevention" widget="boolean_toggle"/>
-                                    <field name="duplicate_timeout_seconds"/>
-                                </group>
-                            </group>
-                            <separator string="Custom Prefix/Suffix Rules"/>
-                            <field name="prefix_suffix_rules_ids" mode="tree">
-                                <tree string="Prefix/Suffix Rules" editable="bottom">
-                                    <field name="rule_name"/>
-                                    <field name="barcode_pattern"/>
-                                    <field name="prefix_to_add"/>
-                                    <field name="suffix_to_add"/>
-                                    <field name="active" widget="boolean_toggle"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="Performance" name="performance">
-                            <group>
-                                <group string="Daily Statistics">
-                                    <field name="scans_today"/>
+    <!-- SEARCH VIEW: Advanced Barcode Product Search -->
+    <record id="view_barcode_product_search" model="ir.ui.view">
+        <field name="name">barcode.product.search</field>
+        <field name="model">barcode.product</field>
+        <field name="arch" type="xml">
+            <search string="Search Barcode Products">
+                <field name="name" string="Product Name" filter_domain="[('name', 'ilike', self)]"/>
+                <field name="product_category" string="Category"/>
+                <field name="barcode_pattern" string="Barcode Pattern"/>
+                <field name="box_size" string="Box Size"/>
+                
+                <filter string="Active Products" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive Products" name="inactive" domain="[('active', '=', False)]"/>
+                
+                <separator/>
+                <filter string="Storage Boxes" name="storage_boxes" domain="[('product_category', '=', 'storage_box')]"/>
+                <filter string="Shred Bins" name="shred_bins" domain="[('product_category', '=', 'shred_bin')]"/>
+                
+                <separator/>
+                <filter string="High Volume" name="high_volume" domain="[('monthly_volume', '&gt;', 100)]"/>
+                <filter string="Premium Pricing" name="premium" domain="[('storage_rate', '&gt;', 50)]"/>
+                <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Category" name="group_category" context="{'group_by': 'product_category'}"/>
+                    <filter string="Box Size" name="group_size" context="{'group_by': 'box_size'}"/>
+                    <filter string="Barcode Length" name="group_length" context="{'group_by': 'barcode_length'}"/>
+                    <filter string="Active Status" name="group_active" context="{'group_by': 'active'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- GRAPH VIEW: Barcode Product Analytics -->
+    <record id="view_barcode_product_graph" model="ir.ui.view">
+        <field name="name">barcode.product.graph</field>
+        <field name="model">barcode.product</field>
+        <field name="arch" type="xml">
+            <graph string="Product Analytics" type="bar" sample="1">
+                <field name="product_category" type="row"/>
+                <field name="box_size" type="col"/>
+                <field name="monthly_volume" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- PIVOT VIEW: Barcode Product Analysis -->
+    <record id="view_barcode_product_pivot" model="ir.ui.view">
+        <field name="name">barcode.product.pivot</field>
+        <field name="model">barcode.product</field>
+        <field name="arch" type="xml">
+            <pivot string="Product Analysis" sample="1">
+                <field name="product_category" type="row"/>
+                <field name="box_size" type="col"/>
+                <field name="monthly_revenue" type="measure"/>
+                <field name="utilization_rate" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ACTION: Barcode Product Management -->
+    <record id="action_barcode_scanner" model="ir.actions.act_window">
+        <field name="name">📦 Barcode Product Management</field>
+        <field name="res_model">barcode.product</field>
+        <field name="view_mode">kanban,tree,form,graph,pivot</field>
+        <field name="search_view_id" ref="view_barcode_product_search"/>
+        <field name="context">{
+            'search_default_active': 1,
+            'search_default_storage_boxes': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                📦 Create your first barcode product configuration!
+            </p>
+            <p>
+                Configure barcode patterns and pricing for storage box types and shred bin sizes. 
+                Manage product categories, pricing tiers, and automated barcode generation for efficient inventory tracking.
+            </p>
+            <p>
+                <strong>Key Features:</strong><br/>
+                • Storage box and shred bin barcode configuration<br/>
+                • Automated pricing based on box size and capacity<br/>
+                • Barcode pattern generation and validation<br/>
+                • Volume-based pricing tiers and discounts<br/>
+                • NAID compliance tracking for shred services<br/>
+                • Revenue analytics and utilization reporting
+            </p>
+        </field>
+    </record>
+</odoo>
                                     <field name="successful_scans_today"/>
                                     <field name="failed_scans_today"/>
                                     <field name="average_scan_time"/>

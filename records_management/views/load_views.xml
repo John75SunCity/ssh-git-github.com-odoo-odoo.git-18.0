@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 🚛 ENTERPRISE LOAD MANAGEMENT - Trailer Load Operations & Capacity Optimization -->
+    <!-- � PAPER BALE LOAD MANAGEMENT - Post-Shredding Paper Market Sales -->
     
-    <!-- KANBAN VIEW: Visual Load Management Dashboard -->
+    <!-- KANBAN VIEW: Paper Bale Load Dashboard -->
     <record id="view_load_kanban" model="ir.ui.view">
         <field name="name">load.kanban</field>
         <field name="model">load</field>
@@ -10,13 +10,12 @@
             <kanban default_group_by="state" sample="1" quick_create="false" class="o_kanban_small_column">
                 <field name="name"/>
                 <field name="state"/>
-                <field name="trailer_id"/>
                 <field name="total_weight"/>
-                <field name="capacity_utilization"/>
-                <field name="scheduled_departure"/>
-                <field name="driver_id"/>
-                <field name="route_code"/>
+                <field name="bale_count"/>
+                <field name="market_price_per_ton"/>
+                <field name="estimated_revenue"/>
                 <field name="load_date"/>
+                <field name="buyer_company"/>
                 <field name="activity_ids"/>
                 <field name="activity_state"/>
                 <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
@@ -29,22 +28,22 @@
                                         <field name="name"/>
                                     </strong>
                                     <span class="float-end">
-                                        <field name="state" widget="label_selection" options="{'classes': {'draft': 'secondary', 'planned': 'primary', 'loading': 'warning', 'in_transit': 'info', 'delivered': 'success', 'cancelled': 'danger'}}"/>
+                                        <field name="state" widget="label_selection" options="{'classes': {'draft': 'secondary', 'ready': 'primary', 'loading': 'warning', 'shipped': 'info', 'sold': 'success', 'cancelled': 'danger'}}"/>
                                     </span>
                                 </div>
                                 <span class="o_kanban_record_subtitle text-muted">
-                                    🚛 <field name="trailer_id"/> | Route: <field name="route_code"/>
+                                    � <field name="bale_count"/> bales | <field name="buyer_company"/>
                                 </span>
                             </div>
                             <div class="o_kanban_record_body">
                                 <div class="row">
                                     <div class="col-6">
-                                        <strong>Weight:</strong> <field name="total_weight" widget="float"/> kg<br/>
-                                        <strong>Capacity:</strong> <field name="capacity_utilization" widget="percentage"/>
+                                        <strong>Weight:</strong> <field name="total_weight" widget="float"/> lbs<br/>
+                                        <strong>Market Price:</strong> $<field name="market_price_per_ton"/>/ton
                                     </div>
                                     <div class="col-6">
-                                        <strong>Driver:</strong> <field name="driver_id"/><br/>
-                                        <strong>Departure:</strong> <field name="scheduled_departure" widget="datetime"/>
+                                        <strong>Revenue:</strong> $<field name="estimated_revenue" widget="float"/><br/>
+                                        <strong>Load Date:</strong> <field name="load_date" widget="date"/>
                                     </div>
                                 </div>
                                 <div class="mt-2">
@@ -54,7 +53,7 @@
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
                                     <span class="badge badge-pill badge-info">
-                                        📅 <field name="load_date" widget="date"/>
+                                        � <field name="total_weight" widget="float"/> lbs
                                     </span>
                                 </div>
                                 <div class="oe_kanban_bottom_right">
@@ -68,62 +67,70 @@
         </field>
     </record>
 
-    <!-- TREE VIEW: Load Operations List -->
+    <!-- TREE VIEW: Paper Bale Load List -->
     <record id="view_load_tree" model="ir.ui.view">
         <field name="name">load.tree</field>
         <field name="model">load</field>
         <field name="arch" type="xml">
-            <tree string="Load Management" decoration-success="state=='delivered'" decoration-info="state=='in_transit'" decoration-warning="state=='loading'" decoration-muted="state=='cancelled'" multi_edit="1" sample="1">
+            <tree string="Paper Bale Load Management" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'" decoration-muted="state=='cancelled'" multi_edit="1" sample="1">
                 <header>
-                    <button name="action_plan_load" type="object" string="Plan Load"/>
+                    <button name="action_prepare_load" type="object" string="Prepare Load"/>
                     <button name="action_start_loading" type="object" string="Start Loading"/>
-                    <button name="action_complete_loading" type="object" string="Complete Loading"/>
+                    <button name="action_ship_load" type="object" string="Ship Load"/>
+                    <button name="action_mark_sold" type="object" string="Mark Sold"/>
                 </header>
                 <field name="name" string="Load #"/>
                 <field name="load_date" widget="date"/>
-                <field name="trailer_id" string="Trailer"/>
-                <field name="driver_id" string="Driver"/>
-                <field name="route_code" string="Route"/>
-                <field name="total_weight" string="Weight (kg)" widget="float" sum="Total Weight"/>
-                <field name="capacity_utilization" string="Capacity %" widget="percentage" avg="Avg Capacity"/>
-                <field name="scheduled_departure" string="Departure" widget="datetime"/>
-                <field name="state" string="Status" widget="badge" decoration-success="state=='delivered'" decoration-info="state=='in_transit'" decoration-warning="state=='loading'"/>
+                <field name="buyer_company" string="Buyer"/>
+                <field name="bale_count" string="Bales" sum="Total Bales"/>
+                <field name="total_weight" string="Weight (lbs)" widget="float" sum="Total Weight"/>
+                <field name="market_price_per_ton" string="Price/Ton" widget="monetary"/>
+                <field name="estimated_revenue" string="Est. Revenue" widget="monetary" sum="Total Revenue"/>
+                <field name="shipping_date" string="Ship Date" widget="date"/>
+                <field name="state" string="Status" widget="badge" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
             </tree>
         </field>
     </record>
 
-    <!-- FORM VIEW: Detailed Load Management -->
+    <!-- FORM VIEW: Detailed Paper Bale Load Management -->
     <record id="view_load_form" model="ir.ui.view">
         <field name="name">load.form</field>
         <field name="model">load</field>
         <field name="arch" type="xml">
-            <form string="Load Management">
+            <form string="Paper Bale Load Management">
                 <header>
-                    <button name="action_plan_load" string="Plan Load" type="object" class="btn-primary" states="draft"/>
-                    <button name="action_start_loading" string="Start Loading" type="object" class="btn-primary" states="planned"/>
-                    <button name="action_complete_loading" string="Complete Loading" type="object" class="btn-primary" states="loading"/>
-                    <button name="action_dispatch" string="Dispatch" type="object" class="btn-success" states="loaded"/>
-                    <button name="action_mark_delivered" string="Mark Delivered" type="object" class="btn-success" states="in_transit"/>
-                    <button name="action_cancel" string="Cancel" type="object" states="draft,planned,loading"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,planned,loading,loaded,in_transit,delivered"/>
+                    <button name="action_prepare_load" string="Prepare Load" type="object" class="btn-primary" states="draft"/>
+                    <button name="action_start_loading" string="Start Loading" type="object" class="btn-primary" states="ready"/>
+                    <button name="action_ship_load" string="Ship Load" type="object" class="btn-success" states="loading"/>
+                    <button name="action_mark_sold" string="Mark Sold" type="object" class="btn-success" states="shipped"/>
+                    <button name="action_cancel" string="Cancel" type="object" states="draft,ready,loading"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,ready,loading,shipped,sold"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_deliveries" type="object" class="oe_stat_button" icon="fa-truck">
+                        <button name="action_view_bales" type="object" class="oe_stat_button" icon="fa-cubes">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
-                                    <field name="delivery_count"/>
+                                    <field name="bale_count"/>
                                 </span>
-                                <span class="o_stat_text">Deliveries</span>
+                                <span class="o_stat_text">Paper Bales</span>
                             </div>
                         </button>
-                        <button name="action_view_documents" type="object" class="oe_stat_button" icon="fa-file-text">
+                        <button name="action_view_revenue_report" type="object" class="oe_stat_button" icon="fa-dollar">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
-                                    <field name="document_count"/>
+                                    <field name="estimated_revenue" widget="monetary"/>
                                 </span>
-                                <span class="o_stat_text">Documents</span>
+                                <span class="o_stat_text">Revenue</span>
+                            </div>
+                        </button>
+                        <button name="action_view_weight_tickets" type="object" class="oe_stat_button" icon="fa-balance-scale">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="weight_ticket_count"/>
+                                </span>
+                                <span class="o_stat_text">Weight Tickets</span>
                             </div>
                         </button>
                     </div>
@@ -134,19 +141,29 @@
                         </h1>
                         <div class="o_row">
                             <field name="load_date" widget="date"/>
-                            <label for="route_code" string="Route:"/>
-                            <field name="route_code" placeholder="Route Code"/>
+                            <label for="buyer_company" string="Buyer:"/>
+                            <field name="buyer_company" placeholder="Paper Company"/>
                         </div>
                     </div>
                     
                     <group>
-                        <group name="load_details" string="Load Details">
-                            <field name="trailer_id" options="{'no_create': True, 'no_edit': True}"/>
-                            <field name="driver_id" options="{'no_create': True, 'no_edit': True}"/>
+                        <group name="load_details" string="📦 Load Details">
                             <field name="total_weight" widget="float"/>
-                            <field name="capacity_utilization" widget="percentage"/>
-                            <field name="scheduled_departure" widget="datetime"/>
-                            <field name="actual_departure" widget="datetime" states="in_transit,delivered"/>
+                            <field name="bale_count"/>
+                            <field name="average_bale_weight" widget="float"/>
+                            <field name="load_quality_grade"/>
+                            <field name="moisture_content" widget="percentage"/>
+                            <field name="contamination_level"/>
+                        </group>
+                        <group name="market_details" string="💰 Market Details">
+                            <field name="market_price_per_ton" widget="monetary"/>
+                            <field name="estimated_revenue" widget="monetary"/>
+                            <field name="actual_sale_price" widget="monetary" states="sold"/>
+                            <field name="price_variance" widget="monetary" states="sold"/>
+                            <field name="buyer_company"/>
+                            <field name="sale_contract_number" states="shipped,sold"/>
+                        </group>
+                    </group>
                         </group>
                         <group name="tracking" string="Tracking & Status">
                             <field name="priority" widget="priority"/>
@@ -160,31 +177,33 @@
                     
                     <notebook>
                         <page string="Load Items" name="load_items">
-                            <field name="load_item_ids" mode="tree,kanban">
-                                <tree string="Load Items" editable="bottom">
-                                    <field name="product_id"/>
-                                    <field name="quantity" sum="Total Quantity"/>
+                    <notebook>
+                        <page string="Paper Bales" name="paper_bales">
+                            <field name="bale_ids" mode="tree,kanban">
+                                <tree string="Paper Bales" editable="bottom">
+                                    <field name="bale_number"/>
                                     <field name="weight" sum="Total Weight"/>
-                                    <field name="volume" sum="Total Volume"/>
-                                    <field name="destination_location_id"/>
-                                    <field name="priority"/>
-                                    <field name="fragile" widget="boolean_toggle"/>
-                                    <field name="temperature_sensitive" widget="boolean_toggle"/>
+                                    <field name="quality_grade"/>
+                                    <field name="moisture_content" widget="percentage"/>
+                                    <field name="contamination_notes"/>
+                                    <field name="production_date" widget="date"/>
+                                    <field name="value_per_ton" widget="monetary"/>
                                 </tree>
                                 <kanban>
-                                    <field name="product_id"/>
-                                    <field name="quantity"/>
+                                    <field name="bale_number"/>
                                     <field name="weight"/>
-                                    <field name="destination_location_id"/>
+                                    <field name="quality_grade"/>
+                                    <field name="value_per_ton"/>
                                     <templates>
                                         <t t-name="kanban-box">
                                             <div class="oe_kanban_global_click">
                                                 <div class="o_kanban_record_top">
-                                                    <strong><field name="product_id"/></strong>
+                                                    <strong><field name="bale_number"/></strong>
+                                                    <span class="float-end">Grade: <field name="quality_grade"/></span>
                                                 </div>
                                                 <div class="o_kanban_record_body">
-                                                    Qty: <field name="quantity"/> | Weight: <field name="weight"/>kg<br/>
-                                                    📍 <field name="destination_location_id"/>
+                                                    Weight: <field name="weight"/> lbs<br/>
+                                                    Value: $<field name="value_per_ton"/>/ton
                                                 </div>
                                             </div>
                                         </t>
@@ -192,33 +211,38 @@
                                 </kanban>
                             </field>
                         </page>
-                        <page string="Route & Stops" name="route_stops">
-                            <field name="stop_ids" mode="tree">
-                                <tree string="Route Stops" editable="bottom">
-                                    <field name="sequence" widget="handle"/>
-                                    <field name="location_id"/>
-                                    <field name="stop_type"/>
-                                    <field name="estimated_arrival" widget="datetime"/>
-                                    <field name="actual_arrival" widget="datetime"/>
-                                    <field name="duration_minutes"/>
-                                    <field name="completed" widget="boolean_toggle"/>
-                                    <field name="notes"/>
-                                </tree>
-                            </field>
+                        <page string="Shipping & Transport" name="shipping">
+                            <group>
+                                <group string="🚛 Transport Details">
+                                    <field name="shipping_date" widget="date"/>
+                                    <field name="delivery_date" widget="date"/>
+                                    <field name="transport_company"/>
+                                    <field name="driver_name"/>
+                                    <field name="truck_license_plate"/>
+                                    <field name="trailer_number"/>
+                                </group>
+                                <group string="📍 Delivery Information">
+                                    <field name="destination_address"/>
+                                    <field name="delivery_contact"/>
+                                    <field name="delivery_phone"/>
+                                    <field name="special_delivery_instructions"/>
+                                    <field name="loading_dock_requirements"/>
+                                </group>
+                            </group>
                         </page>
                         <page string="Documentation" name="documentation">
                             <group>
-                                <group string="Load Documentation">
+                                <group string="📄 Sales Documentation">
                                     <field name="bill_of_lading"/>
-                                    <field name="manifest_number"/>
-                                    <field name="seal_number"/>
-                                    <field name="inspection_checklist"/>
+                                    <field name="sales_contract_number"/>
+                                    <field name="invoice_number" states="sold"/>
+                                    <field name="payment_terms"/>
                                 </group>
-                                <group string="Compliance">
-                                    <field name="dot_inspection" widget="boolean_toggle"/>
-                                    <field name="weight_ticket"/>
-                                    <field name="customs_declaration"/>
-                                    <field name="insurance_verification"/>
+                                <group string="📊 Quality Documentation">
+                                    <field name="quality_certificate"/>
+                                    <field name="weight_certificate"/>
+                                    <field name="moisture_test_report"/>
+                                    <field name="contamination_report"/>
                                 </group>
                             </group>
                             <separator string="Load Photos"/>
@@ -226,6 +250,7 @@
                                 <kanban>
                                     <field name="name"/>
                                     <field name="image"/>
+                                    <field name="photo_type"/>
                                     <templates>
                                         <t t-name="kanban-box">
                                             <div class="oe_kanban_global_click">
@@ -348,9 +373,9 @@
         </field>
     </record>
 
-    <!-- ACTION: Load Management -->
+    <!-- ACTION: Paper Bale Load Management -->
     <record id="action_load" model="ir.actions.act_window">
-        <field name="name">🚛 Load Management</field>
+        <field name="name">� Paper Bale Load Management</field>
         <field name="res_model">load</field>
         <field name="view_mode">kanban,tree,form,calendar,graph,pivot</field>
         <field name="search_view_id" ref="view_load_search"/>
@@ -360,20 +385,20 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                🚛 Create your first load!
+                � Create your first paper bale load!
             </p>
             <p>
-                Manage trailer loading operations with comprehensive capacity optimization, route planning, and real-time tracking. 
-                Track load progress from planning through delivery with driver assignment, documentation management, and compliance verification.
+                Track paper bale loads for post-shredding market sales operations. 
+                Manage paper bale tracking from preparation through market sales with quality documentation, buyer management, and revenue tracking.
             </p>
             <p>
                 <strong>Key Features:</strong><br/>
-                • Visual load planning and capacity optimization<br/>
-                • Real-time tracking and status updates<br/>
-                • Route management and stop scheduling<br/>
-                • Documentation and compliance management<br/>
-                • Driver assignment and communication tools<br/>
-                • Performance analytics and reporting
+                • Paper bale quantity and weight tracking<br/>
+                • Market pricing and buyer management<br/>
+                • Quality grades and contamination monitoring<br/>
+                • Revenue estimation and sales documentation<br/>
+                • Load preparation and shipping coordination<br/>
+                • Paper market sales analytics and reporting
             </p>
         </field>
     </record>
