@@ -12,7 +12,7 @@
                 <field name="location_type"/>
                 <field name="capacity"/>
                 <field name="current_occupancy"/>
-                <field name="used_capacity"/>
+                <field name="utilization_percentage"/>
                 <field name="active"/>
                 <templates>
                     <t t-name="kanban-box">

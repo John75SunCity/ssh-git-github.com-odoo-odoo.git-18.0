@@ -35,7 +35,8 @@ class RecordsLocation(models.Model):
     box_ids = fields.One2many('records.box', 'location_id', string='Boxes')
     box_count = fields.Integer('Box Count', compute='_compute_box_count')
     capacity = fields.Integer('Maximum Box Capacity')
-    used_capacity = fields.Float('Used Capacity (%)', compute='_compute_used_capacity')
+    utilization_percentage = fields.Float('Utilization %', compute='_compute_used_capacity', store=True,
+                                         help="Percentage of location capacity currently used")
     current_occupancy = fields.Integer('Current Occupancy', compute='_compute_box_count', store=True,
                                       help="Current number of boxes stored in this location")
 
@@ -61,9 +62,10 @@ class RecordsLocation(models.Model):
     def _compute_used_capacity(self):
         for location in self:
             if location.capacity:
-                location.used_capacity = (location.box_count / location.capacity) * 100
+                percentage = (location.box_count / location.capacity) * 100
+                location.utilization_percentage = percentage
             else:
-                location.used_capacity = 0
+                location.utilization_percentage = 0
 
     def action_view_boxes(self):
         self.ensure_one()
