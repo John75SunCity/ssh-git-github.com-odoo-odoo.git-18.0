@@ -77,19 +77,22 @@ Features:
         'data/portal_mail_templates.xml',  # New: Email/SMS templates for notifications
         'data/naid_compliance_data.xml',  # New: NAID data for audits/signatures
         'data/feedback_survey_data.xml',  # New: Default feedback survey
-        'views/records_management_menus.xml',  # Load menus early to ensure menu dependencies
+        # Load all action-containing view files before menus
+        'views/records_box_views.xml',
         'views/records_tag_views.xml',
         'views/records_location_views.xml',
         'views/records_retention_policy_views.xml',
         'views/records_document_type_views.xml',
-        'views/records_box_views.xml',
         'views/records_document_views.xml',
         'views/pickup_request.xml',
         'views/shredding_views.xml',
-        'views/hard_drive_scan_views.xml',  # New: Hard drive scanning views
         'views/stock_lot_views.xml',
-        'views/res_partner_views.xml',
         'views/customer_inventory_views.xml',
+        'report/records_reports.xml',  # Contains report actions
+        # Now load menus after all actions are defined
+        'views/records_management_menus.xml',
+        'views/hard_drive_scan_views.xml',  # New: Hard drive scanning views
+        'views/res_partner_views.xml',
         'views/billing_views.xml',
         'views/departmental_billing_views.xml',
         'views/barcode_views.xml',
@@ -101,7 +104,6 @@ Features:
         'views/portal_feedback_views.xml',  # New: Feedback views
         'views/box_type_converter_views.xml',  # New: Box type conversion wizard
         'views/permanent_flag_wizard_views.xml',  # New: Permanent flag security wizard
-        'report/records_reports.xml',
         'report/destruction_certificate_report.xml',
         'report/bale_label_report.xml',
         'report/portal_audit_report.xml',  # New: Audit reports for NAID
