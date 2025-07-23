@@ -57,24 +57,22 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-6">
-                                        <button class="btn btn-primary btn-sm" type="object" name="action_view_documents">
+                                        <button class="btn btn-primary btn-sm" type="object" name="action_view_type_documents">
                                             📄 Documents
                                         </button>
                                     </div>
                                     <div class="col-6">
-                                        <button class="btn btn-success btn-sm" type="object" name="action_create_template">
-                                            📝 Template
-                                        </button>
+                                        <span class="badge badge-primary">
+                                            📝 Template Ready
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Type</a>
-                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">📄 View Documents</a>
-                                <a role="menuitem" type="object" name="action_retention_policy" class="dropdown-item">⏰ Retention Policy</a>
-                                <a role="menuitem" type="object" name="action_compliance_check" class="dropdown-item">🏆 Compliance Check</a>
+                                <a role="menuitem" type="object" name="action_view_type_documents" class="dropdown-item">📄 View Documents</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item">📋 Duplicate</a>
+                                <a role="menuitem" type="delete" class="dropdown-item">�️ Delete</a>
                             </div>
                         </div>
                     </t>
@@ -96,8 +94,7 @@
                 <field name="approval_required" string="✅ Approval" widget="boolean_toggle"/>
                 <field name="auto_archive" string="📦 Auto Archive" widget="boolean_toggle"/>
                 <field name="active" string="🎯 Status" widget="boolean_toggle"/>
-                <button name="action_view_documents" type="object" string="Documents" icon="fa-file-text-o" class="btn-link"/>
-                <button name="action_retention_policy" type="object" string="Policy" icon="fa-clock-o" class="btn-link"/>
+                <button name="action_view_type_documents" type="object" string="Documents" icon="fa-file-text-o" class="btn-link"/>
             </list>
         </field>
     </record>
@@ -109,21 +106,12 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_create_template" type="object" string="📝 Create Template" class="btn-primary"/>
-                    <button name="action_retention_policy" type="object" string="⏰ Retention Policy" class="btn-secondary"/>
-                    <button name="action_compliance_check" type="object" string="🏆 Compliance Check" class="btn-info"/>
                     <field name="active" widget="boolean_button" options="{'terminology': {'string_true': '🟢 Active', 'string_false': '⭕ Archived'}}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o">
+                        <button class="oe_stat_button" type="object" name="action_view_type_documents" icon="fa-file-text-o">
                             <field string="Documents" name="document_count" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button" type="object" name="action_view_templates" icon="fa-file-code-o">
-                            <field string="Templates" name="template_count" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button" type="object" name="action_view_retention_policies" icon="fa-clock-o">
-                            <field string="Policies" name="policy_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-shield" invisible="security_classification not in ('confidential', 'secret')">>
                             <div class="o_field_widget o_stat_info">
