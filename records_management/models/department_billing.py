@@ -116,6 +116,56 @@ class RecordsDepartmentBillingContact(models.Model):
         string='Last Billing Date'
     )
 
+    # Phase 3: Analytics & Computed Fields (8 fields)
+    billing_engagement_score = fields.Float(
+        string='Billing Engagement Score (%)',
+        compute='_compute_billing_analytics',
+        store=True,
+        help='Engagement level with billing communications'
+    )
+    communication_effectiveness = fields.Float(
+        string='Communication Effectiveness',
+        compute='_compute_billing_analytics',
+        store=True,
+        help='Effectiveness of billing communications with this contact'
+    )
+    payment_coordination_rating = fields.Float(
+        string='Payment Coordination Rating',
+        compute='_compute_billing_analytics',
+        store=True,
+        help='Rating of payment coordination efficiency'
+    )
+    department_coverage_percentage = fields.Float(
+        string='Department Coverage (%)',
+        compute='_compute_billing_analytics',
+        store=True,
+        help='Percentage of departments this contact handles'
+    )
+    billing_responsiveness_index = fields.Float(
+        string='Responsiveness Index',
+        compute='_compute_billing_analytics',
+        store=True,
+        help='Index measuring billing inquiry responsiveness'
+    )
+    contact_optimization_score = fields.Float(
+        string='Contact Optimization Score',
+        compute='_compute_billing_analytics',
+        store=True,
+        help='Optimization score for billing contact setup'
+    )
+    billing_insights = fields.Text(
+        string='Billing Insights',
+        compute='_compute_billing_analytics',
+        store=True,
+        help='AI-generated insights about billing contact performance'
+    )
+    analytics_computed_timestamp = fields.Datetime(
+        string='Analytics Updated',
+        compute='_compute_billing_analytics',
+        store=True,
+        help='Last analytics computation time'
+    )
+
     @api.depends('email')
     def _compute_hashed_email(self):
         """Compute SHA256 hash of email for privacy compliance"""
@@ -128,6 +178,147 @@ class RecordsDepartmentBillingContact(models.Model):
         for rec in self:
             if rec.customer_id:
                 # Search for departments instead of using direct relationship
+                departments = self.env['records.department'].search([('partner_id', '=', rec.customer_id.id)])
+                rec.total_departments = len(departments)
+            else:
+                rec.total_departments = 0
+
+    @api.depends('is_primary', 'receives_invoices', 'receives_statements', 'receives_notifications',
+                 'delivery_method', 'total_departments', 'active')
+    def _compute_billing_analytics(self):
+        """Compute comprehensive analytics for billing contacts"""
+        for contact in self:
+            # Update timestamp
+            contact.analytics_computed_timestamp = fields.Datetime.now()
+            
+            # Billing engagement score
+            engagement = 40.0  # Base engagement
+            
+            if contact.receives_invoices:
+                engagement += 25.0
+            if contact.receives_statements:
+                engagement += 15.0
+            if contact.receives_notifications:
+                engagement += 15.0
+            
+            if contact.is_primary:
+                engagement += 10.0  # Primary contacts have higher engagement
+            
+            # Delivery method effectiveness
+            if contact.delivery_method == 'both':
+                engagement += 15.0  # Multiple channels
+            elif contact.delivery_method in ['email', 'portal']:
+                engagement += 10.0  # Digital channels
+            
+            contact.billing_engagement_score = min(100, engagement)
+            
+            # Communication effectiveness
+            effectiveness = 60.0  # Base effectiveness
+            
+            # Email validation effectiveness
+            if contact.email and '@' in contact.email:
+                effectiveness += 20.0
+            
+            # Phone availability
+            if contact.phone:
+                effectiveness += 10.0
+            
+            # Multi-channel delivery
+            if contact.delivery_method == 'both':
+                effectiveness += 10.0
+            
+            contact.communication_effectiveness = min(100, effectiveness)
+            
+            # Payment coordination rating
+            coordination = 65.0  # Base coordination
+            
+            if contact.is_primary:
+                coordination += 20.0
+            
+            if contact.receives_invoices and contact.receives_statements:
+                coordination += 15.0  # Full billing communication
+            
+            contact.payment_coordination_rating = min(100, coordination)
+            
+            # Department coverage percentage
+            if contact.customer_id:
+                total_customer_departments = self.env['records.department'].search_count([
+                    ('partner_id', '=', contact.customer_id.id)
+                ])
+                
+                if total_customer_departments > 0:
+                    coverage = (contact.total_departments / total_customer_departments) * 100
+                    contact.department_coverage_percentage = min(100, coverage)
+                else:
+                    contact.department_coverage_percentage = 0.0
+            else:
+                contact.department_coverage_percentage = 0.0
+            
+            # Billing responsiveness index
+            responsiveness = 50.0  # Base responsiveness
+            
+            if contact.delivery_method in ['email', 'portal', 'both']:
+                responsiveness += 30.0  # Digital delivery is faster
+            
+            if contact.receives_notifications:
+                responsiveness += 20.0  # Notifications enable quick response
+            
+            contact.billing_responsiveness_index = min(100, responsiveness)
+            
+            # Contact optimization score
+            optimization = 50.0  # Base optimization
+            
+            # Check for complete setup
+            if contact.email and contact.phone:
+                optimization += 20.0
+            
+            if contact.delivery_method == 'both':
+                optimization += 15.0
+            
+            if contact.is_primary:
+                optimization += 10.0
+            
+            if contact.receives_invoices and contact.receives_statements:
+                optimization += 5.0
+            
+            contact.contact_optimization_score = min(100, optimization)
+            
+            # Billing insights
+            insights = []
+            
+            if contact.billing_engagement_score > 85:
+                insights.append("✅ Highly engaged billing contact")
+            elif contact.billing_engagement_score < 60:
+                insights.append("⚠️ Low engagement - review communication preferences")
+            
+            if not contact.is_primary and contact.department_coverage_percentage > 50:
+                insights.append("👤 Consider designating as primary contact")
+            
+            if contact.delivery_method == 'mail':
+                insights.append("📧 Switch to digital delivery for faster processing")
+            
+            if not contact.receives_notifications:
+                insights.append("🔔 Enable notifications for better responsiveness")
+            
+            if contact.communication_effectiveness > 90:
+                insights.append("📞 Excellent communication setup")
+            
+            if contact.payment_coordination_rating < 70:
+                insights.append("💳 Payment coordination needs improvement")
+            
+            if contact.department_coverage_percentage == 100:
+                insights.append("🎯 Complete department coverage achieved")
+            
+            if not insights:
+                insights.append("📊 Standard billing contact configuration")
+            
+            contact.billing_insights = "\n".join(insights)
+
+    @api.depends('customer_id')
+    def _compute_contact_stats(self):
+        """Compute statistics about contact's departments"""
+        for rec in self:
+            if rec.customer_id:
                 departments = self.env['records.department'].search([
                     ('partner_id', '=', rec.customer_id.id)
                 ])

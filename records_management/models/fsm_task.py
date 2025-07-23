@@ -12,6 +12,148 @@ class FSMTask(models.Model):
     portal_request_id = fields.Many2one('portal.request', string='Portal Request')
     # Auto-create from portal_request.action_submit
 
+    # Phase 3: Analytics & Computed Fields (6 fields)
+    task_efficiency_rating = fields.Float(
+        string='Task Efficiency Rating (%)',
+        compute='_compute_fsm_analytics',
+        store=True,
+        help='Overall efficiency rating for this FSM task'
+    )
+    completion_performance = fields.Float(
+        string='Completion Performance',
+        compute='_compute_fsm_analytics',
+        store=True,
+        help='Performance score based on completion metrics'
+    )
+    customer_response_time = fields.Float(
+        string='Response Time (Hours)',
+        compute='_compute_fsm_analytics',
+        store=True,
+        help='Time to respond to customer request'
+    )
+    resource_optimization_score = fields.Float(
+        string='Resource Optimization Score',
+        compute='_compute_fsm_analytics',
+        store=True,
+        help='Efficiency of resource allocation for this task'
+    )
+    fsm_insights = fields.Text(
+        string='FSM Insights',
+        compute='_compute_fsm_analytics',
+        store=True,
+        help='AI-generated field service insights'
+    )
+    analytics_update_time = fields.Datetime(
+        string='Analytics Updated',
+        compute='_compute_fsm_analytics',
+        store=True,
+        help='Last analytics computation timestamp'
+    )
+
+    @api.depends('stage_id', 'create_date', 'date_deadline', 'user_ids', 'portal_request_id')
+    def _compute_fsm_analytics(self):
+        """Compute comprehensive analytics for FSM tasks"""
+        for task in self:
+            # Update timestamp
+            task.analytics_update_time = fields.Datetime.now()
+            
+            # Task efficiency rating
+            efficiency = 60.0  # Base efficiency
+            
+            # Stage progression efficiency
+            if task.stage_id:
+                stage_name = task.stage_id.name.lower()
+                if 'done' in stage_name or 'complete' in stage_name:
+                    efficiency += 30.0
+                elif 'progress' in stage_name:
+                    efficiency += 20.0
+                elif 'paused' in stage_name:
+                    efficiency -= 10.0
+            
+            # Assignment efficiency
+            if task.user_ids:
+                efficiency += 15.0  # Has assigned users
+            
+            # Portal integration efficiency
+            if task.portal_request_id:
+                efficiency += 10.0  # Connected to portal request
+            
+            task.task_efficiency_rating = min(100, efficiency)
+            
+            # Completion performance
+            performance = 70.0  # Base performance
+            
+            # Deadline performance
+            if task.date_deadline and task.create_date:
+                now = fields.Datetime.now()
+                if task.stage_id and 'done' in task.stage_id.name.lower():
+                    # Task completed
+                    performance += 20.0
+                elif task.date_deadline < now:
+                    # Overdue
+                    performance -= 25.0
+                else:
+                    # On track
+                    performance += 10.0
+            
+            task.completion_performance = max(0, min(100, performance))
+            
+            # Customer response time
+            if task.create_date:
+                # Simulate response time based on task age
+                age_hours = (fields.Datetime.now() - task.create_date).total_seconds() / 3600
+                
+                if task.user_ids:  # If assigned, faster response
+                    task.customer_response_time = min(24, age_hours * 0.5)
+                else:  # Unassigned tasks have slower response
+                    task.customer_response_time = min(48, age_hours)
+            else:
+                task.customer_response_time = 0.0
+            
+            # Resource optimization score
+            optimization = 65.0  # Base optimization
+            
+            if task.user_ids:
+                optimization += 20.0
+            
+            if task.portal_request_id:
+                optimization += 10.0  # Automated request handling
+            
+            if task.stage_id and task.stage_id.name:
+                optimization += 5.0  # Proper workflow tracking
+            
+            task.resource_optimization_score = min(100, optimization)
+            
+            # FSM insights
+            insights = []
+            
+            if task.task_efficiency_rating > 85:
+                insights.append("✅ High efficiency task execution")
+            elif task.task_efficiency_rating < 60:
+                insights.append("⚠️ Below target efficiency - review process")
+            
+            if task.customer_response_time > 24:
+                insights.append("⏰ Slow response time - expedite assignment")
+            elif task.customer_response_time <= 4:
+                insights.append("🚀 Excellent response time")
+            
+            if not task.user_ids:
+                insights.append("👤 Unassigned task - allocate resources")
+            
+            if task.completion_performance > 90:
+                insights.append("🎯 Outstanding completion performance")
+            
+            if task.portal_request_id:
+                insights.append("🌐 Portal-integrated request - automated workflow")
+            
+            if task.date_deadline and fields.Datetime.now() > task.date_deadline:
+                insights.append("🚨 Overdue task - immediate attention required")
+            
+            if not insights:
+                insights.append("📊 Standard task performance")
+            
+            task.fsm_insights = "\n".join(insights)
+
     def action_start_task(self):
         """Start the FSM task"""
         self.write({'stage_id': self._get_stage_by_name('In Progress')})

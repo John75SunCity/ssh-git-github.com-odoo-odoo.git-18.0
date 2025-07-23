@@ -57,6 +57,12 @@ from . import scrm_records_management
 from . import naid_audit
 from . import naid_custody
 
+# Audit and Security Models
+from . import records_security_audit
+from . import records_location_inspection
+from . import records_audit_log
+from . import shredding_service_log
+
 # Extensions (One2many after bases)
 from . import department_billing
 from . import res_partner

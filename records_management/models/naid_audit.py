@@ -178,6 +178,56 @@ class NAIDAuditLog(models.Model):
         compute='_compute_days_since_event',
         store=True
     )
+
+    # Phase 3: Analytics & Computed Fields (8 fields)
+    audit_criticality_score = fields.Float(
+        string='Criticality Score (0-100)',
+        compute='_compute_audit_analytics',
+        store=True,
+        help='Audit event criticality assessment score'
+    )
+    compliance_impact_rating = fields.Float(
+        string='Compliance Impact Rating',
+        compute='_compute_audit_analytics',
+        store=True,
+        help='Impact rating on overall compliance posture'
+    )
+    remediation_urgency = fields.Float(
+        string='Remediation Urgency (0-10)',
+        compute='_compute_audit_analytics',
+        store=True,
+        help='Urgency level for required remediation'
+    )
+    risk_exposure_level = fields.Float(
+        string='Risk Exposure Level',
+        compute='_compute_audit_analytics',
+        store=True,
+        help='Calculated risk exposure from this event'
+    )
+    audit_trend_indicator = fields.Char(
+        string='Trend Indicator',
+        compute='_compute_audit_analytics',
+        store=True,
+        help='Trend analysis indicator'
+    )
+    compliance_recovery_time = fields.Float(
+        string='Recovery Time (Days)',
+        compute='_compute_audit_analytics',
+        store=True,
+        help='Estimated time to resolve compliance issues'
+    )
+    audit_insights = fields.Text(
+        string='Audit Insights',
+        compute='_compute_audit_analytics',
+        store=True,
+        help='AI-generated insights and recommendations'
+    )
+    analytics_timestamp = fields.Datetime(
+        string='Analytics Updated',
+        compute='_compute_audit_analytics',
+        store=True,
+        help='Last analytics computation timestamp'
+    )
     
     is_overdue = fields.Boolean(
         string='Remediation Overdue',
@@ -195,6 +245,168 @@ class NAIDAuditLog(models.Model):
                 record.days_since_event = delta.days
             else:
                 record.days_since_event = 0
+
+    @api.depends('remediation_deadline', 'remediation_completed')
+    def _compute_is_overdue(self):
+        """Check if remediation is overdue"""
+        now = fields.Datetime.now()
+        for record in self:
+            record.is_overdue = (
+                record.remediation_required and
+                not record.remediation_completed and
+                record.remediation_deadline and
+                record.remediation_deadline < now
+            )
+
+    @api.depends('event_type', 'risk_level', 'compliance_status', 'days_since_event',
+                 'remediation_required', 'remediation_completed', 'witness_employee_ids')
+    def _compute_audit_analytics(self):
+        """Compute comprehensive analytics for audit events"""
+        for audit in self:
+            # Update timestamp
+            audit.analytics_timestamp = fields.Datetime.now()
+            
+            # Audit criticality score
+            criticality = 20.0  # Base score
+            
+            # Event type impact
+            event_criticality = {
+                'security_breach': 40.0,
+                'policy_violation': 30.0,
+                'destruction_complete': 15.0,
+                'destruction_start': 10.0,
+                'document_intake': 5.0,
+                'access': 5.0,
+                'storage_assignment': 3.0,
+                'equipment_maintenance': 5.0,
+                'employee_screening': 10.0,
+                'certificate_generated': 2.0,
+                'audit_review': 8.0
+            }
+            criticality += event_criticality.get(audit.event_type, 10.0)
+            
+            # Risk level impact
+            risk_multipliers = {
+                'low': 1.0,
+                'medium': 1.5,
+                'high': 2.0,
+                'critical': 3.0
+            }
+            criticality *= risk_multipliers.get(audit.risk_level, 1.0)
+            
+            # Compliance status impact
+            compliance_multipliers = {
+                'compliant': 0.8,
+                'warning': 1.2,
+                'violation': 1.8,
+                'critical': 2.5
+            }
+            criticality *= compliance_multipliers.get(audit.compliance_status, 1.0)
+            
+            audit.audit_criticality_score = min(100, criticality)
+            
+            # Compliance impact rating
+            impact = 50.0  # Base impact
+            
+            if audit.compliance_status in ['violation', 'critical']:
+                impact += 30.0
+            elif audit.compliance_status == 'warning':
+                impact += 15.0
+            
+            if audit.event_type in ['security_breach', 'policy_violation']:
+                impact += 20.0
+            
+            audit.compliance_impact_rating = min(100, impact)
+            
+            # Remediation urgency
+            urgency = 3.0  # Base urgency
+            
+            if audit.remediation_required:
+                urgency += 3.0
+                
+                if audit.risk_level == 'critical':
+                    urgency += 4.0
+                elif audit.risk_level == 'high':
+                    urgency += 2.0
+                
+                # Increase urgency if overdue
+                if audit.is_overdue:
+                    urgency += 2.0
+            
+            audit.remediation_urgency = min(10, urgency)
+            
+            # Risk exposure level
+            exposure = 25.0  # Base exposure
+            
+            # Time factor - older unresolved issues increase exposure
+            if audit.days_since_event > 30 and not audit.remediation_completed:
+                exposure += (audit.days_since_event - 30) * 0.5
+            
+            # Event type exposure
+            if audit.event_type == 'security_breach':
+                exposure += 40.0
+            elif audit.event_type == 'policy_violation':
+                exposure += 25.0
+            
+            audit.risk_exposure_level = min(100, exposure)
+            
+            # Trend indicator
+            recent_similar = self.search_count([
+                ('event_type', '=', audit.event_type),
+                ('timestamp', '>=', fields.Datetime.now() - timedelta(days=30)),
+                ('id', '!=', audit.id)
+            ])
+            
+            if recent_similar >= 5:
+                audit.audit_trend_indicator = '📈 Increasing Frequency'
+            elif recent_similar >= 2:
+                audit.audit_trend_indicator = '⚠️ Pattern Detected'
+            else:
+                audit.audit_trend_indicator = '✅ Isolated Event'
+            
+            # Compliance recovery time
+            if audit.remediation_required and not audit.remediation_completed:
+                base_time = 7.0  # Base 7 days
+                
+                if audit.risk_level == 'critical':
+                    base_time = 1.0  # 1 day for critical
+                elif audit.risk_level == 'high':
+                    base_time = 3.0  # 3 days for high
+                elif audit.risk_level == 'medium':
+                    base_time = 5.0  # 5 days for medium
+                
+                audit.compliance_recovery_time = base_time
+            else:
+                audit.compliance_recovery_time = 0.0
+            
+            # Audit insights
+            insights = []
+            
+            if audit.audit_criticality_score > 80:
+                insights.append("🚨 High criticality event requiring immediate attention")
+            
+            if audit.compliance_impact_rating > 75:
+                insights.append("📋 Significant compliance impact - review procedures")
+            
+            if audit.remediation_urgency > 7:
+                insights.append("⚡ Urgent remediation required")
+            
+            if audit.risk_exposure_level > 70:
+                insights.append("🔒 High risk exposure - implement controls")
+            
+            if 'Increasing Frequency' in audit.audit_trend_indicator:
+                insights.append("📊 Trending issue - root cause analysis needed")
+            
+            if audit.is_overdue:
+                insights.append("⏰ Remediation overdue - escalate immediately")
+            
+            if len(audit.witness_employee_ids) > 0:
+                insights.append("👥 Witnessed event - good documentation practices")
+            
+            if not insights:
+                insights.append("✅ Standard audit event - routine monitoring")
+            
+            audit.audit_insights = "\n".join(insights)
 
     @api.depends('remediation_deadline', 'remediation_completed')
     def _compute_is_overdue(self):
