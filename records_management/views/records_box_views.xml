@@ -187,10 +187,9 @@
                             <field name="service_request_ids" mode="list">
                                 <list>
                                     <field name="name"/>
-                                    <field name="service_type"/>
                                     <field name="priority"/>
                                     <field name="state"/>
-                                    <field name="requested_date"/>
+                                    <field name="request_date"/>
                                 </list>
                             </field>
                         </page>
