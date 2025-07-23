@@ -25,9 +25,9 @@
             <field name="arch" type="xml">
                 <form string="Retention Policy">
                     <header>
-                        <button name="action_activate_policy" string="Activate" type="object" class="btn-primary" states="pending"/>
-                        <button name="action_review_policy" string="Mark for Review" type="object" class="btn-secondary" states="active"/>
-                        <button name="action_deactivate_policy" string="Retire" type="object" class="btn-warning" states="active,pending"/>
+                        <button name="action_activate_policy" string="Activate" type="object" class="btn-primary" invisible="policy_status != 'pending'"/>
+                        <button name="action_review_policy" string="Mark for Review" type="object" class="btn-secondary" invisible="policy_status != 'active'"/>
+                        <button name="action_deactivate_policy" string="Retire" type="object" class="btn-warning" invisible="policy_status not in ('active', 'pending')"/>
                         <field name="policy_status" widget="statusbar" statusbar_visible="pending,active,inactive,expired"/>
                     </header>
                     <sheet>
