@@ -77,6 +77,7 @@ Features:
         'data/portal_mail_templates.xml',  # New: Email/SMS templates for notifications
         'data/naid_compliance_data.xml',  # New: NAID data for audits/signatures
         'data/feedback_survey_data.xml',  # New: Default feedback survey
+        'views/records_management_menus.xml',  # Load menus early to ensure menu dependencies
         'views/records_tag_views.xml',
         'views/records_location_views.xml',
         'views/records_retention_policy_views.xml',
@@ -104,7 +105,6 @@ Features:
         'report/destruction_certificate_report.xml',
         'report/bale_label_report.xml',
         'report/portal_audit_report.xml',  # New: Audit reports for NAID
-        'views/records_management_menus.xml',  # Load menus after reports they reference
         'views/departmental_billing_menus.xml',  # Loaded after main menus for proper dependencies
         'views/barcode_menus.xml',  # Loaded after main menus for proper dependencies
         'views/portal_request_menus.xml',  # Loaded after main menus for proper dependencies
