@@ -32,6 +32,8 @@ class RecordsRetentionPolicy(models.Model):
                                  help='Automatically destroy documents when destruction is eligible')
     compliance_required = fields.Boolean('Compliance Required', default=True,
                                        help='Requires compliance verification before destruction')
+    compliance_verified = fields.Boolean('Compliance Verified', default=False,
+                                        help='Indicates if this policy has been verified for compliance')
     
     # Trigger Configuration
     trigger_event = fields.Selection([
@@ -53,6 +55,8 @@ class RecordsRetentionPolicy(models.Model):
     # Relationships
     document_ids = fields.One2many('records.document', 'retention_policy_id', string='Documents')
     document_count = fields.Integer(compute='_compute_document_count')
+    schedule_count = fields.Integer(string='Scheduled Actions', default=0)
+    audit_count = fields.Integer(string='Audit Logs', default=0)
 
     @api.depends('retention_years')
     def _compute_retention_period(self):
@@ -63,7 +67,29 @@ class RecordsRetentionPolicy(models.Model):
     def _compute_document_count(self):
         for policy in self:
             policy.document_count = len(policy.document_ids)
-    
+
+    @api.depends('retention_years')
+    def _compute_retention_period(self):
+        for policy in self:
+            policy.retention_period = policy.retention_years * 365 if policy.retention_years else 0
+
+    @api.depends('document_ids')
+    def _compute_document_count(self):
+        for policy in self:
+            policy.document_count = len(policy.document_ids)
+
+    @api.depends('review_date', 'name')
+    def _compute_next_review_date(self):
+        """Compute next review date based on review cycle"""
+        for record in self:
+            if record.review_date:
+                # If review_date is set, use it as next_review_date
+                record.next_review_date = record.review_date
+            else:
+                # Default to one year from today if no review_date set
+                from datetime import date, timedelta
+                record.next_review_date = date.today() + timedelta(days=365)
+
     def action_apply_policy(self):
         """Apply this retention policy to selected documents or document types."""
         self.ensure_one()
@@ -313,3 +339,33 @@ class RecordsRetentionPolicy(models.Model):
             'view_mode': 'tree',
             'context': {'default_retention_policy_id': self.id},
         }
+
+    def action_refresh_counts(self):
+        """Refresh schedule and audit counts manually"""
+        for policy in self:
+            # Update schedule count
+            schedule_count = 0
+            try:
+                schedule_count += self.env['ir.cron'].search_count([
+                    ('name', 'ilike', policy.name or ''),
+                    ('active', '=', True)
+                ])
+                schedule_count += self.env['records.document'].search_count([
+                    ('retention_policy_id', '=', policy.id),
+                    ('destruction_eligible_date', '!=', False),
+                    ('state', '!=', 'destroyed')
+                ])
+            except Exception:
+                pass
+            policy.schedule_count = schedule_count
+            
+            # Update audit count
+            audit_count = 0
+            try:
+                if self.env['naid.audit']._name:
+                    audit_count = self.env['naid.audit'].search_count([
+                        ('policy_id', '=', policy.id)
+                    ])
+            except Exception:
+                pass
+            policy.audit_count = audit_count
