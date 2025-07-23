@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 class RecordsLocation(models.Model):
     _name = 'records.location'
@@ -168,7 +169,7 @@ class RecordsLocation(models.Model):
             else:
                 location.current_occupancy = 0.0
 
-    @api.depends('box_count', 'capacity', 'location_type', 'security_level', 'current_occupancy',
+    @api.depends('box_ids', 'capacity', 'location_type', 'security_level',
                  'temperature_controlled', 'humidity_controlled', 'surveillance_system', 'access_control_system')
     def _compute_location_analytics(self):
         """Compute comprehensive analytics for storage locations"""
@@ -189,8 +190,9 @@ class RecordsLocation(models.Model):
                 location.space_utilization_efficiency = 50.0  # No capacity defined
             
             # Storage density score
-            if location.box_count > 0 and location.capacity:
-                density_ratio = location.box_count / location.capacity
+            box_count = len(location.box_ids)
+            if box_count > 0 and location.capacity:
+                density_ratio = box_count / location.capacity
                 if density_ratio <= 0.85:  # Optimal density
                     location.storage_density_score = 95.0
                 elif density_ratio <= 1.0:  # Full but manageable
