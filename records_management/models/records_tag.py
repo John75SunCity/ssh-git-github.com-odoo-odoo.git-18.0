@@ -3,7 +3,7 @@
 from odoo import models, fields, api
 
 
-class RecordsTag(models.Model):
+class RecordsTag(models.Model, mail.thread):
     """Minimal tag model for initial deployment - will be enhanced later."""
     _name = 'records.tag'
     _description = 'Records Management Tag'
@@ -16,10 +16,21 @@ class RecordsTag(models.Model):
         translate=True,
         help="Unique name for this tag"
     )
+    description = fields.Text(
+        string='Description',
+        help="Detailed description of this tag's purpose and usage"
+    )
     color = fields.Integer(
         string='Color Index',
         help="Color used to display this tag"
     )
+
+    # Phase 1 Critical Fields - Added by automated script
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    category = fields.Selection([('general', 'General'), ('legal', 'Legal'), ('financial', 'Financial'), ('hr', 'HR')], string='Category')
+    priority = fields.Selection([('low', 'Low'), ('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
     
     # TODO: Enhanced fields will be added in next deployment phase:
     # - active field

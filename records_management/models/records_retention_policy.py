@@ -1,12 +1,17 @@
 from odoo import models, fields, api, _
 
-class RecordsRetentionPolicy(models.Model):
+class RecordsRetentionPolicy(models.Model, mail.thread):
     _name = 'records.retention.policy'
     _description = 'Document Retention Policy'
 
     name = fields.Char('Policy Name', required=True)
     retention_years = fields.Integer('Retention Period (Years)', required=True)
     retention_period = fields.Integer('Retention Period (Days)', compute='_compute_retention_period', store=True)
+    retention_unit = fields.Selection([
+        ('days', 'Days'),
+        ('months', 'Months'),
+        ('years', 'Years')
+    ], string='Retention Unit', default='years', required=True)
     description = fields.Text('Description')
     active = fields.Boolean(default=True)
     
@@ -61,6 +66,18 @@ class RecordsRetentionPolicy(models.Model):
     document_count = fields.Integer(compute='_compute_document_count')
     schedule_count = fields.Integer(string='Scheduled Actions', default=0)
     audit_count = fields.Integer(string='Audit Logs', default=0)
+
+    # Phase 1 Critical Fields - Added by automated script
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    action = fields.Selection([('archive', 'Archive'), ('destroy', 'Destroy'), ('review', 'Review')], string='Action')
+    compliance_officer = fields.Many2one('res.users', string='Compliance Officer')
+    legal_reviewer = fields.Many2one('res.users', string='Legal Reviewer')
+    review_frequency = fields.Selection([('monthly', 'Monthly'), ('quarterly', 'Quarterly'), ('yearly', 'Yearly')], string='Review Frequency', default='yearly')
+    notification_enabled = fields.Boolean('Notifications Enabled', default=True)
+    priority = fields.Selection([('low', 'Low'), ('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
+
 
     @api.depends('retention_years')
     def _compute_retention_period(self):

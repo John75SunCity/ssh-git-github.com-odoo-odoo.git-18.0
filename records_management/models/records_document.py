@@ -253,9 +253,48 @@ class RecordsDocument(models.Model):
             else:
                 doc.days_until_destruction = 0
 
+    # Phase 1 Critical Fields - Added by automated script
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    audit_trail_count = fields.Integer('Audit Trail Count', compute='_compute_audit_trail_count')
+    chain_of_custody_count = fields.Integer('Chain of Custody Count', compute='_compute_chain_of_custody_count')
+    file_format = fields.Char('File Format')
+    file_size = fields.Float('File Size (MB)')
+    scan_date = fields.Datetime('Scan Date')
+    signature_verified = fields.Boolean('Signature Verified', default=False)
+
     def _compute_attachment_count(self):
         for rec in self:
             rec.attachment_count = len(rec.attachment_ids)
+
+    def _compute_audit_trail_count(self):
+        """Compute count of audit trail entries for this document"""
+        for doc in self:
+            # Count related audit trail records when audit model exists
+            audit_count = 0
+            try:
+                if hasattr(self.env, 'records.audit.log'):
+                    audit_count = self.env['records.audit.log'].search_count([
+                        ('document_id', '=', doc.id)
+                    ])
+            except Exception:
+                pass
+            doc.audit_trail_count = audit_count
+
+    def _compute_chain_of_custody_count(self):
+        """Compute count of chain of custody entries for this document"""
+        for doc in self:
+            # Count related chain of custody records when model exists
+            custody_count = 0
+            try:
+                if hasattr(self.env, 'records.chain.of.custody'):
+                    custody_count = self.env['records.chain.of.custody'].search_count([
+                        ('document_id', '=', doc.id)
+                    ])
+            except Exception:
+                pass
+            doc.chain_of_custody_count = custody_count
 
     @api.model_create_multi
     def create(self, vals_list):

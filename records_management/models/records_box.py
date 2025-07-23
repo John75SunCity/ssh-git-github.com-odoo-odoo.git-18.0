@@ -181,9 +181,20 @@ class RecordsBox(models.Model):
         string='Movement History'
     )
     service_request_ids = fields.One2many(
-        'records.service.request', 'box_id',
+        'pickup.request', 'box_id',
         string='Service Requests'
     )
+
+    # Phase 1 Critical Fields - Added by automated script
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    movement_count = fields.Integer('Movement Count', compute='_compute_movement_count')
+    service_request_count = fields.Integer('Service Request Count', compute='_compute_service_request_count')
+    retention_policy_id = fields.Many2one('records.retention.policy', string='Retention Policy')
+    size_category = fields.Selection([('small', 'Small'), ('medium', 'Medium'), ('large', 'Large')], string='Size Category')
+    weight = fields.Float('Weight (lbs)')
+    priority = fields.Selection([('low', 'Low'), ('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
 
     @api.model_create_multi
     def create(self, vals_list: List[dict]) -> 'RecordsBox':
@@ -206,6 +217,38 @@ class RecordsBox(models.Model):
                 box.used_capacity = percentage
             else:
                 box.used_capacity = 0
+
+    def _compute_movement_count(self):
+        """Compute count of movement records for this box"""
+        for box in self:
+            movement_count = 0
+            if hasattr(box, 'movement_ids'):
+                movement_count = len(box.movement_ids)
+            else:
+                # Count movements from movement model if relation exists
+                try:
+                    movement_count = self.env['records.box.movement'].search_count([
+                        ('box_id', '=', box.id)
+                    ])
+                except Exception:
+                    pass
+            box.movement_count = movement_count
+
+    def _compute_service_request_count(self):
+        """Compute count of service requests for this box"""
+        for box in self:
+            service_count = 0
+            if hasattr(box, 'service_request_ids'):
+                service_count = len(box.service_request_ids)
+            else:
+                # Count service requests if relation exists
+                try:
+                    service_count = self.env['pickup.request'].search_count([
+                        ('box_id', '=', box.id)
+                    ])
+                except Exception:
+                    pass
+            box.service_request_count = service_count
 
     @api.depends('box_type_code')
     def _compute_box_type_display(self) -> None:

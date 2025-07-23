@@ -54,9 +54,16 @@ class RecordsLocation(models.Model):
         ('low', 'Low - General Access'),
         ('medium', 'Medium - Restricted Access'),
         ('high', 'High - Secure Access'),
-        ('maximum', 'Maximum - Vault/Special Access')
-    ], string='Security Level', default='low',
-       help='Security access level required for this location')
+        ('maximum', 'Maximum - Vault Access')
+    ], string='Security Level', default='medium')
+
+    # Phase 1 Critical Fields - Added by automated script
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    customer_id = fields.Many2one('res.partner', string='Customer')
+    state = fields.Selection([('active', 'Active'), ('inactive', 'Inactive')], string='State', default='active')
+    storage_date = fields.Date('Storage Date')
 
     @api.depends('name', 'parent_id.complete_name')
     def _compute_complete_name(self):
