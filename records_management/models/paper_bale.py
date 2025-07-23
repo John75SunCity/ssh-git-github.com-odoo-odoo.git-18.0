@@ -10,6 +10,9 @@ class PaperBale(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc'
 
+    # Phase 1: Explicit Activity Field (1 field)
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+
     # Basic fields structure - ready for your code
     name = fields.Char(string='Bale Reference', required=True, default='New', tracking=True)
     shredding_id = fields.Many2one('shredding.service', string='Related Shredding Service')

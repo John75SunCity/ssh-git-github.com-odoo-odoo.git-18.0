@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-from odoo import fields, models, api
+from odoo import fields, models, api, _
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
+
+    # Phase 1: Explicit Activity Field (1 field)
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
 
     shred_type = fields.Selection([
         ('document', 'Document Shredding'),

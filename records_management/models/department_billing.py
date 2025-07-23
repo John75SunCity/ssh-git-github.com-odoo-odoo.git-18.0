@@ -20,6 +20,9 @@ class RecordsDepartmentBillingContact(models.Model):
     _order = 'contact_name'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
+    # Phase 1: Explicit Activity Field (1 field)
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+
     customer_id = fields.Many2one(
         'res.partner',
         string='Customer',

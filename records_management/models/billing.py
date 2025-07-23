@@ -10,6 +10,9 @@ class Billing(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'invoice_date desc'
 
+    # Phase 1: Explicit Activity Field (1 field)
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+
     name = fields.Char('Reference', required=True, tracking=True)
     partner_id = fields.Many2one('res.partner', 'Customer', required=True, tracking=True)
     department_id = fields.Many2one('records.department', 'Department', tracking=True)

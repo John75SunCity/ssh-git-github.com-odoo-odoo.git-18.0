@@ -13,6 +13,9 @@ class CustomerInventoryReport(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'report_date desc, customer_id'
 
+    # Phase 1: Explicit Activity Field (1 field)
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+
     name = fields.Char(string='Report Name', required=True)
     customer_id = fields.Many2one(
         'res.partner',

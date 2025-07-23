@@ -358,14 +358,14 @@ This document provides a complete reference of all fields, actions, and importan
 - `records.location.activity_ids` ✅ FIXED
 - `shredding.service.activity_ids` ✅ FIXED (via mail.thread inheritance)
 - `res.partner.activity_ids` ✅ FIXED (via mail.thread inheritance)
-- `portal.request.activity_ids` ⏳ PENDING (explicit field needed)
-- `customer.inventory.report.activity_ids` ⏳ PENDING
-- `fsm.task.activity_ids` ⏳ PENDING
-- `records.department.billing.contact.activity_ids` ⏳ PENDING
-- `records.billing.config.activity_ids` ⏳ PENDING
-- `paper.bale.activity_ids` ⏳ PENDING
-- `product.template.activity_ids` ⏳ PENDING
-- `stock.lot.activity_ids` ⏳ PENDING
+- `portal.request.activity_ids` ✅ FIXED (explicit field added)
+- `customer.inventory.report.activity_ids` ✅ FIXED (explicit field added)
+- `fsm.task.activity_ids` ✅ FIXED (explicit field added)
+- `records.department.billing.contact.activity_ids` ✅ FIXED (explicit field added)
+- `records.billing.activity_ids` ✅ FIXED (explicit field added)
+- `paper.bale.activity_ids` ✅ FIXED (explicit field added)
+- `product.template.activity_ids` ✅ FIXED (explicit field added)
+- `stock.lot.activity_ids` ✅ FIXED (explicit field added)
 
 #### Priority 1B: Messaging System Fields (15+ models) ✅ COMPLETE
 - `records.document.message_follower_ids` ✅ FIXED
@@ -382,8 +382,8 @@ This document provides a complete reference of all fields, actions, and importan
 - `shredding.service.message_ids` ✅ FIXED (via mail.thread inheritance)
 - `res.partner.message_follower_ids` ✅ FIXED (via mail.thread inheritance)
 - `res.partner.message_ids` ✅ FIXED (via mail.thread inheritance)
-- `portal.request.message_follower_ids` ⏳ PENDING (explicit field needed)
-- `portal.request.message_ids` ⏳ PENDING (explicit field needed)
+- `portal.request.message_follower_ids` ✅ FIXED (explicit field added)
+- `portal.request.message_ids` ✅ FIXED (explicit field added)
 
 #### Priority 1C: Core Business Logic Fields (20 fields) ✅ MOSTLY COMPLETE
 - `records.document.audit_trail_count` ✅ FIXED

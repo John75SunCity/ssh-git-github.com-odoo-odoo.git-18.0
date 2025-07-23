@@ -1,10 +1,13 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import models, fields
+from odoo import models, fields, _
 
 
 class StockLot(models.Model):
     _inherit = 'stock.lot'
+
+    # Phase 1: Explicit Activity Field (1 field)
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
 
     # Customer tracking for records management
     customer_id = fields.Many2one(

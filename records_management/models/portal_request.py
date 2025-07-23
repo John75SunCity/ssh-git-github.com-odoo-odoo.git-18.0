@@ -30,6 +30,11 @@ class PortalRequest(models.Model):
         ('rejected', 'Rejected'),
     ], default='draft', tracking=True)
     
+    # Phase 1: Explicit Activity & Messaging Fields (3 fields)
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    
     # Missing fields that were causing the view error
     is_walk_in = fields.Boolean(string='Walk-in Request', default=False, help='Indicates if this is a walk-in request')
     linked_visitor_id = fields.Many2one('res.partner', string='Linked Visitor', help='Partner record for walk-in visitors')
