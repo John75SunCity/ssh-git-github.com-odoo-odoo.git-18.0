@@ -54,6 +54,12 @@ class RecordsAuditLog(models.Model):
         help='Related document if applicable'
     )
     
+    box_id = fields.Many2one(
+        'records.box',
+        string='Box',
+        help='Related box if applicable'
+    )
+    
     shredding_service_id = fields.Many2one(
         'shredding.service',
         string='Shredding Service',

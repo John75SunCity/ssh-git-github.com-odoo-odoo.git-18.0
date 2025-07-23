@@ -26,6 +26,7 @@ from . import records_chain_of_custody
 
 # Box Related Models (movements, service requests)
 from . import records_box_movement
+from . import records_box_transfer
 
 # Shredding and Services
 from . import shredding_service

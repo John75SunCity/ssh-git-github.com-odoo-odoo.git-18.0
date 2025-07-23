@@ -7,6 +7,7 @@ class RecordsChainCustody(models.Model):
     _order = 'custody_timestamp desc'
 
     document_id = fields.Many2one('records.document', string='Document', required=True, ondelete='cascade')
+    box_id = fields.Many2one('records.box', string='Box', ondelete='cascade')
     custody_timestamp = fields.Datetime('Custody Time', required=True, default=fields.Datetime.now)
     
     # Custody transfer details
