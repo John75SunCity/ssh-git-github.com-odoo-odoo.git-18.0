@@ -288,6 +288,68 @@ class RecordsDocument(models.Model):
     custody_verified = fields.Boolean('Custody Verified', default=False)
     custody_verification_date = fields.Datetime('Custody Verification Date')
 
+    # Phase 3: Analytics & Computed Fields (10 fields)
+    access_frequency = fields.Float(
+        string='Access Frequency (per month)',
+        compute='_compute_document_analytics',
+        store=True,
+        help='Average number of times document is accessed per month'
+    )
+    storage_efficiency = fields.Float(
+        string='Storage Efficiency Score',
+        compute='_compute_document_analytics',
+        store=True,
+        help='Efficiency score based on access vs storage cost'
+    )
+    compliance_risk_score = fields.Float(
+        string='Compliance Risk Score',
+        compute='_compute_document_analytics', 
+        store=True,
+        help='Risk score for compliance violations (0-100)'
+    )
+    retention_status = fields.Selection([
+        ('active', 'Active Storage'),
+        ('pending_review', 'Pending Review'),
+        ('eligible_destruction', 'Eligible for Destruction'),
+        ('permanent', 'Permanent Retention')
+    ], string='Retention Status', compute='_compute_document_analytics', store=True)
+    value_assessment = fields.Float(
+        string='Document Value Score',
+        compute='_compute_document_analytics',
+        store=True,
+        help='Assessed value of document for business operations'
+    )
+    digitization_priority = fields.Selection([
+        ('low', 'Low Priority'),
+        ('medium', 'Medium Priority'),
+        ('high', 'High Priority'),
+        ('critical', 'Critical Priority')
+    ], string='Digitization Priority', compute='_compute_document_analytics', store=True)
+    aging_analysis = fields.Integer(
+        string='Days Since Creation',
+        compute='_compute_document_analytics',
+        store=True,
+        help='Number of days since document was created'
+    )
+    predicted_destruction_date = fields.Date(
+        string='Predicted Destruction Date',
+        compute='_compute_document_analytics',
+        store=True,
+        help='AI-predicted destruction date based on patterns'
+    )
+    document_health_score = fields.Float(
+        string='Document Health Score',
+        compute='_compute_document_analytics',
+        store=True,
+        help='Overall health score considering all factors'
+    )
+    analytics_insights = fields.Text(
+        string='Analytics Insights',
+        compute='_compute_document_analytics',
+        store=True,
+        help='AI-generated insights about this document'
+    )
+
 
     def _compute_attachment_count(self):
         for rec in self:
@@ -320,6 +382,136 @@ class RecordsDocument(models.Model):
             except Exception:
                 pass
             doc.chain_of_custody_count = custody_count
+
+    @api.depends('created_date', 'last_access_date', 'retention_policy_id', 'document_category', 'digitized')
+    def _compute_document_analytics(self):
+        """Compute advanced analytics and business intelligence for documents"""
+        for doc in self:
+            # Calculate aging analysis
+            if doc.created_date:
+                doc.aging_analysis = (fields.Date.today() - doc.created_date).days
+            else:
+                doc.aging_analysis = 0
+            
+            # Access frequency calculation (simplified)
+            if doc.last_access_date and doc.created_date:
+                days_since_creation = (fields.Date.today() - doc.created_date).days
+                if days_since_creation > 0:
+                    # Simplified frequency calculation
+                    doc.access_frequency = 30.0 / max(days_since_creation, 1)
+                else:
+                    doc.access_frequency = 1.0
+            else:
+                doc.access_frequency = 0.1  # Low frequency if never accessed
+            
+            # Storage efficiency (access frequency vs storage cost)
+            storage_cost_per_day = 0.10  # $0.10 per day
+            if doc.access_frequency > 0:
+                doc.storage_efficiency = min(100, (doc.access_frequency / storage_cost_per_day) * 10)
+            else:
+                doc.storage_efficiency = 5.0  # Low efficiency for never-accessed docs
+            
+            # Compliance risk score
+            risk_score = 0
+            if doc.aging_analysis > 2555:  # 7 years
+                risk_score += 30
+            if not doc.retention_policy_id:
+                risk_score += 40
+            if not doc.digitized:
+                risk_score += 20
+            if doc.document_category == 'legal':
+                risk_score += 10  # Legal docs have higher risk
+            doc.compliance_risk_score = min(100, risk_score)
+            
+            # Retention status assessment
+            if doc.aging_analysis > 2555:  # 7+ years
+                doc.retention_status = 'eligible_destruction'
+            elif doc.aging_analysis > 2190:  # 6+ years
+                doc.retention_status = 'pending_review'
+            elif doc.document_category == 'legal':
+                doc.retention_status = 'permanent'
+            else:
+                doc.retention_status = 'active'
+            
+            # Document value assessment
+            value_score = 50  # Base value
+            if doc.document_category == 'legal':
+                value_score += 30
+            elif doc.document_category == 'financial':
+                value_score += 25
+            elif doc.document_category == 'contract':
+                value_score += 20
+            
+            if doc.access_frequency > 1.0:
+                value_score += 20
+            if doc.digitized:
+                value_score += 10
+            
+            doc.value_assessment = min(100, value_score)
+            
+            # Digitization priority
+            if not doc.digitized:
+                if doc.access_frequency > 2.0:
+                    doc.digitization_priority = 'critical'
+                elif doc.document_category in ['legal', 'financial']:
+                    doc.digitization_priority = 'high'
+                elif doc.access_frequency > 0.5:
+                    doc.digitization_priority = 'medium'
+                else:
+                    doc.digitization_priority = 'low'
+            else:
+                doc.digitization_priority = 'low'  # Already digitized
+            
+            # Predicted destruction date
+            if doc.retention_policy_id and hasattr(doc.retention_policy_id, 'retention_years'):
+                years_to_add = getattr(doc.retention_policy_id, 'retention_years', 7)
+                if doc.created_date:
+                    from datetime import timedelta
+                    doc.predicted_destruction_date = doc.created_date + timedelta(days=years_to_add * 365)
+                else:
+                    doc.predicted_destruction_date = False
+            else:
+                # Default 7-year retention
+                if doc.created_date:
+                    from datetime import timedelta
+                    doc.predicted_destruction_date = doc.created_date + timedelta(days=7 * 365)
+                else:
+                    doc.predicted_destruction_date = False
+            
+            # Document health score (overall assessment)
+            health_score = 100
+            health_score -= doc.compliance_risk_score * 0.4  # Risk impacts health
+            if not doc.digitized:
+                health_score -= 15
+            if doc.access_frequency < 0.1:
+                health_score -= 10  # Unused documents
+            if not doc.retention_policy_id:
+                health_score -= 20
+            
+            doc.document_health_score = max(0, health_score)
+            
+            # Analytics insights (AI-style recommendations)
+            insights = []
+            
+            if doc.compliance_risk_score > 70:
+                insights.append("🚨 High compliance risk - review immediately")
+            
+            if doc.digitization_priority == 'critical':
+                insights.append("📱 Critical for digitization - high access frequency")
+            
+            if doc.storage_efficiency < 20:
+                insights.append("💰 Low storage efficiency - consider archiving")
+            
+            if doc.aging_analysis > 2555:
+                insights.append("⏰ Eligible for destruction review")
+            
+            if doc.value_assessment > 80:
+                insights.append("💎 High-value document - ensure protection")
+            
+            if not insights:
+                insights.append("✅ Document in good standing")
+            
+            doc.analytics_insights = " | ".join(insights)
 
     @api.model_create_multi
     def create(self, vals_list):

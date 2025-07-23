@@ -118,6 +118,62 @@ class PickupRequest(models.Model):
         ('0', 'Normal'),
         ('1', 'High')
     ], default='0', string='Priority', tracking=True)
+
+    # Phase 3: Analytics & Computed Fields (9 fields)
+    pickup_efficiency_score = fields.Float(
+        string='Pickup Efficiency Score (%)',
+        compute='_compute_pickup_analytics',
+        store=True,
+        help='Overall efficiency score for pickup operations'
+    )
+    fulfillment_time_hours = fields.Float(
+        string='Fulfillment Time (Hours)',
+        compute='_compute_pickup_analytics',
+        store=True,
+        help='Time from request to completion'
+    )
+    route_optimization_score = fields.Float(
+        string='Route Optimization Score',
+        compute='_compute_pickup_analytics',
+        store=True,
+        help='Route efficiency and optimization rating'
+    )
+    cost_per_pickup = fields.Float(
+        string='Cost per Pickup ($)',
+        compute='_compute_pickup_analytics',
+        store=True,
+        help='Estimated cost for this pickup operation'
+    )
+    customer_satisfaction_rating = fields.Float(
+        string='Customer Satisfaction Rating',
+        compute='_compute_pickup_analytics',
+        store=True,
+        help='Predicted customer satisfaction score'
+    )
+    operational_complexity = fields.Float(
+        string='Operational Complexity (1-10)',
+        compute='_compute_pickup_analytics',
+        store=True,
+        help='Complexity assessment for this pickup'
+    )
+    resource_utilization = fields.Float(
+        string='Resource Utilization (%)',
+        compute='_compute_pickup_analytics',
+        store=True,
+        help='Efficiency of resource allocation'
+    )
+    pickup_performance_insights = fields.Text(
+        string='Performance Insights',
+        compute='_compute_pickup_analytics',
+        store=True,
+        help='AI-generated operational insights'
+    )
+    analytics_timestamp = fields.Datetime(
+        string='Analytics Updated',
+        compute='_compute_pickup_analytics',
+        store=True,
+        help='Last analytics computation time'
+    )
     signature = fields.Binary(string='Signature')
     signed_by = fields.Many2one('res.users', string='Signed By')
     signature_date = fields.Datetime(string='Signature Date')

@@ -92,6 +92,80 @@ class ShreddingService(models.Model):
     compliance_notes = fields.Text('Compliance Notes')
     risk_level = fields.Selection([('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('critical', 'Critical')], string='Risk Level', default='medium')
 
+    # Phase 3: Analytics & Computed Fields (12 fields)
+    service_efficiency_score = fields.Float(
+        string='Service Efficiency Score',
+        compute='_compute_shredding_analytics',
+        store=True,
+        help='Overall efficiency score (0-100) based on time, volume, and quality metrics'
+    )
+    throughput_rate = fields.Float(
+        string='Throughput Rate (boxes/hour)',
+        compute='_compute_shredding_analytics',
+        store=True,
+        help='Processing rate in boxes per hour'
+    )
+    cost_per_box = fields.Float(
+        string='Cost per Box ($)',
+        compute='_compute_shredding_analytics',
+        store=True,
+        help='Unit cost calculation per box processed'
+    )
+    revenue_per_service = fields.Float(
+        string='Revenue per Service ($)',
+        compute='_compute_shredding_analytics',
+        store=True,
+        help='Total revenue generated from this service'
+    )
+    compliance_score = fields.Float(
+        string='Compliance Score (%)',
+        compute='_compute_shredding_analytics',
+        store=True,
+        help='Compliance assessment score based on certifications and audits'
+    )
+    environmental_impact = fields.Float(
+        string='Environmental Impact Score',
+        compute='_compute_shredding_analytics',
+        store=True,
+        help='Environmental impact assessment (lower is better)'
+    )
+    service_duration_hours = fields.Float(
+        string='Service Duration (hours)',
+        compute='_compute_shredding_analytics',
+        store=True,
+        help='Total time from start to completion'
+    )
+    quality_assurance_score = fields.Float(
+        string='QA Score (%)',
+        compute='_compute_shredding_analytics',
+        store=True,
+        help='Quality assurance score based on verification checks'
+    )
+    customer_satisfaction_index = fields.Float(
+        string='Customer Satisfaction Index',
+        compute='_compute_shredding_analytics',
+        store=True,
+        help='Predicted customer satisfaction based on service metrics'
+    )
+    security_risk_assessment = fields.Float(
+        string='Security Risk Level',
+        compute='_compute_shredding_analytics',
+        store=True,
+        help='Security risk assessment (0-10, lower is better)'
+    )
+    operational_insights = fields.Text(
+        string='Operational Insights',
+        compute='_compute_shredding_analytics',
+        store=True,
+        help='AI-generated insights and recommendations'
+    )
+    analytics_last_updated = fields.Datetime(
+        string='Analytics Updated',
+        compute='_compute_shredding_analytics',
+        store=True,
+        help='Last time analytics were computed'
+    )
+
     @api.depends('hard_drive_ids', 'hard_drive_ids.scanned_at_customer', 'hard_drive_ids.verified_before_destruction')
     def _compute_hard_drive_counts(self):
         """Compute scanned and verified hard drive counts"""
@@ -123,6 +197,163 @@ class ShreddingService(models.Model):
                 rec.map_display = f"{rec.latitude},{rec.longitude}"
             else:
                 rec.map_display = ''
+
+    @api.depends('service_type', 'status', 'total_charge', 'service_date', 'scheduled_date', 
+                 'quality_control_performed', 'compliance_status', 'naid_certification', 'iso_certification')
+    def _compute_shredding_analytics(self):
+        """Compute comprehensive analytics for shredding services"""
+        for service in self:
+            # Update timestamp
+            service.analytics_last_updated = fields.Datetime.now()
+            
+            # Service efficiency calculation
+            efficiency_factors = []
+            
+            # Time efficiency (scheduled vs actual)
+            if service.scheduled_date and service.service_date:
+                time_diff = (service.service_date - service.scheduled_date).days
+                if time_diff <= 0:  # On time or early
+                    efficiency_factors.append(100)
+                elif time_diff <= 3:  # Up to 3 days late
+                    efficiency_factors.append(85)
+                else:  # More than 3 days late
+                    efficiency_factors.append(60)
+            else:
+                efficiency_factors.append(75)  # Default if dates missing
+            
+            # Volume efficiency
+            if service.service_type == 'bin':
+                volume_score = min(100, len(service.bin_ids) * 10)
+            elif service.service_type == 'box':
+                total_boxes = service.box_quantity or len(service.shredded_box_ids)
+                volume_score = min(100, total_boxes * 5)
+            elif service.service_type == 'hard_drive':
+                hd_count = len(service.hard_drive_ids) or service.hard_drive_quantity
+                volume_score = min(100, hd_count * 15)
+            else:
+                volume_score = 70
+            
+            efficiency_factors.append(volume_score)
+            service.service_efficiency_score = sum(efficiency_factors) / len(efficiency_factors)
+            
+            # Throughput rate calculation
+            if service.service_type in ['box', 'bin']:
+                total_items = service.box_quantity or len(service.shredded_box_ids) or len(service.bin_ids)
+                # Estimate 8-hour working day
+                service.throughput_rate = total_items / 8.0
+            else:
+                service.throughput_rate = 0.0
+            
+            # Cost and revenue calculations
+            if service.service_type == 'box':
+                total_boxes = service.box_quantity or len(service.shredded_box_ids)
+                service.cost_per_box = 5.0 if total_boxes > 0 else 0.0
+            else:
+                service.cost_per_box = 0.0
+            
+            service.revenue_per_service = service.total_charge or 0.0
+            
+            # Compliance score
+            compliance_factors = []
+            
+            if service.naid_certification:
+                compliance_factors.append(100)
+            if service.iso_certification:
+                compliance_factors.append(100)
+            if service.compliance_status == 'compliant':
+                compliance_factors.append(100)
+            elif service.compliance_status == 'non_compliant':
+                compliance_factors.append(0)
+            else:
+                compliance_factors.append(50)  # Pending
+            
+            if service.quality_control_performed:
+                compliance_factors.append(90)
+            
+            service.compliance_score = sum(compliance_factors) / len(compliance_factors) if compliance_factors else 50.0
+            
+            # Environmental impact (lower is better)
+            if service.service_type == 'hard_drive':
+                service.environmental_impact = 3.5  # Higher impact due to electronics
+            elif service.service_type == 'uniform':
+                service.environmental_impact = 2.0  # Fabric recycling
+            else:
+                service.environmental_impact = 1.5  # Paper recycling
+            
+            # Service duration estimation
+            if service.service_type == 'bin':
+                service.service_duration_hours = len(service.bin_ids) * 0.5
+            elif service.service_type == 'box':
+                total_boxes = service.box_quantity or len(service.shredded_box_ids)
+                service.service_duration_hours = total_boxes * 0.1 + 2.0  # Base 2 hours + 0.1 per box
+            elif service.service_type == 'hard_drive':
+                hd_count = len(service.hard_drive_ids) or service.hard_drive_quantity
+                service.service_duration_hours = hd_count * 0.3 + 1.0  # More time per drive
+            else:
+                service.service_duration_hours = 4.0  # Default
+            
+            # Quality assurance score
+            qa_factors = []
+            if service.quality_control_performed:
+                qa_factors.append(95)
+            if service.destruction_method_verified:
+                qa_factors.append(90)
+            if service.chain_of_custody_maintained:
+                qa_factors.append(85)
+            if service.equipment_calibration_verified:
+                qa_factors.append(80)
+            
+            service.quality_assurance_score = sum(qa_factors) / len(qa_factors) if qa_factors else 60.0
+            
+            # Customer satisfaction prediction
+            satisfaction_base = 70.0
+            if service.service_efficiency_score > 85:
+                satisfaction_base += 15
+            if service.compliance_score > 90:
+                satisfaction_base += 10
+            if service.status == 'completed':
+                satisfaction_base += 5
+            
+            service.customer_satisfaction_index = min(100, satisfaction_base)
+            
+            # Security risk assessment (0-10 scale, lower is better)
+            risk_score = 5.0  # Base risk
+            
+            if service.service_type == 'hard_drive':
+                risk_score += 2.0  # Higher risk for electronic data
+            
+            if service.compliance_status == 'non_compliant':
+                risk_score += 3.0
+            elif service.compliance_status == 'compliant':
+                risk_score -= 2.0
+            
+            if not service.chain_of_custody_maintained:
+                risk_score += 1.5
+            
+            service.security_risk_assessment = max(0, min(10, risk_score))
+            
+            # Generate operational insights
+            insights = []
+            
+            if service.service_efficiency_score < 70:
+                insights.append("⚠️ Efficiency below target - consider process optimization")
+            
+            if service.compliance_score < 80:
+                insights.append("📋 Compliance review needed - update certifications")
+            
+            if service.security_risk_assessment > 7:
+                insights.append("🔒 High security risk - immediate attention required")
+            
+            if service.throughput_rate > 0 and service.throughput_rate < 5:
+                insights.append("⏱️ Low throughput - consider capacity improvements")
+            
+            if service.customer_satisfaction_index > 90:
+                insights.append("✅ Excellent service metrics - maintain standards")
+            
+            if not insights:
+                insights.append("📊 All metrics within normal parameters")
+            
+            service.operational_insights = "\n".join(insights)
 
     @api.depends('box_quantity', 'shredded_box_ids')
     def _compute_total_boxes(self):

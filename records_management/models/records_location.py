@@ -85,6 +85,68 @@ class RecordsLocation(models.Model):
     inspection_log_ids = fields.One2many('records.location.inspection', 'location_id', string='Inspection Log')
     compliance_violations_count = fields.Integer('Compliance Violations', compute='_compute_violations_count')
 
+    # Phase 3: Analytics & Computed Fields (10 fields)
+    space_utilization_efficiency = fields.Float(
+        string='Space Efficiency (%)',
+        compute='_compute_location_analytics',
+        store=True,
+        help='Space utilization efficiency rating'
+    )
+    storage_density_score = fields.Float(
+        string='Storage Density Score',
+        compute='_compute_location_analytics',
+        store=True,
+        help='Storage density optimization score (0-100)'
+    )
+    access_frequency_rating = fields.Float(
+        string='Access Frequency Rating',
+        compute='_compute_location_analytics',
+        store=True,
+        help='How frequently this location is accessed'
+    )
+    security_effectiveness = fields.Float(
+        string='Security Effectiveness (%)',
+        compute='_compute_location_analytics',
+        store=True,
+        help='Overall security system effectiveness'
+    )
+    operational_cost_per_box = fields.Float(
+        string='Cost per Box ($/month)',
+        compute='_compute_location_analytics',
+        store=True,
+        help='Monthly operational cost per box stored'
+    )
+    environmental_compliance_score = fields.Float(
+        string='Environmental Score (%)',
+        compute='_compute_location_analytics',
+        store=True,
+        help='Environmental controls compliance score'
+    )
+    storage_turnover_rate = fields.Float(
+        string='Turnover Rate (%)',
+        compute='_compute_location_analytics',
+        store=True,
+        help='Storage turnover rate indicating activity level'
+    )
+    risk_assessment_level = fields.Float(
+        string='Risk Level (0-10)',
+        compute='_compute_location_analytics',
+        store=True,
+        help='Comprehensive risk assessment score'
+    )
+    location_performance_summary = fields.Text(
+        string='Performance Summary',
+        compute='_compute_location_analytics',
+        store=True,
+        help='AI-generated performance insights'
+    )
+    analytics_last_computed = fields.Datetime(
+        string='Analytics Updated',
+        compute='_compute_location_analytics',
+        store=True,
+        help='Last analytics computation timestamp'
+    )
+
     @api.depends('name', 'parent_id.complete_name')
     def _compute_complete_name(self):
         for location in self:
@@ -108,6 +170,158 @@ class RecordsLocation(models.Model):
                 location.utilization_percentage = percentage
             else:
                 location.utilization_percentage = 0
+
+    @api.depends('box_count', 'capacity', 'location_type', 'security_level', 'utilization_percentage',
+                 'temperature_controlled', 'humidity_controlled', 'surveillance_system', 'access_control_system')
+    def _compute_location_analytics(self):
+        """Compute comprehensive analytics for storage locations"""
+        for location in self:
+            # Update timestamp
+            location.analytics_last_computed = fields.Datetime.now()
+            
+            # Space utilization efficiency
+            if location.capacity and location.capacity > 0:
+                utilization = location.utilization_percentage
+                if utilization <= 60:
+                    location.space_utilization_efficiency = utilization + 20  # Bonus for not overpacking
+                elif utilization <= 85:
+                    location.space_utilization_efficiency = 100  # Optimal range
+                else:
+                    location.space_utilization_efficiency = max(70, 120 - utilization)  # Penalty for overpacking
+            else:
+                location.space_utilization_efficiency = 50.0  # No capacity defined
+            
+            # Storage density score
+            if location.box_count > 0 and location.capacity:
+                density_ratio = location.box_count / location.capacity
+                if density_ratio <= 0.85:  # Optimal density
+                    location.storage_density_score = 95.0
+                elif density_ratio <= 1.0:  # Full but manageable
+                    location.storage_density_score = 85.0
+                else:  # Overcrowded
+                    location.storage_density_score = max(50, 85 - (density_ratio - 1.0) * 50)
+            else:
+                location.storage_density_score = 75.0
+            
+            # Access frequency rating (based on location type)
+            type_access_map = {
+                'refiles': 95.0,  # High access for staging
+                'aisles': 80.0,   # Regular access
+                'pallets': 70.0,  # Medium access
+                'vault': 40.0,    # Low access - secure
+                'map': 50.0,      # Occasional access
+                'oversize': 85.0  # Temporary high access
+            }
+            location.access_frequency_rating = type_access_map.get(location.location_type, 65.0)
+            
+            # Security effectiveness
+            security_score = 30.0  # Base score
+            
+            if location.access_control_system:
+                security_score += 20.0
+            if location.surveillance_system:
+                security_score += 20.0
+            if location.alarm_system:
+                security_score += 15.0
+            if location.fire_detection_system:
+                security_score += 10.0
+            
+            # Security level bonus
+            level_bonus = {
+                'low': 0,
+                'medium': 5,
+                'high': 10,
+                'maximum': 15
+            }
+            security_score += level_bonus.get(location.security_level, 0)
+            
+            location.security_effectiveness = min(100, security_score)
+            
+            # Operational cost per box
+            base_cost = 5.0  # Base monthly cost per box
+            
+            # Adjust by location type
+            type_cost_map = {
+                'vault': 15.0,     # Premium storage
+                'aisles': 5.0,     # Standard
+                'pallets': 4.0,    # Efficient
+                'map': 8.0,        # Specialized
+                'oversize': 10.0,  # Temporary premium
+                'refiles': 3.0     # Staging area
+            }
+            
+            location.operational_cost_per_box = type_cost_map.get(location.location_type, base_cost)
+            
+            # Environmental compliance score
+            env_score = 60.0  # Base score
+            
+            if location.temperature_controlled:
+                env_score += 15.0
+            if location.humidity_controlled:
+                env_score += 15.0
+            if location.pest_control_program:
+                env_score += 10.0
+            
+            location.environmental_compliance_score = min(100, env_score)
+            
+            # Storage turnover rate (simulated based on location type)
+            turnover_map = {
+                'refiles': 150.0,  # Very high turnover
+                'oversize': 100.0, # High turnover (temporary)
+                'aisles': 25.0,    # Normal turnover
+                'pallets': 20.0,   # Lower turnover
+                'map': 10.0,       # Low turnover
+                'vault': 5.0       # Very low turnover
+            }
+            location.storage_turnover_rate = turnover_map.get(location.location_type, 20.0)
+            
+            # Risk assessment level (0-10, lower is better)
+            risk_score = 3.0  # Base risk
+            
+            # Increase risk for overcrowding
+            if location.utilization_percentage > 90:
+                risk_score += 2.0
+            
+            # Decrease risk for good security
+            if location.security_effectiveness > 80:
+                risk_score -= 1.0
+            
+            # Type-specific risks
+            if location.location_type == 'oversize':
+                risk_score += 1.0  # Temporary storage has higher risk
+            elif location.location_type == 'vault':
+                risk_score -= 0.5  # Secure storage has lower risk
+            
+            location.risk_assessment_level = max(0, min(10, risk_score))
+            
+            # Performance summary
+            insights = []
+            
+            if location.space_utilization_efficiency > 90:
+                insights.append("✅ Excellent space utilization")
+            elif location.space_utilization_efficiency < 70:
+                insights.append("⚠️ Poor space utilization - optimize layout")
+            
+            if location.utilization_percentage > 95:
+                insights.append("🚨 Location overcrowded - expansion needed")
+            elif location.utilization_percentage < 40:
+                insights.append("📊 Underutilized - consider consolidation")
+            
+            if location.security_effectiveness < 70:
+                insights.append("🔒 Security improvements recommended")
+            else:
+                insights.append("🛡️ Good security measures in place")
+            
+            if location.risk_assessment_level > 7:
+                insights.append("⚠️ High risk level - immediate attention required")
+            
+            if location.environmental_compliance_score > 85:
+                insights.append("🌡️ Excellent environmental controls")
+            
+            if not insights:
+                insights.append("📈 All metrics within acceptable ranges")
+            
+            location.location_performance_summary = "\n".join(insights)
 
     def action_view_boxes(self):
         self.ensure_one()

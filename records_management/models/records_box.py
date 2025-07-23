@@ -218,6 +218,62 @@ class RecordsBox(models.Model):
     seal_verified = fields.Boolean('Seal Verified', default=False)
     seal_verification_date = fields.Datetime('Seal Verification Date')
 
+    # Phase 3: Analytics & Computed Fields (9 fields)
+    utilization_rate = fields.Float(
+        string='Utilization Rate (%)',
+        compute='_compute_box_analytics',
+        store=True,
+        help='Percentage of box capacity currently utilized'
+    )
+    storage_duration = fields.Integer(
+        string='Storage Duration (days)',
+        compute='_compute_box_analytics',
+        store=True,
+        help='Number of days box has been in storage'
+    )
+    retrieval_frequency = fields.Float(
+        string='Retrieval Frequency (per month)',
+        compute='_compute_box_analytics',
+        store=True,
+        help='Average retrievals per month'
+    )
+    cost_per_document = fields.Float(
+        string='Cost per Document',
+        compute='_compute_box_analytics',
+        store=True,
+        help='Storage cost divided by document count'
+    )
+    space_efficiency = fields.Float(
+        string='Space Efficiency Score',
+        compute='_compute_box_analytics',
+        store=True,
+        help='Efficiency score based on space utilization'
+    )
+    destruction_eligibility = fields.Selection([
+        ('not_eligible', 'Not Eligible'),
+        ('review_required', 'Review Required'),
+        ('eligible', 'Eligible'),
+        ('overdue', 'Overdue')
+    ], string='Destruction Eligibility', compute='_compute_box_analytics', store=True)
+    security_score = fields.Float(
+        string='Security Score',
+        compute='_compute_box_analytics',
+        store=True,
+        help='Security assessment score (0-100)'
+    )
+    movement_pattern = fields.Selection([
+        ('static', 'Static'),
+        ('occasional', 'Occasional'),
+        ('frequent', 'Frequent'),
+        ('high_activity', 'High Activity')
+    ], string='Movement Pattern', compute='_compute_box_analytics', store=True)
+    box_insights = fields.Text(
+        string='Box Analytics Insights',
+        compute='_compute_box_analytics',
+        store=True,
+        help='AI-generated insights about box management'
+    )
+
 
     @api.model_create_multi
     def create(self, vals_list: List[dict]) -> 'RecordsBox':
@@ -272,6 +328,122 @@ class RecordsBox(models.Model):
                 except Exception:
                     pass
             box.service_request_count = service_count
+
+    @api.depends('storage_date', 'access_count', 'state', 'document_ids', 'location_id')
+    def _compute_box_analytics(self):
+        """Compute analytics and business intelligence for storage boxes"""
+        for box in self:
+            # Storage duration calculation
+            if box.storage_date:
+                box.storage_duration = (fields.Date.today() - box.storage_date).days
+            else:
+                box.storage_duration = 0
+            
+            # Utilization rate (assume max 50 documents per box)
+            max_capacity = 50
+            doc_count = len(box.document_ids) if box.document_ids else 0
+            box.utilization_rate = min(100, (doc_count / max_capacity) * 100) if max_capacity else 0
+            
+            # Retrieval frequency (based on access count)
+            if box.storage_duration > 0:
+                days_per_month = 30
+                months_stored = max(1, box.storage_duration / days_per_month)
+                box.retrieval_frequency = (box.access_count or 0) / months_stored
+            else:
+                box.retrieval_frequency = 0.0
+            
+            # Cost per document
+            monthly_storage_cost = 5.0  # $5 per box per month
+            if box.storage_duration > 0:
+                total_cost = (box.storage_duration / 30) * monthly_storage_cost
+                if doc_count > 0:
+                    box.cost_per_document = total_cost / doc_count
+                else:
+                    box.cost_per_document = total_cost
+            else:
+                box.cost_per_document = 0.0
+            
+            # Space efficiency score
+            efficiency = 0
+            if box.utilization_rate > 90:
+                efficiency = 100
+            elif box.utilization_rate > 75:
+                efficiency = 85
+            elif box.utilization_rate > 50:
+                efficiency = 70
+            elif box.utilization_rate > 25:
+                efficiency = 50
+            else:
+                efficiency = 25
+            
+            # Bonus for high retrieval frequency (shows it's useful)
+            if box.retrieval_frequency > 1.0:
+                efficiency += 10
+            
+            box.space_efficiency = min(100, efficiency)
+            
+            # Destruction eligibility assessment
+            if box.storage_duration > 2555:  # 7+ years
+                box.destruction_eligibility = 'overdue'
+            elif box.storage_duration > 2190:  # 6+ years
+                box.destruction_eligibility = 'eligible'
+            elif box.storage_duration > 1825:  # 5+ years
+                box.destruction_eligibility = 'review_required'
+            else:
+                box.destruction_eligibility = 'not_eligible'
+            
+            # Security score calculation
+            security_score = 50  # Base score
+            
+            if box.location_id:
+                security_score += 20  # Has assigned location
+            
+            if hasattr(box, 'security_clearance_required') and box.security_clearance_required != 'none':
+                security_score += 15
+            
+            if hasattr(box, 'tamper_evident_seal') and box.tamper_evident_seal:
+                security_score += 10
+            
+            if hasattr(box, 'environmental_controls') and box.environmental_controls:
+                security_score += 5
+            
+            box.security_score = min(100, security_score)
+            
+            # Movement pattern analysis
+            if box.retrieval_frequency > 2.0:
+                box.movement_pattern = 'high_activity'
+            elif box.retrieval_frequency > 1.0:
+                box.movement_pattern = 'frequent'
+            elif box.retrieval_frequency > 0.2:
+                box.movement_pattern = 'occasional'
+            else:
+                box.movement_pattern = 'static'
+            
+            # Analytics insights
+            insights = []
+            
+            if box.utilization_rate < 30:
+                insights.append("📦 Low utilization - consider consolidation")
+            
+            if box.cost_per_document > 2.0:
+                insights.append("💰 High cost per document - review efficiency")
+            
+            if box.destruction_eligibility == 'overdue':
+                insights.append("🗑️ Overdue for destruction review")
+            
+            if box.retrieval_frequency > 2.0:
+                insights.append("🔥 High activity - consider digitization")
+            
+            if box.security_score < 60:
+                insights.append("🔒 Security enhancements recommended")
+            
+            if box.space_efficiency > 90:
+                insights.append("⭐ Excellent space efficiency")
+            
+            if not insights:
+                insights.append("✅ Box management optimized")
+            
+            box.box_insights = " | ".join(insights)
 
     @api.depends('box_type_code')
     def _compute_box_type_display(self) -> None:
