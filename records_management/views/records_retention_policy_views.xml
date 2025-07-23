@@ -3,10 +3,10 @@
     <data>
         <!-- Records Retention Policy List View -->
         <record id="view_records_retention_policy_tree" model="ir.ui.view">
-            <field name="name">records.retention.policy.tree</field>
+            <field name="name">records.retention.policy.list</field>
             <field name="model">records.retention.policy</field>
             <field name="arch" type="xml">
-                <tree string="Retention Policies">
+                <list string="Retention Policies">
                     <field name="name"/>
                     <field name="retention_years"/>
                     <field name="policy_type"/>
@@ -14,7 +14,7 @@
                     <field name="review_date"/>
                     <field name="policy_status"/>
                     <field name="document_count"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -62,13 +62,13 @@
                             </page>
                             <page string="Version History">
                                 <field name="version_history_ids">
-                                    <tree>
+                                    <list>
                                         <field name="version_number"/>
                                         <field name="version_date"/>
                                         <field name="changed_by"/>
                                         <field name="approval_status"/>
                                         <field name="is_current_version"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Analytics" groups="base.group_system">
@@ -123,7 +123,7 @@
         <record id="action_records_retention_policy" model="ir.actions.act_window">
             <field name="name">Retention Policies</field>
             <field name="res_model">records.retention.policy</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="search_view_id" ref="view_records_retention_policy_search"/>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
