@@ -23,6 +23,11 @@ class PickupRequest(models.Model):
         required=True,
         tracking=True
     )
+    box_id = fields.Many2one(
+        'records.box',
+        string='Related Box',
+        help='Box associated with this pickup request'
+    )
     request_date = fields.Date(
         string='Request Date',
         default=fields.Date.context_today,
