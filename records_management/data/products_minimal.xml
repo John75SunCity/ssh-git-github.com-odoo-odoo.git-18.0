@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="1">
-        <!-- Minimal products.xml file for testing - no product records -->
-        <!-- This file can be used temporarily to test if the module loads without product data -->
-    </data>
-</odoo>

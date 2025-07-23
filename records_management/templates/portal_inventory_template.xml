@@ -1,3 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Modern portal inventory view templates will go here -->
+    <data>
+        <!-- Portal Inventory Dashboard Template -->
+        <template id="portal_inventory_dashboard" name="Portal Inventory Dashboard">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Records Inventory</t>
+                </t>
+                
+                <div class="container-fluid mt-3">
+                    <!-- Inventory Overview Cards -->
+                    <div class="row mb-4">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card text-white bg-primary">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 class="card-title" t-esc="total_boxes"/>
+                                            <p class="card-text">Total Boxes</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-archive fa-2x"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card text-white bg-success">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 class="card-title" t-esc="total_documents"/>
+                                            <p class="card-text">Total Documents</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-file-o fa-2x"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card text-white bg-warning">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 class="card-title" t-esc="active_locations"/>
+                                            <p class="card-text">Storage Locations</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-map-marker fa-2x"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card text-white bg-info">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 class="card-title" t-esc="pending_requests"/>
+                                            <p class="card-text">Pending Requests</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fa fa-clock-o fa-2x"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Recent Activity -->
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fa fa-history"/> Recent Activity</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Activity</th>
+                                                    <th>Box/Document</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="recent_activities" t-as="activity">
+                                                    <tr>
+                                                        <td><t t-esc="activity.date"/></td>
+                                                        <td><t t-esc="activity.activity_type"/></td>
+                                                        <td><t t-esc="activity.reference"/></td>
+                                                        <td>
+                                                            <span t-att-class="'badge badge-' + activity.status_class">
+                                                                <t t-esc="activity.status"/>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fa fa-bolt"/> Quick Actions</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group list-group-flush">
+                                        <a href="/my/records/boxes" class="list-group-item list-group-item-action">
+                                            <i class="fa fa-archive"/> View All Boxes
+                                        </a>
+                                        <a href="/my/records/documents" class="list-group-item list-group-item-action">
+                                            <i class="fa fa-file-o"/> Browse Documents
+                                        </a>
+                                        <a href="/my/records/requests" class="list-group-item list-group-item-action">
+                                            <i class="fa fa-plus"/> New Request
+                                        </a>
+                                        <a href="/my/records/reports" class="list-group-item list-group-item-action">
+                                            <i class="fa fa-bar-chart"/> View Reports
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Storage Summary -->
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h6><i class="fa fa-pie-chart"/> Storage Utilization</h6>
+                                </div>
+                                <div class="card-body">
+                                    <t t-foreach="storage_locations" t-as="location">
+                                        <div class="mb-2">
+                                            <div class="d-flex justify-content-between">
+                                                <small><t t-esc="location.name"/></small>
+                                                <small><t t-esc="location.utilization_percent"/>%</small>
+                                            </div>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar" 
+                                                     t-att-style="'width: ' + str(location.utilization_percent) + '%'"
+                                                     t-att-class="'bg-success' if location.utilization_percent &lt; 80 else 'bg-warning' if location.utilization_percent &lt; 95 else 'bg-danger'"/>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search and Filter Section -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fa fa-search"/> Search Inventory</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form method="get" class="form-inline">
+                                        <div class="form-group mr-3">
+                                            <input type="text" name="search" class="form-control" placeholder="Search boxes or documents..." value="{search or ''}"/>
+                                        </div>
+                                        <div class="form-group mr-3">
+                                            <select name="department" class="form-control">
+                                                <option value="">All Departments</option>
+                                                <t t-foreach="departments" t-as="dept">
+                                                    <option t-att-value="dept.id" t-att-selected="'selected' if dept.id == search_department else None">
+                                                        <t t-esc="dept.name"/>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa fa-search"/> Search
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Portal Box Details Template -->
+        <template id="portal_box_details" name="Portal Box Details">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-3">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Box Details: <t t-esc="box.name"/></h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Location:</strong> <t t-esc="box.location_id.name or 'Not Set'"/></p>
+                                            <p><strong>Department:</strong> <t t-esc="box.department_id.name or 'Not Set'"/></p>
+                                            <p><strong>Document Count:</strong> <t t-esc="box.document_count"/></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Status:</strong> <t t-esc="box.status"/></p>
+                                            <p><strong>Last Activity:</strong> <t t-esc="box.last_activity_date"/></p>
+                                            <p><strong>Storage Fee:</strong> <t t-esc="box.storage_fee_monthly"/></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6>Box Actions</h6>
+                                </div>
+                                <div class="card-body">
+                                    <a href="#" class="btn btn-primary btn-block mb-2">Request Retrieval</a>
+                                    <a href="#" class="btn btn-secondary btn-block mb-2">View Documents</a>
+                                    <a href="#" class="btn btn-info btn-block">Download Report</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
 </odoo>

@@ -1,8 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
+    
+    <!-- Main Map Widget Template -->
     <t t-name="records_management.MapWidget">
-        <div class="map_widget">
-            <div class="map_container" t-ref="mapContainer"></div>
+        <div class="o_map_widget">
+            <div class="o_map_controls">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-outline-primary o_map_zoom_in">
+                        <i class="fa fa-plus"/>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-primary o_map_zoom_out">
+                        <i class="fa fa-minus"/>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-primary o_map_reset">
+                        <i class="fa fa-home"/>
+                    </button>
+                </div>
+                <div class="o_map_legend">
+                    <span class="badge badge-success mr-1">
+                        <i class="fa fa-circle"/> Available
+                    </span>
+                    <span class="badge badge-warning mr-1">
+                        <i class="fa fa-circle"/> Partial
+                    </span>
+                    <span class="badge badge-danger mr-1">
+                        <i class="fa fa-circle"/> Full
+                    </span>
+                </div>
+            </div>
+            <div class="o_map_container" t-ref="mapContainer">
+                <!-- Map will be rendered here by JavaScript -->
+            </div>
+            <div class="o_map_info" t-if="widget.show_info">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">Location Details</h6>
+                        <p class="card-text">
+                            <strong>Selected:</strong> <span t-esc="widget.selected_location"/>
+                        </p>
+                        <p class="card-text">
+                            <strong>Capacity:</strong> <span t-esc="widget.location_capacity"/>
+                        </p>
+                        <p class="card-text">
+                            <strong>Utilization:</strong> <span t-esc="widget.location_utilization"/>%
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </t>
+    
+    <!-- Location Marker Popup Template -->
+    <t t-name="records_management.LocationMarkerPopup">
+        <div class="o_location_popup">
+            <div class="popup-header">
+                <h6><t t-esc="location.name"/></h6>
+            </div>
+            <div class="popup-content">
+                <div class="row">
+                    <div class="col-6">
+                        <small><strong>Type:</strong></small><br/>
+                        <small><t t-esc="location.location_type"/></small>
+                    </div>
+                    <div class="col-6">
+                        <small><strong>Capacity:</strong></small><br/>
+                        <small><t t-esc="location.capacity"/> boxes</small>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <small><strong>Current:</strong></small><br/>
+                        <small><t t-esc="location.current_boxes"/> boxes</small>
+                    </div>
+                    <div class="col-6">
+                        <small><strong>Available:</strong></small><br/>
+                        <small><t t-esc="location.available_space"/> spaces</small>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <div class="progress" style="height: 6px;">
+                        <div class="progress-bar" 
+                             t-att-style="'width: ' + location.utilization + '%'"
+                             t-att-class="'bg-success' if location.utilization &lt; 70 else 'bg-warning' if location.utilization &lt; 90 else 'bg-danger'">
+                        </div>
+                    </div>
+                    <small class="text-muted"><t t-esc="location.utilization"/>% utilized</small>
+                </div>
+            </div>
+            <div class="popup-footer">
+                <button class="btn btn-sm btn-primary" t-att-data-location-id="location.id">
+                    View Details
+                </button>
+            </div>
+        </div>
+    </t>
+    
 </templates>
