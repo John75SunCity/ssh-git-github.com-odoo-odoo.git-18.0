@@ -77,7 +77,9 @@ Features:
         'data/portal_mail_templates.xml',  # New: Email/SMS templates for notifications
         'data/naid_compliance_data.xml',  # New: NAID data for audits/signatures
         'data/feedback_survey_data.xml',  # New: Default feedback survey
-        # Load all action-containing view files before menus
+        # Load menus first so they can be referenced by view files
+        'views/records_management_menus.xml',
+        # Load all action-containing view files after menus
         'views/records_box_views.xml',
         'views/records_tag_views.xml',
         'views/records_location_views.xml',
@@ -89,8 +91,7 @@ Features:
         'views/stock_lot_views.xml',
         'views/customer_inventory_views.xml',
         'report/records_reports.xml',  # Contains report actions
-        # Now load menus after all actions are defined
-        'views/records_management_menus.xml',
+        # Additional views that depend on base menus
         'views/hard_drive_scan_views.xml',  # New: Hard drive scanning views
         'views/res_partner_views.xml',
         'views/billing_views.xml',

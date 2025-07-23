@@ -33,12 +33,11 @@ class RecordsLocation(models.Model):
        • Refiles: Staging area for returned files before put-away""")
 
     box_ids = fields.One2many('records.box', 'location_id', string='Boxes')
-    box_count = fields.Integer('Box Count', compute='_compute_box_count')
-    capacity = fields.Integer('Maximum Box Capacity')
-    utilization_percentage = fields.Float('Utilization %', compute='_compute_used_capacity', store=True,
-                                         help="Percentage of location capacity currently used")
-    current_occupancy = fields.Integer('Current Occupancy', compute='_compute_box_count', store=True,
-                                      help="Current number of boxes stored in this location")
+    box_count = fields.Integer('Physical Box Count', compute='_compute_box_count', compute_sudo=False,
+                              help="Actual number of boxes physically stored in this location")
+    capacity = fields.Integer('Maximum Box Capacity', help="Maximum number of boxes this location can hold")
+    current_occupancy = fields.Float('Occupancy %', compute='_compute_current_occupancy', store=True, compute_sudo=False,
+                                    help="Percentage of capacity occupied (box_count / capacity * 100) - shows storage efficiency")
 
     active = fields.Boolean(default=True)
     note = fields.Text('Notes')
@@ -158,20 +157,18 @@ class RecordsLocation(models.Model):
     @api.depends('box_ids')
     def _compute_box_count(self):
         for location in self:
-            count = len(location.box_ids)
-            location.box_count = count
-            location.current_occupancy = count  # Set both fields
+            location.box_count = len(location.box_ids)
 
-    @api.depends('box_count', 'capacity')
-    def _compute_used_capacity(self):
+    @api.depends('box_ids', 'capacity')
+    def _compute_current_occupancy(self):
+        """Calculate occupancy percentage for storage efficiency analysis"""
         for location in self:
-            if location.capacity:
-                percentage = (location.box_count / location.capacity) * 100
-                location.utilization_percentage = percentage
+            if location.capacity and location.capacity > 0:
+                location.current_occupancy = (len(location.box_ids) / location.capacity) * 100
             else:
-                location.utilization_percentage = 0
+                location.current_occupancy = 0.0
 
-    @api.depends('box_count', 'capacity', 'location_type', 'security_level', 'utilization_percentage',
+    @api.depends('box_count', 'capacity', 'location_type', 'security_level', 'current_occupancy',
                  'temperature_controlled', 'humidity_controlled', 'surveillance_system', 'access_control_system')
     def _compute_location_analytics(self):
         """Compute comprehensive analytics for storage locations"""
@@ -181,7 +178,7 @@ class RecordsLocation(models.Model):
             
             # Space utilization efficiency
             if location.capacity and location.capacity > 0:
-                utilization = location.utilization_percentage
+                utilization = location.current_occupancy
                 if utilization <= 60:
                     location.space_utilization_efficiency = utilization + 20  # Bonus for not overpacking
                 elif utilization <= 85:
@@ -279,7 +276,7 @@ class RecordsLocation(models.Model):
             risk_score = 3.0  # Base risk
             
             # Increase risk for overcrowding
-            if location.utilization_percentage > 90:
+            if location.current_occupancy > 90:
                 risk_score += 2.0
             
             # Decrease risk for good security
@@ -302,9 +299,9 @@ class RecordsLocation(models.Model):
             elif location.space_utilization_efficiency < 70:
                 insights.append("⚠️ Poor space utilization - optimize layout")
             
-            if location.utilization_percentage > 95:
+            if location.current_occupancy > 95:
                 insights.append("🚨 Location overcrowded - expansion needed")
-            elif location.utilization_percentage < 40:
+            elif location.current_occupancy < 40:
                 insights.append("📊 Underutilized - consider consolidation")
             
             if location.security_effectiveness < 70:
@@ -365,7 +362,7 @@ class RecordsLocation(models.Model):
     def action_check_capacity(self):
         """Check location capacity"""
         self.ensure_one()
-        self._compute_utilization_percentage()
+        self._compute_current_occupancy()
         return True
 
     def action_view_child_locations(self):

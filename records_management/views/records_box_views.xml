@@ -37,12 +37,12 @@
                             <div class="o_kanban_card_content">
                                 <div class="row">
                                     <div class="col-8">
-                                        <div><i class="fa fa-cube"/> <field name="box_type_display"/> (<field name="box_type_code"/>)</div>
-                                        <div><i class="fa fa-dollar"/> $<field name="monthly_rate"/>/month</div>
-                                        <div><i class="fa fa-map-marker"/> <field name="location_id"/></div>
-                                        <div><i class="fa fa-calendar"/> <field name="storage_date"/></div>
+                                        <div><i class="fa fa-cube" title="Box Type"/> <field name="box_type_display"/> (<field name="box_type_code"/>)</div>
+                                        <div><i class="fa fa-dollar" title="Monthly Rate"/> $<field name="monthly_rate"/>/month</div>
+                                        <div><i class="fa fa-map-marker" title="Storage Location"/> <field name="location_id"/></div>
+                                        <div><i class="fa fa-calendar" title="Storage Date"/> <field name="storage_date"/></div>
                                         <div t-if="record.barcode.raw_value">
-                                            <i class="fa fa-barcode"/> <field name="barcode"/>
+                                            <i class="fa fa-barcode" title="Barcode"/> <field name="barcode"/>
                                         </div>
                                     </div>
                                     <div class="col-4">

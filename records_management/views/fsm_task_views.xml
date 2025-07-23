@@ -35,10 +35,10 @@
                             <div class="o_kanban_card_content">
                                 <div class="row">
                                     <div class="col-8">
-                                        <div><i class="fa fa-wrench"/> <field name="task_type"/></div>
-                                        <div><i class="fa fa-calendar"/> <field name="scheduled_date"/></div>
-                                        <div><i class="fa fa-user"/> <field name="assigned_technician"/></div>
-                                        <div><i class="fa fa-map-marker"/> <field name="location_address"/></div>
+                                        <div><i class="fa fa-wrench" title="Task Type"/> <field name="task_type"/></div>
+                                        <div><i class="fa fa-calendar" title="Scheduled Date"/> <field name="scheduled_date"/></div>
+                                        <div><i class="fa fa-user" title="Assigned Technician"/> <field name="assigned_technician"/></div>
+                                        <div><i class="fa fa-map-marker" title="Location"/> <field name="location_address"/></div>
                                     </div>
                                     <div class="col-4">
                                         <span class="badge" t-att-class="record.priority.raw_value === 'high' ? 'badge-danger' : record.priority.raw_value === 'medium' ? 'badge-warning' : 'badge-secondary'">

@@ -38,8 +38,8 @@ class ShreddingService(models.Model):
     shredded_box_ids = fields.Many2many('stock.lot', string='Shredded Boxes', domain="[('customer_id', '!=', False)]", tracking=True)
     hard_drive_quantity = fields.Integer(string='Number of Hard Drives', tracking=True)  # New
     hard_drive_ids = fields.One2many('shredding.hard_drive', 'service_id', string='Hard Drive Details', tracking=True)
-    hard_drive_scanned_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Scanned Count')
-    hard_drive_verified_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Verified Count')
+    hard_drive_scanned_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Scanned Count', compute_sudo=False)
+    hard_drive_verified_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Verified Count', compute_sudo=False)
     uniform_quantity = fields.Integer(string='Number of Uniforms', tracking=True)  # New
     total_boxes = fields.Integer(compute='_compute_total_boxes', store=True, tracking=True)
     unit_cost = fields.Float(string='Unit Cost', default=5.0, tracking=True)

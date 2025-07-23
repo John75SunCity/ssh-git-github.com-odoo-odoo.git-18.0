@@ -30,13 +30,13 @@ class RecordsApprovalWorkflow(models.Model):
     step_ids = fields.One2many('records.approval.step', 'workflow_id', string='Approval Steps')
     
     # Statistics
-    total_requests = fields.Integer('Total Requests', compute='_compute_statistics')
-    approved_requests = fields.Integer('Approved Requests', compute='_compute_statistics')
-    rejected_requests = fields.Integer('Rejected Requests', compute='_compute_statistics')
-    pending_requests = fields.Integer('Pending Requests', compute='_compute_statistics')
+    total_requests = fields.Integer('Total Requests', compute='_compute_statistics', compute_sudo=False)
+    approved_requests = fields.Integer('Approved Requests', compute='_compute_statistics', compute_sudo=False)
+    rejected_requests = fields.Integer('Rejected Requests', compute='_compute_statistics', compute_sudo=False)
+    pending_requests = fields.Integer('Pending Requests', compute='_compute_statistics', compute_sudo=False)
     
-    approval_rate = fields.Float('Approval Rate %', compute='_compute_statistics')
-    avg_approval_time = fields.Float('Avg Approval Time (hours)', compute='_compute_statistics')
+    approval_rate = fields.Float('Approval Rate %', compute='_compute_statistics', compute_sudo=False)
+    avg_approval_time = fields.Float('Avg Approval Time (hours)', compute='_compute_statistics', compute_sudo=False)
     
     @api.depends('step_ids')
     def _compute_statistics(self):
