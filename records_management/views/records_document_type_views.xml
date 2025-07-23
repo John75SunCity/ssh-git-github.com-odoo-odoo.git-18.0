@@ -3,7 +3,10 @@
     <!-- 📋 ENTERPRISE DOCUMENT TYPES - Records Management Classification -->
 
     <!-- 🎨 Document Type Kanban Dashboard -->
-    <record id="view_records_document_type_kanban" model="ir.ui.view">
+    <record id="view_records                <separator/>
+                <filter string="🛡️ Confidential" name="confidential" domain="[('security_classification', 'in', ['confidential', 'secret'])]"/>
+                <filter string="📋 Retention Compliance" name="retention_compliance" domain="[('retention_compliance', '=', True)]"/>
+                <filter string="🤖 High Auto-Classification Potential" name="auto_classify" domain="[('auto_classification_potential', '>', 75)]"/>ument_type_kanban" model="ir.ui.view">
         <field name="name">records.document.type.kanban</field>
         <field name="model">records.document.type</field>
         <field name="arch" type="xml">
@@ -131,98 +134,40 @@
                         <group string="🛡️ Security &amp; Compliance">
                             <field name="security_classification"/>
                             <field name="approval_required"/>
-                            <field name="requires_signature"/>
-                            <field name="encryption_required"/>
+                            <field name="audit_required"/>
+                            <field name="regulatory_requirement"/>
                         </group>
                     </group>
 
                     <group>
                         <group string="⏰ Retention Management">
                             <field name="risk_level"/>
-                            <field name="retention_unit"/>
+                            <field name="compliance_status"/>
                             <field name="retention_compliance"/>
-                            <field name="destruction_method"/>
+                            <field name="compliance_notes"/>
                         </group>
                         <group string="📋 Processing Rules">
-                            <field name="auto_classify"/>
-                            <field name="ocr_enabled"/>
-                            <field name="index_automatically"/>
-                            <field name="notify_on_expiry"/>
+                            <field name="auto_classification_potential"/>
+                            <field name="classification_accuracy_score"/>
+                            <field name="audit_required"/>
+                            <field name="growth_trend_indicator"/>
                         </group>
                     </group>
 
                     <notebook>
-                        <page string="📄 Document Templates" name="templates">
-                            <field name="template_ids" mode="list">
-                                <list editable="bottom">
-                                    <field name="name"/>
-                                    <field name="template_type"/>
-                                    <field name="file_format"/>
-                                    <field name="is_default"/>
-                                    <field name="active"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="🏷️ Classification Rules" name="classification">
-                            <field name="classification_rule_ids" mode="list">
-                                <list editable="bottom">
-                                    <field name="rule_name"/>
-                                    <field name="keyword"/>
-                                    <field name="rule_type"/>
-                                    <field name="confidence_threshold"/>
-                                    <field name="auto_apply"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="✅ Approval Workflow" name="approval">
+                        <page string="� Analytics" name="analytics">
                             <group>
-                                <group string="👥 Approval Settings">
-                                    <field name="approval_required_for"/>
-                                    <field name="min_approvers"/>
-                                    <field name="approval_sequence"/>
-                                    <field name="escalation_enabled"/>
+                                <group string="� Usage Statistics">
+                                    <field name="document_count" readonly="1"/>
+                                    <field name="document_type_utilization" readonly="1"/>
+                                    <field name="growth_trend_indicator" readonly="1"/>
+                                    <field name="seasonal_pattern_score" readonly="1"/>
                                 </group>
-                                <group string="⏰ Timing">
-                                    <field name="approval_deadline"/>
-                                    <field name="escalation_days"/>
-                                    <field name="auto_approve_days"/>
-                                    <field name="reminder_frequency"/>
-                                </group>
-                            </group>
-                            <field name="approval_rule_ids" mode="list">
-                                <list>
-                                    <field name="approver_id"/>
-                                    <field name="approval_type"/>
-                                    <field name="sequence"/>
-                                    <field name="is_required"/>
-                                    <field name="delegation_allowed"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="🔍 Metadata Fields" name="metadata">
-                            <field name="metadata_field_ids" mode="list">
-                                <list editable="bottom">
-                                    <field name="field_name"/>
-                                    <field name="field_type"/>
-                                    <field name="is_required"/>
-                                    <field name="is_indexed"/>
-                                    <field name="default_value"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="📊 Analytics" name="analytics">
-                            <group>
-                                <group string="📈 Usage Statistics">
-                                    <field name="total_documents" readonly="1"/>
-                                    <field name="active_documents" readonly="1"/>
-                                    <field name="archived_documents" readonly="1"/>
-                                    <field name="pending_approval" readonly="1"/>
-                                </group>
-                                <group string="📅 Timeline">
-                                    <field name="last_document_created" readonly="1"/>
-                                    <field name="last_policy_update" readonly="1"/>
-                                    <field name="next_retention_review" readonly="1"/>
-                                    <field name="compliance_check_date" readonly="1"/>
+                                <group string="📅 Compliance">
+                                    <field name="classification_accuracy_score" readonly="1"/>
+                                    <field name="auto_classification_potential" readonly="1"/>
+                                    <field name="type_complexity_rating" readonly="1"/>
+                                    <field name="regulatory_compliance_score" readonly="1"/>
                                 </group>
                             </group>
                         </page>
@@ -253,8 +198,8 @@
 
                 <separator/>
                 <filter string="✅ Requires Approval" name="approval_required" domain="[('approval_required', '=', True)]"/>
-                <filter string="🔏 Requires Signature" name="signature_required" domain="[('requires_signature', '=', True)]"/>
-                <filter string="🔐 Encryption Required" name="encryption_required" domain="[('encryption_required', '=', True)]"/>
+                <filter string="� Audit Required" name="audit_required" domain="[('audit_required', '=', True)]"/>
+                <filter string="� Has Regulatory Requirement" name="has_regulation" domain="[('regulatory_requirement', '!=', False)]"/>
 
                 <separator/>
                 <filter string="🛡️ Confidential" name="confidential" domain="[('security_classification', 'in', ['confidential', 'secret'])]"/>
@@ -263,7 +208,7 @@
 
                 <separator/>
                 <filter string="⚠️ High Risk" name="high_risk" domain="[('risk_level', 'in', ['high', 'critical'])]"/>
-                <filter string="📋 Recent Updates" name="recent_updates" domain="[('last_policy_update', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <filter string="📋 Under Review" name="under_review" domain="[('compliance_status', '=', 'under_review')]"/>
 
                 <group expand="0" string="📊 Group By">
                     <filter string="Security Classification" name="group_by_security_classification" context="{'group_by': 'security_classification'}"/>
