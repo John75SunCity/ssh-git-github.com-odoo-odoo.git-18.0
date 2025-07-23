@@ -169,7 +169,6 @@
                                     <field name="document_type_id"/>
                                     <field name="state"/>
                                     <field name="created_date"/>
-                                    <button name="action_view_document" type="object" string="View" icon="fa-eye" class="btn-link"/>
                                 </list>
                             </field>
                         </page>
