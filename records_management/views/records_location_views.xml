@@ -9,10 +9,11 @@
         <field name="arch" type="xml">
             <kanban default_group_by="location_type" class="o_kanban_location_dashboard">
                 <field name="name"/>
-                <field name="location_type"/>
+                <field name="box_count"/>
                 <field name="capacity"/>
-                <field name="current_occupancy"/>
-                <field name="utilization_percentage"/>
+                <field name="current_utilization"/>
+                <field name="available_utilization"/>
+                <field name="available_spaces"/>
                 <field name="active"/>
                 <templates>
                     <t t-name="card">
@@ -41,14 +42,18 @@
                                         <div class="col-6">
                                             <div class="text-right">
                                                 <span class="badge badge-info">
-                                                    <field name="current_occupancy"/>/<field name="capacity"/> Used
+                                                    <field name="current_utilization"/>/<field name="capacity"/> Used
+                                                </span>
+                                                <br/>
+                                                <span class="badge badge-success">
+                                                    <field name="available_spaces"/> Available
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="progress mt-2" style="height: 8px;">
                                         <div class="progress-bar bg-info" role="progressbar" 
-                                             t-att-style="'width: ' + (record.current_occupancy.raw_value / record.capacity.raw_value * 100) + '%'"/>
+                                             t-att-style="'width: ' + (record.current_utilization.raw_value / record.capacity.raw_value * 100) + '%'"/>
                                     </div>
                                 </div>
                             </div>
@@ -71,14 +76,16 @@
         <field name="name">records.location.list</field>
         <field name="model">records.location</field>
         <field name="arch" type="xml">
-            <list decoration-success="current_occupancy &lt; capacity * 0.8" 
-                  decoration-warning="current_occupancy &gt;= capacity * 0.8 and current_occupancy &lt; capacity" 
-                  decoration-danger="current_occupancy &gt;= capacity">
+            <list decoration-success="current_utilization &lt; capacity * 0.8" 
+                  decoration-warning="current_utilization &gt;= capacity * 0.8 and current_utilization &lt; capacity" 
+                  decoration-danger="current_utilization &gt;= capacity">
                 <field name="name" string="🏢 Location Name"/>
                 <field name="location_type" string="📂 Type"/>
                 <field name="capacity" string="🔢 Capacity"/>
-                <field name="current_occupancy" string="📦 Current Usage"/>
-                <field name="utilization_percentage" string="📊 Utilization %" widget="percentage"/>
+                <field name="current_utilization" string="📦 Current Usage"/>
+                <field name="current_utilization" string="📊 Utilization %" widget="percentage"/>
+                <field name="available_utilization" string="🆓 Available %" widget="percentage"/>
+                <field name="available_spaces" string="📭 Open Spaces"/>
                 <field name="active" string="✅ Active"/>
                 <button name="action_view_boxes" type="object" string="View Boxes" 
                         icon="fa-cube" class="btn-link"/>
@@ -104,8 +111,14 @@
                         </button>
                         <button class="oe_stat_button" type="object" name="action_location_report" icon="fa-bar-chart">
                             <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value"><field name="utilization_percentage"/>%</span>
+                                <span class="o_stat_value"><field name="current_utilization"/>%</span>
                                 <span class="o_stat_text">Utilization</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-check-circle" style="color: green;">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="available_spaces"/></span>
+                                <span class="o_stat_text">Available</span>
                             </div>
                         </button>
                     </div>
@@ -118,8 +131,11 @@
                         </group>
                         <group string="📊 Capacity &amp; Usage">
                             <field name="capacity"/>
-                            <field name="current_occupancy"/>
-                            <field name="utilization_percentage" widget="percentage"/>
+                            <field name="current_utilization"/>
+                            <field name="current_utilization" widget="percentage"/>
+                            <separator string="Available Space"/>
+                            <field name="available_utilization" widget="percentage"/>
+                            <field name="available_spaces"/>
                         </group>
                     </group>
                     
@@ -163,11 +179,19 @@
                 <field name="location_type"/>
                 
                 <filter string="🟢 Available Space" name="available_space" 
-                        domain="[('current_occupancy', '&lt;', 'capacity')]"/>
+                        domain="[('current_utilization', '&lt;', 'capacity')]"/>
                 <filter string="🟡 Near Capacity" name="near_capacity" 
-                        domain="[('current_occupancy', '&gt;=', 'capacity * 0.8')]"/>
+                        domain="[('current_utilization', '&gt;=', 'capacity * 0.8')]"/>
                 <filter string="🔴 At Capacity" name="at_capacity" 
-                        domain="[('current_occupancy', '&gt;=', 'capacity')]"/>
+                        domain="[('current_utilization', '&gt;=', 'capacity')]"/>
+                        
+                <separator/>
+                <filter string="🆓 High Availability (>50%)" name="high_availability" 
+                        domain="[('available_utilization', '&gt;', 50)]"/>
+                <filter string="📭 10+ Open Spaces" name="many_open_spaces" 
+                        domain="[('available_spaces', '&gt;=', 10)]"/>
+                <filter string="🎯 Optimal Load (20-80%)" name="optimal_load" 
+                        domain="[('current_utilization', '&gt;=', 20), ('current_utilization', '&lt;=', 80)]"/>
                 
                 <separator/>
                 <filter string="📦 Active Locations" name="active" domain="[('active', '=', True)]"/>

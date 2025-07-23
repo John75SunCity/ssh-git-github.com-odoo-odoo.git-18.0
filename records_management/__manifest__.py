@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
                 'name': 'Records Management',
-                'version': '18.0.3.3.2',   # 🔧 FIELD FIX: Added missing utilization_percentage field
+                'version': '18.0.3.3.3',   # 🔧 FIELD FIX: Fixed utilization_percentage references in views
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """

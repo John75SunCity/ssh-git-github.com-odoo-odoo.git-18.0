@@ -49,7 +49,7 @@ class LocationReportWizard(models.TransientModel):
                     locations.extend(wizard.location_id.child_ids)
                 
                 total_capacity = sum(loc.capacity or 0 for loc in locations)
-                current_occupancy = sum(loc.current_occupancy or 0 for loc in locations)
+                current_occupancy = sum(loc.current_utilization or 0 for loc in locations)
                 
                 wizard.total_capacity = total_capacity
                 wizard.current_occupancy = current_occupancy

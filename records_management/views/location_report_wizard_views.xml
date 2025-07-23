@@ -27,7 +27,7 @@
                         
                         <group string="📊 Current Statistics">
                             <field name="total_capacity" readonly="1"/>
-                            <field name="current_occupancy" readonly="1"/>
+                            <field name="current_utilization" readonly="1"/>
                             <field name="utilization_percentage" widget="percentage" readonly="1"/>
                         </group>
                     </group>
