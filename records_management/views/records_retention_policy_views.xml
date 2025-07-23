@@ -142,7 +142,7 @@
                   name="Retention Policies"
                   parent="menu_records_configuration"
                   action="action_records_retention_policy"
-                  sequence="30"/>
+                  sequence="35"/>
 
     </data>
 </odoo>
