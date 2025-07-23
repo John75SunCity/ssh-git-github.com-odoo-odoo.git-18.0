@@ -10,14 +10,14 @@ class CustomerFeedback(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'submitted_date desc'
 
-    name = fields.Char(string='Subject', required=True, tracking=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, readonly=True, tracking=True)
+    name = fields.Char(string='Subject', required=True)
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True, readonly=True)
     feedback_type = fields.Selection([
         ('suggestion', 'Suggestion'),
         ('concern', 'Concern'),
         ('compliment', 'Compliment'),
         ('general', 'General'),
-    ], string='Feedback Type', required=True, tracking=True)
+    ], string='Feedback Type', required=True)
     
     # Core feedback fields
     rating = fields.Selection([
@@ -26,10 +26,10 @@ class CustomerFeedback(models.Model):
         ('3', 'Average'),
         ('4', 'Good'),
         ('5', 'Excellent')
-    ], string='Rating', tracking=True)
+    ], string='Rating')
     
-    comments = fields.Text(string='Comments', tracking=True)
-    service_area = fields.Char(string='Service Area', default='portal', tracking=True)
+    comments = fields.Text(string='Comments')
+    service_area = fields.Char(string='Service Area', default='portal')
     submitted_date = fields.Datetime(string='Submitted Date', default=fields.Datetime.now, readonly=True)
     
     # AI-ready sentiment analysis
@@ -47,11 +47,11 @@ class CustomerFeedback(models.Model):
         ('reviewed', 'Reviewed'),
         ('responded', 'Responded'),
         ('closed', 'Closed')
-    ], string='Status', default='new', tracking=True)
+    ], string='Status', default='new')
     
-    response = fields.Text(string='Management Response', tracking=True)
-    response_date = fields.Datetime(string='Response Date', tracking=True)
-    response_user_id = fields.Many2one('res.users', string='Responded By', tracking=True)
+    response = fields.Text(string='Management Response')
+    response_date = fields.Datetime(string='Response Date')
+    response_user_id = fields.Many2one('res.users', string='Responded By')
     
     # Integration fields
     linked_request_id = fields.Many2one('portal.request', string='Linked Request', 
@@ -61,7 +61,7 @@ class CustomerFeedback(models.Model):
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-    ], string='Priority', default='normal', tracking=True)
+    ], string='Priority', default='normal')
     
     # Phase 3: Customer Feedback Analytics
     
@@ -262,8 +262,7 @@ class CustomerFeedback(models.Model):
         res.message_post(
             body=_('Customer feedback submitted by %s (ID: %s) - NAID Audit Log', 
                   res.partner_id.name, res.partner_id.id),
-            message_type='notification',
-        )
+            message_type='notification')
         
         # Auto-assign priority based on sentiment and rating
         if res.sentiment_category == 'negative' or (res.rating and int(res.rating) <= 2):

@@ -14,14 +14,12 @@ class PickupRequest(models.Model):
     name = fields.Char(
         string='Name',
         required=True,
-        default='New',
-        tracking=True
+        default='New'
     )
     customer_id = fields.Many2one(
         'res.partner',
         string='Customer',
-        required=True,
-        tracking=True
+        required=True
     )
     box_id = fields.Many2one(
         'records.box',
@@ -31,8 +29,7 @@ class PickupRequest(models.Model):
     request_date = fields.Date(
         string='Request Date',
         default=fields.Date.context_today,
-        required=True,
-        tracking=True
+        required=True
     )
     request_item_ids = fields.One2many(
         'pickup.request.item',
@@ -44,15 +41,14 @@ class PickupRequest(models.Model):
     # Phase 2: Audit & Compliance Fields (12 fields)
     audit_required = fields.Boolean(
         string='Audit Required',
-        default=False,
-        tracking=True
+        default=False
     )
     compliance_status = fields.Selection([
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('under_review', 'Under Review')
-    ], string='Compliance Status', default='pending', tracking=True)
+    ], string='Compliance Status', default='pending')
     risk_level = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
@@ -62,8 +58,7 @@ class PickupRequest(models.Model):
     regulatory_requirement = fields.Text(string='Regulatory Requirement')
     approval_required = fields.Boolean(
         string='Approval Required',
-        default=False,
-        tracking=True
+        default=False
     )
     approved_by = fields.Many2one('res.users', string='Approved By')
     approval_date = fields.Datetime(string='Approval Date')
@@ -81,13 +76,11 @@ class PickupRequest(models.Model):
     product_id = fields.Many2one(
         'product.product',
         string='Product',
-        required=True,
-        tracking=True
+        required=True
     )
     quantity = fields.Float(
         string='Quantity',
         required=True,
-        tracking=True,
         digits=(16, 2)
     )
     lot_id = fields.Many2one(
@@ -101,28 +94,25 @@ class PickupRequest(models.Model):
         ('scheduled', 'Scheduled'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    ], default='draft', string='Status', tracking=True)
-    scheduled_date = fields.Date(string='Scheduled Date', tracking=True)
+    ], default='draft', string='Status')
+    scheduled_date = fields.Date(string='Scheduled Date')
     warehouse_id = fields.Many2one(
         'stock.warehouse',
-        string='Warehouse',
-        tracking=True
+        string='Warehouse'
     )
     driver_id = fields.Many2one(
         'res.partner',
         string='Driver',
-        domain="[('is_company', '=', False)]",
-        tracking=True
+        domain="[('is_company', '=', False)]"
     )
     vehicle_id = fields.Many2one(
         'fleet.vehicle',
-        string='Vehicle',
-        tracking=True
+        string='Vehicle'
     )
     priority = fields.Selection([
         ('0', 'Normal'),
         ('1', 'High')
-    ], default='0', string='Priority', tracking=True)
+    ], default='0', string='Priority')
 
     # Phase 3: Analytics & Computed Fields (9 fields)
     pickup_efficiency_score = fields.Float(
@@ -182,7 +172,7 @@ class PickupRequest(models.Model):
     signature = fields.Binary(string='Signature')
     signed_by = fields.Many2one('res.users', string='Signed By')
     signature_date = fields.Datetime(string='Signature Date')
-    completion_date = fields.Date(string='Completion Date', tracking=True)
+    completion_date = fields.Date(string='Completion Date')
 
     @api.depends('state', 'priority', 'request_date', 'scheduled_date', 'completion_date', 
                  'quantity', 'security_level', 'risk_level', 'compliance_status')

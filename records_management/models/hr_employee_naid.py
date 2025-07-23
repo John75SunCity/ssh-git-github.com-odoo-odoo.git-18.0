@@ -25,7 +25,7 @@ class HREmployeeNAID(models.Model):
         ('rejected', 'Rejected'),
         ('expired', 'Expired'),
         ('renewal_required', 'Renewal Required')
-    ], string='Background Check Status', default='pending', tracking=True)
+    ], string='Background Check Status', default='pending')
     
     background_check_date = fields.Date(
         string='Background Check Date',
@@ -54,7 +54,7 @@ class HREmployeeNAID(models.Model):
         ('confidential', 'Confidential Access'),
         ('secret', 'Secret Access'),
         ('top_secret', 'Top Secret Access')
-    ], string='Security Clearance Level', default='none', tracking=True)
+    ], string='Security Clearance Level', default='none')
     
     security_clearance_date = fields.Date(
         string='Security Clearance Date'
@@ -67,8 +67,7 @@ class HREmployeeNAID(models.Model):
     # NAID Specific Training
     naid_training_completed = fields.Boolean(
         string='NAID Training Completed',
-        default=False,
-        tracking=True
+        default=False
     )
     
     naid_training_date = fields.Date(
@@ -90,7 +89,7 @@ class HREmployeeNAID(models.Model):
         ('warehouse', 'Warehouse Access'),
         ('destruction', 'Destruction Area'),
         ('full', 'Full Facility Access')
-    ], string='Facility Access Level', default='none', tracking=True)
+    ], string='Facility Access Level', default='none')
     
     access_card_number = fields.Char(
         string='Access Card Number',
@@ -103,8 +102,7 @@ class HREmployeeNAID(models.Model):
     
     access_card_active = fields.Boolean(
         string='Access Card Active',
-        default=False,
-        tracking=True
+        default=False
     )
     
     # Emergency Contacts (Enhanced)

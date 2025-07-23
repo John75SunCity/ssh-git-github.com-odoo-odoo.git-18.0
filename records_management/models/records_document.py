@@ -10,9 +10,9 @@ class RecordsDocument(models.Model):
     _order = 'date desc, name'
 
     # Core fields
-    name = fields.Char('Document Reference', required=True, tracking=True)
+    name = fields.Char('Document Reference', required=True)
     box_id = fields.Many2one(
-        'records.box', string='Box', required=True, tracking=True,
+        'records.box', string='Box', required=True,
         index=True, domain="[('state', '=', 'active')]"
     )
     location_id = fields.Many2one(
@@ -91,16 +91,15 @@ class RecordsDocument(models.Model):
         'records.retention.policy', string='Retention Policy'
     )
     retention_date = fields.Date(
-        'Retention Date', tracking=True,
+        'Retention Date',
         compute='_compute_retention_date', store=True
     )
     expiry_date = fields.Date(
-        'Expiry Date', tracking=True,
+        'Expiry Date',
         help='Date when the document expires and should be reviewed for destruction'
     )
     destruction_eligible_date = fields.Date(
-        'Destruction Eligible Date', 
-        tracking=True,
+        'Destruction Eligible Date',
         compute='_compute_destruction_eligible_date',
         store=True,
         help='Date when the document becomes eligible for destruction based on retention policy'
@@ -120,16 +119,13 @@ class RecordsDocument(models.Model):
         'res.partner',
         string='Customer',
         domain="[('is_company', '=', True)]",
-        tracking=True,
         index=True
     )
     department_id = fields.Many2one(
-        'records.department', string='Department',
-        tracking=True, index=True
+        'records.department', string='Department', index=True
     )
     user_id = fields.Many2one(
-        'res.users', string='Responsible',
-        tracking=True
+        'res.users', string='Responsible'
     )
     company_id = fields.Many2one(
         'res.company', string='Company',
@@ -159,21 +155,20 @@ class RecordsDocument(models.Model):
         ('returned', 'Returned'),
         ('archived', 'Archived'),
         ('destroyed', 'Destroyed')
-    ], string='Status', default='draft', tracking=True)
+    ], string='Status', default='draft')
     destruction_method = fields.Selection([
         ('shredding', 'Shredding'),
         ('pulping', 'Pulping'),
         ('incineration', 'Incineration'),
         ('disintegration', 'Disintegration')
-    ], string='Destruction Method', tracking=True)
+    ], string='Destruction Method')
     active = fields.Boolean(default=True)
 
     # Security fields
     hashed_content = fields.Char('Content Hash', readonly=True)
     permanent_flag = fields.Boolean(
         'Permanent Record', 
-        default=False, 
-        tracking=True,
+        default=False,
         help="When checked, this document is marked as permanent and excluded from destruction schedules. "
              "Only administrators can remove this flag."
     )

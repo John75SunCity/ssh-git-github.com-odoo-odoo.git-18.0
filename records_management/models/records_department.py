@@ -21,25 +21,25 @@ class RecordsDepartment(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
 
-    name = fields.Char(string='Department Name', required=True, tracking=True)
-    code = fields.Char(string='Code', tracking=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True, index=True)
-    parent_id = fields.Many2one('records.department', string='Parent Department', index=True, tracking=True)
+    name = fields.Char(string='Department Name', required=True)
+    code = fields.Char(string='Code')
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True, index=True)
+    parent_id = fields.Many2one('records.department', string='Parent Department', index=True)
     child_ids = fields.One2many('records.department', 'parent_id', string='Sub-Departments')
     
     # Contact Information
-    manager_id = fields.Many2one('res.partner', string='Manager', tracking=True)
-    phone = fields.Char(string='Phone', tracking=True)
-    email = fields.Char(string='Email', tracking=True)
+    manager_id = fields.Many2one('res.partner', string='Manager')
+    phone = fields.Char(string='Phone')
+    email = fields.Char(string='Email')
     
     # Additional Information
-    description = fields.Text(string='Description', tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, tracking=True)
+    description = fields.Text(string='Description')
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     
-    retention_policy_id = fields.Many2one('records.retention.policy', string='Retention Policy', tracking=True)
-    notes = fields.Text(string='Notes', tracking=True)
+    retention_policy_id = fields.Many2one('records.retention.policy', string='Retention Policy')
+    notes = fields.Text(string='Notes')
     hashed_code = fields.Char(compute='_compute_hashed_code', store=True)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     monthly_cost = fields.Float(compute='_compute_monthly_cost', store=True, help='Optimized with PuLP if available.')
     
     # Computed fields for billing views

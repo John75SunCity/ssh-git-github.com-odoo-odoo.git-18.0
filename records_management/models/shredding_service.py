@@ -13,19 +13,19 @@ class ShreddingService(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'service_date desc, name'
 
-    name = fields.Char(string='Service Reference', required=True, default='New', tracking=True)
+    name = fields.Char(string='Service Reference', required=True, default='New')
     status = fields.Selection([
         ('draft', 'Draft'), ('confirmed', 'Confirmed'), ('in_progress', 'In Progress'),
         ('completed', 'Completed'), ('invoiced', 'Invoiced'), ('cancelled', 'Cancelled')
-    ], default='draft', string='Status', tracking=True)
-    customer_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    ], default='draft', string='Status')
+    customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     department_id = fields.Many2one('records.department', string='Department', domain="[('partner_id', '=', customer_id)]")  # Added for granular
-    service_date = fields.Date(string='Service Date', default=fields.Date.context_today, required=True, tracking=True)
-    scheduled_date = fields.Date(string='Scheduled Date', tracking=True)
+    service_date = fields.Date(string='Service Date', default=fields.Date.context_today, required=True)
+    scheduled_date = fields.Date(string='Scheduled Date')
     service_type = fields.Selection([
         ('bin', 'Bin Shredding'), ('box', 'Box Shredding'),
         ('hard_drive', 'Hard Drive Destruction'), ('uniform', 'Uniform Shredding')
-    ], string='Service Type', required=True, tracking=True)  # Expanded for new services
+    ], string='Service Type', required=True)  # Expanded for new services
     bin_ids = fields.Many2many(
         'stock.lot',
         relation='shredding_service_bin_rel',  # Custom relation to avoid conflict with shredded_box_ids
@@ -34,29 +34,29 @@ class ShreddingService(models.Model):
         string='Serviced Bins',
         domain="[('product_id.name', '=', 'Shredding Bin')]"
     )
-    box_quantity = fields.Integer(string='Number of Boxes', tracking=True)
-    shredded_box_ids = fields.Many2many('stock.lot', string='Shredded Boxes', domain="[('customer_id', '!=', False)]", tracking=True)
-    hard_drive_quantity = fields.Integer(string='Number of Hard Drives', tracking=True)  # New
-    hard_drive_ids = fields.One2many('shredding.hard_drive', 'service_id', string='Hard Drive Details', tracking=True)
+    box_quantity = fields.Integer(string='Number of Boxes')
+    shredded_box_ids = fields.Many2many('stock.lot', string='Shredded Boxes', domain="[('customer_id', '!=', False)]")
+    hard_drive_quantity = fields.Integer(string='Number of Hard Drives')  # New
+    hard_drive_ids = fields.One2many('shredding.hard_drive', 'service_id', string='Hard Drive Details')
     hard_drive_scanned_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Scanned Count', compute_sudo=False)
     hard_drive_verified_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Verified Count', compute_sudo=False)
-    uniform_quantity = fields.Integer(string='Number of Uniforms', tracking=True)  # New
-    total_boxes = fields.Integer(compute='_compute_total_boxes', store=True, tracking=True)
-    unit_cost = fields.Float(string='Unit Cost', default=5.0, tracking=True)
-    total_cost = fields.Float(compute='_compute_total_cost', store=True, tracking=True)
-    notes = fields.Text(string='Notes', tracking=True)
-    company_id = fields.Many2one('res.company', default=lambda self: self.env.company, tracking=True)
-    audit_barcodes = fields.Text(string='Audit Barcodes', help='Barcodes for NAID audit trails', tracking=True)
-    total_charge = fields.Float(compute='_compute_total_charge', store=True, tracking=True)
+    uniform_quantity = fields.Integer(string='Number of Uniforms')  # New
+    total_boxes = fields.Integer(compute='_compute_total_boxes', store=True)
+    unit_cost = fields.Float(string='Unit Cost', default=5.0)
+    total_cost = fields.Float(compute='_compute_total_cost', store=True)
+    notes = fields.Text(string='Notes')
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    audit_barcodes = fields.Text(string='Audit Barcodes', help='Barcodes for NAID audit trails')
+    total_charge = fields.Float(compute='_compute_total_charge', store=True)
     timestamp = fields.Datetime(default=fields.Datetime.now, readonly=True)
-    latitude = fields.Float(string='Latitude (for mobile verification)', digits=(16, 8), tracking=True)
-    longitude = fields.Float('Longitude', digits=(16, 8), tracking=True)
+    latitude = fields.Float(string='Latitude (for mobile verification)', digits=(16, 8))
+    longitude = fields.Float('Longitude', digits=(16, 8))
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments (e.g., photos, CCTV clips)')
     map_display = fields.Char(compute='_compute_map_display', store=True)
     certificate_id = fields.Many2one('ir.attachment', string='Destruction Certificate', readonly=True)  # New for auto-certificate
     invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True)  # New for auto-invoicing
     bale_ids = fields.One2many('paper.bale', 'shredding_id', string='Generated Bales')  # Link to bales
-    pos_session_id = fields.Many2one('pos.session', string='POS Session (Walk-in)', tracking=True)  # New for walk-in
+    pos_session_id = fields.Many2one('pos.session', string='POS Session (Walk-in)')  # New for walk-in
     estimated_bale_weight = fields.Float(compute='_compute_estimated_bale_weight', store=True, help='Predictive weight for recycling efficiency')
 
     # Phase 2 Audit & Compliance Fields - Added by automated script
@@ -66,7 +66,7 @@ class ShreddingService(models.Model):
     witness_verification_required = fields.Boolean('Witness Verification Required', default=True)
     photo_documentation_required = fields.Boolean('Photo Documentation Required', default=True)
     video_documentation_required = fields.Boolean('Video Documentation Required', default=False)
-    certificate_of_destruction_id = fields.Many2one('records.destruction.certificate', string='Certificate of Destruction')
+    certificate_of_destruction = fields.Text('Certificate of Destruction Notes')
     audit_trail_ids = fields.One2many('records.audit.log', 'shredding_service_id', string='Audit Trail')
     compliance_documentation_ids = fields.One2many('ir.attachment', 'res_id', string='Compliance Documentation', domain=[('res_model', '=', 'shredding.service')])
     destruction_method_verified = fields.Boolean('Destruction Method Verified', default=False)

@@ -28,7 +28,7 @@ class PortalRequest(models.Model):
         ('submitted', 'Submitted'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
-    ], default='draft', tracking=True)
+    ], default='draft')
     
     # Phase 1: Explicit Activity & Messaging Fields (3 fields)
     activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')

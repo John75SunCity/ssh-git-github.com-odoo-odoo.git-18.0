@@ -18,6 +18,7 @@ class NAIDChainOfCustody(models.Model):
     """
     _name = 'naid.chain.custody'
     _description = 'NAID Chain of Custody'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'start_date desc'
     _rec_name = 'name'
 
@@ -216,6 +217,7 @@ class NAIDCustodyEvent(models.Model):
     """
     _name = 'naid.custody.event'
     _description = 'NAID Custody Event'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'timestamp desc'
 
     custody_id = fields.Many2one(

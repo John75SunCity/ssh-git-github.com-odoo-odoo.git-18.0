@@ -11,7 +11,7 @@ class RecordsLocation(models.Model):
     _order = 'complete_name'
 
     code = fields.Char('Location Code', required=False, index=True, help='Short code for this location (for barcode, reference, etc.)')
-    name = fields.Char('Location Name', required=True, tracking=True)
+    name = fields.Char('Location Name', required=True)
     complete_name = fields.Char('Complete Name', compute='_compute_complete_name', recursive=True, store=True)
     parent_id = fields.Many2one('records.location', 'Parent Location', index=True, ondelete='cascade')
     parent_path = fields.Char(index=True)
@@ -25,7 +25,7 @@ class RecordsLocation(models.Model):
         ('map', 'Map Storage - Map Boxes (Type 03)'),
         ('oversize', 'Oversize - Odd-Shaped Boxes (Type 04)'),
         ('refiles', 'Refiles - Staging for Returns/Put-Away'),
-    ], string='Location Type', required=True, default='aisles', tracking=True,
+    ], string='Location Type', required=True, default='aisles',
        help="""Location type determines what kind of boxes can be stored:
        • Aisles/Pallets: Standard file boxes (Type 01) - monthly rent
        • Vault: Specialty boxes (Type 06) - secure storage

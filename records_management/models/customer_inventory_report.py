@@ -67,15 +67,14 @@ class CustomerInventoryReport(models.Model):
     # Phase 2: Audit & Compliance Fields (12 fields)
     audit_required = fields.Boolean(
         string='Audit Required',
-        default=False,
-        tracking=True
+        default=False
     )
     compliance_status = fields.Selection([
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('under_review', 'Under Review')
-    ], string='Compliance Status', default='pending', tracking=True)
+    ], string='Compliance Status', default='pending')
     risk_level = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
@@ -85,8 +84,7 @@ class CustomerInventoryReport(models.Model):
     regulatory_requirement = fields.Text(string='Regulatory Requirement')
     approval_required = fields.Boolean(
         string='Approval Required',
-        default=False,
-        tracking=True
+        default=False
     )
     approved_by = fields.Many2one('res.users', string='Approved By')
     approval_date = fields.Datetime(string='Approval Date')
@@ -975,7 +973,7 @@ class RecordsServiceRequest(models.Model):
         
         # Other
         ('other', 'Other - Custom service type')
-    ], string='Service Type', required=True, tracking=True)
+    ], string='Service Type', required=True)
     
     # Enhanced action codes from O'Neil Stratus
     action_code = fields.Char('Action Code', 
@@ -987,23 +985,23 @@ class RecordsServiceRequest(models.Model):
     transaction_type = fields.Selection([
         ('workorder', 'Work Order'),
         ('invoice', 'Invoice')
-    ], string='Transaction Type', default='workorder', tracking=True)
+    ], string='Transaction Type', default='workorder')
     
     priority = fields.Selection([
         ('low', 'Low'),
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-    ], string='Priority', default='normal', tracking=True)
+    ], string='Priority', default='normal')
     
     # Customer/Department Info
     customer_id = fields.Many2one(
         'res.partner', string='Customer', required=True,
-        domain="[('is_company', '=', True)]", tracking=True)
+        domain="[('is_company', '=', True)]")
     department_id = fields.Many2one(
-        'records.department', string='Department', tracking=True)
+        'records.department', string='Department')
     requested_by = fields.Many2one(
-        'res.partner', string='Requested By', required=True, tracking=True)
+        'res.partner', string='Requested By', required=True)
     
     # Service Details
     description = fields.Html(string='Description', required=True)
@@ -1015,9 +1013,9 @@ class RecordsServiceRequest(models.Model):
     
     # Scheduling
     requested_date = fields.Datetime(
-        string='Requested Date', default=fields.Datetime.now, tracking=True)
-    scheduled_date = fields.Datetime(string='Scheduled Date', tracking=True)
-    completed_date = fields.Datetime(string='Completed Date', tracking=True)
+        string='Requested Date', default=fields.Datetime.now)
+    scheduled_date = fields.Datetime(string='Scheduled Date')
+    completed_date = fields.Datetime(string='Completed Date')
     
     # Status and Workflow
     state = fields.Selection([
@@ -1028,7 +1026,7 @@ class RecordsServiceRequest(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
+    ], string='Status', default='draft')
      # Costs and Billing - Enhanced with O'Neil Stratus features
     estimated_cost = fields.Float(string='Estimated Cost')
     actual_cost = fields.Float(string='Actual Cost')
@@ -1118,12 +1116,11 @@ class RecordsDeletionRequest(models.Model):
     # Request Details
     customer_id = fields.Many2one(
         'res.partner', string='Customer', required=True,
-        domain="[('is_company', '=', True)]", tracking=True)
+        domain="[('is_company', '=', True)]")
     department_id = fields.Many2one(
-        'records.department', string='Department', required=True,
-        tracking=True)
+        'records.department', string='Department', required=True)
     requested_by = fields.Many2one(
-        'res.partner', string='Requested By', required=True, tracking=True)
+        'res.partner', string='Requested By', required=True)
     
     # Items to Delete
     box_ids = fields.Many2many(
@@ -1138,7 +1135,7 @@ class RecordsDeletionRequest(models.Model):
         ('legal_requirement', 'Legal Requirement'),
         ('space_optimization', 'Space Optimization'),
         ('other', 'Other')
-    ], string='Deletion Reason', required=True, tracking=True)
+    ], string='Deletion Reason', required=True)
     justification = fields.Html(
         string='Justification', required=True,
         help="Detailed justification for the deletion request")
@@ -1148,7 +1145,7 @@ class RecordsDeletionRequest(models.Model):
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected')
-    ], string='Department Admin Approval', default='pending', tracking=True)
+    ], string='Department Admin Approval', default='pending')
     dept_admin_approved_by = fields.Many2one(
         'res.partner', string='Dept Admin Approved By')
     dept_admin_approval_date = fields.Datetime(
@@ -1160,7 +1157,7 @@ class RecordsDeletionRequest(models.Model):
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected')
-    ], string='Company Admin Approval', default='pending', tracking=True)
+    ], string='Company Admin Approval', default='pending')
     company_admin_approved_by = fields.Many2one(
         'res.partner', string='Company Admin Approved By')
     company_admin_approval_date = fields.Datetime(
@@ -1177,7 +1174,7 @@ class RecordsDeletionRequest(models.Model):
         ('rejected', 'Rejected'),
         ('executed', 'Deletion Executed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True,
+    ], string='Status', default='draft',
        compute='_compute_state', store=True)
     
     # Billing and Execution
@@ -1478,7 +1475,7 @@ class RecordsBillingPeriod(models.Model):
         ('approved', 'Approved'),
         ('invoiced', 'Invoiced'),
         ('closed', 'Closed')
-    ], string='Status', default='draft', tracking=True)
+    ], string='Status', default='draft')
     
     # Billing Lines
     billing_line_ids = fields.One2many(

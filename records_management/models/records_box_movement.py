@@ -329,14 +329,14 @@ class RecordsServiceRequest(models.Model):
         ('relocation', 'Box Relocation'),
         ('inventory', 'Inventory Check'),
         ('other', 'Other Service')
-    ], string='Service Type', required=True, tracking=True)
+    ], string='Service Type', required=True)
     
     priority = fields.Selection([
         ('low', 'Low'),
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-    ], string='Priority', default='normal', required=True, tracking=True)
+    ], string='Priority', default='normal', required=True)
     
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -345,7 +345,7 @@ class RecordsServiceRequest(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', required=True, tracking=True)
+    ], string='Status', default='draft', required=True)
     
     requested_date = fields.Datetime('Requested Date', required=True, default=fields.Datetime.now)
     required_date = fields.Date('Required Date')
@@ -355,11 +355,11 @@ class RecordsServiceRequest(models.Model):
     notes = fields.Text('Internal Notes')
     
     # Assignment
-    assigned_to = fields.Many2one('res.users', string='Assigned To', tracking=True)
+    assigned_to = fields.Many2one('res.users', string='Assigned To')
     
     # Tracking
     requestor_id = fields.Many2one('res.users', string='Requestor', 
-                                 default=lambda self: self.env.user, required=True, tracking=True)
+                                 default=lambda self: self.env.user, required=True)
     
     # Phase 3: Advanced Service Request Analytics
     

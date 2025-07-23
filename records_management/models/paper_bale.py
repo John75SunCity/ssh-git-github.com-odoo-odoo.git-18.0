@@ -64,13 +64,13 @@ class PaperBale(models.Model):
     )
 
     # Basic fields structure - ready for your code
-    name = fields.Char(string='Bale Reference', required=True, default='New', tracking=True)
+    name = fields.Char(string='Bale Reference', required=True, default='New')
     shredding_id = fields.Many2one('shredding.service', string='Related Shredding Service')
     paper_type = fields.Selection([
         ('white', 'White Paper'),
         ('mixed', 'Mixed Paper'),
     ], string='Paper Type', required=True, default='white')
-    weight = fields.Float(string='Weight (lbs)', tracking=True)
+    weight = fields.Float(string='Weight (lbs)')
     
     @api.depends('weight', 'paper_type', 'create_date')
     def _compute_analytics(self):

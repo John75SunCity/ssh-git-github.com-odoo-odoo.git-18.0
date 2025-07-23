@@ -13,18 +13,18 @@ class Billing(models.Model):
     # Phase 1: Explicit Activity Field (1 field)
     activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
 
-    name = fields.Char('Reference', required=True, tracking=True)
-    partner_id = fields.Many2one('res.partner', 'Customer', required=True, tracking=True)
-    department_id = fields.Many2one('records.department', 'Department', tracking=True)
-    invoice_date = fields.Date('Invoice Date', default=fields.Date.today, tracking=True)
-    amount_total = fields.Float('Total Amount', tracking=True)
+    name = fields.Char('Reference', required=True)
+    partner_id = fields.Many2one('res.partner', 'Customer', required=True)
+    department_id = fields.Many2one('records.department', 'Department')
+    invoice_date = fields.Date('Invoice Date', default=fields.Date.today)
+    amount_total = fields.Float('Total Amount')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('invoiced', 'Invoiced'),
         ('paid', 'Paid'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
+    ], string='Status', default='draft')
     
     # Invoice integration
     invoice_id = fields.Many2one('account.move', 'Invoice', readonly=True)

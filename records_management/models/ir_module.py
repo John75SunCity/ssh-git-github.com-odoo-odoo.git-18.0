@@ -169,8 +169,7 @@ class IrModule(models.Model):
                         url=url_path,
                         res_model='ir.ui.view',
                         type='binary',
-                        datas=data,
-                    )
+                        datas=data)
                     # Do not create a bridge module for this check.
                     if 'public' in IrAttachment._fields:
                         # Static data is public and not website-specific.
@@ -237,8 +236,7 @@ class IrModule(models.Model):
             [module],
             [lang for lang, _name in self.env['res.lang'].get_installed()],
             overwrite=True,
-            imported_module=True,
-        )
+            imported_module=True)
 
         if ('knowledge.article' in self.env
             and (article_record := self.env.ref(f"{module}.welcome_article", raise_if_not_found=False))
@@ -314,8 +312,7 @@ class IrModule(models.Model):
                     except Exception as e:
                         raise UserError(_(
                             "Error while importing module '%(module)s'.\n\n %(error_message)s \n\n",
-                            module=mod_name, error_message=str(e),
-                        ))
+                            module=mod_name, error_message=str(e)))
         return "", module_names
 
     def module_uninstall(self):
@@ -420,8 +417,7 @@ class IrModule(models.Model):
                 f"{APPS_URL}/loempia/listdatamodules",
                 data=payload,
                 headers=headers,
-                timeout=5.0,
-            )
+                timeout=5.0)
 
     @api.model
     @ormcache()
@@ -430,8 +426,7 @@ class IrModule(models.Model):
             resp = requests.post(
                 f"{APPS_URL}/loempia/listindustrycategory",
                 json={'params': {}},
-                timeout=5.0,
-            )
+                timeout=5.0)
             resp.raise_for_status()
             return resp.json().get('result', [])
         except requests.exceptions.HTTPError:
@@ -446,8 +441,7 @@ class IrModule(models.Model):
         try:
             resp = requests.get(
                 f"{APPS_URL}/loempia/download/data_app/{module_name}/{major_version}",
-                timeout=5.0,
-            )
+                timeout=5.0)
             resp.raise_for_status()
             missing_dependencies_description, unavailable_modules = self._get_missing_dependencies(resp.content)
             if unavailable_modules:
@@ -490,8 +484,7 @@ class IrModule(models.Model):
         else:
             description = _(
                 "Load demo data to test the industry's features with sample records. "
-                "Do not load them if this is your production database.",
-            )
+                "Do not load them if this is your production database.")
         return description, unavailable_modules
 
     def _get_missing_dependencies_modules(self, zip_data):
@@ -537,7 +530,7 @@ def _domain_asks_for_industries(domain):
         if is_leaf(dom) and dom[0] == 'module_type':
             if dom[2] == 'industries':
                 if dom[1] != '=':
-                    raise UserError('%r is an unsupported leaf' % (dom,))
+                    raise UserError('%r is an unsupported leaf' % (dom))
                 return True
     return False
 

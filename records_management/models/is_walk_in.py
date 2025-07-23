@@ -24,7 +24,7 @@ class PortalRequest(models.Model):
         ('submitted', 'Submitted'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
-    ], default='draft', tracking=True)
+    ], default='draft')
     
     # Missing fields that caused the view error
     is_walk_in = fields.Boolean(string='Walk-in Request', default=False, help='Indicates if this is a walk-in request')

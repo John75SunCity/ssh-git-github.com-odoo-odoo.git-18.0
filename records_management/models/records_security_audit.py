@@ -22,15 +22,13 @@ class RecordsSecurityAudit(models.Model):
     name = fields.Char(
         string='Audit Reference',
         required=True,
-        default='New',
-        tracking=True
+        default='New'
     )
     
     audit_date = fields.Date(
         string='Audit Date',
         default=fields.Date.context_today,
-        required=True,
-        tracking=True
+        required=True
     )
     
     audit_type = fields.Selection([
@@ -40,7 +38,7 @@ class RecordsSecurityAudit(models.Model):
         ('personnel', 'Personnel Security Audit'),
         ('system', 'System Security Audit'),
         ('compliance', 'Compliance Audit')
-    ], string='Audit Type', required=True, default='location', tracking=True)
+    ], string='Audit Type', required=True, default='location')
     
     # Related entities
     location_id = fields.Many2one(
@@ -53,8 +51,7 @@ class RecordsSecurityAudit(models.Model):
         'res.users',
         string='Auditor',
         default=lambda self: self.env.user,
-        required=True,
-        tracking=True
+        required=True
     )
     
     # Audit status and results
@@ -64,14 +61,14 @@ class RecordsSecurityAudit(models.Model):
         ('completed', 'Completed'),
         ('failed', 'Failed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='scheduled', tracking=True)
+    ], string='Status', default='scheduled')
     
     result = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('conditional', 'Conditional Pass'),
         ('pending', 'Pending Review')
-    ], string='Audit Result', tracking=True)
+    ], string='Audit Result')
     
     # Security assessment scores
     security_score = fields.Float(

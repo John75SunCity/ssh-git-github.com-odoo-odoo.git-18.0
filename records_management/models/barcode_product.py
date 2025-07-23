@@ -7,10 +7,10 @@ class BarcodeProduct(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
 
-    name = fields.Char('Product Name', required=True, tracking=True)
-    barcode = fields.Char('Barcode', required=True, index=True, tracking=True)
-    product_id = fields.Many2one('product.product', 'Related Product', tracking=True)
-    active = fields.Boolean('Active', default=True, tracking=True)
+    name = fields.Char('Product Name', required=True)
+    barcode = fields.Char('Barcode', required=True, index=True)
+    product_id = fields.Many2one('product.product', 'Related Product')
+    active = fields.Boolean('Active', default=True)
     
     # Product details
     description = fields.Text('Description')
@@ -20,10 +20,10 @@ class BarcodeProduct(models.Model):
         ('retrieval', 'Retrieval Service'),
         ('scanning', 'Scanning Service'),
         ('other', 'Other Service'),
-    ], string='Category', default='storage', tracking=True)
+    ], string='Category', default='storage')
     
     # Pricing
-    unit_price = fields.Float('Unit Price', tracking=True)
+    unit_price = fields.Float('Unit Price')
     currency_id = fields.Many2one('res.currency', 'Currency', 
                                  default=lambda self: self.env.company.currency_id)
     

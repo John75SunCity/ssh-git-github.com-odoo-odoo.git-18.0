@@ -18,6 +18,7 @@ class NAIDAuditLog(models.Model):
     """
     _name = 'naid.audit.log'
     _description = 'NAID AAA Compliance Audit Log'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'timestamp desc'
     _rec_name = 'event_type'
 
@@ -541,6 +542,7 @@ class NAIDCompliancePolicy(models.Model):
     """
     _name = 'naid.compliance.policy'
     _description = 'NAID Compliance Policy'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, name'
 
     name = fields.Char(

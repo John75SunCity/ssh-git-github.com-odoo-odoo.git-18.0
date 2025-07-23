@@ -22,15 +22,13 @@ class RecordsLocationInspection(models.Model):
     name = fields.Char(
         string='Inspection Reference',
         required=True,
-        default='New',
-        tracking=True
+        default='New'
     )
     
     inspection_date = fields.Date(
         string='Inspection Date',
         default=fields.Date.context_today,
-        required=True,
-        tracking=True
+        required=True
     )
     
     inspection_type = fields.Selection([
@@ -39,22 +37,20 @@ class RecordsLocationInspection(models.Model):
         ('emergency', 'Emergency Inspection'),
         ('compliance', 'Compliance Inspection'),
         ('security', 'Security Inspection')
-    ], string='Inspection Type', required=True, default='routine', tracking=True)
+    ], string='Inspection Type', required=True, default='routine')
     
     # Related location
     location_id = fields.Many2one(
         'records.location',
         string='Location',
-        required=True,
-        tracking=True
+        required=True
     )
     
     inspector_id = fields.Many2one(
         'res.users',
         string='Inspector',
         default=lambda self: self.env.user,
-        required=True,
-        tracking=True
+        required=True
     )
     
     # Inspection status and results
@@ -63,14 +59,14 @@ class RecordsLocationInspection(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='scheduled', tracking=True)
+    ], string='Status', default='scheduled')
     
     result = fields.Selection([
         ('satisfactory', 'Satisfactory'),
         ('needs_attention', 'Needs Attention'),
         ('unsatisfactory', 'Unsatisfactory'),
         ('critical', 'Critical Issues Found')
-    ], string='Inspection Result', tracking=True)
+    ], string='Inspection Result')
     
     # Inspection areas
     structural_condition = fields.Selection([

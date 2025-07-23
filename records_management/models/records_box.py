@@ -26,7 +26,7 @@ class RecordsBox(models.Model):
         ('active', 'Active'),
         ('archived', 'Archived'),
         ('destroyed', 'Destroyed')
-    ], string='Status', default='draft', tracking=True)
+    ], string='Status', default='draft')
     item_status = fields.Selection([
         ('active', 'Active'),
         ('inactive', 'Inactive'),
@@ -34,11 +34,10 @@ class RecordsBox(models.Model):
         ('permanent_out', 'Permanent Out'),
         ('destroyed', 'Destroyed'),
         ('archived', 'Archived')
-    ], string='Item Status', default='active', tracking=True)
+    ], string='Item Status', default='active')
     status_date = fields.Datetime(
         string='Status Date',
-        default=fields.Datetime.now,
-        tracking=True
+        default=fields.Datetime.now
     )
     add_date = fields.Datetime(
         string='Add Date',
@@ -47,8 +46,7 @@ class RecordsBox(models.Model):
     )
     storage_date = fields.Date(
         string='Storage Date',
-        help='Date when the box was placed in storage location',
-        tracking=True
+        help='Date when the box was placed in storage location'
     )
     destroy_date = fields.Date(string='Destroy Date')
     access_count = fields.Integer(string='Access Count', default=0)
@@ -57,7 +55,6 @@ class RecordsBox(models.Model):
     location_id = fields.Many2one(
         'records.location',
         string='Storage Location',
-        tracking=True,
         index=True
     )
     location_code = fields.Char(
@@ -71,7 +68,7 @@ class RecordsBox(models.Model):
         ('specialty', 'Specialty Box'),
         ('pallet', 'Pallet'),
         ('other', 'Other')
-    ], string='Container Type', default='standard', tracking=True)
+    ], string='Container Type', default='standard')
     
     # Business-specific box type codes for pricing and location management
     box_type_code = fields.Selection([
@@ -79,7 +76,7 @@ class RecordsBox(models.Model):
         ('03', 'Type 03 - Map Box'),
         ('04', 'Type 04 - Oversize/Odd-shaped Box'),
         ('06', 'Type 06 - Specialty/Vault Box'),
-    ], string='Box Type Code', default='01', required=True, tracking=True,
+    ], string='Box Type Code', default='01', required=True,
        help="Box type determines pricing, storage location, and handling requirements")
     
     # Computed field for customer-friendly display
@@ -155,20 +152,17 @@ class RecordsBox(models.Model):
         'res.partner',
         string='Customer',
         domain="[('is_company', '=', True)]",
-        tracking=True,
         index=True
     )
     department_id = fields.Many2one(
         'records.department',
         string='Department',
-        tracking=True,
         index=True
     )
     user_id = fields.Many2one(
         'res.users',
         string='Responsible',
-        default=lambda self: self.env.user,
-        tracking=True
+        default=lambda self: self.env.user
     )
     create_date = fields.Datetime(string='Created on', readonly=True)
     destruction_date = fields.Date(string='Destruction Date')

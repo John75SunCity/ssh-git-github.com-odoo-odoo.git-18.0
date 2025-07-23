@@ -28,7 +28,6 @@ class RecordsDepartmentBillingContact(models.Model):
         string='Customer',
         required=True,
         ondelete='cascade',
-        tracking=True,
         index=True
     )
     
@@ -36,58 +35,49 @@ class RecordsDepartmentBillingContact(models.Model):
         'records.department',
         string='Department',
         required=True,
-        tracking=True,
         index=True
     )
     
     contact_name = fields.Char(
         string='Contact Name',
-        required=True,
-        tracking=True
+        required=True
     )
     
     email = fields.Char(
         string='Email',
-        required=True,
-        tracking=True
+        required=True
     )
     
     phone = fields.Char(
-        string='Phone',
-        tracking=True
+        string='Phone'
     )
     
     is_primary = fields.Boolean(
         string='Primary Contact',
         default=False,
-        tracking=True,
         help='Only one primary contact allowed per department'
     )
     
     active = fields.Boolean(
-        default=True,
-        tracking=True
+        default=True
     )
     
     # Billing Preferences
     receives_invoices = fields.Boolean(
         string='Receives Invoices',
         default=True,
-        tracking=True,
         help='This contact receives invoices for the department'
     )
     
     receives_statements = fields.Boolean(
         string='Receives Statements',
         default=False,
-        tracking=True,
         help='This contact receives monthly statements'
     )
     
     receives_notifications = fields.Boolean(
         string='Receives Notifications',
         default=True,
-        tracking=True,
         help='This contact receives billing notifications'
     )
     
@@ -96,7 +86,7 @@ class RecordsDepartmentBillingContact(models.Model):
         ('portal', 'Customer Portal'),
         ('mail', 'Postal Mail'),
         ('both', 'Email + Portal')
-    ], string='Delivery Method', default='email', tracking=True,
+    ], string='Delivery Method', default='email',
        help='How this contact prefers to receive documents')
     
     hashed_email = fields.Char(
@@ -384,7 +374,6 @@ class ResPartnerDepartmentBilling(models.Model):
         string='Partner',
         required=True,
         ondelete='cascade',
-        tracking=True,
         index=True
     )
     
@@ -392,15 +381,13 @@ class ResPartnerDepartmentBilling(models.Model):
         'records.department',
         string='Department',
         required=True,
-        tracking=True,
         index=True
     )
     
     billing_contact_id = fields.Many2one(
         'res.partner',
         string='Billing Contact',
-        domain="[('parent_id', '=', partner_id)]",
-        tracking=True
+        domain="[('parent_id', '=', partner_id)]"
     )
     
     billing_method = fields.Selection([
@@ -408,25 +395,22 @@ class ResPartnerDepartmentBilling(models.Model):
         ('email', 'Email'),
         ('portal', 'Customer Portal'),
         ('mail', 'Postal Mail'),
-    ], string='Billing Method', default='inherit', tracking=True)
+    ], string='Billing Method', default='inherit')
     
     # PO Number Configuration
     use_separate_po_numbers = fields.Boolean(
         string='Use Separate PO Numbers',
         default=False,
-        tracking=True,
         help='Use separate PO numbers for this department'
     )
     
     default_po_number = fields.Char(
         string='Default PO Number',
-        tracking=True,
         help='Default PO number for this department invoices'
     )
     
     active = fields.Boolean(
-        default=True,
-        tracking=True
+        default=True
     )
     
     # Computed fields
