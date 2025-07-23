@@ -126,7 +126,7 @@
                             <field string="Total Revenue" name="total_revenue" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-check-circle" 
-                                attrs="{'invisible': [('auto_billing', '=', False)]}">
+                                invisible="not auto_billing">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">🤖</span>
                                 <span class="o_stat_text">Automated</span>

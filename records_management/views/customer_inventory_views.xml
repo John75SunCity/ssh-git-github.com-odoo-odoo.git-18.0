@@ -101,9 +101,9 @@
             <form>
                 <header>
                     <button name="action_confirm_report" type="object" string="✅ Confirm Report" 
-                            class="btn-primary" attrs="{'invisible': [('status', '!=', 'draft')]}"/>
+                            class="btn-primary" invisible="status != 'draft'"/>
                     <button name="action_send_to_customer" type="object" string="📧 Send to Customer" 
-                            class="btn-secondary" attrs="{'invisible': [('status', '!=', 'confirmed')]}"/>
+                            class="btn-secondary" invisible="status != 'confirmed'"/>
                     <button name="action_generate_pdf_report" type="object" string="📋 Generate PDF" class="btn-info"/>
                     <field name="status" widget="statusbar" statusbar_visible="draft,confirmed,sent"/>
                 </header>

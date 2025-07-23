@@ -142,7 +142,7 @@
                             <field string="Price Changes" name="price_history_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-star" 
-                                attrs="{'invisible': [('is_featured_service', '=', False)]}">
+                                invisible="not is_featured_service">>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">⭐</span>
                                 <span class="o_stat_text">Featured</span>
@@ -157,12 +157,12 @@
                                     <field name="default_code" placeholder="e.g., RMS-001"/>
                                     <field name="categ_id"/>
                                     <field name="type"/>
-                                    <field name="detailed_type" attrs="{'invisible': [('type', '!=', 'product')]}"/>
+                                    <field name="detailed_type" invisible="type != 'product'"/>
                                 </group>
                                 <group string="🎯 Service Settings">
                                     <field name="sale_ok"/>
                                     <field name="purchase_ok"/>
-                                    <field name="can_be_expensed" attrs="{'invisible': [('type', '!=', 'service')]}"/>
+                                    <field name="can_be_expensed" invisible="type != 'service'"/>
                                     <field name="is_featured_service"/>
                                 </group>
                             </group>
@@ -179,8 +179,8 @@
                                 <group string="📏 Units &amp; Measurements">
                                     <field name="uom_id"/>
                                     <field name="uom_po_id"/>
-                                    <field name="weight" attrs="{'invisible': [('type', '!=', 'product')]}"/>
-                                    <field name="volume" attrs="{'invisible': [('type', '!=', 'product')]}"/>
+                                    <field name="weight" invisible="type != 'product'"/>
+                                    <field name="volume" invisible="type != 'product'"/>
                                 </group>
                             </group>
                             <group>
@@ -252,7 +252,7 @@
                                     <field name="display_name"/>
                                     <field name="lst_price"/>
                                     <field name="standard_price"/>
-                                    <field name="qty_available" attrs="{'invisible': [('parent.type', '!=', 'product')]}"/>
+                                    <field name="qty_available" invisible="parent.type != 'product'"/>
                                     <field name="active"/>
                                 </list>
                             </field>

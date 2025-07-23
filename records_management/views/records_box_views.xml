@@ -122,11 +122,11 @@
             <form>
                 <header>
                     <button name="action_store_box" type="object" string="📦 Store Box" 
-                            class="btn-primary" attrs="{'invisible': [('state', '!=', 'pending')]}"/>
+                            class="btn-primary" invisible="state != 'pending'"/>
                     <button name="action_move_box" type="object" string="📍 Move Box" 
-                            class="btn-secondary" attrs="{'invisible': [('state', '!=', 'stored')]}"/>
+                            class="btn-secondary" invisible="state != 'stored'"/>
                     <button name="action_schedule_destruction" type="object" string="🗑️ Schedule Destruction" 
-                            class="btn-warning" attrs="{'invisible': [('state', '=', 'destroyed')]}"/>
+                            class="btn-warning" invisible="state == 'destroyed'"/>
                     <button name="action_generate_barcode" type="object" string="🏷️ Print Barcode" class="btn-info"/>
                     <field name="state" widget="statusbar" statusbar_visible="pending,stored,in_transit,destroyed"/>
                 </header>
@@ -157,7 +157,7 @@
                             <field name="location_id"/>
                             <field name="state"/>
                             <field name="storage_date"/>
-                            <field name="destruction_date" attrs="{'invisible': [('destruction_date', '=', False)]}"/>
+                            <field name="destruction_date" invisible="not destruction_date"/>
                         </group>
                     </group>
                     

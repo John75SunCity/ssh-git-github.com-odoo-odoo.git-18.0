@@ -8,7 +8,7 @@
             <form string="Hard Drive Serial Number Scanner">
                 <header>
                     <button name="action_finish_scan" string="Finish Scanning" type="object" 
-                            class="btn-primary" attrs="{'invisible': [('scan_count', '=', 0)]}"/>
+                            class="btn-primary" invisible="scan_count == 0"/>
                     <button name="action_view_scanned_drives" string="View All Drives" type="object" 
                             class="btn-secondary"/>
                 </header>
@@ -27,15 +27,15 @@
                     <group>
                         <group string="Serial Number Scanning">
                             <field name="serial_number" placeholder="Scan or type serial number..." 
-                                   widget="char" attrs="{'required': [('bulk_serial_input', '=', False)]}"/>
+                                   widget="char" required="not bulk_serial_input"/>
                             <button name="action_scan_serial" string="Add Serial Number" type="object" 
-                                    class="btn-success" attrs="{'invisible': [('serial_number', '=', False)]}"/>
+                                    class="btn-success" invisible="not serial_number"/>
                         </group>
                         
                         <group string="Scan Progress">
                             <field name="scan_count" readonly="1"/>
                             <field name="scanned_serials" readonly="1" widget="text" 
-                                   attrs="{'invisible': [('scan_count', '=', 0)]}"/>
+                                   invisible="scan_count == 0"/>
                         </group>
                     </group>
                     
@@ -44,7 +44,7 @@
                         <field name="bulk_serial_input" placeholder="Paste multiple serial numbers, one per line..."
                                widget="text" nolabel="1"/>
                         <button name="action_bulk_scan" string="Process Bulk Scan" type="object" 
-                                class="btn-warning" attrs="{'invisible': [('bulk_serial_input', '=', False)]}"/>
+                                class="btn-warning" invisible="not bulk_serial_input"/>
                     </group>
                     
                     <separator string="Notes"/>
@@ -87,13 +87,13 @@
                 <header>
                     <button name="action_mark_customer_scanned" string="Mark Customer Scanned" 
                             type="object" class="btn-primary" 
-                            attrs="{'invisible': [('scanned_at_customer', '=', True)]}"/>
+                            invisible="scanned_at_customer"/>
                     <button name="action_mark_facility_verified" string="Mark Facility Verified" 
                             type="object" class="btn-warning" 
-                            attrs="{'invisible': ['|', ('verified_before_destruction', '=', True), ('scanned_at_customer', '=', False)]}"/>
+                            invisible="verified_before_destruction or not scanned_at_customer"/>
                     <button name="action_mark_destroyed" string="Mark Destroyed" 
                             type="object" class="btn-danger" 
-                            attrs="{'invisible': ['|', ('destroyed', '=', True), ('verified_before_destruction', '=', False)]}"/>
+                            invisible="destroyed or not verified_before_destruction"/>
                     <field name="destroyed" widget="statusbar" statusbar_visible="false,true"/>
                 </header>
                 
@@ -111,23 +111,23 @@
                     <group>
                         <group string="Customer Location Scanning">
                             <field name="scanned_at_customer" widget="boolean_toggle"/>
-                            <field name="scanned_at_customer_date" attrs="{'readonly': [('scanned_at_customer', '=', False)]}"/>
-                            <field name="scanned_at_customer_by" attrs="{'readonly': [('scanned_at_customer', '=', False)]}"/>
-                            <field name="customer_location_notes" attrs="{'readonly': [('scanned_at_customer', '=', False)]}"/>
+                            <field name="scanned_at_customer_date" readonly="not scanned_at_customer"/>
+                            <field name="scanned_at_customer_by" readonly="not scanned_at_customer"/>
+                            <field name="customer_location_notes" readonly="not scanned_at_customer"/>
                         </group>
                         
                         <group string="Facility Verification">
                             <field name="verified_before_destruction" widget="boolean_toggle"/>
-                            <field name="verified_at_facility_date" attrs="{'readonly': [('verified_before_destruction', '=', False)]}"/>
-                            <field name="verified_at_facility_by" attrs="{'readonly': [('verified_before_destruction', '=', False)]}"/>
-                            <field name="facility_verification_notes" attrs="{'readonly': [('verified_before_destruction', '=', False)]}"/>
+                            <field name="verified_at_facility_date" readonly="not verified_before_destruction"/>
+                            <field name="verified_at_facility_by" readonly="not verified_before_destruction"/>
+                            <field name="facility_verification_notes" readonly="not verified_before_destruction"/>
                         </group>
                     </group>
                     
                     <group>
                         <group string="Destruction Details">
-                            <field name="destruction_method" attrs="{'readonly': [('destroyed', '=', False)]}"/>
-                            <field name="destruction_date" attrs="{'readonly': [('destroyed', '=', False)]}"/>
+                            <field name="destruction_method" readonly="not destroyed"/>
+                            <field name="destruction_date" readonly="not destroyed"/>
                         </group>
                         
                         <group string="Certificate Information">

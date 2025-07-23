@@ -121,7 +121,7 @@
                             <field string="Policies" name="policy_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-shield" 
-                                attrs="{'invisible': [('confidentiality_level', 'not in', ['high', 'confidential'])]}">
+                                invisible="confidentiality_level not in ('high', 'confidential')">>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">🛡️</span>
                                 <span class="o_stat_text">Confidential</span>

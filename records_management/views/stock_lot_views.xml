@@ -117,7 +117,7 @@
                             <field string="Quality Checks" name="quality_check_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-warning" 
-                                attrs="{'invisible': [('expiration_date', '&gt;=', context_today())]}">
+                                invisible="expiration_date >= context_today()">>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">⚠️</span>
                                 <span class="o_stat_text">Expired</span>

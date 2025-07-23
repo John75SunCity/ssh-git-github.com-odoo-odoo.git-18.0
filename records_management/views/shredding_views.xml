@@ -98,7 +98,7 @@
                 <field name="service_state" string="🎯 Status" widget="badge"/>
                 <button name="action_start_destruction" type="object" string="Start" 
                         icon="fa-play" class="btn-link" 
-                        attrs="{'invisible': [('service_state', '!=', 'scheduled')]}"/>
+                        invisible="service_state != 'scheduled'"/>
                 <button name="action_generate_certificate" type="object" string="Certificate" 
                         icon="fa-certificate" class="btn-link"/>
             </list>
@@ -113,12 +113,12 @@
             <form>
                 <header>
                     <button name="action_start_destruction" type="object" string="🚀 Start Destruction" 
-                            class="btn-primary" attrs="{'invisible': [('service_state', '!=', 'scheduled')]}"/>
+                            class="btn-primary" invisible="service_state != 'scheduled'"/>
                     <button name="action_witness_verification" type="object" string="👁️ Witness Verification" 
-                            class="btn-secondary" attrs="{'invisible': [('witness_required', '=', False)]}"/>
+                            class="btn-secondary" invisible="not witness_required"/>
                     <button name="action_compliance_check" type="object" string="🏆 NAID Compliance Check" class="btn-info"/>
                     <button name="action_generate_certificate" type="object" string="📜 Generate Certificate" 
-                            class="btn-success" attrs="{'invisible': [('service_state', '!=', 'completed')]}"/>
+                            class="btn-success" invisible="service_state != 'completed'"/>
                     <field name="service_state" widget="statusbar" statusbar_visible="scheduled,in_progress,completed,certified"/>
                 </header>
                 <sheet>
@@ -133,7 +133,7 @@
                             <field string="Certificates" name="certificate_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-shield" 
-                                attrs="{'invisible': [('naid_compliance_verified', '=', False)]}">
+                                invisible="not naid_compliance_verified">>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">🏆</span>
                                 <span class="o_stat_text">NAID Verified</span>
@@ -174,7 +174,7 @@
                     </group>
                     
                     <notebook>
-                        <page string="� Hard Drive Scanning" name="hard_drives" attrs="{'invisible': [('service_type', '!=', 'hard_drive')]}">
+                        <page string="💽 Hard Drive Scanning" name="hard_drives" invisible="service_type != 'hard_drive'">>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="alert alert-info">
@@ -190,7 +190,7 @@
                                                 string="📱 Scan at Customer" class="btn btn-primary"/>
                                         <button name="action_scan_hard_drives_facility" type="object" 
                                                 string="🏭 Verify at Facility" class="btn btn-warning"
-                                                attrs="{'invisible': [('hard_drive_scanned_count', '=', 0)]}"/>
+                                                invisible="hard_drive_scanned_count == 0"/>
                                         <button name="action_view_hard_drives" type="object" 
                                                 string="👁️ View All Drives" class="btn btn-secondary"/>
                                     </div>
@@ -212,13 +212,13 @@
                                     <field name="included_in_certificate" widget="boolean_toggle"/>
                                     <button name="action_mark_customer_scanned" type="object" 
                                             string="📱 Mark Scanned" icon="fa-qrcode" class="btn-link"
-                                            attrs="{'invisible': [('scanned_at_customer', '=', True)]}"/>
+                                            invisible="scanned_at_customer"/>
                                     <button name="action_mark_facility_verified" type="object" 
                                             string="🏭 Mark Verified" icon="fa-check" class="btn-link"
-                                            attrs="{'invisible': ['|', ('verified_before_destruction', '=', True), ('scanned_at_customer', '=', False)]}"/>
+                                            invisible="verified_before_destruction or not scanned_at_customer"/>
                                     <button name="action_mark_destroyed" type="object" 
                                             string="💥 Mark Destroyed" icon="fa-times" class="btn-link"
-                                            attrs="{'invisible': ['|', ('destroyed', '=', True), ('verified_before_destruction', '=', False)]}"/>
+                                            invisible="destroyed or not verified_before_destruction"/>
                                 </list>
                             </field>
                         </page>

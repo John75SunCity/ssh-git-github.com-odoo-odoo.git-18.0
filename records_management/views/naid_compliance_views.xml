@@ -95,7 +95,7 @@
                 <field name="last_audit_date" string="📋 Last Audit"/>
                 <button name="action_conduct_audit" type="object" string="Audit" 
                         icon="fa-search" class="btn-link" 
-                        attrs="{'invisible': [('audit_required', '=', False)]}"/>
+                        invisible="not audit_required"/>
                 <button name="action_renew_certificate" type="object" string="Renew" 
                         icon="fa-refresh" class="btn-link"/>
             </list>
@@ -110,7 +110,7 @@
             <form>
                 <header>
                     <button name="action_conduct_audit" type="object" string="🔍 Conduct Audit" 
-                            class="btn-primary" attrs="{'invisible': [('audit_required', '=', False)]}"/>
+                            class="btn-primary" invisible="not audit_required"/>
                     <button name="action_generate_certificate" type="object" string="📜 Generate Certificate" class="btn-secondary"/>
                     <button name="action_renew_certificate" type="object" string="🔄 Renew Certificate" class="btn-info"/>
                     <button name="action_compliance_report" type="object" string="📊 Compliance Report" class="btn-success"/>
@@ -128,7 +128,7 @@
                             <field string="Destructions" name="destruction_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-shield" 
-                                attrs="{'invisible': [('naid_level', '!=', 'AAA')]}">
+                                invisible="naid_level != 'AAA'">>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">🏆</span>
                                 <span class="o_stat_text">NAID AAA</span>

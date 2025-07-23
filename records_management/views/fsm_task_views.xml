@@ -96,10 +96,10 @@
                 <field name="location_address" string="📍 Location"/>
                 <button name="action_start_task" type="object" string="Start" 
                         icon="fa-play" class="btn-link" 
-                        attrs="{'invisible': [('task_status', '!=', 'scheduled')]}"/>
+                        invisible="task_status != 'scheduled'"/>
                 <button name="action_complete_task" type="object" string="Complete" 
                         icon="fa-check" class="btn-link" 
-                        attrs="{'invisible': [('task_status', '!=', 'in_progress')]}"/>
+                        invisible="task_status != 'in_progress'"/>
             </list>
         </field>
     </record>
@@ -112,11 +112,11 @@
             <form>
                 <header>
                     <button name="action_start_task" type="object" string="▶️ Start Task" 
-                            class="btn-primary" attrs="{'invisible': [('task_status', '!=', 'scheduled')]}"/>
+                            class="btn-primary" invisible="task_status != 'scheduled'"/>
                     <button name="action_pause_task" type="object" string="⏸️ Pause Task" 
-                            class="btn-warning" attrs="{'invisible': [('task_status', '!=', 'in_progress')]}"/>
+                            class="btn-warning" invisible="task_status != 'in_progress'"/>
                     <button name="action_complete_task" type="object" string="✅ Complete Task" 
-                            class="btn-success" attrs="{'invisible': [('task_status', '!=', 'in_progress')]}"/>
+                            class="btn-success" invisible="task_status != 'in_progress'"/>
                     <button name="action_reschedule" type="object" string="📅 Reschedule" class="btn-secondary"/>
                     <field name="task_status" widget="statusbar" statusbar_visible="scheduled,in_progress,completed,cancelled"/>
                 </header>
@@ -132,7 +132,7 @@
                             <field string="GPS Tracking" name="location_update_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-mobile" 
-                                attrs="{'invisible': [('mobile_optimized', '=', False)]}">
+                                invisible="not mobile_optimized">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">📱</span>
                                 <span class="o_stat_text">Mobile Ready</span>

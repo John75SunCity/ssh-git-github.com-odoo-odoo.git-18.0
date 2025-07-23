@@ -95,10 +95,10 @@
                 <field name="bale_status" string="🎯 Status" widget="badge"/>
                 <button name="action_weigh_bale" type="object" string="Weigh" 
                         icon="fa-balance-scale" class="btn-link" 
-                        attrs="{'invisible': [('bale_status', 'in', ['weighed', 'loaded', 'shipped'])]}"/>
+                        invisible="bale_status in ('weighed', 'loaded', 'shipped')"/>
                 <button name="action_load_trailer" type="object" string="Load" 
                         icon="fa-truck" class="btn-link" 
-                        attrs="{'invisible': [('loaded_on_trailer', '=', True)]}"/>
+                        invisible="loaded_on_trailer"/>
             </list>
         </field>
     </record>
@@ -111,10 +111,10 @@
             <form>
                 <header>
                     <button name="action_weigh_bale" type="object" string="⚖️ Weigh Bale" 
-                            class="btn-primary" attrs="{'invisible': [('bale_status', 'in', ['weighed', 'loaded', 'shipped'])]}"/>
+                            class="btn-primary" invisible="bale_status in ('weighed', 'loaded', 'shipped')"/>
                     <button name="action_quality_inspection" type="object" string="🔍 Quality Inspection" class="btn-secondary"/>
                     <button name="action_load_trailer" type="object" string="🚚 Load on Trailer" 
-                            class="btn-info" attrs="{'invisible': [('loaded_on_trailer', '=', True)]}"/>
+                            class="btn-info" invisible="loaded_on_trailer"/>
                     <button name="action_print_label" type="object" string="🏷️ Print Label" class="btn-success"/>
                     <field name="bale_status" widget="statusbar" statusbar_visible="created,weighed,ready_for_loading,loaded,shipped"/>
                 </header>
@@ -130,7 +130,7 @@
                             <field string="Trailer Info" name="trailer_load_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-star" 
-                                attrs="{'invisible': [('quality_grade', '!=', 'A')]}">
+                                invisible="quality_grade != 'A'">>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">⭐</span>
                                 <span class="o_stat_text">Grade A</span>
