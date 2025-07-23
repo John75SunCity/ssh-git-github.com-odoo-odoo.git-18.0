@@ -70,9 +70,7 @@
                                         <span class="input-group-text">
                                             <i class="fa fa-search"></i>
                                         </span>
-                                        <input type="text" id="inventory_search" class="form-control" 
-                                               placeholder="Search any text, field, or action (e.g., 'active boxes' or 'destroy document')"
-                                               onkeyup="performSearch(this.value)"/>
+                                        <input type="text" id="inventory_search" class="form-control" placeholder="Search any text, field, or action (e.g., 'active boxes' or 'destroy document')" onkeyup="performSearch(this.value)"/>
                                     </div>
                                 </div>
                                 <div class="col-lg-3 mb-3">
@@ -100,7 +98,7 @@
                     <!-- Inventory Results Section -->
                     <t t-if="not inventory_records">
                         <div class="alert alert-info text-center">
-                            <i class="fa fa-info-circle" title="Information" fa-2x mb-3"></i>
+                            <i class="fa fa-info-circle fa-2x mb-3" title="Information"></i>
                             <h4>No Inventory Records Found</h4>
                             <p>There are currently no records in your inventory matching the selected criteria.</p>
                             <button class="btn btn-primary" onclick="addTempInventory()">
@@ -116,7 +114,8 @@
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <span id="selected_count" class="badge badge-primary">0 selected</span>
-                                        <span class="text-muted ml-2">Total: <t t-esc="len(inventory_records)"/> items</span>
+                                        <span class="text-muted ml-2">Total: <t t-esc="len(inventory_records)"/>
+ items</span>
                                     </div>
                                     <div class="btn-group">
                                         <button class="btn btn-success" onclick="addTempInventory()">
@@ -156,14 +155,10 @@
                                     </thead>
                                     <tbody>
                                         <t t-foreach="inventory_records" t-as="record">
-                                            <tr t-att-class="'inventory-row ' + ('bg-light-success' if record.state == 'active' else 'bg-light-warning' if record.state == 'archived' else 'bg-light-danger' if record.state == 'destroyed' else '')"
-                                                t-att-data-id="record.id" t-att-data-type="record._name" t-att-data-status="record.state">
+                                            <tr t-att-class="'inventory-row ' + ('bg-light-success' if record.state == 'active' else 'bg-light-warning' if record.state == 'archived' else 'bg-light-danger' if record.state == 'destroyed' else '')" t-att-data-id="record.id" t-att-data-type="record._name" t-att-data-status="record.state">
                                                 <td>
                                                     <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input item-checkbox" 
-                                                               t-att-id="'item_' + str(record.id)" 
-                                                               t-att-value="record.id" 
-                                                               onchange="updateSelection()"/>
+                                                        <input type="checkbox" class="custom-control-input item-checkbox" t-att-id="'item_' + str(record.id)" t-att-value="record.id" onchange="updateSelection()"/>
                                                         <label class="custom-control-label" t-att-for="'item_' + str(record.id)"></label>
                                                     </div>
                                                 </td>
@@ -192,25 +187,20 @@
                                                     </t>
                                                 </td>
                                                 <td>
-                                                    <span t-att-class="'badge badge-' + ('success' if record.state == 'active' else 'warning' if record.state == 'archived' else 'danger' if record.state == 'destroyed' else 'secondary')"
-                                                          t-esc="record.state.replace('_', ' ').title()"/>
+                                                    <span t-att-class="'badge badge-' + ('success' if record.state == 'active' else 'warning' if record.state == 'archived' else 'danger' if record.state == 'destroyed' else 'secondary')" t-esc="record.state.replace('_', ' ').title()"/>
                                                 </td>
                                                 <td>
                                                     <span t-esc="record.create_date" t-options="{'widget': 'datetime'}"/>
                                                 </td>
                                                 <td>
                                                     <div class="btn-group btn-group-sm">
-                                                        <button class="btn btn-outline-primary btn-sm" 
-                                                                t-att-onclick="'viewDetails(' + str(record.id) + ')'">
+                                                        <button class="btn btn-outline-primary btn-sm" t-att-onclick="'viewDetails(' + str(record.id) + ')'">
                                                             <i class="fa fa-eye"></i>
                                                         </button>
-                                                        <button class="btn btn-outline-warning btn-sm" 
-                                                                t-att-onclick="'requestPickup(' + str(record.id) + ')'">
+                                                        <button class="btn btn-outline-warning btn-sm" t-att-onclick="'requestPickup(' + str(record.id) + ')'">
                                                             <i class="fa fa-truck"></i>
                                                         </button>
-                                                        <button class="btn btn-outline-danger btn-sm" 
-                                                                t-att-onclick="'requestDestruction(' + str(record.id) + ')'"
-                                                                t-if="record.state != 'destroyed'">
+                                                        <button class="btn btn-outline-danger btn-sm" t-att-onclick="'requestDestruction(' + str(record.id) + ')'" t-if="record.state != 'destroyed'">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </div>
