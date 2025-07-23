@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- 📋 ENTERPRISE DOCUMENT TYPES - Records Management Classification -->
-    
+
     <!-- 🎨 Document Type Kanban Dashboard -->
     <record id="view_records_document_type_kanban" model="ir.ui.view">
         <field name="name">records.document.type.kanban</field>
         <field name="model">records.document.type</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="category" class="o_kanban_document_type_dashboard">
+            <kanban default_group_by="security_classification" class="o_kanban_document_type_dashboard">
                 <field name="name"/>
-                <field name="category"/>
-                <field name="retention_period"/>
-                <field name="confidentiality_level"/>
-                <field name="requires_approval"/>
+                <field name="security_classification"/>
+                <field name="risk_level"/>
+                <field name="compliance_status"/>
+                <field name="approval_required"/>
                 <field name="active"/>
                 <templates>
                     <t t-name="card">
@@ -20,24 +20,33 @@
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-                                        <strong>📋 <field name="name"/></strong>
+                                        <strong>📋                                            <field name="name"/>
+                                        </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        🏷️ <field name="category"/>
+                                        🏷️                                        <field name="security_classification"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" title="More options"/></a>
+                                    <a class="o_kanban_manage_toggle_button" href="#">
+                                        <i class="fa fa-ellipsis-v" title="More options"/>
+                                    </a>
                                 </div>
                             </div>
                             <div class="o_kanban_card_content">
                                 <div class="row">
                                     <div class="col-8">
-                                        <div><i class="fa fa-clock-o" title="Time"/> Retention: <field name="retention_period"/> years</div>
-                                        <div><i class="fa fa-shield" title="Security"/> Level: <field name="confidentiality_level"/></div>
+                                        <div>
+                                            <i class="fa fa-clock-o" title="Time"/>
+ Risk Level: <field name="risk_level"/>
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-shield" title="Security"/>
+ Level: <field name="security_classification"/>
+                                        </div>
                                     </div>
                                     <div class="col-4">
-                                        <span class="badge badge-info" t-if="record.requires_approval.raw_value">
+                                        <span class="badge badge-info" t-if="record.approval_required.raw_value">
                                             ✅ Approval Required
                                         </span>
                                         <span class="badge" t-att-class="record.active.raw_value ? 'badge-success' : 'badge-secondary'">
@@ -79,20 +88,16 @@
         <field name="name">records.document.type.list</field>
         <field name="model">records.document.type</field>
         <field name="arch" type="xml">
-            <list decoration-success="active == True and requires_approval == True" 
-                  decoration-warning="retention_period &gt; 7"
-                  decoration-info="confidentiality_level in ('high', 'confidential')">
+            <list decoration-success="active == True and approval_required == True" decoration-warning="risk_level in ('high', 'critical')" decoration-info="security_classification in ('confidential', 'secret')">
                 <field name="name" string="📋 Document Type"/>
-                <field name="category" string="🏷️ Category"/>
-                <field name="retention_period" string="⏰ Retention (Years)"/>
-                <field name="confidentiality_level" string="🛡️ Confidentiality" widget="badge"/>
-                <field name="requires_approval" string="✅ Approval" widget="boolean_toggle"/>
+                <field name="security_classification" string="🏷️ Security Classification"/>
+                <field name="risk_level" string="⚠️ Risk Level"/>
+                <field name="security_classification" string="🛡️ Security" widget="badge"/>
+                <field name="approval_required" string="✅ Approval" widget="boolean_toggle"/>
                 <field name="auto_archive" string="📦 Auto Archive" widget="boolean_toggle"/>
                 <field name="active" string="🎯 Status" widget="boolean_toggle"/>
-                <button name="action_view_documents" type="object" string="Documents" 
-                        icon="fa-file-text-o" class="btn-link"/>
-                <button name="action_retention_policy" type="object" string="Policy" 
-                        icon="fa-clock-o" class="btn-link"/>
+                <button name="action_view_documents" type="object" string="Documents" icon="fa-file-text-o" class="btn-link"/>
+                <button name="action_retention_policy" type="object" string="Policy" icon="fa-clock-o" class="btn-link"/>
             </list>
         </field>
     </record>
@@ -120,33 +125,32 @@
                         <button class="oe_stat_button" type="object" name="action_view_retention_policies" icon="fa-clock-o">
                             <field string="Policies" name="policy_count" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" icon="fa-shield" 
-                                invisible="confidentiality_level not in ('high', 'confidential')">>
+                        <button class="oe_stat_button" icon="fa-shield" invisible="security_classification not in ('confidential', 'secret')">>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">🛡️</span>
                                 <span class="o_stat_text">Confidential</span>
                             </div>
                         </button>
                     </div>
-                    
+
                     <group>
                         <group string="📋 Basic Information">
                             <field name="name" placeholder="e.g., Financial Statements"/>
-                            <field name="category"/>
+                            <field name="security_classification"/>
                             <field name="description"/>
                             <field name="active"/>
                         </group>
                         <group string="🛡️ Security &amp; Compliance">
-                            <field name="confidentiality_level"/>
-                            <field name="requires_approval"/>
+                            <field name="security_classification"/>
+                            <field name="approval_required"/>
                             <field name="requires_signature"/>
                             <field name="encryption_required"/>
                         </group>
                     </group>
-                    
+
                     <group>
                         <group string="⏰ Retention Management">
-                            <field name="retention_period"/>
+                            <field name="risk_level"/>
                             <field name="retention_unit"/>
                             <field name="auto_archive"/>
                             <field name="destruction_method"/>
@@ -158,7 +162,7 @@
                             <field name="notify_on_expiry"/>
                         </group>
                     </group>
-                    
+
                     <notebook>
                         <page string="📄 Document Templates" name="templates">
                             <field name="template_ids" mode="list">
@@ -252,33 +256,32 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Document Type"/>
-                <field name="category"/>
+                <field name="security_classification"/>
                 <field name="description"/>
-                <field name="confidentiality_level"/>
-                
+                <field name="security_classification"/>
+
                 <filter string="🟢 Active" name="active" domain="[('active', '=', True)]"/>
                 <filter string="⭕ Archived" name="archived" domain="[('active', '=', False)]"/>
-                
+
                 <separator/>
-                <filter string="✅ Requires Approval" name="approval_required" domain="[('requires_approval', '=', True)]"/>
+                <filter string="✅ Requires Approval" name="approval_required" domain="[('approval_required', '=', True)]"/>
                 <filter string="🔏 Requires Signature" name="signature_required" domain="[('requires_signature', '=', True)]"/>
                 <filter string="🔐 Encryption Required" name="encryption_required" domain="[('encryption_required', '=', True)]"/>
-                
+
                 <separator/>
-                <filter string="🛡️ Confidential" name="confidential" domain="[('confidentiality_level', 'in', ['high', 'confidential'])]"/>
+                <filter string="🛡️ Confidential" name="confidential" domain="[('security_classification', 'in', ['confidential', 'secret'])]"/>
                 <filter string="📦 Auto Archive" name="auto_archive" domain="[('auto_archive', '=', True)]"/>
                 <filter string="🤖 Auto Classify" name="auto_classify" domain="[('auto_classify', '=', True)]"/>
-                
+
                 <separator/>
-                <filter string="⏰ Long Retention (&gt;7 years)" name="long_retention" domain="[('retention_period', '&gt;', 7)]"/>
-                <filter string="📋 Recent Updates" name="recent_updates" 
-                        domain="[('last_policy_update', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
-                
+                <filter string="⚠️ High Risk" name="high_risk" domain="[('risk_level', 'in', ['high', 'critical'])]"/>
+                <filter string="📋 Recent Updates" name="recent_updates" domain="[('last_policy_update', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+
                 <group expand="0" string="📊 Group By">
-                    <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
-                    <filter string="Confidentiality Level" name="group_by_confidentiality" context="{'group_by': 'confidentiality_level'}"/>
-                    <filter string="Retention Period" name="group_by_retention" context="{'group_by': 'retention_period'}"/>
-                    <filter string="Approval Required" name="group_by_approval" context="{'group_by': 'requires_approval'}"/>
+                    <filter string="Security Classification" name="group_by_security_classification" context="{'group_by': 'security_classification'}"/>
+                    <filter string="Security Classification" name="group_by_security" context="{'group_by': 'security_classification'}"/>
+                    <filter string="Risk Level" name="group_by_risk" context="{'group_by': 'risk_level'}"/>
+                    <filter string="Approval Required" name="group_by_approval" context="{'group_by': 'approval_required'}"/>
                 </group>
             </search>
         </field>
@@ -298,7 +301,8 @@
                 📋 Create your first document type classification!
             </p>
             <p>
-                <b>Enterprise Document Type Management:</b><br/>
+                <b>Enterprise Document Type Management:</b>
+                <br/>
                 • 🏷️ Comprehensive document classification system<br/>
                 • ⏰ Automated retention policy management<br/>
                 • 🛡️ Multi-level confidentiality and security controls<br/>
@@ -308,7 +312,7 @@
                 • 🔍 Advanced metadata and indexing<br/>
                 • 📊 Real-time analytics and compliance reporting<br/>
                 • 🔐 Encryption and digital signature support
-            </p>
-        </field>
-    </record>
+</p>
+</field>
+</record>
 </odoo>
