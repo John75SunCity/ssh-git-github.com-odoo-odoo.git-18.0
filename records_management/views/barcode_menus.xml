@@ -7,7 +7,7 @@
               name="Barcode Configuration" 
               parent="menu_records_configuration" 
               action="action_barcode_config" 
-              sequence="30"/>
+              sequence="40"/>
               
     <menuitem id="menu_barcode_history" 
               name="Barcode History" 
