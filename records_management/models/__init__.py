@@ -6,6 +6,8 @@
 # Base/Core Models (Many2one first for inverses)
 from . import records_tag
 from . import records_location
+from . import records_policy_version
+from . import records_approval_workflow
 from . import records_retention_policy
 from . import records_document_type
 from . import customer_inventory_report
