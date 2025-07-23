@@ -1,4 +1,5 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from datetime import datetime, timedelta
 from odoo.exceptions import UserError
 
 class Load(models.Model):
@@ -12,6 +13,32 @@ class Load(models.Model):
     weight_total = fields.Float(compute='_compute_weight_total')
     invoice_id = fields.Many2one('account.move')
     driver_signature = fields.Binary()
+    
+    # Phase 3: Load Analytics (Final 3 fields to complete Phase 3!)
+    
+    # Load Efficiency Analytics
+    load_optimization_score = fields.Float(
+        string='Load Optimization Score',
+        compute='_compute_load_analytics',
+        store=True,
+        help='Optimization score for load capacity and weight distribution'
+    )
+    
+    # Revenue Analytics
+    revenue_efficiency_rating = fields.Float(
+        string='Revenue Efficiency Rating',
+        compute='_compute_revenue_analytics',
+        store=True,
+        help='Revenue generation efficiency for this load'
+    )
+    
+    # Operational Analytics
+    operational_complexity_index = fields.Float(
+        string='Operational Complexity Index',
+        compute='_compute_operational_analytics',
+        store=True,
+        help='Complexity assessment for load management operations'
+    )
 
     @api.depends('bale_ids')
     def _compute_bale_count(self):
@@ -22,6 +49,94 @@ class Load(models.Model):
     def _compute_weight_total(self):
         for load in self:
             load.weight_total = sum(b.weight for b in load.bale_ids)
+    
+    @api.depends('bale_count', 'weight_total')
+    def _compute_load_analytics(self):
+        """Compute load optimization analytics"""
+        for load in self:
+            # Load optimization based on capacity utilization
+            max_bales = 28  # Maximum bales per trailer
+            max_weight = 80000  # Maximum weight capacity (example)
+            
+            if max_bales > 0 and max_weight > 0:
+                bale_utilization = (load.bale_count / max_bales) * 100
+                weight_utilization = (load.weight_total / max_weight) * 100
+                
+                # Optimal utilization is 85-95% (not 100% for safety)
+                optimal_range_min = 85
+                optimal_range_max = 95
+                
+                # Average utilization
+                avg_utilization = (bale_utilization + weight_utilization) / 2
+                
+                if optimal_range_min <= avg_utilization <= optimal_range_max:
+                    optimization_score = 100
+                elif avg_utilization > optimal_range_max:
+                    # Penalize overloading
+                    optimization_score = max(100 - (avg_utilization - optimal_range_max) * 3, 0)
+                else:
+                    # Penalize underutilization
+                    optimization_score = (avg_utilization / optimal_range_min) * 100
+                
+                load.load_optimization_score = min(max(optimization_score, 0), 100)
+            else:
+                load.load_optimization_score = 0
+    
+    @api.depends('weight_total', 'invoice_id')
+    def _compute_revenue_analytics(self):
+        """Compute revenue efficiency analytics"""
+        for load in self:
+            base_efficiency = 70  # Base revenue efficiency
+            
+            # Weight factor - heavier loads are more efficient
+            if load.weight_total > 0:
+                # Normalize weight to 0-100 scale (assuming 40,000 lbs is optimal)
+                optimal_weight = 40000
+                weight_factor = min((load.weight_total / optimal_weight) * 100, 100)
+                base_efficiency += (weight_factor - 70) * 0.3
+            
+            # Invoice completion bonus
+            if load.invoice_id:
+                base_efficiency += 15
+            
+            # Load optimization affects revenue efficiency
+            if hasattr(load, 'load_optimization_score'):
+                base_efficiency += (load.load_optimization_score - 70) * 0.2
+            
+            load.revenue_efficiency_rating = min(max(base_efficiency, 0), 100)
+    
+    @api.depends('bale_count', 'state', 'driver_signature')
+    def _compute_operational_analytics(self):
+        """Compute operational complexity analytics"""
+        for load in self:
+            complexity = 30  # Base complexity
+            
+            # Number of bales affects complexity
+            if load.bale_count > 20:
+                complexity += 25
+            elif load.bale_count > 15:
+                complexity += 15
+            elif load.bale_count > 10:
+                complexity += 10
+            
+            # State-based complexity
+            state_complexity = {
+                'draft': 20,
+                'prepare': 40,
+                'loading': 60,
+                'shipped': 50,
+                'sold': 30,
+                'cancelled': 10
+            }
+            
+            if hasattr(load, 'state') and load.state:
+                complexity += state_complexity.get(load.state, 30)
+            
+            # Driver signature indicates completion complexity
+            if load.driver_signature:
+                complexity += 10
+            
+            load.operational_complexity_index = min(max(complexity, 0), 100)
 
     def action_sign_and_invoice(self):
         # Wizard for driver sign-off, auto-create invoice
