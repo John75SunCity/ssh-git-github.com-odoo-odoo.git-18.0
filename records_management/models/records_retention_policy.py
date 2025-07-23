@@ -650,3 +650,14 @@ class RecordsRetentionPolicy(models.Model):
             except Exception:
                 pass
             policy.audit_count = audit_count
+
+    def action_view_exceptions(self):
+        """View policy exceptions"""
+        return {
+            'name': 'Policy Exceptions',
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.policy.exception',
+            'view_mode': 'tree,form',
+            'domain': [('policy_id', '=', self.id)],
+            'context': {'default_policy_id': self.id},
+        }

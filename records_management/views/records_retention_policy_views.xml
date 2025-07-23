@@ -25,14 +25,14 @@
             <field name="arch" type="xml">
                 <form string="Retention Policy">
                     <header>
-                        <button name="action_activate" string="Activate" type="object" class="btn-primary" states="draft"/>
-                        <button name="action_review" string="Mark for Review" type="object" class="btn-secondary" states="active"/>
-                        <button name="action_retire" string="Retire" type="object" class="btn-warning" states="active,under_review"/>
-                        <field name="policy_status" widget="statusbar" statusbar_visible="draft,active,under_review,retired"/>
+                        <button name="action_activate_policy" string="Activate" type="object" class="btn-primary" states="pending"/>
+                        <button name="action_review_policy" string="Mark for Review" type="object" class="btn-secondary" states="active"/>
+                        <button name="action_deactivate_policy" string="Retire" type="object" class="btn-warning" states="active,pending"/>
+                        <field name="policy_status" widget="statusbar" statusbar_visible="pending,active,inactive,expired"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button name="action_view_documents" type="object" class="oe_stat_button" icon="fa-files-o">
+                            <button name="action_view_policy_documents" type="object" class="oe_stat_button" icon="fa-files-o">
                                 <field name="document_count" widget="statinfo" string="Documents"/>
                             </button>
                             <button name="action_view_exceptions" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
