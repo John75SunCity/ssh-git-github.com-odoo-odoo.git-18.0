@@ -59,6 +59,39 @@ class ShreddingService(models.Model):
     pos_session_id = fields.Many2one('pos.session', string='POS Session (Walk-in)', tracking=True)  # New for walk-in
     estimated_bale_weight = fields.Float(compute='_compute_estimated_bale_weight', store=True, help='Predictive weight for recycling efficiency')
 
+    # Phase 2 Audit & Compliance Fields - Added by automated script
+    naid_certificate_id = fields.Many2one('naid.certificate', string='NAID Certificate')
+    naid_compliance_level = fields.Selection([('aaa', 'NAID AAA'), ('aa', 'NAID AA'), ('a', 'NAID A')], string='NAID Compliance Level')
+    destruction_standard = fields.Selection([('dod_5220', 'DoD 5220.22-M'), ('nist_800_88', 'NIST 800-88'), ('iso_27040', 'ISO/IEC 27040'), ('custom', 'Custom Standard')], string='Destruction Standard')
+    witness_verification_required = fields.Boolean('Witness Verification Required', default=True)
+    photo_documentation_required = fields.Boolean('Photo Documentation Required', default=True)
+    video_documentation_required = fields.Boolean('Video Documentation Required', default=False)
+    certificate_of_destruction_id = fields.Many2one('records.destruction.certificate', string='Certificate of Destruction')
+    audit_trail_ids = fields.One2many('records.audit.log', 'shredding_service_id', string='Audit Trail')
+    compliance_documentation_ids = fields.One2many('ir.attachment', 'res_id', string='Compliance Documentation', domain=[('res_model', '=', 'shredding.service')])
+    destruction_method_verified = fields.Boolean('Destruction Method Verified', default=False)
+    chain_of_custody_maintained = fields.Boolean('Chain of Custody Maintained', default=False)
+    environmental_compliance = fields.Boolean('Environmental Compliance Verified', default=False)
+    quality_control_performed = fields.Boolean('Quality Control Performed', default=False)
+    quality_control_date = fields.Datetime('Quality Control Date')
+    quality_control_officer_id = fields.Many2one('res.users', string='Quality Control Officer')
+    particle_size_verified = fields.Boolean('Particle Size Verified', default=False)
+    contamination_check = fields.Boolean('Contamination Check Performed', default=False)
+    equipment_calibration_verified = fields.Boolean('Equipment Calibration Verified', default=False)
+
+    # Phase 2 Audit & Compliance Fields - Added by automated script
+    audit_required = fields.Boolean('Audit Required', default=True)
+    audit_completed = fields.Boolean('Audit Completed', default=False)
+    audit_date = fields.Date('Audit Date')
+    auditor_id = fields.Many2one('res.users', string='Auditor')
+    compliance_status = fields.Selection([('pending', 'Pending'), ('compliant', 'Compliant'), ('non_compliant', 'Non-Compliant')], string='Compliance Status', default='pending')
+    regulatory_approval = fields.Boolean('Regulatory Approval', default=False)
+    naid_certification = fields.Boolean('NAID Certification', default=False)
+    iso_certification = fields.Boolean('ISO Certification', default=False)
+    audit_notes = fields.Text('Audit Notes')
+    compliance_notes = fields.Text('Compliance Notes')
+    risk_level = fields.Selection([('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('critical', 'Critical')], string='Risk Level', default='medium')
+
     @api.depends('hard_drive_ids', 'hard_drive_ids.scanned_at_customer', 'hard_drive_ids.verified_before_destruction')
     def _compute_hard_drive_counts(self):
         """Compute scanned and verified hard drive counts"""

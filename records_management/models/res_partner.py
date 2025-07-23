@@ -82,6 +82,18 @@ class ResPartner(models.Model):
              "(used with separate billing)"
     )
 
+    # Phase 2 Audit & Compliance Fields - Added by automated script
+    audit_required = fields.Boolean('Customer Audit Required', default=False)
+    last_audit_date = fields.Date('Last Audit Date')
+    next_audit_date = fields.Date('Next Audit Date')
+    compliance_score = fields.Float('Compliance Score (%)', default=0.0)
+    compliance_status = fields.Selection([('compliant', 'Compliant'), ('warning', 'Warning'), ('non_compliant', 'Non-Compliant')], string='Compliance Status', default='compliant')
+    regulatory_requirements = fields.Text('Regulatory Requirements')
+    audit_frequency = fields.Selection([('monthly', 'Monthly'), ('quarterly', 'Quarterly'), ('yearly', 'Yearly')], string='Audit Frequency', default='yearly')
+    risk_classification = fields.Selection([('low', 'Low Risk'), ('medium', 'Medium Risk'), ('high', 'High Risk')], string='Risk Classification', default='low')
+    background_check_required = fields.Boolean('Background Check Required', default=False)
+    security_clearance_level = fields.Selection([('none', 'None'), ('basic', 'Basic'), ('confidential', 'Confidential'), ('secret', 'Secret')], string='Security Clearance', default='none')
+
     @api.depends('is_company')  # Simplified dependencies
     def _compute_department_stats(self):
         for partner in self:

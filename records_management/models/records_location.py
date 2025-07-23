@@ -65,6 +65,26 @@ class RecordsLocation(models.Model):
     state = fields.Selection([('active', 'Active'), ('inactive', 'Inactive')], string='State', default='active')
     storage_date = fields.Date('Storage Date')
 
+    # Phase 2 Audit & Compliance Fields - Added by automated script
+    security_audit_ids = fields.One2many('records.security.audit', 'location_id', string='Security Audits')
+    last_security_audit = fields.Date('Last Security Audit')
+    security_certification = fields.Selection([('none', 'None'), ('basic', 'Basic Security'), ('enhanced', 'Enhanced Security'), ('maximum', 'Maximum Security')], string='Security Certification', default='basic')
+    access_control_system = fields.Boolean('Access Control System', default=False)
+    surveillance_system = fields.Boolean('Surveillance System', default=False)
+    alarm_system = fields.Boolean('Alarm System', default=False)
+    fire_detection_system = fields.Boolean('Fire Detection System', default=False)
+    environmental_controls_verified = fields.Boolean('Environmental Controls Verified', default=False)
+    temperature_controlled = fields.Boolean('Temperature Controlled', default=False)
+    humidity_controlled = fields.Boolean('Humidity Controlled', default=False)
+    pest_control_program = fields.Boolean('Pest Control Program', default=False)
+    hazmat_compliance = fields.Boolean('HAZMAT Compliance', default=False)
+    inspection_required = fields.Boolean('Regular Inspection Required', default=True)
+    inspection_frequency = fields.Selection([('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly'), ('quarterly', 'Quarterly')], string='Inspection Frequency', default='monthly')
+    last_inspection_date = fields.Date('Last Inspection Date')
+    next_inspection_date = fields.Date('Next Inspection Date', compute='_compute_next_inspection')
+    inspection_log_ids = fields.One2many('records.location.inspection', 'location_id', string='Inspection Log')
+    compliance_violations_count = fields.Integer('Compliance Violations', compute='_compute_violations_count')
+
     @api.depends('name', 'parent_id.complete_name')
     def _compute_complete_name(self):
         for location in self:

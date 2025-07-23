@@ -60,6 +60,49 @@ class CustomerInventoryReport(models.Model):
     ], default='draft', string='Status')
     notes = fields.Text(string='Notes')
     
+    # Phase 2: Audit & Compliance Fields (12 fields)
+    audit_required = fields.Boolean(
+        string='Audit Required',
+        default=False,
+        tracking=True
+    )
+    compliance_status = fields.Selection([
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('under_review', 'Under Review')
+    ], string='Compliance Status', default='pending', tracking=True)
+    risk_level = fields.Selection([
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+        ('critical', 'Critical')
+    ], string='Risk Level', default='low')
+    regulatory_requirement = fields.Text(string='Regulatory Requirement')
+    approval_required = fields.Boolean(
+        string='Approval Required',
+        default=False,
+        tracking=True
+    )
+    approved_by = fields.Many2one('res.users', string='Approved By')
+    approval_date = fields.Datetime(string='Approval Date')
+    confidentiality_level = fields.Selection([
+        ('public', 'Public'),
+        ('internal', 'Internal'),
+        ('confidential', 'Confidential'),
+        ('restricted', 'Restricted')
+    ], string='Confidentiality Level', default='internal')
+    data_protection_compliance = fields.Boolean(
+        string='Data Protection Compliance',
+        default=True
+    )
+    audit_trail = fields.Text(string='Audit Trail')
+    quality_assurance = fields.Boolean(
+        string='Quality Assurance',
+        default=False
+    )
+    compliance_notes = fields.Text(string='Compliance Notes')
+    
     # Computed fields for UI styling
     volume_category = fields.Selection([
         ('small', 'Small (≤50 boxes)'),

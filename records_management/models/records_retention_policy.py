@@ -78,6 +78,27 @@ class RecordsRetentionPolicy(models.Model, mail.thread):
     notification_enabled = fields.Boolean('Notifications Enabled', default=True)
     priority = fields.Selection([('low', 'Low'), ('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
 
+    # Phase 2 Audit & Compliance Fields - Added by automated script
+    compliance_framework = fields.Selection([('sox', 'Sarbanes-Oxley'), ('hipaa', 'HIPAA'), ('gdpr', 'GDPR'), ('pci', 'PCI-DSS'), ('iso27001', 'ISO 27001'), ('nist', 'NIST'), ('custom', 'Custom')], string='Compliance Framework')
+    regulatory_citation = fields.Text('Regulatory Citation', help='Specific law, regulation, or standard citation')
+    compliance_officer_approval = fields.Boolean('Compliance Officer Approval Required', default=True)
+    legal_counsel_review = fields.Boolean('Legal Counsel Review Required', default=False)
+    audit_trail_required = fields.Boolean('Audit Trail Required', default=True)
+    exception_approval_required = fields.Boolean('Exception Approval Required', default=True)
+    last_review_date = fields.Date('Last Review Date')
+    review_cycle_months = fields.Integer('Review Cycle (Months)', default=12)
+    next_mandatory_review = fields.Date('Next Mandatory Review', compute='_compute_next_review')
+    policy_version = fields.Char('Policy Version', default='1.0')
+    version_history_ids = fields.One2many('records.policy.version', 'policy_id', string='Version History')
+    approval_workflow_id = fields.Many2one('records.approval.workflow', string='Approval Workflow')
+    stakeholder_notification = fields.Boolean('Stakeholder Notification Required', default=True)
+    risk_assessment_required = fields.Boolean('Risk Assessment Required', default=False)
+    risk_level = fields.Selection([('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('critical', 'Critical')], string='Risk Level', default='medium')
+    impact_assessment = fields.Text('Impact Assessment')
+    mitigation_measures = fields.Text('Risk Mitigation Measures')
+    exception_count = fields.Integer('Exception Count', compute='_compute_exception_count')
+    violation_count = fields.Integer('Violation Count', compute='_compute_violation_count')
+
 
     @api.depends('retention_years')
     def _compute_retention_period(self):

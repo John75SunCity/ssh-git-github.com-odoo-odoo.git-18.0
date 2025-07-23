@@ -264,6 +264,31 @@ class RecordsDocument(models.Model):
     scan_date = fields.Datetime('Scan Date')
     signature_verified = fields.Boolean('Signature Verified', default=False)
 
+    # Phase 2 Audit & Compliance Fields - Added by automated script
+    audit_log_ids = fields.One2many('records.audit.log', 'document_id', string='Audit Logs')
+    last_audit_date = fields.Datetime('Last Audit Date', readonly=True)
+    audit_required = fields.Boolean('Audit Required', default=False)
+    audit_frequency = fields.Selection([('weekly', 'Weekly'), ('monthly', 'Monthly'), ('quarterly', 'Quarterly'), ('yearly', 'Yearly')], string='Audit Frequency')
+    compliance_status = fields.Selection([('compliant', 'Compliant'), ('non_compliant', 'Non-Compliant'), ('pending_review', 'Pending Review')], string='Compliance Status', default='pending_review')
+    compliance_notes = fields.Text('Compliance Notes')
+    regulatory_classification = fields.Selection([('public', 'Public'), ('confidential', 'Confidential'), ('restricted', 'Restricted'), ('classified', 'Classified')], string='Regulatory Classification')
+    data_subject_request = fields.Boolean('Data Subject Request', default=False, help='GDPR/Privacy related document')
+    retention_hold = fields.Boolean('Retention Hold', default=False, help='Legal hold preventing destruction')
+    legal_review_required = fields.Boolean('Legal Review Required', default=False)
+    legal_review_date = fields.Date('Legal Review Date')
+    legal_reviewer_id = fields.Many2one('res.users', string='Legal Reviewer')
+    access_log_ids = fields.One2many('records.access.log', 'document_id', string='Access Logs')
+    encryption_required = fields.Boolean('Encryption Required', default=False)
+    encryption_status = fields.Selection([('none', 'Not Encrypted'), ('in_transit', 'Encrypted in Transit'), ('at_rest', 'Encrypted at Rest'), ('both', 'Fully Encrypted')], string='Encryption Status', default='none')
+    access_level = fields.Selection([('public', 'Public'), ('internal', 'Internal'), ('restricted', 'Restricted'), ('confidential', 'Confidential')], string='Access Level', default='internal')
+    authorized_users = fields.Many2many('res.users', string='Authorized Users')
+    authorized_groups = fields.Many2many('res.groups', string='Authorized Groups')
+    custody_log_ids = fields.One2many('records.chain.custody', 'document_id', string='Chain of Custody')
+    current_custodian_id = fields.Many2one('res.users', string='Current Custodian')
+    custody_verified = fields.Boolean('Custody Verified', default=False)
+    custody_verification_date = fields.Datetime('Custody Verification Date')
+
+
     def _compute_attachment_count(self):
         for rec in self:
             rec.attachment_count = len(rec.attachment_ids)

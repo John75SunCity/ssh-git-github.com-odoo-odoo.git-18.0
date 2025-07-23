@@ -196,6 +196,29 @@ class RecordsBox(models.Model):
     weight = fields.Float('Weight (lbs)')
     priority = fields.Selection([('low', 'Low'), ('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
 
+    # Phase 2 Audit & Compliance Fields - Added by automated script
+    audit_log_ids = fields.One2many('records.audit.log', 'box_id', string='Audit Logs')
+    last_audit_date = fields.Datetime('Last Audit Date', readonly=True)
+    audit_required = fields.Boolean('Audit Required', default=True)
+    physical_audit_required = fields.Boolean('Physical Audit Required', default=False)
+    inventory_verified = fields.Boolean('Inventory Verified', default=False)
+    inventory_verification_date = fields.Date('Inventory Verification Date')
+    inventory_discrepancies = fields.Text('Inventory Discrepancies')
+    compliance_status = fields.Selection([('compliant', 'Compliant'), ('non_compliant', 'Non-Compliant'), ('pending_review', 'Pending Review')], string='Compliance Status', default='pending_review')
+    naid_certified = fields.Boolean('NAID Certified Storage', default=False)
+    iso_certified = fields.Boolean('ISO Certified Storage', default=False)
+    security_clearance_required = fields.Selection([('none', 'None'), ('basic', 'Basic'), ('secret', 'Secret'), ('top_secret', 'Top Secret')], string='Security Clearance Required', default='none')
+    environmental_controls = fields.Boolean('Environmental Controls', default=False)
+    fire_suppression = fields.Boolean('Fire Suppression System', default=False)
+    custody_log_ids = fields.One2many('records.chain.custody', 'box_id', string='Chain of Custody')
+    current_custodian_id = fields.Many2one('res.users', string='Current Custodian')
+    transfer_log_ids = fields.One2many('records.box.transfer', 'box_id', string='Transfer Log')
+    witness_required = fields.Boolean('Witness Required for Transfer', default=False)
+    tamper_evident_seal = fields.Char('Tamper Evident Seal Number')
+    seal_verified = fields.Boolean('Seal Verified', default=False)
+    seal_verification_date = fields.Datetime('Seal Verification Date')
+
+
     @api.model_create_multi
     def create(self, vals_list: List[dict]) -> 'RecordsBox':
         for vals in vals_list:
