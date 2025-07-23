@@ -92,7 +92,7 @@
                 <field name="risk_level" string="⚠️ Risk Level"/>
                 <field name="security_classification" string="🛡️ Security" widget="badge"/>
                 <field name="approval_required" string="✅ Approval" widget="boolean_toggle"/>
-                <field name="auto_archive" string="📦 Auto Archive" widget="boolean_toggle"/>
+                <field name="retention_compliance" string="� Retention Compliance" widget="boolean_toggle"/>
                 <field name="active" string="🎯 Status" widget="boolean_toggle"/>
                 <button name="action_view_type_documents" type="object" string="Documents" icon="fa-file-text-o" class="btn-link"/>
             </list>
@@ -140,7 +140,7 @@
                         <group string="⏰ Retention Management">
                             <field name="risk_level"/>
                             <field name="retention_unit"/>
-                            <field name="auto_archive"/>
+                            <field name="retention_compliance"/>
                             <field name="destruction_method"/>
                         </group>
                         <group string="📋 Processing Rules">
@@ -258,7 +258,7 @@
 
                 <separator/>
                 <filter string="🛡️ Confidential" name="confidential" domain="[('security_classification', 'in', ['confidential', 'secret'])]"/>
-                <filter string="📦 Auto Archive" name="auto_archive" domain="[('auto_archive', '=', True)]"/>
+                <filter string="� Retention Compliance" name="retention_compliance" domain="[('retention_compliance', '=', True)]"/>
                 <filter string="🤖 Auto Classify" name="auto_classify" domain="[('auto_classify', '=', True)]"/>
 
                 <separator/>
