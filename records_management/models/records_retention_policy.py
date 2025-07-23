@@ -46,6 +46,8 @@ class RecordsRetentionPolicy(models.Model):
     
     # Additional Policy Details
     legal_basis = fields.Text('Legal Basis', help='Legal or regulatory basis for this retention policy')
+    regulatory_requirement = fields.Char('Regulatory Requirement', 
+                                        help='Specific regulatory or legal requirement this policy addresses')
     effective_date = fields.Date('Effective Date', default=fields.Date.today, 
                                 help='Date when this retention policy becomes effective')
     review_date = fields.Date('Review Date')
