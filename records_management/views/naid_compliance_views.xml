@@ -16,7 +16,7 @@
                 <field name="audit_required"/>
                 <field name="certificate_valid"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
@@ -28,7 +28,7 @@
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v"/></a>
+                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" title="More options"/></a>
                                 </div>
                             </div>
                             <div class="o_kanban_card_content">

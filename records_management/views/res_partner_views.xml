@@ -18,7 +18,7 @@
                 <field name="total_documents"/>
                 <field name="active_storage_value"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click o_kanban_record_has_image_fill">
                             <div class="o_kanban_image">
                                 <img t-att-src="kanban_image('res.partner', 'avatar_128', record.id.raw_value)" alt="Customer Avatar"/>
@@ -63,7 +63,7 @@
                                 </div>
                             </div>
                             <div class="o_kanban_manage_button_section">
-                                <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v"/></a>
+                                <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" title="More options"/></a>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Customer</a>

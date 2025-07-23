@@ -15,7 +15,7 @@
                 <field name="requires_approval"/>
                 <field name="active"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
@@ -27,14 +27,14 @@
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v"/></a>
+                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" title="More options"/></a>
                                 </div>
                             </div>
                             <div class="o_kanban_card_content">
                                 <div class="row">
                                     <div class="col-8">
-                                        <div><i class="fa fa-clock-o"/> Retention: <field name="retention_period"/> years</div>
-                                        <div><i class="fa fa-shield"/> Level: <field name="confidentiality_level"/></div>
+                                        <div><i class="fa fa-clock-o" title="Time"/> Retention: <field name="retention_period"/> years</div>
+                                        <div><i class="fa fa-shield" title="Security"/> Level: <field name="confidentiality_level"/></div>
                                     </div>
                                     <div class="col-4">
                                         <span class="badge badge-info" t-if="record.requires_approval.raw_value">

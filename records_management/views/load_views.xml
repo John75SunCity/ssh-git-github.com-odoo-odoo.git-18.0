@@ -20,7 +20,7 @@
                 <field name="activity_state"/>
                 <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click">
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">
@@ -191,7 +191,7 @@
                                     <field name="quality_grade"/>
                                     <field name="value_per_ton"/>
                                     <templates>
-                                        <t t-name="kanban-box">
+                                        <t t-name="card">
                                             <div class="oe_kanban_global_click">
                                                 <div class="o_kanban_record_top">
                                                     <strong><field name="bale_number"/></strong>
@@ -248,7 +248,7 @@
                                     <field name="image"/>
                                     <field name="photo_type"/>
                                     <templates>
-                                        <t t-name="kanban-box">
+                                        <t t-name="card">
                                             <div class="oe_kanban_global_click">
                                                 <div class="o_kanban_image">
                                                     <img t-att-src="kanban_image('load.photo', 'image', record.id.raw_value)" alt="Load Photo"/>

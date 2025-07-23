@@ -46,6 +46,8 @@ class RecordsRetentionPolicy(models.Model):
     
     # Additional Policy Details
     legal_basis = fields.Text('Legal Basis', help='Legal or regulatory basis for this retention policy')
+    effective_date = fields.Date('Effective Date', default=fields.Date.today, 
+                                help='Date when this retention policy becomes effective')
     review_date = fields.Date('Review Date')
     next_review_date = fields.Date('Next Review Date', compute='_compute_next_review_date', store=True,
                                    help='Automatically calculated next review date based on review cycle')

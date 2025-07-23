@@ -15,7 +15,7 @@
                 <field name="utilization_percentage"/>
                 <field name="active"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
@@ -23,11 +23,11 @@
                                         <strong><field name="name"/></strong>
                                     </div>
                                     <div class="o_secondary">
-                                        <i class="fa fa-building-o"/> <field name="location_type"/>
+                                        <i class="fa fa-building-o" title="Location Type"/> <field name="location_type"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v"/></a>
+                                    <a class="o_kanban_manage_toggle_button" href="#" title="More options"><i class="fa fa-ellipsis-v" title="More options"/></a>
                                 </div>
                             </div>
                             <div class="o_kanban_card_content">

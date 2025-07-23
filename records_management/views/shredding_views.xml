@@ -18,7 +18,7 @@
                 <field name="certificate_required"/>
                 <field name="witness_required"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
@@ -30,7 +30,7 @@
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v"/></a>
+                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" title="More options"/></a>
                                 </div>
                             </div>
                             <div class="o_kanban_card_content">
@@ -38,7 +38,7 @@
                                     <div class="col-8">
                                         <div><i class="fa fa-cogs"/> <field name="service_type"/></div>
                                         <div><i class="fa fa-calendar"/> <field name="scheduled_date"/></div>
-                                        <div><i class="fa fa-shield"/> <field name="destruction_method"/></div>
+                                        <div><i class="fa fa-shield" title="Security"/> <field name="destruction_method"/></div>
                                     </div>
                                     <div class="col-4">
                                         <span class="badge" t-att-class="record.naid_compliance_level.raw_value === 'AAA' ? 'badge-success' : record.naid_compliance_level.raw_value === 'AA' ? 'badge-warning' : 'badge-secondary'">
