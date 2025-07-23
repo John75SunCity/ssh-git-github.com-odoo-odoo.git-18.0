@@ -1,8 +1,9 @@
 from odoo import models, fields, api, _
 
-class RecordsRetentionPolicy(models.Model, mail.thread):
+class RecordsRetentionPolicy(models.Model):
     _name = 'records.retention.policy'
     _description = 'Document Retention Policy'
+    _inherit = ['mail.thread']
 
     name = fields.Char('Policy Name', required=True)
     retention_years = fields.Integer('Retention Period (Years)', required=True)
