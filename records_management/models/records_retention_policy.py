@@ -3,7 +3,7 @@ from odoo import models, fields, api, _
 class RecordsRetentionPolicy(models.Model):
     _name = 'records.retention.policy'
     _description = 'Document Retention Policy'
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char('Policy Name', required=True)
     retention_years = fields.Integer('Retention Period (Years)', required=True)
@@ -69,15 +69,23 @@ class RecordsRetentionPolicy(models.Model):
     audit_count = fields.Integer(string='Audit Logs', default=0)
 
     # Phase 1 Critical Fields - Added by automated script
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    # Note: activity_ids, message_follower_ids, message_ids provided by mixins
     action = fields.Selection([('archive', 'Archive'), ('destroy', 'Destroy'), ('review', 'Review')], string='Action')
     compliance_officer = fields.Many2one('res.users', string='Compliance Officer')
     legal_reviewer = fields.Many2one('res.users', string='Legal Reviewer')
     review_frequency = fields.Selection([('monthly', 'Monthly'), ('quarterly', 'Quarterly'), ('yearly', 'Yearly')], string='Review Frequency', default='yearly')
     notification_enabled = fields.Boolean('Notifications Enabled', default=True)
     priority = fields.Selection([('low', 'Low'), ('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
+
+    # Missing fields referenced in views
+    destruction_method = fields.Selection([
+        ('secure_shredding', 'Secure Shredding'),
+        ('incineration', 'Incineration'),
+        ('pulping', 'Pulping'),
+        ('digital_deletion', 'Digital Deletion'),
+        ('degaussing', 'Degaussing')
+    ], string='Destruction Method', default='secure_shredding')
+    compliance_rate = fields.Float('Compliance Rate (%)', compute='_compute_compliance_rate', store=True)
 
     # Phase 2 Audit & Compliance Fields - Added by automated script
     compliance_framework = fields.Selection([('sox', 'Sarbanes-Oxley'), ('hipaa', 'HIPAA'), ('gdpr', 'GDPR'), ('pci', 'PCI-DSS'), ('iso27001', 'ISO 27001'), ('nist', 'NIST'), ('custom', 'Custom')], string='Compliance Framework')
@@ -320,6 +328,36 @@ class RecordsRetentionPolicy(models.Model):
                 insights.append("📈 Policy performing within acceptable parameters")
             
             policy.policy_performance_insights = "\n".join(insights)
+
+    @api.depends('compliance_verified', 'document_count', 'policy_status')
+    def _compute_compliance_rate(self):
+        """Compute compliance rate as a percentage"""
+        for policy in self:
+            if policy.document_count > 0:
+                # Base compliance rate on various factors
+                rate = 0.0
+                
+                # Policy status impact
+                if policy.policy_status == 'active':
+                    rate += 40.0
+                elif policy.policy_status == 'under_review':
+                    rate += 20.0
+                
+                # Compliance verification impact
+                if policy.compliance_verified:
+                    rate += 30.0
+                
+                # Framework compliance
+                if policy.compliance_framework:
+                    rate += 20.0
+                
+                # Legal review impact
+                if policy.legal_counsel_review:
+                    rate += 10.0
+                
+                policy.compliance_rate = min(100.0, rate)
+            else:
+                policy.compliance_rate = 0.0
 
     @api.depends('review_date', 'name')
     def _compute_next_review_date(self):
