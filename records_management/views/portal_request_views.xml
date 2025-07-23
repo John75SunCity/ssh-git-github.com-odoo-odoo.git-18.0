@@ -94,10 +94,10 @@
                 <field name="sla_status" string="⏱️ SLA" widget="badge"/>
                 <button name="action_process_request" type="object" string="Process" 
                         icon="fa-play" class="btn-link" 
-                        attrs="{'invisible': [('request_status', 'in', ['completed', 'cancelled'])]}"/>
+                        invisible="request_status in ['completed', 'cancelled']"/>
                 <button name="action_escalate" type="object" string="Escalate" 
                         icon="fa-arrow-up" class="btn-link" 
-                        attrs="{'invisible': [('priority', '=', 'high')]}"/>
+                        invisible="priority == 'high'"/>
             </list>
         </field>
     </record>
@@ -110,12 +110,12 @@
             <form>
                 <header>
                     <button name="action_process_request" type="object" string="⚡ Process Request" 
-                            class="btn-primary" attrs="{'invisible': [('request_status', 'in', ['completed', 'cancelled'])]}"/>
+                            class="btn-primary" invisible="request_status in ['completed', 'cancelled']"/>
                     <button name="action_approve_request" type="object" string="✅ Approve" 
-                            class="btn-success" attrs="{'invisible': [('request_status', '!=', 'pending_approval')]}"/>
+                            class="btn-success" invisible="request_status != 'pending_approval'"/>
                     <button name="action_escalate" type="object" string="📈 Escalate" class="btn-warning"/>
                     <button name="action_complete_request" type="object" string="🎯 Complete" 
-                            class="btn-info" attrs="{'invisible': [('request_status', '!=', 'in_progress')]}"/>
+                            class="btn-info" invisible="request_status != 'in_progress'"/>
                     <field name="request_status" widget="statusbar" statusbar_visible="submitted,pending_approval,in_progress,completed,cancelled"/>
                 </header>
                 <sheet>
@@ -130,7 +130,7 @@
                             <field string="Related Requests" name="related_request_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-clock-o" 
-                                attrs="{'invisible': [('sla_status', '!=', 'on_time')]}">
+                                invisible="sla_status != 'on_time'">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">⏱️</span>
                                 <span class="o_stat_text">On Time</span>

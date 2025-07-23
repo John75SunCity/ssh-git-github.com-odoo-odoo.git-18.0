@@ -97,7 +97,7 @@
                 <field name="next_review_date" string="📅 Next Review"/>
                 <button name="action_apply_policy" type="object" string="Apply" 
                         icon="fa-play" class="btn-link" 
-                        attrs="{'invisible': [('policy_status', '!=', 'active')]}"/>
+                        invisible="policy_status != 'active'"/>
                 <button name="action_compliance_audit" type="object" string="Audit" 
                         icon="fa-shield" class="btn-link"/>
             </list>
@@ -112,7 +112,7 @@
             <form>
                 <header>
                     <button name="action_apply_policy" type="object" string="🚀 Apply Policy" 
-                            class="btn-primary" attrs="{'invisible': [('policy_status', '!=', 'active')]}"/>
+                            class="btn-primary" invisible="policy_status != 'active'"/>
                     <button name="action_schedule_review" type="object" string="📅 Schedule Review" class="btn-secondary"/>
                     <button name="action_compliance_audit" type="object" string="🏆 Compliance Audit" class="btn-info"/>
                     <button name="action_test_policy" type="object" string="🧪 Test Policy" class="btn-warning"/>
@@ -130,7 +130,7 @@
                             <field string="Audit Logs" name="audit_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-check-circle" 
-                                attrs="{'invisible': [('compliance_verified', '=', False)]}">
+                                invisible="not compliance_verified">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">🏆</span>
                                 <span class="o_stat_text">Compliant</span>

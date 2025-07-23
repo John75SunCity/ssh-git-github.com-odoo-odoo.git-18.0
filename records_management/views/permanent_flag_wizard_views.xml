@@ -58,9 +58,9 @@
                                 <field name="box_id"/>
                                 <field name="permanent_flag" string="🛡️ Currently Permanent" widget="boolean"/>
                                 <field name="permanent_flag_set_by" string="Set By" 
-                                       attrs="{'invisible': [('permanent_flag', '=', False)]}"/>
+                                       invisible="not permanent_flag"/>
                                 <field name="permanent_flag_set_date" string="Set Date"
-                                       attrs="{'invisible': [('permanent_flag', '=', False)]}"/>
+                                       invisible="not permanent_flag"/>
                             </list>
                         </field>
                     </div>
@@ -68,10 +68,10 @@
                 <footer>
                     <button name="action_confirm" type="object" string="🛡️ Confirm Permanent Flag" 
                             class="btn-primary"
-                            attrs="{'invisible': [('action_type', '!=', 'mark')]}"/>
+                            invisible="action_type != 'mark'"/>
                     <button name="action_confirm" type="object" string="⚠️ Remove Permanent Flag" 
                             class="btn-warning"
-                            attrs="{'invisible': [('action_type', '!=', 'unmark')]}"/>
+                            invisible="action_type != 'unmark'"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>

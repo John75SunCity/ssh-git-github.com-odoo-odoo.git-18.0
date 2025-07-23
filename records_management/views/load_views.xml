@@ -100,11 +100,11 @@
         <field name="arch" type="xml">
             <form string="Paper Bale Load Management">
                 <header>
-                    <button name="action_prepare_load" string="Prepare Load" type="object" class="btn-primary" states="draft"/>
-                    <button name="action_start_loading" string="Start Loading" type="object" class="btn-primary" states="ready"/>
-                    <button name="action_ship_load" string="Ship Load" type="object" class="btn-success" states="loading"/>
-                    <button name="action_mark_sold" string="Mark Sold" type="object" class="btn-success" states="shipped"/>
-                    <button name="action_cancel" string="Cancel" type="object" states="draft,ready,loading"/>
+                    <button name="action_prepare_load" string="Prepare Load" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_start_loading" string="Start Loading" type="object" class="btn-primary" invisible="state != 'ready'"/>
+                    <button name="action_ship_load" string="Ship Load" type="object" class="btn-success" invisible="state != 'loading'"/>
+                    <button name="action_mark_sold" string="Mark Sold" type="object" class="btn-success" invisible="state != 'shipped'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state not in ['draft', 'ready', 'loading']"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,ready,loading,shipped,sold"/>
                 </header>
                 <sheet>
@@ -158,20 +158,19 @@
                         <group name="market_details" string="💰 Market Details">
                             <field name="market_price_per_ton" widget="monetary"/>
                             <field name="estimated_revenue" widget="monetary"/>
-                            <field name="actual_sale_price" widget="monetary" states="sold"/>
-                            <field name="price_variance" widget="monetary" states="sold"/>
+                            <field name="actual_sale_price" widget="monetary" invisible="state != 'sold'"/>
+                            <field name="price_variance" widget="monetary" invisible="state != 'sold'"/>
                             <field name="buyer_company"/>
-                            <field name="sale_contract_number" states="shipped,sold"/>
+                            <field name="sale_contract_number" invisible="state not in ['shipped', 'sold']"/>
                         </group>
                     </group>
                     <group name="tracking" string="Tracking and Status">
-                            <field name="priority" widget="priority"/>
-                            <field name="temperature_controlled" widget="boolean_toggle"/>
-                            <field name="hazmat_required" widget="boolean_toggle"/>
-                            <field name="special_instructions" placeholder="Special handling instructions..."/>
-                            <field name="estimated_delivery" widget="datetime"/>
-                            <field name="actual_delivery" widget="datetime" states="delivered"/>
-                        </group>
+                        <field name="priority" widget="priority"/>
+                        <field name="temperature_controlled" widget="boolean_toggle"/>
+                        <field name="hazmat_required" widget="boolean_toggle"/>
+                        <field name="special_instructions" placeholder="Special handling instructions..."/>
+                        <field name="estimated_delivery" widget="datetime"/>
+                        <field name="actual_delivery" widget="datetime" invisible="state != 'delivered'"/>
                     </group>
                     
                     <notebook>
@@ -232,7 +231,7 @@
                                 <group string="📄 Sales Documentation">
                                     <field name="bill_of_lading"/>
                                     <field name="sales_contract_number"/>
-                                    <field name="invoice_number" states="sold"/>
+                                    <field name="invoice_number" invisible="state != 'sold'"/>
                                     <field name="payment_terms"/>
                                 </group>
                                 <group string="📊 Quality Documentation">

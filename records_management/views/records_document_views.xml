@@ -93,15 +93,15 @@
                         icon="fa-link" class="btn-link"/>
                 <button name="action_mark_permanent" type="object" string="Mark Permanent" 
                         icon="fa-shield" class="btn-link"
-                        attrs="{'invisible': [('permanent_flag', '=', True)]}"
+                        invisible="permanent_flag"
                         groups="records_management.group_records_user"/>
                 <button name="action_unmark_permanent" type="object" string="Remove Permanent" 
                         icon="fa-shield" class="btn-link"
-                        attrs="{'invisible': [('permanent_flag', '=', False)]}"
+                        invisible="not permanent_flag"
                         groups="base.group_system"/>
                 <button name="action_schedule_destruction" type="object" string="Destroy" 
                         icon="fa-trash" class="btn-link" 
-                        attrs="{'invisible': ['|', ('destruction_eligible_date', '=', False), ('permanent_flag', '=', True)]}"/>
+                        invisible="not destruction_eligible_date or permanent_flag"/>
             </list>
         </field>
     </record>
@@ -116,13 +116,13 @@
                     <button name="action_view_chain_of_custody" type="object" string="🔗 View Chain of Custody" class="btn-primary"/>
                     <button name="action_scan_document" type="object" string="📷 Scan/Image Document" class="btn-secondary"/>
                     <button name="action_mark_permanent" type="object" string="🛡️ Mark as Permanent" 
-                            class="btn-success" attrs="{'invisible': [('permanent_flag', '=', True)]}"
+                            class="btn-success" invisible="permanent_flag"
                             groups="records_management.group_records_user"/>
                     <button name="action_unmark_permanent" type="object" string="⚠️ Remove Permanent Flag" 
-                            class="btn-warning" attrs="{'invisible': [('permanent_flag', '=', False)]}"
+                            class="btn-warning" invisible="not permanent_flag"
                             groups="base.group_system"/>
                     <button name="action_schedule_destruction" type="object" string="💥 Schedule Destruction" 
-                            class="btn-warning" attrs="{'invisible': ['|', ('destruction_eligible_date', '=', False), ('permanent_flag', '=', True)]}"/>
+                            class="btn-warning" invisible="not destruction_eligible_date or permanent_flag"/>
                     <field name="state" widget="statusbar" statusbar_visible="active,pending_destruction,destroyed"/>
                 </header>
                 <sheet>
@@ -134,7 +134,7 @@
                             <field string="Audit Events" name="audit_trail_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-calendar-times" 
-                                attrs="{'invisible': [('destruction_eligible_date', '=', False)]}">
+                                invisible="not destruction_eligible_date">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value"><field name="days_until_destruction"/></span>
                                 <span class="o_stat_text">Days to Destroy</span>
@@ -153,9 +153,9 @@
                         <group string="🔒 Security &amp; Compliance">
                             <field name="permanent_flag" widget="boolean_toggle"/>
                             <field name="permanent_flag_set_by" readonly="1" 
-                                   attrs="{'invisible': [('permanent_flag', '=', False)]}"/>
+                                   invisible="not permanent_flag"/>
                             <field name="permanent_flag_set_date" readonly="1"
-                                   attrs="{'invisible': [('permanent_flag', '=', False)]}"/>
+                                   invisible="not permanent_flag"/>
                             <field name="retention_policy_id"/>
                             <field name="destruction_eligible_date"/>
                             <field name="state"/>
@@ -205,7 +205,7 @@
                             </field>
                         </page>
                         <page string="💥 Destruction Record" name="destruction" 
-                              attrs="{'invisible': [('state', '!=', 'destroyed')]}">
+                              invisible="state != 'destroyed'">
                             <group>
                                 <group string="🗑️ Destruction Details">
                                     <field name="destruction_date"/>
