@@ -575,8 +575,13 @@ class RecordsBox(models.Model):
             ]
             
             if (box_type, location_type) in incompatible_combinations:
-                box_type_name = dict(box._fields['box_type_code'].selection)[box_type]
-                location_type_name = dict(box.location_id._fields['location_type'].selection)[location_type]
+                # Get field selections safely
+                box_type_selection = dict(box._fields['box_type_code'].selection)
+                location_type_selection = dict(box.location_id._fields['location_type'].selection)
+                
+                box_type_name = box_type_selection.get(box_type, box_type)
+                location_type_name = location_type_selection.get(location_type, location_type)
+                
                 raise ValidationError(_(
                     'Box type mismatch: %s cannot be stored in %s location.\n'
                     'Please move this box to an appropriate location type.'

@@ -179,6 +179,176 @@ class PickupRequest(models.Model):
     signature_date = fields.Datetime(string='Signature Date')
     completion_date = fields.Date(string='Completion Date', tracking=True)
 
+    @api.depends('state', 'priority', 'request_date', 'scheduled_date', 'completion_date', 
+                 'quantity', 'security_level', 'risk_level', 'compliance_status')
+    def _compute_pickup_analytics(self):
+        """Compute comprehensive analytics for pickup requests"""
+        for pickup in self:
+            # Update timestamp
+            pickup.analytics_timestamp = fields.Datetime.now()
+            
+            # Pickup efficiency score
+            efficiency_factors = []
+            
+            # State progression efficiency
+            if pickup.state == 'completed':
+                efficiency_factors.append(100)
+            elif pickup.state == 'scheduled':
+                efficiency_factors.append(80)
+            elif pickup.state == 'confirmed':
+                efficiency_factors.append(60)
+            else:
+                efficiency_factors.append(40)
+            
+            # Priority handling efficiency
+            if pickup.priority == '1':  # High priority
+                if pickup.state in ['scheduled', 'completed']:
+                    efficiency_factors.append(95)
+                else:
+                    efficiency_factors.append(70)
+            else:
+                efficiency_factors.append(85)
+            
+            # Compliance efficiency
+            if pickup.compliance_status == 'approved':
+                efficiency_factors.append(90)
+            elif pickup.compliance_status == 'under_review':
+                efficiency_factors.append(70)
+            else:
+                efficiency_factors.append(50)
+            
+            pickup.pickup_efficiency_score = sum(efficiency_factors) / len(efficiency_factors)
+            
+            # Fulfillment time calculation
+            if pickup.completion_date and pickup.request_date:
+                time_diff = (pickup.completion_date - pickup.request_date).days
+                pickup.fulfillment_time_hours = time_diff * 24  # Convert to hours
+            elif pickup.scheduled_date and pickup.request_date:
+                time_diff = (pickup.scheduled_date - pickup.request_date).days
+                pickup.fulfillment_time_hours = time_diff * 24
+            else:
+                pickup.fulfillment_time_hours = 0.0
+            
+            # Route optimization score (simulated based on factors)
+            route_score = 70.0  # Base score
+            
+            if pickup.warehouse_id:
+                route_score += 15.0  # Warehouse assignment helps
+            if pickup.driver_id:
+                route_score += 10.0  # Driver assignment helps
+            if pickup.vehicle_id:
+                route_score += 5.0   # Vehicle assignment helps
+            
+            pickup.route_optimization_score = min(100, route_score)
+            
+            # Cost per pickup estimation
+            base_cost = 25.0  # Base pickup cost
+            
+            # Quantity factor
+            if pickup.quantity > 50:
+                base_cost += pickup.quantity * 0.5
+            elif pickup.quantity > 20:
+                base_cost += pickup.quantity * 0.3
+            else:
+                base_cost += pickup.quantity * 0.2
+            
+            # Security level factor
+            security_costs = {
+                'public': 0,
+                'internal': 5,
+                'confidential': 15,
+                'restricted': 30
+            }
+            base_cost += security_costs.get(pickup.security_level, 0)
+            
+            pickup.cost_per_pickup = base_cost
+            
+            # Customer satisfaction rating
+            satisfaction = 75.0  # Base satisfaction
+            
+            if pickup.state == 'completed':
+                satisfaction += 15.0
+            elif pickup.state == 'cancelled':
+                satisfaction -= 30.0
+            
+            if pickup.priority == '1' and pickup.state in ['scheduled', 'completed']:
+                satisfaction += 10.0
+            
+            if pickup.fulfillment_time_hours <= 48:  # Within 2 days
+                satisfaction += 10.0
+            elif pickup.fulfillment_time_hours > 168:  # More than a week
+                satisfaction -= 15.0
+            
+            pickup.customer_satisfaction_rating = min(100, max(0, satisfaction))
+            
+            # Operational complexity assessment
+            complexity = 3.0  # Base complexity
+            
+            # Security level complexity
+            security_complexity = {
+                'public': 0,
+                'internal': 1,
+                'confidential': 2,
+                'restricted': 3
+            }
+            complexity += security_complexity.get(pickup.security_level, 0)
+            
+            # Risk level complexity
+            risk_complexity = {
+                'low': 0,
+                'medium': 1,
+                'high': 2,
+                'critical': 3
+            }
+            complexity += risk_complexity.get(pickup.risk_level, 0)
+            
+            # Quantity complexity
+            if pickup.quantity > 100:
+                complexity += 1
+            
+            pickup.operational_complexity = min(10, complexity)
+            
+            # Resource utilization calculation
+            utilization = 60.0  # Base utilization
+            
+            if pickup.driver_id and pickup.vehicle_id:
+                utilization += 25.0
+            elif pickup.driver_id or pickup.vehicle_id:
+                utilization += 15.0
+            
+            if pickup.warehouse_id:
+                utilization += 10.0
+            
+            pickup.resource_utilization = min(100, utilization)
+            
+            # Performance insights
+            insights = []
+            
+            if pickup.pickup_efficiency_score > 85:
+                insights.append("✅ High efficiency pickup operation")
+            elif pickup.pickup_efficiency_score < 65:
+                insights.append("⚠️ Below target efficiency - process review needed")
+            
+            if pickup.fulfillment_time_hours > 120:  # More than 5 days
+                insights.append("⏰ Extended fulfillment time - expedite processing")
+            
+            if pickup.cost_per_pickup > 100:
+                insights.append("💰 High cost pickup - optimize resource allocation")
+            
+            if pickup.operational_complexity > 7:
+                insights.append("🔧 Complex operation - additional oversight required")
+            
+            if pickup.customer_satisfaction_rating > 90:
+                insights.append("😊 Excellent customer satisfaction metrics")
+            
+            if pickup.resource_utilization < 60:
+                insights.append("📊 Low resource utilization - optimize assignments")
+            
+            if not insights:
+                insights.append("📈 Standard operation within normal parameters")
+            
+            pickup.pickup_performance_insights = "\n".join(insights)
+
     @api.model_create_multi
     def create(self, vals_list: List[dict]) -> 'PickupRequest':
         for vals in vals_list:
