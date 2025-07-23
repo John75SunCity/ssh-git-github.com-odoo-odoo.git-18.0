@@ -243,7 +243,7 @@
     <!-- 📂 Menu Item -->
     <menuitem id="menu_records_tag" 
               name="🏷️ Smart Tags" 
-              parent="records_management.menu_records_management" 
+              parent="menu_records_operations" 
               action="action_records_tag" 
               sequence="50"/>
 </odoo>

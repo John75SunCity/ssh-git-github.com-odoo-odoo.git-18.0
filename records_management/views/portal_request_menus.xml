@@ -4,7 +4,7 @@
     
     <menuitem id="portal_request_menu" 
               name="Portal Requests" 
-              parent="records_management.menu_records_management_root" 
+              parent="menu_records_management_root" 
               action="portal_request_action" 
               sequence="10"
               groups="records_management.group_records_manager"/>

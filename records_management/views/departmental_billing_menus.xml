@@ -5,7 +5,7 @@
     <!-- Menu Item for Department Billing Contacts -->
     <menuitem id="menu_department_billing_contacts" 
               name="Department Billing Contacts" 
-              parent="records_management.menu_records_configuration"
+              parent="menu_records_configuration"
               action="action_department_billing_contacts"
               sequence="26"
               groups="records_management.group_records_manager"/>
