@@ -7,11 +7,11 @@
         <field name="name">shredding.service.kanban</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="service_state" class="o_kanban_shredding_dashboard">
+            <kanban default_group_by="status" class="o_kanban_shredding_dashboard">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="service_type"/>
-                <field name="service_state"/>
+                <field name="status"/>
                 <field name="scheduled_date"/>
                 <field name="destruction_method"/>
                 <field name="naid_compliance_level"/>
@@ -82,9 +82,9 @@
         <field name="name">shredding.service.list</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
-            <list decoration-success="service_state == 'completed' and naid_compliance_verified == True" 
-                  decoration-warning="service_state == 'in_progress'"
-                  decoration-danger="scheduled_date &lt; context_today() and service_state == 'scheduled'"
+            <list decoration-success="status == 'completed' and naid_compliance_verified == True" 
+                  decoration-warning="status == 'in_progress'"
+                  decoration-danger="scheduled_date &lt; context_today() and status == 'confirmed'"
                   decoration-info="certificate_required == True">
                 <field name="name" string="💥 Service ID"/>
                 <field name="customer_id" string="👤 Customer"/>
@@ -95,10 +95,10 @@
                 <field name="witness_required" string="👁️ Witness" widget="boolean_toggle"/>
                 <field name="certificate_required" string="📜 Certificate" widget="boolean_toggle"/>
                 <field name="naid_compliance_verified" string="✅ Verified" widget="boolean_toggle"/>
-                <field name="service_state" string="🎯 Status" widget="badge"/>
+                <field name="status" string="🎯 Status" widget="badge"/>
                 <button name="action_start_destruction" type="object" string="Start" 
                         icon="fa-play" class="btn-link" 
-                        invisible="service_state != 'scheduled'"/>
+                        invisible="status != 'confirmed'"/>
                 <button name="action_generate_certificate" type="object" string="Certificate" 
                         icon="fa-certificate" class="btn-link"/>
             </list>
@@ -113,13 +113,13 @@
             <form>
                 <header>
                     <button name="action_start_destruction" type="object" string="🚀 Start Destruction" 
-                            class="btn-primary" invisible="service_state != 'scheduled'"/>
+                            class="btn-primary" invisible="status != 'confirmed'"/>
                     <button name="action_witness_verification" type="object" string="👁️ Witness Verification" 
                             class="btn-secondary" invisible="not witness_required"/>
                     <button name="action_compliance_check" type="object" string="🏆 NAID Compliance Check" class="btn-info"/>
                     <button name="action_generate_certificate" type="object" string="📜 Generate Certificate" 
-                            class="btn-success" invisible="service_state != 'completed'"/>
-                    <field name="service_state" widget="statusbar" statusbar_visible="scheduled,in_progress,completed,certified"/>
+                            class="btn-success" invisible="status != 'completed'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed,invoiced"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -359,10 +359,11 @@
                 <field name="service_type"/>
                 <field name="assigned_technician"/>
                 
-                <filter string="📅 Scheduled" name="scheduled" domain="[('service_state', '=', 'scheduled')]"/>
-                <filter string="🚀 In Progress" name="in_progress" domain="[('service_state', '=', 'in_progress')]"/>
-                <filter string="✅ Completed" name="completed" domain="[('service_state', '=', 'completed')]"/>
-                <filter string="📜 Certified" name="certified" domain="[('service_state', '=', 'certified')]"/>
+                <filter string="� Draft" name="draft" domain="[('status', '=', 'draft')]"/>
+                <filter string="✅ Confirmed" name="confirmed" domain="[('status', '=', 'confirmed')]"/>
+                <filter string="🚀 In Progress" name="in_progress" domain="[('status', '=', 'in_progress')]"/>
+                <filter string="✅ Completed" name="completed" domain="[('status', '=', 'completed')]"/>
+                <filter string="� Invoiced" name="invoiced" domain="[('status', '=', 'invoiced')]"/>
                 
                 <separator/>
                 <filter string="🏆 NAID AAA" name="naid_aaa" domain="[('naid_compliance_level', '=', 'AAA')]"/>
@@ -387,7 +388,7 @@
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
                     <filter string="Service Type" name="group_by_service_type" context="{'group_by': 'service_type'}"/>
                     <filter string="NAID Level" name="group_by_naid" context="{'group_by': 'naid_compliance_level'}"/>
-                    <filter string="Status" name="group_by_state" context="{'group_by': 'service_state'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'status'}"/>
                     <filter string="Technician" name="group_by_technician" context="{'group_by': 'assigned_technician'}"/>
                     <filter string="Scheduled Date" name="group_by_date" context="{'group_by': 'scheduled_date:day'}"/>
                 </group>
