@@ -121,6 +121,11 @@ class RecordsDocument(models.Model):
         domain="[('is_company', '=', True)]",
         index=True
     )
+    customer_inventory_id = fields.Many2one(
+        'customer.inventory.report',
+        string='Customer Inventory Report',
+        ondelete='cascade'
+    )
     department_id = fields.Many2one(
         'records.department', string='Department', index=True
     )

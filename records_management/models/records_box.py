@@ -62,6 +62,11 @@ class RecordsBox(models.Model):
         string='Location Code',
         readonly=True
     )
+    customer_inventory_id = fields.Many2one(
+        'customer.inventory.report',
+        string='Customer Inventory Report',
+        ondelete='cascade'
+    )
     container_type = fields.Selection([
         ('standard', 'Standard Box'),
         ('map_box', 'Map Box'),

@@ -27,7 +27,7 @@ class ResPartner(models.Model):
         domain="[('parent_id', '=', id), ('is_company', '=', False)]",
         help="Primary contact for billing and invoices")
     
-    department_billing_contacts = fields.One2many('department.billing.contact', 'partner_id', string='Department Billing Contacts')
+    department_billing_contacts = fields.One2many('records.department.billing.contact', 'customer_id', string='Department Billing Contacts')
         'records.department.billing.contact', 'customer_id',
         string='Department Billing Contacts (New Model)')
     
@@ -74,7 +74,7 @@ class ResPartner(models.Model):
         string='Monthly Storage Total', compute='_compute_department_stats')
     
     # Department billing contacts  
-    department_billing_contact_ids = fields.One2many('department.billing.contact', 'contact_id', string='Billing Contact Relations')
+    department_billing_contact_ids = fields.One2many('records.department.billing.contact', 'billing_contact_id', string='Billing Contact Relations')
         'res.partner.department.billing',
         'partner_id',
         string='Department Billing Contacts (Legacy)',

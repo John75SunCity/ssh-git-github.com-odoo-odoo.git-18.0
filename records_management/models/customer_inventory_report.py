@@ -1751,7 +1751,7 @@ class RecordsBillingPeriod(models.Model):
     ], string='Status', default='draft')
     
     # Billing Lines
-    billing_line_ids = fields.One2many('billing.line', 'report_id', string='Billing Lines')
+    billing_line_ids = fields.One2many('records.billing.line', 'billing_period_id', string='Billing Lines')
     
     # Totals
     total_storage_boxes = fields.Integer(
@@ -2348,7 +2348,7 @@ class RecordsServicePricing(models.Model):
     accumulate = fields.Boolean(string='Accumulate Charges', default=False)
     
     # Quantity Breaks
-    quantity_breaks = fields.One2many('pricing.quantity.break', 'report_id', string='Quantity Breaks')
+    quantity_breaks = fields.One2many('records.service.pricing.break', 'pricing_id', string='Quantity Breaks')
     
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(
@@ -2377,6 +2377,9 @@ class AccountMove(models.Model):
     billing_period_id = fields.Many2one(
         'records.billing.period', string='Billing Period',
         help="The billing period this invoice was generated from")
+    customer_inventory_id = fields.Many2one(
+        'customer.inventory.report', string='Customer Inventory Report',
+        help="The customer inventory report this invoice relates to")
 
 
 # Enhanced the existing RecordsServiceRequest model
