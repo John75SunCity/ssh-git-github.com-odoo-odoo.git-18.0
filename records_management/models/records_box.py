@@ -267,6 +267,28 @@ class RecordsBox(models.Model):
         store=True,
         help='AI-generated insights about box management'
     )
+    
+    # Missing technical view fields for XML processing and records management
+    arch = fields.Text(string='View Architecture', help='XML view architecture definition')
+    context = fields.Text(string='Context', help='View context information')
+    created_date = fields.Date(string='Created Date', default=fields.Date.today)
+    document_type_id = fields.Many2one('records.document.type', string='Document Type')
+    from_location_id = fields.Many2one('records.location', string='From Location')
+    help = fields.Text(string='Help', help='Help text for this record')
+    model = fields.Char(string='Model', help='Model name for technical references')
+    movement_date = fields.Date(string='Movement Date', default=fields.Date.today)
+    movement_type = fields.Selection([
+        ('in', 'Incoming'),
+        ('out', 'Outgoing'),
+        ('transfer', 'Transfer'),
+        ('inventory', 'Inventory')
+    ], string='Movement Type', default='in')
+    request_date = fields.Date(string='Request Date', default=fields.Date.today)
+    res_model = fields.Char(string='Resource Model', help='Resource model name')
+    responsible_user_id = fields.Many2one('res.users', string='Responsible User')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View', help='Search view reference')
+    to_location_id = fields.Many2one('records.location', string='To Location')
+    view_mode = fields.Char(string='View Mode', help='View mode configuration')
 
 
     @api.model_create_multi

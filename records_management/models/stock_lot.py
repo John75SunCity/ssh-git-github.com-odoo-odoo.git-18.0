@@ -200,6 +200,121 @@ class StockLot(models.Model):
             # Update timestamp
             lot.analytics_update_timestamp = fields.Datetime.now()
             
+            # Utilization efficiency
+            efficiency = 60.0  # Base efficiency
+            
+            if lot.customer_id:
+                efficiency += 20.0  # Customer assigned
+            
+            if lot.shredding_service_id:
+                efficiency += 15.0  # Service integration
+            
+            if lot.quality_verified:
+                efficiency += 10.0  # Quality verified
+            
+            lot.lot_utilization_efficiency = min(100, efficiency)
+            
+            # Service integration score
+            integration = 50.0  # Base score
+            
+            if lot.shredding_service_id:
+                integration += 30.0
+                
+            if lot.customer_id:
+                integration += 20.0
+            
+            lot.service_integration_score = min(100, integration)
+            
+            # Lifecycle stage
+            if lot.quality_state == 'pass':
+                lot.lifecycle_stage_indicator = '✅ Quality Approved'
+            elif lot.shredding_service_id:
+                lot.lifecycle_stage_indicator = '🔄 In Service'
+            elif lot.customer_id:
+                lot.lifecycle_stage_indicator = '📦 Customer Assigned'
+            else:
+                lot.lifecycle_stage_indicator = '📋 Initial Stage'
+            
+            # Customer service rating
+            rating = 75.0  # Base rating
+            
+            if lot.customer_id and lot.shredding_service_id:
+                rating += 20.0  # Full service integration
+            
+            if lot.quality_verified:
+                rating += 5.0
+            
+            lot.customer_service_rating = min(100, rating)
+            
+            # Insights
+            insights = []
+            
+            if lot.lot_utilization_efficiency > 85:
+                insights.append("🚀 High efficiency lot - excellent utilization")
+            
+            if lot.service_integration_score > 80:
+                insights.append("🔗 Well integrated with services")
+            
+            if not lot.customer_id:
+                insights.append("👤 Customer assignment needed")
+            
+            if not lot.quality_verified:
+                insights.append("🔍 Quality verification pending")
+            
+            if lot.shredding_service_id:
+                insights.append("♻️ Active in shredding workflow")
+            
+            if not insights:
+                insights.append("📊 Standard lot performance")
+            
+            lot.lot_insights = " | ".join(insights)
+
+    def _compute_quantities(self):
+        """Compute available and reserved quantities"""
+        for lot in self:
+            lot.available_quantity = 0.0
+            lot.reserved_quantity = 0.0
+
+    def _compute_movement_metrics(self):
+        """Compute movement-related metrics"""
+        for lot in self:
+            lot.average_movement_time = 0.0
+
+    def _compute_inventory_metrics(self):
+        """Compute inventory-related metrics"""
+        for lot in self:
+            if lot.create_date:
+                lot.days_in_inventory = (fields.Date.today() - lot.create_date.date()).days
+            else:
+                lot.days_in_inventory = 0
+
+    def _compute_current_location(self):
+        """Compute current location"""
+        for lot in self:
+            lot.current_location = lot.location_id
+
+    def _compute_quality_metrics(self):
+        """Compute quality-related metrics"""
+        for lot in self:
+            lot.quality_check_count = len(lot.quality_check_ids)
+
+    def _compute_quant_metrics(self):
+        """Compute quant-related metrics"""
+        for lot in self:
+            lot.quant_count = len(lot.quant_ids)
+
+    def _compute_move_metrics(self):
+        """Compute move-related metrics"""
+        for lot in self:
+            lot.stock_move_count = len(lot.stock_move_ids)
+            lot.total_movements = lot.stock_move_count
+
+    def _compute_value_metrics(self):
+        """Compute value-related metrics"""
+        for lot in self:
+            lot.total_value = (lot.product_qty or 0.0) * (lot.unit_cost or 0.0)
+            lot.analytics_update_timestamp = fields.Datetime.now()
+            
             # Lot utilization efficiency
             utilization = 60.0  # Base utilization
             

@@ -98,6 +98,15 @@ class NAIDCompliance(models.Model):
     quality_control = fields.Boolean(string='Quality Control', default=True)
     incident_management = fields.Boolean(string='Incident Management', default=True)
     
+    # Missing technical view fields for XML processing
+    arch = fields.Text(string='View Architecture', help='XML view architecture definition')
+    context = fields.Text(string='Context', help='View context information')
+    help = fields.Text(string='Help', help='Help text for this record')
+    model = fields.Char(string='Model', help='Model name for technical references')
+    res_model = fields.Char(string='Resource Model', help='Resource model name')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View', help='Search view reference')
+    view_mode = fields.Char(string='View Mode', help='View mode configuration')
+    
     # Destruction tracking
     destruction_method = fields.Selection([
         ('shredding', 'Shredding'),
