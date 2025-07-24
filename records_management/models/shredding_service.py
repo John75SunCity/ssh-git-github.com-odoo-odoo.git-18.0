@@ -62,6 +62,7 @@ class ShreddingService(models.Model):
     # Phase 2 Audit & Compliance Fields - Added by automated script
     naid_certificate_id = fields.Many2one('naid.certificate', string='NAID Certificate')
     naid_compliance_level = fields.Selection([('aaa', 'NAID AAA'), ('aa', 'NAID AA'), ('a', 'NAID A')], string='NAID Compliance Level')
+    naid_compliance_verified = fields.Boolean('NAID Compliance Verified', default=False)
     destruction_standard = fields.Selection([('dod_5220', 'DoD 5220.22-M'), ('nist_800_88', 'NIST 800-88'), ('iso_27040', 'ISO/IEC 27040'), ('custom', 'Custom Standard')], string='Destruction Standard')
     witness_verification_required = fields.Boolean('Witness Verification Required', default=True)
     photo_documentation_required = fields.Boolean('Photo Documentation Required', default=True)
@@ -70,6 +71,15 @@ class ShreddingService(models.Model):
     audit_trail_ids = fields.One2many('records.audit.log', 'shredding_service_id', string='Audit Trail')
     compliance_documentation_ids = fields.One2many('ir.attachment', 'res_id', string='Compliance Documentation', domain=[('res_model', '=', 'shredding.service')])
     destruction_method_verified = fields.Boolean('Destruction Method Verified', default=False)
+    destruction_method = fields.Selection([
+        ('shred', 'Physical Shredding'),
+        ('crush', 'Crushing'),
+        ('degauss', 'Degaussing'),
+        ('wipe', 'Data Wiping'),
+        ('incineration', 'Incineration'),
+        ('pulverization', 'Pulverization')
+    ], string='Destruction Method')
+    certificate_required = fields.Boolean('Certificate Required', default=True)
     chain_of_custody_maintained = fields.Boolean('Chain of Custody Maintained', default=False)
     environmental_compliance = fields.Boolean('Environmental Compliance Verified', default=False)
     quality_control_performed = fields.Boolean('Quality Control Performed', default=False)
