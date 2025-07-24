@@ -154,7 +154,7 @@ class BarcodeProduct(models.Model):
     service_rate = fields.Float(string='Service Rate', default=0.0)
     setup_fee = fields.Float(string='Setup Fee', default=0.0)
     shred_bin_count = fields.Integer(string='Shred Bin Count', default=0)
-    shred_bin_ids = fields.One2many('stock.lot', 'barcode_product_id', string='Shred Bins')
+    # shred_bin_ids = fields.One2many('stock.lot', 'barcode_product_id', string='Shred Bins')  # Disabled - field doesn't exist in stock.lot
     shred_rate = fields.Float(string='Shred Rate', default=0.0)
     shred_security_level = fields.Selection([
         ('level_1', 'Level 1'),
@@ -166,7 +166,7 @@ class BarcodeProduct(models.Model):
     start_barcode = fields.Char(string='Start Barcode')
     start_date = fields.Date(string='Start Date', default=fields.Date.today)
     storage_box_count = fields.Integer(string='Storage Box Count', default=0)
-    storage_box_ids = fields.One2many('stock.lot', 'barcode_product_id', string='Storage Boxes')
+    # storage_box_ids = fields.One2many('stock.lot', 'barcode_product_id', string='Storage Boxes')  # Disabled - field doesn't exist in stock.lot
     storage_rate = fields.Float(string='Storage Rate', default=0.0)
     suitable_document_types = fields.Text(string='Suitable Document Types')
     tier_name = fields.Char(string='Tier Name')
@@ -275,8 +275,8 @@ class BarcodeProduct(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'records.box',
             'view_mode': 'tree,form',
-            'domain': [('barcode_product_id', '=', self.id)],
-            'context': {'default_barcode_product_id': self.id},
+            'domain': [('barcode', '=', self.barcode)],  # Use barcode field instead of barcode_product_id
+            'context': {'default_barcode': self.barcode},
         }
 
     def action_view_shred_bins(self):
@@ -287,8 +287,8 @@ class BarcodeProduct(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'shredding.service',
             'view_mode': 'tree,form',
-            'domain': [('barcode_product_id', '=', self.id)],
-            'context': {'default_barcode_product_id': self.id},
+            'domain': [('service_type', '=', 'shredding')],  # Use service type filter instead of barcode_product_id
+            'context': {'default_service_type': 'shredding'},
         }
 
     def action_view_revenue(self):
