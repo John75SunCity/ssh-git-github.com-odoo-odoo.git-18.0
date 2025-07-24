@@ -45,11 +45,6 @@ class CustomerInventoryReport(models.Model):
         store=True
     )
     box_ids = fields.One2many('records.box', 'customer_inventory_id', string='Boxes')
-        'records.box',
-        'customer_id',
-        string='Customer Boxes',
-        readonly=True
-    )
     
     # Missing fields identified by field analysis
     created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now, readonly=True)
@@ -58,11 +53,6 @@ class CustomerInventoryReport(models.Model):
     storage_date = fields.Date(string='Storage Date', default=fields.Date.today)
     
     document_ids = fields.One2many('records.document', 'customer_inventory_id', string='Documents')
-        'records.document',
-        'customer_id',
-        string='Customer Documents',
-        readonly=True
-    )
     status = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -1372,7 +1362,7 @@ class RecordsBillingConfig(models.Model):
         ('annual', 'Annual')
     ], string='Billing Frequency', default='monthly')
     billing_history_count = fields.Integer(string='Billing History Count', compute='_compute_counts')
-    billing_rate_ids = fields.One2many('records.billing.rate', compute='_compute_billing_rate_ids', string='Billing Rates')
+    billing_rate_ids = fields.One2many('records.billing.rate', 'config_id', string='Billing Rates')
     
     # Customer management
     cc_accounting = fields.Boolean(string='CC Accounting', default=False)
@@ -1686,14 +1676,6 @@ class RecordsBillingConfig(models.Model):
             record.customer_count = len(record.billing_rate_ids.mapped('customer_id')) if record.billing_rate_ids else 0
             record.invoice_count = len(record.invoice_generation_log_ids.filtered(lambda x: hasattr(x, 'invoice_id') and x.invoice_id)) if record.invoice_generation_log_ids else 0
 
-    @api.depends()
-    def _compute_billing_rate_ids(self):
-        """Compute billing rates for this billing configuration"""
-        for record in self:
-            # Since 'records.billing.rate' model doesn't exist, return empty recordset
-            # This maintains compatibility with existing code that references this field
-            record.billing_rate_ids = False
-
     @api.depends('period', 'effective_date', 'billing_frequency')
     def _compute_next_billing_date(self):
         """Compute next billing date based on frequency"""
@@ -1770,8 +1752,6 @@ class RecordsBillingPeriod(models.Model):
     
     # Billing Lines
     billing_line_ids = fields.One2many('billing.line', 'report_id', string='Billing Lines')
-        'records.billing.line', 'billing_period_id',
-        string='Billing Lines')
     
     # Totals
     total_storage_boxes = fields.Integer(
@@ -1787,7 +1767,6 @@ class RecordsBillingPeriod(models.Model):
     
     # Invoice Integration
     invoice_ids = fields.One2many('account.move', 'customer_inventory_id', string='Invoices')
-        'account.move', 'billing_period_id', string='Generated Invoices')
     invoice_count = fields.Integer(
         string='Invoice Count', compute='_compute_invoice_count')
     
@@ -2370,8 +2349,6 @@ class RecordsServicePricing(models.Model):
     
     # Quantity Breaks
     quantity_breaks = fields.One2many('pricing.quantity.break', 'report_id', string='Quantity Breaks')
-        'records.service.pricing.break', 'pricing_id', 
-        string='Quantity Breaks')
     
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(
@@ -2840,3 +2817,84 @@ class RecordsBillingAutomation(models.Model):
                 ('res_model', '=', 'customer.inventory.report'),
                 ('res_id', '=', report.id)
             ])
+
+
+class RecordsBillingRate(models.Model):
+    """Billing rate model for records management"""
+    _name = 'records.billing.rate'
+    _description = 'Records Management Billing Rate'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _rec_name = 'name'
+    _order = 'effective_date desc'
+
+    name = fields.Char(string='Rate Name', required=True, tracking=True)
+    config_id = fields.Many2one('records.billing.config', string='Billing Configuration', 
+                                required=True, ondelete='cascade')
+    customer_id = fields.Many2one('res.partner', string='Customer', 
+                                  related='config_id.customer_id', store=True)
+    
+    # Rate Details
+    service_type = fields.Selection([
+        ('storage', 'Storage'),
+        ('retrieval', 'Retrieval'),
+        ('destruction', 'Destruction'),
+        ('imaging', 'Imaging'),
+        ('transportation', 'Transportation'),
+        ('labor', 'Labor'),
+        ('other', 'Other')
+    ], string='Service Type', required=True, default='storage')
+    
+    rate_type = fields.Selection([
+        ('per_box', 'Per Box'),
+        ('per_document', 'Per Document'),
+        ('per_hour', 'Per Hour'),
+        ('flat_rate', 'Flat Rate'),
+        ('percentage', 'Percentage')
+    ], string='Rate Type', required=True, default='per_box')
+    
+    # Rate Values
+    base_rate = fields.Float(string='Base Rate', digits=(12, 4), required=True, tracking=True)
+    minimum_charge = fields.Float(string='Minimum Charge', digits=(12, 2))
+    maximum_charge = fields.Float(string='Maximum Charge', digits=(12, 2))
+    
+    # Effective Dates
+    effective_date = fields.Date(string='Effective Date', required=True, 
+                                 default=fields.Date.today, tracking=True)
+    expiry_date = fields.Date(string='Expiry Date', tracking=True)
+    
+    # Status
+    active = fields.Boolean(string='Active', default=True, tracking=True)
+    
+    # Computed fields
+    is_current = fields.Boolean(string='Current Rate', compute='_compute_is_current', store=True)
+    
+    @api.depends('effective_date', 'expiry_date', 'active')
+    def _compute_is_current(self):
+        """Compute if this rate is currently active"""
+        today = fields.Date.today()
+        for rate in self:
+            rate.is_current = (
+                rate.active and 
+                rate.effective_date <= today and 
+                (not rate.expiry_date or rate.expiry_date >= today)
+            )
+    
+    @api.constrains('effective_date', 'expiry_date')
+    def _check_date_range(self):
+        """Validate date range"""
+        for rate in self:
+            if rate.expiry_date and rate.effective_date > rate.expiry_date:
+                raise ValidationError(_("Effective date cannot be after expiry date"))
+    
+    def get_rate_for_date(self, date=None):
+        """Get applicable rate for a specific date"""
+        if not date:
+            date = fields.Date.today()
+        
+        return self.search([
+            ('config_id', '=', self.config_id.id),
+            ('service_type', '=', self.service_type),
+            ('active', '=', True),
+            ('effective_date', '<=', date),
+            '|', ('expiry_date', '=', False), ('expiry_date', '>=', date)
+        ], order='effective_date desc', limit=1)
