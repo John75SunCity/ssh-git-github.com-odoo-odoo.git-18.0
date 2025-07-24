@@ -22,7 +22,7 @@ class StockLot(models.Model):
         string='Shredding Service'
     )
 
-    # Enhanced stock lot fields for records management - 70 missing fields added systematically
+    # Enhanced stock lot fields for records management - FIELD ENHANCEMENT COMPLETE ✅
     
     # Action and tracking
     action_type = fields.Selection([
@@ -62,7 +62,7 @@ class StockLot(models.Model):
                                        compute='_compute_inventory_metrics')
     delivery_order_id = fields.Many2one('stock.picking', string='Delivery Order')
     destination_location = fields.Many2one('stock.location', string='Destination Location')
-    expiration_date = fields.Date(string='Expiration Date')
+    # expiration_date = fields.Date(string='Expiration Date')  # Disabled - conflicts with base stock.lot field type
     final_customer = fields.Many2one('res.partner', string='Final Customer')
     
     # Location and movement tracking

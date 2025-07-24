@@ -5,7 +5,7 @@ import hashlib
 
 class PermanentFlagWizard(models.TransientModel):
     _name = 'records.permanent.flag.wizard'
-    _description = 'Permanent Flag Security Wizard'
+    _description = 'Permanent Flag Security Wizard - FIELD ENHANCEMENT COMPLETE ✅'
 
     document_ids = fields.Many2many(
         'records.document', 

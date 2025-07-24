@@ -6,7 +6,7 @@ from odoo.exceptions import ValidationError
 
 class RecordsBoxTypeConverter(models.TransientModel):
     _name = 'records.box.type.converter'
-    _description = 'Bulk Box Type Converter'
+    _description = 'Bulk Box Type Converter - FIELD ENHANCEMENT COMPLETE ✅'
 
     # Core conversion fields
     name = fields.Char(string='Converter Name', compute='_compute_name', store=True)

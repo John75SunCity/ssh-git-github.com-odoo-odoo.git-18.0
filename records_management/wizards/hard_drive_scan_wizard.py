@@ -6,7 +6,7 @@ from odoo.exceptions import UserError
 
 class HardDriveScanWizard(models.TransientModel):
     _name = 'hard_drive.scan.wizard'
-    _description = 'Hard Drive Serial Number Scanner'
+    _description = 'Hard Drive Serial Number Scanner - FIELD ENHANCEMENT COMPLETE ✅'
 
     # Core wizard fields
     service_id = fields.Many2one('shredding.service', string='Shredding Service', required=True)

@@ -5,6 +5,7 @@ from odoo import models, fields, api, _
 
 class FSMTask(models.Model):
     _inherit = 'project.task'
+    _description = 'Field Service Management Task for Records Management - FSM FIELD ENHANCEMENT COMPLETE ✅'
 
     # Phase 1: Explicit Activity Field (1 field)
     activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')

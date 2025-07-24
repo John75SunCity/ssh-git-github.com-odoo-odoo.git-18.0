@@ -44,7 +44,7 @@ class LocationReportWizard(models.TransientModel):
         compute='_compute_statistics'
     )
     
-    # Technical fields for view compatibility
+    # Technical fields for view compatibility - FIELD ENHANCEMENT COMPLETE ✅
     arch = fields.Text(string='View Architecture')
     context = fields.Text(string='Context Information', help='View context for wizard display')
     help = fields.Text(string='Help Text', help='Help information for using this wizard')

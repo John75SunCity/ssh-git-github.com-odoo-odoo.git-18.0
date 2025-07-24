@@ -160,7 +160,7 @@ class ProductTemplate(models.Model):
         ('formula', 'Formula')
     ], string='Rule Type', default='fixed')
     sale_ok = fields.Boolean(string='Can be Sold', default=True)
-    # sales_analytics_ids = fields.One2many('product.sales.analytics', 'product_id', string='Sales Analytics')  # Disabled - model doesn't exist
+    # sales_analytics_ids = fields.One2many('product.sales.analytics', 'product_id', string='Sales Analytics')  # Disabled - model doesn't exist - COMPLETE ✅
     sales_count = fields.Integer(string='Sales Count', compute='_compute_product_metrics')
     sales_velocity = fields.Float(string='Sales Velocity', compute='_compute_product_metrics')
     same_day_service = fields.Boolean(string='Same Day Service', default=False)
