@@ -17,6 +17,8 @@ access_records_tag_user,records.tag.user,model_records_tag,records_management.gr
 access_records_tag_manager,records.tag.manager,model_records_tag,records_management.group_records_manager,1,1,1,1
 access_shredding_service_user,shredding.service.user,model_shredding_service,records_management.group_records_user,1,1,1,0
 access_shredding_service_manager,shredding.service.manager,model_shredding_service,records_management.group_records_manager,1,1,1,1
+access_destruction_item_user,destruction.item.user,model_destruction_item,records_management.group_records_user,1,1,1,0
+access_destruction_item_manager,destruction.item.manager,model_destruction_item,records_management.group_records_manager,1,1,1,1
 access_customer_inventory_report_user,customer.inventory.report.user,model_customer_inventory_report,records_management.group_records_user,1,0,0,0
 access_customer_inventory_report_manager,customer.inventory.report.manager,model_customer_inventory_report,records_management.group_records_manager,1,1,1,1
 access_records_department_user,records.department.user,model_records_department,records_management.group_records_user,1,0,0,0

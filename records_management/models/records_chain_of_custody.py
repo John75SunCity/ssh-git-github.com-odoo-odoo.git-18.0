@@ -7,6 +7,7 @@ class RecordsChainOfCustody(models.Model):
     _order = 'event_date desc'
 
     document_id = fields.Many2one('records.document', string='Document', required=True, ondelete='cascade')
+    service_id = fields.Many2one('shredding.service', string='Shredding Service', ondelete='cascade')
     event_date = fields.Datetime('Event Date', required=True, default=fields.Datetime.now)
     event_type = fields.Selection([
         ('creation', 'Document Creation'),

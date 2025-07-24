@@ -146,6 +146,7 @@ class ShreddingService(models.Model):
     # Weight tracking
     pre_destruction_weight = fields.Float('Pre-Destruction Weight (lbs)')
     post_destruction_weight = fields.Float('Post-Destruction Weight (lbs)')
+    total_weight = fields.Float('Total Weight (lbs)', compute='_compute_total_weight', store=True, help='Total weight from all destruction items')
     
     # Equipment fields
     shredding_equipment = fields.Char('Shredding Equipment Used')
@@ -186,10 +187,12 @@ class ShreddingService(models.Model):
     # Witness fields
     witness_name = fields.Char('Witness Name')
     witness_title = fields.Char('Witness Title')
-    witness_verification_ids = fields.One2many('shredding.witness.verification', 'service_id', string='Witness Verifications')
+    witness_verification_notes = fields.Text('Witness Verification Notes')
     
-    # Destruction item tracking
-    destruction_item_ids = fields.One2many('shredding.destruction.item', 'service_id', string='Destruction Items')
+    # Destruction item tracking notes
+    destruction_item_notes = fields.Text('Destruction Items Notes')
+    destruction_items_count = fields.Integer('Number of Items Destroyed', default=0)
+    destruction_item_ids = fields.One2many('destruction.item', 'service_id', string='Destruction Items')
     
     # NAID member tracking
     naid_member_id = fields.Many2one('res.partner', string='NAID Member', domain="[('is_company', '=', True)]")
@@ -318,6 +321,12 @@ class ShreddingService(models.Model):
                 rec.total_charge = rec.uniform_quantity * 8.0
             else:
                 rec.total_charge = 0
+
+    @api.depends('destruction_item_ids', 'destruction_item_ids.total_weight')
+    def _compute_total_weight(self):
+        """Compute total weight from all destruction items."""
+        for rec in self:
+            rec.total_weight = sum(rec.destruction_item_ids.mapped('total_weight'))
 
     @api.depends('latitude', 'longitude')
     def _compute_map_display(self):
