@@ -125,7 +125,7 @@ class StockLot(models.Model):
         ('cancel', 'Cancelled')
     ], string='State', default='draft')
     stock_move_count = fields.Integer(string='Stock Move Count', compute='_compute_move_metrics')
-    stock_move_ids = fields.One2many('stock.move', 'lot_ids', string='Stock Moves')
+    stock_move_ids = fields.One2many('stock.move', compute='_compute_stock_move_ids', string='Stock Moves')
     supplier_lot_id = fields.Many2one('stock.lot', string='Supplier Lot')
     
     # Testing and verification
@@ -315,6 +315,14 @@ class StockLot(models.Model):
         for lot in self:
             lot.stock_move_count = len(lot.stock_move_ids)
             lot.total_movements = lot.stock_move_count
+
+    @api.depends()
+    def _compute_stock_move_ids(self):
+        """Compute stock moves for this lot"""
+        for record in self:
+            # Search for moves related to this lot via Many2many relationship
+            moves = self.env['stock.move'].search([('lot_ids', 'in', record.id)])
+            record.stock_move_ids = moves
 
     @api.depends('quant_ids')
     def _compute_value_metrics(self):

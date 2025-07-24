@@ -114,8 +114,9 @@ class ShreddingService(models.Model):
     view_mode = fields.Char(string='View Mode', help='View mode configuration')
     witness_count = fields.Integer(string='Witness Count', compute='_compute_witness_count',
                                   help='Number of witnesses for destruction')
-    witness_verification_ids = fields.One2many('shredding.witness.verification', 'service_id',
-                                              string='Witness Verifications')
+        witness_verification_ids = fields.One2many('shredding.witness.verification', compute='_compute_witness_verification_ids',
+                                              string='Witness Verifications',
+                                              help='Witness verifications for this service')
     
     # Additional workflow and tracking fields referenced in views
     description = fields.Text('Description', help='Detailed description of the shredding service')
@@ -523,6 +524,13 @@ class ShreddingService(models.Model):
         """Compute number of witnesses for destruction"""
         for service in self:
             service.witness_count = len(service.witness_verification_ids)
+
+    @api.depends()
+    def _compute_witness_verification_ids(self):
+        """Compute witness verifications for this service"""
+        for record in self:
+            # Return empty recordset since model doesn't exist
+            record.witness_verification_ids = self.env['shredding.witness.verification'].browse()
 
     @api.depends('box_quantity', 'shredded_box_ids')
     def _compute_total_boxes(self):
