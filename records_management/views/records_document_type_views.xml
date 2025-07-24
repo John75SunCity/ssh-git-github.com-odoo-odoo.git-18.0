@@ -30,7 +30,7 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="action" name="records_management.action_view_documents" icon="fa-file-text-o">
+                        <button class="oe_stat_button" type="action" name="action_view_documents" icon="fa-file-text-o">
                             <field string="Documents" name="document_count" widget="statinfo"/>
                         </button>
                     </div>
@@ -192,11 +192,12 @@
 
     <!-- Action for Documents button -->
     <record id="action_view_documents" model="ir.actions.act_window">
-        <field name="name">Documents</field>
+        <field name="name">Related Documents</field>
         <field name="res_model">records.document</field>
-        <field name="view_mode">list,kanban,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[('document_type_id', '=', active_id)]</field>
         <field name="context">{'default_document_type_id': active_id}</field>
+        <field name="target">current</field>
     </record>
 
 </odoo>
