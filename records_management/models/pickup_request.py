@@ -3,7 +3,6 @@
 from typing import List
 from odoo import models, fields, api
 
-
 class PickupRequest(models.Model):
     """Model for pickup requests with workflow enhancements."""
     _name = 'pickup.request'

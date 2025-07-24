@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 
-
 class DestructionItem(models.Model):
     """Model for tracking individual items to be destroyed in shredding services."""
     _name = 'destruction.item'

@@ -10,7 +10,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-
 class NAIDAuditLog(models.Model):
     """
     NAID AAA Compliance Audit Log
@@ -533,7 +532,6 @@ class NAIDAuditLog(models.Model):
             old_logs.write({'active': False})
         
         return len(old_logs)
-
 
 class NAIDCompliancePolicy(models.Model):
     """

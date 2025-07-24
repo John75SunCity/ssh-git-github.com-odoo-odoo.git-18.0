@@ -10,7 +10,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-
 class NAIDChainOfCustody(models.Model):
     """
     NAID Chain of Custody Record
@@ -209,7 +208,6 @@ class NAIDChainOfCustody(models.Model):
             'target': 'new',
             'context': {'default_custody_id': self.id},
         }
-
 
 class NAIDCustodyEvent(models.Model):
     """

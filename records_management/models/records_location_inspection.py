@@ -6,7 +6,6 @@ Tracks regular inspections of storage locations
 
 from odoo import models, fields, api, _
 
-
 class RecordsLocationInspection(models.Model):
     """
     Location Inspection Model

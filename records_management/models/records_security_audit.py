@@ -6,7 +6,6 @@ Tracks security audits for locations and other security-related activities
 
 from odoo import models, fields, api, _
 
-
 class RecordsSecurityAudit(models.Model):
     """
     Security Audit Model for Records Management
