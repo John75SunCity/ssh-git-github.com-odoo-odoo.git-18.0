@@ -31,7 +31,7 @@ class PickupRequest(models.Model):
         default=fields.Date.context_today,
         required=True
     )
-    request_item_ids = fields.One2many(
+    request_item_ids = fields.One2many('pickup.request.item', 'request_id', string='Request Items')
         'pickup.request.item',
         'pickup_id',
         string='Request Items'

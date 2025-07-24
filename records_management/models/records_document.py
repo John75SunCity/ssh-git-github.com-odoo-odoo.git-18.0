@@ -185,15 +185,15 @@ class RecordsDocument(models.Model):
     )
 
     # Related One2many fields for document tracking
-    chain_of_custody_ids = fields.One2many(
+    chain_of_custody_ids = fields.One2many('records.chain.custody', 'document_id', string='Chain of Custody')
         'records.chain.of.custody', 'document_id',
         string='Chain of Custody Records'
     )
-    audit_trail_ids = fields.One2many(
+    audit_trail_ids = fields.One2many('records.audit.log', 'document_id', string='Audit Trail')
         'records.audit.trail', 'document_id',
         string='Audit Trail Records'
     )
-    digital_copy_ids = fields.One2many(
+    digital_copy_ids = fields.One2many('records.digital.copy', 'document_id', string='Digital Copies')
         'records.digital.copy', 'document_id',
         string='Digital Copies'
     )

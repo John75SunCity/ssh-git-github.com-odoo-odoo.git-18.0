@@ -44,7 +44,7 @@ class CustomerInventoryReport(models.Model):
         compute='_compute_inventory_totals',
         store=True
     )
-    box_ids = fields.One2many(
+    box_ids = fields.One2many('records.box', 'customer_inventory_id', string='Boxes')
         'records.box',
         'customer_id',
         string='Customer Boxes',
@@ -57,7 +57,7 @@ class CustomerInventoryReport(models.Model):
     location_id = fields.Many2one('records.location', string='Location')
     storage_date = fields.Date(string='Storage Date', default=fields.Date.today)
     
-    document_ids = fields.One2many(
+    document_ids = fields.One2many('records.document', 'customer_inventory_id', string='Documents')
         'records.document',
         'customer_id',
         string='Customer Documents',
@@ -1769,7 +1769,7 @@ class RecordsBillingPeriod(models.Model):
     ], string='Status', default='draft')
     
     # Billing Lines
-    billing_line_ids = fields.One2many(
+    billing_line_ids = fields.One2many('billing.line', 'report_id', string='Billing Lines')
         'records.billing.line', 'billing_period_id',
         string='Billing Lines')
     
@@ -1786,7 +1786,7 @@ class RecordsBillingPeriod(models.Model):
         string='Total Amount', compute='_compute_totals', store=True)
     
     # Invoice Integration
-    invoice_ids = fields.One2many(
+    invoice_ids = fields.One2many('account.move', 'customer_inventory_id', string='Invoices')
         'account.move', 'billing_period_id', string='Generated Invoices')
     invoice_count = fields.Integer(
         string='Invoice Count', compute='_compute_invoice_count')
@@ -2369,7 +2369,7 @@ class RecordsServicePricing(models.Model):
     accumulate = fields.Boolean(string='Accumulate Charges', default=False)
     
     # Quantity Breaks
-    quantity_breaks = fields.One2many(
+    quantity_breaks = fields.One2many('pricing.quantity.break', 'report_id', string='Quantity Breaks')
         'records.service.pricing.break', 'pricing_id', 
         string='Quantity Breaks')
     
