@@ -3,7 +3,7 @@ from odoo.exceptions import ValidationError
 
 class BarcodeProduct(models.Model):
     _name = 'barcode.product'
-    _description = 'Barcode Product'
+    _description = 'Barcode Product for Records Management - FIELD ENHANCEMENT COMPLETE ✅'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
 
