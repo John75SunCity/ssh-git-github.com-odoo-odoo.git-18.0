@@ -43,6 +43,7 @@ from . import department_billing
 from . import portal_request
 from . import portal_feedback
 from . import fsm_task
+from . import pos_config
 
 # HR and Feedback
 from . import hr_employee

@@ -57,6 +57,21 @@ class RecordsDocumentType(models.Model):
     )
     compliance_notes = fields.Text(string='Compliance Notes')
 
+    # Enhanced tracking and technical fields for records management
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities',
+                                   domain=lambda self: [('res_model', '=', self._name)])
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
+                                           domain=lambda self: [('res_model', '=', self._name)])
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
+                                  domain=lambda self: [('res_model', '=', self._name)])
+    
+    # Technical view fields
+    arch = fields.Text(string='View Architecture')
+    model = fields.Char(string='Model Name', default='records.document.type')
+    res_model = fields.Char(string='Resource Model', default='records.document.type')
+    help = fields.Text(string='Help Text')
+    view_mode = fields.Char(string='View Mode', default='tree,form')
+
     document_count = fields.Integer(
         string='Document Count',
         compute='_compute_document_count',

@@ -24,6 +24,24 @@ class VisitorPosWizard(models.TransientModel):
     visitor_email = fields.Char(string='Visitor Email', related='visitor_id.email', readonly=True)
     visitor_phone = fields.Char(string='Visitor Phone', related='visitor_id.phone', readonly=True)
     
+    # Mail tracking fields (explicit declaration for view compatibility)
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities',
+                                   domain=lambda self: [('res_model', '=', self._name)])
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
+                                           domain=lambda self: [('res_model', '=', self._name)])
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
+                                  domain=lambda self: [('res_model', '=', self._name)])
+    
+    # Missing fields identified by field analysis
+    amount = fields.Float(string='Service Amount', help='Total service amount')
+    check_in_time = fields.Datetime(string='Check-in Time', related='visitor_id.check_in_time', readonly=True)
+    destruction_method = fields.Selection([
+        ('shredding', 'Shredding'),
+        ('pulverizing', 'Pulverizing'),
+        ('disintegrating', 'Disintegrating'),
+        ('incineration', 'Incineration')
+    ], string='Destruction Method')
+    
     # Service configuration
     service_item_ids = fields.One2many('visitor.pos.service.item', 'wizard_id', string='Service Items')
     product_id = fields.Many2one('product.template', string='Service Product')

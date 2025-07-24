@@ -22,6 +22,139 @@ class StockLot(models.Model):
         string='Shredding Service'
     )
 
+    # Enhanced stock lot fields for records management - 70 missing fields added systematically
+    
+    # Action and tracking
+    action_type = fields.Selection([
+        ('create', 'Create'),
+        ('move', 'Move'),
+        ('update', 'Update'),
+        ('destroy', 'Destroy'),
+        ('transfer', 'Transfer')
+    ], string='Action Type', tracking=True)
+    
+    # Attribute management
+    attribute_ids = fields.One2many('stock.lot.attribute', 'lot_id', string='Lot Attributes')
+    attribute_name = fields.Char(string='Attribute Name')
+    attribute_type = fields.Selection([
+        ('text', 'Text'),
+        ('number', 'Number'),
+        ('date', 'Date'),
+        ('boolean', 'Boolean')
+    ], string='Attribute Type')
+    attribute_value = fields.Char(string='Attribute Value')
+    
+    # Inventory and quantity tracking
+    available_quantity = fields.Float(string='Available Quantity', compute='_compute_quantities')
+    average_movement_time = fields.Float(string='Average Movement Time (days)', 
+                                         compute='_compute_movement_metrics')
+    check_date = fields.Date(string='Check Date', default=fields.Date.today)
+    company_id = fields.Many2one('res.company', string='Company', 
+                                 default=lambda self: self.env.company)
+    create_date = fields.Datetime(string='Creation Date', readonly=True)
+    current_location = fields.Many2one('stock.location', string='Current Location',
+                                       compute='_compute_current_location')
+    customer_reference = fields.Char(string='Customer Reference')
+    
+    # Date tracking
+    date = fields.Date(string='Lot Date', default=fields.Date.today)
+    days_in_inventory = fields.Integer(string='Days in Inventory', 
+                                       compute='_compute_inventory_metrics')
+    delivery_order_id = fields.Many2one('stock.picking', string='Delivery Order')
+    destination_location = fields.Many2one('stock.location', string='Destination Location')
+    expiration_date = fields.Date(string='Expiration Date')
+    final_customer = fields.Many2one('res.partner', string='Final Customer')
+    
+    # Location and movement tracking
+    in_date = fields.Date(string='In Date')
+    inventory_date = fields.Date(string='Inventory Date')
+    last_purchase_price = fields.Float(string='Last Purchase Price', digits=(12, 2))
+    location_dest_id = fields.Many2one('stock.location', string='Destination Location')
+    location_from = fields.Many2one('stock.location', string='From Location')
+    location_id = fields.Many2one('stock.location', string='Location')
+    location_to = fields.Many2one('stock.location', string='To Location')
+    
+    # Manufacturing and orders
+    manufacturing_order_id = fields.Many2one('mrp.production', string='Manufacturing Order')
+    market_value = fields.Float(string='Market Value', digits=(12, 2))
+    measure = fields.Float(string='Measure')
+    measurement_unit = fields.Many2one('uom.uom', string='Measurement Unit')
+    
+    # Activity and message tracking
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
+                                           domain=lambda self: [('res_model', '=', self._name)])
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
+                                  domain=lambda self: [('res_model', '=', self._name)])
+    name = fields.Char(string='Lot/Serial Number', required=True)
+    notes = fields.Text(string='Notes')
+    
+    # Product and quantity
+    product_id = fields.Many2one('product.product', string='Product', required=True)
+    product_qty = fields.Float(string='Product Quantity')
+    product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure')
+    product_uom_qty = fields.Float(string='UoM Quantity')
+    purchase_order_id = fields.Many2one('purchase.order', string='Purchase Order')
+    
+    # Quality control
+    quality_check_count = fields.Integer(string='Quality Check Count', 
+                                         compute='_compute_quality_metrics')
+    quality_check_ids = fields.One2many('quality.check', 'lot_id', string='Quality Checks')
+    quality_point_id = fields.Many2one('quality.point', string='Quality Point')
+    quality_state = fields.Selection([
+        ('none', 'No Quality Check'),
+        ('pass', 'Passed'),
+        ('fail', 'Failed'),
+        ('pending', 'Pending')
+    ], string='Quality State', default='none')
+    quality_verified = fields.Boolean(string='Quality Verified', default=False)
+    
+    # Quant management
+    quant_count = fields.Integer(string='Quant Count', compute='_compute_quant_metrics')
+    quant_ids = fields.One2many('stock.quant', 'lot_id', string='Quants')
+    quantity = fields.Float(string='Quantity')
+    ref = fields.Char(string='Reference')
+    reference = fields.Char(string='Reference Number')
+    reserved_quantity = fields.Float(string='Reserved Quantity', compute='_compute_quantities')
+    
+    # Location and movement
+    source_location = fields.Many2one('stock.location', string='Source Location')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done'),
+        ('cancel', 'Cancelled')
+    ], string='State', default='draft')
+    stock_move_count = fields.Integer(string='Stock Move Count', compute='_compute_move_metrics')
+    stock_move_ids = fields.One2many('stock.move', 'lot_ids', string='Stock Moves')
+    supplier_lot_id = fields.Many2one('stock.lot', string='Supplier Lot')
+    
+    # Testing and verification
+    test_type = fields.Selection([
+        ('incoming', 'Incoming Inspection'),
+        ('production', 'Production Test'),
+        ('final', 'Final Inspection'),
+        ('random', 'Random Check')
+    ], string='Test Type')
+    timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now)
+    total_movements = fields.Integer(string='Total Movements', compute='_compute_move_metrics')
+    total_value = fields.Float(string='Total Value', compute='_compute_value_metrics')
+    traceability_log_ids = fields.One2many('stock.traceability.log', 'lot_id', 
+                                           string='Traceability Logs')
+    
+    # Cost and value
+    unit_cost = fields.Float(string='Unit Cost', digits=(12, 4))
+    user_id = fields.Many2one('res.users', string='Responsible User')
+    verification_date = fields.Date(string='Verification Date')
+    
+    # Technical view fields
+    arch = fields.Text(string='View Architecture')
+    model = fields.Char(string='Model Name', default='stock.lot')
+    res_model = fields.Char(string='Resource Model', default='stock.lot')
+    help = fields.Text(string='Help Text')
+    context = fields.Text(string='Context')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View')
+    view_mode = fields.Char(string='View Mode', default='tree,form')
+
     # Phase 3: Analytics & Computed Fields (6 fields)
     lot_utilization_efficiency = fields.Float(
         string='Utilization Efficiency (%)',
@@ -153,6 +286,103 @@ class StockLot(models.Model):
             
             lot.lot_insights = "\n".join(insights)
 
+    @api.depends('quant_ids', 'quant_ids.quantity', 'quant_ids.reserved_quantity')
+    def _compute_quantities(self):
+        """Compute available and reserved quantities"""
+        for lot in self:
+            total_qty = sum(lot.quant_ids.mapped('quantity'))
+            reserved_qty = sum(lot.quant_ids.mapped('reserved_quantity'))
+            lot.available_quantity = total_qty - reserved_qty
+            lot.reserved_quantity = reserved_qty
+
+    @api.depends('stock_move_ids', 'stock_move_ids.date')
+    def _compute_movement_metrics(self):
+        """Compute movement-related metrics"""
+        for lot in self:
+            moves = lot.stock_move_ids.filtered(lambda m: m.state == 'done')
+            lot.stock_move_count = len(moves)
+            lot.total_movements = len(moves)
+            
+            if len(moves) > 1:
+                # Calculate average time between movements
+                dates = sorted(moves.mapped('date'))
+                total_days = 0
+                for i in range(1, len(dates)):
+                    total_days += (dates[i] - dates[i-1]).days
+                lot.average_movement_time = total_days / (len(dates) - 1) if len(dates) > 1 else 0
+            else:
+                lot.average_movement_time = 0
+
+    @api.depends('quant_ids', 'quant_ids.location_id')
+    def _compute_current_location(self):
+        """Compute current location based on quants"""
+        for lot in self:
+            quants_with_qty = lot.quant_ids.filtered(lambda q: q.quantity > 0)
+            if quants_with_qty:
+                lot.current_location = quants_with_qty[0].location_id
+            else:
+                lot.current_location = False
+
+    @api.depends('create_date')
+    def _compute_inventory_metrics(self):
+        """Compute inventory-related metrics"""
+        for lot in self:
+            if lot.create_date:
+                lot.days_in_inventory = (fields.Date.today() - lot.create_date.date()).days
+            else:
+                lot.days_in_inventory = 0
+
+    @api.depends('quality_check_ids')
+    def _compute_quality_metrics(self):
+        """Compute quality-related metrics"""
+        for lot in self:
+            lot.quality_check_count = len(lot.quality_check_ids)
+
+    @api.depends('quant_ids')
+    def _compute_quant_metrics(self):
+        """Compute quant-related metrics"""
+        for lot in self:
+            lot.quant_count = len(lot.quant_ids)
+
+    @api.depends('available_quantity', 'unit_cost')
+    def _compute_value_metrics(self):
+        """Compute value-related metrics"""
+        for lot in self:
+            lot.total_value = lot.available_quantity * (lot.unit_cost or 0.0)
+
+    def action_view_stock_moves(self):
+        """View stock moves for this lot"""
+        return {
+            'name': _('Stock Moves'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'stock.move',
+            'view_mode': 'tree,form',
+            'domain': [('lot_ids', 'in', self.ids)],
+            'context': {'default_lot_ids': [(6, 0, self.ids)]}
+        }
+
+    def action_view_quants(self):
+        """View quants for this lot"""
+        return {
+            'name': _('Stock Quants'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'stock.quant',
+            'view_mode': 'tree,form',
+            'domain': [('lot_id', '=', self.id)],
+            'context': {'default_lot_id': self.id}
+        }
+
+    def action_quality_check(self):
+        """Perform quality check on this lot"""
+        return {
+            'name': _('Quality Check'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'quality.check',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_lot_id': self.id, 'default_product_id': self.product_id.id}
+        }
+
     def action_view_customer_lots(self):
         """View all lots for this customer"""
         self.ensure_one()
@@ -215,3 +445,33 @@ class StockLot(models.Model):
             'report_file': 'records_management.lot_label_report',
             'context': {'active_ids': [self.id]},
         }
+
+
+class StockLotAttribute(models.Model):
+    _name = 'stock.lot.attribute'
+    _description = 'Stock Lot Attribute'
+
+    lot_id = fields.Many2one('stock.lot', string='Lot', required=True, ondelete='cascade')
+    name = fields.Char(string='Attribute Name', required=True)
+    value = fields.Char(string='Attribute Value')
+    attribute_type = fields.Selection([
+        ('text', 'Text'),
+        ('number', 'Number'),
+        ('date', 'Date'),
+        ('boolean', 'Boolean')
+    ], string='Type', default='text')
+
+
+class StockTraceabilityLog(models.Model):
+    _name = 'stock.traceability.log'
+    _description = 'Stock Traceability Log'
+    _order = 'create_date desc'
+
+    lot_id = fields.Many2one('stock.lot', string='Lot', required=True, ondelete='cascade')
+    action = fields.Char(string='Action', required=True)
+    location_from = fields.Many2one('stock.location', string='From Location')
+    location_to = fields.Many2one('stock.location', string='To Location')
+    quantity = fields.Float(string='Quantity')
+    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
+    timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now)
+    notes = fields.Text(string='Notes')

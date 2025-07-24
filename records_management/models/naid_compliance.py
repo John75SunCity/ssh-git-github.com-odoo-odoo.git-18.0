@@ -196,6 +196,19 @@ class NAIDCompliance(models.Model):
     notes = fields.Text(string='Additional Notes')
     destruction_date = fields.Date(string='Last Destruction Date')
     
+    # Missing fields for view compatibility
+    requirement_name = fields.Char(string='Requirement Name', tracking=True,
+                                   help='Name of the specific NAID requirement')
+    requirement_type = fields.Selection([
+        ('security', 'Security Requirement'),
+        ('process', 'Process Requirement'),
+        ('documentation', 'Documentation Requirement'),
+        ('personnel', 'Personnel Requirement'),
+        ('facility', 'Facility Requirement'),
+        ('equipment', 'Equipment Requirement')
+    ], string='Requirement Type', tracking=True,
+       help='Type/category of the NAID requirement')
+    
     # Company and user tracking
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user, tracking=True)

@@ -50,6 +50,13 @@ class CustomerInventoryReport(models.Model):
         string='Customer Boxes',
         readonly=True
     )
+    
+    # Missing fields identified by field analysis
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now, readonly=True)
+    document_type_id = fields.Many2one('records.document.type', string='Document Type')
+    location_id = fields.Many2one('records.location', string='Location')
+    storage_date = fields.Date(string='Storage Date', default=fields.Date.today)
+    
     document_ids = fields.One2many(
         'records.document',
         'customer_id',
