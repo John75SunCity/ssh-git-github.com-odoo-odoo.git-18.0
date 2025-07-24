@@ -108,14 +108,13 @@ class PosConfig(models.Model):
     # Analytics and performance
     most_sold_product_id = fields.Many2one('product.template', string='Most Sold Product', compute='_compute_analytics')
     name = fields.Char(string='Point of Sale Name', required=True)
-    open_session_ids = fields.One2many('pos.session', 'config_id', string='Open Sessions',
-                                       domain=[('state', '!=', 'closed')])
+    open_session_ids = fields.One2many('pos.session', compute='_compute_open_session_ids', string='Open Sessions')
     order_count = fields.Integer(string='Order Count', compute='_compute_analytics')
     
     # Payment and operations
     payment_method_ids = fields.Many2many('pos.payment.method', string='Payment Methods')
     peak_hour_sales = fields.Float(string='Peak Hour Sales', compute='_compute_analytics')
-    performance_data_ids = fields.One2many('pos.performance.data', 'config_id', string='Performance Data')
+    performance_data_ids = fields.One2many('pos.performance.data', compute='_compute_performance_data_ids', string='Performance Data')
     picking_type_id = fields.Many2one('stock.picking.type', string='Picking Type')
     pos_category_id = fields.Many2one('pos.category', string='Default Category')
     pricelist_id = fields.Many2one('product.pricelist', string='Default Pricelist')
@@ -388,3 +387,21 @@ class PosPerformanceData(models.Model):
                 ('res_model', '=', 'pos.config'),
                 ('res_id', '=', config.id)
             ])
+
+    @api.depends()
+    def _compute_open_session_ids(self):
+        """Compute open sessions for this POS configuration"""
+        for config in self:
+            # Search for open sessions using standard domain
+            open_sessions = self.env['pos.session'].search([
+                ('config_id', '=', config.id),
+                ('state', '!=', 'closed')
+            ])
+            config.open_session_ids = open_sessions
+
+    @api.depends()
+    def _compute_performance_data_ids(self):
+        """Compute performance data for this POS configuration"""
+        for config in self:
+            # Since 'pos.performance.data' may not exist or have config_id field, return empty recordset
+            config.performance_data_ids = False

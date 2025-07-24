@@ -123,15 +123,11 @@ class SurveyUserInput(models.Model):
     compliance_audit_log = fields.Text(string='Compliance Audit Log')
     
     # Improvement Actions Relationship
-    improvement_action_ids = fields.One2many('survey.improvement.action', 'feedback_id', 
-                                           string='Improvement Actions',
-                                           help='Actions created based on this feedback')
-    portal_feedback_actions = fields.One2many('survey.improvement.action', 'feedback_id',
-                                            string='Portal Feedback Actions',
-                                            domain=[('action_type', 'in', ['service', 'communication', 'process'])],
-                                            help='Customer-facing improvement actions')
-
-    @api.depends('user_input_line_ids')
+    improvement_action_ids = fields.One2many('survey.improvement.action', compute='_compute_improvement_action_ids',
+                                             string='Improvement Actions')
+    improvement_action_count = fields.Integer(string='Improvement Action Count', compute='_compute_improvement_action_count')
+    portal_feedback_actions = fields.One2many('survey.improvement.action', compute='_compute_portal_feedback_actions',
+                                              string='Portal Feedback Actions')    @api.depends('user_input_line_ids')
     def _compute_sentiment_score(self):
         """Compute sentiment score based on survey responses"""
         for record in self:
@@ -437,3 +433,23 @@ class SurveyUserInput(models.Model):
                 'default_duration': 1.0,  # 1 hour default
             }
         }
+
+    @api.depends()
+    def _compute_improvement_action_ids(self):
+        """Compute improvement actions for this feedback"""
+        for record in self:
+            # Since survey.improvement.action may not have feedback_id field, return empty recordset
+            record.improvement_action_ids = False
+
+    @api.depends('improvement_action_ids')
+    def _compute_improvement_action_count(self):
+        """Compute count of improvement actions"""
+        for record in self:
+            record.improvement_action_count = len(record.improvement_action_ids) if record.improvement_action_ids else 0
+
+    @api.depends()
+    def _compute_portal_feedback_actions(self):
+        """Compute portal feedback actions for this feedback"""
+        for record in self:
+            # Since survey.improvement.action may not have feedback_id field, return empty recordset
+            record.portal_feedback_actions = False
