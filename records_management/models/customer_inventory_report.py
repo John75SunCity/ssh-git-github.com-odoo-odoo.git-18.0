@@ -1372,7 +1372,7 @@ class RecordsBillingConfig(models.Model):
         ('annual', 'Annual')
     ], string='Billing Frequency', default='monthly')
     billing_history_count = fields.Integer(string='Billing History Count', compute='_compute_counts')
-    billing_rate_ids = fields.One2many('records.billing.rate', 'config_id', string='Billing Rates')
+    billing_rate_ids = fields.One2many('records.billing.rate', compute='_compute_billing_rate_ids', string='Billing Rates')
     
     # Customer management
     cc_accounting = fields.Boolean(string='CC Accounting', default=False)
@@ -1389,7 +1389,7 @@ class RecordsBillingConfig(models.Model):
     # Data and retention
     data_retention_period = fields.Integer(string='Data Retention Period (years)', default=7)
     discount_percentage = fields.Float(string='Discount Percentage', digits=(5, 2))
-    discount_rule_ids = fields.One2many('records.billing.discount.rule', 'config_id', string='Discount Rules')
+    discount_rule_ids = fields.One2many('records.billing.discount.rule', compute='_compute_discount_rule_ids', string='Discount Rules')
     discount_type = fields.Selection([
         ('percentage', 'Percentage'),
         ('fixed', 'Fixed Amount'),
@@ -1409,7 +1409,7 @@ class RecordsBillingConfig(models.Model):
     # Invoice management
     invoice_count = fields.Integer(string='Invoice Count', compute='_compute_counts')
     invoice_email_template = fields.Many2one('mail.template', string='Invoice Email Template')
-    invoice_generation_log_ids = fields.One2many('records.billing.log', 'config_id', string='Invoice Generation Logs')
+    invoice_generation_log_ids = fields.One2many('records.billing.log', compute='_compute_invoice_generation_log_ids', string='Invoice Generation Logs')
     invoice_number = fields.Char(string='Invoice Number')
     invoice_status = fields.Selection([
         ('draft', 'Draft'),
@@ -1466,7 +1466,7 @@ class RecordsBillingConfig(models.Model):
     ], string='Rate Unit', default='per_box')
     reminder_schedule = fields.Text(string='Reminder Schedule')
     revenue_amount = fields.Float(string='Revenue Amount', digits=(12, 2))
-    revenue_analytics_ids = fields.One2many('records.billing.analytics', 'config_id', string='Revenue Analytics')
+    revenue_analytics_ids = fields.One2many('records.billing.analytics', compute='_compute_revenue_analytics_ids', string='Revenue Analytics')
     revenue_variance_alerts = fields.Boolean(string='Revenue Variance Alerts', default=True)
     rule_name = fields.Char(string='Rule Name')
     
@@ -1509,7 +1509,7 @@ class RecordsBillingConfig(models.Model):
     unit_of_measure = fields.Many2one('uom.uom', string='Unit of Measure')
     unit_rate = fields.Float(string='Unit Rate', digits=(12, 4))
     usage_threshold_alerts = fields.Boolean(string='Usage Threshold Alerts', default=True)
-    usage_tracking_ids = fields.One2many('records.usage.tracking', 'config_id', string='Usage Tracking')
+    usage_tracking_ids = fields.One2many('records.usage.tracking', compute='_compute_usage_tracking_ids', string='Usage Tracking')
     valid_from = fields.Date(string='Valid From', default=fields.Date.today)
     valid_until = fields.Date(string='Valid Until')
     
@@ -1686,6 +1686,14 @@ class RecordsBillingConfig(models.Model):
             record.customer_count = len(record.billing_rate_ids.mapped('customer_id')) if record.billing_rate_ids else 0
             record.invoice_count = len(record.invoice_generation_log_ids.filtered(lambda x: hasattr(x, 'invoice_id') and x.invoice_id)) if record.invoice_generation_log_ids else 0
 
+    @api.depends()
+    def _compute_billing_rate_ids(self):
+        """Compute billing rates for this billing configuration"""
+        for record in self:
+            # Since 'records.billing.rate' model doesn't exist, return empty recordset
+            # This maintains compatibility with existing code that references this field
+            record.billing_rate_ids = False
+
     @api.depends('period', 'effective_date', 'billing_frequency')
     def _compute_next_billing_date(self):
         """Compute next billing date based on frequency"""
@@ -1709,6 +1717,34 @@ class RecordsBillingConfig(models.Model):
         for record in self:
             record.total_revenue = record.annual_revenue or record.revenue_amount or 0.0
             record.total_cost = record.cost_amount or 0.0
+
+    @api.depends()
+    def _compute_discount_rule_ids(self):
+        """Compute discount rules for this billing configuration"""
+        for record in self:
+            # Since 'records.billing.discount.rule' model doesn't exist, return empty recordset
+            record.discount_rule_ids = False
+
+    @api.depends()
+    def _compute_invoice_generation_log_ids(self):
+        """Compute invoice generation logs for this billing configuration"""
+        for record in self:
+            # Since 'records.billing.log' model doesn't exist, return empty recordset
+            record.invoice_generation_log_ids = False
+
+    @api.depends()
+    def _compute_revenue_analytics_ids(self):
+        """Compute revenue analytics for this billing configuration"""
+        for record in self:
+            # Since 'records.billing.analytics' model doesn't exist, return empty recordset
+            record.revenue_analytics_ids = False
+
+    @api.depends()
+    def _compute_usage_tracking_ids(self):
+        """Compute usage tracking for this billing configuration"""
+        for record in self:
+            # Since 'records.usage.tracking' model doesn't exist, return empty recordset
+            record.usage_tracking_ids = False
 
 
 class RecordsBillingPeriod(models.Model):
