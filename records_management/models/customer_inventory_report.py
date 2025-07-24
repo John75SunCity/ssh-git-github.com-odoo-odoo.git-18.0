@@ -2603,7 +2603,7 @@ class RecordsBarcodeHistory(models.Model):
     
     # Related object
     model_name = fields.Char(string='Model Name', required=True)
-    res_id = fields.Integer(string='Record ID', required=True)
+    record_id = fields.Integer(string='Record ID', required=True)
     res_name = fields.Char(string='Record Name')
     
     # Tracking
