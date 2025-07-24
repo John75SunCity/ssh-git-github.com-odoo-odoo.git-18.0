@@ -255,6 +255,7 @@ class PortalRequest(models.Model):
         for record in self:
             record.communication_count = len(record.communication_log_ids)
 
+    @api.depends('related_request_ids')
     def _compute_related_request_count(self):
         """Compute related request count"""
         for record in self:
@@ -477,6 +478,7 @@ class PortalRequestSLAMilestone(models.Model):
     responsible_user_id = fields.Many2one('res.users', string='Responsible User')
     notes = fields.Text(string='Notes')
     # Compute method for activity_ids One2many field
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this record"""
         for record in self:
@@ -485,6 +487,7 @@ class PortalRequestSLAMilestone(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this record"""
         for record in self:
@@ -493,6 +496,7 @@ class PortalRequestSLAMilestone(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this record"""
         for record in self:

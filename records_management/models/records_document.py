@@ -373,10 +373,12 @@ class RecordsDocument(models.Model):
     )
 
 
+    @api.depends()
     def _compute_attachment_count(self):
         for rec in self:
             rec.attachment_count = len(rec.attachment_ids)
 
+    @api.depends()
     def _compute_audit_trail_count(self):
         """Compute count of audit trail entries for this document"""
         for doc in self:
@@ -391,6 +393,7 @@ class RecordsDocument(models.Model):
                 pass
             doc.audit_trail_count = audit_count
 
+    @api.depends()
     def _compute_chain_of_custody_count(self):
         """Compute count of chain of custody entries for this document"""
         for doc in self:
@@ -836,6 +839,7 @@ class RecordsDocument(models.Model):
         
         return self.search(domain)
     # Compute method for activity_ids One2many field
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this record"""
         for record in self:
@@ -844,6 +848,7 @@ class RecordsDocument(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this record"""
         for record in self:
@@ -852,6 +857,7 @@ class RecordsDocument(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this record"""
         for record in self:

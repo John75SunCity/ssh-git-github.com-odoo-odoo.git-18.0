@@ -441,6 +441,7 @@ class RecordsDocumentType(models.Model):
             'context': {'default_document_type_id': self.id},
         }
 
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities related to this document type"""
         for record in self:
@@ -450,6 +451,7 @@ class RecordsDocumentType(models.Model):
             ])
             record.activity_ids = activities
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute followers of this document type"""
         for record in self:
@@ -459,6 +461,7 @@ class RecordsDocumentType(models.Model):
             ])
             record.message_follower_ids = followers
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages related to this document type"""
         for record in self:

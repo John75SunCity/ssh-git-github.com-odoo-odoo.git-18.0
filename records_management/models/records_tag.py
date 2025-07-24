@@ -386,6 +386,7 @@ class RecordsTag(models.Model):
             'target': 'current',
         }
 
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities related to this tag"""
         for record in self:
@@ -395,6 +396,7 @@ class RecordsTag(models.Model):
             ])
             record.activity_ids = activities
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute followers of this tag"""
         for record in self:
@@ -404,6 +406,7 @@ class RecordsTag(models.Model):
             ])
             record.message_follower_ids = followers
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages related to this tag"""
         for record in self:

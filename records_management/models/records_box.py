@@ -313,6 +313,7 @@ class RecordsBox(models.Model):
             else:
                 box.used_capacity = 0
 
+    @api.depends('movement_ids')
     def _compute_movement_count(self):
         """Compute count of movement records for this box"""
         for box in self:
@@ -329,6 +330,7 @@ class RecordsBox(models.Model):
                     pass
             box.movement_count = movement_count
 
+    @api.depends('service_request_ids')
     def _compute_service_request_count(self):
         """Compute count of service requests for this box"""
         for box in self:
@@ -808,7 +810,9 @@ class RecordsBox(models.Model):
             self.capacity = 50
         elif self.container_type == 'pallet':
             self.capacity = 48
+    
     # Compute method for activity_ids One2many field
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this record"""
         for record in self:
@@ -817,6 +821,7 @@ class RecordsBox(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this record"""
         for record in self:
@@ -825,6 +830,7 @@ class RecordsBox(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this record"""
         for record in self:

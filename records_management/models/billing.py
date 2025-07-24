@@ -346,6 +346,7 @@ class Billing(models.Model):
         return super().create(vals_list)
 
     # Compute method for activity_ids One2many field
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this record"""
         for record in self:

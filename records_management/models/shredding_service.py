@@ -511,12 +511,14 @@ class ShreddingService(models.Model):
             
             service.operational_insights = "\n".join(insights)
 
+    @api.depends('certificate_ids')
     def _compute_certificate_count(self):
         """Compute number of certificates generated"""
         for service in self:
             service.certificate_count = len(service.compliance_documentation_ids.filtered(
                 lambda doc: 'certificate' in doc.name.lower()))
 
+    @api.depends('witness_ids')
     def _compute_witness_count(self):
         """Compute number of witnesses for destruction"""
         for service in self:
@@ -788,6 +790,7 @@ class ShreddingService(models.Model):
         self.message_post(body=_('Bale created for recycling; link to trailer load for efficiency.'))
 
     # Compute methods for One2many fields
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this shredding service"""
         for service in self:
@@ -796,6 +799,7 @@ class ShreddingService(models.Model):
                 ('res_id', '=', service.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this shredding service"""
         for service in self:
@@ -804,6 +808,7 @@ class ShreddingService(models.Model):
                 ('res_id', '=', service.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this shredding service"""
         for service in self:

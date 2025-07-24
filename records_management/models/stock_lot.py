@@ -269,17 +269,20 @@ class StockLot(models.Model):
             
             lot.lot_insights = " | ".join(insights)
 
+    @api.depends('quant_ids')
     def _compute_quantities(self):
         """Compute available and reserved quantities"""
         for lot in self:
             lot.available_quantity = 0.0
             lot.reserved_quantity = 0.0
 
+    @api.depends('stock_move_ids')
     def _compute_movement_metrics(self):
         """Compute movement-related metrics"""
         for lot in self:
             lot.average_movement_time = 0.0
 
+    @api.depends('quant_ids')
     def _compute_inventory_metrics(self):
         """Compute inventory-related metrics"""
         for lot in self:
@@ -288,27 +291,32 @@ class StockLot(models.Model):
             else:
                 lot.days_in_inventory = 0
 
+    @api.depends('quant_ids')
     def _compute_current_location(self):
         """Compute current location"""
         for lot in self:
             lot.current_location = lot.location_id
 
+    @api.depends('quality_check_ids')
     def _compute_quality_metrics(self):
         """Compute quality-related metrics"""
         for lot in self:
             lot.quality_check_count = len(lot.quality_check_ids)
 
+    @api.depends('quant_ids')
     def _compute_quant_metrics(self):
         """Compute quant-related metrics"""
         for lot in self:
             lot.quant_count = len(lot.quant_ids)
 
+    @api.depends('stock_move_ids')
     def _compute_move_metrics(self):
         """Compute move-related metrics"""
         for lot in self:
             lot.stock_move_count = len(lot.stock_move_ids)
             lot.total_movements = lot.stock_move_count
 
+    @api.depends('quant_ids')
     def _compute_value_metrics(self):
         """Compute value-related metrics"""
         for lot in self:
@@ -402,6 +410,7 @@ class StockLot(models.Model):
             lot.lot_insights = "\n".join(insights)
 
     @api.depends('quant_ids', 'quant_ids.quantity', 'quant_ids.reserved_quantity')
+    @api.depends('quant_ids')
     def _compute_quantities(self):
         """Compute available and reserved quantities"""
         for lot in self:
@@ -411,6 +420,7 @@ class StockLot(models.Model):
             lot.reserved_quantity = reserved_qty
 
     @api.depends('stock_move_ids', 'stock_move_ids.date')
+    @api.depends('stock_move_ids')
     def _compute_movement_metrics(self):
         """Compute movement-related metrics"""
         for lot in self:
@@ -429,6 +439,7 @@ class StockLot(models.Model):
                 lot.average_movement_time = 0
 
     @api.depends('quant_ids', 'quant_ids.location_id')
+    @api.depends('quant_ids')
     def _compute_current_location(self):
         """Compute current location based on quants"""
         for lot in self:
@@ -439,6 +450,7 @@ class StockLot(models.Model):
                 lot.current_location = False
 
     @api.depends('create_date')
+    @api.depends('quant_ids')
     def _compute_inventory_metrics(self):
         """Compute inventory-related metrics"""
         for lot in self:
@@ -448,11 +460,13 @@ class StockLot(models.Model):
                 lot.days_in_inventory = 0
 
     @api.depends('quality_check_ids')
+    @api.depends('quality_check_ids')
     def _compute_quality_metrics(self):
         """Compute quality-related metrics"""
         for lot in self:
             lot.quality_check_count = len(lot.quality_check_ids)
 
+    @api.depends('quant_ids')
     @api.depends('quant_ids')
     def _compute_quant_metrics(self):
         """Compute quant-related metrics"""
@@ -460,6 +474,7 @@ class StockLot(models.Model):
             lot.quant_count = len(lot.quant_ids)
 
     @api.depends('available_quantity', 'unit_cost')
+    @api.depends('quant_ids')
     def _compute_value_metrics(self):
         """Compute value-related metrics"""
         for lot in self:
@@ -592,6 +607,7 @@ class StockTraceabilityLog(models.Model):
     notes = fields.Text(string='Notes')
 
     # Compute method for activity_ids One2many field
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this record"""
         for record in self:
@@ -600,6 +616,7 @@ class StockTraceabilityLog(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this record"""
         for record in self:
@@ -608,6 +625,7 @@ class StockTraceabilityLog(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this record"""
         for record in self:

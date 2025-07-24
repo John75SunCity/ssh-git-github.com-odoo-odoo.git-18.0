@@ -342,6 +342,7 @@ class Load(models.Model):
         }
 
     # Compute methods for One2many fields
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this load record"""
         for load in self:
@@ -350,6 +351,7 @@ class Load(models.Model):
                 ('res_id', '=', load.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this load record"""
         for load in self:
@@ -358,6 +360,7 @@ class Load(models.Model):
                 ('res_id', '=', load.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this load record"""
         for load in self:
@@ -366,6 +369,7 @@ class Load(models.Model):
                 ('res_id', '=', load.id)
             ])
 
+    @api.depends()
     def _compute_photo_ids(self):
         """Compute photo attachments for this load record"""
         for load in self:

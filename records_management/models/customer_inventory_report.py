@@ -2778,6 +2778,7 @@ class RecordsBillingAutomation(models.Model):
         return True
 
     # Compute methods for One2many fields
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this customer inventory report"""
         for report in self:
@@ -2786,6 +2787,7 @@ class RecordsBillingAutomation(models.Model):
                 ('res_id', '=', report.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this customer inventory report"""
         for report in self:
@@ -2794,6 +2796,7 @@ class RecordsBillingAutomation(models.Model):
                 ('res_id', '=', report.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this customer inventory report"""
         for report in self:

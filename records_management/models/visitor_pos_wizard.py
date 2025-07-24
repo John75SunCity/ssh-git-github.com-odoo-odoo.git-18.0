@@ -489,6 +489,7 @@ class VisitorPosWizard(models.TransientModel):
         """Cancel wizard."""
         return {'type': 'ir.actions.act_window_close'}
 
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities related to this wizard"""
         for record in self:
@@ -498,6 +499,7 @@ class VisitorPosWizard(models.TransientModel):
             ])
             record.activity_ids = activities
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute followers of this wizard"""
         for record in self:
@@ -507,6 +509,7 @@ class VisitorPosWizard(models.TransientModel):
             ])
             record.message_follower_ids = followers
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages related to this wizard"""
         for record in self:

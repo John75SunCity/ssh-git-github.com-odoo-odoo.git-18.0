@@ -343,11 +343,13 @@ class PortalFeedback(models.Model):
             else:
                 record.customer_feedback_count = 0
 
+    @api.depends()
     def _compute_improvement_count(self):
         for record in self:
             # Count related improvement actions
             record.improvement_action_count = 0  # Placeholder
 
+    @api.depends()
     def _compute_related_count(self):
         for record in self:
             # Count related tickets/service requests
@@ -386,6 +388,7 @@ class PortalFeedback(models.Model):
         return True
 
     # Compute methods for One2many fields
+    @api.depends()
     def _compute_followup_activities(self):
         """Compute follow-up activities for this feedback"""
         for feedback in self:
@@ -395,6 +398,7 @@ class PortalFeedback(models.Model):
                 ('activity_type_id.category', '=', 'meeting')  # Follow-up specific activities
             ])
 
+    @api.depends()
     def _compute_attachments(self):
         """Compute attachments for this feedback"""
         for feedback in self:
@@ -403,6 +407,7 @@ class PortalFeedback(models.Model):
                 ('res_id', '=', feedback.id)
             ])
 
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this feedback"""
         for feedback in self:
@@ -411,6 +416,7 @@ class PortalFeedback(models.Model):
                 ('res_id', '=', feedback.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this record"""
         for record in self:
@@ -419,6 +425,7 @@ class PortalFeedback(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this record"""
         for record in self:

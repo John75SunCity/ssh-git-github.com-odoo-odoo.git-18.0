@@ -419,6 +419,7 @@ class FSMTask(models.Model):
         return stage.id if stage else False
 
     # Compute methods for One2many fields
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this FSM task"""
         for task in self:
@@ -427,6 +428,7 @@ class FSMTask(models.Model):
                 ('res_id', '=', task.id)
             ])
 
+    @api.depends()
     def _compute_material_usage_ids(self):
         """Compute material usage records for this FSM task"""
         for task in self:
@@ -437,6 +439,7 @@ class FSMTask(models.Model):
                 ('action', 'ilike', 'material')
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this FSM task"""
         for task in self:
@@ -446,6 +449,7 @@ class FSMTask(models.Model):
                 ('res_id', '=', task.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this FSM task"""
         for task in self:
@@ -455,6 +459,7 @@ class FSMTask(models.Model):
                 ('res_id', '=', task.id)
             ])
 
+    @api.depends()
     def _compute_mobile_update_ids(self):
         """Compute mobile updates for this FSM task"""
         for task in self:

@@ -182,6 +182,9 @@ class BarcodeProduct(models.Model):
     weight_limit = fields.Float(string='Weight Limit (lbs)', default=0.0)
     witness_destruction = fields.Boolean(string='Witness Destruction', default=False)
     
+    @api.depends('activity_ids')
+
+    
     def _compute_activity_state(self):
         """Compute activity state based on activities"""
         for record in self:
@@ -311,6 +314,7 @@ class BarcodeProduct(models.Model):
         })
 
     # Compute method for activity_ids One2many field
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this record"""
         for record in self:
@@ -319,6 +323,7 @@ class BarcodeProduct(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this record"""
         for record in self:
@@ -327,6 +332,7 @@ class BarcodeProduct(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this record"""
         for record in self:

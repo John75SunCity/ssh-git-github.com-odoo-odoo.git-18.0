@@ -304,6 +304,7 @@ class ProductTemplate(models.Model):
             
             product.product_insights = "\n".join(insights)
 
+    @api.depends('stock_move_ids')
     def _compute_product_metrics(self):
         """Compute additional product metrics"""
         for product in self:
@@ -326,6 +327,7 @@ class ProductTemplate(models.Model):
             product.total_revenue_ytd = 0.0
             product.total_sales_ytd = 0.0
 
+    @api.depends('name', 'default_code')
     def _compute_display_name(self):
         """Compute display name"""
         for product in self:
@@ -430,6 +432,7 @@ class ProductTemplate(models.Model):
         }
 
     # Compute methods for One2many fields
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this product template"""
         for product in self:
@@ -438,6 +441,7 @@ class ProductTemplate(models.Model):
                 ('res_id', '=', product.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this product template"""
         for product in self:
@@ -446,6 +450,7 @@ class ProductTemplate(models.Model):
                 ('res_id', '=', product.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this product template"""
         for product in self:

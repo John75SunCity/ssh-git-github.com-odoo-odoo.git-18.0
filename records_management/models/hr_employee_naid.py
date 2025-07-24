@@ -184,6 +184,7 @@ class HREmployeeNAID(models.Model):
         'security_clearance_level', 'security_clearance_expiry',
         'access_card_active'
     )
+    @api.depends('background_check_status', 'naid_certification_status')
     def _compute_compliance_status(self):
         """Compute overall NAID compliance status"""
         today = fields.Date.today()

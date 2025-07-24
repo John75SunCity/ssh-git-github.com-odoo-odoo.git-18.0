@@ -780,6 +780,7 @@ class RecordsRetentionPolicy(models.Model):
                 policy.policy_risk_score = 0.0
 
     # Compute method for activity_ids One2many field
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this record"""
         for record in self:
@@ -788,6 +789,7 @@ class RecordsRetentionPolicy(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this record"""
         for record in self:
@@ -796,6 +798,7 @@ class RecordsRetentionPolicy(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this record"""
         for record in self:

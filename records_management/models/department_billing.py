@@ -477,6 +477,7 @@ class RecordsDepartmentBillingContact(models.Model):
             else:
                 rec.total_departments = 0
 
+    @api.depends('customer_id', 'department_charge_ids')
     def _compute_billing_stats(self):
         """Compute billing-related statistics"""
         for rec in self:
@@ -809,6 +810,7 @@ class ResPartnerDepartmentBilling(models.Model):
         return False
 
     # Compute method for activity_ids One2many field
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this record"""
         for record in self:
@@ -817,6 +819,7 @@ class ResPartnerDepartmentBilling(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this record"""
         for record in self:
@@ -825,6 +828,7 @@ class ResPartnerDepartmentBilling(models.Model):
                 ("res_id", "=", record.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this record"""
         for record in self:

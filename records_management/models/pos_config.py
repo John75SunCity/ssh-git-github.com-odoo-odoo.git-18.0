@@ -214,6 +214,7 @@ class PosConfig(models.Model):
                 
             config.activity_state = 'planned'
 
+    @api.depends('order_ids', 'session_ids')
     def _compute_analytics(self):
         """Compute various analytics for POS configuration"""
         for config in self:
@@ -283,6 +284,7 @@ class PosConfig(models.Model):
             config.customer_satisfaction_score = 4.2  # Default good rating
             config.loyalty_program_usage = 25.0  # Default 25% usage
 
+    @api.depends('current_session_id')
     def _compute_session_info(self):
         """Compute session-related information"""
         for config in self:
@@ -360,6 +362,7 @@ class PosPerformanceData(models.Model):
     notes = fields.Text(string='Notes')
 
     # Compute methods for One2many fields
+    @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this POS configuration"""
         for config in self:
@@ -368,6 +371,7 @@ class PosPerformanceData(models.Model):
                 ('res_id', '=', config.id)
             ])
 
+    @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this POS configuration"""
         for config in self:
@@ -376,6 +380,7 @@ class PosPerformanceData(models.Model):
                 ('res_id', '=', config.id)
             ])
 
+    @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this POS configuration"""
         for config in self:
