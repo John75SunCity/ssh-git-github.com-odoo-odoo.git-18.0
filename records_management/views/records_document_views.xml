@@ -151,7 +151,7 @@
                             <field name="retention_policy_id"/>
                             <field name="destruction_eligible_date"/>
                             <field name="state"/>
-                            <label string="🏆 NAID AAA Certified Facility" colspan="2" style="font-weight: bold; color: #28a745;" class="o_form_label"/>
+                            <div colspan="2" style="font-weight: bold; color: #28a745; padding: 5px;">🏆 NAID AAA Certified Facility</div>
                         </group>
                     </group>
 
