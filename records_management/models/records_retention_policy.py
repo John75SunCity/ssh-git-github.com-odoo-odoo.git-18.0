@@ -98,8 +98,6 @@ class RecordsRetentionPolicy(models.Model):
     
     # Version history tracking
     version_history_ids = fields.One2many('records.policy.version', 'policy_id', string='Version History')
-        'records.policy.version', 'policy_id', string='Version History'
-    )
     
     # Missing fields referenced in views - added for comprehensive coverage
     changed_by = fields.Many2one('res.users', string='Changed By', 
@@ -130,7 +128,7 @@ class RecordsRetentionPolicy(models.Model):
     review_cycle_months = fields.Integer('Review Cycle (Months)', default=12)
     next_mandatory_review = fields.Date('Next Mandatory Review', compute='_compute_next_review')
     policy_version = fields.Char('Policy Version', default='1.0')
-    version_history_ids = fields.One2many('records.policy.version', 'policy_id', string='Version History')'records.policy.version', 'policy_id', string='Version History')
+    version_history_ids = fields.One2many('records.policy.version', 'policy_id', string='Version History')
     approval_workflow_id = fields.Many2one('records.approval.workflow', string='Approval Workflow')
     stakeholder_notification = fields.Boolean('Stakeholder Notification Required', default=True)
     risk_assessment_required = fields.Boolean('Risk Assessment Required', default=False)

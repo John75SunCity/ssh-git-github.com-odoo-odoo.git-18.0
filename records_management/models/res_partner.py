@@ -28,8 +28,6 @@ class ResPartner(models.Model):
         help="Primary contact for billing and invoices")
     
     department_billing_contacts = fields.One2many('records.department.billing.contact', 'customer_id', string='Department Billing Contacts')
-        'records.department.billing.contact', 'customer_id',
-        string='Department Billing Contacts (New Model)')
     
     # Billing Preferences
     invoice_delivery_method = fields.Selection([
@@ -75,12 +73,6 @@ class ResPartner(models.Model):
     
     # Department billing contacts  
     department_billing_contact_ids = fields.One2many('records.department.billing.contact', 'billing_contact_id', string='Billing Contact Relations')
-        'res.partner.department.billing',
-        'partner_id',
-        string='Department Billing Contacts (Legacy)',
-        help="Specific billing contacts for departments "
-             "(used with separate billing)"
-    )
 
     # Phase 2 Audit & Compliance Fields - Added by automated script
     audit_required = fields.Boolean('Customer Audit Required', default=False)
