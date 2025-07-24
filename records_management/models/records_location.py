@@ -15,7 +15,7 @@ class RecordsLocation(models.Model):
     complete_name = fields.Char('Complete Name', compute='_compute_complete_name', recursive=True, store=True)
     parent_id = fields.Many2one('records.location', 'Parent Location', index=True, ondelete='cascade')
     parent_path = fields.Char(index=True)
-    child_ids = fields.One2many('records.location', 'parent_id', 'Child Locations')
+    child_ids = fields.One2many('records.location', 'parent_id', string='Child Locations')
 
     # Location Type for Business Operations
     location_type = fields.Selection([
