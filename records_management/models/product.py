@@ -4,8 +4,8 @@ from odoo import fields, models, api, _
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    # Phase 1: Explicit Activity Field (1 field)
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    # Phase 1: Activity Field - Use proper domain for generic relation
+    # activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')  # Disabled - incorrect inverse field
 
     shred_type = fields.Selection([
         ('document', 'Document Shredding'),
@@ -119,8 +119,9 @@ class ProductTemplate(models.Model):
     material_cost = fields.Float(string='Material Cost', default=0.0)
     max_boxes_included = fields.Integer(string='Max Boxes Included', default=0)
     max_documents_included = fields.Integer(string='Max Documents Included', default=0)
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    # Use computed fields for mail relations to avoid KeyError
+    # message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')  # Disabled - incorrect inverse
+    # message_ids = fields.One2many('mail.message', 'res_id', string='Messages')  # Disabled - incorrect inverse
     min_quantity = fields.Float(string='Minimum Quantity', default=1.0)
     minimum_billing_period = fields.Integer(string='Minimum Billing Period (months)', default=1)
     model = fields.Char(string='Model', help='Model name for technical references')
@@ -174,11 +175,7 @@ class ProductTemplate(models.Model):
     template_category = fields.Char(string='Template Category')
     total_revenue_ytd = fields.Float(string='Total Revenue YTD', compute='_compute_product_metrics')
     total_sales_ytd = fields.Float(string='Total Sales YTD', compute='_compute_product_metrics')
-    type = fields.Selection([
-        ('consu', 'Consumable'),
-        ('service', 'Service'),
-        ('product', 'Storable Product')
-    ], string='Product Type', default='service')
+    # Use default product type from base model - no override needed
     uom_id = fields.Many2one('uom.uom', string='Unit of Measure')
     uom_po_id = fields.Many2one('uom.uom', string='Purchase Unit of Measure')
     uptime_guarantee = fields.Float(string='Uptime Guarantee (%)', default=99.9)

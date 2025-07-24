@@ -146,12 +146,7 @@ class FSMTask(models.Model):
     photo_attachment = fields.Binary(string='Photo Attachment')
     photos_required = fields.Boolean(string='Photos Required', default=False)
     primary_contact = fields.Char(string='Primary Contact')
-    priority = fields.Selection([
-        ('0', 'Low'),
-        ('1', 'Normal'),
-        ('2', 'High'),
-        ('3', 'Urgent')
-    ], string='Priority', default='1')
+    # Use default priority from project.task - no override needed
     quality_rating = fields.Float(string='Quality Rating', default=0.0)
     quantity_used = fields.Float(string='Quantity Used', default=0.0)
     required = fields.Boolean(string='Required', default=False)

@@ -152,26 +152,18 @@ class Load(models.Model):
         ('quality', 'Quality Check'),
         ('delivery', 'Delivery')
     ], string='Photo Type')
-    priority = fields.Selection([
-        ('0', 'Normal'),
-        ('1', 'Low'),
-        ('2', 'High'),
+    # Use selection_add for priority to extend base selection options
+    priority = fields.Selection(selection_add=[
         ('3', 'Very High')
-    ], string='Priority', default='0')
+    ], string='Load Priority', default='0')
     res_model = fields.Char(string='Resource Model', default='records_management.load')
     search_view_id = fields.Many2one('ir.ui.view', string='Search View')
     
-    # Payment/transaction status tracking
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('loaded', 'Loaded'),
-        ('shipped', 'Shipped'),
-        ('delivered', 'Delivered'),
+    # Payment/transaction status tracking - extend stock.picking state
+    state = fields.Selection(selection_add=[
         ('invoiced', 'Invoiced'),
-        ('paid', 'Paid'),
-        ('cancelled', 'Cancelled')
-    ], string='Payment Status', default='draft', tracking=True, 
+        ('paid', 'Paid')
+    ], string='Payment Status', tracking=True, 
        help='Track the payment and delivery status of the paper load sale')
     
     subject = fields.Char(string='Subject')

@@ -51,13 +51,8 @@ class PosConfig(models.Model):
     
     # Session management
     current_session_id = fields.Many2one('pos.session', string='Current Session', compute='_compute_current_session')
-    current_session_state = fields.Selection([
-        ('opening_control', 'Opening Control'),
-        ('opened', 'In Progress'),
-        ('closing_control', 'Closing Control'),
-        ('closed', 'Closed & Posted'),
-        ('rescue', 'Recovery')
-    ], string='Session State', related='current_session_id.state', readonly=True)
+    # Use related field from pos.session state - no override needed
+    current_session_state = fields.Selection(related='current_session_id.state', readonly=True, string='Session State')
     
     # Customer analytics
     customer_count = fields.Integer(string='Customer Count', compute='_compute_analytics')
