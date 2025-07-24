@@ -29,6 +29,24 @@ class RecordsBoxTypeConverter(models.TransientModel):
     ], string='New Box Type', required=True,
         help='Select the new box type for all selected boxes')
     
+    # Missing fields identified by field analysis
+    reason = fields.Text(
+        string='Conversion Reason',
+        help='Optional: Explain why these boxes are being converted'
+    )
+    
+    summary_line = fields.Html(
+        string='Summary',
+        compute='_compute_summary_line',
+        help='Summary of the conversion operation'
+    )
+    
+    update_location = fields.Boolean(
+        string='Auto-relocate boxes',
+        default=True,
+        help='Automatically move boxes to appropriate location type based on new box type'
+    )
+    
     # Technical fields for view compatibility
     arch = fields.Text(string='View Architecture')
     model = fields.Char(string='Model Name', default='records.box.type.converter')
@@ -46,23 +64,6 @@ class RecordsBoxTypeConverter(models.TransientModel):
                 record.name = f"Convert {len(record.box_ids)} boxes to {type_name.split(' - ')[0]}"
             else:
                 record.name = "Box Type Converter"
-    
-    update_location = fields.Boolean(
-        string='Auto-relocate boxes',
-        default=True,
-        help='Automatically move boxes to appropriate location type based on new box type'
-    )
-    
-    reason = fields.Text(
-        string='Conversion Reason',
-        help='Optional: Explain why these boxes are being converted'
-    )
-    
-    summary_line = fields.Html(
-        string='Summary',
-        compute='_compute_summary_line',
-        help='Summary of the conversion operation'
-    )
 
     @api.depends('box_ids', 'new_box_type_code', 'update_location')
     def _compute_summary_line(self):

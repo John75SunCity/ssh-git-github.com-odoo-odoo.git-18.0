@@ -150,6 +150,15 @@ class RecordsLocation(models.Model):
         store=True,
         help='Last analytics computation timestamp'
     )
+    
+    # Technical View Fields (for XML view inheritance and processing)
+    arch = fields.Text(string='View Architecture', help='XML view architecture definition')
+    context = fields.Text(string='Context', help='View context information')
+    help = fields.Text(string='Help', help='Help text for this record')
+    model = fields.Char(string='Model', help='Model name for technical references')
+    res_model = fields.Char(string='Resource Model', help='Resource model name')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View', help='Search view reference')
+    view_mode = fields.Char(string='View Mode', help='View mode configuration')
 
     @api.depends('name', 'parent_id.complete_name')
     def _compute_complete_name(self):

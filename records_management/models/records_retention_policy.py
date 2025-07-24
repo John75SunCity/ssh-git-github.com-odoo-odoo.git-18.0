@@ -198,8 +198,30 @@ class RecordsRetentionPolicy(models.Model):
         string='Analytics Updated',
         compute='_compute_retention_analytics',
         store=True,
-        help='Last time analytics were computed'
+        help='Last analytics computation timestamp'
     )
+    
+    # Missing technical and activity fields
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities',
+                                   domain=lambda self: [('res_model', '=', self._name)])
+    approval_status = fields.Selection([
+        ('draft', 'Draft'),
+        ('pending', 'Pending Approval'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected')
+    ], string='Approval Status', default='draft')
+    arch = fields.Text(string='View Architecture', help='XML view architecture definition')
+    help = fields.Text(string='Help', help='Help text for this record')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
+                                           domain=lambda self: [('res_model', '=', self._name)])
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
+                                  domain=lambda self: [('res_model', '=', self._name)])
+    model = fields.Char(string='Model', help='Model name for technical references')
+    res_model = fields.Char(string='Resource Model', help='Resource model name')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View', help='Search view reference')
+    version_date = fields.Date(string='Version Date', help='Date of this policy version')
+    version_number = fields.Char(string='Version Number', help='Version number of this policy')
+    view_mode = fields.Char(string='View Mode', help='View mode configuration')
 
     @api.depends('retention_years')
     def _compute_retention_period(self):

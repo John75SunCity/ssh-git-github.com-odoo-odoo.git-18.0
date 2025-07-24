@@ -197,6 +197,33 @@ class RecordsDocument(models.Model):
         'records.digital.copy', 'document_id',
         string='Digital Copies'
     )
+    
+    # Missing technical and audit fields from view references
+    action_type = fields.Selection([
+        ('created', 'Created'),
+        ('modified', 'Modified'),
+        ('accessed', 'Accessed'),
+        ('moved', 'Moved'),
+        ('destroyed', 'Destroyed')
+    ], string='Action Type', help='Type of action performed on document')
+    arch = fields.Text(string='View Architecture', help='XML view architecture definition')
+    compliance_verified = fields.Boolean(string='Compliance Verified', default=False,
+                                        help='Indicates if compliance has been verified')
+    context = fields.Text(string='Context', help='View context information')
+    event_date = fields.Date(string='Event Date', help='Date when event occurred')
+    event_type = fields.Char(string='Event Type', help='Type of event recorded')
+    help = fields.Text(string='Help', help='Help text for this record')
+    location = fields.Char(string='Location', help='Physical location reference')
+    model = fields.Char(string='Model', help='Model name for technical references')
+    notes = fields.Text(string='Notes', help='Additional notes or comments')
+    res_model = fields.Char(string='Resource Model', help='Resource model name')
+    resolution = fields.Text(string='Resolution', help='Resolution or outcome of event')
+    responsible_person = fields.Many2one('res.users', string='Responsible Person',
+                                        help='Person responsible for this document')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View', help='Search view reference')
+    storage_location = fields.Char(string='Storage Location', help='Physical storage location identifier')
+    timestamp = fields.Datetime(string='Timestamp', help='Event timestamp')
+    view_mode = fields.Char(string='View Mode', help='View mode configuration')
 
     # Destruction related fields (referenced in views)
     destruction_date = fields.Date('Destruction Date')

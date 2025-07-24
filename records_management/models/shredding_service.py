@@ -99,6 +99,27 @@ class ShreddingService(models.Model):
     compliance_status = fields.Selection([('pending', 'Pending'), ('compliant', 'Compliant'), ('non_compliant', 'Non-Compliant')], string='Compliance Status', default='pending')
     regulatory_approval = fields.Boolean('Regulatory Approval', default=False)
     
+    # Missing technical view fields
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities',
+                                   domain=lambda self: [('res_model', '=', self._name)])
+    arch = fields.Text(string='View Architecture', help='XML view architecture definition')
+    certificate_count = fields.Integer(string='Certificate Count', compute='_compute_certificate_count',
+                                      help='Number of certificates generated')
+    context = fields.Text(string='Context', help='View context information')
+    help = fields.Text(string='Help', help='Help text for this record')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
+                                           domain=lambda self: [('res_model', '=', self._name)])
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
+                                  domain=lambda self: [('res_model', '=', self._name)])
+    model = fields.Char(string='Model', help='Model name for technical references')
+    res_model = fields.Char(string='Resource Model', help='Resource model name')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View', help='Search view reference')
+    view_mode = fields.Char(string='View Mode', help='View mode configuration')
+    witness_count = fields.Integer(string='Witness Count', compute='_compute_witness_count',
+                                  help='Number of witnesses for destruction')
+    witness_verification_ids = fields.One2many('shredding.witness.verification', 'service_id',
+                                              string='Witness Verifications')
+    
     # Additional workflow and tracking fields referenced in views
     description = fields.Text('Description', help='Detailed description of the shredding service')
     user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user)
@@ -492,6 +513,17 @@ class ShreddingService(models.Model):
                 insights.append("📊 All metrics within normal parameters")
             
             service.operational_insights = "\n".join(insights)
+
+    def _compute_certificate_count(self):
+        """Compute number of certificates generated"""
+        for service in self:
+            service.certificate_count = len(service.compliance_documentation_ids.filtered(
+                lambda doc: 'certificate' in doc.name.lower()))
+
+    def _compute_witness_count(self):
+        """Compute number of witnesses for destruction"""
+        for service in self:
+            service.witness_count = len(service.witness_verification_ids)
 
     @api.depends('box_quantity', 'shredded_box_ids')
     def _compute_total_boxes(self):
