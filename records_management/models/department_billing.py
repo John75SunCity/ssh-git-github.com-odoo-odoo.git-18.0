@@ -21,7 +21,7 @@ class RecordsDepartmentBillingContact(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # Phase 1: Explicit Activity Field (1 field)
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
 
     customer_id = fields.Many2one(
         'res.partner',
@@ -204,9 +204,9 @@ class RecordsDepartmentBillingContact(models.Model):
     help = fields.Text(string='Help Text')
     
     # Missing fields for complete view compatibility
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers',
                                            domain=lambda self: [('res_model', '=', self._name)])
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages',
                                   domain=lambda self: [('res_model', '=', self._name)])
     model = fields.Char(string='Model Name', default='records.department.billing.contact')
     monthly_budget = fields.Float(string='Monthly Budget', default=0.0)
@@ -807,3 +807,28 @@ class ResPartnerDepartmentBilling(models.Model):
             charge.write({'state': 'approved'})
             return True
         return False
+
+    # Compute method for activity_ids One2many field
+    def _compute_activity_ids(self):
+        """Compute activities for this record"""
+        for record in self:
+            record.activity_ids = self.env["mail.activity"].search([
+                ("res_model", "=", "records.department.billing.contact"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this record"""
+        for record in self:
+            record.message_follower_ids = self.env["mail.followers"].search([
+                ("res_model", "=", "records.department.billing.contact"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this record"""
+        for record in self:
+            record.message_ids = self.env["mail.message"].search([
+                ("res_model", "=", "records.department.billing.contact"),
+                ("res_id", "=", record.id)
+            ])

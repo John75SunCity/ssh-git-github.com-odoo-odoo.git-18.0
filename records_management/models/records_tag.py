@@ -37,9 +37,9 @@ class RecordsTag(models.Model):
     search_view_id = fields.Many2one('ir.ui.view', string='Search View')
     view_id = fields.Many2one('ir.ui.view', string='View')
     view_mode = fields.Char(string='View Mode', default='tree,form')
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     category = fields.Selection([('general', 'General'), ('legal', 'Legal'), ('financial', 'Financial'), ('hr', 'HR')], string='Category')
     priority = fields.Selection([('low', 'Low'), ('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
     
@@ -385,3 +385,30 @@ class RecordsTag(models.Model):
             'view_mode': 'form',
             'target': 'current',
         }
+
+    def _compute_activity_ids(self):
+        """Compute activities related to this tag"""
+        for record in self:
+            activities = self.env['mail.activity'].search([
+                ('res_model', '=', record._name),
+                ('res_id', '=', record.id)
+            ])
+            record.activity_ids = activities
+
+    def _compute_message_followers(self):
+        """Compute followers of this tag"""
+        for record in self:
+            followers = self.env['mail.followers'].search([
+                ('res_model', '=', record._name),
+                ('res_id', '=', record.id)
+            ])
+            record.message_follower_ids = followers
+
+    def _compute_message_ids(self):
+        """Compute messages related to this tag"""
+        for record in self:
+            messages = self.env['mail.message'].search([
+                ('model', '=', record._name),
+                ('res_id', '=', record.id)
+            ])
+            record.message_ids = messages

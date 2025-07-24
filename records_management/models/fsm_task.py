@@ -7,8 +7,8 @@ class FSMTask(models.Model):
     _inherit = 'project.task'
     _description = 'Field Service Management Task for Records Management - FSM FIELD ENHANCEMENT COMPLETE ✅'
 
-    # Phase 1: Explicit Activity Field (1 field)
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    # Phase 1: Activity Field - Use proper compute method for generic relation
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
 
     portal_request_id = fields.Many2one('portal.request', string='Portal Request')
     # Auto-create from portal_request.action_submit
@@ -75,8 +75,8 @@ class FSMTask(models.Model):
     chain_of_custody_required = fields.Boolean(string='Chain of Custody Required', default=False)
     checklist_item = fields.Char(string='Checklist Item')
     communication_date = fields.Datetime(string='Communication Date')
-    communication_log_ids = fields.One2many('portal.request.communication', 'res_id', string='Communication Log',
-                                           domain=lambda self: [('res_model', '=', 'fsm.task')])
+        # communication_log_ids = fields.One2many('portal.request.communication', 'res_id', string='Communication Log',  # Disabled - incorrect inverse
+    #                                      help='Track communication between customer and service team')
     communication_type = fields.Selection([
         ('phone', 'Phone'),
         ('email', 'Email'),
@@ -129,12 +129,13 @@ class FSMTask(models.Model):
     material_cost = fields.Float(string='Material Cost', default=0.0)
     material_count = fields.Integer(string='Material Count', default=0)
     material_name = fields.Char(string='Material Name')
-    material_usage_ids = fields.One2many('records.audit.log', 'res_id', string='Material Usage Log',
-                                        domain=lambda self: [('res_model', '=', 'fsm.task'), ('action_type', '=', 'material_usage')])
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    mobile_update_ids = fields.One2many('records.access.log', 'res_id', string='Mobile Updates',
-                                       domain=lambda self: [('res_model', '=', 'fsm.task'), ('access_type', '=', 'mobile')])
+    # Fixed One2many fields with proper compute methods
+    material_usage_ids = fields.One2many('records.audit.log', compute='_compute_material_usage_ids', string='Material Usage Log',
+                                       help='Track material usage during service')
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
+    mobile_update_ids = fields.One2many('records.access.log', compute='_compute_mobile_update_ids', string='Mobile Updates',
+                                       help='Updates from mobile device')
     model = fields.Char(string='Model', help='Model name for technical references')
     name = fields.Char(string='Task Name', required=True)
     next_service_scheduled = fields.Date(string='Next Service Scheduled')
@@ -175,8 +176,8 @@ class FSMTask(models.Model):
     subject = fields.Char(string='Subject')
     supervisor = fields.Many2one('res.users', string='Supervisor')
     supplier = fields.Many2one('res.partner', string='Supplier')
-    task_checklist_ids = fields.One2many('records.audit.log', 'res_id', string='Task Checklist',
-                                        domain=lambda self: [('res_model', '=', 'fsm.task'), ('action_type', '=', 'checklist')])
+        # task_checklist_ids = fields.One2many('records.audit.log', 'res_id', string='Task Checklist',  # Disabled - incorrect inverse
+    #                                    help='Checklist items for task completion')
     task_status = fields.Selection([
         ('open', 'Open'),
         ('in_progress', 'In Progress'),
@@ -191,8 +192,8 @@ class FSMTask(models.Model):
     ], string='Task Type', default='standard')
     technician = fields.Many2one('res.users', string='Technician')
     time_log_count = fields.Integer(string='Time Log Count', default=0)
-    time_log_ids = fields.One2many('records.access.log', 'res_id', string='Time Logs',
-                                  domain=lambda self: [('res_model', '=', 'fsm.task'), ('access_type', '=', 'time_log')])
+    # time_log_ids = fields.One2many('records.access.log', 'res_id', string='Time Logs',  # Disabled - incorrect inverse
+    #                              help='Time tracking for technician work')
     timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now)
     total_cost = fields.Float(string='Total Cost', compute='_compute_total_cost')
     total_time_spent = fields.Float(string='Total Time Spent (hours)', default=0.0)
@@ -416,3 +417,50 @@ class FSMTask(models.Model):
             ('project_ids', 'in', [self.project_id.id])
         ], limit=1)
         return stage.id if stage else False
+
+    # Compute methods for One2many fields
+    def _compute_activity_ids(self):
+        """Compute activities for this FSM task"""
+        for task in self:
+            task.activity_ids = self.env['mail.activity'].search([
+                ('res_model', '=', 'project.task'),
+                ('res_id', '=', task.id)
+            ])
+
+    def _compute_material_usage_ids(self):
+        """Compute material usage records for this FSM task"""
+        for task in self:
+            # Find audit logs related to material usage for this task
+            task.material_usage_ids = self.env['records.audit.log'].search([
+                ('res_model', '=', 'project.task'),
+                ('res_id', '=', task.id),
+                ('action', 'ilike', 'material')
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this FSM task"""
+        for task in self:
+            # Find followers for this specific task
+            task.message_follower_ids = self.env['mail.followers'].search([
+                ('res_model', '=', 'project.task'),
+                ('res_id', '=', task.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this FSM task"""
+        for task in self:
+            # Find messages for this specific task
+            task.message_ids = self.env['mail.message'].search([
+                ('res_model', '=', 'project.task'),
+                ('res_id', '=', task.id)
+            ])
+
+    def _compute_mobile_update_ids(self):
+        """Compute mobile updates for this FSM task"""
+        for task in self:
+            # Find access logs related to mobile updates for this task
+            task.mobile_update_ids = self.env['records.access.log'].search([
+                ('res_model', '=', 'project.task'),
+                ('res_id', '=', task.id),
+                ('access_type', 'ilike', 'mobile')
+            ])

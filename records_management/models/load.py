@@ -43,8 +43,7 @@ class Load(models.Model):
     # RECYCLING REVENUE INTERNAL PAPER SALES MODEL FIELDS
     # Activity and messaging tracking for mail.thread integration
     activity_exception_decoration = fields.Char(string='Activity Exception Decoration')
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities',
-                                   domain=lambda self: [('res_model', '=', self._name)])
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
     activity_state = fields.Selection([
         ('overdue', 'Overdue'),
         ('today', 'Today'),
@@ -135,18 +134,15 @@ class Load(models.Model):
     context = fields.Text(string='Context', help='View context information')
     help = fields.Text(string='Help', help='Help text for this record')
     image = fields.Binary(string='Image', attachment=True)
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
-                                           domain=lambda self: [('res_model', '=', self._name)])
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
-                                  domain=lambda self: [('res_model', '=', self._name)])
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     message_type = fields.Selection([
         ('email', 'Email'),
         ('comment', 'Comment'),
         ('notification', 'System Notification')
     ], string='Message Type')
     model = fields.Char(string='Model Name', default='records_management.load')
-    photo_ids = fields.One2many('ir.attachment', 'res_id', string='Photos',
-                                domain=lambda self: [('res_model', '=', self._name), ('mimetype', 'like', 'image%')])
+    photo_ids = fields.One2many('ir.attachment', compute='_compute_photo_ids', string='Photos')
     photo_type = fields.Selection([
         ('loading', 'Loading'),
         ('quality', 'Quality Check'),
@@ -344,3 +340,37 @@ class Load(models.Model):
             'domain': [('origin', '=', self.name)],
             'context': {'default_origin': self.name},
         }
+
+    # Compute methods for One2many fields
+    def _compute_activity_ids(self):
+        """Compute activities for this load record"""
+        for load in self:
+            load.activity_ids = self.env['mail.activity'].search([
+                ('res_model', '=', 'records_management.load'),
+                ('res_id', '=', load.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this load record"""
+        for load in self:
+            load.message_follower_ids = self.env['mail.followers'].search([
+                ('res_model', '=', 'records_management.load'),
+                ('res_id', '=', load.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this load record"""
+        for load in self:
+            load.message_ids = self.env['mail.message'].search([
+                ('res_model', '=', 'records_management.load'),
+                ('res_id', '=', load.id)
+            ])
+
+    def _compute_photo_ids(self):
+        """Compute photo attachments for this load record"""
+        for load in self:
+            load.photo_ids = self.env['ir.attachment'].search([
+                ('res_model', '=', 'records_management.load'),
+                ('res_id', '=', load.id),
+                ('mimetype', 'like', 'image%')
+            ])

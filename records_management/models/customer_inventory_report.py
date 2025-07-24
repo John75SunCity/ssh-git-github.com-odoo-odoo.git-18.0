@@ -15,7 +15,7 @@ class CustomerInventoryReport(models.Model):
     _order = 'report_date desc, customer_id'
 
     # Phase 1: Explicit Activity Field (1 field)
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
 
     name = fields.Char(string='Report Name', required=True)
     customer_id = fields.Many2one(
@@ -1523,12 +1523,9 @@ class RecordsBillingConfig(models.Model):
     view_mode = fields.Char(string='View Mode', default='form,tree')
     
     # Activity and message tracking (for mail.thread inheritance)
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities', 
-                                   domain=lambda self: [('res_model', '=', self._name)])
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
-                                           domain=lambda self: [('res_model', '=', self._name)])
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
-                                  domain=lambda self: [('res_model', '=', self._name)])
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     
     # Storage Pricing (Monthly Recurring) - Original fields preserved
     
@@ -2779,3 +2776,28 @@ class RecordsBillingAutomation(models.Model):
         """Process service completion billing"""
         # TODO: Implement service billing logic
         return True
+
+    # Compute methods for One2many fields
+    def _compute_activity_ids(self):
+        """Compute activities for this customer inventory report"""
+        for report in self:
+            report.activity_ids = self.env['mail.activity'].search([
+                ('res_model', '=', 'customer.inventory.report'),
+                ('res_id', '=', report.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this customer inventory report"""
+        for report in self:
+            report.message_follower_ids = self.env['mail.followers'].search([
+                ('res_model', '=', 'customer.inventory.report'),
+                ('res_id', '=', report.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this customer inventory report"""
+        for report in self:
+            report.message_ids = self.env['mail.message'].search([
+                ('res_model', '=', 'customer.inventory.report'),
+                ('res_id', '=', report.id)
+            ])

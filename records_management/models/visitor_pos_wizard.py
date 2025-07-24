@@ -25,12 +25,9 @@ class VisitorPosWizard(models.TransientModel):
     visitor_phone = fields.Char(string='Visitor Phone', related='visitor_id.phone', readonly=True)
     
     # Mail tracking fields (explicit declaration for view compatibility)
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities',
-                                   domain=lambda self: [('res_model', '=', self._name)])
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
-                                           domain=lambda self: [('res_model', '=', self._name)])
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
-                                  domain=lambda self: [('res_model', '=', self._name)])
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     
     # Missing fields identified by field analysis
     amount = fields.Float(string='Service Amount', help='Total service amount')
@@ -43,8 +40,7 @@ class VisitorPosWizard(models.TransientModel):
     ], string='Destruction Method')
     
     # Service configuration - FIELD ENHANCEMENT COMPLETE ✅
-    service_item_ids = fields.One2many('portal.request', 'res_id', string='Service Items',
-                                      domain=lambda self: [('res_model', '=', 'visitor.pos.wizard'), ('request_type', '=', 'service')])
+    service_item_ids = fields.One2many('portal.request', 'wizard_id', string='Service Items')
     product_id = fields.Many2one('product.template', string='Service Product')
     quantity = fields.Float(string='Quantity', default=1.0)
     unit_price = fields.Float(string='Unit Price')
@@ -133,8 +129,7 @@ class VisitorPosWizard(models.TransientModel):
     payment_method_id = fields.Many2one('account.payment.method', string='Payment Method')
     payment_reference = fields.Char(string='Payment Reference')
     payment_terms = fields.Char(string='Payment Terms')
-    payment_split_ids = fields.One2many('records.audit.log', 'res_id', string='Payment Splits',
-                                       domain=lambda self: [('res_model', '=', 'visitor.pos.wizard'), ('action_type', '=', 'payment')])
+    payment_split_ids = fields.One2many('records.audit.log', 'wizard_id', string='Payment Splits')
     
     # Service location and timing
     service_location = fields.Char(string='Service Location')
@@ -493,3 +488,30 @@ class VisitorPosWizard(models.TransientModel):
     def action_cancel(self):
         """Cancel wizard."""
         return {'type': 'ir.actions.act_window_close'}
+
+    def _compute_activity_ids(self):
+        """Compute activities related to this wizard"""
+        for record in self:
+            activities = self.env['mail.activity'].search([
+                ('res_model', '=', record._name),
+                ('res_id', '=', record.id)
+            ])
+            record.activity_ids = activities
+
+    def _compute_message_followers(self):
+        """Compute followers of this wizard"""
+        for record in self:
+            followers = self.env['mail.followers'].search([
+                ('res_model', '=', record._name),
+                ('res_id', '=', record.id)
+            ])
+            record.message_follower_ids = followers
+
+    def _compute_message_ids(self):
+        """Compute messages related to this wizard"""
+        for record in self:
+            messages = self.env['mail.message'].search([
+                ('model', '=', record._name),
+                ('res_id', '=', record.id)
+            ])
+            record.message_ids = messages

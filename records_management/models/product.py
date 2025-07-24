@@ -4,8 +4,8 @@ from odoo import fields, models, api, _
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    # Phase 1: Activity Field - Use proper domain for generic relation
-    # activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')  # Disabled - incorrect inverse field
+    # Phase 1: Activity Field - Use proper compute method for generic relation
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
 
     shred_type = fields.Selection([
         ('document', 'Document Shredding'),
@@ -119,9 +119,9 @@ class ProductTemplate(models.Model):
     material_cost = fields.Float(string='Material Cost', default=0.0)
     max_boxes_included = fields.Integer(string='Max Boxes Included', default=0)
     max_documents_included = fields.Integer(string='Max Documents Included', default=0)
-    # Use computed fields for mail relations to avoid KeyError
-    # message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')  # Disabled - incorrect inverse
-    # message_ids = fields.One2many('mail.message', 'res_id', string='Messages')  # Disabled - incorrect inverse
+    # Use computed fields for mail relations with proper compute methods
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     min_quantity = fields.Float(string='Minimum Quantity', default=1.0)
     minimum_billing_period = fields.Integer(string='Minimum Billing Period (months)', default=1)
     model = fields.Char(string='Model', help='Model name for technical references')
@@ -428,3 +428,28 @@ class ProductTemplate(models.Model):
             'domain': [('product_tmpl_id', '=', self.id)],
             'context': {'default_product_tmpl_id': self.id},
         }
+
+    # Compute methods for One2many fields
+    def _compute_activity_ids(self):
+        """Compute activities for this product template"""
+        for product in self:
+            product.activity_ids = self.env['mail.activity'].search([
+                ('res_model', '=', 'product.template'),
+                ('res_id', '=', product.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this product template"""
+        for product in self:
+            product.message_follower_ids = self.env['mail.followers'].search([
+                ('res_model', '=', 'product.template'),
+                ('res_id', '=', product.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this product template"""
+        for product in self:
+            product.message_ids = self.env['mail.message'].search([
+                ('res_model', '=', 'product.template'),
+                ('res_id', '=', product.id)
+            ])

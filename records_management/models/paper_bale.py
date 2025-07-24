@@ -11,7 +11,7 @@ class PaperBale(models.Model):
     _order = 'create_date desc'
 
     # Phase 1: Explicit Activity Field (1 field)
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
 
     # Phase 3: Analytics & Computed Fields (8 fields)
     total_documents = fields.Integer(
@@ -225,9 +225,9 @@ class PaperBale(models.Model):
     notes = fields.Text(string='Additional Notes')
     
     # Mail tracking
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers',
                                            domain=lambda self: [('res_model', '=', self._name)])
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages',
                                   domain=lambda self: [('res_model', '=', self._name)])
     
     # Technical view fields
@@ -431,3 +431,28 @@ class PaperBale(models.Model):
                 'target': 'current',
             }
         return False
+
+    # Compute method for activity_ids One2many field
+    def _compute_activity_ids(self):
+        """Compute activities for this record"""
+        for record in self:
+            record.activity_ids = self.env["mail.activity"].search([
+                ("res_model", "=", "paper.bale"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this record"""
+        for record in self:
+            record.message_follower_ids = self.env["mail.followers"].search([
+                ("res_model", "=", "paper.bale"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this record"""
+        for record in self:
+            record.message_ids = self.env["mail.message"].search([
+                ("res_model", "=", "paper.bale"),
+                ("res_id", "=", record.id)
+            ])

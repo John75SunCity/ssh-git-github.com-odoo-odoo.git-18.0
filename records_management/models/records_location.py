@@ -62,9 +62,9 @@ class RecordsLocation(models.Model):
     ], string='Security Level', default='medium')
 
     # Phase 1 Critical Fields - Added by automated script
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     customer_id = fields.Many2one('res.partner', string='Customer')
     state = fields.Selection([('active', 'Active'), ('inactive', 'Inactive')], string='State', default='active')
     storage_date = fields.Date('Storage Date')
@@ -450,3 +450,28 @@ class RecordsLocation(models.Model):
             'target': 'new',
             'context': {'default_location_id': self.id},
         }
+
+    # Compute method for activity_ids One2many field
+    def _compute_activity_ids(self):
+        """Compute activities for this record"""
+        for record in self:
+            record.activity_ids = self.env["mail.activity"].search([
+                ("res_model", "=", "records.location"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this record"""
+        for record in self:
+            record.message_follower_ids = self.env["mail.followers"].search([
+                ("res_model", "=", "records.location"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this record"""
+        for record in self:
+            record.message_ids = self.env["mail.message"].search([
+                ("res_model", "=", "records.location"),
+                ("res_id", "=", record.id)
+            ])

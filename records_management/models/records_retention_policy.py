@@ -209,8 +209,7 @@ class RecordsRetentionPolicy(models.Model):
     )
     
     # Missing technical and activity fields
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities',
-                                   domain=lambda self: [('res_model', '=', self._name)])
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
     approval_status = fields.Selection([
         ('draft', 'Draft'),
         ('pending', 'Pending Approval'),
@@ -219,9 +218,9 @@ class RecordsRetentionPolicy(models.Model):
     ], string='Approval Status', default='draft')
     arch = fields.Text(string='View Architecture', help='XML view architecture definition')
     help = fields.Text(string='Help', help='Help text for this record')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers',
                                            domain=lambda self: [('res_model', '=', self._name)])
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages',
                                   domain=lambda self: [('res_model', '=', self._name)])
     model = fields.Char(string='Model', help='Model name for technical references')
     res_model = fields.Char(string='Resource Model', help='Resource model name')
@@ -779,3 +778,28 @@ class RecordsRetentionPolicy(models.Model):
                 policy.policy_effectiveness_score = 0.0
                 policy.destruction_efficiency_rate = 0.0
                 policy.policy_risk_score = 0.0
+
+    # Compute method for activity_ids One2many field
+    def _compute_activity_ids(self):
+        """Compute activities for this record"""
+        for record in self:
+            record.activity_ids = self.env["mail.activity"].search([
+                ("res_model", "=", "records.retention.policy"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this record"""
+        for record in self:
+            record.message_follower_ids = self.env["mail.followers"].search([
+                ("res_model", "=", "records.retention.policy"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this record"""
+        for record in self:
+            record.message_ids = self.env["mail.message"].search([
+                ("res_model", "=", "records.retention.policy"),
+                ("res_id", "=", record.id)
+            ])

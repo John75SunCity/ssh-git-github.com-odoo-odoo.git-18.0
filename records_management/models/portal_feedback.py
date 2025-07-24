@@ -240,8 +240,8 @@ class PortalFeedback(models.Model):
     related_ticket_count = fields.Integer(string='Related Ticket Count', compute='_compute_related_count')
     
     # One2many relationships
-    followup_activity_ids = fields.One2many('mail.activity', 'res_id', string='Follow-up Activities')
-    attachment_ids = fields.One2many('ir.attachment', 'res_id', string='Attachments')
+    followup_activity_ids = fields.One2many('mail.activity', compute='_compute_followup_activities', string='Follow-up Activities')
+    attachment_ids = fields.One2many('ir.attachment', compute='_compute_attachments', string='Attachments')
     
     # File information
     file_size = fields.Integer(string='File Size')
@@ -259,7 +259,7 @@ class PortalFeedback(models.Model):
     description = fields.Text(string='Description', related='feedback_description')
     
     # Activity and message fields
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
     activity_state = fields.Selection(selection=[
         ('overdue', 'Overdue'),
         ('today', 'Today'),
@@ -272,8 +272,8 @@ class PortalFeedback(models.Model):
         ('danger', 'Error')
     ], string='Activity Exception Decoration')
     
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     
     # Additional fields
     currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
@@ -384,3 +384,45 @@ class PortalFeedback(models.Model):
             'resolved_by': self.env.user.id
         })
         return True
+
+    # Compute methods for One2many fields
+    def _compute_followup_activities(self):
+        """Compute follow-up activities for this feedback"""
+        for feedback in self:
+            feedback.followup_activity_ids = self.env['mail.activity'].search([
+                ('res_model', '=', 'portal.feedback'),
+                ('res_id', '=', feedback.id),
+                ('activity_type_id.category', '=', 'meeting')  # Follow-up specific activities
+            ])
+
+    def _compute_attachments(self):
+        """Compute attachments for this feedback"""
+        for feedback in self:
+            feedback.attachment_ids = self.env['ir.attachment'].search([
+                ('res_model', '=', 'portal.feedback'),
+                ('res_id', '=', feedback.id)
+            ])
+
+    def _compute_activity_ids(self):
+        """Compute activities for this feedback"""
+        for feedback in self:
+            feedback.activity_ids = self.env['mail.activity'].search([
+                ('res_model', '=', 'portal.feedback'),
+                ('res_id', '=', feedback.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this record"""
+        for record in self:
+            record.message_follower_ids = self.env["mail.followers"].search([
+                ("res_model", "=", "portal.feedback"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this record"""
+        for record in self:
+            record.message_ids = self.env["mail.message"].search([
+                ("res_model", "=", "portal.feedback"),
+                ("res_id", "=", record.id)
+            ])

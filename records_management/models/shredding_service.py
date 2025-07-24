@@ -71,7 +71,7 @@ class ShreddingService(models.Model):
     video_documentation_required = fields.Boolean('Video Documentation Required', default=False)
     certificate_of_destruction = fields.Text('Certificate of Destruction Notes')
     audit_trail_ids = fields.One2many('records.audit.log', 'shredding_service_id', string='Audit Trail')
-    compliance_documentation_ids = fields.One2many('ir.attachment', 'res_id', string='Compliance Documentation', domain=[('res_model', '=', 'shredding.service')])
+    compliance_documentation_ids = fields.One2many('ir.attachment', compute='_compute_compliance_docs', string='Compliance Documentation')
     destruction_method_verified = fields.Boolean('Destruction Method Verified', default=False)
     destruction_method = fields.Selection([
         ('shred', 'Physical Shredding'),
@@ -100,17 +100,14 @@ class ShreddingService(models.Model):
     regulatory_approval = fields.Boolean('Regulatory Approval', default=False)
     
     # Missing technical view fields
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities',
-                                   domain=lambda self: [('res_model', '=', self._name)])
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
     arch = fields.Text(string='View Architecture', help='XML view architecture definition')
     certificate_count = fields.Integer(string='Certificate Count', compute='_compute_certificate_count',
                                       help='Number of certificates generated')
     context = fields.Text(string='Context', help='View context information')
     help = fields.Text(string='Help', help='Help text for this record')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
-                                           domain=lambda self: [('res_model', '=', self._name)])
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
-                                  domain=lambda self: [('res_model', '=', self._name)])
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     model = fields.Char(string='Model', help='Model name for technical references')
     res_model = fields.Char(string='Resource Model', help='Resource model name')
     search_view_id = fields.Many2one('ir.ui.view', string='Search View', help='Search view reference')
@@ -789,6 +786,32 @@ class ShreddingService(models.Model):
         bale = self.env['paper.bale'].create(bale_vals)
         self.bale_ids = [(4, bale.id)]
         self.message_post(body=_('Bale created for recycling; link to trailer load for efficiency.'))
+
+    # Compute methods for One2many fields
+    def _compute_activity_ids(self):
+        """Compute activities for this shredding service"""
+        for service in self:
+            service.activity_ids = self.env['mail.activity'].search([
+                ('res_model', '=', 'shredding.service'),
+                ('res_id', '=', service.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this shredding service"""
+        for service in self:
+            service.message_follower_ids = self.env['mail.followers'].search([
+                ('res_model', '=', 'shredding.service'),
+                ('res_id', '=', service.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this shredding service"""
+        for service in self:
+            service.message_ids = self.env['mail.message'].search([
+                ('res_model', '=', 'shredding.service'),
+                ('res_id', '=', service.id)
+            ])
+
 
 class ShreddingHardDrive(models.Model):
     _name = 'shredding.hard_drive'

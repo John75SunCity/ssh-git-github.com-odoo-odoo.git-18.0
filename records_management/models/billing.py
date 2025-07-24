@@ -11,7 +11,7 @@ class Billing(models.Model):
     _order = 'invoice_date desc'
 
     # Phase 1: Explicit Activity Field (1 field)
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
 
     name = fields.Char('Reference', required=True)
     partner_id = fields.Many2one('res.partner', 'Customer', required=True)
@@ -344,3 +344,12 @@ class Billing(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.billing') or _('New')
         return super().create(vals_list)
+
+    # Compute method for activity_ids One2many field
+    def _compute_activity_ids(self):
+        """Compute activities for this record"""
+        for record in self:
+            record.activity_ids = self.env["mail.activity"].search([
+                ("res_model", "=", "records.billing"),
+                ("res_id", "=", record.id)
+            ])

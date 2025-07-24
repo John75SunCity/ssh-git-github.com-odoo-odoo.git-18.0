@@ -194,9 +194,9 @@ class NAIDCompliance(models.Model):
     view_mode = fields.Char(string='View Mode', default='tree,form')
     
     # Activity and message fields
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     
     # Audit reminder
     audit_reminder = fields.Boolean(string='Audit Reminder Enabled', default=True)
@@ -363,3 +363,28 @@ class NAIDCompliance(models.Model):
             'last_verified': fields.Datetime.now(),
         })
         return True
+
+    # Compute method for activity_ids One2many field
+    def _compute_activity_ids(self):
+        """Compute activities for this record"""
+        for record in self:
+            record.activity_ids = self.env["mail.activity"].search([
+                ("res_model", "=", "naid.compliance"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this record"""
+        for record in self:
+            record.message_follower_ids = self.env["mail.followers"].search([
+                ("res_model", "=", "naid.compliance"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this record"""
+        for record in self:
+            record.message_ids = self.env["mail.message"].search([
+                ("res_model", "=", "naid.compliance"),
+                ("res_id", "=", record.id)
+            ])

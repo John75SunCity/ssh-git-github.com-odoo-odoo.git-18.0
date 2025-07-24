@@ -34,7 +34,7 @@ class BarcodeProduct(models.Model):
     # Comprehensive missing fields for barcode management
     access_frequency = fields.Float(string='Access Frequency', default=0.0)
     activity_exception_decoration = fields.Char(string='Activity Exception Decoration')
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
     activity_state = fields.Selection([
         ('overdue', 'Overdue'),
         ('today', 'Today'),
@@ -112,8 +112,8 @@ class BarcodeProduct(models.Model):
     max_file_folders = fields.Integer(string='Max File Folders', default=0)
     max_quantity = fields.Float(string='Max Quantity', default=0.0)
     max_stack_height = fields.Float(string='Max Stack Height (feet)', default=0.0)
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     min_quantity = fields.Float(string='Min Quantity', default=0.0)
     mobile = fields.Boolean(string='Mobile', default=False)
     model = fields.Char(string='Model', help='Model name for technical references')
@@ -309,3 +309,28 @@ class BarcodeProduct(models.Model):
             'usage_count': self.usage_count + 1,
             'last_used': fields.Datetime.now()
         })
+
+    # Compute method for activity_ids One2many field
+    def _compute_activity_ids(self):
+        """Compute activities for this record"""
+        for record in self:
+            record.activity_ids = self.env["mail.activity"].search([
+                ("res_model", "=", "barcode.product"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this record"""
+        for record in self:
+            record.message_follower_ids = self.env["mail.followers"].search([
+                ("res_model", "=", "barcode.product"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this record"""
+        for record in self:
+            record.message_ids = self.env["mail.message"].search([
+                ("res_model", "=", "barcode.product"),
+                ("res_id", "=", record.id)
+            ])

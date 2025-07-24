@@ -13,8 +13,7 @@ class PosConfig(models.Model):
     
     # Activity and state management
     activity_exception_decoration = fields.Char(string='Activity Exception Decoration')
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities', 
-                                   domain=lambda self: [('res_model', '=', self._name)])
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
     activity_state = fields.Selection([
         ('overdue', 'Overdue'),
         ('today', 'Today'),
@@ -96,10 +95,8 @@ class PosConfig(models.Model):
     loyalty_program_usage = fields.Float(string='Loyalty Program Usage (%)', compute='_compute_analytics')
     
     # Mail tracking
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
-                                           domain=lambda self: [('res_model', '=', self._name)])
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
-                                  domain=lambda self: [('res_model', '=', self._name)])
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     
     # Module configuration
     module_pos_discount = fields.Boolean(string='POS Discount Module', default=False)
@@ -361,3 +358,28 @@ class PosPerformanceData(models.Model):
         ('efficiency', 'Efficiency')
     ], string='Metric Type', required=True)
     notes = fields.Text(string='Notes')
+
+    # Compute methods for One2many fields
+    def _compute_activity_ids(self):
+        """Compute activities for this POS configuration"""
+        for config in self:
+            config.activity_ids = self.env['mail.activity'].search([
+                ('res_model', '=', 'pos.config'),
+                ('res_id', '=', config.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this POS configuration"""
+        for config in self:
+            config.message_follower_ids = self.env['mail.followers'].search([
+                ('res_model', '=', 'pos.config'),
+                ('res_id', '=', config.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this POS configuration"""
+        for config in self:
+            config.message_ids = self.env['mail.message'].search([
+                ('res_model', '=', 'pos.config'),
+                ('res_id', '=', config.id)
+            ])

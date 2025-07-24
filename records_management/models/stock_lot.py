@@ -7,7 +7,7 @@ class StockLot(models.Model):
     _inherit = 'stock.lot'
 
     # Phase 1: Explicit Activity Field (1 field)
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
 
     # Customer tracking for records management
     customer_id = fields.Many2one(
@@ -81,9 +81,9 @@ class StockLot(models.Model):
     measurement_unit = fields.Many2one('uom.uom', string='Measurement Unit')
     
     # Activity and message tracking
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers',
                                            domain=lambda self: [('res_model', '=', self._name)])
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages',
                                   domain=lambda self: [('res_model', '=', self._name)])
     name = fields.Char(string='Lot/Serial Number', required=True)
     notes = fields.Text(string='Notes')
@@ -590,3 +590,28 @@ class StockTraceabilityLog(models.Model):
     user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
     timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now)
     notes = fields.Text(string='Notes')
+
+    # Compute method for activity_ids One2many field
+    def _compute_activity_ids(self):
+        """Compute activities for this record"""
+        for record in self:
+            record.activity_ids = self.env["mail.activity"].search([
+                ("res_model", "=", "stock.lot"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this record"""
+        for record in self:
+            record.message_follower_ids = self.env["mail.followers"].search([
+                ("res_model", "=", "stock.lot"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this record"""
+        for record in self:
+            record.message_ids = self.env["mail.message"].search([
+                ("res_model", "=", "stock.lot"),
+                ("res_id", "=", record.id)
+            ])

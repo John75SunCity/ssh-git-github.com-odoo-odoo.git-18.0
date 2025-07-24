@@ -276,9 +276,9 @@ class RecordsDocument(models.Model):
                 doc.days_until_destruction = 0
 
     # Phase 1 Critical Fields - Added by automated script
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
+    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     audit_trail_count = fields.Integer('Audit Trail Count', compute='_compute_audit_trail_count')
     chain_of_custody_count = fields.Integer('Chain of Custody Count', compute='_compute_chain_of_custody_count')
     file_format = fields.Char('File Format')
@@ -835,3 +835,27 @@ class RecordsDocument(models.Model):
             domain.append(('customer_id', '=', customer_id))
         
         return self.search(domain)
+    # Compute method for activity_ids One2many field
+    def _compute_activity_ids(self):
+        """Compute activities for this record"""
+        for record in self:
+            record.activity_ids = self.env["mail.activity"].search([
+                ("res_model", "=", "records.document"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_followers(self):
+        """Compute message followers for this record"""
+        for record in self:
+            record.message_follower_ids = self.env["mail.followers"].search([
+                ("res_model", "=", "records.document"),
+                ("res_id", "=", record.id)
+            ])
+
+    def _compute_message_ids(self):
+        """Compute messages for this record"""
+        for record in self:
+            record.message_ids = self.env["mail.message"].search([
+                ("res_model", "=", "records.document"),
+                ("res_id", "=", record.id)
+            ])
