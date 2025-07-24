@@ -40,6 +40,7 @@ class ShreddingService(models.Model):
     hard_drive_ids = fields.One2many('shredding.hard_drive', 'service_id', string='Hard Drive Details')
     hard_drive_scanned_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Scanned Count', compute_sudo=False)
     hard_drive_verified_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Verified Count', compute_sudo=False)
+    item_count = fields.Integer(compute='_compute_item_count', store=True, string='Items to Destroy Count', compute_sudo=False)
     uniform_quantity = fields.Integer(string='Number of Uniforms')  # New
     total_boxes = fields.Integer(compute='_compute_total_boxes', store=True)
     unit_cost = fields.Float(string='Unit Cost', default=5.0)
@@ -97,6 +98,110 @@ class ShreddingService(models.Model):
     auditor_id = fields.Many2one('res.users', string='Auditor')
     compliance_status = fields.Selection([('pending', 'Pending'), ('compliant', 'Compliant'), ('non_compliant', 'Non-Compliant')], string='Compliance Status', default='pending')
     regulatory_approval = fields.Boolean('Regulatory Approval', default=False)
+    
+    # Additional workflow and tracking fields referenced in views
+    description = fields.Text('Description', help='Detailed description of the shredding service')
+    user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user)
+    company = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    
+    # Certificate fields
+    certificate_number = fields.Char('Certificate Number')
+    certificate_date = fields.Date('Certificate Date')
+    certificate_type = fields.Selection([
+        ('destruction', 'Destruction Certificate'),
+        ('compliance', 'Compliance Certificate'),
+        ('naid', 'NAID Certificate')
+    ], string='Certificate Type')
+    certificate_notes = fields.Text('Certificate Notes')
+    
+    # Chain of custody fields
+    chain_of_custody_number = fields.Char('Chain of Custody Number')
+    chain_of_custody_ids = fields.One2many('records.chain.of.custody', 'service_id', string='Chain of Custody Records')
+    
+    # Timing fields
+    actual_start_time = fields.Datetime('Actual Start Time')
+    actual_completion_time = fields.Datetime('Actual Completion Time')
+    estimated_duration = fields.Float('Estimated Duration (hours)')
+    
+    # Personnel fields
+    assigned_technician = fields.Many2one('res.users', string='Assigned Technician')
+    supervising_manager = fields.Many2one('res.users', string='Supervising Manager')
+    security_officer = fields.Many2one('res.users', string='Security Officer')
+    customer_representative = fields.Many2one('res.partner', string='Customer Representative')
+    
+    # Verification fields
+    signature_required = fields.Boolean('Signature Required', default=True)
+    signature_verified = fields.Boolean('Signature Verified', default=False)
+    photo_id_verified = fields.Boolean('Photo ID Verified', default=False)
+    verified = fields.Boolean('Verified', default=False)
+    verified_by_customer = fields.Boolean('Verified by Customer', default=False)
+    verification_date = fields.Date('Verification Date')
+    third_party_verified = fields.Boolean('Third Party Verified', default=False)
+    
+    # Documentation fields
+    destruction_photographed = fields.Boolean('Destruction Photographed', default=False)
+    video_recorded = fields.Boolean('Video Recorded', default=False)
+    destruction_notes = fields.Text('Destruction Notes')
+    
+    # Weight tracking
+    pre_destruction_weight = fields.Float('Pre-Destruction Weight (lbs)')
+    post_destruction_weight = fields.Float('Post-Destruction Weight (lbs)')
+    
+    # Equipment fields
+    shredding_equipment = fields.Char('Shredding Equipment Used')
+    equipment_calibration_date = fields.Date('Equipment Calibration Date')
+    particle_size = fields.Char('Particle Size Achieved')
+    
+    # Location fields
+    service_location = fields.Char('Service Location')
+    location = fields.Many2one('records.location', string='Storage Location')
+    
+    # Transfer fields
+    transfer_date = fields.Date('Transfer Date')
+    transfer_location = fields.Char('Transfer Location')
+    from_person = fields.Char('From Person')
+    to_person = fields.Char('To Person')
+    seal_number = fields.Char('Seal Number')
+    
+    # Quality fields
+    quality_control_passed = fields.Boolean('Quality Control Passed', default=False)
+    destruction_efficiency = fields.Float('Destruction Efficiency (%)')
+    confidentiality_level = fields.Selection([
+        ('public', 'Public'),
+        ('internal', 'Internal'),
+        ('confidential', 'Confidential'),
+        ('secret', 'Secret')
+    ], string='Confidentiality Level', default='confidential')
+    
+    # Item tracking
+    item_type = fields.Selection([
+        ('documents', 'Documents'),
+        ('hard_drives', 'Hard Drives'),
+        ('uniforms', 'Uniforms'),
+        ('mixed', 'Mixed Items')
+    ], string='Item Type')
+    quantity = fields.Float('Quantity')
+    unit_of_measure = fields.Char('Unit of Measure')
+    
+    # Witness fields
+    witness_name = fields.Char('Witness Name')
+    witness_title = fields.Char('Witness Title')
+    witness_verification_ids = fields.One2many('shredding.witness.verification', 'service_id', string='Witness Verifications')
+    
+    # Destruction item tracking
+    destruction_item_ids = fields.One2many('shredding.destruction.item', 'service_id', string='Destruction Items')
+    
+    # NAID member tracking
+    naid_member_id = fields.Many2one('res.partner', string='NAID Member', domain="[('is_company', '=', True)]")
+    
+    # Action field for workflow
+    action = fields.Selection([
+        ('schedule', 'Schedule'),
+        ('confirm', 'Confirm'),
+        ('start', 'Start'),
+        ('complete', 'Complete'),
+        ('cancel', 'Cancel')
+    ], string='Action')
     naid_certification = fields.Boolean('NAID Certification', default=False)
     iso_certification = fields.Boolean('ISO Certification', default=False)
     audit_notes = fields.Text('Audit Notes')
@@ -183,6 +288,19 @@ class ShreddingService(models.Model):
         for rec in self:
             rec.hard_drive_scanned_count = len(rec.hard_drive_ids.filtered('scanned_at_customer'))
             rec.hard_drive_verified_count = len(rec.hard_drive_ids.filtered('verified_before_destruction'))
+
+    @api.depends('bin_ids', 'shredded_box_ids', 'hard_drive_ids', 'box_quantity', 'hard_drive_quantity', 'uniform_quantity')
+    def _compute_item_count(self):
+        """Compute total count of items to be destroyed"""
+        for rec in self:
+            total = 0
+            total += len(rec.bin_ids)
+            total += len(rec.shredded_box_ids)
+            total += len(rec.hard_drive_ids)
+            total += rec.box_quantity or 0
+            total += rec.hard_drive_quantity or 0
+            total += rec.uniform_quantity or 0
+            rec.item_count = total
 
     @api.depends('service_type', 'bin_ids', 'shredded_box_ids', 'box_quantity', 'hard_drive_quantity', 'uniform_quantity', 'hard_drive_ids')
     def _compute_total_charge(self):

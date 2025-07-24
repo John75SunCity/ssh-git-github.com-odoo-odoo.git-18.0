@@ -86,6 +86,31 @@ class RecordsRetentionPolicy(models.Model):
         ('degaussing', 'Degaussing')
     ], string='Destruction Method', default='secure_shredding')
     compliance_rate = fields.Float('Compliance Rate (%)', compute='_compute_compliance_rate', store=True)
+    
+    # Missing fields referenced in views
+    exception_count = fields.Integer('Exception Count', compute='_compute_exception_count', store=True)
+    risk_level = fields.Selection([
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+        ('critical', 'Critical')
+    ], string='Risk Level', default='low')
+    
+    # Version history tracking
+    version_history_ids = fields.One2many(
+        'records.policy.version', 'policy_id', string='Version History'
+    )
+    
+    # Analytics fields
+    policy_effectiveness_score = fields.Float(
+        'Policy Effectiveness Score', compute='_compute_analytics', store=True
+    )
+    destruction_efficiency_rate = fields.Float(
+        'Destruction Efficiency Rate', compute='_compute_analytics', store=True  
+    )
+    policy_risk_score = fields.Float(
+        'Policy Risk Score', compute='_compute_analytics', store=True
+    )
 
     # Phase 2 Audit & Compliance Fields - Added by automated script
     compliance_framework = fields.Selection([('sox', 'Sarbanes-Oxley'), ('hipaa', 'HIPAA'), ('gdpr', 'GDPR'), ('pci', 'PCI-DSS'), ('iso27001', 'ISO 27001'), ('nist', 'NIST'), ('custom', 'Custom')], string='Compliance Framework')
@@ -661,3 +686,67 @@ class RecordsRetentionPolicy(models.Model):
             'domain': [('policy_id', '=', self.id)],
             'context': {'default_policy_id': self.id},
         }
+
+    @api.depends('document_ids')
+    def _compute_exception_count(self):
+        """Compute the count of policy exceptions"""
+        for policy in self:
+            try:
+                # Count documents that have retention exceptions
+                exception_count = self.env['records.document'].search_count([
+                    ('retention_policy_id', '=', policy.id),
+                    ('permanent_flag', '=', True)  # Permanent documents are exceptions
+                ])
+                # Add any explicit policy exceptions if the model exists
+                if 'records.policy.exception' in self.env.registry:
+                    exception_count += self.env['records.policy.exception'].search_count([
+                        ('policy_id', '=', policy.id)
+                    ])
+                policy.exception_count = exception_count
+            except Exception:
+                policy.exception_count = 0
+
+    @api.depends('document_ids', 'document_count')
+    def _compute_analytics(self):
+        """Compute policy analytics and effectiveness scores"""
+        for policy in self:
+            try:
+                total_docs = policy.document_count or 0
+                if total_docs == 0:
+                    policy.policy_effectiveness_score = 0.0
+                    policy.destruction_efficiency_rate = 0.0
+                    policy.policy_risk_score = 0.0
+                    continue
+
+                # Count documents that have been properly processed
+                properly_processed = self.env['records.document'].search_count([
+                    ('retention_policy_id', '=', policy.id),
+                    ('state', 'in', ['archived', 'destroyed'])
+                ])
+                
+                # Count documents eligible for destruction that have been destroyed
+                eligible_docs = self.env['records.document'].search_count([
+                    ('retention_policy_id', '=', policy.id),
+                    ('destruction_eligible_date', '<=', fields.Date.today())
+                ])
+                
+                destroyed_docs = self.env['records.document'].search_count([
+                    ('retention_policy_id', '=', policy.id),
+                    ('state', '=', 'destroyed'),
+                    ('destruction_eligible_date', '<=', fields.Date.today())
+                ])
+
+                # Calculate effectiveness score (0-100)
+                policy.policy_effectiveness_score = (properly_processed / total_docs) * 100 if total_docs > 0 else 0
+                
+                # Calculate destruction efficiency rate (0-100)
+                policy.destruction_efficiency_rate = (destroyed_docs / eligible_docs) * 100 if eligible_docs > 0 else 100
+                
+                # Calculate risk score (0-100, lower is better)
+                overdue_docs = eligible_docs - destroyed_docs
+                policy.policy_risk_score = (overdue_docs / total_docs) * 100 if total_docs > 0 else 0
+                
+            except Exception:
+                policy.policy_effectiveness_score = 0.0
+                policy.destruction_efficiency_rate = 0.0
+                policy.policy_risk_score = 0.0
