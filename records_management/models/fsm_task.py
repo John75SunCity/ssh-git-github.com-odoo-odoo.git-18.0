@@ -7,9 +7,6 @@ class FSMTask(models.Model):
     _inherit = 'project.task'
     _description = 'Field Service Management Task for Records Management - FSM FIELD ENHANCEMENT COMPLETE ✅'
 
-    # Phase 1: Activity Field - Use proper compute method for generic relation
-    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
-
     portal_request_id = fields.Many2one('portal.request', string='Portal Request')
     # Auto-create from portal_request.action_submit
 
@@ -75,7 +72,8 @@ class FSMTask(models.Model):
     chain_of_custody_required = fields.Boolean(string='Chain of Custody Required', default=False)
     checklist_item = fields.Char(string='Checklist Item')
     communication_date = fields.Datetime(string='Communication Date')
-    communication_log_ids = fields.One2many('portal.request.communication', compute='_compute_communication_log_ids', string='Communication Log')
+    # communication_log_ids = fields.One2many('portal.request.communication', compute='_compute_communication_log_ids', string='Communication Log')
+    # Note: Commented out until portal.request.communication model exists with proper relationship field
     #                                      help='Track communication between customer and service team')
     communication_type = fields.Selection([
         ('phone', 'Phone'),
@@ -129,12 +127,10 @@ class FSMTask(models.Model):
     material_cost = fields.Float(string='Material Cost', default=0.0)
     material_count = fields.Integer(string='Material Count', default=0)
     material_name = fields.Char(string='Material Name')
-    # Fixed One2many fields with proper compute methods
-    material_usage_ids = fields.One2many('records.audit.log', compute='_compute_material_usage_ids', string='Material Usage Log',
+    # Fixed One2many fields with proper inverse relationships
+    material_usage_ids = fields.One2many('records.audit.log', 'task_id', string='Material Usage Log',
                                        help='Track material usage during service')
-    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
-    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
-    mobile_update_ids = fields.One2many('records.access.log', compute='_compute_mobile_update_ids', string='Mobile Updates',
+    mobile_update_ids = fields.One2many('records.access.log', 'task_id', string='Mobile Updates',
                                        help='Updates from mobile device')
     model = fields.Char(string='Model', help='Model name for technical references')
     name = fields.Char(string='Task Name', required=True)
@@ -176,7 +172,7 @@ class FSMTask(models.Model):
     subject = fields.Char(string='Subject')
     supervisor = fields.Many2one('res.users', string='Supervisor')
     supplier = fields.Many2one('res.partner', string='Supplier')
-    task_checklist_ids = fields.One2many('records.audit.log', compute='_compute_task_checklist_ids', string='Task Checklist')
+    task_checklist_ids = fields.One2many('records.audit.log', 'task_id', string='Task Checklist')
     #                                    help='Checklist items for task completion')
     task_status = fields.Selection([
         ('open', 'Open'),
@@ -192,7 +188,7 @@ class FSMTask(models.Model):
     ], string='Task Type', default='standard')
     technician = fields.Many2one('res.users', string='Technician')
     time_log_count = fields.Integer(string='Time Log Count', default=0)
-    time_log_ids = fields.One2many('records.access.log', compute='_compute_time_log_ids', string='Time Logs')
+    time_log_ids = fields.One2many('records.access.log', 'task_id', string='Time Logs')
     #                              help='Time tracking for technician work')
     timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now)
     total_cost = fields.Float(string='Total Cost', compute='_compute_total_cost')

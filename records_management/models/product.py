@@ -4,9 +4,6 @@ from odoo import fields, models, api, _
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    # Phase 1: Activity Field - Use proper compute method for generic relation
-    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
-
     shred_type = fields.Selection([
         ('document', 'Document Shredding'),
         ('hard_drive', 'Hard Drive Destruction'),
@@ -119,9 +116,6 @@ class ProductTemplate(models.Model):
     material_cost = fields.Float(string='Material Cost', default=0.0)
     max_boxes_included = fields.Integer(string='Max Boxes Included', default=0)
     max_documents_included = fields.Integer(string='Max Documents Included', default=0)
-    # Use computed fields for mail relations with proper compute methods
-    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
-    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
     min_quantity = fields.Float(string='Minimum Quantity', default=1.0)
     minimum_billing_period = fields.Integer(string='Minimum Billing Period (months)', default=1)
     model = fields.Char(string='Model', help='Model name for technical references')
@@ -143,39 +137,6 @@ class ProductTemplate(models.Model):
     pickup_delivery_included = fields.Boolean(string='Pickup/Delivery Included', default=False)
     price_history_count = fields.Integer(string='Price History Count', compute='_compute_product_metrics')
     price_margin = fields.Float(string='Price Margin (%)', compute='_compute_product_metrics')
-    pricing_rule_ids = fields.One2many('product.pricing.rule', compute='_compute_pricing_rule_ids', string='Pricing Rules')
-    product_variant_count = fields.Integer(string='Variant Count', compute='_compute_product_metrics')
-    product_variant_ids = fields.One2many('product.product', 'product_tmpl_id', string='Product Variants')
-    profit = fields.Float(string='Profit', compute='_compute_product_metrics')
-    profit_margin = fields.Float(string='Profit Margin (%)', compute='_compute_product_metrics')
-    prorate_partial_periods = fields.Boolean(string='Prorate Partial Periods', default=True)
-    purchase_ok = fields.Boolean(string='Can be Purchased', default=False)
-    qty_available = fields.Float(string='Quantity Available', compute='_compute_product_metrics')
-    requires_approval = fields.Boolean(string='Requires Approval', default=False)
-    res_model = fields.Char(string='Resource Model', help='Resource model name')
-    revenue = fields.Float(string='Revenue', compute='_compute_product_metrics')
-    rule_name = fields.Char(string='Rule Name')
-    rule_type = fields.Selection([
-        ('fixed', 'Fixed Price'),
-        ('percentage', 'Percentage'),
-        ('formula', 'Formula')
-    ], string='Rule Type', default='fixed')
-    sale_ok = fields.Boolean(string='Can be Sold', default=True)
-    sales_analytics_ids = fields.One2many('product.sales.analytics', compute='_compute_sales_analytics_ids', string='Sales Analytics')
-    sales_count = fields.Integer(string='Sales Count', compute='_compute_product_metrics')
-    sales_velocity = fields.Float(string='Sales Velocity', compute='_compute_product_metrics')
-    same_day_service = fields.Boolean(string='Same Day Service', default=False)
-    search_view_id = fields.Many2one('ir.ui.view', string='Search View')
-    security_guarantee = fields.Boolean(string='Security Guarantee', default=False)
-    shredding_included = fields.Boolean(string='Shredding Included', default=False)
-    sla_terms = fields.Text(string='SLA Terms')
-    standard_price = fields.Float(string='Cost', default=0.0)
-    standard_response_time = fields.Float(string='Standard Response Time (hours)', default=24.0)
-    sync_enabled = fields.Boolean(string='Sync Enabled', default=False)
-    template_category = fields.Char(string='Template Category')
-    total_revenue_ytd = fields.Float(string='Total Revenue YTD', compute='_compute_product_metrics')
-    total_sales_ytd = fields.Float(string='Total Sales YTD', compute='_compute_product_metrics')
-    # Use default product type from base model - no override needed
     uom_id = fields.Many2one('uom.uom', string='Unit of Measure')
     uom_po_id = fields.Many2one('uom.uom', string='Purchase Unit of Measure')
     uptime_guarantee = fields.Float(string='Uptime Guarantee (%)', default=99.9)

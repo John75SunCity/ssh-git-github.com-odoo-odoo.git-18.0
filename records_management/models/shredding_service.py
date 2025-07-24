@@ -70,7 +70,9 @@ class ShreddingService(models.Model):
     video_documentation_required = fields.Boolean('Video Documentation Required', default=False)
     certificate_of_destruction = fields.Text('Certificate of Destruction Notes')
     audit_trail_ids = fields.One2many('records.audit.log', 'shredding_service_id', string='Audit Trail')
-    compliance_documentation_ids = fields.One2many('ir.attachment', compute='_compute_compliance_docs', string='Compliance Documentation')
+    compliance_documentation_ids = fields.One2many('ir.attachment', 'res_id', string='Compliance Documentation', 
+                                                   domain="[('res_model', '=', 'shredding.service')]", 
+                                                   compute='_compute_compliance_docs')
     destruction_method_verified = fields.Boolean('Destruction Method Verified', default=False)
     destruction_method = fields.Selection([
         ('shred', 'Physical Shredding'),

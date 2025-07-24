@@ -6,7 +6,8 @@ class RecordsAccessLog(models.Model):
     _description = 'Records Access Log'
     _order = 'access_timestamp desc'
 
-    document_id = fields.Many2one('records.document', string='Document', required=True, ondelete='cascade')
+    document_id = fields.Many2one('records.document', string='Document', ondelete='cascade')
+    task_id = fields.Many2one('project.task', string='FSM Task', help='Related FSM task if applicable')
     access_timestamp = fields.Datetime('Access Time', required=True, default=fields.Datetime.now)
     user_id = fields.Many2one('res.users', string='User', required=True, default=lambda self: self.env.user)
     

@@ -70,7 +70,9 @@ class DestructionItem(models.Model):
     
     # Documentation
     notes = fields.Text(string='Notes')
-    photos = fields.One2many('ir.attachment', compute='_compute_photos', string='Photos')
+    photos = fields.One2many('ir.attachment', 'res_id', string='Photos',
+                             domain="[('res_model', '=', 'destruction.item')]",
+                             compute='_compute_photos')
     
     # Standard fields
     company_id = fields.Many2one('res.company', default=lambda self: self.env.company)

@@ -82,9 +82,9 @@ class SurveyImprovementAction(models.Model):
     ], string='Effectiveness Rating',
        help='Post-completion assessment of action effectiveness')
     
-    # Related Records
-    task_ids = fields.One2many('project.task', compute='_compute_task_ids', 
-                              string='Related Tasks')
+    # Related Records - FIXED: Changed from compute to proper Many2many relationship
+    task_ids = fields.Many2many('project.task', string='Related Tasks',
+                               help='Tasks related to this improvement action')
     meeting_ids = fields.Many2many('calendar.event', string='Related Meetings')
     
     # Compliance and Audit
@@ -117,14 +117,6 @@ class SurveyImprovementAction(models.Model):
                 record.days_to_due = delta.days
             else:
                 record.days_to_due = 0
-    
-    @api.depends()
-    def _compute_task_ids(self):
-        """Compute related tasks for this improvement action"""
-        for record in self:
-            # Since standard 'project.task' model doesn't have 'improvement_action_id' field,
-            # we return empty recordset to maintain compatibility
-            record.task_ids = False
     
     def action_start(self):
         """Mark action as started"""

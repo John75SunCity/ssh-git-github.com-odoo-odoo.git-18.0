@@ -166,13 +166,6 @@ class NAIDCompliance(models.Model):
     escalation_contacts = fields.Many2many('res.users', string='Escalation Contacts')
     
     # One2many relationships - converted to compute methods to avoid KeyError
-    audit_history_ids = fields.One2many('naid.audit.log', compute='_compute_audit_history_ids', string='Audit History')
-    certificate_ids = fields.One2many('naid.certificate', compute='_compute_certificate_ids', string='Certificates')
-    destruction_record_ids = fields.One2many('destruction.item', compute='_compute_destruction_record_ids', string='Destruction Records')
-    performance_history_ids = fields.One2many('naid.performance.history', compute='_compute_performance_history_ids', string='Performance History')
-    compliance_checklist_ids = fields.One2many('naid.compliance.checklist', compute='_compute_compliance_checklist_ids', string='Compliance Checklist')
-    
-    # Computed counts
     audit_count = fields.Integer(string='Audit Count', compute='_compute_counts')
     certificate_count = fields.Integer(string='Certificate Count', compute='_compute_counts')
     destruction_count = fields.Integer(string='Destruction Count', compute='_compute_counts')

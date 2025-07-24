@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ dont # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
@@ -13,7 +13,6 @@ class PosConfig(models.Model):
     
     # Activity and state management
     activity_exception_decoration = fields.Char(string='Activity Exception Decoration')
-    activity_ids = fields.One2many('mail.activity', compute='_compute_activity_ids', string='Activities')
     activity_state = fields.Selection([
         ('overdue', 'Overdue'),
         ('today', 'Today'),
@@ -94,10 +93,6 @@ class PosConfig(models.Model):
     list_price = fields.Float(string='List Price', default=0.0)
     loyalty_program_usage = fields.Float(string='Loyalty Program Usage (%)', compute='_compute_analytics')
     
-    # Mail tracking
-    message_follower_ids = fields.One2many('mail.followers', compute='_compute_message_followers', string='Followers')
-    message_ids = fields.One2many('mail.message', compute='_compute_message_ids', string='Messages')
-    
     # Module configuration
     module_pos_discount = fields.Boolean(string='POS Discount Module', default=False)
     module_pos_loyalty = fields.Boolean(string='POS Loyalty Module', default=False)
@@ -108,13 +103,13 @@ class PosConfig(models.Model):
     # Analytics and performance
     most_sold_product_id = fields.Many2one('product.template', string='Most Sold Product', compute='_compute_analytics')
     name = fields.Char(string='Point of Sale Name', required=True)
-    open_session_ids = fields.One2many('pos.session', compute='_compute_open_session_ids', string='Open Sessions')
+    open_session_ids = fields.One2many('pos.session', 'config_id', string='Open Sessions')
     order_count = fields.Integer(string='Order Count', compute='_compute_analytics')
     
     # Payment and operations
     payment_method_ids = fields.Many2many('pos.payment.method', string='Payment Methods')
     peak_hour_sales = fields.Float(string='Peak Hour Sales', compute='_compute_analytics')
-    performance_data_ids = fields.One2many('pos.performance.data', compute='_compute_performance_data_ids', string='Performance Data')
+    performance_data_ids = fields.One2many('pos.performance.data', 'config_id', string='Performance Data')
     picking_type_id = fields.Many2one('stock.picking.type', string='Picking Type')
     pos_category_id = fields.Many2one('pos.category', string='Default Category')
     pricelist_id = fields.Many2one('product.pricelist', string='Default Pricelist')
@@ -359,49 +354,3 @@ class PosPerformanceData(models.Model):
         ('efficiency', 'Efficiency')
     ], string='Metric Type', required=True)
     notes = fields.Text(string='Notes')
-
-    # Compute methods for One2many fields
-    @api.depends()
-    def _compute_activity_ids(self):
-        """Compute activities for this POS configuration"""
-        for config in self:
-            config.activity_ids = self.env['mail.activity'].search([
-                ('res_model', '=', 'pos.config'),
-                ('res_id', '=', config.id)
-            ])
-
-    @api.depends()
-    def _compute_message_followers(self):
-        """Compute message followers for this POS configuration"""
-        for config in self:
-            config.message_follower_ids = self.env['mail.followers'].search([
-                ('res_model', '=', 'pos.config'),
-                ('res_id', '=', config.id)
-            ])
-
-    @api.depends()
-    def _compute_message_ids(self):
-        """Compute messages for this POS configuration"""
-        for config in self:
-            config.message_ids = self.env['mail.message'].search([
-                ('res_model', '=', 'pos.config'),
-                ('res_id', '=', config.id)
-            ])
-
-    @api.depends()
-    def _compute_open_session_ids(self):
-        """Compute open sessions for this POS configuration"""
-        for config in self:
-            # Search for open sessions using standard domain
-            open_sessions = self.env['pos.session'].search([
-                ('config_id', '=', config.id),
-                ('state', '!=', 'closed')
-            ])
-            config.open_session_ids = open_sessions
-
-    @api.depends()
-    def _compute_performance_data_ids(self):
-        """Compute performance data for this POS configuration"""
-        for config in self:
-            # Since 'pos.performance.data' may not exist or have config_id field, return empty recordset
-            config.performance_data_ids = False

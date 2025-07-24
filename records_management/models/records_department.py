@@ -57,9 +57,9 @@ class RecordsDepartment(models.Model):
     # Links
     box_ids = fields.One2many('records.box', 'department_id', string='Boxes')
     document_ids = fields.One2many('records.document', 'department_id', string='Documents')  # Now valid with inverse
-    shredding_ids = fields.One2many('shredding.service', compute='_compute_shredding_ids', string='Shredding Services')
-    invoice_ids = fields.One2many('account.move', compute='_compute_invoice_ids', string='Invoices')
-    portal_request_ids = fields.One2many('portal.request', compute='_compute_portal_request_ids', string='Portal Requests')
+    shredding_ids = fields.One2many('shredding.service', 'department_id', string='Shredding Services')
+    invoice_ids = fields.One2many('account.move', 'department_id', string='Invoices')
+    portal_request_ids = fields.One2many('portal.request', 'department_id', string='Portal Requests')
 
     @api.depends('code')
     def _compute_hashed_code(self):

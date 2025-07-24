@@ -66,6 +66,12 @@ class RecordsAuditLog(models.Model):
         help='Related shredding service if applicable'
     )
     
+    task_id = fields.Many2one(
+        'project.task',
+        string='FSM Task',
+        help='Related FSM task if applicable'
+    )
+    
     # Audit details
     details = fields.Text(
         string='Details',
