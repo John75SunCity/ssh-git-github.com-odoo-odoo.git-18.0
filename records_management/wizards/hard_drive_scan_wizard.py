@@ -8,6 +8,7 @@ class HardDriveScanWizard(models.TransientModel):
     _name = 'hard_drive.scan.wizard'
     _description = 'Hard Drive Serial Number Scanner'
 
+    # Core wizard fields
     service_id = fields.Many2one('shredding.service', string='Shredding Service', required=True)
     scan_location = fields.Selection([
         ('customer', 'Customer Location'),
@@ -26,6 +27,52 @@ class HardDriveScanWizard(models.TransientModel):
     
     # Notes
     scan_notes = fields.Text(string='Scan Notes')
+    
+    # Missing hard drive destruction tracking fields (29 missing fields added)
+    
+    # Customer location tracking
+    customer_location_notes = fields.Text(string='Customer Location Notes',
+                                           help='Additional notes from customer location scanning')
+    scanned_at_customer = fields.Boolean(string='Scanned at Customer', default=False)
+    scanned_at_customer_by = fields.Many2one('res.users', string='Scanned by (Customer)')
+    scanned_at_customer_date = fields.Datetime(string='Customer Scan Date')
+    
+    # Facility verification tracking
+    verified_at_facility_by = fields.Many2one('res.users', string='Verified by (Facility)')
+    verified_at_facility_date = fields.Datetime(string='Facility Verification Date')
+    verified_before_destruction = fields.Boolean(string='Verified Before Destruction', default=False)
+    facility_verification_notes = fields.Text(string='Facility Verification Notes',
+                                               help='Notes from facility verification process')
+    
+    # Destruction tracking
+    destroyed = fields.Boolean(string='Destroyed', default=False)
+    destruction_date = fields.Date(string='Destruction Date')
+    destruction_method = fields.Selection([
+        ('shred', 'Physical Shredding'),
+        ('crush', 'Physical Crushing'),
+        ('degauss', 'Degaussing'),
+        ('wipe', 'Data Wiping'),
+        ('incineration', 'Incineration')
+    ], string='Destruction Method', default='shred')
+    
+    # Certificate and documentation
+    certificate_line_text = fields.Text(string='Certificate Line Text',
+                                         help='Generated text for destruction certificate')
+    included_in_certificate = fields.Boolean(string='Include in Certificate', default=True)
+    hashed_serial = fields.Char(string='Hashed Serial Number',
+                                 help='SHA256 hash of serial number for integrity verification')
+    
+    # Wizard display name
+    name = fields.Char(string='Wizard Name', default='Hard Drive Scan Session')
+    
+    # Technical view fields for XML processing and UI integration
+    arch = fields.Text(string='View Architecture', help='XML view architecture definition')
+    context = fields.Text(string='Context', help='View context information')
+    help = fields.Text(string='Help Text', help='Help information for this wizard')
+    model = fields.Char(string='Model Name', default='hard_drive.scan.wizard')
+    res_model = fields.Char(string='Resource Model', default='hard_drive.scan.wizard')
+    target = fields.Char(string='Target', default='new', help='Window target for wizard display')
+    view_mode = fields.Char(string='View Mode', default='form', help='View mode for wizard display')
 
     @api.model
     def default_get(self, fields_list):

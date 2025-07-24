@@ -47,13 +47,34 @@ class RecordsBoxTypeConverter(models.TransientModel):
         help='Automatically move boxes to appropriate location type based on new box type'
     )
     
-    # Technical fields for view compatibility
-    arch = fields.Text(string='View Architecture')
+    # Technical fields for view compatibility and integration
+    arch = fields.Text(string='View Architecture', help='XML view architecture definition')
     model = fields.Char(string='Model Name', default='records.box.type.converter')
     res_model = fields.Char(string='Resource Model', default='records.box.type.converter')
-    context = fields.Text(string='Context')
+    context = fields.Text(string='Context', help='Evaluation context for the wizard')
     target = fields.Char(string='Target', default='new')
     view_mode = fields.Char(string='View Mode', default='form')
+    help = fields.Text(string='Help Text', help='User guidance and help information')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View')
+    
+    # Analytics and tracking fields
+    conversion_count = fields.Integer(string='Conversion Count', compute='_compute_conversion_count')
+    cost_impact = fields.Float(string='Cost Impact', compute='_compute_cost_impact')
+    efficiency_score = fields.Float(string='Efficiency Score', compute='_compute_efficiency_score')
+    
+    # Workflow state
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('preview', 'Preview'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Completed')
+    ], string='State', default='draft')
+    
+    # Audit fields
+    created_by = fields.Many2one('res.users', string='Created By', default=lambda self: self.env.user)
+    conversion_date = fields.Datetime(string='Conversion Date')
+    validated_by = fields.Many2one('res.users', string='Validated By')
+    validation_notes = fields.Text(string='Validation Notes')
     
     @api.depends('box_ids', 'new_box_type_code')
     def _compute_name(self):
@@ -64,6 +85,44 @@ class RecordsBoxTypeConverter(models.TransientModel):
                 record.name = f"Convert {len(record.box_ids)} boxes to {type_name.split(' - ')[0]}"
             else:
                 record.name = "Box Type Converter"
+
+    @api.depends('box_ids')
+    def _compute_conversion_count(self):
+        for record in self:
+            record.conversion_count = len(record.box_ids)
+
+    @api.depends('box_ids', 'new_box_type_code')
+    def _compute_cost_impact(self):
+        for record in self:
+            if not record.box_ids or not record.new_box_type_code:
+                record.cost_impact = 0.0
+                continue
+                
+            current_total = sum(box.monthly_rate for box in record.box_ids)
+            rate_mapping = {'01': 0.32, '03': 0.50, '04': 1.25, '06': 2.00}
+            new_rate = rate_mapping.get(record.new_box_type_code, 0.32)
+            new_total = new_rate * len(record.box_ids)
+            record.cost_impact = new_total - current_total
+
+    @api.depends('box_ids', 'new_box_type_code', 'update_location')
+    def _compute_efficiency_score(self):
+        for record in self:
+            if not record.box_ids:
+                record.efficiency_score = 0.0
+                continue
+                
+            # Calculate efficiency based on cost optimization and location matching
+            base_score = 50.0
+            
+            # Bonus for cost savings
+            if record.cost_impact < 0:
+                base_score += min(30.0, abs(record.cost_impact) * 10)
+            
+            # Bonus for auto-relocation
+            if record.update_location:
+                base_score += 20.0
+                
+            record.efficiency_score = min(100.0, base_score)
 
     @api.depends('box_ids', 'new_box_type_code', 'update_location')
     def _compute_summary_line(self):

@@ -46,6 +46,8 @@ class LocationReportWizard(models.TransientModel):
     
     # Technical fields for view compatibility
     arch = fields.Text(string='View Architecture')
+    context = fields.Text(string='Context Information', help='View context for wizard display')
+    help = fields.Text(string='Help Text', help='Help information for using this wizard')
     model = fields.Char(string='Model Name', default='records.location.report.wizard')
     res_model = fields.Char(string='Resource Model', default='records.location.report.wizard')
     name = fields.Char(string='Wizard Name', compute='_compute_name')

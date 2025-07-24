@@ -101,6 +101,13 @@ class RecordsRetentionPolicy(models.Model):
         'records.policy.version', 'policy_id', string='Version History'
     )
     
+    # Missing fields referenced in views - added for comprehensive coverage
+    changed_by = fields.Many2one('res.users', string='Changed By', 
+                                 help='User who last modified this policy version',
+                                 default=lambda self: self.env.user)
+    is_current_version = fields.Boolean(string='Is Current Version', default=True,
+                                        help='Indicates if this is the current active version of the policy')
+    
     # Analytics fields
     policy_effectiveness_score = fields.Float(
         'Policy Effectiveness Score', compute='_compute_analytics', store=True

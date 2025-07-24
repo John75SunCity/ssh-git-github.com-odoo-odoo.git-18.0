@@ -36,9 +36,34 @@ class PermanentFlagWizard(models.TransientModel):
     permanent_flag_set_date = fields.Datetime(string='Set Date', default=fields.Datetime.now)
     
     # Technical fields for view compatibility
-    arch = fields.Text(string='View Architecture')
+    arch = fields.Text(string='View Architecture', help='XML view architecture definition')
     model = fields.Char(string='Model Name', default='records.permanent.flag.wizard')
     name = fields.Char(string='Wizard Name', compute='_compute_name')
+    
+    # Additional technical view fields for comprehensive XML compatibility
+    context = fields.Text(string='Context', help='View context information')
+    help = fields.Text(string='Help', help='Help text for this wizard')
+    res_model = fields.Char(string='Resource Model', default='records.permanent.flag.wizard')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View', help='Search view reference')
+    view_mode = fields.Char(string='View Mode', default='form', help='View mode configuration')
+    
+    # Operational status and workflow fields
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('cancelled', 'Cancelled')
+    ], string='State', default='draft', help='Wizard workflow state')
+    
+    # Security and audit fields
+    security_level = fields.Selection([
+        ('standard', 'Standard'),
+        ('high', 'High Security'),
+        ('critical', 'Critical')
+    ], string='Security Level', default='high', help='Security level for permanent flag operations')
+    
+    audit_log = fields.Text(string='Audit Log', help='Security audit log for this operation')
+    verified_at = fields.Datetime(string='Verified At', help='Password verification timestamp')
+    verification_attempts = fields.Integer(string='Verification Attempts', default=0, help='Number of password verification attempts')
     
     @api.depends('action_type', 'document_count')
     def _compute_name(self):
