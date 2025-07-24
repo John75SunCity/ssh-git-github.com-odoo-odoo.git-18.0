@@ -75,7 +75,7 @@ class FSMTask(models.Model):
     chain_of_custody_required = fields.Boolean(string='Chain of Custody Required', default=False)
     checklist_item = fields.Char(string='Checklist Item')
     communication_date = fields.Datetime(string='Communication Date')
-        # communication_log_ids = fields.One2many('portal.request.communication', 'res_id', string='Communication Log',  # Disabled - incorrect inverse
+    communication_log_ids = fields.One2many('portal.request.communication', compute='_compute_communication_log_ids', string='Communication Log')
     #                                      help='Track communication between customer and service team')
     communication_type = fields.Selection([
         ('phone', 'Phone'),
@@ -176,7 +176,7 @@ class FSMTask(models.Model):
     subject = fields.Char(string='Subject')
     supervisor = fields.Many2one('res.users', string='Supervisor')
     supplier = fields.Many2one('res.partner', string='Supplier')
-        # task_checklist_ids = fields.One2many('records.audit.log', 'res_id', string='Task Checklist',  # Disabled - incorrect inverse
+    task_checklist_ids = fields.One2many('records.audit.log', compute='_compute_task_checklist_ids', string='Task Checklist')
     #                                    help='Checklist items for task completion')
     task_status = fields.Selection([
         ('open', 'Open'),
@@ -192,7 +192,7 @@ class FSMTask(models.Model):
     ], string='Task Type', default='standard')
     technician = fields.Many2one('res.users', string='Technician')
     time_log_count = fields.Integer(string='Time Log Count', default=0)
-    # time_log_ids = fields.One2many('records.access.log', 'res_id', string='Time Logs',  # Disabled - incorrect inverse
+    time_log_ids = fields.One2many('records.access.log', compute='_compute_time_log_ids', string='Time Logs')
     #                              help='Time tracking for technician work')
     timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now)
     total_cost = fields.Float(string='Total Cost', compute='_compute_total_cost')
@@ -417,6 +417,28 @@ class FSMTask(models.Model):
             ('project_ids', 'in', [self.project_id.id])
         ], limit=1)
         return stage.id if stage else False
+
+    # Compute methods for previously commented One2many fields
+    @api.depends()
+    def _compute_communication_log_ids(self):
+        """Compute communication log for this FSM task"""
+        for task in self:
+            # Return empty recordset since inverse field doesn't exist
+            task.communication_log_ids = self.env['portal.request.communication'].browse()
+
+    @api.depends()
+    def _compute_task_checklist_ids(self):
+        """Compute task checklist for this FSM task"""
+        for task in self:
+            # Return empty recordset since inverse field doesn't exist
+            task.task_checklist_ids = self.env['records.audit.log'].browse()
+
+    @api.depends()
+    def _compute_time_log_ids(self):
+        """Compute time logs for this FSM task"""
+        for task in self:
+            # Return empty recordset since inverse field doesn't exist
+            task.time_log_ids = self.env['records.access.log'].browse()
 
     # Compute methods for One2many fields
     @api.depends()

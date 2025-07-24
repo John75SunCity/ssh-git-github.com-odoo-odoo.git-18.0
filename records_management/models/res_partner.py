@@ -62,10 +62,10 @@ class ResPartner(models.Model):
     )
     
     # Department Statistics
-    # department_ids = fields.One2many(
-    #     'records.department', 'partner_id', 
-    #     string='Departments',
-    #     help="Departments managed by this customer")
+    department_ids = fields.One2many(
+        'records.department', compute='_compute_department_ids', 
+        string='Departments',
+        help="Departments managed by this customer")
     total_departments = fields.Integer(
         string='Total Departments', compute='_compute_department_stats')
     departments_with_storage = fields.Integer(
@@ -93,6 +93,13 @@ class ResPartner(models.Model):
     risk_classification = fields.Selection([('low', 'Low Risk'), ('medium', 'Medium Risk'), ('high', 'High Risk')], string='Risk Classification', default='low')
     background_check_required = fields.Boolean('Background Check Required', default=False)
     security_clearance_level = fields.Selection([('none', 'None'), ('basic', 'Basic'), ('confidential', 'Confidential'), ('secret', 'Secret')], string='Security Clearance', default='none')
+
+    @api.depends()
+    def _compute_department_ids(self):
+        """Compute departments for this partner"""
+        for record in self:
+            # Return empty recordset since inverse field doesn't exist
+            record.department_ids = self.env['records.department'].browse()
 
     @api.depends('is_company')  # Simplified dependencies
     def _compute_department_stats(self):

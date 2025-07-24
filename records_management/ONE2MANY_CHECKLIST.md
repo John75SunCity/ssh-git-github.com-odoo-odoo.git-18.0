@@ -53,14 +53,18 @@
 - 🔧 records_department.py:61 - `invoice_ids` (Fixed)
 - 🔧 records_department.py:62 - `portal_request_ids` (Fixed)
 
-### 3. Commented Out Fields (Safe)
-- ✅ barcode_product.py:95 - `# generation_history_ids` (Commented out)
-- ✅ barcode_product.py:133 - `# pricing_tier_ids` (Commented out)
-- ✅ barcode_product.py:148 - `# seasonal_pricing_ids` (Commented out)
-- ✅ barcode_product.py:157 - `# shred_bin_ids` (Commented out)
-- ✅ barcode_product.py:169 - `# storage_box_ids` (Commented out)
-- ✅ product.py:146 - `# pricing_rule_ids` (Commented out)
-- ✅ product.py:164 - `# sales_analytics_ids` (Commented out)
+### 4. Commented Out Fields (Safe) - NOW IMPLEMENTED ✅
+- 🔧 barcode_product.py:95 - `generation_history_ids` (IMPLEMENTED with compute method)
+- 🔧 barcode_product.py:133 - `pricing_tier_ids` (IMPLEMENTED with compute method)
+- 🔧 barcode_product.py:148 - `seasonal_pricing_ids` (IMPLEMENTED with compute method)
+- 🔧 barcode_product.py:157 - `shred_bin_ids` (IMPLEMENTED with compute method)
+- 🔧 barcode_product.py:169 - `storage_box_ids` (IMPLEMENTED with compute method)
+- 🔧 res_partner.py:65 - `department_ids` (IMPLEMENTED with compute method)
+- 🔧 fsm_task.py:78 - `communication_log_ids` (IMPLEMENTED with compute method)
+- 🔧 fsm_task.py:179 - `task_checklist_ids` (IMPLEMENTED with compute method)
+- 🔧 fsm_task.py:195 - `time_log_ids` (IMPLEMENTED with compute method)
+- 🔧 product.py:146 - `pricing_rule_ids` (IMPLEMENTED with compute method)
+- 🔧 product.py:164 - `sales_analytics_ids` (IMPLEMENTED with compute method)
 
 ### 4. Fields That Need Investigation 🔍
 

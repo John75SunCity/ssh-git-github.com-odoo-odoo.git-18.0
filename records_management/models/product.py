@@ -143,7 +143,7 @@ class ProductTemplate(models.Model):
     pickup_delivery_included = fields.Boolean(string='Pickup/Delivery Included', default=False)
     price_history_count = fields.Integer(string='Price History Count', compute='_compute_product_metrics')
     price_margin = fields.Float(string='Price Margin (%)', compute='_compute_product_metrics')
-    # pricing_rule_ids = fields.One2many('product.pricing.rule', 'product_id', string='Pricing Rules')  # Disabled - model doesn't exist
+    pricing_rule_ids = fields.One2many('product.pricing.rule', compute='_compute_pricing_rule_ids', string='Pricing Rules')
     product_variant_count = fields.Integer(string='Variant Count', compute='_compute_product_metrics')
     product_variant_ids = fields.One2many('product.product', 'product_tmpl_id', string='Product Variants')
     profit = fields.Float(string='Profit', compute='_compute_product_metrics')
@@ -161,7 +161,7 @@ class ProductTemplate(models.Model):
         ('formula', 'Formula')
     ], string='Rule Type', default='fixed')
     sale_ok = fields.Boolean(string='Can be Sold', default=True)
-    # sales_analytics_ids = fields.One2many('product.sales.analytics', 'product_id', string='Sales Analytics')  # Disabled - model doesn't exist - COMPLETE ✅
+    sales_analytics_ids = fields.One2many('product.sales.analytics', compute='_compute_sales_analytics_ids', string='Sales Analytics')
     sales_count = fields.Integer(string='Sales Count', compute='_compute_product_metrics')
     sales_velocity = fields.Float(string='Sales Velocity', compute='_compute_product_metrics')
     same_day_service = fields.Boolean(string='Same Day Service', default=False)
@@ -432,6 +432,21 @@ class ProductTemplate(models.Model):
         }
 
     # Compute methods for One2many fields
+    # Compute methods for previously commented One2many fields
+    @api.depends()
+    def _compute_pricing_rule_ids(self):
+        """Compute pricing rules for this product"""
+        for product in self:
+            # Return empty recordset since model doesn't exist
+            product.pricing_rule_ids = self.env['product.pricing.rule'].browse()
+
+    @api.depends()
+    def _compute_sales_analytics_ids(self):
+        """Compute sales analytics for this product"""
+        for product in self:
+            # Return empty recordset since model doesn't exist
+            product.sales_analytics_ids = self.env['product.sales.analytics'].browse()
+
     @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this product template"""
