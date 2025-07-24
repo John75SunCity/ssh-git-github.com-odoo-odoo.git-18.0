@@ -21,6 +21,9 @@ from . import bale
 from . import load
 from . import paper_bale
 
+# NAID Compliance Models
+from . import naid_compliance
+
 # Document Related Models (custody, audit, digital copies)
 from . import records_chain_of_custody
 from . import destruction_item
@@ -38,6 +41,7 @@ from . import department_billing
 
 # Portal and FSM
 from . import portal_request
+from . import portal_feedback
 from . import fsm_task
 
 # HR and Feedback

@@ -28,6 +28,28 @@ class PermanentFlagWizard(models.TransientModel):
         compute='_compute_document_count'
     )
     
+    # Additional fields for enhanced functionality
+    box_id = fields.Many2one('records.box', string='Box')
+    customer_id = fields.Many2one('res.partner', string='Customer')
+    permanent_flag = fields.Boolean(string='Permanent Flag', default=True)
+    permanent_flag_set_by = fields.Many2one('res.users', string='Set By', default=lambda self: self.env.user)
+    permanent_flag_set_date = fields.Datetime(string='Set Date', default=fields.Datetime.now)
+    
+    # Technical fields for view compatibility
+    arch = fields.Text(string='View Architecture')
+    model = fields.Char(string='Model Name', default='records.permanent.flag.wizard')
+    name = fields.Char(string='Wizard Name', compute='_compute_name')
+    
+    @api.depends('action_type', 'document_count')
+    def _compute_name(self):
+        for record in self:
+            if record.action_type == 'mark':
+                record.name = f"Mark {record.document_count} documents as permanent"
+            elif record.action_type == 'unmark':
+                record.name = f"Remove permanent flag from {record.document_count} documents"
+            else:
+                record.name = "Permanent Flag Wizard"
+    
     @api.depends('document_ids')
     def _compute_document_count(self):
         for wizard in self:

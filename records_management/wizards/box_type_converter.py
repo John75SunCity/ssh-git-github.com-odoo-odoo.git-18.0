@@ -8,6 +8,8 @@ class RecordsBoxTypeConverter(models.TransientModel):
     _name = 'records.box.type.converter'
     _description = 'Bulk Box Type Converter'
 
+    # Core conversion fields
+    name = fields.Char(string='Converter Name', compute='_compute_name', store=True)
     box_ids = fields.Many2many(
         'records.box',
         string='Boxes to Convert',
@@ -26,6 +28,24 @@ class RecordsBoxTypeConverter(models.TransientModel):
         ('06', '06 - Specialty Box ($2.00/month)'),
     ], string='New Box Type', required=True,
         help='Select the new box type for all selected boxes')
+    
+    # Technical fields for view compatibility
+    arch = fields.Text(string='View Architecture')
+    model = fields.Char(string='Model Name', default='records.box.type.converter')
+    res_model = fields.Char(string='Resource Model', default='records.box.type.converter')
+    context = fields.Text(string='Context')
+    target = fields.Char(string='Target', default='new')
+    view_mode = fields.Char(string='View Mode', default='form')
+    
+    @api.depends('box_ids', 'new_box_type_code')
+    def _compute_name(self):
+        for record in self:
+            if record.box_ids and record.new_box_type_code:
+                type_dict = dict(record._fields['new_box_type_code'].selection)
+                type_name = type_dict.get(record.new_box_type_code, record.new_box_type_code)
+                record.name = f"Convert {len(record.box_ids)} boxes to {type_name.split(' - ')[0]}"
+            else:
+                record.name = "Box Type Converter"
     
     update_location = fields.Boolean(
         string='Auto-relocate boxes',

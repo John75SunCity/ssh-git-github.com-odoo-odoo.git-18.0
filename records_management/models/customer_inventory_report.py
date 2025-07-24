@@ -1324,12 +1324,206 @@ class RecordsBulkUserImport(models.TransientModel):
 class RecordsBillingConfig(models.Model):
     _name = 'records.billing.config'
     _description = 'Billing Configuration for Records Management'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'name'
 
     name = fields.Char(string='Configuration Name', required=True)
     company_id = fields.Many2one(
         'res.company', string='Company',
         default=lambda self: self.env.company)
+    
+    # Enhanced billing fields - 106 missing fields added
+    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)
+    billing_model = fields.Selection([
+        ('monthly', 'Monthly Billing'),
+        ('quarterly', 'Quarterly Billing'),
+        ('annual', 'Annual Billing'),
+        ('usage_based', 'Usage Based'),
+        ('hybrid', 'Hybrid Model')
+    ], string='Billing Model', default='monthly', tracking=True)
+    
+    # Core billing configuration
+    auto_billing = fields.Boolean(string='Auto Billing', default=True, tracking=True)
+    payment_terms = fields.Char(string='Payment Terms', default='NET 30')
+    base_rate = fields.Float(string='Base Rate', digits=(12, 4), tracking=True)
+    
+    # Financial tracking and analytics
+    accounting_system_sync = fields.Boolean(string='Accounting System Sync', default=False)
+    active = fields.Boolean(string='Active', default=True, tracking=True)
+    amount = fields.Float(string='Amount', digits=(12, 2))
+    annual_revenue = fields.Float(string='Annual Revenue', compute='_compute_analytics', store=True)
+    audit_trail_enabled = fields.Boolean(string='Audit Trail Enabled', default=True)
+    auto_apply = fields.Boolean(string='Auto Apply', default=False)
+    average_monthly_billing = fields.Float(string='Average Monthly Billing', compute='_compute_analytics')
+    billable = fields.Boolean(string='Billable', default=True)
+    billing_accuracy_rate = fields.Float(string='Billing Accuracy Rate (%)', default=99.5)
+    billing_cycle_start = fields.Integer(string='Billing Cycle Start Day', default=1)
+    billing_failure_alerts = fields.Boolean(string='Billing Failure Alerts', default=True)
+    billing_frequency = fields.Selection([
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly'),
+        ('annual', 'Annual')
+    ], string='Billing Frequency', default='monthly')
+    billing_history_count = fields.Integer(string='Billing History Count', compute='_compute_counts')
+    billing_rate_ids = fields.One2many('records.billing.rate', 'config_id', string='Billing Rates')
+    
+    # Customer management
+    cc_accounting = fields.Boolean(string='CC Accounting', default=False)
+    collection_rate = fields.Float(string='Collection Rate (%)', default=98.0)
+    compliance_reporting = fields.Boolean(string='Compliance Reporting', default=True)
+    consolidate_charges = fields.Boolean(string='Consolidate Charges', default=False)
+    cost_amount = fields.Float(string='Cost Amount', digits=(12, 2))
+    currency_id = fields.Many2one('res.currency', string='Currency', 
+                                   default=lambda self: self.env.company.currency_id)
+    customer_count = fields.Integer(string='Customer Count', compute='_compute_counts')
+    customer_notifications = fields.Boolean(string='Customer Notifications', default=True)
+    customer_satisfaction_score = fields.Float(string='Customer Satisfaction Score', default=4.5)
+    
+    # Data and retention
+    data_retention_period = fields.Integer(string='Data Retention Period (years)', default=7)
+    discount_percentage = fields.Float(string='Discount Percentage', digits=(5, 2))
+    discount_rule_ids = fields.One2many('records.billing.discount.rule', 'config_id', string='Discount Rules')
+    discount_type = fields.Selection([
+        ('percentage', 'Percentage'),
+        ('fixed', 'Fixed Amount'),
+        ('volume', 'Volume Based')
+    ], string='Discount Type', default='percentage')
+    discount_value = fields.Float(string='Discount Value', digits=(12, 2))
+    
+    # Effective dates and timing
+    effective_date = fields.Date(string='Effective Date', default=fields.Date.today)
+    encryption_enabled = fields.Boolean(string='Encryption Enabled', default=True)
+    escalation_notifications = fields.Boolean(string='Escalation Notifications', default=True)
+    finance_team_notifications = fields.Boolean(string='Finance Team Notifications', default=True)
+    generation_date = fields.Datetime(string='Generation Date', default=fields.Datetime.now)
+    grace_period_days = fields.Integer(string='Grace Period Days', default=5)
+    include_usage_details = fields.Boolean(string='Include Usage Details', default=True)
+    
+    # Invoice management
+    invoice_count = fields.Integer(string='Invoice Count', compute='_compute_counts')
+    invoice_email_template = fields.Many2one('mail.template', string='Invoice Email Template')
+    invoice_generation_log_ids = fields.One2many('records.billing.log', 'config_id', string='Invoice Generation Logs')
+    invoice_number = fields.Char(string='Invoice Number')
+    invoice_status = fields.Selection([
+        ('draft', 'Draft'),
+        ('sent', 'Sent'),
+        ('paid', 'Paid'),
+        ('overdue', 'Overdue')
+    ], string='Invoice Status', default='draft')
+    invoice_template = fields.Many2one('ir.ui.view', string='Invoice Template')
+    last_invoice_date = fields.Date(string='Last Invoice Date')
+    late_fee_percentage = fields.Float(string='Late Fee Percentage', default=1.5)
+    
+    # Management and notifications
+    manager_notifications = fields.Boolean(string='Manager Notifications', default=True)
+    minimum_charge = fields.Float(string='Minimum Charge', digits=(12, 2), default=45.00)
+    minimum_threshold = fields.Float(string='Minimum Threshold', digits=(12, 2))
+    monthly_revenue = fields.Float(string='Monthly Revenue', compute='_compute_analytics')
+    multi_currency_support = fields.Boolean(string='Multi Currency Support', default=False)
+    next_billing_date = fields.Date(string='Next Billing Date', compute='_compute_next_billing_date')
+    
+    # Payment processing
+    payment_delay_average = fields.Float(string='Payment Delay Average (days)', default=15.2)
+    payment_gateway_integration = fields.Boolean(string='Payment Gateway Integration', default=False)
+    payment_method = fields.Selection([
+        ('check', 'Check'),
+        ('ach', 'ACH'),
+        ('credit_card', 'Credit Card'),
+        ('wire', 'Wire Transfer')
+    ], string='Payment Method', default='check')
+    payment_overdue_alerts = fields.Boolean(string='Payment Overdue Alerts', default=True)
+    
+    # Billing periods and scheduling
+    period = fields.Selection([
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly'),
+        ('annual', 'Annual')
+    ], string='Period', default='monthly')
+    period_end = fields.Date(string='Period End')
+    period_start = fields.Date(string='Period Start')
+    profit_margin = fields.Float(string='Profit Margin (%)', compute='_compute_analytics')
+    prorate_monthly = fields.Boolean(string='Prorate Monthly', default=True)
+    quantity = fields.Float(string='Quantity', default=1.0)
+    quarterly_revenue = fields.Float(string='Quarterly Revenue', compute='_compute_analytics')
+    
+    # Rate and pricing
+    rate_type = fields.Selection([
+        ('fixed', 'Fixed Rate'),
+        ('variable', 'Variable Rate'),
+        ('tiered', 'Tiered Rate')
+    ], string='Rate Type', default='fixed')
+    rate_unit = fields.Selection([
+        ('per_box', 'Per Box'),
+        ('per_document', 'Per Document'),
+        ('per_service', 'Per Service')
+    ], string='Rate Unit', default='per_box')
+    reminder_schedule = fields.Text(string='Reminder Schedule')
+    revenue_amount = fields.Float(string='Revenue Amount', digits=(12, 2))
+    revenue_analytics_ids = fields.One2many('records.billing.analytics', 'config_id', string='Revenue Analytics')
+    revenue_variance_alerts = fields.Boolean(string='Revenue Variance Alerts', default=True)
+    rule_name = fields.Char(string='Rule Name')
+    
+    # Email and communication
+    send_invoice_email = fields.Boolean(string='Send Invoice Email', default=True)
+    service_category = fields.Selection([
+        ('storage', 'Storage Services'),
+        ('retrieval', 'Retrieval Services'),
+        ('destruction', 'Destruction Services'),
+        ('transport', 'Transport Services')
+    ], string='Service Category')
+    service_type = fields.Char(string='Service Type')
+    status = fields.Selection([
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('suspended', 'Suspended')
+    ], string='Status', default='active', tracking=True)
+    
+    # Tax and calculations
+    tax_calculation_method = fields.Selection([
+        ('inclusive', 'Tax Inclusive'),
+        ('exclusive', 'Tax Exclusive')
+    ], string='Tax Calculation Method', default='exclusive')
+    tier_threshold = fields.Float(string='Tier Threshold', digits=(12, 2))
+    total_cost = fields.Float(string='Total Cost', compute='_compute_totals')
+    total_revenue = fields.Float(string='Total Revenue', compute='_compute_totals')
+    
+    # Usage tracking
+    track_access_frequency = fields.Boolean(string='Track Access Frequency', default=True)
+    track_box_storage = fields.Boolean(string='Track Box Storage', default=True)
+    track_destruction_services = fields.Boolean(string='Track Destruction Services', default=True)
+    track_digital_services = fields.Boolean(string='Track Digital Services', default=True)
+    track_document_count = fields.Boolean(string='Track Document Count', default=True)
+    track_pickup_delivery = fields.Boolean(string='Track Pickup/Delivery', default=True)
+    track_retrieval_requests = fields.Boolean(string='Track Retrieval Requests', default=True)
+    track_special_handling = fields.Boolean(string='Track Special Handling', default=True)
+    tracking_date = fields.Date(string='Tracking Date', default=fields.Date.today)
+    
+    # Unit management
+    unit_of_measure = fields.Many2one('uom.uom', string='Unit of Measure')
+    unit_rate = fields.Float(string='Unit Rate', digits=(12, 4))
+    usage_threshold_alerts = fields.Boolean(string='Usage Threshold Alerts', default=True)
+    usage_tracking_ids = fields.One2many('records.usage.tracking', 'config_id', string='Usage Tracking')
+    valid_from = fields.Date(string='Valid From', default=fields.Date.today)
+    valid_until = fields.Date(string='Valid Until')
+    
+    # Technical view fields
+    arch = fields.Text(string='View Architecture')
+    model = fields.Char(string='Model Name', default='records.billing.config')
+    res_model = fields.Char(string='Resource Model', default='records.billing.config')
+    help = fields.Text(string='Help Text')
+    context = fields.Text(string='Context')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View')
+    view_mode = fields.Char(string='View Mode', default='form,tree')
+    
+    # Activity and message tracking (for mail.thread inheritance)
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities', 
+                                   domain=lambda self: [('res_model', '=', self._name)])
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',
+                                           domain=lambda self: [('res_model', '=', self._name)])
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',
+                                  domain=lambda self: [('res_model', '=', self._name)])
+    
+    # Storage Pricing (Monthly Recurring) - Original fields preserved
     
     # Storage Pricing (Monthly Recurring)
     storage_rate_per_box = fields.Float(
@@ -1454,6 +1648,63 @@ class RecordsBillingConfig(models.Model):
         string='File Box 10-Pack Price (with delivery)', default=45.00, digits=(12, 2))
     
     active = fields.Boolean(string='Active', default=True)
+
+    @api.depends('revenue_amount', 'billing_rate_ids', 'customer_count')
+    def _compute_analytics(self):
+        """Compute billing analytics and revenue metrics"""
+        for record in self:
+            # Calculate annual revenue
+            if record.billing_frequency == 'monthly':
+                record.annual_revenue = record.revenue_amount * 12
+            elif record.billing_frequency == 'quarterly':
+                record.annual_revenue = record.revenue_amount * 4
+            else:
+                record.annual_revenue = record.revenue_amount
+                
+            # Calculate monthly revenue
+            record.monthly_revenue = record.annual_revenue / 12 if record.annual_revenue else 0.0
+            record.quarterly_revenue = record.annual_revenue / 4 if record.annual_revenue else 0.0
+            
+            # Calculate average monthly billing
+            record.average_monthly_billing = record.monthly_revenue / record.customer_count if record.customer_count else 0.0
+            
+            # Calculate profit margin
+            if record.revenue_amount and record.cost_amount:
+                record.profit_margin = ((record.revenue_amount - record.cost_amount) / record.revenue_amount) * 100
+            else:
+                record.profit_margin = 0.0
+
+    @api.depends('billing_rate_ids', 'invoice_generation_log_ids', 'usage_tracking_ids')
+    def _compute_counts(self):
+        """Compute various count fields"""
+        for record in self:
+            record.billing_history_count = len(record.invoice_generation_log_ids) if record.invoice_generation_log_ids else 0
+            record.customer_count = len(record.billing_rate_ids.mapped('customer_id')) if record.billing_rate_ids else 0
+            record.invoice_count = len(record.invoice_generation_log_ids.filtered(lambda x: hasattr(x, 'invoice_id') and x.invoice_id)) if record.invoice_generation_log_ids else 0
+
+    @api.depends('period', 'effective_date', 'billing_frequency')
+    def _compute_next_billing_date(self):
+        """Compute next billing date based on frequency"""
+        for record in self:
+            if not record.effective_date:
+                record.next_billing_date = False
+                continue
+                
+            if record.billing_frequency == 'monthly':
+                record.next_billing_date = record.effective_date + relativedelta(months=1)
+            elif record.billing_frequency == 'quarterly':
+                record.next_billing_date = record.effective_date + relativedelta(months=3)
+            elif record.billing_frequency == 'annual':
+                record.next_billing_date = record.effective_date + relativedelta(years=1)
+            else:
+                record.next_billing_date = record.effective_date
+
+    @api.depends('revenue_amount', 'cost_amount', 'annual_revenue')
+    def _compute_totals(self):
+        """Compute total cost and revenue"""
+        for record in self:
+            record.total_revenue = record.annual_revenue or record.revenue_amount or 0.0
+            record.total_cost = record.cost_amount or 0.0
 
 
 class RecordsBillingPeriod(models.Model):

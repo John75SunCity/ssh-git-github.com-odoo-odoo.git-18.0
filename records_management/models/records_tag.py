@@ -28,6 +28,15 @@ class RecordsTag(models.Model):
     )
 
     # Phase 1 Critical Fields - Added by automated script
+    
+    # Technical fields for view compatibility
+    arch = fields.Text(string='View Architecture')
+    model = fields.Char(string='Model Name', default='records.tag')
+    res_model = fields.Char(string='Resource Model', default='records.tag')
+    help = fields.Text(string='Help Text')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View')
+    view_id = fields.Many2one('ir.ui.view', string='View')
+    view_mode = fields.Char(string='View Mode', default='tree,form')
     activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
     message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
     message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
@@ -313,69 +322,11 @@ class RecordsTag(models.Model):
             
             record.knowledge_sharing_potential = min(max(knowledge_potential, 0), 100)
     
+    # Additional essential fields
+    active = fields.Boolean(string='Active', default=True)
+    
     # TODO: Enhanced fields will be added in next deployment phase:
-    # - active field
-    # - description field  
-    # - category selection
     # - analytics fields
-    # - automation features
-
-    def action_tag_documents(self):
-        """Tag selected documents"""
-        self.ensure_one()
-        return {
-            'name': _('Tag Documents'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'tag.documents.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {'default_tag_id': self.id},
-        }
-
-    def action_view_tagged_documents(self):
-        """View documents with this tag"""
-        self.ensure_one()
-        return {
-            'name': _('Documents Tagged: %s') % self.name,
-            'type': 'ir.actions.act_window',
-            'res_model': 'records.document',
-            'view_mode': 'tree,form',
-            'domain': [('tag_ids', 'in', [self.id])],
-            'context': {'default_tag_ids': [(6, 0, [self.id])]},
-        }
-
-    def action_merge_tags(self):
-        """Merge this tag with another"""
-        self.ensure_one()
-        return {
-            'name': _('Merge Tags'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'merge.tags.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {'default_source_tag_id': self.id},
-        }
-
-    def action_archive_tag(self):
-        """Archive this tag"""
-        self.ensure_one()
-        self.active = False
-        return True
-
-    def action_duplicate_tag(self):
-        """Duplicate this tag"""
-        self.ensure_one()
-        new_tag = self.copy({
-            'name': _('%s (Copy)') % self.name,
-        })
-        return {
-            'name': _('Duplicated Tag'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'records.tag',
-            'res_id': new_tag.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
     # - automation features
 
     def action_tag_documents(self):

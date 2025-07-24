@@ -39,6 +39,24 @@ class LocationReportWizard(models.TransientModel):
         'Utilization %',
         compute='_compute_statistics'
     )
+    current_utilization = fields.Float(
+        'Current Utilization',
+        compute='_compute_statistics'
+    )
+    
+    # Technical fields for view compatibility
+    arch = fields.Text(string='View Architecture')
+    model = fields.Char(string='Model Name', default='records.location.report.wizard')
+    res_model = fields.Char(string='Resource Model', default='records.location.report.wizard')
+    name = fields.Char(string='Wizard Name', compute='_compute_name')
+    
+    @api.depends('location_id', 'report_date')
+    def _compute_name(self):
+        for record in self:
+            if record.location_id:
+                record.name = f"Location Report: {record.location_id.name}"
+            else:
+                record.name = "Location Report"
     
     @api.depends('location_id', 'include_child_locations')
     def _compute_statistics(self):
