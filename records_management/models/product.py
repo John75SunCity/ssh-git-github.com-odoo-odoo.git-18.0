@@ -142,7 +142,7 @@ class ProductTemplate(models.Model):
     pickup_delivery_included = fields.Boolean(string='Pickup/Delivery Included', default=False)
     price_history_count = fields.Integer(string='Price History Count', compute='_compute_product_metrics')
     price_margin = fields.Float(string='Price Margin (%)', compute='_compute_product_metrics')
-    pricing_rule_ids = fields.One2many('product.pricing.rule', 'product_id', string='Pricing Rules')
+    # pricing_rule_ids = fields.One2many('product.pricing.rule', 'product_id', string='Pricing Rules')  # Disabled - model doesn't exist
     product_variant_count = fields.Integer(string='Variant Count', compute='_compute_product_metrics')
     product_variant_ids = fields.One2many('product.product', 'product_tmpl_id', string='Product Variants')
     profit = fields.Float(string='Profit', compute='_compute_product_metrics')
@@ -160,7 +160,7 @@ class ProductTemplate(models.Model):
         ('formula', 'Formula')
     ], string='Rule Type', default='fixed')
     sale_ok = fields.Boolean(string='Can be Sold', default=True)
-    sales_analytics_ids = fields.One2many('product.sales.analytics', 'product_id', string='Sales Analytics')
+    # sales_analytics_ids = fields.One2many('product.sales.analytics', 'product_id', string='Sales Analytics')  # Disabled - model doesn't exist
     sales_count = fields.Integer(string='Sales Count', compute='_compute_product_metrics')
     sales_velocity = fields.Float(string='Sales Velocity', compute='_compute_product_metrics')
     same_day_service = fields.Boolean(string='Same Day Service', default=False)
