@@ -89,4 +89,3 @@ from . import barcode_product
 from . import installer
 from . import ir_actions_report
 from . import ir_module
-from . import is_walk_in
