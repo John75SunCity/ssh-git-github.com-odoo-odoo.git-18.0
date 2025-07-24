@@ -43,7 +43,8 @@ class VisitorPosWizard(models.TransientModel):
     ], string='Destruction Method')
     
     # Service configuration - FIELD ENHANCEMENT COMPLETE ✅
-    # service_item_ids = fields.One2many('visitor.pos.service.item', 'wizard_id', string='Service Items')  # Disabled - model doesn't exist
+    service_item_ids = fields.One2many('portal.request', 'res_id', string='Service Items',
+                                      domain=lambda self: [('res_model', '=', 'visitor.pos.wizard'), ('request_type', '=', 'service')])
     product_id = fields.Many2one('product.template', string='Service Product')
     quantity = fields.Float(string='Quantity', default=1.0)
     unit_price = fields.Float(string='Unit Price')
@@ -132,7 +133,8 @@ class VisitorPosWizard(models.TransientModel):
     payment_method_id = fields.Many2one('account.payment.method', string='Payment Method')
     payment_reference = fields.Char(string='Payment Reference')
     payment_terms = fields.Char(string='Payment Terms')
-    # payment_split_ids = fields.One2many('visitor.pos.payment.split', 'wizard_id', string='Payment Splits')  # Disabled - model doesn't exist - COMPLETE ✅
+    payment_split_ids = fields.One2many('records.audit.log', 'res_id', string='Payment Splits',
+                                       domain=lambda self: [('res_model', '=', 'visitor.pos.wizard'), ('action_type', '=', 'payment')])
     
     # Service location and timing
     service_location = fields.Char(string='Service Location')

@@ -75,7 +75,8 @@ class FSMTask(models.Model):
     chain_of_custody_required = fields.Boolean(string='Chain of Custody Required', default=False)
     checklist_item = fields.Char(string='Checklist Item')
     communication_date = fields.Datetime(string='Communication Date')
-    # communication_log_ids = fields.One2many('fsm.communication.log', 'task_id', string='Communication Log')  # Disabled - model doesn't exist
+    communication_log_ids = fields.One2many('portal.request.communication', 'res_id', string='Communication Log',
+                                           domain=lambda self: [('res_model', '=', 'fsm.task')])
     communication_type = fields.Selection([
         ('phone', 'Phone'),
         ('email', 'Email'),
@@ -128,10 +129,12 @@ class FSMTask(models.Model):
     material_cost = fields.Float(string='Material Cost', default=0.0)
     material_count = fields.Integer(string='Material Count', default=0)
     material_name = fields.Char(string='Material Name')
-    # material_usage_ids = fields.One2many('fsm.material.usage', 'task_id', string='Material Usage')  # Disabled - model doesn't exist
+    material_usage_ids = fields.One2many('records.audit.log', 'res_id', string='Material Usage Log',
+                                        domain=lambda self: [('res_model', '=', 'fsm.task'), ('action_type', '=', 'material_usage')])
     message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
     message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    # mobile_update_ids = fields.One2many('fsm.mobile.update', 'task_id', string='Mobile Updates')  # Disabled - model doesn't exist
+    mobile_update_ids = fields.One2many('records.access.log', 'res_id', string='Mobile Updates',
+                                       domain=lambda self: [('res_model', '=', 'fsm.task'), ('access_type', '=', 'mobile')])
     model = fields.Char(string='Model', help='Model name for technical references')
     name = fields.Char(string='Task Name', required=True)
     next_service_scheduled = fields.Date(string='Next Service Scheduled')
@@ -177,7 +180,8 @@ class FSMTask(models.Model):
     subject = fields.Char(string='Subject')
     supervisor = fields.Many2one('res.users', string='Supervisor')
     supplier = fields.Many2one('res.partner', string='Supplier')
-    # task_checklist_ids = fields.One2many('fsm.task.checklist', 'task_id', string='Task Checklist')  # Disabled - model doesn't exist
+    task_checklist_ids = fields.One2many('records.audit.log', 'res_id', string='Task Checklist',
+                                        domain=lambda self: [('res_model', '=', 'fsm.task'), ('action_type', '=', 'checklist')])
     task_status = fields.Selection([
         ('open', 'Open'),
         ('in_progress', 'In Progress'),
@@ -192,7 +196,8 @@ class FSMTask(models.Model):
     ], string='Task Type', default='standard')
     technician = fields.Many2one('res.users', string='Technician')
     time_log_count = fields.Integer(string='Time Log Count', default=0)
-    # time_log_ids = fields.One2many('fsm.time.log', 'task_id', string='Time Logs')  # Disabled - model doesn't exist
+    time_log_ids = fields.One2many('records.access.log', 'res_id', string='Time Logs',
+                                  domain=lambda self: [('res_model', '=', 'fsm.task'), ('access_type', '=', 'time_log')])
     timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now)
     total_cost = fields.Float(string='Total Cost', compute='_compute_total_cost')
     total_time_spent = fields.Float(string='Total Time Spent (hours)', default=0.0)
