@@ -155,6 +155,53 @@ class RecordsDepartmentBillingContact(models.Model):
         store=True,
         help='Last analytics computation time'
     )
+    
+    # Missing fields identified by field analysis
+    amount = fields.Float(string='Amount', default=0.0)
+    approval_authority = fields.Selection([
+        ('none', 'No Authority'),
+        ('limited', 'Limited Authority'),
+        ('full', 'Full Authority'),
+        ('supervisor', 'Supervisor Authority')
+    ], string='Approval Authority', default='limited')
+    approval_count = fields.Integer(string='Approval Count', default=0)
+    approval_date = fields.Date(string='Approval Date')
+    approval_history_ids = fields.One2many('approval.history', 'contact_id', string='Approval History')
+    approval_limit = fields.Float(string='Approval Limit', default=1000.0)
+    approval_notes = fields.Text(string='Approval Notes')
+    approval_status = fields.Selection([
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('expired', 'Expired')
+    ], string='Approval Status', default='pending')
+    approved_by = fields.Many2one('res.users', string='Approved By')
+    arch = fields.Text(string='View Architecture')
+    billing_role = fields.Selection([
+        ('primary', 'Primary Billing Contact'),
+        ('secondary', 'Secondary Contact'),
+        ('approver', 'Billing Approver'),
+        ('reviewer', 'Billing Reviewer'),
+        ('administrator', 'Billing Administrator')
+    ], string='Billing Role', default='primary')
+    budget_alert_threshold = fields.Float(string='Budget Alert Threshold (%)', default=80.0)
+    budget_utilization = fields.Float(string='Budget Utilization (%)', compute='_compute_budget_metrics')
+    cc_additional_emails = fields.Text(string='CC Additional Emails')
+    cc_department_head = fields.Boolean(string='CC Department Head', default=True)
+    cc_finance_team = fields.Boolean(string='CC Finance Team', default=False)
+    charge_amount = fields.Float(string='Charge Amount', default=0.0)
+    charge_date = fields.Date(string='Charge Date')
+    context = fields.Text(string='Context')
+    current_month_actual = fields.Float(string='Current Month Actual', compute='_compute_budget_metrics')
+    current_month_budget = fields.Float(string='Current Month Budget', compute='_compute_budget_metrics')
+    current_month_charges = fields.Float(string='Current Month Charges', compute='_compute_budget_metrics')
+    current_month_forecast = fields.Float(string='Current Month Forecast', compute='_compute_budget_metrics')
+    current_month_variance = fields.Float(string='Current Month Variance', compute='_compute_budget_metrics')
+    department_charge_ids = fields.One2many('billing.charge', 'contact_id', string='Department Charges')
+    department_charges_count = fields.Integer(string='Department Charges Count', compute='_compute_charge_count')
+    description = fields.Text(string='Description')
+    email_notifications = fields.Boolean(string='Email Notifications', default=True)
+    help = fields.Text(string='Help Text')
 
     @api.depends('email')
     def _compute_hashed_email(self):
@@ -172,6 +219,61 @@ class RecordsDepartmentBillingContact(models.Model):
                 rec.total_departments = len(departments)
             else:
                 rec.total_departments = 0
+
+    @api.depends('department_id', 'approval_limit')
+    def _compute_budget_metrics(self):
+        """Compute budget-related metrics for department billing contact"""
+        for contact in self:
+            if not contact.department_id:
+                contact.budget_utilization = 0.0
+                contact.current_month_actual = 0.0
+                contact.current_month_budget = 0.0
+                contact.current_month_charges = 0.0
+                contact.current_month_forecast = 0.0
+                contact.current_month_variance = 0.0
+                continue
+                
+            # Calculate current month metrics
+            current_month_start = fields.Date.today().replace(day=1)
+            
+            # Get current month billing lines for the department
+            billing_lines = self.env['records.billing.line'].search([
+                ('department_id', '=', contact.department_id.id),
+                ('billing_period_id.period_start', '>=', current_month_start)
+            ])
+            
+            actual_charges = sum(billing_lines.mapped('amount'))
+            contact.current_month_actual = actual_charges
+            contact.current_month_charges = actual_charges
+            
+            # Estimated budget (based on department size)
+            dept_budget = contact.department_id.monthly_cost or (contact.approval_limit * 0.8)
+            contact.current_month_budget = dept_budget
+            
+            # Calculate variance
+            contact.current_month_variance = contact.current_month_budget - contact.current_month_actual
+            
+            # Forecast for rest of month
+            days_in_month = 30  # Simplified
+            current_day = fields.Date.today().day
+            if current_day > 0:
+                daily_rate = contact.current_month_actual / current_day
+                forecast = daily_rate * days_in_month
+                contact.current_month_forecast = forecast
+            else:
+                contact.current_month_forecast = 0.0
+            
+            # Budget utilization percentage
+            if contact.current_month_budget > 0:
+                contact.budget_utilization = (contact.current_month_actual / contact.current_month_budget) * 100
+            else:
+                contact.budget_utilization = 0.0
+
+    @api.depends('department_charge_ids')
+    def _compute_charge_count(self):
+        """Compute count of department charges"""
+        for contact in self:
+            contact.department_charges_count = len(contact.department_charge_ids)
 
     @api.depends('is_primary', 'receives_invoices', 'receives_statements', 'receives_notifications',
                  'delivery_method', 'total_departments', 'active')
