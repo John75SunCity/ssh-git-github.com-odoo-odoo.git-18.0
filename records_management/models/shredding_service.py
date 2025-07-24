@@ -65,6 +65,7 @@ class ShreddingService(models.Model):
     naid_compliance_verified = fields.Boolean('NAID Compliance Verified', default=False)
     destruction_standard = fields.Selection([('dod_5220', 'DoD 5220.22-M'), ('nist_800_88', 'NIST 800-88'), ('iso_27040', 'ISO/IEC 27040'), ('custom', 'Custom Standard')], string='Destruction Standard')
     witness_verification_required = fields.Boolean('Witness Verification Required', default=True)
+    witness_required = fields.Boolean('Witness Required', default=True, help='Shorthand for witness verification requirement')
     photo_documentation_required = fields.Boolean('Photo Documentation Required', default=True)
     video_documentation_required = fields.Boolean('Video Documentation Required', default=False)
     certificate_of_destruction = fields.Text('Certificate of Destruction Notes')
