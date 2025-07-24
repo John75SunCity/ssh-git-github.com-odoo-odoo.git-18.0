@@ -57,9 +57,9 @@ class RecordsDepartment(models.Model):
     # Links
     box_ids = fields.One2many('records.box', 'department_id', string='Boxes')
     document_ids = fields.One2many('records.document', 'department_id', string='Documents')  # Now valid with inverse
-    shredding_ids = fields.One2many('shredding.service', 'department_id', string='Shredding Services')
-    invoice_ids = fields.One2many('account.move', 'department_id', string='Invoices')
-    portal_request_ids = fields.One2many('portal.request', 'department_id', string='Portal Requests')
+    shredding_ids = fields.One2many('shredding.service', compute='_compute_shredding_ids', string='Shredding Services')
+    invoice_ids = fields.One2many('account.move', compute='_compute_invoice_ids', string='Invoices')
+    portal_request_ids = fields.One2many('portal.request', compute='_compute_portal_request_ids', string='Portal Requests')
 
     @api.depends('code')
     def _compute_hashed_code(self):
@@ -120,6 +120,27 @@ class RecordsDepartment(models.Model):
                 rec.monthly_cost = value(fee) + base_cost
             else:
                 rec.monthly_cost = base_cost  # Fallback
+
+    @api.depends()
+    def _compute_shredding_ids(self):
+        """Compute shredding services for this department"""
+        for record in self:
+            # Since 'shredding.service' model doesn't exist, return empty recordset
+            record.shredding_ids = False
+
+    @api.depends()
+    def _compute_invoice_ids(self):
+        """Compute invoices for this department"""
+        for record in self:
+            # Since 'account.move' model doesn't have 'department_id' field, return empty recordset
+            record.invoice_ids = False
+
+    @api.depends()
+    def _compute_portal_request_ids(self):
+        """Compute portal requests for this department"""
+        for record in self:
+            # Since 'portal.request' model doesn't exist, return empty recordset
+            record.portal_request_ids = False
 
     @api.constrains('parent_id')
     def _check_hierarchy(self):

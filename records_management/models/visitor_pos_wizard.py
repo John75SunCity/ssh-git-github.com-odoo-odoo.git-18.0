@@ -40,7 +40,7 @@ class VisitorPosWizard(models.TransientModel):
     ], string='Destruction Method')
     
     # Service configuration - FIELD ENHANCEMENT COMPLETE ✅
-    service_item_ids = fields.One2many('portal.request', 'wizard_id', string='Service Items')
+    service_item_ids = fields.One2many('portal.request', compute='_compute_service_item_ids', string='Service Items')
     product_id = fields.Many2one('product.template', string='Service Product')
     quantity = fields.Float(string='Quantity', default=1.0)
     unit_price = fields.Float(string='Unit Price')
@@ -129,7 +129,7 @@ class VisitorPosWizard(models.TransientModel):
     payment_method_id = fields.Many2one('account.payment.method', string='Payment Method')
     payment_reference = fields.Char(string='Payment Reference')
     payment_terms = fields.Char(string='Payment Terms')
-    payment_split_ids = fields.One2many('records.audit.log', 'wizard_id', string='Payment Splits')
+    payment_split_ids = fields.One2many('records.audit.log', compute='_compute_payment_split_ids', string='Payment Splits')
     
     # Service location and timing
     service_location = fields.Char(string='Service Location')
@@ -156,7 +156,7 @@ class VisitorPosWizard(models.TransientModel):
         ('urgent', 'Urgent')
     ], string='Processing Priority', default='normal')
     processed_by = fields.Many2one('res.users', string='Processed By')
-    processing_log_ids = fields.One2many('visitor.pos.processing.log', 'wizard_id', string='Processing Log')
+    processing_log_ids = fields.One2many('visitor.pos.processing.log', compute='_compute_processing_log_ids', string='Processing Log')
     
     # Quality and verification
     quality_check_by = fields.Many2one('res.users', string='Quality Check By')
@@ -182,7 +182,7 @@ class VisitorPosWizard(models.TransientModel):
     error_message = fields.Text(string='Error Message')
     error_details = fields.Text(string='Error Details')
     error_time = fields.Datetime(string='Error Time')
-    integration_error_ids = fields.One2many('visitor.pos.integration.error', 'wizard_id', string='Integration Errors')
+    integration_error_ids = fields.One2many('visitor.pos.integration.error', compute='_compute_integration_error_ids', string='Integration Errors')
     resolved = fields.Boolean(string='Resolved')
     resolution_notes = fields.Text(string='Resolution Notes')
     
@@ -518,3 +518,31 @@ class VisitorPosWizard(models.TransientModel):
                 ('res_id', '=', record.id)
             ])
             record.message_ids = messages
+
+    @api.depends()
+    def _compute_service_item_ids(self):
+        """Compute service items for this wizard"""
+        for record in self:
+            # Since 'portal.request' model doesn't have wizard_id field, return empty recordset
+            record.service_item_ids = False
+
+    @api.depends()
+    def _compute_payment_split_ids(self):
+        """Compute payment splits for this wizard"""
+        for record in self:
+            # Since 'records.audit.log' model doesn't have wizard_id field, return empty recordset
+            record.payment_split_ids = False
+
+    @api.depends()
+    def _compute_processing_log_ids(self):
+        """Compute processing log for this wizard"""
+        for record in self:
+            # Since 'visitor.pos.processing.log' model doesn't exist, return empty recordset
+            record.processing_log_ids = False
+
+    @api.depends()
+    def _compute_integration_error_ids(self):
+        """Compute integration errors for this wizard"""
+        for record in self:
+            # Since 'visitor.pos.integration.error' model doesn't exist, return empty recordset
+            record.integration_error_ids = False
