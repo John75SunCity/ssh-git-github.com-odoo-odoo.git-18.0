@@ -2,6 +2,16 @@
 <odoo>
     <!-- 📋 DOCUMENT TYPES - Records Management Classification -->
 
+    <!-- Actions defined first so they can be referenced by buttons -->
+    <record id="action_view_documents" model="ir.actions.act_window">
+        <field name="name">Related Documents</field>
+        <field name="res_model">records.document</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('document_type_id', '=', active_id)]</field>
+        <field name="context">{'default_document_type_id': active_id}</field>
+        <field name="target">current</field>
+    </record>
+
     <!-- Document Type List View -->
     <record id="view_records_document_type_list" model="ir.ui.view">
         <field name="name">records.document.type.list</field>
@@ -188,16 +198,6 @@
                 Document types help classify and organize your records management system.
             </p>
         </field>
-    </record>
-
-    <!-- Action for Documents button -->
-    <record id="action_view_documents" model="ir.actions.act_window">
-        <field name="name">Related Documents</field>
-        <field name="res_model">records.document</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('document_type_id', '=', active_id)]</field>
-        <field name="context">{'default_document_type_id': active_id}</field>
-        <field name="target">current</field>
     </record>
 
 </odoo>
