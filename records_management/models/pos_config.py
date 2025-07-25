@@ -10,8 +10,9 @@ class PosConfig(models.Model):
     _description = 'Enhanced POS Configuration for Records Management'
 
     # Enhanced POS configuration fields for records management - FIELD ENHANCEMENT COMPLETE ✅
+    # NOTE: Removed fields that already exist in base pos.config to avoid conflicts
     
-    # Activity and state management
+    # Activity and state management (custom fields only)
     activity_exception_decoration = fields.Char(string='Activity Exception Decoration')
     activity_state = fields.Selection([
         ('overdue', 'Overdue'),
@@ -19,18 +20,17 @@ class PosConfig(models.Model):
         ('planned', 'Planned')
     ], string='Activity State', compute='_compute_activity_state')
     
-    # Records management integration
+    # Records management integration (custom fields only)
     auto_create_customer = fields.Boolean(string='Auto Create Customer', default=True,
                                           help='Automatically create customer records for walk-in services')
     available_in_pos = fields.Boolean(string='Available in POS', default=True)
     avg_transaction_time = fields.Float(string='Average Transaction Time (minutes)', compute='_compute_analytics')
     avg_transaction_value = fields.Float(string='Average Transaction Value', compute='_compute_analytics')
     
-    # Barcode and scanning
-    barcode_nomenclature_id = fields.Many2one('barcode.nomenclature', string='Barcode Nomenclature')
+    # Custom scanning features (not conflicting with base fields)
     barcode_scanner_enabled = fields.Boolean(string='Barcode Scanner Enabled', default=True)
     
-    # Analytics and reporting
+    # Analytics and reporting (custom fields)
     busiest_day_of_week = fields.Selection([
         ('0', 'Monday'),
         ('1', 'Tuesday'),
@@ -41,23 +41,16 @@ class PosConfig(models.Model):
         ('6', 'Sunday')
     ], string='Busiest Day of Week', compute='_compute_analytics')
     
-    # Company and currency
-    company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
-    currency_id = fields.Many2one('res.currency', string='Currency',
-                                  default=lambda self: self.env.company.currency_id)
-    
-    # Session management
+    # Session management (custom fields)
     current_session_id = fields.Many2one('pos.session', string='Current Session', compute='_compute_current_session')
     # Use related field from pos.session state - no override needed
     current_session_state = fields.Selection(related='current_session_id.state', readonly=True, string='Session State')
     
-    # Customer analytics
+    # Customer analytics (custom fields)
     customer_count = fields.Integer(string='Customer Count', compute='_compute_analytics')
     customer_satisfaction_score = fields.Float(string='Customer Satisfaction Score', compute='_compute_analytics')
     
-    # Date and document services
-    date = fields.Date(string='Configuration Date', default=fields.Date.today)
+    # Records management custom fields
     document_scanning_rate = fields.Float(string='Document Scanning Rate', default=25.0)
     document_storage_rate = fields.Float(string='Document Storage Rate', default=3.0)
     enable_document_services = fields.Boolean(string='Enable Document Services', default=True,
@@ -65,45 +58,14 @@ class PosConfig(models.Model):
     enable_walk_in_service = fields.Boolean(string='Enable Walk-in Service', default=True,
                                             help='Allow walk-in customers without appointments')
     
-    # Interface configuration
-    iface_available_categ_ids = fields.Many2many('pos.category', string='Available Categories')
-    iface_cashdrawer = fields.Boolean(string='Cashdrawer Interface', default=False)
-    iface_customer_facing_display = fields.Boolean(string='Customer Facing Display', default=False)
-    iface_display_categ_images = fields.Boolean(string='Display Category Images', default=True)
-    iface_electronic_scale = fields.Boolean(string='Electronic Scale Interface', default=False)
-    iface_orderline_notes = fields.Boolean(string='Order Line Notes', default=True)
-    iface_payment_terminal = fields.Boolean(string='Payment Terminal Interface', default=False)
-    iface_print_auto = fields.Boolean(string='Auto Print', default=False)
-    iface_print_skip_screen = fields.Boolean(string='Skip Print Screen', default=False)
-    iface_printbill = fields.Boolean(string='Print Bill', default=True)
-    iface_scan_via_proxy = fields.Boolean(string='Scan Via Proxy', default=False)
-    iface_splitbill = fields.Boolean(string='Split Bill', default=False)
-    iface_start_categ_id = fields.Many2one('pos.category', string='Start Category')
-    iface_tipproduct = fields.Boolean(string='Tip Product', default=False)
-    
-    # Journal and invoice configuration
-    invoice_journal_id = fields.Many2one('account.journal', string='Invoice Journal')
-    journal_id = fields.Many2one('account.journal', string='Sales Journal')
-    
-    # Session tracking
+    # Session tracking (custom fields)
     last_session_closing_date = fields.Datetime(string='Last Session Closing Date', compute='_compute_session_info')
-    limit_categories = fields.Boolean(string='Limit Categories', default=False)
     
-    # Product and pricing
-    list_price = fields.Float(string='List Price', default=0.0)
+    # Product and pricing (custom fields)
     loyalty_program_usage = fields.Float(string='Loyalty Program Usage (%)', compute='_compute_analytics')
     
-    # Module configuration
-    module_pos_discount = fields.Boolean(string='POS Discount Module', default=False)
-    module_pos_loyalty = fields.Boolean(string='POS Loyalty Module', default=False)
-    module_pos_mercury = fields.Boolean(string='POS Mercury Module', default=False)
-    module_pos_reprint = fields.Boolean(string='POS Reprint Module', default=False)
-    module_pos_restaurant = fields.Boolean(string='POS Restaurant Module', default=False)
-    
-    # Analytics and performance
+    # Custom analytics and performance (no base field conflicts)
     most_sold_product_id = fields.Many2one('product.template', string='Most Sold Product', compute='_compute_analytics')
-    name = fields.Char(string='Point of Sale Name', required=True)
-    open_session_ids = fields.One2many('pos.session', 'config_id', string='Open Sessions')
     order_count = fields.Integer(string='Order Count', compute='_compute_analytics')
     
     # Additional relationship fields for comprehensive POS management
@@ -112,29 +74,21 @@ class PosConfig(models.Model):
     order_ids = fields.One2many('pos.order', 'config_id', string='All Orders',
                                 help='All orders processed through this POS configuration')
     
-    # Payment and operations
-    payment_method_ids = fields.Many2many('pos.payment.method', string='Payment Methods')
+    # Custom payment analytics (no base field conflicts)
     peak_hour_sales = fields.Float(string='Peak Hour Sales', compute='_compute_analytics')
     performance_data_ids = fields.One2many('pos.performance.data', 'config_id', string='Performance Data')
-    picking_type_id = fields.Many2one('stock.picking.type', string='Picking Type')
     pos_category_id = fields.Many2one('pos.category', string='Default Category')
-    pricelist_id = fields.Many2one('product.pricelist', string='Default Pricelist')
     product_id = fields.Many2one('product.template', string='Default Product')
     
-    # System configuration
-    proxy_ip = fields.Char(string='Proxy IP Address')
-    receipt_footer = fields.Text(string='Receipt Footer')
-    receipt_header = fields.Text(string='Receipt Header')
+    # Custom service requirements (no base field conflicts)
     require_customer_info = fields.Boolean(string='Require Customer Info', default=True,
                                            help='Require customer information for records services')
     requires_appointment = fields.Boolean(string='Requires Appointment', default=False,
                                           help='Require appointments for certain services')
-    restrict_price_control = fields.Boolean(string='Restrict Price Control', default=False)
     
-    # Service configuration
+    # Service configuration (custom fields)
     rush_service_multiplier = fields.Float(string='Rush Service Multiplier', default=1.5,
                                            help='Price multiplier for rush services')
-    scan_product_check = fields.Boolean(string='Scan Product Check', default=False)
     service_product_ids = fields.Many2many('product.template', string='Service Products',
                                            help='Products available for records management services')
     service_type = fields.Selection([
@@ -143,31 +97,24 @@ class PosConfig(models.Model):
         ('hybrid', 'Hybrid')
     ], string='Service Type', default='full_service')
     
-    # Session and transaction management
+    # Session and transaction management (custom fields)
     session_count = fields.Integer(string='Session Count', compute='_compute_session_info')
     session_user_id = fields.Many2one('res.users', string='Session User')
     shredding_service_rate = fields.Float(string='Shredding Service Rate', default=0.10,
                                           help='Rate per pound for shredding services')
     split_transactions = fields.Boolean(string='Split Transactions', default=False)
-    state = fields.Selection([
-        ('active', 'Active'),
-        ('inactive', 'Inactive'),
-        ('maintenance', 'Maintenance')
-    ], string='State', default='active')
-    stock_location_id = fields.Many2one('stock.location', string='Stock Location')
     
-    # Financial tracking
+    # Financial tracking (custom fields)
     total_sales = fields.Float(string='Total Sales', compute='_compute_analytics')
     total_transactions = fields.Integer(string='Total Transactions', compute='_compute_analytics')
     transaction_count = fields.Integer(string='Transaction Count', compute='_compute_analytics')
-    type = fields.Selection([
+    pos_type = fields.Selection([
         ('records_management', 'Records Management'),
         ('standard', 'Standard POS'),
         ('kiosk', 'Self-Service Kiosk')
     ], string='POS Type', default='records_management')
-    use_payment_terminal = fields.Boolean(string='Use Payment Terminal', default=False)
     
-    # Walk-in customer configuration
+    # Walk-in customer configuration (custom fields)
     walk_in_customer_id = fields.Many2one('res.partner', string='Walk-in Customer Template',
                                           help='Default customer for walk-in services')
     walk_in_pricelist_id = fields.Many2one('product.pricelist', string='Walk-in Pricelist',
