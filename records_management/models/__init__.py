@@ -48,6 +48,11 @@ from . import records_box_transfer
 # Shredding and Services
 from . import shredding_service
 from . import shredding_hard_drive
+from . import shredding_bin_models
+from . import work_order_shredding
+from . import document_retrieval_work_order
+from . import shredding_rates
+from . import shredding_inventory
 
 # Billing
 from . import billing

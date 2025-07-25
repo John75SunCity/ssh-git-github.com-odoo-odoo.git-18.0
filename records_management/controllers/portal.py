@@ -6,6 +6,7 @@ from odoo.exceptions import AccessError
 import csv
 import io
 import json
+from datetime import datetime, timedelta
 
 
 class CustomerPortalExtended(CustomerPortal):
@@ -1187,3 +1188,234 @@ class PortalCertificateController(http.Controller):
             ('Content-Length', len(pdf_content)),
         ]
         return request.make_response(pdf_content, headers=headers)
+    
+    # Document Retrieval Portal Routes
+    
+    @http.route('/my/document-retrieval', type='http', auth='user', website=True)
+    def portal_document_retrieval(self, **kw):
+        """Portal page for document retrieval requests with pricing"""
+        partner = request.env.user.partner_id
+        
+        # Get customer-specific rates if available
+        customer_rates = request.env['customer.retrieval.rates'].sudo().search([
+            ('customer_id', '=', partner.id),
+            ('active', '=', True),
+            ('effective_date', '<=', fields.Date.today()),
+            '|',
+            ('expiry_date', '=', False),
+            ('expiry_date', '>=', fields.Date.today())
+        ], limit=1, order='effective_date desc')
+        
+        # Get base rates
+        base_rates = request.env['document.retrieval.rates'].sudo().search([
+            ('active', '=', True)
+        ], limit=1, order='effective_date desc')
+        
+        if not base_rates:
+            # Create default rates if none exist
+            base_rates = request.env['document.retrieval.rates'].sudo().create({
+                'name': 'Default Rates',
+            })
+        
+        # Get customer's boxes and documents for selection
+        boxes = request.env['records.box'].sudo().search([
+            ('customer_id', '=', partner.id),
+            ('state', '=', 'active')
+        ], order='name')
+        
+        documents = request.env['records.document'].sudo().search([
+            ('customer_id', '=', partner.id),
+            ('state', '=', 'active')
+        ], order='name')
+        
+        # Get existing work orders
+        work_orders = request.env['document.retrieval.work.order'].sudo().search([
+            ('customer_id', '=', partner.id)
+        ], order='request_date desc', limit=10)
+        
+        values = {
+            'partner': partner,
+            'customer_rates': customer_rates,
+            'base_rates': base_rates,
+            'has_custom_rates': bool(customer_rates),
+            'boxes': boxes,
+            'documents': documents,
+            'work_orders': work_orders,
+            'page_name': 'document_retrieval',
+        }
+        
+        return request.render('records_management.portal_document_retrieval', values)
+    
+    @http.route('/my/document-retrieval/calculate-price', type='json', auth='user')
+    def calculate_retrieval_price(self, priority='standard', item_count=1, **kw):
+        """Calculate retrieval price based on priority and item count"""
+        partner = request.env.user.partner_id
+        
+        # Get customer-specific rates
+        customer_rates = request.env['customer.retrieval.rates'].sudo().search([
+            ('customer_id', '=', partner.id),
+            ('active', '=', True),
+            ('effective_date', '<=', fields.Date.today()),
+            '|',
+            ('expiry_date', '=', False),
+            ('expiry_date', '>=', fields.Date.today())
+        ], limit=1, order='effective_date desc')
+        
+        # Get base rates
+        base_rates = request.env['document.retrieval.rates'].sudo().search([
+            ('active', '=', True)
+        ], limit=1, order='effective_date desc')
+        
+        if not base_rates:
+            return {'error': 'No rates configured'}
+        
+        # Calculate pricing
+        if customer_rates and customer_rates.custom_retrieval_rate > 0:
+            retrieval_rate = customer_rates.custom_retrieval_rate
+        else:
+            retrieval_rate = base_rates.base_retrieval_rate
+        
+        if customer_rates and customer_rates.custom_delivery_rate > 0:
+            delivery_rate = customer_rates.custom_delivery_rate
+        else:
+            delivery_rate = base_rates.base_delivery_rate
+        
+        # Base costs
+        base_retrieval_cost = retrieval_rate * item_count
+        base_delivery_cost = delivery_rate
+        
+        # Priority fees
+        priority_item_fee = 0.0
+        priority_order_fee = 0.0
+        
+        if priority == 'rush_eod':
+            priority_item_fee = base_rates.rush_end_of_day_item
+            priority_order_fee = base_rates.rush_end_of_day_order
+        elif priority == 'rush_4h':
+            priority_item_fee = base_rates.rush_4_hours_item
+            priority_order_fee = base_rates.rush_4_hours_order
+        elif priority == 'emergency_1h':
+            priority_item_fee = base_rates.emergency_1_hour_item
+            priority_order_fee = base_rates.emergency_1_hour_order
+        elif priority == 'weekend':
+            priority_item_fee = base_rates.weekend_item
+            priority_order_fee = base_rates.weekend_order
+        elif priority == 'holiday':
+            priority_item_fee = base_rates.holiday_item
+            priority_order_fee = base_rates.holiday_order
+        
+        # Apply customer multipliers
+        if customer_rates:
+            if priority in ['rush_eod', 'rush_4h']:
+                multiplier = customer_rates.rush_multiplier
+            elif priority == 'emergency_1h':
+                multiplier = customer_rates.emergency_multiplier
+            elif priority == 'weekend':
+                multiplier = customer_rates.weekend_multiplier
+            elif priority == 'holiday':
+                multiplier = customer_rates.holiday_multiplier
+            else:
+                multiplier = 1.0
+            
+            priority_item_fee *= multiplier
+            priority_order_fee *= multiplier
+        
+        priority_item_cost = priority_item_fee * item_count
+        priority_order_cost = priority_order_fee
+        
+        total_cost = base_retrieval_cost + base_delivery_cost + priority_item_cost + priority_order_cost
+        
+        return {
+            'base_retrieval_cost': base_retrieval_cost,
+            'base_delivery_cost': base_delivery_cost,
+            'priority_item_cost': priority_item_cost,
+            'priority_order_cost': priority_order_cost,
+            'total_cost': total_cost,
+            'has_custom_rates': bool(customer_rates),
+            'priority_label': dict([
+                ('standard', 'Standard (48 Hours)'),
+                ('rush_eod', 'Rush (End of Day)'),
+                ('rush_4h', 'Rush (4 Hours)'),
+                ('emergency_1h', 'Emergency (1 Hour)'),
+                ('weekend', 'Weekend Service'),
+                ('holiday', 'Holiday Service')
+            ]).get(priority, priority)
+        }
+    
+    @http.route('/my/document-retrieval/create', type='http', auth='user', website=True, methods=['POST'], csrf=False)
+    def create_retrieval_work_order(self, **post):
+        """Create a new document retrieval work order"""
+        partner = request.env.user.partner_id
+        
+        # Get form data
+        priority = post.get('priority', 'standard')
+        delivery_date = post.get('delivery_date')
+        delivery_address = post.get('delivery_address', '')
+        delivery_contact = post.get('delivery_contact', '')
+        delivery_phone = post.get('delivery_phone', '')
+        retrieval_notes = post.get('retrieval_notes', '')
+        
+        # Create work order
+        work_order_vals = {
+            'customer_id': partner.id,
+            'priority': priority,
+            'delivery_address': delivery_address,
+            'delivery_contact': delivery_contact,
+            'delivery_phone': delivery_phone,
+            'retrieval_notes': retrieval_notes,
+            'requested_by': request.env.user.id,
+        }
+        
+        if delivery_date:
+            try:
+                work_order_vals['delivery_date'] = datetime.strptime(delivery_date, '%Y-%m-%d').date()
+            except:
+                pass
+        
+        work_order = request.env['document.retrieval.work.order'].sudo().create(work_order_vals)
+        
+        # Add items to retrieve
+        items_data = json.loads(post.get('items', '[]'))
+        for item_data in items_data:
+            item_vals = {
+                'work_order_id': work_order.id,
+                'item_type': item_data.get('type', 'box'),
+                'description': item_data.get('description', ''),
+                'barcode': item_data.get('barcode', ''),
+                'retrieval_notes': item_data.get('notes', ''),
+            }
+            
+            if item_data.get('type') == 'box' and item_data.get('box_id'):
+                item_vals['box_id'] = int(item_data['box_id'])
+            elif item_data.get('type') == 'document' and item_data.get('document_id'):
+                item_vals['document_id'] = int(item_data['document_id'])
+            
+            request.env['document.retrieval.item'].sudo().create(item_vals)
+        
+        # Send notification
+        work_order.message_post(
+            body=_('Work order created via customer portal. Estimated cost: $%.2f') % work_order.total_cost
+        )
+        
+        return request.redirect('/my/document-retrieval?message=Order created successfully!')
+    
+    @http.route('/my/document-retrieval/<int:order_id>', type='http', auth='user', website=True)
+    def view_retrieval_work_order(self, order_id, **kw):
+        """View a specific work order"""
+        partner = request.env.user.partner_id
+        
+        work_order = request.env['document.retrieval.work.order'].sudo().search([
+            ('id', '=', order_id),
+            ('customer_id', '=', partner.id)
+        ])
+        
+        if not work_order:
+            return request.not_found()
+        
+        values = {
+            'work_order': work_order,
+            'partner': partner,
+            'page_name': 'document_retrieval_detail',
+        }
+        
+        return request.render('records_management.portal_document_retrieval_detail', values)

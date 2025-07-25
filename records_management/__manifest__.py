@@ -78,6 +78,7 @@ Features:
         'data/portal_mail_templates.xml',  # New: Email/SMS templates for notifications
         'data/naid_compliance_data.xml',  # New: NAID data for audits/signatures
         'data/feedback_survey_data.xml',  # New: Default feedback survey
+        'data/document_retrieval_rates.xml',  # New: Default retrieval rates
         # Load base menu structure first (parent menus only, no actions)
         'views/records_management_base_menus.xml',
         # Load all action-containing view files
@@ -110,6 +111,10 @@ Features:
         'views/portal_feedback_views.xml',  # New: Feedback views
         'views/box_type_converter_views.xml',  # New: Box type conversion wizard
         'views/permanent_flag_wizard_views.xml',  # New: Permanent flag security wizard
+        'views/document_retrieval_work_order_views.xml',  # New: Document retrieval work orders
+        'views/document_retrieval_rates_views.xml',  # New: Document retrieval rates
+        'views/shredding_rates_views.xml',  # New: Shredding rates views
+        'views/shredding_inventory_views.xml',  # New: Shredding inventory views
         'report/destruction_certificate_report.xml',
         'report/bale_label_report.xml',
         'report/portal_audit_report.xml',  # New: Audit reports for NAID
@@ -118,6 +123,7 @@ Features:
         'views/portal_request_menus.xml',  # Loaded after main menus for proper dependencies
         'views/portal_feedback_menus.xml',  # Loaded after main menus for proper dependencies
         'views/paper_recycling_menus.xml',  # New: Paper recycling menus
+        'views/document_retrieval_menus.xml',  # New: Document retrieval menus
         'templates/my_portal_inventory.xml',
         'templates/portal_quote_template.xml',  # New: Quote generation
         'templates/portal_billing_template.xml',  # New: Billing updates
@@ -125,6 +131,7 @@ Features:
         'templates/portal_overview.xml',  # New: Portal overview/tour
         'templates/portal_feedback_template.xml',  # New: Feedback form
         'templates/portal_centralized_docs.xml',  # New: Centralized docs dashboard
+        'templates/portal_document_retrieval.xml',  # New: Document retrieval portal
     ],
     'demo': [
         'demo/odoo.xml',

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Document Retrieval Rates Views -->
+
+    <!-- Base Rates Tree View -->
+    <record id="view_document_retrieval_rates_tree" model="ir.ui.view">
+        <field name="name">document.retrieval.rates.tree</field>
+        <field name="model">document.retrieval.rates</field>
+        <field name="arch" type="xml">
+            <tree string="Document Retrieval Base Rates">
+                <field name="name"/>
+                <field name="base_retrieval_rate" widget="monetary"/>
+                <field name="base_delivery_rate" widget="monetary"/>
+                <field name="rush_end_of_day_item" widget="monetary"/>
+                <field name="emergency_1_hour_item" widget="monetary"/>
+                <field name="effective_date"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Base Rates Form View -->
+    <record id="view_document_retrieval_rates_form" model="ir.ui.view">
+        <field name="name">document.retrieval.rates.form</field>
+        <field name="model">document.retrieval.rates</field>
+        <field name="arch" type="xml">
+            <form string="Document Retrieval Base Rates">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Rate Configuration Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Basic Information">
+                            <field name="effective_date"/>
+                            <field name="active"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Working Hours">
+                            <field name="working_hours_start" widget="float_time"/>
+                            <field name="working_hours_end" widget="float_time"/>
+                        </group>
+                    </group>
+
+                    <group string="Base Rates">
+                        <group>
+                            <field name="base_retrieval_rate" widget="monetary"/>
+                            <field name="base_delivery_rate" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <group string="Priority Fees - Per Item">
+                        <group>
+                            <field name="rush_end_of_day_item" widget="monetary"/>
+                            <field name="rush_4_hours_item" widget="monetary"/>
+                            <field name="emergency_1_hour_item" widget="monetary"/>
+                        </group>
+                        <group>
+                            <field name="weekend_item" widget="monetary"/>
+                            <field name="holiday_item" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <group string="Priority Fees - Per Work Order">
+                        <group>
+                            <field name="rush_end_of_day_order" widget="monetary"/>
+                            <field name="rush_4_hours_order" widget="monetary"/>
+                            <field name="emergency_1_hour_order" widget="monetary"/>
+                        </group>
+                        <group>
+                            <field name="weekend_order" widget="monetary"/>
+                            <field name="holiday_order" widget="monetary"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Customer Rates Tree View -->
+    <record id="view_customer_retrieval_rates_tree" model="ir.ui.view">
+        <field name="name">customer.retrieval.rates.tree</field>
+        <field name="model">customer.retrieval.rates</field>
+        <field name="arch" type="xml">
+            <tree string="Customer-Specific Retrieval Rates">
+                <field name="customer_id"/>
+                <field name="custom_retrieval_rate" widget="monetary"/>
+                <field name="custom_delivery_rate" widget="monetary"/>
+                <field name="rush_multiplier"/>
+                <field name="emergency_multiplier"/>
+                <field name="effective_date"/>
+                <field name="expiry_date"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Customer Rates Form View -->
+    <record id="view_customer_retrieval_rates_form" model="ir.ui.view">
+        <field name="name">customer.retrieval.rates.form</field>
+        <field name="model">customer.retrieval.rates</field>
+        <field name="arch" type="xml">
+            <form string="Customer-Specific Retrieval Rates">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="customer_id" placeholder="Select Customer"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Contract Period">
+                            <field name="effective_date"/>
+                            <field name="expiry_date"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Company">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <group string="Custom Base Rates" help="Leave at 0.0 to use standard base rates">
+                        <group>
+                            <field name="custom_retrieval_rate" widget="monetary"/>
+                            <field name="custom_delivery_rate" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <group string="Priority Service Multipliers" help="1.0 = standard rates, 0.5 = 50% discount, 1.5 = 50% premium">
+                        <group>
+                            <field name="rush_multiplier"/>
+                            <field name="emergency_multiplier"/>
+                        </group>
+                        <group>
+                            <field name="weekend_multiplier"/>
+                            <field name="holiday_multiplier"/>
+                        </group>
+                    </group>
+
+                    <group string="Contract Notes">
+                        <field name="contract_notes" nolabel="1" placeholder="Special terms and conditions for this customer..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Pricing Wizard Form View -->
+    <record id="view_document_retrieval_pricing_wizard_form" model="ir.ui.view">
+        <field name="name">document.retrieval.pricing.wizard.form</field>
+        <field name="model">document.retrieval.pricing.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Pricing Breakdown">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        <h4>Pricing Breakdown for Work Order</h4>
+                        <p>This shows the detailed pricing calculation for the selected work order.</p>
+                    </div>
+
+                    <group>
+                        <group string="Order Information">
+                            <field name="customer_name" readonly="1"/>
+                            <field name="priority" readonly="1"/>
+                            <field name="item_count" readonly="1"/>
+                            <field name="has_custom_rates" readonly="1" widget="boolean"/>
+                        </group>
+                    </group>
+
+                    <group string="Cost Breakdown">
+                        <group string="Base Costs">
+                            <field name="base_retrieval_cost" widget="monetary" readonly="1"/>
+                            <field name="base_delivery_cost" widget="monetary" readonly="1"/>
+                        </group>
+                        <group string="Priority Fees">
+                            <field name="priority_item_cost" widget="monetary" readonly="1"/>
+                            <field name="priority_order_cost" widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="total_cost" widget="monetary" readonly="1" class="oe_subtotal_footer_separator"/>
+                    </group>
+
+                    <div class="alert alert-success" role="alert" attrs="{'invisible': [('has_custom_rates', '=', False)]}">
+                        <strong>Custom Rates Applied:</strong> This customer has special pricing terms.
+                    </div>
+
+                    <div class="alert alert-warning" role="alert" attrs="{'invisible': [('priority', '=', 'standard')]}">
+                        <strong>Priority Service:</strong> Additional fees apply for expedited service.
+                    </div>
+                </sheet>
+
+                <footer>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_document_retrieval_rates" model="ir.actions.act_window">
+        <field name="name">Document Retrieval Base Rates</field>
+        <field name="res_model">document.retrieval.rates</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Set up your base rates for document retrieval!
+            </p>
+            <p>
+                Configure standard rates and priority fees for document retrieval services.
+                These rates will be used as defaults for all customers unless they have
+                custom rates configured.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_customer_retrieval_rates" model="ir.actions.act_window">
+        <field name="name">Customer-Specific Retrieval Rates</field>
+        <field name="res_model">customer.retrieval.rates</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Set up customer-specific rates!
+            </p>
+            <p>
+                Configure special pricing for customers with custom rate agreements.
+                These rates will override the base rates for the specified customers.
+            </p>
+        </field>
+    </record>
+
+</odoo>

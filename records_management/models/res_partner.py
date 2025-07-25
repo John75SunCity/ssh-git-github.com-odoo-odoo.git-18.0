@@ -14,6 +14,35 @@ class ResPartner(models.Model):
         string='Records Management Customer', default=False,
         help="Check if this partner is a records management customer")
     
+    # Shredding Service Preferences
+    preferred_shredding_service = fields.Selection([
+        ('standard', 'Standard (Off-site) - Default'),
+        ('mobile', 'Mobile (On-site) - Default')
+    ], string='Preferred Shredding Service', default='standard',
+       help="Default shredding service preference for work orders and portal requests")
+    
+    allow_service_type_changes = fields.Boolean(
+        string='Allow Service Type Changes', default=True,
+        help="Allow technicians/staff to change service type during work order creation")
+    
+    mobile_shredding_available = fields.Boolean(
+        string='Mobile Shredding Available', default=True,
+        help="Whether mobile shredding service is available for this customer location")
+    
+    # Service Notes
+    shredding_service_notes = fields.Text(
+        string='Shredding Service Notes',
+        help="Special instructions or notes for shredding services")
+    
+    # Bin Management
+    assigned_bin_ids = fields.One2many('shredding.bin', 'customer_id', string='Assigned Bins')
+    bin_count = fields.Integer(string='Bin Count', compute='_compute_bin_count')
+    
+    # Customer Rates
+    shredding_rates_ids = fields.One2many('shredding.customer.rate', 'customer_id', 
+                                         string='Custom Shredding Rates')
+    has_custom_rates = fields.Boolean(string='Has Custom Rates', compute='_compute_has_custom_rates')
+    
     # Departmental Billing Preferences
     billing_method = fields.Selection([
         ('consolidated', 'Consolidated Billing - One Invoice with Department Breakdown'),
@@ -122,6 +151,18 @@ class ResPartner(models.Model):
         for partner in self:
             partner.document_count = len(partner.document_ids)
 
+    @api.depends('assigned_bin_ids')
+    def _compute_bin_count(self):
+        """Compute the number of assigned bins"""
+        for partner in self:
+            partner.bin_count = len(partner.assigned_bin_ids)
+
+    @api.depends('shredding_rates_ids')
+    def _compute_has_custom_rates(self):
+        """Check if customer has any custom shredding rates"""
+        for partner in self:
+            partner.has_custom_rates = len(partner.shredding_rates_ids) > 0
+
     def action_view_customer_documents(self):
         """View all documents for this customer"""
         self.ensure_one()
@@ -129,6 +170,30 @@ class ResPartner(models.Model):
             'name': _('Customer Documents'),
             'type': 'ir.actions.act_window',
             'res_model': 'records.document',
+            'view_mode': 'tree,form',
+            'domain': [('customer_id', '=', self.id)],
+            'context': {'default_customer_id': self.id},
+        }
+
+    def action_view_assigned_bins(self):
+        """View bins assigned to this customer"""
+        self.ensure_one()
+        return {
+            'name': _('Assigned Bins - %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'shredding.bin',
+            'view_mode': 'tree,form',
+            'domain': [('customer_id', '=', self.id)],
+            'context': {'default_customer_id': self.id},
+        }
+
+    def action_manage_shredding_rates(self):
+        """Manage custom shredding rates for this customer"""
+        self.ensure_one()
+        return {
+            'name': _('Shredding Rates - %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'shredding.customer.rate',
             'view_mode': 'tree,form',
             'domain': [('customer_id', '=', self.id)],
             'context': {'default_customer_id': self.id},
