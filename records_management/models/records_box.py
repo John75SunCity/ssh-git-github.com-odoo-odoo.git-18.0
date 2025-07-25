@@ -195,32 +195,29 @@ class RecordsBox(models.Model):
 
     # Phase 1 Critical Fields - Added by automated script
     
-    @api.depends('box_type')
+    @api.depends('box_type_code')
     def _compute_box_type_display(self):
         """Compute display name for box type"""
         for record in self:
-            if record.box_type:
-                record.box_type_display = dict(record._fields['box_type'].selection).get(record.box_type, record.box_type)
+            if record.box_type_code:
+                record.box_type_display = dict(record._fields['box_type_code'].selection).get(record.box_type_code, record.box_type_code)
             else:
                 record.box_type_display = ''
     
-    @api.depends('box_type', 'service_level')
+    @api.depends('box_type_code')
     def _compute_monthly_rate(self):
-        """Compute monthly storage rate based on box type and service level"""
+        """Compute monthly storage rate based on box type"""
         for record in self:
-            # Basic rate calculation - in real implementation this would use rate tables
-            base_rate = 10.0  # Base monthly rate
-            if record.box_type == 'legal':
-                base_rate = 12.0
-            elif record.box_type == 'letter':
-                base_rate = 8.0
-            elif record.box_type == 'oversized':
+            # Basic rate calculation based on box type code
+            base_rate = 10.0  # Base monthly rate for Type 01
+            if record.box_type_code == '01':  # Standard File Box
+                base_rate = 10.0
+            elif record.box_type_code == '03':  # Map Box
                 base_rate = 15.0
-            
-            if record.service_level == 'premium':
-                base_rate *= 1.5
-            elif record.service_level == 'express':
-                base_rate *= 2.0
+            elif record.box_type_code == '04':  # Oversize/Odd-shaped Box
+                base_rate = 18.0
+            elif record.box_type_code == '06':  # Specialty/Vault Box
+                base_rate = 25.0
                 
             record.monthly_rate = base_rate
     
