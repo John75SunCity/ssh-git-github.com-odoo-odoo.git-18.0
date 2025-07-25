@@ -129,82 +129,72 @@ class PosConfig(models.Model):
     sequence_line_id = fields.Many2one('ir.sequence', string='Line Sequence')
     view_mode = fields.Char(string='View Mode', default='tree,form')
 
-    @api.depends('open_session_ids')
+    @api.depends('session_ids')
     def _compute_current_session(self):
         """Compute current active session"""
         for config in self:
-            current_session = config.open_session_ids.filtered(lambda s: s.state == 'opened')
+            # Get the current open session from all sessions
+            current_session = config.session_ids.filtered(lambda s: s.state == 'opened')
             config.current_session_id = current_session[0] if current_session else False
 
-    @api.depends('session_ids', 'order_ids', 'open_session_ids')
+    @api.depends('session_ids', 'order_ids')
     def _compute_analytics(self):
         """Compute various analytics for POS configuration"""
         for config in self:
             # Get orders for this config
             orders = self.env['pos.order'].search([('config_id', '=', config.id)])
             
-            # Basic metrics
+            # Basic counts
             config.order_count = len(orders)
+            config.customer_count = len(orders.mapped('partner_id'))
             config.transaction_count = len(orders)
             config.total_transactions = len(orders)
-            config.session_count = len(config.open_session_ids) + len(
-                self.env['pos.session'].search([
-                    ('config_id', '=', config.id),
-                    ('state', '=', 'closed')
-                ])
-            )
             
+            # Financial metrics
+            config.total_sales = sum(orders.mapped('amount_total'))
+            config.avg_transaction_value = config.total_sales / len(orders) if orders else 0.0
+            
+            # Session analytics
+            sessions = config.session_ids
+            config.session_count = len(sessions)
+            
+            # Get open sessions from session_ids instead of open_session_ids
+            open_sessions = sessions.filtered(lambda s: s.state == 'opened')
+            
+            # Time-based analytics
             if orders:
-                # Financial metrics
-                config.total_sales = sum(orders.mapped('amount_total'))
-                config.avg_transaction_value = config.total_sales / len(orders)
+                # Calculate average transaction time (simplified)
+                config.avg_transaction_time = 5.0  # Default estimate
                 
-                # Customer metrics
-                config.customer_count = len(orders.mapped('partner_id'))
+                # Peak hour sales (simplified calculation)
+                config.peak_hour_sales = config.total_sales * 0.3  # Assume 30% during peak
                 
                 # Most sold product
-                order_lines = orders.mapped('lines')
-                if order_lines:
-                    product_sales = {}
-                    for line in order_lines:
-                        product_id = line.product_id.id
-                        if product_id in product_sales:
-                            product_sales[product_id] += line.qty
+                product_sales = {}
+                for order in orders:
+                    for line in order.lines:
+                        product = line.product_id.product_tmpl_id
+                        if product.id in product_sales:
+                            product_sales[product.id] += line.qty
                         else:
-                            product_sales[product_id] = line.qty
-                    
-                    if product_sales:
-                        most_sold_id = max(product_sales, key=product_sales.get)
-                        config.most_sold_product_id = most_sold_id
+                            product_sales[product.id] = line.qty
                 
-                # Time-based analytics
-                session_durations = []
-                for session in self.env['pos.session'].search([('config_id', '=', config.id)]):
-                    if session.start_at and session.stop_at:
-                        duration = (session.stop_at - session.start_at).total_seconds() / 60
-                        session_durations.append(duration)
-                
-                if session_durations:
-                    config.avg_transaction_time = sum(session_durations) / len(session_durations)
-                
-                # Peak hour analysis (simplified)
-                config.peak_hour_sales = config.total_sales * 0.15  # Assume 15% during peak
-                
-                # Busiest day (simplified - would need more complex logic in real implementation)
-                config.busiest_day_of_week = '4'  # Friday as default
+                if product_sales:
+                    most_sold_id = max(product_sales, key=product_sales.get)
+                    config.most_sold_product_id = most_sold_id
+                else:
+                    config.most_sold_product_id = False
             else:
-                # Reset all computed values
-                config.total_sales = 0.0
-                config.avg_transaction_value = 0.0
-                config.customer_count = 0
                 config.avg_transaction_time = 0.0
                 config.peak_hour_sales = 0.0
                 config.most_sold_product_id = False
-                config.busiest_day_of_week = False
+                
+            # Customer satisfaction and loyalty (simplified)
+            config.customer_satisfaction_score = 85.0  # Default good score
+            config.loyalty_program_usage = 25.0  # Default percentage
             
-            # Default analytics values
-            config.customer_satisfaction_score = 4.2  # Default good rating
-            config.loyalty_program_usage = 25.0  # Default 25% usage
+            # Day of week analysis (simplified)
+            config.busiest_day_of_week = '4'  # Friday as default
 
     @api.depends('current_session_id')
     def _compute_session_info(self):
