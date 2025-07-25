@@ -221,18 +221,17 @@ class RecordsBox(models.Model):
                 
             record.monthly_rate = base_rate
     
-    @api.depends('capacity', 'documents_stored')
+    @api.depends('capacity', 'document_count')
     def _compute_used_capacity(self):
         """Compute used capacity percentage"""
         for record in self:
             if record.capacity and record.capacity > 0:
-                record.used_capacity = (record.documents_stored / record.capacity) * 100
+                record.used_capacity = (record.document_count / record.capacity) * 100
             else:
                 record.used_capacity = 0.0
     
-    @api.depends()
+    @api.depends('document_ids')
     def _compute_document_count(self):
         """Compute number of documents in this box"""
         for record in self:
-            documents = self.env['records.document'].search([('box_id', '=', record.id)])
-            record.document_count = len(documents)
+            record.document_count = len(record.document_ids)
