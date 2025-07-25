@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Paper Bale Recycling Views -->
-    
+
     <!-- Tree View -->
     <record id="view_paper_bale_recycling_tree" model="ir.ui.view">
         <field name="name">paper.bale.recycling.tree</field>
         <field name="model">paper.bale.recycling</field>
         <field name="arch" type="xml">
-            <tree string="Paper Bales" 
-                  decoration-success="status=='paid'" 
-                  decoration-info="status=='shipped'" 
-                  decoration-warning="status=='assigned_load'"
-                  decoration-muted="status=='produced'"
-                  sample="1">
+            <tree string="Paper Bales" decoration-success="status=='paid'" decoration-info="status=='shipped'" decoration-warning="status=='assigned_load'" decoration-muted="status=='produced'" sample="1">
                 <field name="display_name"/>
                 <field name="bale_number"/>
                 <field name="paper_grade"/>
@@ -21,10 +16,7 @@
                 <field name="production_date"/>
                 <field name="weighed_by"/>
                 <field name="load_number"/>
-                <field name="status" widget="badge" 
-                       decoration-success="status=='paid'" 
-                       decoration-info="status=='shipped'" 
-                       decoration-warning="status=='assigned_load'"/>
+                <field name="status" widget="badge" decoration-success="status=='paid'" decoration-info="status=='shipped'" decoration-warning="status=='assigned_load'"/>
                 <field name="mobile_entry" widget="boolean_toggle"/>
             </tree>
         </field>
@@ -37,20 +29,13 @@
         <field name="arch" type="xml">
             <form string="Paper Bale">
                 <header>
-                    <button name="action_store_bale" string="Store Bale" type="object" 
-                            class="btn-primary" invisible="status != 'produced'"/>
-                    <button name="action_assign_to_load" string="Assign to Load" type="object" 
-                            class="btn-primary" invisible="status not in ['produced', 'stored']"/>
-                    <button name="action_ready_to_ship" string="Ready to Ship" type="object" 
-                            class="btn-warning" invisible="status != 'assigned_load'"/>
-                    <button name="action_ship_bale" string="Ship Bale" type="object" 
-                            class="btn-success" invisible="status != 'ready_ship'"/>
-                    <button name="action_mark_delivered" string="Mark Delivered" type="object" 
-                            class="btn-info" invisible="status != 'shipped'"/>
-                    <button name="action_mark_paid" string="Mark Paid" type="object" 
-                            class="btn-success" invisible="status != 'delivered'"/>
-                    <field name="status" widget="statusbar" 
-                           statusbar_visible="produced,stored,assigned_load,ready_ship,shipped,delivered,paid"/>
+                    <button name="action_store_bale" string="Store Bale" type="object" class="btn-primary" invisible="status != 'produced'"/>
+                    <button name="action_assign_to_load" string="Assign to Load" type="object" class="btn-primary" invisible="status not in ['produced', 'stored']"/>
+                    <button name="action_ready_to_ship" string="Ready to Ship" type="object" class="btn-warning" invisible="status != 'assigned_load'"/>
+                    <button name="action_ship_bale" string="Ship Bale" type="object" class="btn-success" invisible="status != 'ready_ship'"/>
+                    <button name="action_mark_delivered" string="Mark Delivered" type="object" class="btn-info" invisible="status != 'shipped'"/>
+                    <button name="action_mark_paid" string="Mark Paid" type="object" class="btn-success" invisible="status != 'delivered'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="produced,stored,assigned_load,ready_ship,shipped,delivered,paid"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -60,7 +45,8 @@
                         <div class="o_row">
                             <field name="paper_grade" widget="selection"/>
                             <span class="mx-2">•</span>
-                            <field name="weight_lbs"/> lbs
+                            <field name="weight_lbs"/>
+ lbs
                             <span class="mx-2">•</span>
                             Bale #<field name="bale_number"/>
                         </div>
@@ -135,19 +121,23 @@
                                         <field name="display_name"/>
                                     </strong>
                                     <span class="float-end">
-                                        <field name="status" widget="label_selection" 
-                                               options="{'classes': {'produced': 'secondary', 'stored': 'info', 'assigned_load': 'warning', 'ready_ship': 'primary', 'shipped': 'success', 'delivered': 'info', 'paid': 'success'}}"/>
+                                        <field name="status" widget="label_selection" options="{'classes': {'produced': 'secondary', 'stored': 'info', 'assigned_load': 'warning', 'ready_ship': 'primary', 'shipped': 'success', 'delivered': 'info', 'paid': 'success'}}"/>
                                     </span>
                                 </div>
                                 <span class="o_kanban_record_subtitle text-muted">
-                                    <field name="paper_grade"/> • <field name="weight_lbs"/> lbs
+                                    <field name="paper_grade"/>
+ •                                    <field name="weight_lbs"/>
+ lbs
                                 </span>
                             </div>
                             <div class="o_kanban_record_body">
                                 <div class="row">
                                     <div class="col-12">
-                                        <strong>Produced:</strong> <field name="production_date"/><br/>
-                                        <strong>Bale #:</strong> <field name="bale_number"/>
+                                        <strong>Produced:</strong>
+                                        <field name="production_date"/>
+                                        <br/>
+                                        <strong>Bale #:</strong>
+                                        <field name="bale_number"/>
                                         <span t-if="record.mobile_entry.raw_value" class="float-end">
                                             <i class="fa fa-mobile text-primary" title="Mobile Entry"/>
                                         </span>
@@ -172,11 +162,11 @@
                 <field name="paper_grade"/>
                 <field name="weighed_by"/>
                 <field name="load_shipment_id"/>
-                
+
                 <filter string="White Paper" name="white_paper" domain="[('paper_grade', '=', 'white')]"/>
                 <filter string="Mixed Paper" name="mixed_paper" domain="[('paper_grade', '=', 'mixed')]"/>
                 <filter string="Cardboard" name="cardboard" domain="[('paper_grade', '=', 'cardboard')]"/>
-                
+
                 <separator/>
                 <filter string="Produced" name="produced" domain="[('status', '=', 'produced')]"/>
                 <filter string="Stored" name="stored" domain="[('status', '=', 'stored')]"/>
@@ -185,16 +175,16 @@
                 <filter string="Shipped" name="shipped" domain="[('status', '=', 'shipped')]"/>
                 <filter string="Delivered" name="delivered" domain="[('status', '=', 'delivered')]"/>
                 <filter string="Paid" name="paid" domain="[('status', '=', 'paid')]"/>
-                
+
                 <separator/>
                 <filter string="Mobile Entry" name="mobile_entry" domain="[('mobile_entry', '=', True)]"/>
                 <filter string="Has Contamination" name="contamination" domain="[('contamination', '=', True)]"/>
-                
+
                 <separator/>
                 <filter string="Today" name="today" domain="[('production_date', '=', context_today())]"/>
                 <filter string="This Week" name="this_week" domain="[('production_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
                 <filter string="This Month" name="this_month" domain="[('production_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
-                
+
                 <group expand="0" string="Group By">
                     <filter string="Paper Grade" name="group_paper_grade" context="{'group_by': 'paper_grade'}"/>
                     <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>

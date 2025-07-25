@@ -1,30 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Paper Recycling Menu Structure -->
-    
+
     <!-- Main Paper Recycling Menu -->
-    <menuitem id="menu_paper_recycling" 
-              name="Paper Recycling" 
-              parent="records_management_main_menu" 
-              sequence="25"
-              groups="records_management.group_records_user"/>
-    
+    <menuitem id="menu_paper_recycling" name="Paper Recycling" parent="records_management_main_menu" sequence="25" groups="records_management.group_records_user"/>
+
     <!-- Paper Bales Menu -->
-    <menuitem id="menu_paper_bales" 
-              name="Paper Bales" 
-              parent="menu_paper_recycling" 
-              action="action_paper_bale_recycling"
-              sequence="10"
-              groups="records_management.group_records_user"/>
-    
+    <menuitem id="menu_paper_bales" name="Paper Bales" parent="menu_paper_recycling" action="action_paper_bale_recycling" sequence="10" groups="records_management.group_records_user"/>
+
     <!-- Load Shipments Menu -->
-    <menuitem id="menu_load_shipments" 
-              name="Load Shipments" 
-              parent="menu_paper_recycling" 
-              action="action_paper_load_shipment"
-              sequence="20"
-              groups="records_management.group_records_user"/>
-    
+    <menuitem id="menu_load_shipments" name="Load Shipments" parent="menu_paper_recycling" action="action_paper_load_shipment" sequence="20" groups="records_management.group_records_user"/>
+
     <!-- Paper Recycling Dashboard Action -->
     <record id="action_paper_recycling_dashboard" model="ir.actions.act_window">
         <field name="name">Paper Recycling Dashboard</field>
@@ -43,13 +29,8 @@
             </p>
         </field>
     </record>
-    
+
     <!-- Dashboard Menu -->
-    <menuitem id="menu_paper_recycling_dashboard" 
-              name="Dashboard" 
-              parent="menu_paper_recycling" 
-              action="action_paper_recycling_dashboard"
-              sequence="5"
-              groups="records_management.group_records_user"/>
+    <menuitem id="menu_paper_recycling_dashboard" name="Dashboard" parent="menu_paper_recycling" action="action_paper_recycling_dashboard" sequence="5" groups="records_management.group_records_user"/>
 
 </odoo>

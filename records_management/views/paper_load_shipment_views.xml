@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Paper Load Shipment Views -->
-    
+
     <!-- Tree View -->
     <record id="view_paper_load_shipment_tree" model="ir.ui.view">
         <field name="name">paper.load.shipment.tree</field>
         <field name="model">paper.load.shipment</field>
         <field name="arch" type="xml">
-            <tree string="Load Shipments" 
-                  decoration-success="status=='paid'" 
-                  decoration-info="status=='delivered'" 
-                  decoration-warning="status=='in_transit'"
-                  decoration-primary="status=='ready_pickup'"
-                  sample="1">
+            <tree string="Load Shipments" decoration-success="status=='paid'" decoration-info="status=='delivered'" decoration-warning="status=='in_transit'" decoration-primary="status=='ready_pickup'" sample="1">
                 <field name="load_number"/>
                 <field name="pickup_date"/>
                 <field name="driver_name"/>
@@ -23,10 +18,7 @@
                 <field name="white_paper_count"/>
                 <field name="mixed_paper_count"/>
                 <field name="cardboard_count"/>
-                <field name="status" widget="badge" 
-                       decoration-success="status=='paid'" 
-                       decoration-info="status=='delivered'" 
-                       decoration-warning="status=='in_transit'"/>
+                <field name="status" widget="badge" decoration-success="status=='paid'" decoration-info="status=='delivered'" decoration-warning="status=='in_transit'"/>
                 <field name="manifest_generated" widget="boolean_toggle"/>
                 <field name="mobile_manifest" widget="boolean_toggle"/>
             </tree>
@@ -40,22 +32,14 @@
         <field name="arch" type="xml">
             <form string="Load Shipment">
                 <header>
-                    <button name="action_schedule_pickup" string="Schedule Pickup" type="object" 
-                            class="btn-primary" invisible="status != 'draft'"/>
-                    <button name="action_ready_for_pickup" string="Ready for Pickup" type="object" 
-                            class="btn-primary" invisible="status != 'scheduled'"/>
-                    <button name="action_generate_manifest" string="Generate Manifest" type="object" 
-                            class="btn-warning" invisible="status not in ['scheduled', 'ready_pickup']"/>
-                    <button name="action_mark_in_transit" string="Mark In Transit" type="object" 
-                            class="btn-success" invisible="status != 'ready_pickup'"/>
-                    <button name="action_mark_delivered" string="Mark Delivered" type="object" 
-                            class="btn-info" invisible="status != 'in_transit'"/>
-                    <button name="action_create_invoice" string="Create Invoice" type="object" 
-                            class="btn-warning" invisible="status != 'delivered'"/>
-                    <button name="action_mark_paid" string="Mark Paid" type="object" 
-                            class="btn-success" invisible="status != 'invoiced'"/>
-                    <field name="status" widget="statusbar" 
-                           statusbar_visible="draft,scheduled,ready_pickup,in_transit,delivered,invoiced,paid"/>
+                    <button name="action_schedule_pickup" string="Schedule Pickup" type="object" class="btn-primary" invisible="status != 'draft'"/>
+                    <button name="action_ready_for_pickup" string="Ready for Pickup" type="object" class="btn-primary" invisible="status != 'scheduled'"/>
+                    <button name="action_generate_manifest" string="Generate Manifest" type="object" class="btn-warning" invisible="status not in ['scheduled', 'ready_pickup']"/>
+                    <button name="action_mark_in_transit" string="Mark In Transit" type="object" class="btn-success" invisible="status != 'ready_pickup'"/>
+                    <button name="action_mark_delivered" string="Mark Delivered" type="object" class="btn-info" invisible="status != 'in_transit'"/>
+                    <button name="action_create_invoice" string="Create Invoice" type="object" class="btn-warning" invisible="status != 'delivered'"/>
+                    <button name="action_mark_paid" string="Mark Paid" type="object" class="btn-success" invisible="status != 'invoiced'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,scheduled,ready_pickup,in_transit,delivered,invoiced,paid"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -75,8 +59,7 @@
                                 <span class="o_stat_text">Total lbs</span>
                             </div>
                         </button>
-                        <button name="action_view_manifest" type="object" class="oe_stat_button" icon="fa-file-text" 
-                                invisible="not manifest_generated">
+                        <button name="action_view_manifest" type="object" class="oe_stat_button" icon="fa-file-text" invisible="not manifest_generated">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_text">View Manifest</span>
                             </div>
@@ -134,18 +117,24 @@
                         <group name="grade_breakdown" string="Paper Grade Breakdown">
                             <label for="white_paper_weight" string="White Paper:"/>
                             <div class="o_row">
-                                <field name="white_paper_weight" readonly="1"/> lbs
-                                (<field name="white_paper_count" readonly="1"/> bales)
+                                <field name="white_paper_weight" readonly="1"/>
+ lbs
+                                (                                <field name="white_paper_count" readonly="1"/>
+ bales)
                             </div>
                             <label for="mixed_paper_weight" string="Mixed Paper:"/>
                             <div class="o_row">
-                                <field name="mixed_paper_weight" readonly="1"/> lbs
-                                (<field name="mixed_paper_count" readonly="1"/> bales)
+                                <field name="mixed_paper_weight" readonly="1"/>
+ lbs
+                                (                                <field name="mixed_paper_count" readonly="1"/>
+ bales)
                             </div>
                             <label for="cardboard_weight" string="Cardboard:"/>
                             <div class="o_row">
-                                <field name="cardboard_weight" readonly="1"/> lbs
-                                (<field name="cardboard_count" readonly="1"/> bales)
+                                <field name="cardboard_weight" readonly="1"/>
+ lbs
+                                (                                <field name="cardboard_count" readonly="1"/>
+ bales)
                             </div>
                         </group>
                     </group>
@@ -228,30 +217,39 @@
                                         <field name="load_number"/>
                                     </strong>
                                     <span class="float-end">
-                                        <field name="status" widget="label_selection" 
-                                               options="{'classes': {'draft': 'secondary', 'scheduled': 'primary', 'ready_pickup': 'warning', 'in_transit': 'info', 'delivered': 'success', 'invoiced': 'warning', 'paid': 'success'}}"/>
+                                        <field name="status" widget="label_selection" options="{'classes': {'draft': 'secondary', 'scheduled': 'primary', 'ready_pickup': 'warning', 'in_transit': 'info', 'delivered': 'success', 'invoiced': 'warning', 'paid': 'success'}}"/>
                                     </span>
                                 </div>
                                 <span class="o_kanban_record_subtitle text-muted">
-                                    <field name="driver_name"/> • <field name="pickup_date"/>
+                                    <field name="driver_name"/>
+ •                                    <field name="pickup_date"/>
                                 </span>
                             </div>
                             <div class="o_kanban_record_body">
                                 <!-- Load Progress Visualization -->
                                 <div class="mb-2">
                                     <div class="d-flex justify-content-between">
-                                        <small><strong><field name="bale_count"/> bales</strong></small>
-                                        <small><strong><field name="total_weight_lbs"/> lbs</strong></small>
+                                        <small>
+                                            <strong>
+                                                <field name="bale_count"/>
+ bales</strong>
+                                        </small>
+                                        <small>
+                                            <strong>
+                                                <field name="total_weight_lbs"/>
+ lbs</strong>
+                                        </small>
                                     </div>
                                     <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-success" role="progressbar" 
-                                             t-att-style="'width: ' + str(min(100, (record.bale_count.raw_value or 0) * 2)) + '%'">
+                                        <div class="progress-bar bg-success" role="progressbar" t-att-style="'width: ' + str(min(100, (record.bale_count.raw_value or 0) * 2)) + '%'">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
-                                        <strong>Customer:</strong> <field name="customer_id"/><br/>
+                                        <strong>Customer:</strong>
+                                        <field name="customer_id"/>
+                                        <br/>
                                         <span t-if="record.manifest_generated.raw_value" class="float-end">
                                             <i class="fa fa-file-text-o text-success" title="Manifest Generated"/>
                                         </span>
@@ -274,7 +272,7 @@
                 <field name="load_number"/>
                 <field name="driver_name"/>
                 <field name="customer_id"/>
-                
+
                 <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
                 <filter string="Scheduled" name="scheduled" domain="[('status', '=', 'scheduled')]"/>
                 <filter string="Ready for Pickup" name="ready_pickup" domain="[('status', '=', 'ready_pickup')]"/>
@@ -282,16 +280,16 @@
                 <filter string="Delivered" name="delivered" domain="[('status', '=', 'delivered')]"/>
                 <filter string="Invoiced" name="invoiced" domain="[('status', '=', 'invoiced')]"/>
                 <filter string="Paid" name="paid" domain="[('status', '=', 'paid')]"/>
-                
+
                 <separator/>
                 <filter string="Manifest Generated" name="manifest_generated" domain="[('manifest_generated', '=', True)]"/>
                 <filter string="Mobile Manifest" name="mobile_manifest" domain="[('mobile_manifest', '=', True)]"/>
-                
+
                 <separator/>
                 <filter string="Today" name="today" domain="[('pickup_date', '=', context_today())]"/>
                 <filter string="This Week" name="this_week" domain="[('pickup_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
                 <filter string="This Month" name="this_month" domain="[('pickup_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
-                
+
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
                     <filter string="Pickup Date" name="group_pickup_date" context="{'group_by': 'pickup_date'}"/>

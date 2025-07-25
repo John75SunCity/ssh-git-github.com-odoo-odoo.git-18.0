@@ -145,6 +145,17 @@ class ProductTemplate(models.Model):
     webhook_notifications = fields.Boolean(string='Webhook Notifications', default=False)
     weight = fields.Float(string='Weight')
     witness_destruction = fields.Boolean(string='Witness Destruction', default=False)
+    
+    # Additional computed fields used in _compute_product_metrics
+    product_variant_count = fields.Integer(string='Variant Count', compute='_compute_product_metrics')
+    profit = fields.Float(string='Profit', compute='_compute_product_metrics')
+    profit_margin = fields.Float(string='Profit Margin (%)', compute='_compute_product_metrics')
+    qty_available = fields.Float(string='Quantity Available', compute='_compute_product_metrics')
+    revenue = fields.Float(string='Revenue', compute='_compute_product_metrics')
+    sales_count = fields.Integer(string='Sales Count', compute='_compute_product_metrics')
+    sales_velocity = fields.Float(string='Sales Velocity', compute='_compute_product_metrics')
+    total_revenue_ytd = fields.Float(string='Total Revenue YTD', compute='_compute_product_metrics')
+    total_sales_ytd = fields.Float(string='Total Sales YTD', compute='_compute_product_metrics')
 
     @api.depends('type')
     def _compute_retention_note(self):
@@ -265,7 +276,7 @@ class ProductTemplate(models.Model):
             
             product.product_insights = "\n".join(insights)
 
-    @api.depends('stock_move_ids')
+    @api.depends('list_price', 'standard_price', 'product_variant_ids')
     def _compute_product_metrics(self):
         """Compute additional product metrics"""
         for product in self:
