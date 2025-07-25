@@ -162,8 +162,20 @@ class NAIDCompliance(models.Model):
     compliance_alerts = fields.Boolean(string='Compliance Alerts Enabled', default=True)
     management_alerts = fields.Boolean(string='Management Alerts', default=True)
     regulatory_notifications = fields.Boolean(string='Regulatory Notifications', default=True)
-    notification_recipients = fields.Many2many('res.users', string='Notification Recipients')
-    escalation_contacts = fields.Many2many('res.users', string='Escalation Contacts')
+    notification_recipients = fields.Many2many(
+        'res.users', 
+        'naid_compliance_notification_rel', 
+        'compliance_id', 
+        'user_id',
+        string='Notification Recipients'
+    )
+    escalation_contacts = fields.Many2many(
+        'res.users', 
+        'naid_compliance_escalation_rel', 
+        'compliance_id', 
+        'user_id',
+        string='Escalation Contacts'
+    )
     
     # One2many relationships - converted to compute methods to avoid KeyError
     audit_count = fields.Integer(string='Audit Count', compute='_compute_counts')
