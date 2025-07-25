@@ -22,14 +22,15 @@ from . import box_contents
 from . import pickup_request_item
 from . import pickup_request
 from . import temp_inventory
-from . import bale
-from . import load
-from . import paper_bale
-from . import records_management_bale
 
-# Paper Recycling Models (Business-focused)
+# New Paper Recycling Models (Business-focused)
 from . import paper_bale_recycling
 from . import paper_load_shipment
+
+# Legacy bale models (for compatibility)
+from . import bale
+from . import paper_bale
+from . import load
 
 # NAID Compliance Models
 from . import naid_compliance
