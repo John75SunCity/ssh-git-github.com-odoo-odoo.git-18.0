@@ -173,6 +173,8 @@ class PortalFeedback(models.Model):
     competitive_mention = fields.Boolean(string='Competitive Mention')
     
     # Revenue and business impact
+    currency_id = fields.Many2one('res.currency', string='Currency', 
+                                  default=lambda self: self.env.company.currency_id)
     revenue_impact = fields.Monetary(string='Revenue Impact', currency_field='currency_id')
     customer_tier = fields.Selection([
         ('bronze', 'Bronze'),
@@ -238,6 +240,106 @@ class PortalFeedback(models.Model):
     customer_feedback_count = fields.Integer(string='Customer Feedback Count', compute='_compute_feedback_count')
     improvement_action_count = fields.Integer(string='Improvement Action Count', compute='_compute_improvement_count')
     related_ticket_count = fields.Integer(string='Related Ticket Count', compute='_compute_related_count')
-    
-    # One2many relationships
-    followup_
+
+    # Compute methods for the fields above
+    @api.depends()
+    def _compute_response_time(self):
+        """Compute response time in hours"""
+        for record in self:
+            if record.create_date and record.response_date:
+                delta = record.response_date - record.create_date
+                record.response_time_hours = delta.total_seconds() / 3600
+            else:
+                record.response_time_hours = 0.0
+
+    @api.depends()
+    def _compute_resolution_time(self):
+        """Compute resolution time in hours"""
+        for record in self:
+            if record.create_date and record.resolution_date:
+                delta = record.resolution_date - record.create_date
+                record.resolution_time_hours = delta.total_seconds() / 3600
+            else:
+                record.resolution_time_hours = 0.0
+
+    @api.depends('feedback_description', 'overall_rating', 'satisfaction_level')
+    def _compute_sentiment_analysis(self):
+        """Compute sentiment analysis based on feedback description and ratings"""
+        for record in self:
+            if not record.feedback_description and not record.overall_rating:
+                record.sentiment_analysis = 'neutral'
+                continue
+                
+            # Simple sentiment analysis based on rating and keywords
+            if record.overall_rating:
+                rating_num = int(record.overall_rating) if record.overall_rating.isdigit() else 3
+                if rating_num >= 4:
+                    record.sentiment_analysis = 'positive'
+                elif rating_num <= 2:
+                    record.sentiment_analysis = 'negative'
+                else:
+                    record.sentiment_analysis = 'neutral'
+            else:
+                # Check satisfaction level as fallback
+                if record.satisfaction_level in ['satisfied', 'very_satisfied']:
+                    record.sentiment_analysis = 'positive'
+                elif record.satisfaction_level in ['dissatisfied', 'very_dissatisfied']:
+                    record.sentiment_analysis = 'negative'
+                else:
+                    record.sentiment_analysis = 'neutral'
+
+    @api.depends('sentiment_analysis', 'overall_rating', 'urgency_level', 'priority')
+    def _compute_retention_risk(self):
+        """Compute customer retention risk based on sentiment and other factors"""
+        for record in self:
+            # Simple risk assessment logic
+            risk_factors = 0
+            
+            # Check sentiment
+            if record.sentiment_analysis == 'negative':
+                risk_factors += 2
+            elif record.sentiment_analysis == 'positive':
+                risk_factors -= 1
+                
+            # Check rating
+            if record.overall_rating:
+                rating_num = int(record.overall_rating) if record.overall_rating.isdigit() else 3
+                if rating_num <= 2:
+                    risk_factors += 2
+                elif rating_num >= 4:
+                    risk_factors -= 1
+                    
+            # Check urgency and priority
+            if record.urgency_level == 'critical' or record.priority == 'urgent':
+                risk_factors += 1
+                
+            # Determine risk level
+            if risk_factors >= 3:
+                record.retention_risk = 'critical'
+            elif risk_factors >= 2:
+                record.retention_risk = 'high'
+            elif risk_factors >= 1:
+                record.retention_risk = 'medium'
+            else:
+                record.retention_risk = 'low'
+
+    @api.depends()
+    def _compute_feedback_count(self):
+        """Compute customer feedback count"""
+        for record in self:
+            # This would typically count related feedback records
+            record.customer_feedback_count = 1  # Simplified
+
+    @api.depends()
+    def _compute_improvement_count(self):
+        """Compute improvement action count"""
+        for record in self:
+            # This would typically count related improvement actions
+            record.improvement_action_count = 0  # Simplified
+
+    @api.depends()
+    def _compute_related_count(self):
+        """Compute related ticket count"""
+        for record in self:
+            # This would typically count related tickets/issues
+            record.related_ticket_count = 0  # Simplified
