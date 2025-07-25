@@ -78,6 +78,11 @@ class HrEmployee(models.Model):
         help='Specialization level in records management'
     )
     
+    # NAID Compliance Tracking
+    audit_log_ids = fields.One2many('naid.audit.log', 'employee_id', 
+                                   string='NAID Audit Logs',
+                                   help='NAID compliance audit logs for this employee')
+    
     @api.depends('user_id')
     def _compute_imported_user_count(self):
         """Compute number of users imported by this employee."""

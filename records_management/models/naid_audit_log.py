@@ -125,6 +125,43 @@ class NAIDAuditLog(models.Model):
                                  default=lambda self: self.env.company)
     active = fields.Boolean('Active', default=True)
     
+    # Computed fields
+    days_since_logged = fields.Integer('Days Since Logged', compute='_compute_days_since_logged')
+    overdue_action = fields.Boolean('Overdue Action', compute='_compute_overdue_status')
+    days_until_deadline = fields.Integer('Days Until Deadline', compute='_compute_days_until_deadline')
+    
+    @api.depends('log_datetime')
+    def _compute_days_since_logged(self):
+        """Compute days since the log entry was created"""
+        for record in self:
+            if record.log_datetime:
+                delta = fields.Datetime.now() - record.log_datetime
+                record.days_since_logged = delta.days
+            else:
+                record.days_since_logged = 0
+    
+    @api.depends('corrective_action_deadline', 'corrective_action_completed')
+    def _compute_overdue_status(self):
+        """Determine if corrective actions are overdue"""
+        for record in self:
+            if record.corrective_action_required and record.corrective_action_deadline:
+                record.overdue_action = (
+                    not record.corrective_action_completed and 
+                    record.corrective_action_deadline < fields.Date.today()
+                )
+            else:
+                record.overdue_action = False
+    
+    @api.depends('corrective_action_deadline')
+    def _compute_days_until_deadline(self):
+        """Compute days until corrective action deadline"""
+        for record in self:
+            if record.corrective_action_deadline:
+                delta = record.corrective_action_deadline - fields.Date.today()
+                record.days_until_deadline = delta.days
+            else:
+                record.days_until_deadline = 0
+    
     @api.model
     def create(self, vals):
         """Generate sequence for log reference"""

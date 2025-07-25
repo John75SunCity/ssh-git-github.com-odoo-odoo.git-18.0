@@ -147,6 +147,53 @@ class ShreddingHardDrive(models.Model):
                                  default=lambda self: self.env.company)
     active = fields.Boolean('Active', default=True)
     
+    # Computed fields
+    days_in_custody = fields.Integer('Days in Custody', compute='_compute_custody_days')
+    service_name = fields.Char('Service Name', related='service_id.name', readonly=True)
+    compliance_score = fields.Float('Compliance Score', compute='_compute_compliance_score')
+    destruction_complete = fields.Boolean('Destruction Complete', compute='_compute_destruction_status')
+    
+    @api.depends('received_date')
+    def _compute_custody_days(self):
+        """Compute days the device has been in custody"""
+        for record in self:
+            if record.received_date:
+                end_date = record.destruction_date or fields.Datetime.now()
+                delta = end_date - record.received_date
+                record.days_in_custody = delta.days
+            else:
+                record.days_in_custody = 0
+    
+    @api.depends('nist_compliant', 'dod_compliant', 'hipaa_compliant', 'destruction_verified', 'certificate_generated')
+    def _compute_compliance_score(self):
+        """Compute compliance score based on standards met"""
+        for record in self:
+            score = 0
+            total_checks = 5
+            
+            if record.nist_compliant:
+                score += 1
+            if record.dod_compliant:
+                score += 1
+            if record.hipaa_compliant:
+                score += 1
+            if record.destruction_verified:
+                score += 1
+            if record.certificate_generated:
+                score += 1
+                
+            record.compliance_score = (score / total_checks) * 100
+    
+    @api.depends('state', 'destruction_verified', 'certificate_generated')
+    def _compute_destruction_status(self):
+        """Determine if destruction process is complete"""
+        for record in self:
+            record.destruction_complete = (
+                record.state in ('destroyed', 'certified') and
+                record.destruction_verified and
+                record.certificate_generated
+            )
+    
     @api.model
     def create(self, vals):
         """Generate sequence for drive reference"""
