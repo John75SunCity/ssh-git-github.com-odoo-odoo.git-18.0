@@ -235,3 +235,120 @@ class RecordsBox(models.Model):
         """Compute number of documents in this box"""
         for record in self:
             record.document_count = len(record.document_ids)
+
+    # Action Methods
+    def action_view_documents(self):
+        """View documents in this box"""
+        self.ensure_one()
+        return {
+            'name': _('Documents in Box %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document',
+            'view_mode': 'tree,form',
+            'domain': [('box_id', '=', self.id)],
+            'context': {'default_box_id': self.id}
+        }
+
+    def action_generate_barcode(self):
+        """Generate or print barcode for this box"""
+        self.ensure_one()
+        if not self.barcode:
+            # Generate barcode if it doesn't exist
+            sequence = self.env['ir.sequence'].next_by_code('records.box.barcode') or str(self.id).zfill(12)
+            self.barcode = sequence
+        
+        # Return action to print barcode label
+        return {
+            'type': 'ir.actions.report',
+            'report_name': 'records_management.report_box_barcode_label',
+            'report_type': 'qweb-pdf',
+            'data': {'box_id': self.id},
+            'context': self.env.context
+        }
+
+    def action_move_box(self):
+        """Move box to a different location"""
+        self.ensure_one()
+        return {
+            'name': _('Move Box'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.box.movement',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_box_id': self.id,
+                'default_from_location_id': self.location_id.id,
+                'default_movement_type': 'relocation'
+            }
+        }
+
+    def action_schedule_destruction(self):
+        """Schedule this box for destruction"""
+        self.ensure_one()
+        return {
+            'name': _('Schedule Destruction'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.deletion.request',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_customer_id': self.customer_id.id,
+                'default_department_id': self.department_id.id,
+                'default_box_ids': [(6, 0, [self.id])],
+                'default_description': f'Destruction request for box {self.name}'
+            }
+        }
+
+    def action_store_box(self):
+        """Mark box as stored/active"""
+        self.ensure_one()
+        self.write({
+            'state': 'active',
+            'item_status': 'active',
+            'storage_date': fields.Date.today()
+        })
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Box Stored'),
+                'message': _('Box %s has been marked as stored and active.') % self.name,
+                'type': 'success'
+            }
+        }
+
+    def action_view_movements(self):
+        """View movement history for this box"""
+        self.ensure_one()
+        return {
+            'name': _('Movement History - %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.box.movement',
+            'view_mode': 'tree,form',
+            'domain': [('box_id', '=', self.id)],
+            'context': {'default_box_id': self.id}
+        }
+
+    def action_view_requests(self):
+        """View service requests for this box"""
+        self.ensure_one()
+        return {
+            'name': _('Service Requests - %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'pickup.request',
+            'view_mode': 'tree,form',
+            'domain': [('box_id', '=', self.id)],
+            'context': {'default_box_id': self.id}
+        }
+
+    @api.model
+    def action_bulk_convert_box_type(self):
+        """Bulk convert box types - open wizard"""
+        return {
+            'name': _('Bulk Convert Box Types'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.box.type.converter',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': self.env.context
+        }
