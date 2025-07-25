@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 
 class PosConfig(models.Model):
-    _inherit = 'pos.config'
+    _inherit = ['pos.config', 'mail.thread', 'mail.activity.mixin']
     _description = 'Enhanced POS Configuration for Records Management'
 
     # Enhanced POS configuration fields for records management - FIELD ENHANCEMENT COMPLETE ✅
@@ -106,6 +106,12 @@ class PosConfig(models.Model):
     open_session_ids = fields.One2many('pos.session', 'config_id', string='Open Sessions')
     order_count = fields.Integer(string='Order Count', compute='_compute_analytics')
     
+    # Additional relationship fields for comprehensive POS management
+    session_ids = fields.One2many('pos.session', 'config_id', string='All Sessions',
+                                  help='All sessions (open and closed) for this POS configuration')
+    order_ids = fields.One2many('pos.order', 'config_id', string='All Orders',
+                                help='All orders processed through this POS configuration')
+    
     # Payment and operations
     payment_method_ids = fields.Many2many('pos.payment.method', string='Payment Methods')
     peak_hour_sales = fields.Float(string='Peak Hour Sales', compute='_compute_analytics')
@@ -185,7 +191,7 @@ class PosConfig(models.Model):
             current_session = config.open_session_ids.filtered(lambda s: s.state == 'opened')
             config.current_session_id = current_session[0] if current_session else False
 
-    @api.depends('activity_ids')
+    @api.depends('activity_ids.user_id', 'activity_ids.date_deadline')
     def _compute_activity_state(self):
         """Compute activity state based on activities"""
         for config in self:
@@ -208,7 +214,7 @@ class PosConfig(models.Model):
                 
             config.activity_state = 'planned'
 
-    @api.depends('order_ids', 'session_ids')
+    @api.depends()  # No dependencies since we manually search for data
     def _compute_analytics(self):
         """Compute various analytics for POS configuration"""
         for config in self:
