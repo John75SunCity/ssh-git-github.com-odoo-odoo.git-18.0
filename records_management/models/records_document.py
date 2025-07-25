@@ -24,7 +24,11 @@ class RecordsDocument(models.Model):
     )
     date = fields.Date('Document Date', default=fields.Date.context_today)
     description = fields.Html('Description')
-    tags = fields.Many2many('records.tag', string='Tags')
+    tags = fields.Many2many('records.tag', 
+                           relation='records_document_tag_rel',
+                           column1='document_id',
+                           column2='tag_id',
+                           string='Tags')
 
     # Date tracking fields
     created_date = fields.Date(

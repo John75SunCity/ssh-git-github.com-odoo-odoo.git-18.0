@@ -6,19 +6,13 @@ from dateutil.relativedelta import relativedelta
 
 
 class PosConfig(models.Model):
-    _inherit = ['pos.config', 'mail.thread', 'mail.activity.mixin']
+    _inherit = 'pos.config'
     _description = 'Enhanced POS Configuration for Records Management'
 
     # Enhanced POS configuration fields for records management - FIELD ENHANCEMENT COMPLETE ✅
     # NOTE: Removed fields that already exist in base pos.config to avoid conflicts
+    # NOTE: Simplified inheritance to avoid multiple inheritance conflicts
     
-    # Activity and state management (custom fields only)
-    activity_exception_decoration = fields.Char(string='Activity Exception Decoration')
-    activity_state = fields.Selection([
-        ('overdue', 'Overdue'),
-        ('today', 'Today'),
-        ('planned', 'Planned')
-    ], string='Activity State', compute='_compute_activity_state')
     
     # Records management integration (custom fields only)
     auto_create_customer = fields.Boolean(string='Auto Create Customer', default=True,
@@ -141,29 +135,6 @@ class PosConfig(models.Model):
         for config in self:
             current_session = config.open_session_ids.filtered(lambda s: s.state == 'opened')
             config.current_session_id = current_session[0] if current_session else False
-
-    @api.depends('activity_ids.user_id', 'activity_ids.date_deadline')
-    def _compute_activity_state(self):
-        """Compute activity state based on activities"""
-        for config in self:
-            activities = config.activity_ids.filtered(lambda a: a.user_id == self.env.user)
-            if not activities:
-                config.activity_state = False
-                continue
-                
-            # Check for overdue activities
-            overdue = activities.filtered(lambda a: a.date_deadline < fields.Date.today())
-            if overdue:
-                config.activity_state = 'overdue'
-                continue
-                
-            # Check for today's activities
-            today = activities.filtered(lambda a: a.date_deadline == fields.Date.today())
-            if today:
-                config.activity_state = 'today'
-                continue
-                
-            config.activity_state = 'planned'
 
     @api.depends('session_ids', 'order_ids', 'open_session_ids')
     def _compute_analytics(self):

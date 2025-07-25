@@ -34,7 +34,12 @@ class ShreddingService(models.Model):
         domain="[('product_id.name', '=', 'Shredding Bin')]"
     )
     box_quantity = fields.Integer(string='Number of Boxes')
-    shredded_box_ids = fields.Many2many('stock.lot', string='Shredded Boxes', domain="[('customer_id', '!=', False)]")
+    shredded_box_ids = fields.Many2many('stock.lot', 
+                                        relation='shredding_service_shredded_box_rel',
+                                        column1='service_id',
+                                        column2='lot_id',
+                                        string='Shredded Boxes', 
+                                        domain="[('customer_id', '!=', False)]")
     hard_drive_quantity = fields.Integer(string='Number of Hard Drives')  # New
     hard_drive_ids = fields.One2many('shredding.hard_drive', 'service_id', string='Hard Drive Details')
     hard_drive_scanned_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Scanned Count', compute_sudo=False)
@@ -51,7 +56,11 @@ class ShreddingService(models.Model):
     timestamp = fields.Datetime(default=fields.Datetime.now, readonly=True)
     latitude = fields.Float(string='Latitude (for mobile verification)', digits=(16, 8))
     longitude = fields.Float('Longitude', digits=(16, 8))
-    attachment_ids = fields.Many2many('ir.attachment', string='Attachments (e.g., photos, CCTV clips)')
+    attachment_ids = fields.Many2many('ir.attachment', 
+                                     relation='shredding_service_attachment_rel',
+                                     column1='service_id',
+                                     column2='attachment_id',
+                                     string='Attachments (e.g., photos, CCTV clips)')
     map_display = fields.Char(compute='_compute_map_display', store=True)
     certificate_id = fields.Many2one('ir.attachment', string='Destruction Certificate', readonly=True)  # New for auto-certificate
     invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True)  # New for auto-invoicing
