@@ -100,6 +100,8 @@ Features:
         'views/departmental_billing_views.xml',
         'views/barcode_views.xml',
         'views/paper_bale_views.xml',
+        'views/paper_bale_recycling_views.xml',  # New: Paper recycling bale views
+        'views/paper_load_shipment_views.xml',  # New: Load shipment views
         'views/pos_config_views.xml',
         'views/visitor_pos_wizard_views.xml',
         'views/portal_request_views.xml',  # New: Views for portal requests
@@ -114,6 +116,7 @@ Features:
         'views/barcode_menus.xml',  # Loaded after main menus for proper dependencies
         'views/portal_request_menus.xml',  # Loaded after main menus for proper dependencies
         'views/portal_feedback_menus.xml',  # Loaded after main menus for proper dependencies
+        'views/paper_recycling_menus.xml',  # New: Paper recycling menus
         'templates/my_portal_inventory.xml',
         'templates/portal_quote_template.xml',  # New: Quote generation
         'templates/portal_billing_template.xml',  # New: Billing updates
@@ -137,6 +140,9 @@ Features:
             'records_management/static/src/xml/map_widget.xml',
             'records_management/static/src/js/trailer_visualization.js',
             'records_management/static/src/xml/trailer_visualization.xml',
+            'records_management/static/src/js/truck_widget.js',  # Original truck widget
+            'records_management/static/src/js/paper_load_truck_widget.js',  # New: Enhanced paper load truck widget
+            'records_management/static/src/js/paper_load_progress_field.js',  # New: Field widget for paper loads
             'records_management/static/src/js/portal_inventory_highlights.js',  # New: JS for inventory highlights
             'records_management/static/src/js/naid_compliance_widget.js',  # New: Compliance widgets
         ],

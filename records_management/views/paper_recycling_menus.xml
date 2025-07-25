@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Paper Recycling Menu Structure -->
+    
+    <!-- Main Paper Recycling Menu -->
+    <menuitem id="menu_paper_recycling" 
+              name="Paper Recycling" 
+              parent="records_management_main_menu" 
+              sequence="25"
+              groups="records_management.group_records_user"/>
+    
+    <!-- Paper Bales Menu -->
+    <menuitem id="menu_paper_bales" 
+              name="Paper Bales" 
+              parent="menu_paper_recycling" 
+              action="action_paper_bale_recycling"
+              sequence="10"
+              groups="records_management.group_records_user"/>
+    
+    <!-- Load Shipments Menu -->
+    <menuitem id="menu_load_shipments" 
+              name="Load Shipments" 
+              parent="menu_paper_recycling" 
+              action="action_paper_load_shipment"
+              sequence="20"
+              groups="records_management.group_records_user"/>
+    
+    <!-- Paper Recycling Dashboard Action -->
+    <record id="action_paper_recycling_dashboard" model="ir.actions.act_window">
+        <field name="name">Paper Recycling Dashboard</field>
+        <field name="res_model">paper.load.shipment</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_id" ref="view_paper_load_shipment_kanban"/>
+        <field name="domain">[('status', 'in', ['draft', 'scheduled', 'ready_pickup', 'in_transit'])]</field>
+        <field name="context">{'search_default_group_status': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Welcome to Paper Recycling Dashboard!
+            </p>
+            <p>
+                Track your paper recycling operations from bale production to payment receipt.
+                Create load shipments, generate manifests, and manage driver pickups.
+            </p>
+        </field>
+    </record>
+    
+    <!-- Dashboard Menu -->
+    <menuitem id="menu_paper_recycling_dashboard" 
+              name="Dashboard" 
+              parent="menu_paper_recycling" 
+              action="action_paper_recycling_dashboard"
+              sequence="5"
+              groups="records_management.group_records_user"/>
+
+</odoo>

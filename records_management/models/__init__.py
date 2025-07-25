@@ -27,6 +27,10 @@ from . import load
 from . import paper_bale
 from . import records_management_bale
 
+# Paper Recycling Models (Business-focused)
+from . import paper_bale_recycling
+from . import paper_load_shipment
+
 # NAID Compliance Models
 from . import naid_compliance
 from . import naid_custody_event

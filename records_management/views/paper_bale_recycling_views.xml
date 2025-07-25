@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Paper Bale Recycling Views -->
+    
+    <!-- Tree View -->
+    <record id="view_paper_bale_recycling_tree" model="ir.ui.view">
+        <field name="name">paper.bale.recycling.tree</field>
+        <field name="model">paper.bale.recycling</field>
+        <field name="arch" type="xml">
+            <tree string="Paper Bales" 
+                  decoration-success="status=='paid'" 
+                  decoration-info="status=='shipped'" 
+                  decoration-warning="status=='assigned_load'"
+                  decoration-muted="status=='produced'"
+                  sample="1">
+                <field name="display_name"/>
+                <field name="bale_number"/>
+                <field name="paper_grade"/>
+                <field name="weight_lbs" sum="Total Weight (lbs)"/>
+                <field name="weight_kg" sum="Total Weight (kg)"/>
+                <field name="production_date"/>
+                <field name="weighed_by"/>
+                <field name="load_number"/>
+                <field name="status" widget="badge" 
+                       decoration-success="status=='paid'" 
+                       decoration-info="status=='shipped'" 
+                       decoration-warning="status=='assigned_load'"/>
+                <field name="mobile_entry" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_paper_bale_recycling_form" model="ir.ui.view">
+        <field name="name">paper.bale.recycling.form</field>
+        <field name="model">paper.bale.recycling</field>
+        <field name="arch" type="xml">
+            <form string="Paper Bale">
+                <header>
+                    <button name="action_store_bale" string="Store Bale" type="object" 
+                            class="btn-primary" invisible="status != 'produced'"/>
+                    <button name="action_assign_to_load" string="Assign to Load" type="object" 
+                            class="btn-primary" invisible="status not in ['produced', 'stored']"/>
+                    <button name="action_ready_to_ship" string="Ready to Ship" type="object" 
+                            class="btn-warning" invisible="status != 'assigned_load'"/>
+                    <button name="action_ship_bale" string="Ship Bale" type="object" 
+                            class="btn-success" invisible="status != 'ready_ship'"/>
+                    <button name="action_mark_delivered" string="Mark Delivered" type="object" 
+                            class="btn-info" invisible="status != 'shipped'"/>
+                    <button name="action_mark_paid" string="Mark Paid" type="object" 
+                            class="btn-success" invisible="status != 'delivered'"/>
+                    <field name="status" widget="statusbar" 
+                           statusbar_visible="produced,stored,assigned_load,ready_ship,shipped,delivered,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name" readonly="1"/>
+                        </h1>
+                        <div class="o_row">
+                            <field name="paper_grade" widget="selection"/>
+                            <span class="mx-2">•</span>
+                            <field name="weight_lbs"/> lbs
+                            <span class="mx-2">•</span>
+                            Bale #<field name="bale_number"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group name="basic_info" string="Bale Information">
+                            <field name="bale_number"/>
+                            <field name="paper_grade"/>
+                            <field name="production_date"/>
+                            <field name="weighed_by"/>
+                        </group>
+                        <group name="weight_info" string="Weight Information">
+                            <field name="weight_lbs"/>
+                            <field name="weight_kg" readonly="1"/>
+                            <field name="scale_reading" readonly="mobile_entry"/>
+                            <field name="mobile_entry" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group name="load_info" string="Load Assignment">
+                            <field name="load_shipment_id" options="{'no_create': True}"/>
+                            <field name="load_number" readonly="1"/>
+                        </group>
+                        <group name="quality_info" string="Quality Information">
+                            <field name="moisture_level"/>
+                            <field name="contamination" widget="boolean_toggle"/>
+                            <field name="contamination_notes" invisible="not contamination"/>
+                        </group>
+                    </group>
+
+                    <group name="location_info" string="Location and Processing">
+                        <field name="storage_location"/>
+                        <field name="processed_from_service"/>
+                        <field name="gps_coordinates" readonly="not mobile_entry"/>
+                    </group>
+
+                    <group name="system_info" string="System Information">
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_paper_bale_recycling_kanban" model="ir.ui.view">
+        <field name="name">paper.bale.recycling.kanban</field>
+        <field name="model">paper.bale.recycling</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" class="o_kanban_small_column" sample="1">
+                <field name="display_name"/>
+                <field name="bale_number"/>
+                <field name="paper_grade"/>
+                <field name="weight_lbs"/>
+                <field name="production_date"/>
+                <field name="status"/>
+                <field name="mobile_entry"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="display_name"/>
+                                    </strong>
+                                    <span class="float-end">
+                                        <field name="status" widget="label_selection" 
+                                               options="{'classes': {'produced': 'secondary', 'stored': 'info', 'assigned_load': 'warning', 'ready_ship': 'primary', 'shipped': 'success', 'delivered': 'info', 'paid': 'success'}}"/>
+                                    </span>
+                                </div>
+                                <span class="o_kanban_record_subtitle text-muted">
+                                    <field name="paper_grade"/> • <field name="weight_lbs"/> lbs
+                                </span>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <strong>Produced:</strong> <field name="production_date"/><br/>
+                                        <strong>Bale #:</strong> <field name="bale_number"/>
+                                        <span t-if="record.mobile_entry.raw_value" class="float-end">
+                                            <i class="fa fa-mobile text-primary" title="Mobile Entry"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_paper_bale_recycling_search" model="ir.ui.view">
+        <field name="name">paper.bale.recycling.search</field>
+        <field name="model">paper.bale.recycling</field>
+        <field name="arch" type="xml">
+            <search string="Paper Bales">
+                <field name="display_name"/>
+                <field name="bale_number"/>
+                <field name="paper_grade"/>
+                <field name="weighed_by"/>
+                <field name="load_shipment_id"/>
+                
+                <filter string="White Paper" name="white_paper" domain="[('paper_grade', '=', 'white')]"/>
+                <filter string="Mixed Paper" name="mixed_paper" domain="[('paper_grade', '=', 'mixed')]"/>
+                <filter string="Cardboard" name="cardboard" domain="[('paper_grade', '=', 'cardboard')]"/>
+                
+                <separator/>
+                <filter string="Produced" name="produced" domain="[('status', '=', 'produced')]"/>
+                <filter string="Stored" name="stored" domain="[('status', '=', 'stored')]"/>
+                <filter string="Assigned to Load" name="assigned_load" domain="[('status', '=', 'assigned_load')]"/>
+                <filter string="Ready to Ship" name="ready_ship" domain="[('status', '=', 'ready_ship')]"/>
+                <filter string="Shipped" name="shipped" domain="[('status', '=', 'shipped')]"/>
+                <filter string="Delivered" name="delivered" domain="[('status', '=', 'delivered')]"/>
+                <filter string="Paid" name="paid" domain="[('status', '=', 'paid')]"/>
+                
+                <separator/>
+                <filter string="Mobile Entry" name="mobile_entry" domain="[('mobile_entry', '=', True)]"/>
+                <filter string="Has Contamination" name="contamination" domain="[('contamination', '=', True)]"/>
+                
+                <separator/>
+                <filter string="Today" name="today" domain="[('production_date', '=', context_today())]"/>
+                <filter string="This Week" name="this_week" domain="[('production_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" domain="[('production_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Paper Grade" name="group_paper_grade" context="{'group_by': 'paper_grade'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Production Date" name="group_production_date" context="{'group_by': 'production_date'}"/>
+                    <filter string="Weighed By" name="group_weighed_by" context="{'group_by': 'weighed_by'}"/>
+                    <filter string="Load Shipment" name="group_load_shipment" context="{'group_by': 'load_shipment_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_paper_bale_recycling" model="ir.actions.act_window">
+        <field name="name">Paper Bales</field>
+        <field name="res_model">paper.bale.recycling</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="view_paper_bale_recycling_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first paper bale!
+            </p>
+            <p>
+                Track paper bales from production through to payment.
+                Use mobile devices to weigh bales and assign them to load shipments.
+            </p>
+        </field>
+    </record>
+
+</odoo>
