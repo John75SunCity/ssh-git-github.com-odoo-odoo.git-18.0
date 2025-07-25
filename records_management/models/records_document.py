@@ -271,3 +271,13 @@ class RecordsDocument(models.Model):
                 doc.days_until_destruction = 0
 
     # Phase 1 Critical Fields - Added by automated script
+    
+    @api.depends()
+    def _compute_attachment_count(self):
+        """Compute the number of attachments for this document"""
+        for record in self:
+            attachments = self.env['ir.attachment'].search([
+                ('res_model', '=', 'records.document'),
+                ('res_id', '=', record.id)
+            ])
+            record.attachment_count = len(attachments)

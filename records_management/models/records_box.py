@@ -184,3 +184,48 @@ class RecordsBox(models.Model):
     )
 
     # Phase 1 Critical Fields - Added by automated script
+    
+    @api.depends('box_type')
+    def _compute_box_type_display(self):
+        """Compute display name for box type"""
+        for record in self:
+            if record.box_type:
+                record.box_type_display = dict(record._fields['box_type'].selection).get(record.box_type, record.box_type)
+            else:
+                record.box_type_display = ''
+    
+    @api.depends('box_type', 'service_level')
+    def _compute_monthly_rate(self):
+        """Compute monthly storage rate based on box type and service level"""
+        for record in self:
+            # Basic rate calculation - in real implementation this would use rate tables
+            base_rate = 10.0  # Base monthly rate
+            if record.box_type == 'legal':
+                base_rate = 12.0
+            elif record.box_type == 'letter':
+                base_rate = 8.0
+            elif record.box_type == 'oversized':
+                base_rate = 15.0
+            
+            if record.service_level == 'premium':
+                base_rate *= 1.5
+            elif record.service_level == 'express':
+                base_rate *= 2.0
+                
+            record.monthly_rate = base_rate
+    
+    @api.depends('capacity', 'documents_stored')
+    def _compute_used_capacity(self):
+        """Compute used capacity percentage"""
+        for record in self:
+            if record.capacity and record.capacity > 0:
+                record.used_capacity = (record.documents_stored / record.capacity) * 100
+            else:
+                record.used_capacity = 0.0
+    
+    @api.depends()
+    def _compute_document_count(self):
+        """Compute number of documents in this box"""
+        for record in self:
+            documents = self.env['records.document'].search([('box_id', '=', record.id)])
+            record.document_count = len(documents)

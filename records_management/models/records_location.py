@@ -62,3 +62,40 @@ class RecordsLocation(models.Model):
     ], string='Security Level', default='medium')
 
     # Phase 1 Critical Fields - Added by automated script
+    
+    @api.depends('name', 'parent_id.complete_name')
+    def _compute_complete_name(self):
+        """Compute complete hierarchical name"""
+        for record in self:
+            if record.parent_id:
+                record.complete_name = f"{record.parent_id.complete_name} / {record.name}"
+            else:
+                record.complete_name = record.name or ''
+    
+    @api.depends()
+    def _compute_box_count(self):
+        """Compute number of boxes in this location"""
+        for record in self:
+            boxes = self.env['records.box'].search([('location_id', '=', record.id)])
+            record.box_count = len(boxes)
+    
+    @api.depends('box_count', 'capacity')
+    def _compute_current_utilization(self):
+        """Compute current utilization percentage"""
+        for record in self:
+            if record.capacity and record.capacity > 0:
+                record.current_utilization = (record.box_count / record.capacity) * 100
+            else:
+                record.current_utilization = 0.0
+    
+    @api.depends('current_utilization')
+    def _compute_available_utilization(self):
+        """Compute available utilization percentage"""
+        for record in self:
+            record.available_utilization = max(0, 100 - record.current_utilization)
+    
+    @api.depends('capacity', 'box_count')
+    def _compute_available_spaces(self):
+        """Compute number of available spaces"""
+        for record in self:
+            record.available_spaces = max(0, (record.capacity or 0) - record.box_count)

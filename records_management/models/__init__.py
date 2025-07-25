@@ -41,11 +41,10 @@ from . import department_billing
 
 # Portal and FSM
 from . import portal_request
-from . import portal_feedback
 from . import fsm_task
 from . import pos_config
 
-# HR and Feedback
+# HR and Feedback - Load survey models first, then portal_feedback
 from . import hr_employee
 from . import hr_employee_naid
 from . import customer_feedback
@@ -75,7 +74,6 @@ from . import records_chain_custody
 from . import shredding_service_log
 
 # Extensions (One2many after bases)
-from . import department_billing
 from . import res_partner
 from . import stock_lot
 from . import stock_move_sms_validation
@@ -83,9 +81,11 @@ from . import stock_picking
 from . import account_move
 from . import project_task
 
+# Portal Feedback (moved later to avoid dependency issues)
+from . import portal_feedback
+
 # Wizards/Installers (last, as they depend on models)
 from . import visitor_pos_wizard
-from . import barcode_product
 from . import installer
 from . import ir_actions_report
 from . import ir_module
