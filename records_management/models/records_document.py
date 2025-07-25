@@ -128,6 +128,10 @@ class RecordsDocument(models.Model):
     department_id = fields.Many2one(
         'records.department', string='Department', index=True
     )
+    container_id = fields.Many2one(
+        'box.contents', string='File Folder/Container',
+        help='The file folder or container within the box where this document is filed'
+    )
     user_id = fields.Many2one(
         'res.users', string='Responsible'
     )
@@ -160,6 +164,13 @@ class RecordsDocument(models.Model):
         ('archived', 'Archived'),
         ('destroyed', 'Destroyed')
     ], string='Status', default='draft')
+    checkout_status = fields.Selection([
+        ('in_box', 'In Box'),
+        ('checked_out', 'Checked Out'),
+        ('destroyed', 'Destroyed'),
+        ('lost', 'Lost')
+    ], string='Checkout Status', default='in_box', tracking=True,
+       help='Current checkout status of this document')
     destruction_method = fields.Selection([
         ('shredding', 'Shredding'),
         ('pulping', 'Pulping'),

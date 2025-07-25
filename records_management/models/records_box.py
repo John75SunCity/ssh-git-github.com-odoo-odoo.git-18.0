@@ -182,6 +182,16 @@ class RecordsBox(models.Model):
         'pickup.request', 'box_id',
         string='Service Requests'
     )
+    
+    # Additional One2many relationships for document and container tracking
+    contents_ids = fields.One2many(
+        'records.document', 'box_id',
+        string='Box Contents'
+    )
+    container_contents_ids = fields.One2many(
+        'box.contents', 'box_id',
+        string='Box Contents'
+    )
 
     # Phase 1 Critical Fields - Added by automated script
     
