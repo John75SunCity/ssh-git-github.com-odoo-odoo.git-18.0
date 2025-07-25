@@ -12,6 +12,7 @@ from . import records_retention_policy
 from . import records_document_type
 from . import customer_inventory_report
 from . import records_department
+from . import records_storage_department_user
 from . import records_document
 from . import records_box
 from . import pickup_request_item
