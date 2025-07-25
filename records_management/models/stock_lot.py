@@ -59,7 +59,9 @@ class StockLot(models.Model):
                                        compute='_compute_inventory_metrics')
     delivery_order_id = fields.Many2one('stock.picking', string='Delivery Order')
     destination_location = fields.Many2one('stock.location', string='Destination Location')
-    # expiration_date = fields.Date(string='Expiration Date')  # Disabled - conflicts with base stock.lot field type
+    # expiration_date is inherited from base stock.lot model - no need to redefine
+    expiry_reminder_date = fields.Date(string='Expiry Reminder Date', 
+                                      help='Date to remind about upcoming expiration')
     final_customer = fields.Many2one('res.partner', string='Final Customer')
     
     # Location and movement tracking
@@ -117,7 +119,9 @@ class StockLot(models.Model):
         ('cancel', 'Cancelled')
     ], string='State', default='draft')
     stock_move_count = fields.Integer(string='Stock Move Count', compute='_compute_move_metrics')
-    # stock_move_ids = fields.One2many('stock.move', compute='_compute_stock_move_ids', string='Stock Moves')
+    stock_move_ids = fields.Many2many('stock.move', compute='_compute_stock_move_ids', 
+                                     string='Stock Moves', 
+                                     help='Stock moves that involve this lot')
     # Note: Standard stock.move uses Many2many relationship with stock.lot through move.line_ids
     supplier_lot_id = fields.Many2one('stock.lot', string='Supplier Lot')
     
@@ -262,156 +266,36 @@ class StockLot(models.Model):
             
             lot.lot_insights = " | ".join(insights)
 
-    @api.depends('quant_ids')
-    def _compute_quantities(self):
-        """Compute available and reserved quantities"""
-        for lot in self:
-            lot.available_quantity = 0.0
-            lot.reserved_quantity = 0.0
-
-    @api.depends('stock_move_ids')
-    def _compute_movement_metrics(self):
-        """Compute movement-related metrics"""
-        for lot in self:
-            lot.average_movement_time = 0.0
+    # All compute methods are implemented below in their improved versions
+    # This section removed to prevent duplicates
 
     @api.depends('quant_ids')
-    def _compute_inventory_metrics(self):
-        """Compute inventory-related metrics"""
-        for lot in self:
-            if lot.create_date:
-                lot.days_in_inventory = (fields.Date.today() - lot.create_date.date()).days
-            else:
-                lot.days_in_inventory = 0
-
-    @api.depends('quant_ids')
-    def _compute_current_location(self):
-        """Compute current location"""
-        for lot in self:
-            lot.current_location = lot.location_id
-
-    @api.depends('quality_check_ids')
-    def _compute_quality_metrics(self):
-        """Compute quality-related metrics"""
-        for lot in self:
-            lot.quality_check_count = len(lot.quality_check_ids)
-
-    @api.depends('quant_ids')
-    def _compute_quant_metrics(self):
-        """Compute quant-related metrics"""
-        for lot in self:
-            lot.quant_count = len(lot.quant_ids)
-
-    @api.depends('stock_move_ids')
     def _compute_move_metrics(self):
         """Compute move-related metrics"""
         for lot in self:
-            lot.stock_move_count = len(lot.stock_move_ids)
-            lot.total_movements = lot.stock_move_count
+            # Get all move lines for this lot
+            move_lines = self.env['stock.move.line'].search([
+                ('lot_id', '=', lot.id)
+            ])
+            
+            # Count unique moves and total movements
+            unique_moves = move_lines.mapped('move_id')
+            lot.stock_move_count = len(unique_moves)
+            lot.total_movements = len(move_lines)  # Total move line entries
 
     @api.depends()
     def _compute_stock_move_ids(self):
-        """Compute stock moves for this lot"""
-        for record in self:
-            # Search for moves related to this lot via Many2many relationship
-            moves = self.env['stock.move'].search([('lot_ids', 'in', record.id)])
-            record.stock_move_ids = moves
-
-    @api.depends('quant_ids')
-    def _compute_value_metrics(self):
-        """Compute value-related metrics"""
+        """Compute stock moves for this lot through move lines"""
         for lot in self:
-            lot.total_value = (lot.product_qty or 0.0) * (lot.unit_cost or 0.0)
-            lot.analytics_update_timestamp = fields.Datetime.now()
-            
-            # Lot utilization efficiency
-            utilization = 60.0  # Base utilization
-            
-            # Customer assignment efficiency
-            if lot.customer_id:
-                utilization += 25.0
-            
-            # Product integration
-            if lot.product_id:
-                utilization += 15.0
-            
-            # Naming convention efficiency
-            if lot.name and len(lot.name) > 5:
-                utilization += 10.0  # Good identification
-            
-            lot.lot_utilization_efficiency = min(100, utilization)
-            
-            # Service integration score
-            integration = 40.0  # Base integration
-            
-            if lot.shredding_service_id:
-                integration += 40.0  # Connected to shredding service
-            
-            if lot.customer_id and lot.shredding_service_id:
-                integration += 20.0  # Full service integration
-            
-            lot.service_integration_score = min(100, integration)
-            
-            # Lifecycle stage indicator
-            if lot.shredding_service_id:
-                # Check shredding service status
-                service = lot.shredding_service_id
-                if service.status == 'completed':
-                    lot.lifecycle_stage_indicator = '🏁 Service Completed'
-                elif service.status == 'in_progress':
-                    lot.lifecycle_stage_indicator = '⚡ Service In Progress'
-                elif service.status == 'confirmed':
-                    lot.lifecycle_stage_indicator = '📋 Service Scheduled'
-                else:
-                    lot.lifecycle_stage_indicator = '📝 Service Planned'
-            elif lot.customer_id:
-                lot.lifecycle_stage_indicator = '🏢 Customer Assigned'
-            else:
-                lot.lifecycle_stage_indicator = '📦 Available Stock'
-            
-            # Customer service rating
-            service_rating = 70.0  # Base rating
-            
-            if lot.customer_id:
-                service_rating += 20.0
-            
-            if lot.shredding_service_id:
-                service_rating += 10.0
-            
-            lot.customer_service_rating = min(100, service_rating)
-            
-            # Lot insights
-            insights = []
-            
-            if lot.lot_utilization_efficiency > 85:
-                insights.append("✅ Highly efficient lot management")
-            elif lot.lot_utilization_efficiency < 60:
-                insights.append("⚠️ Low utilization - optimize assignment")
-            
-            if lot.service_integration_score > 80:
-                insights.append("🔗 Excellent service integration")
-            
-            if not lot.customer_id:
-                insights.append("👤 No customer assigned - allocate for service")
-            
-            if lot.shredding_service_id:
-                insights.append("🗂️ Integrated with shredding service workflow")
-            else:
-                insights.append("📋 Available for service scheduling")
-            
-            if lot.customer_service_rating > 90:
-                insights.append("🌟 Outstanding customer service setup")
-            
-            if 'Service Completed' in lot.lifecycle_stage_indicator:
-                insights.append("🎯 Service lifecycle completed successfully")
-            
-            if not insights:
-                insights.append("📊 Standard lot management")
-            
-            lot.lot_insights = "\n".join(insights)
+            # Find all stock.move.line records with this lot
+            move_lines = self.env['stock.move.line'].search([
+                ('lot_id', '=', lot.id)
+            ])
+            # Get unique stock moves from these move lines
+            moves = move_lines.mapped('move_id')
+            lot.stock_move_ids = moves
 
     @api.depends('quant_ids', 'quant_ids.quantity', 'quant_ids.reserved_quantity')
-    @api.depends('quant_ids')
     def _compute_quantities(self):
         """Compute available and reserved quantities"""
         for lot in self:
@@ -420,27 +304,30 @@ class StockLot(models.Model):
             lot.available_quantity = total_qty - reserved_qty
             lot.reserved_quantity = reserved_qty
 
-    @api.depends('stock_move_ids', 'stock_move_ids.date')
-    @api.depends('stock_move_ids')
+    @api.depends('quant_ids')
     def _compute_movement_metrics(self):
         """Compute movement-related metrics"""
         for lot in self:
-            moves = lot.stock_move_ids.filtered(lambda m: m.state == 'done')
-            lot.stock_move_count = len(moves)
-            lot.total_movements = len(moves)
+            # Get all move lines for this lot to calculate average movement time
+            move_lines = self.env['stock.move.line'].search([
+                ('lot_id', '=', lot.id),
+                ('date', '!=', False)
+            ], order='date asc')
             
-            if len(moves) > 1:
+            if len(move_lines) > 1:
                 # Calculate average time between movements
-                dates = sorted(moves.mapped('date'))
-                total_days = 0
-                for i in range(1, len(dates)):
-                    total_days += (dates[i] - dates[i-1]).days
-                lot.average_movement_time = total_days / (len(dates) - 1) if len(dates) > 1 else 0
+                total_time = 0
+                count = 0
+                for i in range(1, len(move_lines)):
+                    time_diff = (move_lines[i].date - move_lines[i-1].date).total_seconds() / (24 * 3600)  # days
+                    total_time += time_diff
+                    count += 1
+                
+                lot.average_movement_time = total_time / count if count > 0 else 0.0
             else:
-                lot.average_movement_time = 0
+                lot.average_movement_time = 0.0
 
     @api.depends('quant_ids', 'quant_ids.location_id')
-    @api.depends('quant_ids')
     def _compute_current_location(self):
         """Compute current location based on quants"""
         for lot in self:
@@ -450,8 +337,7 @@ class StockLot(models.Model):
             else:
                 lot.current_location = False
 
-    @api.depends('create_date')
-    @api.depends('quant_ids')
+    @api.depends('create_date', 'quant_ids')
     def _compute_inventory_metrics(self):
         """Compute inventory-related metrics"""
         for lot in self:
@@ -461,21 +347,33 @@ class StockLot(models.Model):
                 lot.days_in_inventory = 0
 
     @api.depends('quality_check_ids')
-    @api.depends('quality_check_ids')
     def _compute_quality_metrics(self):
         """Compute quality-related metrics"""
         for lot in self:
             lot.quality_check_count = len(lot.quality_check_ids)
 
     @api.depends('quant_ids')
+    def _compute_quant_metrics(self):
+        """Compute quant-related metrics"""
+        for lot in self:
+            lot.quant_count = len(lot.quant_ids)
+
+    @api.depends('available_quantity', 'unit_cost', 'quant_ids')
+    def _compute_value_metrics(self):
+        """Compute value-related metrics"""
+        for lot in self:
+            lot.total_value = lot.available_quantity * (lot.unit_cost or 0.0)
+
+    # Action methods for lot management
+            lot.quality_check_count = len(lot.quality_check_ids)
+
     @api.depends('quant_ids')
     def _compute_quant_metrics(self):
         """Compute quant-related metrics"""
         for lot in self:
             lot.quant_count = len(lot.quant_ids)
 
-    @api.depends('available_quantity', 'unit_cost')
-    @api.depends('quant_ids')
+    @api.depends('available_quantity', 'unit_cost', 'quant_ids')
     def _compute_value_metrics(self):
         """Compute value-related metrics"""
         for lot in self:
