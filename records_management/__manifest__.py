@@ -79,6 +79,7 @@ Features:
         'data/naid_compliance_data.xml',  # New: NAID data for audits/signatures
         'data/feedback_survey_data.xml',  # New: Default feedback survey
         'data/document_retrieval_rates.xml',  # New: Default retrieval rates
+        'data/advanced_billing_demo.xml',  # New: Advanced billing demo data
         # Load base menu structure first (parent menus only, no actions)
         'views/records_management_base_menus.xml',
         # Load all action-containing view files
@@ -115,6 +116,7 @@ Features:
         'views/document_retrieval_rates_views.xml',  # New: Document retrieval rates
         'views/shredding_rates_views.xml',  # New: Shredding rates views
         'views/shredding_inventory_views.xml',  # New: Shredding inventory views
+        'views/advanced_billing_views.xml',  # New: Advanced billing views
         'report/destruction_certificate_report.xml',
         'report/bale_label_report.xml',
         'report/portal_audit_report.xml',  # New: Audit reports for NAID

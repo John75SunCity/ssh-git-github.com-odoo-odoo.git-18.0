@@ -70,14 +70,21 @@ class RecordsBillingPeriod(models.Model):
             period.total_amount = sum(period.billing_line_ids.mapped('amount'))
 
 class RecordsBillingLine(models.Model):
-    """Individual billing line items"""
+    """Individual billing line items - Enhanced for dual billing model"""
     _name = 'records.billing.line'
     _description = 'Records Billing Line'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    billing_period_id = fields.Many2one('records.billing.period', string='Billing Period', required=True, ondelete='cascade')
+    billing_period_id = fields.Many2one('records.billing.period', string='Billing Period', ondelete='cascade')
+    advanced_billing_period_id = fields.Many2one('records.advanced.billing.period', string='Advanced Billing Period', ondelete='cascade')
     customer_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
     department_id = fields.Many2one('records.department', string='Department', tracking=True)
+    
+    # Line type for advanced billing
+    line_type = fields.Selection([
+        ('storage', 'Storage'),
+        ('service', 'Service')
+    ], string='Line Type', tracking=True, help="Differentiates between storage (forward billing) and service (arrears billing)")
     
     # Service details
     service_type = fields.Selection([
@@ -95,16 +102,44 @@ class RecordsBillingLine(models.Model):
     quantity = fields.Float(string='Quantity', default=1.0, tracking=True)
     unit_price = fields.Monetary(string='Unit Price', tracking=True)
     amount = fields.Monetary(string='Amount', compute='_compute_amount', store=True, tracking=True)
-    currency_id = fields.Many2one('res.currency', related='billing_period_id.company_id.currency_id')
+    currency_id = fields.Many2one('res.currency', 
+                                 related='billing_period_id.company_id.currency_id',
+                                 compute_sudo=True, store=False)
     
-    # References
+    # Period information for storage billing
+    period_start_date = fields.Date(string='Period Start Date', tracking=True)
+    period_end_date = fields.Date(string='Period End Date', tracking=True)
+    
+    # Service completion date for service billing
+    service_date = fields.Date(string='Service Date', tracking=True,
+                              help="Date when service was completed (for arrears billing)")
+    
+    # References to source records
     box_id = fields.Many2one('records.box', string='Related Box')
     service_request_id = fields.Many2one('records.service.request', string='Related Service Request')
+    retrieval_work_order_id = fields.Many2one('document.retrieval.work.order', string='Retrieval Work Order')
+    shredding_work_order_id = fields.Many2one('work.order.shredding', string='Shredding Work Order')
+    
+    # Billing direction indicator
+    billing_direction = fields.Selection([
+        ('advance', 'In Advance'),
+        ('arrears', 'In Arrears')
+    ], string='Billing Direction', compute='_compute_billing_direction', store=True)
     
     @api.depends('quantity', 'unit_price')
     def _compute_amount(self):
         for line in self:
             line.amount = line.quantity * line.unit_price
+    
+    @api.depends('line_type', 'service_type')
+    def _compute_billing_direction(self):
+        for line in self:
+            if line.line_type == 'storage' or line.service_type == 'storage':
+                # Storage is typically billed in advance
+                line.billing_direction = 'advance'
+            else:
+                # Services are typically billed in arrears
+                line.billing_direction = 'arrears'
 
 class RecordsServicePricing(models.Model):
     """Service pricing configuration"""
