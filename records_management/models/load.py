@@ -8,7 +8,8 @@ class Load(models.Model):
     _inherit = ['stock.picking', 'mail.thread']
 
     name = fields.Char(default=lambda self: self.env['ir.sequence'].next_by_code('records_management.load'))
-    bale_ids = fields.One2many('paper.bale.recycling', 'load_shipment_id', string='Paper Bales')
+    # Legacy bale reference (for old records_management.bale model)
+    legacy_bale_ids = fields.One2many('records_management.bale', 'load_id', string='Legacy Bales')
     bale_count = fields.Integer(compute='_compute_bale_count')
     weight_total = fields.Float(compute='_compute_weight_total')
     invoice_id = fields.Many2one('account.move')

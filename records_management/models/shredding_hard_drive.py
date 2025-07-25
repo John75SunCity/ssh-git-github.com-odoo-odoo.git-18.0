@@ -5,7 +5,7 @@ from odoo.exceptions import ValidationError
 
 class ShreddingHardDrive(models.Model):
     """Model for hard drive and electronic media destruction tracking."""
-    _name = 'shredding.hard.drive'
+    _name = 'shredding.hard_drive'
     _description = 'Hard Drive Destruction'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'service_id, destruction_date desc'
