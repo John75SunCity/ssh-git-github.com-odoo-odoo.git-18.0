@@ -89,7 +89,11 @@ class PosConfig(models.Model):
     # Service configuration (custom fields)
     rush_service_multiplier = fields.Float(string='Rush Service Multiplier', default=1.5,
                                            help='Price multiplier for rush services')
-    service_product_ids = fields.Many2many('product.template', string='Service Products',
+    service_product_ids = fields.Many2many('product.template', 
+                                           relation='pos_config_service_product_rel',
+                                           column1='config_id', 
+                                           column2='product_id',
+                                           string='Service Products',
                                            help='Products available for records management services')
     service_type = fields.Selection([
         ('full_service', 'Full Service'),
