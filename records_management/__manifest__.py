@@ -67,6 +67,7 @@ Features:
     'data': [
         'security/records_management_security.xml',
         'security/ir.model.access.csv',
+        'security/new_models_access.xml',
         'data/ir_sequence_data.xml',
         'data/sequence.xml',
         'data/tag_data.xml',

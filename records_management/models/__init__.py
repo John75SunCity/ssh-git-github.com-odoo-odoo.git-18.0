@@ -52,6 +52,9 @@ from . import shredding_hard_drive
 # Billing
 from . import billing
 from . import department_billing
+from . import billing_models
+from . import barcode_models
+from . import records_deletion_request
 
 # Portal and FSM
 from . import portal_request

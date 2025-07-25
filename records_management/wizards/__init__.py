@@ -3,6 +3,7 @@
 
 # Template and example wizards
 from . import wizard_template  # Template for creating new wizards
+from . import user_management_wizards  # User invitation and bulk import wizards
 
 # Box management wizards
 from . import box_type_converter  # Bulk box type conversion wizard

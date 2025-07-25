@@ -36,5 +36,14 @@
             <field name="padding">4</field>
             <field name="company_id" eval="False"/>
         </record>
+
+        <!-- Sequence for Deletion Requests -->
+        <record id="seq_records_deletion_request" model="ir.sequence">
+            <field name="name">Records Deletion Request Sequence</field>
+            <field name="code">records.deletion.request</field>
+            <field name="prefix">DEL</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>
