@@ -214,7 +214,7 @@ class PosConfig(models.Model):
                 
             config.activity_state = 'planned'
 
-    @api.depends()  # No dependencies since we manually search for data
+    @api.depends('session_ids', 'order_ids', 'open_session_ids')
     def _compute_analytics(self):
         """Compute various analytics for POS configuration"""
         for config in self:
