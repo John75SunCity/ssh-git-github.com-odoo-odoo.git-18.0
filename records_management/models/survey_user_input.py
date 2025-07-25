@@ -127,7 +127,9 @@ class SurveyUserInput(models.Model):
                                              string='Improvement Actions')
     improvement_action_count = fields.Integer(string='Improvement Action Count', compute='_compute_improvement_action_count')
     portal_feedback_actions = fields.One2many('survey.improvement.action', 'feedback_id',
-                                              string='Portal Feedback Actions')    @api.depends('user_input_line_ids')
+                                              string='Portal Feedback Actions')
+
+    @api.depends('user_input_line_ids')
     def _compute_sentiment_score(self):
         """Compute sentiment score based on survey responses"""
         for record in self:
