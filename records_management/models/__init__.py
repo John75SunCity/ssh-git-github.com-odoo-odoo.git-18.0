@@ -25,9 +25,12 @@ from . import temp_inventory
 from . import bale
 from . import load
 from . import paper_bale
+from . import records_management_bale
 
 # NAID Compliance Models
 from . import naid_compliance
+from . import naid_custody_event
+from . import naid_audit_log
 
 # Document Related Models (custody, audit, digital copies)
 from . import records_chain_of_custody
@@ -39,6 +42,7 @@ from . import records_box_transfer
 
 # Shredding and Services
 from . import shredding_service
+from . import shredding_hard_drive
 
 # Billing
 from . import billing
