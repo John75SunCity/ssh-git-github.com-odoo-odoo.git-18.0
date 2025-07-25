@@ -20,4 +20,17 @@ class RecordsDepartmentBillingContact(models.Model):
     _order = 'contact_name'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    # Phase 1: Explicit Activity Field (1 field)
+    # Core fields
+    contact_name = fields.Char(string='Contact Name', required=True, tracking=True)
+    customer_id = fields.Many2one('res.partner', string='Customer', required=True)
+    billing_contact_id = fields.Many2one('res.partner', string='Billing Contact')
+    department_id = fields.Many2one('records.department', string='Department')
+    
+    # Contact details
+    email = fields.Char(string='Email')
+    phone = fields.Char(string='Phone')
+    active = fields.Boolean(string='Active', default=True)
+    
+    # Company context
+    company_id = fields.Many2one('res.company', string='Company', 
+                                 default=lambda self: self.env.company)
