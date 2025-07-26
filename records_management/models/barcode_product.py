@@ -170,11 +170,11 @@ class BarcodeProduct(models.Model):
     product_category = fields.Many2one('product.category', string='Product Category')
     product_code = fields.Char(string='Product Code')
     
-    # Shredding and Destruction
-    shred_bin_ids = fields.One2many('shredding.bin', 'barcode_product_id', string='Shred Bins')
-    shred_bin_count = fields.Integer(string='Shred Bin Count', compute='_compute_shred_bin_count')
-    storage_box_ids = fields.One2many('records.box', 'barcode_product_id', string='Storage Boxes')
-    storage_box_count = fields.Integer(string='Storage Box Count', compute='_compute_storage_box_count')
+    # Shredding and Destruction - Fixed field references
+    shred_bin_ids = fields.Many2many('shredding.bin', string='Related Shred Bins')  # Changed to Many2many to avoid inverse field issues
+    shred_bin_count = fields.Integer(string='Shred Bin Count', compute='_compute_shred_bin_count')  # Restored compute method
+    storage_box_ids = fields.Many2many('records.box', string='Related Storage Boxes')  # Changed to Many2many to avoid inverse field issues
+    storage_box_count = fields.Integer(string='Storage Box Count', compute='_compute_storage_box_count')  # Restored compute method
     shred_security_level = fields.Selection([
         ('basic', 'Basic'),
         ('high', 'High'),
