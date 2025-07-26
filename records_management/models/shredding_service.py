@@ -53,7 +53,6 @@ class ShreddingService(models.Model):
     company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
     audit_barcodes = fields.Text(string='Audit Barcodes', help='Barcodes for NAID audit trails')
     total_charge = fields.Float(compute='_compute_total_charge', store=True)
-    timestamp = fields.Datetime(default=fields.Datetime.now, readonly=True)
     latitude = fields.Float(string='Latitude (for mobile verification)', digits=(16, 8))
     longitude = fields.Float('Longitude', digits=(16, 8))
     attachment_ids = fields.Many2many('ir.attachment', 

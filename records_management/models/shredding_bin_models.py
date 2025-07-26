@@ -139,8 +139,6 @@ class ShreddingBaseRate(models.Model):
 
     display_name = fields.Char(string='Rate Name', compute='_compute_display_name', store=True)
     
-    bin_size = fields.Selection([
-        ('23_gallon', '23 Gallon'),
         ('32_gallon', '32 Gallon'),
         ('console', 'Console'),
         ('64_gallon', '64 Gallon'),
@@ -153,7 +151,6 @@ class ShreddingBaseRate(models.Model):
     ], string='Service Type', required=True)
     
     rate = fields.Monetary(string='Base Rate', required=True)
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
     
     active = fields.Boolean(string='Active', default=True)
     effective_date = fields.Date(string='Effective Date', default=fields.Date.today)
@@ -175,33 +172,21 @@ class ShreddingCustomerRate(models.Model):
     _description = 'Customer Shredding Rate'
     _rec_name = 'display_name'
 
-    display_name = fields.Char(string='Rate Name', compute='_compute_display_name', store=True)
     
-    customer_id = fields.Many2one('res.partner', string='Customer', required=True,
-                                 domain="[('is_company', '=', True)]")
     
-    bin_size = fields.Selection([
-        ('23_gallon', '23 Gallon'),
         ('32_gallon', '32 Gallon'),
         ('console', 'Console'),
         ('64_gallon', '64 Gallon'),
         ('96_gallon', '96 Gallon')
     ], string='Bin Size', required=True)
     
-    service_type = fields.Selection([
-        ('standard', 'Standard (Off-site)'),
         ('mobile', 'Mobile (On-site)')
     ], string='Service Type', required=True)
     
-    rate = fields.Monetary(string='Customer Rate', required=True)
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
     
     # Contract Information
     contract_reference = fields.Char(string='Contract Reference')
-    effective_date = fields.Date(string='Effective Date', default=fields.Date.today, required=True)
-    expiration_date = fields.Date(string='Expiration Date')
     
-    active = fields.Boolean(string='Active', default=True)
     notes = fields.Text(string='Notes')
     
     @api.depends('customer_id', 'bin_size', 'service_type', 'rate')

@@ -163,7 +163,6 @@ class RecordsBillingContact(models.Model):
     _rec_name = 'name'
     _order = 'sequence, name'
 
-    name = fields.Char(string='Contact Name', required=True)
     email = fields.Char(string='Email', required=True)
     phone = fields.Char(string='Phone')
     billing_profile_id = fields.Many2one('records.customer.billing.profile', string='Billing Profile', required=True, ondelete='cascade')
@@ -175,7 +174,6 @@ class RecordsBillingContact(models.Model):
     receive_statements = fields.Boolean(string='Receive Statements', default=True)
     primary_contact = fields.Boolean(string='Primary Contact')
     
-    active = fields.Boolean(default=True)
 
 
 class RecordsAdvancedBillingPeriod(models.Model):
@@ -187,10 +185,6 @@ class RecordsAdvancedBillingPeriod(models.Model):
     _rec_name = 'display_name'
 
     # Core identification
-    name = fields.Char(string='Period Name', required=True, tracking=True)
-    display_name = fields.Char(compute='_compute_display_name', store=True)
-    billing_profile_id = fields.Many2one('records.customer.billing.profile', string='Billing Profile', required=True)
-    partner_id = fields.Many2one('res.partner', related='billing_profile_id.partner_id', store=True)
     
     # Billing type and timing
     billing_type = fields.Selection([
@@ -199,7 +193,6 @@ class RecordsAdvancedBillingPeriod(models.Model):
         ('combined', 'Combined Billing')
     ], string='Billing Type', required=True, tracking=True)
     
-    invoice_date = fields.Date(string='Invoice Date', required=True, default=fields.Date.today, tracking=True)
     
     # Period dates (what's being billed for)
     period_start_date = fields.Date(string='Period Start Date', required=True, tracking=True)
@@ -236,7 +229,6 @@ class RecordsAdvancedBillingPeriod(models.Model):
     invoice_id = fields.Many2one('account.move', string='Invoice', tracking=True)
     
     # Company
-    company_id = fields.Many2one('res.company', related='billing_profile_id.company_id', store=True)
     
     @api.depends('name', 'partner_id.name', 'billing_type')
     def _compute_display_name(self):

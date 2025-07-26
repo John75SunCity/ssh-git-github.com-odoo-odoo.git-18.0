@@ -40,7 +40,6 @@ class RecordsBox(models.Model):
     )
     add_date = fields.Datetime(
         string='Add Date',
-        default=fields.Datetime.now,
         readonly=True
     )
     storage_date = fields.Date(
@@ -50,7 +49,6 @@ class RecordsBox(models.Model):
     destroy_date = fields.Date(string='Destroy Date')
     created_date = fields.Datetime(
         string='Created Date',
-        default=fields.Datetime.now,
         readonly=True,
         help='Date and time when the box record was created'
     )

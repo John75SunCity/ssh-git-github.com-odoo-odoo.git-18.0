@@ -226,7 +226,6 @@ class PortalRequest(models.Model):
     def _compute_sla_breach_risk(self):
         for record in self:
             if record.sla_deadline:
-                now = fields.Datetime.now()
                 record.sla_breach_risk = (record.sla_deadline - now).total_seconds() < 3600  # 1 hour
             else:
                 record.sla_breach_risk = False
@@ -235,7 +234,6 @@ class PortalRequest(models.Model):
     def _compute_time_elapsed(self):
         for record in self:
             if record.submission_date:
-                now = fields.Datetime.now()
                 elapsed = (now - record.submission_date).total_seconds() / 3600
                 record.time_elapsed = elapsed
             else:
@@ -245,7 +243,6 @@ class PortalRequest(models.Model):
     def _compute_time_remaining(self):
         for record in self:
             if record.target_completion_date:
-                now = fields.Datetime.now()
                 remaining = (record.target_completion_date - now).total_seconds() / 3600
                 record.time_remaining = max(0.0, remaining)
             else:
@@ -307,11 +304,7 @@ class PortalRequestMilestone(models.Model):
     _description = 'Portal Request SLA Milestone'
     
     request_id = fields.Many2one('portal.request', string='Request', required=True, ondelete='cascade')
-    name = fields.Char(string='Milestone Name', required=True)
-    target_date = fields.Datetime(string='Target Date')
     completion_date = fields.Datetime(string='Completion Date')
-    status = fields.Selection([
-        ('pending', 'Pending'),
         ('completed', 'Completed'),
         ('overdue', 'Overdue')
     ], string='Status', default='pending')
@@ -321,31 +314,20 @@ class PortalRequestApproval(models.Model):
     _name = 'portal.request.approval'
     _description = 'Portal Request Approval History'
     
-    request_id = fields.Many2one('portal.request', string='Request', required=True, ondelete='cascade')
     approver_id = fields.Many2one('res.users', string='Approver', required=True)
-    approval_date = fields.Datetime(string='Approval Date', default=fields.Datetime.now)
-    action = fields.Selection([
-        ('approve', 'Approved'),
         ('reject', 'Rejected'),
         ('defer', 'Deferred'),
         ('escalate', 'Escalated')
     ], string='Action', required=True)
-    comments = fields.Text(string='Comments')
 
 
 class PortalRequestCommunication(models.Model):
     _name = 'portal.request.communication'
     _description = 'Portal Request Communication Log'
     
-    request_id = fields.Many2one('portal.request', string='Request', required=True, ondelete='cascade')
-    communication_date = fields.Datetime(string='Date', default=fields.Datetime.now)
-    communication_type = fields.Selection([
-        ('email', 'Email'),
-        ('phone', 'Phone'),
         ('portal', 'Portal'),
         ('in_person', 'In Person')
     ], string='Type', required=True)
     from_user_id = fields.Many2one('res.users', string='From')
     to_user_id = fields.Many2one('res.users', string='To')
-    subject = fields.Char(string='Subject')
     message = fields.Text(string='Message')

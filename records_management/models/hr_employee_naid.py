@@ -223,12 +223,10 @@ class HREmployeeNAID(models.Model):
             if employee.last_compliance_review:
                 employee.next_compliance_review = employee.last_compliance_review + timedelta(days=90)
             else:
-                employee.next_compliance_review = fields.Date.today() + timedelta(days=30)
 
     @api.depends('background_check_expiry', 'naid_training_expiry', 'security_clearance_expiry')
     def _compute_expiry_warnings(self):
         """Compute expiry warning flags"""
-        today = fields.Date.today()
         warning_days = 30  # Warn 30 days before expiry
         warning_date = today + timedelta(days=warning_days)
         
@@ -276,7 +274,6 @@ class HREmployeeNAID(models.Model):
 
     def action_approve_background_check(self):
         """Approve background check"""
-        today = fields.Date.today()
         expiry = today + timedelta(days=365)  # 1 year validity
         
         self.write({
@@ -296,7 +293,6 @@ class HREmployeeNAID(models.Model):
 
     def action_complete_naid_training(self):
         """Mark NAID training as completed"""
-        today = fields.Date.today()
         expiry = today + timedelta(days=365)  # 1 year validity
         
         self.write({
@@ -365,7 +361,6 @@ class HREmployeeNAID(models.Model):
         """
         Cron job to check for expiring credentials and send notifications
         """
-        today = fields.Date.today()
         warning_date = today + timedelta(days=30)
         
         # Find employees with expiring credentials

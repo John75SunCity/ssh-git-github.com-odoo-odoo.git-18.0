@@ -26,7 +26,6 @@ class RecordsBoxMovement(models.Model):
     
     # Tracking fields
     created_by = fields.Many2one('res.users', string='Created By', default=lambda self: self.env.user, readonly=True)
-    created_on = fields.Datetime('Created On', default=fields.Datetime.now, readonly=True)
     
     # Phase 3: Advanced Movement Analytics
     
@@ -317,7 +316,6 @@ class RecordsServiceRequest(models.Model):
     _order = 'requested_date desc'
 
     name = fields.Char('Request Reference', required=True, default='New')
-    box_id = fields.Many2one('records.box', string='Box')
     customer_id = fields.Many2one('res.partner', string='Customer', 
                                 domain="[('is_company', '=', True)]", required=True)
     
@@ -347,12 +345,10 @@ class RecordsServiceRequest(models.Model):
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft', required=True)
     
-    requested_date = fields.Datetime('Requested Date', required=True, default=fields.Datetime.now)
     required_date = fields.Date('Required Date')
     completed_date = fields.Datetime('Completed Date')
     
     description = fields.Text('Description')
-    notes = fields.Text('Internal Notes')
     
     # Assignment
     assigned_to = fields.Many2one('res.users', string='Assigned To')
@@ -746,7 +742,6 @@ class RecordsServiceRequest(models.Model):
     
     def action_complete(self):
         self.state = 'completed'
-        self.completed_date = fields.Datetime.now()
     
     def action_cancel(self):
         self.state = 'cancelled'

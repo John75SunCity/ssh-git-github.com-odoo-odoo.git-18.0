@@ -209,7 +209,6 @@ class FSMTask(models.Model):
         """Compute comprehensive analytics for FSM tasks"""
         for task in self:
             # Update timestamp
-            task.analytics_update_time = fields.Datetime.now()
             
             # Task efficiency rating
             efficiency = 60.0  # Base efficiency

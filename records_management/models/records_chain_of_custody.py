@@ -26,7 +26,6 @@ class RecordsChainOfCustody(models.Model):
     
     # Audit fields
     created_by = fields.Many2one('res.users', string='Created By', default=lambda self: self.env.user, readonly=True)
-    created_on = fields.Datetime('Created On', default=fields.Datetime.now, readonly=True)
     
     # Phase 3: Advanced Analytics & Computed Fields
     
@@ -281,8 +280,6 @@ class RecordsAuditTrail(models.Model):
     _description = 'Document Audit Trail'
     _order = 'timestamp desc'
 
-    document_id = fields.Many2one('records.document', string='Document', required=True, ondelete='cascade')
-    timestamp = fields.Datetime('Timestamp', required=True, default=fields.Datetime.now)
     action_type = fields.Selection([
         ('create', 'Created'),
         ('read', 'Accessed'),
@@ -578,8 +575,6 @@ class RecordsDigitalCopy(models.Model):
     _description = 'Document Digital Copy'
     _order = 'scan_date desc'
 
-    document_id = fields.Many2one('records.document', string='Document', required=True, ondelete='cascade')
-    scan_date = fields.Datetime('Scan Date', required=True, default=fields.Datetime.now)
     file_format = fields.Selection([
         ('pdf', 'PDF'),
         ('tiff', 'TIFF'),

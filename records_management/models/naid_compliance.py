@@ -192,13 +192,6 @@ class NAIDCompliance(models.Model):
     compliance_trend = fields.Char(string='Compliance Trend', compute='_compute_trend')
     
     # Technical fields for view compatibility
-    arch = fields.Text(string='View Architecture')
-    model = fields.Char(string='Model Name', default='naid.compliance')
-    res_model = fields.Char(string='Resource Model', default='naid.compliance')
-    context = fields.Text(string='Context')
-    help = fields.Text(string='Help Text')
-    search_view_id = fields.Many2one('ir.ui.view', string='Search View')
-    view_mode = fields.Char(string='View Mode', default='tree,form')
     
     # Missing relationship and tracking fields
     audit_history_ids = fields.One2many(

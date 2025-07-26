@@ -82,38 +82,24 @@ class ShreddingCustomerRates(models.Model):
     _rec_name = 'display_name'
 
     # Core fields
-    name = fields.Char(string='Rate Name', required=True, tracking=True)
-    display_name = fields.Char(compute='_compute_display_name', store=True)
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    effective_date = fields.Date(string='Effective Date', required=True, default=fields.Date.today, tracking=True)
-    expiry_date = fields.Date(string='Expiry Date', tracking=True)
-    active = fields.Boolean(default=True, tracking=True)
     
     # Workflow
-    state = fields.Selection([
-        ('draft', 'Draft'),
         ('active', 'Active'),
         ('expired', 'Expired')
     ], default='draft', tracking=True)
     
     # External Shredding Rates (overrides for base rates)
     use_custom_external_rates = fields.Boolean(string='Use Custom External Rates', tracking=True)
-    external_per_bin_rate = fields.Float(string='Custom External Per Bin Rate', digits=(16, 2), tracking=True)
-    external_service_call_rate = fields.Float(string='Custom External Service Call Rate', digits=(16, 2), tracking=True)
     
     # Managed Inventory Rates (overrides for base rates)
     use_custom_managed_rates = fields.Boolean(string='Use Custom Managed Rates', tracking=True)
-    managed_retrieval_rate = fields.Float(string='Custom Managed Retrieval Rate', digits=(16, 2), tracking=True)
-    managed_permanent_removal_rate = fields.Float(string='Custom Managed Permanent Removal Rate', digits=(16, 2), tracking=True)
-    managed_shredding_rate = fields.Float(string='Custom Managed Shredding Rate', digits=(16, 2), tracking=True)
-    managed_service_call_rate = fields.Float(string='Custom Managed Service Call Rate', digits=(16, 2), tracking=True)
     
     # Discount/Markup
     discount_percentage = fields.Float(string='Discount Percentage', digits=(5, 2), tracking=True,
                                       help="Percentage discount from base rates")
     
     # Company
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     
     @api.depends('name', 'partner_id.name', 'effective_date')
     def _compute_display_name(self):

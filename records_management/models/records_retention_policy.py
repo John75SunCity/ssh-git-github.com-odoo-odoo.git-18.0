@@ -105,7 +105,6 @@ class RecordsRetentionPolicy(models.Model):
     )
     version_date = fields.Datetime(
         string='Version Date',
-        default=fields.Datetime.now,
         help='Date when this version was created'
     )
     approval_status = fields.Selection([
@@ -145,19 +144,14 @@ class RecordsRetentionPolicy(models.Model):
     review_cycle_months = fields.Integer('Review Cycle (Months)', default=12)
     next_mandatory_review = fields.Date('Next Mandatory Review', compute='_compute_next_review')
     policy_version = fields.Char('Policy Version', default='1.0')
-    version_history_ids = fields.One2many('records.policy.version', 'policy_id', string='Version History')
     approval_workflow_id = fields.Many2one('records.approval.workflow', string='Approval Workflow')
     stakeholder_notification = fields.Boolean('Stakeholder Notification Required', default=True)
     risk_assessment_required = fields.Boolean('Risk Assessment Required', default=False)
-    risk_level = fields.Selection([('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('critical', 'Critical')], string='Risk Level', default='medium')
     impact_assessment = fields.Text('Impact Assessment')
     mitigation_measures = fields.Text('Risk Mitigation Measures')
-    exception_count = fields.Integer('Exception Count', compute='_compute_exception_count')
     violation_count = fields.Integer('Violation Count', compute='_compute_violation_count')
 
     # Phase 3: Analytics & Computed Fields (11 fields)
-    policy_effectiveness_score = fields.Float(
-        string='Policy Effectiveness (%)',
         compute='_compute_retention_analytics',
         store=True,
         help='Overall policy effectiveness score based on compliance and adoption'
@@ -180,14 +174,10 @@ class RecordsRetentionPolicy(models.Model):
         store=True,
         help='Average actual retention duration for documents under this policy'
     )
-    destruction_efficiency_rate = fields.Float(
-        string='Destruction Efficiency (%)',
         compute='_compute_retention_analytics',
         store=True,
         help='Efficiency of document destruction process'
     )
-    policy_risk_score = fields.Float(
-        string='Policy Risk Score (0-10)',
         compute='_compute_retention_analytics',
         store=True,
         help='Risk assessment score for this retention policy'

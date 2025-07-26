@@ -175,7 +175,6 @@ class PickupRequest(models.Model):
         """Compute comprehensive analytics for pickup requests"""
         for pickup in self:
             # Update timestamp
-            pickup.analytics_timestamp = fields.Datetime.now()
             
             # Pickup efficiency score
             efficiency_factors = []
@@ -354,11 +353,9 @@ class PickupRequest(models.Model):
 
     def action_schedule(self) -> bool:
         if not self.scheduled_date:
-            self.scheduled_date = fields.Date.context_today(self)
         return self.write({'state': 'scheduled'})
 
     def action_complete(self) -> bool:
-        self.completion_date = fields.Date.context_today(self)
         return self.write({'state': 'completed'})
 
     def action_cancel(self) -> bool:

@@ -110,7 +110,6 @@ class SurveyImprovementAction(models.Model):
     @api.depends('due_date')
     def _compute_days_to_due(self):
         """Calculate days until due date"""
-        today = fields.Date.today()
         for record in self:
             if record.due_date:
                 delta = record.due_date - today

@@ -65,8 +65,6 @@ class RecordsApprovalStep(models.Model):
 
     workflow_id = fields.Many2one('records.approval.workflow', string='Workflow', required=True, ondelete='cascade')
     sequence = fields.Integer('Sequence', default=10)
-    name = fields.Char('Step Name', required=True)
-    description = fields.Text('Description')
     
     # Step configuration
     step_type = fields.Selection([

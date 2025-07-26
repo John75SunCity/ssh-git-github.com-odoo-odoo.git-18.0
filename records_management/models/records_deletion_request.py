@@ -74,7 +74,6 @@ class RecordsDeletionRequest(models.Model):
     def action_approve(self):
         self.state = 'approved'
         self.approved_by = self.env.user
-        self.approval_date = fields.Datetime.now()
         
     def action_schedule(self):
         self.state = 'scheduled'
@@ -84,7 +83,6 @@ class RecordsDeletionRequest(models.Model):
         
     def action_complete(self):
         self.state = 'completed'
-        self.completion_date = fields.Date.today()
         
     def action_cancel(self):
         self.state = 'cancelled'

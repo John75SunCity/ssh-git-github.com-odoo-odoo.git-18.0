@@ -238,7 +238,6 @@ class NAIDCustodyEvent(models.Model):
     timestamp = fields.Datetime(
         string='Event Time',
         required=True,
-        default=fields.Datetime.now
     )
     
     employee_id = fields.Many2one(

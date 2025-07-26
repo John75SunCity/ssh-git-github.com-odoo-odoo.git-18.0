@@ -167,18 +167,11 @@ class ShreddingPicklistItem(models.Model):
     _rec_name = 'display_name'
 
     # Core fields
-    display_name = fields.Char(compute='_compute_display_name', store=True)
-    sequence = fields.Integer(string='Sequence', default=10)
-    work_order_id = fields.Many2one('work.order.shredding', string='Work Order', required=True, ondelete='cascade')
     
     # Item references
-    box_id = fields.Many2one('records.box', string='Records Box')
-    document_id = fields.Many2one('records.document', string='Document')
     location_id = fields.Many2one('records.location', string='Location', required=True)
     
     # Pickup tracking
-    status = fields.Selection([
-        ('pending_pickup', 'Pending Pickup'),
         ('picked', 'Picked'),
         ('not_found', 'Not Found'),
         ('damaged', 'Damaged'),
@@ -190,7 +183,6 @@ class ShreddingPicklistItem(models.Model):
     notes = fields.Text(string='Notes')
     
     # Company
-    company_id = fields.Many2one('res.company', string='Company', related='work_order_id.company_id', store=True)
     
     @api.depends('box_id.name', 'document_id.name', 'location_id.name')
     def _compute_display_name(self):

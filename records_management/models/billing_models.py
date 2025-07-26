@@ -267,7 +267,6 @@ class RecordsBillingRate(models.Model):
     _description = 'Records Billing Rate'
     
     config_id = fields.Many2one('records.billing.config', string='Configuration', required=True, ondelete='cascade')
-    name = fields.Char(string='Rate Name', required=True)
     service_type = fields.Selection([
         ('storage', 'Storage'),
         ('destruction', 'Destruction'),
@@ -282,13 +281,8 @@ class RecordsBillingDiscountRule(models.Model):
     _name = 'records.billing.discount.rule'
     _description = 'Records Billing Discount Rule'
     
-    config_id = fields.Many2one('records.billing.config', string='Configuration', required=True, ondelete='cascade')
-    name = fields.Char(string='Rule Name', required=True)
-    discount_type = fields.Selection([
-        ('percentage', 'Percentage'),
         ('fixed', 'Fixed Amount')
     ], string='Discount Type', required=True)
-    discount_value = fields.Float(string='Discount Value', required=True)
     min_threshold = fields.Float(string='Minimum Threshold')
 
 
@@ -296,14 +290,8 @@ class RecordsBillingGenerationLog(models.Model):
     _name = 'records.billing.generation.log'
     _description = 'Records Billing Generation Log'
     
-    config_id = fields.Many2one('records.billing.config', string='Configuration', required=True, ondelete='cascade')
-    generation_date = fields.Datetime(string='Generation Date', default=fields.Datetime.now)
-    status = fields.Selection([
-        ('success', 'Success'),
-        ('failed', 'Failed'),
         ('partial', 'Partial')
     ], string='Status', required=True)
-    invoice_count = fields.Integer(string='Invoices Generated')
     total_amount = fields.Float(string='Total Amount')
     error_message = fields.Text(string='Error Message')
 
@@ -312,11 +300,8 @@ class RecordsBillingRevenueAnalytics(models.Model):
     _name = 'records.billing.revenue.analytics'
     _description = 'Records Billing Revenue Analytics'
     
-    config_id = fields.Many2one('records.billing.config', string='Configuration', required=True, ondelete='cascade')
     period_date = fields.Date(string='Period Date', required=True)
     monthly_amount = fields.Float(string='Monthly Amount')
-    total_amount = fields.Float(string='Total Amount')
-    customer_count = fields.Integer(string='Customer Count')
     service_count = fields.Integer(string='Service Count')
 
 
@@ -324,11 +309,6 @@ class RecordsBillingUsageTracking(models.Model):
     _name = 'records.billing.usage.tracking'
     _description = 'Records Billing Usage Tracking'
     
-    config_id = fields.Many2one('records.billing.config', string='Configuration', required=True, ondelete='cascade')
-    tracking_date = fields.Date(string='Tracking Date', default=fields.Date.today)
-    service_type = fields.Selection([
-        ('storage', 'Storage'),
-        ('destruction', 'Destruction'),
         ('retrieval', 'Retrieval'),
         ('scanning', 'Scanning')
     ], string='Service Type', required=True)
@@ -344,9 +324,7 @@ class RecordsBillingPeriod(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'start_date desc'
 
-    name = fields.Char(string='Period Name', required=True, tracking=True)
     billing_config_id = fields.Many2one('records.billing.config', string='Billing Configuration', required=True)
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     
     # Period dates
     start_date = fields.Date(string='Start Date', required=True, tracking=True)
@@ -364,7 +342,6 @@ class RecordsBillingPeriod(models.Model):
     billing_line_ids = fields.One2many('records.billing.line', 'billing_period_id', string='Billing Lines')
     
     # Totals
-    total_amount = fields.Monetary(string='Total Amount', compute='_compute_totals', store=True)
     currency_id = fields.Many2one('res.currency', related='company_id.currency_id')
     
     @api.depends('billing_line_ids.amount')
@@ -380,7 +357,6 @@ class RecordsBillingLine(models.Model):
 
     billing_period_id = fields.Many2one('records.billing.period', string='Billing Period', ondelete='cascade')
     advanced_billing_period_id = fields.Many2one('records.advanced.billing.period', string='Advanced Billing Period', ondelete='cascade')
-    customer_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
     department_id = fields.Many2one('records.department', string='Department', tracking=True)
     
     # Line type for advanced billing
@@ -390,8 +366,6 @@ class RecordsBillingLine(models.Model):
     ], string='Line Type', tracking=True, help="Differentiates between storage (forward billing) and service (arrears billing)")
     
     # Service details
-    service_type = fields.Selection([
-        ('storage', 'Storage'),
         ('retrieval', 'Retrieval'),
         ('destruction', 'Destruction'),
         ('scanning', 'Scanning'),
@@ -405,9 +379,6 @@ class RecordsBillingLine(models.Model):
     quantity = fields.Float(string='Quantity', default=1.0, tracking=True)
     unit_price = fields.Monetary(string='Unit Price', tracking=True)
     amount = fields.Monetary(string='Amount', compute='_compute_amount', store=True, tracking=True)
-    currency_id = fields.Many2one('res.currency', 
-                                 related='billing_period_id.company_id.currency_id',
-                                 compute_sudo=True, store=False)
     
     # Period information for storage billing
     period_start_date = fields.Date(string='Period Start Date', tracking=True)
@@ -450,9 +421,6 @@ class RecordsServicePricing(models.Model):
     _description = 'Records Service Pricing'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Pricing Name', required=True, tracking=True)
-    service_type = fields.Selection([
-        ('storage', 'Storage'),
         ('retrieval', 'Retrieval'),
         ('destruction', 'Destruction'),
         ('scanning', 'Scanning'),
@@ -469,12 +437,9 @@ class RecordsServicePricing(models.Model):
     
     # Basic pricing
     base_price = fields.Monetary(string='Base Price', tracking=True)
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
     
     # Validity
-    valid_from = fields.Date(string='Valid From', default=fields.Date.today, tracking=True)
     valid_to = fields.Date(string='Valid To', tracking=True)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
     
     # Pricing breaks
     pricing_break_ids = fields.One2many('records.service.pricing.break', 'pricing_id', string='Pricing Breaks')
@@ -491,8 +456,6 @@ class RecordsServicePricingBreak(models.Model):
     quantity_to = fields.Float(string='Quantity To')
     
     # Pricing
-    unit_price = fields.Monetary(string='Unit Price')
-    currency_id = fields.Many2one('res.currency', related='pricing_id.currency_id')
     
     # Discounts
     discount_percentage = fields.Float(string='Discount %', default=0.0)
@@ -503,9 +466,7 @@ class RecordsProduct(models.Model):
     _description = 'Records Product'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Product Name', required=True, tracking=True)
     code = fields.Char(string='Product Code', tracking=True)
-    description = fields.Text(string='Description')
     
     # Product type
     product_type = fields.Selection([
@@ -518,10 +479,8 @@ class RecordsProduct(models.Model):
     # Pricing
     list_price = fields.Monetary(string='List Price', tracking=True)
     cost_price = fields.Monetary(string='Cost Price', tracking=True)
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
     
     # Status
-    active = fields.Boolean(string='Active', default=True, tracking=True)
     
     # Related product if any
     product_id = fields.Many2one('product.product', string='Related Odoo Product')
@@ -532,8 +491,6 @@ class RecordsBillingAutomation(models.Model):
     _description = 'Records Billing Automation'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Automation Rule Name', required=True, tracking=True)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
     
     # Trigger conditions
     trigger_type = fields.Selection([
@@ -544,8 +501,6 @@ class RecordsBillingAutomation(models.Model):
     ], string='Trigger Type', required=True, tracking=True)
     
     # Rule configuration
-    service_type = fields.Selection([
-        ('storage', 'Storage'),
         ('retrieval', 'Retrieval'),
         ('destruction', 'Destruction'),
         ('scanning', 'Scanning'),
@@ -554,7 +509,6 @@ class RecordsBillingAutomation(models.Model):
     ], string='Service Type', tracking=True)
     
     # Auto-pricing
-    pricing_id = fields.Many2one('records.service.pricing', string='Default Pricing')
     
     # Conditions
     apply_to_all_customers = fields.Boolean(string='Apply to All Customers', default=True)

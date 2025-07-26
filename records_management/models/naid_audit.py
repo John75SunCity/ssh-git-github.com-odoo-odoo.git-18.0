@@ -249,7 +249,6 @@ class NAIDAuditLog(models.Model):
     @api.depends('remediation_deadline', 'remediation_completed')
     def _compute_is_overdue(self):
         """Check if remediation is overdue"""
-        now = fields.Datetime.now()
         for record in self:
             record.is_overdue = (
                 record.remediation_required and
@@ -264,7 +263,6 @@ class NAIDAuditLog(models.Model):
         """Compute comprehensive analytics for audit events"""
         for audit in self:
             # Update timestamp
-            audit.analytics_timestamp = fields.Datetime.now()
             
             # Audit criticality score
             criticality = 20.0  # Base score
@@ -411,7 +409,6 @@ class NAIDAuditLog(models.Model):
     @api.depends('remediation_deadline', 'remediation_completed')
     def _compute_is_overdue(self):
         """Check if remediation is overdue"""
-        now = fields.Datetime.now()
         for record in self:
             record.is_overdue = (
                 record.remediation_required and
@@ -553,10 +550,6 @@ class NAIDCompliancePolicy(models.Model):
         default=10
     )
     
-    description = fields.Text(
-        string='Policy Description',
-        required=True
-    )
     
     policy_type = fields.Selection([
         ('access_control', 'Access Control'),

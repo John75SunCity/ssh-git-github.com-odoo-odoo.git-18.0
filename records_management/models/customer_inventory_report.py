@@ -19,7 +19,6 @@ class CustomerInventoryReport(models.Model):
     name = fields.Char('Report Name', required=True, tracking=True)
     customer_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
     report_date = fields.Date('Report Date', required=True, default=fields.Date.today, tracking=True)
-    created_date = fields.Date('Created Date', default=fields.Date.today, tracking=True)
     status = fields.Selection([
         ('draft', 'Draft'),
         ('generated', 'Generated'),

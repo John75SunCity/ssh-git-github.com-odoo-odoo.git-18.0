@@ -191,25 +191,13 @@ class CustomerRetrievalRates(models.Model):
         help='Special terms and conditions for this customer'
     )
     
-    effective_date = fields.Date(
-        string='Effective Date',
-        default=fields.Date.today,
-        required=True
-    )
     
     expiry_date = fields.Date(
         string='Expiry Date',
         help='When these rates expire (empty = no expiry)'
     )
     
-    active = fields.Boolean(default=True)
     
-    company_id = fields.Many2one(
-        'res.company',
-        string='Company',
-        default=lambda self: self.env.company,
-        required=True
-    )
 
     @api.depends('customer_id', 'effective_date')
     def _compute_display_name(self):
@@ -229,23 +217,10 @@ class DocumentRetrievalWorkOrder(models.Model):
     _rec_name = 'name'
 
     # Core identification
-    name = fields.Char(
-        string='Work Order #',
-        required=True,
-        copy=False,
-        readonly=True,
-        index=True,
-        default=lambda self: _('New'),
         tracking=True
     )
     
     # Customer information
-    customer_id = fields.Many2one(
-        'res.partner',
-        string='Customer',
-        required=True,
-        tracking=True,
-        domain=[('is_company', '=', True)]
     )
     
     department_id = fields.Many2one(
@@ -259,7 +234,6 @@ class DocumentRetrievalWorkOrder(models.Model):
     request_date = fields.Datetime(
         string='Request Date',
         required=True,
-        default=fields.Datetime.now,
         tracking=True
     )
     
@@ -435,12 +409,6 @@ class DocumentRetrievalWorkOrder(models.Model):
     )
     
     # Company and audit
-    company_id = fields.Many2one(
-        'res.company',
-        string='Company',
-        required=True,
-        default=lambda self: self.env.company
-    )
 
     @api.model
     def create(self, vals):
@@ -663,11 +631,6 @@ class DocumentRetrievalItem(models.Model):
     _description = 'Document Retrieval Item'
     _rec_name = 'display_name'
 
-    display_name = fields.Char(
-        string='Display Name',
-        compute='_compute_display_name',
-        store=True
-    )
     
     work_order_id = fields.Many2one(
         'document.retrieval.work.order',
@@ -720,17 +683,8 @@ class DocumentRetrievalItem(models.Model):
     ], string='Status', default='requested')
     
     # Customer from work order
-    customer_id = fields.Many2one(
-        related='work_order_id.customer_id',
-        string='Customer',
-        readonly=True
-    )
     
     # Notes
-    retrieval_notes = fields.Text(
-        string='Retrieval Notes',
-        help='Special notes for retrieving this item'
-    )
 
     @api.depends('item_type', 'box_id', 'document_id', 'description')
     def _compute_display_name(self):
@@ -750,11 +704,6 @@ class DocumentRetrievalPricingWizard(models.TransientModel):
     _name = 'document.retrieval.pricing.wizard'
     _description = 'Document Retrieval Pricing Breakdown'
 
-    work_order_id = fields.Many2one(
-        'document.retrieval.work.order',
-        string='Work Order',
-        required=True
-    )
     
     # Pricing details (computed from work order)
     customer_name = fields.Char(
@@ -762,42 +711,12 @@ class DocumentRetrievalPricingWizard(models.TransientModel):
         string='Customer'
     )
     
-    priority = fields.Selection(
-        related='work_order_id.priority',
-        string='Priority Level'
+    
+    
+    
+    
+    
     )
     
-    item_count = fields.Integer(
-        related='work_order_id.item_count',
-        string='Number of Items'
     )
     
-    has_custom_rates = fields.Boolean(
-        related='work_order_id.has_custom_rates',
-        string='Has Custom Rates'
-    )
-    
-    base_retrieval_cost = fields.Float(
-        related='work_order_id.base_retrieval_cost',
-        string='Base Retrieval Cost'
-    )
-    
-    base_delivery_cost = fields.Float(
-        related='work_order_id.base_delivery_cost',
-        string='Base Delivery Cost'
-    )
-    
-    priority_item_cost = fields.Float(
-        related='work_order_id.priority_item_cost',
-        string='Priority Fee (Items)'
-    )
-    
-    priority_order_cost = fields.Float(
-        related='work_order_id.priority_order_cost',
-        string='Priority Fee (Order)'
-    )
-    
-    total_cost = fields.Float(
-        related='work_order_id.total_cost',
-        string='Total Cost'
-    )

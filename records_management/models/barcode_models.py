@@ -38,7 +38,6 @@ class RecordsBarcodeConfig(models.Model):
     _description = 'Records Barcode Configuration'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Configuration Name', required=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     
     # Barcode format
@@ -64,7 +63,6 @@ class RecordsBarcodeConfig(models.Model):
     check_duplicates = fields.Boolean(string='Check for Duplicates', default=True, tracking=True)
     
     # Status
-    active = fields.Boolean(string='Active', default=True, tracking=True)
 
 class RecordsBarcodeHistory(models.Model):
     """History of barcode scans and operations"""

@@ -137,7 +137,6 @@ class VisitorPosWizard(models.TransientModel):
     
     # Timing and Duration
     check_in_time = fields.Datetime(string='Check-in Time', default=fields.Datetime.now)
-    wizard_start_time = fields.Datetime(string='Wizard Start Time', default=fields.Datetime.now)
     collection_date = fields.Datetime(string='Collection Date')
     duration_seconds = fields.Integer(string='Duration (seconds)', compute='_compute_duration')
     
@@ -250,8 +249,6 @@ class VisitorPosPaymentSplit(models.TransientModel):
     _description = 'Visitor POS Payment Split'
     
     wizard_id = fields.Many2one('visitor.pos.wizard', string='Wizard', required=True, ondelete='cascade')
-    payment_method_id = fields.Many2one('account.payment.method', string='Payment Method', required=True)
-    amount = fields.Float(string='Amount', required=True)
     reference = fields.Char(string='Reference')
 
 
@@ -259,11 +256,7 @@ class VisitorPosServiceItem(models.TransientModel):
     _name = 'visitor.pos.service.item'
     _description = 'Visitor POS Service Item'
     
-    wizard_id = fields.Many2one('visitor.pos.wizard', string='Wizard', required=True, ondelete='cascade')
-    product_id = fields.Many2one('product.product', string='Product', required=True)
     description = fields.Text(string='Description')
-    quantity = fields.Float(string='Quantity', default=1.0)
-    unit_price = fields.Float(string='Unit Price')
     total_price = fields.Float(string='Total Price', compute='_compute_total_price')
     
     @api.depends('quantity', 'unit_price')
@@ -276,32 +269,17 @@ class VisitorPosProcessingLog(models.TransientModel):
     _name = 'visitor.pos.processing.log'
     _description = 'Visitor POS Processing Log'
     
-    wizard_id = fields.Many2one('visitor.pos.wizard', string='Wizard', required=True, ondelete='cascade')
-    step_name = fields.Char(string='Step Name', required=True)
-    step_time = fields.Datetime(string='Step Time', default=fields.Datetime.now)
-    status = fields.Selection([
-        ('started', 'Started'),
         ('completed', 'Completed'),
         ('failed', 'Failed')
     ], string='Status', required=True)
-    notes = fields.Text(string='Notes')
-    duration_seconds = fields.Integer(string='Duration (seconds)')
 
 
 class VisitorPosIntegrationError(models.TransientModel):
     _name = 'visitor.pos.integration.error'
     _description = 'Visitor POS Integration Error'
     
-    wizard_id = fields.Many2one('visitor.pos.wizard', string='Wizard', required=True, ondelete='cascade')
-    error_type = fields.Selection([
-        ('pos', 'POS Integration'),
         ('accounting', 'Accounting Integration'),
         ('inventory', 'Inventory Integration'),
         ('crm', 'CRM Integration')
     ], string='Error Type', required=True)
-    error_time = fields.Datetime(string='Error Time', default=fields.Datetime.now)
-    error_message = fields.Text(string='Error Message')
-    resolved = fields.Boolean(string='Resolved', default=False)
-    resolution_notes = fields.Text(string='Resolution Notes')
-    
     # Mail tracking fields (explicit declaration for view compatibility)

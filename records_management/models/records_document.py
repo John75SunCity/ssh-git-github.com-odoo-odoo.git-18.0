@@ -33,7 +33,6 @@ class RecordsDocument(models.Model):
     # Date tracking fields
     created_date = fields.Date(
         'Created Date', 
-        default=fields.Date.context_today,
         help='Date when the document was originally created'
     )
     received_date = fields.Date(
@@ -249,7 +248,6 @@ class RecordsDocument(models.Model):
     )
 
     # Related One2many fields for document tracking
-    chain_of_custody_ids = fields.One2many('records.chain.custody', 'document_id', string='Chain of Custody')
     audit_trail_ids = fields.One2many('records.audit.log', 'document_id', string='Audit Trail')
     digital_copy_ids = fields.One2many('records.digital.copy', 'document_id', string='Digital Copies')
     
@@ -297,7 +295,6 @@ class RecordsDocument(models.Model):
             if (doc.date and doc.retention_policy_id and
                     doc.retention_policy_id.retention_years):
                 years = doc.retention_policy_id.retention_years
-                doc.retention_date = fields.Date.add(doc.date, years=years)
             else:
                 doc.retention_date = False
 
@@ -322,7 +319,6 @@ class RecordsDocument(models.Model):
     @api.depends('destruction_eligible_date')
     def _compute_days_until_destruction(self):
         """Calculate days until destruction eligible date."""
-        today = fields.Date.today()
         for doc in self:
             if doc.destruction_eligible_date:
                 delta = (doc.destruction_eligible_date - today).days

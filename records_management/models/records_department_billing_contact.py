@@ -229,40 +229,25 @@ class DepartmentBillingApprovalHistory(models.Model):
     _description = 'Department Billing Approval History'
     
     contact_id = fields.Many2one('records.department.billing.contact', string='Contact', required=True, ondelete='cascade')
-    approval_date = fields.Datetime(string='Approval Date', default=fields.Datetime.now)
-    approved_by = fields.Many2one('res.users', string='Approved By', required=True)
-    approval_type = fields.Selection([
-        ('budget', 'Budget Approval'),
         ('charge', 'Charge Approval'),
         ('limit', 'Limit Approval')
     ], string='Approval Type', required=True)
-    amount = fields.Float(string='Approved Amount')
     status = fields.Selection([
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('pending', 'Pending')
     ], string='Status', required=True)
-    notes = fields.Text(string='Notes')
 
 
 class DepartmentBillingCharge(models.Model):
     _name = 'department.billing.charge'
     _description = 'Department Billing Charge'
     
-    contact_id = fields.Many2one('records.department.billing.contact', string='Contact', required=True, ondelete='cascade')
-    charge_date = fields.Date(string='Charge Date', default=fields.Date.today, required=True)
-    amount = fields.Float(string='Charge Amount', required=True)
-    service_type = fields.Selection([
-        ('storage', 'Storage'),
-        ('destruction', 'Destruction'),
         ('retrieval', 'Retrieval'),
         ('scanning', 'Scanning'),
         ('consultation', 'Consultation')
     ], string='Service Type', required=True)
-    description = fields.Text(string='Description')
     invoice_id = fields.Many2one('account.move', string='Related Invoice')
-    status = fields.Selection([
-        ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('invoiced', 'Invoiced'),
         ('paid', 'Paid')

@@ -221,7 +221,6 @@ class ProductTemplate(models.Model):
         """Compute comprehensive analytics for products"""
         for product in self:
             # Update timestamp
-            product.analytics_updated_timestamp = fields.Datetime.now()
             
             # Service utilization rate (simulated based on type and compliance)
             utilization = 60.0  # Base utilization
@@ -336,8 +335,6 @@ class ProductTemplate(models.Model):
             product.avg_deal_size = product.list_price
             product.customer_count = 0
             product.customer_retention_rate = 85.0
-            product.first_sale_date = fields.Date.today()
-            product.last_sale_date = fields.Date.today()
             product.price_history_count = 0
             product.price_margin = 0.0
             product.product_variant_count = len(product.product_variant_ids)

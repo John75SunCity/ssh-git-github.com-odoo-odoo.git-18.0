@@ -176,13 +176,6 @@ class WorkOrderShredding(models.Model):
         tracking=True
     )
     
-    supervisor_id = fields.Many2one(
-        'res.users',
-        string='Approving Supervisor',
-        tracking=True,
-        domain=[('groups_id', 'in', [
-            'records_management.group_records_manager'
-        ])]
     )
     
     # Execution tracking
@@ -659,14 +652,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
         required=True
     )
     
-    customer_id = fields.Many2one(
-        'res.partner',
-        string='Customer',
-        required=True
-    )
     
-    service_type = fields.Selection([
-        ('standard', 'Standard (Off-Site)'),
         ('mobile', 'Mobile (On-Site)')
     ], string='Service Type', required=True)
     
