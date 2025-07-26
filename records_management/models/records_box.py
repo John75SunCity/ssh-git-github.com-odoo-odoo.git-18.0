@@ -145,6 +145,16 @@ class RecordsBox(models.Model):
         string='Document Count',
         store=True
     )
+    movement_count = fields.Integer(
+        compute='_compute_movement_count',
+        string='Movement Count',
+        store=True
+    )
+    service_request_count = fields.Integer(
+        compute='_compute_service_request_count',
+        string='Service Request Count',
+        store=True
+    )
     notes = fields.Html(string='Notes')
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
@@ -235,6 +245,18 @@ class RecordsBox(models.Model):
         """Compute number of documents in this box"""
         for record in self:
             record.document_count = len(record.document_ids)
+
+    @api.depends('movement_ids')
+    def _compute_movement_count(self):
+        """Compute number of movements for this box"""
+        for record in self:
+            record.movement_count = len(record.movement_ids)
+
+    @api.depends('service_request_ids')
+    def _compute_service_request_count(self):
+        """Compute number of service requests for this box"""
+        for record in self:
+            record.service_request_count = len(record.service_request_ids)
 
     # Action Methods
     def action_view_documents(self):
