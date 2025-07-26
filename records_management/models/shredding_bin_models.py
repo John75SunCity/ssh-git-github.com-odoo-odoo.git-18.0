@@ -139,6 +139,8 @@ class ShreddingBaseRate(models.Model):
 
     display_name = fields.Char(string='Rate Name', compute='_compute_display_name', store=True)
     
+    bin_size = fields.Selection([
+        ('24_gallon', '24 Gallon'),
         ('32_gallon', '32 Gallon'),
         ('console', 'Console'),
         ('64_gallon', '64 Gallon'),
@@ -172,17 +174,23 @@ class ShreddingCustomerRate(models.Model):
     _description = 'Customer Shredding Rate'
     _rec_name = 'display_name'
 
+    display_name = fields.Char(string='Customer Rate', compute='_compute_display_name', store=True)
+    customer_id = fields.Many2one('res.partner', string='Customer', required=True, ondelete='cascade')
     
-    
+    bin_size = fields.Selection([
+        ('24_gallon', '24 Gallon'),
         ('32_gallon', '32 Gallon'),
         ('console', 'Console'),
         ('64_gallon', '64 Gallon'),
         ('96_gallon', '96 Gallon')
     ], string='Bin Size', required=True)
     
+    service_type = fields.Selection([
+        ('standard', 'Standard (Off-site)'),
         ('mobile', 'Mobile (On-site)')
     ], string='Service Type', required=True)
     
+    rate = fields.Monetary(string='Customer Rate', required=True)
     
     # Contract Information
     contract_reference = fields.Char(string='Contract Reference')
