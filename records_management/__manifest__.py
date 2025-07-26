@@ -141,6 +141,9 @@ Features:
         'views/shredding_rates_views.xml',  # New: Shredding rates views
         'views/shredding_inventory_views.xml',  # New: Shredding inventory views
         'views/advanced_billing_views.xml',  # New: Advanced billing views
+        'views/bin_key_management_views.xml',  # New: Bin key management views
+        'views/partner_bin_key_views.xml',  # New: Partner bin key views
+        'views/mobile_bin_key_wizard_views.xml',  # New: Mobile bin key wizard views
         'report/destruction_certificate_report.xml',
         'report/bale_label_report.xml',
         'report/portal_audit_report.xml',  # New: Audit reports for NAID

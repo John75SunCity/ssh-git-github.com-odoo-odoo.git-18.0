@@ -48,6 +48,11 @@ from . import records_box_transfer
 # Shredding and Services
 from . import shredding_service
 from . import shredding_hard_drive
+
+# Bin Key Management System
+from . import bin_key_management
+from . import partner_bin_key
+from . import mobile_bin_key_wizard
 from . import shredding_bin_models
 from . import work_order_shredding
 from . import document_retrieval_work_order
