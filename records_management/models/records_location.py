@@ -25,12 +25,13 @@ class RecordsLocation(models.Model):
         ('map', 'Map Storage - Map Boxes (Type 03)'),
         ('oversize', 'Oversize - Odd-Shaped Boxes (Type 04)'),
         ('refiles', 'Refiles - Staging for Returns/Put-Away'),
+    ], string='Location Type', required=True, default='aisles',
        help="""Location type determines what kind of boxes can be stored:
        • Aisles/Pallets: Standard file boxes (Type 01) - monthly rent
        • Vault: Specialty boxes (Type 06) - secure storage
        • Map: Map boxes (Type 03) - oversized maps/plans
        • Oversize: Odd-shaped boxes (Type 04) - temporary storage during split
-       • Refiles: Staging area for returned files before put-away""")  # Added missing closing parenthesis for fields.Selection(
+       • Refiles: Staging area for returned files before put-away""")
 
     box_ids = fields.One2many('records.box', 'location_id', string='Boxes')
     box_count = fields.Integer('Physical Box Count', compute='_compute_box_count', compute_sudo=False,
