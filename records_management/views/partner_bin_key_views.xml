@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
+
     <!-- Enhanced Partner Tree View with Key Indicators -->
     <record id="view_res_partner_tree_key_management" model="ir.ui.view">
         <field name="name">res.partner.tree.key.management</field>
@@ -13,19 +13,17 @@
             </field>
         </field>
     </record>
-    
+
     <!-- Enhanced Partner Form View with Key Management -->
     <record id="view_res_partner_form_key_management" model="ir.ui.view">
         <field name="name">res.partner.form.key.management</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            
+
             <!-- Add Key Management button box -->
             <div name="button_box" position="inside">
-                <button name="action_view_bin_keys" type="object" 
-                        class="oe_stat_button" icon="fa-key"
-                        attrs="{'invisible': [('has_bin_key', '=', False)]}">
+                <button name="action_view_bin_keys" type="object" class="oe_stat_button" icon="fa-key" attrs="{'invisible': [('has_bin_key', '=', False)]}">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_value">
                             <field name="active_bin_key_count"/>
@@ -33,10 +31,8 @@
                         <span class="o_stat_text">Bin Keys</span>
                     </div>
                 </button>
-                
-                <button name="action_view_unlock_services" type="object" 
-                        class="oe_stat_button" icon="fa-unlock-alt"
-                        attrs="{'invisible': [('unlock_service_count', '=', 0)]}">
+
+                <button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt" attrs="{'invisible': [('unlock_service_count', '=', 0)]}">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_value">
                             <field name="unlock_service_count"/>
@@ -45,7 +41,7 @@
                     </div>
                 </button>
             </div>
-            
+
             <!-- Add key status indicators near name -->
             <h1 position="after">
                 <div class="o_row" attrs="{'invisible': [('has_bin_key', '=', False)]}">
@@ -55,36 +51,32 @@
                     </span>
                 </div>
             </h1>
-            
+
             <!-- Add Bin Key Management tab -->
             <page string="Internal Notes" position="after">
                 <page string="🔑 Bin Key Management" attrs="{'invisible': [('is_company', '=', True)]}">
-                    
+
                     <!-- Quick Actions -->
                     <div class="row mb-3">
                         <div class="col-12">
                             <div class="alert alert-info" role="alert" attrs="{'invisible': [('has_bin_key', '=', True)]}">
                                 <h4 class="alert-heading">No Active Bin Key</h4>
                                 <p>This contact does not currently have an active bin key assigned.</p>
-                                <button name="action_issue_new_key" string="🔑 Issue New Key" 
-                                        type="object" class="btn btn-primary btn-sm"/>
+                                <button name="action_issue_new_key" string="🔑 Issue New Key" type="object" class="btn btn-primary btn-sm"/>
                             </div>
-                            
+
                             <div class="alert alert-success" role="alert" attrs="{'invisible': [('has_bin_key', '=', False)]}">
                                 <h4 class="alert-heading">Active Bin Key</h4>
                                 <p>This contact has an active bin key assigned.</p>
                                 <div class="btn-group" role="group">
-                                    <button name="action_view_active_key" string="👀 View Key Details" 
-                                            type="object" class="btn btn-info btn-sm"/>
-                                    <button name="action_return_key" string="🔄 Return Key" 
-                                            type="object" class="btn btn-warning btn-sm"/>
-                                    <button name="action_report_lost_key" string="⚠️ Report Lost" 
-                                            type="object" class="btn btn-danger btn-sm"/>
+                                    <button name="action_view_active_key" string="👀 View Key Details" type="object" class="btn btn-info btn-sm"/>
+                                    <button name="action_return_key" string="🔄 Return Key" type="object" class="btn btn-warning btn-sm"/>
+                                    <button name="action_report_lost_key" string="⚠️ Report Lost" type="object" class="btn btn-danger btn-sm"/>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Key Status Summary -->
                     <group string="Key Status Summary">
                         <group>
@@ -99,29 +91,23 @@
                             <field name="total_unlock_charges" readonly="1"/>
                         </group>
                     </group>
-                    
+
                     <!-- Key History -->
                     <separator string="🗂️ Key Assignment History"/>
                     <field name="bin_key_history_ids" readonly="1">
                         <tree>
                             <field name="key_number"/>
-                            <field name="status" widget="badge" 
-                                   decoration-success="status == 'issued'"
-                                   decoration-info="status == 'returned'"
-                                   decoration-warning="status == 'lost'"
-                                   decoration-danger="status == 'replaced'"/>
+                            <field name="status" widget="badge" decoration-success="status == 'issued'" decoration-info="status == 'returned'" decoration-warning="status == 'lost'" decoration-danger="status == 'replaced'"/>
                             <field name="issue_date"/>
                             <field name="return_date"/>
                             <field name="issue_location"/>
                             <field name="emergency_contact" widget="boolean_toggle"/>
                         </tree>
                     </field>
-                    
+
                     <!-- Unlock Service History -->
-                    <separator string="🔓 Unlock Service History" 
-                               attrs="{'invisible': [('unlock_service_count', '=', 0)]}"/>
-                    <field name="unlock_service_history_ids" readonly="1" 
-                           attrs="{'invisible': [('unlock_service_count', '=', 0)]}">
+                    <separator string="🔓 Unlock Service History" attrs="{'invisible': [('unlock_service_count', '=', 0)]}"/>
+                    <field name="unlock_service_history_ids" readonly="1" attrs="{'invisible': [('unlock_service_count', '=', 0)]}">
                         <tree>
                             <field name="service_number"/>
                             <field name="service_date"/>
@@ -132,27 +118,27 @@
                             <field name="invoice_created" widget="boolean_toggle"/>
                         </tree>
                     </field>
-                    
+
                 </page>
             </page>
-            
+
         </field>
     </record>
-    
+
     <!-- Enhanced Partner Kanban View with Key Indicators -->
     <record id="view_res_partner_kanban_key_management" model="ir.ui.view">
         <field name="name">res.partner.kanban.key.management</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.res_partner_kanban_view"/>
         <field name="arch" type="xml">
-            
+
             <!-- Add key-related fields to kanban -->
             <field name="country_id" position="after">
                 <field name="has_bin_key"/>
                 <field name="is_emergency_key_contact"/>
                 <field name="active_bin_key_count"/>
             </field>
-            
+
             <!-- Add key indicators to kanban card -->
             <div class="oe_kanban_details" position="before">
                 <div class="o_kanban_tags_section" t-if="record.has_bin_key.raw_value or record.is_emergency_key_contact.raw_value">
@@ -160,10 +146,10 @@
                     <span t-if="record.is_emergency_key_contact.raw_value" class="badge badge-danger">🚨 Emergency</span>
                 </div>
             </div>
-            
+
         </field>
     </record>
-    
+
     <!-- Quick Key Assignment Action -->
     <record id="action_quick_key_assignment" model="ir.actions.act_window">
         <field name="name">Quick Key Assignment</field>
@@ -172,7 +158,7 @@
         <field name="target">new</field>
         <field name="context">{'default_action_type': 'issue_new', 'default_contact_id': active_id}</field>
     </record>
-    
+
     <!-- Add Quick Key Assignment to Partner Action Menu -->
     <record id="action_partner_key_assignment" model="ir.actions.act_window">
         <field name="name">Assign Bin Key</field>
@@ -183,14 +169,14 @@
         <field name="binding_model_id" ref="base.model_res_partner"/>
         <field name="binding_view_types">form,list</field>
     </record>
-    
+
     <!-- Partner Search View with Key Filters -->
     <record id="view_res_partner_filter_key_management" model="ir.ui.view">
         <field name="name">res.partner.search.key.management</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_res_partner_filter"/>
         <field name="arch" type="xml">
-            
+
             <!-- Add key-related filters -->
             <filter name="customer" position="after">
                 <separator/>
@@ -198,14 +184,14 @@
                 <filter name="emergency_contacts" string="Emergency Contacts" domain="[('is_emergency_key_contact', '=', True)]"/>
                 <filter name="no_bin_key" string="No Bin Key" domain="[('has_bin_key', '=', False)]"/>
             </filter>
-            
+
             <!-- Add key-related search fields -->
             <field name="category_id" position="after">
                 <field name="key_issue_date"/>
                 <field name="active_bin_key_count"/>
             </field>
-            
+
         </field>
     </record>
-    
+
 </odoo>
