@@ -41,7 +41,9 @@ class RecordsDepartmentBillingContact(models.Model):
     approval_authority = fields.Boolean(string='Has Approval Authority', default=False, tracking=True)
     approval_count = fields.Integer(string='Approval Count', compute='_compute_approval_metrics', store=True)
     approval_date = fields.Date(string='Last Approval Date', tracking=True)
-    approval_history_ids = fields.Many2many('department.billing.approval.history', string='Approval History')  # Fixed to existing model
+    approval_history_ids = fields.Many2many('department.billing.approval.history', 
+                                           relation='dept_billing_approval_rel',
+                                           string='Approval History')  # Fixed with shorter table name
     approval_limit = fields.Float(string='Approval Limit ($)', default=0.0, tracking=True)
     approval_notes = fields.Text(string='Approval Notes')
     approval_status = fields.Selection([
@@ -82,7 +84,9 @@ class RecordsDepartmentBillingContact(models.Model):
     current_month_variance = fields.Float(string='Current Month Variance ($)', compute='_compute_monthly_metrics', store=True)
     
     # Department charges and tracking
-    department_charge_ids = fields.Many2many('department.billing.charge', string='Department Charges')  # Fixed to existing model
+    department_charge_ids = fields.Many2many('department.billing.charge', 
+                                            relation='dept_billing_charge_rel',
+                                            string='Department Charges')  # Fixed with shorter table name
     department_charges_count = fields.Integer(string='Charges Count', compute='_compute_charge_metrics', store=True)
     charge_amount = fields.Float(string='Total Charge Amount ($)', compute='_compute_charge_metrics', store=True)
     charge_date = fields.Date(string='Last Charge Date', compute='_compute_charge_metrics', store=True)
