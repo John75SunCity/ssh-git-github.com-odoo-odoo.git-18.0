@@ -103,7 +103,9 @@ class PaperBale(models.Model):
     # Customer and source tracking
     customer_name = fields.Char('Customer Name', related='shredding_id.customer_id.name', store=True)
     source_facility = fields.Char('Source Facility')
-    source_document_ids = fields.One2many('records.document', 'paper_bale_id', string='Source Documents')
+    source_document_ids = fields.Many2many('records.document', 
+                                          relation='paper_bale_document_rel',
+                                          string='Source Documents')  # Fixed to Many2many with shorter table name
     
     # Document tracking
     destruction_date = fields.Date('Destruction Date', tracking=True)
