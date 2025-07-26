@@ -24,7 +24,6 @@ class DestructionItem(models.Model):
         ('media', 'Electronic Media'),
         ('uniform', 'Uniform/Textile'),
         ('other', 'Other')
-    ], string='Item Type', required=True, default='document')
     
     # Quantity and measurements
     quantity = fields.Integer(string='Quantity', default=1, required=True)
@@ -35,7 +34,6 @@ class DestructionItem(models.Model):
         ('kilogram', 'Kilogram'),
         ('bag', 'Bag'),
         ('pallet', 'Pallet')
-    ], string='Unit of Measure', default='piece', required=True)
     
     weight = fields.Float(string='Weight (lbs)', help='Weight of the item in pounds')
     
@@ -48,7 +46,6 @@ class DestructionItem(models.Model):
         ('crush', 'Crushing'),
         ('degauss', 'Degaussing'),
         ('other', 'Other')
-    ], string='Destruction Method')
     
     # Chain of custody
     custodian_id = fields.Many2one('res.users', string='Current Custodian', default=lambda self: self.env.user)
@@ -61,7 +58,6 @@ class DestructionItem(models.Model):
         ('confidential', 'Confidential'),
         ('restricted', 'Restricted'),
         ('top_secret', 'Top Secret')
-    ], string='Confidentiality Level', default='internal')
     
     # NAID compliance
     naid_compliant = fields.Boolean(string='NAID Compliant', default=True)

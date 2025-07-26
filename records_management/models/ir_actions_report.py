@@ -3,7 +3,6 @@
 from typing import Dict, Any
 from odoo import models
 
-
 class IrActionsReport(models.Model):
     """Extension for report actions to handle custom rendering contexts."""
     _inherit = 'ir.actions.report'

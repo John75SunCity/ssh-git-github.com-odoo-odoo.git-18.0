@@ -24,7 +24,6 @@ class ShreddingService(models.Model):
     service_type = fields.Selection([
         ('bin', 'Bin Shredding'), ('box', 'Box Shredding'),
         ('hard_drive', 'Hard Drive Destruction'), ('uniform', 'Uniform Shredding')
-    ], string='Service Type', required=True)  # Expanded for new services
     bin_ids = fields.Many2many(
         'stock.lot',
         relation='shredding_service_bin_rel',  # Custom relation to avoid conflict with shredded_box_ids
@@ -32,7 +31,6 @@ class ShreddingService(models.Model):
         column2='lot_id',
         string='Serviced Bins',
         domain="[('product_id.name', '=', 'Shredding Bin')]"
-    )
     box_quantity = fields.Integer(string='Number of Boxes')
     shredded_box_ids = fields.Many2many('stock.lot', 
                                         relation='shredding_service_shredded_box_rel',
@@ -89,7 +87,6 @@ class ShreddingService(models.Model):
         ('wipe', 'Data Wiping'),
         ('incineration', 'Incineration'),
         ('pulverization', 'Pulverization')
-    ], string='Destruction Method')
     certificate_required = fields.Boolean('Certificate Required', default=True)
     chain_of_custody_maintained = fields.Boolean('Chain of Custody Maintained', default=False)
     environmental_compliance = fields.Boolean('Environmental Compliance Verified', default=False)
@@ -145,7 +142,6 @@ class ShreddingService(models.Model):
         ('naid_aaa', 'NAID AAA Certificate'),
         ('iso', 'ISO Compliance Certificate'),
         ('custom', 'Custom Certificate')
-    ], string='Certificate Type', default='standard')
     included_in_certificate = fields.Boolean('Included in Certificate', default=True)
     
     # Chain of custody and tracking
@@ -163,7 +159,6 @@ class ShreddingService(models.Model):
         ('kg', 'Kilograms'),
         ('boxes', 'Boxes'),
         ('items', 'Items')
-    ], string='Unit of Measure', default='lbs')
     
     # Verification and quality control
     destruction_efficiency = fields.Float('Destruction Efficiency (%)', compute='_compute_destruction_metrics', store=True)
@@ -195,7 +190,6 @@ class ShreddingService(models.Model):
         ('confidential', 'Confidential'),
         ('restricted', 'Restricted'),
         ('top_secret', 'Top Secret')
-    ], string='Confidentiality Level', default='confidential')
     destroyed = fields.Boolean('Destroyed', default=False, tracking=True)
     item_type = fields.Selection([
         ('documents', 'Documents'),
@@ -203,7 +197,6 @@ class ShreddingService(models.Model):
         ('optical_media', 'Optical Media'),
         ('uniforms', 'Uniforms'),
         ('mixed', 'Mixed Materials')
-    ], string='Item Type', default='documents')
     naid_member_id = fields.Many2one('res.partner', string='NAID Member Company')
     shredding_equipment = fields.Char('Shredding Equipment Used')
     

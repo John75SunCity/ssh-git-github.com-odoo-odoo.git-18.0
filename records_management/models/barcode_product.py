@@ -20,7 +20,6 @@ class BarcodeProduct(models.Model):
         ('retrieval', 'Retrieval Service'),
         ('scanning', 'Scanning Service'),
         ('other', 'Other Service'),
-    ], string='Category', default='storage')
     
     # Pricing
     unit_price = fields.Float('Unit Price')
@@ -79,13 +78,11 @@ class BarcodeProduct(models.Model):
         ('legal', 'Legal'),
         ('x-ray', 'X-Ray'),
         ('oversize', 'Oversize')
-    ], string='Box Size')
     material_type = fields.Selection([
         ('cardboard', 'Cardboard'),
         ('plastic', 'Plastic'),
         ('metal', 'Metal'),
         ('wood', 'Wood')
-    ], string='Material Type')
     
     # Status and Condition
     box_status = fields.Selection([
@@ -94,13 +91,11 @@ class BarcodeProduct(models.Model):
         ('fair', 'Fair'),
         ('poor', 'Poor'),
         ('damaged', 'Damaged')
-    ], string='Box Status', default='new')
     bin_status = fields.Selection([
         ('empty', 'Empty'),
         ('partial', 'Partial'),
         ('full', 'Full'),
         ('overflow', 'Overflow')
-    ], string='Bin Status', default='empty')
     
     # Capacity and Volume Management
     bin_volume = fields.Float(string='Bin Volume (cubic ft)')
@@ -122,19 +117,16 @@ class BarcodeProduct(models.Model):
         ('1hour', '1 Hour'),
         ('2hour', '2 Hour'),
         ('4hour', '4 Hour')
-    ], string='Fireproof Rating', default='none')
     indoor_outdoor = fields.Selection([
         ('indoor', 'Indoor'),
         ('outdoor', 'Outdoor'),
         ('both', 'Both')
-    ], string='Indoor/Outdoor', default='indoor')
     
     # Service and Security
     security_level = fields.Selection([
         ('basic', 'Basic'),
         ('enhanced', 'Enhanced'),
         ('maximum', 'Maximum')
-    ], string='Security Level', default='basic')
     naid_compliant = fields.Boolean(string='NAID Compliant', default=True)
     witness_destruction = fields.Boolean(string='Witness Destruction', default=False)
     certificate_provided = fields.Boolean(string='Certificate Provided', default=True)
@@ -178,13 +170,11 @@ class BarcodeProduct(models.Model):
         ('basic', 'Basic'),
         ('high', 'High'),
         ('maximum', 'Maximum')
-    ], string='Shred Security Level', default='basic')
     shredding_type = fields.Selection([
         ('strip_cut', 'Strip Cut'),
         ('cross_cut', 'Cross Cut'),
         ('micro_cut', 'Micro Cut'),
         ('disintegration', 'Disintegration')
-    ], string='Shredding Type')
     
     # Dates and Scheduling
     last_access_date = fields.Date(string='Last Access Date')
@@ -197,7 +187,6 @@ class BarcodeProduct(models.Model):
         ('quarterly', 'Quarterly'),
         ('annual', 'Annual'),
         ('on_demand', 'On Demand')
-    ], string='Pickup Frequency', default='monthly')
     
     # Additional fields for complete coverage
     color = fields.Char(string='Color')
@@ -239,7 +228,6 @@ class BarcodeProduct(models.Model):
         for record in self:
             record.storage_box_count = len(record.storage_box_ids)
 
-
 # Related Models for One2many relationships
 class BarcodeGenerationBatch(models.Model):
     _name = 'barcode.generation.batch'
@@ -249,8 +237,6 @@ class BarcodeGenerationBatch(models.Model):
         ('draft', 'Draft'),
         ('generated', 'Generated'),
         ('completed', 'Completed')
-    ], string='Status', default='draft')
-
 
 class BarcodeGenerationHistory(models.Model):
     _name = 'barcode.generation.history'
@@ -259,13 +245,11 @@ class BarcodeGenerationHistory(models.Model):
     start_code = fields.Char(string='Start Code')
     end_code = fields.Char(string='End Code')
 
-
 class BarcodePricingTier(models.Model):
     _name = 'barcode.pricing.tier'
     _description = 'Barcode Product Pricing Tier'
     
     rate = fields.Float(string='Rate')
-
 
 class BarcodeSeasonalPricing(models.Model):
     _name = 'barcode.seasonal.pricing'

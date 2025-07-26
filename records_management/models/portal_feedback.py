@@ -23,7 +23,6 @@ class PortalFeedback(models.Model):
         ('compliment', 'Compliment'),
         ('inquiry', 'Inquiry'),
         ('technical', 'Technical Issue')
-    ], string='Feedback Type', required=True, tracking=True)
     
     feedback_category = fields.Selection([
         ('service_quality', 'Service Quality'),
@@ -33,7 +32,6 @@ class PortalFeedback(models.Model):
         ('delivery', 'Delivery'),
         ('staff', 'Staff'),
         ('other', 'Other')
-    ], string='Category', tracking=True)
     
     # Status and priority
     status = fields.Selection([
@@ -42,21 +40,18 @@ class PortalFeedback(models.Model):
         ('resolved', 'Resolved'),
         ('closed', 'Closed'),
         ('escalated', 'Escalated')
-    ], string='Status', default='new', required=True, tracking=True)
     
     priority = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-    ], string='Priority', default='medium', tracking=True)
     
     urgency_level = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
         ('critical', 'Critical')
-    ], string='Urgency Level', tracking=True)
     
     # Assignment and responsibility
     assigned_to = fields.Many2one('res.users', string='Assigned To', tracking=True)
@@ -87,7 +82,6 @@ class PortalFeedback(models.Model):
         ('phone', 'Phone'),
         ('portal', 'Portal'),
         ('in_person', 'In Person')
-    ], string='Response Method', tracking=True)
     
     # Satisfaction ratings
     overall_rating = fields.Selection([
@@ -96,7 +90,6 @@ class PortalFeedback(models.Model):
         ('3', 'Average'),
         ('4', 'Good'),
         ('5', 'Excellent')
-    ], string='Overall Rating')
     
     satisfaction_level = fields.Selection([
         ('very_dissatisfied', 'Very Dissatisfied'),
@@ -104,7 +97,6 @@ class PortalFeedback(models.Model):
         ('neutral', 'Neutral'),
         ('satisfied', 'Satisfied'),
         ('very_satisfied', 'Very Satisfied')
-    ], string='Satisfaction Level')
     
     # NPS and specific ratings
     nps_score = fields.Integer(string='NPS Score (0-10)', help='Net Promoter Score')
@@ -117,7 +109,6 @@ class PortalFeedback(models.Model):
         ('3', 'Average'),
         ('4', 'Good'),
         ('5', 'Excellent')
-    ], string='Service Quality Rating')
     
     communication_rating = fields.Selection([
         ('1', 'Very Poor'),
@@ -125,7 +116,6 @@ class PortalFeedback(models.Model):
         ('3', 'Average'),
         ('4', 'Good'),
         ('5', 'Excellent')
-    ], string='Communication Rating')
     
     response_time_rating = fields.Selection([
         ('1', 'Very Poor'),
@@ -133,7 +123,6 @@ class PortalFeedback(models.Model):
         ('3', 'Average'),
         ('4', 'Good'),
         ('5', 'Excellent')
-    ], string='Response Time Rating')
     
     staff_professionalism_rating = fields.Selection([
         ('1', 'Very Poor'),
@@ -141,7 +130,6 @@ class PortalFeedback(models.Model):
         ('3', 'Average'),
         ('4', 'Good'),
         ('5', 'Excellent')
-    ], string='Staff Professionalism Rating')
     
     value_for_money_rating = fields.Selection([
         ('1', 'Very Poor'),
@@ -149,7 +137,6 @@ class PortalFeedback(models.Model):
         ('3', 'Average'),
         ('4', 'Good'),
         ('5', 'Excellent')
-    ], string='Value for Money Rating')
     
     # CES and CSAT scores
     ces_score = fields.Integer(string='Customer Effort Score (1-7)', help='How easy was it to resolve your issue?')
@@ -166,7 +153,6 @@ class PortalFeedback(models.Model):
         ('positive', 'Positive'),
         ('neutral', 'Neutral'),
         ('negative', 'Negative')
-    ], string='Sentiment Analysis', compute='_compute_sentiment_analysis')
     
     keyword_tags = fields.Char(string='Keyword Tags')
     trend_analysis = fields.Text(string='Trend Analysis')
@@ -181,21 +167,18 @@ class PortalFeedback(models.Model):
         ('silver', 'Silver'),
         ('gold', 'Gold'),
         ('platinum', 'Platinum')
-    ], string='Customer Tier')
     
     customer_segment = fields.Selection([
         ('small', 'Small Business'),
         ('medium', 'Medium Business'),
         ('enterprise', 'Enterprise'),
         ('government', 'Government')
-    ], string='Customer Segment')
     
     retention_risk = fields.Selection([
         ('low', 'Low Risk'),
         ('medium', 'Medium Risk'),
         ('high', 'High Risk'),
         ('critical', 'Critical Risk')
-    ], string='Retention Risk', compute='_compute_retention_risk')
     
     # Related records
     service_request_id = fields.Many2one('records.service.request', string='Related Service Request')
@@ -206,35 +189,29 @@ class PortalFeedback(models.Model):
         'ir.attachment', 
         string='Attachments',
         help='Documents or files attached to this feedback'
-    )
     file_size = fields.Float(
         string='Total File Size (MB)',
         compute='_compute_file_size',
         help='Total size of all attached files'
-    )
     mimetype = fields.Char(
         string='Primary MIME Type',
         compute='_compute_mimetype',
         help='MIME type of the primary attachment'
-    )
     
     # Activity tracking
     activity_date = fields.Datetime(
         string='Last Activity Date',
         compute='_compute_activity_date',
         help='Date of the most recent activity'
-    )
     activity_type = fields.Selection([
         ('call', 'Phone Call'),
         ('email', 'Email'),
         ('meeting', 'Meeting'),
         ('todo', 'To Do'),
         ('upload', 'Upload')
-    ], string='Last Activity Type', compute='_compute_activity_type')
     followup_activity_ids = fields.Many2many('mail.activity', relation='followup_activity_ids_rel', string='Follow-up Activities',
         domain=[('res_model', '=', 'portal.feedback')],  # Fixed syntax error
         help='Scheduled follow-up activities for this feedback'
-    )
     
     # Follow-up and actions
     followup_required = fields.Boolean(string='Follow-up Required', tracking=True)
@@ -244,7 +221,6 @@ class PortalFeedback(models.Model):
         ('email', 'Email'),
         ('phone', 'Phone'),
         ('survey', 'Survey')
-    ], string='Follow-up Method')
     
     # Actions and resolutions
     internal_actions = fields.Text(string='Internal Actions Taken')
@@ -255,7 +231,6 @@ class PortalFeedback(models.Model):
         ('compensation', 'Compensation'),
         ('explanation', 'Explanation'),
         ('no_action', 'No Action Required')
-    ], string='Resolution Category')
     
     root_cause_category = fields.Selection([
         ('communication', 'Communication'),
@@ -264,7 +239,6 @@ class PortalFeedback(models.Model):
         ('training', 'Training'),
         ('policy', 'Policy'),
         ('external', 'External Factor')
-    ], string='Root Cause Category')
     
     impact_assessment = fields.Text(string='Impact Assessment')
     

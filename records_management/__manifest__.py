@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
                 'name': 'Records Management',
-                'version': '18.0.3.5.0',   # 🔧 CLEAR CACHE: Updated version to force complete cache clear for portal_feedback issues
+                'version': '18.0.6.0.0',   # Updated version for Odoo 18.0 compatibility fixes
     'category': 'Document Management',
     'summary': 'Manage physical document boxes, records, shredding, recycling, and visitor-POS integration for walk-ins',
     'description': """
@@ -33,36 +33,60 @@ Features:
     'author': 'John75SunCity',
     'website': 'https://github.com/John75SunCity',
     'depends': [
+        # Core Odoo Dependencies (Required)
         'base',
-        'product',
-        'stock',
         'mail',
         'web',
         'portal',
-        'base_setup',
-        'fleet',
+        
+        # Product and Inventory Management
+        'product',
+        'stock',
+        'barcodes',
+        
+        # Accounting and Sales
         'account',  # For invoicing/billing
-        'sale',  # For quotes/self-quotes
+        'sale',     # For quotes/self-quotes
+        
+        # Website and E-commerce
         'website',  # For website forms/quoting
+        
+        # Point of Sale
         'point_of_sale',  # For walk-in services
-        'frontdesk',  # For visitor check-in integration
-        'sms',  # For POS SMS receipts/notifications
-        'industry_fsm',  # For field service management (shredding/pickups)
+        
+        # Communication
+        'sms',  # For SMS notifications
+        
+        # Electronic Signatures (if available)
         'sign',  # For electronic signatures (NAID compliance)
+        
+        # Human Resources
         'hr',  # For employee training/access
-        'barcodes',  # For temp inventory/barcode handling
-        'web_tour',  # For portal app tours
-        'survey',  # For customer feedback forms/suggestions
-        'project',  # For project tasks and FSM integration
+        
+        # Project Management
+        'project',  # For project tasks
         'calendar',  # For meeting/event scheduling
+        
+        # Survey and Feedback
+        'survey',  # For customer feedback forms/suggestions
+        
+        # Additional modules (commented out if not available in Odoo 18.0)
+        # 'frontdesk',  # For visitor check-in integration - may not exist in 18.0
+        # 'industry_fsm',  # For field service management - may not exist in 18.0
+        # 'web_tour',  # For portal app tours - may not exist in 18.0
     ],
     'external_dependencies': {
         'python': [
-            'qrcode',
-            'Pillow',
-            'cryptography',
-            # 'pulp',  # Commented out for development - uncomment when ready for production
+            'qrcode',      # For QR code generation
+            'Pillow',      # For image processing
+            'cryptography', # For encryption and security
+            # 'pulp',      # For optimization - uncomment when ready for production
+            # 'torch',     # For AI features - optional dependency
         ],
+        # Binary dependencies (if any)
+        # 'bin': [
+        #     'wkhtmltopdf',  # For PDF generation - usually pre-installed
+        # ],
     },
     'data': [
         'security/records_management_security.xml',

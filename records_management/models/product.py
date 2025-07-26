@@ -8,7 +8,6 @@ class ProductTemplate(models.Model):
         ('document', 'Document Shredding'),
         ('hard_drive', 'Hard Drive Destruction'),
         ('uniform', 'Uniform Shredding'),
-    ], string='Shred Type', help='Type of shredding service for NAID-compliant categorization.')
     naid_compliant = fields.Boolean(string='NAID Compliant', default=True, help='Flag if this product meets NAID AAA standards.')
     retention_note = fields.Text(string='Retention Note', compute='_compute_retention_note', store=True, 
                                  help='Computed note for ISO data integrity (e.g., retention policies).')
@@ -19,43 +18,36 @@ class ProductTemplate(models.Model):
         compute='_compute_product_analytics',
         store=True,
         help='Rate of service utilization and demand'
-    )
     revenue_performance_score = fields.Float(
         string='Revenue Performance Score',
         compute='_compute_product_analytics',
         store=True,
         help='Performance score based on revenue generation'
-    )
     compliance_certification_level = fields.Float(
         string='Compliance Level (%)',
         compute='_compute_product_analytics',
         store=True,
         help='NAID and regulatory compliance certification level'
-    )
     market_demand_indicator = fields.Char(
         string='Market Demand',
         compute='_compute_product_analytics',
         store=True,
         help='Market demand trend indicator'
-    )
     service_quality_rating = fields.Float(
         string='Service Quality Rating',
         compute='_compute_product_analytics',
         store=True,
         help='Quality rating based on customer feedback and compliance'
-    )
     product_insights = fields.Text(
         string='Product Insights',
         compute='_compute_product_analytics',
         store=True,
         help='AI-generated product performance insights'
-    )
     analytics_updated_timestamp = fields.Datetime(
         string='Analytics Updated',
         compute='_compute_product_analytics',
         store=True,
         help='Last analytics computation time'
-    )
     
     # Missing business and technical fields from view analysis
     active = fields.Boolean(string='Active', default=True)
@@ -73,7 +65,6 @@ class ProductTemplate(models.Model):
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
         ('yearly', 'Yearly')
-    ], string='Billing Frequency', default='monthly')
     box_retrieval_time = fields.Float(string='Box Retrieval Time (hours)', default=24.0)
     box_storage_included = fields.Integer(string='Box Storage Included', default=0)
     can_be_expensed = fields.Boolean(string='Can Be Expensed', default=True)
@@ -93,7 +84,6 @@ class ProductTemplate(models.Model):
         ('consu', 'Consumable'),
         ('service', 'Service'),
         ('product', 'Storable Product')
-    ], string='Product Type', default='service')
     digital_conversion_included = fields.Boolean(string='Digital Conversion Included', default=False)
     discount_percentage = fields.Float(string='Discount Percentage', default=0.0)
     display_name = fields.Char(string='Display Name', compute='_compute_display_name')
@@ -124,7 +114,6 @@ class ProductTemplate(models.Model):
         ('a', 'NAID Level A'),
         ('aa', 'NAID Level AA'),
         ('aaa', 'NAID Level AAA')
-    ], string='NAID Compliance Level', default='aaa')
     name = fields.Char(string='Product Name', required=True)
     overhead_cost = fields.Float(string='Overhead Cost', default=0.0)
     period = fields.Selection([
@@ -133,7 +122,6 @@ class ProductTemplate(models.Model):
         ('month', 'Month'),
         ('quarter', 'Quarter'),
         ('year', 'Year')
-    ], string='Period', default='month')
     pickup_delivery_included = fields.Boolean(string='Pickup/Delivery Included', default=False)
     price_history_count = fields.Integer(string='Price History Count', compute='_compute_product_metrics')
     price_margin = fields.Float(string='Price Margin (%)', compute='_compute_product_metrics')
@@ -168,7 +156,6 @@ class ProductTemplate(models.Model):
         ('discount', 'Discount Rule'),
         ('volume', 'Volume Rule'),
         ('service', 'Service Rule')
-    ], string='Rule Type', help='Type of business rule')
     
     # Sales and purchase configuration
     purchase_ok = fields.Boolean(string='Can be Purchased', default=False, 
@@ -205,7 +192,6 @@ class ProductTemplate(models.Model):
         ('premium', 'Premium'),
         ('enterprise', 'Enterprise'),
         ('custom', 'Custom')
-    ], string='Template Category', default='standard',
        help='Category classification for template products')
 
     @api.depends('type')

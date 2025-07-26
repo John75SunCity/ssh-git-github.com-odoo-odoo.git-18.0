@@ -61,7 +61,6 @@ class PortalRequest(models.Model):
         ('on_time', 'On Time'),
         ('at_risk', 'At Risk'),
         ('breached', 'Breached')
-    ], string='SLA Status', compute='_compute_sla_status')
     sla_target_hours = fields.Float(string='SLA Target Hours')
     sla_breach_risk = fields.Boolean(string='SLA Breach Risk', compute='_compute_sla_breach_risk')
     sla_milestone_ids = fields.One2many('portal.request.milestone', 'request_id', string='SLA Milestones')
@@ -91,7 +90,6 @@ class PortalRequest(models.Model):
         ('retrieval', 'Retrieval'),
         ('scanning', 'Scanning'),
         ('consultation', 'Consultation')
-    ], string='Service Category')
     
     # Approval Workflow
     requires_approval = fields.Boolean(string='Requires Approval', default=True)
@@ -99,13 +97,11 @@ class PortalRequest(models.Model):
         ('supervisor', 'Supervisor'),
         ('manager', 'Manager'),
         ('executive', 'Executive')
-    ], string='Approval Level')
     approval_level_required = fields.Selection([
         ('none', 'None'),
         ('basic', 'Basic'),
         ('advanced', 'Advanced'),
         ('executive', 'Executive')
-    ], string='Approval Level Required')
     primary_approver = fields.Many2one('res.users', string='Primary Approver')
     secondary_approver = fields.Many2one('res.users', string='Secondary Approver')
     final_approver = fields.Many2one('res.users', string='Final Approver')
@@ -119,7 +115,6 @@ class PortalRequest(models.Model):
         ('reject', 'Reject'),
         ('defer', 'Defer'),
         ('escalate', 'Escalate')
-    ], string='Approval Action')
     approval_history_ids = fields.One2many('portal.request.approval', 'request_id', string='Approval History')
     auto_approve_threshold = fields.Float(string='Auto Approve Threshold')
     
@@ -134,7 +129,6 @@ class PortalRequest(models.Model):
         ('hourly', 'Hourly'),
         ('fixed', 'Fixed Price'),
         ('materials', 'Materials Based')
-    ], string='Billing Method')
     billing_required = fields.Boolean(string='Billing Required')
     invoice_generated = fields.Boolean(string='Invoice Generated')
     
@@ -155,7 +149,6 @@ class PortalRequest(models.Model):
         ('phone', 'Phone'),
         ('portal', 'Portal'),
         ('in_person', 'In Person')
-    ], string='Communication Type')
     communication_date = fields.Datetime(string='Communication Date')
     
     # Quality and Satisfaction
@@ -165,7 +158,6 @@ class PortalRequest(models.Model):
         ('3', 'Average'),
         ('4', 'Good'),
         ('5', 'Excellent')
-    ], string='Customer Satisfaction')
     customer_rating = fields.Integer(string='Customer Rating (1-10)')
     overall_satisfaction = fields.Float(string='Overall Satisfaction Score')
     quality_score = fields.Float(string='Quality Score')
@@ -191,7 +183,6 @@ class PortalRequest(models.Model):
         ('internal', 'Internal'),
         ('confidential', 'Confidential'),
         ('restricted', 'Restricted')
-    ], string='Confidentiality Level', default='internal')
     access_restrictions = fields.Text(string='Access Restrictions')
     naid_compliance_required = fields.Boolean(string='NAID Compliance Required')
     chain_of_custody_required = fields.Boolean(string='Chain of Custody Required')
@@ -295,7 +286,6 @@ class PortalRequest(models.Model):
             else:
                 record.related_request_count = 0
 
-
 # Related Models for One2many relationships
 class PortalRequestMilestone(models.Model):
     _name = 'portal.request.milestone'
@@ -305,8 +295,6 @@ class PortalRequestMilestone(models.Model):
     completion_date = fields.Datetime(string='Completion Date')
         ('completed', 'Completed'),
         ('overdue', 'Overdue')
-    ], string='Status', default='pending')
-
 
 class PortalRequestApproval(models.Model):
     _name = 'portal.request.approval'
@@ -316,8 +304,6 @@ class PortalRequestApproval(models.Model):
         ('reject', 'Rejected'),
         ('defer', 'Deferred'),
         ('escalate', 'Escalated')
-    ], string='Action', required=True)
-
 
 class PortalRequestCommunication(models.Model):
     _name = 'portal.request.communication'
@@ -325,7 +311,6 @@ class PortalRequestCommunication(models.Model):
     
         ('portal', 'Portal'),
         ('in_person', 'In Person')
-    ], string='Type', required=True)
     from_user_id = fields.Many2one('res.users', string='From')
     to_user_id = fields.Many2one('res.users', string='To')
     message = fields.Text(string='Message')

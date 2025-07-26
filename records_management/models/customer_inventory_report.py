@@ -25,7 +25,6 @@ class CustomerInventoryReport(models.Model):
         ('sent', 'Sent'),
         ('reviewed', 'Reviewed'),
         ('archived', 'Archived')
-    ], string='Status', default='draft', tracking=True)
     
     # Inventory details and relationships
     location_id = fields.Many2one('records.location', string='Primary Location', tracking=True)
@@ -45,7 +44,6 @@ class CustomerInventoryReport(models.Model):
         ('medium', 'Medium (100-500 boxes)'),
         ('large', 'Large (500-1000 boxes)'),
         ('enterprise', 'Enterprise (> 1000 boxes)')
-    ], string='Volume Category', compute='_compute_volume_category', store=True)
     
     # Additional contextual fields
     notes = fields.Text('Notes')
@@ -53,7 +51,6 @@ class CustomerInventoryReport(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('pending', 'Pending Review')
-    ], string='State', default='active')
     
     # Company context
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)

@@ -51,7 +51,6 @@ class RecordsDepartmentBillingContact(models.Model):
         ('limited', 'Limited Authority'),
         ('full', 'Full Authority'),
         ('suspended', 'Suspended')
-    ], string='Approval Status', default='none', tracking=True)
     approved_by = fields.Many2one('res.users', string='Approved By', tracking=True)
     
     # Billing role and configuration
@@ -61,7 +60,6 @@ class RecordsDepartmentBillingContact(models.Model):
         ('approver', 'Approver'),
         ('reviewer', 'Reviewer'),
         ('finance', 'Finance Team')
-    ], string='Billing Role', required=True, default='primary', tracking=True)
     
     # Budget management
     budget_alert_threshold = fields.Float(string='Budget Alert Threshold (%)', default=80.0)
@@ -100,7 +98,6 @@ class RecordsDepartmentBillingContact(models.Model):
         ('digital', 'Digital Services'),
         ('consultation', 'Consultation Services'),
         ('mixed', 'Mixed Services')
-    ], string='Service Type', default='storage')
     vendor = fields.Many2one('res.partner', string='Vendor/Service Provider')
     
     # Year-to-date financials

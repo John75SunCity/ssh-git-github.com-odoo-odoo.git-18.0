@@ -1,6 +1,5 @@
 from odoo import models, fields, api, _
 
-
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
@@ -18,7 +17,6 @@ class ResPartner(models.Model):
     preferred_shredding_service = fields.Selection([
         ('standard', 'Standard (Off-site) - Default'),
         ('mobile', 'Mobile (On-site) - Default')
-    ], string='Preferred Shredding Service', default='standard',
        help="Default shredding service preference for work orders and portal requests")
     
     allow_service_type_changes = fields.Boolean(
@@ -48,7 +46,6 @@ class ResPartner(models.Model):
         ('consolidated', 'Consolidated Billing - One Invoice with Department Breakdown'),
         ('separate', 'Separate Department Billing - Individual Invoices per Department'),
         ('hybrid', 'Hybrid - Consolidated Storage, Separate Services')
-    ], string='Billing Method', default='consolidated',
        help="How to handle billing when customer has multiple departments")
     
     billing_contact_id = fields.Many2one(
@@ -64,7 +61,6 @@ class ResPartner(models.Model):
         ('portal', 'Customer Portal'),
         ('mail', 'Postal Mail'),
         ('both', 'Email + Portal')
-    ], string='Invoice Delivery', default='email')
     
     payment_terms_override = fields.Many2one(
         'account.payment.term', string='Payment Terms Override',
@@ -76,7 +72,6 @@ class ResPartner(models.Model):
          'department breakdown'),
         ('separate', 'Separate - Individual invoices per department'),
         ('hybrid', 'Hybrid - Consolidated storage, separate services'),
-    ], string='Billing Preference', default='consolidated',
        help="Choose how invoices should be generated for companies with "
             "multiple departments")
     
@@ -86,7 +81,6 @@ class ResPartner(models.Model):
         help="If checked, monthly minimum fee applies to each department "
              "separately. Otherwise, minimum applies to total company usage "
              "and is distributed proportionally."
-    )
     
     # Department Statistics
     department_ids = fields.One2many(

@@ -17,7 +17,6 @@ class CustomerFeedback(models.Model):
         ('concern', 'Concern'),
         ('compliment', 'Compliment'),
         ('general', 'General'),
-    ], string='Feedback Type', required=True)
     
     # Core feedback fields
     rating = fields.Selection([
@@ -26,7 +25,6 @@ class CustomerFeedback(models.Model):
         ('3', 'Average'),
         ('4', 'Good'),
         ('5', 'Excellent')
-    ], string='Rating')
     
     comments = fields.Text(string='Comments')
     service_area = fields.Char(string='Service Area', default='portal')
@@ -39,7 +37,6 @@ class CustomerFeedback(models.Model):
         ('positive', 'Positive'),
         ('neutral', 'Neutral'),
         ('negative', 'Negative')
-    ], string='Sentiment', compute='_compute_sentiment', store=True)
     
     # NAID compliance and workflow
     state = fields.Selection([
@@ -47,7 +44,6 @@ class CustomerFeedback(models.Model):
         ('reviewed', 'Reviewed'),
         ('responded', 'Responded'),
         ('closed', 'Closed')
-    ], string='Status', default='new')
     
     response = fields.Text(string='Management Response')
     response_date = fields.Datetime(string='Response Date')
@@ -61,7 +57,6 @@ class CustomerFeedback(models.Model):
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-    ], string='Priority', default='normal')
     
     # Phase 3: Customer Feedback Analytics
     
@@ -71,14 +66,12 @@ class CustomerFeedback(models.Model):
         compute='_compute_satisfaction_analytics',
         store=True,
         help='Trending satisfaction score for this customer'
-    )
     
     response_effectiveness_rating = fields.Float(
         string='Response Effectiveness Rating',
         compute='_compute_satisfaction_analytics',
         store=True,
         help='Effectiveness of management response'
-    )
     
     # Pattern Analytics
     feedback_frequency_indicator = fields.Selection([
@@ -86,7 +79,6 @@ class CustomerFeedback(models.Model):
         ('occasional', 'Occasional'),
         ('frequent', 'Frequent'),
         ('power_user', 'Power User')
-    ], string='Feedback Frequency',
        compute='_compute_pattern_analytics',
        store=True,
        help='Customer feedback frequency pattern')
@@ -96,7 +88,6 @@ class CustomerFeedback(models.Model):
         compute='_compute_pattern_analytics',
         store=True,
         help='Potential for service improvements based on feedback'
-    )
 
     @api.depends('comments', 'rating')
     def _compute_sentiment(self):

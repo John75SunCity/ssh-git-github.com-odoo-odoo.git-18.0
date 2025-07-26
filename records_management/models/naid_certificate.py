@@ -24,7 +24,6 @@ class NAIDCertificate(models.Model):
         ('employee', 'Employee Certification'),
         ('auditor', 'Auditor Certification'),
         ('facility', 'Facility Certification')
-    ], string='Certificate Type', required=True, tracking=True)
     
     # NAID compliance relationship
     compliance_id = fields.Many2one('naid.compliance', string='NAID Compliance Record', tracking=True)
@@ -42,7 +41,6 @@ class NAIDCertificate(models.Model):
         ('suspended', 'Suspended'),
         ('revoked', 'Revoked'),
         ('pending', 'Pending Renewal')
-    ], string='Status', default='active', tracking=True)
     
     is_valid = fields.Boolean('Is Valid', compute='_compute_validity', store=True)
     days_until_expiry = fields.Integer('Days Until Expiry', compute='_compute_validity', store=True)

@@ -17,7 +17,6 @@ class RecordsBillingConfig(models.Model):
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
         ('yearly', 'Yearly')
-    ], string='Billing Cycle', default='monthly', required=True, tracking=True)
     
     # Billing day
     billing_day = fields.Integer(string='Billing Day of Month', default=1, 
@@ -53,14 +52,12 @@ class RecordsBillingConfig(models.Model):
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
         ('annually', 'Annually')
-    ], string='Billing Frequency', default='monthly')
     billing_history_count = fields.Integer(string='Billing History Count', compute='_compute_billing_history_count')
     billing_model = fields.Selection([
         ('subscription', 'Subscription'),
         ('usage', 'Usage Based'),
         ('hybrid', 'Hybrid'),
         ('project', 'Project Based')
-    ], string='Billing Model', default='subscription')
     billing_rate_ids = fields.One2many('records.billing.rate', 'config_id', string='Billing Rates')
     
     # Notification Settings
@@ -81,7 +78,6 @@ class RecordsBillingConfig(models.Model):
         ('fixed', 'Fixed Amount'),
         ('tiered', 'Tiered'),
         ('volume', 'Volume Based')
-    ], string='Discount Type')
     discount_value = fields.Float(string='Discount Value')
     effective_date = fields.Date(string='Effective Date', default=fields.Date.today)
     encryption_enabled = fields.Boolean(string='Encryption Enabled', default=True)
@@ -101,7 +97,6 @@ class RecordsBillingConfig(models.Model):
         ('open', 'Open'),
         ('paid', 'Paid'),
         ('cancelled', 'Cancelled')
-    ], string='Default Invoice Status', default='draft')
     invoice_template = fields.Many2one('account.move', string='Invoice Template')
     last_invoice_date = fields.Date(string='Last Invoice Date')
     
@@ -120,7 +115,6 @@ class RecordsBillingConfig(models.Model):
         ('credit_card', 'Credit Card'),
         ('ach', 'ACH'),
         ('wire', 'Wire Transfer')
-    ], string='Default Payment Method')
     payment_overdue_alerts = fields.Boolean(string='Payment Overdue Alerts', default=True)
     payment_terms = fields.Many2one('account.payment.term', string='Default Payment Terms')
     
@@ -131,7 +125,6 @@ class RecordsBillingConfig(models.Model):
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
         ('annually', 'Annually')
-    ], string='Billing Period', default='monthly')
     period_end = fields.Date(string='Current Period End')
     period_start = fields.Date(string='Current Period Start')
     profit_margin = fields.Float(string='Target Profit Margin (%)')
@@ -144,13 +137,11 @@ class RecordsBillingConfig(models.Model):
         ('variable', 'Variable'),
         ('tiered', 'Tiered'),
         ('custom', 'Custom')
-    ], string='Rate Type', default='fixed')
     rate_unit = fields.Selection([
         ('box', 'Per Box'),
         ('cubic_foot', 'Per Cubic Foot'),
         ('hour', 'Per Hour'),
         ('project', 'Per Project')
-    ], string='Rate Unit', default='box')
     reminder_schedule = fields.Text(string='Reminder Schedule')
     revenue_amount = fields.Float(string='Revenue Amount')
     revenue_analytics_ids = fields.One2many('records.billing.revenue.analytics', 'config_id', string='Revenue Analytics')
@@ -165,19 +156,16 @@ class RecordsBillingConfig(models.Model):
         ('retrieval', 'Retrieval'),
         ('scanning', 'Scanning'),
         ('consultation', 'Consultation')
-    ], string='Primary Service Category')
     status = fields.Selection([
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('suspended', 'Suspended')
-    ], string='Configuration Status', default='active')
     
     # Tax and Financial Calculation
     tax_calculation_method = fields.Selection([
         ('inclusive', 'Tax Inclusive'),
         ('exclusive', 'Tax Exclusive'),
         ('exempt', 'Tax Exempt')
-    ], string='Tax Calculation Method', default='exclusive')
     tier_threshold = fields.Float(string='Tier Threshold')
     total_cost = fields.Float(string='Total Cost', compute='_compute_total_cost')
     total_revenue = fields.Float(string='Total Revenue', compute='_compute_total_revenue')
@@ -260,7 +248,6 @@ class RecordsBillingConfig(models.Model):
         for config in self:
             config.total_revenue = sum(config.revenue_analytics_ids.mapped('total_amount'))
 
-
 # Additional Related Models for One2many relationships
 class RecordsBillingRate(models.Model):
     _name = 'records.billing.rate'
@@ -272,10 +259,8 @@ class RecordsBillingRate(models.Model):
         ('destruction', 'Destruction'),
         ('retrieval', 'Retrieval'),
         ('scanning', 'Scanning')
-    ], string='Service Type', required=True)
     rate = fields.Float(string='Rate', required=True)
     unit = fields.Char(string='Unit')
-
 
 class RecordsBillingDiscountRule(models.Model):
     _name = 'records.billing.discount.rule'
@@ -284,9 +269,7 @@ class RecordsBillingDiscountRule(models.Model):
     discount_type = fields.Selection([
         ('percentage', 'Percentage'),
         ('fixed', 'Fixed Amount')
-    ], string='Discount Type', required=True)
     min_threshold = fields.Float(string='Minimum Threshold')
-
 
 class RecordsBillingGenerationLog(models.Model):
     _name = 'records.billing.generation.log'
@@ -296,10 +279,8 @@ class RecordsBillingGenerationLog(models.Model):
         ('success', 'Success'),
         ('failed', 'Failed'),
         ('partial', 'Partial')
-    ], string='Status', required=True)
     total_amount = fields.Float(string='Total Amount')
     error_message = fields.Text(string='Error Message')
-
 
 class RecordsBillingRevenueAnalytics(models.Model):
     _name = 'records.billing.revenue.analytics'
@@ -309,14 +290,12 @@ class RecordsBillingRevenueAnalytics(models.Model):
     monthly_amount = fields.Float(string='Monthly Amount')
     service_count = fields.Integer(string='Service Count')
 
-
 class RecordsBillingUsageTracking(models.Model):
     _name = 'records.billing.usage.tracking'
     _description = 'Records Billing Usage Tracking'
     
         ('retrieval', 'Retrieval'),
         ('scanning', 'Scanning')
-    ], string='Service Type', required=True)
     usage_count = fields.Integer(string='Usage Count')
     usage_amount = fields.Float(string='Usage Amount')
     customer_id = fields.Many2one('res.partner', string='Customer')
@@ -341,7 +320,6 @@ class RecordsBillingPeriod(models.Model):
         ('active', 'Active'),
         ('closed', 'Closed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
     
     # Billing lines
     billing_line_ids = fields.One2many('records.billing.line', 'billing_period_id', string='Billing Lines')
@@ -368,7 +346,6 @@ class RecordsBillingLine(models.Model):
     line_type = fields.Selection([
         ('storage', 'Storage'),
         ('service', 'Service')
-    ], string='Line Type', tracking=True, help="Differentiates between storage (forward billing) and service (arrears billing)")
     
     # Service details
         ('retrieval', 'Retrieval'),
@@ -376,7 +353,6 @@ class RecordsBillingLine(models.Model):
         ('scanning', 'Scanning'),
         ('delivery', 'Delivery'),
         ('other', 'Other')
-    ], string='Service Type', required=True, tracking=True)
     
     description = fields.Text(string='Description', required=True)
     
@@ -403,7 +379,6 @@ class RecordsBillingLine(models.Model):
     billing_direction = fields.Selection([
         ('advance', 'In Advance'),
         ('arrears', 'In Arrears')
-    ], string='Billing Direction', compute='_compute_billing_direction', store=True)
     
     @api.depends('quantity', 'unit_price')
     def _compute_amount(self):
@@ -431,14 +406,12 @@ class RecordsServicePricing(models.Model):
         ('scanning', 'Scanning'),
         ('delivery', 'Delivery'),
         ('other', 'Other')
-    ], string='Service Type', required=True, tracking=True)
     
     # Pricing model
     pricing_model = fields.Selection([
         ('fixed', 'Fixed Price'),
         ('tiered', 'Tiered Pricing'),
         ('volume', 'Volume Based')
-    ], string='Pricing Model', default='fixed', required=True, tracking=True)
     
     # Basic pricing
     base_price = fields.Monetary(string='Base Price', tracking=True)
@@ -479,7 +452,6 @@ class RecordsProduct(models.Model):
         ('service', 'Service'),
         ('material', 'Material'),
         ('equipment', 'Equipment')
-    ], string='Product Type', required=True, tracking=True)
     
     # Pricing
     list_price = fields.Monetary(string='List Price', tracking=True)
@@ -503,7 +475,6 @@ class RecordsBillingAutomation(models.Model):
         ('box_added', 'Box Added'),
         ('service_completed', 'Service Completed'),
         ('manual', 'Manual Only')
-    ], string='Trigger Type', required=True, tracking=True)
     
     # Rule configuration
         ('retrieval', 'Retrieval'),
@@ -511,7 +482,6 @@ class RecordsBillingAutomation(models.Model):
         ('scanning', 'Scanning'),
         ('delivery', 'Delivery'),
         ('other', 'Other')
-    ], string='Service Type', tracking=True)
     
     # Auto-pricing
     

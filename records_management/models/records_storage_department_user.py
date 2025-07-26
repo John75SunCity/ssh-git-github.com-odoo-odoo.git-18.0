@@ -23,7 +23,6 @@ class RecordsStorageDepartmentUser(models.Model):
         ('viewer', 'Viewer'),
         ('user', 'User'), 
         ('admin', 'Administrator')
-    ], string='Role', default='user', required=True, tracking=True)
     
     # Status fields
     active = fields.Boolean(string='Active', default=True, tracking=True)

@@ -14,22 +14,18 @@ class PickupRequest(models.Model):
         string='Name',
         required=True,
         default='New'
-    )
     customer_id = fields.Many2one(
         'res.partner',
         string='Customer',
         required=True
-    )
     box_id = fields.Many2one(
         'records.box',
         string='Related Box',
         help='Box associated with this pickup request'
-    )
     request_date = fields.Date(
         string='Request Date',
         default=fields.Date.context_today,
         required=True
-    )
     request_item_ids = fields.One2many('pickup.request.item', 'pickup_id', string='Request Items')
     notes = fields.Text(string='Notes')
     
@@ -37,24 +33,20 @@ class PickupRequest(models.Model):
     audit_required = fields.Boolean(
         string='Audit Required',
         default=False
-    )
     compliance_status = fields.Selection([
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('under_review', 'Under Review')
-    ], string='Compliance Status', default='pending')
     risk_level = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
         ('critical', 'Critical')
-    ], string='Risk Level', default='low')
     regulatory_requirement = fields.Text(string='Regulatory Requirement')
     approval_required = fields.Boolean(
         string='Approval Required',
         default=False
-    )
     approved_by = fields.Many2one('res.users', string='Approved By')
     approval_date = fields.Datetime(string='Approval Date')
     security_level = fields.Selection([
@@ -62,7 +54,6 @@ class PickupRequest(models.Model):
         ('internal', 'Internal'),
         ('confidential', 'Confidential'),
         ('restricted', 'Restricted')
-    ], string='Security Level', default='internal')
     chain_of_custody = fields.Text(string='Chain of Custody')
     pickup_authorization = fields.Char(string='Pickup Authorization')
     transport_requirements = fields.Text(string='Transport Requirements')
@@ -72,17 +63,14 @@ class PickupRequest(models.Model):
         'product.product',
         string='Product',
         required=True
-    )
     quantity = fields.Float(
         string='Quantity',
         required=True,
         digits=(16, 2)
-    )
     lot_id = fields.Many2one(
         'stock.lot',
         string='Lot',
         domain="[('product_id', '=', product_id)]"
-    )
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -94,16 +82,13 @@ class PickupRequest(models.Model):
     warehouse_id = fields.Many2one(
         'stock.warehouse',
         string='Warehouse'
-    )
     driver_id = fields.Many2one(
         'res.partner',
         string='Driver',
         domain="[('is_company', '=', False)]"
-    )
     vehicle_id = fields.Many2one(
         'fleet.vehicle',
         string='Vehicle'
-    )
     priority = fields.Selection([
         ('0', 'Normal'),
         ('1', 'High')
@@ -115,55 +100,46 @@ class PickupRequest(models.Model):
         compute='_compute_pickup_analytics',
         store=True,
         help='Overall efficiency score for pickup operations'
-    )
     fulfillment_time_hours = fields.Float(
         string='Fulfillment Time (Hours)',
         compute='_compute_pickup_analytics',
         store=True,
         help='Time from request to completion'
-    )
     route_optimization_score = fields.Float(
         string='Route Optimization Score',
         compute='_compute_pickup_analytics',
         store=True,
         help='Route efficiency and optimization rating'
-    )
     cost_per_pickup = fields.Float(
         string='Cost per Pickup ($)',
         compute='_compute_pickup_analytics',
         store=True,
         help='Estimated cost for this pickup operation'
-    )
     customer_satisfaction_rating = fields.Float(
         string='Customer Satisfaction Rating',
         compute='_compute_pickup_analytics',
         store=True,
         help='Predicted customer satisfaction score'
-    )
     operational_complexity = fields.Float(
         string='Operational Complexity (1-10)',
         compute='_compute_pickup_analytics',
         store=True,
         help='Complexity assessment for this pickup'
-    )
     resource_utilization = fields.Float(
         string='Resource Utilization (%)',
         compute='_compute_pickup_analytics',
         store=True,
         help='Efficiency of resource allocation'
-    )
     pickup_performance_insights = fields.Text(
         string='Performance Insights',
         compute='_compute_pickup_analytics',
         store=True,
         help='AI-generated operational insights'
-    )
     analytics_timestamp = fields.Datetime(
         string='Analytics Updated',
         compute='_compute_pickup_analytics',
         store=True,
         help='Last analytics computation time'
-    )
     signature = fields.Binary(string='Signature')
     signed_by = fields.Many2one('res.users', string='Signed By')
     signature_date = fields.Datetime(string='Signature Date')
@@ -344,7 +320,6 @@ class PickupRequest(models.Model):
             if vals.get('name', 'New') == 'New':
                 sequence = self.env['ir.sequence'].next_by_code(
                     'pickup.request'
-                )
                 vals['name'] = sequence or 'New'
         return super().create(vals_list)
 

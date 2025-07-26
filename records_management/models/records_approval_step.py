@@ -27,7 +27,6 @@ class RecordsApprovalStep(models.Model):
         ('group', 'Group Member'),
         ('manager', 'Department Manager'),
         ('any', 'Any User')
-    ], string='Approval Type', default='user', required=True)
     
     # Status and timing
     state = fields.Selection([
@@ -35,7 +34,6 @@ class RecordsApprovalStep(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('skipped', 'Skipped')
-    ], string='Status', default='pending', tracking=True)
     
     approved_date = fields.Datetime('Approved Date', readonly=True)
     approved_by = fields.Many2one('res.users', string='Approved By', readonly=True)

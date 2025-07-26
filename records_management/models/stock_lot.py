@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api, _
 
-
 class StockLot(models.Model):
     _inherit = 'stock.lot'
 
@@ -11,13 +10,11 @@ class StockLot(models.Model):
         'res.partner',
         string='Customer',
         help='Customer associated with this lot/serial number'
-    )
     
     # Extensions for shredding integration (e.g., link to shredding service)
     shredding_service_id = fields.Many2one(
         'shredding.service',
         string='Shredding Service'
-    )
 
     # Enhanced stock lot fields for records management - FIELD ENHANCEMENT COMPLETE ✅
     
@@ -28,7 +25,6 @@ class StockLot(models.Model):
         ('update', 'Update'),
         ('destroy', 'Destroy'),
         ('transfer', 'Transfer')
-    ], string='Action Type', tracking=True)
     
     # Attribute management
     attribute_ids = fields.One2many('stock.lot.attribute', 'lot_id', string='Lot Attributes')
@@ -38,7 +34,6 @@ class StockLot(models.Model):
         ('number', 'Number'),
         ('date', 'Date'),
         ('boolean', 'Boolean')
-    ], string='Attribute Type')
     attribute_value = fields.Char(string='Attribute Value')
     
     # Inventory and quantity tracking
@@ -99,7 +94,6 @@ class StockLot(models.Model):
         ('pass', 'Passed'),
         ('fail', 'Failed'),
         ('pending', 'Pending')
-    ], string='Quality State', default='none')
     quality_verified = fields.Boolean(string='Quality Verified', default=False)
     
     # Quant management
@@ -117,7 +111,6 @@ class StockLot(models.Model):
         ('confirmed', 'Confirmed'),
         ('done', 'Done'),
         ('cancel', 'Cancelled')
-    ], string='State', default='draft')
     stock_move_count = fields.Integer(string='Stock Move Count', compute='_compute_move_metrics')
     stock_move_ids = fields.Many2many('stock.move', compute='_compute_stock_move_ids', 
                                      string='Stock Moves', 
@@ -131,7 +124,6 @@ class StockLot(models.Model):
         ('production', 'Production Test'),
         ('final', 'Final Inspection'),
         ('random', 'Random Check')
-    ], string='Test Type')
     timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now)
     total_movements = fields.Integer(string='Total Movements', compute='_compute_move_metrics')
     total_value = fields.Float(string='Total Value', compute='_compute_value_metrics')
@@ -158,37 +150,31 @@ class StockLot(models.Model):
         compute='_compute_lot_analytics',
         store=True,
         help='Efficiency of lot utilization and management'
-    )
     service_integration_score = fields.Float(
         string='Service Integration Score',
         compute='_compute_lot_analytics',
         store=True,
         help='Score indicating integration with shredding services'
-    )
     lifecycle_stage_indicator = fields.Char(
         string='Lifecycle Stage',
         compute='_compute_lot_analytics',
         store=True,
         help='Current stage in lot lifecycle'
-    )
     customer_service_rating = fields.Float(
         string='Customer Service Rating',
         compute='_compute_lot_analytics',
         store=True,
         help='Rating based on customer service delivery'
-    )
     lot_insights = fields.Text(
         string='Lot Insights',
         compute='_compute_lot_analytics',
         store=True,
         help='AI-generated insights about lot management'
-    )
     analytics_update_timestamp = fields.Datetime(
         string='Analytics Updated',
         compute='_compute_lot_analytics',
         store=True,
         help='Last analytics computation time'
-    )
 
     @api.depends('customer_id', 'shredding_service_id', 'product_id', 'name')
     def _compute_lot_analytics(self):
@@ -475,7 +461,6 @@ class StockLot(models.Model):
             'context': {'active_ids': [self.id]},
         }
 
-
 class StockLotAttribute(models.Model):
     _name = 'stock.lot.attribute'
     _description = 'Stock Lot Attribute'
@@ -488,8 +473,6 @@ class StockLotAttribute(models.Model):
         ('number', 'Number'),
         ('date', 'Date'),
         ('boolean', 'Boolean')
-    ], string='Type', default='text')
-
 
 class StockTraceabilityLog(models.Model):
     _name = 'stock.traceability.log'

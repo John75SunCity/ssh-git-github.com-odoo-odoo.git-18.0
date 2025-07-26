@@ -23,7 +23,6 @@ class NAIDComplianceChecklist(models.Model):
         ('annual', 'Annual Checklist'),
         ('audit', 'Audit Checklist'),
         ('incident', 'Incident Response Checklist')
-    ], string='Checklist Type', required=True, tracking=True)
     
     # NAID compliance relationship
     compliance_id = fields.Many2one('naid.compliance', string='NAID Compliance Record', tracking=True)
@@ -40,7 +39,6 @@ class NAIDComplianceChecklist(models.Model):
         ('completed', 'Completed'),
         ('failed', 'Failed'),
         ('overdue', 'Overdue')
-    ], string='Status', default='pending', tracking=True)
     
     completion_percentage = fields.Float('Completion %', compute='_compute_completion', store=True)
     is_overdue = fields.Boolean('Is Overdue', compute='_compute_overdue', store=True)

@@ -27,7 +27,6 @@ _logger = logging.getLogger(__name__)
 APPS_URL = "https://apps.odoo.com"
 MAX_FILE_SIZE = 100 * 1024 * 1024  # in megabytes
 
-
 class IrModule(models.Model):
     _inherit = "ir.module.module"
 
@@ -276,7 +275,6 @@ class IrModule(models.Model):
                     for file in z.filelist
                     if file.filename.count('/') == 1
                     and file.filename.split('/')[1] in MANIFEST_NAMES
-                ]
                 module_data_files = defaultdict(list)
                 for manifest in manifest_files:
                     manifest_path = z.extract(manifest, module_dir)
@@ -473,14 +471,12 @@ class IrModule(models.Model):
             description = _(
                 "The installation of the data module would fail as the following dependencies can't"
                 " be found in the addons-path:\n"
-            )
             for module in unavailable_modules:
                 description += "- " + module + "\n"
             description += _(
                 "\nYou may need the Enterprise version to install the data module. Please visit "
                 "https://www.odoo.com/pricing-plan for more information.\n"
                 "If you need Website themes, it can be downloaded from https://github.com/odoo/design-themes.\n"
-            )
         else:
             description = _(
                 "Load demo data to test the industry's features with sample records. "
@@ -498,7 +494,6 @@ class IrModule(models.Model):
                 for file in z.filelist
                 if file.filename.count('/') == 1
                 and file.filename.split('/')[1] in MANIFEST_NAMES
-            ]
             for manifest_file in manifest_files:
                 if manifest_file.file_size > MAX_FILE_SIZE:
                     raise UserError(_("File '%s' exceed maximum allowed file size", manifest_file.filename))
@@ -511,7 +506,6 @@ class IrModule(models.Model):
                 dependencies_to_install |= known_mods.filtered(lambda m: m.name in unmet_dependencies)
                 not_found_modules |= set(
                     mod for mod in unmet_dependencies if mod not in dependencies_to_install.mapped('name')
-                )
         return dependencies_to_install, not_found_modules
 
     @api.model
@@ -524,7 +518,6 @@ class IrModule(models.Model):
             }
         return super().search_panel_select_range(field_name, **kwargs)
 
-
 def _domain_asks_for_industries(domain):
     for dom in domain:
         if is_leaf(dom) and dom[0] == 'module_type':
@@ -533,7 +526,6 @@ def _domain_asks_for_industries(domain):
                     raise UserError('%r is an unsupported leaf' % (dom))
                 return True
     return False
-
 
 def _is_studio_custom(path):
     """

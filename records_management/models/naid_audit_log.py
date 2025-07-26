@@ -33,7 +33,6 @@ class NAIDAuditLog(models.Model):
         ('procedure', 'Procedure Execution'),
         ('system', 'System Activity'),
         ('manual', 'Manual Entry')
-    ], string='Audit Type', required=True, tracking=True)
     
     log_datetime = fields.Datetime('Log Date/Time', required=True, 
                                   default=fields.Datetime.now, tracking=True)
@@ -48,7 +47,6 @@ class NAIDAuditLog(models.Model):
         ('facility_operations', 'Facility Operations'),
         ('equipment_maintenance', 'Equipment Maintenance'),
         ('training_compliance', 'Training Compliance')
-    ], string='NAID Category', required=True)
     
     # Severity and impact
     severity_level = fields.Selection([
@@ -56,7 +54,6 @@ class NAIDAuditLog(models.Model):
         ('medium', 'Medium'),
         ('high', 'High'),
         ('critical', 'Critical')
-    ], string='Severity Level', default='low', tracking=True)
     
     impact_assessment = fields.Text('Impact Assessment')
     
@@ -78,7 +75,6 @@ class NAIDAuditLog(models.Model):
         ('major_deviation', 'Major Deviation'),
         ('non_compliant', 'Non-Compliant'),
         ('under_review', 'Under Review')
-    ], string='Compliance Status', default='compliant', tracking=True)
     
     # Corrective actions
     corrective_action_required = fields.Boolean('Corrective Action Required', default=False)
@@ -104,7 +100,6 @@ class NAIDAuditLog(models.Model):
         ('moderate', 'Moderate Risk'),
         ('high', 'High Risk'),
         ('critical', 'Critical Risk')
-    ], string='Risk Level', default='minimal')
     
     risk_mitigation = fields.Text('Risk Mitigation Measures')
     
@@ -116,7 +111,6 @@ class NAIDAuditLog(models.Model):
         ('action_required', 'Action Required'),
         ('completed', 'Completed'),
         ('archived', 'Archived')
-    ], string='Status', default='draft', tracking=True)
     
     # Audit trail
     created_by = fields.Many2one('res.users', string='Created By', 
@@ -152,7 +146,6 @@ class NAIDAuditLog(models.Model):
                 record.overdue_action = (
                     not record.corrective_action_completed and 
                     record.corrective_action_deadline < fields.Date.today()
-                )
             else:
                 record.overdue_action = False
     
@@ -185,7 +178,6 @@ class NAIDAuditLog(models.Model):
                     record.message_post(
                         body=_('Follow-up date has passed. Please update status.'),
                         message_type='notification'
-                    )
     
     def action_log_entry(self):
         """Log the audit entry"""

@@ -1,6 +1,5 @@
 from odoo import models  # type: ignore
 
-
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
@@ -14,7 +13,6 @@ class StockPicking(models.Model):
             # Filter move lines that have a lot with a customer
             customer_items = self.move_line_ids.filtered(
                 lambda line: line.lot_id and line.lot_id.customer_id
-            )
             if customer_items:
                 # Group items by customer
                 customers = {}

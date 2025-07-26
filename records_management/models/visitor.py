@@ -2,9 +2,30 @@
 import hashlib
 from odoo import fields, models, api, _
 
-class FrontdeskVisitor(models.Model):
-    _inherit = 'frontdesk.visitor'  # Inherit Odoo's Frontdesk visitor model
-
+class RecordsVisitor(models.Model):
+    """Standalone visitor model for records management - compatible with Odoo 18.0"""
+    _name = 'records.visitor'
+    _description = 'Records Management Visitor'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'visit_date desc'
+    
+    # Basic visitor information
+    name = fields.Char('Visitor Name', required=True, tracking=True)
+    email = fields.Char('Email', tracking=True)
+    phone = fields.Char('Phone', tracking=True)
+    company_name = fields.Char('Company', tracking=True)
+    
+    # Visit details
+    visit_date = fields.Datetime('Visit Date', default=fields.Datetime.now, required=True, tracking=True)
+    visit_purpose = fields.Selection([
+        ('shredding', 'Shredding Services'),
+        ('document_pickup', 'Document Pickup'),
+        ('consultation', 'Consultation'),
+        ('delivery', 'Document Delivery'),
+        ('audit', 'Audit/Inspection'),
+        ('other', 'Other')
+    ], string='Visit Purpose', default='shredding', required=True, tracking=True)
+    # Records management specific fields
     pos_order_id = fields.Many2one('pos.order', string='Linked POS Transaction', readonly=True, 
                                    help='Linked walk-in shredding transaction for auditing purposes.')
     is_shred_customer = fields.Boolean(string='Walk-in Shred Customer', default=False, 
@@ -12,7 +33,8 @@ class FrontdeskVisitor(models.Model):
     hashed_email = fields.Char(string='Hashed Email', compute='_compute_hashed_email', store=True, 
                                help='ISO-compliant hashed version of email for secure auditing.')
     
-    # Phase 3: Visitor Analytics
+    # Partner linking
+    partner_id = fields.Many2one('res.partner', string='Related Partner', tracking=True)
     
     # Visit Pattern Analytics
     visit_frequency_score = fields.Float(
@@ -20,40 +42,55 @@ class FrontdeskVisitor(models.Model):
         compute='_compute_visit_analytics',
         store=True,
         help='Frequency pattern analysis for visitor'
-    )
     
     customer_loyalty_indicator = fields.Selection([
         ('new', 'New Visitor'),
         ('returning', 'Returning'),
         ('regular', 'Regular'),
         ('vip', 'VIP Customer')
-    ], string='Customer Loyalty Level',
        compute='_compute_visit_analytics',
        store=True,
-       help='Customer loyalty assessment based on visit patterns')
+       help='Customer loyalty classification based on visit patterns'
     
     # Service Analytics
     service_preference_score = fields.Float(
         string='Service Preference Score',
         compute='_compute_service_analytics',
         store=True,
-        help='Preference scoring for shredding services'
-    )
+        help='Score indicating service preferences and history'
+    
+    # Status and workflow
+    visit_status = fields.Selection([
+        ('scheduled', 'Scheduled'),
+        ('checked_in', 'Checked In'),
+        ('in_service', 'In Service'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    
+    # Notes and comments
+    notes = fields.Text('Visit Notes')
+    internal_notes = fields.Text('Internal Notes')
+    
+    # Company context
+    company_id = fields.Many2one('res.company', string='Company', 
+                                 default=lambda self: self.env.company)
 
     @api.depends('email')
     def _compute_hashed_email(self):
-        """Compute hashed email for data integrity/encryption (ISO 27001 compliance)."""
-        for rec in self:
-            if rec.email:
-                rec.hashed_email = hashlib.sha256(rec.email.encode()).hexdigest()
-            else:
-                rec.hashed_email = False
-    
-    @api.depends('email', 'phone', 'is_shred_customer')
-    def _compute_visit_analytics(self):
-        """Compute visitor pattern analytics"""
+        """Compute hashed email for secure storage (ISO compliance)"""
         for record in self:
-            # Find similar visitors (same email or phone)
+            if record.email:
+                # Use SHA-256 for hashing email addresses
+                hash_object = hashlib.sha256(record.email.encode())
+                record.hashed_email = hash_object.hexdigest()
+            else:
+                record.hashed_email = False
+
+    @api.depends('email', 'phone')
+    def _compute_visit_analytics(self):
+        """Compute visitor analytics based on historical data"""
+        for record in self:
+            # Count previous visits by same email or phone
             domain = []
             if record.email:
                 domain.append(('email', '=', record.email))
@@ -64,17 +101,25 @@ class FrontdeskVisitor(models.Model):
                     domain = [('phone', '=', record.phone)]
             
             if domain:
-                total_visits = self.search_count(domain)
-                shred_visits = self.search_count(domain + [('is_shred_customer', '=', True)])
+                # Exclude current record if it's already saved
+                if record.id:
+                    domain.append(('id', '!=', record.id))
+                
+                total_visits = self.search_count(domain) + 1  # +1 for current visit
             else:
                 total_visits = 1
-                shred_visits = 1 if record.is_shred_customer else 0
             
-            # Visit frequency score
-            frequency_score = min(total_visits * 20, 100)  # Max 100 for 5+ visits
-            record.visit_frequency_score = frequency_score
+            # Calculate frequency score (0-100 scale)
+            if total_visits >= 10:
+                record.visit_frequency_score = 100
+            elif total_visits >= 5:
+                record.visit_frequency_score = 75
+            elif total_visits >= 2:
+                record.visit_frequency_score = 50
+            else:
+                record.visit_frequency_score = 25
             
-            # Customer loyalty assessment
+            # Determine loyalty indicator
             if total_visits >= 10:
                 record.customer_loyalty_indicator = 'vip'
             elif total_visits >= 5:
@@ -103,7 +148,7 @@ class FrontdeskVisitor(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to auto-match or create partner for walk-in customers."""
-        records = super(FrontdeskVisitor, self).create(vals_list)
+        records = super(RecordsVisitor, self).create(vals_list)
         for record, vals in zip(records, vals_list):
             if vals.get('phone') or vals.get('email'):
                 partner = self.env['res.partner'].search([
@@ -116,8 +161,8 @@ class FrontdeskVisitor(models.Model):
                         'email': vals.get('email'),
                         'company_id': vals.get('company_id'),
                     })
-                # Link to partner for POS compatibility (optional extension)
-                record.write({'partner_id': partner.id})  # Assuming visitor has or can have partner_id; extend if needed
+                # Link to partner for POS compatibility
+                record.write({'partner_id': partner.id})
         return records
 
     def action_link_pos(self):
@@ -131,6 +176,18 @@ class FrontdeskVisitor(models.Model):
             'target': 'new',
             'context': {
                 'default_visitor_id': self.id,
-                'default_partner_id': self.partner_id.id,
+                'default_partner_id': self.partner_id.id if self.partner_id else False,
             },
         }
+    
+    def action_start_service(self):
+        """Mark visitor as in service"""
+        self.write({'visit_status': 'in_service'})
+    
+    def action_complete_service(self):
+        """Mark visitor service as completed"""
+        self.write({'visit_status': 'completed'})
+    
+    def action_cancel_visit(self):
+        """Cancel the visitor's visit"""
+        self.write({'visit_status': 'cancelled'})

@@ -4,7 +4,6 @@ from typing import Dict
 from odoo import models, api, _
 from odoo.exceptions import UserError
 
-
 class RecordsManagementInstaller(models.TransientModel):
     """Transient model for records management installation helper."""
     _name = 'records.management.installer'

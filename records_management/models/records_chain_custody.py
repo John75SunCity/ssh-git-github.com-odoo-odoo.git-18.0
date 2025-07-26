@@ -26,7 +26,6 @@ class RecordsChainCustody(models.Model):
         ('destroyed', 'Document Destroyed'),
         ('digitized', 'Document Digitized'),
         ('reviewed', 'Document Reviewed')
-    ], string='Custody Action', required=True, default='transferred')
     
     # Location tracking
     from_location_id = fields.Many2one('records.location', string='From Location')
@@ -54,7 +53,6 @@ class RecordsChainCustody(models.Model):
         ('high', 'High Security'),
         ('classified', 'Classified'),
         ('restricted', 'Restricted Access')
-    ], string='Security Level', default='standard')
     
     compliance_verified = fields.Boolean('Compliance Verified', default=False)
     audit_required = fields.Boolean('Audit Required', default=False)

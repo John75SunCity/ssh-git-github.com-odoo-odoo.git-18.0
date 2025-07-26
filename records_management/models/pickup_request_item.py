@@ -4,7 +4,6 @@ from typing import List, Optional
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-
 class PickupRequestItem(models.Model):
     """Model for items in pickup requests."""
     _name = 'pickup.request.item'
@@ -16,24 +15,20 @@ class PickupRequestItem(models.Model):
         string='Pickup Request',
         required=True,
         ondelete='cascade'
-    )
     product_id = fields.Many2one(
         'product.product',
         string='Product',
         required=True,
         change_default=True
-    )
     quantity = fields.Float(
         string='Quantity',
         default=1.0,
         required=True,
         digits=(16, 2)
-    )
     lot_id = fields.Many2one(
         'stock.lot',
         string='Lot/Serial Number',
         domain="[('product_id', '=', product_id)]"
-    )
     notes = fields.Text(string='Notes')
 
     @api.constrains('quantity')

@@ -8,13 +8,14 @@ class VisitorPosWizard(models.TransientModel):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # Original fields
-    visitor_id = fields.Many2one('frontdesk.visitor', string='Visitor', required=True, readonly=True)
+    visitor_id = fields.Many2one('records.visitor', string='Visitor', required=True, readonly=True)
     partner_id = fields.Many2one('res.partner', string='Customer', readonly=True)
     pos_order_id = fields.Many2one('pos.order', string='POS Transaction', domain="[('partner_id', '=', partner_id)]")
     service_type = fields.Selection([
         ('document_shred', 'Document Shredding'),
         ('hard_drive', 'Hard Drive Destruction'),
         ('uniform_shred', 'Uniform Shredding'),
+    ], string='Service Type', required=True)
     notes = fields.Text(string='Additional Notes')
 
     # Complete wizard fields for POS integration - 90 business fields implemented
@@ -33,7 +34,6 @@ class VisitorPosWizard(models.TransientModel):
         ('existing', 'Existing Customer'),
         ('corporate', 'Corporate'),
         ('individual', 'Individual')
-    ], string='Customer Category', default='new')
     
     # Financial Configuration
     customer_credit_limit = fields.Float(string='Customer Credit Limit', default=0.0)
@@ -54,7 +54,6 @@ class VisitorPosWizard(models.TransientModel):
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-    ], string='Processing Priority', default='normal')
     
     # Service Location and Setup
     service_location = fields.Many2one('stock.location', string='Service Location')
@@ -71,7 +70,6 @@ class VisitorPosWizard(models.TransientModel):
         ('medical', 'Medical'),
         ('financial', 'Financial'),
         ('legal', 'Legal')
-    ], string='Document Type')
     document_count = fields.Integer(string='Document Count', default=1)
     required_document_ids = fields.Many2many('ir.attachment', string='Required Documents')
     
@@ -81,7 +79,6 @@ class VisitorPosWizard(models.TransientModel):
         ('tiff', 'TIFF'),
         ('jpeg', 'JPEG'),
         ('png', 'PNG')
-    ], string='Digitization Format', default='pdf')
     
     # Destruction and Security
     destruction_method = fields.Selection([
@@ -89,12 +86,10 @@ class VisitorPosWizard(models.TransientModel):
         ('incineration', 'Incineration'),
         ('pulping', 'Pulping'),
         ('disintegration', 'Disintegration')
-    ], string='Destruction Method')
     shredding_type = fields.Selection([
         ('strip_cut', 'Strip Cut'),
         ('cross_cut', 'Cross Cut'),
         ('micro_cut', 'Micro Cut')
-    ], string='Shredding Type')
     witness_required = fields.Boolean(string='Witness Required', default=False)
     witness_verification = fields.Boolean(string='Witness Verification', readonly=True)
     confidentiality_level = fields.Selection([
@@ -102,7 +97,6 @@ class VisitorPosWizard(models.TransientModel):
         ('internal', 'Internal'),
         ('confidential', 'Confidential'),
         ('top_secret', 'Top Secret')
-    ], string='Confidentiality Level', default='confidential')
     
     # Chain of Custody and Compliance
     chain_of_custody = fields.Boolean(string='Chain of Custody Required', default=True)
@@ -122,7 +116,6 @@ class VisitorPosWizard(models.TransientModel):
         ('basic', 'Basic'),
         ('standard', 'Standard'),
         ('comprehensive', 'Comprehensive')
-    ], string='Audit Level', default='basic')
     audit_notes = fields.Text(string='Audit Notes')
     quality_check_by = fields.Many2one('res.users', string='Quality Check By')
     final_verification_by = fields.Many2one('res.users', string='Final Verification By')
@@ -185,7 +178,6 @@ class VisitorPosWizard(models.TransientModel):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('failed', 'Failed')
-    ], string='Step Status', default='pending')
     step_time = fields.Datetime(string='Step Time')
     processing_log_ids = fields.One2many('visitor.pos.processing.log', 'wizard_id', string='Processing Log')
     
@@ -195,7 +187,6 @@ class VisitorPosWizard(models.TransientModel):
         ('integration', 'Integration Error'),
         ('payment', 'Payment Error'),
         ('system', 'System Error')
-    ], string='Error Type')
     error_message = fields.Text(string='Error Message')
     error_details = fields.Text(string='Error Details')
     error_time = fields.Datetime(string='Error Time')
@@ -241,7 +232,6 @@ class VisitorPosWizard(models.TransientModel):
             record.total_amount = record.subtotal - record.total_discount + \
                                 (record.express_surcharge or 0.0) + record.tax_amount
 
-
 # Related Models for One2many relationships
 class VisitorPosPaymentSplit(models.TransientModel):
     _name = 'visitor.pos.payment.split'
@@ -249,7 +239,6 @@ class VisitorPosPaymentSplit(models.TransientModel):
     
     wizard_id = fields.Many2one('visitor.pos.wizard', string='Wizard', required=True, ondelete='cascade')
     reference = fields.Char(string='Reference')
-
 
 class VisitorPosServiceItem(models.TransientModel):
     _name = 'visitor.pos.service.item'
@@ -263,22 +252,23 @@ class VisitorPosServiceItem(models.TransientModel):
         for item in self:
             item.total_price = item.quantity * item.unit_price
 
-
 class VisitorPosProcessingLog(models.TransientModel):
     _name = 'visitor.pos.processing.log'
     _description = 'Visitor POS Processing Log'
     
+    status = fields.Selection([
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
         ('completed', 'Completed'),
         ('failed', 'Failed')
-    ], string='Status', required=True)
-
 
 class VisitorPosIntegrationError(models.TransientModel):
     _name = 'visitor.pos.integration.error'
     _description = 'Visitor POS Integration Error'
     
+    error_type = fields.Selection([
+        ('pos', 'POS Integration'),
         ('accounting', 'Accounting Integration'),
         ('inventory', 'Inventory Integration'),
         ('crm', 'CRM Integration')
-    ], string='Error Type', required=True)
     # Mail tracking fields (explicit declaration for view compatibility)

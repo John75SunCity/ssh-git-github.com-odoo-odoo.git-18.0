@@ -25,31 +25,26 @@ class NAIDChainOfCustody(models.Model):
         string='Custody Reference',
         required=True,
         default='New'
-    )
     
     # Related records
     service_id = fields.Many2one(
         'shredding.service',
         string='Shredding Service',
         help='Related shredding service'
-    )
     
     customer_id = fields.Many2one(
         'res.partner',
         string='Customer',
         required=True
-    )
     
     # Custody timeline
     start_date = fields.Datetime(
         string='Custody Start',
         required=True,
         default=fields.Datetime.now
-    )
     
     end_date = fields.Datetime(
         string='Custody End'
-    )
     
     # Status
     status = fields.Selection([
@@ -57,14 +52,12 @@ class NAIDChainOfCustody(models.Model):
         ('completed', 'Completed'),
         ('transferred', 'Transferred'),
         ('terminated', 'Terminated')
-    ], string='Status', default='active', required=True)
     
     # Custody events
     custody_events = fields.One2many(
         'naid.custody.event',
         'custody_id',
         string='Custody Events'
-    )
     
     # Current custodian
     current_custodian_id = fields.Many2one(
@@ -72,18 +65,15 @@ class NAIDChainOfCustody(models.Model):
         string='Current Custodian',
         compute='_compute_current_custodian',
         store=True
-    )
     
     # Materials description
     materials_description = fields.Text(
         string='Materials Description',
         help='Description of materials under custody'
-    )
     
     total_weight = fields.Float(
         string='Total Weight (lbs)',
         help='Total weight of materials'
-    )
     
     # Security information
     security_level = fields.Selection([
@@ -92,17 +82,14 @@ class NAIDChainOfCustody(models.Model):
         ('confidential', 'Confidential'),
         ('secret', 'Secret'),
         ('top_secret', 'Top Secret')
-    ], string='Security Level', default='confidential')
     
     # Compliance
     compliance_verified = fields.Boolean(
         string='Compliance Verified',
         default=False
-    )
     
     verification_notes = fields.Text(
         string='Verification Notes'
-    )
 
     @api.depends('custody_events.timestamp')
     def _compute_current_custodian(self):
@@ -223,7 +210,6 @@ class NAIDCustodyEvent(models.Model):
         string='Chain of Custody',
         required=True,
         ondelete='cascade'
-    )
     
     event_type = fields.Selection([
         ('received', 'Materials Received'),
@@ -233,7 +219,6 @@ class NAIDCustodyEvent(models.Model):
         ('processed', 'Materials Processed'),
         ('destroyed', 'Materials Destroyed'),
         ('completed', 'Custody Completed')
-    ], string='Event Type', required=True)
     
     timestamp = fields.Datetime(
         string='Event Time',
@@ -245,18 +230,15 @@ class NAIDCustodyEvent(models.Model):
         string='Employee',
         required=True,
         help='Employee involved in this event'
-    )
     
     description = fields.Text(
         string='Description',
         required=True,
         help='Detailed description of the event'
-    )
     
     location = fields.Char(
         string='Location',
         help='Where the event took place'
-    )
     
     witness_employee_ids = fields.Many2many(
         'hr.employee',
@@ -265,14 +247,12 @@ class NAIDCustodyEvent(models.Model):
         'employee_id',
         string='Witnesses',
         help='Employees who witnessed this event'
-    )
     
     # Evidence
     evidence_attachment_ids = fields.Many2many(
         'ir.attachment',
         string='Evidence',
         help='Photos, documents, or other evidence'
-    )
     
     # GPS coordinates
     latitude = fields.Float(string='Latitude')
@@ -299,6 +279,5 @@ class NAIDCustodyEvent(models.Model):
                 risk_level='medium',
                 compliance_status='compliant',
                 custody_chain=f"Chain of Custody: {event.custody_id.name}"
-            )
         
         return events

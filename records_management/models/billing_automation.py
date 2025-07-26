@@ -5,7 +5,6 @@ from odoo.exceptions import UserError
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
-
 class RecordsBillingService(models.TransientModel):
     """Service for managing billing generation and automation"""
     _name = 'records.billing.service'
@@ -236,7 +235,6 @@ class RecordsBillingService(models.TransientModel):
         period.period_end_date = storage_end
         
         return period
-
 
 class RecordsBillingCronJobs(models.Model):
     """Cron job management for automated billing"""

@@ -3,7 +3,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class ShreddingBaseRates(models.Model):
     """Base rates for shredding services"""
     _name = 'shredding.base.rates'
@@ -72,7 +71,6 @@ class ShreddingBaseRates(models.Model):
             ('effective_date', '<=', fields.Date.today())
         ], limit=1)
 
-
 class ShreddingCustomerRates(models.Model):
     """Customer-specific shredding rates"""
     _name = 'shredding.customer.rates'
@@ -137,7 +135,6 @@ class ShreddingCustomerRates(models.Model):
             ('company_id', '=', company_id),
             ('state', '=', 'active'),
             ('effective_date', '<=', fields.Date.today())
-        ]
         
         # Check expiry date
         today = fields.Date.today()

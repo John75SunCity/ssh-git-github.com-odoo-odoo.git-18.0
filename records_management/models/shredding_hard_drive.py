@@ -31,7 +31,6 @@ class ShreddingHardDrive(models.Model):
         ('laptop', 'Laptop Hard Drive'),
         ('server', 'Server Drive'),
         ('other', 'Other Electronic Media')
-    ], string='Device Type', required=True, tracking=True)
     
     # Physical characteristics
     manufacturer = fields.Char('Manufacturer')
@@ -45,7 +44,6 @@ class ShreddingHardDrive(models.Model):
         ('usb', 'USB Form Factor'),
         ('custom', 'Custom Size'),
         ('other', 'Other')
-    ], string='Physical Size')
     
     # Security and data classification
     security_level = fields.Selection([
@@ -54,7 +52,6 @@ class ShreddingHardDrive(models.Model):
         ('secret', 'Secret'),
         ('top_secret', 'Top Secret'),
         ('custom', 'Custom Classification')
-    ], string='Security Level', default='standard', required=True)
     
     data_classification = fields.Selection([
         ('public', 'Public'),
@@ -65,7 +62,6 @@ class ShreddingHardDrive(models.Model):
         ('phi', 'Protected Health Information'),
         ('financial', 'Financial Data'),
         ('government', 'Government Classified')
-    ], string='Data Classification', required=True)
     
     # Destruction details
     destruction_method = fields.Selection([
@@ -76,7 +72,6 @@ class ShreddingHardDrive(models.Model):
         ('incineration', 'Incineration'),
         ('acid_bath', 'Chemical Destruction'),
         ('combined', 'Combined Methods')
-    ], string='Destruction Method', required=True, tracking=True)
     
     destruction_date = fields.Datetime('Destruction Date', tracking=True)
     destruction_technician = fields.Many2one('res.users', string='Destruction Technician')
@@ -96,14 +91,12 @@ class ShreddingHardDrive(models.Model):
         ('advanced', 'Advanced Encryption'),
         ('military', 'Military Grade'),
         ('unknown', 'Unknown')
-    ], string='Encryption Status', default='unknown')
     
     functionality_test = fields.Selection([
         ('functional', 'Functional'),
         ('partial', 'Partially Functional'),
         ('non_functional', 'Non-Functional'),
         ('damaged', 'Physically Damaged')
-    ], string='Pre-Destruction Functionality')
     
     # Destruction verification
     destruction_verified = fields.Boolean('Destruction Verified', default=False)
@@ -131,7 +124,6 @@ class ShreddingHardDrive(models.Model):
         ('in_progress', 'Destruction in Progress'),
         ('destroyed', 'Destroyed'),
         ('certified', 'Certified Complete')
-    ], string='Status', default='received', tracking=True)
     
     # Weight and measurements
     weight_kg = fields.Float('Weight (kg)', digits=(8, 3))
@@ -192,7 +184,6 @@ class ShreddingHardDrive(models.Model):
                 record.state in ('destroyed', 'certified') and
                 record.destruction_verified and
                 record.certificate_generated
-            )
     
     @api.model
     def create(self, vals):

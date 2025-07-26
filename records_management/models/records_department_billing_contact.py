@@ -34,7 +34,6 @@ class RecordsDepartmentBillingContact(models.Model):
         ('billing', 'Billing Contact'), 
         ('technical', 'Technical Contact'),
         ('backup', 'Backup Contact')
-    ], string='Contact Type', default='billing', required=True)
     
     # Communication preferences
     receives_invoices = fields.Boolean('Receives Invoices', default=True)
@@ -47,7 +46,6 @@ class RecordsDepartmentBillingContact(models.Model):
         ('mail', 'Postal Mail'),
         ('phone', 'Phone'),
         ('portal', 'Customer Portal')
-    ], string='Preferred Method', default='email')
     
     # Status and dates
     active = fields.Boolean('Active', default=True, tracking=True)
@@ -72,7 +70,6 @@ class RecordsDepartmentBillingContact(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('expired', 'Expired')
-    ], string='Current Approval Status', default='pending', tracking=True)
     approval_date = fields.Datetime(string='Last Approval Date', tracking=True)
     approval_notes = fields.Text(string='Approval Notes')
     approved_by = fields.Many2one('res.users', string='Approved By', tracking=True)
@@ -84,7 +81,6 @@ class RecordsDepartmentBillingContact(models.Model):
         ('reviewer', 'Reviewer'),
         ('recipient', 'Recipient'),
         ('admin', 'Administrator')
-    ], string='Billing Role', default='recipient', required=True, tracking=True)
     
     # Budget Tracking and Alerts
     monthly_budget = fields.Float(string='Monthly Budget', default=0.0, tracking=True)
@@ -115,7 +111,6 @@ class RecordsDepartmentBillingContact(models.Model):
         ('retrieval', 'Retrieval'),
         ('scanning', 'Scanning'),
         ('consultation', 'Consultation')
-    ], string='Primary Service Type')
     service_description = fields.Text(string='Service Description')
     vendor = fields.Many2one('res.partner', string='Primary Vendor', domain="[('supplier_rank', '>', 0)]")
     
@@ -155,7 +150,6 @@ class RecordsDepartmentBillingContact(models.Model):
         for record in self:
             current_month_charges = record.department_charge_ids.filtered(
                 lambda c: c.charge_date and c.charge_date.month == fields.Date.today().month
-            )
             record.current_month_actual = sum(current_month_charges.mapped('amount'))
     
     def _compute_current_month_forecast(self):
@@ -184,7 +178,6 @@ class RecordsDepartmentBillingContact(models.Model):
             year_start = fields.Date.today().replace(month=1, day=1)
             ytd_charges = record.department_charge_ids.filtered(
                 lambda c: c.charge_date and c.charge_date >= year_start
-            )
             record.ytd_actual = sum(ytd_charges.mapped('amount'))
     
     @api.depends('ytd_budget', 'ytd_actual')
@@ -222,7 +215,6 @@ class RecordsDepartmentBillingContact(models.Model):
             if not self.name:
                 self.name = self.billing_contact_id.name
 
-
 # Related Models for One2many relationships
 class DepartmentBillingApprovalHistory(models.Model):
     _name = 'department.billing.approval.history'
@@ -233,13 +225,10 @@ class DepartmentBillingApprovalHistory(models.Model):
         ('contact', 'Contact Approval'),
         ('charge', 'Charge Approval'),
         ('limit', 'Limit Approval')
-    ], string='Approval Type', required=True)
     status = fields.Selection([
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('pending', 'Pending')
-    ], string='Status', required=True)
-
 
 class DepartmentBillingCharge(models.Model):
     _name = 'department.billing.charge'
@@ -252,12 +241,10 @@ class DepartmentBillingCharge(models.Model):
         ('retrieval', 'Retrieval'),
         ('scanning', 'Scanning'),
         ('consultation', 'Consultation')
-    ], string='Service Type', required=True)
     invoice_id = fields.Many2one('account.move', string='Related Invoice')
     status = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('invoiced', 'Invoiced'),
         ('paid', 'Paid')
-    ], string='Status', default='draft')
     

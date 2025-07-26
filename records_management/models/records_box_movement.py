@@ -17,7 +17,6 @@ class RecordsBoxMovement(models.Model):
         ('return', 'Return'),
         ('relocation', 'Relocation'),
         ('destruction', 'To Destruction')
-    ], string='Movement Type', required=True)
     
     responsible_user_id = fields.Many2one('res.users', string='Responsible User', 
                                         default=lambda self: self.env.user, required=True)
@@ -35,21 +34,18 @@ class RecordsBoxMovement(models.Model):
         compute='_compute_logistics_analytics',
         store=True,
         help='Efficiency score for this movement (0-100)'
-    )
     
     distance_optimization_rating = fields.Float(
         string='Distance Optimization Rating',
         compute='_compute_logistics_analytics',
         store=True,
         help='Rating of route optimization for this movement'
-    )
     
     handling_complexity_score = fields.Float(
         string='Handling Complexity Score',
         compute='_compute_logistics_analytics',
         store=True,
         help='Complexity assessment of the movement operation'
-    )
     
     # Pattern Analytics
     movement_pattern_score = fields.Float(
@@ -57,14 +53,12 @@ class RecordsBoxMovement(models.Model):
         compute='_compute_pattern_analytics',
         store=True,
         help='Score based on movement patterns and predictability'
-    )
     
     seasonal_trend_indicator = fields.Selection([
         ('low_season', 'Low Season'),
         ('normal', 'Normal Period'),
         ('peak_season', 'Peak Season'),
         ('irregular', 'Irregular Pattern')
-    ], string='Seasonal Trend',
        compute='_compute_pattern_analytics',
        store=True,
        help='Seasonal movement trend indicator')
@@ -74,7 +68,6 @@ class RecordsBoxMovement(models.Model):
         compute='_compute_pattern_analytics',
         store=True,
         help='Indicates unusual movement frequency'
-    )
     
     # Cost Analytics
     estimated_movement_cost = fields.Float(
@@ -82,21 +75,18 @@ class RecordsBoxMovement(models.Model):
         compute='_compute_cost_analytics',
         store=True,
         help='Estimated cost of this movement operation'
-    )
     
     labor_efficiency_rating = fields.Float(
         string='Labor Efficiency Rating',
         compute='_compute_cost_analytics',
         store=True,
         help='Efficiency rating of labor utilization'
-    )
     
     resource_utilization_score = fields.Float(
         string='Resource Utilization Score',
         compute='_compute_cost_analytics',
         store=True,
         help='Score for resource utilization optimization'
-    )
     
     @api.depends('movement_type', 'from_location_id', 'to_location_id', 'movement_date')
     def _compute_logistics_analytics(self):
@@ -282,7 +272,6 @@ class RecordsBoxMovement(models.Model):
                 # Consistency factor (same user handling similar movements)
                 similar_movements = user_movements.filtered(
                     lambda m: m.movement_type == record.movement_type
-                )
                 if len(similar_movements) >= 5:
                     labor_efficiency += 10
             
@@ -327,14 +316,12 @@ class RecordsServiceRequest(models.Model):
         ('relocation', 'Box Relocation'),
         ('inventory', 'Inventory Check'),
         ('other', 'Other Service')
-    ], string='Service Type', required=True)
     
     priority = fields.Selection([
         ('low', 'Low'),
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-    ], string='Priority', default='normal', required=True)
     
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -343,7 +330,6 @@ class RecordsServiceRequest(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', required=True)
     
     required_date = fields.Date('Required Date')
     completed_date = fields.Datetime('Completed Date')
@@ -365,21 +351,18 @@ class RecordsServiceRequest(models.Model):
         compute='_compute_performance_analytics',
         store=True,
         help='Overall efficiency score for this service request'
-    )
     
     response_time_score = fields.Float(
         string='Response Time Score',
         compute='_compute_performance_analytics',
         store=True,
         help='Score based on response time to customer request'
-    )
     
     completion_quality_rating = fields.Float(
         string='Completion Quality Rating',
         compute='_compute_performance_analytics',
         store=True,
         help='Quality assessment of service completion'
-    )
     
     # Customer Analytics
     customer_satisfaction_prediction = fields.Float(
@@ -387,21 +370,18 @@ class RecordsServiceRequest(models.Model):
         compute='_compute_customer_analytics',
         store=True,
         help='Predicted customer satisfaction score'
-    )
     
     repeat_service_likelihood = fields.Float(
         string='Repeat Service Likelihood %',
         compute='_compute_customer_analytics',
         store=True,
         help='Likelihood of repeat service requests'
-    )
     
     service_complexity_assessment = fields.Selection([
         ('simple', 'Simple'),
         ('moderate', 'Moderate'),
         ('complex', 'Complex'),
         ('very_complex', 'Very Complex')
-    ], string='Service Complexity',
        compute='_compute_customer_analytics',
        store=True,
        help='Complexity assessment of the service')
@@ -412,14 +392,12 @@ class RecordsServiceRequest(models.Model):
         compute='_compute_resource_analytics',
         store=True,
         help='Efficiency of resource allocation for this request'
-    )
     
     workload_balance_indicator = fields.Selection([
         ('underutilized', 'Underutilized'),
         ('optimal', 'Optimal'),
         ('overloaded', 'Overloaded'),
         ('critical', 'Critical')
-    ], string='Workload Balance',
        compute='_compute_resource_analytics',
        store=True,
        help='Workload balance indicator')
@@ -429,7 +407,6 @@ class RecordsServiceRequest(models.Model):
         compute='_compute_resource_analytics',
         store=True,
         help='Cost efficiency assessment'
-    )
     
     @api.depends('state', 'requested_date', 'completed_date', 'required_date', 'priority')
     def _compute_performance_analytics(self):

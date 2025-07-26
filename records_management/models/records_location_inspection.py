@@ -22,13 +22,11 @@ class RecordsLocationInspection(models.Model):
         string='Inspection Reference',
         required=True,
         default='New'
-    )
     
     inspection_date = fields.Date(
         string='Inspection Date',
         default=fields.Date.context_today,
         required=True
-    )
     
     inspection_type = fields.Selection([
         ('routine', 'Routine Inspection'),
@@ -36,21 +34,18 @@ class RecordsLocationInspection(models.Model):
         ('emergency', 'Emergency Inspection'),
         ('compliance', 'Compliance Inspection'),
         ('security', 'Security Inspection')
-    ], string='Inspection Type', required=True, default='routine')
     
     # Related location
     location_id = fields.Many2one(
         'records.location',
         string='Location',
         required=True
-    )
     
     inspector_id = fields.Many2one(
         'res.users',
         string='Inspector',
         default=lambda self: self.env.user,
         required=True
-    )
     
     # Inspection status and results
     status = fields.Selection([
@@ -58,14 +53,12 @@ class RecordsLocationInspection(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='scheduled')
     
     result = fields.Selection([
         ('satisfactory', 'Satisfactory'),
         ('needs_attention', 'Needs Attention'),
         ('unsatisfactory', 'Unsatisfactory'),
         ('critical', 'Critical Issues Found')
-    ], string='Inspection Result')
     
     # Inspection areas
     structural_condition = fields.Selection([
@@ -73,80 +66,67 @@ class RecordsLocationInspection(models.Model):
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor')
-    ], string='Structural Condition')
     
     environmental_controls = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor')
-    ], string='Environmental Controls')
     
     security_systems = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor')
-    ], string='Security Systems')
     
     cleanliness = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor')
-    ], string='Cleanliness')
     
     organization = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor')
-    ], string='Organization')
     
     # Detailed findings
     observations = fields.Text(
         string='Observations',
         help='Detailed observations from the inspection'
-    )
     
     issues_found = fields.Text(
         string='Issues Found',
         help='List of issues identified during inspection'
-    )
     
     recommendations = fields.Text(
         string='Recommendations',
         help='Recommendations for improvement'
-    )
     
     corrective_actions = fields.Text(
         string='Corrective Actions Required',
         help='Required corrective actions'
-    )
     
     # Follow-up information
     follow_up_required = fields.Boolean(
         string='Follow-up Required',
         compute='_compute_follow_up_required',
         store=True
-    )
     
     follow_up_date = fields.Date(
         string='Follow-up Date'
-    )
     
     next_inspection_date = fields.Date(
         string='Next Inspection Date',
         compute='_compute_next_inspection_date',
         store=True
-    )
     
     # Evidence and documentation
     photo_attachment_ids = fields.Many2many(
         'ir.attachment',
         string='Photos',
         help='Photos taken during inspection'
-    )
     
     @api.model_create_multi
     def create(self, vals_list):

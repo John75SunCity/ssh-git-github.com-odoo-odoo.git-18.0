@@ -7,7 +7,6 @@ and customer preference integration.
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class WorkOrderShredding(models.Model):
     """Enhanced work order for shredding services with bin management"""
     _name = 'work.order.shredding'
@@ -25,7 +24,6 @@ class WorkOrderShredding(models.Model):
         index=True,
         default=lambda self: _('New'),
         tracking=True
-    )
     
     # Customer and service information
     customer_id = fields.Many2one(
@@ -34,46 +32,39 @@ class WorkOrderShredding(models.Model):
         required=True,
         tracking=True,
         domain=[('is_company', '=', True)]
-    )
     
     customer_department_id = fields.Many2one(
         'records.department',
         string='Department',
         tracking=True,
         domain="[('partner_id', '=', customer_id)]"
-    )
     
     # Service configuration
     service_type = fields.Selection([
         ('standard', 'Standard (Off-Site)'),
         ('mobile', 'Mobile (On-Site)')
-    ], string='Service Type', required=True, tracking=True)
     
     # Shredding workflow type
     shredding_workflow = fields.Selection([
         ('external', 'External/On-Site Shredding'),
         ('managed_inventory', 'Managed Inventory Destruction')
-    ], string='Shredding Workflow', required=True, default='external', tracking=True,
        help="External: Shred customer's boxes at their location. Managed: Destroy boxes from our warehouse.")
     
     # Payment and billing
     billing_method = fields.Selection([
         ('immediate', 'Immediate Payment'),
         ('monthly', 'Monthly Billing')
-    ], string='Billing Method', compute='_compute_billing_method', store=True, tracking=True)
     
     preferred_service_type = fields.Selection(
         related='customer_id.preferred_shredding_service',
         string='Customer Preferred Service',
         readonly=True
-    )
     
     # Bin assignment
     bin_ids = fields.One2many(
         'shredding.bin',
         'work_order_id',
         string='Assigned Bins'
-    )
     
     # Managed inventory destruction
     inventory_item_ids = fields.One2many(
@@ -81,27 +72,23 @@ class WorkOrderShredding(models.Model):
         'work_order_id',
         string='Inventory Items for Destruction',
         help="Items from managed warehouse inventory selected for destruction"
-    )
     
     # Combined item count
     bin_count = fields.Integer(
         string='Number of Bins',
         compute='_compute_item_counts',
         store=True
-    )
     
     inventory_item_count = fields.Integer(
         string='Number of Inventory Items',
         compute='_compute_item_counts',
         store=True
-    )
     
     total_item_count = fields.Integer(
         string='Total Items',
         compute='_compute_item_counts',
         store=True,
         help="Total bins + inventory items for destruction"
-    )
     
     # Scheduling
     scheduled_date = fields.Date(
@@ -109,12 +96,10 @@ class WorkOrderShredding(models.Model):
         required=True,
         default=fields.Date.today,
         tracking=True
-    )
     
     scheduled_time = fields.Datetime(
         string='Scheduled Time',
         tracking=True
-    )
     
     # Personnel assignment
     technician_id = fields.Many2one(
@@ -124,7 +109,6 @@ class WorkOrderShredding(models.Model):
         domain=[('groups_id', 'in', [
             'records_management.group_shredding_technician'
         ])]
-    )
     
     supervisor_id = fields.Many2one(
         'res.users',
@@ -133,7 +117,6 @@ class WorkOrderShredding(models.Model):
         domain=[('groups_id', 'in', [
             'records_management.group_records_manager'
         ])]
-    )
     
     # Status and workflow
     state = fields.Selection([
@@ -146,7 +129,6 @@ class WorkOrderShredding(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
     
     # Approval workflow (for managed inventory destruction)
     requires_approval = fields.Boolean(
@@ -154,60 +136,48 @@ class WorkOrderShredding(models.Model):
         compute='_compute_requires_approval',
         store=True,
         help="Managed inventory destruction requires customer approval"
-    )
     
     customer_approved = fields.Boolean(
         string='Customer Approved',
         tracking=True
-    )
     
     customer_approval_date = fields.Datetime(
         string='Customer Approval Date',
         tracking=True
-    )
     
     supervisor_approved = fields.Boolean(
         string='Supervisor Approved',
         tracking=True
-    )
     
     supervisor_approval_date = fields.Datetime(
         string='Supervisor Approval Date',
         tracking=True
-    )
     
     # Execution tracking
     actual_start_time = fields.Datetime(
         string='Actual Start Time',
         tracking=True
-    )
     
     actual_completion_time = fields.Datetime(
         string='Actual Completion Time',
         tracking=True
-    )
     
     # Customer confirmation
     customer_signature = fields.Binary(
         string='Customer Signature'
-    )
     
     customer_signature_date = fields.Datetime(
         string='Signature Date'
-    )
     
     customer_representative = fields.Char(
         string='Customer Representative'
-    )
     
     # Documentation
     notes = fields.Text(
         string='Work Order Notes'
-    )
     
     internal_notes = fields.Text(
         string='Internal Notes'
-    )
     
     # Pricing breakdown
     retrieval_cost = fields.Float(
@@ -215,50 +185,42 @@ class WorkOrderShredding(models.Model):
         compute='_compute_pricing_breakdown',
         store=True,
         help="Cost to retrieve items from warehouse shelves"
-    )
     
     permanent_removal_cost = fields.Float(
         string='Permanent Removal Cost',
         compute='_compute_pricing_breakdown',
         store=True,
         help="Cost for permanently removing items from inventory"
-    )
     
     shredding_cost = fields.Float(
         string='Shredding Cost',
         compute='_compute_pricing_breakdown',
         store=True,
         help="Cost for shredding/destruction service"
-    )
     
     service_call_cost = fields.Float(
         string='Service Call Cost',
         compute='_compute_pricing_breakdown',
         store=True,
         help="Cost for on-site service call (external shredding)"
-    )
     
     total_cost = fields.Float(
         string='Total Cost',
         compute='_compute_pricing_breakdown',
         store=True,
         tracking=True
-    )
     
     # Certificate and documentation
     certificate_issued = fields.Boolean(
         string='Certificate Issued',
         tracking=True
-    )
     
     certificate_number = fields.Char(
         string='Certificate Number',
         help="Destruction certificate reference number"
-    )
     
     certificate_date = fields.Date(
         string='Certificate Date'
-    )
     
     # Company and audit
     company_id = fields.Many2one(
@@ -266,18 +228,15 @@ class WorkOrderShredding(models.Model):
         string='Company',
         required=True,
         default=lambda self: self.env.company
-    )
     
     create_uid = fields.Many2one(
         'res.users',
         string='Created by',
         readonly=True
-    )
     
     create_date = fields.Datetime(
         string='Created on',
         readonly=True
-    )
 
     @api.model
     def create(self, vals):
@@ -404,7 +363,6 @@ class WorkOrderShredding(models.Model):
         # Send notification to customer for approval
         self.message_post(
             body=_('Destruction request submitted for approval. Total cost: $%.2f') % self.total_cost
-        )
         return True
     
     def action_customer_approve(self):
@@ -493,7 +451,6 @@ class WorkOrderShredding(models.Model):
         
         self.message_post(
             body=_('Picklist generated with %d items for warehouse retrieval.') % len(picklist_items)
-        )
         
         return {
             'name': _('Picklist Generated'),
@@ -590,6 +547,7 @@ class WorkOrderShredding(models.Model):
                 'default_work_order_id': self.id,
                 'default_customer_id': self.customer_id.id,
                 'default_service_type': self.service_type,
+            }
         }
 
     def action_view_bins(self):
@@ -618,7 +576,6 @@ class WorkOrderShredding(models.Model):
         if generated_count > 0:
             self.message_post(
                 body=_('Generated barcodes for %d bins.') % generated_count
-            )
         
         return {
             'type': 'ir.actions.client',
@@ -637,7 +594,6 @@ class WorkOrderShredding(models.Model):
             'records_management.action_report_work_order_shredding'
         ).report_action(self)
 
-
 class WorkOrderBinAssignmentWizard(models.TransientModel):
     """Wizard for assigning bins to work orders"""
     _name = 'work.order.bin.assignment.wizard'
@@ -647,37 +603,27 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
         'work.order.shredding',
         string='Work Order',
         required=True
-    )
-    
-    
-        ('mobile', 'Mobile (On-Site)')
-    ], string='Service Type', required=True)
     
     # Bin quantity selection
     bins_23_gallon = fields.Integer(
         string='23 Gallon Bins',
         default=0
-    )
     
     bins_32_gallon = fields.Integer(
         string='32 Gallon Bins',
         default=0
-    )
     
     bins_console = fields.Integer(
         string='Console Bins',
         default=0
-    )
     
     bins_64_gallon = fields.Integer(
         string='64 Gallon Bins',
         default=0
-    )
     
     bins_96_gallon = fields.Integer(
         string='96 Gallon Bins',
         default=0
-    )
     
     def action_assign_bins(self):
         """Create and assign bins to the work order"""
@@ -689,6 +635,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
             ('console', self.bins_console),
             ('64_gallon', self.bins_64_gallon),
             ('96_gallon', self.bins_96_gallon),
+        ]
         
         created_bins = 0
         
@@ -709,7 +656,6 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
         if created_bins > 0:
             self.work_order_id.message_post(
                 body=_('Assigned %d bins to work order.') % created_bins
-            )
         
         return {
             'type': 'ir.actions.client',

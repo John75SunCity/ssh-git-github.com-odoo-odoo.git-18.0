@@ -16,7 +16,6 @@ class ResPartnerDepartmentBilling(models.Model):
         ('standard', 'Standard Billing'),
         ('consolidated', 'Consolidated Billing'),
         ('separate', 'Separate Billing')
-    ], string='Billing Method', default='standard', required=True, tracking=True)
     
     # Contact information
     billing_contact_id = fields.Many2one('res.partner', string='Billing Contact', tracking=True)
@@ -47,7 +46,6 @@ class RecordsBarcodeConfig(models.Model):
         ('upc', 'UPC'),
         ('ean13', 'EAN-13'),
         ('qr', 'QR Code')
-    ], string='Barcode Format', default='code128', required=True, tracking=True)
     
     # Generation settings
     auto_generate = fields.Boolean(string='Auto Generate Barcodes', default=True, tracking=True)
@@ -90,7 +88,6 @@ class RecordsBarcodeHistory(models.Model):
         ('movement', 'Movement'),
         ('verification', 'Verification'),
         ('other', 'Other')
-    ], string='Operation Type', required=True)
     
     # Results
     scan_result = fields.Selection([
@@ -98,7 +95,6 @@ class RecordsBarcodeHistory(models.Model):
         ('error', 'Error'),
         ('warning', 'Warning'),
         ('not_found', 'Not Found')
-    ], string='Scan Result', default='success')
     
     error_message = fields.Text(string='Error Message')
     notes = fields.Text(string='Notes')

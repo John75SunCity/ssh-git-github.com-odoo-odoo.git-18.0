@@ -27,7 +27,6 @@ class RecordsDigitalCopy(models.Model):
         ('docx', 'Word Document'),
         ('xlsx', 'Excel Spreadsheet'),
         ('other', 'Other')
-    ], string='File Format', default='pdf', required=True)
     
     file_size_mb = fields.Float('File Size (MB)', digits=(10, 2))
     resolution_dpi = fields.Integer('Resolution (DPI)', default=300)
@@ -35,7 +34,6 @@ class RecordsDigitalCopy(models.Model):
         ('color', 'Color'),
         ('grayscale', 'Grayscale'),
         ('bw', 'Black & White')
-    ], string='Color Mode', default='color')
     
     # Quality and compression
     quality_level = fields.Selection([
@@ -43,7 +41,6 @@ class RecordsDigitalCopy(models.Model):
         ('medium', 'Medium Quality'),
         ('low', 'Low Quality'),
         ('archive', 'Archive Quality')
-    ], string='Quality Level', default='medium')
     
     compressed = fields.Boolean('Compressed', default=True)
     ocr_enabled = fields.Boolean('OCR Enabled', default=False,
@@ -57,7 +54,6 @@ class RecordsDigitalCopy(models.Model):
         ('cloud', 'Cloud Storage'),
         ('archive', 'Archive Storage'),
         ('backup', 'Backup Storage')
-    ], string='Storage Location', default='local')
     
     file_path = fields.Char('File Path', help='Path to the digital file')
     access_url = fields.Char('Access URL', help='URL to access the digital copy')
@@ -75,7 +71,6 @@ class RecordsDigitalCopy(models.Model):
         ('archived', 'Archived'),
         ('corrupted', 'Corrupted'),
         ('deleted', 'Deleted')
-    ], string='Status', default='draft', tracking=True)
     
     # Security and compliance
     encrypted = fields.Boolean('Encrypted', default=False)

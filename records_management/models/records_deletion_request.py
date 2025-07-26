@@ -22,7 +22,6 @@ class RecordsDeletionRequest(models.Model):
         ('medium', 'Medium'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-    ], string='Urgency', default='medium', tracking=True)
     
     # Items to delete
     box_ids = fields.Many2many('records.box', string='Boxes to Delete')
@@ -37,7 +36,6 @@ class RecordsDeletionRequest(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
     
     # Approval workflow
     approved_by = fields.Many2one('res.users', string='Approved By', tracking=True)

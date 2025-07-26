@@ -22,13 +22,11 @@ class RecordsSecurityAudit(models.Model):
         string='Audit Reference',
         required=True,
         default='New'
-    )
     
     audit_date = fields.Date(
         string='Audit Date',
         default=fields.Date.context_today,
         required=True
-    )
     
     audit_type = fields.Selection([
         ('location', 'Location Security Audit'),
@@ -37,21 +35,18 @@ class RecordsSecurityAudit(models.Model):
         ('personnel', 'Personnel Security Audit'),
         ('system', 'System Security Audit'),
         ('compliance', 'Compliance Audit')
-    ], string='Audit Type', required=True, default='location')
     
     # Related entities
     location_id = fields.Many2one(
         'records.location',
         string='Location',
         help='Location being audited'
-    )
     
     auditor_id = fields.Many2one(
         'res.users',
         string='Auditor',
         default=lambda self: self.env.user,
         required=True
-    )
     
     # Audit status and results
     status = fields.Selection([
@@ -60,64 +55,53 @@ class RecordsSecurityAudit(models.Model):
         ('completed', 'Completed'),
         ('failed', 'Failed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='scheduled')
     
     result = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('conditional', 'Conditional Pass'),
         ('pending', 'Pending Review')
-    ], string='Audit Result')
     
     # Security assessment scores
     security_score = fields.Float(
         string='Security Score (0-100)',
         help='Overall security assessment score'
-    )
     
     compliance_score = fields.Float(
         string='Compliance Score (0-100)',
         help='Compliance assessment score'
-    )
     
     # Audit details
     findings = fields.Text(
         string='Audit Findings',
         help='Detailed findings from the security audit'
-    )
     
     recommendations = fields.Text(
         string='Recommendations',
         help='Security recommendations based on audit findings'
-    )
     
     corrective_actions = fields.Text(
         string='Corrective Actions',
         help='Required corrective actions'
-    )
     
     # Follow-up information
     follow_up_required = fields.Boolean(
         string='Follow-up Required',
         default=False
-    )
     
     follow_up_date = fields.Date(
         string='Follow-up Date'
-    )
     
     next_audit_date = fields.Date(
         string='Next Audit Date',
         compute='_compute_next_audit_date',
         store=True
-    )
     
     # Evidence and documentation
     evidence_attachment_ids = fields.Many2many(
         'ir.attachment',
         string='Evidence Attachments',
         help='Supporting documentation and evidence'
-    )
     
     @api.model_create_multi
     def create(self, vals_list):

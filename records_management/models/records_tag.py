@@ -16,15 +16,12 @@ class RecordsTag(models.Model):
         required=True, 
         translate=True,
         help="Unique name for this tag"
-    )
     description = fields.Text(
         string='Description',
         help="Detailed description of this tag's purpose and usage"
-    )
     color = fields.Integer(
         string='Color Index',
         help="Color used to display this tag"
-    )
 
     # Phase 1 Critical Fields - Added by automated script
     

@@ -17,7 +17,6 @@ class RecordsApprovalWorkflow(models.Model):
         ('destruction', 'Destruction Approval'),
         ('access', 'Access Request Approval'),
         ('general', 'General Approval')
-    ], string='Workflow Type', required=True, default='general')
     
     auto_approve_threshold = fields.Float('Auto-Approve Threshold', default=0.0,
                                         help='Automatically approve requests below this threshold')
@@ -75,7 +74,6 @@ class RecordsApprovalStep(models.Model):
         ('compliance', 'Compliance Officer'),
         ('legal', 'Legal Review'),
         ('automatic', 'Automatic')
-    ], string='Step Type', required=True, default='user')
     
     approver_user_id = fields.Many2one('res.users', string='Approver User')
     approver_group_id = fields.Many2one('res.groups', string='Approver Group')
@@ -96,7 +94,6 @@ class RecordsApprovalStep(models.Model):
         ('<=', 'Less or Equal'),
         ('in', 'In'),
         ('not in', 'Not In')
-    ], string='Condition Operator')
     condition_value = fields.Char('Condition Value')
     
     @api.onchange('step_type')

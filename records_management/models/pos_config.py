@@ -4,7 +4,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from dateutil.relativedelta import relativedelta
 
-
 class PosConfig(models.Model):
     _inherit = 'pos.config'
     _description = 'Enhanced POS Configuration for Records Management'
@@ -33,7 +32,6 @@ class PosConfig(models.Model):
         ('4', 'Friday'),
         ('5', 'Saturday'),
         ('6', 'Sunday')
-    ], string='Busiest Day of Week', compute='_compute_analytics')
     
     # Session management (custom fields)
     current_session_id = fields.Many2one('pos.session', string='Current Session', compute='_compute_current_session')
@@ -93,7 +91,6 @@ class PosConfig(models.Model):
         ('full_service', 'Full Service'),
         ('self_service', 'Self Service'),
         ('hybrid', 'Hybrid')
-    ], string='Service Type', default='full_service')
     
     # Session and transaction management (custom fields)
     session_count = fields.Integer(string='Session Count', compute='_compute_session_info')
@@ -110,7 +107,6 @@ class PosConfig(models.Model):
         ('records_management', 'Records Management'),
         ('standard', 'Standard POS'),
         ('kiosk', 'Self-Service Kiosk')
-    ], string='POS Type', default='records_management')
     
     # Walk-in customer configuration (custom fields)
     walk_in_customer_id = fields.Many2one('res.partner', string='Walk-in Customer Template',
@@ -256,7 +252,6 @@ class PosConfig(models.Model):
         
         return self.current_session_id.action_pos_session_close()
 
-
 class PosPerformanceData(models.Model):
     _name = 'pos.performance.data'
     _description = 'POS Performance Analytics Data'
@@ -270,5 +265,4 @@ class PosPerformanceData(models.Model):
         ('transactions', 'Transactions'),
         ('customers', 'Customers'),
         ('efficiency', 'Efficiency')
-    ], string='Metric Type', required=True)
     notes = fields.Text(string='Notes')

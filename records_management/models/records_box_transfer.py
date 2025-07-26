@@ -28,7 +28,6 @@ class RecordsBoxTransfer(models.Model):
         ('maintenance', 'Facility Maintenance'),
         ('reorganization', 'Storage Reorganization'),
         ('emergency', 'Emergency Move')
-    ], string='Transfer Reason', required=True, default='routine')
     
     transfer_notes = fields.Text('Transfer Notes')
     special_instructions = fields.Text('Special Instructions')
@@ -40,7 +39,6 @@ class RecordsBoxTransfer(models.Model):
         ('truck', 'Truck/Vehicle'),
         ('forklift', 'Forklift'),
         ('conveyor', 'Conveyor System')
-    ], string='Transport Method', default='manual')
     
     # Tracking and verification
     tracking_number = fields.Char('Tracking Number')
@@ -54,7 +52,6 @@ class RecordsBoxTransfer(models.Model):
         ('fair', 'Fair'),
         ('poor', 'Poor'),
         ('damaged', 'Damaged')
-    ], string='Condition Before', default='good')
     
     condition_after = fields.Selection([
         ('excellent', 'Excellent'),
@@ -62,7 +59,6 @@ class RecordsBoxTransfer(models.Model):
         ('fair', 'Fair'),
         ('poor', 'Poor'),
         ('damaged', 'Damaged')
-    ], string='Condition After', default='good')
     
     # Digital signatures
     from_signature = fields.Binary('From User Signature')
@@ -75,7 +71,6 @@ class RecordsBoxTransfer(models.Model):
         ('completed', 'Completed'),
         ('failed', 'Failed'),
         ('cancelled', 'Cancelled')
-    ], string='Transfer Status', default='pending')
     
     completion_date = fields.Datetime('Completion Date')
     

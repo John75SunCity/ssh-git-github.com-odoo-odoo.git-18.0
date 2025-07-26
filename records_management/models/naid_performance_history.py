@@ -21,7 +21,6 @@ class NAIDPerformanceHistory(models.Model):
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
         ('annually', 'Annually')
-    ], string='Performance Period', required=True, tracking=True)
     
     # NAID compliance relationship
     compliance_id = fields.Many2one('naid.compliance', string='NAID Compliance Record', tracking=True)
@@ -58,7 +57,6 @@ class NAIDPerformanceHistory(models.Model):
         ('satisfactory', 'Satisfactory'),
         ('needs_improvement', 'Needs Improvement'),
         ('poor', 'Poor')
-    ], string='Performance Status', compute='_compute_performance_status', store=True, tracking=True)
     
     # Personnel
     assessed_by = fields.Many2one('res.users', string='Assessed By', tracking=True)
@@ -108,7 +106,6 @@ class NAIDPerformanceHistory(models.Model):
                 record.on_time_percentage or 0,
                 record.quality_percentage or 0,
                 record.customer_satisfaction or 0
-            ]
             
             if all(metric == 0 for metric in metrics):
                 record.performance_status = 'needs_improvement'

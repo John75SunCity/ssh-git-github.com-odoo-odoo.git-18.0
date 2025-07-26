@@ -23,7 +23,6 @@ class SurveyImprovementAction(models.Model):
         ('technology', 'Technology Update'),
         ('policy', 'Policy Change'),
         ('other', 'Other')
-    ], string='Action Type', required=True, default='process')
     
     # Priority and Scheduling
     priority = fields.Selection([
@@ -31,7 +30,6 @@ class SurveyImprovementAction(models.Model):
         ('medium', 'Medium'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-    ], string='Priority', required=True, default='medium')
     
     due_date = fields.Date(string='Due Date')
     estimated_effort = fields.Float(string='Estimated Effort (hours)', 
@@ -50,7 +48,6 @@ class SurveyImprovementAction(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
         ('on_hold', 'On Hold')
-    ], string='Status', default='draft', required=True)
     
     # Progress Tracking
     progress = fields.Float(string='Progress (%)', default=0.0,
@@ -66,7 +63,6 @@ class SurveyImprovementAction(models.Model):
         ('medium', 'Medium Impact'),
         ('high', 'High Impact'),
         ('critical', 'Critical Impact')
-    ], string='Expected Impact', default='medium')
     
     impact_description = fields.Text(string='Impact Description',
                                    help='Description of expected impact on customer satisfaction')
@@ -79,7 +75,6 @@ class SurveyImprovementAction(models.Model):
         ('3', 'Moderately Effective'),
         ('4', 'Very Effective'),
         ('5', 'Extremely Effective')
-    ], string='Effectiveness Rating',
        help='Post-completion assessment of action effectiveness')
     
     # Related Records - FIXED: Changed from compute to proper Many2many relationship
@@ -105,7 +100,6 @@ class SurveyImprovementAction(models.Model):
                 record.due_date and 
                 record.due_date < today and 
                 record.status not in ['completed', 'cancelled']
-            )
     
     @api.depends('due_date')
     def _compute_days_to_due(self):

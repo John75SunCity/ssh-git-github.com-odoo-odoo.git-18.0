@@ -30,7 +30,6 @@ class NAIDCustodyEvent(models.Model):
         ('completion', 'Process Completion'),
         ('exception', 'Exception/Issue'),
         ('verification', 'Verification Check')
-    ], string='Event Type', required=True, tracking=True)
     
     event_datetime = fields.Datetime('Event Date/Time', required=True, 
                                     default=fields.Datetime.now, tracking=True)
@@ -72,7 +71,6 @@ class NAIDCustodyEvent(models.Model):
         ('access', 'Access Problem'),
         ('equipment', 'Equipment Failure'),
         ('other', 'Other Issue')
-    ], string='Exception Type')
     exception_details = fields.Text('Exception Details')
     resolution_action = fields.Text('Resolution Action Taken')
     
@@ -88,7 +86,6 @@ class NAIDCustodyEvent(models.Model):
         ('completed', 'Completed'),
         ('exception', 'Exception'),
         ('verified', 'Verified')
-    ], string='Status', default='draft', tracking=True)
     
     # Audit trail
     created_by = fields.Many2one('res.users', string='Created By', 

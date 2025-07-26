@@ -5,7 +5,6 @@ from odoo.exceptions import UserError, ValidationError
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
-
 class RecordsCustomerBillingProfile(models.Model):
     """Customer-specific billing profiles with flexible cycles and timing"""
     _name = 'records.customer.billing.profile'
@@ -27,13 +26,11 @@ class RecordsCustomerBillingProfile(models.Model):
         ('semi_annual', 'Semi-Annual'),
         ('annual', 'Annual'),
         ('prepaid', 'Prepaid (Custom Period)')
-    ], string='Storage Billing Cycle', default='monthly', required=True, tracking=True)
     
     service_billing_cycle = fields.Selection([
         ('monthly', 'Monthly in Arrears'),
         ('weekly', 'Weekly in Arrears'),
         ('immediate', 'Immediate Upon Completion')
-    ], string='Service Billing Cycle', default='monthly', required=True, tracking=True)
     
     # Storage billing configuration
     storage_bill_in_advance = fields.Boolean(string='Bill Storage in Advance', default=True, tracking=True,
@@ -71,26 +68,21 @@ class RecordsCustomerBillingProfile(models.Model):
         'records.box',
         string='Records Box',
         help='Associated records box for billing'
-    )
     retrieval_work_order_id = fields.Many2one(
         'document.retrieval.work.order',
         string='Retrieval Work Order',
         help='Associated retrieval work order'
-    )
     service_date = fields.Date(
         string='Service Date',
         help='Date when the service was provided'
-    )
     shredding_work_order_id = fields.Many2one(
         'work.order.shredding',
         string='Shredding Work Order',
         help='Associated shredding work order'
-    )
     unit_price = fields.Float(
         string='Unit Price',
         digits='Product Price',
         help='Unit price for billing calculation'
-    )
     
     @api.depends('name', 'partner_id.name')
     def _compute_display_name(self):
@@ -155,7 +147,6 @@ class RecordsCustomerBillingProfile(models.Model):
         
         return start_date, end_date
 
-
 class RecordsBillingContact(models.Model):
     """Billing contacts for customer profiles"""
     _name = 'records.billing.contact'
@@ -175,7 +166,6 @@ class RecordsBillingContact(models.Model):
     primary_contact = fields.Boolean(string='Primary Contact')
     
 
-
 class RecordsAdvancedBillingPeriod(models.Model):
     """Enhanced billing periods supporting dual billing timing"""
     _name = 'records.advanced.billing.period'
@@ -191,7 +181,6 @@ class RecordsAdvancedBillingPeriod(models.Model):
         ('storage', 'Storage Billing'),
         ('service', 'Service Billing'),
         ('combined', 'Combined Billing')
-    ], string='Billing Type', required=True, tracking=True)
     
     
     # Period dates (what's being billed for)
@@ -202,7 +191,6 @@ class RecordsAdvancedBillingPeriod(models.Model):
     billing_direction = fields.Selection([
         ('advance', 'In Advance'),
         ('arrears', 'In Arrears')
-    ], string='Billing Direction', compute='_compute_billing_direction', store=True)
     
     # Status
     state = fields.Selection([
@@ -211,7 +199,6 @@ class RecordsAdvancedBillingPeriod(models.Model):
         ('invoiced', 'Invoiced'),
         ('paid', 'Paid'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
     
     # Financial information
     storage_amount = fields.Monetary(string='Storage Amount', tracking=True)
@@ -262,7 +249,6 @@ class RecordsAdvancedBillingPeriod(models.Model):
         box_domain = [
             ('partner_id', '=', self.partner_id.id),
             ('state', 'in', ['stored', 'active'])
-        ]
         
         # For advance billing, we bill based on current storage
         # For arrears billing, we bill based on storage during the period
@@ -311,7 +297,6 @@ class RecordsAdvancedBillingPeriod(models.Model):
             ('state', '=', 'completed'),
             ('actual_completion_time', '>=', fields.Datetime.combine(self.period_start_date, datetime.min.time())),
             ('actual_completion_time', '<=', fields.Datetime.combine(self.period_end_date, datetime.max.time()))
-        ]
         
         # Check both retrieval and shredding work orders
         retrieval_orders = self.env['document.retrieval.work.order'].search(work_order_domain)

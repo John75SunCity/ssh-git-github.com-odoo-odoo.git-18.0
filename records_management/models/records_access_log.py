@@ -19,7 +19,6 @@ class RecordsAccessLog(models.Model):
         ('share', 'Share'),
         ('copy', 'Copy'),
         ('export', 'Export')
-    ], string='Access Type', required=True, default='view')
     
     ip_address = fields.Char('IP Address')
     user_agent = fields.Text('User Agent')
@@ -37,14 +36,12 @@ class RecordsAccessLog(models.Model):
         ('certificate', 'Digital Certificate'),
         ('biometric', 'Biometric'),
         ('token', 'Security Token')
-    ], string='Authentication Method', default='password')
     
     security_level = fields.Selection([
         ('low', 'Low Security'),
         ('medium', 'Medium Security'),
         ('high', 'High Security'),
         ('critical', 'Critical Security')
-    ], string='Security Level', default='medium')
     
     # Additional tracking
     duration_seconds = fields.Integer('Access Duration (seconds)')

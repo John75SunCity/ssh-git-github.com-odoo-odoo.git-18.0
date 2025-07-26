@@ -26,7 +26,6 @@ class SurveyFeedbackTheme(models.Model):
         ('support', 'Customer Support'),
         ('process', 'Process Improvement'),
         ('other', 'Other')
-    ], string='Category', default='other')
     
     # Usage tracking
     usage_count = fields.Integer(string='Usage Count', default=0,

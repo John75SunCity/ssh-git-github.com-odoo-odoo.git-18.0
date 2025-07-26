@@ -12,7 +12,6 @@ class RecordsRetentionPolicy(models.Model):
         ('days', 'Days'),
         ('months', 'Months'),
         ('years', 'Years')
-    ], string='Retention Unit', default='years', required=True)
     description = fields.Text('Description')
     active = fields.Boolean(default=True)
     
@@ -22,14 +21,12 @@ class RecordsRetentionPolicy(models.Model):
         ('legal_hold', 'Legal Hold'),
         ('regulatory', 'Regulatory'),
         ('custom', 'Custom')
-    ], string='Policy Type', required=True, default='standard')
     
     policy_status = fields.Selection([
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('pending', 'Pending'),
         ('expired', 'Expired')
-    ], string='Policy Status', default='active')
     
     # Automation Settings
     auto_archive = fields.Boolean('Auto Archive', default=False,
@@ -47,7 +44,6 @@ class RecordsRetentionPolicy(models.Model):
         ('closure', 'Case Closure'),
         ('last_access', 'Last Access'),
         ('custom_date', 'Custom Date')
-    ], string='Trigger Event', default='creation',
        help='Event that starts the retention period countdown')
     
     # Additional Policy Details
@@ -84,7 +80,6 @@ class RecordsRetentionPolicy(models.Model):
         ('pulping', 'Pulping'),
         ('digital_deletion', 'Digital Deletion'),
         ('degaussing', 'Degaussing')
-    ], string='Destruction Method', default='secure_shredding')
     compliance_rate = fields.Float('Compliance Rate (%)', compute='_compute_compliance_rate', store=True)
     
     # Missing fields referenced in views
@@ -94,7 +89,6 @@ class RecordsRetentionPolicy(models.Model):
         ('medium', 'Medium'),
         ('high', 'High'),
         ('critical', 'Critical')
-    ], string='Risk Level', default='low')
     
     # Version history tracking
     version_history_ids = fields.One2many('records.policy.version', 'policy_id', string='Version History')
@@ -102,19 +96,16 @@ class RecordsRetentionPolicy(models.Model):
         string='Version Number',
         default='1.0',
         help='Current version number of this retention policy'
-    )
     version_date = fields.Datetime(
         string='Version Date',
         default=fields.Datetime.now,
         help='Date when this version was created'
-    )
     approval_status = fields.Selection([
         ('draft', 'Draft'),
         ('pending', 'Pending Approval'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('expired', 'Expired')
-    ], string='Approval Status', default='draft', tracking=True)
     
     # Missing fields referenced in views - added for comprehensive coverage
     changed_by = fields.Many2one('res.users', string='Changed By', 
@@ -126,10 +117,8 @@ class RecordsRetentionPolicy(models.Model):
     # Analytics fields
     destruction_efficiency_rate = fields.Float(
         'Destruction Efficiency Rate', compute='_compute_analytics', store=True  
-    )
     policy_risk_score = fields.Float(
         'Policy Risk Score', compute='_compute_analytics', store=True
-    )
 
     # Phase 2 Audit & Compliance Fields - Added by automated script
     compliance_framework = fields.Selection([('sox', 'Sarbanes-Oxley'), ('hipaa', 'HIPAA'), ('gdpr', 'GDPR'), ('pci', 'PCI-DSS'), ('iso27001', 'ISO 27001'), ('nist', 'NIST'), ('custom', 'Custom')], string='Compliance Framework')
@@ -155,54 +144,45 @@ class RecordsRetentionPolicy(models.Model):
         compute='_compute_retention_analytics',
         store=True,
         help='Overall policy effectiveness score based on compliance and adoption'
-    )
     compliance_adherence_rate = fields.Float(
         string='Compliance Adherence (%)',
         compute='_compute_retention_analytics',
         store=True,
         help='Percentage of documents following this policy correctly'
-    )
     document_coverage_percentage = fields.Float(
         string='Document Coverage (%)',
         compute='_compute_retention_analytics',
         store=True,
         help='Percentage of applicable documents covered by this policy'
-    )
     average_retention_duration = fields.Float(
         string='Avg Retention (Days)',
         compute='_compute_retention_analytics',
         store=True,
         help='Average actual retention duration for documents under this policy'
-    )
     storage_cost_impact = fields.Float(
         string='Storage Cost Impact ($)',
         compute='_compute_retention_analytics',
         store=True,
         help='Estimated monthly storage cost impact of this policy'
-    )
     automation_utilization = fields.Float(
         string='Automation Utilization (%)',
         compute='_compute_retention_analytics',
         store=True,
         help='Percentage of policy actions that are automated'
-    )
     legal_compliance_confidence = fields.Float(
         string='Legal Compliance Confidence (%)',
         compute='_compute_retention_analytics',
         store=True,
         help='Confidence level in legal compliance of this policy'
-    )
     policy_performance_insights = fields.Text(
         string='Performance Insights',
         compute='_compute_retention_analytics',
         store=True,
         help='AI-generated insights about policy performance'
-    )
     analytics_computation_date = fields.Datetime(
         string='Analytics Updated',
         compute='_compute_retention_analytics',
         store=True,
         help='Last analytics computation timestamp'
-    )
     
     # Missing technical and activity fields

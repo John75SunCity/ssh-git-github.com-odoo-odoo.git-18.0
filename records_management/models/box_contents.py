@@ -29,7 +29,6 @@ class BoxContents(models.Model):
         ('envelope', 'Envelope'),
         ('loose_documents', 'Loose Documents'),
         ('other', 'Other')
-    ], string='Folder Type', default='manila_folder', required=True)
     
     # Content tracking
     document_count = fields.Integer(string='Total Documents', compute='_compute_document_count')
@@ -53,7 +52,6 @@ class BoxContents(models.Model):
         ('employee_files', 'Employee Files'),
         ('mixed_contents', 'Mixed Contents'),
         ('other', 'Other')
-    ], string='Filing System', default='alphabetical')
     
     # Status tracking
     checkout_status = fields.Selection([
@@ -61,7 +59,6 @@ class BoxContents(models.Model):
         ('checked_out', 'Checked Out'),
         ('destroyed', 'Destroyed'),
         ('lost', 'Lost')
-    ], string='Status', default='in_box', tracking=True)
     
     checkout_date = fields.Datetime(string='Checkout Date')
     checkout_user_id = fields.Many2one('res.users', string='Checked Out By')

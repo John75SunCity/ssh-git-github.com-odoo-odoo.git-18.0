@@ -18,30 +18,25 @@ class RecordsDocumentType(models.Model):
         string='Company',
         default=lambda self: self.env.company,
         readonly=True
-    )
 
     # Phase 2: Audit & Compliance Fields (10 fields) 
     audit_required = fields.Boolean(
         string='Audit Required',
         default=False
-    )
     compliance_status = fields.Selection([
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('under_review', 'Under Review')
-    ], string='Compliance Status', default='pending')
     risk_level = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
         ('critical', 'Critical')
-    ], string='Risk Level', default='low')
     regulatory_requirement = fields.Text(string='Regulatory Requirement')
     approval_required = fields.Boolean(
         string='Approval Required',
         default=False
-    )
     approved_by = fields.Many2one('res.users', string='Approved By')
     approval_date = fields.Datetime(string='Approval Date')
     security_classification = fields.Selection([
@@ -49,11 +44,9 @@ class RecordsDocumentType(models.Model):
         ('internal', 'Internal'),
         ('confidential', 'Confidential'),
         ('secret', 'Secret')
-    ], string='Security Classification', default='internal')
     retention_compliance = fields.Boolean(
         string='Retention Compliance',
         default=True
-    )
     compliance_notes = fields.Text(string='Compliance Notes')
     
     # Analytics and assessment fields (missing from views)
@@ -62,53 +55,43 @@ class RecordsDocumentType(models.Model):
         ('partially_ready', 'Partially Ready'),
         ('ready', 'Ready'),
         ('audit_complete', 'Audit Complete')
-    ], string='Audit Readiness Level', default='not_ready')
     auto_classification_potential = fields.Float(
         string='Auto Classification Potential',
         digits=(3, 2),
         help='Potential for automatic classification (0.0-1.0)'
-    )
     classification_accuracy_score = fields.Float(
         string='Classification Accuracy Score',
         digits=(3, 2),
         help='Accuracy score for document classification'
-    )
     compliance_risk_assessment = fields.Text(
         string='Compliance Risk Assessment',
         help='Detailed risk assessment for compliance'
-    )
     document_count = fields.Integer(
         string='Document Count',
         compute='_compute_document_count',
         help='Number of documents of this type'
-    )
     document_type_utilization = fields.Float(
         string='Document Type Utilization',
         digits=(5, 2),
         help='Utilization percentage of this document type'
-    )
     growth_trend_indicator = fields.Selection([
         ('declining', 'Declining'),
         ('stable', 'Stable'),
         ('growing', 'Growing'),
         ('rapid_growth', 'Rapid Growth')
-    ], string='Growth Trend Indicator', default='stable')
     regulatory_compliance_score = fields.Float(
         string='Regulatory Compliance Score',
         digits=(3, 2),
         help='Score for regulatory compliance (0.0-100.0)'
-    )
     seasonal_pattern_score = fields.Float(
         string='Seasonal Pattern Score',
         digits=(3, 2),
         help='Score indicating seasonal usage patterns'
-    )
     type_complexity_rating = fields.Selection([
         ('simple', 'Simple'),
         ('moderate', 'Moderate'),
         ('complex', 'Complex'),
         ('very_complex', 'Very Complex')
-    ], string='Type Complexity Rating', default='simple')
 
     # Enhanced tracking and technical fields for records management
     

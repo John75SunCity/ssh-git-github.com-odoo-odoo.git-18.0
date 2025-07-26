@@ -3,7 +3,6 @@
 from odoo import models, fields, api, _
 from datetime import datetime, timedelta
 
-
 class HrEmployee(models.Model):
     """Updated HR Employee for user access imports."""
     _inherit = 'hr.employee'
@@ -12,26 +11,22 @@ class HrEmployee(models.Model):
     can_import_users = fields.Boolean(
         string='Can Import Portal Users',
         help='Allow this employee to import users via portal'
-    )
     
     portal_access_level = fields.Selection([
         ('basic', 'Basic Access'),
         ('advanced', 'Advanced Access'),
         ('admin', 'Admin Access'),
-    ], string='Portal Access Level', default='basic')
     
     records_management_role = fields.Selection([
         ('viewer', 'Viewer'),
         ('operator', 'Operator'),
         ('supervisor', 'Supervisor'),
         ('manager', 'Manager'),
-    ], string='Records Management Role', default='viewer')
     
     # User import tracking
     imported_user_count = fields.Integer(
         string='Imported Users Count',
         compute='_compute_imported_user_count'
-    )
     
     last_import_date = fields.Datetime(string='Last Import Date')
     
@@ -43,14 +38,12 @@ class HrEmployee(models.Model):
         compute='_compute_performance_analytics',
         store=True,
         help='Efficiency score for records management tasks'
-    )
     
     productivity_score = fields.Float(
         string='Productivity Score',
         compute='_compute_performance_analytics',
         store=True,
         help='Overall productivity assessment (0-100)'
-    )
     
     # Training Analytics  
     skill_development_index = fields.Float(
@@ -58,14 +51,12 @@ class HrEmployee(models.Model):
         compute='_compute_training_analytics',
         store=True,
         help='Index measuring skill progression and development'
-    )
     
     compliance_training_status = fields.Selection([
         ('up_to_date', 'Up to Date'),
         ('due_soon', 'Due Soon'),
         ('overdue', 'Overdue'),
         ('not_required', 'Not Required')
-    ], string='Compliance Training Status',
        compute='_compute_training_analytics',
        store=True,
        help='Current compliance training status')
@@ -76,7 +67,6 @@ class HrEmployee(models.Model):
         compute='_compute_specialization_analytics',
         store=True,
         help='Specialization level in records management'
-    )
     
     # NAID Compliance Tracking
     audit_log_ids = fields.One2many('naid.audit.log', 'employee_id', 

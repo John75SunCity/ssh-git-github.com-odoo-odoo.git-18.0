@@ -6,7 +6,6 @@ General audit logging for records management activities
 
 from odoo import models, fields, api, _
 
-
 class RecordsAuditLog(models.Model):
     """
     General Audit Log Model
@@ -23,7 +22,6 @@ class RecordsAuditLog(models.Model):
         default=fields.Datetime.now,
         required=True,
         index=True
-    )
     
     event_type = fields.Selection([
         ('access', 'Access Event'),
@@ -33,12 +31,10 @@ class RecordsAuditLog(models.Model):
         ('security', 'Security Event'),
         ('compliance', 'Compliance Event'),
         ('system', 'System Event')
-    ], string='Event Type', required=True, index=True)
     
     event_description = fields.Char(
         string='Event Description',
         required=True
-    )
     
     # Related entities
     user_id = fields.Many2one(
@@ -46,47 +42,39 @@ class RecordsAuditLog(models.Model):
         string='User',
         default=lambda self: self.env.user,
         required=True
-    )
     
     document_id = fields.Many2one(
         'records.document',
         string='Document',
         help='Related document if applicable'
-    )
     
     box_id = fields.Many2one(
         'records.box',
         string='Box',
         help='Related box if applicable'
-    )
     
     shredding_service_id = fields.Many2one(
         'shredding.service',
         string='Shredding Service',
         help='Related shredding service if applicable'
-    )
     
     task_id = fields.Many2one(
         'project.task',
         string='FSM Task',
         help='Related FSM task if applicable'
-    )
     
     # Audit details
     details = fields.Text(
         string='Details',
         help='Detailed information about the audit event'
-    )
     
     ip_address = fields.Char(
         string='IP Address',
         help='IP address from which the event originated'
-    )
     
     session_id = fields.Char(
         string='Session ID',
         help='User session identifier'
-    )
     
     # Risk assessment
     risk_level = fields.Selection([
@@ -94,26 +82,21 @@ class RecordsAuditLog(models.Model):
         ('medium', 'Medium'),
         ('high', 'High'),
         ('critical', 'Critical')
-    ], string='Risk Level', default='low')
     
     # Status tracking
     reviewed = fields.Boolean(
         string='Reviewed',
         default=False
-    )
     
     reviewer_id = fields.Many2one(
         'res.users',
         string='Reviewer'
-    )
     
     review_date = fields.Datetime(
         string='Review Date'
-    )
     
     review_notes = fields.Text(
         string='Review Notes'
-    )
     
     def action_mark_reviewed(self):
         """Mark audit log entry as reviewed"""

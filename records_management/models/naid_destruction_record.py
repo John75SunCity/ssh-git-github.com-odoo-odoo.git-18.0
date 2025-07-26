@@ -24,7 +24,6 @@ class NAIDDestructionRecord(models.Model):
         ('chemical', 'Chemical Destruction'),
         ('degaussing', 'Degaussing'),
         ('overwriting', 'Data Overwriting')
-    ], string='Destruction Type', required=True, tracking=True)
     
     # NAID compliance relationship
     compliance_id = fields.Many2one('naid.compliance', string='NAID Compliance Record', tracking=True)
@@ -42,7 +41,6 @@ class NAIDDestructionRecord(models.Model):
         ('magnetic_tape', 'Magnetic Tape'),
         ('electronic', 'Electronic Devices'),
         ('mixed', 'Mixed Materials')
-    ], string='Material Type', required=True, tracking=True)
     
     total_weight = fields.Float('Total Weight', tracking=True)
     item_count = fields.Integer('Item Count', tracking=True)
@@ -63,7 +61,6 @@ class NAIDDestructionRecord(models.Model):
         ('completed', 'Completed'),
         ('certified', 'Certified'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='scheduled', tracking=True)
     
     witnessed = fields.Boolean('Witnessed Destruction', tracking=True)
     photographed = fields.Boolean('Photographed', tracking=True)

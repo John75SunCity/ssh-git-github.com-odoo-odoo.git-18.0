@@ -20,7 +20,6 @@ class RecordsPolicyVersion(models.Model):
         ('pulping', 'Pulping'),
         ('electronic_wipe', 'Electronic Data Wiping'),
         ('secure_disposal', 'Secure Disposal')
-    ], string='Destruction Method')
     
     review_cycle_months = fields.Integer('Review Cycle (Months)')
     risk_level = fields.Selection([
@@ -28,7 +27,6 @@ class RecordsPolicyVersion(models.Model):
         ('medium', 'Medium'),
         ('high', 'High'),
         ('critical', 'Critical')
-    ], string='Risk Level')
     
     approval_status = fields.Selection([
         ('draft', 'Draft'),
@@ -36,7 +34,6 @@ class RecordsPolicyVersion(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('superseded', 'Superseded')
-    ], string='Approval Status', default='draft')
     
     approved_by = fields.Many2one('res.users', string='Approved By')
     approval_date = fields.Datetime('Approval Date')

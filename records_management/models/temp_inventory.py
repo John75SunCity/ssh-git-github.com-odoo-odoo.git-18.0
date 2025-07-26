@@ -14,7 +14,6 @@ class TempInventory(models.Model):
         ('box', 'Box'),
         ('document', 'Document'),
         ('file', 'File'),
-    ], string='Type', required=True)
     temp_barcode = fields.Char(string='Temporary Barcode', readonly=True)
     description = fields.Text()
     state = fields.Selection([

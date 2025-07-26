@@ -10,14 +10,12 @@ class SurveyUserInput(models.Model):
         compute='_compute_sentiment_score', 
         store=True,
         help='Sentiment score from 0.0 (negative) to 1.0 (positive)'
-    )
     
     # Priority and Categorization
     priority_level = fields.Selection([
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent'),
-    ], string='Priority Level', default='normal')
     
     feedback_category = fields.Selection([
         ('service', 'Service Quality'),
@@ -26,7 +24,6 @@ class SurveyUserInput(models.Model):
         ('process', 'Process Improvement'),
         ('billing', 'Billing'),
         ('other', 'Other'),
-    ], string='Feedback Category')
     
     # Follow-up and Review Fields
     follow_up_required = fields.Boolean(string='Follow-up Required', default=False)
@@ -61,7 +58,6 @@ class SurveyUserInput(models.Model):
         ('medium', 'Medium'), 
         ('high', 'High'),
         ('critical', 'Critical')
-    ], string='Escalation Level', default='low')
     estimated_resolution_time = fields.Float(string='Estimated Resolution Time (hours)')
     
     # Follow-up Planning
@@ -71,13 +67,11 @@ class SurveyUserInput(models.Model):
         ('phone', 'Phone Call'),
         ('meeting', 'In-Person Meeting'),
         ('portal', 'Portal Message')
-    ], string='Follow-up Method', default='email')
     customer_contact_preference = fields.Selection([
         ('email', 'Email'),
         ('phone', 'Phone'),
         ('mail', 'Mail'),
         ('portal', 'Portal Only')
-    ], string='Customer Contact Preference', default='email')
     
     # Historical Context Fields
     customer_previous_feedback_count = fields.Integer(string='Previous Feedback Count', 
@@ -88,7 +82,6 @@ class SurveyUserInput(models.Model):
         ('improving', 'Improving'),
         ('stable', 'Stable'),
         ('declining', 'Declining')
-    ], string='Satisfaction Trend', compute='_compute_satisfaction_trend')
     
     # Comparative Analysis
     industry_benchmark_comparison = fields.Float(string='Industry Benchmark Comparison')
@@ -102,7 +95,6 @@ class SurveyUserInput(models.Model):
         ('average', 'Average (50-69%)'),
         ('poor', 'Poor (30-49%)'),
         ('critical', 'Critical (0-29%)')
-    ], string='Satisfaction Level Group', compute='_compute_satisfaction_level_group', store=True)
     
     satisfaction_level = fields.Selection([
         ('very_high', 'Very High'),
@@ -110,7 +102,6 @@ class SurveyUserInput(models.Model):
         ('medium', 'Medium'),
         ('low', 'Low'),
         ('very_low', 'Very Low')
-    ], string='Satisfaction Level', compute='_compute_satisfaction_level', store=True)
     
     # Compliance Fields
     compliance_logged = fields.Boolean(string='Compliance Logged', default=False)

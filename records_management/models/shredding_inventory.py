@@ -3,7 +3,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class ShreddingInventoryItem(models.Model):
     """Items selected for managed inventory destruction"""
     _name = 'shredding.inventory.item'
@@ -156,7 +155,6 @@ class ShreddingInventoryItem(models.Model):
             })
         
         return True
-
 
 class ShreddingPicklistItem(models.Model):
     """Picklist items for warehouse retrieval"""

@@ -56,7 +56,6 @@ class PaperLoadShipment(models.Model):
         ('delivered', 'Delivered'),
         ('invoiced', 'Invoiced'),
         ('paid', 'Paid')
-    ], string='Status', default='draft', tracking=True)
     
     # Bales relationship
     bale_ids = fields.One2many('paper.bale.recycling', 'load_shipment_id', 
@@ -104,33 +103,27 @@ class PaperLoadShipment(models.Model):
     bale_number = fields.Char(
         string='Bale Number',
         help='Individual bale identifier within the load'
-    )
     mobile_entry = fields.Boolean(
         string='Mobile Entry',
         default=False,
         help='Indicates if this entry was made via mobile device'
-    )
     paper_grade = fields.Selection([
         ('white', 'White Paper'),
         ('mixed', 'Mixed Paper'), 
         ('cardboard', 'Cardboard'),
         ('newsprint', 'Newsprint'),
         ('magazines', 'Magazines')
-    ], string='Paper Grade', help='Primary paper grade for this load')
     production_date = fields.Date(
         string='Production Date',
         help='Date when the load was produced/prepared'
-    )
     weighed_by = fields.Many2one(
         'hr.employee',
         string='Weighed By',
         help='Employee who weighed the load'
-    )
     weight_lbs = fields.Float(
         string='Weight (lbs)',
         digits='Product Weight',
         help='Total weight of the load in pounds'
-    )
     
     # === COMPUTED METHODS ===
     

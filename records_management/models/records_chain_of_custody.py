@@ -17,7 +17,6 @@ class RecordsChainOfCustody(models.Model):
         ('transfer', 'Transfer'),
         ('scan', 'Scanning/Digitization'),
         ('destruction', 'Destruction')
-    ], string='Event Type', required=True)
     
     responsible_person = fields.Char('Responsible Person', required=True)
     location = fields.Char('Location', required=True)
@@ -35,21 +34,18 @@ class RecordsChainOfCustody(models.Model):
         compute='_compute_custody_analytics',
         store=True,
         help='Duration this custody event lasted'
-    )
     
     custody_efficiency_score = fields.Float(
         string='Custody Efficiency Score',
         compute='_compute_custody_analytics',
         store=True,
         help='Efficiency score based on processing time and compliance'
-    )
     
     event_criticality_level = fields.Selection([
         ('low', 'Low Risk'),
         ('medium', 'Medium Risk'),
         ('high', 'High Risk'),
         ('critical', 'Critical Risk')
-    ], string='Event Criticality',
        compute='_compute_custody_analytics',
        store=True,
        help='Risk level assessment for this custody event')
@@ -60,21 +56,18 @@ class RecordsChainOfCustody(models.Model):
         compute='_compute_compliance_analytics',
         store=True,
         help='Automated compliance assessment score (0-100)'
-    )
     
     regulatory_flags = fields.Integer(
         string='Regulatory Flags',
         compute='_compute_compliance_analytics',
         store=True,
         help='Number of potential regulatory compliance issues'
-    )
     
     audit_readiness_score = fields.Float(
         string='Audit Readiness Score',
         compute='_compute_compliance_analytics',
         store=True,
         help='Assessment of audit trail completeness'
-    )
     
     # Process Analytics
     event_sequence_accuracy = fields.Float(
@@ -82,21 +75,18 @@ class RecordsChainOfCustody(models.Model):
         compute='_compute_process_analytics',
         store=True,
         help='Accuracy of event sequencing in custody chain'
-    )
     
     process_automation_potential = fields.Float(
         string='Automation Potential %',
         compute='_compute_process_analytics',
         store=True,
         help='Potential for process automation based on patterns'
-    )
     
     chain_completeness_score = fields.Float(
         string='Chain Completeness Score',
         compute='_compute_process_analytics',
         store=True,
         help='Completeness of custody chain documentation'
-    )
     
     @api.depends('event_date', 'event_type', 'signature_verified', 'document_id')
     def _compute_custody_analytics(self):
@@ -292,7 +282,6 @@ class RecordsAuditTrail(models.Model):
         ('email', 'Emailed'),
         ('archive', 'Archived'),
         ('destroy', 'Destroyed')
-    ], string='Action Type', required=True)
     
     user_id = fields.Many2one('res.users', string='User', required=True, default=lambda self: self.env.user)
     description = fields.Text('Description', required=True)
@@ -311,7 +300,6 @@ class RecordsAuditTrail(models.Model):
         ('medium', 'Medium Risk'),
         ('high', 'High Risk'),
         ('critical', 'Critical Risk')
-    ], string='Security Risk Level',
        compute='_compute_security_analytics',
        store=True,
        help='Automated security risk assessment')
@@ -321,14 +309,12 @@ class RecordsAuditTrail(models.Model):
         compute='_compute_security_analytics',
         store=True,
         help='Score based on access patterns and anomalies'
-    )
     
     behavioral_anomaly_flag = fields.Boolean(
         string='Behavioral Anomaly Detected',
         compute='_compute_security_analytics',
         store=True,
         help='Indicates unusual access patterns'
-    )
     
     # Compliance Analytics
     regulatory_compliance_score = fields.Float(
@@ -336,20 +322,17 @@ class RecordsAuditTrail(models.Model):
         compute='_compute_compliance_analytics',
         store=True,
         help='Compliance assessment score (0-100)'
-    )
     
     audit_trail_completeness = fields.Float(
         string='Trail Completeness %',
         compute='_compute_compliance_analytics',
         store=True,
         help='Completeness of audit trail documentation'
-    )
     
     retention_compliance_status = fields.Selection([
         ('compliant', 'Compliant'),
         ('warning', 'Warning'),
         ('violation', 'Violation')
-    ], string='Retention Compliance',
        compute='_compute_compliance_analytics',
        store=True)
     
@@ -359,21 +342,18 @@ class RecordsAuditTrail(models.Model):
         compute='_compute_performance_analytics',
         store=True,
         help='Score based on action frequency patterns'
-    )
     
     user_efficiency_rating = fields.Float(
         string='User Efficiency Rating',
         compute='_compute_performance_analytics',
         store=True,
         help='Efficiency rating for the user performing this action'
-    )
     
     system_performance_impact = fields.Float(
         string='System Performance Impact',
         compute='_compute_performance_analytics',
         store=True,
         help='Estimated impact on system performance (0-100)'
-    )
     
     @api.depends('action_type', 'user_id', 'timestamp', 'ip_address')
     def _compute_security_analytics(self):
@@ -582,7 +562,6 @@ class RecordsDigitalCopy(models.Model):
         ('png', 'PNG'),
         ('docx', 'DOCX'),
         ('txt', 'TXT')
-    ], string='File Format', required=True)
     
     resolution = fields.Char('Resolution (DPI)')
     file_size = fields.Float('File Size (MB)')
@@ -597,7 +576,6 @@ class RecordsDigitalCopy(models.Model):
         ('medium', 'Medium'),
         ('high', 'High'),
         ('archive', 'Archive Quality')
-    ], string='Scan Quality', default='medium')
     
     # File access
     file_attachment_id = fields.Many2one('ir.attachment', string='File Attachment')
@@ -610,21 +588,18 @@ class RecordsDigitalCopy(models.Model):
         compute='_compute_digitization_analytics',
         store=True,
         help='Overall quality assessment of digital copy'
-    )
     
     compression_efficiency = fields.Float(
         string='Compression Efficiency %',
         compute='_compute_digitization_analytics',
         store=True,
         help='File size optimization efficiency'
-    )
     
     format_optimization_score = fields.Float(
         string='Format Optimization Score',
         compute='_compute_digitization_analytics',
         store=True,
         help='Score for format choice optimization'
-    )
     
     # Storage Analytics
     storage_cost_estimate = fields.Float(
@@ -632,21 +607,18 @@ class RecordsDigitalCopy(models.Model):
         compute='_compute_storage_analytics',
         store=True,
         help='Estimated annual storage cost'
-    )
     
     access_frequency_prediction = fields.Float(
         string='Access Frequency Prediction',
         compute='_compute_storage_analytics',
         store=True,
         help='Predicted access frequency per month'
-    )
     
     migration_priority_score = fields.Float(
         string='Migration Priority Score',
         compute='_compute_storage_analytics',
         store=True,
         help='Priority score for format migration'
-    )
     
     # Process Analytics
     scanning_efficiency_score = fields.Float(
@@ -654,21 +626,18 @@ class RecordsDigitalCopy(models.Model):
         compute='_compute_process_analytics',
         store=True,
         help='Efficiency of the scanning process'
-    )
     
     automation_readiness = fields.Float(
         string='Automation Readiness %',
         compute='_compute_process_analytics',
         store=True,
         help='Readiness for automated digitization'
-    )
     
     workflow_optimization_potential = fields.Float(
         string='Workflow Optimization Potential',
         compute='_compute_process_analytics',
         store=True,
         help='Potential for workflow improvements'
-    )
     
     @api.depends('file_format', 'scan_quality', 'resolution', 'file_size')
     def _compute_digitization_analytics(self):

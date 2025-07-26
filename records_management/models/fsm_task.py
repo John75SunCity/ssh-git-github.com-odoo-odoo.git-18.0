@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api, _
 
-
 class FSMTask(models.Model):
     _inherit = 'project.task'
     _description = 'Field Service Management Task for Records Management - FSM FIELD ENHANCEMENT COMPLETE ✅'
@@ -16,37 +15,31 @@ class FSMTask(models.Model):
         compute='_compute_fsm_analytics',
         store=True,
         help='Overall efficiency rating for this FSM task'
-    )
     completion_performance = fields.Float(
         string='Completion Performance',
         compute='_compute_fsm_analytics',
         store=True,
         help='Performance score based on completion metrics'
-    )
     customer_response_time = fields.Float(
         string='Response Time (Hours)',
         compute='_compute_fsm_analytics',
         store=True,
         help='Time to respond to customer request'
-    )
     resource_optimization_score = fields.Float(
         string='Resource Optimization Score',
         compute='_compute_fsm_analytics',
         store=True,
         help='Efficiency of resource allocation for this task'
-    )
     fsm_insights = fields.Text(
         string='FSM Insights',
         compute='_compute_fsm_analytics',
         store=True,
         help='AI-generated field service insights'
-    )
     analytics_update_time = fields.Datetime(
         string='Analytics Updated',
         compute='_compute_fsm_analytics',
         store=True,
         help='Last analytics computation timestamp'
-    )
     
     # Comprehensive missing fields for FSM task management
     activity_type = fields.Selection([
@@ -56,7 +49,6 @@ class FSMTask(models.Model):
         ('inspection', 'Inspection'),
         ('pickup', 'Pickup'),
         ('delivery', 'Delivery')
-    ], string='Activity Type', default='maintenance')
     actual_completion_time = fields.Datetime(string='Actual Completion Time')
     actual_start_time = fields.Datetime(string='Actual Start Time')
     arch = fields.Text(string='View Architecture', help='XML view architecture definition')
@@ -80,7 +72,6 @@ class FSMTask(models.Model):
         ('email', 'Email'),
         ('sms', 'SMS'),
         ('in_person', 'In Person')
-    ], string='Communication Type', default='phone')
     completed = fields.Boolean(string='Completed', default=False)
     completion_notes = fields.Text(string='Completion Notes')
     completion_status = fields.Selection([
@@ -88,14 +79,12 @@ class FSMTask(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    ], string='Completion Status', default='not_started')
     completion_time = fields.Datetime(string='Completion Time')
     confidentiality_level = fields.Selection([
         ('public', 'Public'),
         ('internal', 'Internal'),
         ('confidential', 'Confidential'),
         ('restricted', 'Restricted')
-    ], string='Confidentiality Level', default='internal')
     contact_email = fields.Char(string='Contact Email')
     contact_person = fields.Char(string='Contact Person')
     contact_phone = fields.Char(string='Contact Phone')
@@ -157,7 +146,6 @@ class FSMTask(models.Model):
         ('maintenance', 'Maintenance'),
         ('repair', 'Repair'),
         ('consultation', 'Consultation')
-    ], string='Service Type', default='maintenance')
     signature_required = fields.Boolean(string='Signature Required', default=False)
     sms_updates_enabled = fields.Boolean(string='SMS Updates Enabled', default=False)
     special_instructions = fields.Text(string='Special Instructions')
@@ -168,7 +156,6 @@ class FSMTask(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft')
     subject = fields.Char(string='Subject')
     supervisor = fields.Many2one('res.users', string='Supervisor')
     supplier = fields.Many2one('res.partner', string='Supplier')
@@ -179,13 +166,11 @@ class FSMTask(models.Model):
         ('in_progress', 'In Progress'),
         ('blocked', 'Blocked'),
         ('completed', 'Completed')
-    ], string='Task Status', default='open')
     task_type = fields.Selection([
         ('standard', 'Standard'),
         ('emergency', 'Emergency'),
         ('preventive', 'Preventive'),
         ('corrective', 'Corrective')
-    ], string='Task Type', default='standard')
     technician = fields.Many2one('res.users', string='Technician')
     time_log_count = fields.Integer(string='Time Log Count', default=0)
     time_log_ids = fields.One2many('records.access.log', 'task_id', string='Time Logs')
@@ -200,7 +185,6 @@ class FSMTask(models.Model):
         ('location', 'Location Update'),
         ('photo', 'Photo Update'),
         ('completion', 'Completion Update')
-    ], string='Update Type', default='status')
     view_mode = fields.Char(string='View Mode', help='View mode configuration')
     work_time = fields.Float(string='Work Time (hours)', default=0.0)
 

@@ -13,15 +13,12 @@ class RecordsDocument(models.Model):
     box_id = fields.Many2one(
         'records.box', string='Box', required=True,
         index=True, domain="[('state', '=', 'active')]"
-    )
     location_id = fields.Many2one(
         related='box_id.location_id', string='Storage Location', store=True
-    )
 
     # Document metadata
     document_type_id = fields.Many2one(
         'records.document.type', string='Document Type'
-    )
     date = fields.Date('Document Date', default=fields.Date.context_today)
     description = fields.Html('Description')
     tags = fields.Many2many('records.tag', 
@@ -34,19 +31,15 @@ class RecordsDocument(models.Model):
     created_date = fields.Date(
         'Created Date', 
         help='Date when the document was originally created'
-    )
     received_date = fields.Date(
         'Received Date',
         help='Date when the document was received by the organization'
-    )
     storage_date = fields.Date(
         'Storage Date',
         help='Date when the document was placed in storage'
-    )
     last_access_date = fields.Date(
         'Last Access Date',
         help='Date when the document was last accessed'
-    )
 
     # Document classification fields
     document_category = fields.Selection([
@@ -58,7 +51,6 @@ class RecordsDocument(models.Model):
         ('contracts', 'Contracts & Agreements'),
         ('correspondence', 'Correspondence'),
         ('other', 'Other')
-    ], string='Document Category', default='other')
 
     media_type = fields.Selection([
         ('paper', 'Paper'),
@@ -68,7 +60,6 @@ class RecordsDocument(models.Model):
         ('magnetic_tape', 'Magnetic Tape'),
         ('optical_disc', 'Optical Disc'),
         ('other', 'Other')
-    ], string='Media Type', default='paper')
 
     original_format = fields.Selection([
         ('letter', 'Letter Size (8.5x11)'),
@@ -80,40 +71,32 @@ class RecordsDocument(models.Model):
         ('digital_file', 'Digital File'),
         ('bound_volume', 'Bound Volume'),
         ('other', 'Other')
-    ], string='Original Format', default='letter')
 
     digitized = fields.Boolean(
         'Digitized',
         default=False,
         help='Whether this document has been digitized'
-    )
 
     # Retention details
     retention_policy_id = fields.Many2one(
         'records.retention.policy', string='Retention Policy'
-    )
     retention_date = fields.Date(
         'Retention Date',
         compute='_compute_retention_date', store=True
-    )
     expiry_date = fields.Date(
         'Expiry Date',
         help='Date when the document expires and should be reviewed for destruction'
-    )
     destruction_eligible_date = fields.Date(
         'Destruction Eligible Date',
         compute='_compute_destruction_eligible_date',
         store=True,
         help='Date when the document becomes eligible for destruction based on retention policy'
-    )
     days_to_retention = fields.Integer(
         'Days until destruction', compute='_compute_days_to_retention'
-    )
     days_until_destruction = fields.Integer(
         'Days Until Destruction', 
         compute='_compute_days_until_destruction',
         help='Number of days until the document is eligible for destruction'
-    )
 
     # Relations
     partner_id = fields.Many2one('res.partner', string='Related Partner')
@@ -122,53 +105,41 @@ class RecordsDocument(models.Model):
         string='Customer',
         domain="[('is_company', '=', True)]",
         index=True
-    )
     customer_inventory_id = fields.Many2one(
         'customer.inventory.report',
         string='Customer Inventory Report',
         ondelete='cascade'
-    )
     department_id = fields.Many2one(
         'records.department', string='Department', index=True
-    )
     container_id = fields.Many2one(
         'box.contents', string='File Folder/Container',
         help='The file folder or container within the box where this document is filed'
-    )
     user_id = fields.Many2one(
         'res.users', string='Responsible'
-    )
     company_id = fields.Many2one(
         'res.company', string='Company',
         default=lambda self: self.env.company
-    )
 
     # File management
     attachment_ids = fields.Many2many(
         'ir.attachment', string='Attachments'
-    )
     attachment_count = fields.Integer(
         'Document Attachments Count', compute='_compute_attachment_count'
-    )
     
     # Digital document fields
     file_format = fields.Char(
         string='File Format',
         help='Digital file format (e.g., PDF, DOC, JPG)'
-    )
     file_size = fields.Float(
         string='File Size (MB)',
         help='Size of the digital file in megabytes'
-    )
     scan_date = fields.Datetime(
         string='Scan Date',
         help='Date when the document was digitally scanned'
-    )
     signature_verified = fields.Boolean(
         string='Signature Verified',
         default=False,
         help='Whether digital signatures have been verified'
-    )
     
     # Audit and custody tracking relationships
     audit_log_ids = fields.One2many(
@@ -176,32 +147,27 @@ class RecordsDocument(models.Model):
         'document_id',
         string='Audit Log Entries',
         help='Audit trail entries for this document'
-    )
     chain_of_custody_ids = fields.One2many(
         'records.chain.of.custody',
         'document_id',
         string='Chain of Custody Entries',
         help='Chain of custody entries for this document'
-    )
     
     # Computed audit and custody tracking
     audit_trail_count = fields.Integer(
         string='Audit Trail Count',
         compute='_compute_audit_trail_count',
         help='Number of audit trail entries for this document'
-    )
     chain_of_custody_count = fields.Integer(
         string='Chain of Custody Count',
         compute='_compute_chain_of_custody_count',
         help='Number of chain of custody entries for this document'
-    )
 
     # Billing fields
     storage_fee = fields.Float(
         string='Storage Fee',
         digits='Product Price',
         help='Monthly storage fee for this document'
-    )
 
     # Status fields
     state = fields.Selection([
@@ -211,20 +177,17 @@ class RecordsDocument(models.Model):
         ('returned', 'Returned'),
         ('archived', 'Archived'),
         ('destroyed', 'Destroyed')
-    ], string='Status', default='draft')
     checkout_status = fields.Selection([
         ('in_box', 'In Box'),
         ('checked_out', 'Checked Out'),
         ('destroyed', 'Destroyed'),
         ('lost', 'Lost')
-    ], string='Checkout Status', default='in_box', tracking=True,
        help='Current checkout status of this document')
     destruction_method = fields.Selection([
         ('shredding', 'Shredding'),
         ('pulping', 'Pulping'),
         ('incineration', 'Incineration'),
         ('disintegration', 'Disintegration')
-    ], string='Destruction Method')
     active = fields.Boolean(default=True)
 
     # Security fields
@@ -234,18 +197,15 @@ class RecordsDocument(models.Model):
         default=False,
         help="When checked, this document is marked as permanent and excluded from destruction schedules. "
              "Only administrators can remove this flag."
-    )
     permanent_flag_set_by = fields.Many2one(
         'res.users', 
         string='Permanent Flag Set By',
         readonly=True,
         help="User who marked this document as permanent"
-    )
     permanent_flag_set_date = fields.Datetime(
         'Permanent Flag Set Date',
         readonly=True,
         help="Date and time when permanent flag was set"
-    )
 
     # Related One2many fields for document tracking
     audit_trail_ids = fields.One2many('records.audit.log', 'document_id', string='Audit Trail')
@@ -258,7 +218,6 @@ class RecordsDocument(models.Model):
         ('accessed', 'Accessed'),
         ('moved', 'Moved'),
         ('destroyed', 'Destroyed')
-    ], string='Action Type', help='Type of action performed on document')
     arch = fields.Text(string='View Architecture', help='XML view architecture definition')
     compliance_verified = fields.Boolean(string='Compliance Verified', default=False,
                                         help='Indicates if compliance has been verified')

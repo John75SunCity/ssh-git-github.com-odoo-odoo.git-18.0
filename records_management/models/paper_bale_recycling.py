@@ -24,7 +24,6 @@ class PaperBaleRecycling(models.Model):
         ('white', 'White Paper'),
         ('mixed', 'Mixed Paper'),
         ('cardboard', 'Cardboard')
-    ], string='Paper Grade', required=True, default='mixed',
        help='Type of paper in this bale')
     
     # Weight tracking (primary business metric)
@@ -54,7 +53,6 @@ class PaperBaleRecycling(models.Model):
         ('shipped', 'Shipped'),
         ('delivered', 'Delivered'),
         ('paid', 'Payment Received')
-    ], string='Status', default='produced', tracking=True)
     
     # Mobile/Floor Scale Integration Fields
     scale_reading = fields.Float('Scale Reading', help='Direct reading from floor scale')
@@ -67,7 +65,6 @@ class PaperBaleRecycling(models.Model):
         ('dry', 'Dry'),
         ('normal', 'Normal'),
         ('damp', 'Damp')
-    ], string='Moisture Level', default='normal')
     
     contamination = fields.Boolean('Has Contamination', default=False,
                                   help='Check if bale has non-paper contamination')

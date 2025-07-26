@@ -28,7 +28,6 @@ class PaperBale(models.Model):
         ('processed', 'Processed'),
         ('shipped', 'Shipped'),
         ('complete', 'Complete')
-    ], string='Status', default='draft', tracking=True)
     
     # Dates
     creation_date = fields.Datetime('Creation Date', default=fields.Datetime.now)
@@ -51,7 +50,6 @@ class PaperBale(models.Model):
         ('loaded', 'Loaded'),
         ('shipped', 'Shipped'),
         ('processed', 'Processed')
-    ], string='Action Type', tracking=True)
     
     # Bale identification and status
     bale_number = fields.Char('Bale Number', required=True, tracking=True)
@@ -62,7 +60,6 @@ class PaperBale(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('shipped', 'Shipped')
-    ], string='Bale Status', default='new', tracking=True)
     
     # Environmental and sustainability metrics
     carbon_footprint_saved = fields.Float('Carbon Footprint Saved (kg CO2)', compute='_compute_environmental_metrics', store=True)
@@ -76,7 +73,6 @@ class PaperBale(models.Model):
         ('sustainable_forestry', 'Sustainable Forestry'),
         ('carbon_neutral', 'Carbon Neutral'),
         ('zero_waste', 'Zero Waste')
-    ], string='Environmental Certification', default='none')
     sustainable_source = fields.Boolean('Sustainable Source', default=True)
     
     # Compliance and verification
@@ -86,7 +82,6 @@ class PaperBale(models.Model):
         ('internal', 'Internal'),
         ('confidential', 'Confidential'),
         ('restricted', 'Restricted')
-    ], string='Confidentiality Level', default='internal')
     naid_compliance_verified = fields.Boolean('NAID Compliance Verified', default=False, tracking=True)
     
     # Contamination and quality control
@@ -97,7 +92,6 @@ class PaperBale(models.Model):
         ('moderate', 'Moderate'),
         ('high', 'High'),
         ('rejected', 'Rejected')
-    ], string='Contamination Level', default='none')
     contamination_percentage = fields.Float('Contamination Percentage (%)', default=0.0)
     
     # Customer and source tracking
@@ -117,7 +111,6 @@ class PaperBale(models.Model):
         ('magazine', 'Magazine'),
         ('cardboard', 'Cardboard'),
         ('mixed', 'Mixed Paper')
-    ], string='Document Type', default='office')
     
     # Financial tracking
     estimated_value = fields.Float('Estimated Value ($)', compute='_compute_financial_metrics', store=True)
@@ -132,14 +125,12 @@ class PaperBale(models.Model):
         ('grade_3', 'Grade 3 - Lower'),
         ('mixed', 'Mixed Grade'),
         ('reject', 'Reject')
-    ], string='Grade Assigned', default='grade_2')
     paper_grade = fields.Selection([
         ('oinp', 'OINP - Office Paper'),
         ('onp', 'ONP - Old Newspaper'),
         ('occ', 'OCC - Old Corrugated'),
         ('mixed', 'Mixed Paper'),
         ('white_ledger', 'White Ledger')
-    ], string='Paper Grade', default='oinp')
     paper_type = fields.Selection([
         ('white_office', 'White Office Paper'),
         ('colored_office', 'Colored Office Paper'),
@@ -147,13 +138,11 @@ class PaperBale(models.Model):
         ('newspaper', 'Newspaper'),
         ('magazine', 'Magazine'),
         ('cardboard', 'Cardboard')
-    ], string='Paper Type', default='white_office')
     quality_grade = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor')
-    ], string='Quality Grade', default='good')
     quality_score = fields.Float('Quality Score (1-10)', default=7.0)
     
     # Inspection and quality control
@@ -163,7 +152,6 @@ class PaperBale(models.Model):
         ('sample', 'Sample Testing'),
         ('full', 'Full Inspection'),
         ('random', 'Random Check')
-    ], string='Inspection Type', default='visual')
     inspector = fields.Many2one('res.users', string='Inspector')
     passed_inspection = fields.Boolean('Passed Inspection', default=False, tracking=True)
     quality_inspection_ids = fields.Many2many('paper.bale.quality.inspection', relation='quality_inspection_ids_rel', string='Quality Inspections')  # Fixed: was One2many with missing inverse field
@@ -189,7 +177,6 @@ class PaperBale(models.Model):
         ('estimated', 'Estimated'),
         ('scale', 'Scale Measurement'),
         ('certified', 'Certified Measurement')
-    ], string='Measurement Type', default='scale')
     moisture_content = fields.Float('Moisture Content (%)', default=0.0)
     moisture_reading = fields.Float('Moisture Reading', default=0.0)
     scale_used = fields.Char('Scale Used for Weighing')
@@ -207,7 +194,6 @@ class PaperBale(models.Model):
         ('lbs', 'Pounds'),
         ('kg', 'Kilograms'),
         ('tons', 'Tons')
-    ], string='Weight Unit', default='lbs')
     variance_from_previous = fields.Float('Variance from Previous (%)', compute='_compute_weight_metrics', store=True)
     
     # Personnel and processing

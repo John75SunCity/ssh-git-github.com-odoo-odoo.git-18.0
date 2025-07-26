@@ -19,7 +19,6 @@ class ShreddingBin(models.Model):
         ('console', 'Console'),
         ('64_gallon', '64 Gallon'),
         ('96_gallon', '96 Gallon')
-    ], string='Bin Size', required=True, tracking=True)
     
     capacity_gallons = fields.Float(string='Capacity (Gallons)', compute='_compute_capacity', store=True)
     
@@ -27,7 +26,6 @@ class ShreddingBin(models.Model):
     current_service_type = fields.Selection([
         ('standard', 'Standard (Off-site)'),
         ('mobile', 'Mobile (On-site)')
-    ], string='Current Service Type', default='standard', tracking=True)
     
     # Assignment and tracking
     customer_id = fields.Many2one(
@@ -36,20 +34,17 @@ class ShreddingBin(models.Model):
         required=True,
         tracking=True,
         domain=[('is_company', '=', True)]
-    )
     
     work_order_id = fields.Many2one(
         'work.order.shredding',
         string='Work Order',
         tracking=True
-    )
     
     department_id = fields.Many2one(
         'records.department',
         string='Department',
         tracking=True,
         domain="[('partner_id', '=', customer_id)]"
-    )
     location_description = fields.Char(string='Location at Customer Site', tracking=True)
     
     # Status Tracking
@@ -60,7 +55,6 @@ class ShreddingBin(models.Model):
         ('in_transit', 'In Transit'),
         ('being_serviced', 'Being Serviced'),
         ('maintenance', 'Maintenance Required')
-    ], string='Status', default='available', tracking=True)
     
     last_service_date = fields.Date(string='Last Service Date', tracking=True)
     next_service_date = fields.Date(string='Next Scheduled Service', tracking=True)
@@ -130,7 +124,6 @@ class ShreddingBin(models.Model):
             }
         }
 
-
 class ShreddingBaseRate(models.Model):
     """Base rates for shredding services by bin size and service type"""
     _name = 'shredding.base.rate'
@@ -145,12 +138,10 @@ class ShreddingBaseRate(models.Model):
         ('console', 'Console'),
         ('64_gallon', '64 Gallon'),
         ('96_gallon', '96 Gallon')
-    ], string='Bin Size', required=True)
     
     service_type = fields.Selection([
         ('standard', 'Standard (Off-site)'),
         ('mobile', 'Mobile (On-site)')
-    ], string='Service Type', required=True)
     
     rate = fields.Monetary(string='Base Rate', required=True)
     
@@ -167,7 +158,6 @@ class ShreddingBaseRate(models.Model):
             service_label = service_labels.get(rate.service_type, rate.service_type)
             rate.display_name = f"{bin_label} - {service_label}: ${rate.rate}"
 
-
 class ShreddingCustomerRate(models.Model):
     """Customer-specific rates that override base rates"""
     _name = 'shredding.customer.rate'
@@ -183,12 +173,10 @@ class ShreddingCustomerRate(models.Model):
         ('console', 'Console'),
         ('64_gallon', '64 Gallon'),
         ('96_gallon', '96 Gallon')
-    ], string='Bin Size', required=True)
     
     service_type = fields.Selection([
         ('standard', 'Standard (Off-site)'),
         ('mobile', 'Mobile (On-site)')
-    ], string='Service Type', required=True)
     
     rate = fields.Monetary(string='Customer Rate', required=True)
     

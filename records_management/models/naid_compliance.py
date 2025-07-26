@@ -21,7 +21,6 @@ class NAIDCompliance(models.Model):
         ('non_compliant', 'Non-Compliant'),
         ('pending', 'Pending Review'),
         ('suspended', 'Suspended')
-    ], string='Compliance Status', default='pending', required=True, tracking=True)
     
     overall_compliance_score = fields.Float(string='Overall Compliance Score', compute='_compute_compliance_scores')
     physical_security_score = fields.Float(string='Physical Security Score', tracking=True)
@@ -36,7 +35,6 @@ class NAIDCompliance(models.Model):
         ('biannual', 'Bi-Annual'),
         ('quarterly', 'Quarterly'),
         ('monthly', 'Monthly')
-    ], string='Audit Frequency', default='annual', tracking=True)
     
     last_audit_date = fields.Date(string='Last Audit Date', tracking=True)
     next_audit_date = fields.Date(string='Next Audit Date', compute='_compute_next_audit_date', store=True)
@@ -53,7 +51,6 @@ class NAIDCompliance(models.Model):
         ('renewal', 'Renewal'),
         ('surveillance', 'Surveillance'),
         ('special', 'Special Audit')
-    ], string='Audit Type', tracking=True)
     
     # Certificate management
     certificate_required = fields.Boolean(string='Certificate Required', default=True)
@@ -64,7 +61,6 @@ class NAIDCompliance(models.Model):
         ('naid_aaa', 'NAID AAA'),
         ('naid_aa', 'NAID AA'),
         ('naid_a', 'NAID A')
-    ], string='Certificate Type', tracking=True)
     
     issue_date = fields.Date(string='Issue Date', tracking=True)
     expiry_date = fields.Date(string='Expiry Date', tracking=True)
@@ -113,7 +109,6 @@ class NAIDCompliance(models.Model):
         ('incineration', 'Incineration'),
         ('pulverization', 'Pulverization'),
         ('disintegration', 'Disintegration')
-    ], string='Destruction Method', tracking=True)
     
     destruction_verification = fields.Boolean(string='Destruction Verification', default=True)
     witness_present = fields.Boolean(string='Witness Present During Destruction', tracking=True)
@@ -125,14 +120,12 @@ class NAIDCompliance(models.Model):
         ('paper', 'Paper Documents'),
         ('electronic', 'Electronic Media'),
         ('mixed', 'Mixed Media')
-    ], string='Material Type', tracking=True)
     
     client_name = fields.Many2one('res.partner', string='Client Name')
     naid_level = fields.Selection([
         ('aaa', 'NAID AAA'),
         ('aa', 'NAID AA'),
         ('a', 'NAID A')
-    ], string='NAID Level', required=True, tracking=True)
     
     # Risk and compliance metrics
     risk_level = fields.Selection([
@@ -140,7 +133,6 @@ class NAIDCompliance(models.Model):
         ('medium', 'Medium Risk'),
         ('high', 'High Risk'),
         ('critical', 'Critical Risk')
-    ], string='Risk Level', compute='_compute_risk_level', store=True)
     
     compliance_verified = fields.Boolean(string='Compliance Verified', tracking=True)
     last_verified = fields.Datetime(string='Last Verified', tracking=True)
@@ -153,7 +145,6 @@ class NAIDCompliance(models.Model):
         ('improving', 'Improving'),
         ('stable', 'Stable'),
         ('declining', 'Declining')
-    ], string='Trend', compute='_compute_trend')
     
     measurement_date = fields.Date(string='Measurement Date', default=fields.Date.today)
     metric_type = fields.Char(string='Metric Type', default='NAID Compliance')
@@ -170,14 +161,12 @@ class NAIDCompliance(models.Model):
         'compliance_id', 
         'user_id',
         string='Notification Recipients'
-    )
     escalation_contacts = fields.Many2many(
         'res.users', 
         'naid_compliance_escalation_rel', 
         'compliance_id', 
         'user_id',
         string='Escalation Contacts'
-    )
     
     # One2many relationships - converted to compute methods to avoid KeyError
     audit_count = fields.Integer(string='Audit Count', compute='_compute_counts')
@@ -199,51 +188,42 @@ class NAIDCompliance(models.Model):
         'compliance_id',
         string='Audit History',
         help='Historical audit records for this compliance item'
-    )
     audit_reminder = fields.Boolean(
         string='Audit Reminder',
         default=True,
         help='Send reminder notifications for upcoming audits'
-    )
     certificate_ids = fields.One2many(
         'naid.certificate',
         'compliance_id',
         string='Certificates',
         help='NAID certificates associated with this compliance record'
-    )
     compliance_checklist_ids = fields.One2many(
         'naid.compliance.checklist',
         'compliance_id',
         string='Compliance Checklist Items',
         help='Detailed compliance checklist items'
-    )
     destruction_date = fields.Date(
         string='Destruction Date',
         tracking=True,
         help='Date when destruction was completed'
-    )
     destruction_record_ids = fields.One2many(
         'naid.destruction.record',
         'compliance_id',
         string='Destruction Records',
         help='Records of destruction activities'
-    )
     performance_history_ids = fields.One2many(
         'naid.performance.history',
         'compliance_id',
         string='Performance History',
         help='Historical performance tracking records'
-    )
     requirement_name = fields.Char(
         string='Requirement Name',
         help='Name of the specific NAID requirement'
-    )
     requirement_type = fields.Selection([
         ('physical', 'Physical Security'),
         ('operational', 'Operational'),
         ('documentation', 'Documentation'),
         ('personnel', 'Personnel'),
         ('equipment', 'Equipment')
-    ], string='Requirement Type', help='Type of NAID compliance requirement')
     
     # Activity and message fields
