@@ -18,10 +18,290 @@ class VisitorPosWizard(models.TransientModel):
     ], string='Service Type', help='Suggested based on visitor notes.')
     notes = fields.Text(string='Additional Notes')
 
-    # Enhanced wizard fields - all 113 missing fields
+    # Enhanced wizard fields - all 90 missing fields
     name = fields.Char(string='Service Name', required=True, default='Walk-in Service')
     visitor_name = fields.Char(string='Visitor Name', related='visitor_id.name', readonly=True)
     visitor_email = fields.Char(string='Visitor Email', related='visitor_id.email', readonly=True)
     visitor_phone = fields.Char(string='Visitor Phone', related='visitor_id.phone', readonly=True)
+    
+    # Customer and Service Information
+    create_new_customer = fields.Boolean(string='Create New Customer', default=False)
+    existing_customer_id = fields.Many2one('res.partner', string='Existing Customer')
+    customer_record_created = fields.Boolean(string='Customer Record Created', readonly=True)
+    customer_record_id = fields.Many2one('res.partner', string='Created Customer Record', readonly=True)
+    customer_category = fields.Selection([
+        ('new', 'New Customer'),
+        ('existing', 'Existing Customer'),
+        ('corporate', 'Corporate'),
+        ('individual', 'Individual')
+    ], string='Customer Category', default='new')
+    
+    # Financial Configuration
+    customer_credit_limit = fields.Float(string='Customer Credit Limit', default=0.0)
+    customer_payment_terms = fields.Many2one('account.payment.term', string='Customer Payment Terms')
+    payment_method_id = fields.Many2one('account.payment.method', string='Payment Method')
+    payment_terms = fields.Many2one('account.payment.term', string='Payment Terms')
+    payment_reference = fields.Char(string='Payment Reference')
+    payment_split_ids = fields.One2many('visitor.pos.payment.split', 'wizard_id', string='Payment Splits')
+    
+    # Service Processing and Configuration
+    customer_processing_time = fields.Float(string='Customer Processing Time (minutes)')
+    service_configuration_time = fields.Float(string='Service Configuration Time (minutes)')
+    estimated_service_time = fields.Float(string='Estimated Service Time (minutes)')
+    total_processing_time = fields.Float(string='Total Processing Time (minutes)', compute='_compute_total_processing_time')
+    estimated_volume = fields.Float(string='Estimated Volume (cubic ft)')
+    processing_priority = fields.Selection([
+        ('low', 'Low'),
+        ('normal', 'Normal'),
+        ('high', 'High'),
+        ('urgent', 'Urgent')
+    ], string='Processing Priority', default='normal')
+    
+    # Service Location and Setup
+    service_location = fields.Many2one('stock.location', string='Service Location')
+    express_service = fields.Boolean(string='Express Service', default=False)
+    pickup_required = fields.Boolean(string='Pickup Required', default=False)
+    scanning_required = fields.Boolean(string='Scanning Required', default=False)
+    special_requirements = fields.Text(string='Special Requirements')
+    
+    # Documents and Materials
+    document_name = fields.Char(string='Document Name')
+    document_type = fields.Selection([
+        ('confidential', 'Confidential'),
+        ('public', 'Public'),
+        ('medical', 'Medical'),
+        ('financial', 'Financial'),
+        ('legal', 'Legal')
+    ], string='Document Type')
+    document_count = fields.Integer(string='Document Count', default=1)
+    required_document_ids = fields.Many2many('ir.attachment', string='Required Documents')
+    
+    # Digital Services
+    digitization_format = fields.Selection([
+        ('pdf', 'PDF'),
+        ('tiff', 'TIFF'),
+        ('jpeg', 'JPEG'),
+        ('png', 'PNG')
+    ], string='Digitization Format', default='pdf')
+    
+    # Destruction and Security
+    destruction_method = fields.Selection([
+        ('shred', 'Shredding'),
+        ('incineration', 'Incineration'),
+        ('pulping', 'Pulping'),
+        ('disintegration', 'Disintegration')
+    ], string='Destruction Method')
+    shredding_type = fields.Selection([
+        ('strip_cut', 'Strip Cut'),
+        ('cross_cut', 'Cross Cut'),
+        ('micro_cut', 'Micro Cut')
+    ], string='Shredding Type')
+    witness_required = fields.Boolean(string='Witness Required', default=False)
+    witness_verification = fields.Boolean(string='Witness Verification', readonly=True)
+    confidentiality_level = fields.Selection([
+        ('public', 'Public'),
+        ('internal', 'Internal'),
+        ('confidential', 'Confidential'),
+        ('top_secret', 'Top Secret')
+    ], string='Confidentiality Level', default='confidential')
+    
+    # Chain of Custody and Compliance
+    chain_of_custody = fields.Boolean(string='Chain of Custody Required', default=True)
+    chain_of_custody_id = fields.Many2one('records.chain.of.custody', string='Chain of Custody Record')
+    certificate_required = fields.Boolean(string='Certificate Required', default=True)
+    compliance_documentation = fields.Text(string='Compliance Documentation')
+    
+    # NAID Compliance
+    naid_compliance_required = fields.Boolean(string='NAID Compliance Required', default=True)
+    naid_certificate_required = fields.Boolean(string='NAID Certificate Required', default=True)
+    naid_audit_created = fields.Boolean(string='NAID Audit Created', readonly=True)
+    naid_audit_id = fields.Many2one('naid.audit.log', string='NAID Audit Record', readonly=True)
+    
+    # Quality Control and Audit
+    audit_required = fields.Boolean(string='Audit Required', default=False)
+    audit_level = fields.Selection([
+        ('basic', 'Basic'),
+        ('standard', 'Standard'),
+        ('comprehensive', 'Comprehensive')
+    ], string='Audit Level', default='basic')
+    audit_notes = fields.Text(string='Audit Notes')
+    quality_check_by = fields.Many2one('res.users', string='Quality Check By')
+    final_verification_by = fields.Many2one('res.users', string='Final Verification By')
+    
+    # Personnel and Authorization
+    processed_by = fields.Many2one('res.users', string='Processed By', default=lambda self: self.env.user)
+    cashier_id = fields.Many2one('res.users', string='Cashier', default=lambda self: self.env.user)
+    compliance_officer = fields.Many2one('res.users', string='Compliance Officer')
+    supervisor_approval = fields.Boolean(string='Supervisor Approval Required', default=False)
+    authorization_code = fields.Char(string='Authorization Code')
+    
+    # Timing and Duration
+    check_in_time = fields.Datetime(string='Check-in Time', default=fields.Datetime.now)
+    wizard_start_time = fields.Datetime(string='Wizard Start Time', default=fields.Datetime.now)
+    collection_date = fields.Datetime(string='Collection Date')
+    duration_seconds = fields.Integer(string='Duration (seconds)', compute='_compute_duration')
+    
+    # Visit Purpose and Requirements
+    purpose_of_visit = fields.Text(string='Purpose of Visit')
+    retention_period = fields.Integer(string='Retention Period (years)', default=7)
+    
+    # Pricing and Financial Details
+    product_id = fields.Many2one('product.product', string='Primary Product')
+    service_item_ids = fields.One2many('visitor.pos.service.item', 'wizard_id', string='Service Items')
+    unit_price = fields.Float(string='Unit Price')
+    quantity = fields.Float(string='Quantity', default=1.0)
+    base_amount = fields.Float(string='Base Amount')
+    subtotal = fields.Float(string='Subtotal', compute='_compute_financial_totals')
+    discount_percent = fields.Float(string='Discount (%)', default=0.0)
+    total_discount = fields.Float(string='Total Discount', compute='_compute_financial_totals')
+    express_surcharge = fields.Float(string='Express Surcharge')
+    tax_id = fields.Many2one('account.tax', string='Tax')
+    tax_amount = fields.Float(string='Tax Amount', compute='_compute_financial_totals')
+    total_amount = fields.Float(string='Total Amount', compute='_compute_financial_totals')
+    amount = fields.Float(string='Amount')  # Contextual field
+    
+    # POS Integration
+    pos_config_id = fields.Many2one('pos.config', string='POS Configuration')
+    pos_session_id = fields.Many2one('pos.session', string='POS Session')
+    pos_order_created = fields.Boolean(string='POS Order Created', readonly=True)
+    transaction_id = fields.Char(string='Transaction ID', readonly=True)
+    
+    # Invoice and Billing
+    invoice_required = fields.Boolean(string='Invoice Required', default=True)
+    invoice_generated = fields.Boolean(string='Invoice Generated', readonly=True)
+    invoice_id = fields.Many2one('account.move', string='Generated Invoice', readonly=True)
+    receipt_email = fields.Char(string='Receipt Email')
+    
+    # Request and Work Order Creation
+    records_request_created = fields.Boolean(string='Records Request Created', readonly=True)
+    records_request_id = fields.Many2one('portal.request', string='Created Request', readonly=True)
+    
+    # Collection and Status
+    collected = fields.Boolean(string='Collected', default=False)
+    
+    # Processing Steps and Workflow
+    step_name = fields.Char(string='Current Step')
+    step_description = fields.Text(string='Step Description')
+    step_status = fields.Selection([
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed')
+    ], string='Step Status', default='pending')
+    step_time = fields.Datetime(string='Step Time')
+    processing_log_ids = fields.One2many('visitor.pos.processing.log', 'wizard_id', string='Processing Log')
+    
+    # Error Handling and Resolution
+    error_type = fields.Selection([
+        ('validation', 'Validation Error'),
+        ('integration', 'Integration Error'),
+        ('payment', 'Payment Error'),
+        ('system', 'System Error')
+    ], string='Error Type')
+    error_message = fields.Text(string='Error Message')
+    error_details = fields.Text(string='Error Details')
+    error_time = fields.Datetime(string='Error Time')
+    resolved = fields.Boolean(string='Resolved', default=False)
+    resolution_notes = fields.Text(string='Resolution Notes')
+    integration_error_ids = fields.One2many('visitor.pos.integration.error', 'wizard_id', string='Integration Errors')
+    
+    # Compute Methods
+    @api.depends('customer_processing_time', 'service_configuration_time', 'estimated_service_time')
+    def _compute_total_processing_time(self):
+        for record in self:
+            record.total_processing_time = (record.customer_processing_time or 0) + \
+                                         (record.service_configuration_time or 0) + \
+                                         (record.estimated_service_time or 0)
+    
+    @api.depends('wizard_start_time')
+    def _compute_duration(self):
+        for record in self:
+            if record.wizard_start_time:
+                now = fields.Datetime.now()
+                duration = (now - record.wizard_start_time).total_seconds()
+                record.duration_seconds = int(duration)
+            else:
+                record.duration_seconds = 0
+    
+    @api.depends('base_amount', 'discount_percent', 'express_surcharge', 'tax_id')
+    def _compute_financial_totals(self):
+        for record in self:
+            # Calculate subtotal
+            record.subtotal = record.base_amount or 0.0
+            
+            # Calculate discount
+            record.total_discount = (record.subtotal * (record.discount_percent or 0.0)) / 100
+            
+            # Calculate tax
+            if record.tax_id and record.subtotal:
+                # Simplified tax calculation
+                record.tax_amount = (record.subtotal * record.tax_id.amount) / 100
+            else:
+                record.tax_amount = 0.0
+            
+            # Calculate total
+            record.total_amount = record.subtotal - record.total_discount + \
+                                (record.express_surcharge or 0.0) + record.tax_amount
+
+
+# Related Models for One2many relationships
+class VisitorPosPaymentSplit(models.TransientModel):
+    _name = 'visitor.pos.payment.split'
+    _description = 'Visitor POS Payment Split'
+    
+    wizard_id = fields.Many2one('visitor.pos.wizard', string='Wizard', required=True, ondelete='cascade')
+    payment_method_id = fields.Many2one('account.payment.method', string='Payment Method', required=True)
+    amount = fields.Float(string='Amount', required=True)
+    reference = fields.Char(string='Reference')
+
+
+class VisitorPosServiceItem(models.TransientModel):
+    _name = 'visitor.pos.service.item'
+    _description = 'Visitor POS Service Item'
+    
+    wizard_id = fields.Many2one('visitor.pos.wizard', string='Wizard', required=True, ondelete='cascade')
+    product_id = fields.Many2one('product.product', string='Product', required=True)
+    description = fields.Text(string='Description')
+    quantity = fields.Float(string='Quantity', default=1.0)
+    unit_price = fields.Float(string='Unit Price')
+    total_price = fields.Float(string='Total Price', compute='_compute_total_price')
+    
+    @api.depends('quantity', 'unit_price')
+    def _compute_total_price(self):
+        for item in self:
+            item.total_price = item.quantity * item.unit_price
+
+
+class VisitorPosProcessingLog(models.TransientModel):
+    _name = 'visitor.pos.processing.log'
+    _description = 'Visitor POS Processing Log'
+    
+    wizard_id = fields.Many2one('visitor.pos.wizard', string='Wizard', required=True, ondelete='cascade')
+    step_name = fields.Char(string='Step Name', required=True)
+    step_time = fields.Datetime(string='Step Time', default=fields.Datetime.now)
+    status = fields.Selection([
+        ('started', 'Started'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed')
+    ], string='Status', required=True)
+    notes = fields.Text(string='Notes')
+    duration_seconds = fields.Integer(string='Duration (seconds)')
+
+
+class VisitorPosIntegrationError(models.TransientModel):
+    _name = 'visitor.pos.integration.error'
+    _description = 'Visitor POS Integration Error'
+    
+    wizard_id = fields.Many2one('visitor.pos.wizard', string='Wizard', required=True, ondelete='cascade')
+    error_type = fields.Selection([
+        ('pos', 'POS Integration'),
+        ('accounting', 'Accounting Integration'),
+        ('inventory', 'Inventory Integration'),
+        ('crm', 'CRM Integration')
+    ], string='Error Type', required=True)
+    error_time = fields.Datetime(string='Error Time', default=fields.Datetime.now)
+    error_message = fields.Text(string='Error Message')
+    resolved = fields.Boolean(string='Resolved', default=False)
+    resolution_notes = fields.Text(string='Resolution Notes')
     
     # Mail tracking fields (explicit declaration for view compatibility)
