@@ -60,9 +60,6 @@ class NAIDAuditLog(models.Model):
     
     impact_assessment = fields.Text('Impact Assessment')
     
-    # NAID compliance relationship
-    compliance_id = fields.Many2one('naid.compliance', string='NAID Compliance Record', tracking=True)
-    
     # Personnel involved
     responsible_user_id = fields.Many2one('res.users', string='Responsible User', 
                                          required=True, tracking=True)
