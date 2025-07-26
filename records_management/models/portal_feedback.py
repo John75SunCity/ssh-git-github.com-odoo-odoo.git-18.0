@@ -201,6 +201,44 @@ class PortalFeedback(models.Model):
     service_request_id = fields.Many2one('records.service.request', string='Related Service Request')
     product_id = fields.Many2one('product.product', string='Related Product')
     
+    # Attachment and file management
+    attachment_ids = fields.Many2many(
+        'ir.attachment', 
+        string='Attachments',
+        help='Documents or files attached to this feedback'
+    )
+    file_size = fields.Float(
+        string='Total File Size (MB)',
+        compute='_compute_file_size',
+        help='Total size of all attached files'
+    )
+    mimetype = fields.Char(
+        string='Primary MIME Type',
+        compute='_compute_mimetype',
+        help='MIME type of the primary attachment'
+    )
+    
+    # Activity tracking
+    activity_date = fields.Datetime(
+        string='Last Activity Date',
+        compute='_compute_activity_date',
+        help='Date of the most recent activity'
+    )
+    activity_type = fields.Selection([
+        ('call', 'Phone Call'),
+        ('email', 'Email'),
+        ('meeting', 'Meeting'),
+        ('todo', 'To Do'),
+        ('upload', 'Upload')
+    ], string='Last Activity Type', compute='_compute_activity_type')
+    followup_activity_ids = fields.One2many(
+        'mail.activity',
+        'res_id',
+        string='Follow-up Activities',
+        domain=[('res_model', '=', 'portal.feedback')],
+        help='Scheduled follow-up activities for this feedback'
+    )
+    
     # Follow-up and actions
     followup_required = fields.Boolean(string='Follow-up Required', tracking=True)
     followup_date = fields.Date(string='Follow-up Date', tracking=True)
@@ -343,3 +381,41 @@ class PortalFeedback(models.Model):
         for record in self:
             # This would typically count related tickets/issues
             record.related_ticket_count = 0  # Simplified
+    
+    @api.depends('attachment_ids')
+    def _compute_file_size(self):
+        """Compute total file size of all attachments."""
+        for record in self:
+            total_size = 0
+            for attachment in record.attachment_ids:
+                if attachment.file_size:
+                    total_size += attachment.file_size
+            record.file_size = total_size / (1024 * 1024)  # Convert to MB
+    
+    @api.depends('attachment_ids')
+    def _compute_mimetype(self):
+        """Compute the MIME type of the primary attachment."""
+        for record in self:
+            if record.attachment_ids:
+                record.mimetype = record.attachment_ids[0].mimetype
+            else:
+                record.mimetype = False
+    
+    @api.depends('activity_ids')
+    def _compute_activity_date(self):
+        """Compute the date of the most recent activity."""
+        for record in self:
+            if record.activity_ids:
+                record.activity_date = max(record.activity_ids.mapped('date_deadline'))
+            else:
+                record.activity_date = False
+    
+    @api.depends('activity_ids')
+    def _compute_activity_type(self):
+        """Compute the type of the most recent activity."""
+        for record in self:
+            if record.activity_ids:
+                latest_activity = record.activity_ids.sorted('date_deadline', reverse=True)[0]
+                record.activity_type = latest_activity.activity_type_id.category or 'todo'
+            else:
+                record.activity_type = False

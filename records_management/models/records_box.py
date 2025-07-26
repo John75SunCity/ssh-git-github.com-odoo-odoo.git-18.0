@@ -48,6 +48,12 @@ class RecordsBox(models.Model):
         help='Date when the box was placed in storage location'
     )
     destroy_date = fields.Date(string='Destroy Date')
+    created_date = fields.Datetime(
+        string='Created Date',
+        default=fields.Datetime.now,
+        readonly=True,
+        help='Date and time when the box record was created'
+    )
     access_count = fields.Integer(string='Access Count', default=0)
     perm_flag = fields.Boolean(string='Permanent Flag', default=False)
     product_id = fields.Many2one('product.product', string='Box Product')

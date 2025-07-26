@@ -98,6 +98,23 @@ class RecordsRetentionPolicy(models.Model):
     
     # Version history tracking
     version_history_ids = fields.One2many('records.policy.version', 'policy_id', string='Version History')
+    version_number = fields.Char(
+        string='Version Number',
+        default='1.0',
+        help='Current version number of this retention policy'
+    )
+    version_date = fields.Datetime(
+        string='Version Date',
+        default=fields.Datetime.now,
+        help='Date when this version was created'
+    )
+    approval_status = fields.Selection([
+        ('draft', 'Draft'),
+        ('pending', 'Pending Approval'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('expired', 'Expired')
+    ], string='Approval Status', default='draft', tracking=True)
     
     # Missing fields referenced in views - added for comprehensive coverage
     changed_by = fields.Many2one('res.users', string='Changed By', 

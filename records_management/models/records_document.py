@@ -151,6 +151,37 @@ class RecordsDocument(models.Model):
     attachment_count = fields.Integer(
         'Document Attachments Count', compute='_compute_attachment_count'
     )
+    
+    # Digital document fields
+    file_format = fields.Char(
+        string='File Format',
+        help='Digital file format (e.g., PDF, DOC, JPG)'
+    )
+    file_size = fields.Float(
+        string='File Size (MB)',
+        help='Size of the digital file in megabytes'
+    )
+    scan_date = fields.Datetime(
+        string='Scan Date',
+        help='Date when the document was digitally scanned'
+    )
+    signature_verified = fields.Boolean(
+        string='Signature Verified',
+        default=False,
+        help='Whether digital signatures have been verified'
+    )
+    
+    # Audit and custody tracking
+    audit_trail_count = fields.Integer(
+        string='Audit Trail Count',
+        compute='_compute_audit_trail_count',
+        help='Number of audit trail entries for this document'
+    )
+    chain_of_custody_count = fields.Integer(
+        string='Chain of Custody Count',
+        compute='_compute_chain_of_custody_count',
+        help='Number of chain of custody entries for this document'
+    )
 
     # Billing fields
     storage_fee = fields.Float(
@@ -296,3 +327,17 @@ class RecordsDocument(models.Model):
                 ('res_id', '=', record.id)
             ])
             record.attachment_count = len(attachments)
+    
+    @api.depends('audit_log_ids')
+    def _compute_audit_trail_count(self):
+        """Compute number of audit trail entries."""
+        for record in self:
+            # This would typically link to an audit log model
+            record.audit_trail_count = len(record.audit_log_ids) if hasattr(record, 'audit_log_ids') else 0
+    
+    @api.depends('chain_of_custody_ids')
+    def _compute_chain_of_custody_count(self):
+        """Compute number of chain of custody entries."""
+        for record in self:
+            # This would typically link to a chain of custody model
+            record.chain_of_custody_count = len(record.chain_of_custody_ids) if hasattr(record, 'chain_of_custody_ids') else 0
