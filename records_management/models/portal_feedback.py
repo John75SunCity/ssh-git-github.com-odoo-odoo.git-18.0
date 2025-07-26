@@ -232,7 +232,7 @@ class PortalFeedback(models.Model):
         ('upload', 'Upload')
     ], string='Last Activity Type', compute='_compute_activity_type')
     followup_activity_ids = fields.Many2many('mail.activity', relation='followup_activity_ids_rel', string='Follow-up Activities',
-        domain=[('res_model', '=', 'portal.feedback')  # Fixed: was One2many with missing inverse field],
+        domain=[('res_model', '=', 'portal.feedback')],  # Fixed syntax error
         help='Scheduled follow-up activities for this feedback'
     )
     
