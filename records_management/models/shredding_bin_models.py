@@ -67,7 +67,8 @@ class ShreddingBin(models.Model):
     
     # Work Order Integration
     current_work_order_id = fields.Many2one('shredding.service', string='Current Work Order')
-    service_history_ids = fields.One2many('shredding.service', 'bin_id', string='Service History')
+    # Note: service_history_ids removed due to incompatible relationship
+    # The shredding.service model uses Many2many to stock.lot, not Many2one to shredding.bin
     
     # Computed Fields
     current_rate = fields.Monetary(string='Current Rate', compute='_compute_current_rate', store=True)
