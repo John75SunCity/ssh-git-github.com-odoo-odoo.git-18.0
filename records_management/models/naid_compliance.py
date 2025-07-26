@@ -198,4 +198,57 @@ class NAIDCompliance(models.Model):
     search_view_id = fields.Many2one('ir.ui.view', string='Search View')
     view_mode = fields.Char(string='View Mode', default='tree,form')
     
+    # Missing relationship and tracking fields
+    audit_history_ids = fields.One2many(
+        'naid.audit.log',
+        'compliance_id',
+        string='Audit History',
+        help='Historical audit records for this compliance item'
+    )
+    audit_reminder = fields.Boolean(
+        string='Audit Reminder',
+        default=True,
+        help='Send reminder notifications for upcoming audits'
+    )
+    certificate_ids = fields.One2many(
+        'naid.certificate',
+        'compliance_id',
+        string='Certificates',
+        help='NAID certificates associated with this compliance record'
+    )
+    compliance_checklist_ids = fields.One2many(
+        'naid.compliance.checklist',
+        'compliance_id',
+        string='Compliance Checklist Items',
+        help='Detailed compliance checklist items'
+    )
+    destruction_date = fields.Date(
+        string='Destruction Date',
+        tracking=True,
+        help='Date when destruction was completed'
+    )
+    destruction_record_ids = fields.One2many(
+        'naid.destruction.record',
+        'compliance_id',
+        string='Destruction Records',
+        help='Records of destruction activities'
+    )
+    performance_history_ids = fields.One2many(
+        'naid.performance.history',
+        'compliance_id',
+        string='Performance History',
+        help='Historical performance tracking records'
+    )
+    requirement_name = fields.Char(
+        string='Requirement Name',
+        help='Name of the specific NAID requirement'
+    )
+    requirement_type = fields.Selection([
+        ('physical', 'Physical Security'),
+        ('operational', 'Operational'),
+        ('documentation', 'Documentation'),
+        ('personnel', 'Personnel'),
+        ('equipment', 'Equipment')
+    ], string='Requirement Type', help='Type of NAID compliance requirement')
+    
     # Activity and message fields

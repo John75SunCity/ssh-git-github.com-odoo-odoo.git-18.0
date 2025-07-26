@@ -66,6 +66,32 @@ class RecordsCustomerBillingProfile(models.Model):
     # Company
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     
+    # Service tracking fields (missing from views)
+    box_id = fields.Many2one(
+        'records.box',
+        string='Records Box',
+        help='Associated records box for billing'
+    )
+    retrieval_work_order_id = fields.Many2one(
+        'document.retrieval.work.order',
+        string='Retrieval Work Order',
+        help='Associated retrieval work order'
+    )
+    service_date = fields.Date(
+        string='Service Date',
+        help='Date when the service was provided'
+    )
+    shredding_work_order_id = fields.Many2one(
+        'work.order.shredding',
+        string='Shredding Work Order',
+        help='Associated shredding work order'
+    )
+    unit_price = fields.Float(
+        string='Unit Price',
+        digits='Product Price',
+        help='Unit price for billing calculation'
+    )
+    
     @api.depends('name', 'partner_id.name')
     def _compute_display_name(self):
         for record in self:
