@@ -159,9 +159,9 @@ class ProductTemplate(models.Model):
 
     # Phase 4: Missing Critical Business Fields (17 fields)
     
-    # Product configuration and rules
-    pricing_rule_ids = fields.One2many('product.pricing.rule', 'product_id', string='Pricing Rules')
-    product_variant_ids = fields.One2many('product.product', 'product_tmpl_id', string='Product Variants')
+    # Product configuration and rules - Fixed relationship types
+    pricing_rule_ids = fields.Many2many('product.pricelist.item', string='Pricing Rules')  # Changed to existing model
+    product_variant_ids = fields.One2many('product.product', 'product_tmpl_id', string='Product Variants')  # This one is correct
     rule_name = fields.Char(string='Rule Name', help='Name of the pricing or business rule')
     rule_type = fields.Selection([
         ('pricing', 'Pricing Rule'),
@@ -194,11 +194,10 @@ class ProductTemplate(models.Model):
     sla_terms = fields.Text(string='SLA Terms', 
                           help='Service Level Agreement terms and conditions')
     
-    # Approval and analytics
+    # Approval and analytics - Fixed relationship type
     requires_approval = fields.Boolean(string='Requires Approval', default=False,
                                      help='Service requires management approval')
-    sales_analytics_ids = fields.One2many('product.sales.analytics', 'product_id', 
-                                        string='Sales Analytics')
+    sales_analytics_ids = fields.Many2many('sale.report', string='Sales Analytics')  # Changed to existing model
     sync_enabled = fields.Boolean(string='Sync Enabled', default=True,
                                 help='Enable synchronization for this product')
     template_category = fields.Selection([
