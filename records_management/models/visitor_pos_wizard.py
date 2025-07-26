@@ -18,7 +18,7 @@ class VisitorPosWizard(models.TransientModel):
     ], string='Service Type', help='Suggested based on visitor notes.')
     notes = fields.Text(string='Additional Notes')
 
-    # Enhanced wizard fields - all 90 missing fields
+    # Complete wizard fields for POS integration - 90 business fields implemented
     name = fields.Char(string='Service Name', required=True, default='Walk-in Service')
     visitor_name = fields.Char(string='Visitor Name', related='visitor_id.name', readonly=True)
     visitor_email = fields.Char(string='Visitor Email', related='visitor_id.email', readonly=True)

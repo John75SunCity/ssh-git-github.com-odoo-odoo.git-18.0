@@ -55,7 +55,7 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="Approval & Tracking">
+                            <page string="Approval &amp; Tracking">
                                 <group>
                                     <group>
                                         <field name="customer_approved"/>

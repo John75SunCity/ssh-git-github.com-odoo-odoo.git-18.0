@@ -1,5 +1,5 @@
-# Updated file: Added @api.model_create_multi decorator to override create in batch mode (fixes deprecation warning in log for non-batch create). This accomplishes efficient multi-record creation
-# Added missing fields: is_walk_in and linked_visitor_id to fix view validation errors
+# Portal Request Model - Enterprise-grade request management system with SLA tracking
+# Features: Complete approval workflow, financial billing integration, quality metrics
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
@@ -13,7 +13,7 @@ class PortalRequest(models.Model):
 
     name = fields.Char(string='Request Reference', default='New', readonly=True)
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, readonly=True)
-    department_id = fields.Many2one('records.department', string='Department', domain="[('partner_id', '=', partner_id)]")  # Added for granular requests
+    department_id = fields.Many2one('records.department', string='Department', domain="[('partner_id', '=', partner_id)]")
     request_type = fields.Selection([
         ('destruction', 'Destruction Request'),
         ('service', 'Service Request'),
@@ -349,5 +349,3 @@ class PortalRequestCommunication(models.Model):
     to_user_id = fields.Many2one('res.users', string='To')
     subject = fields.Char(string='Subject')
     message = fields.Text(string='Message')
-    
-    # Phase 1: Explicit Activity & Messaging Fields (3 fields)
