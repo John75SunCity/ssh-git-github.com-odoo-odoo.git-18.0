@@ -79,8 +79,8 @@ class ShreddingService(models.Model):
     video_documentation_required = fields.Boolean('Video Documentation Required', default=False)
     certificate_of_destruction = fields.Text('Certificate of Destruction Notes')
     audit_trail_ids = fields.One2many('records.audit.log', 'shredding_service_id', string='Audit Trail')
-    compliance_documentation_ids = fields.One2many('ir.attachment', 'res_id', string='Compliance Documentation', 
-                                                   domain="[('res_model', '=', 'shredding.service')]", 
+    compliance_documentation_ids = fields.Many2many('ir.attachment', relation='compliance_documentation_ids_rel', string='Compliance Documentation', 
+                                                   domain="[('res_model', '=', 'shredding.service')  # Fixed: was One2many with missing inverse field]", 
                                                    compute='_compute_compliance_docs')
     destruction_method_verified = fields.Boolean('Destruction Method Verified', default=False)
     destruction_method = fields.Selection([
@@ -150,7 +150,7 @@ class ShreddingService(models.Model):
     included_in_certificate = fields.Boolean('Included in Certificate', default=True)
     
     # Chain of custody and tracking
-    chain_of_custody_ids = fields.One2many('records.chain.custody', 'shredding_service_id', string='Chain of Custody Records')
+    chain_of_custody_ids = fields.Many2many('records.chain.custody', relation='chain_of_custody_ids_rel', string='Chain of Custody Records')  # Fixed: was One2many with missing inverse field
     chain_of_custody_number = fields.Char('Chain of Custody Number', tracking=True)
     seal_number = fields.Char('Seal Number', tracking=True)
     serial_number = fields.Char('Serial Number', tracking=True)
@@ -209,8 +209,8 @@ class ShreddingService(models.Model):
     shredding_equipment = fields.Char('Shredding Equipment Used')
     
     # One2many relationships
-    destruction_item_ids = fields.One2many('destruction.item', 'shredding_service_id', string='Destruction Items')
-    witness_verification_ids = fields.One2many('witness.verification', 'shredding_service_id', string='Witness Verifications')
+    destruction_item_ids = fields.Many2many('destruction.item', relation='destruction_item_ids_rel', string='Destruction Items')  # Fixed: was One2many with missing inverse field
+    witness_verification_ids = fields.Many2many('witness.verification', relation='witness_verification_ids_rel', string='Witness Verifications')  # Fixed: was One2many with missing inverse field
     
     # Compute methods for new fields
     @api.depends('destruction_item_ids')

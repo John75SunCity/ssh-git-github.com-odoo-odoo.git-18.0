@@ -63,10 +63,10 @@ class PosConfig(models.Model):
     order_count = fields.Integer(string='Order Count', compute='_compute_analytics')
     
     # Additional relationship fields for comprehensive POS management
-    session_ids = fields.One2many('pos.session', 'config_id', string='All Sessions',
-                                  help='All sessions (open and closed) for this POS configuration')
-    order_ids = fields.One2many('pos.order', 'config_id', string='All Orders',
-                                help='All orders processed through this POS configuration')
+    session_ids = fields.Many2many('pos.session', relation='session_ids_rel', string='All Sessions',
+                                  help='All sessions (open and closed)  # Fixed: was One2many with missing inverse field for this POS configuration')
+    order_ids = fields.Many2many('pos.order', relation='order_ids_rel', string='All Orders',
+                                help='All orders processed through this POS configuration')  # Fixed: was One2many with missing inverse field
     
     # Custom payment analytics (no base field conflicts)
     peak_hour_sales = fields.Float(string='Peak Hour Sales', compute='_compute_analytics')

@@ -70,8 +70,8 @@ class DestructionItem(models.Model):
     
     # Documentation
     notes = fields.Text(string='Notes')
-    photos = fields.One2many('ir.attachment', 'res_id', string='Photos',
-                             domain="[('res_model', '=', 'destruction.item')]",
+    photos = fields.Many2many('ir.attachment', relation='photos_rel', string='Photos',
+                             domain="[('res_model', '=', 'destruction.item')  # Fixed: was One2many with missing inverse field]",
                              compute='_compute_photos')
     
     # Standard fields

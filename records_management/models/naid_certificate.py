@@ -55,8 +55,8 @@ class NAIDCertificate(models.Model):
     # Additional details
     description = fields.Text('Description')
     notes = fields.Text('Notes')
-    attachment_ids = fields.One2many('ir.attachment', 'res_id', 
-                                   domain=[('res_model', '=', 'naid.certificate')],
+    attachment_ids = fields.Many2many('ir.attachment', relation='attachment_ids_rel', 
+                                   domain=[('res_model', '=', 'naid.certificate')  # Fixed: was One2many with missing inverse field],
                                    string='Attachments')
     
     @api.depends('expiry_date', 'status')

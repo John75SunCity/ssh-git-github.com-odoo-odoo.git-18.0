@@ -58,7 +58,7 @@ class RecordsDepartment(models.Model):
     box_ids = fields.One2many('records.box', 'department_id', string='Boxes')
     document_ids = fields.One2many('records.document', 'department_id', string='Documents')  # Now valid with inverse
     shredding_ids = fields.One2many('shredding.service', 'department_id', string='Shredding Services')
-    invoice_ids = fields.One2many('account.move', 'department_id', string='Invoices')
+    invoice_ids = fields.Many2many('account.move', relation='invoice_ids_rel', string='Invoices')  # Fixed: was One2many with missing inverse field
     portal_request_ids = fields.One2many('portal.request', 'department_id', string='Portal Requests')
 
     @api.depends('code')

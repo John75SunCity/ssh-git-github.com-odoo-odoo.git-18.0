@@ -161,7 +161,7 @@ class ProductTemplate(models.Model):
     
     # Product configuration and rules - Fixed relationship types
     pricing_rule_ids = fields.Many2many('product.pricelist.item', string='Pricing Rules')  # Changed to existing model
-    product_variant_ids = fields.One2many('product.product', 'product_tmpl_id', string='Product Variants')  # This one is correct
+    product_variant_ids = fields.Many2many('product.product', relation='product_variant_ids_rel', string='Product Variants')  # Fixed: was One2many with missing inverse field  # This one is correct
     rule_name = fields.Char(string='Rule Name', help='Name of the pricing or business rule')
     rule_type = fields.Selection([
         ('pricing', 'Pricing Rule'),

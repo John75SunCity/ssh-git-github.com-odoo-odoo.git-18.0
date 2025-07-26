@@ -92,7 +92,7 @@ class StockLot(models.Model):
     # Quality control
     quality_check_count = fields.Integer(string='Quality Check Count', 
                                          compute='_compute_quality_metrics')
-    quality_check_ids = fields.One2many('quality.check', 'lot_id', string='Quality Checks')
+    quality_check_ids = fields.Many2many('quality.check', relation='quality_check_ids_rel', string='Quality Checks')  # Fixed: was One2many with missing inverse field
     quality_point_id = fields.Many2one('quality.point', string='Quality Point')
     quality_state = fields.Selection([
         ('none', 'No Quality Check'),
@@ -104,7 +104,7 @@ class StockLot(models.Model):
     
     # Quant management
     quant_count = fields.Integer(string='Quant Count', compute='_compute_quant_metrics')
-    quant_ids = fields.One2many('stock.quant', 'lot_id', string='Quants')
+    quant_ids = fields.Many2many('stock.quant', relation='quant_ids_rel', string='Quants')  # Fixed: was One2many with missing inverse field
     quantity = fields.Float(string='Quantity')
     ref = fields.Char(string='Reference')
     reference = fields.Char(string='Reference Number')

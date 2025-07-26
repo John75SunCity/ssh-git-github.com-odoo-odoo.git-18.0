@@ -166,7 +166,7 @@ class PaperBale(models.Model):
     ], string='Inspection Type', default='visual')
     inspector = fields.Many2one('res.users', string='Inspector')
     passed_inspection = fields.Boolean('Passed Inspection', default=False, tracking=True)
-    quality_inspection_ids = fields.One2many('paper.bale.quality.inspection', 'bale_id', string='Quality Inspections')
+    quality_inspection_ids = fields.Many2many('paper.bale.quality.inspection', relation='quality_inspection_ids_rel', string='Quality Inspections')  # Fixed: was One2many with missing inverse field
     quality_inspector = fields.Many2one('res.users', string='Quality Inspector')
     quality_notes = fields.Text('Quality Notes')
     
@@ -174,7 +174,7 @@ class PaperBale(models.Model):
     loaded_by = fields.Many2one('res.users', string='Loaded By')
     loaded_on_trailer = fields.Boolean('Loaded on Trailer', default=False, tracking=True)
     loading_date = fields.Date('Loading Date', tracking=True)
-    loading_history_ids = fields.One2many('paper.bale.loading.history', 'bale_id', string='Loading History')
+    loading_history_ids = fields.Many2many('paper.bale.loading.history', relation='loading_history_ids_rel', string='Loading History')  # Fixed: was One2many with missing inverse field
     loading_notes = fields.Text('Loading Notes')
     loading_order = fields.Integer('Loading Order', default=1)
     loading_position = fields.Char('Loading Position')
@@ -201,7 +201,7 @@ class PaperBale(models.Model):
     weight_contributed = fields.Float('Weight Contributed (lbs)', default=0.0)
     weight_efficiency = fields.Float('Weight Efficiency (%)', compute='_compute_weight_metrics', store=True)
     weight_history_count = fields.Integer('Weight History Count', compute='_compute_weight_metrics', store=True)
-    weight_measurement_ids = fields.One2many('paper.bale.weight.measurement', 'bale_id', string='Weight Measurements')
+    weight_measurement_ids = fields.Many2many('paper.bale.weight.measurement', relation='weight_measurement_ids_rel', string='Weight Measurements')  # Fixed: was One2many with missing inverse field
     weight_recorded = fields.Float('Weight Recorded (lbs)', default=0.0, tracking=True)
     weight_unit = fields.Selection([
         ('lbs', 'Pounds'),
