@@ -42,23 +42,25 @@ class RecordsVisitor(models.Model):
         compute='_compute_visit_analytics',
         store=True,
         help='Frequency pattern analysis for visitor'
-    
+    )
     customer_loyalty_indicator = fields.Selection([
         ('new', 'New Visitor'),
         ('returning', 'Returning'),
         ('regular', 'Regular'),
         ('vip', 'VIP Customer')
+    ], string='Customer Loyalty',
        compute='_compute_visit_analytics',
        store=True,
        help='Customer loyalty classification based on visit patterns'
-    
+    )
     # Service Analytics
     service_preference_score = fields.Float(
         string='Service Preference Score',
         compute='_compute_service_analytics',
         store=True,
         help='Score indicating service preferences and history'
-    
+    )
+
     # Status and workflow
     visit_status = fields.Selection([
         ('scheduled', 'Scheduled'),
@@ -66,7 +68,7 @@ class RecordsVisitor(models.Model):
         ('in_service', 'In Service'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    
+    ], string='Visit Status', default='scheduled')
     # Notes and comments
     notes = fields.Text('Visit Notes')
     internal_notes = fields.Text('Internal Notes')
