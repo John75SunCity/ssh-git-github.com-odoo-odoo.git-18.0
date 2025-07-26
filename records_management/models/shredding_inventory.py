@@ -69,20 +69,24 @@ class ShreddingInventoryItem(models.Model):
             else:
                 record.display_name = f"Item #{record.id}"
     
-    @api.depends('work_order_id.managed_retrieval_rate', 'work_order_id.managed_permanent_removal_rate', 
-                 'work_order_id.managed_shredding_rate')
+    @api.depends('work_order_id.retrieval_cost', 'work_order_id.permanent_removal_cost', 
+                 'work_order_id.shredding_cost', 'work_order_id.inventory_item_count')
     def _compute_costs(self):
         for record in self:
-            # Get rates from work order (which gets them from customer/base rates)
-            retrieval_rate = record.work_order_id.managed_retrieval_rate or 0.0
-            removal_rate = record.work_order_id.managed_permanent_removal_rate or 0.0
-            shredding_rate = record.work_order_id.managed_shredding_rate or 0.0
+            # Calculate per-item costs based on work order totals
+            work_order = record.work_order_id
+            item_count = work_order.inventory_item_count or 1  # Avoid division by zero
             
-            # For now, using flat rates per item
-            # Could be enhanced to consider item size, weight, etc.
-            record.retrieval_cost = retrieval_rate
-            record.permanent_removal_cost = removal_rate
-            record.shredding_cost = shredding_rate
+            # Distribute work order costs across all inventory items
+            if item_count > 0:
+                record.retrieval_cost = (work_order.retrieval_cost or 0.0) / item_count
+                record.permanent_removal_cost = (work_order.permanent_removal_cost or 0.0) / item_count
+                record.shredding_cost = (work_order.shredding_cost or 0.0) / item_count
+            else:
+                record.retrieval_cost = 0.0
+                record.permanent_removal_cost = 0.0
+                record.shredding_cost = 0.0
+            
             record.total_cost = record.retrieval_cost + record.permanent_removal_cost + record.shredding_cost
     
     @api.constrains('box_id', 'document_id')
