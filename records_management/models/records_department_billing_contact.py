@@ -229,6 +229,8 @@ class DepartmentBillingApprovalHistory(models.Model):
     _description = 'Department Billing Approval History'
     
     contact_id = fields.Many2one('records.department.billing.contact', string='Contact', required=True, ondelete='cascade')
+    approval_type = fields.Selection([
+        ('contact', 'Contact Approval'),
         ('charge', 'Charge Approval'),
         ('limit', 'Limit Approval')
     ], string='Approval Type', required=True)
@@ -243,11 +245,17 @@ class DepartmentBillingCharge(models.Model):
     _name = 'department.billing.charge'
     _description = 'Department Billing Charge'
     
+    contact_id = fields.Many2one('records.department.billing.contact', string='Contact', required=True, ondelete='cascade')
+    service_type = fields.Selection([
+        ('storage', 'Storage'),
+        ('destruction', 'Destruction'),
         ('retrieval', 'Retrieval'),
         ('scanning', 'Scanning'),
         ('consultation', 'Consultation')
     ], string='Service Type', required=True)
     invoice_id = fields.Many2one('account.move', string='Related Invoice')
+    status = fields.Selection([
+        ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('invoiced', 'Invoiced'),
         ('paid', 'Paid')
