@@ -111,3 +111,11 @@ access_records_billing_service_user,records.billing.service.user,model_records_b
 access_records_billing_service_manager,records.billing.service.manager,model_records_billing_service,records_management.group_records_manager,1,1,1,1
 access_records_billing_cron_user,records.billing.cron.user,model_records_billing_cron,records_management.group_records_user,1,0,0,0
 access_records_billing_cron_manager,records.billing.cron.manager,model_records_billing_cron,records_management.group_records_manager,1,1,1,1
+access_bin_key_management_user,bin.key.management.user,model_bin_key_management,records_management.group_records_user,1,1,1,0
+access_bin_key_management_manager,bin.key.management.manager,model_bin_key_management,records_management.group_records_manager,1,1,1,1
+access_bin_key_management_portal,bin.key.management.portal,model_bin_key_management,base.group_portal,1,0,0,0
+access_bin_unlock_service_user,bin.unlock.service.user,model_bin_unlock_service,records_management.group_records_user,1,1,1,0
+access_bin_unlock_service_manager,bin.unlock.service.manager,model_bin_unlock_service,records_management.group_records_manager,1,1,1,1
+access_bin_unlock_service_portal,bin.unlock.service.portal,model_bin_unlock_service,base.group_portal,1,0,0,0
+access_mobile_bin_key_wizard_user,mobile.bin.key.wizard.user,model_mobile_bin_key_wizard,records_management.group_records_user,1,1,1,0
+access_mobile_bin_key_wizard_manager,mobile.bin.key.wizard.manager,model_mobile_bin_key_wizard,records_management.group_records_manager,1,1,1,1
