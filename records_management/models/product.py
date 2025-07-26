@@ -157,6 +157,58 @@ class ProductTemplate(models.Model):
     total_revenue_ytd = fields.Float(string='Total Revenue YTD', compute='_compute_product_metrics')
     total_sales_ytd = fields.Float(string='Total Sales YTD', compute='_compute_product_metrics')
 
+    # Phase 4: Missing Critical Business Fields (17 fields)
+    
+    # Product configuration and rules
+    pricing_rule_ids = fields.One2many('product.pricing.rule', 'product_id', string='Pricing Rules')
+    product_variant_ids = fields.One2many('product.product', 'product_tmpl_id', string='Product Variants')
+    rule_name = fields.Char(string='Rule Name', help='Name of the pricing or business rule')
+    rule_type = fields.Selection([
+        ('pricing', 'Pricing Rule'),
+        ('discount', 'Discount Rule'),
+        ('volume', 'Volume Rule'),
+        ('service', 'Service Rule')
+    ], string='Rule Type', help='Type of business rule')
+    
+    # Sales and purchase configuration
+    purchase_ok = fields.Boolean(string='Can be Purchased', default=False, 
+                                help='Specify if the product can be purchased')
+    sale_ok = fields.Boolean(string='Can be Sold', default=True,
+                           help='Specify if the product can be sold')
+    
+    # Pricing and billing
+    standard_price = fields.Float(string='Cost Price', default=0.0,
+                                help='Cost price of the product used for cost accounting')
+    prorate_partial_periods = fields.Boolean(string='Prorate Partial Periods', default=True,
+                                           help='Prorate billing for partial periods')
+    
+    # Service guarantees and SLA
+    same_day_service = fields.Boolean(string='Same Day Service Available', default=False,
+                                    help='Service can be completed same day')
+    security_guarantee = fields.Boolean(string='Security Guarantee', default=True,
+                                      help='Security guarantee provided')
+    shredding_included = fields.Boolean(string='Shredding Included', default=False,
+                                      help='Shredding service included in package')
+    standard_response_time = fields.Float(string='Standard Response Time (hours)', default=24.0,
+                                        help='Standard response time for service requests')
+    sla_terms = fields.Text(string='SLA Terms', 
+                          help='Service Level Agreement terms and conditions')
+    
+    # Approval and analytics
+    requires_approval = fields.Boolean(string='Requires Approval', default=False,
+                                     help='Service requires management approval')
+    sales_analytics_ids = fields.One2many('product.sales.analytics', 'product_id', 
+                                        string='Sales Analytics')
+    sync_enabled = fields.Boolean(string='Sync Enabled', default=True,
+                                help='Enable synchronization for this product')
+    template_category = fields.Selection([
+        ('standard', 'Standard'),
+        ('premium', 'Premium'),
+        ('enterprise', 'Enterprise'),
+        ('custom', 'Custom')
+    ], string='Template Category', default='standard',
+       help='Category classification for template products')
+
     @api.depends('type')
     def _compute_retention_note(self):
         for rec in self:

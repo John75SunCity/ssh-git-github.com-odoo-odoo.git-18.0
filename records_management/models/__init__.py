@@ -88,6 +88,11 @@ from . import scrm_records_management
 # NAID Compliance Models
 from . import naid_audit
 from . import naid_custody
+from . import naid_compliance
+from . import naid_certificate
+from . import naid_compliance_checklist
+from . import naid_destruction_record
+from . import naid_performance_history
 
 # Audit and Security Models
 from . import records_security_audit

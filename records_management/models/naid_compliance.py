@@ -162,6 +162,8 @@ class NAIDCompliance(models.Model):
     compliance_alerts = fields.Boolean(string='Compliance Alerts Enabled', default=True)
     management_alerts = fields.Boolean(string='Management Alerts', default=True)
     regulatory_notifications = fields.Boolean(string='Regulatory Notifications', default=True)
+    
+    # Many2many relationships for notifications and escalation
     notification_recipients = fields.Many2many(
         'res.users', 
         'naid_compliance_notification_rel', 

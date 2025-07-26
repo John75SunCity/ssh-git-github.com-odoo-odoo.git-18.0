@@ -14,6 +14,10 @@ class NAIDAuditLog(models.Model):
     name = fields.Char('Log Reference', required=True, default='/')
     description = fields.Text('Log Description')
     
+    # Compliance relationship - CRITICAL for NAID compliance tracking
+    compliance_id = fields.Many2one('naid.compliance', string='NAID Compliance Record',
+                                    help='Associated NAID compliance record for this audit log entry')
+    
     # Employee relationship
     employee_id = fields.Many2one('hr.employee', string='Employee', 
                                   help='Employee associated with this audit log entry')
@@ -55,6 +59,9 @@ class NAIDAuditLog(models.Model):
     ], string='Severity Level', default='low', tracking=True)
     
     impact_assessment = fields.Text('Impact Assessment')
+    
+    # NAID compliance relationship
+    compliance_id = fields.Many2one('naid.compliance', string='NAID Compliance Record', tracking=True)
     
     # Personnel involved
     responsible_user_id = fields.Many2one('res.users', string='Responsible User', 
