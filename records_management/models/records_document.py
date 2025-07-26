@@ -171,7 +171,21 @@ class RecordsDocument(models.Model):
         help='Whether digital signatures have been verified'
     )
     
-    # Audit and custody tracking
+    # Audit and custody tracking relationships
+    audit_log_ids = fields.One2many(
+        'records.audit.log',
+        'document_id',
+        string='Audit Log Entries',
+        help='Audit trail entries for this document'
+    )
+    chain_of_custody_ids = fields.One2many(
+        'records.chain.of.custody',
+        'document_id',
+        string='Chain of Custody Entries',
+        help='Chain of custody entries for this document'
+    )
+    
+    # Computed audit and custody tracking
     audit_trail_count = fields.Integer(
         string='Audit Trail Count',
         compute='_compute_audit_trail_count',
