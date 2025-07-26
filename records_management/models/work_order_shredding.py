@@ -176,8 +176,6 @@ class WorkOrderShredding(models.Model):
         tracking=True
     )
     
-    )
-    
     # Execution tracking
     actual_start_time = fields.Datetime(
         string='Actual Start Time',
