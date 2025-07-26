@@ -135,6 +135,21 @@ class RecordsBox(models.Model):
         ('qr', 'QR Code'),
         ('other', 'Other')
     ], string='Barcode Type', default='code128')
+    
+    # Physical properties and policy management
+    weight = fields.Float(string='Weight (kg)', digits=(10, 2))
+    size_category = fields.Selection([
+        ('small', 'Small'),
+        ('medium', 'Medium'),
+        ('large', 'Large'),
+        ('extra_large', 'Extra Large')
+    ], string='Size Category', default='medium')
+    retention_policy_id = fields.Many2one(
+        'records.retention.policy',
+        string='Retention Policy',
+        help="Records retention policy governing this box"
+    )
+    
     document_ids = fields.One2many(
         'records.document',
         'box_id',
@@ -182,6 +197,43 @@ class RecordsBox(models.Model):
     destruction_date = fields.Date(string='Destruction Date')
     color = fields.Integer(string='Color Index')
     tag_ids = fields.Many2many('records.tag', string='Tags')
+
+    # Operational tracking fields
+    priority = fields.Selection([
+        ('0', 'Low'),
+        ('1', 'Normal'),
+        ('2', 'High'),
+        ('3', 'Urgent')
+    ], string='Priority', default='1')
+    document_type_id = fields.Many2one(
+        'records.document.type',
+        string='Primary Document Type',
+        help="Primary type of documents stored in this box"
+    )
+    request_date = fields.Date(string='Request Date')
+    movement_date = fields.Date(string='Last Movement Date')
+    movement_type = fields.Selection([
+        ('inbound', 'Inbound'),
+        ('outbound', 'Outbound'),
+        ('relocation', 'Relocation'),
+        ('retrieval', 'Retrieval'),
+        ('return', 'Return')
+    ], string='Last Movement Type')
+    from_location_id = fields.Many2one(
+        'records.location',
+        string='From Location',
+        help="Previous location for movement tracking"
+    )
+    to_location_id = fields.Many2one(
+        'records.location', 
+        string='To Location',
+        help="Destination location for movement tracking"
+    )
+    responsible_user_id = fields.Many2one(
+        'res.users',
+        string='Responsible User',
+        help="User responsible for this box operations"
+    )
 
     # One2many relations referenced in views
     movement_ids = fields.One2many(
