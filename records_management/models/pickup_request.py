@@ -353,6 +353,7 @@ class PickupRequest(models.Model):
 
     def action_schedule(self) -> bool:
         if not self.scheduled_date:
+            self.scheduled_date = fields.Date.context_today(self)
         return self.write({'state': 'scheduled'})
 
     def action_complete(self) -> bool:

@@ -281,6 +281,8 @@ class RecordsBillingDiscountRule(models.Model):
     _name = 'records.billing.discount.rule'
     _description = 'Records Billing Discount Rule'
     
+    discount_type = fields.Selection([
+        ('percentage', 'Percentage'),
         ('fixed', 'Fixed Amount')
     ], string='Discount Type', required=True)
     min_threshold = fields.Float(string='Minimum Threshold')
@@ -290,6 +292,9 @@ class RecordsBillingGenerationLog(models.Model):
     _name = 'records.billing.generation.log'
     _description = 'Records Billing Generation Log'
     
+    status = fields.Selection([
+        ('success', 'Success'),
+        ('failed', 'Failed'),
         ('partial', 'Partial')
     ], string='Status', required=True)
     total_amount = fields.Float(string='Total Amount')

@@ -105,6 +105,7 @@ class RecordsRetentionPolicy(models.Model):
     )
     version_date = fields.Datetime(
         string='Version Date',
+        default=fields.Datetime.now,
         help='Date when this version was created'
     )
     approval_status = fields.Selection([
@@ -123,9 +124,6 @@ class RecordsRetentionPolicy(models.Model):
                                         help='Indicates if this is the current active version of the policy')
     
     # Analytics fields
-    policy_effectiveness_score = fields.Float(
-        'Policy Effectiveness Score', compute='_compute_analytics', store=True
-    )
     destruction_efficiency_rate = fields.Float(
         'Destruction Efficiency Rate', compute='_compute_analytics', store=True  
     )
@@ -152,6 +150,8 @@ class RecordsRetentionPolicy(models.Model):
     violation_count = fields.Integer('Violation Count', compute='_compute_violation_count')
 
     # Phase 3: Analytics & Computed Fields (11 fields)
+    policy_effectiveness_score = fields.Float(
+        string='Policy Effectiveness (%)',
         compute='_compute_retention_analytics',
         store=True,
         help='Overall policy effectiveness score based on compliance and adoption'
@@ -173,14 +173,6 @@ class RecordsRetentionPolicy(models.Model):
         compute='_compute_retention_analytics',
         store=True,
         help='Average actual retention duration for documents under this policy'
-    )
-        compute='_compute_retention_analytics',
-        store=True,
-        help='Efficiency of document destruction process'
-    )
-        compute='_compute_retention_analytics',
-        store=True,
-        help='Risk assessment score for this retention policy'
     )
     storage_cost_impact = fields.Float(
         string='Storage Cost Impact ($)',

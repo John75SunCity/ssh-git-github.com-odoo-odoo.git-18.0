@@ -25,7 +25,6 @@ class RecordsLocation(models.Model):
         ('map', 'Map Storage - Map Boxes (Type 03)'),
         ('oversize', 'Oversize - Odd-Shaped Boxes (Type 04)'),
         ('refiles', 'Refiles - Staging for Returns/Put-Away'),
-    ], string='Location Type', required=True, default='aisles',
        help="""Location type determines what kind of boxes can be stored:
        • Aisles/Pallets: Standard file boxes (Type 01) - monthly rent
        • Vault: Specialty boxes (Type 06) - secure storage

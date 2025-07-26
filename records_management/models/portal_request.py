@@ -20,7 +20,6 @@ class PortalRequest(models.Model):
         ('inventory_checkout', 'Inventory Checkout'),
         ('billing_update', 'Billing Update'),
         ('quote_generate', 'Quote Generation'),
-    ], string='Request Type', required=True)
     description = fields.Html(string='Description')
     suggested_date = fields.Date(string='Suggested Date', help='Customer suggested date for service/request')
     state = fields.Selection([
@@ -28,7 +27,6 @@ class PortalRequest(models.Model):
         ('submitted', 'Submitted'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
-    ], default='draft', tracking=True)
     
     # Core Request Management Fields
     customer_id = fields.Many2one('res.partner', string='Customer', related='partner_id', store=True)

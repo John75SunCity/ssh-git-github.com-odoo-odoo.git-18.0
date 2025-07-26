@@ -193,6 +193,7 @@ class RecordsBillingService(models.TransientModel):
     def generate_combined_billing(self, partner_id, reference_date=None):
         """Generate combined storage and service billing for a customer"""
         if not reference_date:
+            reference_date = fields.Date.today()
         
         partner = self.env['res.partner'].browse(partner_id)
         profile = self.env['records.customer.billing.profile'].search([

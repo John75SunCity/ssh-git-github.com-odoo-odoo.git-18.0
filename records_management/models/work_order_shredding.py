@@ -592,7 +592,6 @@ class WorkOrderShredding(models.Model):
                 'default_work_order_id': self.id,
                 'default_customer_id': self.customer_id.id,
                 'default_service_type': self.service_type,
-            },
         }
 
     def action_view_bins(self):
@@ -692,7 +691,6 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
             ('console', self.bins_console),
             ('64_gallon', self.bins_64_gallon),
             ('96_gallon', self.bins_96_gallon),
-        ]
         
         created_bins = 0
         

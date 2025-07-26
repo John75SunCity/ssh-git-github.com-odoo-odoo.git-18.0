@@ -15,7 +15,6 @@ class VisitorPosWizard(models.TransientModel):
         ('document_shred', 'Document Shredding'),
         ('hard_drive', 'Hard Drive Destruction'),
         ('uniform_shred', 'Uniform Shredding'),
-    ], string='Service Type', help='Suggested based on visitor notes.')
     notes = fields.Text(string='Additional Notes')
 
     # Complete wizard fields for POS integration - 90 business fields implemented
