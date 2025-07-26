@@ -44,6 +44,18 @@ class RecordsLocation(models.Model):
     available_spaces = fields.Integer('Available Spaces', compute='_compute_available_spaces', store=True, compute_sudo=False,
                                      help="Number of open spaces available (capacity - box_count) - actual quantity available")
 
+    # Business tracking fields
+    customer_id = fields.Many2one(
+        'res.partner', 
+        string='Customer',
+        domain=[('is_company', '=', True)],
+        help="Customer associated with this location"
+    )
+    storage_date = fields.Date(
+        string='Storage Date',
+        help="Date when items were first stored in this location"
+    )
+
     active = fields.Boolean(default=True)
     note = fields.Text('Notes')
     description = fields.Text(
@@ -99,3 +111,37 @@ class RecordsLocation(models.Model):
         """Compute number of available spaces"""
         for record in self:
             record.available_spaces = max(0, (record.capacity or 0) - record.box_count)
+
+    # Action Methods
+    def action_view_boxes(self):
+        """View all boxes stored in this location"""
+        self.ensure_one()
+        return {
+            'name': _('Boxes in %s') % self.complete_name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.box',
+            'view_mode': 'tree,form',
+            'domain': [('location_id', '=', self.id)],
+            'context': {
+                'default_location_id': self.id,
+                'search_default_location_id': self.id
+            }
+        }
+
+    def action_location_report(self):
+        """Generate location utilization report"""
+        self.ensure_one()
+        return {
+            'name': _('Location Report - %s') % self.complete_name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.location.report.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_location_id': self.id,
+                'default_location_name': self.complete_name,
+                'default_current_utilization': self.current_utilization,
+                'default_total_capacity': self.capacity,
+                'default_report_date': fields.Date.today()
+            }
+        }
