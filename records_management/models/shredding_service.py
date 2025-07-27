@@ -111,7 +111,7 @@ class ShreddingService(models.Model):
     # ==========================================
     # DESTRUCTION ITEMS & INVENTORY
     # ==========================================
-    destruction_item_ids = fields.One2many('destruction.item', 'shredding_service_id',
+    destruction_item_ids = fields.One2many('dest.item', 'shredding_service_id',
                                           string='Items for Destruction')
     box_ids = fields.Many2many('records.box', string='Boxes to Destroy', 
                               tracking=True)

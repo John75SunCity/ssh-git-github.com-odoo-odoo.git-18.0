@@ -106,7 +106,7 @@ class NAIDDestructionRecord(models.Model):
     # ==========================================
     # ITEMS DESTROYED
     # ==========================================
-    destruction_item_ids = fields.One2many('destruction.item', 'destruction_record_id', 
+    destruction_item_ids = fields.One2many('dest.item', 'destruction_record_id', 
                                            string='Items Destroyed')
     
     total_weight = fields.Float(string='Total Weight (lbs)', 

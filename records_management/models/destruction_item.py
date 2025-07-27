@@ -22,6 +22,22 @@ class DestructionItem(models.Model):
     user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
 
+    # Relationships
+    shredding_service_id = fields.Many2one('shred.svc', string='Shredding Service')
+    destruction_record_id = fields.Many2one('naid.destruction.record', string='Destruction Record')
+
+    # Item details
+    item_type = fields.Selection([
+        ('box', 'Records Box'),
+        ('media', 'Digital Media'),
+        ('equipment', 'IT Equipment'),
+        ('documents', 'Loose Documents')
+    ], string='Item Type', required=True)
+    
+    quantity = fields.Integer(string='Quantity', default=1)
+    weight = fields.Float(string='Weight (lbs)')
+    barcode = fields.Char(string='Barcode/Serial Number')
+
     # Basic state management
     state = fields.Selection([
         ('draft', 'Draft'),

@@ -40,7 +40,7 @@ class RecordsBox(models.Model):
                                  required=True, tracking=True,
                                  domain=[('is_company', '=', True)])
     location_id = fields.Many2one('records.location', string='Storage Location', tracking=True)
-    container_id = fields.Many2one('container', string='Container', tracking=True)
+    container_id = fields.Many2one('records.container', string='Container', tracking=True)
     
     # ==========================================
     # BOX SPECIFICATIONS

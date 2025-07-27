@@ -90,7 +90,7 @@ class RecordsLocation(models.Model):
     # RELATIONSHIPS
     # ==========================================
     box_ids = fields.One2many('records.box', 'location_id', string='Stored Boxes')
-    container_ids = fields.One2many('container', 'location_id', string='Containers')
+    container_ids = fields.One2many('records.container', 'location_id', string='Containers')
     
     # ==========================================
     # STATUS
