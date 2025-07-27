@@ -11,7 +11,7 @@ class ResPartnerDepartmentBilling(models.Model):
     Partner Department Billing
     """
 
-    _name = "temp.model"
+    _name = "barcode.models.enhanced"
     _description = "Partner Department Billing"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

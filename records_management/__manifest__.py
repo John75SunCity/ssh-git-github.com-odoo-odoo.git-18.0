@@ -80,6 +80,7 @@ Features:
             'qrcode',      # For QR code generation
             'Pillow',      # For image processing
             'cryptography', # For encryption and security
+            'requests',    # For monitoring webhook notifications
             # 'pulp',      # For optimization - uncomment when ready for production
             # 'torch',     # For AI features - optional dependency
         ],

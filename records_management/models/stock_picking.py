@@ -11,7 +11,7 @@ class StockPicking(models.Model):
     Temporary Model
     """
 
-    _name = "temp.model"
+    _name = "stock.picking.records.extension"
     _description = "Temporary Model"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

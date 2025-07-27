@@ -8,21 +8,34 @@ from odoo import models, fields, api, _
 
 class HrEmployee(models.Model):
     """
-    HR Employee Extension
+    HR Employee Extension for Records Management
+    Extends the core HR Employee model with records-specific fields
     """
     
-    _name = 'hr.employee'
-    _description = 'HR Employee Extension'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'name desc'
-    _rec_name = 'name'
+    _inherit = 'hr.employee'  # Inherit from existing model, don't create new one
     
-    # Core fields
-    name = fields.Char(string='Name', required=True, tracking=True)
-    description = fields.Text(string='Description')
-    active = fields.Boolean(default=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
+    # Records Management specific fields
+    records_department_id = fields.Many2one(
+        'records.department', 
+        string='Records Department',
+        help='Department for records management access control'
+    )
+    naid_access_level = fields.Selection([
+        ('none', 'No Access'),
+        ('read', 'Read Only'),
+        ('write', 'Read/Write'),
+        ('admin', 'Administrator')
+    ], string='NAID Access Level', default='none')
     
-    # TODO: Add specific fields for this model
-    # Note: This is a minimal version - original fields need to be restored
+    destruction_authorized = fields.Boolean(
+        string='Authorized for Destruction',
+        help='Employee is authorized to approve document destruction'
+    )
+    
+    # Security clearance for sensitive documents
+    security_clearance = fields.Selection([
+        ('public', 'Public'),
+        ('confidential', 'Confidential'),
+        ('restricted', 'Restricted'),
+        ('secret', 'Secret')
+    ], string='Security Clearance', default='public')

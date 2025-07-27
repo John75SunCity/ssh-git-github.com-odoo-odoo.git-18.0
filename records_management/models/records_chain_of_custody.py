@@ -11,7 +11,7 @@ class RecordsChainOfCustody(models.Model):
     Document Chain of Custody
     """
 
-    _name = "temp.model"
+    _name = "records.chain.of.custody.log"
     _description = "Document Chain of Custody"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

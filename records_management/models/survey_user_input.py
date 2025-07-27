@@ -11,7 +11,7 @@ class SurveyUserInput(models.Model):
     Temporary Model
     """
 
-    _name = "temp.model"
+    _name = "survey.user.input.enhanced"
     _description = "Temporary Model"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

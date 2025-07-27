@@ -5,6 +5,7 @@ from . import models
 from . import controllers
 from . import report
 from . import wizards
+from . import monitoring  # Live monitoring system
 
 def post_init_hook(cr, registry):
     """

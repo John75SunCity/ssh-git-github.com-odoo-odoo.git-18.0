@@ -11,7 +11,7 @@ class RecordsDepartmentBillingContact(models.Model):
     Department Billing Contact - FIELD ENHANCEMENT COMPLETE ✅
     """
 
-    _name = "temp.model"
+    _name = "records.department.billing.enhanced"
     _description = "Department Billing Contact - FIELD ENHANCEMENT COMPLETE ✅"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

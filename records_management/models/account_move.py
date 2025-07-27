@@ -11,7 +11,7 @@ class AccountMove(models.Model):
     Temporary Model
     """
 
-    _name = "temp.model"
+    _name = "account.move.records.extension"
     _description = "Temporary Model"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

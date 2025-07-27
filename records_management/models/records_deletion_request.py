@@ -11,7 +11,7 @@ class RecordsDeletionRequest(models.Model):
     Records Deletion Request
     """
 
-    _name = "temp.model"
+    _name = "records.deletion.request.enhanced"
     _description = "Records Deletion Request"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"
