@@ -11,7 +11,7 @@ class DestructionItem(models.Model):
     Destruction Item
     """
 
-    _name = "dest.item"
+    _name = "destruction.item"
     _description = "Destruction Item"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

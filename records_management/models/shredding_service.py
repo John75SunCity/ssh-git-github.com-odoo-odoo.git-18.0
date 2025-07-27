@@ -111,7 +111,7 @@ class ShreddingService(models.Model):
     # ==========================================
     # DESTRUCTION ITEMS & INVENTORY
     # ==========================================
-    destruction_item_ids = fields.One2many('dest.item', 'shredding_service_id',
+    destruction_item_ids = fields.One2many('destruction.item', 'shredding_service_id',
                                           string='Items for Destruction')
     box_ids = fields.Many2many('records.box', string='Boxes to Destroy', 
                               tracking=True)
@@ -157,7 +157,7 @@ class ShreddingService(models.Model):
     certificate_number = fields.Char(string='Certificate Number', tracking=True, 
                                     copy=False)
     certificate_date = fields.Date(string='Certificate Date', tracking=True)
-    certificate_id = fields.Many2one('destruction.certificate', 
+    certificate_id = fields.Many2one('naid.certificate', 
                                     string='Destruction Certificate')
     
     # ==========================================
@@ -305,7 +305,7 @@ class ShreddingService(models.Model):
     # ==========================================
     def _generate_certificate_number(self):
         """Generate unique certificate number"""
-        sequence = self.env['ir.sequence'].next_by_code('destruction.certificate')
+        sequence = self.env['ir.sequence'].next_by_code('naid.certificate')
         return f"CERT-{sequence}-{fields.Date.today().strftime('%Y%m%d')}"
     
     def _create_destruction_certificate(self):
@@ -321,7 +321,7 @@ class ShreddingService(models.Model):
                 'destruction_method': self.service_type,
                 'verified': self.verified_by_customer,
             }
-            certificate = self.env['destruction.certificate'].create(cert_vals)
+            certificate = self.env['naid.certificate'].create(cert_vals)
             self.write({'certificate_id': certificate.id})
     
     @api.model_create_multi

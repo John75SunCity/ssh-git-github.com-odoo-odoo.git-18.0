@@ -93,7 +93,7 @@ class RecordsBox(models.Model):
     # ==========================================
     # BALE ASSIGNMENT (for destroyed boxes)
     # ==========================================
-    bale_id = fields.Many2one('records.management.bale', string='Assigned Bale', tracking=True)
+    bale_id = fields.Many2one('paper.bale', string='Assigned Bale', tracking=True)
     
     # ==========================================
     # NOTES

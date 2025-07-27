@@ -106,7 +106,7 @@ class NAIDDestructionRecord(models.Model):
     # ==========================================
     # ITEMS DESTROYED
     # ==========================================
-    destruction_item_ids = fields.One2many('dest.item', 'destruction_record_id', 
+    destruction_item_ids = fields.One2many('destruction.item', 'destruction_record_id', 
                                            string='Items Destroyed')
     
     total_weight = fields.Float(string='Total Weight (lbs)', 
@@ -225,27 +225,3 @@ class DestructionWitness(models.Model):
     signature_date = fields.Datetime(string='Signature Date', tracking=True)
     
     notes = fields.Text(string='Notes', tracking=True)
-
-
-class DestructionItem(models.Model):
-    """Items destroyed in destruction record"""
-    
-    _name = 'destruction.item'
-    _description = 'Destruction Item'
-    
-    destruction_record_id = fields.Many2one('naid.destruction.record', 
-                                           string='Destruction Record', required=True)
-    
-    name = fields.Char(string='Item Description', required=True)
-    item_type = fields.Selection([
-        ('box', 'Records Box'),
-        ('media', 'Digital Media'),
-        ('equipment', 'IT Equipment'),
-        ('documents', 'Loose Documents')
-    ], string='Item Type', required=True)
-    
-    quantity = fields.Integer(string='Quantity', default=1)
-    weight = fields.Float(string='Weight (lbs)')
-    
-    barcode = fields.Char(string='Barcode/Serial Number')
-    notes = fields.Text(string='Notes')

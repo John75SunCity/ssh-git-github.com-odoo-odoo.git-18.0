@@ -90,7 +90,7 @@ class RecordsDocument(models.Model):
     destruction_date = fields.Date(string='Scheduled Destruction Date', 
                                   compute='_compute_destruction_date', store=True)
     destroyed = fields.Boolean(string='Destroyed', tracking=True)
-    destruction_certificate_id = fields.Many2one('destruction.certificate', 
+    destruction_certificate_id = fields.Many2one('naid.certificate', 
                                                 string='Destruction Certificate')
     
     # ==========================================
@@ -134,7 +134,7 @@ class RecordsDocument(models.Model):
             'destruction_date': fields.Date.today(),
             'destruction_method': 'shredding',
         }
-        certificate = self.env['destruction.certificate'].create(cert_vals)
+        certificate = self.env['naid.certificate'].create(cert_vals)
         self.write({'destruction_certificate_id': certificate.id})
         
         self.message_post(body=_('Destruction certificate created'))
