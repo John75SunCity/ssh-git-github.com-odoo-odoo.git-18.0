@@ -4,6 +4,7 @@ NAID Certificate Management
 """
 
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -151,9 +152,10 @@ class NaidCertificate(models.Model):
         self.write({'state': 'archived'})
         self.message_post(body=_('Certificate archived'))
     
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set sequence number"""
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('naid.certificate') or _('New')
-        return super().create(vals)
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('naid.certificate') or _('New')
+        return super().create(vals_list)

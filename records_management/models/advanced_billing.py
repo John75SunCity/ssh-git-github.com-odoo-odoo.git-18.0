@@ -165,12 +165,13 @@ class AdvancedBilling(models.Model):
         self.write({'state': 'cancelled'})
         self.message_post(body=_('Billing cancelled'))
     
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set sequence"""
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('advanced.billing') or _('New')
-        return super(AdvancedBilling, self).create(vals)
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('advanced.billing') or _('New')
+        return super().create(vals_list)
 
 
 class AdvancedBillingLine(models.Model):

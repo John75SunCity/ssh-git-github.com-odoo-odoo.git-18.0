@@ -194,12 +194,13 @@ class NAIDDestructionRecord(models.Model):
         })
         self.message_post(body=_('Destruction certificate generated: %s') % sequence)
     
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set sequence"""
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('naid.destruction.record') or _('New')
-        return super(NAIDDestructionRecord, self).create(vals)
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('naid.destruction.record') or _('New')
+        return super().create(vals_list)
 
 
 class DestructionWitness(models.Model):

@@ -19,6 +19,7 @@ from . import records_document
 from . import records_digital_copy
 from . import records_box
 from . import box_contents
+from . import container
 from . import pickup_request_item
 from . import pickup_request
 from . import temp_inventory
