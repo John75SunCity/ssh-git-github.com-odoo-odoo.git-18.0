@@ -5,6 +5,7 @@
 
 # Base/Core Models (Many2one first for inverses)
 from . import records_tag
+from . import container
 from . import records_location
 from . import records_policy_version
 from . import records_approval_workflow
@@ -19,7 +20,6 @@ from . import records_document
 from . import records_digital_copy
 from . import records_box
 from . import box_contents
-from . import container
 from . import pickup_request_item
 from . import pickup_request
 from . import temp_inventory

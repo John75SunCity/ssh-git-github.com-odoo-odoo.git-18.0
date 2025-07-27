@@ -112,9 +112,10 @@ class PartnerBinKey(models.Model):
         })
         self.message_post(body=_('Key made available'))
     
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set sequence number if needed"""
-        if not vals.get('name'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('partner.bin.key') or _('New Key')
-        return super().create(vals)
+        for vals in vals_list:
+            if not vals.get('name'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('partner.bin.key') or _('New Key')
+        return super().create(vals_list)

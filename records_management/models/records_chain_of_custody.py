@@ -332,17 +332,14 @@ class RecordsChainOfCustody(models.Model):
         # This would integrate with report generation
         pass
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set sequence number and validation"""
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('records.chain.of.custody.log') or _('New')
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('records.chain.of.custody.log') or _('New')
         
-        # Set verification code if not provided
-        if not vals.get('verification_code'):
-            vals['verification_code'] = self._generate_verification_code()
-        
-        return super().create(vals)
+        return super().create(vals_list)
 
     # ==========================================
     # VALIDATION METHODS
