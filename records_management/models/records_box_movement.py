@@ -111,7 +111,7 @@ class RecordsBoxMovement(models.Model):
     # Chain of custody fields
     custody_transferred = fields.Boolean(string='Custody Transferred', tracking=True)
     custody_transfer_date = fields.Datetime(string='Custody Transfer Date')
-    chain_of_custody_ids = fields.One2many('chain.of.custody', 'movement_id',
+    chain_of_custody_ids = fields.One2many('records.chain.of.custody.log', 'movement_id',
                                           string='Chain of Custody Records')
     
     # ==========================================
@@ -231,7 +231,7 @@ class RecordsBoxMovement(models.Model):
             'received_by_id': self.env.user.id,
             'custody_status': 'transferred'
         }
-        self.env['chain.of.custody'].create(custody_vals)
+        self.env['records.chain.of.custody.log'].create(custody_vals)
         self.write({'custody_transferred': True, 'custody_transfer_date': fields.Datetime.now()})
 
     @api.model
@@ -263,31 +263,3 @@ class RecordsBoxMovement(models.Model):
             if record.from_location_id and record.to_location_id:
                 if record.from_location_id == record.to_location_id:
                     raise ValidationError(_('From and To locations cannot be the same'))
-
-    # Additional details
-    description = fields.Text(string='Movement Description')
-    notes = fields.Text(string='Internal Notes')
-    external_ref = fields.Char(string='External Reference')
-    
-    # GPS coordinates (if available)
-    gps_lat = fields.Float(string='GPS Latitude', digits=(10, 7))
-    gps_lng = fields.Float(string='GPS Longitude', digits=(10, 7))
-    
-    # Timestamps
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    completed_date = fields.Datetime(string='Completed Date')
-
-    @api.model
-    def create(self, vals):
-        """Generate sequence number for movement reference"""
-        if not vals.get('name'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('rec.box.move') or 'MOVE/'
-        return super().create(vals)
-
-    def action_confirm(self):
-        """Confirm the record"""
-        self.write({'state': 'confirmed'})
-
-    def action_done(self):
-        """Mark as done"""
-        self.write({'state': 'done'})

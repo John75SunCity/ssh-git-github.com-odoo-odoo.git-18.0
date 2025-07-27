@@ -1,85 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        
+
         <!-- Model Records for Security Rules -->
-        
+
         <!-- Shredding Service Model -->
         <record id="model_shred_svc" model="ir.model">
             <field name="name">shred.svc</field>
             <field name="model">shred.svc</field>
             <field name="info">Shredding Service Management</field>
         </record>
-        
+
         <!-- Records Box Model -->
         <record id="model_records_box" model="ir.model">
             <field name="name">records.box</field>
             <field name="model">records.box</field>
             <field name="info">Records Box Management</field>
         </record>
-        
+
         <!-- Records Location Model -->
         <record id="model_records_location" model="ir.model">
             <field name="name">records.location</field>
             <field name="model">records.location</field>
             <field name="info">Records Location Management</field>
         </record>
-        
+
         <!-- Records Box Movement Model -->
         <record id="model_records_box_movement" model="ir.model">
             <field name="name">records.box.movement</field>
             <field name="model">records.box.movement</field>
             <field name="info">Records Box Movement History</field>
         </record>
-        
+
         <!-- Records Document Model -->
         <record id="model_records_document" model="ir.model">
             <field name="name">records.document</field>
             <field name="model">records.document</field>
             <field name="info">Records Document Management</field>
         </record>
-        
+
         <!-- Portal Request Model -->
         <record id="model_portal_request" model="ir.model">
             <field name="name">portal.request</field>
             <field name="model">portal.request</field>
             <field name="info">Portal Request Management</field>
         </record>
-        
+
         <!-- Customer Feedback Model -->
         <record id="model_customer_feedback" model="ir.model">
             <field name="name">customer.feedback</field>
             <field name="model">customer.feedback</field>
             <field name="info">Customer Feedback Management</field>
         </record>
-        
+
         <!-- NAID Audit Log Model -->
         <record id="model_naid_audit_log" model="ir.model">
             <field name="name">naid.audit.log</field>
             <field name="model">naid.audit.log</field>
             <field name="info">NAID Audit Log Management</field>
         </record>
-        
+
         <!-- Chain of Custody Model -->
         <record id="model_chain_of_custody" model="ir.model">
             <field name="name">chain.of.custody</field>
             <field name="model">chain.of.custody</field>
             <field name="info">Chain of Custody Management</field>
         </record>
-        
+
         <!-- Destruction Certificate Model -->
         <record id="model_destruction_certificate" model="ir.model">
             <field name="name">destruction.certificate</field>
             <field name="model">destruction.certificate</field>
             <field name="info">Destruction Certificate Management</field>
         </record>
-        
+
         <!-- Destruction Item Model -->
         <record id="model_destruction_item" model="ir.model">
             <field name="name">destruction.item</field>
             <field name="model">destruction.item</field>
             <field name="info">Destruction Item Management</field>
         </record>
-        
+
     </data>
 </odoo>
