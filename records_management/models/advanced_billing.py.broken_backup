@@ -1,0 +1,206 @@
+# -*- coding: utf-8 -*-
+
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+
+class RecordsCustomerBillingProfile(models.Model):
+    """Customer-specific billing profiles with flexible cycles and timing"""
+    _name = 'records.customer.billing.profile'
+    _description = 'Customer Billing Profile'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _rec_name = 'display_name'
+    _order = 'partner_id, name'
+
+    # Core identification
+    name = fields.Char(string='Profile Name', required=True, tracking=True)
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    display_name = fields.Char(compute='_compute_display_name', store=True)
+    active = fields.Boolean(default=True, tracking=True)
+    
+    # Billing timing configuration
+    storage_billing_cycle = fields.Selection([
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly'),
+        ('semi_annual', 'Semi-Annual'),
+        ('annual', 'Annual'),
+        ('prepaid', 'Prepaid (Custom Period)')), string='Storage Billing Cycle'
+    
+    service_billing_cycle = fields.Selection([('temp', 'Temporary')))
+        ('monthly', 'Monthly in Arrears'),
+        ('weekly', 'Weekly in Arrears'),
+        ('immediate', 'Immediate Upon Completion')), string='Service Billing Cycle'
+    
+    # Storage billing configuration
+    storage_bill_in_advance = fields.Boolean(
+        string='Bill Storage in Advance'),
+        default=True),
+        tracking=True,
+        help="When enabled, storage fees are billed forward. When disabled, billed in arrears.",
+    
+    
+    
+    storage_advance_months = fields.Integer(
+        string='Storage Advance Months'),
+        default=1),
+        tracking=True,
+        help="Number of months to bill in advance for storage",
+    
+    
+    
+    # Billing timing
+    billing_day = fields.Integer(string='Billing Day of Month', default=1, tracking=True
+                                help="Day of the month when invoices are generated"
+    invoice_due_days = fields.Integer(string='Invoice Due Days', default=30, tracking=True)
+    
+    # Prepaid storage configuration
+    prepaid_enabled = fields.Boolean(string='Enable Prepaid Storage', tracking=True
+    prepaid_months = fields.Integer(string='Prepaid Months', default=12, tracking=True)
+    prepaid_discount_percent = fields.Float(string='Prepaid Discount %', tracking=True)
+    prepaid_balance = fields.Float(string='Prepaid Balance', compute='_compute_prepaid_balance', store=True)
+    
+    # Auto-billing settings
+    auto_generate_storage_invoices = fields.Boolean(string='Auto Generate Storage Invoices', default=True, tracking=True
+    auto_generate_service_invoices = fields.Boolean(string='Auto Generate Service Invoices', default=True, tracking=True)
+    auto_send_invoices = fields.Boolean(string='Auto Send Invoices', default=False, tracking=True)
+    
+    # Payment terms
+    payment_term_id = fields.Many2one('account.payment.term', string='Payment Terms', tracking=True
+    
+    # Billing contacts
+    billing_contact_ids = fields.One2many('records.billing.contact', 'billing_profile_id', string='Billing Contacts'
+    
+    # Company
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company
+    
+    # Service tracking fields (missing from views
+    box_id = fields.Many2one()
+        'records.box',
+        string='Records Box'
+        help='Associated records box for billing'),
+    
+    retrieval_work_order_id = fields.Many2one()
+        'document.retrieval.work.order',
+        string='Retrieval Work Order'
+        help='Associated retrieval work order'),
+    
+    service_date = fields.Date(
+        string='Service Date'),
+        help='Date when the service was provided'),
+    
+    shredding_work_order_id = fields.Many2one()
+        'work.order.shredding',
+        string='Shredding Work Order'
+        help='Associated shredding work order'),
+    
+    unit_price = fields.Float(
+        string='Unit Price'),
+    
+        digits='Product Price',
+        help='Unit price for billing calculation'
+@api.depends('name', 'partner_id.name')
+    def _compute_display_name(self):
+        for record in self:
+            partner_name = record.partner_id.name if record.partner_id else 'No Customer'
+            record.display_name = f"{record.name} - {partner_name}"
+    
+    @api.depends('prepaid_enabled')  # Will be enhanced with actual balance calculation
+    def _compute_prepaid_balance(self:
+        for record in self:
+            # TODO: Calculate actual prepaid balance from payments and usage
+            record.prepaid_balance = 0.0
+    
+    def get_next_billing_date(self, billing_type='storage', reference_date=None:
+        """Calculate next billing date based on billing cycle"""
+        self.ensure_one()
+        if not reference_date:
+        reference_date = fields.Date.today()
+        
+        if billing_type == 'storage':
+            cycle = self.storage_billing_cycle
+        else:
+            cycle = self.service_billing_cycle
+        
+        # Start from the billing day of current month
+        next_date = reference_date.replace(day=self.billing_day
+        
+        # If we've passed this month's billing day, move to next cycle
+        if reference_date.day >= self.billing_day:
+            if cycle == 'monthly':
+                next_date = next_date + relativedelta(months=1
+            elif cycle == 'quarterly':
+                next_date = next_date + relativedelta(months=3)
+            elif cycle == 'semi_annual':
+                next_date = next_date + relativedelta(months=6)
+            elif cycle == 'annual':
+                next_date = next_date + relativedelta(months=12)
+                next_date = next_date + relativedelta(months=12)
+        
+        return next_date
+    
+    def get_billing_period_dates(self, billing_type='storage', invoice_date=None):
+        """Get the period dates for billing"""
+        self.ensure_one()
+        if not invoice_date:            invoice_date = fields.Date.today()
+        
+        if billing_type == 'storage' and self.storage_bill_in_advance:
+        pass
+            # Storage billed in advance
+            if self.storage_billing_cycle == 'monthly':                start_date = invoice_date.replace(day=1
+                end_date = start_date + relativedelta(months=self.storage_advance_months) - timedelta(days=1)
+            elif self.storage_billing_cycle == 'quarterly':                start_date = invoice_date.replace(day=1)
+                end_date = start_date + relativedelta(months=3) - timedelta(days=1)
+            else:
+                start_date = invoice_date.replace(day=1)
+                end_date = start_date + relativedelta(months=1) - timedelta(days=1)
+        else:
+            # Services billed in arrears
+            end_date = invoice_date.replace(day=1 - timedelta(days=1  # Last day of previous month
+            start_date = end_date.replace(day=1  # First day of previous month
+        
+        return start_date, end_date
+
+class RecordsBillingContact(models.Model):
+    _name = "temp.model"
+    """Billing contacts for customer profiles"""
+    _name = 'records.billing.contact'
+    _description = 'Billing Contact'
+    _rec_name = 'name'
+    _order = 'sequence, name'
+
+    email = fields.Char(string='Email', required=True)
+    phone = fields.Char(string='Phone')
+    billing_profile_id = fields.Many2one('records.customer.billing.profile', string='Billing Profile', required=True, ondelete='cascade')
+    sequence = fields.Integer(string='Sequence', default=10)
+    
+    # Contact types
+    receive_storage_invoices = fields.Boolean(string='Receive Storage Invoices', default=True
+    receive_service_invoices = fields.Boolean(string='Receive Service Invoices', default=True)
+    receive_statements = fields.Boolean(string='Receive Statements', default=True)
+    primary_contact = fields.Boolean(string='Primary Contact')
+    
+
+class RecordsAdvancedBillingPeriod(models.Model):
+    _name = "temp.model"
+    """Enhanced billing periods supporting dual billing timing"""
+    _name = 'records.advanced.billing.period'
+    _description = 'Advanced Billing Period'
+    _inherit = ['mail.thread', 'mail.activity.mixin')
+    _order = 'invoice_date desc'
+    _rec_name = 'display_name'
+
+    # Core identification
+    
+    # Billing type and timing
+    billing_type = fields.Selection([('temp', 'Temporary'))
+        ('service', 'Service Billing'),
+        ('combined', 'Combined Billing'),
+        ('arrears', 'In Arrears'),
+        ('confirmed', 'Confirmed'),
+        ('invoiced', 'Invoiced'),
+        ('paid', 'Paid'),
+        ('cancelled', 'Cancelled'),
+        ('partner_id', '=', self.partner_id.id),
+        ('partner_id', '=', self.partner_id.id)
+        ('actual_completion_time', '>=', fields.Datetime.combine(self.period_start_date, datetime.min.time())),

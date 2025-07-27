@@ -1,46 +1,43 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+"""
+Survey Feedback Theme
+"""
+
+from odoo import models, fields, api, _
+
 
 class SurveyFeedbackTheme(models.Model):
-    """Model for categorizing feedback themes for AI analysis"""
-    _name = 'survey.feedback.theme'
-    _description = 'Survey Feedback Theme'
-    _order = 'name'
+    """
+    Survey Feedback Theme
+    """
 
-    name = fields.Char(string='Theme Name', required=True, 
-                       help='Name of the feedback theme (e.g., "Service Quality", "Response Time"')
-    description = fields.Text(string='Description', 
-                             help='Detailed description of this theme',
-    color = fields.Integer(string='Color', 
-                          help='Color for kanban view and tags',
-    active = fields.Boolean(string='Active', default=True)
-    
-    # AI Classification fields
-    keywords = fields.Text(string='Keywords', 
-                          help='Comma-separated keywords for AI theme detection',
-    category = fields.Selection([
-        ('service', 'Service Quality',
-        ('communication', 'Communication'),
-        ('pricing', 'Pricing'),
-        ('product', 'Product Quality'),
-        ('support', 'Customer Support'),
-        ('process', 'Process Improvement'),
-        ('other', 'Other')
-    
-    # Usage tracking), string="Selection Field"
-    usage_count = fields.Integer(string='Usage Count', default=0,
-                                help='Number of times this theme was identified',
-    _sql_constraints = [
-        ('name_unique', 'UNIQUE(name)', 'Theme name must be unique'),
-    ]
+    _name = "survey.feedback.theme"
+    _description = "Survey Feedback Theme"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "name"
 
-    def action_view_feedback(self):
-        """View feedback entries tagged with this theme"""
-        return {
-            'type': 'ir.actions.act_window',
-            'name': f'Feedback: {self.name}',
-            'res_model': 'survey.user_input',
-            'view_mode': 'tree,form',
-            'domain': [('key_themes', 'in', [self.id])],
-            'context': {'default_key_themes': [(6, 0, [self.id])]},
-        }
+    # Core fields
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    active = fields.Boolean(default=True)
+
+    # Basic state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
+    ], string='State', default='draft', tracking=True)
+
+    # Common fields
+    description = fields.Text()
+    notes = fields.Text()
+    date = fields.Date(default=fields.Date.today)
+
+    def action_confirm(self):
+        """Confirm the record"""
+        self.write({'state': 'confirmed'})
+
+    def action_done(self):
+        """Mark as done"""
+        self.write({'state': 'done'})

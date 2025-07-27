@@ -7,7 +7,7 @@ class RecordsTag(models.Model):
     """Minimal tag model for initial deployment - will be enhanced later."""
     _name = 'records.tag'
     _description = 'Records Management Tag'
-    _inherit = ['mail.thread']
+    _inherit = 'mail.thread'
     _order = 'name'
 
     # Essential fields only

@@ -1,107 +1,43 @@
 # -*- coding: utf-8 -*-
+"""
+Digital Copy of Document
+"""
 
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+
 
 class RecordsDigitalCopy(models.Model):
-    """Model for tracking digital copies of documents."""
-    _name = 'records.digital.copy'
-    _description = 'Digital Copy of Document'
+    """
+    Digital Copy of Document
+    """
+
+    _name = "records.digital.copy"
+    _description = "Digital Copy of Document"
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'document_id, copy_date desc'
+    _order = "name"
 
     # Core fields
-    name = fields.Char('Copy Reference', required=True, default='/')
-    description = fields.Text('Description')
-    
-    # Document relationship
-    document_id = fields.Many2one('records.document', string='Original Document', 
-                                  required=True, ondelete='cascade'
-    
-    # Digital copy details
-    file_format = fields.Selection([
-        ('pdf', 'PDF',
-        ('tiff', 'TIFF'),
-        ('jpeg', 'JPEG'),
-        ('png', 'PNG'),
-        ('docx', 'Word Document'),
-        ('xlsx', 'Excel Spreadsheet'),
-        ('other', 'Other'),
-), string="Selection Field"
-    file_size_mb = fields.Float('File Size (MB)', digits=(10, 2))
-    resolution_dpi = fields.Integer('Resolution (DPI)', default=300)
-    color_mode = fields.Selection([
-        ('color', 'Color'),
-        ('grayscale', 'Grayscale'),
-        ('bw', 'Black & White')
-    
-    # Quality and compression), string="Selection Field"
-    quality_level = fields.Selection([
-        ('high', 'High Quality'),
-        ('medium', 'Medium Quality'),
-        ('low', 'Low Quality'),
-        ('archive', 'Archive Quality'),
-), string="Selection Field"
-    compressed = fields.Boolean('Compressed', default=True)
-    ocr_enabled = fields.Boolean('OCR Enabled', default=False,
-                                help='Whether text recognition was applied',
-    searchable = fields.Boolean('Searchable', default=False,
-                               help='Whether the content is text-searchable',
-    
-    # Storage and access
-    storage_location = fields.Selection([
-        ('local', 'Local Storage',
-        ('cloud', 'Cloud Storage'),
-        ('archive', 'Archive Storage'),
-        ('backup', 'Backup Storage'),
-), string="Selection Field"
-    file_path = fields.Char('File Path', help='Path to the digital file')
-    access_url = fields.Char('Access URL', help='URL to access the digital copy')
-    
-    # Dates and tracking
-    copy_date = fields.Datetime('Copy Date', default=fields.Datetime.now, required=True)
-    last_accessed = fields.Datetime('Last Accessed')
-    created_by = fields.Many2one('res.users', string='Created By', 
-                                default=lambda self: self.env.user, required=True
-    
-    # Status
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    active = fields.Boolean(default=True)
+
+    # Basic state management
     state = fields.Selection([
-        ('draft', 'Draft',
-        ('active', 'Active'),
-        ('archived', 'Archived'),
-        ('corrupted', 'Corrupted'),
-        ('deleted', 'Deleted')
-    
-    # Security and compliance), string="Selection Field"
-    encrypted = fields.Boolean('Encrypted', default=False)
-    access_restricted = fields.Boolean('Access Restricted', default=False)
-    retention_date = fields.Date('Retention Date', 
-                                help='Date when this digital copy should be reviewed for deletion',
-    
-    # Attachments
-    attachment_id = fields.Many2one('ir.attachment', string='File Attachment')
-    
-    # Company context
-    company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company
-    active = fields.Boolean('Active', default=True)
-    
-    @api.model
-    def create(self, vals):
-        """Generate sequence for copy reference"""
-        if vals.get('name', '/') == '/':
-    pass
-            vals['name'] = self.env['ir.sequence'].next_by_code('records.digital.copy') or '/'
-        return super().create(vals)
-    
-    def action_mark_accessed(self):
-        """Mark the digital copy as accessed"""
-        self.write({'last_accessed': fields.Datetime.now()})
-    
-    def action_archive_copy(self):
-        """Archive the digital copy"""
-        self.write({'state': 'archived'})
-    
-    def action_mark_corrupted(self):
-        """Mark the digital copy as corrupted"""
-        self.write({'state': 'corrupted'})
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
+    ], string='State', default='draft', tracking=True)
+
+    # Common fields
+    description = fields.Text()
+    notes = fields.Text()
+    date = fields.Date(default=fields.Date.today)
+
+    def action_confirm(self):
+        """Confirm the record"""
+        self.write({'state': 'confirmed'})
+
+    def action_done(self):
+        """Mark as done"""
+        self.write({'state': 'done'})

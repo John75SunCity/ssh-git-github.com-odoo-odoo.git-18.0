@@ -1,33 +1,43 @@
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
+# -*- coding: utf-8 -*-
+"""
+Temporary Model
+"""
 
-from odoo import api, fields, models
+from odoo import models, fields, api, _
+
 
 class AccountMove(models.Model):
-    _inherit = 'account.move'
+    """
+    Temporary Model
+    """
 
-    department_id = fields.Many2one('records.department', string='Department', index=True, check_company=True)  # Added for inverse; ISO company integrity)
+    _name = "temp.model"
+    _description = "Temporary Model"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "name"
 
-    @api.depends('amount_total', 'department_id')
-    def _compute_shredding_cost(self):
-        """Innovative: Placeholder for PuLP-optimized cost (extend for real destruction links)."""
-        for rec in self:
-            rec.shredding_cost = rec.amount_total * 0.1  # Simple; use PuLP for dept allocation
+    # Core fields
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    active = fields.Boolean(default=True)
 
-    shredding_cost = fields.Float(compute='_compute_shredding_cost', store=True)
+    # Basic state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
+    ], string='State', default='draft', tracking=True)
 
-    def action_view_department_invoices(self):
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Department Invoices'),
-            'view_mode': 'kanban,tree,form',
-            'res_model': 'account.move',
-            'domain': [('department_id', '=', self.department_id.id)],
-            'context': {'default_department_id': self.department_id.id},
-        }
+    # Common fields
+    description = fields.Text()
+    notes = fields.Text()
+    date = fields.Date(default=fields.Date.today)
 
-    def write(self, vals):
-        res = super().write(vals)
-        if 'department_id' in vals:
-    pass
-            self.message_post(body=_('Department updated to %s for NAID audit.' % self.department_id.name))
-        return res
+    def action_confirm(self):
+        """Confirm the record"""
+        self.write({'state': 'confirmed'})
+
+    def action_done(self):
+        """Mark as done"""
+        self.write({'state': 'done'})

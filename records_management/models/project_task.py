@@ -1,58 +1,43 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields
+"""
+Temporary Model
+"""
+
+from odoo import models, fields, api, _
+
 
 class ProjectTask(models.Model):
-    """Extension of project.task to link with improvement actions"""
-    _inherit = 'project.task'
-    
-    improvement_action_id = fields.Many2one('survey.improvement.action', 
-                                          string='Related Improvement Action',
-                                          help='Improvement action that this task is part of')
-    
-    feedback_id = fields.Many2one('survey.user_input', 
-                                 related='improvement_action_id.feedback_id',
-                                 string='Related Feedback', 
-                                 store=True, readonly=True,
-                                 help='Original feedback that led to this improvement task')
+    """
+    Temporary Model
+    """
 
-    def action_view_improvement_action(self):
-        """View related improvement action"""
-        self.ensure_one()
-        if self.improvement_action_id:
-    pass
-            return {
-                'name': _('Improvement Action'),
-                'type': 'ir.actions.act_window',
-                'res_model': 'survey.improvement.action',
-                'res_id': self.improvement_action_id.id,
-                'view_mode': 'form',
-                'target': 'current',
-            }
-        return False
+    _name = "temporary.model"
+    _description = "Temporary Model"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "name"
 
-    def action_view_feedback(self):
-        """View original feedback"""
-        self.ensure_one()
-        if self.feedback_id:
-    pass
-            return {
-                'name': _('Original Feedback'),
-                'type': 'ir.actions.act_window',
-                'res_model': 'survey.user_input',
-                'res_id': self.feedback_id.id,
-                'view_mode': 'form',
-                'target': 'current',
-            }
-        return False
+    # Core fields
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    active = fields.Boolean(default=True)
 
-    def action_complete_improvement(self):
-        """Complete improvement task"""
-        self.ensure_one()
-        return {
-            'name': _('Complete Improvement'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'improvement.completion.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {'default_task_id': self.id},
-        }
+    # Basic state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
+    ], string='State', default='draft', tracking=True)
+
+    # Common fields
+    description = fields.Text()
+    notes = fields.Text()
+    date = fields.Date(default=fields.Date.today)
+
+    def action_confirm(self):
+        """Confirm the record"""
+        self.write({'state': 'confirmed'})
+
+    def action_done(self):
+        """Mark as done"""
+        self.write({'state': 'done'})

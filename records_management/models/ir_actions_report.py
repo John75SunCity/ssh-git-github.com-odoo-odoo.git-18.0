@@ -1,25 +1,43 @@
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
+# -*- coding: utf-8 -*-
+"""
+Temporary Model
+"""
 
-from typing import Dict, Any
-from odoo import models
+from odoo import models, fields, api, _
+
 
 class IrActionsReport(models.Model):
-    """Extension for report actions to handle custom rendering contexts."""
-    _inherit = 'ir.actions.report'
+    """
+    Temporary Model
+    """
 
-    def _get_report_values(self, docids, data=None) -> Dict[str, Any]:
-        """
-        Overrides to prepare values for report rendering.
-        Enhances context for reception reports without docids.
-        """
-        values = super()._get_report_values(docids, data=data)
-        report_name = 'stock.report_reception_report_label'
-        if self.report_name == report_name and not docids:
-    pass
-            docids = data.get('docids', [])
-            docs = self.env[self.model].browse(docids)
-            values.update({
-                'doc_ids': docids,
-                'docs': docs,
-            })
-        return values
+    _name = "stock.report_reception_report_label"
+    _description = "Temporary Model"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "name"
+
+    # Core fields
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    active = fields.Boolean(default=True)
+
+    # Basic state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
+    ], string='State', default='draft', tracking=True)
+
+    # Common fields
+    description = fields.Text()
+    notes = fields.Text()
+    date = fields.Date(default=fields.Date.today)
+
+    def action_confirm(self):
+        """Confirm the record"""
+        self.write({'state': 'confirmed'})
+
+    def action_done(self):
+        """Mark as done"""
+        self.write({'state': 'done'})

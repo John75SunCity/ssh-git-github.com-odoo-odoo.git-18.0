@@ -1,28 +1,43 @@
+# -*- coding: utf-8 -*-
 """
-Records Management Models
-Contains the core business logic for the Records Management module.
+SCRM Records Management
 """
 
-from odoo import fields, models, api, _
-from odoo.exceptions import ValidationError
-import logging
+from odoo import models, fields, api, _
 
-_logger = logging.getLogger(__name__)
 
 class ScrmRecordsManagement(models.Model):
-    _name = 'scrm.records.management'
-    _description = 'SCRM Records Management'
+    """
+    SCRM Records Management
+    """
 
-    # Example fields
-    name = fields.Char(string='Name', required=True)
-    description = fields.Text(string='Description')
+    _name = "scrm.records.management"
+    _description = "SCRM Records Management"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "name"
 
-    # Example method using another model (do NOT import the model file!)
-    def example_method(self):
-        # Access stock.lot via ORM, no direct import needed
-        lots = self.env['stock.lot'].search([('customer_id', '=', self.env.user.partner_id.id)])
-        _logger.info('Found lots: %s', lots)
-        return lots
+    # Core fields
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    active = fields.Boolean(default=True)
 
-    # Put your business logic, constraints, and methods here
+    # Basic state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
+    ], string='State', default='draft', tracking=True)
 
+    # Common fields
+    description = fields.Text()
+    notes = fields.Text()
+    date = fields.Date(default=fields.Date.today)
+
+    def action_confirm(self):
+        """Confirm the record"""
+        self.write({'state': 'confirmed'})
+
+    def action_done(self):
+        """Mark as done"""
+        self.write({'state': 'done'})

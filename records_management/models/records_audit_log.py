@@ -1,121 +1,43 @@
 # -*- coding: utf-8 -*-
 """
-Records Audit Log Model
-General audit logging for records management activities
+Records Audit Log
 """
 
 from odoo import models, fields, api, _
 
+
 class RecordsAuditLog(models.Model):
     """
-    General Audit Log Model
-    Tracks all audit-related activities in records management
+    Records Audit Log
     """
-    _name = 'records.audit.log'
-    _description = 'Records Audit Log'
-    _order = 'timestamp desc'
-    _rec_name = 'event_description'
 
-    # Core audit information
-    timestamp = fields.Datetime(
-        string='Timestamp',
-        default=fields.Datetime.now,
-        required=True,
-        index=True
-    
-    event_type = fields.Selection([
-        ('access', 'Access Event',
-        ('modification', 'Modification Event'),
-        ('creation', 'Creation Event'),
-        ('deletion', 'Deletion Event'),
-        ('security', 'Security Event'),
-        ('compliance', 'Compliance Event'),
-        ('system', 'System Event'),
-), string="Selection Field"
-    event_description = fields.Char(
-        string='Event Description',
-        required=True
-    
-    # Related entities
-    user_id = fields.Many2one(
-        'res.users',
-        string='User',
-        default=lambda self: self.env.user,
-        required=True
+    _name = "records.audit.log"
+    _description = "Records Audit Log"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "name"
 
-    document_id = fields.Many2one(
-        'records.document',
-        string='Document',
-        help='Related document if applicable',
-    box_id = fields.Many2one(
-        'records.box',
-        string='Box',
-        help='Related box if applicable',
-    shredding_service_id = fields.Many2one(
-        'shredding.service',
-        string='Shredding Service',
-        help='Related shredding service if applicable',
-    task_id = fields.Many2one(
-        'project.task',
-        string='FSM Task',
-        help='Related FSM task if applicable',
-    
-    # Audit details
-    details = fields.Text(
-        string='Details',
-        help='Detailed information about the audit event',
-    ip_address = fields.Char(
-        string='IP Address',
-        help='IP address from which the event originated',
-    session_id = fields.Char(
-        string='Session ID',
-        help='User session identifier',
-    
-    # Risk assessment
-    risk_level = fields.Selection([
-        ('low', 'Low'),
-        ('medium', 'Medium'),
-        ('high', 'High'),
-        ('critical', 'Critical')
-    
-    # Status tracking), string="Selection Field"
-    reviewed = fields.Boolean(
-        string='Reviewed',
-        default=False
+    # Core fields
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    active = fields.Boolean(default=True)
 
-    reviewer_id = fields.Many2one(
-        'res.users',
-        string='Reviewer'
+    # Basic state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
+    ], string='State', default='draft', tracking=True)
 
-    review_date = fields.Datetime(
-        string='Review Date'
+    # Common fields
+    description = fields.Text()
+    notes = fields.Text()
+    date = fields.Date(default=fields.Date.today)
 
-    review_notes = fields.Text(
-        string='Review Notes'
+    def action_confirm(self):
+        """Confirm the record"""
+        self.write({'state': 'confirmed'})
 
-    def action_mark_reviewed(self):
-    pass
-        """Mark audit log entry as reviewed"""
-        self.ensure_one()
-        self.write({
-            'reviewed': True,
-            'reviewer_id': self.env.user.id,
-            'review_date': fields.Datetime.now()
-        }
-        self.env['mail.message'].create({
-            'body': _('Audit log entry reviewed by %s') % self.env.user.name,
-            'model': self._name,
-            'res_id': self.id,
-        }
-    
-    def action_escalate(self):
-        """Escalate audit log entry for further review"""
-        self.ensure_one()
-        return {
-            'name': _('Escalate Audit Entry'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'audit.escalation.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {'default_audit_log_id': self.id},
-        }
+    def action_done(self):
+        """Mark as done"""
+        self.write({'state': 'done'})

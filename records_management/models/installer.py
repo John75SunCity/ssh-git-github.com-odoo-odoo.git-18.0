@@ -17,19 +17,14 @@ class RecordsManagementInstaller(models.TransientModel):
         """
         required_modules = ['stock', 'account', 'sale', 'point_of_sale']
         for module_name in required_modules:
-    pass
             module = self.env['ir.module.module'].search([
                 ('name', '=', module_name),
-                ('state', '=', 'installed')])
+                ('state', '=', 'installed')
             ])
             if not module:
-    pass
                 raise UserError(_(
                     f'The {module_name.capitalize()} module must be '
-                    'installed before installing Records Management.\n'
-                    f'Please go to Apps, search for '
-                    f'"{module_name.capitalize()}", install it, '
-                    'and then try again.'
+                    'installed before installing Records Management.'
                 ))
         return True
 
@@ -38,10 +33,9 @@ class RecordsManagementInstaller(models.TransientModel):
         required_modules = ['stock', 'account', 'sale', 'point_of_sale']
         for module_name in required_modules:
             module = self.env['ir.module.module'].search([
-                ('name', '=', module_name),])
+                ('name', '=', module_name),
                 ('state', 'in', ['uninstalled', 'to install'])
             ])
             if module:
-    pass
                 module.button_immediate_install()
         return {'type': 'ir.actions.client', 'tag': 'reload'}

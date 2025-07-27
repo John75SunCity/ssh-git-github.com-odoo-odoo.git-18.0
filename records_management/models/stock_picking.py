@@ -1,34 +1,43 @@
-from odoo import models  # type: ignore
+# -*- coding: utf-8 -*-
+"""
+Temporary Model
+"""
+
+from odoo import models, fields, api, _
+
 
 class StockPicking(models.Model):
-    _inherit = 'stock.picking'
+    """
+    Temporary Model
+    """
 
-    def button_validate(self):
-        """
-        Overrides the core button_validate to create a sale order for retrieval fees
-        when an outgoing picking is validated and items are grouped by customer.
-        """
-        res = super().button_validate()
-        if self.state == 'done' and self.picking_type_id.code == 'outgoing':
-    pass
-            # Filter move lines that have a lot with a customer
-            customer_items = self.move_line_ids.filtered(
-                lambda line: line.lot_id and line.lot_id.customer_id
-            if customer_items:
-    pass
-                # Group items by customer
-                customers = {}
-                for item in customer_items:
-                    customer = item.lot_id.customer_id
-                    customers.setdefault(customer, [].append(item)
-                for customer, items in customers.items():
-                    self.env['sale.order'].create({
-                        'partner_id': customer.id,
-                        'order_line': [(0, 0, {
-                            'product_id': self.env.ref(
-                                'records_management.retrieval_fee_product'
-                            ).id,
-                            'product_uom_qty': len(items),
-                        })],
-                    }
-        return res
+    _name = "temp.model"
+    _description = "Temporary Model"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "name"
+
+    # Core fields
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    active = fields.Boolean(default=True)
+
+    # Basic state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
+    ], string='State', default='draft', tracking=True)
+
+    # Common fields
+    description = fields.Text()
+    notes = fields.Text()
+    date = fields.Date(default=fields.Date.today)
+
+    def action_confirm(self):
+        """Confirm the record"""
+        self.write({'state': 'confirmed'})
+
+    def action_done(self):
+        """Mark as done"""
+        self.write({'state': 'done'})

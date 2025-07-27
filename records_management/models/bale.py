@@ -1,29 +1,43 @@
-from odoo import models, fields, api
+# -*- coding: utf-8 -*-
+"""
+Shredded Paper Bale
+"""
+
+from odoo import models, fields, api, _
+
 
 class Bale(models.Model):
-    _name = 'records_management.bale'
-    _description = 'Shredded Paper Bale'
-    _inherit = ['mail.thread', 'mail.activity.mixin']  # Audit logs, notifications
+    """
+    Shredded Paper Bale
+    """
 
-    name = fields.Char(default=lambda self: self.env['ir.sequence'].next_by_code('records_management.bale'))
-    paper_type = fields.Selection([('white', 'White'), ('mix', 'Mix'), ('cardboard', 'Cardboard')], required=True)
-    weight = fields.Float(required=True)
-    technician_id = fields.Many2one('hr.employee', required=True)
-    signature = fields.Binary(attachment=True)
-    date = fields.Date(default=fields.Date.today())
-    load_id = fields.Many2one('records_management.load')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    qr_code = fields.Binary(compute='_compute_qr_code')  # Innovative: QR for tracking)
+    _name = "records_management.bale"
+    _description = "Shredded Paper Bale"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "name"
 
-    @api.depends('name', 'paper_type', 'weight', 'technician_id.name', 'date')
-    def _compute_qr_code(self):
-        import qrcode
-        from io import BytesIO
-        for bale in self:
-            qr = qrcode.QRCode()
-            qr.add_data(f'Bale: {bale.name} | Type: {bale.paper_type} | Weight: {bale.weight} | Tech: {bale.technician_id.name} | Date: {bale.date}')
-            qr.make(fit=True)
-            img = qr.make_image(fill='black', back_color='white')
-            buffer = BytesIO()
-            img.save(buffer, 'PNG')
-            bale.qr_code = buffer.getvalue()
+    # Core fields
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    active = fields.Boolean(default=True)
+
+    # Basic state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
+    ], string='State', default='draft', tracking=True)
+
+    # Common fields
+    description = fields.Text()
+    notes = fields.Text()
+    date = fields.Date(default=fields.Date.today)
+
+    def action_confirm(self):
+        """Confirm the record"""
+        self.write({'state': 'confirmed'})
+
+    def action_done(self):
+        """Mark as done"""
+        self.write({'state': 'done'})

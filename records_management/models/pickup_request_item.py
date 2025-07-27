@@ -1,56 +1,43 @@
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
+# -*- coding: utf-8 -*-
+"""
+Pickup Request Item
+"""
 
-from typing import List, Optional
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+
 
 class PickupRequestItem(models.Model):
-    """Model for items in pickup requests."""
-    _name = 'pickup.request.item'
-    _description = 'Pickup Request Item'
-    _order = 'product_id'
+    """
+    Pickup Request Item
+    """
 
-    pickup_id = fields.Many2one(
-        'pickup.request',
-        string='Pickup Request',
-        required=True,
-        ondelete='cascade'
-    product_id = fields.Many2one(
-        'product.product',
-        string='Product',
-        required=True,
-        change_default=True
-    quantity = fields.Float(
-        string='Quantity',
-        default=1.0,
-        required=True,
-        digits=(16, 2)
-    lot_id = fields.Many2one(
-        'stock.lot',
-        string='Lot/Serial Number',
-        domain="[('product_id', '=', product_id]")
-    notes = fields.Text(string='Notes')
+    _name = "pickup.request.item"
+    _description = "Pickup Request Item"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "name"
 
-    @api.constrains('quantity')
-    def _check_quantity(self) -> None:
-        for item in self:
-            if item.quantity <= 0:
-    pass
-                error_msg = _("Quantity must be positive for item %s.")
-                raise ValidationError(error_msg % item.product_id.name)
+    # Core fields
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    active = fields.Boolean(default=True)
 
-    @api.onchange('product_id')
-    def _onchange_product_id(self) -> Optional[dict]:
-        if (self.product_id and self.lot_id and
-                self.lot_id.product_id != self.product_id):
-    pass
-            self.lot_id = False
-        return {
-            'domain': {
-                'lot_id': [('product_id', '=', self.product_id.id)]
-            }
-        }
+    # Basic state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')
+    ], string='State', default='draft', tracking=True)
 
-    @api.model_create_multi
-    def create(self, vals_list: List[dict]) -> 'PickupRequestItem':
-        return super().create(vals_list)
+    # Common fields
+    description = fields.Text()
+    notes = fields.Text()
+    date = fields.Date(default=fields.Date.today)
+
+    def action_confirm(self):
+        """Confirm the record"""
+        self.write({'state': 'confirmed'})
+
+    def action_done(self):
+        """Mark as done"""
+        self.write({'state': 'done'})
