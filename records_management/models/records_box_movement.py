@@ -24,9 +24,9 @@ class RecordsBoxMovement(models.Model):
     active = fields.Boolean(default=True)
 
     # Movement specific fields
-    box_id = fields.Many2one('rec.box', string='Box', required=True, tracking=True)
-    from_location_id = fields.Many2one('rec.loc', string='From Location', tracking=True)
-    to_location_id = fields.Many2one('rec.loc', string='To Location', required=True, tracking=True)
+    box_id = fields.Many2one('records.box', string='Box', required=True, tracking=True)
+    from_location_id = fields.Many2one('records.location', string='From Location', tracking=True)
+    to_location_id = fields.Many2one('records.location', string='To Location', required=True, tracking=True)
     move_date = fields.Datetime(string='Movement Date', default=fields.Datetime.now, required=True)
     move_reason = fields.Selection([
         ('pickup', 'Pickup'),
@@ -71,11 +71,6 @@ class RecordsBoxMovement(models.Model):
         if not vals.get('name'):
             vals['name'] = self.env['ir.sequence'].next_by_code('rec.box.move') or 'MOVE/'
         return super().create(vals)
-
-    # Common fields
-    description = fields.Text()
-    notes = fields.Text()
-    date = fields.Date(default=fields.Date.today)
 
     def action_confirm(self):
         """Confirm the record"""

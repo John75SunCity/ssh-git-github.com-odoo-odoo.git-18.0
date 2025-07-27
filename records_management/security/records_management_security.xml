@@ -60,8 +60,8 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
 
     <record id="rule_shredding_service_granular" model="ir.rule">
         <field name="name">Granular Shredding Service Access</field>
-        <field name="model_id" ref="model_shredding_service"/>
-        <field name="domain_force">[('customer_id', '=', user.partner_id.id)]</field>
+        <field name="model_id" ref="model_shred_svc"/>
+        <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="False"/>
@@ -118,8 +118,8 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
 
     <record id="rule_cert_portal" model="ir.rule">
         <field name="name">Portal Access to Certificates</field>
-        <field name="model_id" ref="model_shredding_service"/>
-        <field name="domain_force">[('customer_id', '=', user.partner_id.id), ('status', '=', 'completed')]</field>
+        <field name="model_id" ref="model_shred_svc"/>
+        <field name="domain_force">[('company_id', '=', user.company_id.id), ('state', '=', 'done')]</field>
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="False"/>
