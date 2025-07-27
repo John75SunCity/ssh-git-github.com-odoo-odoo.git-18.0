@@ -25,6 +25,7 @@ class RecordsLocation(models.Model):
         ('map', 'Map Storage - Map Boxes (Type 03)'),
         ('oversize', 'Oversize - Odd-Shaped Boxes (Type 04)'),
         ('refiles', 'Refiles - Staging for Returns/Put-Away'),
+    ], string='Location Type'])
        help="""Location type determines what kind of boxes can be stored:
        • Aisles/Pallets: Standard file boxes (Type 01) - monthly rent
        • Vault: Specialty boxes (Type 06) - secure storage
@@ -49,23 +50,31 @@ class RecordsLocation(models.Model):
         string='Customer',
         domain=[('is_company', '=', True)],
         help="Customer associated with this location"
+    )
+    
     storage_date = fields.Date(
         string='Storage Date',
         help="Date when items were first stored in this location"
+    )
 
     active = fields.Boolean(default=True)
     note = fields.Text('Notes')
     description = fields.Text(
         'Description',
         help='Detailed description of the location and its contents'
+    )
+    
     access_instructions = fields.Text(
         'Access Instructions',
         help='Instructions for accessing this location (keys, codes, etc.)'
+    )
+    
     security_level = fields.Selection([
         ('low', 'Low - General Access'),
         ('medium', 'Medium - Restricted Access'),
         ('high', 'High - Secure Access'),
         ('maximum', 'Maximum - Vault Access')
+    ], string='Security Level'])
 
     # Phase 1 Critical Fields - Added by automated script
     

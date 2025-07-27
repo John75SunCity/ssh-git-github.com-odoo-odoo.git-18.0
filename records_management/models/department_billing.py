@@ -50,7 +50,7 @@ class RecordsDepartmentBillingContact(models.Model):
         ('none', 'No Authority'),
         ('limited', 'Limited Authority'),
         ('full', 'Full Authority'),
-        ('suspended', 'Suspended')
+        ('suspended', 'Suspended'))
     approved_by = fields.Many2one('res.users', string='Approved By', tracking=True)
     
     # Billing role and configuration
@@ -61,7 +61,7 @@ class RecordsDepartmentBillingContact(models.Model):
         ('reviewer', 'Reviewer'),
         ('finance', 'Finance Team')
     
-    # Budget management
+    # Budget management)
     budget_alert_threshold = fields.Float(string='Budget Alert Threshold (%)', default=80.0)
     budget_utilization = fields.Float(string='Budget Utilization (%)', compute='_compute_budget_metrics', store=True)
     monthly_budget = fields.Float(string='Monthly Budget ($)', tracking=True)
@@ -97,7 +97,7 @@ class RecordsDepartmentBillingContact(models.Model):
         ('destruction', 'Destruction Services'),
         ('digital', 'Digital Services'),
         ('consultation', 'Consultation Services'),
-        ('mixed', 'Mixed Services')
+        ('mixed', 'Mixed Services'))
     vendor = fields.Many2one('res.partner', string='Vendor/Service Provider')
     
     # Year-to-date financials

@@ -16,50 +16,50 @@ class RecordsBox(models.Model):
         required=True,
         copy=False,
         readonly=True,
-        default=lambda self: _('New')
+        default=lambda self: _('New'))
     alternate_code = fields.Char(string='Alternate Code', copy=False)
     description = fields.Char(string='Description', required=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),
         ('archived', 'Archived'),
-        ('destroyed', 'Destroyed')
+        ('destroyed', 'Destroyed'))
     item_status = fields.Selection([
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('pending', 'Pending'),
         ('permanent_out', 'Permanent Out'),
         ('destroyed', 'Destroyed'),
-        ('archived', 'Archived')
+        ('archived', 'Archived'))
     status_date = fields.Datetime(
-        string='Status Date',
+        string='Status Date',)
         default=fields.Datetime.now
     add_date = fields.Datetime(
         string='Add Date',
-        readonly=True
+        readonly=True)
     storage_date = fields.Date(
         string='Storage Date',
-        help='Date when the box was placed in storage location'
+        help='Date when the box was placed in storage location')
     destroy_date = fields.Date(string='Destroy Date')
     created_date = fields.Datetime(
         string='Created Date',
         readonly=True,
-        help='Date and time when the box record was created'
+        help='Date and time when the box record was created')
     access_count = fields.Integer(string='Access Count', default=0)
     perm_flag = fields.Boolean(string='Permanent Flag', default=False)
     product_id = fields.Many2one('product.product', string='Box Product')
     location_id = fields.Many2one(
         'records.location',
         string='Storage Location',
-        index=True
+        index=True)
     location_code = fields.Char(
         related='location_id.code',
         string='Location Code',
-        readonly=True
+        readonly=True)
     customer_inventory_id = fields.Many2one(
         'customer.inventory.report',
         string='Customer Inventory Report',
-        ondelete='cascade'
+        ondelete='cascade')
     container_type = fields.Selection([
         ('standard', 'Standard Box'),
         ('map_box', 'Map Box'),
@@ -67,7 +67,7 @@ class RecordsBox(models.Model):
         ('pallet', 'Pallet'),
         ('other', 'Other')
     
-    # Business-specific box type codes for pricing and location management
+    # Business-specific box type codes for pricing and location management)
     box_type_code = fields.Selection([
         ('01', 'Type 01 - Standard File Box'),
         ('03', 'Type 03 - Map Box'),
@@ -82,12 +82,12 @@ class RecordsBox(models.Model):
         store=True,
         help="Customer-friendly display name for invoicing and reports"
     
-    # Pricing related to box type
+    # Pricing related to box type)
     monthly_rate = fields.Float(
         string='Monthly Storage Rate',
         compute='_compute_monthly_rate',
         store=True,
-        help="Monthly storage rate based on box type"
+        help="Monthly storage rate based on box type")
     security_code = fields.Char(string='Security Code')
     category_code = fields.Char(string='Category Code')
     record_series = fields.Char(string='Record Series')
@@ -106,13 +106,13 @@ class RecordsBox(models.Model):
     custom_date = fields.Date(string='Custom Date')
     charge_for_storage = fields.Boolean(
         string='Charge for Storage',
-        default=True
+        default=True)
     charge_for_add = fields.Boolean(string='Charge for Add', default=True)
     capacity = fields.Integer(string='Capacity (documents)', default=100)
     used_capacity = fields.Float(
         string='Used Capacity (%)',
         compute='_compute_used_capacity',
-        store=False
+        store=False)
     barcode = fields.Char(string='Barcode', copy=False, index=True)
     barcode_length = fields.Integer(string='Barcode Length', default=12)
     barcode_type = fields.Selection([
@@ -123,53 +123,53 @@ class RecordsBox(models.Model):
         ('qr', 'QR Code'),
         ('other', 'Other')
     
-    # Physical properties and policy management
+    # Physical properties and policy management)
     weight = fields.Float(string='Weight (kg)', digits=(10, 2))
     size_category = fields.Selection([
         ('small', 'Small'),
         ('medium', 'Medium'),
         ('large', 'Large'),
-        ('extra_large', 'Extra Large')
+        ('extra_large', 'Extra Large'))
     retention_policy_id = fields.Many2one(
         'records.retention.policy',
         string='Retention Policy',
         help="Records retention policy governing this box"
-    
+)
     document_ids = fields.One2many(
         'records.document',
         'box_id',
-        string='Documents'
+        string='Documents')
     document_count = fields.Integer(
         compute='_compute_document_count',
         string='Document Count',
-        store=True
+        store=True)
     movement_count = fields.Integer(
         compute='_compute_movement_count',
         string='Movement Count',
-        store=True
+        store=True)
     service_request_count = fields.Integer(
         compute='_compute_service_request_count',
         string='Service Request Count',
-        store=True
+        store=True)
     notes = fields.Html(string='Notes')
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
         'res.company',
         string='Company',
-        default=lambda self: self.env.company
+        default=lambda self: self.env.company)
     customer_id = fields.Many2one(
         'res.partner',
         string='Customer',
         domain="[('is_company', '=', True)]",
-        index=True
+        index=True)
     department_id = fields.Many2one(
         'records.department',
         string='Department',
-        index=True
+        index=True)
     user_id = fields.Many2one(
         'res.users',
         string='Responsible',
-        default=lambda self: self.env.user
+        default=lambda self: self.env.user)
     create_date = fields.Datetime(string='Created on', readonly=True)
     destruction_date = fields.Date(string='Destruction Date')
     color = fields.Integer(string='Color Index')
@@ -180,11 +180,11 @@ class RecordsBox(models.Model):
         ('0', 'Low'),
         ('1', 'Normal'),
         ('2', 'High'),
-        ('3', 'Urgent')
+        ('3', 'Urgent'))
     document_type_id = fields.Many2one(
         'records.document.type',
         string='Primary Document Type',
-        help="Primary type of documents stored in this box"
+        help="Primary type of documents stored in this box")
     request_date = fields.Date(string='Request Date')
     movement_date = fields.Date(string='Last Movement Date')
     movement_type = fields.Selection([
@@ -192,38 +192,38 @@ class RecordsBox(models.Model):
         ('outbound', 'Outbound'),
         ('relocation', 'Relocation'),
         ('retrieval', 'Retrieval'),
-        ('return', 'Return')
+        ('return', 'Return'))
     from_location_id = fields.Many2one(
         'records.location',
         string='From Location',
-        help="Previous location for movement tracking"
+        help="Previous location for movement tracking")
     to_location_id = fields.Many2one(
         'records.location', 
         string='To Location',
-        help="Destination location for movement tracking"
+        help="Destination location for movement tracking")
     responsible_user_id = fields.Many2one(
         'res.users',
         string='Responsible User',
         help="User responsible for this box operations"
 
-    # One2many relations referenced in views
+    # One2many relations referenced in views)
     movement_ids = fields.One2many(
         'records.box.movement', 'box_id',
-        string='Movement History'
+        string='Movement History')
     service_request_ids = fields.One2many(
         'pickup.request', 'box_id',
         string='Service Requests'
     
-    # Additional One2many relationships for document and container tracking
+    # Additional One2many relationships for document and container tracking)
     contents_ids = fields.One2many(
         'records.document', 'box_id',
-        string='Box Contents'
+        string='Box Contents')
     container_contents_ids = fields.One2many(
         'box.contents', 'box_id',
         string='Box Contents'
 
     # Phase 1 Critical Fields - Added by automated script
-    
+)
     @api.depends('box_type_code')
     def _compute_box_type_display(self):
         """Compute display name for box type"""
