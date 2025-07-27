@@ -11,7 +11,7 @@ class ResPartner(models.Model):
     Temporary Model
     """
 
-    _name = "temporary.model"
+    _name = "res.partner.ext"
     _description = "Temporary Model"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

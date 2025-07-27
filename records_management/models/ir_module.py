@@ -11,7 +11,7 @@ class IrModule(models.Model):
     Temporary Model
     """
 
-    _name = "temporary.model"
+    _name = "ir.module.ext"
     _description = "Temporary Model"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

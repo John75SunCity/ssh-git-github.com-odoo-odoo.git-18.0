@@ -11,11 +11,11 @@ class PartnerBinKey(models.Model):
     Partner Bin Key Management
     """
     
-    _name = 'partner.bin.key'
+    _name = 'partner.bin'
     _description = 'Partner Bin Key Management'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name desc'
-    _rec_name = 'name'
+    _rec_name = "name"
     
     # Core fields
     name = fields.Char(string='Name', required=True, tracking=True)

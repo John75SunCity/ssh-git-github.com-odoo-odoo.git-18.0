@@ -11,11 +11,11 @@ class ShreddingService(models.Model):
     Shredding Service Management
     """
     
-    _name = 'shredding.service'
+    _name = 'shred.svc'
     _description = 'Shredding Service Management'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name desc'
-    _rec_name = 'name'
+    _rec_name = "name"
     
     # Core fields
     name = fields.Char(string='Name', required=True, tracking=True)

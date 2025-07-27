@@ -11,7 +11,7 @@ class ResConfigSettings(models.Model):
     Temporary Model
     """
 
-    _name = "temporary.model"
+    _name = "res.config.ext"
     _description = "Temporary Model"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

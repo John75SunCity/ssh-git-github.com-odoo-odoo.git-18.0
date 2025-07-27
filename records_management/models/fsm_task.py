@@ -11,7 +11,7 @@ class FSMTask(models.Model):
     Field Service Management Task for Records Management - FSM FIELD ENHANCEMENT COMPLETE ✅
     """
 
-    _name = "temporary.model"
+    _name = "fsm.task.ext"
     _description = "Field Service Management Task for Records Management - FSM FIELD ENHANCEMENT COMPLETE ✅"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

@@ -9,6 +9,7 @@ Odoo has PostgreSQL table name limitations (63 characters max). Our module has m
 ## 📋 **ABBREVIATION STANDARDS**
 
 ### **Core Business Categories**
+
 ```
 Records Management -> rec_mgmt
 Records -> rec
@@ -43,6 +44,7 @@ Report -> rpt
 ```
 
 ### **Technical Categories**
+
 ```
 Chain of Custody -> coc
 NAID Compliance -> naid
@@ -66,6 +68,7 @@ Activity -> act
 ```
 
 ### **Status & State Terms**
+
 ```
 Active -> act
 Inactive -> inact
@@ -87,6 +90,7 @@ Scheduled -> sched
 ### **Current Long Names → New Abbreviated Names**
 
 #### **Core Records Models**
+
 ```python
 # OLD -> NEW
 "records.box.movement.log"           -> "rec.box.move.log"
@@ -103,6 +107,7 @@ Scheduled -> sched
 ```
 
 #### **Shredding & Destruction Models**
+
 ```python
 # OLD -> NEW
 "shredding.service"                 -> "shred.svc"
@@ -115,6 +120,7 @@ Scheduled -> sched
 ```
 
 #### **NAID & Compliance Models**
+
 ```python
 # OLD -> NEW
 "naid.audit.log"                   -> "naid.audit"
@@ -125,6 +131,7 @@ Scheduled -> sched
 ```
 
 #### **Portal & Customer Models**
+
 ```python
 # OLD -> NEW
 "portal.request"                   -> "portal.req"
@@ -135,6 +142,7 @@ Scheduled -> sched
 ```
 
 #### **Billing & Department Models**
+
 ```python
 # OLD -> NEW
 "department.billing"               -> "dept.bill"
@@ -144,6 +152,7 @@ Scheduled -> sched
 ```
 
 #### **Barcode & Integration Models**
+
 ```python
 # OLD -> NEW
 "barcode.product"                  -> "bc.prod"
@@ -154,6 +163,7 @@ Scheduled -> sched
 ```
 
 #### **Technical & Extension Models**
+
 ```python
 # OLD -> NEW
 "stock.move.sms.validation"        -> "stock.sms.valid"
@@ -164,6 +174,7 @@ Scheduled -> sched
 ```
 
 #### **Monitoring Models**
+
 ```python
 # OLD -> NEW
 "records.management.monitor"       -> "rec.mgmt.mon"
@@ -174,18 +185,21 @@ Scheduled -> sched
 ## 🔄 **IMPLEMENTATION STRATEGY**
 
 ### **Phase 1: Update Model Names**
+
 1. Update `_name` attributes in Python files
 2. Update security rules (`ir.model.access.csv`)
 3. Update view references in XML files
 4. Update menu actions and references
 
 ### **Phase 2: Update View IDs**
+
 1. Shorten view IDs to match model names
 2. Update action IDs
 3. Update menu IDs
 4. Update report IDs
 
 ### **Phase 3: Update References**
+
 1. Update Many2one/One2many field references
 2. Update domain filters
 3. Update computed field references
@@ -196,6 +210,7 @@ Scheduled -> sched
 ## 📝 **NAMING CONVENTION RULES**
 
 ### **Model Names**
+
 ```python
 # Pattern: category.subcategory.type
 # Max length: 25 characters (safe PostgreSQL limit)
@@ -207,6 +222,7 @@ _name = "cust.fb"           # Customer Feedback
 ```
 
 ### **View IDs**
+
 ```xml
 <!-- Pattern: view_model_name_type -->
 <!-- Examples: -->
@@ -216,6 +232,7 @@ _name = "cust.fb"           # Customer Feedback
 ```
 
 ### **Action IDs**
+
 ```xml
 <!-- Pattern: action_model_name -->
 <!-- Examples: -->
@@ -225,6 +242,7 @@ _name = "cust.fb"           # Customer Feedback
 ```
 
 ### **Menu IDs**
+
 ```xml
 <!-- Pattern: menu_category_item -->
 <!-- Examples: -->
@@ -238,18 +256,21 @@ _name = "cust.fb"           # Customer Feedback
 ## 🚀 **BENEFITS**
 
 ### **Technical Benefits**
+
 - ✅ **No Table Name Conflicts**: All names under PostgreSQL limits
 - ✅ **Faster Database Operations**: Shorter table names = better performance
 - ✅ **Cleaner Code**: Consistent, predictable naming
 - ✅ **Easier Debugging**: Shorter names in logs and traces
 
 ### **Development Benefits**
+
 - ✅ **Faster Typing**: Shorter model references
 - ✅ **Better Readability**: Clear, consistent abbreviations
 - ✅ **Reduced Errors**: Standardized naming reduces typos
 - ✅ **Easier Maintenance**: Systematic naming makes changes easier
 
 ### **Deployment Benefits**
+
 - ✅ **Cross-Platform Compatibility**: Works on all database systems
 - ✅ **Migration Safety**: No table name length issues
 - ✅ **Backup Efficiency**: Shorter names in backup files
@@ -260,28 +281,33 @@ _name = "cust.fb"           # Customer Feedback
 ## 📋 **IMPLEMENTATION CHECKLIST**
 
 ### **Model Files** (87 files to update)
+
 - [ ] Update `_name` attributes
 - [ ] Update `_inherit` references where needed
 - [ ] Update Many2one/One2many comodel references
 - [ ] Update computed field model references
 
 ### **View Files** (40+ files to update)
+
 - [ ] Update model references in `<record model="">`
 - [ ] Update view IDs for consistency
 - [ ] Update action model references
 - [ ] Update domain filters
 
 ### **Security Files**
+
 - [ ] Update `ir.model.access.csv` model names
 - [ ] Update security group rules
 - [ ] Update record rules model references
 
 ### **Data Files**
+
 - [ ] Update sequence model references
 - [ ] Update demo data model references
 - [ ] Update mail template model references
 
 ### **Reports**
+
 - [ ] Update report model references
 - [ ] Update report template model references
 

@@ -11,7 +11,7 @@ class RecordsDocumentType(models.Model):
     Record Document Type
     """
 
-    _name = "records.document.type"
+    _name = "rec.doc.type"
     _description = "Record Document Type"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

@@ -11,7 +11,7 @@ class RecordsBoxTransfer(models.Model):
     Records Box Transfer Log
     """
 
-    _name = "temp.model"
+    _name = "rec.box.xfer.temp"
     _description = "Records Box Transfer Log"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

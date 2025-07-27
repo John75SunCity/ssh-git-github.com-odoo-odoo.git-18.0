@@ -11,7 +11,7 @@ class PaperBaleRecycling(models.Model):
     Paper Bale for Recycling
     """
 
-    _name = "paper.bale.recycling"
+    _name = "pb.recycl"
     _description = "Paper Bale for Recycling"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

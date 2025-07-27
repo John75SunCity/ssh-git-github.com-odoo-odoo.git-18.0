@@ -11,7 +11,7 @@ class CustomerInventoryReport(models.Model):
     Customer Inventory Report
     """
 
-    _name = "customer.inventory.report"
+    _name = "cust.inv.rpt"
     _description = "Customer Inventory Report"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

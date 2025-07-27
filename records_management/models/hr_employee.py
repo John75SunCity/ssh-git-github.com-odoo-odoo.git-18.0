@@ -16,7 +16,7 @@ class HrEmployee(models.Model):
     
     # Records Management specific fields
     records_department_id = fields.Many2one(
-        'records.department', 
+        'rec.dept', 
         string='Records Department',
         help='Department for records management access control'
     )

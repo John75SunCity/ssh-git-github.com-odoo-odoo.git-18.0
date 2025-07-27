@@ -11,11 +11,11 @@ class RecordsApprovalStep(models.Model):
     Records Approval Step
     """
     
-    _name = 'records.approval.step'
+    _name = 'rec.appr.step'
     _description = 'Records Approval Step'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name desc'
-    _rec_name = 'name'
+    _rec_name = "name"
     
     # Core fields
     name = fields.Char(string='Name', required=True, tracking=True)

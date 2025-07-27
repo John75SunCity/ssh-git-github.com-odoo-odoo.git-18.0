@@ -11,7 +11,7 @@ class ProjectTask(models.Model):
     Temporary Model
     """
 
-    _name = "temporary.model"
+    _name = "proj.task.ext"
     _description = "Temporary Model"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

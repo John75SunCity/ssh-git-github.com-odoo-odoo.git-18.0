@@ -11,7 +11,7 @@ class HREmployeeNAID(models.Model):
     Temporary Model
     """
 
-    _name = "temporary.model"
+    _name = "hr.emp.naid"
     _description = "Temporary Model"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

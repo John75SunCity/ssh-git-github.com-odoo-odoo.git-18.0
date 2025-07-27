@@ -11,7 +11,7 @@ class RecordsDepartment(models.Model):
     Records Department
     """
 
-    _name = "records.department"
+    _name = "rec.dept"
     _description = "Records Department"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

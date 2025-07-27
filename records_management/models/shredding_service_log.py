@@ -16,7 +16,7 @@ class ShreddingServiceLog(models.Model):
     _name = "shredding.service.log"
     _description = "Shredding Service Log"
     _order = "timestamp desc"
-    _rec_name = "activity_description"
+    _rec_rec_name = "activity_description"
 
     # Core log information
     timestamp = fields.Datetime(
@@ -39,7 +39,7 @@ class ShreddingServiceLog(models.Model):
     activity_description = fields.Char(string="Activity Description", required=True)
 
     # Related entities
-    shredding_service_id = fields.Many2one("shredding.service",
+    shredding_service_id = fields.Many2one("shred.svc",
         string="Shredding Service",
         required=True,
         ondelete="cascade"

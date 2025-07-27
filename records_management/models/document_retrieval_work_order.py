@@ -11,7 +11,7 @@ class DocumentRetrievalRates(models.Model):
     Document Retrieval Base Rates
     """
 
-    _name = "document.retrieval.rates"
+    _name = "doc.ret.rates"
     _description = "Document Retrieval Base Rates"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

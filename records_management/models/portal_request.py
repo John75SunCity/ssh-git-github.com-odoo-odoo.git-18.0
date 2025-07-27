@@ -11,11 +11,11 @@ class PortalRequest(models.Model):
     Portal Request Management
     """
     
-    _name = 'portal.request'
+    _name = 'portal.req'
     _description = 'Portal Request Management'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name desc'
-    _rec_name = 'name'
+    _rec_name = "name"
     
     # Core fields
     name = fields.Char(string='Name', required=True, tracking=True)
