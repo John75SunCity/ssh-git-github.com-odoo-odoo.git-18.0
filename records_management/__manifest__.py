@@ -169,7 +169,9 @@ Features:
     'application': True,
     'installable': True,
     'auto_install': False,
+    'sequence': 1000,  # Load after all dependencies are loaded
     'license': 'LGPL-3',
+    'post_init_hook': 'post_init_hook',  # For any setup that needs to run after other modules
     'assets': {
         'web.assets_backend': [
             'records_management/static/src/scss/records_management.scss',
