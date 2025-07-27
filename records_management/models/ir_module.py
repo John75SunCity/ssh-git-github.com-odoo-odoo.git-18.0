@@ -22,7 +22,7 @@ from odoo.release import major_version
 from odoo.tools import convert_csv_import, convert_sql_import, convert_xml_import
 from odoo.tools import file_open, file_open_temporary_directory, ormcache
 
-_logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__
 
 APPS_URL = "https://apps.odoo.com"
 MAX_FILE_SIZE = 100 * 1024 * 1024  # in megabytes
@@ -34,11 +34,11 @@ class IrModule(models.Model):
     module_type = fields.Selection([
         ('official', 'Official Apps'),
         ('industries', 'Industries'),
-    ], default='official')
+    ], default='official'
 
     def _get_modules_to_load_domain(self):
         # imported modules are not expected to be loaded as regular modules
-        return super()._get_modules_to_load_domain() + [('imported', '=', False)]
+        return super(._get_modules_to_load_domain() + [('imported', '=', False)]
 
     @api.depends('name')
     def _get_latest_version(self):
@@ -52,11 +52,11 @@ class IrModule(models.Model):
         super()._get_icon_image()
         IrAttachment = self.env["ir.attachment"]
         for module in self.filtered('imported'):
-            attachment = IrAttachment.sudo().search([
+            attachment = IrAttachment.sudo().search\([
                 ('url', '=', module.icon),
                 ('type', '=', 'binary'),
-                ('res_model', '=', 'ir.ui.view')
-            ], limit=1)
+                ('res_model', '=', 'ir.ui.view')])
+            ], limit=1
             if attachment:
                 module.icon_image = attachment.datas
 
@@ -64,9 +64,9 @@ class IrModule(models.Model):
         # Do not create a bridge module for these neutralizations.
         # Do not involve specific website during import by resetting
         # information used by website's get_current_website.
-        self = self.with_context(website_id=None)  # noqa: PLW0642
+        self = self.with_context(website_id=None  # noqa: PLW0642
         force_website_id = None
-        if request and request.session.get('force_website_id'):
+        if request and request.session.get('force_website_id':
             force_website_id = request.session.pop('force_website_id')
 
         known_mods = self.search([])
@@ -149,7 +149,7 @@ class IrModule(models.Model):
                                     'model': self.env['ir.model.data']._xmlid_lookup(xml_id)[0],
                                     'module': "__cloc_exclude__",
                                     'res_id': value,
-                                }])
+                                }]
 
         path_static = opj(path, 'static')
         IrAttachment = self.env['ir.attachment']
@@ -168,12 +168,12 @@ class IrModule(models.Model):
                         url=url_path,
                         res_model='ir.ui.view',
                         type='binary',
-                        datas=data)
+                        datas=data
                     # Do not create a bridge module for this check.
                     if 'public' in IrAttachment._fields:
                         # Static data is public and not website-specific.
                         values['public'] = True
-                    attachment = IrAttachment.sudo().search([('url', '=', url_path), ('type', '=', 'binary'), ('res_model', '=', 'ir.ui.view')])
+                    attachment = IrAttachment.sudo(.search([('url', '=', url_path), ('type', '=', 'binary'), ('res_model', '=', 'ir.ui.view')])
                     if attachment:
                         attachment.write(values)
                     else:
@@ -183,20 +183,20 @@ class IrModule(models.Model):
                             'model': 'ir.attachment',
                             'module': module,
                             'res_id': attachment.id,
-                        })
+                        }
                         if str(pathlib.Path(full_path).relative_to(base_dir)) in exclude_list:
                             self.env['ir.model.data'].create({
                                 'name': f"cloc_exclude_attachment_{url_path}".replace('.', '_').replace(' ', '_'),
                                 'model': 'ir.attachment',
                                 'module': "__cloc_exclude__",
                                 'res_id': attachment.id,
-                            })
+                            }
 
         IrAsset = self.env['ir.asset']
         assets_vals = []
 
         # Generate 'ir.asset' record values for each asset delared in the manifest
-        for bundle, commands in terp.get('assets', {}).items():
+        for bundle, commands in terp.get('assets', {}.items():
             for command in commands:
                 directive, target, path = IrAsset._process_command(command)
                 path = path if path.startswith('/') else '/' + path # Ensures a '/' at the start
@@ -206,36 +206,36 @@ class IrModule(models.Model):
                     'target': target,
                     'path': path,
                     'bundle': bundle,
-                })
+                }
 
         # Look for existing assets
         existing_assets = {
             asset.name: asset
-            for asset in IrAsset.search([('name', 'in', [vals['name'] for vals in assets_vals])])
+            for asset in IrAsset.search([('name', 'in', [vals['name'] for vals in assets_vals]])
         }
         assets_to_create = []
 
         # Update existing assets and generate the list of new assets values
         for values in assets_vals:
             if values['name'] in existing_assets:
-                existing_assets[values['name']].write(values)
+                existing_assets[values['name']].write(values
             else:
                 assets_to_create.append(values)
 
         # Create new assets and attach 'ir.model.data' records to them
-        created_assets = IrAsset.create(assets_to_create)
+        created_assets = IrAsset.create(assets_to_create
         self.env['ir.model.data'].create([{
             'name': f"{asset['bundle']}_{asset['path']}".replace(".", "_"),
             'model': 'ir.asset',
             'module': module,
             'res_id': asset.id,
-        } for asset in created_assets])
+        } for asset in created_assets]
 
         self.env['ir.module.module']._load_module_terms(
             [module],
             [lang for lang, _name in self.env['res.lang'].get_installed()],
             overwrite=True,
-            imported_module=True)
+            imported_module=True
 
         if ('knowledge.article' in self.env
             and (article_record := self.env.ref(f"{module}.welcome_article", raise_if_not_found=False))
@@ -255,7 +255,7 @@ class IrModule(models.Model):
         return True
 
     @api.model
-    def _import_zipfile(self, module_file, force=False, with_demo=False):
+    def _import_zipfile(self, module_file, force=False, with_demo=False:
         if not self.env.is_admin():
             raise AccessError(_("Only administrators can install data modules."))
         if not module_file:
@@ -304,35 +304,35 @@ class IrModule(models.Model):
                 for mod_name in dirs:
                     module_names.append(mod_name)
                     try:
-                        # assert mod_name.startswith('theme_')
+                        # assert mod_name.startswith('theme_'
                         path = opj(module_dir, mod_name)
                         self.sudo()._import_module(mod_name, path, force=force, with_demo=with_demo)
                     except Exception as e:
                         raise UserError(_(
                             "Error while importing module '%(module)s'.\n\n %(error_message)s \n\n",
-                            module=mod_name, error_message=str(e)))
+                            module=mod_name, error_message=str(e))
         return "", module_names
-
+]
     def module_uninstall(self):
         # Delete an ir_module_module record completely if it was an imported
         # one. The rationale behind this is that an imported module *cannot* be
         # reinstalled anyway, as it requires the data files. Any attempt to
         # install it again will simply fail without trace.
-        # /!\ modules_to_delete must be calculated before calling super().module_uninstall(),
+        # /!\ modules_to_delete must be calculated before calling super(.module_uninstall(),
         # because when uninstalling `base_import_module` the `imported` column will no longer be
         # in the database but we'll still have an old registry that runs this code.
-        modules_to_delete = self.filtered('imported')
+        modules_to_delete = self.filtered('imported'
         res = super().module_uninstall()
         if modules_to_delete:
             deleted_modules_names = modules_to_delete.mapped('name')
-            assets_data = self.env['ir.model.data'].search([
+            assets_data = self.env['ir.model.data'].search\([
                 ('model', '=', 'ir.asset'),
-                ('module', 'in', deleted_modules_names),
-            ])
+                ('module', 'in', deleted_modules_names),])
+            ]
             assets = self.env['ir.asset'].search([('id', 'in', assets_data.mapped('res_id'))])
             assets.unlink()
             _logger.info("deleting imported modules upon uninstallation: %s",
-                         ", ".join(deleted_modules_names))
+                         ", ".join(deleted_modules_names)
             modules_to_delete.unlink()
         return res
 
@@ -415,7 +415,7 @@ class IrModule(models.Model):
                 f"{APPS_URL}/loempia/listdatamodules",
                 data=payload,
                 headers=headers,
-                timeout=5.0)
+                timeout=5.0
 
     @api.model
     @ormcache()
@@ -424,7 +424,7 @@ class IrModule(models.Model):
             resp = requests.post(
                 f"{APPS_URL}/loempia/listindustrycategory",
                 json={'params': {}},
-                timeout=5.0)
+                timeout=5.0
             resp.raise_for_status()
             return resp.json().get('result', [])
         except requests.exceptions.HTTPError:
@@ -439,7 +439,7 @@ class IrModule(models.Model):
         try:
             resp = requests.get(
                 f"{APPS_URL}/loempia/download/data_app/{module_name}/{major_version}",
-                timeout=5.0)
+                timeout=5.0
             resp.raise_for_status()
             missing_dependencies_description, unavailable_modules = self._get_missing_dependencies(resp.content)
             if unavailable_modules:
@@ -448,7 +448,7 @@ class IrModule(models.Model):
                 'module_file': base64.b64encode(resp.content),
                 'state': 'init',
                 'modules_dependencies': missing_dependencies_description,
-            })
+            }
             return {
                 'name': _("Install an Industry"),
                 'view_mode': 'form',
@@ -480,7 +480,7 @@ class IrModule(models.Model):
         else:
             description = _(
                 "Load demo data to test the industry's features with sample records. "
-                "Do not load them if this is your production database.")
+                "Do not load them if this is your production database."
         return description, unavailable_modules
 
     def _get_missing_dependencies_modules(self, zip_data):
@@ -508,7 +508,7 @@ class IrModule(models.Model):
                     mod for mod in unmet_dependencies if mod not in dependencies_to_install.mapped('name')
         return dependencies_to_install, not_found_modules
 
-    @api.model
+    @api.model]
     def search_panel_select_range(self, field_name, **kwargs):
         if field_name == 'category_id' and _domain_asks_for_industries(kwargs.get('category_domain', [])):
             categories = self._get_industry_categories_from_apps()
@@ -546,12 +546,12 @@ def _is_studio_custom(path):
         for record in root:
             # there might not be a context if it's a non-studio module
             try:
-                # ast.literal_eval is like eval(), but safer
+                # ast.literal_eval is like eval(, but safer
                 # context is a string representing a python dict
-                ctx = ast.literal_eval(record.get('context'))
+                ctx = ast.literal_eval(record.get('context')
                 # there are no cases in which studio is false
                 # so just checking for its existence is enough
-                if ctx and ctx.get('studio'):
+                if ctx and ctx.get('studio':
                     return True
             except Exception:
                 continue

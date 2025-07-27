@@ -18,7 +18,7 @@ class StockPicking(models.Model):
                 customers = {}
                 for item in customer_items:
                     customer = item.lot_id.customer_id
-                    customers.setdefault(customer, []).append(item)
+                    customers.setdefault(customer, [].append(item)
                 for customer, items in customers.items():
                     self.env['sale.order'].create({
                         'partner_id': customer.id,
@@ -28,5 +28,5 @@ class StockPicking(models.Model):
                             ).id,
                             'product_uom_qty': len(items),
                         })],
-                    })
+                    }
         return res

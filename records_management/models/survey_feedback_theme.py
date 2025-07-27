@@ -8,18 +8,18 @@ class SurveyFeedbackTheme(models.Model):
     _order = 'name'
 
     name = fields.Char(string='Theme Name', required=True, 
-                       help='Name of the feedback theme (e.g., "Service Quality", "Response Time")')
+                       help='Name of the feedback theme (e.g., "Service Quality", "Response Time"')
     description = fields.Text(string='Description', 
-                             help='Detailed description of this theme')
+                             help='Detailed description of this theme',
     color = fields.Integer(string='Color', 
-                          help='Color for kanban view and tags')
+                          help='Color for kanban view and tags',
     active = fields.Boolean(string='Active', default=True)
     
     # AI Classification fields
     keywords = fields.Text(string='Keywords', 
-                          help='Comma-separated keywords for AI theme detection')
+                          help='Comma-separated keywords for AI theme detection',
     category = fields.Selection([
-        ('service', 'Service Quality'),
+        ('service', 'Service Quality',
         ('communication', 'Communication'),
         ('pricing', 'Pricing'),
         ('product', 'Product Quality'),
@@ -27,10 +27,9 @@ class SurveyFeedbackTheme(models.Model):
         ('process', 'Process Improvement'),
         ('other', 'Other')
     
-    # Usage tracking
+    # Usage tracking), string="Selection Field"
     usage_count = fields.Integer(string='Usage Count', default=0,
-                                help='Number of times this theme was identified')
-    
+                                help='Number of times this theme was identified',
     _sql_constraints = [
         ('name_unique', 'UNIQUE(name)', 'Theme name must be unique'),
     ]

@@ -8,14 +8,14 @@ class Load(models.Model):
     _inherit = ['stock.picking', 'mail.thread']
 
     name = fields.Char(default=lambda self: self.env['ir.sequence'].next_by_code('records_management.load'))
-    # Legacy bale reference (for old records_management.bale model)
+    # Legacy bale reference (for old records_management.bale model
     legacy_bale_ids = fields.One2many('records_management.bale', 'load_id', string='Legacy Bales')
     bale_count = fields.Integer(compute='_compute_bale_count')
     weight_total = fields.Float(compute='_compute_weight_total')
     invoice_id = fields.Many2one('account.move')
     driver_signature = fields.Binary()
     
-    # Phase 3: Load Analytics (Final 3 fields to complete Phase 3!)
+    # Phase 3: Load Analytics (Final 3 fields to complete Phase 3!
     
     # Load Efficiency Analytics
     load_optimization_score = fields.Float(

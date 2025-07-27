@@ -10,24 +10,24 @@ class HrEmployee(models.Model):
     # Portal user import fields
     can_import_users = fields.Boolean(
         string='Can Import Portal Users',
-        help='Allow this employee to import users via portal'
-)
+        help='Allow this employee to import users via portal',
     portal_access_level = fields.Selection([
-        ('basic', 'Basic Access'),
-        ('advanced', 'Advanced Access'),
+        ('basic', 'Basic Access',
+        ('advanced', 'Advanced Access',
         ('admin', 'Admin Access'),
-)
+    ), string='Portal Access Level'
+    
     records_management_role = fields.Selection([
         ('viewer', 'Viewer'),
         ('operator', 'Operator'),
         ('supervisor', 'Supervisor'),
         ('manager', 'Manager'),
-    
-    # User import tracking)
+    ), string='Records Management Role'
+    # User import tracking
     imported_user_count = fields.Integer(
         string='Imported Users Count',
         compute='_compute_imported_user_count'
-)
+
     last_import_date = fields.Datetime(string='Last Import Date')
     
     # Phase 3: HR Analytics & Performance Fields
@@ -37,29 +37,27 @@ class HrEmployee(models.Model):
         string='Records Handling Efficiency %',
         compute='_compute_performance_analytics',
         store=True,
-        help='Efficiency score for records management tasks'
-)
+        help='Efficiency score for records management tasks',
     productivity_score = fields.Float(
         string='Productivity Score',
         compute='_compute_performance_analytics',
         store=True,
-        help='Overall productivity assessment (0-100)'
+        help='Overall productivity assessment (0-100'
     
-    # Training Analytics)
+    # Training Analytics
     skill_development_index = fields.Float(
         string='Skill Development Index',
         compute='_compute_training_analytics',
         store=True,
-        help='Index measuring skill progression and development'
-)
+        help='Index measuring skill progression and development',
     compliance_training_status = fields.Selection([
-        ('up_to_date', 'Up to Date'),
+        ('up_to_date', 'Up to Date',
         ('due_soon', 'Due Soon'),
         ('overdue', 'Overdue'),
         ('not_required', 'Not Required')
-       compute='_compute_training_analytics',
+    ), string='Training Status', compute='_compute_training_analytics',
        store=True,
-       help='Current compliance training status')
+       help='Current compliance training status'
     
     # Specialization Analytics
     records_specialization_score = fields.Float(
@@ -68,20 +66,20 @@ class HrEmployee(models.Model):
         store=True,
         help='Specialization level in records management'
     
-    # NAID Compliance Tracking)
+    # NAID Compliance Tracking
     audit_log_ids = fields.One2many('naid.audit.log', 'employee_id', 
                                    string='NAID Audit Logs',
-                                   help='NAID compliance audit logs for this employee')
+                                   help='NAID compliance audit logs for this employee'
     
-    @api.depends('user_id')
+    @api.depends('user_id'
     def _compute_imported_user_count(self):
         """Compute number of users imported by this employee."""
         for employee in self:
             # Implementation will be added when user import model is created
             employee.imported_user_count = 0
     
-    @api.depends('records_management_role', 'portal_access_level', 'user_id')
-    def _compute_performance_analytics(self):
+    @api.depends('records_management_role', 'portal_access_level', 'user_id'
+    def _compute_performance_analytics(self:
         """Compute performance analytics for records management"""
         for employee in self:
             # Base efficiency score based on role
@@ -92,7 +90,7 @@ class HrEmployee(models.Model):
                 'viewer': 60        # Limited interaction
             }
             
-            base_efficiency = role_efficiency.get(employee.records_management_role, 70)
+            base_efficiency = role_efficiency.get(employee.records_management_role, 70
             
             # Access level factor
             access_factors = {
@@ -101,17 +99,17 @@ class HrEmployee(models.Model):
                 'basic': 0          # Standard access
             }
             
-            access_bonus = access_factors.get(employee.portal_access_level, 0)
+            access_bonus = access_factors.get(employee.portal_access_level, 0
             
             # User import capability bonus
             if employee.can_import_users:
                 access_bonus += 5
             
-            # Recent activity bonus (simplified - would track actual activity)
+            # Recent activity bonus (simplified - would track actual activity
             activity_bonus = 5 if employee.last_import_date else 0
             
             total_efficiency = base_efficiency + access_bonus + activity_bonus
-            employee.records_handling_efficiency = min(max(total_efficiency, 0), 100)
+            employee.records_handling_efficiency = min(max(total_efficiency, 0, 100)
             
             # Productivity score based on role and responsibilities
             productivity = employee.records_handling_efficiency
@@ -128,7 +126,7 @@ class HrEmployee(models.Model):
                 if 80 <= productivity <= 95:
                     productivity += 3
             
-            employee.productivity_score = min(max(productivity, 0), 100)
+            employee.productivity_score = min(max(productivity, 0, 100
     
     @api.depends('records_management_role', 'portal_access_level')
     def _compute_training_analytics(self):
@@ -142,7 +140,7 @@ class HrEmployee(models.Model):
                 'manager': 90       # Expert skills
             }
             
-            base_skill = role_skills.get(employee.records_management_role, 30)
+            base_skill = role_skills.get(employee.records_management_role, 30
             
             # Access level indicates training completion
             access_training = {
@@ -151,14 +149,14 @@ class HrEmployee(models.Model):
                 'admin': 25         # Comprehensive training
             }
             
-            training_bonus = access_training.get(employee.portal_access_level, 0)
+            training_bonus = access_training.get(employee.portal_access_level, 0
             
             # Import capability indicates specialized training
             if employee.can_import_users:
                 training_bonus += 10
             
             skill_index = base_skill + training_bonus
-            employee.skill_development_index = min(skill_index, 100)
+            employee.skill_development_index = min(skill_index, 100
             
             # Compliance training status assessment
             # In real implementation, would check actual training records
@@ -180,8 +178,8 @@ class HrEmployee(models.Model):
                 # Viewers have minimal requirements
                 employee.compliance_training_status = 'not_required'
     
-    @api.depends('records_management_role', 'portal_access_level', 'can_import_users')
-    def _compute_specialization_analytics(self):
+    @api.depends('records_management_role', 'portal_access_level', 'can_import_users'
+    def _compute_specialization_analytics(self:
         """Compute records management specialization analytics"""
         for employee in self:
             # Base specialization from role
@@ -192,7 +190,7 @@ class HrEmployee(models.Model):
                 'viewer': 20        # Basic specialization
             }
             
-            base_spec = role_specialization.get(employee.records_management_role, 30)
+            base_spec = role_specialization.get(employee.records_management_role, 30
             
             # Access level indicates deeper system knowledge
             access_specialization = {
@@ -201,14 +199,14 @@ class HrEmployee(models.Model):
                 'basic': 0          # Standard knowledge
             }
             
-            access_spec = access_specialization.get(employee.portal_access_level, 0)
+            access_spec = access_specialization.get(employee.portal_access_level, 0
             
             # Special capabilities indicate expertise
             capability_bonus = 0
             if employee.can_import_users:
                 capability_bonus += 8  # Specialized skill
             
-            # Experience factor (based on import history)
+            # Experience factor (based on import history
             experience_bonus = 0
             if employee.imported_user_count > 10:
                 experience_bonus = 7
@@ -218,4 +216,4 @@ class HrEmployee(models.Model):
                 experience_bonus = 2
             
             total_specialization = base_spec + access_spec + capability_bonus + experience_bonus
-            employee.records_specialization_score = min(max(total_specialization, 0), 100)
+            employee.records_specialization_score = min(max(total_specialization, 0, 100)

@@ -19,7 +19,7 @@ class PortalRequest(models.Model):
         ('service', 'Service Request'),
         ('inventory_checkout', 'Inventory Checkout'),
         ('billing_update', 'Billing Update'),
-        ('quote_generate', 'Quote Generation'),
+        ('quote_generate', 'Quote Generation',), string="Selection Field")
     description = fields.Html(string='Description')
     suggested_date = fields.Date(string='Suggested Date', help='Customer suggested date for service/request')
     state = fields.Selection([
@@ -28,7 +28,7 @@ class PortalRequest(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
     
-    # Core Request Management Fields
+    # Core Request Management Fields), string="Selection Field"
     customer_id = fields.Many2one('res.partner', string='Customer', related='partner_id', store=True)
     subject = fields.Char(string='Subject', required=True)
     priority = fields.Selection([
@@ -36,7 +36,7 @@ class PortalRequest(models.Model):
         ('normal', 'Normal'), 
         ('high', 'High'),
         ('urgent', 'Urgent')
-    ], default='normal', string='Priority', tracking=True)
+    ], default='normal', string='Priority', tracking=True
     status = fields.Selection([
         ('new', 'New'),
         ('in_progress', 'In Progress'),
@@ -44,7 +44,7 @@ class PortalRequest(models.Model):
         ('resolved', 'Resolved'),
         ('closed', 'Closed'),
         ('cancelled', 'Cancelled')
-    ], default='new', string='Status', tracking=True)
+    ], default='new', string='Status', tracking=True
     request_status = fields.Char(string='Request Status', compute='_compute_request_status', store=True)
     
     # Dates and Timeline
@@ -60,13 +60,13 @@ class PortalRequest(models.Model):
     sla_status = fields.Selection([
         ('on_time', 'On Time'),
         ('at_risk', 'At Risk'),
-        ('breached', 'Breached')
+        ('breached', 'Breached'), string="Selection Field")
     sla_target_hours = fields.Float(string='SLA Target Hours')
     sla_breach_risk = fields.Boolean(string='SLA Breach Risk', compute='_compute_sla_breach_risk')
     sla_milestone_ids = fields.One2many('portal.request.milestone', 'request_id', string='SLA Milestones')
     
     # Time Tracking
-    processing_time = fields.Float(string='Processing Time (Hours)')
+    processing_time = fields.Float(string='Processing Time (Hours')
     response_time = fields.Float(string='Response Time (Hours)')
     resolution_time = fields.Float(string='Resolution Time (Hours)')
     first_response_time = fields.Float(string='First Response Time (Hours)')
@@ -91,17 +91,17 @@ class PortalRequest(models.Model):
         ('scanning', 'Scanning'),
         ('consultation', 'Consultation')
     
-    # Approval Workflow
+    # Approval Workflow), string="Selection Field"
     requires_approval = fields.Boolean(string='Requires Approval', default=True)
     approval_level = fields.Selection([
         ('supervisor', 'Supervisor'),
         ('manager', 'Manager'),
-        ('executive', 'Executive')
+        ('executive', 'Executive'), string="Selection Field")
     approval_level_required = fields.Selection([
         ('none', 'None'),
         ('basic', 'Basic'),
         ('advanced', 'Advanced'),
-        ('executive', 'Executive')
+        ('executive', 'Executive'), string="Selection Field")
     primary_approver = fields.Many2one('res.users', string='Primary Approver')
     secondary_approver = fields.Many2one('res.users', string='Secondary Approver')
     final_approver = fields.Many2one('res.users', string='Final Approver')
@@ -114,7 +114,7 @@ class PortalRequest(models.Model):
         ('approve', 'Approve'),
         ('reject', 'Reject'),
         ('defer', 'Defer'),
-        ('escalate', 'Escalate')
+        ('escalate', 'Escalate'), string="Selection Field")
     approval_history_ids = fields.One2many('portal.request.approval', 'request_id', string='Approval History')
     auto_approve_threshold = fields.Float(string='Auto Approve Threshold')
     
@@ -128,7 +128,7 @@ class PortalRequest(models.Model):
     billing_method = fields.Selection([
         ('hourly', 'Hourly'),
         ('fixed', 'Fixed Price'),
-        ('materials', 'Materials Based')
+        ('materials', 'Materials Based'), string="Selection Field")
     billing_required = fields.Boolean(string='Billing Required')
     invoice_generated = fields.Boolean(string='Invoice Generated')
     
@@ -148,16 +148,16 @@ class PortalRequest(models.Model):
         ('email', 'Email'),
         ('phone', 'Phone'),
         ('portal', 'Portal'),
-        ('in_person', 'In Person')
+        ('in_person', 'In Person'), string="Selection Field")
     communication_date = fields.Datetime(string='Communication Date')
     
     # Quality and Satisfaction
     customer_satisfaction = fields.Selection([
-        ('1', 'Very Poor'),
+        ('1', 'Very Poor',
         ('2', 'Poor'),
         ('3', 'Average'),
         ('4', 'Good'),
-        ('5', 'Excellent')
+        ('5', 'Excellent'), string="Selection Field")
     customer_rating = fields.Integer(string='Customer Rating (1-10)')
     overall_satisfaction = fields.Float(string='Overall Satisfaction Score')
     quality_score = fields.Float(string='Quality Score')
@@ -182,7 +182,7 @@ class PortalRequest(models.Model):
         ('public', 'Public'),
         ('internal', 'Internal'),
         ('confidential', 'Confidential'),
-        ('restricted', 'Restricted')
+        ('restricted', 'Restricted'), string="Selection Field")
     access_restrictions = fields.Text(string='Access Restrictions')
     naid_compliance_required = fields.Boolean(string='NAID Compliance Required')
     chain_of_custody_required = fields.Boolean(string='Chain of Custody Required')
@@ -192,7 +192,7 @@ class PortalRequest(models.Model):
     notes = fields.Text(string='Notes')
     
     # Compute Methods
-    @api.depends('status')
+    @api.depends('status'
     def _compute_request_status(self):
         for record in self:
             record.request_status = record.status or 'new'
@@ -211,7 +211,7 @@ class PortalRequest(models.Model):
             else:
                 record.sla_status = 'on_time'
     
-    @api.depends('sla_deadline')
+    @api.depends('sla_deadline'
     def _compute_sla_breach_risk(self):
         for record in self:
             if record.sla_deadline:
@@ -219,7 +219,7 @@ class PortalRequest(models.Model):
             else:
                 record.sla_breach_risk = False
     
-    @api.depends('submission_date')
+    @api.depends('submission_date'
     def _compute_time_elapsed(self):
         for record in self:
             if record.submission_date:

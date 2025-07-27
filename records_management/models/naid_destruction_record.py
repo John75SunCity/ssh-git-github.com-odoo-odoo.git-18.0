@@ -24,7 +24,7 @@ class NAIDDestructionRecord(models.Model):
         ('chemical', 'Chemical Destruction'),
         ('degaussing', 'Degaussing'),
         ('overwriting', 'Data Overwriting')
-    ], string='Destruction Type', required=True, tracking=True)
+    ), string='Destruction Type', required=True, tracking=True
     
     # NAID compliance relationship
     compliance_id = fields.Many2one('naid.compliance', string='NAID Compliance Record', tracking=True)
@@ -36,13 +36,13 @@ class NAIDDestructionRecord(models.Model):
     
     # Material details
     material_type = fields.Selection([
-        ('paper', 'Paper Documents'),
-        ('hard_drive', 'Hard Drives'),
+        ('paper', 'Paper Documents',
+        ('hard_drive', 'Hard Drives',
         ('optical_media', 'Optical Media'),
         ('magnetic_tape', 'Magnetic Tape'),
         ('electronic', 'Electronic Devices'),
         ('mixed', 'Mixed Materials')
-)
+), string="Selection Field")
     total_weight = fields.Float('Total Weight', tracking=True)
     item_count = fields.Integer('Item Count', tracking=True)
     
@@ -57,12 +57,12 @@ class NAIDDestructionRecord(models.Model):
     
     # Status and verification
     status = fields.Selection([
-        ('scheduled', 'Scheduled'),
-        ('in_progress', 'In Progress'),
+        ('scheduled', 'Scheduled',
+        ('in_progress', 'In Progress',
         ('completed', 'Completed'),
         ('certified', 'Certified'),
         ('cancelled', 'Cancelled')
-)
+), string="Selection Field")
     witnessed = fields.Boolean('Witnessed Destruction', tracking=True)
     photographed = fields.Boolean('Photographed', tracking=True)
     video_recorded = fields.Boolean('Video Recorded', tracking=True)
@@ -87,7 +87,7 @@ class NAIDDestructionRecord(models.Model):
         self.write({
             'status': 'in_progress',
             'destruction_date': fields.Datetime.now()
-        })
+        }
         
     def action_complete_destruction(self):
         """Complete the destruction process"""
@@ -95,16 +95,16 @@ class NAIDDestructionRecord(models.Model):
         self.write({
             'status': 'completed',
             'completion_date': fields.Datetime.now()
-        })
+        }
         
     def action_generate_certificate(self):
         """Generate destruction certificate"""
         self.ensure_one()
         # Generate certificate logic here
-        certificate_number = f"CERT-{self.destruction_number}-{fields.Date.today().strftime('%Y%m%d')}"
+        certificate_number = f"CERT-{self.destruction_number}-{fields.Date.today(.strftime('%Y%m%d'}"
         self.write({
             'status': 'certified',
             'certificate_generated': True,
             'certificate_number': certificate_number,
             'certificate_date': fields.Date.today()
-        })
+        }

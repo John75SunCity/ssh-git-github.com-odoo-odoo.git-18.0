@@ -24,7 +24,7 @@ class NAIDComplianceChecklist(models.Model):
         ('audit', 'Audit Checklist'),
         ('incident', 'Incident Response Checklist')
     
-    # NAID compliance relationship
+    # NAID compliance relationship), string="Selection Field"
     compliance_id = fields.Many2one('naid.compliance', string='NAID Compliance Record', tracking=True)
     
     # Checklist details
@@ -34,12 +34,12 @@ class NAIDComplianceChecklist(models.Model):
     
     # Status and completion
     status = fields.Selection([
-        ('pending', 'Pending'),
+        ('pending', 'Pending',
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('failed', 'Failed'),
         ('overdue', 'Overdue')
-    
+), string="Selection Field"
     completion_percentage = fields.Float('Completion %', compute='_compute_completion', store=True)
     is_overdue = fields.Boolean('Is Overdue', compute='_compute_overdue', store=True)
     
@@ -65,7 +65,7 @@ class NAIDComplianceChecklist(models.Model):
         today = fields.Date.today()
         for record in self:
             record.is_overdue = (record.due_date and record.due_date < today and 
-                               record.status not in ['completed', 'failed'])
+                               record.status not in ['completed', 'failed']
     
     @api.depends('status')
     def _compute_completion(self):
@@ -84,7 +84,7 @@ class NAIDComplianceChecklist(models.Model):
         self.write({
             'status': 'in_progress',
             'assigned_to': self.env.user.id
-        })
+        }
         
     def action_complete_checklist(self):
         """Mark checklist as completed"""
@@ -94,4 +94,4 @@ class NAIDComplianceChecklist(models.Model):
             'completed_date': fields.Date.today(),
             'completed_by': self.env.user.id,
             'completion_percentage': 100.0
-        })
+        }

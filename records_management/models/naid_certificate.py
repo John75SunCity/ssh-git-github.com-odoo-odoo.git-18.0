@@ -25,7 +25,7 @@ class NAIDCertificate(models.Model):
         ('auditor', 'Auditor Certification'),
         ('facility', 'Facility Certification')
     
-    # NAID compliance relationship
+    # NAID compliance relationship), string="Selection Field"
     compliance_id = fields.Many2one('naid.compliance', string='NAID Compliance Record', tracking=True)
     
     # Certificate details
@@ -36,12 +36,12 @@ class NAIDCertificate(models.Model):
     
     # Status and validity
     status = fields.Selection([
-        ('active', 'Active'),
+        ('active', 'Active',
         ('expired', 'Expired'),
         ('suspended', 'Suspended'),
         ('revoked', 'Revoked'),
         ('pending', 'Pending Renewal')
-    
+), string="Selection Field"
     is_valid = fields.Boolean('Is Valid', compute='_compute_validity', store=True)
     days_until_expiry = fields.Integer('Days Until Expiry', compute='_compute_validity', store=True)
     
@@ -55,9 +55,9 @@ class NAIDCertificate(models.Model):
     notes = fields.Text('Notes')
     attachment_ids = fields.Many2many('ir.attachment', relation='attachment_ids_rel', 
                                    domain=[('res_model', '=', 'naid.certificate')],  # Fixed syntax error
-                                   string='Attachments')
+                                   string='Attachments'
     
-    @api.depends('expiry_date', 'status')
+    @api.depends('expiry_date', 'status'
     def _compute_validity(self):
         """Compute certificate validity and days until expiry"""
         today = fields.Date.today()

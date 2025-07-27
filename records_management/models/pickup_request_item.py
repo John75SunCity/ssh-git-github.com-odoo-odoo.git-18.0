@@ -28,7 +28,7 @@ class PickupRequestItem(models.Model):
     lot_id = fields.Many2one(
         'stock.lot',
         string='Lot/Serial Number',
-        domain="[('product_id', '=', product_id)]"
+        domain="[('product_id', '=', product_id]")
     notes = fields.Text(string='Notes')
 
     @api.constrains('quantity')

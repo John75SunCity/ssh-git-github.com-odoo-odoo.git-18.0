@@ -22,6 +22,7 @@ class ShreddingServiceLog(models.Model):
         default=fields.Datetime.now,
         required=True,
         index=True
+    )
     
     activity_type = fields.Selection([
         ('scheduled', 'Service Scheduled'),
@@ -31,46 +32,51 @@ class ShreddingServiceLog(models.Model):
         ('incident', 'Incident Reported'),
         ('quality_check', 'Quality Check'),
         ('compliance_check', 'Compliance Check')
+    ], string='Activity Type')
     
     activity_description = fields.Char(
         string='Activity Description',
         required=True
-    
+    )
     # Related entities
     shredding_service_id = fields.Many2one(
         'shredding.service',
         string='Shredding Service',
         required=True,
         ondelete='cascade'
-    
+    )
+
     user_id = fields.Many2one(
         'res.users',
         string='User',
         default=lambda self: self.env.user,
         required=True
-    
+    )
     # Service details
     documents_count = fields.Integer(
         string='Documents Processed',
         help='Number of documents processed in this activity'
-    
+    )
+
     weight_processed = fields.Float(
         string='Weight Processed (kg)',
         help='Weight of materials processed'
-    
+    )
+
     duration_minutes = fields.Integer(
         string='Duration (minutes)',
         help='Duration of the activity in minutes'
-    
+    )
     # Quality and compliance
     quality_score = fields.Float(
         string='Quality Score',
         help='Quality assessment score (0-100)'
-    
+    )
+
     compliance_verified = fields.Boolean(
         string='Compliance Verified',
         default=False
-    
+    )
     # Status and notes
     status = fields.Selection([
         ('pending', 'Pending'),
@@ -78,16 +84,18 @@ class ShreddingServiceLog(models.Model):
         ('completed', 'Completed'),
         ('failed', 'Failed'),
         ('requires_attention', 'Requires Attention')
+    ], string='Status')
     
     notes = fields.Text(
         string='Notes',
         help='Additional notes about this activity'
-    
+    )
     # File attachments
     attachment_ids = fields.Many2many(
         'ir.attachment',
         string='Attachments',
         help='Photos, certificates, or other documentation'
+    )
     
     # Computed fields for analytics
     efficiency_score = fields.Float(
@@ -95,7 +103,7 @@ class ShreddingServiceLog(models.Model):
         compute='_compute_efficiency_score',
         store=True,
         help='Calculated efficiency based on time and volume'
-    
+    )
     @api.depends('duration_minutes', 'documents_count', 'weight_processed')
     def _compute_efficiency_score(self):
         """Calculate efficiency score based on processing metrics"""
@@ -134,7 +142,7 @@ class ShreddingServiceLog(models.Model):
         
         # Create notification
         self.env['mail.message'].create({
-            'body': _('Shredding service activity flagged for attention: %s') % self.activity_description,
+            'body': _('Shredding service activity flagged for attention: %s' % self.activity_description),
             'model': self._name,
             'res_id': self.id,
         })

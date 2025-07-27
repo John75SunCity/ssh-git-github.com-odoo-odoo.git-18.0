@@ -22,26 +22,25 @@ class RecordsSecurityAudit(models.Model):
         string='Audit Reference',
         required=True,
         default='New'
-    
+
     audit_date = fields.Date(
         string='Audit Date',
         default=fields.Date.context_today,
         required=True
     
     audit_type = fields.Selection([
-        ('location', 'Location Security Audit'),
+        ('location', 'Location Security Audit',
         ('access', 'Access Control Audit'),
         ('document', 'Document Security Audit'),
         ('personnel', 'Personnel Security Audit'),
         ('system', 'System Security Audit'),
         ('compliance', 'Compliance Audit')
     
-    # Related entities
+    # Related entities), string="Selection Field"
     location_id = fields.Many2one(
         'records.location',
         string='Location',
-        help='Location being audited'
-    
+        help='Location being audited',
     auditor_id = fields.Many2one(
         'res.users',
         string='Auditor',
@@ -55,18 +54,17 @@ class RecordsSecurityAudit(models.Model):
         ('completed', 'Completed'),
         ('failed', 'Failed'),
         ('cancelled', 'Cancelled')
-    
+), string="Selection Field"
     result = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('conditional', 'Conditional Pass'),
         ('pending', 'Pending Review')
     
-    # Security assessment scores
+    # Security assessment scores), string="Selection Field"
     security_score = fields.Float(
         string='Security Score (0-100)',
-        help='Overall security assessment score'
-    
+        help='Overall security assessment score',
     compliance_score = fields.Float(
         string='Compliance Score (0-100)',
         help='Compliance assessment score'
@@ -74,12 +72,10 @@ class RecordsSecurityAudit(models.Model):
     # Audit details
     findings = fields.Text(
         string='Audit Findings',
-        help='Detailed findings from the security audit'
-    
+        help='Detailed findings from the security audit',
     recommendations = fields.Text(
         string='Recommendations',
-        help='Security recommendations based on audit findings'
-    
+        help='Security recommendations based on audit findings',
     corrective_actions = fields.Text(
         string='Corrective Actions',
         help='Required corrective actions'
@@ -88,10 +84,10 @@ class RecordsSecurityAudit(models.Model):
     follow_up_required = fields.Boolean(
         string='Follow-up Required',
         default=False
-    
+
     follow_up_date = fields.Date(
         string='Follow-up Date'
-    
+
     next_audit_date = fields.Date(
         string='Next Audit Date',
         compute='_compute_next_audit_date',
@@ -125,7 +121,7 @@ class RecordsSecurityAudit(models.Model):
                     'compliance': 365    # Annually
                 }
                 
-                days_to_add = intervals.get(audit.audit_type, 90)
+                days_to_add = intervals.get(audit.audit_type, 90
                 audit.next_audit_date = audit.audit_date + fields.Date.from_string('1970-01-01').replace(day=days_to_add)
             else:
                 audit.next_audit_date = False

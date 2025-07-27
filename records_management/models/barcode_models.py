@@ -13,11 +13,11 @@ class ResPartnerDepartmentBilling(models.Model):
     
     # Billing settings
     billing_method = fields.Selection([
-        ('standard', 'Standard Billing'),
+        ('standard', 'Standard Billing',
         ('consolidated', 'Consolidated Billing'),
         ('separate', 'Separate Billing')
     
-    # Contact information
+    # Contact information), string="Selection Field"
     billing_contact_id = fields.Many2one('res.partner', string='Billing Contact', tracking=True)
     billing_email = fields.Char(string='Billing Email', tracking=True)
     
@@ -41,13 +41,13 @@ class RecordsBarcodeConfig(models.Model):
     
     # Barcode format
     barcode_format = fields.Selection([
-        ('code128', 'Code 128'),
+        ('code128', 'Code 128',
         ('code39', 'Code 39'),
         ('upc', 'UPC'),
         ('ean13', 'EAN-13'),
         ('qr', 'QR Code')
     
-    # Generation settings
+    # Generation settings), string="Selection Field"
     auto_generate = fields.Boolean(string='Auto Generate Barcodes', default=True, tracking=True)
     prefix = fields.Char(string='Prefix', tracking=True)
     suffix = fields.Char(string='Suffix', tracking=True)
@@ -82,20 +82,20 @@ class RecordsBarcodeHistory(models.Model):
     
     # Operation details
     operation_type = fields.Selection([
-        ('checkin', 'Check In'),
+        ('checkin', 'Check In',
         ('checkout', 'Check Out'),
         ('inventory', 'Inventory'),
         ('movement', 'Movement'),
         ('verification', 'Verification'),
         ('other', 'Other')
     
-    # Results
+    # Results), string="Selection Field"
     scan_result = fields.Selection([
         ('success', 'Success'),
         ('error', 'Error'),
         ('warning', 'Warning'),
         ('not_found', 'Not Found')
-    
+), string="Selection Field"
     error_message = fields.Text(string='Error Message')
     notes = fields.Text(string='Notes')
     

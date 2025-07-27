@@ -8,7 +8,7 @@ from odoo import models, fields, api
 from datetime import timedelta
 import logging
 
-_logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__
 
 class HREmployeeNAID(models.Model):
     """
@@ -18,25 +18,22 @@ class HREmployeeNAID(models.Model):
 
     # NAID Background Check Fields
     background_check_status = fields.Selection([
-        ('pending', 'Pending'),
+        ('pending', 'Pending',
         ('in_progress', 'In Progress'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('expired', 'Expired'),
         ('renewal_required', 'Renewal Required')
-    
+), string="Selection Field"
     background_check_date = fields.Date(
         string='Background Check Date',
-        help='Date when background check was completed'
-    
+        help='Date when background check was completed',
     background_check_expiry = fields.Date(
         string='Background Check Expiry',
-        help='Date when background check expires'
-    
+        help='Date when background check expires',
     background_check_provider = fields.Char(
         string='Background Check Provider',
-        help='Company that performed the background check'
-    
+        help='Company that performed the background check',
     background_check_reference = fields.Char(
         string='Background Check Reference',
         help='Reference number from background check provider'
@@ -48,10 +45,10 @@ class HREmployeeNAID(models.Model):
         ('confidential', 'Confidential Access'),
         ('secret', 'Secret Access'),
         ('top_secret', 'Top Secret Access')
-    
+), string="Selection Field"
     security_clearance_date = fields.Date(
         string='Security Clearance Date'
-    
+
     security_clearance_expiry = fields.Date(
         string='Security Clearance Expiry'
     
@@ -59,13 +56,13 @@ class HREmployeeNAID(models.Model):
     naid_training_completed = fields.Boolean(
         string='NAID Training Completed',
         default=False
-    
+
     naid_training_date = fields.Date(
         string='NAID Training Date'
-    
+
     naid_training_expiry = fields.Date(
         string='NAID Training Expiry'
-    
+
     naid_certification_number = fields.Char(
         string='NAID Certification Number'
     
@@ -76,14 +73,13 @@ class HREmployeeNAID(models.Model):
         ('warehouse', 'Warehouse Access'),
         ('destruction', 'Destruction Area'),
         ('full', 'Full Facility Access')
-    
+), string="Selection Field"
     access_card_number = fields.Char(
         string='Access Card Number',
-        help='Physical access card or key fob number'
-    
+        help='Physical access card or key fob number',
     access_card_issued_date = fields.Date(
         string='Access Card Issued Date'
-    
+
     access_card_active = fields.Boolean(
         string='Access Card Active',
         default=False
@@ -92,8 +88,7 @@ class HREmployeeNAID(models.Model):
     emergency_contact_verified = fields.Boolean(
         string='Emergency Contact Verified',
         default=False,
-        help='Whether emergency contacts have been verified'
-    
+        help='Whether emergency contacts have been verified',
     emergency_contact_verification_date = fields.Date(
         string='Emergency Contact Verification Date'
     
@@ -105,7 +100,7 @@ class HREmployeeNAID(models.Model):
         ('background_check_required', 'Background Check Required'),
         ('non_compliant', 'Non-Compliant'),
         ('suspended', 'Suspended')
-    
+), string="Selection Field"
     compliance_notes = fields.Text(
         string='Compliance Notes',
         help='Notes about compliance status and requirements'
@@ -113,7 +108,7 @@ class HREmployeeNAID(models.Model):
     # Audit Trail
     last_compliance_review = fields.Date(
         string='Last Compliance Review'
-    
+
     next_compliance_review = fields.Date(
         string='Next Compliance Review',
         compute='_compute_next_compliance_review',
@@ -125,7 +120,7 @@ class HREmployeeNAID(models.Model):
         'employee_id',
         string='Audit Logs',
         readonly=True
-    
+
     witness_audit_log_ids = fields.Many2many(
         'naid.audit.log',
         'naid_audit_witness_rel',
@@ -139,12 +134,12 @@ class HREmployeeNAID(models.Model):
         string='Background Check Expires Soon',
         compute='_compute_expiry_warnings',
         store=True
-    
+
     training_expires_soon = fields.Boolean(
         string='Training Expires Soon',
         compute='_compute_expiry_warnings',
         store=True
-    
+
     clearance_expires_soon = fields.Boolean(
         string='Clearance Expires Soon',
         compute='_compute_expiry_warnings',
@@ -187,7 +182,7 @@ class HREmployeeNAID(models.Model):
             
             employee.compliance_status = status
 
-    @api.depends('last_compliance_review')
+    @api.depends('last_compliance_review'
     def _compute_next_compliance_review(self):
         """Compute next compliance review date (quarterly)"""
         for employee in self:
@@ -199,7 +194,7 @@ class HREmployeeNAID(models.Model):
     def _compute_expiry_warnings(self):
         """Compute expiry warning flags"""
         warning_days = 30  # Warn 30 days before expiry
-        warning_date = today + timedelta(days=warning_days)
+        warning_date = today + timedelta(days=warning_days
         
         for employee in self:
             # Background check expiry warning
@@ -217,11 +212,11 @@ class HREmployeeNAID(models.Model):
                 employee.security_clearance_expiry and
                 employee.security_clearance_expiry <= warning_date
 
-    def action_request_background_check(self):
+    def action_request_background_check(self:
         """Initiate background check process"""
         self.write({
             'background_check_status': 'in_progress'
-        })
+        }
         
         # Log the event
         self.env['naid.audit.log'].log_event(
@@ -239,7 +234,7 @@ class HREmployeeNAID(models.Model):
             'context': {'default_employee_id': self.id}
         }
 
-    def action_approve_background_check(self):
+    def action_approve_background_check(self:
         """Approve background check"""
         expiry = today + timedelta(days=365)  # 1 year validity
         
@@ -247,7 +242,7 @@ class HREmployeeNAID(models.Model):
             'background_check_status': 'approved',
             'background_check_date': today,
             'background_check_expiry': expiry
-        })
+        }
         
         # Log the event
         self.env['naid.audit.log'].log_event(
@@ -257,7 +252,7 @@ class HREmployeeNAID(models.Model):
             risk_level='low',
             compliance_status='compliant'
 
-    def action_complete_naid_training(self):
+    def action_complete_naid_training(self:
         """Mark NAID training as completed"""
         expiry = today + timedelta(days=365)  # 1 year validity
         
@@ -265,7 +260,7 @@ class HREmployeeNAID(models.Model):
             'naid_training_completed': True,
             'naid_training_date': today,
             'naid_training_expiry': expiry
-        })
+        }
         
         # Log the event
         self.env['naid.audit.log'].log_event(
@@ -275,12 +270,12 @@ class HREmployeeNAID(models.Model):
             risk_level='low',
             compliance_status='compliant'
 
-    def action_issue_access_card(self):
+    def action_issue_access_card(self:
         """Issue access card to employee"""
         self.write({
             'access_card_active': True,
             'access_card_issued_date': fields.Date.today()
-        })
+        }
         
         # Log the event
         self.env['naid.audit.log'].log_event(
@@ -290,11 +285,11 @@ class HREmployeeNAID(models.Model):
             risk_level='medium',
             compliance_status='compliant'
 
-    def action_revoke_access_card(self):
+    def action_revoke_access_card(self:
         """Revoke access card from employee"""
         self.write({
             'access_card_active': False
-        })
+        }
         
         # Log the event
         self.env['naid.audit.log'].log_event(
@@ -304,11 +299,11 @@ class HREmployeeNAID(models.Model):
             risk_level='high',
             compliance_status='compliant'
 
-    def action_conduct_compliance_review(self):
+    def action_conduct_compliance_review(self:
         """Conduct compliance review"""
         self.write({
             'last_compliance_review': fields.Date.today()
-        })
+        }
         
         # Log the event
         self.env['naid.audit.log'].log_event(
@@ -319,20 +314,20 @@ class HREmployeeNAID(models.Model):
             compliance_status='compliant'
 
     @api.model
-    def check_expiring_credentials(self):
+    def check_expiring_credentials(self:
         """
         Cron job to check for expiring credentials and send notifications
         """
         warning_date = today + timedelta(days=30)
         
         # Find employees with expiring credentials
-        expiring_employees = self.search([
+        expiring_employees = self.search\([
             '|', '|', '|',
-            ('background_check_expiry', '<=', warning_date),
+            ('background_check_expiry', '<=', warning_date,
             ('naid_training_expiry', '<=', warning_date),
-            ('security_clearance_expiry', '<=', warning_date),
+            ('security_clearance_expiry', '<=', warning_date),])
             ('compliance_status', 'in', ['training_required', 'background_check_required'])
-        ])
+        ]
         
         for employee in expiring_employees:
             # Create audit log for expiring credentials
@@ -343,6 +338,6 @@ class HREmployeeNAID(models.Model):
                 risk_level='medium',
                 compliance_status='warning',
                 remediation_required=True,
-                remediation_deadline=fields.Datetime.now() + timedelta(days=30)
+                remediation_deadline=fields.Datetime.now( + timedelta(days=30)
         
         return len(expiring_employees)

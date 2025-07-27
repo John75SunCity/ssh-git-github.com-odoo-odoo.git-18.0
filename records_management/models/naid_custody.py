@@ -8,7 +8,7 @@ from odoo import models, fields, api
 from datetime import datetime, timedelta
 import logging
 
-_logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__
 
 class NAIDChainOfCustody(models.Model):
     """
@@ -30,8 +30,7 @@ class NAIDChainOfCustody(models.Model):
     service_id = fields.Many2one(
         'shredding.service',
         string='Shredding Service',
-        help='Related shredding service'
-    
+        help='Related shredding service',
     customer_id = fields.Many2one(
         'res.partner',
         string='Customer',
@@ -53,7 +52,7 @@ class NAIDChainOfCustody(models.Model):
         ('transferred', 'Transferred'),
         ('terminated', 'Terminated')
     
-    # Custody events
+    # Custody events), string="Selection Field"
     custody_events = fields.One2many(
         'naid.custody.event',
         'custody_id',
@@ -69,8 +68,7 @@ class NAIDChainOfCustody(models.Model):
     # Materials description
     materials_description = fields.Text(
         string='Materials Description',
-        help='Description of materials under custody'
-    
+        help='Description of materials under custody',
     total_weight = fields.Float(
         string='Total Weight (lbs)',
         help='Total weight of materials'
@@ -83,11 +81,11 @@ class NAIDChainOfCustody(models.Model):
         ('secret', 'Secret'),
         ('top_secret', 'Top Secret')
     
-    # Compliance
+    # Compliance), string="Selection Field"
     compliance_verified = fields.Boolean(
         string='Compliance Verified',
         default=False
-    
+
     verification_notes = fields.Text(
         string='Verification Notes'
 
@@ -125,16 +123,16 @@ class NAIDChainOfCustody(models.Model):
         self.write({
             'status': 'completed',
             'end_date': fields.Datetime.now()
-        })
+        }
         
         # Log completion event
         self.env['naid.custody.event'].create({
             'custody_id': self.id,
             'event_type': 'completed',
-            'timestamp': fields.Datetime.now(),
+            'timestamp': fields.Datetime.now(,
             'employee_id': self.env.user.employee_id.id,
             'description': 'Chain of custody completed'
-        })
+        }
 
     def action_view_events(self):
         """View custody events"""
@@ -210,7 +208,7 @@ class NAIDCustodyEvent(models.Model):
         string='Chain of Custody',
         required=True,
         ondelete='cascade'
-    
+
     event_type = fields.Selection([
         ('received', 'Materials Received'),
         ('transferred', 'Custody Transferred'),
@@ -219,27 +217,24 @@ class NAIDCustodyEvent(models.Model):
         ('processed', 'Materials Processed'),
         ('destroyed', 'Materials Destroyed'),
         ('completed', 'Custody Completed')
-    
+), string="Selection Field"
     timestamp = fields.Datetime(
         string='Event Time',
         required=True,
-    )
+    
     
     employee_id = fields.Many2one(
         'hr.employee',
         string='Employee',
         required=True,
-        help='Employee involved in this event'
-    
+        help='Employee involved in this event',
     description = fields.Text(
         string='Description',
         required=True,
-        help='Detailed description of the event'
-    
+        help='Detailed description of the event',
     location = fields.Char(
         string='Location',
-        help='Where the event took place'
-    
+        help='Where the event took place',
     witness_employee_ids = fields.Many2many(
         'hr.employee',
         'custody_event_witness_rel',
@@ -259,7 +254,7 @@ class NAIDCustodyEvent(models.Model):
     longitude = fields.Float(string='Longitude')
     
     # Temperature and environmental conditions
-    temperature = fields.Float(string='Temperature (°F)')
+    temperature = fields.Float(string='Temperature (°F')
     humidity = fields.Float(string='Humidity (%)')
     
     notes = fields.Text(string='Additional Notes')

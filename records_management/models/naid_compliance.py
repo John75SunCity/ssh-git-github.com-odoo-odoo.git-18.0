@@ -17,11 +17,11 @@ class NAIDCompliance(models.Model):
     
     # Compliance status and scoring
     compliance_status = fields.Selection([
-        ('compliant', 'Compliant'),
+        ('compliant', 'Compliant',
         ('non_compliant', 'Non-Compliant'),
         ('pending', 'Pending Review'),
         ('suspended', 'Suspended')
-    
+), string="Selection Field"
     overall_compliance_score = fields.Float(string='Overall Compliance Score', compute='_compute_compliance_scores')
     physical_security_score = fields.Float(string='Physical Security Score', tracking=True)
     operational_score = fields.Float(string='Operational Score', tracking=True)
@@ -35,7 +35,7 @@ class NAIDCompliance(models.Model):
         ('biannual', 'Bi-Annual'),
         ('quarterly', 'Quarterly'),
         ('monthly', 'Monthly')
-    
+), string="Selection Field"
     last_audit_date = fields.Date(string='Last Audit Date', tracking=True)
     next_audit_date = fields.Date(string='Next Audit Date', compute='_compute_next_audit_date', store=True)
     audit_date = fields.Date(string='Current Audit Date', tracking=True)
@@ -52,7 +52,7 @@ class NAIDCompliance(models.Model):
         ('surveillance', 'Surveillance'),
         ('special', 'Special Audit')
     
-    # Certificate management
+    # Certificate management), string="Selection Field"
     certificate_required = fields.Boolean(string='Certificate Required', default=True)
     certificate_issued = fields.Boolean(string='Certificate Issued', tracking=True)
     certificate_valid = fields.Boolean(string='Certificate Valid', compute='_compute_certificate_status')
@@ -61,7 +61,7 @@ class NAIDCompliance(models.Model):
         ('naid_aaa', 'NAID AAA'),
         ('naid_aa', 'NAID AA'),
         ('naid_a', 'NAID A')
-    
+), string="Selection Field"
     issue_date = fields.Date(string='Issue Date', tracking=True)
     expiry_date = fields.Date(string='Expiry Date', tracking=True)
     certification_date = fields.Date(string='Certification Date', tracking=True)
@@ -105,11 +105,11 @@ class NAIDCompliance(models.Model):
     
     # Destruction tracking
     destruction_method = fields.Selection([
-        ('shredding', 'Shredding'),
+        ('shredding', 'Shredding',
         ('incineration', 'Incineration'),
         ('pulverization', 'Pulverization'),
         ('disintegration', 'Disintegration')
-    
+), string="Selection Field"
     destruction_verification = fields.Boolean(string='Destruction Verification', default=True)
     witness_present = fields.Boolean(string='Witness Present During Destruction', tracking=True)
     chain_of_custody = fields.Boolean(string='Chain of Custody Maintained', default=True)
@@ -117,23 +117,23 @@ class NAIDCompliance(models.Model):
     
     # Material and client information
     material_type = fields.Selection([
-        ('paper', 'Paper Documents'),
+        ('paper', 'Paper Documents',
         ('electronic', 'Electronic Media'),
         ('mixed', 'Mixed Media')
-    
+), string="Selection Field"
     client_name = fields.Many2one('res.partner', string='Client Name')
     naid_level = fields.Selection([
         ('aaa', 'NAID AAA'),
         ('aa', 'NAID AA'),
         ('a', 'NAID A')
     
-    # Risk and compliance metrics
+    # Risk and compliance metrics), string="Selection Field"
     risk_level = fields.Selection([
         ('low', 'Low Risk'),
         ('medium', 'Medium Risk'),
         ('high', 'High Risk'),
         ('critical', 'Critical Risk')
-    
+), string="Selection Field"
     compliance_verified = fields.Boolean(string='Compliance Verified', tracking=True)
     last_verified = fields.Datetime(string='Last Verified', tracking=True)
     
@@ -145,7 +145,7 @@ class NAIDCompliance(models.Model):
         ('improving', 'Improving'),
         ('stable', 'Stable'),
         ('declining', 'Declining')
-    
+), string="Selection Field"
     measurement_date = fields.Date(string='Measurement Date', default=fields.Date.today)
     metric_type = fields.Char(string='Metric Type', default='NAID Compliance')
     
@@ -187,40 +187,40 @@ class NAIDCompliance(models.Model):
         'naid.audit.log',
         'compliance_id',
         string='Audit History',
-        help='Historical audit records for this compliance item'
+        help='Historical audit records for this compliance item',
     audit_reminder = fields.Boolean(
         string='Audit Reminder',
         default=True,
-        help='Send reminder notifications for upcoming audits'
+        help='Send reminder notifications for upcoming audits',
     certificate_ids = fields.One2many(
         'naid.certificate',
         'compliance_id',
         string='Certificates',
-        help='NAID certificates associated with this compliance record'
+        help='NAID certificates associated with this compliance record',
     compliance_checklist_ids = fields.One2many(
         'naid.compliance.checklist',
         'compliance_id',
         string='Compliance Checklist Items',
-        help='Detailed compliance checklist items'
+        help='Detailed compliance checklist items',
     destruction_date = fields.Date(
         string='Destruction Date',
         tracking=True,
-        help='Date when destruction was completed'
+        help='Date when destruction was completed',
     destruction_record_ids = fields.One2many(
         'naid.destruction.record',
         'compliance_id',
         string='Destruction Records',
-        help='Records of destruction activities'
+        help='Records of destruction activities',
     performance_history_ids = fields.One2many(
         'naid.performance.history',
         'compliance_id',
         string='Performance History',
-        help='Historical performance tracking records'
+        help='Historical performance tracking records',
     requirement_name = fields.Char(
         string='Requirement Name',
-        help='Name of the specific NAID requirement'
+        help='Name of the specific NAID requirement',
     requirement_type = fields.Selection([
-        ('physical', 'Physical Security'),
+        ('physical', 'Physical Security',
         ('operational', 'Operational'),
         ('documentation', 'Documentation'),
         ('personnel', 'Personnel'),

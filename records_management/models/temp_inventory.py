@@ -13,14 +13,14 @@ class TempInventory(models.Model):
     inventory_type = fields.Selection([
         ('box', 'Box'),
         ('document', 'Document'),
-        ('file', 'File'),
+        ('file', 'File',), string="Selection Field")
     temp_barcode = fields.Char(string='Temporary Barcode', readonly=True)
     description = fields.Text()
     state = fields.Selection([
         ('temp', 'Temporary'),
         ('requested', 'Pickup Requested'),
         ('verified', 'Verified'),
-    ], default='temp')
+    ], default='temp'
     physical_barcode = fields.Char(string='Physical Barcode')
     audit_log = fields.Html(string='Audit Trail', readonly=True)
     pickup_request_id = fields.Many2one('pickup.request', string='Pickup Request')
@@ -40,11 +40,11 @@ class TempInventory(models.Model):
         pickup = self.env['pickup.request'].create({
             'customer_id': self.partner_id.id,
             'request_item_ids': [(0, 0, {
-                'product_id': self.env.ref('records_management.product_inventory_add', raise_if_not_found=False).id or False,  # Assume product
+                'product_id': self.env.ref('records_management.product_inventory_add', raise_if_not_found=False.id or False,  # Assume product
                 'quantity': 1,
                 'notes': self.description,
-            }) for item in self],
-        })
+            } for item in self],
+        }
         self.write({'state': 'requested', 'pickup_request_id': pickup.id})
         for item in self:
             item._append_audit_log(_('Added to pickup request %s.', pickup.name))
@@ -52,21 +52,21 @@ class TempInventory(models.Model):
     def action_verify_physical(self):
         # Internal action: Assign physical barcode, link to real inventory
         if not self.physical_barcode:
-            raise ValidationError(_("Enter physical barcode."))
+            raise ValidationError(_("Enter physical barcode.")
         if self.inventory_type == 'box':
             box = self.env['records.box'].create({
                 'name': self.temp_barcode,  # Temp as initial ref
                 'barcode': self.physical_barcode,
                 'customer_id': self.partner_id.id,
                 'description': self.description,
-            })
+            }
         elif self.inventory_type == 'document':
             document = self.env['records.document'].create({
                 'name': self.description or self.temp_barcode,
                 'barcode': self.physical_barcode,
                 'customer_id': self.partner_id.id,
                 'description': self.description,
-            })
+            }
         elif self.inventory_type == 'file':
             # Create file record or link to document
             file_record = self.env['records.document'].create({
@@ -75,10 +75,10 @@ class TempInventory(models.Model):
                 'customer_id': self.partner_id.id,
                 'description': self.description,
                 'document_type': 'file',
-            })
+            }
         
         self.state = 'verified'
-        self._append_audit_log(_('Verified and assigned physical barcode %s on %s.', self.physical_barcode, fields.Datetime.now()))
+        self._append_audit_log(_('Verified and assigned physical barcode %s on %s.', self.physical_barcode, fields.Datetime.now())
 
     def _append_audit_log(self, message):
         current_log = self.audit_log or ''

@@ -37,6 +37,7 @@ class RecordsCustomerBillingProfile(models.Model):
     # Storage billing configuration
     storage_bill_in_advance = fields.Boolean(string='Bill Storage in Advance', default=True, tracking=True,
                                             help="When enabled, storage fees are billed forward. When disabled, billed in arrears.")
+    
     storage_advance_months = fields.Integer(string='Storage Advance Months', default=1, tracking=True,
                                            help="Number of months to bill in advance for storage")
     
@@ -65,7 +66,7 @@ class RecordsCustomerBillingProfile(models.Model):
     # Company
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     
-    # Service tracking fields (missing from views)
+    # Service tracking fields (missing from views
     box_id = fields.Many2one(
         'records.box',
         string='Records Box',
@@ -93,12 +94,12 @@ class RecordsCustomerBillingProfile(models.Model):
             record.display_name = f"{record.name} - {partner_name}"
     
     @api.depends('prepaid_enabled')  # Will be enhanced with actual balance calculation
-    def _compute_prepaid_balance(self):
+    def _compute_prepaid_balance(self:
         for record in self:
             # TODO: Calculate actual prepaid balance from payments and usage
             record.prepaid_balance = 0.0
     
-    def get_next_billing_date(self, billing_type='storage', reference_date=None):
+    def get_next_billing_date(self, billing_type='storage', reference_date=None:
         """Calculate next billing date based on billing cycle"""
         self.ensure_one()
         if not reference_date:
@@ -110,12 +111,12 @@ class RecordsCustomerBillingProfile(models.Model):
             cycle = self.service_billing_cycle
         
         # Start from the billing day of current month
-        next_date = reference_date.replace(day=self.billing_day)
+        next_date = reference_date.replace(day=self.billing_day
         
         # If we've passed this month's billing day, move to next cycle
         if reference_date.day >= self.billing_day:
             if cycle == 'monthly':
-                next_date = next_date + relativedelta(months=1)
+                next_date = next_date + relativedelta(months=1
             elif cycle == 'quarterly':
                 next_date = next_date + relativedelta(months=3)
             elif cycle == 'semi_annual':
@@ -134,7 +135,7 @@ class RecordsCustomerBillingProfile(models.Model):
         if billing_type == 'storage' and self.storage_bill_in_advance:
             # Storage billed in advance
             if self.storage_billing_cycle == 'monthly':
-                start_date = invoice_date.replace(day=1)
+                start_date = invoice_date.replace(day=1
                 end_date = start_date + relativedelta(months=self.storage_advance_months) - timedelta(days=1)
             elif self.storage_billing_cycle == 'quarterly':
                 start_date = invoice_date.replace(day=1)
@@ -144,8 +145,8 @@ class RecordsCustomerBillingProfile(models.Model):
                 end_date = start_date + relativedelta(months=1) - timedelta(days=1)
         else:
             # Services billed in arrears
-            end_date = invoice_date.replace(day=1) - timedelta(days=1)  # Last day of previous month
-            start_date = end_date.replace(day=1)  # First day of previous month
+            end_date = invoice_date.replace(day=1 - timedelta(days=1)  # Last day of previous month
+            start_date = end_date.replace(day=1  # First day of previous month
         
         return start_date, end_date
 
@@ -180,29 +181,29 @@ class RecordsAdvancedBillingPeriod(models.Model):
     
     # Billing type and timing
     billing_type = fields.Selection([
-        ('storage', 'Storage Billing'),
+        ('storage', 'Storage Billing',
         ('service', 'Service Billing'),
         ('combined', 'Combined Billing')
-    ], string='Billing Type')
+    ), string='Billing Type')
     
-    # Period dates (what's being billed for)
+    # Period dates (what's being billed for
     period_start_date = fields.Date(string='Period Start Date', required=True, tracking=True)
     period_end_date = fields.Date(string='Period End Date', required=True, tracking=True)
     
     # Billing direction
     billing_direction = fields.Selection([
-        ('advance', 'In Advance'),
+        ('advance', 'In Advance',
         ('arrears', 'In Arrears')
-    ], string='Billing Direction')
+    ), string='Billing Direction')
     
     # Status
     state = fields.Selection([
-        ('draft', 'Draft'),
+        ('draft', 'Draft',
         ('confirmed', 'Confirmed'),
         ('invoiced', 'Invoiced'),
         ('paid', 'Paid'),
         ('cancelled', 'Cancelled')
-    ], string='State', default='draft', tracking=True)
+    ), string='State', default='draft', tracking=True)
     
     # Financial information
     storage_amount = fields.Monetary(string='Storage Amount', tracking=True)
@@ -212,7 +213,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
     
     # Billing lines
     storage_line_ids = fields.One2many('records.billing.line', 'billing_period_id', 
-                                      domain=[('line_type', '=', 'storage')], string='Storage Lines')
+                                      domain=[('line_type', '=', 'storage'], string='Storage Lines')
     service_line_ids = fields.One2many('records.billing.line', 'billing_period_id', 
                                       domain=[('line_type', '=', 'service')], string='Service Lines')
     
@@ -221,7 +222,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
     
     # Company
     
-    @api.depends('name', 'partner_id.name', 'billing_type')
+    @api.depends('name', 'partner_id.name', 'billing_type'
     def _compute_display_name(self):
         for record in self:
             partner_name = record.partner_id.name if record.partner_id else 'No Customer'
@@ -247,28 +248,28 @@ class RecordsAdvancedBillingPeriod(models.Model):
             raise UserError(_('Storage lines can only be generated for storage or combined billing.'))
         
         # Clear existing storage lines
-        self.storage_line_ids.unlink()
+        self.storage_line_ids.unlink(
         
-        # Get storage items (boxes) for this customer during the period
+        # Get storage items (boxes for this customer during the period
         box_domain = [
             ('partner_id', '=', self.partner_id.id),
-            ('state', 'in', ['stored', 'active'])
+            ('state', 'in', ['stored', 'active'])]
         ]
         
         # For advance billing, we bill based on current storage
         # For arrears billing, we bill based on storage during the period
         if self.billing_direction == 'advance':
             # Current storage as of invoice date
-            boxes = self.env['records.box'].search(box_domain)
+            boxes = self.env['records.box'].search(box_domain
         else:
-            # Storage during the period (more complex - would need storage history)
+            # Storage during the period (more complex - would need storage history
             boxes = self.env['records.box'].search(box_domain)
         
         # Create billing lines for each box
         storage_lines = []
         for box in boxes:
             # Get storage rate for this box type/customer
-            rate = self._get_storage_rate(box)
+            rate = self._get_storage_rate(box
             
             storage_lines.append({
                 'billing_period_id': self.id,
@@ -285,7 +286,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
             self.env['records.billing.line'].create(storage_lines)
         
         # Update storage amount
-        self.storage_amount = sum(line['quantity'] * line['unit_price'] for line in storage_lines)
+        self.storage_amount = sum(line['quantity'] * line['unit_price'] for line in storage_lines
     
     def action_generate_service_lines(self):
         """Generate service billing lines for the period"""
@@ -294,18 +295,18 @@ class RecordsAdvancedBillingPeriod(models.Model):
             raise UserError(_('Service lines can only be generated for service or combined billing.'))
         
         # Clear existing service lines
-        self.service_line_ids.unlink()
+        self.service_line_ids.unlink(
         
         # Get completed work orders during the period
         work_order_domain = [
-            ('partner_id', '=', self.partner_id.id),
-            ('state', '=', 'completed'),
+            ('partner_id', '=', self.partner_id.id,
+            ('state', '=', 'completed'),]
             ('actual_completion_time', '>=', fields.Datetime.combine(self.period_start_date, datetime.min.time())),
             ('actual_completion_time', '<=', fields.Datetime.combine(self.period_end_date, datetime.max.time()))
         ]
         
         # Check both retrieval and shredding work orders
-        retrieval_orders = self.env['document.retrieval.work.order'].search(work_order_domain)
+        retrieval_orders = self.env['document.retrieval.work.order'].search(work_order_domain
         shredding_orders = self.env['work.order.shredding'].search(work_order_domain)
         
         service_lines = []
@@ -319,7 +320,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
                 'retrieval_work_order_id': order.id,
                 'quantity': 1.0,
                 'unit_price': order.total_cost,
-                'service_date': order.actual_completion_time.date(),
+                'service_date': order.actual_completion_time.date(,
             })
         
         # Process shredding work orders
@@ -327,7 +328,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
             service_lines.append({
                 'billing_period_id': self.id,
                 'line_type': 'service',
-                'description': f'Shredding Service - {order.name} ({order.shredding_workflow})',
+                'description': f'Shredding Service - {order.name} ({order.shredding_workflow}',
                 'shredding_work_order_id': order.id,
                 'quantity': 1.0,
                 'unit_price': order.total_cost,
@@ -338,7 +339,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
             self.env['records.billing.line'].create(service_lines)
         
         # Update service amount
-        self.service_amount = sum(line['quantity'] * line['unit_price'] for line in service_lines)
+        self.service_amount = sum(line['quantity'] * line['unit_price'] for line in service_lines
     
     def _get_storage_rate(self, box):
         """Get storage rate for a specific box"""
@@ -346,7 +347,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
         # For now, return a default rate
         return 10.0  # Default $10 per box per month
     
-    def action_generate_invoice(self):
+    def action_generate_invoice(self:
         """Generate invoice from billing period"""
         self.ensure_one()
         if self.state != 'confirmed':
@@ -366,7 +367,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
                 'name': line.description,
                 'quantity': line.quantity,
                 'price_unit': line.unit_price,
-                'account_id': self._get_storage_account().id,
+                'account_id': self._get_storage_account(.id,
             }))
         
         # Add service lines
@@ -375,7 +376,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
                 'name': line.description,
                 'quantity': line.quantity,
                 'price_unit': line.unit_price,
-                'account_id': self._get_service_account().id,
+                'account_id': self._get_service_account(.id,
             }))
         
         invoice = self.env['account.move'].create(invoice_vals)
@@ -396,11 +397,11 @@ class RecordsAdvancedBillingPeriod(models.Model):
     def _get_storage_account(self):
         """Get account for storage revenue"""
         # Return default storage revenue account
-        return self.env['account.account'].search([('code', '=', '400100')], limit=1) or \
+        return self.env['account.account'].search([('code', '=', '400100'], limit=1) or \
                self.env['account.account'].search([('internal_type', '=', 'receivable')], limit=1)
     
     def _get_service_account(self):
         """Get account for service revenue"""
         # Return default service revenue account
-        return self.env['account.account'].search([('code', '=', '400200')], limit=1) or \
+        return self.env['account.account'].search([('code', '=', '400200'], limit=1) or \
                self.env['account.account'].search([('internal_type', '=', 'receivable')], limit=1)

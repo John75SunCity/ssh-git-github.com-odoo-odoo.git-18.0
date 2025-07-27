@@ -1,4 +1,4 @@
-# New file: Extend FSM (project.task) for portal-generated field services. Auto-notify on creation, link to requests for compliance.
+# New file: Extend FSM (project.task for portal-generated field services. Auto-notify on creation, link to requests for compliance.
 
 from odoo import models, fields, api, _
 
@@ -9,32 +9,32 @@ class FSMTask(models.Model):
     portal_request_id = fields.Many2one('portal.request', string='Portal Request')
     # Auto-create from portal_request.action_submit
 
-    # Phase 3: Analytics & Computed Fields (6 fields)
+    # Phase 3: Analytics & Computed Fields (6 fields
     task_efficiency_rating = fields.Float(
         string='Task Efficiency Rating (%)',
         compute='_compute_fsm_analytics',
         store=True,
-        help='Overall efficiency rating for this FSM task'
+        help='Overall efficiency rating for this FSM task',
     completion_performance = fields.Float(
         string='Completion Performance',
         compute='_compute_fsm_analytics',
         store=True,
-        help='Performance score based on completion metrics'
+        help='Performance score based on completion metrics',
     customer_response_time = fields.Float(
         string='Response Time (Hours)',
         compute='_compute_fsm_analytics',
         store=True,
-        help='Time to respond to customer request'
+        help='Time to respond to customer request',
     resource_optimization_score = fields.Float(
         string='Resource Optimization Score',
         compute='_compute_fsm_analytics',
         store=True,
-        help='Efficiency of resource allocation for this task'
+        help='Efficiency of resource allocation for this task',
     fsm_insights = fields.Text(
         string='FSM Insights',
         compute='_compute_fsm_analytics',
         store=True,
-        help='AI-generated field service insights'
+        help='AI-generated field service insights',
     analytics_update_time = fields.Datetime(
         string='Analytics Updated',
         compute='_compute_fsm_analytics',
@@ -48,7 +48,7 @@ class FSMTask(models.Model):
         ('repair', 'Repair'),
         ('inspection', 'Inspection'),
         ('pickup', 'Pickup'),
-        ('delivery', 'Delivery')
+        ('delivery', 'Delivery'), string="Selection Field")
     actual_completion_time = fields.Datetime(string='Actual Completion Time')
     actual_start_time = fields.Datetime(string='Actual Start Time')
     arch = fields.Text(string='View Architecture', help='XML view architecture definition')
@@ -66,25 +66,25 @@ class FSMTask(models.Model):
     communication_date = fields.Datetime(string='Communication Date')
     # communication_log_ids = fields.One2many('portal.request.communication', compute='_compute_communication_log_ids', string='Communication Log')
     # Note: Commented out until portal.request.communication model exists with proper relationship field
-    #                                      help='Track communication between customer and service team')
+    #                                      help='Track communication between customer and service team',
     communication_type = fields.Selection([
         ('phone', 'Phone'),
         ('email', 'Email'),
         ('sms', 'SMS'),
-        ('in_person', 'In Person')
+        ('in_person', 'In Person'), string="Selection Field")
     completed = fields.Boolean(string='Completed', default=False)
     completion_notes = fields.Text(string='Completion Notes')
     completion_status = fields.Selection([
         ('not_started', 'Not Started'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
-        ('cancelled', 'Cancelled')
+        ('cancelled', 'Cancelled'), string="Selection Field")
     completion_time = fields.Datetime(string='Completion Time')
     confidentiality_level = fields.Selection([
         ('public', 'Public'),
         ('internal', 'Internal'),
         ('confidential', 'Confidential'),
-        ('restricted', 'Restricted')
+        ('restricted', 'Restricted'), string="Selection Field")
     contact_email = fields.Char(string='Contact Email')
     contact_person = fields.Char(string='Contact Person')
     contact_phone = fields.Char(string='Contact Phone')
@@ -118,9 +118,9 @@ class FSMTask(models.Model):
     material_name = fields.Char(string='Material Name')
     # Fixed One2many fields with proper inverse relationships
     material_usage_ids = fields.One2many('records.audit.log', 'task_id', string='Material Usage Log',
-                                       help='Track material usage during service')
+                                       help='Track material usage during service',
     mobile_update_ids = fields.One2many('records.access.log', 'task_id', string='Mobile Updates',
-                                       help='Updates from mobile device')
+                                       help='Updates from mobile device',
     model = fields.Char(string='Model', help='Model name for technical references')
     name = fields.Char(string='Task Name', required=True)
     next_service_scheduled = fields.Date(string='Next Service Scheduled')
@@ -145,7 +145,7 @@ class FSMTask(models.Model):
         ('installation', 'Installation'),
         ('maintenance', 'Maintenance'),
         ('repair', 'Repair'),
-        ('consultation', 'Consultation')
+        ('consultation', 'Consultation'), string="Selection Field")
     signature_required = fields.Boolean(string='Signature Required', default=False)
     sms_updates_enabled = fields.Boolean(string='SMS Updates Enabled', default=False)
     special_instructions = fields.Text(string='Special Instructions')
@@ -155,26 +155,26 @@ class FSMTask(models.Model):
         ('assigned', 'Assigned'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
-        ('cancelled', 'Cancelled')
+        ('cancelled', 'Cancelled'), string="Selection Field")
     subject = fields.Char(string='Subject')
     supervisor = fields.Many2one('res.users', string='Supervisor')
     supplier = fields.Many2one('res.partner', string='Supplier')
     task_checklist_ids = fields.One2many('records.audit.log', 'task_id', string='Task Checklist')
-    #                                    help='Checklist items for task completion')
+    #                                    help='Checklist items for task completion',
     task_status = fields.Selection([
         ('open', 'Open'),
         ('in_progress', 'In Progress'),
         ('blocked', 'Blocked'),
-        ('completed', 'Completed')
+        ('completed', 'Completed'), string="Selection Field")
     task_type = fields.Selection([
         ('standard', 'Standard'),
         ('emergency', 'Emergency'),
         ('preventive', 'Preventive'),
-        ('corrective', 'Corrective')
+        ('corrective', 'Corrective'), string="Selection Field")
     technician = fields.Many2one('res.users', string='Technician')
     time_log_count = fields.Integer(string='Time Log Count', default=0)
     time_log_ids = fields.One2many('records.access.log', 'task_id', string='Time Logs')
-    #                              help='Time tracking for technician work')
+    #                              help='Time tracking for technician work',
     timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now)
     total_cost = fields.Float(string='Total Cost', compute='_compute_total_cost')
     total_time_spent = fields.Float(string='Total Time Spent (hours)', default=0.0)
@@ -184,7 +184,7 @@ class FSMTask(models.Model):
         ('status', 'Status Update'),
         ('location', 'Location Update'),
         ('photo', 'Photo Update'),
-        ('completion', 'Completion Update')
+        ('completion', 'Completion Update'), string="Selection Field")
     view_mode = fields.Char(string='View Mode', help='View mode configuration')
     work_time = fields.Float(string='Work Time (hours)', default=0.0)
 
@@ -199,7 +199,7 @@ class FSMTask(models.Model):
             
             # Stage progression efficiency
             if task.stage_id:
-                stage_name = task.stage_id.name.lower()
+                stage_name = task.stage_id.name.lower(
                 if 'done' in stage_name or 'complete' in stage_name:
                     efficiency += 30.0
                 elif 'progress' in stage_name:
@@ -215,14 +215,14 @@ class FSMTask(models.Model):
             if task.portal_request_id:
                 efficiency += 10.0  # Connected to portal request
             
-            task.task_efficiency_rating = min(100, efficiency)
+            task.task_efficiency_rating = min(100, efficiency
             
             # Completion performance
             performance = 70.0  # Base performance
             
             # Deadline performance
             if task.date_deadline and task.create_date:
-                now = fields.Datetime.now()
+                now = fields.Datetime.now(
                 if task.stage_id and 'done' in task.stage_id.name.lower():
                     # Task completed
                     performance += 20.0
@@ -233,17 +233,17 @@ class FSMTask(models.Model):
                     # On track
                     performance += 10.0
             
-            task.completion_performance = max(0, min(100, performance))
+            task.completion_performance = max(0, min(100, performance)
             
             # Customer response time
             if task.create_date:
                 # Simulate response time based on task age
-                age_hours = (fields.Datetime.now() - task.create_date).total_seconds() / 3600
+                age_hours = (fields.Datetime.now( - task.create_date).total_seconds() / 3600)
                 
                 if task.user_ids:  # If assigned, faster response
-                    task.customer_response_time = min(24, age_hours * 0.5)
+                    task.customer_response_time = min(24, age_hours * 0.5
                 else:  # Unassigned tasks have slower response
-                    task.customer_response_time = min(48, age_hours)
+                    task.customer_response_time = min(48, age_hours
             else:
                 task.customer_response_time = 0.0
             
@@ -259,13 +259,13 @@ class FSMTask(models.Model):
             if task.stage_id and task.stage_id.name:
                 optimization += 5.0  # Proper workflow tracking
             
-            task.resource_optimization_score = min(100, optimization)
+            task.resource_optimization_score = min(100, optimization
             
             # FSM insights
             insights = []
             
             if task.task_efficiency_rating > 85:
-                insights.append("✅ High efficiency task execution")
+                insights.append("✅ High efficiency task execution"
             elif task.task_efficiency_rating < 60:
                 insights.append("⚠️ Below target efficiency - review process")
             
@@ -391,82 +391,82 @@ class FSMTask(models.Model):
 
     def _get_stage_by_name(self, stage_name):
         """Get stage ID by name"""
-        stage = self.env['project.task.type'].search([
-            ('name', '=', stage_name),
+        stage = self.env['project.task.type'].search\([
+            ('name', '=', stage_name),])
             ('project_ids', 'in', [self.project_id.id])
-        ], limit=1)
+        ], limit=1
         return stage.id if stage else False
 
     # Compute methods for previously commented One2many fields
-    @api.depends()
+    @api.depends(
     def _compute_communication_log_ids(self):
         """Compute communication log for this FSM task"""
         for task in self:
             # Return empty recordset since inverse field doesn't exist
-            task.communication_log_ids = self.env['portal.request.communication'].browse()
+            task.communication_log_ids = self.env['portal.request.communication'].browse(
 
     @api.depends()
     def _compute_task_checklist_ids(self):
         """Compute task checklist for this FSM task"""
         for task in self:
             # Return empty recordset since inverse field doesn't exist
-            task.task_checklist_ids = self.env['records.audit.log'].browse()
+            task.task_checklist_ids = self.env['records.audit.log'].browse(
 
     @api.depends()
     def _compute_time_log_ids(self):
         """Compute time logs for this FSM task"""
         for task in self:
             # Return empty recordset since inverse field doesn't exist
-            task.time_log_ids = self.env['records.access.log'].browse()
+            task.time_log_ids = self.env['records.access.log'].browse(
 
     # Compute methods for One2many fields
-    @api.depends()
+    @api.depends(
     def _compute_activity_ids(self):
         """Compute activities for this FSM task"""
         for task in self:
-            task.activity_ids = self.env['mail.activity'].search([
+            task.activity_ids = self.env['mail.activity'].search\([
                 ('res_model', '=', 'project.task'),
-                ('res_id', '=', task.id)
-            ])
+                ('res_id', '=', task.id)])
+            ]
 
     @api.depends()
     def _compute_material_usage_ids(self):
         """Compute material usage records for this FSM task"""
         for task in self:
             # Find audit logs related to material usage for this task
-            task.material_usage_ids = self.env['records.audit.log'].search([
-                ('res_model', '=', 'project.task'),
+            task.material_usage_ids = self.env['records.audit.log'].search\([
+                ('res_model', '=', 'project.task',
                 ('res_id', '=', task.id),
-                ('action', 'ilike', 'material')
-            ])
+                ('action', 'ilike', 'material')])
+            ]
 
     @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this FSM task"""
         for task in self:
             # Find followers for this specific task
-            task.message_follower_ids = self.env['mail.followers'].search([
-                ('res_model', '=', 'project.task'),
-                ('res_id', '=', task.id)
-            ])
+            task.message_follower_ids = self.env['mail.followers'].search\([
+                ('res_model', '=', 'project.task',
+                ('res_id', '=', task.id)])
+            ]
 
     @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this FSM task"""
         for task in self:
             # Find messages for this specific task
-            task.message_ids = self.env['mail.message'].search([
-                ('res_model', '=', 'project.task'),
-                ('res_id', '=', task.id)
-            ])
+            task.message_ids = self.env['mail.message'].search\([
+                ('res_model', '=', 'project.task',
+                ('res_id', '=', task.id)])
+            ]
 
     @api.depends()
     def _compute_mobile_update_ids(self):
         """Compute mobile updates for this FSM task"""
         for task in self:
             # Find access logs related to mobile updates for this task
-            task.mobile_update_ids = self.env['records.access.log'].search([
-                ('res_model', '=', 'project.task'),
+            task.mobile_update_ids = self.env['records.access.log'].search\([
+                ('res_model', '=', 'project.task',
                 ('res_id', '=', task.id),
-                ('access_type', 'ilike', 'mobile')
-            ])
+                ('access_type', 'ilike', 'mobile')])
+            ]

@@ -16,11 +16,11 @@ class NAIDCustodyEvent(models.Model):
     
     # Custody relationship
     custody_id = fields.Many2one('naid.custody', string='Custody Record', 
-                                 required=True, ondelete='cascade')
+                                 required=True, ondelete='cascade'
     
     # Event details
     event_type = fields.Selection([
-        ('pickup', 'Pickup/Collection'),
+        ('pickup', 'Pickup/Collection',
         ('transport', 'In Transport'),
         ('arrival', 'Arrival at Facility'),
         ('storage', 'Placed in Storage'),
@@ -30,13 +30,13 @@ class NAIDCustodyEvent(models.Model):
         ('completion', 'Process Completion'),
         ('exception', 'Exception/Issue'),
         ('verification', 'Verification Check')
-    
-    event_datetime = fields.Datetime('Event Date/Time', required=True, 
-                                    default=fields.Datetime.now, tracking=True)
+), string="Selection Field"
+    event_datetime = fields.Datetime('Event Date/Time', required=True,)
+                                    default=fields.Datetime.now, tracking=True
     
     # Personnel involved
     responsible_user_id = fields.Many2one('res.users', string='Responsible Person', 
-                                         required=True, tracking=True)
+                                         required=True, tracking=True
     witness_user_id = fields.Many2one('res.users', string='Witness')
     customer_representative = fields.Char('Customer Representative')
     
@@ -58,7 +58,7 @@ class NAIDCustodyEvent(models.Model):
     signature_obtained = fields.Boolean('Signature Obtained', default=False)
     
     # Environmental conditions
-    temperature = fields.Float('Temperature (°F)')
+    temperature = fields.Float('Temperature (°F')
     humidity = fields.Float('Humidity (%)')
     weather_conditions = fields.Char('Weather Conditions')
     
@@ -70,7 +70,7 @@ class NAIDCustodyEvent(models.Model):
         ('security', 'Security Issue'),
         ('access', 'Access Problem'),
         ('equipment', 'Equipment Failure'),
-        ('other', 'Other Issue')
+        ('other', 'Other Issue'), string="Selection Field")
     exception_details = fields.Text('Exception Details')
     resolution_action = fields.Text('Resolution Action Taken')
     
@@ -81,21 +81,21 @@ class NAIDCustodyEvent(models.Model):
     
     # Status
     state = fields.Selection([
-        ('draft', 'Draft'),
+        ('draft', 'Draft',
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('exception', 'Exception'),
         ('verified', 'Verified')
     
-    # Audit trail
+    # Audit trail), string="Selection Field"
     created_by = fields.Many2one('res.users', string='Created By', 
-                                default=lambda self: self.env.user, readonly=True)
+                                default=lambda self: self.env.user, readonly=True
     verified_by = fields.Many2one('res.users', string='Verified By')
     verification_date = fields.Datetime('Verification Date')
     
     # Company context
     company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company
     active = fields.Boolean('Active', default=True)
     
     @api.model
@@ -121,7 +121,7 @@ class NAIDCustodyEvent(models.Model):
             'verification_date': fields.Datetime.now(),
             'naid_compliance_verified': True,
             'documentation_complete': True
-        })
+        }
     
     def action_mark_exception(self):
         """Mark event as having an exception"""
@@ -129,4 +129,4 @@ class NAIDCustodyEvent(models.Model):
         self.write({
             'state': 'exception',
             'exception_occurred': True
-        })
+        }

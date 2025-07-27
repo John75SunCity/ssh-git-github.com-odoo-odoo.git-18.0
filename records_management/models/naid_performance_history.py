@@ -22,7 +22,7 @@ class NAIDPerformanceHistory(models.Model):
         ('quarterly', 'Quarterly'),
         ('annually', 'Annually')
     
-    # NAID compliance relationship
+    # NAID compliance relationship), string="Selection Field"
     compliance_id = fields.Many2one('naid.compliance', string='NAID Compliance Record', tracking=True)
     
     # Performance details
@@ -52,13 +52,13 @@ class NAIDPerformanceHistory(models.Model):
     
     # Status and assessment
     performance_status = fields.Selection([
-        ('excellent', 'Excellent'),
+        ('excellent', 'Excellent',
         ('good', 'Good'),
         ('satisfactory', 'Satisfactory'),
         ('needs_improvement', 'Needs Improvement'),
         ('poor', 'Poor')
     
-    # Personnel
+    # Personnel), string="Selection Field"
     assessed_by = fields.Many2one('res.users', string='Assessed By', tracking=True)
     reviewed_by = fields.Many2one('res.users', string='Reviewed By', tracking=True)
     
@@ -74,25 +74,25 @@ class NAIDPerformanceHistory(models.Model):
     corrective_actions = fields.Text('Corrective Actions')
     
     @api.depends('services_completed', 'services_on_time', 'incidents_reported', 'incidents_resolved',
-                 'quality_checks_passed', 'quality_checks_total')
+                 'quality_checks_passed', 'quality_checks_total'
     def _compute_percentages(self):
         """Compute various performance percentages"""
         for record in self:
             # On-time percentage
             if record.services_completed > 0:
-                record.on_time_percentage = (record.services_on_time / record.services_completed) * 100
+                record.on_time_percentage = (record.services_on_time / record.services_completed * 100
             else:
                 record.on_time_percentage = 0.0
                 
             # Resolution percentage  
             if record.incidents_reported > 0:
-                record.resolution_percentage = (record.incidents_resolved / record.incidents_reported) * 100
+                record.resolution_percentage = (record.incidents_resolved / record.incidents_reported * 100
             else:
                 record.resolution_percentage = 100.0 if record.incidents_resolved == 0 else 0.0
                 
             # Quality percentage
             if record.quality_checks_total > 0:
-                record.quality_percentage = (record.quality_checks_passed / record.quality_checks_total) * 100
+                record.quality_percentage = (record.quality_checks_passed / record.quality_checks_total * 100
             else:
                 record.quality_percentage = 0.0
     
@@ -101,16 +101,14 @@ class NAIDPerformanceHistory(models.Model):
         """Compute overall performance status based on metrics"""
         for record in self:
             # Calculate average of all metrics
-            metrics = [
-                record.compliance_score or 0,
+            metrics = [record.compliance_score or 0,
                 record.on_time_percentage or 0,
                 record.quality_percentage or 0,
                 record.customer_satisfaction or 0
             
-            if all(metric == 0 for metric in metrics):
+            if all(metric == 0 for metric in metrics:
                 record.performance_status = 'needs_improvement'
-                continue
-                
+                continue]
             average_score = sum(metrics) / len([m for m in metrics if m > 0])
             
             if average_score >= 90:

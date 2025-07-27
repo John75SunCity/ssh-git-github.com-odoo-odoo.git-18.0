@@ -27,7 +27,7 @@ class RecordsChainCustody(models.Model):
         ('digitized', 'Document Digitized'),
         ('reviewed', 'Document Reviewed')
     
-    # Location tracking
+    # Location tracking), string="Selection Field"
     from_location_id = fields.Many2one('records.location', string='From Location')
     to_location_id = fields.Many2one('records.location', string='To Location')
     current_location_id = fields.Many2one('records.location', string='Current Location')
@@ -49,11 +49,11 @@ class RecordsChainCustody(models.Model):
     
     # Compliance and security
     security_level = fields.Selection([
-        ('standard', 'Standard'),
+        ('standard', 'Standard',
         ('high', 'High Security'),
         ('classified', 'Classified'),
         ('restricted', 'Restricted Access')
-    
+), string="Selection Field"
     compliance_verified = fields.Boolean('Compliance Verified', default=False)
     audit_required = fields.Boolean('Audit Required', default=False)
     
@@ -64,7 +64,7 @@ class RecordsChainCustody(models.Model):
     break_reason = fields.Text('Chain Break Reason')
     
     # Analytics
-    custody_duration = fields.Float('Custody Duration (hours)', compute='_compute_custody_duration', store=True)
+    custody_duration = fields.Float('Custody Duration (hours', compute='_compute_custody_duration', store=True)
     compliance_score = fields.Float('Compliance Score', compute='_compute_compliance_score', store=True)
     
     @api.depends('custody_timestamp', 'next_custody_id.custody_timestamp')
@@ -76,7 +76,7 @@ class RecordsChainCustody(models.Model):
                 record.custody_duration = delta.total_seconds() / 3600  # Convert to hours
             else:
                 # Still in custody - calculate current duration
-                delta = fields.Datetime.now() - record.custody_timestamp
+                delta = fields.Datetime.now( - record.custody_timestamp
                 record.custody_duration = delta.total_seconds() / 3600
     
     @api.depends('from_signature', 'to_signature', 'witness_signature', 'compliance_verified', 'chain_broken')
@@ -107,7 +107,7 @@ class RecordsChainCustody(models.Model):
             if record.authorization_code:
                 score += 5
             
-            record.compliance_score = min(max(score, 0), 100)
+            record.compliance_score = min(max(score, 0, 100)
     
     def action_verify_compliance(self):
         """Mark custody transfer as compliance verified"""
@@ -118,7 +118,7 @@ class RecordsChainCustody(models.Model):
         self.write({
             'chain_broken': True,
             'break_reason': reason
-        })
+        }
     
     @api.model
     def create_custody_record(self, document_id, action, to_user_id, **kwargs):

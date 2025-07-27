@@ -20,11 +20,11 @@ class RecordsStorageDepartmentUser(models.Model):
     
     # Role and permissions
     role = fields.Selection([
-        ('viewer', 'Viewer'),
+        ('viewer', 'Viewer',
         ('user', 'User'), 
         ('admin', 'Administrator')
     
-    # Status fields
+    # Status fields), string="Selection Field"
     active = fields.Boolean(string='Active', default=True, tracking=True)
     date_assigned = fields.Date(string='Date Assigned', default=fields.Date.today, tracking=True)
     date_removed = fields.Date(string='Date Removed', tracking=True)
@@ -36,7 +36,7 @@ class RecordsStorageDepartmentUser(models.Model):
     
     # Company context
     company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company
     
     # Computed fields
     user_name = fields.Char(related='user_id.name', string='User Name', readonly=True)
@@ -46,15 +46,15 @@ class RecordsStorageDepartmentUser(models.Model):
     def _check_unique_user_department(self):
         """Ensure user is not assigned to the same department multiple times"""
         for record in self:
-            existing = self.search([
+            existing = self.search\([
                 ('user_id', '=', record.user_id.id),
                 ('department_id', '=', record.department_id.id),
                 ('active', '=', True),
-                ('id', '!=', record.id)
-            ])
+                ('id', '!=', record.id)])
+            ]
             if existing:
                 raise ValidationError(_('User %s is already assigned to department %s') % 
-                                    (record.user_id.name, record.department_id.name))
+                                    (record.user_id.name, record.department_id.name)
     
     def action_activate(self):
         """Activate user assignment"""

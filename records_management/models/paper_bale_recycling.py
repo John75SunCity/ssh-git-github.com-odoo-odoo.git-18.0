@@ -17,36 +17,36 @@ class PaperBaleRecycling(models.Model):
     # Core business fields
     display_name = fields.Char('Bale ID', compute='_compute_display_name', store=True)
     bale_number = fields.Integer('Bale Number', required=True, 
-                                help='Sequential bale number (auto-generated)')
+                                help='Sequential bale number (auto-generated')
     
-    # Paper specifications (simplified for daily operations)
+    # Paper specifications (simplified for daily operations
     paper_grade = fields.Selection([
         ('white', 'White Paper'),
         ('mixed', 'Mixed Paper'),
         ('cardboard', 'Cardboard')
-       help='Type of paper in this bale')
+       help='Type of paper in this bale'
     
-    # Weight tracking (primary business metric)
+    # Weight tracking (primary business metric), string="Selection Field")
     weight_lbs = fields.Float('Weight (lbs)', required=True, digits=(8, 2),
-                             help='Weight in pounds as measured on floor scale')
+                             help='Weight in pounds as measured on floor scale',
     weight_kg = fields.Float('Weight (kg)', compute='_compute_weight_kg', store=True,
-                            help='Automatic conversion to kilograms')
+                            help='Automatic conversion to kilograms'
     
     # Production tracking
-    production_date = fields.Date('Production Date', required=True, 
+    production_date = fields.Date('Production Date', required=True,
                                  default=fields.Date.today,
-                                 help='Date when bale was produced')
+                                 help='Date when bale was produced',
     weighed_by = fields.Many2one('hr.employee', string='Weighed By', required=True,
-                                help='Employee who weighed the bale')
+                                help='Employee who weighed the bale'
     
-    # Load shipment tracking (key business process)
+    # Load shipment tracking (key business process
     load_shipment_id = fields.Many2one('paper.load.shipment', string='Load Shipment',
-                                      help='Which load shipment this bale is assigned to')
+                                      help='Which load shipment this bale is assigned to',
     load_number = fields.Char('Load Number', related='load_shipment_id.load_number', store=True)
     
     # Status workflow
     status = fields.Selection([
-        ('produced', 'Produced'),
+        ('produced', 'Produced',
         ('stored', 'In Storage'),
         ('assigned_load', 'Assigned to Load'),
         ('ready_ship', 'Ready to Ship'),
@@ -54,35 +54,35 @@ class PaperBaleRecycling(models.Model):
         ('delivered', 'Delivered'),
         ('paid', 'Payment Received')
     
-    # Mobile/Floor Scale Integration Fields
+    # Mobile/Floor Scale Integration Fields), string="Selection Field"
     scale_reading = fields.Float('Scale Reading', help='Direct reading from floor scale')
     mobile_entry = fields.Boolean('Mobile Entry', default=False,
-                                 help='Entered via mobile device')
+                                 help='Entered via mobile device',
     gps_coordinates = fields.Char('GPS Coordinates', help='Location where bale was weighed')
     
-    # Quality tracking (simplified for daily operations)
+    # Quality tracking (simplified for daily operations
     moisture_level = fields.Selection([
         ('dry', 'Dry'),
         ('normal', 'Normal'),
         ('damp', 'Damp')
-    
+), string="Selection Field"
     contamination = fields.Boolean('Has Contamination', default=False,
-                                  help='Check if bale has non-paper contamination')
+                                  help='Check if bale has non-paper contamination',
     contamination_notes = fields.Text('Contamination Notes')
     
     # Storage and processing
     storage_location = fields.Many2one('stock.location', string='Storage Location')
     processed_from_service = fields.Many2one('shredding.service', string='From Shredding Service',
-                                           help='Which shredding service produced this paper')
+                                           help='Which shredding service produced this paper'
     
     # Company context
     company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company
     active = fields.Boolean('Active', default=True)
     
     # === COMPUTED METHODS ===
     
-    @api.depends('bale_number', 'paper_grade', 'weight_lbs')
+    @api.depends('bale_number', 'paper_grade', 'weight_lbs'
     def _compute_display_name(self):
         """Generate display name for bale"""
         for record in self:
@@ -105,15 +105,15 @@ class PaperBaleRecycling(models.Model):
     # === MODEL METHODS ===
     
     @api.model
-    def create(self, vals):
+    def create(self, vals:
         """Generate bale number sequence and handle mobile entry"""
         if not vals.get('bale_number'):
             # Auto-generate next bale number
-            last_bale = self.search([], order='bale_number desc', limit=1)
+            last_bale = self.search([], order='bale_number desc', limit=1
             vals['bale_number'] = (last_bale.bale_number + 1) if last_bale else 1
         
         # Handle mobile scale integration
-        if vals.get('scale_reading') and not vals.get('weight_lbs'):
+        if vals.get('scale_reading' and not vals.get('weight_lbs'):
             vals['weight_lbs'] = vals['scale_reading']
             vals['mobile_entry'] = True
             
@@ -128,13 +128,13 @@ class PaperBaleRecycling(models.Model):
     
     # === ACTION METHODS ===
     
-    def action_store_bale(self):
+    def action_store_bale(self:
         """Move bale to storage"""
         self.ensure_one()
         self.write({
             'status': 'stored',
             'storage_date': fields.Datetime.now()
-        })
+        }
         return True
     
     def action_assign_to_load(self):
@@ -159,7 +159,7 @@ class PaperBaleRecycling(models.Model):
         self.write({
             'status': 'shipped',
             'shipping_date': fields.Datetime.now()
-        })
+        }
         return True
     
     def action_mark_delivered(self):

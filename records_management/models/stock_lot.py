@@ -26,37 +26,37 @@ class StockLot(models.Model):
         ('destroy', 'Destroy'),
         ('transfer', 'Transfer')
     
-    # Attribute management
+    # Attribute management), string="Selection Field"
     attribute_ids = fields.One2many('stock.lot.attribute', 'lot_id', string='Lot Attributes')
     attribute_name = fields.Char(string='Attribute Name')
     attribute_type = fields.Selection([
         ('text', 'Text'),
         ('number', 'Number'),
         ('date', 'Date'),
-        ('boolean', 'Boolean')
+        ('boolean', 'Boolean'), string="Selection Field")
     attribute_value = fields.Char(string='Attribute Value')
     
     # Inventory and quantity tracking
     available_quantity = fields.Float(string='Available Quantity', compute='_compute_quantities')
     average_movement_time = fields.Float(string='Average Movement Time (days)', 
-                                         compute='_compute_movement_metrics')
+                                         compute='_compute_movement_metrics'
     check_date = fields.Date(string='Check Date', default=fields.Date.today)
     company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company
     create_date = fields.Datetime(string='Creation Date', readonly=True)
     current_location = fields.Many2one('stock.location', string='Current Location',
-                                       compute='_compute_current_location')
+                                       compute='_compute_current_location'
     customer_reference = fields.Char(string='Customer Reference')
     
     # Date tracking
     date = fields.Date(string='Lot Date', default=fields.Date.today)
     days_in_inventory = fields.Integer(string='Days in Inventory', 
-                                       compute='_compute_inventory_metrics')
+                                       compute='_compute_inventory_metrics'
     delivery_order_id = fields.Many2one('stock.picking', string='Delivery Order')
     destination_location = fields.Many2one('stock.location', string='Destination Location')
     # expiration_date is inherited from base stock.lot model - no need to redefine
     expiry_reminder_date = fields.Date(string='Expiry Reminder Date', 
-                                      help='Date to remind about upcoming expiration')
+                                      help='Date to remind about upcoming expiration',
     final_customer = fields.Many2one('res.partner', string='Final Customer')
     
     # Location and movement tracking
@@ -86,19 +86,19 @@ class StockLot(models.Model):
     
     # Quality control
     quality_check_count = fields.Integer(string='Quality Check Count', 
-                                         compute='_compute_quality_metrics')
-    quality_check_ids = fields.Many2many('quality.check', relation='quality_check_ids_rel', string='Quality Checks')  # Fixed: was One2many with missing inverse field
+                                         compute='_compute_quality_metrics'
+    quality_check_ids = fields.Many2many('quality.check', relation='quality_check_ids_rel', string='Quality Checks'  # Fixed: was One2many with missing inverse field)
     quality_point_id = fields.Many2one('quality.point', string='Quality Point')
     quality_state = fields.Selection([
         ('none', 'No Quality Check'),
         ('pass', 'Passed'),
         ('fail', 'Failed'),
-        ('pending', 'Pending')
+        ('pending', 'Pending'), string="Selection Field")
     quality_verified = fields.Boolean(string='Quality Verified', default=False)
     
     # Quant management
     quant_count = fields.Integer(string='Quant Count', compute='_compute_quant_metrics')
-    quant_ids = fields.Many2many('stock.quant', relation='quant_ids_rel', string='Quants')  # Fixed: was One2many with missing inverse field
+    quant_ids = fields.Many2many('stock.quant', relation='quant_ids_rel', string='Quants')  # Fixed: was One2many with missing inverse field)
     quantity = fields.Float(string='Quantity')
     ref = fields.Char(string='Reference')
     reference = fields.Char(string='Reference Number')
@@ -110,28 +110,28 @@ class StockLot(models.Model):
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('done', 'Done'),
-        ('cancel', 'Cancelled')
+        ('cancel', 'Cancelled'), string="Selection Field")
     stock_move_count = fields.Integer(string='Stock Move Count', compute='_compute_move_metrics')
     stock_move_ids = fields.Many2many('stock.move', compute='_compute_stock_move_ids', 
                                      string='Stock Moves', 
-                                     help='Stock moves that involve this lot')
+                                     help='Stock moves that involve this lot'
     # Note: Standard stock.move uses Many2many relationship with stock.lot through move.line_ids
     supplier_lot_id = fields.Many2one('stock.lot', string='Supplier Lot')
     
     # Testing and verification
     test_type = fields.Selection([
-        ('incoming', 'Incoming Inspection'),
+        ('incoming', 'Incoming Inspection',
         ('production', 'Production Test'),
         ('final', 'Final Inspection'),
-        ('random', 'Random Check')
+        ('random', 'Random Check'), string="Selection Field")
     timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now)
     total_movements = fields.Integer(string='Total Movements', compute='_compute_move_metrics')
     total_value = fields.Float(string='Total Value', compute='_compute_value_metrics')
     traceability_log_ids = fields.One2many('stock.traceability.log', 'lot_id', 
-                                           string='Traceability Logs')
+                                           string='Traceability Logs'
     
     # Cost and value
-    unit_cost = fields.Float(string='Unit Cost', digits=(12, 4))
+    unit_cost = fields.Float(string='Unit Cost', digits=(12, 4)
     user_id = fields.Many2one('res.users', string='Responsible User')
     verification_date = fields.Date(string='Verification Date')
     
@@ -144,32 +144,32 @@ class StockLot(models.Model):
     search_view_id = fields.Many2one('ir.ui.view', string='Search View')
     view_mode = fields.Char(string='View Mode', default='tree,form')
 
-    # Phase 3: Analytics & Computed Fields (6 fields)
+    # Phase 3: Analytics & Computed Fields (6 fields
     lot_utilization_efficiency = fields.Float(
         string='Utilization Efficiency (%)',
         compute='_compute_lot_analytics',
         store=True,
-        help='Efficiency of lot utilization and management'
+        help='Efficiency of lot utilization and management',
     service_integration_score = fields.Float(
         string='Service Integration Score',
         compute='_compute_lot_analytics',
         store=True,
-        help='Score indicating integration with shredding services'
+        help='Score indicating integration with shredding services',
     lifecycle_stage_indicator = fields.Char(
         string='Lifecycle Stage',
         compute='_compute_lot_analytics',
         store=True,
-        help='Current stage in lot lifecycle'
+        help='Current stage in lot lifecycle',
     customer_service_rating = fields.Float(
         string='Customer Service Rating',
         compute='_compute_lot_analytics',
         store=True,
-        help='Rating based on customer service delivery'
+        help='Rating based on customer service delivery',
     lot_insights = fields.Text(
         string='Lot Insights',
         compute='_compute_lot_analytics',
         store=True,
-        help='AI-generated insights about lot management'
+        help='AI-generated insights about lot management',
     analytics_update_timestamp = fields.Datetime(
         string='Analytics Updated',
         compute='_compute_lot_analytics',
@@ -195,7 +195,7 @@ class StockLot(models.Model):
             if lot.quality_verified:
                 efficiency += 10.0  # Quality verified
             
-            lot.lot_utilization_efficiency = min(100, efficiency)
+            lot.lot_utilization_efficiency = min(100, efficiency
             
             # Service integration score
             integration = 50.0  # Base score
@@ -206,7 +206,7 @@ class StockLot(models.Model):
             if lot.customer_id:
                 integration += 20.0
             
-            lot.service_integration_score = min(100, integration)
+            lot.service_integration_score = min(100, integration
             
             # Lifecycle stage
             if lot.quality_state == 'pass':
@@ -227,13 +227,13 @@ class StockLot(models.Model):
             if lot.quality_verified:
                 rating += 5.0
             
-            lot.customer_service_rating = min(100, rating)
+            lot.customer_service_rating = min(100, rating
             
             # Insights
             insights = []
             
             if lot.lot_utilization_efficiency > 85:
-                insights.append("🚀 High efficiency lot - excellent utilization")
+                insights.append("🚀 High efficiency lot - excellent utilization"
             
             if lot.service_integration_score > 80:
                 insights.append("🔗 Well integrated with services")
@@ -255,30 +255,30 @@ class StockLot(models.Model):
     # All compute methods are implemented below in their improved versions
     # This section removed to prevent duplicates
 
-    @api.depends('quant_ids')
+    @api.depends('quant_ids'
     def _compute_move_metrics(self):
         """Compute move-related metrics"""
         for lot in self:
             # Get all move lines for this lot
-            move_lines = self.env['stock.move.line'].search([
-                ('lot_id', '=', lot.id)
-            ])
+            move_lines = self.env['stock.move.line'].search\([
+                ('lot_id', '=', lot.id])
+            ]
             
             # Count unique moves and total movements
-            unique_moves = move_lines.mapped('move_id')
+            unique_moves = move_lines.mapped('move_id'
             lot.stock_move_count = len(unique_moves)
             lot.total_movements = len(move_lines)  # Total move line entries
 
-    @api.depends()
+    @api.depends(
     def _compute_stock_move_ids(self):
         """Compute stock moves for this lot through move lines"""
         for lot in self:
             # Find all stock.move.line records with this lot
-            move_lines = self.env['stock.move.line'].search([
-                ('lot_id', '=', lot.id)
-            ])
+            move_lines = self.env['stock.move.line'].search\([
+                ('lot_id', '=', lot.id])
+            ]
             # Get unique stock moves from these move lines
-            moves = move_lines.mapped('move_id')
+            moves = move_lines.mapped('move_id'
             lot.stock_move_ids = moves
 
     @api.depends('quant_ids', 'quant_ids.quantity', 'quant_ids.reserved_quantity')
@@ -295,16 +295,16 @@ class StockLot(models.Model):
         """Compute movement-related metrics"""
         for lot in self:
             # Get all move lines for this lot to calculate average movement time
-            move_lines = self.env['stock.move.line'].search([
-                ('lot_id', '=', lot.id),
-                ('date', '!=', False)
-            ], order='date asc')
+            move_lines = self.env['stock.move.line'].search\([
+                ('lot_id', '=', lot.id,
+                ('date', '!=', False)])
+            ], order='date asc'
             
             if len(move_lines) > 1:
                 # Calculate average time between movements
                 total_time = 0
                 count = 0
-                for i in range(1, len(move_lines)):
+                for i in range(1, len(move_lines):
                     time_diff = (move_lines[i].date - move_lines[i-1].date).total_seconds() / (24 * 3600)  # days
                     total_time += time_diff
                     count += 1
@@ -313,7 +313,7 @@ class StockLot(models.Model):
             else:
                 lot.average_movement_time = 0.0
 
-    @api.depends('quant_ids', 'quant_ids.location_id')
+    @api.depends('quant_ids', 'quant_ids.location_id'
     def _compute_current_location(self):
         """Compute current location based on quants"""
         for lot in self:
@@ -351,7 +351,7 @@ class StockLot(models.Model):
             lot.total_value = lot.available_quantity * (lot.unit_cost or 0.0)
 
     # Action methods for lot management
-            lot.quality_check_count = len(lot.quality_check_ids)
+            lot.quality_check_count = len(lot.quality_check_ids
 
     @api.depends('quant_ids')
     def _compute_quant_metrics(self):
@@ -478,7 +478,7 @@ class StockTraceabilityLog(models.Model):
     _name = 'stock.traceability.log'
     _description = 'Stock Traceability Log'
     _order = 'create_date desc'
-
+), string="Selection Field"
     lot_id = fields.Many2one('stock.lot', string='Lot', required=True, ondelete='cascade')
     action = fields.Char(string='Action', required=True)
     location_from = fields.Many2one('stock.location', string='From Location')

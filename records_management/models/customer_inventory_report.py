@@ -13,7 +13,7 @@ class CustomerInventoryReport(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'report_date desc, customer_id'
 
-    # Phase 1: Core Customer Inventory Report Fields (13 fields)
+    # Phase 1: Core Customer Inventory Report Fields (13 fields
     
     # Report identification and basic info
     name = fields.Char('Report Name', required=True, tracking=True)
@@ -26,7 +26,7 @@ class CustomerInventoryReport(models.Model):
         ('reviewed', 'Reviewed'),
         ('archived', 'Archived')
     
-    # Inventory details and relationships
+    # Inventory details and relationships), string="Selection Field"
     location_id = fields.Many2one('records.location', string='Primary Location', tracking=True)
     active_locations = fields.Integer('Active Locations', compute='_compute_inventory_totals', store=True)
     storage_date = fields.Date('Storage Date', tracking=True)
@@ -45,14 +45,14 @@ class CustomerInventoryReport(models.Model):
         ('large', 'Large (500-1000 boxes)'),
         ('enterprise', 'Enterprise (> 1000 boxes)')
     
-    # Additional contextual fields
+    # Additional contextual fields), string="Selection Field"
     notes = fields.Text('Notes')
     state = fields.Selection([
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('pending', 'Pending Review')
     
-    # Company context
+    # Company context), string="Selection Field"
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user)
     active = fields.Boolean('Active', default=True)
@@ -65,7 +65,7 @@ class CustomerInventoryReport(models.Model):
             record.total_documents = len(record.document_ids)
             
             # Count unique locations
-            locations = record.box_ids.mapped('location_id')
+            locations = record.box_ids.mapped('location_id'
             record.active_locations = len(locations.filtered('active'))
     
     @api.depends('total_boxes')

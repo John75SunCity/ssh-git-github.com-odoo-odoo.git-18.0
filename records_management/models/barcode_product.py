@@ -21,10 +21,10 @@ class BarcodeProduct(models.Model):
         ('scanning', 'Scanning Service'),
         ('other', 'Other Service'),
     
-    # Pricing
+    # Pricing), string="Selection Field"
     unit_price = fields.Float('Unit Price')
     currency_id = fields.Many2one('res.currency', 'Currency', 
-                                 default=lambda self: self.env.company.currency_id)
+                                 default=lambda self: self.env.company.currency_id
     
     # Usage statistics
     usage_count = fields.Integer('Usage Count', default=0)
@@ -69,7 +69,7 @@ class BarcodeProduct(models.Model):
     location_id = fields.Many2one('stock.location', string='Storage Location')
     
     # Physical Specifications
-    dimensions = fields.Char(string='Dimensions (L×W×H)')
+    dimensions = fields.Char(string='Dimensions (L×W×H')
     weight_capacity = fields.Float(string='Weight Capacity (lbs)')
     weight_limit = fields.Float(string='Weight Limit (lbs)')
     capacity = fields.Float(string='Storage Capacity (cubic ft)')
@@ -77,27 +77,27 @@ class BarcodeProduct(models.Model):
         ('letter', 'Letter'),
         ('legal', 'Legal'),
         ('x-ray', 'X-Ray'),
-        ('oversize', 'Oversize')
+        ('oversize', 'Oversize'), string="Selection Field")
     material_type = fields.Selection([
         ('cardboard', 'Cardboard'),
         ('plastic', 'Plastic'),
         ('metal', 'Metal'),
         ('wood', 'Wood')
     
-    # Status and Condition
+    # Status and Condition), string="Selection Field"
     box_status = fields.Selection([
         ('new', 'New'),
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor'),
-        ('damaged', 'Damaged')
+        ('damaged', 'Damaged'), string="Selection Field")
     bin_status = fields.Selection([
         ('empty', 'Empty'),
         ('partial', 'Partial'),
         ('full', 'Full'),
         ('overflow', 'Overflow')
     
-    # Capacity and Volume Management
+    # Capacity and Volume Management), string="Selection Field"
     bin_volume = fields.Float(string='Bin Volume (cubic ft)')
     fill_level = fields.Float(string='Fill Level (%)', default=0.0)
     fill_percentage = fields.Float(string='Fill Percentage', compute='_compute_fill_percentage')
@@ -116,17 +116,17 @@ class BarcodeProduct(models.Model):
         ('none', 'None'),
         ('1hour', '1 Hour'),
         ('2hour', '2 Hour'),
-        ('4hour', '4 Hour')
+        ('4hour', '4 Hour'), string="Selection Field")
     indoor_outdoor = fields.Selection([
         ('indoor', 'Indoor'),
         ('outdoor', 'Outdoor'),
         ('both', 'Both')
     
-    # Service and Security
+    # Service and Security), string="Selection Field"
     security_level = fields.Selection([
         ('basic', 'Basic'),
         ('enhanced', 'Enhanced'),
-        ('maximum', 'Maximum')
+        ('maximum', 'Maximum'), string="Selection Field")
     naid_compliant = fields.Boolean(string='NAID Compliant', default=True)
     witness_destruction = fields.Boolean(string='Witness Destruction', default=False)
     certificate_provided = fields.Boolean(string='Certificate Provided', default=True)
@@ -162,21 +162,21 @@ class BarcodeProduct(models.Model):
     product_code = fields.Char(string='Product Code')
     
     # Shredding and Destruction - Fixed field references
-    shred_bin_ids = fields.Many2many('shredding.bin', string='Related Shred Bins')  # Changed to Many2many to avoid inverse field issues
-    shred_bin_count = fields.Integer(string='Shred Bin Count', compute='_compute_shred_bin_count')  # Restored compute method
-    storage_box_ids = fields.Many2many('records.box', string='Related Storage Boxes')  # Changed to Many2many to avoid inverse field issues
-    storage_box_count = fields.Integer(string='Storage Box Count', compute='_compute_storage_box_count')  # Restored compute method
+    shred_bin_ids = fields.Many2many('shredding.bin', string='Related Shred Bins'  # Changed to Many2many to avoid inverse field issues)
+    shred_bin_count = fields.Integer(string='Shred Bin Count', compute='_compute_shred_bin_count'  # Restored compute method)
+    storage_box_ids = fields.Many2many('records.box', string='Related Storage Boxes'  # Changed to Many2many to avoid inverse field issues)
+    storage_box_count = fields.Integer(string='Storage Box Count', compute='_compute_storage_box_count'  # Restored compute method)
     shred_security_level = fields.Selection([
-        ('basic', 'Basic'),
+        ('basic', 'Basic',
         ('high', 'High'),
-        ('maximum', 'Maximum')
+        ('maximum', 'Maximum'), string="Selection Field")
     shredding_type = fields.Selection([
         ('strip_cut', 'Strip Cut'),
         ('cross_cut', 'Cross Cut'),
         ('micro_cut', 'Micro Cut'),
         ('disintegration', 'Disintegration')
     
-    # Dates and Scheduling
+    # Dates and Scheduling), string="Selection Field"
     last_access_date = fields.Date(string='Last Access Date')
     last_pickup_date = fields.Date(string='Last Pickup Date')
     next_pickup_date = fields.Date(string='Next Pickup Date')
@@ -188,11 +188,11 @@ class BarcodeProduct(models.Model):
         ('annual', 'Annual'),
         ('on_demand', 'On Demand')
     
-    # Additional fields for complete coverage
+    # Additional fields for complete coverage), string="Selection Field"
     color = fields.Char(string='Color')
     
     # Compute Methods
-    @api.depends('generation_history_ids')
+    @api.depends('generation_history_ids'
     def _compute_total_generated(self):
         for record in self:
             record.total_generated = sum(record.generation_history_ids.mapped('quantity'))
@@ -241,7 +241,7 @@ class BarcodeGenerationBatch(models.Model):
 class BarcodeGenerationHistory(models.Model):
     _name = 'barcode.generation.history'
     _description = 'Barcode Generation History'
-    
+), string="Selection Field"
     start_code = fields.Char(string='Start Code')
     end_code = fields.Char(string='End Code')
 

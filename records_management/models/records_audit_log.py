@@ -24,14 +24,14 @@ class RecordsAuditLog(models.Model):
         index=True
     
     event_type = fields.Selection([
-        ('access', 'Access Event'),
+        ('access', 'Access Event',
         ('modification', 'Modification Event'),
         ('creation', 'Creation Event'),
         ('deletion', 'Deletion Event'),
         ('security', 'Security Event'),
         ('compliance', 'Compliance Event'),
         ('system', 'System Event')
-    
+), string="Selection Field"
     event_description = fields.Char(
         string='Event Description',
         required=True
@@ -42,22 +42,19 @@ class RecordsAuditLog(models.Model):
         string='User',
         default=lambda self: self.env.user,
         required=True
-    
+
     document_id = fields.Many2one(
         'records.document',
         string='Document',
-        help='Related document if applicable'
-    
+        help='Related document if applicable',
     box_id = fields.Many2one(
         'records.box',
         string='Box',
-        help='Related box if applicable'
-    
+        help='Related box if applicable',
     shredding_service_id = fields.Many2one(
         'shredding.service',
         string='Shredding Service',
-        help='Related shredding service if applicable'
-    
+        help='Related shredding service if applicable',
     task_id = fields.Many2one(
         'project.task',
         string='FSM Task',
@@ -66,12 +63,10 @@ class RecordsAuditLog(models.Model):
     # Audit details
     details = fields.Text(
         string='Details',
-        help='Detailed information about the audit event'
-    
+        help='Detailed information about the audit event',
     ip_address = fields.Char(
         string='IP Address',
-        help='IP address from which the event originated'
-    
+        help='IP address from which the event originated',
     session_id = fields.Char(
         string='Session ID',
         help='User session identifier'
@@ -83,21 +78,21 @@ class RecordsAuditLog(models.Model):
         ('high', 'High'),
         ('critical', 'Critical')
     
-    # Status tracking
+    # Status tracking), string="Selection Field"
     reviewed = fields.Boolean(
         string='Reviewed',
         default=False
-    
+
     reviewer_id = fields.Many2one(
         'res.users',
         string='Reviewer'
-    
+
     review_date = fields.Datetime(
         string='Review Date'
-    
+
     review_notes = fields.Text(
         string='Review Notes'
-    
+
     def action_mark_reviewed(self):
         """Mark audit log entry as reviewed"""
         self.ensure_one()
@@ -105,12 +100,12 @@ class RecordsAuditLog(models.Model):
             'reviewed': True,
             'reviewer_id': self.env.user.id,
             'review_date': fields.Datetime.now()
-        })
+        }
         self.env['mail.message'].create({
             'body': _('Audit log entry reviewed by %s') % self.env.user.name,
             'model': self._name,
             'res_id': self.id,
-        })
+        }
     
     def action_escalate(self):
         """Escalate audit log entry for further review"""

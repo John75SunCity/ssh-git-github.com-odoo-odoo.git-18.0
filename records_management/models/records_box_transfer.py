@@ -19,7 +19,7 @@ class RecordsBoxTransfer(models.Model):
     
     # Transfer reasons and documentation
     transfer_reason = fields.Selection([
-        ('routine', 'Routine Move'),
+        ('routine', 'Routine Move',
         ('retrieval', 'Document Retrieval'),
         ('audit', 'Audit Requirement'),
         ('destruction', 'Scheduled Destruction'),
@@ -28,31 +28,31 @@ class RecordsBoxTransfer(models.Model):
         ('maintenance', 'Facility Maintenance'),
         ('reorganization', 'Storage Reorganization'),
         ('emergency', 'Emergency Move')
-    
+), string="Selection Field"
     transfer_notes = fields.Text('Transfer Notes')
     special_instructions = fields.Text('Special Instructions')
     
     # Transfer method and logistics
     transport_method = fields.Selection([
-        ('manual', 'Manual Carry'),
+        ('manual', 'Manual Carry',
         ('cart', 'Storage Cart'),
         ('truck', 'Truck/Vehicle'),
         ('forklift', 'Forklift'),
         ('conveyor', 'Conveyor System')
     
-    # Tracking and verification
+    # Tracking and verification), string="Selection Field"
     tracking_number = fields.Char('Tracking Number')
     barcode_scanned = fields.Boolean('Barcode Scanned', default=False)
     verification_code = fields.Char('Verification Code')
     
     # Condition assessment
     condition_before = fields.Selection([
-        ('excellent', 'Excellent'),
+        ('excellent', 'Excellent',
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor'),
         ('damaged', 'Damaged')
-    
+), string="Selection Field"
     condition_after = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
@@ -60,22 +60,22 @@ class RecordsBoxTransfer(models.Model):
         ('poor', 'Poor'),
         ('damaged', 'Damaged')
     
-    # Digital signatures
+    # Digital signatures), string="Selection Field"
     from_signature = fields.Binary('From User Signature')
     to_signature = fields.Binary('To User Signature')
     
     # Status tracking
     transfer_status = fields.Selection([
-        ('pending', 'Pending'),
+        ('pending', 'Pending',
         ('in_transit', 'In Transit'),
         ('completed', 'Completed'),
         ('failed', 'Failed'),
         ('cancelled', 'Cancelled')
-    
+), string="Selection Field"
     completion_date = fields.Datetime('Completion Date')
     
     # Analytics
-    transfer_duration = fields.Float('Transfer Duration (minutes)', compute='_compute_transfer_duration', store=True)
+    transfer_duration = fields.Float('Transfer Duration (minutes', compute='_compute_transfer_duration', store=True)
     efficiency_score = fields.Float('Transfer Efficiency Score', compute='_compute_efficiency_score', store=True)
     
     @api.depends('transfer_date', 'completion_date')
@@ -94,7 +94,7 @@ class RecordsBoxTransfer(models.Model):
         for transfer in self:
             score = 50  # Base score
             
-            # Duration efficiency (assuming 15 minutes is optimal)
+            # Duration efficiency (assuming 15 minutes is optimal
             if transfer.transfer_duration > 0:
                 if transfer.transfer_duration <= 15:
                     score += 20
@@ -107,7 +107,7 @@ class RecordsBoxTransfer(models.Model):
             
             # Condition maintenance
             condition_values = {'excellent': 5, 'good': 4, 'fair': 3, 'poor': 2, 'damaged': 1}
-            before_val = condition_values.get(transfer.condition_before, 3)
+            before_val = condition_values.get(transfer.condition_before, 3
             after_val = condition_values.get(transfer.condition_after, 3)
             
             if after_val >= before_val:
@@ -123,25 +123,25 @@ class RecordsBoxTransfer(models.Model):
             if transfer.to_signature:
                 score += 5
             
-            transfer.efficiency_score = min(max(score, 0), 100)
+            transfer.efficiency_score = min(max(score, 0, 100)
     
     def action_start_transfer(self):
         """Mark transfer as started"""
         self.write({
             'transfer_status': 'in_transit',
             'transfer_date': fields.Datetime.now()
-        })
+        }
     
     def action_complete_transfer(self):
         """Mark transfer as completed"""
         self.write({
             'transfer_status': 'completed',
             'completion_date': fields.Datetime.now()
-        })
+        }
         
         # Update box location
         if self.box_id and self.to_location_id:
-            self.box_id.write({'location_id': self.to_location_id.id})
+            self.box_id.write({'location_id': self.to_location_id.id}
     
     def action_cancel_transfer(self):
         """Cancel the transfer"""

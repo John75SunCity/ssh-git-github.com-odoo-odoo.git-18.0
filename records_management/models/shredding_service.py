@@ -16,34 +16,34 @@ class ShreddingService(models.Model):
     status = fields.Selection([
         ('draft', 'Draft'), ('confirmed', 'Confirmed'), ('in_progress', 'In Progress'),
         ('completed', 'Completed'), ('invoiced', 'Invoiced'), ('cancelled', 'Cancelled')
-    ], default='draft', string='Status')
+    ], default='draft', string='Status'
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
-    department_id = fields.Many2one('records.department', string='Department', domain="[('partner_id', '=', customer_id)]")  # Added for granular
+    department_id = fields.Many2one('records.department', string='Department', domain="[('partner_id', '=', customer_id)]")  # Added for granular)
     service_date = fields.Date(string='Service Date', default=fields.Date.context_today, required=True)
     scheduled_date = fields.Date(string='Scheduled Date')
     service_type = fields.Selection([
         ('bin', 'Bin Shredding'), ('box', 'Box Shredding'),
-        ('hard_drive', 'Hard Drive Destruction'), ('uniform', 'Uniform Shredding')
+        ('hard_drive', 'Hard Drive Destruction', ('uniform', 'Uniform Shredding')), string="Selection Field")
     bin_ids = fields.Many2many(
         'stock.lot',
         relation='shredding_service_bin_rel',  # Custom relation to avoid conflict with shredded_box_ids
         column1='service_id',
         column2='lot_id',
         string='Serviced Bins',
-        domain="[('product_id.name', '=', 'Shredding Bin')]"
+        domain="[('product_id.name', '=', 'Shredding Bin']"
     box_quantity = fields.Integer(string='Number of Boxes')
     shredded_box_ids = fields.Many2many('stock.lot', 
                                         relation='shredding_service_shredded_box_rel',
                                         column1='service_id',
                                         column2='lot_id',
                                         string='Shredded Boxes', 
-                                        domain="[('customer_id', '!=', False)]")
-    hard_drive_quantity = fields.Integer(string='Number of Hard Drives')  # New
+                                        domain="[('customer_id', '!=', False]")
+    hard_drive_quantity = fields.Integer(string='Number of Hard Drives')  # New)
     hard_drive_ids = fields.One2many('shredding.hard_drive', 'service_id', string='Hard Drive Details')
     hard_drive_scanned_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Scanned Count', compute_sudo=False)
     hard_drive_verified_count = fields.Integer(compute='_compute_hard_drive_counts', store=True, string='Verified Count', compute_sudo=False)
     item_count = fields.Integer(compute='_compute_item_count', store=True, string='Items to Destroy Count', compute_sudo=False)
-    uniform_quantity = fields.Integer(string='Number of Uniforms')  # New
+    uniform_quantity = fields.Integer(string='Number of Uniforms')  # New)
     total_boxes = fields.Integer(compute='_compute_total_boxes', store=True)
     unit_cost = fields.Float(string='Unit Cost', default=5.0)
     total_cost = fields.Float(compute='_compute_total_cost', store=True)
@@ -57,12 +57,12 @@ class ShreddingService(models.Model):
                                      relation='shredding_service_attachment_rel',
                                      column1='service_id',
                                      column2='attachment_id',
-                                     string='Attachments (e.g., photos, CCTV clips)')
+                                     string='Attachments (e.g., photos, CCTV clips')
     map_display = fields.Char(compute='_compute_map_display', store=True)
-    certificate_id = fields.Many2one('ir.attachment', string='Destruction Certificate', readonly=True)  # New for auto-certificate
-    invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True)  # New for auto-invoicing
-    bale_ids = fields.One2many('paper.bale', 'shredding_id', string='Generated Bales')  # Link to bales
-    pos_session_id = fields.Many2one('pos.session', string='POS Session (Walk-in)')  # New for walk-in
+    certificate_id = fields.Many2one('ir.attachment', string='Destruction Certificate', readonly=True)  # New for auto-certificate)
+    invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True  # New for auto-invoicing)
+    bale_ids = fields.One2many('paper.bale', 'shredding_id', string='Generated Bales'  # Link to bales)
+    pos_session_id = fields.Many2one('pos.session', string='POS Session (Walk-in')  # New for walk-in)
     estimated_bale_weight = fields.Float(compute='_compute_estimated_bale_weight', store=True, help='Predictive weight for recycling efficiency')
 
     # Phase 2 Audit & Compliance Fields - Added by automated script
@@ -78,7 +78,7 @@ class ShreddingService(models.Model):
     audit_trail_ids = fields.One2many('records.audit.log', 'shredding_service_id', string='Audit Trail')
     compliance_documentation_ids = fields.Many2many('ir.attachment', relation='compliance_documentation_ids_rel', string='Compliance Documentation', 
                                                    domain="[('res_model', '=', 'shredding.service')  # Fixed: was One2many with missing inverse field]", 
-                                                   compute='_compute_compliance_docs')
+                                                   compute='_compute_compliance_docs'
     destruction_method_verified = fields.Boolean('Destruction Method Verified', default=False)
     destruction_method = fields.Selection([
         ('shred', 'Physical Shredding'),
@@ -86,7 +86,7 @@ class ShreddingService(models.Model):
         ('degauss', 'Degaussing'),
         ('wipe', 'Data Wiping'),
         ('incineration', 'Incineration'),
-        ('pulverization', 'Pulverization')
+        ('pulverization', 'Pulverization'), string="Selection Field")
     certificate_required = fields.Boolean('Certificate Required', default=True)
     chain_of_custody_maintained = fields.Boolean('Chain of Custody Maintained', default=False)
     environmental_compliance = fields.Boolean('Environmental Compliance Verified', default=False)
@@ -105,7 +105,7 @@ class ShreddingService(models.Model):
     compliance_status = fields.Selection([('pending', 'Pending'), ('compliant', 'Compliant'), ('non_compliant', 'Non-Compliant')], string='Compliance Status', default='pending')
     regulatory_approval = fields.Boolean('Regulatory Approval', default=False)
     
-    # PHASE 3: Missing Critical Business Fields (55 fields) - NAID Compliance Enhanced
+    # PHASE 3: Missing Critical Business Fields (55 fields - NAID Compliance Enhanced
     
     # Timing and scheduling fields
     actual_completion_time = fields.Datetime('Actual Completion Time', tracking=True)
@@ -141,17 +141,17 @@ class ShreddingService(models.Model):
         ('standard', 'Standard Certificate'),
         ('naid_aaa', 'NAID AAA Certificate'),
         ('iso', 'ISO Compliance Certificate'),
-        ('custom', 'Custom Certificate')
+        ('custom', 'Custom Certificate'), string="Selection Field")
     included_in_certificate = fields.Boolean('Included in Certificate', default=True)
     
     # Chain of custody and tracking
-    chain_of_custody_ids = fields.Many2many('records.chain.custody', relation='chain_of_custody_ids_rel', string='Chain of Custody Records')  # Fixed: was One2many with missing inverse field
+    chain_of_custody_ids = fields.Many2many('records.chain.custody', relation='chain_of_custody_ids_rel', string='Chain of Custody Records'  # Fixed: was One2many with missing inverse field)
     chain_of_custody_number = fields.Char('Chain of Custody Number', tracking=True)
     seal_number = fields.Char('Seal Number', tracking=True)
     serial_number = fields.Char('Serial Number', tracking=True)
     
     # Weight and measurements
-    pre_destruction_weight = fields.Float('Pre-Destruction Weight (lbs)', tracking=True)
+    pre_destruction_weight = fields.Float('Pre-Destruction Weight (lbs', tracking=True)
     post_destruction_weight = fields.Float('Post-Destruction Weight (lbs)', tracking=True)
     particle_size = fields.Float('Particle Size (mm)', help='Size of shredded particles for compliance')
     unit_of_measure = fields.Selection([
@@ -160,7 +160,7 @@ class ShreddingService(models.Model):
         ('boxes', 'Boxes'),
         ('items', 'Items')
     
-    # Verification and quality control
+    # Verification and quality control), string="Selection Field"
     destruction_efficiency = fields.Float('Destruction Efficiency (%)', compute='_compute_destruction_metrics', store=True)
     photo_id_verified = fields.Boolean('Photo ID Verified', default=False, tracking=True)
     quality_control_passed = fields.Boolean('Quality Control Passed', default=False, tracking=True)
@@ -189,28 +189,28 @@ class ShreddingService(models.Model):
         ('internal', 'Internal'),
         ('confidential', 'Confidential'),
         ('restricted', 'Restricted'),
-        ('top_secret', 'Top Secret')
+        ('top_secret', 'Top Secret'), string="Selection Field")
     destroyed = fields.Boolean('Destroyed', default=False, tracking=True)
     item_type = fields.Selection([
         ('documents', 'Documents'),
         ('hard_drives', 'Hard Drives'),
         ('optical_media', 'Optical Media'),
         ('uniforms', 'Uniforms'),
-        ('mixed', 'Mixed Materials')
+        ('mixed', 'Mixed Materials'), string="Selection Field")
     naid_member_id = fields.Many2one('res.partner', string='NAID Member Company')
     shredding_equipment = fields.Char('Shredding Equipment Used')
     
     # One2many relationships
-    destruction_item_ids = fields.Many2many('destruction.item', relation='destruction_item_ids_rel', string='Destruction Items')  # Fixed: was One2many with missing inverse field
-    witness_verification_ids = fields.Many2many('witness.verification', relation='witness_verification_ids_rel', string='Witness Verifications')  # Fixed: was One2many with missing inverse field
+    destruction_item_ids = fields.Many2many('destruction.item', relation='destruction_item_ids_rel', string='Destruction Items'  # Fixed: was One2many with missing inverse field)
+    witness_verification_ids = fields.Many2many('witness.verification', relation='witness_verification_ids_rel', string='Witness Verifications'  # Fixed: was One2many with missing inverse field)
     
     # Compute methods for new fields
-    @api.depends('destruction_item_ids')
+    @api.depends('destruction_item_ids'
     def _compute_certificate_metrics(self):
         """Compute certificate-related metrics"""
         for record in self:
             # Count certificates generated for this service
-            record.certificate_count = len(record.destruction_item_ids.filtered('certificate_generated'))
+            record.certificate_count = len(record.destruction_item_ids.filtered('certificate_generated')
     
     @api.depends('pre_destruction_weight', 'post_destruction_weight')
     def _compute_destruction_metrics(self):

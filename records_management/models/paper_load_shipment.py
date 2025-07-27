@@ -16,29 +16,29 @@ class PaperLoadShipment(models.Model):
     
     # Core load identification
     load_number = fields.Char('Load Number', required=True,
-                             help='Load identifier (e.g., LOAD 535)')
+                             help='Load identifier (e.g., LOAD 535'
     
     # Shipment details
     pickup_date = fields.Date('Pickup Date', required=True,
-                             help='Date when load will be/was picked up')
+                             help='Date when load will be/was picked up',
     pickup_time = fields.Datetime('Pickup Time',
-                                 help='Scheduled or actual pickup time')
+                                 help='Scheduled or actual pickup time'
     
     # Driver and transportation
     driver_name = fields.Char('Driver Name', required=True)
     driver_phone = fields.Char('Driver Phone')
     driver_license = fields.Char('Driver License')
     truck_info = fields.Char('Truck Information',
-                           help='Truck details, license plate, etc.')
+                           help='Truck details, license plate, etc.',
     transportation_company = fields.Char('Transportation Company')
     
-    # Load composition and weight (key business metrics)
+    # Load composition and weight (key business metrics
     total_weight_lbs = fields.Float('Total Weight (lbs)', compute='_compute_totals', store=True,
-                                   help='Total weight of all bales in this load')
+                                   help='Total weight of all bales in this load',
     total_weight_kg = fields.Float('Total Weight (kg)', compute='_compute_totals', store=True)
     bale_count = fields.Integer('Number of Bales', compute='_compute_totals', store=True)
     
-    # Paper grade breakdown (for manifest)
+    # Paper grade breakdown (for manifest
     white_paper_weight = fields.Float('White Paper Weight', compute='_compute_grade_breakdown', store=True)
     mixed_paper_weight = fields.Float('Mixed Paper Weight', compute='_compute_grade_breakdown', store=True)
     cardboard_weight = fields.Float('Cardboard Weight', compute='_compute_grade_breakdown', store=True)
@@ -49,7 +49,7 @@ class PaperLoadShipment(models.Model):
     
     # Status and workflow
     status = fields.Selection([
-        ('draft', 'Draft'),
+        ('draft', 'Draft',
         ('scheduled', 'Scheduled'),
         ('ready_pickup', 'Ready for Pickup'),
         ('in_transit', 'In Transit'),
@@ -57,13 +57,13 @@ class PaperLoadShipment(models.Model):
         ('invoiced', 'Invoiced'),
         ('paid', 'Paid')
     
-    # Bales relationship
+    # Bales relationship), string="Selection Field"
     bale_ids = fields.One2many('paper.bale.recycling', 'load_shipment_id', 
-                              string='Bales in Load')
+                              string='Bales in Load'
     
     # Destination and customer
     customer_id = fields.Many2one('res.partner', string='Customer/Mill',
-                                 help='Paper mill or customer receiving the load')
+                                 help='Paper mill or customer receiving the load',
     destination_address = fields.Text('Destination Address')
     delivery_notes = fields.Text('Delivery Notes')
     
@@ -80,7 +80,7 @@ class PaperLoadShipment(models.Model):
     manifest_date = fields.Datetime('Manifest Generation Date')
     bill_of_lading = fields.Char('Bill of Lading')
     
-    # Payment tracking (3-4 week cycle as mentioned)
+    # Payment tracking (3-4 week cycle as mentioned
     invoice_amount = fields.Float('Invoice Amount', digits='Product Price')
     invoice_date = fields.Date('Invoice Date')
     payment_due_date = fields.Date('Payment Due Date')
@@ -90,36 +90,36 @@ class PaperLoadShipment(models.Model):
     
     # Mobile integration fields
     mobile_manifest = fields.Boolean('Mobile Manifest', default=False,
-                                    help='Manifest generated on mobile device')
+                                    help='Manifest generated on mobile device',
     gps_pickup_location = fields.Char('GPS Pickup Location')
     gps_delivery_location = fields.Char('GPS Delivery Location')
     
     # Company context
     company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company
     active = fields.Boolean('Active', default=True)
     
     # Additional fields referenced in views
     bale_number = fields.Char(
         string='Bale Number',
-        help='Individual bale identifier within the load'
+        help='Individual bale identifier within the load',
     mobile_entry = fields.Boolean(
         string='Mobile Entry',
         default=False,
-        help='Indicates if this entry was made via mobile device'
+        help='Indicates if this entry was made via mobile device',
     paper_grade = fields.Selection([
-        ('white', 'White Paper'),
+        ('white', 'White Paper',
         ('mixed', 'Mixed Paper'), 
         ('cardboard', 'Cardboard'),
         ('newsprint', 'Newsprint'),
-        ('magazines', 'Magazines')
+        ('magazines', 'Magazines'), string="Selection Field")
     production_date = fields.Date(
         string='Production Date',
-        help='Date when the load was produced/prepared'
+        help='Date when the load was produced/prepared',
     weighed_by = fields.Many2one(
         'hr.employee',
         string='Weighed By',
-        help='Employee who weighed the load'
+        help='Employee who weighed the load',
     weight_lbs = fields.Float(
         string='Weight (lbs)',
         digits='Product Weight',
@@ -127,7 +127,7 @@ class PaperLoadShipment(models.Model):
     
     # === COMPUTED METHODS ===
     
-    @api.depends('bale_ids', 'bale_ids.weight_lbs', 'bale_ids.weight_kg')
+    @api.depends('bale_ids', 'bale_ids.weight_lbs', 'bale_ids.weight_kg'
     def _compute_totals(self):
         """Compute total weight and bale count"""
         for record in self:
@@ -154,11 +154,11 @@ class PaperLoadShipment(models.Model):
     # === MODEL METHODS ===
     
     @api.model
-    def create(self, vals):
+    def create(self, vals:
         """Generate load number sequence"""
         if not vals.get('load_number'):
             # Auto-generate next load number
-            last_load = self.search([], order='load_number desc', limit=1)
+            last_load = self.search([], order='load_number desc', limit=1
             if last_load and last_load.load_number.startswith('LOAD '):
                 try:
                     last_num = int(last_load.load_number.split(' ')[1])
@@ -180,7 +180,7 @@ class PaperLoadShipment(models.Model):
     
     # === ACTION METHODS ===
     
-    def action_schedule_pickup(self):
+    def action_schedule_pickup(self:
         """Schedule the pickup"""
         self.ensure_one()
         if not self.bale_ids:
@@ -206,7 +206,7 @@ class PaperLoadShipment(models.Model):
             'manifest_generated': True,
             'manifest_date': fields.Datetime.now(),
             'manifest_number': f'MAN-{self.load_number}-{fields.Date.today().strftime("%Y%m%d")}'
-        })
+        }
         
         # This would trigger manifest report generation
         return {
@@ -216,7 +216,7 @@ class PaperLoadShipment(models.Model):
             'context': {'active_id': self.id}
         }
     
-    def action_mark_in_transit(self):
+    def action_mark_in_transit(self:
         """Mark load as in transit"""
         self.ensure_one()
         if not self.driver_signature:
@@ -225,7 +225,7 @@ class PaperLoadShipment(models.Model):
         self.write({
             'status': 'in_transit',
             'pickup_time': fields.Datetime.now() if not self.pickup_time else self.pickup_time
-        })
+        }
         return True
     
     def action_mark_delivered(self):
@@ -234,7 +234,7 @@ class PaperLoadShipment(models.Model):
         self.write({'status': 'delivered'})
         
         # Auto-update bale statuses
-        self.bale_ids.write({'status': 'delivered'})
+        self.bale_ids.write({'status': 'delivered'}
         return True
     
     def action_create_invoice(self):
@@ -243,7 +243,7 @@ class PaperLoadShipment(models.Model):
         if not self.customer_id:
             raise ValidationError(_('Customer is required to create invoice'))
         
-        # Calculate payment due date (3-4 weeks as mentioned)
+        # Calculate payment due date (3-4 weeks as mentioned
         import datetime
         due_date = fields.Date.today() + datetime.timedelta(weeks=3)
         
@@ -251,7 +251,7 @@ class PaperLoadShipment(models.Model):
             'status': 'invoiced',
             'invoice_date': fields.Date.today(),
             'payment_due_date': due_date
-        })
+        }
         return True
     
     def action_mark_paid(self):
@@ -260,10 +260,10 @@ class PaperLoadShipment(models.Model):
         self.write({
             'status': 'paid',
             'payment_received_date': fields.Date.today()
-        })
+        }
         
         # Auto-update bale statuses
-        self.bale_ids.write({'status': 'paid'})
+        self.bale_ids.write({'status': 'paid'}
         return True
     
     def action_add_bales_to_load(self):

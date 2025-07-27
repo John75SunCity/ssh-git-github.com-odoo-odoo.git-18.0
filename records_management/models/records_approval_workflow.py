@@ -12,15 +12,14 @@ class RecordsApprovalWorkflow(models.Model):
     
     # Workflow configuration
     workflow_type = fields.Selection([
-        ('policy', 'Policy Approval'),
+        ('policy', 'Policy Approval',
         ('document', 'Document Approval'),
         ('destruction', 'Destruction Approval'),
         ('access', 'Access Request Approval'),
         ('general', 'General Approval')
-    
+), string="Selection Field"
     auto_approve_threshold = fields.Float('Auto-Approve Threshold', default=0.0,
-                                        help='Automatically approve requests below this threshold')
-    
+                                        help='Automatically approve requests below this threshold',
     require_manager_approval = fields.Boolean('Require Manager Approval', default=True)
     require_compliance_review = fields.Boolean('Require Compliance Review', default=False)
     require_legal_review = fields.Boolean('Require Legal Review', default=False)
@@ -49,7 +48,7 @@ class RecordsApprovalWorkflow(models.Model):
             workflow.approval_rate = 0.0
             workflow.avg_approval_time = 0.0
     
-    def action_duplicate(self):
+    def action_duplicate(self:
         """Duplicate this workflow"""
         copy_values = {
             'name': f"{self.name} (Copy)",
@@ -67,21 +66,21 @@ class RecordsApprovalStep(models.Model):
     
     # Step configuration
     step_type = fields.Selection([
-        ('user', 'Specific User'),
+        ('user', 'Specific User',
         ('group', 'User Group'),
         ('manager', 'Manager'),
         ('department', 'Department Head'),
         ('compliance', 'Compliance Officer'),
         ('legal', 'Legal Review'),
         ('automatic', 'Automatic')
-    
+), string="Selection Field"
     approver_user_id = fields.Many2one('res.users', string='Approver User')
     approver_group_id = fields.Many2one('res.groups', string='Approver Group')
     
     is_required = fields.Boolean('Required Step', default=True)
     can_delegate = fields.Boolean('Can Delegate', default=False)
     timeout_hours = fields.Integer('Timeout (Hours)', default=48,
-                                 help='Hours before this step times out')
+                                 help='Hours before this step times out'
     
     # Conditions
     condition_field = fields.Char('Condition Field', help='Field to check for conditions')
@@ -93,7 +92,7 @@ class RecordsApprovalStep(models.Model):
         ('>=', 'Greater or Equal'),
         ('<=', 'Less or Equal'),
         ('in', 'In'),
-        ('not in', 'Not In')
+        ('not in', 'Not In'), string="Selection Field")
     condition_value = fields.Char('Condition Value')
     
     @api.onchange('step_type')

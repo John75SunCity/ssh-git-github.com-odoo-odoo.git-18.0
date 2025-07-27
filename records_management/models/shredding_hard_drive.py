@@ -16,11 +16,11 @@ class ShreddingHardDrive(models.Model):
     
     # Service relationship
     service_id = fields.Many2one('shredding.service', string='Shredding Service', 
-                                 required=True, ondelete='cascade')
+                                 required=True, ondelete='cascade'
     
     # Device identification
     device_type = fields.Selection([
-        ('hdd', 'Hard Disk Drive (HDD)'),
+        ('hdd', 'Hard Disk Drive (HDD'),
         ('ssd', 'Solid State Drive (SSD)'),
         ('usb', 'USB Drive'),
         ('cd_dvd', 'CD/DVD'),
@@ -32,7 +32,7 @@ class ShreddingHardDrive(models.Model):
         ('server', 'Server Drive'),
         ('other', 'Other Electronic Media')
     
-    # Physical characteristics
+    # Physical characteristics), string="Selection Field"
     manufacturer = fields.Char('Manufacturer')
     model_number = fields.Char('Model Number')
     serial_number = fields.Char('Serial Number', tracking=True)
@@ -45,14 +45,14 @@ class ShreddingHardDrive(models.Model):
         ('custom', 'Custom Size'),
         ('other', 'Other')
     
-    # Security and data classification
+    # Security and data classification), string="Selection Field"
     security_level = fields.Selection([
         ('standard', 'Standard'),
         ('confidential', 'Confidential'),
         ('secret', 'Secret'),
         ('top_secret', 'Top Secret'),
         ('custom', 'Custom Classification')
-    
+), string="Selection Field"
     data_classification = fields.Selection([
         ('public', 'Public'),
         ('internal', 'Internal Use'),
@@ -63,7 +63,7 @@ class ShreddingHardDrive(models.Model):
         ('financial', 'Financial Data'),
         ('government', 'Government Classified')
     
-    # Destruction details
+    # Destruction details), string="Selection Field"
     destruction_method = fields.Selection([
         ('physical_shred', 'Physical Shredding'),
         ('disintegration', 'Disintegration'),
@@ -72,7 +72,7 @@ class ShreddingHardDrive(models.Model):
         ('incineration', 'Incineration'),
         ('acid_bath', 'Chemical Destruction'),
         ('combined', 'Combined Methods')
-    
+), string="Selection Field"
     destruction_date = fields.Datetime('Destruction Date', tracking=True)
     destruction_technician = fields.Many2one('res.users', string='Destruction Technician')
     witness_present = fields.Boolean('Witness Present', default=False)
@@ -91,17 +91,17 @@ class ShreddingHardDrive(models.Model):
         ('advanced', 'Advanced Encryption'),
         ('military', 'Military Grade'),
         ('unknown', 'Unknown')
-    
+), string="Selection Field"
     functionality_test = fields.Selection([
         ('functional', 'Functional'),
         ('partial', 'Partially Functional'),
         ('non_functional', 'Non-Functional'),
         ('damaged', 'Physically Damaged')
     
-    # Destruction verification
+    # Destruction verification), string="Selection Field"
     destruction_verified = fields.Boolean('Destruction Verified', default=False)
     particle_size_mm = fields.Float('Particle Size (mm)', digits=(5, 2),
-                                   help='Maximum particle size after destruction')
+                                   help='Maximum particle size after destruction',
     destruction_photographed = fields.Boolean('Destruction Photographed', default=False)
     video_recorded = fields.Boolean('Video Recorded', default=False)
     
@@ -118,14 +118,14 @@ class ShreddingHardDrive(models.Model):
     
     # Status
     state = fields.Selection([
-        ('received', 'Received'),
+        ('received', 'Received',
         ('verified', 'Verified'),
         ('ready', 'Ready for Destruction'),
         ('in_progress', 'Destruction in Progress'),
         ('destroyed', 'Destroyed'),
         ('certified', 'Certified Complete')
     
-    # Weight and measurements
+    # Weight and measurements), string="Selection Field"
     weight_kg = fields.Float('Weight (kg)', digits=(8, 3))
     dimensions = fields.Char('Dimensions (L x W x H)')
     
@@ -136,7 +136,7 @@ class ShreddingHardDrive(models.Model):
     # Company and customer
     customer_id = fields.Many2one('res.partner', string='Customer')
     company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company
     active = fields.Boolean('Active', default=True)
     
     # Computed fields
@@ -206,7 +206,7 @@ class ShreddingHardDrive(models.Model):
         self.write({
             'state': 'verified',
             'custody_verified': True
-        })
+        }
     
     def action_start_destruction(self):
         """Start the destruction process"""
@@ -222,7 +222,7 @@ class ShreddingHardDrive(models.Model):
             'state': 'destroyed',
             'destruction_date': fields.Datetime.now(),
             'destruction_verified': True
-        })
+        }
     
     def action_generate_certificate(self):
         """Generate destruction certificate"""
@@ -236,4 +236,4 @@ class ShreddingHardDrive(models.Model):
             'certificate_generated': True,
             'certificate_number': certificate_num,
             'chain_of_custody_complete': True
-        })
+        }

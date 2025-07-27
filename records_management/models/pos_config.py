@@ -13,17 +13,17 @@ class PosConfig(models.Model):
     # NOTE: Simplified inheritance to avoid multiple inheritance conflicts
     
     
-    # Records management integration (custom fields only)
+    # Records management integration (custom fields only
     auto_create_customer = fields.Boolean(string='Auto Create Customer', default=True,
-                                          help='Automatically create customer records for walk-in services')
+                                          help='Automatically create customer records for walk-in services',
     available_in_pos = fields.Boolean(string='Available in POS', default=True)
     avg_transaction_time = fields.Float(string='Average Transaction Time (minutes)', compute='_compute_analytics')
     avg_transaction_value = fields.Float(string='Average Transaction Value', compute='_compute_analytics')
     
-    # Custom scanning features (not conflicting with base fields)
+    # Custom scanning features (not conflicting with base fields
     barcode_scanner_enabled = fields.Boolean(string='Barcode Scanner Enabled', default=True)
     
-    # Analytics and reporting (custom fields)
+    # Analytics and reporting (custom fields
     busiest_day_of_week = fields.Selection([
         ('0', 'Monday'),
         ('1', 'Tuesday'),
@@ -33,12 +33,12 @@ class PosConfig(models.Model):
         ('5', 'Saturday'),
         ('6', 'Sunday')
     
-    # Session management (custom fields)
+    # Session management (custom fields), string="Selection Field")
     current_session_id = fields.Many2one('pos.session', string='Current Session', compute='_compute_current_session')
     # Use related field from pos.session state - no override needed
     current_session_state = fields.Selection(related='current_session_id.state', readonly=True, string='Session State')
     
-    # Customer analytics (custom fields)
+    # Customer analytics (custom fields
     customer_count = fields.Integer(string='Customer Count', compute='_compute_analytics')
     customer_satisfaction_score = fields.Float(string='Customer Satisfaction Score', compute='_compute_analytics')
     
@@ -46,60 +46,60 @@ class PosConfig(models.Model):
     document_scanning_rate = fields.Float(string='Document Scanning Rate', default=25.0)
     document_storage_rate = fields.Float(string='Document Storage Rate', default=3.0)
     enable_document_services = fields.Boolean(string='Enable Document Services', default=True,
-                                               help='Enable document shredding and storage services')
+                                               help='Enable document shredding and storage services',
     enable_walk_in_service = fields.Boolean(string='Enable Walk-in Service', default=True,
-                                            help='Allow walk-in customers without appointments')
+                                            help='Allow walk-in customers without appointments'
     
-    # Session tracking (custom fields)
+    # Session tracking (custom fields
     last_session_closing_date = fields.Datetime(string='Last Session Closing Date', compute='_compute_session_info')
     
-    # Product and pricing (custom fields)
+    # Product and pricing (custom fields
     loyalty_program_usage = fields.Float(string='Loyalty Program Usage (%)', compute='_compute_analytics')
     
-    # Custom analytics and performance (no base field conflicts)
+    # Custom analytics and performance (no base field conflicts
     most_sold_product_id = fields.Many2one('product.template', string='Most Sold Product', compute='_compute_analytics')
     order_count = fields.Integer(string='Order Count', compute='_compute_analytics')
     
     # Additional relationship fields for comprehensive POS management
     session_ids = fields.Many2many('pos.session', relation='session_ids_rel', string='All Sessions',
-                                  help='All sessions (open and closed)  # Fixed: was One2many with missing inverse field for this POS configuration')
+                                  help='All sessions (open and closed  # Fixed: was One2many with missing inverse field for this POS configuration',
     order_ids = fields.Many2many('pos.order', relation='order_ids_rel', string='All Orders',
                                 help='All orders processed through this POS configuration')  # Fixed: was One2many with missing inverse field
     
-    # Custom payment analytics (no base field conflicts)
+    # Custom payment analytics (no base field conflicts
     peak_hour_sales = fields.Float(string='Peak Hour Sales', compute='_compute_analytics')
     performance_data_ids = fields.One2many('pos.performance.data', 'config_id', string='Performance Data')
     pos_category_id = fields.Many2one('pos.category', string='Default Category')
     product_id = fields.Many2one('product.template', string='Default Product')
     
-    # Custom service requirements (no base field conflicts)
+    # Custom service requirements (no base field conflicts
     require_customer_info = fields.Boolean(string='Require Customer Info', default=True,
-                                           help='Require customer information for records services')
+                                           help='Require customer information for records services',
     requires_appointment = fields.Boolean(string='Requires Appointment', default=False,
-                                          help='Require appointments for certain services')
+                                          help='Require appointments for certain services'
     
-    # Service configuration (custom fields)
+    # Service configuration (custom fields
     rush_service_multiplier = fields.Float(string='Rush Service Multiplier', default=1.5,
-                                           help='Price multiplier for rush services')
+                                           help='Price multiplier for rush services',
     service_product_ids = fields.Many2many('product.template', 
                                            relation='pos_config_service_product_rel',
                                            column1='config_id', 
                                            column2='product_id',
                                            string='Service Products',
-                                           help='Products available for records management services')
+                                           help='Products available for records management services',
     service_type = fields.Selection([
         ('full_service', 'Full Service'),
         ('self_service', 'Self Service'),
         ('hybrid', 'Hybrid')
     
-    # Session and transaction management (custom fields)
+    # Session and transaction management (custom fields), string="Selection Field")
     session_count = fields.Integer(string='Session Count', compute='_compute_session_info')
     session_user_id = fields.Many2one('res.users', string='Session User')
     shredding_service_rate = fields.Float(string='Shredding Service Rate', default=0.10,
-                                          help='Rate per pound for shredding services')
+                                          help='Rate per pound for shredding services',
     split_transactions = fields.Boolean(string='Split Transactions', default=False)
     
-    # Financial tracking (custom fields)
+    # Financial tracking (custom fields
     total_sales = fields.Float(string='Total Sales', compute='_compute_analytics')
     total_transactions = fields.Integer(string='Total Transactions', compute='_compute_analytics')
     transaction_count = fields.Integer(string='Transaction Count', compute='_compute_analytics')
@@ -108,11 +108,11 @@ class PosConfig(models.Model):
         ('standard', 'Standard POS'),
         ('kiosk', 'Self-Service Kiosk')
     
-    # Walk-in customer configuration (custom fields)
+    # Walk-in customer configuration (custom fields), string="Selection Field")
     walk_in_customer_id = fields.Many2one('res.partner', string='Walk-in Customer Template',
-                                          help='Default customer for walk-in services')
+                                          help='Default customer for walk-in services',
     walk_in_pricelist_id = fields.Many2one('product.pricelist', string='Walk-in Pricelist',
-                                           help='Special pricing for walk-in customers')
+                                           help='Special pricing for walk-in customers'
     
     # Technical view fields
     arch = fields.Text(string='View Architecture')
@@ -130,7 +130,7 @@ class PosConfig(models.Model):
         """Compute current active session"""
         for config in self:
             # Get the current open session from all sessions
-            current_session = config.session_ids.filtered(lambda s: s.state == 'opened')
+            current_session = config.session_ids.filtered(lambda s: s.state == 'opened'
             config.current_session_id = current_session[0] if current_session else False
 
     @api.depends('session_ids', 'order_ids')
@@ -138,31 +138,31 @@ class PosConfig(models.Model):
         """Compute various analytics for POS configuration"""
         for config in self:
             # Get orders for this config
-            orders = self.env['pos.order'].search([('config_id', '=', config.id)])
+            orders = self.env['pos.order'].search([('config_id', '=', config.id])
             
             # Basic counts
-            config.order_count = len(orders)
+            config.order_count = len(orders
             config.customer_count = len(orders.mapped('partner_id'))
             config.transaction_count = len(orders)
             config.total_transactions = len(orders)
             
             # Financial metrics
-            config.total_sales = sum(orders.mapped('amount_total'))
+            config.total_sales = sum(orders.mapped('amount_total')
             config.avg_transaction_value = config.total_sales / len(orders) if orders else 0.0
             
             # Session analytics
             sessions = config.session_ids
-            config.session_count = len(sessions)
+            config.session_count = len(sessions
             
             # Get open sessions from session_ids instead of open_session_ids
-            open_sessions = sessions.filtered(lambda s: s.state == 'opened')
+            open_sessions = sessions.filtered(lambda s: s.state == 'opened'
             
             # Time-based analytics
             if orders:
-                # Calculate average transaction time (simplified)
+                # Calculate average transaction time (simplified
                 config.avg_transaction_time = 5.0  # Default estimate
                 
-                # Peak hour sales (simplified calculation)
+                # Peak hour sales (simplified calculation
                 config.peak_hour_sales = config.total_sales * 0.3  # Assume 30% during peak
                 
                 # Most sold product
@@ -176,7 +176,7 @@ class PosConfig(models.Model):
                             product_sales[product.id] = line.qty
                 
                 if product_sales:
-                    most_sold_id = max(product_sales, key=product_sales.get)
+                    most_sold_id = max(product_sales, key=product_sales.get
                     config.most_sold_product_id = most_sold_id
                 else:
                     config.most_sold_product_id = False
@@ -185,14 +185,14 @@ class PosConfig(models.Model):
                 config.peak_hour_sales = 0.0
                 config.most_sold_product_id = False
                 
-            # Customer satisfaction and loyalty (simplified)
+            # Customer satisfaction and loyalty (simplified
             config.customer_satisfaction_score = 85.0  # Default good score
             config.loyalty_program_usage = 25.0  # Default percentage
             
-            # Day of week analysis (simplified)
+            # Day of week analysis (simplified
             config.busiest_day_of_week = '4'  # Friday as default
 
-    @api.depends('current_session_id')
+    @api.depends('current_session_id'
     def _compute_session_info(self):
         """Compute session-related information"""
         for config in self:
@@ -200,7 +200,7 @@ class PosConfig(models.Model):
             config.session_count = len(sessions)
             
             # Get last closed session
-            closed_sessions = sessions.filtered(lambda s: s.state == 'closed')
+            closed_sessions = sessions.filtered(lambda s: s.state == 'closed'
             if closed_sessions:
                 last_session = closed_sessions.sorted('stop_at', reverse=True)[0]
                 config.last_session_closing_date = last_session.stop_at
@@ -215,7 +215,7 @@ class PosConfig(models.Model):
                 config.most_sold_product_id = False
                 config.busiest_day_of_week = False
 
-    def action_view_sessions(self):
+    def action_view_sessions(self:
         """View sessions for this POS configuration"""
         return {
             'name': _('POS Sessions'),
@@ -264,5 +264,5 @@ class PosPerformanceData(models.Model):
         ('sales', 'Sales'),
         ('transactions', 'Transactions'),
         ('customers', 'Customers'),
-        ('efficiency', 'Efficiency')
+        ('efficiency', 'Efficiency'), string="Selection Field")
     notes = fields.Text(string='Notes')

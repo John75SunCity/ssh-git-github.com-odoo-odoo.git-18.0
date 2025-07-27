@@ -20,21 +20,21 @@ class RecordsPolicyVersion(models.Model):
         ('pulping', 'Pulping'),
         ('electronic_wipe', 'Electronic Data Wiping'),
         ('secure_disposal', 'Secure Disposal')
-    
+), string="Selection Field"
     review_cycle_months = fields.Integer('Review Cycle (Months)')
     risk_level = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
         ('critical', 'Critical')
-    
+), string="Selection Field"
     approval_status = fields.Selection([
         ('draft', 'Draft'),
         ('pending', 'Pending Approval'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('superseded', 'Superseded')
-    
+), string="Selection Field"
     approved_by = fields.Many2one('res.users', string='Approved By')
     approval_date = fields.Datetime('Approval Date')
     
@@ -56,7 +56,7 @@ class RecordsPolicyVersion(models.Model):
             'approval_status': 'approved',
             'approved_by': self.env.user.id,
             'approval_date': fields.Datetime.now()
-        })
+        }
         
         # Update the main policy to this version
         if self.policy_id:
@@ -66,14 +66,14 @@ class RecordsPolicyVersion(models.Model):
                 'destruction_method': self.destruction_method,
                 'review_cycle_months': self.review_cycle_months,
                 'risk_level': self.risk_level
-            })
+            }
             
             # Mark other versions as superseded
-            other_versions = self.search([
-                ('policy_id', '=', self.policy_id.id),
+            other_versions = self.search\([
+                ('policy_id', '=', self.policy_id.id,
                 ('id', '!=', self.id),
-                ('approval_status', '=', 'approved')
-            ])
+                ('approval_status', '=', 'approved')])
+            ]
             other_versions.write({'approval_status': 'superseded'})
     
     def action_reject(self):
@@ -82,4 +82,4 @@ class RecordsPolicyVersion(models.Model):
             'approval_status': 'rejected',
             'approved_by': self.env.user.id,
             'approval_date': fields.Datetime.now()
-        })
+        }

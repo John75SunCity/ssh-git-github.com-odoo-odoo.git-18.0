@@ -12,7 +12,7 @@ class RecordsDocument(models.Model):
     name = fields.Char('Document Reference', required=True)
     box_id = fields.Many2one(
         'records.box', string='Box', required=True,
-        index=True, domain="[('state', '=', 'active')]"
+        index=True, domain="[('state', '=', 'active']")
     location_id = fields.Many2one(
         related='box_id.location_id', string='Storage Location', store=True
 
@@ -25,18 +25,18 @@ class RecordsDocument(models.Model):
                            relation='records_document_tag_rel',
                            column1='document_id',
                            column2='tag_id',
-                           string='Tags')
+                           string='Tags'
 
     # Date tracking fields
     created_date = fields.Date(
         'Created Date', 
-        help='Date when the document was originally created'
+        help='Date when the document was originally created',
     received_date = fields.Date(
         'Received Date',
-        help='Date when the document was received by the organization'
+        help='Date when the document was received by the organization',
     storage_date = fields.Date(
         'Storage Date',
-        help='Date when the document was placed in storage'
+        help='Date when the document was placed in storage',
     last_access_date = fields.Date(
         'Last Access Date',
         help='Date when the document was last accessed'
@@ -51,7 +51,7 @@ class RecordsDocument(models.Model):
         ('contracts', 'Contracts & Agreements'),
         ('correspondence', 'Correspondence'),
         ('other', 'Other')
-
+), string="Selection Field"
     media_type = fields.Selection([
         ('paper', 'Paper'),
         ('digital', 'Digital'),
@@ -60,7 +60,7 @@ class RecordsDocument(models.Model):
         ('magnetic_tape', 'Magnetic Tape'),
         ('optical_disc', 'Optical Disc'),
         ('other', 'Other')
-
+), string="Selection Field"
     original_format = fields.Selection([
         ('letter', 'Letter Size (8.5x11)'),
         ('legal', 'Legal Size (8.5x14)'),
@@ -71,7 +71,7 @@ class RecordsDocument(models.Model):
         ('digital_file', 'Digital File'),
         ('bound_volume', 'Bound Volume'),
         ('other', 'Other')
-
+), string="Selection Field"
     digitized = fields.Boolean(
         'Digitized',
         default=False,
@@ -85,12 +85,12 @@ class RecordsDocument(models.Model):
         compute='_compute_retention_date', store=True
     expiry_date = fields.Date(
         'Expiry Date',
-        help='Date when the document expires and should be reviewed for destruction'
+        help='Date when the document expires and should be reviewed for destruction',
     destruction_eligible_date = fields.Date(
         'Destruction Eligible Date',
         compute='_compute_destruction_eligible_date',
         store=True,
-        help='Date when the document becomes eligible for destruction based on retention policy'
+        help='Date when the document becomes eligible for destruction based on retention policy',
     days_to_retention = fields.Integer(
         'Days until destruction', compute='_compute_days_to_retention'
     days_until_destruction = fields.Integer(
@@ -113,7 +113,7 @@ class RecordsDocument(models.Model):
         'records.department', string='Department', index=True
     container_id = fields.Many2one(
         'box.contents', string='File Folder/Container',
-        help='The file folder or container within the box where this document is filed'
+        help='The file folder or container within the box where this document is filed',
     user_id = fields.Many2one(
         'res.users', string='Responsible'
     company_id = fields.Many2one(
@@ -129,13 +129,13 @@ class RecordsDocument(models.Model):
     # Digital document fields
     file_format = fields.Char(
         string='File Format',
-        help='Digital file format (e.g., PDF, DOC, JPG)'
+        help='Digital file format (e.g., PDF, DOC, JPG')
     file_size = fields.Float(
         string='File Size (MB)',
-        help='Size of the digital file in megabytes'
+        help='Size of the digital file in megabytes',
     scan_date = fields.Datetime(
         string='Scan Date',
-        help='Date when the document was digitally scanned'
+        help='Date when the document was digitally scanned',
     signature_verified = fields.Boolean(
         string='Signature Verified',
         default=False,
@@ -146,7 +146,7 @@ class RecordsDocument(models.Model):
         'records.audit.log',
         'document_id',
         string='Audit Log Entries',
-        help='Audit trail entries for this document'
+        help='Audit trail entries for this document',
     chain_of_custody_ids = fields.One2many(
         'records.chain.of.custody',
         'document_id',
@@ -157,7 +157,7 @@ class RecordsDocument(models.Model):
     audit_trail_count = fields.Integer(
         string='Audit Trail Count',
         compute='_compute_audit_trail_count',
-        help='Number of audit trail entries for this document'
+        help='Number of audit trail entries for this document',
     chain_of_custody_count = fields.Integer(
         string='Chain of Custody Count',
         compute='_compute_chain_of_custody_count',
@@ -176,18 +176,18 @@ class RecordsDocument(models.Model):
         ('retrieved', 'Retrieved'),
         ('returned', 'Returned'),
         ('archived', 'Archived'),
-        ('destroyed', 'Destroyed')
+        ('destroyed', 'Destroyed'), string="Selection Field")
     checkout_status = fields.Selection([
         ('in_box', 'In Box'),
         ('checked_out', 'Checked Out'),
         ('destroyed', 'Destroyed'),
         ('lost', 'Lost')
-       help='Current checkout status of this document')
+       help='Current checkout status of this document'), string="Selection Field")
     destruction_method = fields.Selection([
         ('shredding', 'Shredding'),
         ('pulping', 'Pulping'),
         ('incineration', 'Incineration'),
-        ('disintegration', 'Disintegration')
+        ('disintegration', 'Disintegration'), string="Selection Field")
     active = fields.Boolean(default=True)
 
     # Security fields
@@ -213,14 +213,14 @@ class RecordsDocument(models.Model):
     
     # Missing technical and audit fields from view references
     action_type = fields.Selection([
-        ('created', 'Created'),
+        ('created', 'Created',
         ('modified', 'Modified'),
         ('accessed', 'Accessed'),
         ('moved', 'Moved'),
-        ('destroyed', 'Destroyed')
+        ('destroyed', 'Destroyed'), string="Selection Field")
     arch = fields.Text(string='View Architecture', help='XML view architecture definition')
     compliance_verified = fields.Boolean(string='Compliance Verified', default=False,
-                                        help='Indicates if compliance has been verified')
+                                        help='Indicates if compliance has been verified',
     context = fields.Text(string='Context', help='View context information')
     event_date = fields.Date(string='Event Date', help='Date when event occurred')
     event_type = fields.Char(string='Event Type', help='Type of event recorded')
@@ -231,13 +231,13 @@ class RecordsDocument(models.Model):
     res_model = fields.Char(string='Resource Model', help='Resource model name')
     resolution = fields.Text(string='Resolution', help='Resolution or outcome of event')
     responsible_person = fields.Many2one('res.users', string='Responsible Person',
-                                        help='Person responsible for this document')
+                                        help='Person responsible for this document',
     search_view_id = fields.Many2one('ir.ui.view', string='Search View', help='Search view reference')
     storage_location = fields.Char(string='Storage Location', help='Physical storage location identifier')
     timestamp = fields.Datetime(string='Timestamp', help='Event timestamp')
     view_mode = fields.Char(string='View Mode', help='View mode configuration')
 
-    # Destruction related fields (referenced in views)
+    # Destruction related fields (referenced in views
     destruction_date = fields.Date('Destruction Date')
     destruction_certificate_id = fields.Many2one('ir.attachment', string='Destruction Certificate')
     naid_destruction_verified = fields.Boolean('NAID Destruction Verified', default=False)
@@ -248,8 +248,8 @@ class RecordsDocument(models.Model):
 
     # Compute methods
     @api.depends('date', 'retention_policy_id',
-                 'retention_policy_id.retention_years')
-    def _compute_retention_date(self):
+                 'retention_policy_id.retention_years'
+    def _compute_retention_date(self:
         for doc in self:
             if (doc.date and doc.retention_policy_id and
                     doc.retention_policy_id.retention_years):
@@ -265,7 +265,7 @@ class RecordsDocument(models.Model):
             # unless there are special business rules
             doc.destruction_eligible_date = doc.retention_date
 
-    @api.depends('retention_date')
+    @api.depends('retention_date'
     def _compute_days_to_retention(self):
         today = fields.Date.today()
         for doc in self:
@@ -287,14 +287,14 @@ class RecordsDocument(models.Model):
 
     # Phase 1 Critical Fields - Added by automated script
     
-    @api.depends()
+    @api.depends(
     def _compute_attachment_count(self):
         """Compute the number of attachments for this document"""
         for record in self:
-            attachments = self.env['ir.attachment'].search([
+            attachments = self.env['ir.attachment'].search\([
                 ('res_model', '=', 'records.document'),
-                ('res_id', '=', record.id)
-            ])
+                ('res_id', '=', record.id)])
+            ]
             record.attachment_count = len(attachments)
     
     @api.depends('audit_log_ids')
@@ -302,11 +302,11 @@ class RecordsDocument(models.Model):
         """Compute number of audit trail entries."""
         for record in self:
             # This would typically link to an audit log model
-            record.audit_trail_count = len(record.audit_log_ids) if hasattr(record, 'audit_log_ids') else 0
+            record.audit_trail_count = len(record.audit_log_ids if hasattr(record, 'audit_log_ids') else 0
     
     @api.depends('chain_of_custody_ids')
     def _compute_chain_of_custody_count(self):
         """Compute number of chain of custody entries."""
         for record in self:
             # This would typically link to a chain of custody model
-            record.chain_of_custody_count = len(record.chain_of_custody_ids) if hasattr(record, 'chain_of_custody_ids') else 0
+            record.chain_of_custody_count = len(record.chain_of_custody_ids if hasattr(record, 'chain_of_custody_ids') else 0

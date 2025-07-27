@@ -17,9 +17,9 @@ class RecordsBoxMovement(models.Model):
         ('return', 'Return'),
         ('relocation', 'Relocation'),
         ('destruction', 'To Destruction')
-)
+), string="Selection Field")
     responsible_user_id = fields.Many2one('res.users', string='Responsible User', 
-                                        default=lambda self: self.env.user, required=True)
+                                        default=lambda self: self.env.user, required=True
     notes = fields.Text('Notes')
     reference = fields.Char('Reference Number')
     
@@ -33,62 +33,57 @@ class RecordsBoxMovement(models.Model):
         string='Movement Efficiency Score',
         compute='_compute_logistics_analytics',
         store=True,
-        help='Efficiency score for this movement (0-100)'
-)
+        help='Efficiency score for this movement (0-100',
     distance_optimization_rating = fields.Float(
         string='Distance Optimization Rating',
         compute='_compute_logistics_analytics',
         store=True,
-        help='Rating of route optimization for this movement'
-)
+        help='Rating of route optimization for this movement',
     handling_complexity_score = fields.Float(
         string='Handling Complexity Score',
         compute='_compute_logistics_analytics',
         store=True,
         help='Complexity assessment of the movement operation'
     
-    # Pattern Analytics)
+    # Pattern Analytics
     movement_pattern_score = fields.Float(
         string='Movement Pattern Score',
         compute='_compute_pattern_analytics',
         store=True,
-        help='Score based on movement patterns and predictability'
-)
+        help='Score based on movement patterns and predictability',
     seasonal_trend_indicator = fields.Selection([
-        ('low_season', 'Low Season'),
+        ('low_season', 'Low Season',
         ('normal', 'Normal Period'),
         ('peak_season', 'Peak Season'),
         ('irregular', 'Irregular Pattern')
        compute='_compute_pattern_analytics',
        store=True,
-       help='Seasonal movement trend indicator')
-    
+       help='Seasonal movement trend indicator'
+), string="Selection Field"
     frequency_anomaly_flag = fields.Boolean(
         string='Frequency Anomaly Detected',
         compute='_compute_pattern_analytics',
         store=True,
         help='Indicates unusual movement frequency'
     
-    # Cost Analytics)
+    # Cost Analytics
     estimated_movement_cost = fields.Float(
         string='Estimated Movement Cost',
         compute='_compute_cost_analytics',
         store=True,
-        help='Estimated cost of this movement operation'
-)
+        help='Estimated cost of this movement operation',
     labor_efficiency_rating = fields.Float(
         string='Labor Efficiency Rating',
         compute='_compute_cost_analytics',
         store=True,
-        help='Efficiency rating of labor utilization'
-)
+        help='Efficiency rating of labor utilization',
     resource_utilization_score = fields.Float(
         string='Resource Utilization Score',
         compute='_compute_cost_analytics',
         store=True,
         help='Score for resource utilization optimization'
-)
-    @api.depends('movement_type', 'from_location_id', 'to_location_id', 'movement_date')
+
+    @api.depends('movement_type', 'from_location_id', 'to_location_id', 'movement_date'
     def _compute_logistics_analytics(self):
         """Compute logistics efficiency analytics"""
         for record in self:
@@ -102,9 +97,9 @@ class RecordsBoxMovement(models.Model):
                 'destruction': 90   # Final destination, high efficiency
             }
             
-            base_efficiency = efficiency_scores.get(record.movement_type, 70)
+            base_efficiency = efficiency_scores.get(record.movement_type, 70
             
-            # Location distance factor (simplified - would integrate with actual distance calculation)
+            # Location distance factor (simplified - would integrate with actual distance calculation
             distance_rating = 80  # Default rating
             
             if record.from_location_id and record.to_location_id:
@@ -113,10 +108,10 @@ class RecordsBoxMovement(models.Model):
                 to_path = record.to_location_id.complete_name or ''
                 
                 # Same building/area = high efficiency
-                if from_path.split('/')[0] == to_path.split('/')[0]:
+                if from_path.split('/'[0] == to_path.split('/'[0]:
                     distance_rating = 95
                 # Different areas = moderate efficiency
-                elif len(from_path.split('/')) > 1 and len(to_path.split('/')) > 1:
+                elif len(from_path.split('/' > 1 and len(to_path.split('/')) > 1:
                     distance_rating = 75
                 # Complex routing = lower efficiency
                 else:
@@ -134,26 +129,26 @@ class RecordsBoxMovement(models.Model):
                 'destruction': 60   # Medium-high complexity
             }
             
-            complexity_score = complexity_factors.get(record.movement_type, 50)
+            complexity_score = complexity_factors.get(record.movement_type, 50
             
-            # Time-based complexity (movements outside business hours are more complex)
+            # Time-based complexity (movements outside business hours are more complex
             if record.movement_date:
                 hour = record.movement_date.hour
                 if hour < 7 or hour > 18:
                     complexity_score += 15
                 
                 # Weekend movements are more complex
-                if record.movement_date.weekday() >= 5:
+                if record.movement_date.weekday( >= 5:
                     complexity_score += 10
             
-            record.handling_complexity_score = min(complexity_score, 100)
+            record.handling_complexity_score = min(complexity_score, 100
             
-            # Overall efficiency (considering distance and complexity)
+            # Overall efficiency (considering distance and complexity
             adjusted_efficiency = base_efficiency
-            adjusted_efficiency += (distance_rating - 80) * 0.3  # Distance factor
-            adjusted_efficiency -= (complexity_score - 50) * 0.2  # Complexity penalty
+            adjusted_efficiency += (distance_rating - 80 * 0.3  # Distance factor
+            adjusted_efficiency -= (complexity_score - 50 * 0.2  # Complexity penalty
             
-            record.movement_efficiency_score = min(max(adjusted_efficiency, 0), 100)
+            record.movement_efficiency_score = min(max(adjusted_efficiency, 0, 100
     
     @api.depends('box_id', 'movement_date', 'movement_type')
     def _compute_pattern_analytics(self):
@@ -166,17 +161,17 @@ class RecordsBoxMovement(models.Model):
                 continue
             
             # Analyze movement patterns for this box
-            box_movements = self.search([
-                ('box_id', '=', record.box_id.id),
-                ('movement_date', '<=', record.movement_date)
-            ], order='movement_date asc')
+            box_movements = self.search\([
+                ('box_id', '=', record.box_id.id,
+                ('movement_date', '<=', record.movement_date])
+            ], order='movement_date asc'
             
             pattern_score = 50  # Base score
             
-            if len(box_movements) >= 3:
+            if len(box_movements >= 3:
                 # Calculate movement intervals
                 intervals = []
-                for i in range(1, len(box_movements)):
+                for i in range(1, len(box_movements:
                     interval_days = (box_movements[i].movement_date - box_movements[i-1].movement_date).days
                     intervals.append(interval_days)
                 
@@ -194,11 +189,11 @@ class RecordsBoxMovement(models.Model):
                     if record.movement_date:
                         month = record.movement_date.month
                         
-                        # Peak seasons (end of quarters, year-end)
+                        # Peak seasons (end of quarters, year-end
                         if month in [3, 6, 9, 12]:
                             record.seasonal_trend_indicator = 'peak_season'
                             pattern_score += 10
-                        # Low season (typically summer months)
+                        # Low season (typically summer months
                         elif month in [7, 8]:
                             record.seasonal_trend_indicator = 'low_season'
                         else:
@@ -208,7 +203,7 @@ class RecordsBoxMovement(models.Model):
                     
                     # Frequency anomaly detection
                     recent_movements = len([m for m in box_movements 
-                                          if (record.movement_date - m.movement_date).days <= 7])
+                                          if (record.movement_date - m.movement_date.days <= 7]
                     
                     if recent_movements > 3:  # More than 3 movements in a week
                         record.frequency_anomaly_flag = True
@@ -219,13 +214,13 @@ class RecordsBoxMovement(models.Model):
                 record.seasonal_trend_indicator = 'irregular'
                 record.frequency_anomaly_flag = False
             
-            record.movement_pattern_score = min(max(pattern_score, 0), 100)
+            record.movement_pattern_score = min(max(pattern_score, 0, 100
     
     @api.depends('movement_type', 'responsible_user_id', 'movement_date')
     def _compute_cost_analytics(self):
         """Compute cost and resource analytics"""
         for record in self:
-            # Base cost estimation (in currency units)
+            # Base cost estimation (in currency units
             base_costs = {
                 'storage': 15,      # Low cost
                 'transfer': 35,     # Medium cost
@@ -235,7 +230,7 @@ class RecordsBoxMovement(models.Model):
                 'destruction': 30   # Medium cost
             }
             
-            base_cost = base_costs.get(record.movement_type, 30)
+            base_cost = base_costs.get(record.movement_type, 30
             
             # Time-based cost adjustments
             if record.movement_date:
@@ -246,7 +241,7 @@ class RecordsBoxMovement(models.Model):
                     base_cost *= 1.5
                 
                 # Weekend premium
-                if record.movement_date.weekday() >= 5:
+                if record.movement_date.weekday( >= 5:
                     base_cost *= 1.3
             
             record.estimated_movement_cost = base_cost
@@ -256,23 +251,23 @@ class RecordsBoxMovement(models.Model):
             
             if record.responsible_user_id:
                 # Analyze user's movement history
-                user_movements = self.search([
-                    ('responsible_user_id', '=', record.responsible_user_id.id),
-                    ('movement_date', '>=', fields.Datetime.now() - timedelta(days=30))
-                ])
+                user_movements = self.search\([
+                    ('responsible_user_id', '=', record.responsible_user_id.id,
+                    ('movement_date', '>=', fields.Datetime.now( - timedelta(days=30))])
+                ]
                 
                 # Experience factor
-                if len(user_movements) > 20:  # Experienced user
+                if len(user_movements > 20:  # Experienced user
                     labor_efficiency += 15
-                elif len(user_movements) > 10:  # Moderate experience
+                elif len(user_movements > 10:  # Moderate experience
                     labor_efficiency += 8
-                elif len(user_movements) < 3:  # New user
+                elif len(user_movements < 3:  # New user
                     labor_efficiency -= 10
                 
-                # Consistency factor (same user handling similar movements)
+                # Consistency factor (same user handling similar movements
                 similar_movements = user_movements.filtered(
                     lambda m: m.movement_type == record.movement_type
-                if len(similar_movements) >= 5:
+                if len(similar_movements >= 5:
                     labor_efficiency += 10
             
             record.labor_efficiency_rating = min(max(labor_efficiency, 0), 100)
@@ -292,11 +287,11 @@ class RecordsBoxMovement(models.Model):
                 if 8 <= hour <= 16:
                     resource_score += 15
             
-            # Pattern efficiency (regular movements are more resource-efficient)
+            # Pattern efficiency (regular movements are more resource-efficient
             if record.movement_pattern_score > 70:
                 resource_score += 10
             
-            record.resource_utilization_score = min(max(resource_score, 0), 100)
+            record.resource_utilization_score = min(max(resource_score, 0, 100)
 
 class RecordsServiceRequest(models.Model):
     _name = 'records.service.request'
@@ -306,7 +301,7 @@ class RecordsServiceRequest(models.Model):
 
     name = fields.Char('Request Reference', required=True, default='New')
     customer_id = fields.Many2one('res.partner', string='Customer', 
-                                domain="[('is_company', '=', True)]", required=True)
+                                domain="[('is_company', '=', True]", required=True)
     
     service_type = fields.Selection([
         ('retrieval', 'Document Retrieval'),
@@ -316,13 +311,13 @@ class RecordsServiceRequest(models.Model):
         ('relocation', 'Box Relocation'),
         ('inventory', 'Inventory Check'),
         ('other', 'Other Service')
-)
+), string="Selection Field")
     priority = fields.Selection([
         ('low', 'Low'),
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-)
+), string="Selection Field")
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
@@ -330,7 +325,7 @@ class RecordsServiceRequest(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-)
+), string="Selection Field")
     required_date = fields.Date('Required Date')
     completed_date = fields.Datetime('Completed Date')
     
@@ -341,7 +336,7 @@ class RecordsServiceRequest(models.Model):
     
     # Tracking
     requestor_id = fields.Many2one('res.users', string='Requestor', 
-                                 default=lambda self: self.env.user, required=True)
+                                 default=lambda self: self.env.user, required=True
     
     # Phase 3: Advanced Service Request Analytics
     
@@ -350,64 +345,59 @@ class RecordsServiceRequest(models.Model):
         string='Service Efficiency Score',
         compute='_compute_performance_analytics',
         store=True,
-        help='Overall efficiency score for this service request'
-)
+        help='Overall efficiency score for this service request',
     response_time_score = fields.Float(
         string='Response Time Score',
         compute='_compute_performance_analytics',
         store=True,
-        help='Score based on response time to customer request'
-)
+        help='Score based on response time to customer request',
     completion_quality_rating = fields.Float(
         string='Completion Quality Rating',
         compute='_compute_performance_analytics',
         store=True,
         help='Quality assessment of service completion'
     
-    # Customer Analytics)
+    # Customer Analytics
     customer_satisfaction_prediction = fields.Float(
         string='Customer Satisfaction Prediction',
         compute='_compute_customer_analytics',
         store=True,
-        help='Predicted customer satisfaction score'
-)
+        help='Predicted customer satisfaction score',
     repeat_service_likelihood = fields.Float(
         string='Repeat Service Likelihood %',
         compute='_compute_customer_analytics',
         store=True,
-        help='Likelihood of repeat service requests'
-)
+        help='Likelihood of repeat service requests',
     service_complexity_assessment = fields.Selection([
-        ('simple', 'Simple'),
+        ('simple', 'Simple',
         ('moderate', 'Moderate'),
         ('complex', 'Complex'),
         ('very_complex', 'Very Complex')
        compute='_compute_customer_analytics',
        store=True,
-       help='Complexity assessment of the service')
+       help='Complexity assessment of the service'
     
-    # Resource Analytics
+    # Resource Analytics), string="Selection Field"
     resource_allocation_score = fields.Float(
         string='Resource Allocation Score',
         compute='_compute_resource_analytics',
         store=True,
-        help='Efficiency of resource allocation for this request'
-)
+        help='Efficiency of resource allocation for this request',
     workload_balance_indicator = fields.Selection([
-        ('underutilized', 'Underutilized'),
+        ('underutilized', 'Underutilized',
         ('optimal', 'Optimal'),
         ('overloaded', 'Overloaded'),
         ('critical', 'Critical')
        compute='_compute_resource_analytics',
        store=True,
-       help='Workload balance indicator')
-    
+       help='Workload balance indicator'
+), string="Selection Field"
     cost_efficiency_rating = fields.Float(
         string='Cost Efficiency Rating',
         compute='_compute_resource_analytics',
         store=True,
         help='Cost efficiency assessment'
-)
+
     @api.depends('state', 'requested_date', 'completed_date', 'required_date', 'priority')
     def _compute_performance_analytics(self):
         """Compute service performance analytics"""
@@ -420,7 +410,7 @@ class RecordsServiceRequest(models.Model):
                 
                 # Timing efficiency
                 if record.completed_date and record.requested_date:
-                    completion_hours = (record.completed_date - record.requested_date).total_seconds() / 3600
+                    completion_hours = (record.completed_date - record.requested_date.total_seconds( / 3600
                     
                     # Expected completion times by service type
                     expected_hours = {
@@ -433,7 +423,7 @@ class RecordsServiceRequest(models.Model):
                         'other': 12
                     }
                     
-                    expected = expected_hours.get(record.service_type, 12)
+                    expected = expected_hours.get(record.service_type, 12
                     
                     if completion_hours <= expected:
                         base_efficiency += 20
@@ -453,18 +443,18 @@ class RecordsServiceRequest(models.Model):
                 'normal': 5,
                 'low': 0
             }
-            base_efficiency += priority_bonuses.get(record.priority, 0)
+            base_efficiency += priority_bonuses.get(record.priority, 0
             
-            record.service_efficiency_score = min(max(base_efficiency, 0), 100)
+            record.service_efficiency_score = min(max(base_efficiency, 0, 100)
             
             # Response time score
             response_score = 80  # Base score
             
             if record.state not in ['draft'] and record.requested_date:
-                # Time from request to first action (submitted/confirmed)
+                # Time from request to first action (submitted/confirmed
                 if record.state in ['submitted', 'confirmed', 'in_progress', 'completed']:
-                    # Simulate response time (would track actual state change timestamps)
-                    current_time = fields.Datetime.now()
+                    # Simulate response time (would track actual state change timestamps
+                    current_time = fields.Datetime.now(
                     if record.completed_date and record.state == 'completed':
                         current_time = record.completed_date
                     
@@ -478,7 +468,7 @@ class RecordsServiceRequest(models.Model):
                         'low': 48       # 2 days
                     }
                     
-                    expected = expected_response.get(record.priority, 24)
+                    expected = expected_response.get(record.priority, 24
                     
                     if response_hours <= expected * 0.5:
                         response_score = 100
@@ -487,7 +477,7 @@ class RecordsServiceRequest(models.Model):
                     elif response_hours <= expected * 2:
                         response_score = 70
                     else:
-                        response_score = max(50 - (response_hours - expected * 2) * 2, 0)
+                        response_score = max(50 - (response_hours - expected * 2 * 2, 0)
             
             record.response_time_score = response_score
             
@@ -499,13 +489,13 @@ class RecordsServiceRequest(models.Model):
                 
                 # On-time completion bonus
                 if record.required_date and record.completed_date:
-                    if record.completed_date.date() <= record.required_date:
+                    if record.completed_date.date( <= record.required_date:
                         quality_rating += 10
-                    elif (record.completed_date.date() - record.required_date).days <= 1:
+                    elif (record.completed_date.date( - record.required_date).days <= 1:
                         quality_rating += 5
                 
-                # Notes quality (indicates thoroughness)
-                if record.notes and len(record.notes.strip()) > 50:
+                # Notes quality (indicates thoroughness
+                if record.notes and len(record.notes.strip() > 50:
                     quality_rating += 5
             
             record.completion_quality_rating = min(max(quality_rating, 0), 100)
@@ -522,13 +512,13 @@ class RecordsServiceRequest(models.Model):
                 'retrieval': 80,    # Generally high satisfaction
                 'delivery': 85,     # High satisfaction
                 'scanning': 75,     # Moderate satisfaction
-                'destruction': 70,  # Lower satisfaction (necessary but not preferred)
+                'destruction': 70,  # Lower satisfaction (necessary but not preferred
                 'relocation': 65,   # Moderate satisfaction
-                'inventory': 90,    # High satisfaction (proactive)
+                'inventory': 90,    # High satisfaction (proactive
                 'other': 70         # Variable satisfaction
             }
             
-            base_satisfaction = satisfaction_factors.get(record.service_type, 75)
+            base_satisfaction = satisfaction_factors.get(record.service_type, 75
             
             # Priority handling affects satisfaction
             if record.priority == 'urgent' and record.state in ['confirmed', 'in_progress', 'completed']:
@@ -544,7 +534,7 @@ class RecordsServiceRequest(models.Model):
             elif record.state == 'in_progress':
                 base_satisfaction += 5
             
-            record.customer_satisfaction_prediction = min(max(base_satisfaction, 0), 100)
+            record.customer_satisfaction_prediction = min(max(base_satisfaction, 0, 100
             
             # Repeat service likelihood
             repeat_likelihood = 60  # Base likelihood
@@ -552,8 +542,8 @@ class RecordsServiceRequest(models.Model):
             if record.customer_id:
                 # Customer history analysis
                 customer_requests = self.search_count([
-                    ('customer_id', '=', record.customer_id.id)
-                ])
+                    ('customer_id', '=', record.customer_id.id
+                ]
                 
                 if customer_requests > 5:  # Frequent customer
                     repeat_likelihood += 20
@@ -562,9 +552,9 @@ class RecordsServiceRequest(models.Model):
                 
                 # Recent request frequency
                 recent_requests = self.search_count([
-                    ('customer_id', '=', record.customer_id.id),
-                    ('requested_date', '>=', fields.Datetime.now() - timedelta(days=90))
-                ])
+                    ('customer_id', '=', record.customer_id.id,
+                    ('requested_date', '>=', fields.Datetime.now( - timedelta(days=90))
+                ]
                 
                 if recent_requests > 3:
                     repeat_likelihood += 15
@@ -580,9 +570,9 @@ class RecordsServiceRequest(models.Model):
                 'other': 15         # Variable
             }
             
-            repeat_likelihood += repeat_factors.get(record.service_type, 15)
+            repeat_likelihood += repeat_factors.get(record.service_type, 15
             
-            record.repeat_service_likelihood = min(max(repeat_likelihood, 0), 100)
+            record.repeat_service_likelihood = min(max(repeat_likelihood, 0, 100)
             
             # Service complexity assessment
             complexity_scores = {
@@ -595,7 +585,7 @@ class RecordsServiceRequest(models.Model):
                 'other': 40
             }
             
-            complexity = complexity_scores.get(record.service_type, 40)
+            complexity = complexity_scores.get(record.service_type, 40
             
             # Priority adds complexity
             priority_complexity = {
@@ -605,7 +595,7 @@ class RecordsServiceRequest(models.Model):
                 'low': -5
             }
             
-            complexity += priority_complexity.get(record.priority, 0)
+            complexity += priority_complexity.get(record.priority, 0
             
             if complexity <= 30:
                 record.service_complexity_assessment = 'simple'
@@ -616,7 +606,7 @@ class RecordsServiceRequest(models.Model):
             else:
                 record.service_complexity_assessment = 'very_complex'
     
-    @api.depends('assigned_to', 'service_type', 'priority', 'state')
+    @api.depends('assigned_to', 'service_type', 'priority', 'state'
     def _compute_resource_analytics(self):
         """Compute resource allocation analytics"""
         for record in self:
@@ -628,10 +618,10 @@ class RecordsServiceRequest(models.Model):
                 
                 # Assignee workload analysis
                 assignee_requests = self.search_count([
-                    ('assigned_to', '=', record.assigned_to.id),
-                    ('state', 'in', ['confirmed', 'in_progress']),
+                    ('assigned_to', '=', record.assigned_to.id,
+                    ('state', 'in', ['confirmed', 'in_progress'],
                     ('requested_date', '>=', fields.Datetime.now() - timedelta(days=7))
-                ])
+                ]
                 
                 # Workload balance assessment
                 if assignee_requests <= 3:
@@ -661,7 +651,7 @@ class RecordsServiceRequest(models.Model):
                 'other': 60         # Moderate resources
             }
             
-            requirement = resource_requirements.get(record.service_type, 60)
+            requirement = resource_requirements.get(record.service_type, 60
             
             # Adjust score based on resource intensity
             if requirement <= 50:
@@ -669,7 +659,7 @@ class RecordsServiceRequest(models.Model):
             elif requirement >= 80:
                 allocation_score -= 5   # High resource needs are harder to allocate
             
-            record.resource_allocation_score = min(max(allocation_score, 0), 100)
+            record.resource_allocation_score = min(max(allocation_score, 0, 100
             
             # Cost efficiency rating
             cost_efficiency = 65  # Base efficiency
@@ -679,13 +669,13 @@ class RecordsServiceRequest(models.Model):
                 'inventory': 85,    # High efficiency
                 'retrieval': 75,    # Good efficiency
                 'delivery': 70,     # Moderate efficiency
-                'scanning': 60,     # Lower efficiency (equipment intensive)
-                'relocation': 55,   # Lower efficiency (labor intensive)
-                'destruction': 80,  # Good efficiency (specialized but efficient)
+                'scanning': 60,     # Lower efficiency (equipment intensive
+                'relocation': 55,   # Lower efficiency (labor intensive
+                'destruction': 80,  # Good efficiency (specialized but efficient
                 'other': 65         # Average efficiency
             }
             
-            cost_efficiency = cost_factors.get(record.service_type, 65)
+            cost_efficiency = cost_factors.get(record.service_type, 65
             
             # Priority impact on cost efficiency
             if record.priority == 'urgent':
@@ -699,7 +689,7 @@ class RecordsServiceRequest(models.Model):
             elif record.state == 'cancelled':
                 cost_efficiency -= 20
             
-            record.cost_efficiency_rating = min(max(cost_efficiency, 0), 100)
+            record.cost_efficiency_rating = min(max(cost_efficiency, 0, 100
     
     @api.model_create_multi
     def create(self, vals_list):

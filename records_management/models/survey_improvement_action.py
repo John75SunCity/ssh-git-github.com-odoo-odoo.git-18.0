@@ -11,11 +11,11 @@ class SurveyImprovementAction(models.Model):
     name = fields.Char(string='Action Title', required=True)
     description = fields.Text(string='Description', required=True)
     feedback_id = fields.Many2one('survey.user_input', string='Related Feedback', 
-                                 required=True, ondelete='cascade')
+                                 required=True, ondelete='cascade'
     
     # Action Classification
     action_type = fields.Selection([
-        ('process', 'Process Improvement'),
+        ('process', 'Process Improvement',
         ('training', 'Staff Training'),
         ('facility', 'Facility Upgrade'),
         ('service', 'Service Enhancement'),
@@ -24,48 +24,47 @@ class SurveyImprovementAction(models.Model):
         ('policy', 'Policy Change'),
         ('other', 'Other')
     
-    # Priority and Scheduling
+    # Priority and Scheduling), string="Selection Field"
     priority = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-    
+), string="Selection Field"
     due_date = fields.Date(string='Due Date')
     estimated_effort = fields.Float(string='Estimated Effort (hours)', 
-                                   help='Estimated time to complete this action')
+                                   help='Estimated time to complete this action'
     
     # Assignment and Status
     responsible_user_id = fields.Many2one('res.users', string='Responsible User',
-                                         help='User responsible for completing this action')
+                                         help='User responsible for completing this action',
     assigned_team = fields.Many2one('hr.department', string='Assigned Team',
-                                   help='Department responsible for this action')
-    
+                                   help='Department responsible for this action',
     status = fields.Selection([
-        ('draft', 'Draft'),
+        ('draft', 'Draft',
         ('planned', 'Planned'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
         ('on_hold', 'On Hold')
     
-    # Progress Tracking
+    # Progress Tracking), string="Selection Field"
     progress = fields.Float(string='Progress (%)', default=0.0,
-                           help='Completion percentage (0-100)')
+                           help='Completion percentage (0-100')
     start_date = fields.Date(string='Start Date')
     completion_date = fields.Date(string='Completion Date')
     actual_effort = fields.Float(string='Actual Effort (hours)',
-                                help='Actual time spent on this action')
+                                help='Actual time spent on this action'
     
     # Impact Assessment
     expected_impact = fields.Selection([
-        ('low', 'Low Impact'),
+        ('low', 'Low Impact',
         ('medium', 'Medium Impact'),
         ('high', 'High Impact'),
         ('critical', 'Critical Impact')
-    
+), string="Selection Field"
     impact_description = fields.Text(string='Impact Description',
-                                   help='Description of expected impact on customer satisfaction')
+                                   help='Description of expected impact on customer satisfaction'
     
     # Results and Follow-up
     completion_notes = fields.Text(string='Completion Notes')
@@ -75,11 +74,11 @@ class SurveyImprovementAction(models.Model):
         ('3', 'Moderately Effective'),
         ('4', 'Very Effective'),
         ('5', 'Extremely Effective')
-       help='Post-completion assessment of action effectiveness')
+       help='Post-completion assessment of action effectiveness'
     
-    # Related Records - FIXED: Changed from compute to proper Many2many relationship
+    # Related Records - FIXED: Changed from compute to proper Many2many relationship), string="Selection Field"
     task_ids = fields.Many2many('project.task', string='Related Tasks',
-                               help='Tasks related to this improvement action')
+                               help='Tasks related to this improvement action',
     meeting_ids = fields.Many2many('calendar.event', string='Related Meetings')
     
     # Compliance and Audit
@@ -116,7 +115,7 @@ class SurveyImprovementAction(models.Model):
         self.write({
             'status': 'in_progress',
             'start_date': fields.Date.today()
-        })
+        }
         self._update_audit_trail('Action started')
     
     def action_complete(self):
@@ -125,16 +124,16 @@ class SurveyImprovementAction(models.Model):
             'status': 'completed',
             'completion_date': fields.Date.today(),
             'progress': 100.0
-        })
+        }
         self._update_audit_trail('Action completed')
         
         # Update feedback record
         if self.feedback_id:
             self.feedback_id.write({
                 'improvement_actions_created': True
-            })
+            }
     
-    def action_cancel(self):
+    def action_cancel(self:
         """Cancel the action"""
         self.write({'status': 'cancelled'})
         self._update_audit_trail('Action cancelled')

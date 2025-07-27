@@ -9,14 +9,14 @@ class SurveyUserInput(models.Model):
         string='Sentiment Score', 
         compute='_compute_sentiment_score', 
         store=True,
-        help='Sentiment score from 0.0 (negative) to 1.0 (positive)'
+        help='Sentiment score from 0.0 (negative to 1.0 (positive)'
     
     # Priority and Categorization
     priority_level = fields.Selection([
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent'),
-    
+), string="Selection Field"
     feedback_category = fields.Selection([
         ('service', 'Service Quality'),
         ('staff', 'Staff Performance'),
@@ -25,7 +25,7 @@ class SurveyUserInput(models.Model):
         ('billing', 'Billing'),
         ('other', 'Other'),
     
-    # Follow-up and Review Fields
+    # Follow-up and Review Fields), string="Selection Field"
     follow_up_required = fields.Boolean(string='Follow-up Required', default=False)
     admin_reviewed = fields.Boolean(string='Admin Reviewed', default=False)
     reviewed_by = fields.Many2one('res.users', string='Reviewed By')
@@ -37,7 +37,7 @@ class SurveyUserInput(models.Model):
     completion_time = fields.Float(string='Completion Time (minutes)', compute='_compute_completion_time', store=True)
     response_summary = fields.Text(string='Response Summary', compute='_compute_response_summary', store=True)
     total_score = fields.Float(string='Computed Score', compute='_compute_total_score', store=True,
-                              help='Calculated total score based on survey responses')
+                              help='Calculated total score based on survey responses'
     
     # Improvement Tracking
     improvement_actions_created = fields.Boolean(string='Improvement Actions Created', default=False)
@@ -45,11 +45,11 @@ class SurveyUserInput(models.Model):
     
     # AI-Powered Analysis Fields
     key_themes = fields.Many2many('survey.feedback.theme', string='Key Themes', 
-                                  help='Identified themes from feedback analysis')
+                                  help='Identified themes from feedback analysis',
     improvement_suggestions = fields.Text(string='AI Improvement Suggestions',
-                                         help='AI-generated suggestions for improvement')
+                                         help='AI-generated suggestions for improvement',
     predicted_churn_risk = fields.Float(string='Predicted Churn Risk', 
-                                       help='AI prediction of customer churn risk (0-1 scale)')
+                                       help='AI prediction of customer churn risk (0-1 scale'
     
     # Additional Analytics Fields for View
     requires_manager_attention = fields.Boolean(string='Requires Manager Attention', default=False)
@@ -57,7 +57,7 @@ class SurveyUserInput(models.Model):
         ('low', 'Low'),
         ('medium', 'Medium'), 
         ('high', 'High'),
-        ('critical', 'Critical')
+        ('critical', 'Critical'), string="Selection Field")
     estimated_resolution_time = fields.Float(string='Estimated Resolution Time (hours)')
     
     # Follow-up Planning
@@ -66,36 +66,36 @@ class SurveyUserInput(models.Model):
         ('email', 'Email'),
         ('phone', 'Phone Call'),
         ('meeting', 'In-Person Meeting'),
-        ('portal', 'Portal Message')
+        ('portal', 'Portal Message'), string="Selection Field")
     customer_contact_preference = fields.Selection([
         ('email', 'Email'),
         ('phone', 'Phone'),
         ('mail', 'Mail'),
         ('portal', 'Portal Only')
     
-    # Historical Context Fields
+    # Historical Context Fields), string="Selection Field"
     customer_previous_feedback_count = fields.Integer(string='Previous Feedback Count', 
-                                                     compute='_compute_customer_history')
+                                                     compute='_compute_customer_history'
     customer_avg_satisfaction = fields.Float(string='Customer Average Satisfaction',
-                                           compute='_compute_customer_history')
+                                           compute='_compute_customer_history'
     satisfaction_trend = fields.Selection([
         ('improving', 'Improving'),
         ('stable', 'Stable'),
         ('declining', 'Declining')
     
-    # Comparative Analysis
+    # Comparative Analysis), string="Selection Field"
     industry_benchmark_comparison = fields.Float(string='Industry Benchmark Comparison')
     peer_satisfaction_ranking = fields.Integer(string='Peer Satisfaction Ranking')
     improvement_opportunity_score = fields.Float(string='Improvement Opportunity Score')
     
     # Grouping and Classification Fields
     satisfaction_level_group = fields.Selection([
-        ('excellent', 'Excellent (90-100%)'),
+        ('excellent', 'Excellent (90-100%'),
         ('good', 'Good (70-89%)'),
         ('average', 'Average (50-69%)'),
         ('poor', 'Poor (30-49%)'),
         ('critical', 'Critical (0-29%)')
-    
+), string="Selection Field"
     satisfaction_level = fields.Selection([
         ('very_high', 'Very High'),
         ('high', 'High'),
@@ -103,7 +103,7 @@ class SurveyUserInput(models.Model):
         ('low', 'Low'),
         ('very_low', 'Very Low')
     
-    # Compliance Fields
+    # Compliance Fields), string="Selection Field"
     compliance_logged = fields.Boolean(string='Compliance Logged', default=False)
     compliance_log_date = fields.Datetime(string='Compliance Log Date')
     compliance_reference = fields.Char(string='Compliance Reference')
@@ -115,10 +115,10 @@ class SurveyUserInput(models.Model):
     
     # Improvement Actions Relationship - FIXED: Using proper inverse field
     improvement_action_ids = fields.One2many('survey.improvement.action', 'feedback_id',
-                                             string='Improvement Actions')
+                                             string='Improvement Actions'
     improvement_action_count = fields.Integer(string='Improvement Action Count', compute='_compute_improvement_action_count')
     portal_feedback_actions = fields.One2many('survey.improvement.action', 'feedback_id',
-                                              string='Portal Feedback Actions')
+                                              string='Portal Feedback Actions'
 
     @api.depends('user_input_line_ids')
     def _compute_sentiment_score(self):
@@ -138,7 +138,7 @@ class SurveyUserInput(models.Model):
             for line in record.user_input_line_ids:
                 # Check for text responses using correct field names
                 text_value = None
-                if hasattr(line, 'value_text_box') and line.value_text_box:
+                if hasattr(line, 'value_text_box' and line.value_text_box:
                     text_value = line.value_text_box.lower()
                 elif hasattr(line, 'value_char_box') and line.value_char_box:
                     text_value = line.value_char_box.lower()
@@ -146,7 +146,7 @@ class SurveyUserInput(models.Model):
                 if text_value:
                     score = 0.5  # neutral
                     
-                    positive_count = sum(1 for word in positive_keywords if word in text_value)
+                    positive_count = sum(1 for word in positive_keywords if word in text_value
                     negative_count = sum(1 for word in negative_keywords if word in text_value)
                     
                     if positive_count > negative_count:
@@ -157,7 +157,7 @@ class SurveyUserInput(models.Model):
                     total_score += score
                     response_count += 1
                 elif hasattr(line, 'value_numerical') and line.value_numerical:
-                    # Normalize numerical responses (assuming 1-5 scale)
+                    # Normalize numerical responses (assuming 1-5 scale
                     normalized = (line.value_numerical - 1) / 4.0
                     total_score += normalized
                     response_count += 1
@@ -180,7 +180,7 @@ class SurveyUserInput(models.Model):
             else:
                 record.completion_time = 0.0
 
-    @api.depends('user_input_line_ids')
+    @api.depends('user_input_line_ids'
     def _compute_response_summary(self):
         """Create a summary of text responses"""
         for record in self:
@@ -188,7 +188,7 @@ class SurveyUserInput(models.Model):
             for line in record.user_input_line_ids:
                 # Check for different text field types in survey.user_input.line
                 text_value = None
-                if hasattr(line, 'value_text_box') and line.value_text_box:
+                if hasattr(line, 'value_text_box' and line.value_text_box:
                     text_value = line.value_text_box.strip()
                 elif hasattr(line, 'value_char_box') and line.value_char_box:
                     text_value = line.value_char_box.strip()
@@ -202,7 +202,7 @@ class SurveyUserInput(models.Model):
                 # Create a summary of first 100 characters of each response
                 summary_parts = []
                 for response in text_responses[:3]:  # First 3 responses
-                    if len(response) > 100:
+                    if len(response > 100:
                         summary_parts.append(response[:97] + "...")
                     else:
                         summary_parts.append(response)
@@ -234,22 +234,22 @@ class SurveyUserInput(models.Model):
             else:
                 record.total_score = total
 
-    @api.depends('partner_id')
+    @api.depends('partner_id'
     def _compute_customer_history(self):
         """Compute customer feedback history"""
         for record in self:
             if record.partner_id:
                 # Count previous feedback from same customer
-                previous_feedback = self.search([
-                    ('partner_id', '=', record.partner_id.id),
+                previous_feedback = self.search\([
+                    ('partner_id', '=', record.partner_id.id,
                     ('id', '!=', record.id),
-                    ('state', '=', 'done')
-                ])
+                    ('state', '=', 'done')])
+                ]
                 record.customer_previous_feedback_count = len(previous_feedback)
                 
                 # Calculate average satisfaction
                 if previous_feedback:
-                    total_satisfaction = sum(feedback.scoring_percentage for feedback in previous_feedback)
+                    total_satisfaction = sum(feedback.scoring_percentage for feedback in previous_feedback
                     record.customer_avg_satisfaction = total_satisfaction / len(previous_feedback)
                 else:
                     record.customer_avg_satisfaction = 0.0
@@ -312,7 +312,7 @@ class SurveyUserInput(models.Model):
             'admin_reviewed': True,
             'reviewed_by': self.env.user.id,
             'review_date': fields.Datetime.now()
-        })
+        }
 
     def action_assign_to_user(self):
         """Open wizard to assign feedback to a user"""
@@ -331,7 +331,7 @@ class SurveyUserInput(models.Model):
             'admin_reviewed': True,
             'reviewed_by': self.env.user.id,
             'review_date': fields.Datetime.now()
-        })
+        }
         
         return {
             'type': 'ir.actions.act_window',
@@ -347,7 +347,7 @@ class SurveyUserInput(models.Model):
         self.write({
             'follow_up_required': True,
             'follow_up_date': fields.Datetime.now()
-        })
+        }
         
         return {
             'type': 'ir.actions.client',
@@ -390,11 +390,11 @@ class SurveyUserInput(models.Model):
             }
         }
 
-    def action_create_strategic_improvement_plan(self):
+    def action_create_strategic_improvement_plan(self:
         """Create comprehensive strategic improvement plan"""
         self.write({
             'improvement_actions_created': True,
-        })
+        }
         
         return {
             'type': 'ir.actions.act_window',
@@ -427,7 +427,7 @@ class SurveyUserInput(models.Model):
             }
         }
 
-    @api.depends('improvement_action_ids')
+    @api.depends('improvement_action_ids'
     def _compute_improvement_action_count(self):
         """Compute count of improvement actions"""
         for record in self:

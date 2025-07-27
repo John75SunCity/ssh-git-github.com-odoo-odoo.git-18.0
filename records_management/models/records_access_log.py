@@ -19,7 +19,7 @@ class RecordsAccessLog(models.Model):
         ('share', 'Share'),
         ('copy', 'Copy'),
         ('export', 'Export')
-    
+), string="Selection Field"
     ip_address = fields.Char('IP Address')
     user_agent = fields.Text('User Agent')
     session_id = fields.Char('Session ID')
@@ -31,19 +31,19 @@ class RecordsAccessLog(models.Model):
     
     # Security information
     authentication_method = fields.Selection([
-        ('password', 'Password'),
+        ('password', 'Password',
         ('two_factor', 'Two Factor Authentication'),
         ('certificate', 'Digital Certificate'),
         ('biometric', 'Biometric'),
         ('token', 'Security Token')
-    
+), string="Selection Field"
     security_level = fields.Selection([
         ('low', 'Low Security'),
         ('medium', 'Medium Security'),
         ('high', 'High Security'),
         ('critical', 'Critical Security')
     
-    # Additional tracking
+    # Additional tracking), string="Selection Field"
     duration_seconds = fields.Integer('Access Duration (seconds)')
     actions_performed = fields.Text('Actions Performed')
     files_accessed = fields.Text('Files Accessed')
@@ -72,7 +72,7 @@ class RecordsAccessLog(models.Model):
                 'copy': 55,
                 'export': 65
             }
-            base_score += type_risk.get(log.access_type, 20)
+            base_score += type_risk.get(log.access_type, 20
             
             # Security level adjustment
             security_multiplier = {
@@ -81,24 +81,24 @@ class RecordsAccessLog(models.Model):
                 'high': 1.3,
                 'critical': 1.6
             }
-            base_score *= security_multiplier.get(log.security_level, 1.0)
+            base_score *= security_multiplier.get(log.security_level, 1.0
             
             # Authorization check
             if not log.authorized_access:
                 base_score += 40
             
-            log.risk_score = min(max(base_score, 0), 100)
+            log.risk_score = min(max(base_score, 0, 100)
     
     def action_flag_for_review(self):
         """Flag this access for compliance review"""
         self.write({
             'flagged_for_review': True,
             'compliance_reviewed': False
-        })
+        }
     
     def action_mark_reviewed(self):
         """Mark this access as compliance reviewed"""
         self.write({
             'compliance_reviewed': True,
             'flagged_for_review': False
-        })
+        }

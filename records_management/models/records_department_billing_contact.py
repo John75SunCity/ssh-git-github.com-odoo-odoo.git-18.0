@@ -17,10 +17,10 @@ class RecordsDepartmentBillingContact(models.Model):
     
     # Contact relationships
     customer_id = fields.Many2one('res.partner', string='Customer',
-                                  domain="[('is_company', '=', True)]",
-                                  help='Customer this contact belongs to')
+                                  domain="[('is_company', '=', True]",
+                                  help='Customer this contact belongs to',
     billing_contact_id = fields.Many2one('res.partner', string='Billing Contact',
-                                         help='Specific billing contact person')
+                                         help='Specific billing contact person',
     department_id = fields.Many2one('records.department', string='Department')
     
     # Contact details
@@ -30,24 +30,24 @@ class RecordsDepartmentBillingContact(models.Model):
     
     # Billing preferences
     contact_type = fields.Selection([
-        ('primary', 'Primary Contact'),
+        ('primary', 'Primary Contact',
         ('billing', 'Billing Contact'), 
         ('technical', 'Technical Contact'),
         ('backup', 'Backup Contact')
     
-    # Communication preferences
+    # Communication preferences), string="Selection Field"
     receives_invoices = fields.Boolean('Receives Invoices', default=True)
     receives_statements = fields.Boolean('Receives Statements', default=True)
     receives_notifications = fields.Boolean('Receives Notifications', default=True)
     
     # Preferred communication method
     communication_method = fields.Selection([
-        ('email', 'Email'),
+        ('email', 'Email',
         ('mail', 'Postal Mail'),
         ('phone', 'Phone'),
         ('portal', 'Customer Portal')
     
-    # Status and dates
+    # Status and dates), string="Selection Field"
     active = fields.Boolean('Active', default=True, tracking=True)
     start_date = fields.Date('Start Date', default=fields.Date.today)
     end_date = fields.Date('End Date')
@@ -57,7 +57,7 @@ class RecordsDepartmentBillingContact(models.Model):
     
     # Company context
     company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company
     
     # Additional Critical Business Fields for Department Billing
     
@@ -69,7 +69,7 @@ class RecordsDepartmentBillingContact(models.Model):
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
-        ('expired', 'Expired')
+        ('expired', 'Expired'), string="Selection Field")
     approval_date = fields.Datetime(string='Last Approval Date', tracking=True)
     approval_notes = fields.Text(string='Approval Notes')
     approved_by = fields.Many2one('res.users', string='Approved By', tracking=True)
@@ -77,12 +77,12 @@ class RecordsDepartmentBillingContact(models.Model):
     
     # Billing Role and Responsibilities
     billing_role = fields.Selection([
-        ('approver', 'Approver'),
+        ('approver', 'Approver',
         ('reviewer', 'Reviewer'),
         ('recipient', 'Recipient'),
         ('admin', 'Administrator')
     
-    # Budget Tracking and Alerts
+    # Budget Tracking and Alerts), string="Selection Field"
     monthly_budget = fields.Float(string='Monthly Budget', default=0.0, tracking=True)
     budget_alert_threshold = fields.Float(string='Budget Alert Threshold (%)', default=80.0)
     budget_utilization = fields.Float(string='Budget Utilization (%)', compute='_compute_budget_utilization')
@@ -110,7 +110,7 @@ class RecordsDepartmentBillingContact(models.Model):
         ('destruction', 'Destruction'),
         ('retrieval', 'Retrieval'),
         ('scanning', 'Scanning'),
-        ('consultation', 'Consultation')
+        ('consultation', 'Consultation'), string="Selection Field")
     service_description = fields.Text(string='Service Description')
     vendor = fields.Many2one('res.partner', string='Primary Vendor', domain="[('supplier_rank', '>', 0)]")
     
@@ -123,12 +123,12 @@ class RecordsDepartmentBillingContact(models.Model):
     weekly_reports = fields.Boolean(string='Receive Weekly Reports', default=False)
     
     # Additional fields for complete coverage
-    amount = fields.Float(string='Amount')  # Contextual field
-    description = fields.Text(string='Description')  # Contextual field
-    contact_name = fields.Char(string='Contact Name', related='name', store=True)  # Explicit field for views
+    amount = fields.Float(string='Amount'  # Contextual field)
+    description = fields.Text(string='Description'  # Contextual field)
+    contact_name = fields.Char(string='Contact Name', related='name', store=True  # Explicit field for views)
     
     # Compute Methods for Department Billing Contact
-    def _compute_approval_count(self):
+    def _compute_approval_count(self:
         for record in self:
             record.approval_count = len(record.approval_history_ids)
     
@@ -145,11 +145,11 @@ class RecordsDepartmentBillingContact(models.Model):
         for record in self:
             record.current_month_budget = record.monthly_budget
     
-    def _compute_current_month_actual(self):
+    def _compute_current_month_actual(self:
         # Calculate actual charges for current month
         for record in self:
             current_month_charges = record.department_charge_ids.filtered(
-                lambda c: c.charge_date and c.charge_date.month == fields.Date.today().month
+                lambda c: c.charge_date and c.charge_date.month == fields.Date.today(.month
             record.current_month_actual = sum(current_month_charges.mapped('amount'))
     
     def _compute_current_month_forecast(self):
@@ -157,7 +157,7 @@ class RecordsDepartmentBillingContact(models.Model):
         for record in self:
             record.current_month_forecast = record.current_month_actual * 1.1  # Simple 10% buffer
     
-    @api.depends('current_month_budget', 'current_month_actual')
+    @api.depends('current_month_budget', 'current_month_actual'
     def _compute_current_month_variance(self):
         for record in self:
             record.current_month_variance = record.current_month_actual - record.current_month_budget
@@ -169,13 +169,13 @@ class RecordsDepartmentBillingContact(models.Model):
     def _compute_ytd_budget(self):
         # Calculate year-to-date budget
         for record in self:
-            current_month = fields.Date.today().month
+            current_month = fields.Date.today(.month
             record.ytd_budget = record.monthly_budget * current_month
     
     def _compute_ytd_actual(self):
         # Calculate year-to-date actual charges
         for record in self:
-            year_start = fields.Date.today().replace(month=1, day=1)
+            year_start = fields.Date.today(.replace(month=1, day=1)
             ytd_charges = record.department_charge_ids.filtered(
                 lambda c: c.charge_date and c.charge_date >= year_start
             record.ytd_actual = sum(ytd_charges.mapped('amount'))
@@ -224,7 +224,7 @@ class DepartmentBillingApprovalHistory(models.Model):
     approval_type = fields.Selection([
         ('contact', 'Contact Approval'),
         ('charge', 'Charge Approval'),
-        ('limit', 'Limit Approval')
+        ('limit', 'Limit Approval'), string="Selection Field")
     status = fields.Selection([
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
@@ -233,14 +233,14 @@ class DepartmentBillingApprovalHistory(models.Model):
 class DepartmentBillingCharge(models.Model):
     _name = 'department.billing.charge'
     _description = 'Department Billing Charge'
-    
+), string="Selection Field"
     contact_id = fields.Many2one('records.department.billing.contact', string='Contact', required=True, ondelete='cascade')
     service_type = fields.Selection([
         ('storage', 'Storage'),
         ('destruction', 'Destruction'),
         ('retrieval', 'Retrieval'),
         ('scanning', 'Scanning'),
-        ('consultation', 'Consultation')
+        ('consultation', 'Consultation'), string="Selection Field")
     invoice_id = fields.Many2one('account.move', string='Related Invoice')
     status = fields.Selection([
         ('draft', 'Draft'),

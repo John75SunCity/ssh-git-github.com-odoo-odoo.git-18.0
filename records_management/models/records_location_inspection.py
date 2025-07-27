@@ -22,25 +22,25 @@ class RecordsLocationInspection(models.Model):
         string='Inspection Reference',
         required=True,
         default='New'
-    
+
     inspection_date = fields.Date(
         string='Inspection Date',
         default=fields.Date.context_today,
         required=True
     
     inspection_type = fields.Selection([
-        ('routine', 'Routine Inspection'),
+        ('routine', 'Routine Inspection',
         ('maintenance', 'Maintenance Inspection'),
         ('emergency', 'Emergency Inspection'),
         ('compliance', 'Compliance Inspection'),
         ('security', 'Security Inspection')
     
-    # Related location
+    # Related location), string="Selection Field"
     location_id = fields.Many2one(
         'records.location',
         string='Location',
         required=True
-    
+
     inspector_id = fields.Many2one(
         'res.users',
         string='Inspector',
@@ -53,57 +53,54 @@ class RecordsLocationInspection(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    
+), string="Selection Field"
     result = fields.Selection([
         ('satisfactory', 'Satisfactory'),
         ('needs_attention', 'Needs Attention'),
         ('unsatisfactory', 'Unsatisfactory'),
         ('critical', 'Critical Issues Found')
     
-    # Inspection areas
+    # Inspection areas), string="Selection Field"
     structural_condition = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor')
-    
+), string="Selection Field"
     environmental_controls = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor')
-    
+), string="Selection Field"
     security_systems = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor')
-    
+), string="Selection Field"
     cleanliness = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor')
-    
+), string="Selection Field"
     organization = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor')
     
-    # Detailed findings
+    # Detailed findings), string="Selection Field"
     observations = fields.Text(
         string='Observations',
-        help='Detailed observations from the inspection'
-    
+        help='Detailed observations from the inspection',
     issues_found = fields.Text(
         string='Issues Found',
-        help='List of issues identified during inspection'
-    
+        help='List of issues identified during inspection',
     recommendations = fields.Text(
         string='Recommendations',
-        help='Recommendations for improvement'
-    
+        help='Recommendations for improvement',
     corrective_actions = fields.Text(
         string='Corrective Actions Required',
         help='Required corrective actions'
@@ -113,10 +110,10 @@ class RecordsLocationInspection(models.Model):
         string='Follow-up Required',
         compute='_compute_follow_up_required',
         store=True
-    
+
     follow_up_date = fields.Date(
         string='Follow-up Date'
-    
+
     next_inspection_date = fields.Date(
         string='Next Inspection Date',
         compute='_compute_next_inspection_date',
@@ -155,7 +152,7 @@ class RecordsLocationInspection(models.Model):
                     'security': 60       # Bi-monthly
                 }
                 
-                days_to_add = intervals.get(inspection.inspection_type, 30)
+                days_to_add = intervals.get(inspection.inspection_type, 30
                 inspection.next_inspection_date = inspection.inspection_date + fields.Date.from_string('1970-01-01').replace(day=days_to_add)
             else:
                 inspection.next_inspection_date = False

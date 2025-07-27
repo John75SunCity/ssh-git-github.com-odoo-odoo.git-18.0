@@ -18,14 +18,14 @@ class DestructionItem(models.Model):
     
     # Item categorization
     item_type = fields.Selection([
-        ('document', 'Document'),
+        ('document', 'Document',
         ('box', 'Box'),
         ('hard_drive', 'Hard Drive'),
         ('media', 'Electronic Media'),
         ('uniform', 'Uniform/Textile'),
         ('other', 'Other')
     
-    # Quantity and measurements
+    # Quantity and measurements), string="Selection Field"
     quantity = fields.Integer(string='Quantity', default=1, required=True)
     unit_of_measure = fields.Selection([
         ('piece', 'Piece'),
@@ -34,7 +34,7 @@ class DestructionItem(models.Model):
         ('kilogram', 'Kilogram'),
         ('bag', 'Bag'),
         ('pallet', 'Pallet')
-    
+), string="Selection Field"
     weight = fields.Float(string='Weight (lbs)', help='Weight of the item in pounds')
     
     # Destruction tracking
@@ -47,19 +47,19 @@ class DestructionItem(models.Model):
         ('degauss', 'Degaussing'),
         ('other', 'Other')
     
-    # Chain of custody
+    # Chain of custody), string="Selection Field"
     custodian_id = fields.Many2one('res.users', string='Current Custodian', default=lambda self: self.env.user)
     location_id = fields.Many2one('records.location', string='Current Location')
     
     # Security and compliance
     confidentiality_level = fields.Selection([
-        ('public', 'Public'),
+        ('public', 'Public',
         ('internal', 'Internal'),
         ('confidential', 'Confidential'),
         ('restricted', 'Restricted'),
         ('top_secret', 'Top Secret')
     
-    # NAID compliance
+    # NAID compliance), string="Selection Field"
     naid_compliant = fields.Boolean(string='NAID Compliant', default=True)
     certificate_required = fields.Boolean(string='Certificate Required', default=True)
     certificate_number = fields.Char(string='Certificate Number')
@@ -68,7 +68,7 @@ class DestructionItem(models.Model):
     notes = fields.Text(string='Notes')
     photos = fields.Many2many('ir.attachment', relation='photos_rel', string='Photos',
                              domain="[('res_model', '=', 'destruction.item')  # Fixed: was One2many with missing inverse field]",
-                             compute='_compute_photos')
+                             compute='_compute_photos'
     
     # Standard fields
     company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
@@ -90,7 +90,7 @@ class DestructionItem(models.Model):
         self.write({
             'destroyed': True,
             'destruction_date': fields.Datetime.now()
-        })
+        }
         self.message_post(body=_('Item marked as destroyed'))
     
     def action_generate_certificate(self):
@@ -109,7 +109,7 @@ class DestructionItem(models.Model):
     def _compute_photos(self):
         """Compute photos (attachments) for this destruction item"""
         for record in self:
-            record.photos = self.env['ir.attachment'].search([
+            record.photos = self.env['ir.attachment'].search\([
                 ('res_model', '=', 'destruction.item'),
-                ('res_id', '=', record.id)
-            ])
+                ('res_id', '=', record.id)])
+            ]

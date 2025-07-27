@@ -8,7 +8,7 @@ from odoo import models, fields, api, _
 from datetime import timedelta
 import logging
 
-_logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__
 
 class NAIDAuditLog(models.Model):
     """
@@ -29,7 +29,7 @@ class NAIDAuditLog(models.Model):
         index=True
     
     event_type = fields.Selection([
-        ('access', 'Facility Access'),
+        ('access', 'Facility Access',
         ('document_intake', 'Document Intake'),
         ('storage_assignment', 'Storage Assignment'),
         ('destruction_start', 'Destruction Process Start'),
@@ -41,27 +41,23 @@ class NAIDAuditLog(models.Model):
         ('policy_violation', 'Policy Violation'),
         ('audit_review', 'Audit Review')
     
-    # Related records
+    # Related records), string="Selection Field"
     employee_id = fields.Many2one(
         'hr.employee',
         string='Employee',
-        help='Employee responsible for or involved in the event'
-    
+        help='Employee responsible for or involved in the event',
     document_id = fields.Many2one(
         'records.document',
         string='Document',
-        help='Related document if applicable'
-    
+        help='Related document if applicable',
     box_id = fields.Many2one(
         'records.box',
         string='Records Box',
-        help='Related box if applicable'
-    
+        help='Related box if applicable',
     bale_id = fields.Many2one(
         'paper.bale',
         string='Bale',
-        help='Related bale if applicable'
-    
+        help='Related bale if applicable',
     partner_id = fields.Many2one(
         'res.partner',
         string='Customer',
@@ -71,29 +67,26 @@ class NAIDAuditLog(models.Model):
     description = fields.Text(
         string='Event Description',
         required=True,
-        help='Detailed description of the event'
-    
+        help='Detailed description of the event',
     risk_level = fields.Selection([
         ('low', 'Low Risk'),
         ('medium', 'Medium Risk'),
         ('high', 'High Risk'),
         ('critical', 'Critical Risk')
-    
+), string="Selection Field"
     compliance_status = fields.Selection([
         ('compliant', 'Compliant'),
         ('warning', 'Warning'),
         ('violation', 'Violation'),
         ('critical', 'Critical Violation')
     
-    # Technical details
+    # Technical details), string="Selection Field"
     ip_address = fields.Char(
         string='IP Address',
-        help='IP address of the user/system generating the event'
-    
+        help='IP address of the user/system generating the event',
     user_agent = fields.Text(
         string='User Agent',
-        help='Browser/system information'
-    
+        help='Browser/system information',
     session_id = fields.Char(
         string='Session ID',
         help='User session identifier'
@@ -107,8 +100,7 @@ class NAIDAuditLog(models.Model):
     # Chain of custody
     custody_chain = fields.Text(
         string='Chain of Custody',
-        help='Complete chain of custody information'
-    
+        help='Complete chain of custody information',
     witness_employee_ids = fields.Many2many(
         'hr.employee',
         'naid_audit_witness_rel',
@@ -121,18 +113,17 @@ class NAIDAuditLog(models.Model):
     remediation_required = fields.Boolean(
         string='Remediation Required',
         default=False
-    
+
     remediation_description = fields.Text(
         string='Remediation Description',
-        help='Description of required remediation actions'
-    
+        help='Description of required remediation actions',
     remediation_deadline = fields.Datetime(
         string='Remediation Deadline'
-    
+
     remediation_completed = fields.Boolean(
         string='Remediation Completed',
         default=False
-    
+
     remediation_completed_date = fields.Datetime(
         string='Remediation Completed Date'
     
@@ -140,11 +131,10 @@ class NAIDAuditLog(models.Model):
     reviewed_by = fields.Many2one(
         'hr.employee',
         string='Reviewed By',
-        help='Security officer who reviewed this event'
-    
+        help='Security officer who reviewed this event',
     review_date = fields.Datetime(
         string='Review Date'
-    
+
     review_notes = fields.Text(
         string='Review Notes'
     
@@ -159,43 +149,42 @@ class NAIDAuditLog(models.Model):
         string='Criticality Score (0-100)',
         compute='_compute_audit_analytics',
         store=True,
-        help='Audit event criticality assessment score'
+        help='Audit event criticality assessment score',
     compliance_impact_rating = fields.Float(
         string='Compliance Impact Rating',
         compute='_compute_audit_analytics',
         store=True,
-        help='Impact rating on overall compliance posture'
+        help='Impact rating on overall compliance posture',
     remediation_urgency = fields.Float(
         string='Remediation Urgency (0-10)',
         compute='_compute_audit_analytics',
         store=True,
-        help='Urgency level for required remediation'
+        help='Urgency level for required remediation',
     risk_exposure_level = fields.Float(
         string='Risk Exposure Level',
         compute='_compute_audit_analytics',
         store=True,
-        help='Calculated risk exposure from this event'
+        help='Calculated risk exposure from this event',
     audit_trend_indicator = fields.Char(
         string='Trend Indicator',
         compute='_compute_audit_analytics',
         store=True,
-        help='Trend analysis indicator'
+        help='Trend analysis indicator',
     compliance_recovery_time = fields.Float(
         string='Recovery Time (Days)',
         compute='_compute_audit_analytics',
         store=True,
-        help='Estimated time to resolve compliance issues'
+        help='Estimated time to resolve compliance issues',
     audit_insights = fields.Text(
         string='Audit Insights',
         compute='_compute_audit_analytics',
         store=True,
-        help='AI-generated insights and recommendations'
+        help='AI-generated insights and recommendations',
     analytics_timestamp = fields.Datetime(
         string='Analytics Updated',
         compute='_compute_audit_analytics',
         store=True,
-        help='Last analytics computation timestamp'
-    
+        help='Last analytics computation timestamp',
     is_overdue = fields.Boolean(
         string='Remediation Overdue',
         compute='_compute_is_overdue',
@@ -223,7 +212,7 @@ class NAIDAuditLog(models.Model):
                 record.remediation_deadline < now
 
     @api.depends('event_type', 'risk_level', 'compliance_status', 'days_since_event',
-                 'remediation_required', 'remediation_completed', 'witness_employee_ids')
+                 'remediation_required', 'remediation_completed', 'witness_employee_ids'
     def _compute_audit_analytics(self):
         """Compute comprehensive analytics for audit events"""
         for audit in self:
@@ -246,7 +235,7 @@ class NAIDAuditLog(models.Model):
                 'certificate_generated': 2.0,
                 'audit_review': 8.0
             }
-            criticality += event_criticality.get(audit.event_type, 10.0)
+            criticality += event_criticality.get(audit.event_type, 10.0
             
             # Risk level impact
             risk_multipliers = {
@@ -255,7 +244,7 @@ class NAIDAuditLog(models.Model):
                 'high': 2.0,
                 'critical': 3.0
             }
-            criticality *= risk_multipliers.get(audit.risk_level, 1.0)
+            criticality *= risk_multipliers.get(audit.risk_level, 1.0
             
             # Compliance status impact
             compliance_multipliers = {
@@ -264,7 +253,7 @@ class NAIDAuditLog(models.Model):
                 'violation': 1.8,
                 'critical': 2.5
             }
-            criticality *= compliance_multipliers.get(audit.compliance_status, 1.0)
+            criticality *= compliance_multipliers.get(audit.compliance_status, 1.0
             
             audit.audit_criticality_score = min(100, criticality)
             
@@ -279,7 +268,7 @@ class NAIDAuditLog(models.Model):
             if audit.event_type in ['security_breach', 'policy_violation']:
                 impact += 20.0
             
-            audit.compliance_impact_rating = min(100, impact)
+            audit.compliance_impact_rating = min(100, impact
             
             # Remediation urgency
             urgency = 3.0  # Base urgency
@@ -296,14 +285,14 @@ class NAIDAuditLog(models.Model):
                 if audit.is_overdue:
                     urgency += 2.0
             
-            audit.remediation_urgency = min(10, urgency)
+            audit.remediation_urgency = min(10, urgency
             
             # Risk exposure level
             exposure = 25.0  # Base exposure
             
             # Time factor - older unresolved issues increase exposure
             if audit.days_since_event > 30 and not audit.remediation_completed:
-                exposure += (audit.days_since_event - 30) * 0.5
+                exposure += (audit.days_since_event - 30 * 0.5
             
             # Event type exposure
             if audit.event_type == 'security_breach':
@@ -311,14 +300,14 @@ class NAIDAuditLog(models.Model):
             elif audit.event_type == 'policy_violation':
                 exposure += 25.0
             
-            audit.risk_exposure_level = min(100, exposure)
+            audit.risk_exposure_level = min(100, exposure
             
             # Trend indicator
             recent_similar = self.search_count([
-                ('event_type', '=', audit.event_type),
+                ('event_type', '=', audit.event_type,
                 ('timestamp', '>=', fields.Datetime.now() - timedelta(days=30)),
                 ('id', '!=', audit.id)
-            ])
+            ]
             
             if recent_similar >= 5:
                 audit.audit_trend_indicator = '📈 Increasing Frequency'
@@ -346,7 +335,7 @@ class NAIDAuditLog(models.Model):
             insights = []
             
             if audit.audit_criticality_score > 80:
-                insights.append("🚨 High criticality event requiring immediate attention")
+                insights.append("🚨 High criticality event requiring immediate attention"
             
             if audit.compliance_impact_rating > 75:
                 insights.append("📋 Significant compliance impact - review procedures")
@@ -409,14 +398,14 @@ class NAIDAuditLog(models.Model):
         self.write({
             'reviewed_by': self.env.user.employee_id.id,
             'review_date': fields.Datetime.now()
-        })
+        }
 
     def action_complete_remediation(self):
         """Mark remediation as completed"""
         self.write({
             'remediation_completed': True,
             'remediation_completed_date': fields.Datetime.now()
-        })
+        }
 
     def action_start_audit(self):
         """Start NAID audit process"""
@@ -484,13 +473,13 @@ class NAIDAuditLog(models.Model):
         Clean up old audit logs beyond retention period
         NAID AAA requires 7-year retention minimum
         """
-        cutoff_date = fields.Datetime.now() - timedelta(days=days)
+        cutoff_date = fields.Datetime.now( - timedelta(days=days)
         old_logs = self.search([('timestamp', '<', cutoff_date)])
         
         if old_logs:
             _logger.info("Archiving %d old audit logs", len(old_logs))
             # Archive instead of delete for compliance
-            old_logs.write({'active': False})
+            old_logs.write({'active': False}
         
         return len(old_logs)
 
@@ -507,12 +496,12 @@ class NAIDCompliancePolicy(models.Model):
     name = fields.Char(
         string='Policy Name',
         required=True
-    
+
     sequence = fields.Integer(
         string='Sequence',
         default=10
     
-    
+
     policy_type = fields.Selection([
         ('access_control', 'Access Control'),
         ('document_handling', 'Document Handling'),
@@ -521,7 +510,7 @@ class NAIDCompliancePolicy(models.Model):
         ('facility_security', 'Facility Security'),
         ('equipment_maintenance', 'Equipment Maintenance'),
         ('audit_requirements', 'Audit Requirements')
-    
+), string="Selection Field"
     active = fields.Boolean(
         string='Active',
         default=True
@@ -530,13 +519,11 @@ class NAIDCompliancePolicy(models.Model):
     mandatory = fields.Boolean(
         string='Mandatory',
         default=True,
-        help='Whether this policy is mandatory for NAID compliance'
-    
+        help='Whether this policy is mandatory for NAID compliance',
     automated_check = fields.Boolean(
         string='Automated Check',
         default=False,
-        help='Whether compliance with this policy can be automatically verified'
-    
+        help='Whether compliance with this policy can be automatically verified',
     check_frequency = fields.Selection([
         ('daily', 'Daily'),
         ('weekly', 'Weekly'),
@@ -544,11 +531,10 @@ class NAIDCompliancePolicy(models.Model):
         ('quarterly', 'Quarterly'),
         ('annually', 'Annually')
     
-    # Implementation details
+    # Implementation details), string="Selection Field"
     implementation_notes = fields.Text(
         string='Implementation Notes',
-        help='How to implement this policy'
-    
+        help='How to implement this policy',
     violation_consequences = fields.Text(
         string='Violation Consequences',
         help='What happens when this policy is violated'
@@ -562,10 +548,10 @@ class NAIDCompliancePolicy(models.Model):
     # Tracking
     last_review_date = fields.Date(
         string='Last Review Date'
-    
+
     next_review_date = fields.Date(
         string='Next Review Date'
-    
+
     review_frequency_months = fields.Integer(
         string='Review Frequency (Months)',
         default=12
@@ -581,7 +567,7 @@ class NAIDCompliancePolicy(models.Model):
         for policy in policies:
             # This would be extended with specific compliance checks
             # based on the policy type
-            result = self._run_policy_check(policy)
+            result = self._run_policy_check(policy
             results.append(result)
         
         return results

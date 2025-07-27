@@ -15,31 +15,31 @@ class PaperBale(models.Model):
     
     # Relationship fields
     shredding_id = fields.Many2one('shredding.service', string='Shredding Service',
-                                   help='The shredding service this bale is associated with')
+                                   help='The shredding service this bale is associated with'
     
     # Weight and measurement
-    weight_kg = fields.Float('Weight (kg)', digits=(10, 2))
+    weight_kg = fields.Float('Weight (kg', digits=(10, 2))
     volume_m3 = fields.Float('Volume (m³)', digits=(10, 3))
     
     # Status and tracking
     state = fields.Selection([
-        ('draft', 'Draft'),
+        ('draft', 'Draft',
         ('ready', 'Ready for Processing'),
         ('processed', 'Processed'),
         ('shipped', 'Shipped'),
         ('complete', 'Complete')
     
-    # Dates
+    # Dates), string="Selection Field"
     creation_date = fields.Datetime('Creation Date', default=fields.Datetime.now)
     processing_date = fields.Datetime('Processing Date')
     shipping_date = fields.Datetime('Shipping Date')
     
     # Company context
     company_id = fields.Many2one('res.company', string='Company',
-                                 default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company
     active = fields.Boolean('Active', default=True)
     
-    # PHASE 4: Critical Business Fields (69 fields) - Paper Recycling Enhanced
+    # PHASE 4: Critical Business Fields (69 fields - Paper Recycling Enhanced
     
     # Action and lifecycle tracking
     action_date = fields.Date('Action Date', tracking=True)
@@ -51,7 +51,7 @@ class PaperBale(models.Model):
         ('shipped', 'Shipped'),
         ('processed', 'Processed')
     
-    # Bale identification and status
+    # Bale identification and status), string="Selection Field"
     bale_number = fields.Char('Bale Number', required=True, tracking=True)
     bale_status = fields.Selection([
         ('new', 'New'),
@@ -61,7 +61,7 @@ class PaperBale(models.Model):
         ('rejected', 'Rejected'),
         ('shipped', 'Shipped')
     
-    # Environmental and sustainability metrics
+    # Environmental and sustainability metrics), string="Selection Field"
     carbon_footprint_saved = fields.Float('Carbon Footprint Saved (kg CO2)', compute='_compute_environmental_metrics', store=True)
     carbon_neutral = fields.Boolean('Carbon Neutral', default=False)
     energy_saved = fields.Float('Energy Saved (kWh)', compute='_compute_environmental_metrics', store=True)
@@ -72,7 +72,7 @@ class PaperBale(models.Model):
         ('recycled_content', 'Recycled Content'),
         ('sustainable_forestry', 'Sustainable Forestry'),
         ('carbon_neutral', 'Carbon Neutral'),
-        ('zero_waste', 'Zero Waste')
+        ('zero_waste', 'Zero Waste'), string="Selection Field")
     sustainable_source = fields.Boolean('Sustainable Source', default=True)
     
     # Compliance and verification
@@ -81,7 +81,7 @@ class PaperBale(models.Model):
         ('public', 'Public'),
         ('internal', 'Internal'),
         ('confidential', 'Confidential'),
-        ('restricted', 'Restricted')
+        ('restricted', 'Restricted'), string="Selection Field")
     naid_compliance_verified = fields.Boolean('NAID Compliance Verified', default=False, tracking=True)
     
     # Contamination and quality control
@@ -91,7 +91,7 @@ class PaperBale(models.Model):
         ('minimal', 'Minimal'),
         ('moderate', 'Moderate'),
         ('high', 'High'),
-        ('rejected', 'Rejected')
+        ('rejected', 'Rejected'), string="Selection Field")
     contamination_percentage = fields.Float('Contamination Percentage (%)', default=0.0)
     
     # Customer and source tracking
@@ -112,7 +112,7 @@ class PaperBale(models.Model):
         ('cardboard', 'Cardboard'),
         ('mixed', 'Mixed Paper')
     
-    # Financial tracking
+    # Financial tracking), string="Selection Field"
     estimated_value = fields.Float('Estimated Value ($)', compute='_compute_financial_metrics', store=True)
     market_price_per_lb = fields.Float('Market Price per Lb ($)', default=0.05)
     processing_cost = fields.Float('Processing Cost ($)', default=0.0)
@@ -120,29 +120,29 @@ class PaperBale(models.Model):
     
     # Quality and grading
     grade_assigned = fields.Selection([
-        ('grade_1', 'Grade 1 - Premium'),
+        ('grade_1', 'Grade 1 - Premium',
         ('grade_2', 'Grade 2 - Standard'),
         ('grade_3', 'Grade 3 - Lower'),
         ('mixed', 'Mixed Grade'),
-        ('reject', 'Reject')
+        ('reject', 'Reject'), string="Selection Field")
     paper_grade = fields.Selection([
         ('oinp', 'OINP - Office Paper'),
         ('onp', 'ONP - Old Newspaper'),
         ('occ', 'OCC - Old Corrugated'),
         ('mixed', 'Mixed Paper'),
-        ('white_ledger', 'White Ledger')
+        ('white_ledger', 'White Ledger'), string="Selection Field")
     paper_type = fields.Selection([
         ('white_office', 'White Office Paper'),
         ('colored_office', 'Colored Office Paper'),
         ('computer_paper', 'Computer Paper'),
         ('newspaper', 'Newspaper'),
         ('magazine', 'Magazine'),
-        ('cardboard', 'Cardboard')
+        ('cardboard', 'Cardboard'), string="Selection Field")
     quality_grade = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
         ('fair', 'Fair'),
-        ('poor', 'Poor')
+        ('poor', 'Poor'), string="Selection Field")
     quality_score = fields.Float('Quality Score (1-10)', default=7.0)
     
     # Inspection and quality control
@@ -151,10 +151,10 @@ class PaperBale(models.Model):
         ('visual', 'Visual Inspection'),
         ('sample', 'Sample Testing'),
         ('full', 'Full Inspection'),
-        ('random', 'Random Check')
+        ('random', 'Random Check'), string="Selection Field")
     inspector = fields.Many2one('res.users', string='Inspector')
     passed_inspection = fields.Boolean('Passed Inspection', default=False, tracking=True)
-    quality_inspection_ids = fields.Many2many('paper.bale.quality.inspection', relation='quality_inspection_ids_rel', string='Quality Inspections')  # Fixed: was One2many with missing inverse field
+    quality_inspection_ids = fields.Many2many('paper.bale.quality.inspection', relation='quality_inspection_ids_rel', string='Quality Inspections')  # Fixed: was One2many with missing inverse field)
     quality_inspector = fields.Many2one('res.users', string='Quality Inspector')
     quality_notes = fields.Text('Quality Notes')
     
@@ -162,7 +162,7 @@ class PaperBale(models.Model):
     loaded_by = fields.Many2one('res.users', string='Loaded By')
     loaded_on_trailer = fields.Boolean('Loaded on Trailer', default=False, tracking=True)
     loading_date = fields.Date('Loading Date', tracking=True)
-    loading_history_ids = fields.Many2many('paper.bale.loading.history', relation='loading_history_ids_rel', string='Loading History')  # Fixed: was One2many with missing inverse field
+    loading_history_ids = fields.Many2many('paper.bale.loading.history', relation='loading_history_ids_rel', string='Loading History')  # Fixed: was One2many with missing inverse field)
     loading_notes = fields.Text('Loading Notes')
     loading_order = fields.Integer('Loading Order', default=1)
     loading_position = fields.Char('Loading Position')
@@ -176,7 +176,7 @@ class PaperBale(models.Model):
     measurement_type = fields.Selection([
         ('estimated', 'Estimated'),
         ('scale', 'Scale Measurement'),
-        ('certified', 'Certified Measurement')
+        ('certified', 'Certified Measurement'), string="Selection Field")
     moisture_content = fields.Float('Moisture Content (%)', default=0.0)
     moisture_reading = fields.Float('Moisture Reading', default=0.0)
     scale_used = fields.Char('Scale Used for Weighing')
@@ -184,16 +184,16 @@ class PaperBale(models.Model):
     weighed_by = fields.Many2one('res.users', string='Weighed By')
     
     # Weight tracking and metrics
-    weight = fields.Float('Weight (lbs)', default=0.0, tracking=True)
+    weight = fields.Float('Weight (lbs', default=0.0, tracking=True)
     weight_contributed = fields.Float('Weight Contributed (lbs)', default=0.0)
     weight_efficiency = fields.Float('Weight Efficiency (%)', compute='_compute_weight_metrics', store=True)
     weight_history_count = fields.Integer('Weight History Count', compute='_compute_weight_metrics', store=True)
-    weight_measurement_ids = fields.Many2many('paper.bale.weight.measurement', relation='weight_measurement_ids_rel', string='Weight Measurements')  # Fixed: was One2many with missing inverse field
-    weight_recorded = fields.Float('Weight Recorded (lbs)', default=0.0, tracking=True)
+    weight_measurement_ids = fields.Many2many('paper.bale.weight.measurement', relation='weight_measurement_ids_rel', string='Weight Measurements')  # Fixed: was One2many with missing inverse field)
+    weight_recorded = fields.Float('Weight Recorded (lbs', default=0.0, tracking=True)
     weight_unit = fields.Selection([
         ('lbs', 'Pounds'),
         ('kg', 'Kilograms'),
-        ('tons', 'Tons')
+        ('tons', 'Tons'), string="Selection Field")
     variance_from_previous = fields.Float('Variance from Previous (%)', compute='_compute_weight_metrics', store=True)
     
     # Personnel and processing
@@ -201,27 +201,27 @@ class PaperBale(models.Model):
     processing_time = fields.Float('Processing Time (hours)', default=0.0)
     special_handling = fields.Boolean('Special Handling Required', default=False)
     
-    # Contextual field (from analysis)
+    # Contextual field (from analysis
     notes = fields.Text('Notes')
     
     # Compute methods for the new fields
-    @api.depends('weight', 'document_count', 'paper_type')
+    @api.depends('weight', 'document_count', 'paper_type'
     def _compute_environmental_metrics(self):
         """Compute environmental impact metrics"""
         for record in self:
             # Environmental calculations based on paper recycling standards
             weight_kg = record.weight * 0.453592  # Convert lbs to kg
             
-            # Carbon footprint savings (industry standard: 1.1 kg CO2 per kg paper)
+            # Carbon footprint savings (industry standard: 1.1 kg CO2 per kg paper
             record.carbon_footprint_saved = weight_kg * 1.1
             
-            # Energy savings (industry standard: 4100 kWh per ton)
+            # Energy savings (industry standard: 4100 kWh per ton
             record.energy_saved = (weight_kg / 1000) * 4100
             
-            # Trees saved (industry standard: 17 trees per ton)
+            # Trees saved (industry standard: 17 trees per ton
             record.trees_saved_equivalent = (weight_kg / 1000) * 17
             
-            # Water saved (industry standard: 7000 gallons per ton)
+            # Water saved (industry standard: 7000 gallons per ton
             record.water_saved = (weight_kg / 1000) * 7000
     
     @api.depends('weight', 'market_price_per_lb', 'processing_cost')
@@ -234,7 +234,7 @@ class PaperBale(models.Model):
             # Estimated value after processing costs
             record.estimated_value = record.revenue_potential - record.processing_cost
     
-    @api.depends('source_document_ids')
+    @api.depends('source_document_ids'
     def _compute_document_metrics(self):
         """Compute document-related metrics"""
         for record in self:
@@ -258,6 +258,6 @@ class PaperBale(models.Model):
             
             # Weight efficiency based on processing
             if record.weight > 0:
-                record.weight_efficiency = (record.weight_contributed / record.weight) * 100
+                record.weight_efficiency = (record.weight_contributed / record.weight * 100
             else:
                 record.weight_efficiency = 0.0

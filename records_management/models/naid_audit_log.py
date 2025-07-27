@@ -16,15 +16,15 @@ class NAIDAuditLog(models.Model):
     
     # Compliance relationship - CRITICAL for NAID compliance tracking
     compliance_id = fields.Many2one('naid.compliance', string='NAID Compliance Record',
-                                    help='Associated NAID compliance record for this audit log entry')
+                                    help='Associated NAID compliance record for this audit log entry'
     
     # Employee relationship
     employee_id = fields.Many2one('hr.employee', string='Employee', 
-                                  help='Employee associated with this audit log entry')
+                                  help='Employee associated with this audit log entry'
     
     # Audit details
     audit_type = fields.Selection([
-        ('access', 'Access Control'),
+        ('access', 'Access Control',
         ('security', 'Security Check'),
         ('compliance', 'Compliance Verification'),
         ('training', 'Training Record'),
@@ -33,13 +33,13 @@ class NAIDAuditLog(models.Model):
         ('procedure', 'Procedure Execution'),
         ('system', 'System Activity'),
         ('manual', 'Manual Entry')
-    
-    log_datetime = fields.Datetime('Log Date/Time', required=True, 
-                                  default=fields.Datetime.now, tracking=True)
+), string="Selection Field"
+    log_datetime = fields.Datetime('Log Date/Time', required=True,)
+                                  default=fields.Datetime.now, tracking=True
     
     # NAID compliance categories
     naid_category = fields.Selection([
-        ('physical_security', 'Physical Security'),
+        ('physical_security', 'Physical Security',
         ('personnel_security', 'Personnel Security'),
         ('information_security', 'Information Security'),
         ('chain_of_custody', 'Chain of Custody'),
@@ -48,18 +48,18 @@ class NAIDAuditLog(models.Model):
         ('equipment_maintenance', 'Equipment Maintenance'),
         ('training_compliance', 'Training Compliance')
     
-    # Severity and impact
+    # Severity and impact), string="Selection Field"
     severity_level = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
         ('critical', 'Critical')
-    
+), string="Selection Field"
     impact_assessment = fields.Text('Impact Assessment')
     
     # Personnel involved
     responsible_user_id = fields.Many2one('res.users', string='Responsible User', 
-                                         required=True, tracking=True)
+                                         required=True, tracking=True
     authorized_by = fields.Many2one('res.users', string='Authorized By')
     reviewed_by = fields.Many2one('res.users', string='Reviewed By')
     
@@ -70,13 +70,13 @@ class NAIDAuditLog(models.Model):
     
     # Compliance verification
     compliance_status = fields.Selection([
-        ('compliant', 'Compliant'),
+        ('compliant', 'Compliant',
         ('minor_deviation', 'Minor Deviation'),
         ('major_deviation', 'Major Deviation'),
         ('non_compliant', 'Non-Compliant'),
         ('under_review', 'Under Review')
     
-    # Corrective actions
+    # Corrective actions), string="Selection Field"
     corrective_action_required = fields.Boolean('Corrective Action Required', default=False)
     corrective_action_description = fields.Text('Corrective Action Description')
     corrective_action_deadline = fields.Date('Corrective Action Deadline')
@@ -95,32 +95,32 @@ class NAIDAuditLog(models.Model):
     
     # Risk assessment
     risk_level = fields.Selection([
-        ('minimal', 'Minimal Risk'),
+        ('minimal', 'Minimal Risk',
         ('low', 'Low Risk'),
         ('moderate', 'Moderate Risk'),
         ('high', 'High Risk'),
         ('critical', 'Critical Risk')
-    
+), string="Selection Field"
     risk_mitigation = fields.Text('Risk Mitigation Measures')
     
     # Status and workflow
     state = fields.Selection([
-        ('draft', 'Draft'),
+        ('draft', 'Draft',
         ('logged', 'Logged'),
         ('under_review', 'Under Review'),
         ('action_required', 'Action Required'),
         ('completed', 'Completed'),
         ('archived', 'Archived')
     
-    # Audit trail
+    # Audit trail), string="Selection Field"
     created_by = fields.Many2one('res.users', string='Created By', 
-                                default=lambda self: self.env.user, readonly=True)
+                                default=lambda self: self.env.user, readonly=True
     reviewed_date = fields.Datetime('Reviewed Date')
     archived_date = fields.Datetime('Archived Date')
     
     # Company context
     company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company
     active = fields.Boolean('Active', default=True)
     
     # Computed fields
@@ -173,7 +173,7 @@ class NAIDAuditLog(models.Model):
             if record.corrective_action_deadline and record.corrective_action_deadline < fields.Date.today():
                 if record.state == 'draft':
                     continue  # Allow past dates for draft records
-            if record.follow_up_date and record.follow_up_date < fields.Date.today():
+            if record.follow_up_date and record.follow_up_date < fields.Date.today(:
                 if not record.follow_up_completed:
                     record.message_post(
                         body=_('Follow-up date has passed. Please update status.'),

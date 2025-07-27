@@ -17,7 +17,7 @@ class RecordsApprovalStep(models.Model):
     
     # Workflow relationship
     workflow_id = fields.Many2one('records.approval.workflow', string='Approval Workflow', 
-                                  required=True, ondelete='cascade')
+                                  required=True, ondelete='cascade'
     
     # Approval details
     approver_user_id = fields.Many2one('res.users', string='Approver')
@@ -27,14 +27,14 @@ class RecordsApprovalStep(models.Model):
         ('group', 'Group Member'),
         ('manager', 'Department Manager'),
         ('any', 'Any User')
-    ], string='Approval Type', default='user', tracking=True)
+    ), string='Approval Type', default='user', tracking=True)
     # Status and timing
     state = fields.Selection([
-        ('pending', 'Pending'),
+        ('pending', 'Pending',
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('skipped', 'Skipped')
-    ], string='State', default='pending', tracking=True)
+    ), string='State', default='pending', tracking=True)
     
     approved_date = fields.Datetime('Approved Date', readonly=True)
     approved_by = fields.Many2one('res.users', string='Approved By', readonly=True)
@@ -42,13 +42,13 @@ class RecordsApprovalStep(models.Model):
     
     # Conditions
     required = fields.Boolean('Required', default=True, 
-                             help='If unchecked, this step can be skipped')
+                             help='If unchecked, this step can be skipped',
     auto_approve = fields.Boolean('Auto Approve', default=False,
                                  help='Automatically approve this step under certain conditions')
     
     # Company context
     company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company
     active = fields.Boolean('Active', default=True)
     
     @api.constrains('approver_user_id', 'approver_group_id', 'approval_type')

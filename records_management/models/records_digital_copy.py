@@ -16,18 +16,18 @@ class RecordsDigitalCopy(models.Model):
     
     # Document relationship
     document_id = fields.Many2one('records.document', string='Original Document', 
-                                  required=True, ondelete='cascade')
+                                  required=True, ondelete='cascade'
     
     # Digital copy details
     file_format = fields.Selection([
-        ('pdf', 'PDF'),
+        ('pdf', 'PDF',
         ('tiff', 'TIFF'),
         ('jpeg', 'JPEG'),
         ('png', 'PNG'),
         ('docx', 'Word Document'),
         ('xlsx', 'Excel Spreadsheet'),
         ('other', 'Other')
-    
+), string="Selection Field"
     file_size_mb = fields.Float('File Size (MB)', digits=(10, 2))
     resolution_dpi = fields.Integer('Resolution (DPI)', default=300)
     color_mode = fields.Selection([
@@ -35,26 +35,26 @@ class RecordsDigitalCopy(models.Model):
         ('grayscale', 'Grayscale'),
         ('bw', 'Black & White')
     
-    # Quality and compression
+    # Quality and compression), string="Selection Field"
     quality_level = fields.Selection([
         ('high', 'High Quality'),
         ('medium', 'Medium Quality'),
         ('low', 'Low Quality'),
         ('archive', 'Archive Quality')
-    
+), string="Selection Field"
     compressed = fields.Boolean('Compressed', default=True)
     ocr_enabled = fields.Boolean('OCR Enabled', default=False,
-                                help='Whether text recognition was applied')
+                                help='Whether text recognition was applied',
     searchable = fields.Boolean('Searchable', default=False,
-                               help='Whether the content is text-searchable')
+                               help='Whether the content is text-searchable'
     
     # Storage and access
     storage_location = fields.Selection([
-        ('local', 'Local Storage'),
+        ('local', 'Local Storage',
         ('cloud', 'Cloud Storage'),
         ('archive', 'Archive Storage'),
         ('backup', 'Backup Storage')
-    
+), string="Selection Field"
     file_path = fields.Char('File Path', help='Path to the digital file')
     access_url = fields.Char('Access URL', help='URL to access the digital copy')
     
@@ -62,28 +62,28 @@ class RecordsDigitalCopy(models.Model):
     copy_date = fields.Datetime('Copy Date', default=fields.Datetime.now, required=True)
     last_accessed = fields.Datetime('Last Accessed')
     created_by = fields.Many2one('res.users', string='Created By', 
-                                default=lambda self: self.env.user, required=True)
+                                default=lambda self: self.env.user, required=True
     
     # Status
     state = fields.Selection([
-        ('draft', 'Draft'),
+        ('draft', 'Draft',
         ('active', 'Active'),
         ('archived', 'Archived'),
         ('corrupted', 'Corrupted'),
         ('deleted', 'Deleted')
     
-    # Security and compliance
+    # Security and compliance), string="Selection Field"
     encrypted = fields.Boolean('Encrypted', default=False)
     access_restricted = fields.Boolean('Access Restricted', default=False)
     retention_date = fields.Date('Retention Date', 
-                                help='Date when this digital copy should be reviewed for deletion')
+                                help='Date when this digital copy should be reviewed for deletion'
     
     # Attachments
     attachment_id = fields.Many2one('ir.attachment', string='File Attachment')
     
     # Company context
     company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company
     active = fields.Boolean('Active', default=True)
     
     @api.model

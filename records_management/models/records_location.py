@@ -25,8 +25,7 @@ class RecordsLocation(models.Model):
         ('map', 'Map Storage - Map Boxes (Type 03)'),
         ('oversize', 'Oversize - Odd-Shaped Boxes (Type 04)'),
         ('refiles', 'Refiles - Staging for Returns/Put-Away'),
-    ], string='Location Type'])
-       help="""Location type determines what kind of boxes can be stored:
+    ], string='Location Type', help="""Location type determines what kind of boxes can be stored:
        • Aisles/Pallets: Standard file boxes (Type 01) - monthly rent
        • Vault: Specialty boxes (Type 06) - secure storage
        • Map: Map boxes (Type 03) - oversized maps/plans
@@ -74,7 +73,7 @@ class RecordsLocation(models.Model):
         ('medium', 'Medium - Restricted Access'),
         ('high', 'High - Secure Access'),
         ('maximum', 'Maximum - Vault Access')
-    ], string='Security Level'])
+    ], string='Security Level')
 
     # Phase 1 Critical Fields - Added by automated script
     

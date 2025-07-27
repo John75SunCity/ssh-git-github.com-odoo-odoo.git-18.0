@@ -23,13 +23,13 @@ class RecordsDeletionRequest(models.Model):
         ('high', 'High'),
         ('urgent', 'Urgent')
     
-    # Items to delete)
+    # Items to delete), string="Selection Field")
     box_ids = fields.Many2many('records.box', string='Boxes to Delete')
     document_ids = fields.Many2many('records.document', string='Documents to Delete')
     
     # Status tracking
     state = fields.Selection([
-        ('draft', 'Draft'),
+        ('draft', 'Draft',
         ('submitted', 'Submitted'),
         ('approved', 'Approved'),
         ('scheduled', 'Scheduled'),
@@ -37,7 +37,7 @@ class RecordsDeletionRequest(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
     
-    # Approval workflow)
+    # Approval workflow), string="Selection Field")
     approved_by = fields.Many2one('res.users', string='Approved By', tracking=True)
     approval_date = fields.Datetime(string='Approval Date', tracking=True)
     scheduled_date = fields.Date(string='Scheduled Date', tracking=True)

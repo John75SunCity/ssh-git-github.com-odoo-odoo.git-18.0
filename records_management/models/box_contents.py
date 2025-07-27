@@ -18,11 +18,11 @@ class BoxContents(models.Model):
     name = fields.Char(string='File Folder/Item Name', required=True, tracking=True)
     description = fields.Text(string='Description')
     box_id = fields.Many2one('records.box', string='Parent Box', required=True, 
-                             ondelete='cascade', tracking=True)
+                             ondelete='cascade', tracking=True
     
     # File folder details
     folder_type = fields.Selection([
-        ('manila_folder', 'Manila Folder'),
+        ('manila_folder', 'Manila Folder',
         ('hanging_folder', 'Hanging Folder'),
         ('file_jacket', 'File Jacket'),
         ('binder', 'Binder'),
@@ -30,22 +30,22 @@ class BoxContents(models.Model):
         ('loose_documents', 'Loose Documents'),
         ('other', 'Other')
     
-    # Content tracking
+    # Content tracking), string="Selection Field"
     document_count = fields.Integer(string='Total Documents', compute='_compute_document_count')
     checked_out_count = fields.Integer(string='Checked Out', compute='_compute_checkout_status')
     available_count = fields.Integer(string='Available in Box', compute='_compute_checkout_status')
     
     # Box completion tracking
     contents_catalogued = fields.Boolean(string='All Contents Catalogued', default=False,
-                                       help="Check when all items in box have been listed and barcoded")
+                                       help="Check when all items in box have been listed and barcoded"
     box_at_capacity = fields.Boolean(string='Box at Capacity', default=False,
-                                   help="Check when box is full and no more items can be added")
+                                   help="Check when box is full and no more items can be added"
     temp_barcodes_assigned = fields.Boolean(string='Temp Barcodes Assigned', default=False,
-                                          help="Indicates if temporary barcodes have been assigned to contents")
+                                          help="Indicates if temporary barcodes have been assigned to contents"
     
     # Filing details
     filing_system = fields.Selection([
-        ('alphabetical', 'Alphabetical'),
+        ('alphabetical', 'Alphabetical',
         ('numerical', 'Numerical'),
         ('chronological', 'Chronological'),
         ('subject', 'Subject-based'),
@@ -53,18 +53,18 @@ class BoxContents(models.Model):
         ('mixed_contents', 'Mixed Contents'),
         ('other', 'Other')
     
-    # Status tracking
+    # Status tracking), string="Selection Field"
     checkout_status = fields.Selection([
         ('in_box', 'In Box'),
         ('checked_out', 'Checked Out'),
         ('destroyed', 'Destroyed'),
         ('lost', 'Lost')
-    
+), string="Selection Field"
     checkout_date = fields.Datetime(string='Checkout Date')
     checkout_user_id = fields.Many2one('res.users', string='Checked Out By')
     expected_return_date = fields.Date(string='Expected Return Date')
     temp_barcode = fields.Char(string='Temporary Barcode', 
-                              help="Temporary barcode assigned during cataloguing")
+                              help="Temporary barcode assigned during cataloguing"
     
     # Standard fields
     active = fields.Boolean(string='Active', default=True)
@@ -75,12 +75,12 @@ class BoxContents(models.Model):
     
     # Company context
     company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
+                                 default=lambda self: self.env.company
     
     # Computed fields
     box_name = fields.Char(related='box_id.name', string='Box Name', readonly=True)
     checkout_percentage = fields.Float(string='% Checked Out', 
-                                      compute='_compute_checkout_status')
+                                      compute='_compute_checkout_status'
     
     @api.depends('document_ids')
     def _compute_document_count(self):
@@ -109,7 +109,7 @@ class BoxContents(models.Model):
         self.write({
             'contents_catalogued': True,
             'temp_barcodes_assigned': True
-        })
+        }
     
     def action_mark_at_capacity(self):
         """Mark box as at capacity - no more items can be added"""
@@ -123,7 +123,7 @@ class BoxContents(models.Model):
             'checkout_status': 'checked_out',
             'checkout_date': fields.Datetime.now(),
             'checkout_user_id': self.env.user.id
-        })
+        }
     
     def action_return_item(self):
         """Return this item to the box"""
@@ -133,4 +133,4 @@ class BoxContents(models.Model):
             'checkout_date': False,
             'checkout_user_id': False,
             'expected_return_date': False
-        })
+        }

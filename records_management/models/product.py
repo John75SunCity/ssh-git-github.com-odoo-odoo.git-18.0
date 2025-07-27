@@ -7,42 +7,42 @@ class ProductTemplate(models.Model):
     shred_type = fields.Selection([
         ('document', 'Document Shredding'),
         ('hard_drive', 'Hard Drive Destruction'),
-        ('uniform', 'Uniform Shredding'),
+        ('uniform', 'Uniform Shredding',), string="Selection Field")
     naid_compliant = fields.Boolean(string='NAID Compliant', default=True, help='Flag if this product meets NAID AAA standards.')
     retention_note = fields.Text(string='Retention Note', compute='_compute_retention_note', store=True, 
-                                 help='Computed note for ISO data integrity (e.g., retention policies).')
+                                 help='Computed note for ISO data integrity (e.g., retention policies.')
 
-    # Phase 3: Analytics & Computed Fields (7 fields)
+    # Phase 3: Analytics & Computed Fields (7 fields
     service_utilization_rate = fields.Float(
         string='Service Utilization (%)',
         compute='_compute_product_analytics',
         store=True,
-        help='Rate of service utilization and demand'
+        help='Rate of service utilization and demand',
     revenue_performance_score = fields.Float(
         string='Revenue Performance Score',
         compute='_compute_product_analytics',
         store=True,
-        help='Performance score based on revenue generation'
+        help='Performance score based on revenue generation',
     compliance_certification_level = fields.Float(
         string='Compliance Level (%)',
         compute='_compute_product_analytics',
         store=True,
-        help='NAID and regulatory compliance certification level'
+        help='NAID and regulatory compliance certification level',
     market_demand_indicator = fields.Char(
         string='Market Demand',
         compute='_compute_product_analytics',
         store=True,
-        help='Market demand trend indicator'
+        help='Market demand trend indicator',
     service_quality_rating = fields.Float(
         string='Service Quality Rating',
         compute='_compute_product_analytics',
         store=True,
-        help='Quality rating based on customer feedback and compliance'
+        help='Quality rating based on customer feedback and compliance',
     product_insights = fields.Text(
         string='Product Insights',
         compute='_compute_product_analytics',
         store=True,
-        help='AI-generated product performance insights'
+        help='AI-generated product performance insights',
     analytics_updated_timestamp = fields.Datetime(
         string='Analytics Updated',
         compute='_compute_product_analytics',
@@ -64,7 +64,7 @@ class ProductTemplate(models.Model):
         ('weekly', 'Weekly'), 
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
-        ('yearly', 'Yearly')
+        ('yearly', 'Yearly'), string="Selection Field")
     box_retrieval_time = fields.Float(string='Box Retrieval Time (hours)', default=24.0)
     box_storage_included = fields.Integer(string='Box Storage Included', default=0)
     can_be_expensed = fields.Boolean(string='Can Be Expensed', default=True)
@@ -83,7 +83,7 @@ class ProductTemplate(models.Model):
     detailed_type = fields.Selection([
         ('consu', 'Consumable'),
         ('service', 'Service'),
-        ('product', 'Storable Product')
+        ('product', 'Storable Product'), string="Selection Field")
     digital_conversion_included = fields.Boolean(string='Digital Conversion Included', default=False)
     discount_percentage = fields.Float(string='Discount Percentage', default=0.0)
     display_name = fields.Char(string='Display Name', compute='_compute_display_name')
@@ -113,7 +113,7 @@ class ProductTemplate(models.Model):
         ('none', 'No NAID Compliance'),
         ('a', 'NAID Level A'),
         ('aa', 'NAID Level AA'),
-        ('aaa', 'NAID Level AAA')
+        ('aaa', 'NAID Level AAA'), string="Selection Field")
     name = fields.Char(string='Product Name', required=True)
     overhead_cost = fields.Float(string='Overhead Cost', default=0.0)
     period = fields.Selection([
@@ -121,7 +121,7 @@ class ProductTemplate(models.Model):
         ('week', 'Week'),
         ('month', 'Month'),
         ('quarter', 'Quarter'),
-        ('year', 'Year')
+        ('year', 'Year'), string="Selection Field")
     pickup_delivery_included = fields.Boolean(string='Pickup/Delivery Included', default=False)
     price_history_count = fields.Integer(string='Price History Count', compute='_compute_product_metrics')
     price_margin = fields.Float(string='Price Margin (%)', compute='_compute_product_metrics')
@@ -145,11 +145,11 @@ class ProductTemplate(models.Model):
     total_revenue_ytd = fields.Float(string='Total Revenue YTD', compute='_compute_product_metrics')
     total_sales_ytd = fields.Float(string='Total Sales YTD', compute='_compute_product_metrics')
 
-    # Phase 4: Missing Critical Business Fields (17 fields)
+    # Phase 4: Missing Critical Business Fields (17 fields
     
     # Product configuration and rules - Fixed relationship types
-    pricing_rule_ids = fields.Many2many('product.pricelist.item', string='Pricing Rules')  # Changed to existing model
-    product_variant_ids = fields.Many2many('product.product', relation='product_variant_ids_rel', string='Product Variants')  # Fixed: was One2many with missing inverse field  # This one is correct
+    pricing_rule_ids = fields.Many2many('product.pricelist.item', string='Pricing Rules'  # Changed to existing model)
+    product_variant_ids = fields.Many2many('product.product', relation='product_variant_ids_rel', string='Product Variants'  # Fixed: was One2many with missing inverse field  # This one is correct)
     rule_name = fields.Char(string='Rule Name', help='Name of the pricing or business rule')
     rule_type = fields.Selection([
         ('pricing', 'Pricing Rule'),
@@ -157,44 +157,44 @@ class ProductTemplate(models.Model):
         ('volume', 'Volume Rule'),
         ('service', 'Service Rule')
     
-    # Sales and purchase configuration
+    # Sales and purchase configuration), string="Selection Field"
     purchase_ok = fields.Boolean(string='Can be Purchased', default=False, 
-                                help='Specify if the product can be purchased')
+                                help='Specify if the product can be purchased',
     sale_ok = fields.Boolean(string='Can be Sold', default=True,
-                           help='Specify if the product can be sold')
+                           help='Specify if the product can be sold'
     
     # Pricing and billing
     standard_price = fields.Float(string='Cost Price', default=0.0,
-                                help='Cost price of the product used for cost accounting')
+                                help='Cost price of the product used for cost accounting',
     prorate_partial_periods = fields.Boolean(string='Prorate Partial Periods', default=True,
-                                           help='Prorate billing for partial periods')
+                                           help='Prorate billing for partial periods'
     
     # Service guarantees and SLA
     same_day_service = fields.Boolean(string='Same Day Service Available', default=False,
-                                    help='Service can be completed same day')
+                                    help='Service can be completed same day',
     security_guarantee = fields.Boolean(string='Security Guarantee', default=True,
-                                      help='Security guarantee provided')
+                                      help='Security guarantee provided',
     shredding_included = fields.Boolean(string='Shredding Included', default=False,
-                                      help='Shredding service included in package')
-    standard_response_time = fields.Float(string='Standard Response Time (hours)', default=24.0,
-                                        help='Standard response time for service requests')
+                                      help='Shredding service included in package',
+    standard_response_time = fields.Float(string='Standard Response Time (hours', default=24.0,
+                                        help='Standard response time for service requests',
     sla_terms = fields.Text(string='SLA Terms', 
-                          help='Service Level Agreement terms and conditions')
+                          help='Service Level Agreement terms and conditions'
     
     # Approval and analytics - Fixed relationship type
     requires_approval = fields.Boolean(string='Requires Approval', default=False,
-                                     help='Service requires management approval')
-    sales_analytics_ids = fields.Many2many('sale.report', string='Sales Analytics')  # Changed to existing model
+                                     help='Service requires management approval',
+    sales_analytics_ids = fields.Many2many('sale.report', string='Sales Analytics'  # Changed to existing model)
     sync_enabled = fields.Boolean(string='Sync Enabled', default=True,
-                                help='Enable synchronization for this product')
+                                help='Enable synchronization for this product',
     template_category = fields.Selection([
-        ('standard', 'Standard'),
+        ('standard', 'Standard',
         ('premium', 'Premium'),
         ('enterprise', 'Enterprise'),
         ('custom', 'Custom')
-       help='Category classification for template products')
+       help='Category classification for template products'
 
-    @api.depends('type')
+    @api.depends('type'), string="Selection Field")
     def _compute_retention_note(self):
         for rec in self:
             if rec.type == 'service' and rec.shred_type:
@@ -208,7 +208,7 @@ class ProductTemplate(models.Model):
         for product in self:
             # Update timestamp
             
-            # Service utilization rate (simulated based on type and compliance)
+            # Service utilization rate (simulated based on type and compliance
             utilization = 60.0  # Base utilization
             
             if product.type == 'service':
@@ -225,7 +225,7 @@ class ProductTemplate(models.Model):
             if product.naid_compliant:
                 utilization += 10.0
             
-            product.service_utilization_rate = min(100, utilization)
+            product.service_utilization_rate = min(100, utilization
             
             # Revenue performance score
             revenue_score = 50.0  # Base score
@@ -240,7 +240,7 @@ class ProductTemplate(models.Model):
             
             # Margin analysis
             if product.list_price > 0 and product.standard_price > 0:
-                margin = (product.list_price - product.standard_price) / product.list_price
+                margin = (product.list_price - product.standard_price / product.list_price
                 if margin > 0.5:
                     revenue_score += 20.0  # High margin
                 elif margin > 0.3:
@@ -248,7 +248,7 @@ class ProductTemplate(models.Model):
                 else:
                     revenue_score += 5.0   # Low margin
             
-            product.revenue_performance_score = min(100, revenue_score)
+            product.revenue_performance_score = min(100, revenue_score
             
             # Compliance certification level
             compliance = 70.0  # Base compliance
@@ -259,7 +259,7 @@ class ProductTemplate(models.Model):
             if product.type == 'service' and product.shred_type:
                 compliance += 5.0  # Service categorization helps compliance
             
-            product.compliance_certification_level = min(100, compliance)
+            product.compliance_certification_level = min(100, compliance
             
             # Market demand indicator
             demand_score = product.service_utilization_rate
@@ -282,13 +282,13 @@ class ProductTemplate(models.Model):
             if product.type == 'service':
                 quality += 10.0
             
-            product.service_quality_rating = min(100, quality)
+            product.service_quality_rating = min(100, quality
             
             # Product insights
             insights = []
             
             if product.revenue_performance_score > 85:
-                insights.append("💰 Strong revenue performer")
+                insights.append("💰 Strong revenue performer"
             elif product.revenue_performance_score < 60:
                 insights.append("📊 Revenue optimization needed")
             
@@ -323,7 +323,7 @@ class ProductTemplate(models.Model):
             product.customer_retention_rate = 85.0
             product.price_history_count = 0
             product.price_margin = 0.0
-            product.product_variant_count = len(product.product_variant_ids)
+            product.product_variant_count = len(product.product_variant_ids
             product.profit = max(0, product.list_price - product.standard_price)
             product.profit_margin = (product.profit / product.list_price * 100) if product.list_price > 0 else 0.0
             product.qty_available = 0.0
@@ -439,43 +439,43 @@ class ProductTemplate(models.Model):
 
     # Compute methods for One2many fields
     # Compute methods for previously commented One2many fields
-    @api.depends()
+    @api.depends(
     def _compute_pricing_rule_ids(self):
         """Compute pricing rules for this product"""
         for product in self:
             # Return empty recordset since model doesn't exist
-            product.pricing_rule_ids = self.env['product.pricing.rule'].browse()
+            product.pricing_rule_ids = self.env['product.pricing.rule'].browse(
 
     @api.depends()
     def _compute_sales_analytics_ids(self):
         """Compute sales analytics for this product"""
         for product in self:
             # Return empty recordset since model doesn't exist
-            product.sales_analytics_ids = self.env['product.sales.analytics'].browse()
+            product.sales_analytics_ids = self.env['product.sales.analytics'].browse(
 
     @api.depends()
     def _compute_activity_ids(self):
         """Compute activities for this product template"""
         for product in self:
-            product.activity_ids = self.env['mail.activity'].search([
+            product.activity_ids = self.env['mail.activity'].search\([
                 ('res_model', '=', 'product.template'),
-                ('res_id', '=', product.id)
-            ])
+                ('res_id', '=', product.id)])
+            ]
 
     @api.depends()
     def _compute_message_followers(self):
         """Compute message followers for this product template"""
         for product in self:
-            product.message_follower_ids = self.env['mail.followers'].search([
+            product.message_follower_ids = self.env['mail.followers'].search\([
                 ('res_model', '=', 'product.template'),
-                ('res_id', '=', product.id)
-            ])
+                ('res_id', '=', product.id)])
+            ]
 
     @api.depends()
     def _compute_message_ids(self):
         """Compute messages for this product template"""
         for product in self:
-            product.message_ids = self.env['mail.message'].search([
+            product.message_ids = self.env['mail.message'].search\([
                 ('res_model', '=', 'product.template'),
-                ('res_id', '=', product.id)
-            ])
+                ('res_id', '=', product.id)])
+            ]
