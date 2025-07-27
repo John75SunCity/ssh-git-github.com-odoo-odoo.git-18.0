@@ -53,6 +53,7 @@ class RecordsStorageDepartmentUser(models.Model):
                 ('id', '!=', record.id)])
             ]
             if existing:
+    pass
                 raise ValidationError(_('User %s is already assigned to department %s') % 
                                     (record.user_id.name, record.department_id.name)
     

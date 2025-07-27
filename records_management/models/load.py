@@ -22,21 +22,21 @@ class Load(models.Model):
         string='Load Optimization Score',
         compute='_compute_load_analytics',
         store=True,
-        help='Optimization score for load capacity and weight distribution'
+        help='Optimization score for load capacity and weight distribution',
     
     # Revenue Analytics
     revenue_efficiency_rating = fields.Float(
         string='Revenue Efficiency Rating',
         compute='_compute_revenue_analytics',
         store=True,
-        help='Revenue generation efficiency for this load'
+        help='Revenue generation efficiency for this load',
     
     # Operational Analytics
     operational_complexity_index = fields.Float(
         string='Operational Complexity Index',
         compute='_compute_operational_analytics',
         store=True,
-        help='Complexity assessment for load management operations'
+        help='Complexity assessment for load management operations',
 
     # RECYCLING REVENUE INTERNAL PAPER SALES MODEL FIELDS
     # Activity and messaging tracking for mail.thread integration

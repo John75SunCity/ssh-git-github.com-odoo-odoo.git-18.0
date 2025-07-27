@@ -16,7 +16,7 @@ class RecordsApprovalWorkflow(models.Model):
         ('document', 'Document Approval'),
         ('destruction', 'Destruction Approval'),
         ('access', 'Access Request Approval'),
-        ('general', 'General Approval')
+        ('general', 'General Approval'),
 ), string="Selection Field"
     auto_approve_threshold = fields.Float('Auto-Approve Threshold', default=0.0,
                                         help='Automatically approve requests below this threshold',
@@ -72,7 +72,7 @@ class RecordsApprovalStep(models.Model):
         ('department', 'Department Head'),
         ('compliance', 'Compliance Officer'),
         ('legal', 'Legal Review'),
-        ('automatic', 'Automatic')
+        ('automatic', 'Automatic'),
 ), string="Selection Field"
     approver_user_id = fields.Many2one('res.users', string='Approver User')
     approver_group_id = fields.Many2one('res.groups', string='Approver Group')
@@ -80,7 +80,7 @@ class RecordsApprovalStep(models.Model):
     is_required = fields.Boolean('Required Step', default=True)
     can_delegate = fields.Boolean('Can Delegate', default=False)
     timeout_hours = fields.Integer('Timeout (Hours)', default=48,
-                                 help='Hours before this step times out'
+                                 help='Hours before this step times out',
     
     # Conditions
     condition_field = fields.Char('Condition Field', help='Field to check for conditions')
@@ -99,6 +99,8 @@ class RecordsApprovalStep(models.Model):
     def _onchange_step_type(self):
         """Clear inappropriate fields when step type changes"""
         if self.step_type != 'user':
+    pass
             self.approver_user_id = False
         if self.step_type != 'group':
+    pass
             self.approver_group_id = False

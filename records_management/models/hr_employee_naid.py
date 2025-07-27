@@ -23,7 +23,7 @@ class HREmployeeNAID(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('expired', 'Expired'),
-        ('renewal_required', 'Renewal Required')
+        ('renewal_required', 'Renewal Required'),
 ), string="Selection Field"
     background_check_date = fields.Date(
         string='Background Check Date',
@@ -36,7 +36,7 @@ class HREmployeeNAID(models.Model):
         help='Company that performed the background check',
     background_check_reference = fields.Char(
         string='Background Check Reference',
-        help='Reference number from background check provider'
+        help='Reference number from background check provider',
     
     # Security Clearance
     security_clearance_level = fields.Selection([
@@ -44,7 +44,7 @@ class HREmployeeNAID(models.Model):
         ('basic', 'Basic Access'),
         ('confidential', 'Confidential Access'),
         ('secret', 'Secret Access'),
-        ('top_secret', 'Top Secret Access')
+        ('top_secret', 'Top Secret Access'),
 ), string="Selection Field"
     security_clearance_date = fields.Date(
         string='Security Clearance Date'
@@ -72,7 +72,7 @@ class HREmployeeNAID(models.Model):
         ('reception', 'Reception Only'),
         ('warehouse', 'Warehouse Access'),
         ('destruction', 'Destruction Area'),
-        ('full', 'Full Facility Access')
+        ('full', 'Full Facility Access'),
 ), string="Selection Field"
     access_card_number = fields.Char(
         string='Access Card Number',
@@ -99,11 +99,11 @@ class HREmployeeNAID(models.Model):
         ('training_required', 'Training Required'),
         ('background_check_required', 'Background Check Required'),
         ('non_compliant', 'Non-Compliant'),
-        ('suspended', 'Suspended')
+        ('suspended', 'Suspended'),
 ), string="Selection Field"
     compliance_notes = fields.Text(
         string='Compliance Notes',
-        help='Notes about compliance status and requirements'
+        help='Notes about compliance status and requirements',
     
     # Audit Trail
     last_compliance_review = fields.Date(
@@ -160,24 +160,31 @@ class HREmployeeNAID(models.Model):
             
             # Check background check
             if employee.background_check_status not in ['approved']:
+    pass
                 status = 'background_check_required'
             elif employee.background_check_expiry and employee.background_check_expiry <= today:
+    pass
                 status = 'background_check_required'
             
             # Check training
             elif not employee.naid_training_completed:
+    pass
                 status = 'training_required'
             elif employee.naid_training_expiry and employee.naid_training_expiry <= today:
+    pass
                 status = 'training_required'
             
             # Check security clearance
             elif employee.security_clearance_level == 'none':
+    pass
                 status = 'pending_documentation'
             elif employee.security_clearance_expiry and employee.security_clearance_expiry <= today:
+    pass
                 status = 'pending_documentation'
             
             # Check access card
             elif not employee.access_card_active:
+    pass
                 status = 'pending_documentation'
             
             employee.compliance_status = status
@@ -187,6 +194,7 @@ class HREmployeeNAID(models.Model):
         """Compute next compliance review date (quarterly)"""
         for employee in self:
             if employee.last_compliance_review:
+    pass
                 employee.next_compliance_review = employee.last_compliance_review + timedelta(days=90)
             else:
 

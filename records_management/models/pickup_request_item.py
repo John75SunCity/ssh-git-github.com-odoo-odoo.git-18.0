@@ -35,6 +35,7 @@ class PickupRequestItem(models.Model):
     def _check_quantity(self) -> None:
         for item in self:
             if item.quantity <= 0:
+    pass
                 error_msg = _("Quantity must be positive for item %s.")
                 raise ValidationError(error_msg % item.product_id.name)
 
@@ -42,6 +43,7 @@ class PickupRequestItem(models.Model):
     def _onchange_product_id(self) -> Optional[dict]:
         if (self.product_id and self.lot_id and
                 self.lot_id.product_id != self.product_id):
+    pass
             self.lot_id = False
         return {
             'domain': {

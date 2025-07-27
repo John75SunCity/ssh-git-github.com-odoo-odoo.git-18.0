@@ -46,17 +46,17 @@ class RecordsDepartmentBillingContact(models.Model):
                                            string='Approval History')  # Fixed with shorter table name
     approval_limit = fields.Float(string='Approval Limit ($', default=0.0, tracking=True)
     approval_notes = fields.Text(string='Approval Notes')
-    approval_status = fields.Selection([
+    approval_status = fields.Selection([)
         ('none', 'No Authority'),
         ('limited', 'Limited Authority'),
         ('full', 'Full Authority'),
-        ('suspended', 'Suspended')), string="Selection Field")
+        ('suspended', 'Suspended'), string="Selection Field")
     approved_by = fields.Many2one('res.users', string='Approved By', tracking=True)
     
     # Billing role and configuration
     billing_role = fields.Selection([
         ('primary', 'Primary Contact',
-        ('secondary', 'Secondary Contact',
+        ('secondary', 'Secondary Contact',)
         ('approver', 'Approver'),
         ('reviewer', 'Reviewer'),
         ('finance', 'Finance Team')
@@ -92,12 +92,12 @@ class RecordsDepartmentBillingContact(models.Model):
     # Service tracking
     service_description = fields.Text(string='Service Description')
     service_type = fields.Selection([
-        ('storage', 'Storage Services',
+        ('storage', 'Storage Services',)
         ('retrieval', 'Retrieval Services'),
         ('destruction', 'Destruction Services'),
         ('digital', 'Digital Services'),
         ('consultation', 'Consultation Services'),
-        ('mixed', 'Mixed Services')), string="Selection Field")
+        ('mixed', 'Mixed Services'), string="Selection Field")
     vendor = fields.Many2one('res.partner', string='Vendor/Service Provider')
     
     # Year-to-date financials
@@ -122,6 +122,7 @@ class RecordsDepartmentBillingContact(models.Model):
         """Compute budget utilization metrics"""
         for record in self:
             if record.monthly_budget > 0:
+    pass
                 record.budget_utilization = (record.current_month_actual / record.monthly_budget) * 100
             else:
                 record.budget_utilization = 0.0
@@ -150,6 +151,7 @@ class RecordsDepartmentBillingContact(models.Model):
     
     @api.depends('department_charge_ids', 'ytd_budget')
     def _compute_ytd_metrics(self):
+    pass
         """Compute year-to-date financial metrics"""
         for record in self:
             current_year = fields.Date.today().year
@@ -161,6 +163,7 @@ class RecordsDepartmentBillingContact(models.Model):
             record.ytd_variance = record.ytd_budget - ytd_charges
             
             if record.ytd_budget > 0:
+    pass
                 record.ytd_variance_percentage = (record.ytd_variance / record.ytd_budget) * 100
             else:
                 record.ytd_variance_percentage = 0.0

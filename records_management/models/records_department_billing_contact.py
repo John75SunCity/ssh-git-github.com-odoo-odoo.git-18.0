@@ -136,6 +136,7 @@ class RecordsDepartmentBillingContact(models.Model):
     def _compute_budget_utilization(self):
         for record in self:
             if record.monthly_budget:
+    pass
                 record.budget_utilization = (record.current_month_actual / record.monthly_budget) * 100
             else:
                 record.budget_utilization = 0.0
@@ -189,6 +190,7 @@ class RecordsDepartmentBillingContact(models.Model):
     def _compute_ytd_variance_percentage(self):
         for record in self:
             if record.ytd_budget:
+    pass
                 record.ytd_variance_percentage = (record.ytd_variance / record.ytd_budget) * 100
             else:
                 record.ytd_variance_percentage = 0.0
@@ -203,16 +205,19 @@ class RecordsDepartmentBillingContact(models.Model):
         """Validate date constraints"""
         for record in self:
             if record.end_date and record.start_date and record.end_date < record.start_date:
+    pass
                 raise ValidationError(_('End date cannot be earlier than start date'))
     
     @api.onchange('billing_contact_id')
     def _onchange_billing_contact(self):
         """Update contact details when billing contact changes"""
         if self.billing_contact_id:
+    pass
             self.email = self.billing_contact_id.email
             self.phone = self.billing_contact_id.phone
             self.mobile = self.billing_contact_id.mobile
             if not self.name:
+    pass
                 self.name = self.billing_contact_id.name
 
 # Related Models for One2many relationships

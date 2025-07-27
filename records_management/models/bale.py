@@ -13,7 +13,7 @@ class Bale(models.Model):
     date = fields.Date(default=fields.Date.today())
     load_id = fields.Many2one('records_management.load')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    qr_code = fields.Binary(compute='_compute_qr_code')  # Innovative: QR for tracking
+    qr_code = fields.Binary(compute='_compute_qr_code')  # Innovative: QR for tracking)
 
     @api.depends('name', 'paper_type', 'weight', 'technician_id.name', 'date')
     def _compute_qr_code(self):

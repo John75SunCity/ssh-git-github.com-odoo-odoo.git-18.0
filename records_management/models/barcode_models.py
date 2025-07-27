@@ -94,7 +94,7 @@ class RecordsBarcodeHistory(models.Model):
         ('success', 'Success'),
         ('error', 'Error'),
         ('warning', 'Warning'),
-        ('not_found', 'Not Found')
+        ('not_found', 'Not Found'),
 ), string="Selection Field"
     error_message = fields.Text(string='Error Message')
     notes = fields.Text(string='Notes')

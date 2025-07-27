@@ -26,7 +26,7 @@ class RecordsDigitalCopy(models.Model):
         ('png', 'PNG'),
         ('docx', 'Word Document'),
         ('xlsx', 'Excel Spreadsheet'),
-        ('other', 'Other')
+        ('other', 'Other'),
 ), string="Selection Field"
     file_size_mb = fields.Float('File Size (MB)', digits=(10, 2))
     resolution_dpi = fields.Integer('Resolution (DPI)', default=300)
@@ -40,20 +40,20 @@ class RecordsDigitalCopy(models.Model):
         ('high', 'High Quality'),
         ('medium', 'Medium Quality'),
         ('low', 'Low Quality'),
-        ('archive', 'Archive Quality')
+        ('archive', 'Archive Quality'),
 ), string="Selection Field"
     compressed = fields.Boolean('Compressed', default=True)
     ocr_enabled = fields.Boolean('OCR Enabled', default=False,
                                 help='Whether text recognition was applied',
     searchable = fields.Boolean('Searchable', default=False,
-                               help='Whether the content is text-searchable'
+                               help='Whether the content is text-searchable',
     
     # Storage and access
     storage_location = fields.Selection([
         ('local', 'Local Storage',
         ('cloud', 'Cloud Storage'),
         ('archive', 'Archive Storage'),
-        ('backup', 'Backup Storage')
+        ('backup', 'Backup Storage'),
 ), string="Selection Field"
     file_path = fields.Char('File Path', help='Path to the digital file')
     access_url = fields.Char('Access URL', help='URL to access the digital copy')
@@ -76,7 +76,7 @@ class RecordsDigitalCopy(models.Model):
     encrypted = fields.Boolean('Encrypted', default=False)
     access_restricted = fields.Boolean('Access Restricted', default=False)
     retention_date = fields.Date('Retention Date', 
-                                help='Date when this digital copy should be reviewed for deletion'
+                                help='Date when this digital copy should be reviewed for deletion',
     
     # Attachments
     attachment_id = fields.Many2one('ir.attachment', string='File Attachment')
@@ -90,6 +90,7 @@ class RecordsDigitalCopy(models.Model):
     def create(self, vals):
         """Generate sequence for copy reference"""
         if vals.get('name', '/') == '/':
+    pass
             vals['name'] = self.env['ir.sequence'].next_by_code('records.digital.copy') or '/'
         return super().create(vals)
     

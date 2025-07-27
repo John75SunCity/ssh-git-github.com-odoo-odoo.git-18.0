@@ -19,6 +19,7 @@ class ProjectTask(models.Model):
         """View related improvement action"""
         self.ensure_one()
         if self.improvement_action_id:
+    pass
             return {
                 'name': _('Improvement Action'),
                 'type': 'ir.actions.act_window',
@@ -33,6 +34,7 @@ class ProjectTask(models.Model):
         """View original feedback"""
         self.ensure_one()
         if self.feedback_id:
+    pass
             return {
                 'name': _('Original Feedback'),
                 'type': 'ir.actions.act_window',

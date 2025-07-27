@@ -58,6 +58,7 @@ class IrModule(models.Model):
                 ('res_model', '=', 'ir.ui.view')])
             ], limit=1
             if attachment:
+    pass
                 module.icon_image = attachment.datas
 
     def _import_module(self, module, path, force=False, with_demo=False):
@@ -67,6 +68,7 @@ class IrModule(models.Model):
         self = self.with_context(website_id=None  # noqa: PLW0642
         force_website_id = None
         if request and request.session.get('force_website_id':
+    pass
             force_website_id = request.session.pop('force_website_id')
 
         known_mods = self.search([])
@@ -76,37 +78,47 @@ class IrModule(models.Model):
         terp = {}
         manifest_path = next((opj(path, name) for name in MANIFEST_NAMES if os.path.exists(opj(path, name))), None)
         if manifest_path:
+    pass
             with file_open(manifest_path, 'rb', env=self.env) as f:
                 terp.update(ast.literal_eval(f.read().decode()))
         if not terp:
+    pass
             return False
         if not terp.get('icon'):
+    pass
             icon_path = 'static/description/icon.png'
             module_icon = module if os.path.exists(opj(path, icon_path)) else 'base'
             terp['icon'] = opj('/', module_icon, icon_path)
         values = self.get_values_from_terp(terp)
         if 'version' in terp:
+    pass
             values['latest_version'] = adapt_version(terp['version'])
         if self.env.context.get('data_module'):
+    pass
             values['module_type'] = 'industries'
 
         unmet_dependencies = set(terp.get('depends', [])).difference(installed_mods)
 
         if unmet_dependencies:
+    pass
             wrong_dependencies = unmet_dependencies.difference(known_mods.mapped("name"))
             if wrong_dependencies:
+    pass
                 err = _("Unknown module dependencies:") + "\n - " + "\n - ".join(wrong_dependencies)
                 raise UserError(err)
             to_install = known_mods.filtered(lambda mod: mod.name in unmet_dependencies)
             to_install.button_immediate_install()
         elif 'web_studio' not in installed_mods and _is_studio_custom(path):
+    pass
             raise UserError(_("Studio customizations require the Odoo Studio app."))
 
         mod = known_mods_names.get(module)
         if mod:
+    pass
             mod.write(dict(state='installed', **values))
             mode = 'update' if not force else 'init'
         else:
+    pass
             assert terp.get('installable', True), "Module not installable"
             mod = self.create(dict(name=module, state='installed', imported=True, **values))
             mode = 'init'
@@ -118,31 +130,39 @@ class IrModule(models.Model):
 
         kind_of_files = ['data', 'init_xml', 'update_xml']
         if with_demo:
+    pass
             kind_of_files.append('demo')
         for kind in kind_of_files:
             for filename in terp.get(kind, []):
                 ext = os.path.splitext(filename)[1].lower()
                 if ext not in ('.xml', '.csv', '.sql'):
+    pass
                     _logger.info("module %s: skip unsupported file %s", module, filename)
                     continue
                 _logger.info("module %s: loading %s", module, filename)
                 noupdate = False
                 if ext == '.csv' and kind in ('init', 'init_xml'):
+    pass
                     noupdate = True
                 pathname = opj(path, filename)
                 idref = {}
                 with file_open(pathname, 'rb', env=self.env) as fp:
                     if ext == '.csv':
+    pass
                         convert_csv_import(self.env, module, pathname, fp.read(), idref, mode, noupdate)
                     elif ext == '.sql':
+    pass
                         convert_sql_import(self.env, fp)
                     elif ext == '.xml':
+    pass
                         convert_xml_import(self.env, module, fp, idref, mode, noupdate)
                         if filename in exclude_list:
+    pass
                             for key, value in idref.items():
                                 xml_id = f"{module}.{key}" if '.' not in key else key
                                 name = xml_id.replace('.', '_')
                                 if self.env.ref(f"__cloc_exclude__.{name}", raise_if_not_found=False):
+    pass
                                     continue
                                 self.env['ir.model.data'].create([{
                                     'name': name,
@@ -154,6 +174,7 @@ class IrModule(models.Model):
         path_static = opj(path, 'static')
         IrAttachment = self.env['ir.attachment']
         if os.path.isdir(path_static):
+    pass
             for root, dirs, files in os.walk(path_static):
                 for static_file in files:
                     full_path = opj(root, static_file)
@@ -161,6 +182,7 @@ class IrModule(models.Model):
                         data = base64.b64encode(fp.read())
                     url_path = '/{}{}'.format(module, full_path.split(path)[1].replace(os.path.sep, '/'))
                     if not isinstance(url_path, str):
+    pass
                         url_path = url_path.decode(sys.getfilesystemencoding())
                     filename = os.path.split(url_path)[1]
                     values = dict(
@@ -171,10 +193,12 @@ class IrModule(models.Model):
                         datas=data
                     # Do not create a bridge module for this check.
                     if 'public' in IrAttachment._fields:
+    pass
                         # Static data is public and not website-specific.
                         values['public'] = True
                     attachment = IrAttachment.sudo(.search([('url', '=', url_path), ('type', '=', 'binary'), ('res_model', '=', 'ir.ui.view')])
                     if attachment:
+    pass
                         attachment.write(values)
                     else:
                         attachment = IrAttachment.create(values)
@@ -185,6 +209,7 @@ class IrModule(models.Model):
                             'res_id': attachment.id,
                         }
                         if str(pathlib.Path(full_path).relative_to(base_dir)) in exclude_list:
+    pass
                             self.env['ir.model.data'].create({
                                 'name': f"cloc_exclude_attachment_{url_path}".replace('.', '_').replace(' ', '_'),
                                 'model': 'ir.attachment',
@@ -218,6 +243,7 @@ class IrModule(models.Model):
         # Update existing assets and generate the list of new assets values
         for values in assets_vals:
             if values['name'] in existing_assets:
+    pass
                 existing_assets[values['name']].write(values
             else:
                 assets_to_create.append(values)
@@ -249,6 +275,7 @@ class IrModule(models.Model):
         _logger.info("Successfully imported module '%s'", module)
 
         if force_website_id:
+    pass
             # Restore neutralized website_id.
             request.session['force_website_id'] = force_website_id
 
@@ -257,16 +284,20 @@ class IrModule(models.Model):
     @api.model
     def _import_zipfile(self, module_file, force=False, with_demo=False:
         if not self.env.is_admin():
+    pass
             raise AccessError(_("Only administrators can install data modules."))
         if not module_file:
+    pass
             raise Exception(_("No file sent."))
         if not zipfile.is_zipfile(module_file):
+    pass
             raise UserError(_('Only zip files are supported.'))
 
         module_names = []
         with zipfile.ZipFile(module_file, "r") as z:
             for zf in z.filelist:
                 if zf.file_size > MAX_FILE_SIZE:
+    pass
                     raise UserError(_("File '%s' exceed maximum allowed file size", zf.filename))
 
             with file_open_temporary_directory(self.env) as module_dir:
@@ -277,6 +308,7 @@ class IrModule(models.Model):
                     and file.filename.split('/')[1] in MANIFEST_NAMES
                 module_data_files = defaultdict(list)
                 for manifest in manifest_files:
+    pass
                     manifest_path = z.extract(manifest, module_dir)
                     mod_name = manifest.filename.split('/')[0]
                     try:
@@ -286,9 +318,11 @@ class IrModule(models.Model):
                         continue
                     files_to_import = terp.get('data', []) + terp.get('init_xml', []) + terp.get('update_xml', [])
                     if with_demo:
+    pass
                         files_to_import += terp.get('demo', [])
                     for filename in files_to_import:
                         if os.path.splitext(filename)[1].lower() not in ('.xml', '.csv', '.sql'):
+    pass
                             continue
                         module_data_files[mod_name].append('%s/%s' % (mod_name, filename))
                 for file in z.filelist:
@@ -298,10 +332,12 @@ class IrModule(models.Model):
                     is_static = filename.startswith('%s/static' % mod_name)
                     is_translation = filename.startswith('%s/i18n' % mod_name) and filename.endswith('.po')
                     if is_data_file or is_static or is_translation:
+    pass
                         z.extract(file, module_dir)
 
                 dirs = [d for d in os.listdir(module_dir) if os.path.isdir(opj(module_dir, d))]
                 for mod_name in dirs:
+    pass
                     module_names.append(mod_name)
                     try:
                         # assert mod_name.startswith('theme_'
@@ -324,6 +360,7 @@ class IrModule(models.Model):
         modules_to_delete = self.filtered('imported'
         res = super().module_uninstall()
         if modules_to_delete:
+    pass
             deleted_modules_names = modules_to_delete.mapped('name')
             assets_data = self.env['ir.model.data'].search\([
                 ('model', '=', 'ir.asset'),
@@ -339,6 +376,7 @@ class IrModule(models.Model):
     @api.model
     def web_search_read(self, domain, specification, offset=0, limit=None, order=None, count_limit=None):
         if _domain_asks_for_industries(domain):
+    pass
             fields_name = list(specification.keys())
             modules_list = self._get_modules_from_apps(fields_name, 'industries', False, domain, offset=offset, limit=limit)
             return {
@@ -362,6 +400,7 @@ class IrModule(models.Model):
         fields = list(specification.keys())
         module_type = self.env.context.get('module_type', 'official')
         if module_type == 'industries':
+    pass
             modules_list = self._get_modules_from_apps(fields, module_type, self.env.context.get('module_name'))
             return modules_list
         else:
@@ -370,6 +409,7 @@ class IrModule(models.Model):
     @api.model
     def _get_modules_from_apps(self, fields, module_type, module_name, domain=None, limit=None, offset=None):
         if 'name' not in fields:
+    pass
             fields = fields + ['name']
         payload = {
             'params': {
@@ -391,15 +431,20 @@ class IrModule(models.Model):
                 existing_mod = self.search([('name', '=', module_name), ('state', '=', 'installed')])
                 mod['id'] = existing_mod.id if existing_mod else -1
                 if 'icon' in fields:
+    pass
                     mod['icon'] = f"{APPS_URL}{mod['icon']}"
                 if 'state' in fields:
+    pass
                     if existing_mod:
+    pass
                         mod['state'] = 'installed'
                     else:
                         mod['state'] = 'uninstalled'
                 if 'module_type' in fields:
+    pass
                     mod['module_type'] = module_type
                 if 'website' in fields:
+    pass
                     mod['website'] = f"{APPS_URL}/apps/modules/{major_version}/{module_name}/"
             return modules_list
         except requests.exceptions.HTTPError:
@@ -434,6 +479,7 @@ class IrModule(models.Model):
 
     def button_immediate_install_app(self):
         if not self.env.is_admin():
+    pass
             raise AccessDenied()
         module_name = self.env.context.get('module_name')
         try:
@@ -443,6 +489,7 @@ class IrModule(models.Model):
             resp.raise_for_status()
             missing_dependencies_description, unavailable_modules = self._get_missing_dependencies(resp.content)
             if unavailable_modules:
+    pass
                 raise UserError(missing_dependencies_description)
             import_module = self.env['base.import.module'].create({
                 'module_file': base64.b64encode(resp.content),
@@ -468,6 +515,7 @@ class IrModule(models.Model):
         _modules, unavailable_modules = self._get_missing_dependencies_modules(zip_data)
         description = ''
         if unavailable_modules:
+    pass
             description = _(
                 "The installation of the data module would fail as the following dependencies can't"
                 " be found in the addons-path:\n"
@@ -484,18 +532,22 @@ class IrModule(models.Model):
         return description, unavailable_modules
 
     def _get_missing_dependencies_modules(self, zip_data):
+    pass
         dependencies_to_install = self.env['ir.module.module']
         known_mods = self.search([('to_buy', '=', False)])
         installed_mods = [m.name for m in known_mods if m.state == 'installed']
         not_found_modules = set()
         with zipfile.ZipFile(BytesIO(zip_data), "r") as z:
+    pass
             manifest_files = [
                 file
                 for file in z.filelist
                 if file.filename.count('/') == 1
                 and file.filename.split('/')[1] in MANIFEST_NAMES
             for manifest_file in manifest_files:
+    pass
                 if manifest_file.file_size > MAX_FILE_SIZE:
+    pass
                     raise UserError(_("File '%s' exceed maximum allowed file size", manifest_file.filename))
                 try:
                     with z.open(manifest_file) as manifest:
@@ -510,7 +562,9 @@ class IrModule(models.Model):
 
     @api.model]
     def search_panel_select_range(self, field_name, **kwargs):
+    pass
         if field_name == 'category_id' and _domain_asks_for_industries(kwargs.get('category_domain', [])):
+    pass
             categories = self._get_industry_categories_from_apps()
             return {
                 'parent_field': 'parent_id',
@@ -521,8 +575,11 @@ class IrModule(models.Model):
 def _domain_asks_for_industries(domain):
     for dom in domain:
         if is_leaf(dom) and dom[0] == 'module_type':
+    pass
             if dom[2] == 'industries':
+    pass
                 if dom[1] != '=':
+    pass
                     raise UserError('%r is an unsupported leaf' % (dom))
                 return True
     return False
@@ -537,21 +594,25 @@ def _is_studio_custom(path):
     """
     filepaths = []
     for level in os.walk(path):
+    pass
         filepaths += [os.path.join(level[0], fn) for fn in level[2]]
     filepaths = [fp for fp in filepaths if fp.lower().endswith('.xml')]
 
     for fp in filepaths:
+    pass
         root = lxml.etree.parse(fp).getroot()
 
         for record in root:
             # there might not be a context if it's a non-studio module
             try:
+    pass
                 # ast.literal_eval is like eval(, but safer
                 # context is a string representing a python dict
                 ctx = ast.literal_eval(record.get('context')
                 # there are no cases in which studio is false
                 # so just checking for its existence is enough
                 if ctx and ctx.get('studio':
+    pass
                     return True
             except Exception:
                 continue

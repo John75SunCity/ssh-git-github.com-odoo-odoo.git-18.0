@@ -52,7 +52,7 @@ class RecordsChainCustody(models.Model):
         ('standard', 'Standard',
         ('high', 'High Security'),
         ('classified', 'Classified'),
-        ('restricted', 'Restricted Access')
+        ('restricted', 'Restricted Access'),
 ), string="Selection Field"
     compliance_verified = fields.Boolean('Compliance Verified', default=False)
     audit_required = fields.Boolean('Audit Required', default=False)
@@ -72,6 +72,7 @@ class RecordsChainCustody(models.Model):
         """Compute how long custody was held"""
         for record in self:
             if record.next_custody_id and record.next_custody_id.custody_timestamp:
+    pass
                 delta = record.next_custody_id.custody_timestamp - record.custody_timestamp
                 record.custody_duration = delta.total_seconds() / 3600  # Convert to hours
             else:
@@ -87,24 +88,31 @@ class RecordsChainCustody(models.Model):
             
             # Signature completeness
             if record.from_signature:
+    pass
                 score += 15
             if record.to_signature:
+    pass
                 score += 15
             if record.witness_signature:
+    pass
                 score += 10
             
             # Compliance verification
             if record.compliance_verified:
+    pass
                 score += 10
             
             # Chain integrity
             if record.chain_broken:
+    pass
                 score -= 30
             
             # Required fields completeness
             if record.transfer_reason:
+    pass
                 score += 5
             if record.authorization_code:
+    pass
                 score += 5
             
             record.compliance_score = min(max(score, 0, 100)

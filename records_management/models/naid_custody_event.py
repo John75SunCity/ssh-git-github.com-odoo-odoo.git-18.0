@@ -29,7 +29,7 @@ class NAIDCustodyEvent(models.Model):
         ('destruction', 'Destruction Event'),
         ('completion', 'Process Completion'),
         ('exception', 'Exception/Issue'),
-        ('verification', 'Verification Check')
+        ('verification', 'Verification Check'),
 ), string="Selection Field"
     event_datetime = fields.Datetime('Event Date/Time', required=True,)
                                     default=fields.Datetime.now, tracking=True
@@ -102,6 +102,7 @@ class NAIDCustodyEvent(models.Model):
     def create(self, vals):
         """Generate sequence for event reference"""
         if vals.get('name', '/') == '/':
+    pass
             vals['name'] = self.env['ir.sequence'].next_by_code('naid.custody.event') or '/'
         return super().create(vals)
     
@@ -110,6 +111,7 @@ class NAIDCustodyEvent(models.Model):
         """Validate event datetime is not in future (unless draft)"""
         for record in self:
             if record.state != 'draft' and record.event_datetime > fields.Datetime.now():
+    pass
                 raise ValidationError(_('Event datetime cannot be in the future for completed events'))
     
     def action_verify_event(self):

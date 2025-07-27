@@ -33,7 +33,7 @@ class DestructionItem(models.Model):
         ('pound', 'Pound'),
         ('kilogram', 'Kilogram'),
         ('bag', 'Bag'),
-        ('pallet', 'Pallet')
+        ('pallet', 'Pallet'),
 ), string="Selection Field"
     weight = fields.Float(string='Weight (lbs)', help='Weight of the item in pounds')
     

@@ -19,21 +19,21 @@ class RecordsPolicyVersion(models.Model):
         ('burning', 'Burning'),
         ('pulping', 'Pulping'),
         ('electronic_wipe', 'Electronic Data Wiping'),
-        ('secure_disposal', 'Secure Disposal')
+        ('secure_disposal', 'Secure Disposal'),
 ), string="Selection Field"
     review_cycle_months = fields.Integer('Review Cycle (Months)')
     risk_level = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
-        ('critical', 'Critical')
+        ('critical', 'Critical'),
 ), string="Selection Field"
     approval_status = fields.Selection([
         ('draft', 'Draft'),
         ('pending', 'Pending Approval'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
-        ('superseded', 'Superseded')
+        ('superseded', 'Superseded'),
 ), string="Selection Field"
     approved_by = fields.Many2one('res.users', string='Approved By')
     approval_date = fields.Datetime('Approval Date')
@@ -45,7 +45,9 @@ class RecordsPolicyVersion(models.Model):
     def _compute_is_current(self):
         """Check if this is the current active version"""
         for version in self:
+    pass
             if version.policy_id and version.policy_id.policy_version:
+    pass
                 version.is_current_version = (version.version_number == version.policy_id.policy_version)
             else:
                 version.is_current_version = False
@@ -60,6 +62,7 @@ class RecordsPolicyVersion(models.Model):
         
         # Update the main policy to this version
         if self.policy_id:
+    pass
             self.policy_id.write({
                 'policy_version': self.version_number,
                 'retention_years': self.retention_years,

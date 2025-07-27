@@ -80,18 +80,21 @@ class NAIDPerformanceHistory(models.Model):
         for record in self:
             # On-time percentage
             if record.services_completed > 0:
+    pass
                 record.on_time_percentage = (record.services_on_time / record.services_completed * 100
             else:
                 record.on_time_percentage = 0.0
                 
             # Resolution percentage  
             if record.incidents_reported > 0:
+    pass
                 record.resolution_percentage = (record.incidents_resolved / record.incidents_reported * 100
             else:
                 record.resolution_percentage = 100.0 if record.incidents_resolved == 0 else 0.0
                 
             # Quality percentage
             if record.quality_checks_total > 0:
+    pass
                 record.quality_percentage = (record.quality_checks_passed / record.quality_checks_total * 100
             else:
                 record.quality_percentage = 0.0
@@ -107,17 +110,22 @@ class NAIDPerformanceHistory(models.Model):
                 record.customer_satisfaction or 0
             
             if all(metric == 0 for metric in metrics:
+    pass
                 record.performance_status = 'needs_improvement'
                 continue]
             average_score = sum(metrics) / len([m for m in metrics if m > 0])
             
             if average_score >= 90:
+    pass
                 record.performance_status = 'excellent'
             elif average_score >= 80:
+    pass
                 record.performance_status = 'good'
             elif average_score >= 70:
+    pass
                 record.performance_status = 'satisfactory'
             elif average_score >= 60:
+    pass
                 record.performance_status = 'needs_improvement'
             else:
                 record.performance_status = 'poor'

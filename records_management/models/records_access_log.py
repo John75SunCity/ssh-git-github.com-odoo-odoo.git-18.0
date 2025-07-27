@@ -18,7 +18,7 @@ class RecordsAccessLog(models.Model):
         ('edit', 'Edit'),
         ('share', 'Share'),
         ('copy', 'Copy'),
-        ('export', 'Export')
+        ('export', 'Export'),
 ), string="Selection Field"
     ip_address = fields.Char('IP Address')
     user_agent = fields.Text('User Agent')
@@ -35,7 +35,7 @@ class RecordsAccessLog(models.Model):
         ('two_factor', 'Two Factor Authentication'),
         ('certificate', 'Digital Certificate'),
         ('biometric', 'Biometric'),
-        ('token', 'Security Token')
+        ('token', 'Security Token'),
 ), string="Selection Field"
     security_level = fields.Selection([
         ('low', 'Low Security'),
@@ -85,6 +85,7 @@ class RecordsAccessLog(models.Model):
             
             # Authorization check
             if not log.authorized_access:
+    pass
                 base_score += 40
             
             log.risk_score = min(max(base_score, 0, 100)

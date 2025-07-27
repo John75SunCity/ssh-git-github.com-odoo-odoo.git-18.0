@@ -27,7 +27,7 @@ class RecordsBoxTransfer(models.Model):
         ('customer_request', 'Customer Request'),
         ('maintenance', 'Facility Maintenance'),
         ('reorganization', 'Storage Reorganization'),
-        ('emergency', 'Emergency Move')
+        ('emergency', 'Emergency Move'),
 ), string="Selection Field"
     transfer_notes = fields.Text('Transfer Notes')
     special_instructions = fields.Text('Special Instructions')
@@ -51,7 +51,7 @@ class RecordsBoxTransfer(models.Model):
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor'),
-        ('damaged', 'Damaged')
+        ('damaged', 'Damaged'),
 ), string="Selection Field"
     condition_after = fields.Selection([
         ('excellent', 'Excellent'),
@@ -70,7 +70,7 @@ class RecordsBoxTransfer(models.Model):
         ('in_transit', 'In Transit'),
         ('completed', 'Completed'),
         ('failed', 'Failed'),
-        ('cancelled', 'Cancelled')
+        ('cancelled', 'Cancelled'),
 ), string="Selection Field"
     completion_date = fields.Datetime('Completion Date')
     
@@ -83,6 +83,7 @@ class RecordsBoxTransfer(models.Model):
         """Compute transfer duration in minutes"""
         for transfer in self:
             if transfer.completion_date and transfer.transfer_date:
+    pass
                 delta = transfer.completion_date - transfer.transfer_date
                 transfer.transfer_duration = delta.total_seconds() / 60
             else:
@@ -96,11 +97,15 @@ class RecordsBoxTransfer(models.Model):
             
             # Duration efficiency (assuming 15 minutes is optimal
             if transfer.transfer_duration > 0:
+    pass
                 if transfer.transfer_duration <= 15:
+    pass
                     score += 20
                 elif transfer.transfer_duration <= 30:
+    pass
                     score += 15
                 elif transfer.transfer_duration <= 60:
+    pass
                     score += 10
                 else:
                     score += 5
@@ -111,16 +116,20 @@ class RecordsBoxTransfer(models.Model):
             after_val = condition_values.get(transfer.condition_after, 3)
             
             if after_val >= before_val:
+    pass
                 score += 15
             else:
                 score -= 10  # Condition deteriorated
             
             # Process compliance
             if transfer.barcode_scanned:
+    pass
                 score += 10
             if transfer.from_signature:
+    pass
                 score += 5
             if transfer.to_signature:
+    pass
                 score += 5
             
             transfer.efficiency_score = min(max(score, 0, 100)
@@ -141,6 +150,7 @@ class RecordsBoxTransfer(models.Model):
         
         # Update box location
         if self.box_id and self.to_location_id:
+    pass
             self.box_id.write({'location_id': self.to_location_id.id}
     
     def action_cancel_transfer(self):

@@ -20,7 +20,7 @@ class NAIDCompliance(models.Model):
         ('compliant', 'Compliant',
         ('non_compliant', 'Non-Compliant'),
         ('pending', 'Pending Review'),
-        ('suspended', 'Suspended')
+        ('suspended', 'Suspended'),
 ), string="Selection Field"
     overall_compliance_score = fields.Float(string='Overall Compliance Score', compute='_compute_compliance_scores')
     physical_security_score = fields.Float(string='Physical Security Score', tracking=True)
@@ -34,7 +34,7 @@ class NAIDCompliance(models.Model):
         ('annual', 'Annual'),
         ('biannual', 'Bi-Annual'),
         ('quarterly', 'Quarterly'),
-        ('monthly', 'Monthly')
+        ('monthly', 'Monthly'),
 ), string="Selection Field"
     last_audit_date = fields.Date(string='Last Audit Date', tracking=True)
     next_audit_date = fields.Date(string='Next Audit Date', compute='_compute_next_audit_date', store=True)
@@ -60,7 +60,7 @@ class NAIDCompliance(models.Model):
     certificate_type = fields.Selection([
         ('naid_aaa', 'NAID AAA'),
         ('naid_aa', 'NAID AA'),
-        ('naid_a', 'NAID A')
+        ('naid_a', 'NAID A'),
 ), string="Selection Field"
     issue_date = fields.Date(string='Issue Date', tracking=True)
     expiry_date = fields.Date(string='Expiry Date', tracking=True)
@@ -108,7 +108,7 @@ class NAIDCompliance(models.Model):
         ('shredding', 'Shredding',
         ('incineration', 'Incineration'),
         ('pulverization', 'Pulverization'),
-        ('disintegration', 'Disintegration')
+        ('disintegration', 'Disintegration'),
 ), string="Selection Field"
     destruction_verification = fields.Boolean(string='Destruction Verification', default=True)
     witness_present = fields.Boolean(string='Witness Present During Destruction', tracking=True)
@@ -119,7 +119,7 @@ class NAIDCompliance(models.Model):
     material_type = fields.Selection([
         ('paper', 'Paper Documents',
         ('electronic', 'Electronic Media'),
-        ('mixed', 'Mixed Media')
+        ('mixed', 'Mixed Media'),
 ), string="Selection Field"
     client_name = fields.Many2one('res.partner', string='Client Name')
     naid_level = fields.Selection([
@@ -132,7 +132,7 @@ class NAIDCompliance(models.Model):
         ('low', 'Low Risk'),
         ('medium', 'Medium Risk'),
         ('high', 'High Risk'),
-        ('critical', 'Critical Risk')
+        ('critical', 'Critical Risk'),
 ), string="Selection Field"
     compliance_verified = fields.Boolean(string='Compliance Verified', tracking=True)
     last_verified = fields.Datetime(string='Last Verified', tracking=True)
@@ -144,7 +144,7 @@ class NAIDCompliance(models.Model):
     trend = fields.Selection([
         ('improving', 'Improving'),
         ('stable', 'Stable'),
-        ('declining', 'Declining')
+        ('declining', 'Declining'),
 ), string="Selection Field"
     measurement_date = fields.Date(string='Measurement Date', default=fields.Date.today)
     metric_type = fields.Char(string='Metric Type', default='NAID Compliance')

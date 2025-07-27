@@ -58,7 +58,7 @@ class BoxContents(models.Model):
         ('in_box', 'In Box'),
         ('checked_out', 'Checked Out'),
         ('destroyed', 'Destroyed'),
-        ('lost', 'Lost')
+        ('lost', 'Lost'),
 ), string="Selection Field"
     checkout_date = fields.Datetime(string='Checkout Date')
     checkout_user_id = fields.Many2one('res.users', string='Checked Out By')
@@ -99,6 +99,7 @@ class BoxContents(models.Model):
             record.available_count = total_docs - checked_out_docs
             
             if total_docs > 0:
+    pass
                 record.checkout_percentage = (checked_out_docs / total_docs) * 100
             else:
                 record.checkout_percentage = 0.0

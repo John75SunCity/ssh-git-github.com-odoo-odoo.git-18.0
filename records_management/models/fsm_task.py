@@ -39,7 +39,7 @@ class FSMTask(models.Model):
         string='Analytics Updated',
         compute='_compute_fsm_analytics',
         store=True,
-        help='Last analytics computation timestamp'
+        help='Last analytics computation timestamp',
     
     # Comprehensive missing fields for FSM task management
     activity_type = fields.Selection([
@@ -199,20 +199,26 @@ class FSMTask(models.Model):
             
             # Stage progression efficiency
             if task.stage_id:
+    pass
                 stage_name = task.stage_id.name.lower(
                 if 'done' in stage_name or 'complete' in stage_name:
+    pass
                     efficiency += 30.0
                 elif 'progress' in stage_name:
+    pass
                     efficiency += 20.0
                 elif 'paused' in stage_name:
+    pass
                     efficiency -= 10.0
             
             # Assignment efficiency
             if task.user_ids:
+    pass
                 efficiency += 15.0  # Has assigned users
             
             # Portal integration efficiency
             if task.portal_request_id:
+    pass
                 efficiency += 10.0  # Connected to portal request
             
             task.task_efficiency_rating = min(100, efficiency
@@ -222,11 +228,14 @@ class FSMTask(models.Model):
             
             # Deadline performance
             if task.date_deadline and task.create_date:
+    pass
                 now = fields.Datetime.now(
                 if task.stage_id and 'done' in task.stage_id.name.lower():
+    pass
                     # Task completed
                     performance += 20.0
                 elif task.date_deadline < now:
+    pass
                     # Overdue
                     performance -= 25.0
                 else:
@@ -237,6 +246,7 @@ class FSMTask(models.Model):
             
             # Customer response time
             if task.create_date:
+    pass
                 # Simulate response time based on task age
                 age_hours = (fields.Datetime.now( - task.create_date).total_seconds() / 3600)
                 
@@ -251,12 +261,15 @@ class FSMTask(models.Model):
             optimization = 65.0  # Base optimization
             
             if task.user_ids:
+    pass
                 optimization += 20.0
             
             if task.portal_request_id:
+    pass
                 optimization += 10.0  # Automated request handling
             
             if task.stage_id and task.stage_id.name:
+    pass
                 optimization += 5.0  # Proper workflow tracking
             
             task.resource_optimization_score = min(100, optimization
@@ -265,28 +278,37 @@ class FSMTask(models.Model):
             insights = []
             
             if task.task_efficiency_rating > 85:
+    pass
                 insights.append("✅ High efficiency task execution"
             elif task.task_efficiency_rating < 60:
+    pass
                 insights.append("⚠️ Below target efficiency - review process")
             
             if task.customer_response_time > 24:
+    pass
                 insights.append("⏰ Slow response time - expedite assignment")
             elif task.customer_response_time <= 4:
+    pass
                 insights.append("🚀 Excellent response time")
             
             if not task.user_ids:
+    pass
                 insights.append("👤 Unassigned task - allocate resources")
             
             if task.completion_performance > 90:
+    pass
                 insights.append("🎯 Outstanding completion performance")
             
             if task.portal_request_id:
+    pass
                 insights.append("🌐 Portal-integrated request - automated workflow")
             
             if task.date_deadline and fields.Datetime.now() > task.date_deadline:
+    pass
                 insights.append("🚨 Overdue task - immediate attention required")
             
             if not insights:
+    pass
                 insights.append("📊 Standard task performance")
             
             task.fsm_insights = "\n".join(insights)
@@ -329,6 +351,7 @@ class FSMTask(models.Model):
         """View task location"""
         self.ensure_one()
         if self.partner_id:
+    pass
             return {
                 'name': _('Customer Location'),
                 'type': 'ir.actions.act_window',
@@ -343,6 +366,7 @@ class FSMTask(models.Model):
         """Contact customer"""
         self.ensure_one()
         if self.partner_id:
+    pass
             return {
                 'name': _('Contact Customer'),
                 'type': 'ir.actions.act_window',
@@ -400,6 +424,7 @@ class FSMTask(models.Model):
     # Compute methods for previously commented One2many fields
     @api.depends(
     def _compute_communication_log_ids(self):
+    pass
         """Compute communication log for this FSM task"""
         for task in self:
             # Return empty recordset since inverse field doesn't exist

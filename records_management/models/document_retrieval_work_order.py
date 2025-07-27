@@ -31,7 +31,7 @@ class DocumentRetrievalRates(models.Model):
     base_delivery_rate = fields.Float(
         string='Base Delivery Rate per Order',
         default=25.00,
-        help='Standard delivery fee per work order'
+        help='Standard delivery fee per work order',
     
     # Priority rates - per item
     rush_end_of_day_item = fields.Float(
@@ -53,7 +53,7 @@ class DocumentRetrievalRates(models.Model):
     holiday_item = fields.Float(
         string='Holiday Service - Per Item',
         default=10.00,
-        help='Additional fee per item for holiday service'
+        help='Additional fee per item for holiday service',
     
     # Priority rates - per work order
     rush_end_of_day_order = fields.Float(
@@ -75,7 +75,7 @@ class DocumentRetrievalRates(models.Model):
     holiday_order = fields.Float(
         string='Holiday Service - Per Order',
         default=100.00,
-        help='Additional delivery fee for holiday orders'
+        help='Additional delivery fee for holiday orders',
     
     # Working hours and days
     working_hours_start = fields.Float(
@@ -85,7 +85,7 @@ class DocumentRetrievalRates(models.Model):
     working_hours_end = fields.Float(
         string='Working Hours End',
         default=17.0,
-        help='End of working hours (24-hour format)'
+        help='End of working hours (24-hour format)',
     
     # Company and date tracking
     company_id = fields.Many2one(
@@ -125,7 +125,7 @@ class CustomerRetrievalRates(models.Model):
     custom_delivery_rate = fields.Float(
         string='Custom Delivery Rate per Order',
         default=0.0,
-        help='Customer-specific delivery rate (0 = use base rate)'
+        help='Customer-specific delivery rate (0 = use base rate)',
     
     # Priority multipliers (1.0 = standard, 0.5 = 50% discount, 1.5 = 50% premium)
     rush_multiplier = fields.Float(
@@ -143,7 +143,7 @@ class CustomerRetrievalRates(models.Model):
     holiday_multiplier = fields.Float(
         string='Holiday Service Multiplier',
         default=1.0,
-        help='Multiplier for holiday services (1.0 = standard rates)'
+        help='Multiplier for holiday services (1.0 = standard rates)',
     
     # Contract terms
     contract_notes = fields.Text(
@@ -151,14 +151,16 @@ class CustomerRetrievalRates(models.Model):
         help='Special terms and conditions for this customer',
     expiry_date = fields.Date(
         string='Expiry Date',
-        help='When these rates expire (empty = no expiry)'
+        help='When these rates expire (empty = no expiry)',
     
     
 
     @api.depends('customer_id', 'effective_date')
     def _compute_display_name(self):
+    pass
         for record in self:
             if record.customer_id:
+    pass
                 record.display_name = f"{record.customer_id.name} - {record.effective_date}"
             else:
                 record.display_name = f"New Customer Rate - {record.effective_date}"
@@ -300,7 +302,7 @@ class DocumentRetrievalWorkOrder(models.Model):
         help='Contact person for delivery',
     delivery_phone = fields.Char(
         string='Delivery Phone',
-        help='Phone number for delivery coordination'
+        help='Phone number for delivery coordination',
     
     # Notes and documentation
     retrieval_notes = fields.Text(
@@ -311,7 +313,7 @@ class DocumentRetrievalWorkOrder(models.Model):
         help='Special instructions for delivery',
     internal_notes = fields.Text(
         string='Internal Notes',
-        help='Internal notes not visible to customer'
+        help='Internal notes not visible to customer',
     
     # Customer signature and confirmation
     customer_signature = fields.Binary(
@@ -330,6 +332,7 @@ class DocumentRetrievalWorkOrder(models.Model):
     def create(self, vals:
         """Generate sequence number on creation"""
         if vals.get('name', _('New')) == _('New'):
+    pass
             vals['name'] = self.env['ir.sequence'].next_by_code(
                 'document.retrieval.work.order'
              or _('New')
@@ -346,6 +349,7 @@ class DocumentRetrievalWorkOrder(models.Model):
         """Get active customer-specific rates"""
         for order in self:
             if order.customer_id:
+    pass
                 # Find active customer rates
                 customer_rates = self.env['customer.retrieval.rates'].search\([
                     ('customer_id', '=', order.customer_id.id,
@@ -357,6 +361,7 @@ class DocumentRetrievalWorkOrder(models.Model):
                 ], limit=1, order='effective_date desc'
                 
                 if customer_rates:
+    pass
                     order.customer_rates_id = customer_rates.id
                     order.has_custom_rates = True
                 else:
@@ -371,6 +376,7 @@ class DocumentRetrievalWorkOrder(models.Model):
         """Compute pricing based on priority, customer rates, and items"""
         for order in self:
             if not order.item_count:
+    pass
                 order.base_retrieval_cost = 0.0
                 order.base_delivery_cost = 0.0
                 order.priority_item_cost = 0.0
@@ -385,6 +391,7 @@ class DocumentRetrievalWorkOrder(models.Model):
             ], limit=1, order='effective_date desc'
             
             if not base_rates:
+    pass
                 # Create default rates if none exist
                 base_rates = self.env['document.retrieval.rates'].create({
                     'name': 'Default Rates',
@@ -393,11 +400,13 @@ class DocumentRetrievalWorkOrder(models.Model):
             
             # Apply customer-specific rates or use base rates
             if order.customer_rates_id and order.customer_rates_id.custom_retrieval_rate > 0:
+    pass
                 retrieval_rate = order.customer_rates_id.custom_retrieval_rate
             else:
                 retrieval_rate = base_rates.base_retrieval_rate
             
             if order.customer_rates_id and order.customer_rates_id.custom_delivery_rate > 0:
+    pass
                 delivery_rate = order.customer_rates_id.custom_delivery_rate
             else:
                 delivery_rate = base_rates.base_delivery_rate
@@ -411,30 +420,40 @@ class DocumentRetrievalWorkOrder(models.Model):
             priority_order_fee = 0.0
             
             if order.priority == 'rush_eod':
+    pass
                 priority_item_fee = base_rates.rush_end_of_day_item
                 priority_order_fee = base_rates.rush_end_of_day_order
             elif order.priority == 'rush_4h':
+    pass
                 priority_item_fee = base_rates.rush_4_hours_item
                 priority_order_fee = base_rates.rush_4_hours_order
             elif order.priority == 'emergency_1h':
+    pass
                 priority_item_fee = base_rates.emergency_1_hour_item
                 priority_order_fee = base_rates.emergency_1_hour_order
             elif order.priority == 'weekend':
+    pass
                 priority_item_fee = base_rates.weekend_item
                 priority_order_fee = base_rates.weekend_order
             elif order.priority == 'holiday':
+    pass
                 priority_item_fee = base_rates.holiday_item
                 priority_order_fee = base_rates.holiday_order
             
             # Apply customer multipliers if available
             if order.customer_rates_id:
+    pass
                 if order.priority in ['rush_eod', 'rush_4h']:
+    pass
                     multiplier = order.customer_rates_id.rush_multiplier
                 elif order.priority == 'emergency_1h':
+    pass
                     multiplier = order.customer_rates_id.emergency_multiplier
                 elif order.priority == 'weekend':
+    pass
                     multiplier = order.customer_rates_id.weekend_multiplier
                 elif order.priority == 'holiday':
+    pass
                     multiplier = order.customer_rates_id.holiday_multiplier
                 else:
                     multiplier = 1.0
@@ -456,6 +475,7 @@ class DocumentRetrievalWorkOrder(models.Model):
         """Confirm the work order"""
         self.ensure_one()
         if not self.retrieval_item_ids:
+    pass
             raise UserError(_('Cannot confirm work order without items to retrieve.'))
         
         self.write({'state': 'confirmed'})
@@ -469,6 +489,7 @@ class DocumentRetrievalWorkOrder(models.Model):
         """Assign technician to work order"""
         self.ensure_one()
         if self.state != 'confirmed':
+    pass
             raise UserError(_('Can only assign technicians to confirmed work orders.'))
         
         self.write({'state': 'assigned'})
@@ -478,6 +499,7 @@ class DocumentRetrievalWorkOrder(models.Model):
         """Start retrieval process"""
         self.ensure_one()
         if self.state != 'assigned':
+    pass
             raise UserError(_('Work order must be assigned before starting retrieval.'))
         
         self.write({'state': 'in_progress'})
@@ -487,6 +509,7 @@ class DocumentRetrievalWorkOrder(models.Model):
         """Mark items as ready for delivery"""
         self.ensure_one()
         if self.state != 'in_progress':
+    pass
             raise UserError(_('Can only mark in-progress orders as ready for delivery.'))
         
         self.write({'state': 'ready_delivery'})
@@ -496,6 +519,7 @@ class DocumentRetrievalWorkOrder(models.Model):
         """Mark as delivered"""
         self.ensure_one()
         if self.state != 'ready_delivery':
+    pass
             raise UserError(_('Order must be ready for delivery first.'))
         
         self.write({
@@ -509,6 +533,7 @@ class DocumentRetrievalWorkOrder(models.Model):
         """Complete the work order"""
         self.ensure_one()
         if self.state != 'delivered':
+    pass
             raise UserError(_('Order must be delivered before completion.'))
         
         self.write({'state': 'completed'})
@@ -555,7 +580,7 @@ class DocumentRetrievalItem(models.Model):
     item_type = fields.Selection([
         ('box', 'Box'),
         ('file', 'File'),
-        ('document', 'Document')
+        ('document', 'Document'),
 ), string="Selection Field"
     box_id = fields.Many2one(
         'records.box',
@@ -573,7 +598,7 @@ class DocumentRetrievalItem(models.Model):
     description = fields.Char(
         string='Description',
         required=True,
-        help='Description of the item to retrieve'
+        help='Description of the item to retrieve',
     
     # Location and status
     current_location = fields.Char(
@@ -593,10 +618,13 @@ class DocumentRetrievalItem(models.Model):
     def _compute_display_name(self):
         for item in self:
             if item.item_type == 'box' and item.box_id:
+    pass
                 item.display_name = f"Box: {item.box_id.name}"
             elif item.item_type == 'document' and item.document_id:
+    pass
                 item.display_name = f"Document: {item.document_id.name}"
             elif item.description:
+    pass
                 item.display_name = f"{item.item_type.title()}: {item.description}"
             else:
                 item.display_name = f"New {item.item_type.title()}"

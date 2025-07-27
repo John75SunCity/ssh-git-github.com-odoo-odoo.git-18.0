@@ -24,20 +24,20 @@ class PaperBaleRecycling(models.Model):
         ('white', 'White Paper'),
         ('mixed', 'Mixed Paper'),
         ('cardboard', 'Cardboard')
-       help='Type of paper in this bale'
+       help='Type of paper in this bale',
     
     # Weight tracking (primary business metric), string="Selection Field")
     weight_lbs = fields.Float('Weight (lbs)', required=True, digits=(8, 2),
                              help='Weight in pounds as measured on floor scale',
     weight_kg = fields.Float('Weight (kg)', compute='_compute_weight_kg', store=True,
-                            help='Automatic conversion to kilograms'
+                            help='Automatic conversion to kilograms',
     
     # Production tracking
     production_date = fields.Date('Production Date', required=True,
                                  default=fields.Date.today,
                                  help='Date when bale was produced',
     weighed_by = fields.Many2one('hr.employee', string='Weighed By', required=True,
-                                help='Employee who weighed the bale'
+                                help='Employee who weighed the bale',
     
     # Load shipment tracking (key business process
     load_shipment_id = fields.Many2one('paper.load.shipment', string='Load Shipment',
@@ -64,7 +64,7 @@ class PaperBaleRecycling(models.Model):
     moisture_level = fields.Selection([
         ('dry', 'Dry'),
         ('normal', 'Normal'),
-        ('damp', 'Damp')
+        ('damp', 'Damp'),
 ), string="Selection Field"
     contamination = fields.Boolean('Has Contamination', default=False,
                                   help='Check if bale has non-paper contamination',
@@ -73,7 +73,7 @@ class PaperBaleRecycling(models.Model):
     # Storage and processing
     storage_location = fields.Many2one('stock.location', string='Storage Location')
     processed_from_service = fields.Many2one('shredding.service', string='From Shredding Service',
-                                           help='Which shredding service produced this paper'
+                                           help='Which shredding service produced this paper',
     
     # Company context
     company_id = fields.Many2one('res.company', string='Company', 
@@ -87,6 +87,7 @@ class PaperBaleRecycling(models.Model):
         """Generate display name for bale"""
         for record in self:
             if record.bale_number and record.paper_grade:
+    pass
                 grade_short = {
                     'white': 'W',
                     'mixed': 'M', 
@@ -106,14 +107,17 @@ class PaperBaleRecycling(models.Model):
     
     @api.model
     def create(self, vals:
+    pass
         """Generate bale number sequence and handle mobile entry"""
         if not vals.get('bale_number'):
+    pass
             # Auto-generate next bale number
             last_bale = self.search([], order='bale_number desc', limit=1
             vals['bale_number'] = (last_bale.bale_number + 1) if last_bale else 1
         
         # Handle mobile scale integration
         if vals.get('scale_reading' and not vals.get('weight_lbs'):
+    pass
             vals['weight_lbs'] = vals['scale_reading']
             vals['mobile_entry'] = True
             
@@ -124,6 +128,7 @@ class PaperBaleRecycling(models.Model):
         """Validate weight is positive"""
         for record in self:
             if record.weight_lbs <= 0:
+    pass
                 raise ValidationError(_('Weight must be greater than zero'))
     
     # === ACTION METHODS ===
@@ -141,6 +146,7 @@ class PaperBaleRecycling(models.Model):
         """Assign bale to a load shipment"""
         self.ensure_one()
         if not self.load_shipment_id:
+    pass
             raise ValidationError(_('Please select a load shipment first'))
         self.write({'status': 'assigned_load'})
         return True
@@ -149,6 +155,7 @@ class PaperBaleRecycling(models.Model):
         """Mark bale as ready for shipping"""
         self.ensure_one()
         if not self.load_shipment_id:
+    pass
             raise ValidationError(_('Bale must be assigned to a load first'))
         self.write({'status': 'ready_ship'})
         return True

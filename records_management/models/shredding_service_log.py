@@ -31,7 +31,7 @@ class ShreddingServiceLog(models.Model):
         ('cancelled', 'Service Cancelled'),
         ('incident', 'Incident Reported'),
         ('quality_check', 'Quality Check'),
-        ('compliance_check', 'Compliance Check')
+        ('compliance_check', 'Compliance Check'),
     ], string='Activity Type')
     
     activity_description = fields.Char(
@@ -55,22 +55,22 @@ class ShreddingServiceLog(models.Model):
     # Service details
     documents_count = fields.Integer(
         string='Documents Processed',
-        help='Number of documents processed in this activity'
+        help='Number of documents processed in this activity',
     )
 
     weight_processed = fields.Float(
         string='Weight Processed (kg)',
-        help='Weight of materials processed'
+        help='Weight of materials processed',
     )
 
     duration_minutes = fields.Integer(
         string='Duration (minutes)',
-        help='Duration of the activity in minutes'
+        help='Duration of the activity in minutes',
     )
     # Quality and compliance
     quality_score = fields.Float(
         string='Quality Score',
-        help='Quality assessment score (0-100)'
+        help='Quality assessment score (0-100)',
     )
 
     compliance_verified = fields.Boolean(
@@ -83,18 +83,18 @@ class ShreddingServiceLog(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('failed', 'Failed'),
-        ('requires_attention', 'Requires Attention')
+        ('requires_attention', 'Requires Attention'),
     ], string='Status')
     
     notes = fields.Text(
         string='Notes',
-        help='Additional notes about this activity'
+        help='Additional notes about this activity',
     )
     # File attachments
     attachment_ids = fields.Many2many(
         'ir.attachment',
         string='Attachments',
-        help='Photos, certificates, or other documentation'
+        help='Photos, certificates, or other documentation',
     )
     
     # Computed fields for analytics
@@ -102,22 +102,25 @@ class ShreddingServiceLog(models.Model):
         string='Efficiency Score',
         compute='_compute_efficiency_score',
         store=True,
-        help='Calculated efficiency based on time and volume'
+        help='Calculated efficiency based on time and volume',
     )
     @api.depends('duration_minutes', 'documents_count', 'weight_processed')
     def _compute_efficiency_score(self):
         """Calculate efficiency score based on processing metrics"""
         for record in self:
             if record.duration_minutes and (record.documents_count or record.weight_processed):
+    pass
                 base_score = 50
                 
                 # Documents per minute factor
                 if record.documents_count:
+    pass
                     docs_per_min = record.documents_count / record.duration_minutes
                     base_score += min(docs_per_min * 10, 30)
                 
                 # Weight per minute factor
                 if record.weight_processed:
+    pass
                     weight_per_min = record.weight_processed / record.duration_minutes
                     base_score += min(weight_per_min * 5, 20)
                 

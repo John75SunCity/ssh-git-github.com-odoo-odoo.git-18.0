@@ -51,7 +51,7 @@ class ShreddingHardDrive(models.Model):
         ('confidential', 'Confidential'),
         ('secret', 'Secret'),
         ('top_secret', 'Top Secret'),
-        ('custom', 'Custom Classification')
+        ('custom', 'Custom Classification'),
 ), string="Selection Field"
     data_classification = fields.Selection([
         ('public', 'Public'),
@@ -71,7 +71,7 @@ class ShreddingHardDrive(models.Model):
         ('crushing', 'Physical Crushing'),
         ('incineration', 'Incineration'),
         ('acid_bath', 'Chemical Destruction'),
-        ('combined', 'Combined Methods')
+        ('combined', 'Combined Methods'),
 ), string="Selection Field"
     destruction_date = fields.Datetime('Destruction Date', tracking=True)
     destruction_technician = fields.Many2one('res.users', string='Destruction Technician')
@@ -90,7 +90,7 @@ class ShreddingHardDrive(models.Model):
         ('basic', 'Basic Encryption'),
         ('advanced', 'Advanced Encryption'),
         ('military', 'Military Grade'),
-        ('unknown', 'Unknown')
+        ('unknown', 'Unknown'),
 ), string="Selection Field"
     functionality_test = fields.Selection([
         ('functional', 'Functional'),
@@ -150,6 +150,7 @@ class ShreddingHardDrive(models.Model):
         """Compute days the device has been in custody"""
         for record in self:
             if record.received_date:
+    pass
                 end_date = record.destruction_date or fields.Datetime.now()
                 delta = end_date - record.received_date
                 record.days_in_custody = delta.days
@@ -164,14 +165,19 @@ class ShreddingHardDrive(models.Model):
             total_checks = 5
             
             if record.nist_compliant:
+    pass
                 score += 1
             if record.dod_compliant:
+    pass
                 score += 1
             if record.hipaa_compliant:
+    pass
                 score += 1
             if record.destruction_verified:
+    pass
                 score += 1
             if record.certificate_generated:
+    pass
                 score += 1
                 
             record.compliance_score = (score / total_checks) * 100
@@ -180,6 +186,7 @@ class ShreddingHardDrive(models.Model):
     def _compute_destruction_status(self):
         """Determine if destruction process is complete"""
         for record in self:
+    pass
             record.destruction_complete = (
                 record.state in ('destroyed', 'certified') and
                 record.destruction_verified and
@@ -189,6 +196,7 @@ class ShreddingHardDrive(models.Model):
     def create(self, vals):
         """Generate sequence for drive reference"""
         if vals.get('name', '/') == '/':
+    pass
             vals['name'] = self.env['ir.sequence'].next_by_code('shredding.hard.drive') or '/'
         return super().create(vals)
     
@@ -197,7 +205,9 @@ class ShreddingHardDrive(models.Model):
         """Validate particle size requirements"""
         for record in self:
             if record.particle_size_mm and record.particle_size_mm > 2.0:
+    pass
                 if record.security_level in ('secret', 'top_secret'):
+    pass
                     raise ValidationError(_('Particle size must be ≤ 2mm for high security items'))
     
     def action_verify_device(self):
@@ -212,6 +222,7 @@ class ShreddingHardDrive(models.Model):
         """Start the destruction process"""
         self.ensure_one()
         if not self.destruction_technician:
+    pass
             raise ValidationError(_('Destruction technician must be assigned'))
         self.write({'state': 'in_progress'})
     
@@ -228,6 +239,7 @@ class ShreddingHardDrive(models.Model):
         """Generate destruction certificate"""
         self.ensure_one()
         if not self.destruction_verified:
+    pass
             raise ValidationError(_('Destruction must be verified before generating certificate'))
         
         certificate_num = self.env['ir.sequence'].next_by_code('destruction.certificate') or '/'

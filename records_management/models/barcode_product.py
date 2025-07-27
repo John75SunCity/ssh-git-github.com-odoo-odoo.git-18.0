@@ -14,17 +14,18 @@ class BarcodeProduct(models.Model):
     
     # Product details
     description = fields.Text('Description')
-    category = fields.Selection([
+    category = fields.Selection([)
         ('storage', 'Storage Service'),
         ('destruction', 'Destruction Service'),
         ('retrieval', 'Retrieval Service'),
         ('scanning', 'Scanning Service'),
-        ('other', 'Other Service'),
+        ('other', 'Other Service')
+    ], string="Category")
     
-    # Pricing), string="Selection Field"
+    # Pricing
     unit_price = fields.Float('Unit Price')
     currency_id = fields.Many2one('res.currency', 'Currency', 
-                                 default=lambda self: self.env.company.currency_id
+                                 default=lambda self: self.env.company.currency_id)
     
     # Usage statistics
     usage_count = fields.Integer('Usage Count', default=0)
@@ -73,25 +74,28 @@ class BarcodeProduct(models.Model):
     weight_capacity = fields.Float(string='Weight Capacity (lbs)')
     weight_limit = fields.Float(string='Weight Limit (lbs)')
     capacity = fields.Float(string='Storage Capacity (cubic ft)')
-    box_size = fields.Selection([
+    box_size = fields.Selection([)
         ('letter', 'Letter'),
         ('legal', 'Legal'),
         ('x-ray', 'X-Ray'),
-        ('oversize', 'Oversize'), string="Selection Field")
-    material_type = fields.Selection([
+        ('oversize', 'Oversize')
+    ], string="Box Size")
+    material_type = fields.Selection([)
         ('cardboard', 'Cardboard'),
         ('plastic', 'Plastic'),
         ('metal', 'Metal'),
         ('wood', 'Wood')
+    ], string="Material Type")
     
-    # Status and Condition), string="Selection Field"
-    box_status = fields.Selection([
+    # Status and Condition
+    box_status = fields.Selection([)
         ('new', 'New'),
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('poor', 'Poor'),
-        ('damaged', 'Damaged'), string="Selection Field")
-    bin_status = fields.Selection([
+        ('damaged', 'Damaged')
+    ], string="Box Status")
+    bin_status = fields.Selection([)
         ('empty', 'Empty'),
         ('partial', 'Partial'),
         ('full', 'Full'),
@@ -112,18 +116,18 @@ class BarcodeProduct(models.Model):
     lockable = fields.Boolean(string='Lockable', default=False)
     mobile = fields.Boolean(string='Mobile', default=False)
     climate_controlled = fields.Boolean(string='Climate Controlled', default=False)
-    fireproof_rating = fields.Selection([
+    fireproof_rating = fields.Selection([)
         ('none', 'None'),
         ('1hour', '1 Hour'),
         ('2hour', '2 Hour'),
         ('4hour', '4 Hour'), string="Selection Field")
-    indoor_outdoor = fields.Selection([
+    indoor_outdoor = fields.Selection([)
         ('indoor', 'Indoor'),
         ('outdoor', 'Outdoor'),
         ('both', 'Both')
     
     # Service and Security), string="Selection Field"
-    security_level = fields.Selection([
+    security_level = fields.Selection([)
         ('basic', 'Basic'),
         ('enhanced', 'Enhanced'),
         ('maximum', 'Maximum'), string="Selection Field")
@@ -167,10 +171,10 @@ class BarcodeProduct(models.Model):
     storage_box_ids = fields.Many2many('records.box', string='Related Storage Boxes'  # Changed to Many2many to avoid inverse field issues)
     storage_box_count = fields.Integer(string='Storage Box Count', compute='_compute_storage_box_count'  # Restored compute method)
     shred_security_level = fields.Selection([
-        ('basic', 'Basic',
+        ('basic', 'Basic',)
         ('high', 'High'),
         ('maximum', 'Maximum'), string="Selection Field")
-    shredding_type = fields.Selection([
+    shredding_type = fields.Selection([)
         ('strip_cut', 'Strip Cut'),
         ('cross_cut', 'Cross Cut'),
         ('micro_cut', 'Micro Cut'),
@@ -180,7 +184,7 @@ class BarcodeProduct(models.Model):
     last_access_date = fields.Date(string='Last Access Date')
     last_pickup_date = fields.Date(string='Last Pickup Date')
     next_pickup_date = fields.Date(string='Next Pickup Date')
-    pickup_frequency = fields.Selection([
+    pickup_frequency = fields.Selection([)
         ('weekly', 'Weekly'),
         ('biweekly', 'Bi-weekly'),
         ('monthly', 'Monthly'),
@@ -201,6 +205,7 @@ class BarcodeProduct(models.Model):
     def _compute_fill_percentage(self):
         for record in self:
             if record.capacity:
+    pass
                 record.fill_percentage = (record.fill_level / record.capacity) * 100
             else:
                 record.fill_percentage = 0.0
@@ -209,6 +214,7 @@ class BarcodeProduct(models.Model):
     def _compute_utilization_rate(self):
         for record in self:
             if record.capacity:
+    pass
                 record.utilization_rate = (record.fill_level / record.capacity) * 100
             else:
                 record.utilization_rate = 0.0
@@ -233,7 +239,7 @@ class BarcodeGenerationBatch(models.Model):
     _name = 'barcode.generation.batch'
     _description = 'Barcode Generation Batch'
     
-    status = fields.Selection([
+    status = fields.Selection([)
         ('draft', 'Draft'),
         ('generated', 'Generated'),
         ('completed', 'Completed')

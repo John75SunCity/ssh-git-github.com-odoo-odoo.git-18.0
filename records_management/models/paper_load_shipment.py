@@ -16,13 +16,13 @@ class PaperLoadShipment(models.Model):
     
     # Core load identification
     load_number = fields.Char('Load Number', required=True,
-                             help='Load identifier (e.g., LOAD 535'
+                             help='Load identifier (e.g., LOAD 535',
     
     # Shipment details
     pickup_date = fields.Date('Pickup Date', required=True,
                              help='Date when load will be/was picked up',
     pickup_time = fields.Datetime('Pickup Time',
-                                 help='Scheduled or actual pickup time'
+                                 help='Scheduled or actual pickup time',
     
     # Driver and transportation
     driver_name = fields.Char('Driver Name', required=True)
@@ -123,12 +123,13 @@ class PaperLoadShipment(models.Model):
     weight_lbs = fields.Float(
         string='Weight (lbs)',
         digits='Product Weight',
-        help='Total weight of the load in pounds'
+        help='Total weight of the load in pounds',
     
     # === COMPUTED METHODS ===
     
     @api.depends('bale_ids', 'bale_ids.weight_lbs', 'bale_ids.weight_kg'
     def _compute_totals(self):
+    pass
         """Compute total weight and bale count"""
         for record in self:
             record.total_weight_lbs = sum(record.bale_ids.mapped('weight_lbs'))
@@ -157,9 +158,11 @@ class PaperLoadShipment(models.Model):
     def create(self, vals:
         """Generate load number sequence"""
         if not vals.get('load_number'):
+    pass
             # Auto-generate next load number
             last_load = self.search([], order='load_number desc', limit=1
             if last_load and last_load.load_number.startswith('LOAD '):
+    pass
                 try:
                     last_num = int(last_load.load_number.split(' ')[1])
                     vals['load_number'] = f'LOAD {last_num + 1}'
@@ -175,7 +178,9 @@ class PaperLoadShipment(models.Model):
         """Validate date logic"""
         for record in self:
             if record.payment_due_date and record.pickup_date:
+    pass
                 if record.payment_due_date < record.pickup_date:
+    pass
                     raise ValidationError(_('Payment due date cannot be before pickup date'))
     
     # === ACTION METHODS ===
@@ -184,6 +189,7 @@ class PaperLoadShipment(models.Model):
         """Schedule the pickup"""
         self.ensure_one()
         if not self.bale_ids:
+    pass
             raise ValidationError(_('Cannot schedule pickup - no bales assigned to this load'))
         self.write({'status': 'scheduled'})
         return True
@@ -192,6 +198,7 @@ class PaperLoadShipment(models.Model):
         """Mark load as ready for pickup"""
         self.ensure_one()
         if not self.driver_name:
+    pass
             raise ValidationError(_('Driver name is required before marking ready for pickup'))
         self.write({'status': 'ready_pickup'})
         return True
@@ -200,6 +207,7 @@ class PaperLoadShipment(models.Model):
         """Generate manifest for the load"""
         self.ensure_one()
         if not self.bale_ids:
+    pass
             raise ValidationError(_('Cannot generate manifest - no bales in this load'))
         
         self.write({
@@ -220,6 +228,7 @@ class PaperLoadShipment(models.Model):
         """Mark load as in transit"""
         self.ensure_one()
         if not self.driver_signature:
+    pass
             raise ValidationError(_('Driver signature required before marking in transit'))
         
         self.write({
@@ -229,6 +238,7 @@ class PaperLoadShipment(models.Model):
         return True
     
     def action_mark_delivered(self):
+    pass
         """Mark load as delivered"""
         self.ensure_one()
         self.write({'status': 'delivered'})
@@ -241,6 +251,7 @@ class PaperLoadShipment(models.Model):
         """Create invoice for the load"""
         self.ensure_one()
         if not self.customer_id:
+    pass
             raise ValidationError(_('Customer is required to create invoice'))
         
         # Calculate payment due date (3-4 weeks as mentioned

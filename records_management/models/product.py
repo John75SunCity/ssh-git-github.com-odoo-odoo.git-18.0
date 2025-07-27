@@ -7,7 +7,7 @@ class ProductTemplate(models.Model):
     shred_type = fields.Selection([
         ('document', 'Document Shredding'),
         ('hard_drive', 'Hard Drive Destruction'),
-        ('uniform', 'Uniform Shredding',), string="Selection Field")
+        ('uniform', 'Uniform Shredding'), string="Selection Field")
     naid_compliant = fields.Boolean(string='NAID Compliant', default=True, help='Flag if this product meets NAID AAA standards.')
     retention_note = fields.Text(string='Retention Note', compute='_compute_retention_note', store=True, 
                                  help='Computed note for ISO data integrity (e.g., retention policies.')
@@ -47,7 +47,7 @@ class ProductTemplate(models.Model):
         string='Analytics Updated',
         compute='_compute_product_analytics',
         store=True,
-        help='Last analytics computation time'
+        help='Last analytics computation time',
     
     # Missing business and technical fields from view analysis
     active = fields.Boolean(string='Active', default=True)
@@ -161,13 +161,13 @@ class ProductTemplate(models.Model):
     purchase_ok = fields.Boolean(string='Can be Purchased', default=False, 
                                 help='Specify if the product can be purchased',
     sale_ok = fields.Boolean(string='Can be Sold', default=True,
-                           help='Specify if the product can be sold'
+                           help='Specify if the product can be sold',
     
     # Pricing and billing
     standard_price = fields.Float(string='Cost Price', default=0.0,
                                 help='Cost price of the product used for cost accounting',
     prorate_partial_periods = fields.Boolean(string='Prorate Partial Periods', default=True,
-                                           help='Prorate billing for partial periods'
+                                           help='Prorate billing for partial periods',
     
     # Service guarantees and SLA
     same_day_service = fields.Boolean(string='Same Day Service Available', default=False,
@@ -179,7 +179,7 @@ class ProductTemplate(models.Model):
     standard_response_time = fields.Float(string='Standard Response Time (hours', default=24.0,
                                         help='Standard response time for service requests',
     sla_terms = fields.Text(string='SLA Terms', 
-                          help='Service Level Agreement terms and conditions'
+                          help='Service Level Agreement terms and conditions',
     
     # Approval and analytics - Fixed relationship type
     requires_approval = fields.Boolean(string='Requires Approval', default=False,
@@ -192,12 +192,14 @@ class ProductTemplate(models.Model):
         ('premium', 'Premium'),
         ('enterprise', 'Enterprise'),
         ('custom', 'Custom')
-       help='Category classification for template products'
+       help='Category classification for template products',
 
     @api.depends('type'), string="Selection Field")
     def _compute_retention_note(self):
+    pass
         for rec in self:
             if rec.type == 'service' and rec.shred_type:
+    pass
                 rec.retention_note = f"Service: {rec.shred_type}. Retain logs for 7 years per NAID standards."
             else:
                 rec.retention_note = ""
@@ -212,17 +214,22 @@ class ProductTemplate(models.Model):
             utilization = 60.0  # Base utilization
             
             if product.type == 'service':
+    pass
                 utilization += 20.0
                 
                 # Shred type utilization
                 if product.shred_type == 'document':
+    pass
                     utilization += 15.0  # High demand
                 elif product.shred_type == 'hard_drive':
+    pass
                     utilization += 10.0  # Medium demand
                 elif product.shred_type == 'uniform':
+    pass
                     utilization += 5.0   # Lower demand
             
             if product.naid_compliant:
+    pass
                 utilization += 10.0
             
             product.service_utilization_rate = min(100, utilization
@@ -232,18 +239,23 @@ class ProductTemplate(models.Model):
             
             # Price point analysis
             if product.list_price > 100:
+    pass
                 revenue_score += 30.0  # Premium pricing
             elif product.list_price > 50:
+    pass
                 revenue_score += 20.0  # Standard pricing
             else:
                 revenue_score += 10.0  # Budget pricing
             
             # Margin analysis
             if product.list_price > 0 and product.standard_price > 0:
+    pass
                 margin = (product.list_price - product.standard_price / product.list_price
                 if margin > 0.5:
+    pass
                     revenue_score += 20.0  # High margin
                 elif margin > 0.3:
+    pass
                     revenue_score += 15.0  # Good margin
                 else:
                     revenue_score += 5.0   # Low margin
@@ -254,9 +266,11 @@ class ProductTemplate(models.Model):
             compliance = 70.0  # Base compliance
             
             if product.naid_compliant:
+    pass
                 compliance += 25.0
             
             if product.type == 'service' and product.shred_type:
+    pass
                 compliance += 5.0  # Service categorization helps compliance
             
             product.compliance_certification_level = min(100, compliance
@@ -265,10 +279,13 @@ class ProductTemplate(models.Model):
             demand_score = product.service_utilization_rate
             
             if demand_score > 85:
+    pass
                 product.market_demand_indicator = '🔥 High Demand'
             elif demand_score > 70:
+    pass
                 product.market_demand_indicator = '📈 Growing Demand'
             elif demand_score > 50:
+    pass
                 product.market_demand_indicator = '📊 Steady Demand'
             else:
                 product.market_demand_indicator = '📉 Low Demand'
@@ -277,9 +294,11 @@ class ProductTemplate(models.Model):
             quality = 75.0  # Base quality
             
             if product.naid_compliant:
+    pass
                 quality += 15.0
             
             if product.type == 'service':
+    pass
                 quality += 10.0
             
             product.service_quality_rating = min(100, quality
@@ -288,26 +307,34 @@ class ProductTemplate(models.Model):
             insights = []
             
             if product.revenue_performance_score > 85:
+    pass
                 insights.append("💰 Strong revenue performer"
             elif product.revenue_performance_score < 60:
+    pass
                 insights.append("📊 Revenue optimization needed")
             
             if product.service_utilization_rate > 80:
+    pass
                 insights.append("🚀 High demand service - consider capacity expansion")
             
             if not product.naid_compliant and product.type == 'service':
+    pass
                 insights.append("⚠️ NAID compliance required for service credibility")
             
             if product.compliance_certification_level > 90:
+    pass
                 insights.append("✅ Excellent compliance standards")
             
             if 'High Demand' in product.market_demand_indicator:
+    pass
                 insights.append("🎯 Market leader - maintain competitive advantage")
             
             if product.shred_type == 'hard_drive':
+    pass
                 insights.append("🔒 Specialized service - premium positioning opportunity")
             
             if not insights:
+    pass
                 insights.append("📈 Standard performance within acceptable ranges")
             
             product.product_insights = "\n".join(insights)
@@ -335,6 +362,7 @@ class ProductTemplate(models.Model):
 
     @api.depends('name', 'default_code')
     def _compute_display_name(self):
+    pass
         """Compute display name"""
         for product in self:
             product.display_name = product.name or 'Unnamed Product'
@@ -352,6 +380,7 @@ class ProductTemplate(models.Model):
         }
 
     def action_configure_pricing(self):
+    pass
         """Configure pricing for this product"""
         self.ensure_one()
         return {

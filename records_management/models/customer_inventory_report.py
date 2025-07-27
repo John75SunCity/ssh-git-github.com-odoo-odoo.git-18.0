@@ -73,10 +73,13 @@ class CustomerInventoryReport(models.Model):
         """Compute volume category based on total boxes"""
         for record in self:
             if record.total_boxes < 100:
+    pass
                 record.volume_category = 'small'
             elif record.total_boxes < 500:
+    pass
                 record.volume_category = 'medium'
             elif record.total_boxes < 1000:
+    pass
                 record.volume_category = 'large'
             else:
                 record.volume_category = 'enterprise'

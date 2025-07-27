@@ -29,11 +29,11 @@ class SurveyImprovementAction(models.Model):
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
-        ('urgent', 'Urgent')
+        ('urgent', 'Urgent'),
 ), string="Selection Field"
     due_date = fields.Date(string='Due Date')
     estimated_effort = fields.Float(string='Estimated Effort (hours)', 
-                                   help='Estimated time to complete this action'
+                                   help='Estimated time to complete this action',
     
     # Assignment and Status
     responsible_user_id = fields.Many2one('res.users', string='Responsible User',
@@ -54,17 +54,17 @@ class SurveyImprovementAction(models.Model):
     start_date = fields.Date(string='Start Date')
     completion_date = fields.Date(string='Completion Date')
     actual_effort = fields.Float(string='Actual Effort (hours)',
-                                help='Actual time spent on this action'
+                                help='Actual time spent on this action',
     
     # Impact Assessment
     expected_impact = fields.Selection([
         ('low', 'Low Impact',
         ('medium', 'Medium Impact'),
         ('high', 'High Impact'),
-        ('critical', 'Critical Impact')
+        ('critical', 'Critical Impact'),
 ), string="Selection Field"
     impact_description = fields.Text(string='Impact Description',
-                                   help='Description of expected impact on customer satisfaction'
+                                   help='Description of expected impact on customer satisfaction',
     
     # Results and Follow-up
     completion_notes = fields.Text(string='Completion Notes')
@@ -74,7 +74,7 @@ class SurveyImprovementAction(models.Model):
         ('3', 'Moderately Effective'),
         ('4', 'Very Effective'),
         ('5', 'Extremely Effective')
-       help='Post-completion assessment of action effectiveness'
+       help='Post-completion assessment of action effectiveness',
     
     # Related Records - FIXED: Changed from compute to proper Many2many relationship), string="Selection Field"
     task_ids = fields.Many2many('project.task', string='Related Tasks',
@@ -95,6 +95,7 @@ class SurveyImprovementAction(models.Model):
         """Check if action is overdue"""
         today = fields.Date.today()
         for record in self:
+    pass
             record.is_overdue = (
                 record.due_date and 
                 record.due_date < today and 
@@ -105,6 +106,7 @@ class SurveyImprovementAction(models.Model):
         """Calculate days until due date"""
         for record in self:
             if record.due_date:
+    pass
                 delta = record.due_date - today
                 record.days_to_due = delta.days
             else:
@@ -129,6 +131,7 @@ class SurveyImprovementAction(models.Model):
         
         # Update feedback record
         if self.feedback_id:
+    pass
             self.feedback_id.write({
                 'improvement_actions_created': True
             }
@@ -150,6 +153,7 @@ class SurveyImprovementAction(models.Model):
         new_entry = f"[{timestamp}] {user}: {action}"
         
         if self.audit_trail:
+    pass
             self.audit_trail = f"{self.audit_trail}\n{new_entry}"
         else:
             self.audit_trail = new_entry
@@ -166,6 +170,7 @@ class SurveyImprovementAction(models.Model):
         """Override write to track changes"""
         result = super().write(vals)
         if 'status' in vals:
+    pass
             for record in self:
                 record._update_audit_trail(f'Status changed to {vals["status"]}')
         return result

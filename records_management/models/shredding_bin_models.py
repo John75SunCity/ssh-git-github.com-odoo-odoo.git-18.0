@@ -18,7 +18,7 @@ class ShreddingBin(models.Model):
         ('32_gallon', '32 Gallon'),
         ('console', 'Console'),
         ('64_gallon', '64 Gallon'),
-        ('96_gallon', '96 Gallon')
+        ('96_gallon', '96 Gallon'),
 ), string="Selection Field"
     capacity_gallons = fields.Float(string='Capacity (Gallons)', compute='_compute_capacity', store=True)
     
@@ -54,7 +54,7 @@ class ShreddingBin(models.Model):
         ('full', 'Full - Ready for Service'),
         ('in_transit', 'In Transit'),
         ('being_serviced', 'Being Serviced'),
-        ('maintenance', 'Maintenance Required')
+        ('maintenance', 'Maintenance Required'),
 ), string="Selection Field"
     last_service_date = fields.Date(string='Last Service Date', tracking=True)
     next_service_date = fields.Date(string='Next Scheduled Service', tracking=True)
@@ -85,6 +85,7 @@ class ShreddingBin(models.Model):
         """Compute current rate based on customer-specific or base rates"""
         for bin_record in self:
             if bin_record.customer_id and bin_record.bin_size and bin_record.current_service_type:
+    pass
                 # Look for customer-specific rate first
                 customer_rate = self.env['shredding.customer.rate'].search\([
                     ('customer_id', '=', bin_record.customer_id.id,
@@ -94,6 +95,7 @@ class ShreddingBin(models.Model):
                 ], limit=1
                 
                 if customer_rate:
+    pass
                     bin_record.current_rate = customer_rate.rate
                 else:
                     # Fall back to base rate
@@ -104,6 +106,7 @@ class ShreddingBin(models.Model):
                     ], limit=1
                     bin_record.current_rate = base_rate.rate if base_rate else 0.0
             else:
+    pass
                 bin_record.current_rate = 0.0
     
     def action_create_service_order(self):
@@ -137,11 +140,11 @@ class ShreddingBaseRate(models.Model):
         ('32_gallon', '32 Gallon'),
         ('console', 'Console'),
         ('64_gallon', '64 Gallon'),
-        ('96_gallon', '96 Gallon')
+        ('96_gallon', '96 Gallon'),
 ), string="Selection Field"
     service_type = fields.Selection([
         ('standard', 'Standard (Off-site)'),
-        ('mobile', 'Mobile (On-site)')
+        ('mobile', 'Mobile (On-site)'),
 ), string="Selection Field"
     rate = fields.Monetary(string='Base Rate', required=True)
     
@@ -172,11 +175,11 @@ class ShreddingCustomerRate(models.Model):
         ('32_gallon', '32 Gallon'),
         ('console', 'Console'),
         ('64_gallon', '64 Gallon'),
-        ('96_gallon', '96 Gallon')
+        ('96_gallon', '96 Gallon'),
 ), string="Selection Field"
     service_type = fields.Selection([
         ('standard', 'Standard (Off-site)'),
-        ('mobile', 'Mobile (On-site)')
+        ('mobile', 'Mobile (On-site)'),
 ), string="Selection Field"
     rate = fields.Monetary(string='Customer Rate', required=True)
     

@@ -14,15 +14,15 @@ class RecordsBillingConfig(models.Model):
     
     # Billing cycles
     billing_cycle = fields.Selection([
-        ('monthly', 'Monthly',
+        ('monthly', 'Monthly',)
         ('quarterly', 'Quarterly'),
         ('yearly', 'Yearly')
     
     # Billing day), string="Selection Field"
     billing_day = fields.Integer(string='Billing Day of Month', default=1, 
-                                help='Day of the month when billing is generated'
+                                help='Day of the month when billing is generated',
     
-    # Auto-billing settings
+    # Auto-billing settings)
     auto_generate_invoices = fields.Boolean(string='Auto Generate Invoices', default=True, tracking=True)
     auto_send_invoices = fields.Boolean(string='Auto Send Invoices', default=False, tracking=True)
     
@@ -46,14 +46,14 @@ class RecordsBillingConfig(models.Model):
     billing_accuracy_rate = fields.Float(string='Billing Accuracy Rate (%)', default=100.0)
     billing_cycle_start = fields.Date(string='Billing Cycle Start Date')
     billing_failure_alerts = fields.Boolean(string='Billing Failure Alerts', default=True)
-    billing_frequency = fields.Selection([
+    billing_frequency = fields.Selection([)
         ('daily', 'Daily'),
         ('weekly', 'Weekly'),
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
         ('annually', 'Annually'), string="Selection Field")
     billing_history_count = fields.Integer(string='Billing History Count', compute='_compute_billing_history_count')
-    billing_model = fields.Selection([
+    billing_model = fields.Selection([)
         ('subscription', 'Subscription'),
         ('usage', 'Usage Based'),
         ('hybrid', 'Hybrid'),
@@ -73,7 +73,7 @@ class RecordsBillingConfig(models.Model):
     
     # Discount and Pricing Rules
     discount_rule_ids = fields.One2many('records.billing.discount.rule', 'config_id', string='Discount Rules')
-    discount_type = fields.Selection([
+    discount_type = fields.Selection([)
         ('percentage', 'Percentage'),
         ('fixed', 'Fixed Amount'),
         ('tiered', 'Tiered'),
@@ -92,7 +92,7 @@ class RecordsBillingConfig(models.Model):
     invoice_email_template = fields.Many2one('mail.template', string='Invoice Email Template')
     invoice_generation_log_ids = fields.One2many('records.billing.generation.log', 'config_id', string='Generation Logs')
     invoice_number = fields.Char(string='Last Invoice Number')
-    invoice_status = fields.Selection([
+    invoice_status = fields.Selection([)
         ('draft', 'Draft'),
         ('open', 'Open'),
         ('paid', 'Paid'),
@@ -109,7 +109,7 @@ class RecordsBillingConfig(models.Model):
     next_billing_date = fields.Date(string='Next Billing Date', compute='_compute_next_billing_date')
     payment_delay_average = fields.Float(string='Average Payment Delay (Days)')
     payment_gateway_integration = fields.Boolean(string='Payment Gateway Integration', default=False)
-    payment_method = fields.Selection([
+    payment_method = fields.Selection([)
         ('cash', 'Cash'),
         ('check', 'Check'),
         ('credit_card', 'Credit Card'),
@@ -120,7 +120,7 @@ class RecordsBillingConfig(models.Model):
     
     # Period and Time Management
     period = fields.Selection([
-        ('daily', 'Daily',
+        ('daily', 'Daily',)
         ('weekly', 'Weekly'),
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
@@ -133,11 +133,11 @@ class RecordsBillingConfig(models.Model):
     
     # Rate and Revenue Management
     rate_type = fields.Selection([
-        ('fixed', 'Fixed',
+        ('fixed', 'Fixed',)
         ('variable', 'Variable'),
         ('tiered', 'Tiered'),
         ('custom', 'Custom'), string="Selection Field")
-    rate_unit = fields.Selection([
+    rate_unit = fields.Selection([)
         ('box', 'Per Box'),
         ('cubic_foot', 'Per Cubic Foot'),
         ('hour', 'Per Hour'),
@@ -150,19 +150,19 @@ class RecordsBillingConfig(models.Model):
     
     # Email and Communication Settings
     send_invoice_email = fields.Boolean(string='Send Invoice Email', default=True)
-    service_category = fields.Selection([
+    service_category = fields.Selection([)
         ('storage', 'Storage'),
         ('destruction', 'Destruction'),
         ('retrieval', 'Retrieval'),
         ('scanning', 'Scanning'),
         ('consultation', 'Consultation'), string="Selection Field")
-    status = fields.Selection([
+    status = fields.Selection([)
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('suspended', 'Suspended')
     
     # Tax and Financial Calculation), string="Selection Field"
-    tax_calculation_method = fields.Selection([
+    tax_calculation_method = fields.Selection([)
         ('inclusive', 'Tax Inclusive'),
         ('exclusive', 'Tax Exclusive'),
         ('exempt', 'Tax Exempt'), string="Selection Field")
@@ -197,6 +197,7 @@ class RecordsBillingConfig(models.Model):
     
     @api.depends('monthly_revenue'
     def _compute_average_monthly_billing(self):
+    pass
         for config in self:
             # For now, use monthly revenue as baseline
             config.average_monthly_billing = config.monthly_revenue or 0.0
@@ -218,11 +219,15 @@ class RecordsBillingConfig(models.Model):
     def _compute_next_billing_date(self):
         for config in self:
             if config.period_start:
+    pass
                 if config.period == 'monthly':
+    pass
                     config.next_billing_date = config.period_start + relativedelta(months=1)
                 elif config.period == 'quarterly':
+    pass
                     config.next_billing_date = config.period_start + relativedelta(months=3)
                 elif config.period == 'annually':
+    pass
                     config.next_billing_date = config.period_start + relativedelta(years=1)
                 else:
                     config.next_billing_date = config.period_start
@@ -254,7 +259,7 @@ class RecordsBillingRate(models.Model):
     _description = 'Records Billing Rate'
     
     config_id = fields.Many2one('records.billing.config', string='Configuration', required=True, ondelete='cascade')
-    service_type = fields.Selection([
+    service_type = fields.Selection([)
         ('storage', 'Storage'),
         ('destruction', 'Destruction'),
         ('retrieval', 'Retrieval'),
@@ -266,7 +271,7 @@ class RecordsBillingDiscountRule(models.Model):
     _name = 'records.billing.discount.rule'
     _description = 'Records Billing Discount Rule'
     
-    discount_type = fields.Selection([
+    discount_type = fields.Selection([)
         ('percentage', 'Percentage'),
         ('fixed', 'Fixed Amount'), string="Selection Field")
     min_threshold = fields.Float(string='Minimum Threshold')
@@ -275,7 +280,7 @@ class RecordsBillingGenerationLog(models.Model):
     _name = 'records.billing.generation.log'
     _description = 'Records Billing Generation Log'
     
-    status = fields.Selection([
+    status = fields.Selection([)
         ('success', 'Success'),
         ('failed', 'Failed'),
         ('partial', 'Partial'), string="Selection Field")
@@ -316,7 +321,7 @@ class RecordsBillingPeriod(models.Model):
     
     # Status
     state = fields.Selection([
-        ('draft', 'Draft',
+        ('draft', 'Draft',)
         ('active', 'Active'),
         ('closed', 'Closed'),
         ('cancelled', 'Cancelled')
@@ -344,7 +349,7 @@ class RecordsBillingLine(models.Model):
     
     # Line type for advanced billing
     line_type = fields.Selection([
-        ('storage', 'Storage',
+        ('storage', 'Storage',)
         ('service', 'Service')
     
     # Service details
@@ -352,7 +357,7 @@ class RecordsBillingLine(models.Model):
         ('destruction', 'Destruction'),
         ('scanning', 'Scanning'),
         ('delivery', 'Delivery'),
-        ('other', 'Other')
+        ('other', 'Other'),
 ), string="Selection Field"
     description = fields.Text(string='Description', required=True)
     
@@ -369,7 +374,7 @@ class RecordsBillingLine(models.Model):
     service_date = fields.Date(string='Service Date', tracking=True,
                               help="Date when service was completed (for arrears billing"
     
-    # References to source records
+    # References to source records)
     box_id = fields.Many2one('records.box', string='Related Box')
     service_request_id = fields.Many2one('records.service.request', string='Related Service Request')
     retrieval_work_order_id = fields.Many2one('document.retrieval.work.order', string='Retrieval Work Order')
@@ -377,7 +382,7 @@ class RecordsBillingLine(models.Model):
     
     # Billing direction indicator
     billing_direction = fields.Selection([
-        ('advance', 'In Advance',
+        ('advance', 'In Advance',)
         ('arrears', 'In Arrears')
     
     @api.depends('quantity', 'unit_price'), string="Selection Field")
@@ -389,6 +394,7 @@ class RecordsBillingLine(models.Model):
     def _compute_billing_direction(self):
         for line in self:
             if line.line_type == 'storage' or line.service_type == 'storage':
+    pass
                 # Storage is typically billed in advance
                 line.billing_direction = 'advance'
             else:
@@ -409,7 +415,7 @@ class RecordsServicePricing(models.Model):
     
     # Pricing model
     pricing_model = fields.Selection([
-        ('fixed', 'Fixed Price',
+        ('fixed', 'Fixed Price',)
         ('tiered', 'Tiered Pricing'),
         ('volume', 'Volume Based')
     
@@ -448,7 +454,7 @@ class RecordsProduct(models.Model):
     
     # Product type
     product_type = fields.Selection([
-        ('box', 'Storage Box',
+        ('box', 'Storage Box',)
         ('service', 'Service'),
         ('material', 'Material'),
         ('equipment', 'Equipment')
@@ -463,6 +469,7 @@ class RecordsProduct(models.Model):
     product_id = fields.Many2one('product.product', string='Related Odoo Product')
 
 class RecordsBillingAutomation(models.Model):
+    pass
     """Automation rules for billing"""
     _name = 'records.billing.automation'
     _description = 'Records Billing Automation'
@@ -471,7 +478,7 @@ class RecordsBillingAutomation(models.Model):
     
     # Trigger conditions
     trigger_type = fields.Selection([
-        ('monthly', 'Monthly',
+        ('monthly', 'Monthly',)
         ('box_added', 'Box Added'),
         ('service_completed', 'Service Completed'),
         ('manual', 'Manual Only')

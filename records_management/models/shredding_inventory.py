@@ -62,8 +62,10 @@ class ShreddingInventoryItem(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.box_id:
+    pass
                 record.display_name = f"Box: {record.box_id.name}"
             elif record.document_id:
+    pass
                 record.display_name = f"Document: {record.document_id.name}"
             else:
                 record.display_name = f"Item #{record.id}"
@@ -78,6 +80,7 @@ class ShreddingInventoryItem(models.Model):
             
             # Distribute work order costs across all inventory items
             if item_count > 0:
+    pass
                 record.retrieval_cost = (work_order.retrieval_cost or 0.0 / item_count
                 record.permanent_removal_cost = (work_order.permanent_removal_cost or 0.0) / item_count
                 record.shredding_cost = (work_order.shredding_cost or 0.0) / item_count
@@ -92,14 +95,17 @@ class ShreddingInventoryItem(models.Model):
     def _check_item_reference(self):
         for record in self:
             if not record.box_id and not record.document_id:
+    pass
                 raise ValidationError(_('Must specify either a Records Box or Document for destruction.'))
             if record.box_id and record.document_id:
+    pass
                 raise ValidationError(_('Cannot specify both Records Box and Document. Choose one.'))
     
     def action_approve_item(self):
         """Approve this item for destruction"""
         self.ensure_one()
         if self.status != 'draft':
+    pass
             raise UserError(_('Can only approve draft items.'))
         
         self.write({
@@ -114,6 +120,7 @@ class ShreddingInventoryItem(models.Model):
         """Mark item as retrieved from warehouse"""
         self.ensure_one()
         if self.status != 'pending_pickup':
+    pass
             raise UserError(_('Item must be pending pickup to mark as retrieved.'))
         
         self.write({
@@ -124,8 +131,10 @@ class ShreddingInventoryItem(models.Model):
         
         # Update original item location to show it's been retrieved
         if self.box_id:
+    pass
             self.box_id.write({'state': 'retrieved_for_destruction'}
         elif self.document_id:
+    pass
             self.document_id.write({'state': 'retrieved_for_destruction'})
         
         return True
@@ -134,6 +143,7 @@ class ShreddingInventoryItem(models.Model):
         """Mark item as destroyed"""
         self.ensure_one()
         if self.status != 'retrieved':
+    pass
             raise UserError(_('Item must be retrieved before it can be destroyed.'))
         
         self.write({
@@ -144,11 +154,13 @@ class ShreddingInventoryItem(models.Model):
         
         # Update original item to destroyed state
         if self.box_id:
+    pass
             self.box_id.write({
                 'state': 'destroyed',
                 'destruction_date': fields.Date.today(
             }
         elif self.document_id:
+    pass
             self.document_id.write({
                 'state': 'destroyed',
                 'destruction_date': fields.Date.today()
@@ -190,9 +202,11 @@ class ShreddingPicklistItem(models.Model):
             record.display_name = f"{item_name} @ {location_name}"
     
     def action_mark_picked(self):
+    pass
         """Mark item as picked"""
         self.ensure_one()
         if self.status != 'pending_pickup':
+    pass
             raise UserError(_('Can only pick items that are pending pickup.'))
         
         self.write({

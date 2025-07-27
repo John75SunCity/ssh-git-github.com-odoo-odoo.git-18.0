@@ -23,7 +23,7 @@ class ShreddingService(models.Model):
     scheduled_date = fields.Date(string='Scheduled Date')
     service_type = fields.Selection([
         ('bin', 'Bin Shredding'), ('box', 'Box Shredding'),
-        ('hard_drive', 'Hard Drive Destruction', ('uniform', 'Uniform Shredding')), string="Selection Field")
+        ('hard_drive', 'Hard Drive Destruction', ('uniform', 'Uniform Shredding'), string="Selection Field")
     bin_ids = fields.Many2many(
         'stock.lot',
         relation='shredding_service_bin_rel',  # Custom relation to avoid conflict with shredded_box_ids
@@ -217,6 +217,7 @@ class ShreddingService(models.Model):
         """Compute destruction efficiency and metrics"""
         for record in self:
             if record.pre_destruction_weight > 0:
+    pass
                 weight_reduction = record.pre_destruction_weight - record.post_destruction_weight
                 record.destruction_efficiency = (weight_reduction / record.pre_destruction_weight) * 100
             else:

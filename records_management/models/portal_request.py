@@ -19,7 +19,7 @@ class PortalRequest(models.Model):
         ('service', 'Service Request'),
         ('inventory_checkout', 'Inventory Checkout'),
         ('billing_update', 'Billing Update'),
-        ('quote_generate', 'Quote Generation',), string="Selection Field")
+        ('quote_generate', 'Quote Generation'), string="Selection Field")
     description = fields.Html(string='Description')
     suggested_date = fields.Date(string='Suggested Date', help='Customer suggested date for service/request')
     state = fields.Selection([
@@ -201,8 +201,10 @@ class PortalRequest(models.Model):
     def _compute_sla_status(self):
         for record in self:
             if record.sla_deadline:
+    pass
                 now = fields.Datetime.now()
                 if now > record.sla_deadline:
+    pass
                     record.sla_status = 'breached'
                 elif (record.sla_deadline - now).total_seconds() < 7200:  # 2 hours
                     record.sla_status = 'at_risk'
@@ -215,6 +217,7 @@ class PortalRequest(models.Model):
     def _compute_sla_breach_risk(self):
         for record in self:
             if record.sla_deadline:
+    pass
                 record.sla_breach_risk = (record.sla_deadline - now).total_seconds() < 3600  # 1 hour
             else:
                 record.sla_breach_risk = False
@@ -223,6 +226,7 @@ class PortalRequest(models.Model):
     def _compute_time_elapsed(self):
         for record in self:
             if record.submission_date:
+    pass
                 elapsed = (now - record.submission_date).total_seconds() / 3600
                 record.time_elapsed = elapsed
             else:
@@ -232,6 +236,7 @@ class PortalRequest(models.Model):
     def _compute_time_remaining(self):
         for record in self:
             if record.target_completion_date:
+    pass
                 remaining = (record.target_completion_date - now).total_seconds() / 3600
                 record.time_remaining = max(0.0, remaining)
             else:
@@ -251,12 +256,16 @@ class PortalRequest(models.Model):
     def _compute_completion_percentage(self):
         for record in self:
             if record.state == 'draft':
+    pass
                 record.completion_percentage = 0.0
             elif record.state == 'submitted':
+    pass
                 record.completion_percentage = 25.0
             elif record.state == 'approved':
+    pass
                 record.completion_percentage = 75.0
             elif record.state == 'rejected':
+    pass
                 record.completion_percentage = 100.0
             else:
                 record.completion_percentage = 50.0
@@ -265,6 +274,7 @@ class PortalRequest(models.Model):
     def _compute_resolution_efficiency(self):
         for record in self:
             if record.estimated_hours and record.processing_time:
+    pass
                 record.resolution_efficiency = (record.estimated_hours / record.processing_time) * 100
             else:
                 record.resolution_efficiency = 0.0
@@ -273,6 +283,7 @@ class PortalRequest(models.Model):
     def _compute_variance(self):
         for record in self:
             if record.estimated_cost and record.actual_cost:
+    pass
                 record.variance = record.actual_cost - record.estimated_cost
             else:
                 record.variance = 0.0
@@ -281,6 +292,7 @@ class PortalRequest(models.Model):
     def _compute_related_request_count(self):
         for record in self:
             if record.partner_id:
+    pass
                 count = self.search_count([('partner_id', '=', record.partner_id.id), ('id', '!=', record.id)])
                 record.related_request_count = count
             else:

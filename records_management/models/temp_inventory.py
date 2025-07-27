@@ -13,7 +13,7 @@ class TempInventory(models.Model):
     inventory_type = fields.Selection([
         ('box', 'Box'),
         ('document', 'Document'),
-        ('file', 'File',), string="Selection Field")
+        ('file', 'File'), string="Selection Field")
     temp_barcode = fields.Char(string='Temporary Barcode', readonly=True)
     description = fields.Text()
     state = fields.Selection([
@@ -30,6 +30,7 @@ class TempInventory(models.Model):
         res = super().create(vals_list)
         for record in res:
             if record.name == 'New':
+    pass
                 record.name = self.env['ir.sequence'].next_by_code('temp.inventory') or 'New'
             record.temp_barcode = f'TEMP-{record.inventory_type.upper()}-{record.name}'
             record._append_audit_log(_('Created by customer on %s.', fields.Datetime.now()))
@@ -52,8 +53,10 @@ class TempInventory(models.Model):
     def action_verify_physical(self):
         # Internal action: Assign physical barcode, link to real inventory
         if not self.physical_barcode:
+    pass
             raise ValidationError(_("Enter physical barcode.")
         if self.inventory_type == 'box':
+    pass
             box = self.env['records.box'].create({
                 'name': self.temp_barcode,  # Temp as initial ref
                 'barcode': self.physical_barcode,
@@ -61,6 +64,7 @@ class TempInventory(models.Model):
                 'description': self.description,
             }
         elif self.inventory_type == 'document':
+    pass
             document = self.env['records.document'].create({
                 'name': self.description or self.temp_barcode,
                 'barcode': self.physical_barcode,
@@ -68,6 +72,7 @@ class TempInventory(models.Model):
                 'description': self.description,
             }
         elif self.inventory_type == 'file':
+    pass
             # Create file record or link to document
             file_record = self.env['records.document'].create({
                 'name': self.description or self.temp_barcode,

@@ -9,7 +9,7 @@ class SurveyUserInput(models.Model):
         string='Sentiment Score', 
         compute='_compute_sentiment_score', 
         store=True,
-        help='Sentiment score from 0.0 (negative to 1.0 (positive)'
+        help='Sentiment score from 0.0 (negative to 1.0 (positive)',
     
     # Priority and Categorization
     priority_level = fields.Selection([
@@ -37,7 +37,7 @@ class SurveyUserInput(models.Model):
     completion_time = fields.Float(string='Completion Time (minutes)', compute='_compute_completion_time', store=True)
     response_summary = fields.Text(string='Response Summary', compute='_compute_response_summary', store=True)
     total_score = fields.Float(string='Computed Score', compute='_compute_total_score', store=True,
-                              help='Calculated total score based on survey responses'
+                              help='Calculated total score based on survey responses',
     
     # Improvement Tracking
     improvement_actions_created = fields.Boolean(string='Improvement Actions Created', default=False)
@@ -49,7 +49,7 @@ class SurveyUserInput(models.Model):
     improvement_suggestions = fields.Text(string='AI Improvement Suggestions',
                                          help='AI-generated suggestions for improvement',
     predicted_churn_risk = fields.Float(string='Predicted Churn Risk', 
-                                       help='AI prediction of customer churn risk (0-1 scale'
+                                       help='AI prediction of customer churn risk (0-1 scale',
     
     # Additional Analytics Fields for View
     requires_manager_attention = fields.Boolean(string='Requires Manager Attention', default=False)
@@ -94,7 +94,7 @@ class SurveyUserInput(models.Model):
         ('good', 'Good (70-89%)'),
         ('average', 'Average (50-69%)'),
         ('poor', 'Poor (30-49%)'),
-        ('critical', 'Critical (0-29%)')
+        ('critical', 'Critical (0-29%)'),
 ), string="Selection Field"
     satisfaction_level = fields.Selection([
         ('very_high', 'Very High'),
@@ -125,6 +125,7 @@ class SurveyUserInput(models.Model):
         """Compute sentiment score based on survey responses"""
         for record in self:
             if not record.user_input_line_ids:
+    pass
                 record.sentiment_score = 0.5
                 continue
                 
@@ -139,24 +140,30 @@ class SurveyUserInput(models.Model):
                 # Check for text responses using correct field names
                 text_value = None
                 if hasattr(line, 'value_text_box' and line.value_text_box:
+    pass
                     text_value = line.value_text_box.lower()
                 elif hasattr(line, 'value_char_box') and line.value_char_box:
+    pass
                     text_value = line.value_char_box.lower()
                 
                 if text_value:
+    pass
                     score = 0.5  # neutral
                     
                     positive_count = sum(1 for word in positive_keywords if word in text_value
                     negative_count = sum(1 for word in negative_keywords if word in text_value)
                     
                     if positive_count > negative_count:
+    pass
                         score = min(1.0, 0.5 + (positive_count * 0.1))
                     elif negative_count > positive_count:
+    pass
                         score = max(0.0, 0.5 - (negative_count * 0.1))
                     
                     total_score += score
                     response_count += 1
                 elif hasattr(line, 'value_numerical') and line.value_numerical:
+    pass
                     # Normalize numerical responses (assuming 1-5 scale
                     normalized = (line.value_numerical - 1) / 4.0
                     total_score += normalized
@@ -166,6 +173,7 @@ class SurveyUserInput(models.Model):
 
     @api.depends('user_input_line_ids')
     def _compute_response_count(self):
+    pass
         """Count the number of responses"""
         for record in self:
             record.response_count = len(record.user_input_line_ids)
@@ -175,6 +183,7 @@ class SurveyUserInput(models.Model):
         """Calculate completion time in minutes"""
         for record in self:
             if record.state == 'done' and record.create_date:
+    pass
                 # If we had a finish date, we'd use that. For now, estimate based on response count
                 record.completion_time = record.response_count * 0.5  # Estimate 30 seconds per response
             else:
@@ -189,26 +198,33 @@ class SurveyUserInput(models.Model):
                 # Check for different text field types in survey.user_input.line
                 text_value = None
                 if hasattr(line, 'value_text_box' and line.value_text_box:
+    pass
                     text_value = line.value_text_box.strip()
                 elif hasattr(line, 'value_char_box') and line.value_char_box:
+    pass
                     text_value = line.value_char_box.strip()
                 elif hasattr(line, 'suggested_answer_id') and line.suggested_answer_id:
+    pass
                     text_value = line.suggested_answer_id.value
                 
                 if text_value and len(text_value) > 0:
+    pass
                     text_responses.append(text_value)
             
             if text_responses:
+    pass
                 # Create a summary of first 100 characters of each response
                 summary_parts = []
                 for response in text_responses[:3]:  # First 3 responses
                     if len(response > 100:
+    pass
                         summary_parts.append(response[:97] + "...")
                     else:
                         summary_parts.append(response)
                 
                 record.response_summary = " | ".join(summary_parts)
                 if len(text_responses) > 3:
+    pass
                     record.response_summary += f" (and {len(text_responses) - 3} more responses)"
             else:
                 record.response_summary = "No text responses"
@@ -222,14 +238,17 @@ class SurveyUserInput(models.Model):
             
             for line in record.user_input_line_ids:
                 if hasattr(line, 'value_numerical') and line.value_numerical:
+    pass
                     total += line.value_numerical
                     count += 1
                 elif hasattr(line, 'scoring_value') and line.scoring_value:
+    pass
                     total += line.scoring_value
                     count += 1
             
             # If no numerical values, use scoring_percentage as base
             if count == 0 and record.scoring_percentage:
+    pass
                 record.total_score = record.scoring_percentage
             else:
                 record.total_score = total
@@ -239,6 +258,7 @@ class SurveyUserInput(models.Model):
         """Compute customer feedback history"""
         for record in self:
             if record.partner_id:
+    pass
                 # Count previous feedback from same customer
                 previous_feedback = self.search\([
                     ('partner_id', '=', record.partner_id.id,
@@ -249,6 +269,7 @@ class SurveyUserInput(models.Model):
                 
                 # Calculate average satisfaction
                 if previous_feedback:
+    pass
                     total_satisfaction = sum(feedback.scoring_percentage for feedback in previous_feedback
                     record.customer_avg_satisfaction = total_satisfaction / len(previous_feedback)
                 else:
@@ -262,12 +283,15 @@ class SurveyUserInput(models.Model):
         """Compute satisfaction trend based on historical data"""
         for record in self:
             if record.customer_avg_satisfaction > 0:
+    pass
                 current_score = record.scoring_percentage or 0
                 avg_score = record.customer_avg_satisfaction
                 
                 if current_score > avg_score + 10:
+    pass
                     record.satisfaction_trend = 'improving'
                 elif current_score < avg_score - 10:
+    pass
                     record.satisfaction_trend = 'declining'
                 else:
                     record.satisfaction_trend = 'stable'
@@ -280,12 +304,16 @@ class SurveyUserInput(models.Model):
         for record in self:
             score = record.scoring_percentage or 0
             if score >= 90:
+    pass
                 record.satisfaction_level_group = 'excellent'
             elif score >= 70:
+    pass
                 record.satisfaction_level_group = 'good'
             elif score >= 50:
+    pass
                 record.satisfaction_level_group = 'average'
             elif score >= 30:
+    pass
                 record.satisfaction_level_group = 'poor'
             else:
                 record.satisfaction_level_group = 'critical'
@@ -296,12 +324,16 @@ class SurveyUserInput(models.Model):
         for record in self:
             score = record.scoring_percentage or 0
             if score >= 85:
+    pass
                 record.satisfaction_level = 'very_high'
             elif score >= 70:
+    pass
                 record.satisfaction_level = 'high'
             elif score >= 50:
+    pass
                 record.satisfaction_level = 'medium'
             elif score >= 30:
+    pass
                 record.satisfaction_level = 'low'
             else:
                 record.satisfaction_level = 'very_low'
@@ -391,6 +423,7 @@ class SurveyUserInput(models.Model):
         }
 
     def action_create_strategic_improvement_plan(self:
+    pass
         """Create comprehensive strategic improvement plan"""
         self.write({
             'improvement_actions_created': True,

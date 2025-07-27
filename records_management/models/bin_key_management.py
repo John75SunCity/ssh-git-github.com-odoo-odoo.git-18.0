@@ -42,7 +42,7 @@ class BinKeyManagement(models.Model):
         ('returned', 'Returned'),
         ('lost', 'Lost/Missing'),
         ('replaced', 'Replaced'),
-        ('deactivated', 'Deactivated')
+        ('deactivated', 'Deactivated'),
     ], string='Key Status', default='issued', required=True, tracking=True)
     
     # Issue information
@@ -152,6 +152,7 @@ class BinKeyManagement(models.Model):
         """Mark key as returned"""
         self.ensure_one()
         if self.status != 'issued':
+    pass
             raise UserError(_('Can only return keys that are currently issued.'))
         
         self.write({
@@ -173,6 +174,7 @@ class BinKeyManagement(models.Model):
         """Mark key as lost/missing"""
         self.ensure_one()
         if self.status not in ['issued']:
+    pass
             raise UserError(_('Can only mark issued keys as lost.'))
         
         self.write({
@@ -191,6 +193,7 @@ class BinKeyManagement(models.Model):
         """Create a replacement key"""
         self.ensure_one()
         if self.status not in ['lost', 'issued']:
+    pass
             raise UserError(_('Can only replace lost or issued keys.'))
         
         # Create new key
@@ -304,7 +307,7 @@ class BinUnlockService(models.Model):
         ('retrieve_item', 'Need to Retrieve Item'),
         ('maintenance', 'Bin Maintenance'),
         ('emergency', 'Emergency Access'),
-        ('other', 'Other')
+        ('other', 'Other'),
     ], string='Unlock Reason', required=True)
     
     reason_description = fields.Text(
@@ -343,7 +346,7 @@ class BinUnlockService(models.Model):
         ('completed', 'Completed'),
         ('pending_billing', 'Pending Billing'),
         ('billed', 'Billed'),
-        ('no_charge', 'No Charge')
+        ('no_charge', 'No Charge'),
     ], string='Status', default='completed', tracking=True)
     
     # Resolution and follow-up
@@ -368,13 +371,16 @@ class BinUnlockService(models.Model):
     )
     
     def action_create_invoice(self):
+    pass
         """Create invoice for the unlock service"""
         self.ensure_one()
         
         if not self.billable:
+    pass
             raise UserError(_('This service is marked as non-billable.'))
         
         if self.invoice_id:
+    pass
             raise UserError(_('Invoice already exists for this service.'))
         
         # Create invoice
@@ -388,7 +394,7 @@ class BinUnlockService(models.Model):
                 'quantity': 1,
                 'price_unit': self.charge_amount,
                 'account_id': self.env['account.account'].search([
-                    ('user_type_id.name', '=', 'Income')
+                    ('user_type_id.name', '=', 'Income')])
                 ], limit=1).id
             })]
         }

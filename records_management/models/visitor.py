@@ -23,7 +23,7 @@ class RecordsVisitor(models.Model):
         ('consultation', 'Consultation'),
         ('delivery', 'Document Delivery'),
         ('audit', 'Audit/Inspection'),
-        ('other', 'Other')
+        ('other', 'Other'),
     ], string='Visit Purpose', default='shredding', required=True, tracking=True)
     # Records management specific fields
     pos_order_id = fields.Many2one('pos.order', string='Linked POS Transaction', readonly=True, 
@@ -41,24 +41,24 @@ class RecordsVisitor(models.Model):
         string='Visit Frequency Score',
         compute='_compute_visit_analytics',
         store=True,
-        help='Frequency pattern analysis for visitor'
+        help='Frequency pattern analysis for visitor',
     )
     customer_loyalty_indicator = fields.Selection([
         ('new', 'New Visitor'),
         ('returning', 'Returning'),
         ('regular', 'Regular'),
-        ('vip', 'VIP Customer')
+        ('vip', 'VIP Customer'),
     ], string='Customer Loyalty',
        compute='_compute_visit_analytics',
        store=True,
-       help='Customer loyalty classification based on visit patterns'
+       help='Customer loyalty classification based on visit patterns',
     )
     # Service Analytics
     service_preference_score = fields.Float(
         string='Service Preference Score',
         compute='_compute_service_analytics',
         store=True,
-        help='Score indicating service preferences and history'
+        help='Score indicating service preferences and history',
     )
 
     # Status and workflow
@@ -67,7 +67,7 @@ class RecordsVisitor(models.Model):
         ('checked_in', 'Checked In'),
         ('in_service', 'In Service'),
         ('completed', 'Completed'),
-        ('cancelled', 'Cancelled')
+        ('cancelled', 'Cancelled'),
     ], string='Visit Status', default='scheduled')
     # Notes and comments
     notes = fields.Text('Visit Notes')
@@ -82,6 +82,7 @@ class RecordsVisitor(models.Model):
         """Compute hashed email for secure storage (ISO compliance)"""
         for record in self:
             if record.email:
+    pass
                 # Use SHA-256 for hashing email addresses
                 hash_object = hashlib.sha256(record.email.encode())
                 record.hashed_email = hash_object.hexdigest()
@@ -95,16 +96,21 @@ class RecordsVisitor(models.Model):
             # Count previous visits by same email or phone
             domain = []
             if record.email:
+    pass
                 domain.append(('email', '=', record.email))
             if record.phone:
+    pass
                 if domain:
+    pass
                     domain = ['|'] + domain + [('phone', '=', record.phone)]
                 else:
                     domain = [('phone', '=', record.phone)]
             
             if domain:
+    pass
                 # Exclude current record if it's already saved
                 if record.id:
+    pass
                     domain.append(('id', '!=', record.id))
                 
                 total_visits = self.search_count(domain) + 1  # +1 for current visit
@@ -113,20 +119,26 @@ class RecordsVisitor(models.Model):
             
             # Calculate frequency score (0-100 scale)
             if total_visits >= 10:
+    pass
                 record.visit_frequency_score = 100
             elif total_visits >= 5:
+    pass
                 record.visit_frequency_score = 75
             elif total_visits >= 2:
+    pass
                 record.visit_frequency_score = 50
             else:
                 record.visit_frequency_score = 25
             
             # Determine loyalty indicator
             if total_visits >= 10:
+    pass
                 record.customer_loyalty_indicator = 'vip'
             elif total_visits >= 5:
+    pass
                 record.customer_loyalty_indicator = 'regular'
             elif total_visits >= 2:
+    pass
                 record.customer_loyalty_indicator = 'returning'
             else:
                 record.customer_loyalty_indicator = 'new'
@@ -139,10 +151,12 @@ class RecordsVisitor(models.Model):
             
             # Shredding service preference
             if record.is_shred_customer:
+    pass
                 preference_score += 30
             
             # POS transaction indicates completed service
             if record.pos_order_id:
+    pass
                 preference_score += 20
             
             record.service_preference_score = min(preference_score, 100)
@@ -153,10 +167,12 @@ class RecordsVisitor(models.Model):
         records = super(RecordsVisitor, self).create(vals_list)
         for record, vals in zip(records, vals_list):
             if vals.get('phone') or vals.get('email'):
+    pass
                 partner = self.env['res.partner'].search([
-                    '|', ('phone', '=', vals.get('phone')), ('email', '=', vals.get('email'))
+                    '|', ('phone', '=', vals.get('phone')), ('email', '=', vals.get('email'))])
                 ], limit=1)
                 if not partner:
+    pass
                     partner = self.env['res.partner'].create({
                         'name': vals.get('name'),
                         'phone': vals.get('phone'),
@@ -183,6 +199,7 @@ class RecordsVisitor(models.Model):
         }
     
     def action_start_service(self):
+    pass
         """Mark visitor as in service"""
         self.write({'visit_status': 'in_service'})
     

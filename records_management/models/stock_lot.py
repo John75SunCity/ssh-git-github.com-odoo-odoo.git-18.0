@@ -9,7 +9,7 @@ class StockLot(models.Model):
     customer_id = fields.Many2one(
         'res.partner',
         string='Customer',
-        help='Customer associated with this lot/serial number'
+        help='Customer associated with this lot/serial number',
     
     # Extensions for shredding integration (e.g., link to shredding service)
     shredding_service_id = fields.Many2one(
@@ -114,7 +114,7 @@ class StockLot(models.Model):
     stock_move_count = fields.Integer(string='Stock Move Count', compute='_compute_move_metrics')
     stock_move_ids = fields.Many2many('stock.move', compute='_compute_stock_move_ids', 
                                      string='Stock Moves', 
-                                     help='Stock moves that involve this lot'
+                                     help='Stock moves that involve this lot',
     # Note: Standard stock.move uses Many2many relationship with stock.lot through move.line_ids
     supplier_lot_id = fields.Many2one('stock.lot', string='Supplier Lot')
     
@@ -174,7 +174,7 @@ class StockLot(models.Model):
         string='Analytics Updated',
         compute='_compute_lot_analytics',
         store=True,
-        help='Last analytics computation time'
+        help='Last analytics computation time',
 
     @api.depends('customer_id', 'shredding_service_id', 'product_id', 'name')
     def _compute_lot_analytics(self):
@@ -187,12 +187,15 @@ class StockLot(models.Model):
             efficiency = 60.0  # Base efficiency
             
             if lot.customer_id:
+    pass
                 efficiency += 20.0  # Customer assigned
             
             if lot.shredding_service_id:
+    pass
                 efficiency += 15.0  # Service integration
             
             if lot.quality_verified:
+    pass
                 efficiency += 10.0  # Quality verified
             
             lot.lot_utilization_efficiency = min(100, efficiency
@@ -201,19 +204,24 @@ class StockLot(models.Model):
             integration = 50.0  # Base score
             
             if lot.shredding_service_id:
+    pass
                 integration += 30.0
                 
             if lot.customer_id:
+    pass
                 integration += 20.0
             
             lot.service_integration_score = min(100, integration
             
             # Lifecycle stage
             if lot.quality_state == 'pass':
+    pass
                 lot.lifecycle_stage_indicator = '✅ Quality Approved'
             elif lot.shredding_service_id:
+    pass
                 lot.lifecycle_stage_indicator = '🔄 In Service'
             elif lot.customer_id:
+    pass
                 lot.lifecycle_stage_indicator = '📦 Customer Assigned'
             else:
                 lot.lifecycle_stage_indicator = '📋 Initial Stage'
@@ -222,9 +230,11 @@ class StockLot(models.Model):
             rating = 75.0  # Base rating
             
             if lot.customer_id and lot.shredding_service_id:
+    pass
                 rating += 20.0  # Full service integration
             
             if lot.quality_verified:
+    pass
                 rating += 5.0
             
             lot.customer_service_rating = min(100, rating
@@ -233,21 +243,27 @@ class StockLot(models.Model):
             insights = []
             
             if lot.lot_utilization_efficiency > 85:
+    pass
                 insights.append("🚀 High efficiency lot - excellent utilization"
             
             if lot.service_integration_score > 80:
+    pass
                 insights.append("🔗 Well integrated with services")
             
             if not lot.customer_id:
+    pass
                 insights.append("👤 Customer assignment needed")
             
             if not lot.quality_verified:
+    pass
                 insights.append("🔍 Quality verification pending")
             
             if lot.shredding_service_id:
+    pass
                 insights.append("♻️ Active in shredding workflow")
             
             if not insights:
+    pass
                 insights.append("📊 Standard lot performance")
             
             lot.lot_insights = " | ".join(insights)
@@ -301,6 +317,7 @@ class StockLot(models.Model):
             ], order='date asc'
             
             if len(move_lines) > 1:
+    pass
                 # Calculate average time between movements
                 total_time = 0
                 count = 0
@@ -311,6 +328,7 @@ class StockLot(models.Model):
                 
                 lot.average_movement_time = total_time / count if count > 0 else 0.0
             else:
+    pass
                 lot.average_movement_time = 0.0
 
     @api.depends('quant_ids', 'quant_ids.location_id'
@@ -319,6 +337,7 @@ class StockLot(models.Model):
         for lot in self:
             quants_with_qty = lot.quant_ids.filtered(lambda q: q.quantity > 0)
             if quants_with_qty:
+    pass
                 lot.current_location = quants_with_qty[0].location_id
             else:
                 lot.current_location = False
@@ -328,6 +347,7 @@ class StockLot(models.Model):
         """Compute inventory-related metrics"""
         for lot in self:
             if lot.create_date:
+    pass
                 lot.days_in_inventory = (fields.Date.today() - lot.create_date.date()).days
             else:
                 lot.days_in_inventory = 0
@@ -426,6 +446,7 @@ class StockLot(models.Model):
         """View associated shredding service"""
         self.ensure_one()
         if self.shredding_service_id:
+    pass
             return {
                 'name': _('Shredding Service'),
                 'type': 'ir.actions.act_window',

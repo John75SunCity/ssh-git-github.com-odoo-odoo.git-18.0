@@ -39,7 +39,7 @@ class RecordsDocument(models.Model):
         help='Date when the document was placed in storage',
     last_access_date = fields.Date(
         'Last Access Date',
-        help='Date when the document was last accessed'
+        help='Date when the document was last accessed',
 
     # Document classification fields
     document_category = fields.Selection([
@@ -50,7 +50,7 @@ class RecordsDocument(models.Model):
         ('compliance', 'Compliance Documents'),
         ('contracts', 'Contracts & Agreements'),
         ('correspondence', 'Correspondence'),
-        ('other', 'Other')
+        ('other', 'Other'),
 ), string="Selection Field"
     media_type = fields.Selection([
         ('paper', 'Paper'),
@@ -59,7 +59,7 @@ class RecordsDocument(models.Model):
         ('microfiche', 'Microfiche'),
         ('magnetic_tape', 'Magnetic Tape'),
         ('optical_disc', 'Optical Disc'),
-        ('other', 'Other')
+        ('other', 'Other'),
 ), string="Selection Field"
     original_format = fields.Selection([
         ('letter', 'Letter Size (8.5x11)'),
@@ -70,12 +70,12 @@ class RecordsDocument(models.Model):
         ('custom', 'Custom Size'),
         ('digital_file', 'Digital File'),
         ('bound_volume', 'Bound Volume'),
-        ('other', 'Other')
+        ('other', 'Other'),
 ), string="Selection Field"
     digitized = fields.Boolean(
         'Digitized',
         default=False,
-        help='Whether this document has been digitized'
+        help='Whether this document has been digitized',
 
     # Retention details
     retention_policy_id = fields.Many2one(
@@ -96,7 +96,7 @@ class RecordsDocument(models.Model):
     days_until_destruction = fields.Integer(
         'Days Until Destruction', 
         compute='_compute_days_until_destruction',
-        help='Number of days until the document is eligible for destruction'
+        help='Number of days until the document is eligible for destruction',
 
     # Relations
     partner_id = fields.Many2one('res.partner', string='Related Partner')
@@ -139,7 +139,7 @@ class RecordsDocument(models.Model):
     signature_verified = fields.Boolean(
         string='Signature Verified',
         default=False,
-        help='Whether digital signatures have been verified'
+        help='Whether digital signatures have been verified',
     
     # Audit and custody tracking relationships
     audit_log_ids = fields.One2many(
@@ -151,7 +151,7 @@ class RecordsDocument(models.Model):
         'records.chain.of.custody',
         'document_id',
         string='Chain of Custody Entries',
-        help='Chain of custody entries for this document'
+        help='Chain of custody entries for this document',
     
     # Computed audit and custody tracking
     audit_trail_count = fields.Integer(
@@ -161,13 +161,13 @@ class RecordsDocument(models.Model):
     chain_of_custody_count = fields.Integer(
         string='Chain of Custody Count',
         compute='_compute_chain_of_custody_count',
-        help='Number of chain of custody entries for this document'
+        help='Number of chain of custody entries for this document',
 
     # Billing fields
     storage_fee = fields.Float(
         string='Storage Fee',
         digits='Product Price',
-        help='Monthly storage fee for this document'
+        help='Monthly storage fee for this document',
 
     # Status fields
     state = fields.Selection([
@@ -250,9 +250,11 @@ class RecordsDocument(models.Model):
     @api.depends('date', 'retention_policy_id',
                  'retention_policy_id.retention_years'
     def _compute_retention_date(self:
+    pass
         for doc in self:
             if (doc.date and doc.retention_policy_id and
                     doc.retention_policy_id.retention_years):
+    pass
                 years = doc.retention_policy_id.retention_years
             else:
                 doc.retention_date = False
@@ -270,6 +272,7 @@ class RecordsDocument(models.Model):
         today = fields.Date.today()
         for doc in self:
             if doc.retention_date:
+    pass
                 delta = (doc.retention_date - today).days
                 doc.days_to_retention = max(0, delta)
             else:
@@ -280,6 +283,7 @@ class RecordsDocument(models.Model):
         """Calculate days until destruction eligible date."""
         for doc in self:
             if doc.destruction_eligible_date:
+    pass
                 delta = (doc.destruction_eligible_date - today).days
                 doc.days_until_destruction = max(0, delta)
             else:
@@ -306,6 +310,7 @@ class RecordsDocument(models.Model):
     
     @api.depends('chain_of_custody_ids')
     def _compute_chain_of_custody_count(self):
+    pass
         """Compute number of chain of custody entries."""
         for record in self:
             # This would typically link to a chain of custody model

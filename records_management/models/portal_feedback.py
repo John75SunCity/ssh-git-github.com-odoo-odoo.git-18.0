@@ -22,7 +22,7 @@ class PortalFeedback(models.Model):
         ('suggestion', 'Suggestion'),
         ('compliment', 'Compliment'),
         ('inquiry', 'Inquiry'),
-        ('technical', 'Technical Issue')
+        ('technical', 'Technical Issue'),
 ), string="Selection Field"
     feedback_category = fields.Selection([
         ('service_quality', 'Service Quality'),
@@ -39,13 +39,13 @@ class PortalFeedback(models.Model):
         ('in_progress', 'In Progress'),
         ('resolved', 'Resolved'),
         ('closed', 'Closed'),
-        ('escalated', 'Escalated')
+        ('escalated', 'Escalated'),
 ), string="Selection Field"
     priority = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
-        ('urgent', 'Urgent')
+        ('urgent', 'Urgent'),
 ), string="Selection Field"
     urgency_level = fields.Selection([
         ('low', 'Low'),
@@ -89,7 +89,7 @@ class PortalFeedback(models.Model):
         ('2', 'Poor'),
         ('3', 'Average'),
         ('4', 'Good'),
-        ('5', 'Excellent')
+        ('5', 'Excellent'),
 ), string="Selection Field"
     satisfaction_level = fields.Selection([
         ('very_dissatisfied', 'Very Dissatisfied'),
@@ -108,28 +108,28 @@ class PortalFeedback(models.Model):
         ('2', 'Poor'),
         ('3', 'Average'),
         ('4', 'Good'),
-        ('5', 'Excellent')
+        ('5', 'Excellent'),
 ), string="Selection Field"
     communication_rating = fields.Selection([
         ('1', 'Very Poor'),
         ('2', 'Poor'),
         ('3', 'Average'),
         ('4', 'Good'),
-        ('5', 'Excellent')
+        ('5', 'Excellent'),
 ), string="Selection Field"
     response_time_rating = fields.Selection([
         ('1', 'Very Poor'),
         ('2', 'Poor'),
         ('3', 'Average'),
         ('4', 'Good'),
-        ('5', 'Excellent')
+        ('5', 'Excellent'),
 ), string="Selection Field"
     staff_professionalism_rating = fields.Selection([
         ('1', 'Very Poor'),
         ('2', 'Poor'),
         ('3', 'Average'),
         ('4', 'Good'),
-        ('5', 'Excellent')
+        ('5', 'Excellent'),
 ), string="Selection Field"
     value_for_money_rating = fields.Selection([
         ('1', 'Very Poor'),
@@ -152,7 +152,7 @@ class PortalFeedback(models.Model):
     sentiment_analysis = fields.Selection([
         ('positive', 'Positive',
         ('neutral', 'Neutral'),
-        ('negative', 'Negative')
+        ('negative', 'Negative'),
 ), string="Selection Field"
     keyword_tags = fields.Char(string='Keyword Tags')
     trend_analysis = fields.Text(string='Trend Analysis')
@@ -166,13 +166,13 @@ class PortalFeedback(models.Model):
         ('bronze', 'Bronze'),
         ('silver', 'Silver'),
         ('gold', 'Gold'),
-        ('platinum', 'Platinum')
+        ('platinum', 'Platinum'),
 ), string="Selection Field"
     customer_segment = fields.Selection([
         ('small', 'Small Business'),
         ('medium', 'Medium Business'),
         ('enterprise', 'Enterprise'),
-        ('government', 'Government')
+        ('government', 'Government'),
 ), string="Selection Field"
     retention_risk = fields.Selection([
         ('low', 'Low Risk'),
@@ -196,7 +196,7 @@ class PortalFeedback(models.Model):
     mimetype = fields.Char(
         string='Primary MIME Type',
         compute='_compute_mimetype',
-        help='MIME type of the primary attachment'
+        help='MIME type of the primary attachment',
     
     # Activity tracking
     activity_date = fields.Datetime(
@@ -211,7 +211,7 @@ class PortalFeedback(models.Model):
         ('upload', 'Upload'), string="Selection Field")
     followup_activity_ids = fields.Many2many('mail.activity', relation='followup_activity_ids_rel', string='Follow-up Activities',
         domain=[('res_model', '=', 'portal.feedback')],  # Fixed syntax error
-        help='Scheduled follow-up activities for this feedback'
+        help='Scheduled follow-up activities for this feedback',
     
     # Follow-up and actions
     followup_required = fields.Boolean(string='Follow-up Required', tracking=True)
@@ -230,7 +230,7 @@ class PortalFeedback(models.Model):
         ('process_improvement', 'Process Improvement'),
         ('compensation', 'Compensation'),
         ('explanation', 'Explanation'),
-        ('no_action', 'No Action Required')
+        ('no_action', 'No Action Required'),
 ), string="Selection Field"
     root_cause_category = fields.Selection([
         ('communication', 'Communication'),
@@ -238,7 +238,7 @@ class PortalFeedback(models.Model):
         ('system', 'System'),
         ('training', 'Training'),
         ('policy', 'Policy'),
-        ('external', 'External Factor')
+        ('external', 'External Factor'),
 ), string="Selection Field"
     impact_assessment = fields.Text(string='Impact Assessment')
     
@@ -256,6 +256,7 @@ class PortalFeedback(models.Model):
         """Compute response time in hours"""
         for record in self:
             if record.create_date and record.response_date:
+    pass
                 delta = record.response_date - record.create_date
                 record.response_time_hours = delta.total_seconds() / 3600
             else:
@@ -266,6 +267,7 @@ class PortalFeedback(models.Model):
         """Compute resolution time in hours"""
         for record in self:
             if record.create_date and record.resolution_date:
+    pass
                 delta = record.resolution_date - record.create_date
                 record.resolution_time_hours = delta.total_seconds() / 3600
             else:
@@ -276,23 +278,29 @@ class PortalFeedback(models.Model):
         """Compute sentiment analysis based on feedback description and ratings"""
         for record in self:
             if not record.feedback_description and not record.overall_rating:
+    pass
                 record.sentiment_analysis = 'neutral'
                 continue
                 
             # Simple sentiment analysis based on rating and keywords
             if record.overall_rating:
+    pass
                 rating_num = int(record.overall_rating if record.overall_rating.isdigit() else 3
                 if rating_num >= 4:
+    pass
                     record.sentiment_analysis = 'positive'
                 elif rating_num <= 2:
+    pass
                     record.sentiment_analysis = 'negative'
                 else:
                     record.sentiment_analysis = 'neutral'
             else:
                 # Check satisfaction level as fallback
                 if record.satisfaction_level in ['satisfied', 'very_satisfied']:
+    pass
                     record.sentiment_analysis = 'positive'
                 elif record.satisfaction_level in ['dissatisfied', 'very_dissatisfied']:
+    pass
                     record.sentiment_analysis = 'negative'
                 else:
                     record.sentiment_analysis = 'neutral'
@@ -306,28 +314,37 @@ class PortalFeedback(models.Model):
             
             # Check sentiment
             if record.sentiment_analysis == 'negative':
+    pass
                 risk_factors += 2
             elif record.sentiment_analysis == 'positive':
+    pass
                 risk_factors -= 1
                 
             # Check rating
             if record.overall_rating:
+    pass
                 rating_num = int(record.overall_rating if record.overall_rating.isdigit() else 3
                 if rating_num <= 2:
+    pass
                     risk_factors += 2
                 elif rating_num >= 4:
+    pass
                     risk_factors -= 1
                     
             # Check urgency and priority
             if record.urgency_level == 'critical' or record.priority == 'urgent':
+    pass
                 risk_factors += 1
                 
             # Determine risk level
             if risk_factors >= 3:
+    pass
                 record.retention_risk = 'critical'
             elif risk_factors >= 2:
+    pass
                 record.retention_risk = 'high'
             elif risk_factors >= 1:
+    pass
                 record.retention_risk = 'medium'
             else:
                 record.retention_risk = 'low'
@@ -360,6 +377,7 @@ class PortalFeedback(models.Model):
             total_size = 0
             for attachment in record.attachment_ids:
                 if attachment.file_size:
+    pass
                     total_size += attachment.file_size
             record.file_size = total_size / (1024 * 1024)  # Convert to MB
     
@@ -368,6 +386,7 @@ class PortalFeedback(models.Model):
         """Compute the MIME type of the primary attachment."""
         for record in self:
             if record.attachment_ids:
+    pass
                 record.mimetype = record.attachment_ids[0].mimetype
             else:
                 record.mimetype = False
@@ -377,6 +396,7 @@ class PortalFeedback(models.Model):
         """Compute the date of the most recent activity."""
         for record in self:
             if record.activity_ids:
+    pass
                 record.activity_date = max(record.activity_ids.mapped('date_deadline'))
             else:
                 record.activity_date = False
@@ -386,6 +406,7 @@ class PortalFeedback(models.Model):
         """Compute the type of the most recent activity."""
         for record in self:
             if record.activity_ids:
+    pass
                 latest_activity = record.activity_ids.sorted('date_deadline', reverse=True)[0]
                 record.activity_type = latest_activity.activity_type_id.category or 'todo'
             else:

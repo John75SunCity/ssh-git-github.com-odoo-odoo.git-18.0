@@ -26,14 +26,14 @@ class RecordsApprovalStep(models.Model):
         ('user', 'Specific User'),
         ('group', 'Group Member'),
         ('manager', 'Department Manager'),
-        ('any', 'Any User')
+        ('any', 'Any User'),
     ), string='Approval Type', default='user', tracking=True)
     # Status and timing
     state = fields.Selection([
         ('pending', 'Pending',
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
-        ('skipped', 'Skipped')
+        ('skipped', 'Skipped'),
     ), string='State', default='pending', tracking=True)
     
     approved_date = fields.Datetime('Approved Date', readonly=True)
@@ -56,8 +56,10 @@ class RecordsApprovalStep(models.Model):
         """Validate approver configuration"""
         for record in self:
             if record.approval_type == 'user' and not record.approver_user_id:
+    pass
                 raise ValidationError(_('Specific user must be selected for user approval type'))
             if record.approval_type == 'group' and not record.approver_group_id:
+    pass
                 raise ValidationError(_('Group must be selected for group approval type'))
     
     def action_approve(self):
@@ -74,5 +76,6 @@ class RecordsApprovalStep(models.Model):
         self.ensure_one()
         vals = {'state': 'rejected'}
         if reason:
+    pass
             vals['rejection_reason'] = reason
         self.write(vals)

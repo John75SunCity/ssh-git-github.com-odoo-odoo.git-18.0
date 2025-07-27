@@ -15,7 +15,7 @@ class PaperBale(models.Model):
     
     # Relationship fields
     shredding_id = fields.Many2one('shredding.service', string='Shredding Service',
-                                   help='The shredding service this bale is associated with'
+                                   help='The shredding service this bale is associated with',
     
     # Weight and measurement
     weight_kg = fields.Float('Weight (kg', digits=(10, 2))
@@ -248,8 +248,10 @@ class PaperBale(models.Model):
             record.weight_history_count = len(measurements)
             
             if len(measurements) > 1:
+    pass
                 previous_weight = measurements[-2].weight if len(measurements) > 1 else record.weight
                 if previous_weight > 0:
+    pass
                     record.variance_from_previous = ((record.weight - previous_weight) / previous_weight) * 100
                 else:
                     record.variance_from_previous = 0.0
@@ -258,6 +260,7 @@ class PaperBale(models.Model):
             
             # Weight efficiency based on processing
             if record.weight > 0:
+    pass
                 record.weight_efficiency = (record.weight_contributed / record.weight * 100
             else:
                 record.weight_efficiency = 0.0

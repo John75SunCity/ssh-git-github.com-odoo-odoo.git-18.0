@@ -63,6 +63,7 @@ class RecordsDeletionRequest(models.Model):
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
+    pass
             vals['name'] = self.env['ir.sequence'].next_by_code('records.deletion.request') or _('New')
         return super().create(vals)
 

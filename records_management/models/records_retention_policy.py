@@ -20,7 +20,7 @@ class RecordsRetentionPolicy(models.Model):
         ('standard', 'Standard',
         ('legal_hold', 'Legal Hold'),
         ('regulatory', 'Regulatory'),
-        ('custom', 'Custom')
+        ('custom', 'Custom'),
 ), string="Selection Field"
     policy_status = fields.Selection([
         ('active', 'Active'),
@@ -36,7 +36,7 @@ class RecordsRetentionPolicy(models.Model):
     compliance_required = fields.Boolean('Compliance Required', default=True,
                                        help='Requires compliance verification before destruction',
     compliance_verified = fields.Boolean('Compliance Verified', default=False,
-                                        help='Indicates if this policy has been verified for compliance'
+                                        help='Indicates if this policy has been verified for compliance',
     
     # Trigger Configuration
     trigger_event = fields.Selection([
@@ -44,7 +44,7 @@ class RecordsRetentionPolicy(models.Model):
         ('closure', 'Case Closure'),
         ('last_access', 'Last Access'),
         ('custom_date', 'Custom Date')
-       help='Event that starts the retention period countdown'
+       help='Event that starts the retention period countdown',
     
     # Additional Policy Details), string="Selection Field"
     legal_basis = fields.Text('Legal Basis', help='Legal or regulatory basis for this retention policy')
@@ -112,7 +112,7 @@ class RecordsRetentionPolicy(models.Model):
                                  help='User who last modified this policy version',
                                  default=lambda self: self.env.user
     is_current_version = fields.Boolean(string='Is Current Version', default=True,
-                                        help='Indicates if this is the current active version of the policy'
+                                        help='Indicates if this is the current active version of the policy',
     
     # Analytics fields
     destruction_efficiency_rate = fields.Float(
@@ -183,6 +183,6 @@ class RecordsRetentionPolicy(models.Model):
         string='Analytics Updated',
         compute='_compute_retention_analytics',
         store=True,
-        help='Last analytics computation timestamp'
+        help='Last analytics computation timestamp',
     
     # Missing technical and activity fields

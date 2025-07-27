@@ -15,6 +15,7 @@ class IrActionsReport(models.Model):
         values = super()._get_report_values(docids, data=data)
         report_name = 'stock.report_reception_report_label'
         if self.report_name == report_name and not docids:
+    pass
             docids = data.get('docids', [])
             docs = self.env[self.model].browse(docids)
             values.update({

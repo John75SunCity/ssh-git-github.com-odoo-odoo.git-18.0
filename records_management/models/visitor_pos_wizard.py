@@ -36,7 +36,7 @@ class VisitorPosWizard(models.TransientModel):
         ('new', 'New Customer'),
         ('existing', 'Existing Customer'),
         ('corporate', 'Corporate'),
-        ('individual', 'Individual')
+        ('individual', 'Individual'),
     ], string='Customer Category', default='new')
 
     # Financial Configuration
@@ -55,7 +55,7 @@ class VisitorPosWizard(models.TransientModel):
         ('low', 'Low'),
         ('normal', 'Normal'),
         ('high', 'High'),
-        ('urgent', 'Urgent')
+        ('urgent', 'Urgent'),
     ], string='Processing Priority', default='normal')
 
     # Service Location and Setup
@@ -71,7 +71,7 @@ class VisitorPosWizard(models.TransientModel):
         ('public', 'Public'),
         ('medical', 'Medical'),
         ('financial', 'Financial'),
-        ('legal', 'Legal')
+        ('legal', 'Legal'),
     ], string='Document Type', default='confidential')
     
     document_count = fields.Integer(string='Document Count', default=1)
@@ -82,7 +82,7 @@ class VisitorPosWizard(models.TransientModel):
         ('pdf', 'PDF'),
         ('tiff', 'TIFF'),
         ('jpeg', 'JPEG'),
-        ('png', 'PNG')
+        ('png', 'PNG'),
     ], string='Digitization Format', default='pdf')
     
     # Destruction and Security
@@ -90,13 +90,13 @@ class VisitorPosWizard(models.TransientModel):
         ('shred', 'Shredding'),
         ('incineration', 'Incineration'),
         ('pulping', 'Pulping'),
-        ('disintegration', 'Disintegration')
+        ('disintegration', 'Disintegration'),
     ], string='Destruction Method', default='shred')
     
     shredding_type = fields.Selection([
         ('strip_cut', 'Strip Cut'),
         ('cross_cut', 'Cross Cut'),
-        ('micro_cut', 'Micro Cut')
+        ('micro_cut', 'Micro Cut'),
     ], string='Shredding Type', default='cross_cut')
     
     witness_required = fields.Boolean(string='Witness Required', default=False)
@@ -106,7 +106,7 @@ class VisitorPosWizard(models.TransientModel):
         ('public', 'Public'),
         ('internal', 'Internal'),
         ('confidential', 'Confidential'),
-        ('top_secret', 'Top Secret')
+        ('top_secret', 'Top Secret'),
     ], string='Confidentiality Level', default='confidential')
 
     # Chain of Custody and Compliance
@@ -120,7 +120,7 @@ class VisitorPosWizard(models.TransientModel):
     naid_certificate_level = fields.Selection([
         ('aaa', 'AAA Certification'),
         ('aa', 'AA Certification'),
-        ('a', 'A Certification')
+        ('a', 'A Certification'),
     ], string='NAID Certificate Level')
     
     # Quality Control and Audit
@@ -128,7 +128,7 @@ class VisitorPosWizard(models.TransientModel):
     audit_level = fields.Selection([
         ('basic', 'Basic'),
         ('standard', 'Standard'),
-        ('comprehensive', 'Comprehensive')
+        ('comprehensive', 'Comprehensive'),
     ], string='Audit Level', default='standard')
     
     audit_notes = fields.Text(string='Audit Notes')
@@ -140,7 +140,7 @@ class VisitorPosWizard(models.TransientModel):
         ('draft', 'Draft'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
-        ('cancelled', 'Cancelled')
+        ('cancelled', 'Cancelled'),
     ], string='Status', default='draft')
 
     @api.depends('customer_processing_time', 'estimated_service_time')
@@ -154,6 +154,7 @@ class VisitorPosWizard(models.TransientModel):
         self.ensure_one()
         
         if not self.pos_order_id:
+    pass
             raise UserError(_('Please select a POS transaction.'))
         
         # Update visitor with POS information

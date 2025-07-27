@@ -38,7 +38,7 @@ class NAIDComplianceChecklist(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('failed', 'Failed'),
-        ('overdue', 'Overdue')
+        ('overdue', 'Overdue'),
 ), string="Selection Field"
     completion_percentage = fields.Float('Completion %', compute='_compute_completion', store=True)
     is_overdue = fields.Boolean('Is Overdue', compute='_compute_overdue', store=True)
@@ -64,6 +64,7 @@ class NAIDComplianceChecklist(models.Model):
         """Compute if checklist is overdue"""
         today = fields.Date.today()
         for record in self:
+    pass
             record.is_overdue = (record.due_date and record.due_date < today and 
                                record.status not in ['completed', 'failed']
     
@@ -72,8 +73,10 @@ class NAIDComplianceChecklist(models.Model):
         """Compute completion percentage based on status"""
         for record in self:
             if record.status == 'completed':
+    pass
                 record.completion_percentage = 100.0
             elif record.status == 'in_progress':
+    pass
                 record.completion_percentage = 50.0
             else:
                 record.completion_percentage = 0.0

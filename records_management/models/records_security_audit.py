@@ -53,7 +53,7 @@ class RecordsSecurityAudit(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('failed', 'Failed'),
-        ('cancelled', 'Cancelled')
+        ('cancelled', 'Cancelled'),
 ), string="Selection Field"
     result = fields.Selection([
         ('pass', 'Pass'),
@@ -67,7 +67,7 @@ class RecordsSecurityAudit(models.Model):
         help='Overall security assessment score',
     compliance_score = fields.Float(
         string='Compliance Score (0-100)',
-        help='Compliance assessment score'
+        help='Compliance assessment score',
     
     # Audit details
     findings = fields.Text(
@@ -78,7 +78,7 @@ class RecordsSecurityAudit(models.Model):
         help='Security recommendations based on audit findings',
     corrective_actions = fields.Text(
         string='Corrective Actions',
-        help='Required corrective actions'
+        help='Required corrective actions',
     
     # Follow-up information
     follow_up_required = fields.Boolean(
@@ -97,12 +97,13 @@ class RecordsSecurityAudit(models.Model):
     evidence_attachment_ids = fields.Many2many(
         'ir.attachment',
         string='Evidence Attachments',
-        help='Supporting documentation and evidence'
+        help='Supporting documentation and evidence',
     
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', 'New') == 'New':
+    pass
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.security.audit') or 'SA-' + str(self.env['ir.sequence'].next_by_code('records.security.audit.simple') or '001')
         return super().create(vals_list)
     
@@ -111,6 +112,7 @@ class RecordsSecurityAudit(models.Model):
         """Compute next audit date based on audit type and current date"""
         for audit in self:
             if audit.audit_date:
+    pass
                 # Standard audit intervals
                 intervals = {
                     'location': 90,      # Quarterly

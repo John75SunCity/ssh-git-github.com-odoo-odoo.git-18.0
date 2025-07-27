@@ -25,7 +25,7 @@ class RecordsLocation(models.Model):
         ('map', 'Map Storage - Map Boxes (Type 03)'),
         ('oversize', 'Oversize - Odd-Shaped Boxes (Type 04)'),
         ('refiles', 'Refiles - Staging for Returns/Put-Away'),
-    ], string='Location Type', help="""Location type determines what kind of boxes can be stored:
+    ], string='Location Type', help="""Location type determines what kind of boxes can be stored:,
        • Aisles/Pallets: Standard file boxes (Type 01) - monthly rent
        • Vault: Specialty boxes (Type 06) - secure storage
        • Map: Map boxes (Type 03) - oversized maps/plans
@@ -60,19 +60,19 @@ class RecordsLocation(models.Model):
     note = fields.Text('Notes')
     description = fields.Text(
         'Description',
-        help='Detailed description of the location and its contents'
+        help='Detailed description of the location and its contents',
     )
     
     access_instructions = fields.Text(
         'Access Instructions',
-        help='Instructions for accessing this location (keys, codes, etc.)'
+        help='Instructions for accessing this location (keys, codes, etc.)',
     )
     
     security_level = fields.Selection([
         ('low', 'Low - General Access'),
         ('medium', 'Medium - Restricted Access'),
         ('high', 'High - Secure Access'),
-        ('maximum', 'Maximum - Vault Access')
+        ('maximum', 'Maximum - Vault Access'),
     ], string='Security Level')
 
     # Phase 1 Critical Fields - Added by automated script
@@ -82,6 +82,7 @@ class RecordsLocation(models.Model):
         """Compute complete hierarchical name"""
         for record in self:
             if record.parent_id:
+    pass
                 record.complete_name = f"{record.parent_id.complete_name} / {record.name}"
             else:
                 record.complete_name = record.name or ''
@@ -98,6 +99,7 @@ class RecordsLocation(models.Model):
         """Compute current utilization percentage"""
         for record in self:
             if record.capacity and record.capacity > 0:
+    pass
                 record.current_utilization = (record.box_count / record.capacity) * 100
             else:
                 record.current_utilization = 0.0

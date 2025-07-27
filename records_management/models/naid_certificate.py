@@ -40,7 +40,7 @@ class NAIDCertificate(models.Model):
         ('expired', 'Expired'),
         ('suspended', 'Suspended'),
         ('revoked', 'Revoked'),
-        ('pending', 'Pending Renewal')
+        ('pending', 'Pending Renewal'),
 ), string="Selection Field"
     is_valid = fields.Boolean('Is Valid', compute='_compute_validity', store=True)
     days_until_expiry = fields.Integer('Days Until Expiry', compute='_compute_validity', store=True)
@@ -63,6 +63,7 @@ class NAIDCertificate(models.Model):
         today = fields.Date.today()
         for record in self:
             if record.expiry_date:
+    pass
                 delta = record.expiry_date - today
                 record.days_until_expiry = delta.days
                 record.is_valid = (record.status == 'active' and delta.days >= 0)

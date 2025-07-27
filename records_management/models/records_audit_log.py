@@ -30,7 +30,7 @@ class RecordsAuditLog(models.Model):
         ('deletion', 'Deletion Event'),
         ('security', 'Security Event'),
         ('compliance', 'Compliance Event'),
-        ('system', 'System Event')
+        ('system', 'System Event'),
 ), string="Selection Field"
     event_description = fields.Char(
         string='Event Description',
@@ -58,7 +58,7 @@ class RecordsAuditLog(models.Model):
     task_id = fields.Many2one(
         'project.task',
         string='FSM Task',
-        help='Related FSM task if applicable'
+        help='Related FSM task if applicable',
     
     # Audit details
     details = fields.Text(
@@ -69,7 +69,7 @@ class RecordsAuditLog(models.Model):
         help='IP address from which the event originated',
     session_id = fields.Char(
         string='Session ID',
-        help='User session identifier'
+        help='User session identifier',
     
     # Risk assessment
     risk_level = fields.Selection([
@@ -94,6 +94,7 @@ class RecordsAuditLog(models.Model):
         string='Review Notes'
 
     def action_mark_reviewed(self):
+    pass
         """Mark audit log entry as reviewed"""
         self.ensure_one()
         self.write({

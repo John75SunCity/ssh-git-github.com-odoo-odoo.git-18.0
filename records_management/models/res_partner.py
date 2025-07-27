@@ -60,7 +60,7 @@ class ResPartner(models.Model):
         ('email', 'Email',
         ('portal', 'Customer Portal'),
         ('mail', 'Postal Mail'),
-        ('both', 'Email + Portal')
+        ('both', 'Email + Portal'),
 ), string="Selection Field"
     payment_terms_override = fields.Many2one(
         'account.payment.term', string='Payment Terms Override',
@@ -111,6 +111,7 @@ class ResPartner(models.Model):
 
     @api.depends()
     def _compute_department_ids(self):
+    pass
         """Compute departments for this partner"""
         for record in self:
             # Return empty recordset since inverse field doesn't exist
@@ -120,6 +121,7 @@ class ResPartner(models.Model):
     def _compute_department_stats(self:
         for partner in self:
             if partner.is_company:
+    pass
                 # Search for departments instead of using direct relationship
                 departments = self.env['records.department'].search\([
                     ('partner_id', '=', partner.id])
@@ -155,6 +157,7 @@ class ResPartner(models.Model):
     def _compute_has_custom_rates(self):
         """Check if customer has any custom shredding rates"""
         for partner in self:
+    pass
             partner.has_custom_rates = len(partner.shredding_rates_ids) > 0
 
     def action_view_customer_documents(self):

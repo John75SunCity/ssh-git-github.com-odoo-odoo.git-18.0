@@ -63,6 +63,7 @@ class ShreddingBaseRates(models.Model):
     def get_current_rates(self, company_id=None):
         """Get current active rates"""
         if not company_id:
+    pass
             company_id = self.env.company.id
         
         return self.search\([
@@ -107,8 +108,10 @@ class ShreddingCustomerRates(models.Model):
     
     @api.constrains('effective_date', 'expiry_date')
     def _check_date_range(self):
+    pass
         for record in self:
             if record.expiry_date and record.effective_date > record.expiry_date:
+    pass
                 raise ValidationError(_('Effective date cannot be after expiry date.'))
     
     def action_activate(self):
@@ -128,6 +131,7 @@ class ShreddingCustomerRates(models.Model):
     def get_customer_rates(self, partner_id, company_id=None):
         """Get current customer rates"""
         if not company_id:
+    pass
             company_id = self.env.company.id
         
         domain = [
@@ -159,6 +163,7 @@ class ShreddingCustomerRates(models.Model):
         }
         
         if rate_type not in rate_fields:
+    pass
             raise UserError(_('Invalid rate type: %s' % rate_type)
         
         field_name = rate_fields[rate_type]
@@ -169,24 +174,30 @@ class ShreddingCustomerRates(models.Model):
         
         custom_rate = None
         if is_external and self.use_custom_external_rates:
+    pass
             custom_rate = getattr(self, field_name, 0.0)
         elif is_managed and self.use_custom_managed_rates:
+    pass
             custom_rate = getattr(self, field_name, 0.0)
         
         if custom_rate:
+    pass
             return custom_rate
         
         # Use base rate with discount
         if not base_rates:
+    pass
             base_rates = self.env['shredding.base.rates'].get_current_rates(self.company_id.id
         
         if not base_rates:
+    pass
             return 0.0
         
         base_rate = getattr(base_rates, field_name, 0.0)
         
         # Apply discount if configured
         if self.discount_percentage:
+    pass
             discount_multiplier = (100 - self.discount_percentage / 100
             return base_rate * discount_multiplier
         

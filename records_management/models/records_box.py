@@ -23,14 +23,14 @@ class RecordsBox(models.Model):
         ('draft', 'Draft'),
         ('active', 'Active'),
         ('archived', 'Archived'),
-        ('destroyed', 'Destroyed')), string="Selection Field")
+        ('destroyed', 'Destroyed'), string="Selection Field")
     item_status = fields.Selection([
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('pending', 'Pending'),
         ('permanent_out', 'Permanent Out'),
         ('destroyed', 'Destroyed'),
-        ('archived', 'Archived')), string="Selection Field")
+        ('archived', 'Archived'), string="Selection Field")
     status_date = fields.Datetime(
         string='Status Date',
         default=fields.Datetime.now
@@ -129,7 +129,7 @@ class RecordsBox(models.Model):
         ('small', 'Small'),
         ('medium', 'Medium'),
         ('large', 'Large'),
-        ('extra_large', 'Extra Large')), string="Selection Field")
+        ('extra_large', 'Extra Large'), string="Selection Field")
     retention_policy_id = fields.Many2one(
         'records.retention.policy',
         string='Retention Policy',
@@ -180,7 +180,7 @@ class RecordsBox(models.Model):
         ('0', 'Low',
         ('1', 'Normal',
         ('2', 'High'),
-        ('3', 'Urgent')), string="Selection Field")
+        ('3', 'Urgent'), string="Selection Field")
     document_type_id = fields.Many2one(
         'records.document.type',
         string='Primary Document Type',
@@ -192,7 +192,7 @@ class RecordsBox(models.Model):
         ('outbound', 'Outbound'),
         ('relocation', 'Relocation'),
         ('retrieval', 'Retrieval'),
-        ('return', 'Return')), string="Selection Field")
+        ('return', 'Return'), string="Selection Field")
     from_location_id = fields.Many2one(
         'records.location',
         string='From Location',
@@ -229,6 +229,7 @@ class RecordsBox(models.Model):
         """Compute display name for box type"""
         for record in self:
             if record.box_type_code:
+    pass
                 record.box_type_display = dict(record._fields['box_type_code'].selection).get(record.box_type_code, record.box_type_code)
             else:
                 record.box_type_display = ''
@@ -255,6 +256,7 @@ class RecordsBox(models.Model):
         """Compute used capacity percentage"""
         for record in self:
             if record.capacity and record.capacity > 0:
+    pass
                 record.used_capacity = (record.document_count / record.capacity) * 100
             else:
                 record.used_capacity = 0.0
@@ -294,6 +296,7 @@ class RecordsBox(models.Model):
         """Generate or print barcode for this box"""
         self.ensure_one()
         if not self.barcode:
+    pass
             # Generate barcode if it doesn't exist
             sequence = self.env['ir.sequence'].next_by_code('records.box.barcode' or str(self.id.zfill(12)
             self.barcode = sequence

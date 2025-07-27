@@ -12,7 +12,7 @@ class MobileBinKeyWizard(models.TransientModel):
         ('issue_new', 'Issue New Key'),
         ('update_existing', 'Update Existing Contact'),
         ('create_unlock_service', 'Create Unlock Service'),
-        ('quick_lookup', 'Quick Key Lookup')
+        ('quick_lookup', 'Quick Key Lookup'),
     ], string='Action', required=True, default='issue_new')
     
     # Customer/Contact Information
@@ -90,7 +90,7 @@ class MobileBinKeyWizard(models.TransientModel):
         ('retrieve_item', 'Need to Retrieve Item'),
         ('maintenance', 'Bin Maintenance'),
         ('emergency', 'Emergency Access'),
-        ('other', 'Other')
+        ('other', 'Other'),
     ], string='Unlock Reason')
     
     unlock_reason_description = fields.Text(
@@ -176,21 +176,24 @@ class MobileBinKeyWizard(models.TransientModel):
     def _onchange_company_lookup(self):
         """Update lookup results when company changes"""
         if self.action_type == 'quick_lookup' and self.customer_company_id:
+    pass
             self._update_lookup_results()
     
     def _update_lookup_results(self):
         """Update the key lookup results HTML"""
         if not self.customer_company_id:
+    pass
             self.key_lookup_results = ""
             return
         
         # Find all contacts with keys in this company
         key_holders = self.env['res.partner'].search([
             ('parent_id', '=', self.customer_company_id.id),
-            ('has_bin_key', '=', True)
+            ('has_bin_key', '=', True)])
         ])
         
         if not key_holders:
+    pass
             self.key_lookup_results = "<p><strong>No key holders found for this company.</strong></p>"
             return
         
@@ -230,27 +233,35 @@ class MobileBinKeyWizard(models.TransientModel):
         self.key_lookup_results = html
     
     def action_execute(self):
+    pass
         """Execute the selected action"""
         self.ensure_one()
         
         if self.action_type == 'issue_new':
+    pass
             return self._execute_issue_new_key()
         elif self.action_type == 'update_existing':
+    pass
             return self._execute_update_existing()
         elif self.action_type == 'create_unlock_service':
+    pass
             return self._execute_create_unlock_service()
         elif self.action_type == 'quick_lookup':
+    pass
             self._update_lookup_results()
             return {'type': 'ir.actions.do_nothing'}
     
     def _execute_issue_new_key(self):
         """Issue a new key to a contact"""
         if not self.customer_company_id:
+    pass
             raise UserError(_('Please select a customer company.'))
         
         # Create or get contact
         if self.create_new_contact:
+    pass
             if not self.contact_name:
+    pass
                 raise UserError(_('Please enter the contact name.'))
             
             contact = self.env['res.partner'].create({
@@ -264,11 +275,13 @@ class MobileBinKeyWizard(models.TransientModel):
             })
         else:
             if not self.contact_id:
+    pass
                 raise UserError(_('Please select an existing contact.'))
             contact = self.contact_id
         
         # Check if contact already has a key
         if contact.has_bin_key:
+    pass
             raise UserError(_('This contact already has an active bin key.'))
         
         # Create key management record
@@ -298,9 +311,11 @@ class MobileBinKeyWizard(models.TransientModel):
     def _execute_update_existing(self):
         """Update an existing contact with key assignment"""
         if not self.contact_id:
+    pass
             raise UserError(_('Please select a contact to update.'))
         
         if self.contact_id.has_bin_key:
+    pass
             raise UserError(_('This contact already has an active bin key.'))
         
         # Create key management record
@@ -326,12 +341,15 @@ class MobileBinKeyWizard(models.TransientModel):
     def _execute_create_unlock_service(self):
         """Create an unlock service record"""
         if not self.contact_id:
+    pass
             raise UserError(_('Please select a contact for the unlock service.'))
         
         if not self.unlock_reason:
+    pass
             raise UserError(_('Please select an unlock reason.'))
         
         if not self.unlock_bin_location:
+    pass
             raise UserError(_('Please specify the bin location.'))
         
         # Create unlock service record

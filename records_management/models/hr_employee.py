@@ -42,7 +42,7 @@ class HrEmployee(models.Model):
         string='Productivity Score',
         compute='_compute_performance_analytics',
         store=True,
-        help='Overall productivity assessment (0-100'
+        help='Overall productivity assessment (0-100',
     
     # Training Analytics
     skill_development_index = fields.Float(
@@ -54,22 +54,22 @@ class HrEmployee(models.Model):
         ('up_to_date', 'Up to Date',
         ('due_soon', 'Due Soon'),
         ('overdue', 'Overdue'),
-        ('not_required', 'Not Required')
+        ('not_required', 'Not Required'),
     ), string='Training Status', compute='_compute_training_analytics',
        store=True,
-       help='Current compliance training status'
+       help='Current compliance training status',
     
     # Specialization Analytics
     records_specialization_score = fields.Float(
         string='Records Specialization Score',
         compute='_compute_specialization_analytics',
         store=True,
-        help='Specialization level in records management'
+        help='Specialization level in records management',
     
     # NAID Compliance Tracking
     audit_log_ids = fields.One2many('naid.audit.log', 'employee_id', 
                                    string='NAID Audit Logs',
-                                   help='NAID compliance audit logs for this employee'
+                                   help='NAID compliance audit logs for this employee',
     
     @api.depends('user_id'
     def _compute_imported_user_count(self):
@@ -103,6 +103,7 @@ class HrEmployee(models.Model):
             
             # User import capability bonus
             if employee.can_import_users:
+    pass
                 access_bonus += 5
             
             # Recent activity bonus (simplified - would track actual activity
@@ -116,14 +117,19 @@ class HrEmployee(models.Model):
             
             # Role-specific productivity expectations
             if employee.records_management_role == 'manager':
+    pass
                 # Managers should have consistent high productivity
                 if productivity >= 90:
+    pass
                     productivity += 5
                 elif productivity < 75:
+    pass
                     productivity -= 10
             elif employee.records_management_role == 'supervisor':
+    pass
                 # Supervisors need balanced productivity
                 if 80 <= productivity <= 95:
+    pass
                     productivity += 3
             
             employee.productivity_score = min(max(productivity, 0, 100
@@ -153,6 +159,7 @@ class HrEmployee(models.Model):
             
             # Import capability indicates specialized training
             if employee.can_import_users:
+    pass
                 training_bonus += 10
             
             skill_index = base_skill + training_bonus
@@ -161,16 +168,21 @@ class HrEmployee(models.Model):
             # Compliance training status assessment
             # In real implementation, would check actual training records
             if employee.records_management_role in ['manager', 'supervisor']:
+    pass
                 # Higher roles need current compliance training
                 if employee.skill_development_index >= 80:
+    pass
                     employee.compliance_training_status = 'up_to_date'
                 elif employee.skill_development_index >= 60:
+    pass
                     employee.compliance_training_status = 'due_soon'
                 else:
                     employee.compliance_training_status = 'overdue'
             elif employee.records_management_role == 'operator':
+    pass
                 # Operators need regular training
                 if employee.skill_development_index >= 70:
+    pass
                     employee.compliance_training_status = 'up_to_date'
                 else:
                     employee.compliance_training_status = 'due_soon'
@@ -204,15 +216,19 @@ class HrEmployee(models.Model):
             # Special capabilities indicate expertise
             capability_bonus = 0
             if employee.can_import_users:
+    pass
                 capability_bonus += 8  # Specialized skill
             
             # Experience factor (based on import history
             experience_bonus = 0
             if employee.imported_user_count > 10:
+    pass
                 experience_bonus = 7
             elif employee.imported_user_count > 5:
+    pass
                 experience_bonus = 4
             elif employee.imported_user_count > 0:
+    pass
                 experience_bonus = 2
             
             total_specialization = base_spec + access_spec + capability_bonus + experience_bonus

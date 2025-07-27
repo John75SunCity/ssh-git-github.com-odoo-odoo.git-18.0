@@ -71,7 +71,7 @@ class NAIDChainOfCustody(models.Model):
         help='Description of materials under custody',
     total_weight = fields.Float(
         string='Total Weight (lbs)',
-        help='Total weight of materials'
+        help='Total weight of materials',
     
     # Security information
     security_level = fields.Selection([
@@ -95,6 +95,7 @@ class NAIDChainOfCustody(models.Model):
         for record in self:
             latest_event = record.custody_events.sorted('timestamp', reverse=True)[:1]
             if latest_event:
+    pass
                 record.current_custodian_id = latest_event.employee_id
             else:
                 record.current_custodian_id = False
@@ -104,6 +105,7 @@ class NAIDChainOfCustody(models.Model):
         """Auto-generate sequence number"""
         for vals in vals_list:
             if vals.get('name', 'New') == 'New':
+    pass
                 vals['name'] = self.env['ir.sequence'].next_by_code('naid.chain.custody') or 'New'
         return super().create(vals_list)
 
@@ -216,7 +218,7 @@ class NAIDCustodyEvent(models.Model):
         ('moved', 'Materials Moved'),
         ('processed', 'Materials Processed'),
         ('destroyed', 'Materials Destroyed'),
-        ('completed', 'Custody Completed')
+        ('completed', 'Custody Completed'),
 ), string="Selection Field"
     timestamp = fields.Datetime(
         string='Event Time',
@@ -241,13 +243,13 @@ class NAIDCustodyEvent(models.Model):
         'event_id',
         'employee_id',
         string='Witnesses',
-        help='Employees who witnessed this event'
+        help='Employees who witnessed this event',
     
     # Evidence
     evidence_attachment_ids = fields.Many2many(
         'ir.attachment',
         string='Evidence',
-        help='Photos, documents, or other evidence'
+        help='Photos, documents, or other evidence',
     
     # GPS coordinates
     latitude = fields.Float(string='Latitude')

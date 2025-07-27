@@ -89,12 +89,14 @@ class Partner(models.Model):
     def _compute_has_bin_key(self):
         """Compute if contact currently has an active bin key"""
         for partner in self:
+    pass
             active_key = partner.bin_key_ids.filtered(lambda k: k.status == 'issued')
             partner.has_bin_key = bool(active_key)
             partner.active_bin_key_id = active_key[0].id if active_key else False
     
     @api.depends('unlock_service_ids')
     def _compute_unlock_service_count(self):
+    pass
         """Compute unlock service count"""
         for partner in self:
             partner.unlock_service_count = len(partner.unlock_service_ids)
@@ -111,6 +113,7 @@ class Partner(models.Model):
         """Compute other key holders in the same company"""
         for partner in self:
             if partner.parent_id:
+    pass
                 # Find other contacts in the same company who have keys
                 company_contacts = partner.parent_id.child_ids.filtered(
                     lambda p: p.id != partner.id and p.has_bin_key
@@ -126,6 +129,7 @@ class Partner(models.Model):
         self.ensure_one()
         
         if self.has_bin_key:
+    pass
             raise UserError(_('This contact already has an active bin key.'))
         
         return {
@@ -160,6 +164,7 @@ class Partner(models.Model):
         self.ensure_one()
         
         if not self.has_bin_key:
+    pass
             raise UserError(_('This contact does not have an active bin key.'))
         
         return self.active_bin_key_id.action_return_key()
@@ -169,6 +174,7 @@ class Partner(models.Model):
         self.ensure_one()
         
         if not self.has_bin_key:
+    pass
             raise UserError(_('This contact does not have an active bin key.'))
         
         return self.active_bin_key_id.action_mark_lost()
@@ -178,6 +184,7 @@ class Partner(models.Model):
         self.ensure_one()
         
         if not self.has_bin_key:
+    pass
             raise UserError(_('This contact does not have an active bin key.'))
         
         return self.active_bin_key_id.action_replace_key()
@@ -215,10 +222,12 @@ class Partner(models.Model):
         }
     
     def action_view_company_key_holders(self):
+    pass
         """View other key holders in the same company"""
         self.ensure_one()
         
         if not self.parent_id:
+    pass
             raise UserError(_('This contact is not associated with a company.'))
         
         return {

@@ -10,10 +10,12 @@ class StockPicking(models.Model):
         """
         res = super().button_validate()
         if self.state == 'done' and self.picking_type_id.code == 'outgoing':
+    pass
             # Filter move lines that have a lot with a customer
             customer_items = self.move_line_ids.filtered(
                 lambda line: line.lot_id and line.lot_id.customer_id
             if customer_items:
+    pass
                 # Group items by customer
                 customers = {}
                 for item in customer_items:
