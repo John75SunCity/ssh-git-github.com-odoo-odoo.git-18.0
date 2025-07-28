@@ -114,7 +114,6 @@ from . import records_security_audit
 from . import records_location_inspection
 from . import records_audit_log
 from . import records_access_log
-from . import records_chain_custody
 from . import shredding_service_log
 
 # Extensions (One2many after bases)
