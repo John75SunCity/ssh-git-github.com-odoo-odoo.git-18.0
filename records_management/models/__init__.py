@@ -32,8 +32,14 @@ from . import paper_load_shipment
 
 # Service Management Models
 from . import bin_unlock_service
-from . import customer_retrieval_rates
 from . import customer_billing_profile
+
+# Rate Management System (NEW UNIFIED SYSTEM)
+from . import shredding_rates  # Contains comprehensive rate management system
+
+# Legacy Rate Models (compatibility layers - redirect to new unified system)
+from . import customer_retrieval_rates  # Legacy: redirects to customer.rate.profile
+from . import global_rates  # Legacy: redirects to base.rates
 
 # Legacy bale models (for compatibility)
 from . import bale
@@ -56,7 +62,6 @@ from . import naid_audit_log
 from . import records_chain_of_custody
 from . import destruction_item
 from . import file_retrieval_work_order
-from . import global_rates
 from . import pickup_route
 from . import res_partner_key_restriction
 
