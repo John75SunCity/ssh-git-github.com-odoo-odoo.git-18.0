@@ -108,7 +108,7 @@
                 <field name="department_id" string="🏢 Department"/>
                 <field name="location_id" string="📍 Location"/>
                 <field name="state" string="🎯 Status" widget="badge"/>
-                <field name="storage_date" string="📅 Stored"/>
+                <field name="stored_date" string="📅 Stored"/>
                 <field name="destruction_date" string="💥 Destruction" optional="hide"/>
                 <field name="barcode" string="🏷️ Barcode"/>
                 <field name="document_count" string="📄 Docs" sum="Total Documents"/>
@@ -157,7 +157,7 @@
                         <group string="📍 Location &amp; Status">
                             <field name="location_id"/>
                             <field name="state"/>
-                            <field name="storage_date"/>
+                            <field name="stored_date"/>
                             <field name="destruction_date" invisible="not destruction_date"/>
                         </group>
                     </group>
@@ -218,7 +218,7 @@
         <field name="name">records.box.calendar</field>
         <field name="model">records.box</field>
         <field name="arch" type="xml">
-            <calendar string="📅 Box Storage Calendar" date_start="storage_date" date_stop="destruction_date" color="customer_id">
+            <calendar string="📅 Box Storage Calendar" date_start="stored_date" date_stop="destruction_date" color="customer_id">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="state"/>
@@ -255,8 +255,8 @@
                 <filter string="💥 Destroyed" name="destroyed" domain="[('state', '=', 'destroyed')]"/>
 
                 <separator/>
-                <filter string="📅 Stored This Month" name="this_month" domain="[('storage_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
-                <filter string="🗓️ Stored This Year" name="this_year" domain="[('storage_date', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
+                <filter string="📅 Stored This Month" name="this_month" domain="[('stored_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                <filter string="🗓️ Stored This Year" name="this_year" domain="[('stored_date', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
                 <filter string="⚠️ Near Destruction" name="near_destruction" domain="[('destruction_date', '&lt;=', (context_today() + relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="📊 Group By">
@@ -264,7 +264,7 @@
                     <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
                     <filter string="Location" name="group_by_location" context="{'group_by': 'location_id'}"/>
                     <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
-                    <filter string="Storage Date" name="group_by_storage_date" context="{'group_by': 'storage_date:month'}"/>
+                    <filter string="Storage Date" name="group_by_stored_date" context="{'group_by': 'stored_date:month'}"/>
                 </group>
             </search>
         </field>
