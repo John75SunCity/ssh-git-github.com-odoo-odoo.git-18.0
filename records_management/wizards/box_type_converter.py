@@ -4,30 +4,32 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 
-class RecordsBoxTypeConverter(models.TransientModel):
-    _name = 'records.box.type.converter'
-    _description = 'Bulk Box Type Converter - FIELD ENHANCEMENT COMPLETE ✅'
+class ContainerTypeConverter(models.TransientModel):
+    """Container Type Converter Wizard"""
+    
+    _name = 'records.container.type.converter'
+    _description = 'Container Type Converter'
 
     # Core conversion fields
     name = fields.Char(string='Converter Name', compute='_compute_name', store=True)
-    box_ids = fields.Many2many(
-        'records.box',
-        string='Boxes to Convert',
+    container_ids = fields.Many2many(
+        'records.container',
+        string='Containers to Convert',
         required=True,
-        help='Select the boxes you want to convert to a different type'
+        help='Select the containers you want to convert to a different type'
     )
     current_type = fields.Char(
         string='Current Type',
         readonly=True,
-        help='Current box type code (if all selected boxes have the same type)'
+        help='Current container type code (if all selected containers have the same type)'
     )
-    new_box_type_code = fields.Selection([
-        ('01', '01 - Standard File Box ($0.32/month)'),
-        ('03', '03 - Map File Box ($0.50/month)'),
-        ('04', '04 - Oversize File Box ($1.25/month)'),
-        ('06', '06 - Specialty Box ($2.00/month)'),
-    ], string='New Box Type', required=True,
-        help='Select the new box type for all selected boxes')
+    new_container_type_code = fields.Selection([
+        ('01', '01 - Standard File Container ($0.32/month)'),
+        ('03', '03 - Map File Container ($0.50/month)'),
+        ('04', '04 - Oversize File Container ($1.25/month)'),
+        ('06', '06 - Specialty Container ($2.00/month)'),
+    ], string='New Container Type', required=True,
+        help='Select the new container type for all selected containers')
     
     # Missing fields identified by field analysis
     reason = fields.Text(

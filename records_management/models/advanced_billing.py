@@ -4,6 +4,7 @@ Advanced Billing Management
 """
 
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -43,6 +44,8 @@ class AdvancedBilling(models.Model):
     
     billing_period_start = fields.Date(string='Period Start', tracking=True)
     billing_period_end = fields.Date(string='Period End', tracking=True)
+    billing_period_id = fields.Many2one('records.advanced.billing.period', 
+                                       string='Billing Period', tracking=True)
     
     # ==========================================
     # BILLING TYPE
@@ -202,3 +205,89 @@ class AdvancedBillingLine(models.Model):
     def _compute_line_total(self):
         for line in self:
             line.line_total = line.quantity * line.unit_price
+
+
+class RecordsAdvancedBillingPeriod(models.Model):
+    """
+    Advanced Billing Period - Manage billing cycles and periods
+    """
+
+    _name = "records.advanced.billing.period"
+    _description = "Advanced Billing Period"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "start_date desc"
+
+    # Core fields
+    name = fields.Char(string="Period Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company, required=True)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user, tracking=True)
+    active = fields.Boolean(default=True)
+
+    # Period definition
+    start_date = fields.Date(string='Start Date', required=True, tracking=True)
+    end_date = fields.Date(string='End Date', required=True, tracking=True)
+    billing_frequency = fields.Selection([
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly'),
+        ('semi_annual', 'Semi-Annual'),
+        ('annual', 'Annual'),
+        ('custom', 'Custom')
+    ], string='Billing Frequency', default='monthly', required=True, tracking=True)
+
+    # Period status
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('closed', 'Closed'),
+        ('cancelled', 'Cancelled')
+    ], string='State', default='draft', tracking=True)
+
+    # Billing configuration
+    auto_generate_invoices = fields.Boolean(string='Auto Generate Invoices', default=True)
+    cutoff_day = fields.Integer(string='Cutoff Day', default=1, 
+                               help='Day of month for billing cutoff')
+    
+    # Relationships
+    billing_ids = fields.One2many('advanced.billing', 'billing_period_id', string='Billing Records')
+    
+    # Computed fields
+    total_billing_amount = fields.Float(string='Total Billing Amount', 
+                                       compute='_compute_total_billing_amount')
+    billing_count = fields.Integer(string='Billing Count', compute='_compute_billing_count')
+
+    @api.depends('billing_ids.total_amount')
+    def _compute_total_billing_amount(self):
+        """Calculate total billing for this period"""
+        for record in self:
+            record.total_billing_amount = sum(record.billing_ids.mapped('total_amount'))
+
+    @api.depends('billing_ids')
+    def _compute_billing_count(self):
+        """Count billing records for this period"""
+        for record in self:
+            record.billing_count = len(record.billing_ids)
+
+    def action_activate(self):
+        """Activate this billing period"""
+        self.ensure_one()
+        self.write({'state': 'active'})
+        self.message_post(body=_('Billing period activated'))
+
+    def action_close(self):
+        """Close this billing period"""
+        self.ensure_one()
+        self.write({'state': 'closed'})
+        self.message_post(body=_('Billing period closed'))
+
+    def action_generate_billing(self):
+        """Generate billing records for this period"""
+        self.ensure_one()
+        # Implementation for generating billing records
+        self.message_post(body=_('Billing generation started'))
+
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        """Validate period dates"""
+        for record in self:
+            if record.start_date >= record.end_date:
+                raise ValidationError(_('Start date must be before end date'))

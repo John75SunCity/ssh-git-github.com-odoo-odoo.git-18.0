@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Box Type Converter Wizard View -->
-        <record id="view_box_type_converter_form" model="ir.ui.view">
-            <field name="name">records.box.type.converter.form</field>
-            <field name="model">records.box.type.converter</field>
+        <!-- Container Type Converter Wizard View -->
+        <record id="view_container_type_converter_form" model="ir.ui.view">
+            <field name="name">records.container.type.converter.form</field>
+            <field name="model">records.container.type.converter</field>
             <field name="arch" type="xml">
                 <form string="Bulk Box Type Converter">
                     <group>
