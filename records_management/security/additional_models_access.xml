@@ -7,7 +7,7 @@
         <!-- Records Deletion Request Access -->
         <record model="ir.model.access" id="access_records_deletion_request_user">
             <field name="name">rec.del.req.user</field>
-            <field name="model_id" ref="model_rec_del_req"/>
+            <field name="model_id" ref="model_records_deletion_request_enhanced"/>
             <field name="group_id" ref="records_management.group_records_user"/>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
@@ -17,7 +17,7 @@
 
         <record model="ir.model.access" id="access_records_deletion_request_manager">
             <field name="name">rec.del.req.manager</field>
-            <field name="model_id" ref="model_rec_del_req"/>
+            <field name="model_id" ref="model_records_deletion_request_enhanced"/>
             <field name="group_id" ref="records_management.group_records_manager"/>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
