@@ -73,6 +73,31 @@ class BinUnlockService(models.Model):
     ], string='Urgency', default='normal', tracking=True)
     
     reason = fields.Text(string='Unlock Reason', required=True, tracking=True)
+    
+    # Key restriction fields
+    unlock_reason_code = fields.Selection([
+        ('lost_key', 'Lost Key'),
+        ('broken_key', 'Broken Key'),
+        ('emergency', 'Emergency Access'),
+        ('maintenance', 'Maintenance Required'),
+        ('inspection', 'Inspection Required'),
+        ('key_restriction', 'Customer Key Restriction'),
+        ('other', 'Other')
+    ], string='Unlock Reason Code', required=True, tracking=True, default='other')
+    
+    customer_key_restricted = fields.Boolean(
+        string='Customer Key Restricted', 
+        related='customer_id.key_issuance_allowed',
+        readonly=True,
+        help='Indicates if this customer is restricted from receiving keys'
+    )
+    
+    key_restriction_reason = fields.Selection(
+        related='customer_id.key_restriction_reason',
+        readonly=True,
+        string='Key Restriction Reason'
+    )
+    
     special_instructions = fields.Text(string='Special Instructions')
     
     # ==========================================
@@ -292,6 +317,59 @@ class BinUnlockService(models.Model):
         
         self.write({'state': 'cancelled'})
         self.message_post(body=_('Service cancelled'))
+    
+    # ==========================================
+    # KEY RESTRICTION LOGIC
+    # ==========================================
+    
+    @api.onchange('customer_id')
+    def _onchange_customer_key_restriction(self):
+        """Auto-set unlock reason when customer is key restricted"""
+        if self.customer_id and not self.customer_id.key_issuance_allowed:
+            self.unlock_reason_code = 'key_restriction'
+            self.reason = _('Customer is restricted from receiving keys. Service required for bin access.')
+    
+    @api.constrains('customer_id', 'unlock_reason_code')
+    def _check_key_restriction_consistency(self):
+        """Ensure unlock reason is consistent with customer key restrictions"""
+        for record in self:
+            if record.customer_id and not record.customer_id.key_issuance_allowed:
+                if record.unlock_reason_code != 'key_restriction':
+                    # Auto-correct the reason
+                    record.unlock_reason_code = 'key_restriction'
+                    if not record.reason or 'key' not in record.reason.lower():
+                        record.reason = _('Customer is restricted from receiving keys. Service required for bin access.')
+    
+    def get_key_restriction_info(self):
+        """Get key restriction information for this service"""
+        self.ensure_one()
+        
+        if not self.customer_id:
+            return {'restricted': False}
+        
+        restriction_info = self.customer_id.get_key_restriction_summary()
+        restriction_info['service_required'] = not self.customer_id.key_issuance_allowed
+        
+        return restriction_info
+    
+    @api.model
+    def create_for_key_restricted_customer(self, customer_id, bin_identifier, reason=None):
+        """Helper method to create unlock service for key-restricted customers"""
+        customer = self.env['res.partner'].browse(customer_id)
+        
+        if customer.key_issuance_allowed:
+            raise UserError(_('Customer "%s" is not restricted from receiving keys') % customer.name)
+        
+        vals = {
+            'customer_id': customer_id,
+            'bin_identifier': bin_identifier,
+            'unlock_reason_code': 'key_restriction',
+            'reason': reason or _('Customer is restricted from receiving keys. Service required for bin access.'),
+            'urgency': 'normal',
+            'approval_required': True,
+        }
+        
+        return self.create(vals)
     
     # ==========================================
     # VALIDATION

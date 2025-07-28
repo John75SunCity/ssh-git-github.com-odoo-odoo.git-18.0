@@ -50,6 +50,7 @@ from . import destruction_item
 from . import doc_ret_work_order
 from . import global_rates
 from . import pickup_route
+from . import res_partner_key_restriction
 
 # Box Related Models (movements, service requests)
 from . import records_box_movement

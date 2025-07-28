@@ -148,6 +148,8 @@ Features:
         'views/bin_key_management_views.xml',  # New: Bin key management views
         'views/partner_bin_key_views.xml',  # New: Partner bin key views
         'views/mobile_bin_key_wizard_views.xml',  # New: Mobile bin key wizard views
+        'views/key_restriction_views.xml',  # New: Key restriction management views
+        'views/key_restriction_checker_views.xml',  # New: Key restriction checker views
         'report/destruction_certificate_report.xml',
         'report/bale_label_report.xml',
         'report/portal_audit_report.xml',  # New: Audit reports for NAID

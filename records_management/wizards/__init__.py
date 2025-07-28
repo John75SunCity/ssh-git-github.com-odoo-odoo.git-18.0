@@ -11,6 +11,7 @@ from . import work_order_bin_assignment_wizard  # Work order bin assignment wiza
 
 # Security wizards
 from . import permanent_flag_wizard  # Permanent flag security wizard
+from . import key_restriction_checker  # Key restriction checker for technicians
 
 # Reporting wizards
 from . import location_report_wizard  # Location utilization report wizard
