@@ -9,7 +9,7 @@ class HardDriveScanWizard(models.TransientModel):
     _description = 'Hard Drive Serial Number Scanner - FIELD ENHANCEMENT COMPLETE ✅'
 
     # Core wizard fields
-    service_id = fields.Many2one('shredding.service', string='Shredding Service', required=True)
+    service_id = fields.Many2one('shred.svc', string='Shredding Service', required=True)
     scan_location = fields.Selection([
         ('customer', 'Customer Location'),
         ('facility', 'Facility Verification'),

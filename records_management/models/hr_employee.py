@@ -22,7 +22,7 @@ class HrEmployee(models.Model):
     
     # Records Management Department Assignment
     records_department_id = fields.Many2one(
-        'rec.dept', 
+        'records.department', 
         string='Records Department',
         help='Department for records management access control',
         tracking=True

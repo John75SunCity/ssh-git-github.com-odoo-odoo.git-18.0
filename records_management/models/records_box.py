@@ -61,6 +61,8 @@ class RecordsBox(models.Model):
     # Measurements
     estimated_weight = fields.Float(string='Estimated Weight (lbs)', tracking=True)
     actual_weight = fields.Float(string='Actual Weight (lbs)', tracking=True)
+    weight = fields.Float(string='Weight (lbs)', compute='_compute_weight', store=True,
+                         help='Current weight: actual weight if available, otherwise estimated weight')
     
     # ==========================================
     # CONTENT TRACKING
@@ -120,6 +122,12 @@ class RecordsBox(models.Model):
         """Check if box contains confidential documents"""
         for record in self:
             record.confidential_documents = any(record.document_ids.mapped('confidential'))
+    
+    @api.depends('actual_weight', 'estimated_weight')
+    def _compute_weight(self):
+        """Compute weight: actual weight if available, otherwise estimated weight"""
+        for record in self:
+            record.weight = record.actual_weight or record.estimated_weight or 0.0
     
     # ==========================================
     # WORKFLOW METHODS
