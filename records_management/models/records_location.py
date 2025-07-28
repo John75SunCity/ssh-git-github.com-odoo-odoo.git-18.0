@@ -193,6 +193,26 @@ class RecordsLocation(models.Model):
             'context': {'default_location_id': self.id}
         }
     
+    def action_location_report(self):
+        """Generate location utilization report"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.report',
+            'report_name': 'records_management.location_utilization_report',
+            'report_type': 'qweb-pdf',
+            'data': {
+                'location_id': self.id,
+                'location_name': self.name,
+                'box_count': self.box_count,
+                'max_capacity': self.max_capacity,
+                'current_utilization': self.current_utilization,
+                'available_spaces': self.available_spaces,
+                'status': self.status,
+                'access_level': self.access_level,
+            },
+            'context': self.env.context,
+        }
+    
     # ==========================================
     # VALIDATION METHODS
     # ==========================================
