@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Default File Retrieval Base Rates -->
+        <record id="default_retrieval_rates" model="file.retrieval.rates">
+            <field name="name">Default Retrieval Rates</field>
+
+            <!-- Base rates -->
+            <field name="base_retrieval_rate">3.50</field>
+            <field name="base_delivery_rate">25.00</field>
+
+            <!-- Priority rates - per item -->
+            <field name="rush_end_of_day_item">1.50</field>
+            <field name="rush_4_hours_item">3.00</field>
+            <field name="emergency_1_hour_item">7.50</field>
+            <field name="weekend_item">5.00</field>
+            <field name="holiday_item">10.00</field>
+
+            <!-- Priority rates - per work order -->
+            <field name="rush_end_of_day_order">15.00</field>
+            <field name="rush_4_hours_order">35.00</field>
+            <field name="emergency_1_hour_order">75.00</field>
+            <field name="weekend_order">50.00</field>
+            <field name="holiday_order">100.00</field>
+
+            <!-- Working hours -->
+            <field name="working_hours_start">8.0</field>
+            <field name="working_hours_end">17.0</field>
+
+            <field name="active" eval="True"/>
+            <field name="effective_date" eval="(DateTime.now()).strftime('%Y-%m-%d')"/>
+        </record>
+    </data>
+</odoo>
