@@ -120,7 +120,7 @@ class RecordsBoxMovement(models.Model):
     billable = fields.Boolean(string='Billable Movement', default=True)
     cost = fields.Float(string='Movement Cost', tracking=True)
     distance = fields.Float(string='Distance (Miles)')
-    vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle Used')
+    vehicle_id = fields.Many2one('records.vehicle', string='Vehicle Used')
     
     # ==========================================
     # COMPUTED FIELDS

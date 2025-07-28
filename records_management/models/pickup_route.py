@@ -70,7 +70,7 @@ class PickupRoute(models.Model):
     # ==========================================
     # VEHICLE AND DRIVER ASSIGNMENT
     # ==========================================
-    vehicle_id = fields.Many2one('fleet.vehicle', string='Assigned Vehicle', tracking=True)
+    vehicle_id = fields.Many2one('records.vehicle', string='Assigned Vehicle', tracking=True)
     driver_id = fields.Many2one('res.users', string='Primary Driver', tracking=True)
     co_driver_id = fields.Many2one('res.users', string='Co-Driver', tracking=True)
     

@@ -43,6 +43,9 @@ from . import load
 from . import records_box_movement
 from . import records_box_transfer
 
+# Vehicle Management (must be before pickup routes)
+from . import records_vehicle
+
 # NAID Compliance Models
 from . import naid_compliance
 from . import naid_custody_event

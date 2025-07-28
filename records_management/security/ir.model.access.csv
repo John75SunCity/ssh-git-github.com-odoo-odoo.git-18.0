@@ -126,3 +126,5 @@ access_field_label_customization_manager,field.label.custom.manager,model_field_
 access_field_label_customization_portal,field.label.custom.portal,model_field_label_customization,base.group_portal,1,0,0,0
 access_records_digital_scan_user,records.digital.scan.user,model_records_digital_scan,records_management.group_records_user,1,1,1,0
 access_records_digital_scan_manager,records.digital.scan.manager,model_records_digital_scan,records_management.group_records_manager,1,1,1,1
+access_records_vehicle_user,records.vehicle.user,model_records_vehicle,records_management.group_records_user,1,1,1,0
+access_records_vehicle_manager,records.vehicle.manager,model_records_vehicle,records_management.group_records_manager,1,1,1,1
