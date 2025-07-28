@@ -232,6 +232,19 @@ class RecordsBox(models.Model):
             'target': 'current',
         }
     
+    def action_view_documents(self):
+        """View documents in this box"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Documents in Box %s' % self.name,
+            'res_model': 'records.document',
+            'domain': [('box_id', '=', self.id)],
+            'view_mode': 'tree,form',
+            'context': {'default_box_id': self.id},
+            'target': 'current',
+        }
+    
     # ==========================================
     # VALIDATION METHODS
     # ==========================================
