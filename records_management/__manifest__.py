@@ -107,7 +107,7 @@ Features:
         'data/document_retrieval_rates.xml',  # New: Default retrieval rates
         'data/advanced_billing_demo.xml',  # New: Advanced billing demo data
         'data/field_label_demo_data.xml',  # New: Field label customization demo data
-        # 'data/model_records.xml',  # Temporarily disabled due to parsing error - will debug separately
+        'data/model_records.xml',  # Model demo records - now fixed with proper field definitions
         # Load base menu structure first (parent menus only, no actions)
         'views/records_management_base_menus.xml',
         # Load all action-containing view files
