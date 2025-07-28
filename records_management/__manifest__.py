@@ -145,6 +145,7 @@ Features:
         'views/shredding_rates_views.xml',  # New: Shredding rates views
         'views/shredding_inventory_views.xml',  # New: Shredding inventory views
         'views/advanced_billing_views.xml',  # New: Advanced billing views
+        'views/customer_billing_profile_views.xml',  # New: Customer billing profile views
         'views/field_label_customization_views.xml',  # New: Field label customization views
         'views/bin_key_management_views.xml',  # New: Bin key management views
         'views/partner_bin_key_views.xml',  # New: Partner bin key views

@@ -33,6 +33,7 @@ from . import paper_load_shipment
 # Service Management Models
 from . import bin_unlock_service
 from . import customer_retrieval_rates
+from . import customer_billing_profile
 
 # Legacy bale models (for compatibility)
 from . import bale
