@@ -17,7 +17,7 @@ from . import records_department
 from . import records_department_billing_contact
 from . import records_storage_department_user
 from . import records_document
-from . import records_digital_copy
+from . import records_digital_scan
 from . import records_box
 from . import box_contents
 from . import pickup_request_item

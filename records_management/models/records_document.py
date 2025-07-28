@@ -62,7 +62,7 @@ class RecordsDocument(models.Model):
     page_count = fields.Integer(string='Number of Pages', tracking=True)
     document_format = fields.Selection([
         ('paper', 'Paper'),
-        ('digital', 'Digital Copy'),
+        ('digital', 'Digital Scan'),
         ('microfilm', 'Microfilm'),
         ('cd_dvd', 'CD/DVD'),
         ('usb', 'USB Drive')
@@ -74,6 +74,9 @@ class RecordsDocument(models.Model):
     box_id = fields.Many2one('records.box', string='Records Box', tracking=True)
     customer_id = fields.Many2one('res.partner', string='Customer',
                                  domain=[('is_company', '=', True)], tracking=True)
+    
+    # One2many relationships
+    digital_scan_ids = fields.One2many('records.digital.scan', 'document_id', string='Digital Scans')
     
     # ==========================================
     # DATE TRACKING

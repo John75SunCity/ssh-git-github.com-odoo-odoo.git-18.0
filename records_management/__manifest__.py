@@ -115,7 +115,8 @@ Features:
         'views/records_location_views.xml',
         'views/records_document_type_views.xml',
         'views/records_document_views.xml',
-        'views/pickup_request.xml',
+        'views/records_digital_scan_views.xml',  # New: Digital scan views
+        'views/pickup_request_views.xml',
         'views/shredding_views.xml',
         'views/stock_lot_views.xml',
         'views/customer_inventory_views.xml',
