@@ -22,6 +22,9 @@ class RecordsBillingService(models.Model):
     user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
 
+    # Billing relationship
+    billing_id = fields.Many2one('records.billing', string='Related Billing', tracking=True)
+
     # Basic state management
     state = fields.Selection([
         ('draft', 'Draft'),
