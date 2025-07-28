@@ -30,6 +30,20 @@ class TransitoryItems(models.Model):
                       help="Customer description of the item/box/file")
     reference = fields.Char(string="Customer Reference", tracking=True,
                            help="Customer's internal reference number")
+    
+    # Customer box numbering system
+    box_number = fields.Char(string="Box Number", tracking=True,
+                           help="Customer's internal box reference (e.g., 0010, HR0010)")
+    box_set_suffix = fields.Char(string="Set Suffix", tracking=True,
+                               help="Auto-generated suffix for duplicate box numbers (A, B, C)")
+    full_box_reference = fields.Char(string="Full Box Reference", 
+                                   compute='_compute_full_box_reference', store=True,
+                                   help="Complete box reference including suffix")
+    
+    # Barcode for transitory tracking
+    transitory_barcode = fields.Char(string="Transitory Barcode", copy=False, readonly=True,
+                                    help="Temporary barcode until converted to records box")
+    
     company_id = fields.Many2one('res.company', default=lambda self: self.env.company, required=True)
     user_id = fields.Many2one('res.users', string='Created By',
                              default=lambda self: self.env.user, tracking=True)
@@ -55,6 +69,22 @@ class TransitoryItems(models.Model):
         ('other', 'Other Item')
     ], string='Item Type', required=True, tracking=True, default='records_box')
 
+    # Hierarchical structure for file folders
+    parent_box_id = fields.Many2one('transitory.items', string='Parent Box',
+                                   domain="[('item_type', '=', 'records_box'), ('customer_id', '=', customer_id)]",
+                                   tracking=True,
+                                   help="Which box this file/folder belongs to")
+    child_folder_ids = fields.One2many('transitory.items', 'parent_box_id',
+                                      string='Files/Folders in this Box',
+                                      domain="[('item_type', '!=', 'records_box')]")
+    folder_level = fields.Integer(string='Folder Level', compute='_compute_folder_level', store=True,
+                                 help="Depth level: 0=Box, 1=Folder in Box, 2=Subfolder, etc.")
+    
+    # Display helpers for hierarchy
+    parent_box_reference = fields.Char(related='parent_box_id.full_box_reference', string='Box Reference', readonly=True)
+    hierarchy_display = fields.Char(string='Hierarchy Path', compute='_compute_hierarchy_display',
+                                   help="Full path: Box > Folder > Subfolder")
+
     quantity = fields.Integer(string='Quantity', default=1, required=True, tracking=True,
                              help="Number of items (boxes, files, etc.)")
     estimated_weight = fields.Float(string='Estimated Weight (lbs)', tracking=True,
@@ -65,6 +95,72 @@ class TransitoryItems(models.Model):
     # Size estimates for storage planning
     estimated_cubic_feet = fields.Float(string='Estimated Size (cubic feet)', tracking=True,
                                        help="For storage capacity planning")
+    
+    # ==========================================
+    # BUSINESS RECORD FIELDS (Configurable)
+    # ==========================================
+    # Date ranges
+    date_from = fields.Date(string='Records From Date', tracking=True,
+                          help="Start date of records in this box")
+    date_to = fields.Date(string='Records To Date', tracking=True,
+                        help="End date of records in this box")
+    
+    # Sequence ranges for document numbering
+    sequence_from = fields.Char(string='Sequence From', tracking=True,
+                              help="Starting sequence number (e.g., 001, A001)")
+    sequence_to = fields.Char(string='Sequence To', tracking=True,
+                            help="Ending sequence number (e.g., 250, Z999)")
+    
+    # Destruction information
+    scheduled_destruction_date = fields.Date(string='Scheduled Destruction Date', tracking=True,
+                                           help="When these records should be destroyed")
+    destruction_required = fields.Boolean(string='Destruction Required', tracking=True,
+                                        help="Records require certified destruction")
+    retention_period_years = fields.Integer(string='Retention Period (Years)', tracking=True,
+                                           help="Legal retention requirement in years")
+    
+    # Business categorization
+    record_type = fields.Selection([
+        ('financial', 'Financial Records'),
+        ('hr', 'Human Resources'),
+        ('legal', 'Legal Documents'),
+        ('medical', 'Medical Records'),
+        ('tax', 'Tax Documents'),
+        ('contracts', 'Contracts'),
+        ('correspondence', 'Correspondence'),
+        ('invoices', 'Invoices/Billing'),
+        ('other', 'Other')
+    ], string='Record Type', tracking=True, help="Category of records")
+    
+    confidentiality_level = fields.Selection([
+        ('public', 'Public'),
+        ('internal', 'Internal Use'),
+        ('confidential', 'Confidential'),
+        ('restricted', 'Restricted'),
+        ('top_secret', 'Top Secret')
+    ], string='Confidentiality Level', default='internal', tracking=True)
+    
+    # Additional business fields
+    project_code = fields.Char(string='Project Code', tracking=True,
+                              help="Project or job reference code")
+    client_reference = fields.Char(string='Client Reference', tracking=True,
+                                 help="Reference to specific client or matter")
+    compliance_notes = fields.Text(string='Compliance Notes', tracking=True,
+                                 help="Special compliance or legal requirements")
+    
+    # File/folder organization
+    total_file_count = fields.Integer(string='Number of Files', tracking=True,
+                                    help="Approximate number of individual files")
+    filing_system = fields.Char(string='Filing System', tracking=True,
+                               help="How files are organized (alphabetical, chronological, etc.)")
+    
+    # Additional metadata
+    created_by_department = fields.Char(string='Created by Department', tracking=True,
+                                      help="Which department created these records")
+    authorized_by = fields.Char(string='Authorized By', tracking=True,
+                              help="Name of person authorizing storage")
+    special_handling = fields.Text(string='Special Handling Instructions', tracking=True,
+                                 help="Any special requirements or instructions")
     
     # ==========================================
     # STATUS AND WORKFLOW
@@ -109,6 +205,35 @@ class TransitoryItems(models.Model):
                                         related='customer_id.billing_account_id', store=True)
 
     # ==========================================
+    # ADMIN AND IMPORT FIELDS
+    # ==========================================
+    created_by_admin = fields.Boolean(string='Created by Admin', default=False,
+                                     help="Item was created by records management staff")
+    import_batch_id = fields.Char(string='Import Batch ID', 
+                                 help="Batch ID for bulk imported items")
+    import_source = fields.Selection([
+        ('manual', 'Manual Entry'),
+        ('csv_import', 'CSV Import'),
+        ('excel_import', 'Excel Import'),
+        ('api_import', 'API Import'),
+        ('admin_created', 'Admin Created')
+    ], string='Import Source', default='manual', tracking=True)
+    
+    # Admin notes and overrides
+    admin_notes = fields.Text(string='Admin Notes', tracking=True,
+                             help="Internal notes from records management staff")
+    admin_override_billing = fields.Boolean(string='Admin Override Billing',
+                                           help="Admin has overridden default billing settings")
+    admin_priority = fields.Boolean(string='Admin Priority', tracking=True,
+                                   help="Marked as priority by admin")
+    
+    # Field visibility controls (for customer portal)
+    field_config_id = fields.Many2one('transitory.field.config', 
+                                     related='customer_id.transitory_field_config_id',
+                                     string='Field Configuration',
+                                     help="Controls which fields are visible/required for this customer")
+
+    # ==========================================
     # COMPUTED FIELDS
     # ==========================================
     days_in_system = fields.Integer(string='Days in System',
@@ -120,6 +245,41 @@ class TransitoryItems(models.Model):
     storage_impact = fields.Float(string='Storage Impact',
                                  compute='_compute_storage_values', store=True,
                                  help="Storage space impact for capacity planning")
+
+    @api.depends('box_number', 'box_set_suffix')
+    def _compute_full_box_reference(self):
+        """Compute full box reference including set suffix"""
+        for record in self:
+            if record.box_number:
+                if record.box_set_suffix:
+                    record.full_box_reference = f"{record.box_number}-{record.box_set_suffix}"
+                else:
+                    record.full_box_reference = record.box_number
+            else:
+                record.full_box_reference = False
+
+    @api.depends('parent_box_id')
+    def _compute_folder_level(self):
+        """Compute hierarchy level (0=Box, 1=Folder, 2=Subfolder, etc.)"""
+        for record in self:
+            if record.item_type == 'records_box':
+                record.folder_level = 0
+            elif record.parent_box_id:
+                record.folder_level = record.parent_box_id.folder_level + 1
+            else:
+                record.folder_level = 0
+
+    @api.depends('parent_box_id', 'name', 'item_type')
+    def _compute_hierarchy_display(self):
+        """Compute full hierarchy path for display"""
+        for record in self:
+            if record.item_type == 'records_box':
+                record.hierarchy_display = record.full_box_reference or record.name
+            elif record.parent_box_id:
+                parent_path = record.parent_box_id.hierarchy_display or record.parent_box_id.name
+                record.hierarchy_display = f"{parent_path} > {record.name}"
+            else:
+                record.hierarchy_display = record.name
 
     @api.depends('creation_date')
     def _compute_days_in_system(self):
@@ -152,6 +312,393 @@ class TransitoryItems(models.Model):
             
             # Total storage value for billing
             record.total_storage_value = record.quantity * record.monthly_storage_rate
+
+    # ==========================================
+    # BULK IMPORT AND ADMIN METHODS
+    # ==========================================
+    @api.model
+    def bulk_create_from_list(self, items_data, customer_id, created_by_admin=False, parent_box_id=None):
+        """Bulk create transitory items from list data
+        
+        Args:
+            items_data: List of dictionaries with item data
+            customer_id: Customer ID
+            created_by_admin: Whether created by admin
+            parent_box_id: Parent box ID for file folders
+        
+        Returns:
+            List of created record IDs and barcodes
+        """
+        import uuid
+        
+        batch_id = str(uuid.uuid4())[:8]  # Short unique batch ID
+        created_items = []
+        
+        for item_data in items_data:
+            vals = {
+                'customer_id': customer_id,
+                'created_by_admin': created_by_admin,
+                'import_batch_id': batch_id,
+                'import_source': 'admin_created' if created_by_admin else 'csv_import',
+            }
+            
+            # If creating folders in a box, set parent
+            if parent_box_id and item_data.get('item_type') != 'records_box':
+                vals['parent_box_id'] = parent_box_id
+                vals['item_type'] = 'file_folder'  # Default for items in boxes
+            
+            # Map common fields
+            field_mapping = {
+                'name': 'name',
+                'description': 'content_description',
+                'box_number': 'box_number',
+                'item_type': 'item_type',
+                'quantity': 'quantity',
+                'estimated_weight': 'estimated_weight',
+                'date_from': 'date_from',
+                'date_to': 'date_to',
+                'sequence_from': 'sequence_from',
+                'sequence_to': 'sequence_to',
+                'record_type': 'record_type',
+                'confidentiality_level': 'confidentiality_level',
+                'project_code': 'project_code',
+                'client_reference': 'client_reference',
+                'filing_system': 'filing_system',
+                'total_file_count': 'total_file_count',
+            }
+            
+            for api_field, model_field in field_mapping.items():
+                if api_field in item_data:
+                    vals[model_field] = item_data[api_field]
+            
+            # Create the item
+            try:
+                new_item = self.create(vals)
+                created_items.append({
+                    'id': new_item.id,
+                    'barcode': new_item.transitory_barcode,
+                    'name': new_item.name,
+                    'full_reference': new_item.full_box_reference,
+                    'hierarchy_display': new_item.hierarchy_display,
+                    'success': True
+                })
+            except Exception as e:
+                created_items.append({
+                    'name': item_data.get('name', 'Unknown'),
+                    'error': str(e),
+                    'success': False
+                })
+        
+        return {
+            'batch_id': batch_id,
+            'created_items': created_items,
+            'success_count': len([i for i in created_items if i.get('success')]),
+            'error_count': len([i for i in created_items if not i.get('success')])
+        }
+
+    @api.model
+    def create_folders_for_box(self, box_id, folder_list):
+        """Create multiple file folders for a specific box
+        
+        Args:
+            box_id: ID of the parent box
+            folder_list: List of folder data
+        
+        Returns:
+            Created folder records
+        """
+        box = self.browse(box_id)
+        if not box.exists() or box.item_type != 'records_box':
+            raise UserError(_('Invalid box specified'))
+        
+        folder_data = []
+        for folder_info in folder_list:
+            folder_data.append({
+                'name': folder_info.get('name'),
+                'content_description': folder_info.get('description', ''),
+                'item_type': 'file_folder',
+                'sequence_from': folder_info.get('sequence_from'),
+                'sequence_to': folder_info.get('sequence_to'),
+                'date_from': folder_info.get('date_from'),
+                'date_to': folder_info.get('date_to'),
+                'total_file_count': folder_info.get('file_count', 0),
+                'record_type': folder_info.get('record_type'),
+                'confidentiality_level': folder_info.get('confidentiality_level', 'internal'),
+            })
+        
+        return self.bulk_create_from_list(
+            folder_data, 
+            box.customer_id.id, 
+            created_by_admin=self.env.user.has_group('records_management.group_records_manager'),
+            parent_box_id=box_id
+        )
+
+    @api.model
+    def admin_create_for_customer(self, customer_id, item_data, department_id=None):
+        """Admin method to create items for any customer
+        
+        Args:
+            customer_id: Target customer ID
+            item_data: Item data dictionary
+            department_id: Optional department ID
+        
+        Returns:
+            Created item record
+        """
+        # Only allow records management staff
+        if not self.env.user.has_group('records_management.group_records_manager'):
+            raise UserError(_('Only records management staff can create items for customers'))
+        
+        vals = item_data.copy()
+        vals.update({
+            'customer_id': customer_id,
+            'created_by_admin': True,
+            'import_source': 'admin_created',
+            'user_id': self.env.user.id,
+        })
+        
+        if department_id:
+            vals['department_id'] = department_id
+        
+        return self.create(vals)
+
+    @api.model
+    def get_customer_boxes_for_folders(self, customer_id, department_id=None):
+        """Get available boxes for adding folders
+        
+        Args:
+            customer_id: Customer ID
+            department_id: Optional department filter
+        
+        Returns:
+            List of available boxes
+        """
+        domain = [
+            ('customer_id', '=', customer_id),
+            ('item_type', '=', 'records_box'),
+            ('state', 'in', ('declared', 'scheduled'))
+        ]
+        
+        if department_id:
+            domain.append(('department_id', '=', department_id))
+        
+        boxes = self.search(domain)
+        
+        result = []
+        for box in boxes:
+            folder_count = len(box.child_folder_ids)
+            result.append({
+                'id': box.id,
+                'name': box.name,
+                'box_number': box.box_number,
+                'full_reference': box.full_box_reference,
+                'folder_count': folder_count,
+                'barcode': box.transitory_barcode,
+                'description': box.content_description,
+                'state': box.state,
+                'creation_date': box.creation_date.strftime('%Y-%m-%d %H:%M') if box.creation_date else ''
+            })
+        
+        return sorted(result, key=lambda x: x['creation_date'], reverse=True)
+
+    @api.model 
+    def process_csv_import(self, csv_data, customer_id, created_by_admin=False):
+        """Process CSV import for bulk creation
+        
+        Args:
+            csv_data: CSV string data
+            customer_id: Customer ID
+            created_by_admin: Whether import is done by admin
+        
+        Returns:
+            Import results
+        """
+        import csv
+        import io
+        
+        # Parse CSV
+        csv_file = io.StringIO(csv_data)
+        reader = csv.DictReader(csv_file)
+        
+        items_data = []
+        for row in reader:
+            # Clean and validate data
+            item = {}
+            for key, value in row.items():
+                if value and value.strip():
+                    # Convert field names to match model
+                    clean_key = key.lower().replace(' ', '_').replace('-', '_')
+                    item[clean_key] = value.strip()
+            
+            if item.get('name'):  # Must have a name
+                items_data.append(item)
+        
+        if not items_data:
+            raise UserError(_('No valid data found in CSV'))
+        
+        return self.bulk_create_from_list(items_data, customer_id, created_by_admin)
+
+    def action_admin_edit_settings(self):
+        """Open admin view for editing customer settings"""
+        if not self.env.user.has_group('records_management.group_records_manager'):
+            raise UserError(_('Only records management staff can edit customer settings'))
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Admin: Edit Customer Settings',
+            'view_mode': 'form',
+            'res_model': 'res.partner',
+            'res_id': self.customer_id.id,
+            'target': 'new',
+            'context': {'admin_edit_mode': True}
+        }
+    @api.model
+    def get_box_number_suggestions(self, customer_id, department_id=None, search_term=""):
+        """Get box number suggestions for autocomplete"""
+        domain = [('customer_id', '=', customer_id)]
+        if department_id:
+            domain.append(('department_id', '=', department_id))
+        
+        # Search both transitory items and actual boxes
+        transitory_boxes = self.search(domain)
+        actual_boxes = self.env['records.box'].search(domain)
+        
+        suggestions = []
+        
+        # Get existing box numbers
+        for item in transitory_boxes:
+            if item.box_number and (not search_term or search_term.lower() in item.box_number.lower()):
+                suggestions.append({
+                    'box_number': item.box_number,
+                    'full_reference': item.full_box_reference,
+                    'description': item.name,
+                    'source': 'transitory'
+                })
+        
+        for box in actual_boxes:
+            if hasattr(box, 'box_number') and box.box_number:
+                if not search_term or search_term.lower() in box.box_number.lower():
+                    suggestions.append({
+                        'box_number': box.box_number,
+                        'full_reference': box.box_number,
+                        'description': box.description or box.name,
+                        'source': 'records_box'
+                    })
+        
+        # Remove duplicates and sort
+        unique_suggestions = []
+        seen_numbers = set()
+        for suggestion in suggestions:
+            if suggestion['box_number'] not in seen_numbers:
+                unique_suggestions.append(suggestion)
+                seen_numbers.add(suggestion['box_number'])
+        
+        return sorted(unique_suggestions, key=lambda x: x['box_number'])
+
+    @api.model
+    def check_box_number_exists(self, customer_id, box_number, department_id=None):
+        """Check if box number already exists and suggest alternatives"""
+        domain = [('customer_id', '=', customer_id), ('box_number', '=', box_number)]
+        if department_id:
+            domain.append(('department_id', '=', department_id))
+        
+        existing_transitory = self.search(domain)
+        existing_boxes = self.env['records.box'].search(domain)
+        
+        result = {
+            'exists': bool(existing_transitory or existing_boxes),
+            'existing_items': [],
+            'suggested_alternatives': []
+        }
+        
+        if existing_transitory:
+            for item in existing_transitory:
+                result['existing_items'].append({
+                    'type': 'transitory',
+                    'name': item.name,
+                    'full_reference': item.full_box_reference,
+                    'state': item.state
+                })
+        
+        if existing_boxes:
+            for box in existing_boxes:
+                result['existing_items'].append({
+                    'type': 'records_box',
+                    'name': box.name,
+                    'full_reference': getattr(box, 'box_number', box.name),
+                    'state': getattr(box, 'state', 'active')
+                })
+        
+        if result['exists']:
+            # Generate suffix suggestions
+            existing_suffixes = []
+            for item in existing_transitory:
+                if item.box_set_suffix:
+                    existing_suffixes.append(item.box_set_suffix)
+            
+            # Generate next suffix (A, B, C, etc.)
+            alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            for letter in alphabet:
+                if letter not in existing_suffixes:
+                    result['suggested_alternatives'].append({
+                        'full_reference': f"{box_number}-{letter}",
+                        'suffix': letter,
+                        'type': 'set_suffix'
+                    })
+                    break
+            
+            # Also suggest next numeric sequence
+            numeric_suggestions = self._get_next_numeric_suggestions(customer_id, box_number, department_id)
+            result['suggested_alternatives'].extend(numeric_suggestions)
+        
+        return result
+
+    def _get_next_numeric_suggestions(self, customer_id, base_number, department_id=None):
+        """Generate next numeric sequence suggestions"""
+        import re
+        
+        # Extract numeric part and prefix
+        match = re.match(r'([A-Za-z]*)(\d+)', base_number)
+        if not match:
+            return []
+        
+        prefix = match.group(1)
+        number = int(match.group(2))
+        number_length = len(match.group(2))
+        
+        suggestions = []
+        for i in range(1, 6):  # Suggest next 5 numbers
+            next_number = number + i
+            padded_number = str(next_number).zfill(number_length)
+            next_box_number = f"{prefix}{padded_number}"
+            
+            # Check if this number exists
+            domain = [('customer_id', '=', customer_id), ('box_number', '=', next_box_number)]
+            if department_id:
+                domain.append(('department_id', '=', department_id))
+            
+            if not self.search(domain) and not self.env['records.box'].search(domain):
+                suggestions.append({
+                    'full_reference': next_box_number,
+                    'suffix': None,
+                    'type': 'next_number'
+                })
+                break  # Only suggest the first available number
+        
+        return suggestions
+
+    def _generate_transitory_barcode(self, prefix='TI'):
+        """Generate unique barcode for transitory item
+        
+        Args:
+            prefix: Barcode prefix (TB=Box, TF=Folder, TI=Item)
+        """
+        sequence = self.env['ir.sequence'].next_by_code('transitory.items.barcode')
+        if not sequence:
+            # Fallback if sequence doesn't exist
+            import time
+            sequence = f"{int(time.time())}"[-6:]  # Last 6 digits of timestamp
+        return f"{prefix}-{sequence}"
 
     # ==========================================
     # WORKFLOW ACTION METHODS
@@ -292,8 +839,36 @@ class TransitoryItems(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create to set default storage rates"""
+        """Override create to set default storage rates and generate barcodes"""
         for vals in vals_list:
+            # Generate transitory barcode
+            if not vals.get('transitory_barcode'):
+                # Different barcode prefixes for different types
+                item_type = vals.get('item_type', 'records_box')
+                if item_type == 'records_box':
+                    prefix = 'TB'  # Transitory Box
+                elif item_type == 'file_folder':
+                    prefix = 'TF'  # Transitory Folder
+                else:
+                    prefix = 'TI'  # Transitory Item
+                
+                vals['transitory_barcode'] = self._generate_transitory_barcode(prefix)
+            
+            # Handle box number and suffix logic (only for boxes)
+            if vals.get('box_number') and vals.get('customer_id') and vals.get('item_type') == 'records_box':
+                existing_check = self.check_box_number_exists(
+                    vals['customer_id'], 
+                    vals['box_number'], 
+                    vals.get('department_id')
+                )
+                
+                # If box number exists and no suffix provided, auto-generate suffix
+                if existing_check['exists'] and not vals.get('box_set_suffix'):
+                    if existing_check['suggested_alternatives']:
+                        first_suggestion = existing_check['suggested_alternatives'][0]
+                        if first_suggestion['type'] == 'set_suffix':
+                            vals['box_set_suffix'] = first_suggestion['suffix']
+            
             # Set default storage rate based on item type
             if not vals.get('monthly_storage_rate') and vals.get('item_type'):
                 item_type = vals['item_type']
@@ -305,6 +880,20 @@ class TransitoryItems(models.Model):
                     vals['monthly_storage_rate'] = 2.00
                 else:
                     vals['monthly_storage_rate'] = 1.00
+            
+            # Handle admin creation
+            if vals.get('created_by_admin'):
+                vals['admin_notes'] = f"Created by admin: {self.env.user.name}"
+            
+            # Validate parent box relationship
+            if vals.get('parent_box_id') and vals.get('item_type') == 'records_box':
+                raise UserError(_('Records boxes cannot be inside other boxes'))
+            
+            # Ensure file folders have a parent box (unless created by admin)
+            if (vals.get('item_type') == 'file_folder' and 
+                not vals.get('parent_box_id') and 
+                not vals.get('created_by_admin')):
+                raise UserError(_('File folders must be assigned to a box'))
         
         return super().create(vals_list)
 

@@ -534,16 +534,263 @@ class CustomerPortalExtended(CustomerPortal):
         request_obj = request.env['portal.request'].sudo().create(vals)
         return {'id': request_obj.id, 'message': 'Request created.'}
 
+    # ==========================================
+    # TRANSITORY ITEMS (PRE-PICKUP INVENTORY)
+    # ==========================================
+    
+    @http.route('/my/inventory/transitory', type='http', auth="user", website=True)
+    def portal_transitory_items(self, **kw):
+        """Customer portal page for managing transitory items"""
+        user = request.env.user
+        partner = user.partner_id
+        
+        # Get customer's transitory items
+        transitory_items = request.env['transitory.items'].search([
+            ('customer_id', '=', partner.id)
+        ])
+        
+        # Get field configuration for this customer
+        field_config = request.env['transitory.field.config'].sudo().get_config_for_customer(partner.id)
+        
+        values = {
+            'transitory_items': transitory_items,
+            'field_config': field_config.get_field_config_dict(),
+            'page_name': 'transitory_items',
+        }
+        return request.render("records_management.portal_transitory_items", values)
+
+    @http.route('/my/inventory/transitory/add', type='http', auth="user", website=True)
+    def portal_add_transitory_item_form(self, **kw):
+        """Form for adding new transitory item"""
+        user = request.env.user
+        partner = user.partner_id
+        
+        # Get field configuration
+        field_config = request.env['transitory.field.config'].sudo().get_config_for_customer(partner.id)
+        
+        # Get departments for this customer
+        departments = request.env['records.department'].search([
+            ('partner_ids', 'in', [partner.id])
+        ])
+        
+        values = {
+            'field_config': field_config.get_field_config_dict(),
+            'departments': departments,
+            'item_types': request.env['transitory.items']._fields['item_type'].selection,
+            'record_types': request.env['transitory.items']._fields['record_type'].selection,
+            'confidentiality_levels': request.env['transitory.items']._fields['confidentiality_level'].selection,
+            'page_name': 'add_transitory_item',
+        }
+        return request.render("records_management.portal_add_transitory_item", values)
+
+    @http.route('/my/inventory/transitory/create', type='json', auth="user", website=True)
+    def portal_create_transitory_item(self, **kw):
+        """Create new transitory item via AJAX"""
+        user = request.env.user
+        partner = user.partner_id
+        
+        try:
+            # Get field configuration to validate required fields
+            field_config = request.env['transitory.field.config'].sudo().get_config_for_customer(partner.id)
+            config_dict = field_config.get_field_config_dict()
+            
+            # Validate required fields
+            errors = []
+            if config_dict['required_fields']['box_number'] and not kw.get('box_number'):
+                errors.append('Box number is required')
+            if config_dict['required_fields']['description'] and not kw.get('name'):
+                errors.append('Item description is required')
+            if config_dict['required_fields']['content_description'] and not kw.get('content_description'):
+                errors.append('Content description is required')
+            if config_dict['required_fields']['date_from'] and not kw.get('date_from'):
+                errors.append('Start date is required')
+            if config_dict['required_fields']['date_to'] and not kw.get('date_to'):
+                errors.append('End date is required')
+            
+            if errors:
+                return {'success': False, 'errors': errors}
+            
+            # Check for box number conflicts
+            box_conflict = None
+            if kw.get('box_number'):
+                conflict_check = request.env['transitory.items'].sudo().check_box_number_exists(
+                    partner.id, kw.get('box_number'), kw.get('department_id')
+                )
+                if conflict_check['exists']:
+                    box_conflict = {
+                        'exists': True,
+                        'existing_items': conflict_check['existing_items'],
+                        'suggestions': conflict_check['suggested_alternatives']
+                    }
+            
+            # Prepare values for creation
+            vals = {
+                'customer_id': partner.id,
+                'name': kw.get('name'),
+                'box_number': kw.get('box_number'),
+                'content_description': kw.get('content_description'),
+                'item_type': kw.get('item_type', 'records_box'),
+                'quantity': int(kw.get('quantity', 1)),
+                'estimated_weight': float(kw.get('estimated_weight', 0)) if kw.get('estimated_weight') else 0,
+                'estimated_cubic_feet': float(kw.get('estimated_cubic_feet', 0)) if kw.get('estimated_cubic_feet') else 0,
+                'date_from': kw.get('date_from') if kw.get('date_from') else False,
+                'date_to': kw.get('date_to') if kw.get('date_to') else False,
+                'sequence_from': kw.get('sequence_from'),
+                'sequence_to': kw.get('sequence_to'),
+                'scheduled_destruction_date': kw.get('scheduled_destruction_date') if kw.get('scheduled_destruction_date') else False,
+                'record_type': kw.get('record_type'),
+                'confidentiality_level': kw.get('confidentiality_level', 'internal'),
+                'project_code': kw.get('project_code'),
+                'client_reference': kw.get('client_reference'),
+                'total_file_count': int(kw.get('total_file_count', 0)) if kw.get('total_file_count') else 0,
+                'filing_system': kw.get('filing_system'),
+                'created_by_department': kw.get('created_by_department'),
+                'authorized_by': kw.get('authorized_by'),
+                'special_handling': kw.get('special_handling'),
+                'compliance_notes': kw.get('compliance_notes'),
+            }
+            
+            if kw.get('department_id'):
+                vals['department_id'] = int(kw.get('department_id'))
+                
+            # Handle box set suffix if dealing with conflicts
+            if kw.get('use_suggested_suffix') and box_conflict:
+                if box_conflict['suggestions']:
+                    vals['box_set_suffix'] = box_conflict['suggestions'][0]['suffix']
+            elif kw.get('manual_suffix'):
+                vals['box_set_suffix'] = kw.get('manual_suffix')
+            
+            # Create the item
+            new_item = request.env['transitory.items'].sudo().create(vals)
+            
+            return {
+                'success': True,
+                'item_id': new_item.id,
+                'barcode': new_item.transitory_barcode,
+                'full_reference': new_item.full_box_reference,
+                'box_conflict': box_conflict,
+                'message': 'Transitory item created successfully'
+            }
+            
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'message': 'Failed to create transitory item'
+            }
+
+    @http.route('/my/inventory/transitory/box_suggestions', type='json', auth="user", website=True)
+    def portal_get_box_suggestions(self, search_term="", department_id=None):
+        """Get box number suggestions for autocomplete"""
+        user = request.env.user
+        partner = user.partner_id
+        
+        suggestions = request.env['transitory.items'].sudo().get_box_number_suggestions(
+            partner.id, department_id, search_term
+        )
+        
+        return {'suggestions': suggestions}
+
+    @http.route('/my/inventory/transitory/check_box_number', type='json', auth="user", website=True)
+    def portal_check_box_number(self, box_number, department_id=None):
+        """Check if box number exists and get suggestions"""
+        user = request.env.user
+        partner = user.partner_id
+        
+        result = request.env['transitory.items'].sudo().check_box_number_exists(
+            partner.id, box_number, department_id
+        )
+        
+        return result
+
+    @http.route('/my/inventory/transitory/<int:item_id>', type='http', auth="user", website=True)
+    def portal_transitory_item_detail(self, item_id, **kw):
+        """View details of a specific transitory item"""
+        user = request.env.user
+        partner = user.partner_id
+        
+        item = request.env['transitory.items'].search([
+            ('id', '=', item_id),
+            ('customer_id', '=', partner.id)
+        ])
+        
+        if not item:
+            return request.render("website.404")
+        
+        values = {
+            'item': item,
+            'page_name': 'transitory_item_detail',
+        }
+        return request.render("records_management.portal_transitory_item_detail", values)
+
+    @http.route('/my/inventory/transitory/<int:item_id>/edit', type='http', auth="user", website=True)
+    def portal_edit_transitory_item(self, item_id, **kw):
+        """Edit transitory item"""
+        user = request.env.user
+        partner = user.partner_id
+        
+        item = request.env['transitory.items'].search([
+            ('id', '=', item_id),
+            ('customer_id', '=', partner.id),
+            ('state', 'in', ['declared', 'scheduled'])  # Only allow editing in these states
+        ])
+        
+        if not item:
+            return request.render("website.404")
+        
+        # Get field configuration
+        field_config = request.env['transitory.field.config'].sudo().get_config_for_customer(partner.id)
+        
+        # Get departments
+        departments = request.env['records.department'].search([
+            ('partner_ids', 'in', [partner.id])
+        ])
+        
+        values = {
+            'item': item,
+            'field_config': field_config.get_field_config_dict(),
+            'departments': departments,
+            'item_types': request.env['transitory.items']._fields['item_type'].selection,
+            'record_types': request.env['transitory.items']._fields['record_type'].selection,
+            'confidentiality_levels': request.env['transitory.items']._fields['confidentiality_level'].selection,
+            'page_name': 'edit_transitory_item',
+        }
+        return request.render("records_management.portal_edit_transitory_item", values)
+
+    @http.route('/my/inventory/transitory/<int:item_id>/schedule_pickup', type='json', auth="user", website=True)
+    def portal_schedule_pickup(self, item_id, pickup_date):
+        """Schedule pickup for transitory item"""
+        user = request.env.user
+        partner = user.partner_id
+        
+        item = request.env['transitory.items'].search([
+            ('id', '=', item_id),
+            ('customer_id', '=', partner.id)
+        ])
+        
+        if not item:
+            return {'success': False, 'error': 'Item not found'}
+        
+        try:
+            item.sudo().write({
+                'scheduled_pickup_date': pickup_date,
+                'state': 'scheduled'
+            })
+            
+            return {
+                'success': True,
+                'message': f'Pickup scheduled for {pickup_date}'
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e)
+            }
+
     @http.route('/my/inventory/add_temp', type='json', auth="user", website=True)
     def portal_add_temp_inventory(self, **kw):
-        vals = {
-            'customer_id': request.env.user.partner_id.id,
-            'item_type': kw.get('type', 'records_box'),
-            'content_description': kw.get('description'),
-            'name': kw.get('name') or f"Customer item - {kw.get('type', 'item')}",
-        }
-        temp = request.env['transitory.items'].sudo().create(vals)
-        return {'id': temp.id, 'reference': temp.reference or temp.name}
+        """Legacy endpoint - redirect to new transitory items system"""
+        return self.portal_create_transitory_item(**kw)
 
     @http.route('/my/users/import', type='http', auth="user", website=True, csrf=True)
     def portal_import_users(self, **kw):
