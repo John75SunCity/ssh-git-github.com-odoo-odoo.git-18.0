@@ -22,7 +22,7 @@ from . import records_box
 from . import box_contents
 from . import pickup_request_item
 from . import pickup_request
-from . import temp_inventory
+from . import transitory_items
 
 # New Paper Recycling Models (Business-focused)
 from . import paper_bale_recycling

@@ -33,6 +33,11 @@ class RecordsBox(models.Model):
     user_id = fields.Many2one('res.users', string='Responsible User', 
                              default=lambda self: self.env.user, tracking=True)
     
+    # Source tracking for converted transitory items
+    source_transitory_id = fields.Many2one('transitory.items', string='Source Transitory Item',
+                                          readonly=True, tracking=True,
+                                          help="Link to original customer-declared item")
+    
     # ==========================================
     # CUSTOMER AND LOCATION
     # ==========================================

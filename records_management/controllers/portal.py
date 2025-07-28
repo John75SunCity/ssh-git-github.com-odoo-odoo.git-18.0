@@ -537,12 +537,13 @@ class CustomerPortalExtended(CustomerPortal):
     @http.route('/my/inventory/add_temp', type='json', auth="user", website=True)
     def portal_add_temp_inventory(self, **kw):
         vals = {
-            'partner_id': request.env.user.partner_id.id,
-            'inventory_type': kw.get('type'),
-            'description': kw.get('description'),
+            'customer_id': request.env.user.partner_id.id,
+            'item_type': kw.get('type', 'records_box'),
+            'content_description': kw.get('description'),
+            'name': kw.get('name') or f"Customer item - {kw.get('type', 'item')}",
         }
-        temp = request.env['temp.inventory'].sudo().create(vals)
-        return {'barcode': temp.temp_barcode}
+        temp = request.env['transitory.items'].sudo().create(vals)
+        return {'id': temp.id, 'reference': temp.reference or temp.name}
 
     @http.route('/my/users/import', type='http', auth="user", website=True, csrf=True)
     def portal_import_users(self, **kw):

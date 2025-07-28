@@ -156,7 +156,7 @@ class RecordsChainOfCustody(models.Model):
     # ==========================================
     # COMPUTED FIELDS
     # ==========================================
-    customer_id = fields.Many2one(related='box_id.partner_id', string='Customer', readonly=True)
+    customer_id = fields.Many2one(related='box_id.customer_id', string='Customer', readonly=True)
     item_description = fields.Char(string='Item Description', compute='_compute_item_description')
     custody_duration_status = fields.Char(string='Duration Status', compute='_compute_duration_status')
     
