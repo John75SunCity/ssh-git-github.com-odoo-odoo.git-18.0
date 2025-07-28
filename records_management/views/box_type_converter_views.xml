@@ -9,11 +9,9 @@
                 <form string="Bulk Box Type Converter">
                     <group>
                         <group>
-                            <field name="box_ids" widget="many2many_tags" 
-                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="box_ids" widget="many2many_tags" options="{'no_create': True, 'no_open': True}"/>
                             <field name="current_type" invisible="1"/>
-                            <label for="current_type" string="Current Type" 
-                                   invisible="current_type == False"/>
+                            <label for="current_type" string="Current Type" invisible="current_type == False"/>
                             <div invisible="current_type == False">
                                 <field name="current_type" readonly="1" nolabel="1"/>
                             </div>
@@ -23,24 +21,18 @@
                             <field name="update_location"/>
                         </group>
                     </group>
-                    
+
                     <group string="Conversion Summary">
                         <field name="summary_line" nolabel="1"/>
                     </group>
-                    
+
                     <group string="Optional Information">
                         <field name="reason" placeholder="Why are you converting these boxes? (Optional)"/>
                     </group>
-                    
+
                     <footer>
-                        <button name="action_convert_boxes" 
-                                string="Convert Boxes" 
-                                type="object" 
-                                class="btn-primary"/>
-                        <button name="action_preview_changes" 
-                                string="Preview Changes" 
-                                type="object" 
-                                class="btn-secondary"/>
+                        <button name="action_convert_boxes" string="Convert Boxes" type="object" class="btn-primary"/>
+                        <button name="action_preview_changes" string="Preview Changes" type="object" class="btn-secondary"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
                 </form>
@@ -57,11 +49,7 @@
         </record>
 
         <!-- Menu item for standalone access -->
-        <menuitem id="menu_box_type_converter"
-                  name="Bulk Convert Box Types"
-                  parent="menu_records_operations"
-                  action="action_box_type_converter"
-                  sequence="30"/>
+        <menuitem id="menu_box_type_converter" name="Bulk Convert Box Types" parent="menu_records_operations" action="action_box_type_converter" sequence="30"/>
 
     </data>
 </odoo>
