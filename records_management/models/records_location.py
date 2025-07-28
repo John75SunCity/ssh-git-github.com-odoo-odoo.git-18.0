@@ -93,6 +93,14 @@ class RecordsLocation(models.Model):
     container_ids = fields.One2many('records.container', 'location_id', string='Containers')
     
     # ==========================================
+    # COMPUTED FIELDS
+    # ==========================================
+    box_count = fields.Integer(string='Box Count', compute='_compute_box_count', store=True)
+    capacity = fields.Integer(string='Capacity', related='max_capacity', store=True)
+    current_utilization = fields.Float(string='Current Utilization (%)', 
+                                      compute='_compute_current_utilization', store=True)
+    
+    # ==========================================
     # STATUS
     # ==========================================
     status = fields.Selection([
@@ -112,6 +120,21 @@ class RecordsLocation(models.Model):
     # ==========================================
     # COMPUTED FIELDS
     # ==========================================
+    @api.depends('box_ids')
+    def _compute_box_count(self):
+        """Calculate total number of boxes in this location"""
+        for record in self:
+            record.box_count = len(record.box_ids)
+    
+    @api.depends('box_count', 'max_capacity')
+    def _compute_current_utilization(self):
+        """Calculate current utilization percentage"""
+        for record in self:
+            if record.max_capacity and record.max_capacity > 0:
+                record.current_utilization = (record.box_count / record.max_capacity) * 100
+            else:
+                record.current_utilization = 0.0
+    
     @api.depends('box_ids')
     def _compute_current_occupancy(self):
         """Calculate current occupancy"""

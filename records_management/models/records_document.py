@@ -48,7 +48,7 @@ class RecordsDocument(models.Model):
         ('other', 'Other')
     ], string='Document Type', required=True, tracking=True)
     
-    document_type_id = fields.Many2one('records.document.type', string='Document Type', tracking=True)
+    document_type_id = fields.Many2one('rec.doc.type', string='Document Type Reference', tracking=True)
     document_category = fields.Char(string='Document Category', tracking=True)
     
     confidential = fields.Boolean(string='Confidential', tracking=True)
