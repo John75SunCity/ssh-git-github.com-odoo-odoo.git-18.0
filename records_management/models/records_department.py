@@ -27,7 +27,7 @@ class RecordsDepartment(models.Model):
     active = fields.Boolean(default=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', 
                                 default=lambda self: self.env.company, required=True)
-    user_id = fields.Many2one('res.users', string='Department Manager', 
+    user_id = fields.Many2one('res.users', string='Created By', 
                              default=lambda self: self.env.user, tracking=True)
 
     # ==========================================

@@ -77,7 +77,7 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ==========================================
     # PERSONNEL ASSIGNMENT
     # ==========================================
-    assigned_team_id = fields.Many2one('hr.team', string='Assigned Team', tracking=True)
+    assigned_team_id = fields.Many2one('hr.department', string='Assigned Department', tracking=True)
     primary_technician_id = fields.Many2one('res.users', string='Primary Technician', tracking=True)
     secondary_technician_id = fields.Many2one('res.users', string='Secondary Technician', tracking=True)
     supervisor_id = fields.Many2one('res.users', string='Supervisor', tracking=True)
