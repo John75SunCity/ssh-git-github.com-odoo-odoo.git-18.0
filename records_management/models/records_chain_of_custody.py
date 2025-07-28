@@ -121,6 +121,16 @@ class RecordsChainOfCustody(models.Model):
     transfer_receipt = fields.Binary(string='Transfer Receipt')
 
     # ==========================================
+    # ADDITIONAL TRACKING FIELDS
+    # ==========================================
+    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)
+    key = fields.Char(string='Key', tracking=True)
+    priority = fields.Char(string='Priority', tracking=True)
+    request_type = fields.Char(string='Request Type', tracking=True)
+    state = fields.Char(string='State', tracking=True)
+    value = fields.Char(string='Value', tracking=True)
+
+    # ==========================================
     # AUDIT TRAIL
     # ==========================================
     sequence_number = fields.Integer(string='Sequence Number', readonly=True)
