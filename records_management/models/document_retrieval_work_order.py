@@ -217,12 +217,13 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ==========================================
     # CREATE/WRITE METHODS
     # ==========================================
-    @api.model
-    def create(self, vals):
-        """Override create to generate sequence number"""
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('document.retrieval.work.order') or _('New')
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to generate sequence number - batch compatible"""
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('document.retrieval.work.order') or _('New')
+        return super().create(vals_list)
     
     # ==========================================
     # VALIDATION

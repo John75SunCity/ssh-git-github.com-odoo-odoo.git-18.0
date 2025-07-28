@@ -99,6 +99,10 @@ class RecordsLocation(models.Model):
     capacity = fields.Integer(string='Capacity', related='max_capacity', store=True)
     current_utilization = fields.Float(string='Current Utilization (%)', 
                                       compute='_compute_current_utilization', store=True)
+    available_utilization = fields.Float(string='Available Utilization (%)', 
+                                        compute='_compute_available_utilization', store=True)
+    available_spaces = fields.Integer(string='Available Spaces', 
+                                     compute='_compute_available_spaces', store=True)
     
     # ==========================================
     # STATUS
@@ -149,6 +153,18 @@ class RecordsLocation(models.Model):
                 record.available_space = record.max_capacity - record.current_occupancy
             else:
                 record.available_space = 0
+    
+    @api.depends('current_utilization')
+    def _compute_available_utilization(self):
+        """Calculate available utilization percentage"""
+        for record in self:
+            record.available_utilization = 100.0 - record.current_utilization
+    
+    @api.depends('available_space')
+    def _compute_available_spaces(self):
+        """Calculate available spaces (alias for available_space)"""
+        for record in self:
+            record.available_spaces = record.available_space
     
     # ==========================================
     # ACTION METHODS
