@@ -85,9 +85,22 @@ class RecordsBox(models.Model):
     confidential_documents = fields.Boolean(string='Contains Confidential Documents', 
                                            compute='_compute_confidential_status', store=True)
     
+    # Additional relationships
+    movement_ids = fields.One2many('records.box.movement', 'box_id', string='Movement History')
+    service_request_ids = fields.One2many('portal.request', 'box_id', string='Service Requests')
+    
     # Content estimates
     estimated_pages = fields.Integer(string='Estimated Pages', tracking=True)
     content_summary = fields.Text(string='Content Summary', tracking=True)
+    
+    # Additional box specifications
+    retention_policy_id = fields.Many2one('records.retention.policy', string='Retention Policy', tracking=True)
+    size_category = fields.Selection([
+        ('small', 'Small'),
+        ('medium', 'Medium'),
+        ('large', 'Large'),
+        ('extra_large', 'Extra Large')
+    ], string='Size Category', default='medium', tracking=True)
     
     # ==========================================
     # WORKFLOW STATUS

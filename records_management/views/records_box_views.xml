@@ -58,7 +58,7 @@
                                         </div>
                                     </div>
                                     <div class="col-4">
-                                        <span class="badge" t-att-class="record.state.raw_value === 'stored' ? 'badge-success' : record.state.raw_value === 'in_transit' ? 'badge-warning' : record.state.raw_value === 'destroyed' ? 'badge-danger' : 'badge-secondary'">
+                                        <span class="badge" t-att-class="record.state.raw_value === 'stored' ? 'badge-success' : record.state.raw_value === 'indexed' ? 'badge-info' : record.state.raw_value === 'retrieved' ? 'badge-warning' : record.state.raw_value === 'destroyed' ? 'badge-danger' : 'badge-secondary'">
                                             <field name="state"/>
                                         </span>
                                     </div>
@@ -79,10 +79,10 @@
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Box</a>
                                 <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">📄 View Documents</a>
-                                <a role="menuitem" type="object" name="action_move_box" class="dropdown-item">📍 Move Box</a>
+                                <a role="menuitem" type="object" name="action_retrieve_box" class="dropdown-item">📍 Retrieve Box</a>
                                 <a role="menuitem" type="object" name="action_generate_barcode" class="dropdown-item">🏷️ Print Barcode</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_schedule_destruction" class="dropdown-item">🗑️ Schedule Destruction</a>
+                                <a role="menuitem" type="object" name="action_destroy_box" class="dropdown-item">🗑️ Destroy Box</a>
                             </div>
                         </div>
                     </t>
@@ -96,7 +96,7 @@
         <field name="name">records.box.list</field>
         <field name="model">records.box</field>
         <field name="arch" type="xml">
-            <list decoration-success="state == 'stored'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'pending'" multi_edit="1">
+            <list decoration-success="state == 'stored'" decoration-info="state == 'indexed'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'received'" multi_edit="1">
                 <header>
                     <button name="action_bulk_convert_box_type" type="object" string="🔄 Bulk Convert Types" class="btn-primary"/>
                 </header>
@@ -125,22 +125,17 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_store_box" type="object" string="📦 Store Box" class="btn-primary" invisible="state != 'pending'"/>
-                    <button name="action_move_box" type="object" string="📍 Move Box" class="btn-secondary" invisible="state != 'stored'"/>
-                    <button name="action_schedule_destruction" type="object" string="🗑️ Schedule Destruction" class="btn-warning" invisible="state == 'destroyed'"/>
+                    <button name="action_index_box" type="object" string="📋 Index Box" class="btn-primary" invisible="state != 'received'"/>
+                    <button name="action_store_box" type="object" string="📦 Store Box" class="btn-primary" invisible="state != 'indexed'"/>
+                    <button name="action_retrieve_box" type="object" string="📍 Retrieve Box" class="btn-secondary" invisible="state != 'stored'"/>
+                    <button name="action_destroy_box" type="object" string="🗑️ Destroy Box" class="btn-warning" invisible="state not in ['stored', 'retrieved']"/>
                     <button name="action_generate_barcode" type="object" string="🏷️ Print Barcode" class="btn-info"/>
-                    <field name="state" widget="statusbar" statusbar_visible="pending,stored,in_transit,destroyed"/>
+                    <field name="state" widget="statusbar" statusbar_visible="received,indexed,stored,retrieved,destroyed"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o">
                             <field string="Documents" name="document_count" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button" type="object" name="action_view_movements" icon="fa-truck">
-                            <field string="Movements" name="movement_count" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button" type="object" name="action_view_requests" icon="fa-tasks">
-                            <field string="Requests" name="service_request_count" widget="statinfo"/>
                         </button>
                     </div>
 
@@ -169,7 +164,7 @@
                                     <field name="name"/>
                                     <field name="document_type_id"/>
                                     <field name="state"/>
-                                    <field name="created_date"/>
+                                    <field name="creation_date"/>
                                 </list>
                             </field>
                         </page>
@@ -249,9 +244,10 @@
                 <field name="department_id"/>
                 <field name="location_id"/>
 
+                <filter string="� Received Boxes" name="received" domain="[('state', '=', 'received')]"/>
+                <filter string="� Indexed Boxes" name="indexed" domain="[('state', '=', 'indexed')]"/>
                 <filter string="📦 Stored Boxes" name="stored" domain="[('state', '=', 'stored')]"/>
-                <filter string="🚚 In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
-                <filter string="⏳ Pending Storage" name="pending" domain="[('state', '=', 'pending')]"/>
+                <filter string="📤 Retrieved Boxes" name="retrieved" domain="[('state', '=', 'retrieved')]"/>
                 <filter string="💥 Destroyed" name="destroyed" domain="[('state', '=', 'destroyed')]"/>
 
                 <separator/>

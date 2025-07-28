@@ -183,12 +183,104 @@ class RecordsDocument(models.Model):
             'document_id': self.id,
             'customer_id': self.customer_id.id if self.customer_id else False,
             'destruction_date': fields.Date.today(),
-            'destruction_method': 'shredding',
         }
-        certificate = self.env['naid.certificate'].create(cert_vals)
-        self.write({'destruction_certificate_id': certificate.id})
         
+        cert = self.env['naid.certificate'].create(cert_vals)
+        self.write({'destruction_certificate_id': cert.id})
         self.message_post(body=_('Destruction certificate created'))
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Destruction Certificate',
+            'res_model': 'naid.certificate',
+            'res_id': cert.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+    
+    def action_view_chain_of_custody(self):
+        """View chain of custody for this document"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Chain of Custody - %s' % self.name,
+            'res_model': 'records.chain.of.custody',
+            'domain': [('document_id', '=', self.id)],
+            'view_mode': 'tree,form',
+            'context': {'default_document_id': self.id},
+            'target': 'current',
+        }
+    
+    def action_schedule_destruction(self):
+        """Schedule document for destruction"""
+        self.ensure_one()
+        if self.permanent_flag:
+            raise ValidationError(_('Cannot schedule permanent documents for destruction'))
+        
+        # Create destruction record
+        destruction_vals = {
+            'name': f'Destruction - {self.name}',
+            'document_id': self.id,
+            'customer_id': self.customer_id.id if self.customer_id else False,
+            'scheduled_date': self.destruction_eligible_date,
+            'state': 'scheduled'
+        }
+        
+        destruction = self.env['naid.destruction.record'].create(destruction_vals)
+        self.message_post(body=_('Document scheduled for destruction'))
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Destruction Record',
+            'res_model': 'naid.destruction.record',
+            'res_id': destruction.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+    
+    def action_mark_permanent(self):
+        """Mark document as permanent (never destroy)"""
+        self.ensure_one()
+        self.write({
+            'permanent_flag': True,
+            'permanent_flag_set_by': self.env.user.id,
+            'permanent_flag_set_date': fields.Date.today()
+        })
+        self.message_post(body=_('Document marked as permanent by %s') % self.env.user.name)
+    
+    def action_unmark_permanent(self):
+        """Remove permanent flag from document"""
+        self.ensure_one()
+        self.write({
+            'permanent_flag': False,
+            'permanent_flag_set_by': False,
+            'permanent_flag_set_date': False
+        })
+        self.message_post(body=_('Permanent flag removed by %s') % self.env.user.name)
+    
+    def action_scan_document(self):
+        """Scan or upload digital copy of document"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Scan Document - %s' % self.name,
+            'res_model': 'records.digital.scan',
+            'view_mode': 'form',
+            'context': {'default_document_id': self.id},
+            'target': 'new',
+        }
+    
+    def action_audit_trail(self):
+        """View audit trail for this document"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Audit Trail - %s' % self.name,
+            'res_model': 'mail.message',
+            'domain': [('res_id', '=', self.id), ('model', '=', 'records.document')],
+            'view_mode': 'tree',
+            'target': 'current',
+        }
     
     # ==========================================
     # VALIDATION METHODS
