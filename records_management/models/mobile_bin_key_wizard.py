@@ -11,7 +11,7 @@ class MobileBinKeyWizard(models.Model):
     Mobile Bin Key Management Wizard
     """
 
-    _name = "mobile.bin.wiz"
+    _name = "mobile.bin.key.wizard"
     _description = "Mobile Bin Key Management Wizard"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

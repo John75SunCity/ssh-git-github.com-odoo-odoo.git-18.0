@@ -11,7 +11,7 @@ class RecordsDepartmentBillingContact(models.Model):
     Department Billing Contact
     """
 
-    _name = "rec.dept.bill.cont"
+    _name = "records.department.billing.contact"
     _description = "Department Billing Contact"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

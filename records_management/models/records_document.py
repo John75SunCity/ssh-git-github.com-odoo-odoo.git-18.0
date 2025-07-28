@@ -97,7 +97,7 @@ class RecordsDocument(models.Model):
     # ==========================================
     # RELATIONSHIPS
     # ==========================================
-    box_id = fields.Many2one('records.box', string='Records Box', tracking=True)
+    container_id = fields.Many2one('records.container', string='Records Container', tracking=True)
     customer_id = fields.Many2one('res.partner', string='Customer',
                                  domain=[('is_company', '=', True)], tracking=True)
     department_id = fields.Many2one('records.department', string='Department', tracking=True)

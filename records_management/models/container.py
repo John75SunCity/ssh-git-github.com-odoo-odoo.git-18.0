@@ -83,7 +83,7 @@ class RecordsContainer(models.Model):
     # ==========================================
     # RELATIONSHIPS
     # ==========================================
-    box_ids = fields.One2many('records.box', 'container_id', string='Stored Boxes')
+    container_ids = fields.One2many('records.container', 'parent_container_id', string='Stored Containers')
     customer_id = fields.Many2one('res.partner', string='Primary Customer',
                                  domain=[('is_company', '=', True)])
     

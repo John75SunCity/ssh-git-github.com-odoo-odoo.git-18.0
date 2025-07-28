@@ -104,7 +104,7 @@ class PortalRequest(models.Model):
     # ==========================================
     # RELATED RECORDS
     # ==========================================
-    box_id = fields.Many2one('records.box', string='Related Records Box', tracking=True)
+    container_id = fields.Many2one('records.container', string='Related Records Container', tracking=True)
     shredding_service_id = fields.Many2one('shred.svc', string='Related Shredding Service', tracking=True)
     
     # ==========================================

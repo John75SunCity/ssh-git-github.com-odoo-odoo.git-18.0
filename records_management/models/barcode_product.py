@@ -11,7 +11,7 @@ class BarcodeProduct(models.Model):
     Barcode Product for Records Management - FIELD ENHANCEMENT COMPLETE ✅
     """
 
-    _name = "barcode.product.enhanced"
+    _name = "barcode.product"
     _description = "Barcode Product for Records Management - FIELD ENHANCEMENT COMPLETE ✅"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

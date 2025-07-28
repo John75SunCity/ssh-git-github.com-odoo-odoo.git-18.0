@@ -12,7 +12,7 @@ class Load(models.Model):
     Paper Load - RECYCLING REVENUE FIELD ENHANCEMENT COMPLETE ✅
     """
 
-    _name = "records_management.load"
+    _name = "load"
     _description = "Paper Load - RECYCLING REVENUE FIELD ENHANCEMENT COMPLETE ✅"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

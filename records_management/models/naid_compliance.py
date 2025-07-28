@@ -11,7 +11,7 @@ class NAIDCompliance(models.Model):
     NAID Compliance Management
     """
 
-    _name = "naid.compliance.enhanced"
+    _name = "naid.compliance"
     _description = "NAID Compliance Management"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

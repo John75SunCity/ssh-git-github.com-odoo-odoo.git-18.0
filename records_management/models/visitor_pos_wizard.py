@@ -11,7 +11,7 @@ class VisitorPosWizard(models.Model):
     Wizard to Link POS Transaction to Visitor
     """
 
-    _name = "visitor.pos.wiz"
+    _name = "visitor.pos.wizard"
     _description = "Wizard to Link POS Transaction to Visitor"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

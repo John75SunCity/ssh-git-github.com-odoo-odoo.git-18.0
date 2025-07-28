@@ -18,7 +18,7 @@ from . import records_department_billing_contact
 from . import records_storage_department_user
 from . import records_document
 from . import records_digital_scan
-from . import records_box
+from . import records_container
 from . import box_contents
 from . import pickup_request_item
 from . import pickup_request
@@ -41,7 +41,7 @@ from . import paper_bale
 from . import load
 
 # Box Related Models (must be before custody for Many2one references)
-from . import records_box_movement
+from . import records_container_movement
 from . import records_box_transfer
 
 # Vehicle Management (must be before pickup routes)

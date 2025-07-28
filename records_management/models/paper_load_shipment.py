@@ -11,7 +11,7 @@ class PaperLoadShipment(models.Model):
     Paper Load Shipment
     """
 
-    _name = "pb.ship"
+    _name = "paper.load.shipment"
     _description = "Paper Load Shipment"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

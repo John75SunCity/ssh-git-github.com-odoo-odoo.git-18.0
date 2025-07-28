@@ -16,8 +16,8 @@ class RecordsBoxMovement(models.Model):
     Tracks all box location changes, transfers, and audit trails
     """
 
-    _name = "records.box.movement"
-    _description = "Records Box Movement History"
+    _name = "records.container.movement"
+    _description = "Records Container Movement History"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "movement_date desc, name"
     _rec_name = "name"
@@ -37,7 +37,7 @@ class RecordsBoxMovement(models.Model):
     # ==========================================
     # BOX AND LOCATION RELATIONSHIPS
     # ==========================================
-    box_id = fields.Many2one('records.box', string='Records Box', 
+    container_id = fields.Many2one('records.container', string='Records Container', 
                             required=True, tracking=True, ondelete='cascade')
     from_location_id = fields.Many2one('records.location', string='From Location', 
                                       tracking=True)

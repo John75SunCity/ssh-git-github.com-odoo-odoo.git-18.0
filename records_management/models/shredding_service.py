@@ -17,7 +17,7 @@ class ShreddingService(models.Model):
     Manages on-site and off-site document destruction with complete audit trails
     """
     
-    _name = 'shred.svc'
+    _name = 'shredding.service'
     _description = 'Shredding Service Management'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'service_date desc, name'
