@@ -245,6 +245,32 @@ class RecordsBox(models.Model):
             'target': 'current',
         }
     
+    def action_bulk_convert_box_type(self):
+        """Bulk convert box types - wizard for changing multiple box types"""
+        if len(self) == 1:
+            # Single record action
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Convert Box Type',
+                'res_model': 'records.box',
+                'res_id': self.id,
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {'default_box_type': self.box_type}
+            }
+        else:
+            # Multiple records - could open wizard in future
+            # For now, just open form view to edit selected records
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Bulk Convert Box Types',
+                'res_model': 'records.box',
+                'domain': [('id', 'in', self.ids)],
+                'view_mode': 'tree',
+                'target': 'current',
+                'context': {'active_ids': self.ids}
+            }
+    
     # ==========================================
     # VALIDATION METHODS
     # ==========================================
