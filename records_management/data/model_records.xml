@@ -81,5 +81,12 @@
             <field name="info">Destruction Item Management</field>
         </record>
 
+        <!-- Records Management Bale Model -->
+        <record id="model_records_management_bale" model="ir.model">
+            <field name="name">records_management.bale</field>
+            <field name="model">records_management.bale</field>
+            <field name="info">Records Management Bale</field>
+        </record>
+
     </data>
 </odoo>
