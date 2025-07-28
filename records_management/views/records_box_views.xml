@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- 📦 ENTERPRISE STORAGE BOXES - Advanced Warehouse Management -->
-    
+
     <!-- 🎨 Kanban Board for Visual Box Management -->
     <record id="view_records_box_kanban" model="ir.ui.view">
         <field name="name">records.box.kanban</field>
@@ -12,37 +12,53 @@
                 <field name="customer_id"/>
                 <field name="location_id"/>
                 <field name="state"/>
-                <field name="storage_date"/>
+                <field name="stored_date"/>
                 <field name="destruction_date"/>
-                <field name="barcode"/>
-                <field name="box_type_code"/>
-                <field name="box_type_display"/>
-                <field name="monthly_rate"/>
+                <field name="box_type"/>
+                <field name="document_count"/>
+                <field name="estimated_weight"/>
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-                                        <strong>📦 <field name="name"/></strong>
+                                        <strong>📦                                            <field name="name"/>
+                                        </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        👤 <field name="customer_id"/>
+                                        👤                                        <field name="customer_id"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" title="More options"/></a>
+                                    <a class="o_kanban_manage_toggle_button" href="#">
+                                        <i class="fa fa-ellipsis-v" title="More options"/>
+                                    </a>
                                 </div>
                             </div>
                             <div class="o_kanban_card_content">
                                 <div class="row">
                                     <div class="col-8">
-                                        <div><i class="fa fa-cube" title="Box Type"/> <field name="box_type_display"/> (<field name="box_type_code"/>)</div>
-                                        <div><i class="fa fa-dollar" title="Monthly Rate"/> $<field name="monthly_rate"/>/month</div>
-                                        <div><i class="fa fa-map-marker" title="Storage Location"/> <field name="location_id"/></div>
-                                        <div><i class="fa fa-calendar" title="Storage Date"/> <field name="storage_date"/></div>
+                                        <div>
+                                            <i class="fa fa-cube" title="Box Type"/>
+                                            <field name="box_type_display"/>
+ (                                            <field name="box_type_code"/>
+)</div>
+                                        <div>
+                                            <i class="fa fa-dollar" title="Monthly Rate"/>
+ $                                            <field name="monthly_rate"/>
+/month</div>
+                                        <div>
+                                            <i class="fa fa-map-marker" title="Storage Location"/>
+                                            <field name="location_id"/>
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-calendar" title="Storage Date"/>
+                                            <field name="storage_date"/>
+                                        </div>
                                         <div t-if="record.barcode.raw_value">
-                                            <i class="fa fa-barcode" title="Barcode"/> <field name="barcode"/>
+                                            <i class="fa fa-barcode" title="Barcode"/>
+                                            <field name="barcode"/>
                                         </div>
                                     </div>
                                     <div class="col-4">
@@ -84,15 +100,9 @@
         <field name="name">records.box.list</field>
         <field name="model">records.box</field>
         <field name="arch" type="xml">
-            <list decoration-success="state == 'stored'" 
-                  decoration-warning="state == 'in_transit'" 
-                  decoration-danger="state == 'destroyed'"
-                  decoration-muted="state == 'pending'"
-                  multi_edit="1">
+            <list decoration-success="state == 'stored'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'pending'" multi_edit="1">
                 <header>
-                    <button name="action_bulk_convert_box_type" type="object" 
-                            string="🔄 Bulk Convert Types" 
-                            class="btn-primary"/>
+                    <button name="action_bulk_convert_box_type" type="object" string="🔄 Bulk Convert Types" class="btn-primary"/>
                 </header>
                 <field name="name" string="📦 Box ID"/>
                 <field name="box_type_code" string="📊 Type"/>
@@ -106,10 +116,8 @@
                 <field name="destruction_date" string="💥 Destruction" optional="hide"/>
                 <field name="barcode" string="🏷️ Barcode"/>
                 <field name="document_count" string="📄 Docs" sum="Total Documents"/>
-                <button name="action_view_documents" type="object" string="View Docs" 
-                        icon="fa-file-text-o" class="btn-link"/>
-                <button name="action_generate_barcode" type="object" string="Print Barcode" 
-                        icon="fa-barcode" class="btn-link"/>
+                <button name="action_view_documents" type="object" string="View Docs" icon="fa-file-text-o" class="btn-link"/>
+                <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fa-barcode" class="btn-link"/>
             </list>
         </field>
     </record>
@@ -121,12 +129,9 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_store_box" type="object" string="📦 Store Box" 
-                            class="btn-primary" invisible="state != 'pending'"/>
-                    <button name="action_move_box" type="object" string="📍 Move Box" 
-                            class="btn-secondary" invisible="state != 'stored'"/>
-                    <button name="action_schedule_destruction" type="object" string="🗑️ Schedule Destruction" 
-                            class="btn-warning" invisible="state == 'destroyed'"/>
+                    <button name="action_store_box" type="object" string="📦 Store Box" class="btn-primary" invisible="state != 'pending'"/>
+                    <button name="action_move_box" type="object" string="📍 Move Box" class="btn-secondary" invisible="state != 'stored'"/>
+                    <button name="action_schedule_destruction" type="object" string="🗑️ Schedule Destruction" class="btn-warning" invisible="state == 'destroyed'"/>
                     <button name="action_generate_barcode" type="object" string="🏷️ Print Barcode" class="btn-info"/>
                     <field name="state" widget="statusbar" statusbar_visible="pending,stored,in_transit,destroyed"/>
                 </header>
@@ -142,7 +147,7 @@
                             <field string="Requests" name="service_request_count" widget="statinfo"/>
                         </button>
                     </div>
-                    
+
                     <group>
                         <group string="📦 Box Information">
                             <field name="name" placeholder="e.g., BOX-2024-001"/>
@@ -160,7 +165,7 @@
                             <field name="destruction_date" invisible="not destruction_date"/>
                         </group>
                     </group>
-                    
+
                     <notebook>
                         <page string="📄 Documents" name="documents">
                             <field name="document_ids" mode="list">
@@ -217,10 +222,7 @@
         <field name="name">records.box.calendar</field>
         <field name="model">records.box</field>
         <field name="arch" type="xml">
-            <calendar string="📅 Box Storage Calendar" 
-                      date_start="storage_date" 
-                      date_stop="destruction_date"
-                      color="customer_id">
+            <calendar string="📅 Box Storage Calendar" date_start="storage_date" date_stop="destruction_date" color="customer_id">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="state"/>
@@ -246,25 +248,21 @@
         <field name="model">records.box</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" string="Box" 
-                       filter_domain="['|', ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
+                <field name="name" string="Box" filter_domain="['|', ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
                 <field name="customer_id"/>
                 <field name="department_id"/>
                 <field name="location_id"/>
-                
+
                 <filter string="📦 Stored Boxes" name="stored" domain="[('state', '=', 'stored')]"/>
                 <filter string="🚚 In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
                 <filter string="⏳ Pending Storage" name="pending" domain="[('state', '=', 'pending')]"/>
                 <filter string="💥 Destroyed" name="destroyed" domain="[('state', '=', 'destroyed')]"/>
-                
+
                 <separator/>
-                <filter string="📅 Stored This Month" name="this_month" 
-                        domain="[('storage_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
-                <filter string="🗓️ Stored This Year" name="this_year" 
-                        domain="[('storage_date', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
-                <filter string="⚠️ Near Destruction" name="near_destruction" 
-                        domain="[('destruction_date', '&lt;=', (context_today() + relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
-                
+                <filter string="📅 Stored This Month" name="this_month" domain="[('storage_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                <filter string="🗓️ Stored This Year" name="this_year" domain="[('storage_date', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
+                <filter string="⚠️ Near Destruction" name="near_destruction" domain="[('destruction_date', '&lt;=', (context_today() + relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
+
                 <group expand="0" string="📊 Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
                     <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
@@ -291,7 +289,8 @@
                 📦 Create your first storage box!
             </p>
             <p>
-                <b>Enterprise Box Management:</b><br/>
+                <b>Enterprise Box Management:</b>
+                <br/>
                 • 📦 Visual kanban boards for box tracking<br/>
                 • 🏷️ Automated barcode generation and printing<br/>
                 • 📍 Real-time location tracking with movement history<br/>
@@ -299,7 +298,7 @@
                 • 🎯 Service request integration and workflows<br/>
                 • 📊 Advanced analytics and reporting<br/>
                 • 📱 Mobile-optimized for warehouse operations
-            </p>
-        </field>
-    </record>
+</p>
+</field>
+</record>
 </odoo>
