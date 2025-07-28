@@ -46,10 +46,10 @@
             <field name="company_id" eval="False"/>
         </record>
 
-        <!-- Sequence for Box Barcodes -->
+        <!-- Sequence for Box Numbers -->
         <record id="seq_records_box_barcode" model="ir.sequence">
-            <field name="name">Records Box Barcode Sequence</field>
-            <field name="code">records.box.barcode</field>
+            <field name="name">Records Box Number Sequence</field>
+            <field name="code">records.box.number</field>
             <field name="prefix">BX</field>
             <field name="padding">8</field>
             <field name="company_id" eval="False"/>

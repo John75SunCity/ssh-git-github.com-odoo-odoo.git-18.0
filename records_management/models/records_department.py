@@ -8,36 +8,73 @@ from odoo import models, fields, api, _
 
 class RecordsDepartment(models.Model):
     """
-    Records Department
+    Records Department Management
+    Organizational departments for records management
     """
 
-    _name = "rec.dept"
+    _name = "records.department"
     _description = "Records Department"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"
+    _rec_name = "name"
 
-    # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
-    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
-    active = fields.Boolean(default=True)
+    # ==========================================
+    # CORE FIELDS
+    # ==========================================
+    name = fields.Char(string="Department Name", required=True, tracking=True)
+    code = fields.Char(string="Department Code", required=True, tracking=True)
+    description = fields.Text(string="Department Description", tracking=True)
+    active = fields.Boolean(default=True, tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', 
+                                default=lambda self: self.env.company, required=True)
+    user_id = fields.Many2one('res.users', string='Responsible User', 
+                             default=lambda self: self.env.user, tracking=True)
+
+    # ==========================================
+    # PARENT ORGANIZATION
+    # ==========================================
+    partner_id = fields.Many2one('res.partner', string='Organization', 
+                                 tracking=True,
+                                 domain=[('is_company', '=', True)],
+                                 help="Parent organization that owns this department")
+
+    # ==========================================
+    # DEPARTMENT MANAGEMENT
+    # ==========================================
+    department_manager_id = fields.Many2one('res.users', string='Department Manager', tracking=True)
+    records_coordinator_id = fields.Many2one('res.users', string='Records Coordinator', tracking=True)
+
+    # ==========================================
+    # CONTACT INFORMATION
+    # ==========================================
+    email = fields.Char(string='Department Email', tracking=True)
+    phone = fields.Char(string='Department Phone', tracking=True)
 
     # Basic state management
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done')
+        ('active', 'Active'),
+        ('inactive', 'Inactive')
     ], string='State', default='draft', tracking=True)
 
     # Common fields
-    description = fields.Text()
-    notes = fields.Text()
+    notes = fields.Text(string="Notes")
     date = fields.Date(default=fields.Date.today)
 
-    def action_confirm(self):
-        """Confirm the record"""
-        self.write({'state': 'confirmed'})
+    # ==========================================
+    # CONSTRAINTS
+    # ==========================================
+    _sql_constraints = [
+        ('code_uniq', 'unique(code, company_id)', 'Department code must be unique per company!'),
+    ]
 
-    def action_done(self):
-        """Mark as done"""
-        self.write({'state': 'done'})
+    # ==========================================
+    # ACTION METHODS
+    # ==========================================
+    def action_confirm(self):
+        """Activate the department"""
+        self.write({'state': 'active'})
+
+    def action_deactivate(self):
+        """Deactivate the department"""
+        self.write({'state': 'inactive'})

@@ -21,8 +21,8 @@ access_destruction_item_user,dest.item.user,model_dest_item,records_management.g
 access_destruction_item_manager,dest.item.manager,model_dest_item,records_management.group_records_manager,1,1,1,1
 access_customer_inventory_report_user,cust.inv.rpt.user,model_cust_inv_rpt,records_management.group_records_user,1,0,0,0
 access_customer_inventory_report_manager,cust.inv.rpt.manager,model_cust_inv_rpt,records_management.group_records_manager,1,1,1,1
-access_records_department_user,rec.dept.user,model_rec_dept,records_management.group_records_user,1,0,0,0
-access_records_department_manager,rec.dept.manager,model_rec_dept,records_management.group_records_manager,1,1,1,1
+access_records_department_user,records.department.user,model_records_department,records_management.group_records_user,1,0,0,0
+access_records_department_manager,records.department.manager,model_records_department,records_management.group_records_manager,1,1,1,1
 access_records_storage_department_user_user,records.storage.department.user.user,model_records_storage_department_user,records_management.group_records_user,1,0,0,0
 access_records_storage_department_user_manager,records.storage.department.user.manager,model_records_storage_department_user,records_management.group_records_manager,1,1,1,1
 access_records_service_request_user,records.service.request.user,model_records_service_request,records_management.group_records_user,1,1,1,0
