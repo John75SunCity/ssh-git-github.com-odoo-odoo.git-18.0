@@ -958,6 +958,32 @@ class ShreddingBaseRates(models.Model):
     _description = "Shredding Base Rates (Legacy)"
     _inherit = "base.rates"
     
+    # Legacy fields for backward compatibility with existing views
+    external_per_bin_rate = fields.Float(string="External Per Bin Rate", default=0.0)
+    external_service_call_rate = fields.Float(string="External Service Call Rate", default=0.0)
+    managed_retrieval_rate = fields.Float(string="Managed Retrieval Rate", default=0.0)
+    managed_shredding_rate = fields.Float(string="Managed Shredding Rate", default=0.0)
+    managed_service_call_rate = fields.Float(string="Managed Service Call Rate", default=0.0)
+    managed_permanent_removal_rate = fields.Float(string="Managed Permanent Removal Rate", default=0.0)
+    
+    # Customization flags
+    use_custom_external_rates = fields.Boolean(string="Use Custom External Rates", default=False)
+    use_custom_managed_rates = fields.Boolean(string="Use Custom Managed Rates", default=False)
+    
+    # Discount options
+    discount_percentage = fields.Float(string="Discount Percentage", default=0.0)
+    
+    # Validity period
+    effective_date = fields.Date(string="Effective Date", default=fields.Date.today)
+    expiry_date = fields.Date(string="Expiry Date")
+    
+    # Pricing type
+    type = fields.Selection([
+        ('external', 'External Shredding'),
+        ('managed', 'Managed Shredding'),
+        ('mixed', 'Mixed Services')
+    ], string='Rate Type', default='external')
+    
     def create(self, vals):
         """Override to set service category to shredding"""
         vals['service_category'] = 'shredding'

@@ -39,6 +39,9 @@ class CustomerBillingProfile(models.Model):
                                  required=True, tracking=True,
                                  domain=[('is_company', '=', True)])
     
+    # Contact count (computed field)
+    contact_count = fields.Integer(string='Contact Count', compute='_compute_contact_count')
+    
     # ==========================================
     # STORAGE BILLING CONFIGURATION
     # ==========================================
@@ -49,6 +52,57 @@ class CustomerBillingProfile(models.Model):
         ('annual', 'Annual'),
         ('prepaid', 'Prepaid')
     ], string='Storage Billing Cycle', default='monthly', required=True, tracking=True)
+    
+    storage_bill_in_advance = fields.Boolean(string='Bill Storage in Advance', default=False, tracking=True)
+    storage_advance_months = fields.Integer(string='Advance Months', default=1, tracking=True)
+    auto_generate_storage_invoices = fields.Boolean(string='Auto Generate Storage Invoices', default=True, tracking=True)
+    
+    # ==========================================
+    # SERVICE BILLING CONFIGURATION
+    # ==========================================
+    service_billing_cycle = fields.Selection([
+        ('immediate', 'Immediate'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly')
+    ], string='Service Billing Cycle', default='monthly', required=True, tracking=True)
+    
+    auto_generate_service_invoices = fields.Boolean(string='Auto Generate Service Invoices', default=True, tracking=True)
+    
+    # ==========================================
+    # PREPAID OPTIONS
+    # ==========================================
+    prepaid_enabled = fields.Boolean(string='Prepaid Enabled', default=False, tracking=True)
+    prepaid_months = fields.Integer(string='Prepaid Months', default=12, tracking=True)
+    prepaid_discount_percent = fields.Float(string='Prepaid Discount %', default=0.0, tracking=True)
+    
+    # ==========================================
+    # BILLING SCHEDULE
+    # ==========================================
+    billing_day = fields.Integer(string='Billing Day of Month', default=1, tracking=True)
+    invoice_due_days = fields.Integer(string='Invoice Due Days', default=30, tracking=True)
+    payment_term_id = fields.Many2one('account.payment.term', string='Payment Terms', tracking=True)
+    next_storage_billing_date = fields.Date(string='Next Storage Billing Date', tracking=True)
+    
+    # ==========================================
+    # BILLING STATE MANAGEMENT
+    # ==========================================
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('suspended', 'Suspended'),
+        ('terminated', 'Terminated')
+    ], string='Status', default='draft', required=True, tracking=True)
+    
+    @api.depends('partner_id')
+    def _compute_contact_count(self):
+        """Compute contact count for the partner"""
+        for record in self:
+            if record.partner_id:
+                # Count child contacts of the partner
+                record.contact_count = len(record.partner_id.child_ids)
+            else:
+                record.contact_count = 0
     
     storage_bill_in_advance = fields.Boolean(string='Bill Storage in Advance', 
                                             default=True, tracking=True)
