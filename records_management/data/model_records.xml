@@ -8,51 +8,45 @@
         <!-- Demo Storage Locations -->
         <record id="demo_location_warehouse_a" model="records.location">
             <field name="name">Warehouse A - Secure Storage</field>
-            <field name="code">WH-A</field>
+            <field name="description">Secure storage facility with climate control</field>
             <field name="location_type">warehouse</field>
-            <field name="address">123 Storage Drive</field>
-            <field name="city">Storage City</field>
-            <field name="zip">12345</field>
+            <field name="building">Building A</field>
+            <field name="zone">Zone 1</field>
             <field name="active">True</field>
             <field name="climate_controlled">True</field>
-            <field name="security_level">high</field>
+            <field name="access_level">secure</field>
+            <field name="max_capacity">10000</field>
         </record>
 
         <record id="demo_location_warehouse_b" model="records.location">
             <field name="name">Warehouse B - Bulk Storage</field>
-            <field name="code">WH-B</field>
+            <field name="description">Bulk storage facility for general records</field>
             <field name="location_type">warehouse</field>
-            <field name="address">456 Archive Street</field>
-            <field name="city">Storage City</field>
-            <field name="zip">12346</field>
+            <field name="building">Building B</field>
+            <field name="zone">Zone 2</field>
             <field name="active">True</field>
             <field name="climate_controlled">False</field>
-            <field name="security_level">medium</field>
+            <field name="access_level">restricted</field>
+            <field name="max_capacity">20000</field>
         </record>
 
         <!-- Demo Document Types -->
-        <record id="demo_document_type_contracts" model="records.document.type">
+        <record id="demo_document_type_contracts" model="rec.doc.type">
             <field name="name">Contracts</field>
-            <field name="code">CNTR</field>
             <field name="description">Legal contracts and agreements</field>
-            <field name="retention_years">7</field>
-            <field name="confidential_by_default">True</field>
+            <field name="state">confirmed</field>
         </record>
 
-        <record id="demo_document_type_invoices" model="records.document.type">
+        <record id="demo_document_type_invoices" model="rec.doc.type">
             <field name="name">Invoices</field>
-            <field name="code">INV</field>
             <field name="description">Financial invoices and receipts</field>
-            <field name="retention_years">7</field>
-            <field name="confidential_by_default">False</field>
+            <field name="state">confirmed</field>
         </record>
 
-        <record id="demo_document_type_hr_files" model="records.document.type">
+        <record id="demo_document_type_hr_files" model="rec.doc.type">
             <field name="name">HR Personnel Files</field>
-            <field name="code">HR</field>
             <field name="description">Human resources and employee records</field>
-            <field name="retention_years">10</field>
-            <field name="confidential_by_default">True</field>
+            <field name="state">confirmed</field>
         </record>
 
         <!-- Demo Retention Policies -->
@@ -62,6 +56,7 @@
             <field name="retention_period">7</field>
             <field name="description">Standard 7-year retention for business documents</field>
             <field name="active">True</field>
+            <field name="state">confirmed</field>
         </record>
 
         <record id="demo_retention_policy_hr" model="records.retention.policy">
@@ -70,14 +65,15 @@
             <field name="retention_period">10</field>
             <field name="description">Extended retention for HR and employment records</field>
             <field name="active">True</field>
+            <field name="state">confirmed</field>
         </record>
 
         <!-- Demo Containers -->
         <record id="demo_container_001" model="records.container">
             <field name="name">Container-001</field>
-            <field name="container_type">standard_box</field>
+            <field name="container_type">box</field>
             <field name="location_id" ref="demo_location_warehouse_a"/>
-            <field name="capacity">50</field>
+            <field name="max_boxes">50</field>
             <field name="length">24.0</field>
             <field name="width">15.0</field>
             <field name="height">10.0</field>
@@ -86,9 +82,9 @@
 
         <record id="demo_container_002" model="records.container">
             <field name="name">Container-002</field>
-            <field name="container_type">banker_box</field>
+            <field name="container_type">box</field>
             <field name="location_id" ref="demo_location_warehouse_b"/>
-            <field name="capacity">30</field>
+            <field name="max_boxes">30</field>
             <field name="length">15.0</field>
             <field name="width">12.0</field>
             <field name="height">10.0</field>
@@ -101,27 +97,23 @@
         <!-- Demo Shredding Service Templates -->
         <record id="demo_shredding_service_template" model="shred.svc">
             <field name="name">Standard Document Shredding</field>
-            <field name="service_type">on_site</field>
-            <field name="shredding_method">cross_cut</field>
-            <field name="state">template</field>
-            <field name="naid_compliant">True</field>
-            <field name="certificate_required">True</field>
-            <field name="notes">Standard on-site document destruction service with NAID AAA compliance</field>
+            <field name="service_type">onsite</field>
+            <field name="state">draft</field>
+            <field name="description">Standard on-site document destruction service with NAID AAA compliance</field>
         </record>
 
         <!-- Demo Paper Bale Recycling -->
         <record id="demo_paper_bale_001" model="paper.bale.recycling">
             <field name="name">Bale-001-Demo</field>
-            <field name="bale_type">mixed_paper</field>
-            <field name="estimated_weight">500.0</field>
-            <field name="state">draft</field>
-            <field name="collection_date" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')"/>
+            <field name="gross_weight">500.0</field>
+            <field name="state">baling</field>
+            <field name="bale_date" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')"/>
         </record>
 
         <!-- Demo Chain of Custody Log Template -->
         <record id="demo_custody_log_template" model="records.chain.of.custody.log">
             <field name="name">Template Custody Transfer</field>
-            <field name="custody_type">transfer</field>
+            <field name="custody_event">transfer</field>
             <field name="custody_status">template</field>
             <field name="notes">Template for custody transfer procedures</field>
         </record>

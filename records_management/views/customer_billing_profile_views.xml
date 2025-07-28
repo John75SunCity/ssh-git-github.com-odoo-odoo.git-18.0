@@ -27,14 +27,10 @@
         <field name="arch" type="xml">
             <form string="Customer Billing Profile">
                 <header>
-                    <button name="action_activate" string="Activate" type="object" 
-                            class="btn-primary" states="draft"/>
-                    <button name="action_suspend" string="Suspend" type="object" 
-                            class="btn-warning" states="active"/>
-                    <button name="action_reactivate" string="Reactivate" type="object" 
-                            class="btn-success" states="suspended"/>
-                    <button name="action_terminate" string="Terminate" type="object" 
-                            class="btn-danger" states="active,suspended"/>
+                    <button name="action_activate" string="Activate" type="object" class="btn-primary" states="draft"/>
+                    <button name="action_suspend" string="Suspend" type="object" class="btn-warning" states="active"/>
+                    <button name="action_reactivate" string="Reactivate" type="object" class="btn-success" states="suspended"/>
+                    <button name="action_terminate" string="Terminate" type="object" class="btn-danger" states="active,suspended"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,suspended,terminated"/>
                 </header>
                 <sheet>
@@ -54,7 +50,7 @@
                             <field name="contact_count"/>
                         </group>
                     </group>
-                    
+
                     <notebook>
                         <page string="Storage Billing" name="storage_billing">
                             <group>
@@ -68,7 +64,7 @@
                                 </group>
                             </group>
                         </page>
-                        
+
                         <page string="Service Billing" name="service_billing">
                             <group>
                                 <group>
@@ -79,7 +75,7 @@
                                 </group>
                             </group>
                         </page>
-                        
+
                         <page string="Prepaid Options" name="prepaid">
                             <group>
                                 <group>
@@ -91,7 +87,7 @@
                                 </group>
                             </group>
                         </page>
-                        
+
                         <page string="Billing Schedule" name="billing_schedule">
                             <group>
                                 <group>
@@ -104,7 +100,7 @@
                                 </group>
                             </group>
                         </page>
-                        
+
                         <page string="Automation" name="automation">
                             <group>
                                 <group>
@@ -113,7 +109,7 @@
                                 </group>
                             </group>
                         </page>
-                        
+
                         <page string="Billing Contacts" name="billing_contacts">
                             <field name="billing_contact_ids">
                                 <tree editable="bottom">
@@ -130,7 +126,7 @@
                             </field>
                         </page>
                     </notebook>
-                    
+
                     <div class="oe_clear"/>
                     <field name="description" placeholder="Additional notes about this billing profile..."/>
                 </sheet>
@@ -188,7 +184,7 @@
     </record>
 
     <!-- Billing Contact Views -->
-    
+
     <!-- Tree View -->
     <record id="view_billing_contact_tree" model="ir.ui.view">
         <field name="name">records.billing.contact.tree</field>
@@ -233,7 +229,7 @@
                             <field name="active"/>
                         </group>
                     </group>
-                    
+
                     <group string="Communication Preferences">
                         <group>
                             <field name="receive_storage_invoices"/>
