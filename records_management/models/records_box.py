@@ -44,6 +44,8 @@ class RecordsBox(models.Model):
     customer_id = fields.Many2one('res.partner', string='Customer', 
                                  required=True, tracking=True,
                                  domain=[('is_company', '=', True)])
+    department_id = fields.Many2one('hr.department', string='Department', 
+                                   tracking=True, help='Department responsible for this box')
     location_id = fields.Many2one('records.location', string='Storage Location', tracking=True)
     container_id = fields.Many2one('records.container', string='Container', tracking=True)
     
