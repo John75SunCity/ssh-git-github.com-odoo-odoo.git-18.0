@@ -128,7 +128,6 @@
         <record id="demo_custody_log_template" model="records.chain.of.custody.log">
             <field name="name">Template Custody Transfer</field>
             <field name="custody_event">transfer</field>
-            <field name="custody_status">template</field>
             <field name="notes">Template for custody transfer procedures</field>
         </record>
 
