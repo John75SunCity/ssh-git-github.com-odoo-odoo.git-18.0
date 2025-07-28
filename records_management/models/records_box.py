@@ -58,6 +58,17 @@ class RecordsBox(models.Model):
         ('archive', 'Archive Box')
     ], string='Box Type', default='standard', required=True, tracking=True)
     
+    # Computed display fields for box type
+    box_type_code = fields.Char(string='Box Type Code', compute='_compute_box_type_display', store=True)
+    box_type_display = fields.Char(string='Box Type Display', compute='_compute_box_type_display', store=True)
+    
+    # Barcode for box identification
+    barcode = fields.Char(string='Barcode', tracking=True, copy=False)
+    
+    # Monthly storage rate
+    monthly_rate = fields.Float(string='Monthly Storage Rate', digits=(10, 2), tracking=True, 
+                               help='Monthly storage rate for this box')
+    
     # Measurements
     estimated_weight = fields.Float(string='Estimated Weight (lbs)', tracking=True)
     actual_weight = fields.Float(string='Actual Weight (lbs)', tracking=True)
@@ -129,6 +140,27 @@ class RecordsBox(models.Model):
         for record in self:
             record.weight = record.actual_weight or record.estimated_weight or 0.0
     
+    @api.depends('box_type')
+    def _compute_box_type_display(self):
+        """Compute box type display fields"""
+        for record in self:
+            if record.box_type:
+                # Create display name from selection
+                display = dict(record._fields['box_type'].selection).get(record.box_type, record.box_type)
+                record.box_type_display = display
+                # Create code from box type
+                code_map = {
+                    'standard': 'STD',
+                    'legal': 'LGL',
+                    'oversized': 'LRG',
+                    'hanging': 'HNG',
+                    'archive': 'ARC'
+                }
+                record.box_type_code = code_map.get(record.box_type, 'STD')
+            else:
+                record.box_type_display = ''
+                record.box_type_code = ''
+    
     # ==========================================
     # WORKFLOW METHODS
     # ==========================================
@@ -182,6 +214,23 @@ class RecordsBox(models.Model):
             'destruction_date': fields.Date.today()
         })
         self.message_post(body=_('Box marked for destruction'))
+    
+    def action_generate_barcode(self):
+        """Generate barcode for the box"""
+        self.ensure_one()
+        if not self.barcode:
+            # Generate a simple barcode based on box name and id
+            barcode = f"BOX-{self.name}-{self.id}"
+            self.write({'barcode': barcode})
+            self.message_post(body=_('Barcode generated: %s') % barcode)
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Print Barcode',
+            'res_model': 'records.box',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
     
     # ==========================================
     # VALIDATION METHODS
