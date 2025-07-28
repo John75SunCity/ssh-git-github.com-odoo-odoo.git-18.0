@@ -8,21 +8,11 @@
             <field name="arch" type="xml">
                 <form string="Field Label Customization">
                     <header>
-                        <button name="action_apply_corporate_preset" string="Apply Corporate Preset" 
-                                type="object" class="btn-primary" 
-                                help="Apply standard corporate terminology"/>
-                        <button name="action_apply_legal_preset" string="Apply Legal Preset" 
-                                type="object" class="btn-primary"
-                                help="Apply legal industry terminology"/>
-                        <button name="action_apply_healthcare_preset" string="Apply Healthcare Preset" 
-                                type="object" class="btn-primary"
-                                help="Apply healthcare industry terminology"/>
-                        <button name="action_apply_financial_preset" string="Apply Financial Preset" 
-                                type="object" class="btn-primary"
-                                help="Apply financial services terminology"/>
-                        <button name="action_reset_to_defaults" string="Reset to Defaults" 
-                                type="object" class="btn-secondary"
-                                help="Reset all labels to default values"/>
+                        <button name="action_apply_corporate_preset" string="Apply Corporate Preset" type="object" class="btn-primary" help="Apply standard corporate terminology"/>
+                        <button name="action_apply_legal_preset" string="Apply Legal Preset" type="object" class="btn-primary" help="Apply legal industry terminology"/>
+                        <button name="action_apply_healthcare_preset" string="Apply Healthcare Preset" type="object" class="btn-primary" help="Apply healthcare industry terminology"/>
+                        <button name="action_apply_financial_preset" string="Apply Financial Preset" type="object" class="btn-primary" help="Apply financial services terminology"/>
+                        <button name="action_reset_to_defaults" string="Reset to Defaults" type="object" class="btn-secondary" help="Reset all labels to default values"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -143,12 +133,9 @@
                     <field name="customer_id"/>
                     <field name="department_id"/>
                     <separator/>
-                    <filter string="Global Configurations" name="global" 
-                            domain="[('customer_id', '=', False)]"/>
-                    <filter string="Customer Specific" name="customer_specific" 
-                            domain="[('customer_id', '!=', False), ('department_id', '=', False)]"/>
-                    <filter string="Department Specific" name="department_specific" 
-                            domain="[('department_id', '!=', False)]"/>
+                    <filter string="Global Configurations" name="global" domain="[('customer_id', '=', False)]"/>
+                    <filter string="Customer Specific" name="customer_specific" domain="[('customer_id', '!=', False), ('department_id', '=', False)]"/>
+                    <filter string="Department Specific" name="department_specific" domain="[('department_id', '!=', False)]"/>
                     <separator/>
                     <filter string="Active" name="active" domain="[('active', '=', True)]"/>
                     <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
@@ -174,9 +161,12 @@
                     Customize field names to match your organization's terminology.
                     You can create configurations at different levels:
                     <ul>
-                        <li><strong>Global:</strong> Applies to all customers</li>
-                        <li><strong>Customer:</strong> Applies to specific customer</li>
-                        <li><strong>Department:</strong> Applies to specific department</li>
+                        <li>
+                            <strong>Global:</strong> Applies to all customers</li>
+                        <li>
+                            <strong>Customer:</strong> Applies to specific customer</li>
+                        <li>
+                            <strong>Department:</strong> Applies to specific department</li>
                     </ul>
                 </p>
             </field>
@@ -189,9 +179,7 @@
             <field name="arch" type="xml">
                 <form string="Transitory Field Configuration">
                     <header>
-                        <button name="action_setup_field_labels" string="Customize Field Labels" 
-                                type="object" class="btn-primary"
-                                help="Setup custom field labels for this configuration"/>
+                        <button name="action_setup_field_labels" string="Customize Field Labels" type="object" class="btn-primary" help="Setup custom field labels for this configuration"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -286,18 +274,13 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <notebook position="inside">
-                    <page string="Records Field Configuration" name="field_config" 
-                          attrs="{'invisible': [('is_company', '=', False)]}">
+                    <page string="Records Field Configuration" name="field_config" attrs="{'invisible': [('is_company', '=', False)]}">
                         <group>
                             <group string="Field Configuration">
                                 <field name="transitory_field_config_id"/>
                                 <field name="field_label_config_id"/>
-                                <button name="action_setup_transitory_config" 
-                                        string="Setup Field Configuration" 
-                                        type="object" class="btn-primary"/>
-                                <button name="action_setup_field_labels" 
-                                        string="Customize Field Labels" 
-                                        type="object" class="btn-primary"/>
+                                <button name="action_setup_transitory_config" string="Setup Field Configuration" type="object" class="btn-primary"/>
+                                <button name="action_setup_field_labels" string="Customize Field Labels" type="object" class="btn-primary"/>
                             </group>
                             <group string="Portal Settings">
                                 <field name="allow_transitory_items"/>
@@ -317,11 +300,7 @@
         </record>
 
         <!-- Menu Items -->
-        <menuitem id="menu_field_label_customization" 
-                  name="Field Label Customization"
-                  parent="records_management.menu_configuration"
-                  action="action_field_label_customization"
-                  sequence="15"/>
+        <menuitem id="menu_field_label_customization" name="Field Label Customization" parent="records_management.menu_configuration" action="action_field_label_customization" sequence="15"/>
 
     </data>
 </odoo>
