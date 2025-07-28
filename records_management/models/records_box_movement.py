@@ -126,8 +126,8 @@ class RecordsBoxMovement(models.Model):
     # COMPUTED FIELDS
     # ==========================================
     box_barcode = fields.Char(related='box_id.barcode', string='Box Barcode', readonly=True)
-    customer_id = fields.Many2one(related='box_id.customer_id', string='Customer', readonly=True)
-    box_current_location = fields.Many2one(related='box_id.location_id', 
+    customer_id = fields.Many2one('res.partner', related='box_id.customer_id', string='Customer', readonly=True)
+    box_current_location = fields.Many2one('records.location', related='box_id.location_id', 
                                           string='Current Box Location', readonly=True)
     
     duration = fields.Float(string='Duration (Hours)', compute='_compute_duration', store=True)

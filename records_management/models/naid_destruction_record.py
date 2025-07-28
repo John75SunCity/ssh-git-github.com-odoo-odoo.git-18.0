@@ -184,7 +184,7 @@ class NAIDDestructionRecord(models.Model):
             return
         
         # Generate certificate number
-        sequence = self.env['ir.sequence'].next_by_code('naid.destruction.certificate')
+        sequence = self.env['ir.sequence'].next_by_code('naid.certificate')
         
         self.write({
             'state': 'certified',

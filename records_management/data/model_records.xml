@@ -69,9 +69,9 @@
 
         <!-- Destruction Certificate Model -->
         <record id="model_destruction_certificate" model="ir.model">
-            <field name="name">destruction.certificate</field>
-            <field name="model">destruction.certificate</field>
-            <field name="info">Destruction Certificate Management</field>
+            <field name="name">naid.certificate</field>
+            <field name="model">naid.certificate</field>
+            <field name="info">NAID Certificate Management</field>
         </record>
 
         <!-- Destruction Item Model -->
