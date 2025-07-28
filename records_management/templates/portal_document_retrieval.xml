@@ -216,10 +216,11 @@
 
             <!-- JavaScript for dynamic functionality -->
             <script>
+                <![CDATA[
                 let itemCounter = 0;
-                let boxOptions = <t t-esc="json.dumps([(box.id, box.name) for box in boxes])"/>
+                ]]>let boxOptions = <t t-esc="json.dumps([(box.id, box.name) for box in boxes])"/><![CDATA[
 ;
-                let documentOptions = <t t-esc="json.dumps([(doc.id, doc.name) for doc in documents])"/>
+                ]]>let documentOptions = <t t-esc="json.dumps([(doc.id, doc.name) for doc in documents])"/><![CDATA[
 ;
                 
                 function updatePricing() {
@@ -389,7 +390,8 @@
                     document.getElementById('calc_priority').value = this.value;
                     updatePricing();
                 });
-</script>
+                ]]>
+            </script>
 </t>
 </template>
 
