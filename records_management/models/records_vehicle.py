@@ -29,7 +29,7 @@ class RecordsVehicle(models.Model):
     
     company_id = fields.Many2one('res.company', string='Company', 
                                 default=lambda self: self.env.company, required=True)
-    user_id = fields.Many2one('res.users', string='Responsible', 
+    user_id = fields.Many2one('res.users', string='Vehicle Manager', 
                              default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(default=True, tracking=True)
     

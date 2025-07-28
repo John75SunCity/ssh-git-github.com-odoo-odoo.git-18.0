@@ -19,7 +19,7 @@ class RecordsRetentionPolicy(models.Model):
     # Core fields
     name = fields.Char(string="Name", required=True, tracking=True)
     company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', string='Policy Manager', default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
 
     # Basic state management
