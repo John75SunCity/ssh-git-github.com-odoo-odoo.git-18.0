@@ -39,6 +39,10 @@ from . import bale
 from . import paper_bale
 from . import load
 
+# Box Related Models (must be before custody for Many2one references)
+from . import records_box_movement
+from . import records_box_transfer
+
 # NAID Compliance Models
 from . import naid_compliance
 from . import naid_custody_event
@@ -51,10 +55,6 @@ from . import doc_ret_work_order
 from . import global_rates
 from . import pickup_route
 from . import res_partner_key_restriction
-
-# Box Related Models (movements, service requests)
-from . import records_box_movement
-from . import records_box_transfer
 
 # Shredding and Services
 from . import shredding_service
