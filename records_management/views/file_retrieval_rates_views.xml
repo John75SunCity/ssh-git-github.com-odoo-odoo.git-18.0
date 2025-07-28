@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Document Retrieval Rates Views -->
+    <!-- File Retrieval Rates Views -->
 
     <!-- Base Rates Tree View -->
-    <record id="view_document_retrieval_rates_tree" model="ir.ui.view">
-        <field name="name">document.retrieval.rates.tree</field>
-        <field name="model">document.retrieval.rates</field>
+    <record id="view_file_retrieval_rates_tree" model="ir.ui.view">
+        <field name="name">file.retrieval.rates.tree</field>
+        <field name="model">file.retrieval.rates</field>
         <field name="arch" type="xml">
-            <tree string="Document Retrieval Base Rates">
+            <tree string="File Retrieval Base Rates">
                 <field name="name"/>
                 <field name="base_retrieval_rate" widget="monetary"/>
                 <field name="base_delivery_rate" widget="monetary"/>
@@ -20,9 +20,9 @@
     </record>
 
     <!-- Base Rates Form View -->
-    <record id="view_document_retrieval_rates_form" model="ir.ui.view">
-        <field name="name">document.retrieval.rates.form</field>
-        <field name="model">document.retrieval.rates</field>
+    <record id="view_file_retrieval_rates_form" model="ir.ui.view">
+        <field name="name">file.retrieval.rates.form</field>
+        <field name="model">file.retrieval.rates</field>
         <field name="arch" type="xml">
             <form string="Document Retrieval Base Rates">
                 <sheet>
@@ -200,9 +200,9 @@
     </record>
 
     <!-- Actions -->
-    <record id="action_document_retrieval_rates" model="ir.actions.act_window">
+    <record id="action_file_retrieval_rates" model="ir.actions.act_window">
         <field name="name">Document Retrieval Base Rates</field>
-        <field name="res_model">document.retrieval.rates</field>
+        <field name="res_model">file.retrieval.rates</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

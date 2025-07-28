@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data noupdate="1">
-        <!-- Default Document Retrieval Base Rates -->
-        <record id="default_retrieval_rates" model="document.retrieval.rates">
+        <!-- Default File Retrieval Base Rates -->
+        <record id="default_retrieval_rates" model="file.retrieval.rates">
             <field name="name">Default Retrieval Rates</field>
 
             <!-- Base rates -->
