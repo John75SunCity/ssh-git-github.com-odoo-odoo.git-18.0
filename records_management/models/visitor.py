@@ -26,7 +26,7 @@ class Visitor(models.Model):
     # CORE FIELDS
     # ==========================================
     name = fields.Char(string='Visitor Name', required=True, tracking=True)
-    description = fields.Text(string='Visit Purpose', tracking=True)
+    description = fields.Text(string='Visit Description', tracking=True)
     active = fields.Boolean(default=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', 
                                 default=lambda self: self.env.company, required=True)

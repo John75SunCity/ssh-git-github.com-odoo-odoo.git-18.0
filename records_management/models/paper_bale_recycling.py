@@ -31,7 +31,7 @@ class PaperBaleRecycling(models.Model):
     notes = fields.Text(string="Notes")
     company_id = fields.Many2one('res.company', string='Company',
                                 default=lambda self: self.env.company, required=True)
-    user_id = fields.Many2one('res.users', string='Responsible User',
+    user_id = fields.Many2one('res.users', string='Recycling Manager',
                              default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(default=True)
 

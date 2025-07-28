@@ -29,7 +29,7 @@ class RecordsApprovalStep(models.Model):
     active = fields.Boolean(default=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', 
                                 default=lambda self: self.env.company, required=True)
-    user_id = fields.Many2one('res.users', string='Responsible User', 
+    user_id = fields.Many2one('res.users', string='Step Manager', 
                              default=lambda self: self.env.user, tracking=True)
     
     # ==========================================

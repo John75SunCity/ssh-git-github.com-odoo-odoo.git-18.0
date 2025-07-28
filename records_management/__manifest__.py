@@ -90,7 +90,7 @@ Features:
         # ],
     },
     'data': [
-        'data/model_records.xml',  # Model records for security rules
+        # 'data/model_records.xml',  # Model records for security rules - REMOVED: causing ParseError
         'security/records_management_security.xml',
         'security/ir.model.access.csv',
         'security/additional_models_access.xml',
