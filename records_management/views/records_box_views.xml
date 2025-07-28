@@ -175,7 +175,7 @@
                                     <field name="from_location_id"/>
                                     <field name="to_location_id"/>
                                     <field name="movement_type"/>
-                                    <field name="responsible_user_id"/>
+                                    <field name="moved_by_id"/>
                                 </list>
                             </field>
                         </page>
