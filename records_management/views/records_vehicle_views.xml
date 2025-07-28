@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Vehicle Views -->
-    
+
     <!-- Tree View -->
     <record id="view_records_vehicle_tree" model="ir.ui.view">
         <field name="name">records.vehicle.tree</field>
@@ -26,12 +26,9 @@
         <field name="arch" type="xml">
             <form string="Vehicle">
                 <header>
-                    <button name="action_set_available" string="Set Available" type="object" 
-                            class="oe_highlight" attrs="{'invisible': [('status', '=', 'available')]}"/>
-                    <button name="action_set_in_use" string="Set In Use" type="object" 
-                            attrs="{'invisible': [('status', '=', 'in_use')]}"/>
-                    <button name="action_set_maintenance" string="Set Maintenance" type="object" 
-                            attrs="{'invisible': [('status', '=', 'maintenance')]}"/>
+                    <button name="action_set_available" string="Set Available" type="object" class="oe_highlight" attrs="{'invisible': [('status', '=', 'available')]}"/>
+                    <button name="action_set_in_use" string="Set In Use" type="object" attrs="{'invisible': [('status', '=', 'in_use')]}"/>
+                    <button name="action_set_maintenance" string="Set Maintenance" type="object" attrs="{'invisible': [('status', '=', 'maintenance')]}"/>
                     <field name="status" widget="statusbar" statusbar_visible="available,in_use,maintenance"/>
                 </header>
                 <sheet>
@@ -138,10 +135,6 @@
     </record>
 
     <!-- Menu Item -->
-    <menuitem id="menu_records_vehicle"
-              name="Vehicles"
-              action="action_records_vehicle"
-              parent="records_management.menu_records_management_configuration"
-              sequence="50"/>
+    <menuitem id="menu_records_vehicle" name="Vehicles" action="action_records_vehicle" parent="records_management.menu_records_management_configuration" sequence="50"/>
 
 </odoo>

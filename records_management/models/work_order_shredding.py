@@ -19,8 +19,12 @@ class WorkOrderShredding(models.Model):
     # Core fields
     name = fields.Char(string="Name", required=True, tracking=True)
     company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', string='Work Order Manager', default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
+    
+    # Customer relationship
+    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True,
+                                 domain=[('is_company', '=', True)])
 
     # Basic state management
     state = fields.Selection([
