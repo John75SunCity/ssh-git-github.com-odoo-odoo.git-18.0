@@ -48,6 +48,9 @@ class RecordsDocument(models.Model):
         ('other', 'Other')
     ], string='Document Type', required=True, tracking=True)
     
+    document_type_id = fields.Many2one('records.document.type', string='Document Type', tracking=True)
+    document_category = fields.Char(string='Document Category', tracking=True)
+    
     confidential = fields.Boolean(string='Confidential', tracking=True)
     classification_level = fields.Selection([
         ('public', 'Public'),
@@ -55,6 +58,18 @@ class RecordsDocument(models.Model):
         ('confidential', 'Confidential'),
         ('restricted', 'Restricted')
     ], string='Classification', default='internal', tracking=True)
+    
+    # State management
+    state = fields.Selection([
+        ('active', 'Active'),
+        ('pending_destruction', 'Pending Destruction'),
+        ('destroyed', 'Destroyed')
+    ], string='State', default='active', tracking=True)
+    
+    # Permanent flag for records that should never be destroyed
+    permanent_flag = fields.Boolean(string='Permanent Record', tracking=True)
+    permanent_flag_set_by = fields.Many2one('res.users', string='Permanent Flag Set By', tracking=True)
+    permanent_flag_set_date = fields.Date(string='Permanent Flag Set Date', tracking=True)
     
     # ==========================================
     # PHYSICAL PROPERTIES
@@ -68,12 +83,25 @@ class RecordsDocument(models.Model):
         ('usb', 'USB Drive')
     ], string='Format', default='paper', tracking=True)
     
+    # Additional classification fields
+    media_type = fields.Selection([
+        ('paper', 'Paper'),
+        ('digital', 'Digital'),
+        ('microfilm', 'Microfilm'),
+        ('other', 'Other')
+    ], string='Media Type', default='paper', tracking=True)
+    
+    original_format = fields.Char(string='Original Format', tracking=True)
+    digitized = fields.Boolean(string='Digitized', tracking=True)
+    
     # ==========================================
     # RELATIONSHIPS
     # ==========================================
     box_id = fields.Many2one('records.box', string='Records Box', tracking=True)
     customer_id = fields.Many2one('res.partner', string='Customer',
                                  domain=[('is_company', '=', True)], tracking=True)
+    department_id = fields.Many2one('records.department', string='Department', tracking=True)
+    retention_policy_id = fields.Many2one('records.retention.policy', string='Retention Policy', tracking=True)
     
     # One2many relationships
     digital_scan_ids = fields.One2many('records.digital.scan', 'document_id', string='Digital Scans')
@@ -82,8 +110,11 @@ class RecordsDocument(models.Model):
     # DATE TRACKING
     # ==========================================
     creation_date = fields.Date(string='Document Date', tracking=True)
+    created_date = fields.Date(string='Created Date', tracking=True)
     received_date = fields.Date(string='Received Date', 
                                default=fields.Date.today, tracking=True)
+    storage_date = fields.Date(string='Storage Date', tracking=True)
+    last_access_date = fields.Date(string='Last Access Date', tracking=True)
     
     # ==========================================
     # RETENTION AND DISPOSAL
@@ -92,6 +123,10 @@ class RecordsDocument(models.Model):
                                            default=7, tracking=True)
     destruction_date = fields.Date(string='Scheduled Destruction Date', 
                                   compute='_compute_destruction_date', store=True)
+    destruction_eligible_date = fields.Date(string='Destruction Eligible Date',
+                                           compute='_compute_destruction_date', store=True)
+    days_until_destruction = fields.Integer(string='Days Until Destruction',
+                                           compute='_compute_days_until_destruction')
     destroyed = fields.Boolean(string='Destroyed', tracking=True)
     destruction_certificate_id = fields.Many2one('naid.certificate', 
                                                 string='Destruction Certificate')
@@ -112,8 +147,21 @@ class RecordsDocument(models.Model):
             if record.received_date and record.retention_period_years:
                 from dateutil.relativedelta import relativedelta
                 record.destruction_date = record.received_date + relativedelta(years=record.retention_period_years)
+                record.destruction_eligible_date = record.destruction_date
             else:
                 record.destruction_date = False
+                record.destruction_eligible_date = False
+    
+    @api.depends('destruction_eligible_date')
+    def _compute_days_until_destruction(self):
+        """Calculate days until destruction"""
+        today = fields.Date.today()
+        for record in self:
+            if record.destruction_eligible_date:
+                delta = record.destruction_eligible_date - today
+                record.days_until_destruction = delta.days
+            else:
+                record.days_until_destruction = 0
     
     # ==========================================
     # ACTION METHODS

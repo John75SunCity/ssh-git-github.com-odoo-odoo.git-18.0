@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- 📊 ENTERPRISE CUSTOMER INVENTORY - Advanced Analytics Dashboard -->
-    
+
     <!-- 🎨 Kanban Dashboard for Customer Inventory Overview -->
     <record id="view_customer_inventory_kanban" model="ir.ui.view">
         <field name="name">customer.inventory.report.kanban</field>
@@ -20,26 +20,32 @@
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-                                        <strong><field name="customer_id"/></strong>
+                                        <strong>
+                                            <field name="customer_id"/>
+                                        </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        📅 <field name="report_date"/>
+                                        📅                                        <field name="report_date"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" title="More options"/></a>
+                                    <a class="o_kanban_manage_toggle_button" href="#">
+                                        <i class="fa fa-ellipsis-v" title="More options"/>
+                                    </a>
                                 </div>
                             </div>
                             <div class="o_kanban_card_content">
                                 <div class="row">
                                     <div class="col-6">
                                         <button class="btn btn-primary btn-sm" type="object" name="action_view_boxes">
-                                            📦 <field name="total_boxes"/> Boxes
+                                            📦                                            <field name="total_boxes"/>
+ Boxes
                                         </button>
                                     </div>
                                     <div class="col-6">
                                         <button class="btn btn-info btn-sm" type="object" name="action_view_documents">
-                                            📄 <field name="total_documents"/> Docs
+                                            📄                                            <field name="total_documents"/>
+ Docs
                                         </button>
                                     </div>
                                 </div>
@@ -74,9 +80,7 @@
         <field name="name">customer.inventory.report.list</field>
         <field name="model">customer.inventory.report</field>
         <field name="arch" type="xml">
-            <list decoration-success="status == 'confirmed'" 
-                  decoration-warning="status == 'sent'"
-                  decoration-info="status == 'draft'">
+            <list decoration-success="status == 'confirmed'" decoration-warning="status == 'sent'" decoration-info="status == 'draft'">
                 <field name="name" string="📋 Report"/>
                 <field name="customer_id" string="👤 Customer"/>
                 <field name="report_date" string="📅 Date"/>
@@ -85,10 +89,8 @@
                 <field name="active_locations" string="📍 Locations"/>
                 <field name="volume_category" string="📊 Category"/>
                 <field name="status" string="🎯 Status" widget="badge"/>
-                <button name="action_view_boxes" type="object" string="View Boxes" 
-                        icon="fa-cube" class="btn-link"/>
-                <button name="action_generate_pdf_report" type="object" string="PDF" 
-                        icon="fa-file-pdf-o" class="btn-link"/>
+                <button name="action_view_boxes" type="object" string="View Boxes" icon="fa-cube" class="btn-link"/>
+                <button name="action_generate_pdf_report" type="object" string="PDF" icon="fa-file-pdf-o" class="btn-link"/>
             </list>
         </field>
     </record>
@@ -100,10 +102,8 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_confirm_report" type="object" string="✅ Confirm Report" 
-                            class="btn-primary" invisible="status != 'draft'"/>
-                    <button name="action_send_to_customer" type="object" string="📧 Send to Customer" 
-                            class="btn-secondary" invisible="status != 'confirmed'"/>
+                    <button name="action_confirm_report" type="object" string="✅ Confirm Report" class="btn-primary" invisible="status != 'draft'"/>
+                    <button name="action_send_to_customer" type="object" string="📧 Send to Customer" class="btn-secondary" invisible="status != 'confirmed'"/>
                     <button name="action_generate_pdf_report" type="object" string="📋 Generate PDF" class="btn-info"/>
                     <field name="status" widget="statusbar" statusbar_visible="draft,confirmed,sent"/>
                 </header>
@@ -119,7 +119,7 @@
                             <field string="Locations" name="active_locations" widget="statinfo"/>
                         </button>
                     </div>
-                    
+
                     <group>
                         <group string="📋 Report Information">
                             <field name="name"/>
@@ -134,7 +134,7 @@
                             <field name="status"/>
                         </group>
                     </group>
-                    
+
                     <notebook>
                         <page string="📦 Boxes Overview" name="boxes">
                             <field name="box_ids" mode="list">
@@ -142,7 +142,7 @@
                                     <field name="name"/>
                                     <field name="location_id"/>
                                     <field name="state"/>
-                                    <field name="storage_date"/>
+                                    <field name="stored_date"/>
                                 </list>
                             </field>
                         </page>
@@ -191,23 +191,21 @@
             <search>
                 <field name="name" string="Report"/>
                 <field name="customer_id" string="Customer"/>
-                
+
                 <filter string="📝 Draft Reports" name="draft" domain="[('status', '=', 'draft')]"/>
                 <filter string="✅ Confirmed Reports" name="confirmed" domain="[('status', '=', 'confirmed')]"/>
                 <filter string="📧 Sent Reports" name="sent" domain="[('status', '=', 'sent')]"/>
-                
+
                 <separator/>
                 <filter string="📦 Small Volume" name="small_volume" domain="[('volume_category', '=', 'small')]"/>
                 <filter string="📊 Medium Volume" name="medium_volume" domain="[('volume_category', '=', 'medium')]"/>
                 <filter string="📈 Large Volume" name="large_volume" domain="[('volume_category', '=', 'large')]"/>
                 <filter string="🚀 Very Large Volume" name="very_large_volume" domain="[('volume_category', '=', 'very_large')]"/>
-                
+
                 <separator/>
-                <filter string="📅 This Month" name="this_month" 
-                        domain="[('report_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
-                <filter string="📆 Last 3 Months" name="last_quarter" 
-                        domain="[('report_date', '&gt;=', (context_today() - relativedelta(months=3)).strftime('%Y-%m-01'))]"/>
-                
+                <filter string="📅 This Month" name="this_month" domain="[('report_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                <filter string="📆 Last 3 Months" name="last_quarter" domain="[('report_date', '&gt;=', (context_today() - relativedelta(months=3)).strftime('%Y-%m-01'))]"/>
+
                 <group expand="0" string="📊 Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
                     <filter string="Status" name="group_by_status" context="{'group_by': 'status'}"/>
@@ -233,14 +231,15 @@
                 📊 Create your first customer inventory report!
             </p>
             <p>
-                <b>Enterprise Inventory Management:</b><br/>
+                <b>Enterprise Inventory Management:</b>
+                <br/>
                 • 📋 Automated monthly inventory reports<br/>
                 • 📊 Real-time analytics and dashboards<br/>
                 • 📧 Automated customer notifications<br/>
                 • 📈 Volume category tracking and alerts<br/>
                 • 🔍 Smart search and filtering<br/>
                 • 📱 Mobile-optimized interface
-            </p>
-        </field>
-    </record>
+</p>
+</field>
+</record>
 </odoo>
