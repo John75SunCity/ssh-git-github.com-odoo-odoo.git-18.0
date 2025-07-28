@@ -30,6 +30,10 @@ from . import field_label_customization
 from . import paper_bale_recycling
 from . import paper_load_shipment
 
+# Service Management Models
+from . import bin_unlock_service
+from . import customer_retrieval_rates
+
 # Legacy bale models (for compatibility)
 from . import bale
 from . import paper_bale
@@ -43,6 +47,9 @@ from . import naid_audit_log
 # Document Related Models (custody, audit, digital copies)
 from . import records_chain_of_custody
 from . import destruction_item
+from . import doc_ret_work_order
+from . import global_rates
+from . import pickup_route
 
 # Box Related Models (movements, service requests)
 from . import records_box_movement

@@ -7,6 +7,7 @@ from . import user_management_wizards  # User invitation and bulk import wizards
 
 # Box management wizards
 from . import box_type_converter  # Bulk box type conversion wizard
+from . import work_order_bin_assignment_wizard  # Work order bin assignment wizard
 
 # Security wizards
 from . import permanent_flag_wizard  # Permanent flag security wizard

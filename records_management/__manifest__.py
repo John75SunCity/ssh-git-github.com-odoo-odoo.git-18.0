@@ -90,7 +90,7 @@ Features:
         # ],
     },
     'data': [
-        # 'data/model_records.xml',  # Model records for security rules - REMOVED: causing ParseError
+        # Demo data moved to demo section
         'security/records_management_security.xml',
         'security/ir.model.access.csv',
         'security/additional_models_access.xml',
@@ -168,6 +168,7 @@ Features:
     ],
     'demo': [
         'demo/odoo.xml',
+        'demo/demo_records.xml',  # Comprehensive demo data for development and testing
     ],
     'qweb': [],
     'application': True,

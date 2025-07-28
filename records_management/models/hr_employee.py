@@ -114,7 +114,7 @@ class HrEmployee(models.Model):
     
     # Contact Information
     work_phone = fields.Char(string='Work Phone')
-    work_mobile = fields.Char(string='Work Mobile Phone')
+    work_mobile = fields.Char(string='Business Mobile')
     work_location = fields.Char(string='Primary Work Location')
     
     # Computed Fields
