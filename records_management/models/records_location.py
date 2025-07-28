@@ -120,6 +120,14 @@ class RecordsLocation(models.Model):
     # ==========================================
     notes = fields.Text(string='Notes', tracking=True)
     special_instructions = fields.Text(string='Special Instructions', tracking=True)
+    access_instructions = fields.Text(string='Access Instructions', tracking=True,
+                                     help='Specific instructions for accessing this location')
+    security_level = fields.Selection([
+        ('low', 'Low Security'),
+        ('medium', 'Medium Security'),
+        ('high', 'High Security'),
+        ('maximum', 'Maximum Security')
+    ], string='Security Level', default='medium', tracking=True)
     
     # ==========================================
     # COMPUTED FIELDS

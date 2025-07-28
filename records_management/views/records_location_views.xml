@@ -136,7 +136,7 @@
                         <group string="🏢 Location Information">
                             <field name="name" placeholder="e.g., Building A - Section 1"/>
                             <field name="location_type"/>
-                            <field name="parent_id" string="Parent Location"/>
+                            <field name="parent_location_id" string="Parent Location"/>
                         </group>
                         <group string="📊 Capacity &amp; Usage">
                             <field name="capacity"/>
@@ -201,7 +201,7 @@
 
                 <group expand="0" string="📊 Group By">
                     <filter string="Type" name="group_by_type" context="{'group_by': 'location_type'}"/>
-                    <filter string="Parent Location" name="group_by_parent" context="{'group_by': 'parent_id'}"/>
+                    <filter string="Parent Location" name="group_by_parent" context="{'group_by': 'parent_location_id'}"/>
                 </group>
             </search>
         </field>
