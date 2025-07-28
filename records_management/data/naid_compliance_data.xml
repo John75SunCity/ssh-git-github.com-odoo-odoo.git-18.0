@@ -21,7 +21,7 @@
         </record>
 
         <!-- NAID Compliance Policies -->
-        <record id="policy_access_control" model="naid.compliance.policy">
+        <record id="policy_access_control" model="naid.compliance.enhanced">
             <field name="name">Access Control</field>
             <field name="sequence">10</field>
             <field name="policy_type">access_control</field>
@@ -34,7 +34,7 @@
             <field name="review_frequency_months">6</field>
         </record>
 
-        <record id="policy_document_handling" model="naid.compliance.policy">
+        <record id="policy_document_handling" model="naid.compliance.enhanced">
             <field name="name">Document Handling</field>
             <field name="sequence">20</field>
             <field name="policy_type">document_handling</field>
@@ -47,7 +47,7 @@
             <field name="review_frequency_months">12</field>
         </record>
 
-        <record id="policy_destruction_process" model="naid.compliance.policy">
+        <record id="policy_destruction_process" model="naid.compliance.enhanced">
             <field name="name">Destruction Process</field>
             <field name="sequence">30</field>
             <field name="policy_type">destruction_process</field>
@@ -60,7 +60,7 @@
             <field name="review_frequency_months">6</field>
         </record>
 
-        <record id="policy_employee_screening" model="naid.compliance.policy">
+        <record id="policy_employee_screening" model="naid.compliance.enhanced">
             <field name="name">Employee Screening</field>
             <field name="sequence">40</field>
             <field name="policy_type">employee_screening</field>
@@ -73,7 +73,7 @@
             <field name="review_frequency_months">12</field>
         </record>
 
-        <record id="policy_facility_security" model="naid.compliance.policy">
+        <record id="policy_facility_security" model="naid.compliance.enhanced">
             <field name="name">Facility Security</field>
             <field name="sequence">50</field>
             <field name="policy_type">facility_security</field>
@@ -86,7 +86,7 @@
             <field name="review_frequency_months">6</field>
         </record>
 
-        <record id="policy_equipment_maintenance" model="naid.compliance.policy">
+        <record id="policy_equipment_maintenance" model="naid.compliance.enhanced">
             <field name="name">Equipment Maintenance</field>
             <field name="sequence">60</field>
             <field name="policy_type">equipment_maintenance</field>
@@ -99,7 +99,7 @@
             <field name="review_frequency_months">3</field>
         </record>
 
-        <record id="policy_audit_requirements" model="naid.compliance.policy">
+        <record id="policy_audit_requirements" model="naid.compliance.enhanced">
             <field name="name">Audit Requirements</field>
             <field name="sequence">70</field>
             <field name="policy_type">audit_requirements</field>
