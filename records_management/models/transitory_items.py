@@ -81,7 +81,7 @@ class TransitoryItems(models.Model):
                                  help="Depth level: 0=Box, 1=Folder in Box, 2=Subfolder, etc.")
     
     # Display helpers for hierarchy
-    parent_box_reference = fields.Char(related='parent_box_id.full_box_reference', string='Box Reference', readonly=True)
+    parent_box_reference = fields.Char(related='parent_box_id.name', string='Box Reference', readonly=True)
     hierarchy_display = fields.Char(string='Hierarchy Path', compute='_compute_hierarchy_display',
                                    help="Full path: Box > Folder > Subfolder")
 
