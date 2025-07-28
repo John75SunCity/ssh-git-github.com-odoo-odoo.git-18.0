@@ -923,6 +923,43 @@ class TransitoryItems(models.Model):
                 raise ValidationError(_('Estimated weight cannot be negative'))
             if record.estimated_cubic_feet and record.estimated_cubic_feet < 0:
                 raise ValidationError(_('Estimated size cannot be negative'))
+    
     def action_done(self):
         """Mark as done"""
         self.write({'state': 'done'})
+
+    # ==========================================
+    # FIELD LABEL CUSTOMIZATION METHODS
+    # ==========================================
+    def get_portal_field_config(self):
+        """Get field configuration for portal display including custom labels"""
+        if self.customer_id:
+            config = self.customer_id.get_transitory_field_config()
+            # Add custom labels
+            labels = self.env['field.label.customization'].get_labels_for_context(
+                customer_id=self.customer_id.id,
+                department_id=None  # Can be enhanced for department-specific labels
+            )
+            config['field_labels'] = labels
+            return config
+        return {
+            'visible_fields': {},
+            'required_fields': {},
+            'field_labels': {}
+        }
+
+    @api.model
+    def get_field_label(self, field_name, customer_id=None, department_id=None):
+        """Get custom label for a specific field"""
+        return self.env['field.label.customization'].get_label_for_field(
+            field_name, customer_id, department_id
+        )
+
+    def get_customer_field_labels(self):
+        """Get all custom field labels for this item's customer"""
+        self.ensure_one()
+        if self.customer_id:
+            return self.env['field.label.customization'].get_labels_for_context(
+                customer_id=self.customer_id.id
+            )
+        return {}

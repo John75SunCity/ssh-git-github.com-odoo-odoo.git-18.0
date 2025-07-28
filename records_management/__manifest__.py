@@ -106,6 +106,7 @@ Features:
         'data/feedback_survey_data.xml',  # New: Default feedback survey
         'data/document_retrieval_rates.xml',  # New: Default retrieval rates
         'data/advanced_billing_demo.xml',  # New: Advanced billing demo data
+        'data/field_label_demo_data.xml',  # New: Field label customization demo data
         # Load base menu structure first (parent menus only, no actions)
         'views/records_management_base_menus.xml',
         # Load all action-containing view files
@@ -143,6 +144,7 @@ Features:
         'views/shredding_rates_views.xml',  # New: Shredding rates views
         'views/shredding_inventory_views.xml',  # New: Shredding inventory views
         'views/advanced_billing_views.xml',  # New: Advanced billing views
+        'views/field_label_customization_views.xml',  # New: Field label customization views
         'views/bin_key_management_views.xml',  # New: Bin key management views
         'views/partner_bin_key_views.xml',  # New: Partner bin key views
         'views/mobile_bin_key_wizard_views.xml',  # New: Mobile bin key wizard views
@@ -196,6 +198,7 @@ Features:
             'records_management/static/src/js/portal_tour.js',  # New: Tour JS
             'records_management/static/src/js/portal_feedback.js',  # New: Feedback submission
             'records_management/static/src/js/portal_docs.js',  # New: Docs dashboard JS
+            'records_management/static/src/js/field_label_customizer.js',  # New: Field label customization
         ],
     },
 }

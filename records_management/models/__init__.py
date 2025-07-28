@@ -24,6 +24,7 @@ from . import pickup_request_item
 from . import pickup_request
 from . import transitory_items
 from . import transitory_field_config
+from . import field_label_customization
 
 # New Paper Recycling Models (Business-focused)
 from . import paper_bale_recycling

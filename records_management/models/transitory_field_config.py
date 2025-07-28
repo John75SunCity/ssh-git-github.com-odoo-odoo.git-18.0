@@ -20,12 +20,18 @@ class TransitoryFieldConfig(models.Model):
     # ==========================================
     # CORE FIELDS
     # ==========================================
+    name = fields.Char(string='Configuration Name', compute='_compute_name', store=True)
     customer_id = fields.Many2one('res.partner', string='Customer', required=True,
                                  domain=[('is_company', '=', True)],
                                  help="Customer this configuration applies to")
     department_id = fields.Many2one('records.department', string='Department',
                                    help="Specific department (optional)")
     active = fields.Boolean(default=True)
+    
+    # Field label customization integration
+    field_label_config_id = fields.Many2one('field.label.customization',
+                                           string='Field Label Configuration',
+                                           help="Custom field labels for this customer/department")
 
     # ==========================================
     # FIELD VISIBILITY CONTROLS
@@ -86,6 +92,17 @@ class TransitoryFieldConfig(models.Model):
                                         compute='_compute_field_counts')
     required_field_count = fields.Integer(string='Required Fields',
                                          compute='_compute_field_counts')
+
+    @api.depends('customer_id', 'department_id')
+    def _compute_name(self):
+        """Generate name based on customer/department"""
+        for record in self:
+            if record.department_id:
+                record.name = f"{record.customer_id.name} - {record.department_id.name}"
+            elif record.customer_id:
+                record.name = f"{record.customer_id.name} - Field Configuration"
+            else:
+                record.name = "Field Configuration"
 
     @api.depends('show_box_number', 'show_description', 'show_content_description',
                  'show_date_ranges', 'show_sequence_ranges', 'show_destruction_date',
@@ -295,5 +312,46 @@ class TransitoryFieldConfig(models.Model):
                 'confidentiality': self.require_confidentiality,
                 'project_code': self.require_project_code,
                 'client_reference': self.require_client_reference,
-            }
+            },
+            'field_labels': self.get_field_labels()
+        }
+
+    def get_field_labels(self):
+        """Get custom field labels for this configuration"""
+        self.ensure_one()
+        
+        # Get labels from field label customization system
+        labels = self.env['field.label.customization'].get_labels_for_context(
+            customer_id=self.customer_id.id,
+            department_id=self.department_id.id if self.department_id else None
+        )
+        
+        return labels
+
+    def action_setup_field_labels(self):
+        """Setup custom field labels for this configuration"""
+        self.ensure_one()
+        
+        if not self.field_label_config_id:
+            # Create new label configuration
+            config_name = f"Labels for {self.customer_id.name}"
+            if self.department_id:
+                config_name += f" - {self.department_id.name}"
+            
+            label_config = self.env['field.label.customization'].create({
+                'name': config_name,
+                'customer_id': self.customer_id.id,
+                'department_id': self.department_id.id if self.department_id else False,
+                'priority': 30 if self.department_id else 20,  # Department gets higher priority
+                'description': f"Custom field labels for {config_name}",
+            })
+            self.field_label_config_id = label_config.id
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Customize Field Labels',
+            'view_mode': 'form',
+            'res_model': 'field.label.customization',
+            'res_id': self.field_label_config_id.id,
+            'target': 'new',
         }
