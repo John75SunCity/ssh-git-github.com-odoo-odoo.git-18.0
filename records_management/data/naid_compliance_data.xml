@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        
+
         <!-- NAID Chain of Custody Sequence -->
         <record id="seq_naid_chain_custody" model="ir.sequence">
             <field name="name">NAID Chain of Custody</field>
@@ -10,7 +10,7 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- NAID Audit Log Sequence -->
         <record id="seq_naid_audit_log" model="ir.sequence">
             <field name="name">NAID Audit Log</field>
@@ -19,7 +19,7 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <!-- NAID Compliance Policies -->
         <record id="policy_access_control" model="naid.compliance.policy">
             <field name="name">Access Control</field>
@@ -33,7 +33,7 @@
             <field name="violation_consequences">Immediate suspension of access privileges, security review, potential termination.</field>
             <field name="review_frequency_months">6</field>
         </record>
-        
+
         <record id="policy_document_handling" model="naid.compliance.policy">
             <field name="name">Document Handling</field>
             <field name="sequence">20</field>
@@ -46,7 +46,7 @@
             <field name="violation_consequences">Retraining required, disciplinary action, potential contract termination.</field>
             <field name="review_frequency_months">12</field>
         </record>
-        
+
         <record id="policy_destruction_process" model="naid.compliance.policy">
             <field name="name">Destruction Process</field>
             <field name="sequence">30</field>
@@ -59,7 +59,7 @@
             <field name="violation_consequences">Stop work order, investigation, potential re-destruction of affected materials.</field>
             <field name="review_frequency_months">6</field>
         </record>
-        
+
         <record id="policy_employee_screening" model="naid.compliance.policy">
             <field name="name">Employee Screening</field>
             <field name="sequence">40</field>
@@ -72,7 +72,7 @@
             <field name="violation_consequences">Immediate removal from confidential projects, retraining, potential termination.</field>
             <field name="review_frequency_months">12</field>
         </record>
-        
+
         <record id="policy_facility_security" model="naid.compliance.policy">
             <field name="name">Facility Security</field>
             <field name="sequence">50</field>
@@ -85,7 +85,7 @@
             <field name="violation_consequences">Security audit, facility improvements required, potential contract suspension.</field>
             <field name="review_frequency_months">6</field>
         </record>
-        
+
         <record id="policy_equipment_maintenance" model="naid.compliance.policy">
             <field name="name">Equipment Maintenance</field>
             <field name="sequence">60</field>
@@ -98,7 +98,7 @@
             <field name="violation_consequences">Equipment shutdown, recalibration required, affected materials may require re-destruction.</field>
             <field name="review_frequency_months">3</field>
         </record>
-        
+
         <record id="policy_audit_requirements" model="naid.compliance.policy">
             <field name="name">Audit Requirements</field>
             <field name="sequence">70</field>
@@ -111,7 +111,7 @@
             <field name="violation_consequences">Compliance violation notice, corrective action plan required, potential certification loss.</field>
             <field name="review_frequency_months">3</field>
         </record>
-        
+
         <!-- Scheduled Actions for NAID Compliance -->
         <record id="cron_check_employee_credentials" model="ir.cron">
             <field name="name">Check Employee Credential Expiry</field>
@@ -122,26 +122,26 @@
             <field name="interval_type">days</field>
             <field name="active">True</field>
         </record>
-        
+
         <record id="cron_cleanup_audit_logs" model="ir.cron">
             <field name="name">Cleanup Old Audit Logs</field>
-            <field name="model_id" ref="records_management.model_naid_audit_log"/>
+            <field name="model_id" ref="model_naid_audit_log"/>
             <field name="state">code</field>
             <field name="code">model.cleanup_old_logs()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
             <field name="active">True</field>
         </record>
-        
+
         <record id="cron_compliance_check" model="ir.cron">
             <field name="name">NAID Compliance Check</field>
-            <field name="model_id" ref="records_management.model_naid_compliance_policy"/>
+            <field name="model_id" ref="model_naid_compliance_enhanced"/>
             <field name="state">code</field>
             <field name="code">model.check_compliance()</field>
             <field name="interval_number">4</field>
             <field name="interval_type">hours</field>
             <field name="active">True</field>
         </record>
-        
+
     </data>
 </odoo>

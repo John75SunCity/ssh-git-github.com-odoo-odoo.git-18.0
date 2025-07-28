@@ -42,7 +42,7 @@ try:
                 })
 except Exception as e:
     log('Error computing monthly storage fees: %s' % str(e))
-</field>
+            </field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
@@ -52,7 +52,7 @@ except Exception as e:
         <!-- Monthly Customer Inventory Reports -->
         <record id="ir_cron_generate_monthly_inventory_reports" model="ir.cron">
             <field name="name">Generate Monthly Customer Inventory Reports</field>
-            <field name="model_id" ref="records_management.model_customer_inventory_report"/>
+            <field name="model_id" ref="model_cust_inv_rpt"/>
             <field name="state">code</field>
             <field name="code">
 # Generate monthly inventory reports for all customers
@@ -61,7 +61,7 @@ try:
     log('Monthly customer inventory reports generated successfully.')
 except Exception as e:
     log('Error generating monthly inventory reports: %s' % str(e))
-</field>
+            </field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
