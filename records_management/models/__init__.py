@@ -54,7 +54,7 @@ from . import naid_audit_log
 # Document Related Models (custody, audit, digital copies)
 from . import records_chain_of_custody
 from . import destruction_item
-from . import doc_ret_work_order
+from . import file_retrieval_work_order
 from . import global_rates
 from . import pickup_route
 from . import res_partner_key_restriction

@@ -64,6 +64,8 @@ class CustomerRetrievalRates(models.Model):
     # ==========================================
     base_rate = fields.Float(string='Base Rate per Document', required=True, tracking=True,
                             help='Base price for retrieving one document')
+    per_file_rate = fields.Float(string='Per File Rate', tracking=True,
+                                help='Additional charge per individual file')
     per_page_rate = fields.Float(string='Per Page Rate', tracking=True,
                                 help='Additional charge per page')
     per_box_rate = fields.Float(string='Per Box Rate', tracking=True,
@@ -210,7 +212,7 @@ class CustomerRetrievalRates(models.Model):
     # ==========================================
     # PRICING CALCULATION METHODS
     # ==========================================
-    def calculate_retrieval_cost(self, document_count=1, page_count=0, box_count=1, 
+    def calculate_retrieval_cost(self, document_count=1, file_count=0, page_count=0, box_count=1, 
                                 urgency='standard', delivery_date=None):
         """Calculate total cost for retrieval based on parameters"""
         self.ensure_one()
@@ -223,6 +225,10 @@ class CustomerRetrievalRates(models.Model):
         
         # Document base cost
         total_cost += self.base_rate * document_count
+        
+        # Per file cost
+        if file_count and self.per_file_rate:
+            total_cost += self.per_file_rate * file_count
         
         # Per page cost
         if page_count and self.per_page_rate:
@@ -281,12 +287,14 @@ class CustomerRetrievalRates(models.Model):
     # ==========================================
     # VALIDATION
     # ==========================================
-    @api.constrains('base_rate', 'per_page_rate', 'per_box_rate')
+    @api.constrains('base_rate', 'per_file_rate', 'per_page_rate', 'per_box_rate')
     def _check_rates(self):
         """Validate rate values"""
         for record in self:
             if record.base_rate < 0:
                 raise ValidationError(_('Base rate cannot be negative'))
+            if record.per_file_rate < 0:
+                raise ValidationError(_('Per file rate cannot be negative'))
             if record.per_page_rate < 0:
                 raise ValidationError(_('Per page rate cannot be negative'))
             if record.per_box_rate < 0:

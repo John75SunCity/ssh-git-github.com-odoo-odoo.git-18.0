@@ -104,7 +104,6 @@ Features:
         'data/portal_mail_templates.xml',  # New: Email/SMS templates for notifications
         'data/naid_compliance_data.xml',  # New: NAID data for audits/signatures
         'data/feedback_survey_data.xml',  # New: Default feedback survey
-        'data/file_retrieval_rates.xml',  # New: Default retrieval rates
         'data/advanced_billing_demo.xml',  # New: Advanced billing demo data
         'data/field_label_demo_data.xml',  # New: Field label customization demo data
         'data/model_records.xml',  # Model demo records - now fixed with proper field definitions
@@ -143,7 +142,6 @@ Features:
         'views/box_type_converter_views.xml',  # New: Box type conversion wizard
         'views/permanent_flag_wizard_views.xml',  # New: Permanent flag security wizard
         'views/document_retrieval_work_order_views.xml',  # New: Document retrieval work orders
-        'views/file_retrieval_rates_views.xml',  # New: File retrieval rates
         'views/shredding_rates_views.xml',  # New: Shredding rates views
         'views/shredding_inventory_views.xml',  # New: Shredding inventory views
         'views/advanced_billing_views.xml',  # New: Advanced billing views
