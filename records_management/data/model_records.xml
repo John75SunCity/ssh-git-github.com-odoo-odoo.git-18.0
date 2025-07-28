@@ -5,6 +5,19 @@
         <!-- Demo Data for Records Management System -->
         <!-- This file creates sample records for testing and development -->
 
+        <!-- Demo Customer -->
+        <record id="demo_customer_abc_corp" model="res.partner">
+            <field name="name">ABC Corporation</field>
+            <field name="is_company">True</field>
+            <field name="email">info@abccorp.com</field>
+            <field name="phone">555-123-4567</field>
+            <field name="street">123 Business Lane</field>
+            <field name="city">Business City</field>
+            <field name="zip">12345</field>
+            <field name="supplier_rank">0</field>
+            <field name="customer_rank">1</field>
+        </record>
+
         <!-- Demo Storage Locations -->
         <record id="demo_location_warehouse_a" model="records.location">
             <field name="name">Warehouse A - Secure Storage</field>
@@ -97,6 +110,7 @@
         <!-- Demo Shredding Service Templates -->
         <record id="demo_shredding_service_template" model="shred.svc">
             <field name="name">Standard Document Shredding</field>
+            <field name="customer_id" ref="demo_customer_abc_corp"/>
             <field name="service_type">onsite</field>
             <field name="state">draft</field>
             <field name="description">Standard on-site document destruction service with NAID AAA compliance</field>
@@ -121,16 +135,18 @@
         <!-- Demo Portal Request Templates -->
         <record id="demo_portal_request_destruction" model="portal.request">
             <field name="name">Document Destruction Request Template</field>
+            <field name="customer_id" ref="demo_customer_abc_corp"/>
             <field name="request_type">destruction</field>
-            <field name="state">template</field>
+            <field name="state">draft</field>
             <field name="description">Template for customer document destruction requests</field>
             <field name="priority">normal</field>
         </record>
 
         <record id="demo_portal_request_retrieval" model="portal.request">
             <field name="name">Document Retrieval Request Template</field>
+            <field name="customer_id" ref="demo_customer_abc_corp"/>
             <field name="request_type">retrieval</field>
-            <field name="state">template</field>
+            <field name="state">draft</field>
             <field name="description">Template for customer document retrieval requests</field>
             <field name="priority">normal</field>
         </record>
