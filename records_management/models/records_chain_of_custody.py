@@ -13,7 +13,56 @@ _logger = logging.getLogger(__name__)
 
 class RecordsChainOfCustody(models.Model):
     """
-    Comprehensive Chain of Custody Management with NAID AAA Compliance
+    Comprehensive Chain of Custody Management wit        if compliance_issues:
+            raise ValidationError(_('NAID compliance issues found: %s') % ', '.join(compliance_issues))
+        
+        return True
+    
+    # ==========================================
+    # WORK ORDER INTEGRATION METHODS
+    # ==========================================
+    
+    @api.model
+    def create_work_order_custody_log(self, work_order_id, custody_event, from_party=None, to_party=None, notes=None):
+        """Create custody log entry for document retrieval work order"""
+        work_order = self.env['doc.ret.wo'].browse(work_order_id)
+        
+        vals = {
+            'work_order_id': work_order_id,
+            'custody_event': custody_event,
+            'from_party_id': from_party.id if from_party else False,
+            'to_party_id': to_party.id if to_party else False,
+            'transfer_date': fields.Datetime.now(),
+            'location_from': work_order.customer_id.name if custody_event == 'pickup' else 'Records Center',
+            'location_to': 'Records Center' if custody_event == 'pickup' else work_order.delivery_address,
+            'custodian_id': self.env.user.id,
+            'notes': notes or f'Custody event for work order {work_order.name}',
+            'verified': True,
+            'verification_date': fields.Datetime.now(),
+            'naid_compliant': True,
+        }
+        
+        return self.create(vals)
+    
+    def action_verify_work_order_custody(self):
+        """Verify custody for work order related transfers"""
+        self.ensure_one()
+        if not self.work_order_id:
+            raise UserError(_('This custody log is not related to a work order'))
+        
+        self.write({
+            'verified': True,
+            'verification_date': fields.Datetime.now(),
+            'verified_by_customer': True,
+        })
+        
+        # Update work order status if needed
+        if self.custody_event == 'delivery':
+            self.work_order_id.action_deliver()
+        
+        self.message_post(body=_('Work order custody verified'))
+        
+        return TrueID AAA Compliance
     Tracks complete custody history for documents, boxes, and destruction processes
     """
 
@@ -46,6 +95,9 @@ class RecordsChainOfCustody(models.Model):
                                  tracking=True, ondelete='cascade')
     shredding_service_id = fields.Many2one('shred.svc', string='Shredding Service',
                                           tracking=True, ondelete='cascade')
+    work_order_id = fields.Many2one('doc.ret.wo', string='Document Retrieval Work Order',
+                                   tracking=True, ondelete='cascade',
+                                   help='Related document retrieval work order')
     
     # ==========================================
     # LOCATION AND TRANSFER DETAILS
@@ -396,5 +448,51 @@ class RecordsChainOfCustody(models.Model):
 
         if compliance_issues:
             raise ValidationError(_('NAID compliance issues: %s') % ', '.join(compliance_issues))
+        
+        return True
+    
+    # ==========================================
+    # WORK ORDER INTEGRATION METHODS
+    # ==========================================
+    
+    @api.model
+    def create_work_order_custody_log(self, work_order_id, custody_event, from_party=None, to_party=None, notes=None):
+        """Create custody log entry for document retrieval work order"""
+        work_order = self.env['doc.ret.wo'].browse(work_order_id)
+        
+        vals = {
+            'work_order_id': work_order_id,
+            'custody_event': custody_event,
+            'from_party_id': from_party.id if from_party else False,
+            'to_party_id': to_party.id if to_party else False,
+            'transfer_date': fields.Datetime.now(),
+            'location_from': work_order.customer_id.name if custody_event == 'pickup' else 'Records Center',
+            'location_to': 'Records Center' if custody_event == 'pickup' else work_order.delivery_address,
+            'custodian_id': self.env.user.id,
+            'notes': notes or f'Custody event for work order {work_order.name}',
+            'verified': True,
+            'verification_date': fields.Datetime.now(),
+            'naid_compliant': True,
+        }
+        
+        return self.create(vals)
+    
+    def action_verify_work_order_custody(self):
+        """Verify custody for work order related transfers"""
+        self.ensure_one()
+        if not self.work_order_id:
+            raise UserError(_('This custody log is not related to a work order'))
+        
+        self.write({
+            'verified': True,
+            'verification_date': fields.Datetime.now(),
+            'verified_by_customer': True,
+        })
+        
+        # Update work order status if needed
+        if self.custody_event == 'delivery':
+            self.work_order_id.action_deliver()
+        
+        self.message_post(body=_('Work order custody verified'))
         
         return True

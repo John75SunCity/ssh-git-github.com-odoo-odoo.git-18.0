@@ -232,6 +232,17 @@ class DocumentRetrievalWorkOrder(models.Model):
             'state': 'in_progress',
             'actual_start_time': fields.Datetime.now()
         })
+        
+        # Create custody log for work start
+        if self.chain_of_custody_required:
+            self.env['records.chain.of.custody.log'].create_work_order_custody_log(
+                work_order_id=self.id,
+                custody_event='retrieval_start',
+                from_party=None,  # Documents come from storage
+                to_party=self.primary_technician_id.partner_id,
+                notes=f'Document retrieval started by {self.primary_technician_id.name}'
+            )
+        
         self.message_post(body=_('Work order started'))
     
     def action_complete(self):
@@ -247,6 +258,17 @@ class DocumentRetrievalWorkOrder(models.Model):
             'state': 'completed',
             'actual_completion_time': fields.Datetime.now()
         })
+        
+        # Create custody log for work completion
+        if self.chain_of_custody_required:
+            self.env['records.chain.of.custody.log'].create_work_order_custody_log(
+                work_order_id=self.id,
+                custody_event='retrieval_complete',
+                from_party=self.primary_technician_id.partner_id,
+                to_party=None,  # Documents ready for delivery
+                notes=f'Document retrieval completed by {self.primary_technician_id.name}'
+            )
+        
         self.message_post(body=_('Work order completed'))
     
     def action_deliver(self):
@@ -256,6 +278,17 @@ class DocumentRetrievalWorkOrder(models.Model):
             raise UserError(_('Only completed work orders can be delivered'))
         
         self.write({'state': 'delivered'})
+        
+        # Create custody log for delivery
+        if self.chain_of_custody_required:
+            self.env['records.chain.of.custody.log'].create_work_order_custody_log(
+                work_order_id=self.id,
+                custody_event='delivery',
+                from_party=None,  # From records center
+                to_party=self.customer_contact_id or self.customer_id,
+                notes=f'Documents delivered to customer via {self.delivery_method}'
+            )
+        
         self.message_post(body=_('Work order delivered'))
     
     def action_create_invoice(self):
