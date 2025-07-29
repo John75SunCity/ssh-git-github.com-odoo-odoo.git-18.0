@@ -53,6 +53,67 @@ class ResConfigSettings(models.TransientModel):
         default=False
     )
     
+    # POS Module Integration Fields
+    module_pos_discount = fields.Boolean(
+        string='POS Discount Module',
+        config_parameter='records_management.module_pos_discount',
+        default=False,
+        help='Enable POS discount module integration'
+    )
+    
+    module_pos_loyalty = fields.Boolean(
+        string='POS Loyalty Module',
+        config_parameter='records_management.module_pos_loyalty',
+        default=False,
+        help='Enable POS loyalty module integration'
+    )
+    
+    module_pos_mercury = fields.Boolean(
+        string='POS Mercury Module',
+        config_parameter='records_management.module_pos_mercury',
+        default=False,
+        help='Enable POS mercury module integration'
+    )
+    
+    module_pos_reprint = fields.Boolean(
+        string='POS Reprint Module',
+        config_parameter='records_management.module_pos_reprint',
+        default=False,
+        help='Enable POS reprint module integration'
+    )
+    
+    module_pos_restaurant = fields.Boolean(
+        string='POS Restaurant Module',
+        config_parameter='records_management.module_pos_restaurant',
+        default=False,
+        help='Enable POS restaurant module integration'
+    )
+    
+    pos_module_pos_discount = fields.Boolean(
+        related='module_pos_discount',
+        readonly=False
+    )
+    
+    pos_module_pos_loyalty = fields.Boolean(
+        related='module_pos_loyalty',
+        readonly=False
+    )
+    
+    pos_module_pos_mercury = fields.Boolean(
+        related='module_pos_mercury',
+        readonly=False
+    )
+    
+    pos_module_pos_reprint = fields.Boolean(
+        related='module_pos_reprint',
+        readonly=False
+    )
+    
+    pos_module_pos_restaurant = fields.Boolean(
+        related='module_pos_restaurant',
+        readonly=False
+    )
+    
     # Customer display type for POS integration (this fixes the KeyError)
     customer_display_type = fields.Selection([
         ('none', 'No Display'),
