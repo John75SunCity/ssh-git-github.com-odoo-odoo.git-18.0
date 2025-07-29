@@ -384,9 +384,9 @@ class ShreddingService(models.Model):
         """Override create to set sequence number"""
         for vals in vals_list:
             if vals.get("name", _("New")) == _("New"):
-                vals["name"] = self.env["ir.sequence"].next_by_code("shred.svc") or _(
-                    "New"
-                )
+                vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "shredding.service"
+                ) or _("New")
         return super().create(vals_list)
 
     # ==========================================
