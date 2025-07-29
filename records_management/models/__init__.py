@@ -129,7 +129,6 @@ from . import naid_performance_history
 
 # Chain of custody tracking
 from . import records_chain_of_custody
-from . import records_chain_of_custody_clean
 
 # Security and audit logs
 from . import records_security_audit
