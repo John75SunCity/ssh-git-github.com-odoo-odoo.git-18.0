@@ -68,6 +68,18 @@ class ResConfigSettings(models.TransientModel):
         readonly=False
     )
     
+    # Customer display background image for POS integration
+    customer_display_bg_img = fields.Binary(
+        string='Customer Display Background Image',
+        config_parameter='records_management.customer_display_bg_img',
+        help='Background image for customer display screen'
+    )
+    
+    pos_customer_display_bg_img = fields.Binary(
+        related='customer_display_bg_img',
+        readonly=False
+    )
+    
     # Default service settings
     default_shredding_rate = fields.Float(
         string='Default Shredding Rate',
