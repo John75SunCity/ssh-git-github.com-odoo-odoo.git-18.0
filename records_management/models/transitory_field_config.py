@@ -37,7 +37,7 @@ class TransitoryFieldConfig(models.Model):
     # FIELD VISIBILITY CONTROLS
     # ==========================================
     # Core identification
-    show_box_number = fields.Boolean(string='Show Box Number', default=True)
+    show_container_number = fields.Boolean(string='Show Container Number', default=True)
     show_description = fields.Boolean(string='Show Item Description', default=True)
     show_content_description = fields.Boolean(string='Show Content Description', default=True)
     
@@ -61,7 +61,7 @@ class TransitoryFieldConfig(models.Model):
     # ==========================================
     # FIELD REQUIREMENT CONTROLS
     # ==========================================
-    require_box_number = fields.Boolean(string='Require Box Number', default=True)
+    require_container_number = fields.Boolean(string='Require Container Number', default=True)
     require_description = fields.Boolean(string='Require Item Description', default=True)
     require_content_description = fields.Boolean(string='Require Content Description', default=False)
     require_date_from = fields.Boolean(string='Require Date From', default=False)
@@ -78,8 +78,8 @@ class TransitoryFieldConfig(models.Model):
     # PRESET CONFIGURATIONS
     # ==========================================
     config_preset = fields.Selection([
-        ('minimal', 'Minimal (Box #, Description only)'),
-        ('basic', 'Basic (Box #, Description, Date Ranges)'),
+        ('minimal', 'Minimal (Container #, Description only)'),
+        ('basic', 'Basic (Container #, Description, Date Ranges)'),
         ('standard', 'Standard (Common business fields)'),
         ('comprehensive', 'Comprehensive (All fields)'),
         ('custom', 'Custom Configuration')
@@ -104,16 +104,15 @@ class TransitoryFieldConfig(models.Model):
             else:
                 record.name = "Field Configuration"
 
-    @api.depends('show_box_number', 'show_description', 'show_content_description',
-                 'show_date_ranges', 'show_sequence_ranges', 'show_destruction_date',
-                 'show_record_type', 'show_confidentiality', 'show_project_code',
-                 'require_box_number', 'require_description', 'require_content_description')
+        @api.depends('show_container_number', 'show_description', 'show_content_description',
+                 'show_destruction_date', 'show_review_date', 'show_retention_policy',
+                 'require_container_number', 'require_description', 'require_content_description')
     def _compute_field_counts(self):
         """Count visible and required fields"""
         for record in self:
             # Count visible fields
             visible_fields = [
-                record.show_box_number, record.show_description, record.show_content_description,
+                record.show_container_number, record.show_description, record.show_content_description,
                 record.show_date_ranges, record.show_sequence_ranges, record.show_destruction_date,
                 record.show_record_type, record.show_confidentiality, record.show_project_code,
                 record.show_client_reference, record.show_file_count, record.show_filing_system,
@@ -124,7 +123,7 @@ class TransitoryFieldConfig(models.Model):
             
             # Count required fields
             required_fields = [
-                record.require_box_number, record.require_description, record.require_content_description,
+                record.require_container_number, record.require_description, record.require_content_description,
                 record.require_date_from, record.require_date_to, record.require_sequence_from,
                 record.require_sequence_to, record.require_destruction_date, record.require_record_type,
                 record.require_confidentiality, record.require_project_code, record.require_client_reference
@@ -147,10 +146,10 @@ class TransitoryFieldConfig(models.Model):
             self._apply_comprehensive_preset()
 
     def _apply_minimal_preset(self):
-        """Minimal configuration: Box number and description only"""
+        """Minimal configuration: Container number and description only"""
         # Show only essential fields
         self.update({
-            'show_box_number': True,
+            'show_container_number': True,
             'show_description': True,
             'show_content_description': False,
             'show_date_ranges': False,
@@ -169,7 +168,7 @@ class TransitoryFieldConfig(models.Model):
             'show_weight_estimate': False,
             'show_size_estimate': False,
             # Requirements
-            'require_box_number': True,
+            'require_container_number': True,
             'require_description': True,
             'require_content_description': False,
             'require_date_from': False,
@@ -177,9 +176,9 @@ class TransitoryFieldConfig(models.Model):
         })
 
     def _apply_basic_preset(self):
-        """Basic configuration: Box number, description, date ranges"""
+        """Basic configuration: Container number, description, date ranges"""
         self.update({
-            'show_box_number': True,
+            'show_container_number': True,
             'show_description': True,
             'show_content_description': True,
             'show_date_ranges': True,
@@ -198,7 +197,7 @@ class TransitoryFieldConfig(models.Model):
             'show_weight_estimate': False,
             'show_size_estimate': False,
             # Requirements
-            'require_box_number': True,
+            'require_container_number': True,
             'require_description': True,
             'require_content_description': False,
             'require_date_from': False,
@@ -208,7 +207,7 @@ class TransitoryFieldConfig(models.Model):
     def _apply_standard_preset(self):
         """Standard configuration: Common business fields"""
         self.update({
-            'show_box_number': True,
+            'show_container_number': True,
             'show_description': True,
             'show_content_description': True,
             'show_date_ranges': True,
@@ -227,7 +226,7 @@ class TransitoryFieldConfig(models.Model):
             'show_weight_estimate': False,
             'show_size_estimate': False,
             # Requirements
-            'require_box_number': True,
+            'require_container_number': True,
             'require_description': True,
             'require_content_description': True,
             'require_date_from': True,
@@ -243,7 +242,7 @@ class TransitoryFieldConfig(models.Model):
         
         # Set reasonable requirements
         self.update({
-            'require_box_number': True,
+            'require_container_number': True,
             'require_description': True,
             'require_content_description': True,
             'require_record_type': True,
@@ -276,11 +275,11 @@ class TransitoryFieldConfig(models.Model):
         return config
 
     def get_field_config_dict(self):
-        """Return field configuration as dictionary for frontend"""
+        """Returns the field configuration as a dictionary"""
         self.ensure_one()
         return {
             'visible_fields': {
-                'box_number': self.show_box_number,
+                'container_number': self.show_container_number,
                 'description': self.show_description,
                 'content_description': self.show_content_description,
                 'date_ranges': self.show_date_ranges,
@@ -300,7 +299,7 @@ class TransitoryFieldConfig(models.Model):
                 'size_estimate': self.show_size_estimate,
             },
             'required_fields': {
-                'box_number': self.require_box_number,
+                'container_number': self.require_container_number,
                 'description': self.require_description,
                 'content_description': self.require_content_description,
                 'date_from': self.require_date_from,
@@ -312,8 +311,7 @@ class TransitoryFieldConfig(models.Model):
                 'confidentiality': self.require_confidentiality,
                 'project_code': self.require_project_code,
                 'client_reference': self.require_client_reference,
-            },
-            'field_labels': self.get_field_labels()
+            }
         }
 
     def get_field_labels(self):

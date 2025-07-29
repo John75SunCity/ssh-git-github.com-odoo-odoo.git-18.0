@@ -12,7 +12,7 @@ Records Management System - Enterprise Edition
 **MASSIVE SCALE**: 102 Python Models | 51 XML Views | 1400+ Fields | 77 Data Files
 
 🎯 **CORE FEATURES**:
-• Advanced Physical Document Box & Records Tracking
+• Advanced Physical Document Container & Records Tracking
 • Intelligent Barcode Classification System (5-15 chars auto-detection)
 • Complete Chain of Custody with Encrypted Audit Trails
 • Document Retention Policy Automation with Compliance Alerts
@@ -168,7 +168,7 @@ Records Management System - Enterprise Edition
         # Load base menu structure first (parent menus only, no actions)
         'views/records_management_base_menus.xml',
         # Load all action-containing view files
-        'views/records_box_views.xml',
+        'views/records_container_views.xml',
         'views/records_tag_views.xml',
         'views/records_location_views.xml',
         'views/records_document_type_views.xml',
@@ -197,7 +197,7 @@ Records Management System - Enterprise Edition
         'views/portal_request_views.xml',  # New: Views for portal requests
         'views/fsm_task_views.xml',  # New: FSM task views
         'views/portal_feedback_views.xml',  # New: Feedback views
-        'views/box_type_converter_views.xml',  # New: Box type conversion wizard
+        'views/records_container_type_converter_views.xml',  # New: Container type conversion wizard
         'views/permanent_flag_wizard_views.xml',  # New: Permanent flag security wizard
         'views/document_retrieval_work_order_views.xml',  # New: Document retrieval work orders
         'views/shredding_rates_views.xml',  # New: Shredding rates views

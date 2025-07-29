@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Box Content Report -->
-    <record id="report_box_contents" model="ir.actions.report">
-        <field name="name">Box Contents</field>
-        <field name="model">records.box</field>
+    <!-- Container Content Report -->
+    <record id="report_container_contents" model="ir.actions.report">
+        <field name="name">Container Contents</field>
+        <field name="model">records.container</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">records_management.report_box_contents_document</field>
-        <field name="report_file">records_management.report_box_contents</field>
-        <field name="binding_model_id" ref="model_records_box"/>
+        <field name="report_name">records_management.report_container_contents_document</field>
+        <field name="report_file">records_management.report_container_contents</field>
+        <field name="binding_model_id" ref="model_records_container"/>
         <field name="binding_type">report</field>
     </record>
     

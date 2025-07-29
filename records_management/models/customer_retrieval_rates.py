@@ -51,8 +51,8 @@ class CustomerRetrievalRates(models.Model):
                                 help='Additional charge per individual file')
     per_page_rate = fields.Float(string='Per Page Rate',
                                 help='Additional charge per page')
-    per_box_rate = fields.Float(string='Per Box Rate',
-                               help='Charge for accessing a box')
+    per_container_rate = fields.Float(string='Per Container Rate',
+                               help='Charge for accessing a container')
     partner_id = fields.Many2one('res.partner', string='Customer', required=True)
     
     @api.depends('partner_id', 'rate_type', 'profile_type')
@@ -68,7 +68,7 @@ class CustomerRetrievalRates(models.Model):
                 record.name = 'New Rate'
     
     def calculate_retrieval_cost(self, document_count=1, file_count=0, page_count=0, 
-                                box_count=1, urgency='standard', delivery_date=None):
+                                container_count=1, urgency='standard', delivery_date=None):
         """
         Legacy method - redirects to new rate calculation system
         """

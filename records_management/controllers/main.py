@@ -4,12 +4,12 @@ from odoo.http import request
 class RecordsManagementController(http.Controller):
     @http.route('/records/dashboard', type='http', auth='user', website=True)
     def records_dashboard(self):
-        boxes = request.env['records.box'].search([])
+        containers = request.env['records.container'].search([])
         documents = request.env['records.document'].search([])
         locations = request.env['records.location'].search([])
 
         return request.render('records_management.dashboard', {
-            'boxes': boxes,
+            'containers': containers,
             'documents': documents,
             'locations': locations,
         })

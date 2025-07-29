@@ -1,7 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_records_box_user,records.box.user,model_records_box,records_management.group_records_user,1,1,1,0
-access_records_box_manager,records.box.manager,model_records_box,records_management.group_records_manager,1,1,1,1
-access_records_box_portal,records.box.portal,model_records_box,base.group_portal,1,0,0,0
+access_records_container_user,records.container.user,model_records_container,records_management.group_records_user,1,1,1,0
+access_records_container_manager,records.container.manager,model_records_container,records_management.group_records_manager,1,1,1,1
+access_records_container_portal,records.container.portal,model_records_container,base.group_portal,1,0,0,0
 access_records_tag_user,records.tag.user,model_records_tag,records_management.group_records_user,1,1,1,0
 access_records_tag_manager,records.tag.manager,model_records_tag,records_management.group_records_manager,1,1,1,1
 access_records_location_user,records.location.user,model_records_location,records_management.group_records_user,1,1,1,0
@@ -19,8 +19,8 @@ access_records_retention_policy_user,records.retention.policy.user,model_records
 access_records_retention_policy_manager,records.retention.policy.manager,model_records_retention_policy,records_management.group_records_manager,1,1,1,1
 access_records_policy_version_user,records.policy.version.user,model_records_policy_version,records_management.group_records_user,1,1,1,0
 access_records_policy_version_manager,records.policy.version.manager,model_records_policy_version,records_management.group_records_manager,1,1,1,1
-access_records_box_movement_user,records.box.movement.user,model_records_box_movement,records_management.group_records_user,1,1,1,0
-access_records_box_movement_manager,records.box.movement.manager,model_records_box_movement,records_management.group_records_manager,1,1,1,1
+access_records_container_movement_user,records.container.movement.user,model_records_container_movement,records_management.group_records_user,1,1,1,0
+access_records_container_movement_manager,records.container.movement.manager,model_records_container_movement,records_management.group_records_manager,1,1,1,1
 access_pickup_request_user,pickup.request.user,model_pickup_request,records_management.group_records_user,1,1,1,0
 access_pickup_request_manager,pickup.request.manager,model_pickup_request,records_management.group_records_manager,1,1,1,1
 access_pickup_request_item_user,pickup.request.item.user,model_pickup_request_item,records_management.group_records_user,1,1,1,0
@@ -94,12 +94,8 @@ access_records_storage_department_user_user,records.storage.department.user.user
 access_records_storage_department_user_manager,records.storage.department.user.manager,model_records_storage_department_user,records_management.group_records_manager,1,1,1,1
 access_global_rates_user,global.rates.user,model_global_rates,records_management.group_records_user,1,0,0,0
 access_global_rates_manager,global.rates.manager,model_global_rates,records_management.group_records_manager,1,1,1,1
-access_document_retrieval_work_order_user,document.retrieval.work.order.user,model_document_retrieval_work_order,records_management.group_records_user,1,1,1,0
-access_document_retrieval_work_order_manager,document.retrieval.work.order.manager,model_document_retrieval_work_order,records_management.group_records_manager,1,1,1,1
-access_records_customer_billing_profile_user,records.customer.billing.profile.user,model_records_customer_billing_profile,records_management.group_records_user,1,0,0,0
-access_records_customer_billing_profile_manager,records.customer.billing.profile.manager,model_records_customer_billing_profile,records_management.group_records_manager,1,1,1,1
-access_records_billing_contact_user,records.billing.contact.user,model_records_billing_contact,records_management.group_records_user,1,1,1,0
-access_records_billing_contact_manager,records.billing.contact.manager,model_records_billing_contact,records_management.group_records_manager,1,1,1,1
+access_doc_ret_rates_user,doc.ret.rates.user,model_doc_ret_rates,records_management.group_records_user,1,0,0,0
+access_doc_ret_rates_manager,doc.ret.rates.manager,model_doc_ret_rates,records_management.group_records_manager,1,1,1,1
 access_records_container_user,records.container.user,model_records_container,records_management.group_records_user,1,1,1,0
 access_records_container_manager,records.container.manager,model_records_container,records_management.group_records_manager,1,1,1,1
 access_records_audit_log_user,records.audit.log.user,model_records_audit_log,records_management.group_records_user,1,0,0,0
@@ -118,8 +114,8 @@ access_rec_dept_bill_cont_user,rec.dept.bill.cont.user,model_rec_dept_bill_cont,
 access_rec_dept_bill_cont_manager,rec.dept.bill.cont.manager,model_rec_dept_bill_cont,records_management.group_records_manager,1,1,1,1
 access_srv_improve_temp_user,srv.improve.temp.user,model_srv_improve_temp,records_management.group_records_user,1,1,1,0
 access_srv_improve_temp_manager,srv.improve.temp.manager,model_srv_improve_temp,records_management.group_records_manager,1,1,1,1
-access_box_contents_user,box.contents.user,model_box_contents,records_management.group_records_user,1,1,1,0
-access_box_contents_manager,box.contents.manager,model_box_contents,records_management.group_records_manager,1,1,1,1
+access_container_contents_user,container.contents.user,model_container_contents,records_management.group_records_user,1,1,1,0
+access_container_contents_manager,container.contents.manager,model_container_contents,records_management.group_records_manager,1,1,1,1
 access_records_billing_user,records.billing.user,model_records_billing,records_management.group_records_user,1,1,1,0
 access_records_billing_manager,records.billing.manager,model_records_billing,records_management.group_records_manager,1,1,1,1
 access_records_billing_config_user,records.billing.config.user,model_records_billing_config,records_management.group_records_user,1,1,1,0
@@ -130,5 +126,3 @@ access_records_location_inspection_user,records.location.inspection.user,model_r
 access_records_location_inspection_manager,records.location.inspection.manager,model_records_location_inspection,records_management.group_records_manager,1,1,1,1
 access_shredding_service_log_user,shredding.service.log.user,model_shredding_service_log,records_management.group_records_user,1,0,0,0
 access_shredding_service_log_manager,shredding.service.log.manager,model_shredding_service_log,records_management.group_records_manager,1,1,1,1
-access_records_container_transfer_user,records.container.transfer.user,model_records_container_transfer,records_management.group_records_user,1,1,1,0
-access_records_container_transfer_manager,records.container.transfer.manager,model_records_container_transfer,records_management.group_records_manager,1,1,1,1

@@ -11,277 +11,458 @@ from odoo.exceptions import UserError, ValidationError
 class TransitoryItems(models.Model):
     """
     Transitory Items - Customer-declared inventory awaiting pickup
-    
+
     Tracks managed records boxes, files, and items that customers add to their account
-    before we physically pick them up and assign barcodes. These items should be 
+    before we physically pick them up and assign barcodes. These items should be
     charged the same as regular inventory and count toward storage capacity planning.
     """
 
     _name = "transitory.items"
     _description = "Transitory Items - Pre-Pickup Customer Inventory"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "creation_date desc, name"
     _rec_name = "name"
 
     # ==========================================
     # CORE IDENTIFICATION FIELDS
     # ==========================================
-    name = fields.Char(string="Item Description", required=True, tracking=True,
-                      help="Customer description of the item/box/file")
-    reference = fields.Char(string="Customer Reference", tracking=True,
-                           help="Customer's internal reference number")
-    
+    name = fields.Char(
+        string="Item Description",
+        required=True,
+        tracking=True,
+        help="Customer description of the item/box/file",
+    )
+    reference = fields.Char(
+        string="Customer Reference",
+        tracking=True,
+        help="Customer's internal reference number",
+    )
+
     # Customer box numbering system
-    box_number = fields.Char(string="Box Number", tracking=True,
-                           help="Customer's internal box reference (e.g., 0010, HR0010)")
-    box_set_suffix = fields.Char(string="Set Suffix", tracking=True,
-                               help="Auto-generated suffix for duplicate box numbers (A, B, C)")
-    full_box_reference = fields.Char(string="Full Box Reference", 
-                                   compute='_compute_full_box_reference', store=True,
-                                   help="Complete box reference including suffix")
-    
+    box_number = fields.Char(
+        string="Box Number",
+        tracking=True,
+        help="Customer's internal box reference (e.g., 0010, HR0010)",
+    )
+    box_set_suffix = fields.Char(
+        string="Set Suffix",
+        tracking=True,
+        help="Auto-generated suffix for duplicate box numbers (A, B, C)",
+    )
+    full_box_reference = fields.Char(
+        string="Full Box Reference",
+        compute="_compute_full_box_reference",
+        store=True,
+        help="Complete box reference including suffix",
+    )
+
     # Barcode for transitory tracking
-    transitory_barcode = fields.Char(string="Transitory Barcode", copy=False, readonly=True,
-                                    help="Temporary barcode until converted to records box")
-    
-    company_id = fields.Many2one('res.company', default=lambda self: self.env.company, required=True)
-    user_id = fields.Many2one('res.users', string='Created By',
-                             default=lambda self: self.env.user, tracking=True)
+    transitory_barcode = fields.Char(
+        string="Transitory Barcode",
+        copy=False,
+        readonly=True,
+        help="Temporary barcode until converted to records container",
+    )
+
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Created By",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
     active = fields.Boolean(default=True, tracking=True)
 
     # ==========================================
     # CUSTOMER INFORMATION
     # ==========================================
-    customer_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    customer_contact_id = fields.Many2one('res.partner', string='Customer Contact',
-                                         domain="[('parent_id', '=', customer_id)]")
-    department_id = fields.Many2one('records.department', string='Department', tracking=True)
+    customer_id = fields.Many2one(
+        "res.partner", string="Customer", required=True, tracking=True
+    )
+    customer_contact_id = fields.Many2one(
+        "res.partner",
+        string="Customer Contact",
+        domain="[('parent_id', '=', customer_id)]",
+    )
+    department_id = fields.Many2one(
+        "records.department", string="Department", tracking=True
+    )
 
     # ==========================================
     # ITEM DETAILS
     # ==========================================
-    item_type = fields.Selection([
-        ('records_box', 'Records Box'),
-        ('file_folder', 'File/Folder'),
-        ('document_set', 'Document Set'),
-        ('media', 'Media (Tapes/Disks)'),
-        ('equipment', 'Equipment/Hardware'),
-        ('other', 'Other Item')
-    ], string='Item Type', required=True, tracking=True, default='records_box')
+    item_type = fields.Selection(
+        [
+            ("records_box", "Records Box"),
+            ("file_folder", "File/Folder"),
+            ("document_set", "Document Set"),
+            ("media", "Media (Tapes/Disks)"),
+            ("equipment", "Equipment/Hardware"),
+            ("other", "Other Item"),
+        ],
+        string="Item Type",
+        required=True,
+        tracking=True,
+        default="records_box",
+    )
 
     # Hierarchical structure for file folders
-    parent_box_id = fields.Many2one('transitory.items', string='Parent Box',
-                                   domain="[('item_type', '=', 'records_box'), ('customer_id', '=', customer_id)]",
-                                   tracking=True,
-                                   help="Which box this file/folder belongs to")
-    child_folder_ids = fields.One2many('transitory.items', 'parent_box_id',
-                                      string='Files/Folders in this Box',
-                                      domain="[('item_type', '!=', 'records_box')]")
-    folder_level = fields.Integer(string='Folder Level', compute='_compute_folder_level', store=True,
-                                 help="Depth level: 0=Box, 1=Folder in Box, 2=Subfolder, etc.")
-    
-    # Display helpers for hierarchy
-    parent_box_reference = fields.Char(related='parent_box_id.name', string='Box Reference', readonly=True)
-    hierarchy_display = fields.Char(string='Hierarchy Path', compute='_compute_hierarchy_display',
-                                   help="Full path: Box > Folder > Subfolder")
+    parent_container_id = fields.Many2one(
+        "transitory.items",
+        string="Parent Container",
+        domain="[('item_type', '=', 'records_box'), ('customer_id', '=', customer_id)]",
+        tracking=True,
+        help="Which container this file/folder belongs to",
+    )
+    child_folder_ids = fields.One2many(
+        "transitory.items",
+        "parent_container_id",
+        string="Files/Folders in this Container",
+        domain="[('item_type', '!=', 'records_box')]",
+    )
+    folder_level = fields.Integer(
+        string="Folder Level",
+        compute="_compute_folder_level",
+        store=True,
+        help="Depth level: 0=Box, 1=Folder in Box, 2=Subfolder, etc.",
+    )
 
-    quantity = fields.Integer(string='Quantity', default=1, required=True, tracking=True,
-                             help="Number of items (boxes, files, etc.)")
-    estimated_weight = fields.Float(string='Estimated Weight (lbs)', tracking=True,
-                                   help="Customer's estimate - will be verified at pickup")
-    content_description = fields.Text(string='Content Description', tracking=True,
-                                     help="Description of what's inside the item")
-    
+    # Display helpers for hierarchy
+    parent_container_reference = fields.Char(
+        related="parent_container_id.name", string="Container Reference", readonly=True
+    )
+    hierarchy_display = fields.Char(
+        string="Hierarchy Path",
+        compute="_compute_hierarchy_display",
+        help="Full path: Box > Folder > Subfolder",
+    )
+
+    quantity = fields.Integer(
+        string="Quantity",
+        default=1,
+        required=True,
+        tracking=True,
+        help="Number of items (boxes, files, etc.)",
+    )
+    estimated_weight = fields.Float(
+        string="Estimated Weight (lbs)",
+        tracking=True,
+        help="Customer's estimate - will be verified at pickup",
+    )
+    content_description = fields.Text(
+        string="Content Description",
+        tracking=True,
+        help="Description of what's inside the item",
+    )
+
     # Size estimates for storage planning
-    estimated_cubic_feet = fields.Float(string='Estimated Size (cubic feet)', tracking=True,
-                                       help="For storage capacity planning")
-    
+    estimated_cubic_feet = fields.Float(
+        string="Estimated Size (cubic feet)",
+        tracking=True,
+        help="For storage capacity planning",
+    )
+
     # ==========================================
     # BUSINESS RECORD FIELDS (Configurable)
     # ==========================================
     # Date ranges
-    date_from = fields.Date(string='Records From Date', tracking=True,
-                          help="Start date of records in this box")
-    date_to = fields.Date(string='Records To Date', tracking=True,
-                        help="End date of records in this box")
-    
+    date_from = fields.Date(
+        string="Records From Date",
+        tracking=True,
+        help="Start date of records in this container",
+    )
+    date_to = fields.Date(
+        string="Records To Date",
+        tracking=True,
+        help="End date of records in this container",
+    )
+
     # Sequence ranges for document numbering
-    sequence_from = fields.Char(string='Sequence From', tracking=True,
-                              help="Starting sequence number (e.g., 001, A001)")
-    sequence_to = fields.Char(string='Sequence To', tracking=True,
-                            help="Ending sequence number (e.g., 250, Z999)")
-    
+    sequence_from = fields.Char(
+        string="Sequence From",
+        tracking=True,
+        help="Starting sequence number (e.g., 001, A001)",
+    )
+    sequence_to = fields.Char(
+        string="Sequence To",
+        tracking=True,
+        help="Ending sequence number (e.g., 250, Z999)",
+    )
+
     # Destruction information
-    scheduled_destruction_date = fields.Date(string='Scheduled Destruction Date', tracking=True,
-                                           help="When these records should be destroyed")
-    destruction_required = fields.Boolean(string='Destruction Required', tracking=True,
-                                        help="Records require certified destruction")
-    retention_period_years = fields.Integer(string='Retention Period (Years)', tracking=True,
-                                           help="Legal retention requirement in years")
-    
+    scheduled_destruction_date = fields.Date(
+        string="Scheduled Destruction Date",
+        tracking=True,
+        help="When these records should be destroyed",
+    )
+    destruction_required = fields.Boolean(
+        string="Destruction Required",
+        tracking=True,
+        help="Records require certified destruction",
+    )
+    retention_period_years = fields.Integer(
+        string="Retention Period (Years)",
+        tracking=True,
+        help="Legal retention requirement in years",
+    )
+
     # Business categorization
-    record_type = fields.Selection([
-        ('financial', 'Financial Records'),
-        ('hr', 'Human Resources'),
-        ('legal', 'Legal Documents'),
-        ('medical', 'Medical Records'),
-        ('tax', 'Tax Documents'),
-        ('contracts', 'Contracts'),
-        ('correspondence', 'Correspondence'),
-        ('invoices', 'Invoices/Billing'),
-        ('other', 'Other')
-    ], string='Record Type', tracking=True, help="Category of records")
-    
-    confidentiality_level = fields.Selection([
-        ('public', 'Public'),
-        ('internal', 'Internal Use'),
-        ('confidential', 'Confidential'),
-        ('restricted', 'Restricted'),
-        ('top_secret', 'Top Secret')
-    ], string='Confidentiality Level', default='internal', tracking=True)
-    
+    record_type = fields.Selection(
+        [
+            ("financial", "Financial Records"),
+            ("hr", "Human Resources"),
+            ("legal", "Legal Documents"),
+            ("medical", "Medical Records"),
+            ("tax", "Tax Documents"),
+            ("contracts", "Contracts"),
+            ("correspondence", "Correspondence"),
+            ("invoices", "Invoices/Billing"),
+            ("other", "Other"),
+        ],
+        string="Record Type",
+        tracking=True,
+        help="Category of records",
+    )
+
+    confidentiality_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal Use"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+            ("top_secret", "Top Secret"),
+        ],
+        string="Confidentiality Level",
+        default="internal",
+        tracking=True,
+    )
+
     # Additional business fields
-    project_code = fields.Char(string='Project Code', tracking=True,
-                              help="Project or job reference code")
-    client_reference = fields.Char(string='Client Reference', tracking=True,
-                                 help="Reference to specific client or matter")
-    compliance_notes = fields.Text(string='Compliance Notes', tracking=True,
-                                 help="Special compliance or legal requirements")
-    
+    project_code = fields.Char(
+        string="Project Code", tracking=True, help="Project or job reference code"
+    )
+    client_reference = fields.Char(
+        string="Client Reference",
+        tracking=True,
+        help="Reference to specific client or matter",
+    )
+    compliance_notes = fields.Text(
+        string="Compliance Notes",
+        tracking=True,
+        help="Special compliance or legal requirements",
+    )
+
     # File/folder organization
-    total_file_count = fields.Integer(string='Number of Files', tracking=True,
-                                    help="Approximate number of individual files")
-    filing_system = fields.Char(string='Filing System', tracking=True,
-                               help="How files are organized (alphabetical, chronological, etc.)")
-    
+    total_file_count = fields.Integer(
+        string="Number of Files",
+        tracking=True,
+        help="Approximate number of individual files",
+    )
+    filing_system = fields.Char(
+        string="Filing System",
+        tracking=True,
+        help="How files are organized (alphabetical, chronological, etc.)",
+    )
+
     # Additional metadata
-    created_by_department = fields.Char(string='Created by Department', tracking=True,
-                                      help="Which department created these records")
-    authorized_by = fields.Char(string='Authorized By', tracking=True,
-                              help="Name of person authorizing storage")
-    special_handling = fields.Text(string='Special Handling Instructions', tracking=True,
-                                 help="Any special requirements or instructions")
-    
+    created_by_department = fields.Char(
+        string="Created by Department",
+        tracking=True,
+        help="Which department created these records",
+    )
+    authorized_by = fields.Char(
+        string="Authorized By", tracking=True, help="Name of person authorizing storage"
+    )
+    special_handling = fields.Text(
+        string="Special Handling Instructions",
+        tracking=True,
+        help="Any special requirements or instructions",
+    )
+
     # ==========================================
     # STATUS AND WORKFLOW
     # ==========================================
-    state = fields.Selection([
-        ('declared', 'Customer Declared'),
-        ('scheduled', 'Pickup Scheduled'),
-        ('collected', 'Collected/Converted'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='declared', tracking=True, required=True)
+    state = fields.Selection(
+        [
+            ("declared", "Customer Declared"),
+            ("scheduled", "Pickup Scheduled"),
+            ("collected", "Collected/Converted"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="declared",
+        tracking=True,
+        required=True,
+    )
 
     # ==========================================
     # PICKUP AND CONVERSION TRACKING
     # ==========================================
-    creation_date = fields.Datetime(string='Declaration Date',
-                                   default=fields.Datetime.now, required=True, tracking=True)
-    scheduled_pickup_date = fields.Date(string='Scheduled Pickup Date', tracking=True)
-    actual_pickup_date = fields.Date(string='Actual Pickup Date', tracking=True)
-    
-    pickup_request_id = fields.Many2one('pickup.request', string='Related Pickup Request',
-                                       tracking=True)
-    
+    creation_date = fields.Datetime(
+        string="Declaration Date",
+        default=fields.Datetime.now,
+        required=True,
+        tracking=True,
+    )
+    scheduled_pickup_date = fields.Date(string="Scheduled Pickup Date", tracking=True)
+    actual_pickup_date = fields.Date(string="Actual Pickup Date", tracking=True)
+
+    pickup_request_id = fields.Many2one(
+        "pickup.request", string="Related Pickup Request", tracking=True
+    )
+
     # Conversion to real inventory
-    converted_to_box_id = fields.Many2one('records.box', string='Converted to Records Box',
-                                         tracking=True, readonly=True)
-    converted_date = fields.Datetime(string='Conversion Date', tracking=True, readonly=True)
-    converted_by_id = fields.Many2one('res.users', string='Converted By', tracking=True, readonly=True)
+    converted_to_container_id = fields.Many2one(
+        "records.container",
+        string="Converted to Records Container",
+        tracking=True,
+        readonly=True,
+    )
+    converted_date = fields.Datetime(
+        string="Conversion Date", tracking=True, readonly=True
+    )
+    converted_by_id = fields.Many2one(
+        "res.users", string="Converted By", tracking=True, readonly=True
+    )
 
     # ==========================================
     # BILLING FIELDS
     # ==========================================
-    billable = fields.Boolean(string='Billable', default=True, tracking=True,
-                              help="Should be charged same as regular inventory")
-    monthly_storage_rate = fields.Float(string='Monthly Storage Rate', tracking=True,
-                                       help="Monthly storage charge per item")
-    total_storage_value = fields.Float(string='Total Storage Value',
-                                      compute='_compute_storage_values', store=True,
-                                      help="Total value for capacity planning")
-    
+    billable = fields.Boolean(
+        string="Billable",
+        default=True,
+        tracking=True,
+        help="Should be charged same as regular inventory",
+    )
+    monthly_storage_rate = fields.Float(
+        string="Monthly Storage Rate",
+        tracking=True,
+        help="Monthly storage charge per item",
+    )
+    total_storage_value = fields.Float(
+        string="Total Storage Value",
+        compute="_compute_storage_values",
+        store=True,
+        help="Total value for capacity planning",
+    )
+
     # Billing relationship
-    billing_account_id = fields.Many2one('advanced.billing', string='Billing Account',
-                                        related='customer_id.billing_account_id', store=True)
+    billing_account_id = fields.Many2one(
+        "advanced.billing",
+        string="Billing Account",
+        related="customer_id.billing_account_id",
+        store=True,
+    )
 
     # ==========================================
     # ADMIN AND IMPORT FIELDS
     # ==========================================
-    created_by_admin = fields.Boolean(string='Created by Admin', default=False,
-                                     help="Item was created by records management staff")
-    import_batch_id = fields.Char(string='Import Batch ID', 
-                                 help="Batch ID for bulk imported items")
-    import_source = fields.Selection([
-        ('manual', 'Manual Entry'),
-        ('csv_import', 'CSV Import'),
-        ('excel_import', 'Excel Import'),
-        ('api_import', 'API Import'),
-        ('admin_created', 'Admin Created')
-    ], string='Import Source', default='manual', tracking=True)
-    
+    created_by_admin = fields.Boolean(
+        string="Created by Admin",
+        default=False,
+        help="Item was created by records management staff",
+    )
+    import_batch_id = fields.Char(
+        string="Import Batch ID", help="Batch ID for bulk imported items"
+    )
+    import_source = fields.Selection(
+        [
+            ("manual", "Manual Entry"),
+            ("csv_import", "CSV Import"),
+            ("excel_import", "Excel Import"),
+            ("api_import", "API Import"),
+            ("admin_created", "Admin Created"),
+        ],
+        string="Import Source",
+        default="manual",
+        tracking=True,
+    )
+
     # Admin notes and overrides
-    admin_notes = fields.Text(string='Admin Notes', tracking=True,
-                             help="Internal notes from records management staff")
-    admin_override_billing = fields.Boolean(string='Admin Override Billing',
-                                           help="Admin has overridden default billing settings")
-    admin_priority = fields.Boolean(string='Admin Priority', tracking=True,
-                                   help="Marked as priority by admin")
-    
+    admin_notes = fields.Text(
+        string="Admin Notes",
+        tracking=True,
+        help="Internal notes from records management staff",
+    )
+    admin_override_billing = fields.Boolean(
+        string="Admin Override Billing",
+        help="Admin has overridden default billing settings",
+    )
+    admin_priority = fields.Boolean(
+        string="Admin Priority", tracking=True, help="Marked as priority by admin"
+    )
+
     # Field visibility controls (for customer portal)
-    field_config_id = fields.Many2one('transitory.field.config', 
-                                     related='customer_id.transitory_field_config_id',
-                                     string='Field Configuration',
-                                     help="Controls which fields are visible/required for this customer")
+    field_config_id = fields.Many2one(
+        "transitory.field.config",
+        related="customer_id.transitory_field_config_id",
+        string="Field Configuration",
+        help="Controls which fields are visible/required for this customer",
+    )
 
     # ==========================================
     # COMPUTED FIELDS
     # ==========================================
-    days_in_system = fields.Integer(string='Days in System',
-                                    compute='_compute_days_in_system',
-                                    help="Days since customer declared this item")
-    is_overdue_pickup = fields.Boolean(string='Pickup Overdue',
-                                      compute='_compute_pickup_status',
-                                      help="Scheduled pickup date has passed")
-    storage_impact = fields.Float(string='Storage Impact',
-                                 compute='_compute_storage_values', store=True,
-                                 help="Storage space impact for capacity planning")
+    days_in_system = fields.Integer(
+        string="Days in System",
+        compute="_compute_days_in_system",
+        help="Days since customer declared this item",
+    )
+    is_overdue_pickup = fields.Boolean(
+        string="Pickup Overdue",
+        compute="_compute_pickup_status",
+        help="Scheduled pickup date has passed",
+    )
+    storage_impact = fields.Float(
+        string="Storage Impact",
+        compute="_compute_storage_values",
+        store=True,
+        help="Storage space impact for capacity planning",
+    )
 
-    @api.depends('box_number', 'box_set_suffix')
+    @api.depends("box_number", "box_set_suffix")
     def _compute_full_box_reference(self):
         """Compute full box reference including set suffix"""
         for record in self:
             if record.box_number:
                 if record.box_set_suffix:
-                    record.full_box_reference = f"{record.box_number}-{record.box_set_suffix}"
+                    record.full_box_reference = (
+                        f"{record.box_number}-{record.box_set_suffix}"
+                    )
                 else:
                     record.full_box_reference = record.box_number
             else:
                 record.full_box_reference = False
 
-    @api.depends('parent_box_id')
+    @api.depends("parent_container_id")
     def _compute_folder_level(self):
         """Compute hierarchy level (0=Box, 1=Folder, 2=Subfolder, etc.)"""
         for record in self:
-            if record.item_type == 'records_box':
+            if record.item_type == "records_box":
                 record.folder_level = 0
-            elif record.parent_box_id:
-                record.folder_level = record.parent_box_id.folder_level + 1
+            elif record.parent_container_id:
+                record.folder_level = record.parent_container_id.folder_level + 1
             else:
                 record.folder_level = 0
 
-    @api.depends('parent_box_id', 'name', 'item_type')
+    @api.depends("parent_container_id", "name", "item_type")
     def _compute_hierarchy_display(self):
         """Compute full hierarchy path for display"""
         for record in self:
-            if record.item_type == 'records_box':
+            if record.item_type == "records_box":
                 record.hierarchy_display = record.full_box_reference or record.name
-            elif record.parent_box_id:
-                parent_path = record.parent_box_id.hierarchy_display or record.parent_box_id.name
+            elif record.parent_container_id:
+                parent_path = (
+                    record.parent_container_id.hierarchy_display
+                    or record.parent_container_id.name
+                )
                 record.hierarchy_display = f"{parent_path} > {record.name}"
             else:
                 record.hierarchy_display = record.name
 
-    @api.depends('creation_date')
+    @api.depends("creation_date")
     def _compute_days_in_system(self):
         """Calculate days since item was declared"""
         today = fields.Date.today()
@@ -292,24 +473,26 @@ class TransitoryItems(models.Model):
             else:
                 record.days_in_system = 0
 
-    @api.depends('scheduled_pickup_date', 'state')
+    @api.depends("scheduled_pickup_date", "state")
     def _compute_pickup_status(self):
         """Check if pickup is overdue"""
         today = fields.Date.today()
         for record in self:
             record.is_overdue_pickup = (
-                record.state in ('declared', 'scheduled') and
-                record.scheduled_pickup_date and
-                record.scheduled_pickup_date < today
+                record.state in ("declared", "scheduled")
+                and record.scheduled_pickup_date
+                and record.scheduled_pickup_date < today
             )
 
-    @api.depends('quantity', 'estimated_cubic_feet', 'monthly_storage_rate')
+    @api.depends("quantity", "estimated_cubic_feet", "monthly_storage_rate")
     def _compute_storage_values(self):
         """Calculate storage impact and billing values"""
         for record in self:
             # Storage impact for capacity planning
-            record.storage_impact = record.quantity * (record.estimated_cubic_feet or 1.0)
-            
+            record.storage_impact = record.quantity * (
+                record.estimated_cubic_feet or 1.0
+            )
+
             # Total storage value for billing
             record.total_storage_value = record.quantity * record.monthly_storage_rate
 
@@ -317,209 +500,231 @@ class TransitoryItems(models.Model):
     # BULK IMPORT AND ADMIN METHODS
     # ==========================================
     @api.model
-    def bulk_create_from_list(self, items_data, customer_id, created_by_admin=False, parent_box_id=None):
+    def bulk_create_from_list(
+        self, items_data, customer_id, created_by_admin=False, parent_container_id=None
+    ):
         """Bulk create transitory items from list data
-        
+
         Args:
             items_data: List of dictionaries with item data
             customer_id: Customer ID
             created_by_admin: Whether created by admin
-            parent_box_id: Parent box ID for file folders
-        
+            parent_container_id: Parent container ID for file folders
+
         Returns:
             List of created record IDs and barcodes
         """
         import uuid
-        
+
         batch_id = str(uuid.uuid4())[:8]  # Short unique batch ID
         created_items = []
-        
+
         for item_data in items_data:
             vals = {
-                'customer_id': customer_id,
-                'created_by_admin': created_by_admin,
-                'import_batch_id': batch_id,
-                'import_source': 'admin_created' if created_by_admin else 'csv_import',
+                "customer_id": customer_id,
+                "created_by_admin": created_by_admin,
+                "import_batch_id": batch_id,
+                "import_source": "admin_created" if created_by_admin else "csv_import",
             }
-            
+
             # If creating folders in a box, set parent
-            if parent_box_id and item_data.get('item_type') != 'records_box':
-                vals['parent_box_id'] = parent_box_id
-                vals['item_type'] = 'file_folder'  # Default for items in boxes
-            
+            if parent_container_id and item_data.get("item_type") != "records_box":
+                vals["parent_container_id"] = parent_container_id
+                vals["item_type"] = "file_folder"  # Default for items in boxes
+
             # Map common fields
             field_mapping = {
-                'name': 'name',
-                'description': 'content_description',
-                'box_number': 'box_number',
-                'item_type': 'item_type',
-                'quantity': 'quantity',
-                'estimated_weight': 'estimated_weight',
-                'date_from': 'date_from',
-                'date_to': 'date_to',
-                'sequence_from': 'sequence_from',
-                'sequence_to': 'sequence_to',
-                'record_type': 'record_type',
-                'confidentiality_level': 'confidentiality_level',
-                'project_code': 'project_code',
-                'client_reference': 'client_reference',
-                'filing_system': 'filing_system',
-                'total_file_count': 'total_file_count',
+                "name": "name",
+                "description": "content_description",
+                "box_number": "box_number",
+                "item_type": "item_type",
+                "quantity": "quantity",
+                "estimated_weight": "estimated_weight",
+                "date_from": "date_from",
+                "date_to": "date_to",
+                "sequence_from": "sequence_from",
+                "sequence_to": "sequence_to",
+                "record_type": "record_type",
+                "confidentiality_level": "confidentiality_level",
+                "project_code": "project_code",
+                "client_reference": "client_reference",
+                "filing_system": "filing_system",
+                "total_file_count": "total_file_count",
             }
-            
+
             for api_field, model_field in field_mapping.items():
                 if api_field in item_data:
                     vals[model_field] = item_data[api_field]
-            
+
             # Create the item
             try:
                 new_item = self.create(vals)
-                created_items.append({
-                    'id': new_item.id,
-                    'barcode': new_item.transitory_barcode,
-                    'name': new_item.name,
-                    'full_reference': new_item.full_box_reference,
-                    'hierarchy_display': new_item.hierarchy_display,
-                    'success': True
-                })
+                created_items.append(
+                    {
+                        "id": new_item.id,
+                        "barcode": new_item.transitory_barcode,
+                        "name": new_item.name,
+                        "full_reference": new_item.full_box_reference,
+                        "hierarchy_display": new_item.hierarchy_display,
+                        "success": True,
+                    }
+                )
             except Exception as e:
-                created_items.append({
-                    'name': item_data.get('name', 'Unknown'),
-                    'error': str(e),
-                    'success': False
-                })
-        
+                created_items.append(
+                    {
+                        "name": item_data.get("name", "Unknown"),
+                        "error": str(e),
+                        "success": False,
+                    }
+                )
+
         return {
-            'batch_id': batch_id,
-            'created_items': created_items,
-            'success_count': len([i for i in created_items if i.get('success')]),
-            'error_count': len([i for i in created_items if not i.get('success')])
+            "batch_id": batch_id,
+            "created_items": created_items,
+            "success_count": len([i for i in created_items if i.get("success")]),
+            "error_count": len([i for i in created_items if not i.get("success")]),
         }
 
     @api.model
-    def create_folders_for_box(self, box_id, folder_list):
-        """Create multiple file folders for a specific box
-        
+    def create_folders_for_container(self, container_id, folder_list):
+        """Create multiple file folders for a specific container
+
         Args:
-            box_id: ID of the parent box
+            container_id: ID of the parent container
             folder_list: List of folder data
-        
+
         Returns:
             Created folder records
         """
-        box = self.browse(box_id)
-        if not box.exists() or box.item_type != 'records_box':
-            raise UserError(_('Invalid box specified'))
-        
+        container = self.browse(container_id)
+        if not container.exists() or container.item_type != "records_box":
+            raise UserError(_("Invalid container specified"))
+
         folder_data = []
         for folder_info in folder_list:
-            folder_data.append({
-                'name': folder_info.get('name'),
-                'content_description': folder_info.get('description', ''),
-                'item_type': 'file_folder',
-                'sequence_from': folder_info.get('sequence_from'),
-                'sequence_to': folder_info.get('sequence_to'),
-                'date_from': folder_info.get('date_from'),
-                'date_to': folder_info.get('date_to'),
-                'total_file_count': folder_info.get('file_count', 0),
-                'record_type': folder_info.get('record_type'),
-                'confidentiality_level': folder_info.get('confidentiality_level', 'internal'),
-            })
-        
+            folder_data.append(
+                {
+                    "name": folder_info.get("name"),
+                    "content_description": folder_info.get("description", ""),
+                    "item_type": "file_folder",
+                    "sequence_from": folder_info.get("sequence_from"),
+                    "sequence_to": folder_info.get("sequence_to"),
+                    "date_from": folder_info.get("date_from"),
+                    "date_to": folder_info.get("date_to"),
+                    "total_file_count": folder_info.get("file_count", 0),
+                    "record_type": folder_info.get("record_type"),
+                    "confidentiality_level": folder_info.get(
+                        "confidentiality_level", "internal"
+                    ),
+                }
+            )
+
         return self.bulk_create_from_list(
-            folder_data, 
-            box.customer_id.id, 
-            created_by_admin=self.env.user.has_group('records_management.group_records_manager'),
-            parent_box_id=box_id
+            folder_data,
+            container.customer_id.id,
+            created_by_admin=self.env.user.has_group(
+                "records_management.group_records_manager"
+            ),
+            parent_container_id=container_id,
         )
 
     @api.model
     def admin_create_for_customer(self, customer_id, item_data, department_id=None):
         """Admin method to create items for any customer
-        
+
         Args:
             customer_id: Target customer ID
             item_data: Item data dictionary
             department_id: Optional department ID
-        
+
         Returns:
             Created item record
         """
         # Only allow records management staff
-        if not self.env.user.has_group('records_management.group_records_manager'):
-            raise UserError(_('Only records management staff can create items for customers'))
-        
+        if not self.env.user.has_group("records_management.group_records_manager"):
+            raise UserError(
+                _("Only records management staff can create items for customers")
+            )
+
         vals = item_data.copy()
-        vals.update({
-            'customer_id': customer_id,
-            'created_by_admin': True,
-            'import_source': 'admin_created',
-            'user_id': self.env.user.id,
-        })
-        
+        vals.update(
+            {
+                "customer_id": customer_id,
+                "created_by_admin": True,
+                "import_source": "admin_created",
+                "user_id": self.env.user.id,
+            }
+        )
+
         if department_id:
-            vals['department_id'] = department_id
-        
+            vals["department_id"] = department_id
+
         return self.create(vals)
 
     @api.model
-    def get_customer_boxes_for_folders(self, customer_id, department_id=None):
-        """Get available boxes for adding folders
-        
+    def get_customer_containers_for_folders(self, customer_id, department_id=None):
+        """Get available containers for adding folders
+
         Args:
             customer_id: Customer ID
             department_id: Optional department filter
-        
+
         Returns:
-            List of available boxes
+            List of available containers
         """
         domain = [
-            ('customer_id', '=', customer_id),
-            ('item_type', '=', 'records_box'),
-            ('state', 'in', ('declared', 'scheduled'))
+            ("customer_id", "=", customer_id),
+            ("item_type", "=", "records_box"),
+            ("state", "in", ("declared", "scheduled")),
         ]
-        
-        if department_id:
-            domain.append(('department_id', '=', department_id))
-        
-        boxes = self.search(domain)
-        
-        result = []
-        for box in boxes:
-            folder_count = len(box.child_folder_ids)
-            result.append({
-                'id': box.id,
-                'name': box.name,
-                'box_number': box.box_number,
-                'full_reference': box.full_box_reference,
-                'folder_count': folder_count,
-                'barcode': box.transitory_barcode,
-                'description': box.content_description,
-                'state': box.state,
-                'creation_date': box.creation_date.strftime('%Y-%m-%d %H:%M') if box.creation_date else ''
-            })
-        
-        return sorted(result, key=lambda x: x['creation_date'], reverse=True)
 
-    @api.model 
+        if department_id:
+            domain.append(("department_id", "=", department_id))
+
+        containers = self.search(domain)
+
+        result = []
+        for container in containers:
+            folder_count = len(container.child_folder_ids)
+            result.append(
+                {
+                    "id": container.id,
+                    "name": container.name,
+                    "box_number": container.box_number,
+                    "full_reference": container.full_box_reference,
+                    "folder_count": folder_count,
+                    "barcode": container.transitory_barcode,
+                    "description": container.content_description,
+                    "state": container.state,
+                    "creation_date": (
+                        container.creation_date.strftime("%Y-%m-%d %H:%M")
+                        if container.creation_date
+                        else ""
+                    ),
+                }
+            )
+
+        return sorted(result, key=lambda x: x["creation_date"], reverse=True)
+
+    @api.model
     def process_csv_import(self, csv_data, customer_id, created_by_admin=False):
         """Process CSV import for bulk creation
-        
+
         Args:
             csv_data: CSV string data
             customer_id: Customer ID
             created_by_admin: Whether import is done by admin
-        
+
         Returns:
             Import results
         """
         import csv
         import io
-        
+
         # Parse CSV
         csv_file = io.StringIO(csv_data)
         reader = csv.DictReader(csv_file)
-        
+
         items_data = []
         for row in reader:
             # Clean and validate data
@@ -527,176 +732,213 @@ class TransitoryItems(models.Model):
             for key, value in row.items():
                 if value and value.strip():
                     # Convert field names to match model
-                    clean_key = key.lower().replace(' ', '_').replace('-', '_')
+                    clean_key = key.lower().replace(" ", "_").replace("-", "_")
                     item[clean_key] = value.strip()
-            
-            if item.get('name'):  # Must have a name
+
+            if item.get("name"):  # Must have a name
                 items_data.append(item)
-        
+
         if not items_data:
-            raise UserError(_('No valid data found in CSV'))
-        
+            raise UserError(_("No valid data found in CSV"))
+
         return self.bulk_create_from_list(items_data, customer_id, created_by_admin)
 
     def action_admin_edit_settings(self):
         """Open admin view for editing customer settings"""
-        if not self.env.user.has_group('records_management.group_records_manager'):
-            raise UserError(_('Only records management staff can edit customer settings'))
-        
+        if not self.env.user.has_group("records_management.group_records_manager"):
+            raise UserError(
+                _("Only records management staff can edit customer settings")
+            )
+
         return {
-            'type': 'ir.actions.act_window',
-            'name': 'Admin: Edit Customer Settings',
-            'view_mode': 'form',
-            'res_model': 'res.partner',
-            'res_id': self.customer_id.id,
-            'target': 'new',
-            'context': {'admin_edit_mode': True}
+            "type": "ir.actions.act_window",
+            "name": "Admin: Edit Customer Settings",
+            "view_mode": "form",
+            "res_model": "res.partner",
+            "res_id": self.customer_id.id,
+            "target": "new",
+            "context": {"admin_edit_mode": True},
         }
+
     @api.model
-    def get_box_number_suggestions(self, customer_id, department_id=None, search_term=""):
+    def get_box_number_suggestions(
+        self, customer_id, department_id=None, search_term=""
+    ):
         """Get box number suggestions for autocomplete"""
-        domain = [('customer_id', '=', customer_id)]
+        domain = [("customer_id", "=", customer_id)]
         if department_id:
-            domain.append(('department_id', '=', department_id))
-        
-        # Search both transitory items and actual boxes
+            domain.append(("department_id", "=", department_id))
+
+        # Search both transitory items and actual containers
         transitory_boxes = self.search(domain)
-        actual_boxes = self.env['records.box'].search(domain)
-        
+        actual_containers = self.env["records.container"].search(domain)
+
         suggestions = []
-        
+
         # Get existing box numbers
         for item in transitory_boxes:
-            if item.box_number and (not search_term or search_term.lower() in item.box_number.lower()):
-                suggestions.append({
-                    'box_number': item.box_number,
-                    'full_reference': item.full_box_reference,
-                    'description': item.name,
-                    'source': 'transitory'
-                })
-        
-        for box in actual_boxes:
-            if hasattr(box, 'box_number') and box.box_number:
-                if not search_term or search_term.lower() in box.box_number.lower():
-                    suggestions.append({
-                        'box_number': box.box_number,
-                        'full_reference': box.box_number,
-                        'description': box.description or box.name,
-                        'source': 'records_box'
-                    })
-        
+            if item.box_number and (
+                not search_term or search_term.lower() in item.box_number.lower()
+            ):
+                suggestions.append(
+                    {
+                        "box_number": item.box_number,
+                        "full_reference": item.full_box_reference,
+                        "description": item.name,
+                        "source": "transitory",
+                    }
+                )
+
+        for container in actual_containers:
+            if (
+                hasattr(container, "customer_box_number")
+                and container.customer_box_number
+            ):
+                if (
+                    not search_term
+                    or search_term.lower() in container.customer_box_number.lower()
+                ):
+                    suggestions.append(
+                        {
+                            "box_number": container.customer_box_number,
+                            "full_reference": container.customer_box_number,
+                            "description": container.description or container.name,
+                            "source": "records_container",
+                        }
+                    )
+
         # Remove duplicates and sort
         unique_suggestions = []
         seen_numbers = set()
         for suggestion in suggestions:
-            if suggestion['box_number'] not in seen_numbers:
+            if suggestion["box_number"] not in seen_numbers:
                 unique_suggestions.append(suggestion)
-                seen_numbers.add(suggestion['box_number'])
-        
-        return sorted(unique_suggestions, key=lambda x: x['box_number'])
+                seen_numbers.add(suggestion["box_number"])
+
+        return sorted(unique_suggestions, key=lambda x: x["box_number"])
 
     @api.model
     def check_box_number_exists(self, customer_id, box_number, department_id=None):
         """Check if box number already exists and suggest alternatives"""
-        domain = [('customer_id', '=', customer_id), ('box_number', '=', box_number)]
+        domain = [("customer_id", "=", customer_id), ("box_number", "=", box_number)]
         if department_id:
-            domain.append(('department_id', '=', department_id))
-        
+            domain.append(("department_id", "=", department_id))
+
         existing_transitory = self.search(domain)
-        existing_boxes = self.env['records.box'].search(domain)
-        
+        existing_containers = self.env["records.container"].search(domain)
+
         result = {
-            'exists': bool(existing_transitory or existing_boxes),
-            'existing_items': [],
-            'suggested_alternatives': []
+            "exists": bool(existing_transitory or existing_containers),
+            "existing_items": [],
+            "suggested_alternatives": [],
         }
-        
+
         if existing_transitory:
             for item in existing_transitory:
-                result['existing_items'].append({
-                    'type': 'transitory',
-                    'name': item.name,
-                    'full_reference': item.full_box_reference,
-                    'state': item.state
-                })
-        
-        if existing_boxes:
-            for box in existing_boxes:
-                result['existing_items'].append({
-                    'type': 'records_box',
-                    'name': box.name,
-                    'full_reference': getattr(box, 'box_number', box.name),
-                    'state': getattr(box, 'state', 'active')
-                })
-        
-        if result['exists']:
+                result["existing_items"].append(
+                    {
+                        "type": "transitory",
+                        "name": item.name,
+                        "full_reference": item.full_box_reference,
+                        "state": item.state,
+                    }
+                )
+
+        if existing_containers:
+            for container in existing_containers:
+                result["existing_items"].append(
+                    {
+                        "type": "records_container",
+                        "name": container.name,
+                        "full_reference": getattr(
+                            container, "customer_box_number", container.name
+                        ),
+                        "state": getattr(container, "state", "active"),
+                    }
+                )
+
+        if result["exists"]:
             # Generate suffix suggestions
             existing_suffixes = []
             for item in existing_transitory:
                 if item.box_set_suffix:
                     existing_suffixes.append(item.box_set_suffix)
-            
+
             # Generate next suffix (A, B, C, etc.)
-            alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             for letter in alphabet:
                 if letter not in existing_suffixes:
-                    result['suggested_alternatives'].append({
-                        'full_reference': f"{box_number}-{letter}",
-                        'suffix': letter,
-                        'type': 'set_suffix'
-                    })
+                    result["suggested_alternatives"].append(
+                        {
+                            "full_reference": f"{box_number}-{letter}",
+                            "suffix": letter,
+                            "type": "set_suffix",
+                        }
+                    )
                     break
-            
+
             # Also suggest next numeric sequence
-            numeric_suggestions = self._get_next_numeric_suggestions(customer_id, box_number, department_id)
-            result['suggested_alternatives'].extend(numeric_suggestions)
-        
+            numeric_suggestions = self._get_next_numeric_suggestions(
+                customer_id, box_number, department_id
+            )
+            result["suggested_alternatives"].extend(numeric_suggestions)
+
         return result
 
-    def _get_next_numeric_suggestions(self, customer_id, base_number, department_id=None):
+    def _get_next_numeric_suggestions(
+        self, customer_id, base_number, department_id=None
+    ):
         """Generate next numeric sequence suggestions"""
         import re
-        
+
         # Extract numeric part and prefix
-        match = re.match(r'([A-Za-z]*)(\d+)', base_number)
+        match = re.match(r"([A-Za-z]*)(\d+)", base_number)
         if not match:
             return []
-        
+
         prefix = match.group(1)
         number = int(match.group(2))
         number_length = len(match.group(2))
-        
+
         suggestions = []
         for i in range(1, 6):  # Suggest next 5 numbers
             next_number = number + i
             padded_number = str(next_number).zfill(number_length)
             next_box_number = f"{prefix}{padded_number}"
-            
+
             # Check if this number exists
-            domain = [('customer_id', '=', customer_id), ('box_number', '=', next_box_number)]
+            domain = [
+                ("customer_id", "=", customer_id),
+                ("box_number", "=", next_box_number),
+            ]
             if department_id:
-                domain.append(('department_id', '=', department_id))
-            
-            if not self.search(domain) and not self.env['records.box'].search(domain):
-                suggestions.append({
-                    'full_reference': next_box_number,
-                    'suffix': None,
-                    'type': 'next_number'
-                })
+                domain.append(("department_id", "=", department_id))
+
+            if not self.search(domain) and not self.env["records.container"].search(
+                domain
+            ):
+                suggestions.append(
+                    {
+                        "full_reference": next_box_number,
+                        "suffix": None,
+                        "type": "next_number",
+                    }
+                )
                 break  # Only suggest the first available number
-        
+
         return suggestions
 
-    def _generate_transitory_barcode(self, prefix='TI'):
+    def _generate_transitory_barcode(self, prefix="TI"):
         """Generate unique barcode for transitory item
-        
+
         Args:
             prefix: Barcode prefix (TB=Box, TF=Folder, TI=Item)
         """
-        sequence = self.env['ir.sequence'].next_by_code('transitory.items.barcode')
+        sequence = self.env["ir.sequence"].next_by_code("transitory.items.barcode")
         if not sequence:
             # Fallback if sequence doesn't exist
             import time
+
             sequence = f"{int(time.time())}"[-6:]  # Last 6 digits of timestamp
         return f"{prefix}-{sequence}"
 
@@ -706,106 +948,109 @@ class TransitoryItems(models.Model):
     def action_schedule_pickup(self):
         """Schedule pickup for transitory items"""
         for record in self:
-            if record.state != 'declared':
-                raise UserError(_('Only declared items can be scheduled for pickup'))
-            
+            if record.state != "declared":
+                raise UserError(_("Only declared items can be scheduled for pickup"))
+
             if not record.scheduled_pickup_date:
-                raise UserError(_('Please set a pickup date before scheduling'))
-            
-            record.write({'state': 'scheduled'})
+                raise UserError(_("Please set a pickup date before scheduling"))
+
+            record.write({"state": "scheduled"})
             record.message_post(
-                body=_('Pickup scheduled for %s') % record.scheduled_pickup_date,
-                message_type='notification'
+                body=_("Pickup scheduled for %s") % record.scheduled_pickup_date,
+                message_type="notification",
             )
 
-    def action_convert_to_records_box(self):
-        """Convert transitory item to actual records box after pickup"""
+    def action_convert_to_records_container(self):
+        """Convert transitory item to actual records container after pickup"""
         self.ensure_one()
-        
-        if self.state != 'scheduled':
-            raise UserError(_('Only scheduled items can be converted'))
-        
-        if self.converted_to_box_id:
-            raise UserError(_('This item has already been converted'))
-        
-        # Create actual records box
-        box_vals = {
-            'name': f"Box from {self.name}",
-            'customer_id': self.customer_id.id,
-            'department_id': self.department_id.id,
-            'description': self.content_description,
-            'estimated_weight': self.estimated_weight,
-            'state': 'active',
-            'source_transitory_id': self.id,
+
+        if self.state != "scheduled":
+            raise UserError(_("Only scheduled items can be converted"))
+
+        if self.converted_to_container_id:
+            raise UserError(_("This item has already been converted"))
+
+        # Create actual records container
+        container_vals = {
+            "name": f"Container from {self.name}",
+            "customer_id": self.customer_id.id,
+            "department_id": self.department_id.id,
+            "description": self.content_description,
+            "estimated_weight": self.estimated_weight,
+            "state": "received",
+            "source_transitory_id": self.id,
         }
-        
+
         # Add location if we have a default intake location
-        default_location = self.env['records.location'].search([
-            ('location_type', '=', 'intake')
-        ], limit=1)
-        if default_location:
-            box_vals['location_id'] = default_location.id
-        
-        new_box = self.env['records.box'].create(box_vals)
-        
-        self.write({
-            'state': 'collected',
-            'converted_to_box_id': new_box.id,
-            'converted_date': fields.Datetime.now(),
-            'converted_by_id': self.env.user.id,
-            'actual_pickup_date': fields.Date.today()
-        })
-        
-        self.message_post(
-            body=_('Converted to Records Box: %s') % new_box.name,
-            message_type='notification'
+        default_location = self.env["records.location"].search(
+            [("location_type", "=", "intake")], limit=1
         )
-        
+        if default_location:
+            container_vals["location_id"] = default_location.id
+
+        new_container = self.env["records.container"].create(container_vals)
+
+        self.write(
+            {
+                "state": "collected",
+                "converted_to_container_id": new_container.id,
+                "converted_date": fields.Datetime.now(),
+                "converted_by_id": self.env.user.id,
+                "actual_pickup_date": fields.Date.today(),
+            }
+        )
+
+        self.message_post(
+            body=_("Converted to Records Container: %s") % new_container.name,
+            message_type="notification",
+        )
+
         return {
-            'type': 'ir.actions.act_window',
-            'name': 'Created Records Box',
-            'view_mode': 'form',
-            'res_model': 'records.box',
-            'res_id': new_box.id,
-            'target': 'current',
+            "type": "ir.actions.act_window",
+            "name": "Created Records Container",
+            "view_mode": "form",
+            "res_model": "records.container",
+            "res_id": new_container.id,
         }
 
     def action_cancel_item(self):
         """Cancel transitory item"""
         for record in self:
-            if record.state == 'collected':
-                raise UserError(_('Cannot cancel items that have already been collected'))
-            
-            record.write({'state': 'cancelled'})
+            if record.state == "collected":
+                raise UserError(
+                    _("Cannot cancel items that have already been collected")
+                )
+
+            record.write({"state": "cancelled"})
             record.message_post(
-                body=_('Item cancelled by %s') % self.env.user.name,
-                message_type='notification'
+                body=_("Item cancelled by %s") % self.env.user.name,
+                message_type="notification",
             )
 
     def action_create_pickup_request(self):
         """Create pickup request for these items"""
         self.ensure_one()
-        
+
         pickup_vals = {
-            'customer_id': self.customer_id.id,
-            'requested_date': self.scheduled_pickup_date or fields.Date.today(),
-            'description': f"Pickup for transitory items: {self.name}",
-            'special_instructions': f"Collect item: {self.content_description}",
-            'state': 'draft'
+            "customer_id": self.customer_id.id,
+            "requested_date": self.scheduled_pickup_date or fields.Date.today(),
+            "description": f"Pickup for transitory items: {self.name}",
+            "special_instructions": f"Collect item: {self.content_description}",
+            "state": "draft",
         }
-        
-        pickup_request = self.env['pickup.request'].create(pickup_vals)
-        
+
+        pickup_request = self.env["pickup.request"].create(pickup_vals)
+
         # Link this item to the pickup request
-        self.write({'pickup_request_id': pickup_request.id})
-        
+        self.write({"pickup_request_id": pickup_request.id})
+
         return {
-            'type': 'ir.actions.act_window',
-            'name': 'Pickup Request',
-            'view_mode': 'form',
-            'res_model': 'pickup.request',
-            'res_id': pickup_request.id,
-            'target': 'current',
+            "type": "ir.actions.act_window",
+            "name": "Pickup Request",
+            "view_mode": "form",
+            "res_model": "pickup.request",
+            "res_id": pickup_request.id,
+            "target": "current",
         }
 
     # ==========================================
@@ -814,119 +1059,135 @@ class TransitoryItems(models.Model):
     def create_monthly_storage_charges(self):
         """Create monthly storage charges for transitory items
         Called by scheduled action to bill for storage space reservation"""
-        
-        items_to_bill = self.search([
-            ('state', 'in', ('declared', 'scheduled')),
-            ('billable', '=', True),
-            ('monthly_storage_rate', '>', 0)
-        ])
-        
+
+        items_to_bill = self.search(
+            [
+                ("state", "in", ("declared", "scheduled")),
+                ("billable", "=", True),
+                ("monthly_storage_rate", ">", 0),
+            ]
+        )
+
         for item in items_to_bill:
             if item.billing_account_id:
                 # Create billing line for storage
                 billing_line_vals = {
-                    'billing_id': item.billing_account_id.id,
-                    'product_id': self.env.ref('records_management.product_storage_transitory').id,
-                    'quantity': item.quantity,
-                    'unit_price': item.monthly_storage_rate,
-                    'description': f"Transitory storage for {item.name}",
-                    'date': fields.Date.today(),
-                    'source_model': 'transitory.items',
-                    'source_id': item.id,
+                    "billing_id": item.billing_account_id.id,
+                    "product_id": self.env.ref(
+                        "records_management.product_storage_transitory"
+                    ).id,
+                    "quantity": item.quantity,
+                    "unit_price": item.monthly_storage_rate,
+                    "description": f"Transitory storage for {item.name}",
+                    "date": fields.Date.today(),
+                    "source_model": "transitory.items",
+                    "source_id": item.id,
                 }
-                
-                self.env['advanced.billing.line'].create(billing_line_vals)
+
+                self.env["advanced.billing.line"].create(billing_line_vals)
 
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to set default storage rates and generate barcodes"""
         for vals in vals_list:
             # Generate transitory barcode
-            if not vals.get('transitory_barcode'):
+            if not vals.get("transitory_barcode"):
                 # Different barcode prefixes for different types
-                item_type = vals.get('item_type', 'records_box')
-                if item_type == 'records_box':
-                    prefix = 'TB'  # Transitory Box
-                elif item_type == 'file_folder':
-                    prefix = 'TF'  # Transitory Folder
+                item_type = vals.get("item_type", "records_box")
+                if item_type == "records_box":
+                    prefix = "TB"  # Transitory Box
+                elif item_type == "file_folder":
+                    prefix = "TF"  # Transitory Folder
                 else:
-                    prefix = 'TI'  # Transitory Item
-                
-                vals['transitory_barcode'] = self._generate_transitory_barcode(prefix)
-            
+                    prefix = "TI"  # Transitory Item
+
+                vals["transitory_barcode"] = self._generate_transitory_barcode(prefix)
+
             # Handle box number and suffix logic (only for boxes)
-            if vals.get('box_number') and vals.get('customer_id') and vals.get('item_type') == 'records_box':
+            if (
+                vals.get("box_number")
+                and vals.get("customer_id")
+                and vals.get("item_type") == "records_box"
+            ):
                 existing_check = self.check_box_number_exists(
-                    vals['customer_id'], 
-                    vals['box_number'], 
-                    vals.get('department_id')
+                    vals["customer_id"], vals["box_number"], vals.get("department_id")
                 )
-                
+
                 # If box number exists and no suffix provided, auto-generate suffix
-                if existing_check['exists'] and not vals.get('box_set_suffix'):
-                    if existing_check['suggested_alternatives']:
-                        first_suggestion = existing_check['suggested_alternatives'][0]
-                        if first_suggestion['type'] == 'set_suffix':
-                            vals['box_set_suffix'] = first_suggestion['suffix']
-            
+                if existing_check["exists"] and not vals.get("box_set_suffix"):
+                    if existing_check["suggested_alternatives"]:
+                        first_suggestion = existing_check["suggested_alternatives"][0]
+                        if first_suggestion["type"] == "set_suffix":
+                            vals["box_set_suffix"] = first_suggestion["suffix"]
+
             # Set default storage rate based on item type
-            if not vals.get('monthly_storage_rate') and vals.get('item_type'):
-                item_type = vals['item_type']
-                if item_type == 'records_box':
-                    vals['monthly_storage_rate'] = 1.50  # Same as regular box storage
-                elif item_type in ('file_folder', 'document_set'):
-                    vals['monthly_storage_rate'] = 0.75
-                elif item_type == 'media':
-                    vals['monthly_storage_rate'] = 2.00
+            if not vals.get("monthly_storage_rate") and vals.get("item_type"):
+                item_type = vals["item_type"]
+                if item_type == "records_box":
+                    vals["monthly_storage_rate"] = 1.50  # Same as regular box storage
+                elif item_type in ("file_folder", "document_set"):
+                    vals["monthly_storage_rate"] = 0.75
+                elif item_type == "media":
+                    vals["monthly_storage_rate"] = 2.00
                 else:
-                    vals['monthly_storage_rate'] = 1.00
-            
+                    vals["monthly_storage_rate"] = 1.00
+
             # Handle admin creation
-            if vals.get('created_by_admin'):
-                vals['admin_notes'] = f"Created by admin: {self.env.user.name}"
-            
+            if vals.get("created_by_admin"):
+                vals["admin_notes"] = f"Created by admin: {self.env.user.name}"
+
             # Validate parent box relationship
-            if vals.get('parent_box_id') and vals.get('item_type') == 'records_box':
-                raise UserError(_('Records boxes cannot be inside other boxes'))
-            
+            if (
+                vals.get("parent_container_id")
+                and vals.get("item_type") == "records_box"
+            ):
+                raise UserError(
+                    _("Records containers cannot be inside other containers")
+                )
+
             # Ensure file folders have a parent box (unless created by admin)
-            if (vals.get('item_type') == 'file_folder' and 
-                not vals.get('parent_box_id') and 
-                not vals.get('created_by_admin')):
-                raise UserError(_('File folders must be assigned to a box'))
-        
+            if (
+                vals.get("item_type") == "file_folder"
+                and not vals.get("parent_container_id")
+                and not vals.get("created_by_admin")
+            ):
+                raise UserError(_("File folders must be assigned to a container"))
+
         return super().create(vals_list)
 
     # ==========================================
     # VALIDATION METHODS
     # ==========================================
-    @api.constrains('quantity')
+    @api.constrains("quantity")
     def _check_quantity(self):
         """Validate quantity is positive"""
         for record in self:
             if record.quantity <= 0:
-                raise ValidationError(_('Quantity must be greater than zero'))
+                raise ValidationError(_("Quantity must be greater than zero"))
 
-    @api.constrains('scheduled_pickup_date')
+    @api.constrains("scheduled_pickup_date")
     def _check_pickup_date(self):
         """Validate pickup date is not in the past"""
         for record in self:
-            if record.scheduled_pickup_date and record.scheduled_pickup_date < fields.Date.today():
-                if record.state == 'declared':  # Only check for new items
-                    raise ValidationError(_('Pickup date cannot be in the past'))
+            if (
+                record.scheduled_pickup_date
+                and record.scheduled_pickup_date < fields.Date.today()
+            ):
+                if record.state == "declared":  # Only check for new items
+                    raise ValidationError(_("Pickup date cannot be in the past"))
 
-    @api.constrains('estimated_weight', 'estimated_cubic_feet')
+    @api.constrains("estimated_weight", "estimated_cubic_feet")
     def _check_estimates(self):
         """Validate estimates are reasonable"""
         for record in self:
             if record.estimated_weight and record.estimated_weight < 0:
-                raise ValidationError(_('Estimated weight cannot be negative'))
+                raise ValidationError(_("Estimated weight cannot be negative"))
             if record.estimated_cubic_feet and record.estimated_cubic_feet < 0:
-                raise ValidationError(_('Estimated size cannot be negative'))
-    
+                raise ValidationError(_("Estimated size cannot be negative"))
+
     def action_done(self):
         """Mark as done"""
-        self.write({'state': 'done'})
+        self.write({"state": "done"})
 
     # ==========================================
     # FIELD LABEL CUSTOMIZATION METHODS
@@ -936,22 +1197,18 @@ class TransitoryItems(models.Model):
         if self.customer_id:
             config = self.customer_id.get_transitory_field_config()
             # Add custom labels
-            labels = self.env['field.label.customization'].get_labels_for_context(
+            labels = self.env["field.label.customization"].get_labels_for_context(
                 customer_id=self.customer_id.id,
-                department_id=None  # Can be enhanced for department-specific labels
+                department_id=None,  # Can be enhanced for department-specific labels
             )
-            config['field_labels'] = labels
+            config["field_labels"] = labels
             return config
-        return {
-            'visible_fields': {},
-            'required_fields': {},
-            'field_labels': {}
-        }
+        return {"visible_fields": {}, "required_fields": {}, "field_labels": {}}
 
     @api.model
     def get_field_label(self, field_name, customer_id=None, department_id=None):
         """Get custom label for a specific field"""
-        return self.env['field.label.customization'].get_label_for_field(
+        return self.env["field.label.customization"].get_label_for_field(
             field_name, customer_id, department_id
         )
 
@@ -959,7 +1216,7 @@ class TransitoryItems(models.Model):
         """Get all custom field labels for this item's customer"""
         self.ensure_one()
         if self.customer_id:
-            return self.env['field.label.customization'].get_labels_for_context(
+            return self.env["field.label.customization"].get_labels_for_context(
                 customer_id=self.customer_id.id
             )
         return {}

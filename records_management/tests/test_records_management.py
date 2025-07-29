@@ -13,10 +13,10 @@ class TestRecordsManagement(TransactionCase):
             'name': 'Test Customer',
             'email': 'test@example.com',
         })
-        cls.product_box = cls.env.ref('records_management.product_box')
+        cls.product_container = cls.env.ref('records_management.product_container')
         cls.lot = cls.env['stock.lot'].create({
             'name': 'TEST001',
-            'product_id': cls.product_box.id,
+            'product_id': cls.product_container.id,
             'customer_id': cls.partner.id,
         })
 
@@ -44,21 +44,21 @@ class TestRecordsManagement(TransactionCase):
         """Test shredding service creation."""
         service = self.env['shredding.service'].create({
             'customer_id': self.partner.id,
-            'service_type': 'box',
-            'box_quantity': 5,
+            'service_type': 'container',
+            'container_quantity': 5,
         })
         self.assertEqual(service.customer_id, self.partner)
-        self.assertEqual(service.service_type, 'box')
-        self.assertEqual(service.total_charge, 25.0)  # 5 boxes * 5.0
+        self.assertEqual(service.service_type, 'container')
+        self.assertEqual(service.total_charge, 25.0)  # 5 containers * 5.0
 
     def test_shredding_service_validation(self):
         """Test shredding service validation."""
-        # Test box quantity validation
+        # Test container quantity validation
         with self.assertRaises(ValidationError):
             self.env['shredding.service'].create({
                 'customer_id': self.partner.id,
-                'service_type': 'box',
-                'box_quantity': 0,
+                'service_type': 'container',
+                'container_quantity': 0,
             })
 
         # Test latitude/longitude validation

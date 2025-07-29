@@ -17,7 +17,7 @@ class CustomerPortalExtended(CustomerPortal):
         partner = request.env.user.partner_id
         
         # Gather statistics
-        total_boxes = request.env['records.box'].sudo().search_count([
+        total_containers = request.env['records.container'].sudo().search_count([
             ('partner_id', '=', partner.id),
             ('state', '!=', 'destroyed')
         ])
@@ -41,17 +41,17 @@ class CustomerPortalExtended(CustomerPortal):
         # Recent activities (last 10)
         recent_activities = []
         
-        # Recent boxes/documents activity
-        recent_boxes = request.env['records.box'].sudo().search([
+        # Recent containers/documents activity
+        recent_containers = request.env['records.container'].sudo().search([
             ('partner_id', '=', partner.id)
         ], order='write_date desc', limit=3)
         
-        for box in recent_boxes:
+        for container in recent_containers:
             recent_activities.append({
                 'icon': 'archive',
                 'color': 'primary',
-                'description': f'Box {box.name} updated',
-                'date': box.write_date.strftime('%Y-%m-%d %H:%M')
+                'description': f'Container {container.name} updated',
+                'date': container.write_date.strftime('%Y-%m-%d %H:%M')
             })
         
         # Recent requests
@@ -74,8 +74,8 @@ class CustomerPortalExtended(CustomerPortal):
         # AI-powered suggestions based on user patterns
         suggestions = []
         
-        # Check for boxes approaching retention expiry
-        expiring_soon = request.env['records.box'].sudo().search_count([
+        # Check for containers approaching retention expiry
+        expiring_soon = request.env['records.container'].sudo().search_count([
             ('partner_id', '=', partner.id),
             ('retention_date', '<=', fields.Date.add(fields.Date.today(), days=30)),
             ('state', '!=', 'destroyed')
@@ -84,7 +84,7 @@ class CustomerPortalExtended(CustomerPortal):
         if expiring_soon > 0:
             suggestions.append({
                 'title': 'Retention Review Needed',
-                'description': f'{expiring_soon} boxes are approaching retention expiry',
+                'description': f'{expiring_soon} containers are approaching retention expiry',
                 'action': 'window.location.href="/my/inventory?filter=expiring"'
             })
         
@@ -103,7 +103,7 @@ class CustomerPortalExtended(CustomerPortal):
             })
         
         # Check for billing optimization
-        if total_boxes > 50:
+        if total_containers > 50:
             suggestions.append({
                 'title': 'Storage Optimization',
                 'description': 'Consider bulk actions to optimize storage costs',
@@ -111,7 +111,7 @@ class CustomerPortalExtended(CustomerPortal):
             })
         
         values = {
-            'total_boxes': total_boxes,
+            'total_containers': total_containers,
             'total_documents': total_documents,
             'pending_requests': pending_requests,
             'certificates_issued': certificates_issued,
@@ -361,7 +361,7 @@ class CustomerPortalExtended(CustomerPortal):
                 ]
             
             # Get inventory records based on access level
-            boxes = request.env['records.box'].sudo().search(domain + [('state', '!=', 'destroyed')])
+            containers = request.env['records.container'].sudo().search(domain + [('state', '!=', 'destroyed')])
             documents = request.env['records.document'].sudo().search(domain + [('state', '!=', 'destroyed')])
             
             # Get related pickup requests and service records
@@ -373,7 +373,7 @@ class CustomerPortalExtended(CustomerPortal):
             # Get destruction certificates related to user's inventory
             destruction_certs = request.env['records_management.shredding_service'].sudo().search([
                 '|', 
-                ('box_ids', 'in', boxes.ids),
+                ('container_ids', 'in', containers.ids),
                 ('document_ids', 'in', documents.ids),
                 ('state', '=', 'completed')
             ])
@@ -383,25 +383,25 @@ class CustomerPortalExtended(CustomerPortal):
                 'access_level': access_info['access_level'],
                 'department': access_info['department'].name if access_info['department'] else None,
                 
-                'boxes': [{
-                    'id': box.id,
-                    'name': box.name,
-                    'barcode': box.barcode,
-                    'location': box.location_id.name if box.location_id else '',
-                    'department': box.department_id.name if box.department_id else '',
-                    'created_date': box.create_date.strftime('%Y-%m-%d') if box.create_date else '',
-                    'retention_date': box.retention_date.strftime('%Y-%m-%d') if box.retention_date else '',
-                    'state': box.state,
-                    'document_count': len(box.document_ids),
-                    'last_access': box.last_access_date.strftime('%Y-%m-%d') if hasattr(box, 'last_access_date') and box.last_access_date else '',
-                } for box in boxes],
+                'containers': [{
+                    'id': container.id,
+                    'name': container.name,
+                    'barcode': container.barcode,
+                    'location': container.location_id.name if container.location_id else '',
+                    'department': container.department_id.name if container.department_id else '',
+                    'created_date': container.create_date.strftime('%Y-%m-%d') if container.create_date else '',
+                    'retention_date': container.retention_date.strftime('%Y-%m-%d') if container.retention_date else '',
+                    'state': container.state,
+                    'document_count': len(container.document_ids),
+                    'last_access': container.last_access_date.strftime('%Y-%m-%d') if hasattr(container, 'last_access_date') and container.last_access_date else '',
+                } for container in containers],
                 
                 'documents': [{
                     'id': doc.id,
                     'name': doc.name,
                     'document_type': doc.document_type_id.name if doc.document_type_id else '',
-                    'box_id': doc.box_id.id if doc.box_id else None,
-                    'box_name': doc.box_id.name if doc.box_id else '',
+                    'container_id': doc.container_id.id if doc.container_id else None,
+                    'container_name': doc.container_id.name if doc.container_id else '',
                     'department': doc.department_id.name if doc.department_id else '',
                     'created_date': doc.create_date.strftime('%Y-%m-%d') if doc.create_date else '',
                     'retention_date': doc.retention_date.strftime('%Y-%m-%d') if doc.retention_date else '',
@@ -425,17 +425,17 @@ class CustomerPortalExtended(CustomerPortal):
                     'certificate_number': cert.certificate_number if hasattr(cert, 'certificate_number') else '',
                     'destruction_date': cert.destruction_date.strftime('%Y-%m-%d') if cert.destruction_date else '',
                     'destruction_method': cert.destruction_method if hasattr(cert, 'destruction_method') else '',
-                    'boxes_destroyed': len(cert.box_ids) if hasattr(cert, 'box_ids') else 0,
+                    'containers_destroyed': len(cert.container_ids) if hasattr(cert, 'container_ids') else 0,
                     'documents_destroyed': len(cert.document_ids) if hasattr(cert, 'document_ids') else 0,
                     'certificate_url': f'/my/certificates/{cert.id}/download',
                 } for cert in destruction_certs],
                 
                 'summary_stats': {
-                    'total_boxes': len(boxes),
+                    'total_containers': len(containers),
                     'total_documents': len(documents),
                     'active_requests': len(pickup_requests.filtered(lambda r: r.state in ['confirmed', 'in_progress'])),
                     'completed_destructions': len(destruction_certs),
-                    'expiring_soon': len(boxes.filtered(lambda b: b.retention_date and b.retention_date <= fields.Date.add(fields.Date.today(), days=30))),
+                    'expiring_soon': len(containers.filtered(lambda b: b.retention_date and b.retention_date <= fields.Date.add(fields.Date.today(), days=30))),
                 },
                 
                 'access_timestamp': fields.Datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -476,7 +476,7 @@ class CustomerPortalExtended(CustomerPortal):
                 'customer': customer,
                 'permissions': {
                     'can_view_inventory': True,
-                    'can_add_boxes': True,
+                    'can_add_containers': True,
                     'can_request_services': True,
                     'can_request_deletion': True,
                     'can_approve_deletion': True,
@@ -497,7 +497,7 @@ class CustomerPortalExtended(CustomerPortal):
                 'customer': customer,
                 'permissions': {
                     'can_view_inventory': True,
-                    'can_add_boxes': True,
+                    'can_add_containers': True,
                     'can_request_services': True,
                     'can_request_deletion': True,
                     'can_approve_deletion': False,
@@ -516,7 +516,7 @@ class CustomerPortalExtended(CustomerPortal):
             'customer': customer,
             'permissions': {
                 'can_view_inventory': True,
-                'can_add_boxes': False,
+                'can_add_containers': False,
                 'can_request_services': False,
                 'can_request_deletion': False,
                 'can_approve_deletion': False,
@@ -596,8 +596,8 @@ class CustomerPortalExtended(CustomerPortal):
             
             # Validate required fields
             errors = []
-            if config_dict['required_fields']['box_number'] and not kw.get('box_number'):
-                errors.append('Box number is required')
+            if config_dict['required_fields']['container_number'] and not kw.get('container_number'):
+                errors.append('Container number is required')
             if config_dict['required_fields']['description'] and not kw.get('name'):
                 errors.append('Item description is required')
             if config_dict['required_fields']['content_description'] and not kw.get('content_description'):
@@ -610,14 +610,14 @@ class CustomerPortalExtended(CustomerPortal):
             if errors:
                 return {'success': False, 'errors': errors}
             
-            # Check for box number conflicts
-            box_conflict = None
-            if kw.get('box_number'):
-                conflict_check = request.env['transitory.items'].sudo().check_box_number_exists(
-                    partner.id, kw.get('box_number'), kw.get('department_id')
+            # Check for container number conflicts
+            container_conflict = None
+            if kw.get('container_number'):
+                conflict_check = request.env['transitory.items'].sudo().check_container_number_exists(
+                    partner.id, kw.get('container_number'), kw.get('department_id')
                 )
                 if conflict_check['exists']:
-                    box_conflict = {
+                    container_conflict = {
                         'exists': True,
                         'existing_items': conflict_check['existing_items'],
                         'suggestions': conflict_check['suggested_alternatives']
@@ -627,9 +627,9 @@ class CustomerPortalExtended(CustomerPortal):
             vals = {
                 'customer_id': partner.id,
                 'name': kw.get('name'),
-                'box_number': kw.get('box_number'),
+                'container_number': kw.get('container_number'),
                 'content_description': kw.get('content_description'),
-                'item_type': kw.get('item_type', 'records_box'),
+                'item_type': kw.get('item_type', 'records_container'),
                 'quantity': int(kw.get('quantity', 1)),
                 'estimated_weight': float(kw.get('estimated_weight', 0)) if kw.get('estimated_weight') else 0,
                 'estimated_cubic_feet': float(kw.get('estimated_cubic_feet', 0)) if kw.get('estimated_cubic_feet') else 0,
@@ -653,12 +653,12 @@ class CustomerPortalExtended(CustomerPortal):
             if kw.get('department_id'):
                 vals['department_id'] = int(kw.get('department_id'))
                 
-            # Handle box set suffix if dealing with conflicts
-            if kw.get('use_suggested_suffix') and box_conflict:
-                if box_conflict['suggestions']:
-                    vals['box_set_suffix'] = box_conflict['suggestions'][0]['suffix']
+            # Handle container set suffix if dealing with conflicts
+            if kw.get('use_suggested_suffix') and container_conflict:
+                if container_conflict['suggestions']:
+                    vals['container_set_suffix'] = container_conflict['suggestions'][0]['suffix']
             elif kw.get('manual_suffix'):
-                vals['box_set_suffix'] = kw.get('manual_suffix')
+                vals['container_set_suffix'] = kw.get('manual_suffix')
             
             # Create the item
             new_item = request.env['transitory.items'].sudo().create(vals)
@@ -667,8 +667,8 @@ class CustomerPortalExtended(CustomerPortal):
                 'success': True,
                 'item_id': new_item.id,
                 'barcode': new_item.transitory_barcode,
-                'full_reference': new_item.full_box_reference,
-                'box_conflict': box_conflict,
+                'full_container_reference': new_item.full_container_reference,
+                'container_conflict': container_conflict,
                 'message': 'Transitory item created successfully'
             }
             
@@ -679,26 +679,26 @@ class CustomerPortalExtended(CustomerPortal):
                 'message': 'Failed to create transitory item'
             }
 
-    @http.route('/my/inventory/transitory/box_suggestions', type='json', auth="user", website=True)
-    def portal_get_box_suggestions(self, search_term="", department_id=None):
-        """Get box number suggestions for autocomplete"""
+    @http.route('/my/inventory/transitory/container_suggestions', type='json', auth="user", website=True)
+    def portal_get_container_suggestions(self, search_term="", department_id=None):
+        """Get container number suggestions for autocomplete"""
         user = request.env.user
         partner = user.partner_id
         
-        suggestions = request.env['transitory.items'].sudo().get_box_number_suggestions(
+        suggestions = request.env['transitory.items'].sudo().get_container_number_suggestions(
             partner.id, department_id, search_term
         )
         
         return {'suggestions': suggestions}
 
-    @http.route('/my/inventory/transitory/check_box_number', type='json', auth="user", website=True)
-    def portal_check_box_number(self, box_number, department_id=None):
-        """Check if box number exists and get suggestions"""
+    @http.route('/my/inventory/transitory/check_container_number', type='json', auth="user", website=True)
+    def portal_check_container_number(self, container_number, department_id=None):
+        """Check if container number exists and get suggestions"""
         user = request.env.user
         partner = user.partner_id
         
-        result = request.env['transitory.items'].sudo().check_box_number_exists(
-            partner.id, box_number, department_id
+        result = request.env['transitory.items'].sudo().check_container_number_exists(
+            partner.id, container_number, department_id
         )
         
         return result
@@ -826,7 +826,7 @@ class CustomerPortalExtended(CustomerPortal):
     # Additional routes for multi-select actions (e.g., batch destruction request)
     @http.route('/my/inventory/batch_action', type='json', auth="user", website=True)
     def portal_batch_action(self, ids, action, **kw):
-        items = request.env['records.box'].sudo().browse(ids)  # Or documents
+        items = request.env['records.container'].sudo().browse(ids)  # Or documents
         if action == 'destruction':
             req = request.env['portal.request'].sudo().create({
                 'partner_id': request.env.user.partner_id.id,
@@ -891,7 +891,7 @@ class CustomerPortalExtended(CustomerPortal):
             domain = [('customer_id', '=', access_info['customer'].id)]
         
         # Get inventory data
-        boxes = request.env['records.box'].search(domain)
+        containers = request.env['records.container'].search(domain)
         documents = request.env['records.document'].search(domain)        
         # Get service requests
         service_requests = request.env['records.service.request'].search([
@@ -901,9 +901,9 @@ class CustomerPortalExtended(CustomerPortal):
         
         # Calculate statistics
         stats = {
-            'boxes_count': len(boxes),
+            'containers_count': len(containers),
             'documents_count': len(documents),
-            'locations_count': len(boxes.mapped('location_id')),
+            'locations_count': len(containers.mapped('location_id')),
             'active_requests': len(service_requests),
         }
         
@@ -918,7 +918,7 @@ class CustomerPortalExtended(CustomerPortal):
         values = {
             'access_info': access_info,
             'stats': stats,
-            'boxes': boxes[:10],  # Show first 10 for dashboard
+            'containers': containers[:10],  # Show first 10 for dashboard
             'recent_documents': documents.search(domain, 
                                                order='create_date desc', 
                                                limit=10),
@@ -938,7 +938,7 @@ class CustomerPortalExtended(CustomerPortal):
         dept_breakdown = [
             {
                 'name': dept.name,
-                'boxes': dept.total_boxes,
+                'containers': dept.total_containers,
                 'cost': dept.monthly_cost
             }
             for dept in departments
@@ -954,7 +954,7 @@ class CustomerPortalExtended(CustomerPortal):
         """Get billing information for specific department"""
         return {
             'monthly_cost': department.monthly_cost,
-            'total_boxes': department.total_boxes,
+            'total_containers': department.total_containers,
             'total_documents': department.total_documents
         }
     
@@ -988,11 +988,11 @@ class CustomerPortalExtended(CustomerPortal):
                 'special_instructions': kw.get('special_instructions'),
             }
             
-            # Handle box selection for certain service types
+            # Handle container selection for certain service types
             if kw.get('service_type') in ['return', 'retrieval']:
-                box_ids = [int(id) for id in kw.getlist('box_ids') if id]
-                if box_ids:
-                    vals['box_ids'] = [(6, 0, box_ids)]
+                container_ids = [int(id) for id in kw.getlist('container_ids') if id]
+                if container_ids:
+                    vals['container_ids'] = [(6, 0, container_ids)]
             
             request.env['records.service.request'].create(vals)
             return request.redirect('/my/records?success=service_requested')
@@ -1004,12 +1004,12 @@ class CustomerPortalExtended(CustomerPortal):
         else:
             domain.append(('customer_id', '=', access_info['customer'].id))
         
-        boxes = request.env['records.box'].search(
+        containers = request.env['records.container'].search(
             domain + [('state', '=', 'active')])
         
         values = {
             'access_info': access_info,
-            'boxes': boxes,
+            'containers': containers,
         }
         
         return request.render('records_management.portal_new_service_request', 
@@ -1465,8 +1465,8 @@ class PortalCertificateController(http.Controller):
                 'name': 'Default Rates',
             })
         
-        # Get customer's boxes and documents for selection
-        boxes = request.env['records.box'].sudo().search([
+        # Get customer's containers and documents for selection
+        containers = request.env['records.container'].sudo().search([
             ('customer_id', '=', partner.id),
             ('state', '=', 'active')
         ], order='name')
@@ -1486,7 +1486,7 @@ class PortalCertificateController(http.Controller):
             'customer_rates': customer_rates,
             'base_rates': base_rates,
             'has_custom_rates': bool(customer_rates),
-            'boxes': boxes,
+            'containers': containers,
             'documents': documents,
             'work_orders': work_orders,
             'page_name': 'document_retrieval',
@@ -1627,14 +1627,14 @@ class PortalCertificateController(http.Controller):
         for item_data in items_data:
             item_vals = {
                 'work_order_id': work_order.id,
-                'item_type': item_data.get('type', 'box'),
+                'item_type': item_data.get('type', 'container'),
                 'description': item_data.get('description', ''),
                 'barcode': item_data.get('barcode', ''),
                 'retrieval_notes': item_data.get('notes', ''),
             }
             
-            if item_data.get('type') == 'box' and item_data.get('box_id'):
-                item_vals['box_id'] = int(item_data['box_id'])
+            if item_data.get('type') == 'container' and item_data.get('container_id'):
+                item_vals['container_id'] = int(item_data['container_id'])
             elif item_data.get('type') == 'document' and item_data.get('document_id'):
                 item_vals['document_id'] = int(item_data['document_id'])
             
@@ -1642,7 +1642,7 @@ class PortalCertificateController(http.Controller):
         
         # Send notification
         work_order.message_post(
-            body=_('Work order created via customer portal. Estimated cost: $%.2f') % work_order.total_cost
+            body=_('Work order created via customer portal. Estimated cost: $%.2f' % work_order.total_cost)
         )
         
         return request.redirect('/my/document-retrieval?message=Order created successfully!')

@@ -199,7 +199,7 @@ class AdvancedBillingLine(models.Model):
     
     # Service references
     service_reference = fields.Char(string='Service Reference')
-    box_count = fields.Integer(string='Box Count')
+    container_count = fields.Integer(string='Container Count')
     
     @api.depends('quantity', 'unit_price')
     def _compute_line_total(self):

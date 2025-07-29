@@ -4,16 +4,15 @@
         <!-- Essential Records Management Products -->
         
         <!-- Document Storage Box - Basic -->
-        <record id="product_storage_box" model="product.product">
-            <field name="name">Document Storage Box</field>
-            <field name="type">consu</field>
+                <!-- Document Storage Container - Basic -->
+        <record id="product_storage_container" model="product.product">
+            <field name="name">Document Storage Container</field>
+            <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
-            <field name="default_code">REC-BOX</field>
-            <field name="list_price">15.00</field>
-            <field name="standard_price">10.00</field>
-            <field name="uom_id" ref="uom.product_uom_unit"/>
-            <field name="uom_po_id" ref="uom.product_uom_unit"/>
-            <field name="description">Standard archive box for document storage</field>
+            <field name="default_code">REC-CONTAINER</field>
+            <field name="list_price">5.0</field>
+            <field name="standard_price">1.5</field>
+            <field name="description">Standard archive container for document storage</field>
         </record>
 
         <!-- Document Storage Service - Basic -->

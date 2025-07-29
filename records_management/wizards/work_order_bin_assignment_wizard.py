@@ -63,10 +63,10 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
     # ==========================================
     # SELECTION RESULTS
     # ==========================================
-    available_bin_ids = fields.Many2many('records.box', 'wizard_available_bins_rel',
+    available_bin_ids = fields.Many2many('records.container', 'wizard_available_bins_rel',
                                          string='Available Bins', 
                                          help='Bins matching selection criteria')
-    selected_bin_ids = fields.Many2many('records.box', 'wizard_selected_bins_rel',
+    selected_bin_ids = fields.Many2many('records.container', 'wizard_selected_bins_rel',
                                         string='Selected Bins',
                                         help='Bins selected for assignment')
     
@@ -139,7 +139,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
         if hasattr(self.work_order_id, 'max_bins'):
             limit = self.work_order_id.max_bins
         
-        available_bins = self.env['records.box'].search(domain, limit=limit)
+        available_bins = self.env['records.container'].search(domain, limit=limit)
         self.available_bin_ids = [(6, 0, available_bins.ids)]
         self.selected_bin_ids = [(6, 0, available_bins.ids)]
         
@@ -222,7 +222,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
     def _update_available_bins(self):
         """Update available bins based on current criteria"""
         domain = self._build_search_domain()
-        available_bins = self.env['records.box'].search(domain)
+        available_bins = self.env['records.container'].search(domain)
         self.available_bin_ids = [(6, 0, available_bins.ids)]
     
     def _return_wizard(self):

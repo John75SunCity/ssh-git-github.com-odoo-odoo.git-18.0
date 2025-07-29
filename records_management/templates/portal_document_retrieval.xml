@@ -218,7 +218,7 @@
             <script>
                 <![CDATA[
                 let itemCounter = 0;
-                ]]>let boxOptions =                <t t-esc="json.dumps([(box.id, box.name) for box in boxes])"/>
+                ]]>let containerOptions =                <t t-esc="json.dumps([(container.id, container.name) for container in containers])"/>
                 <![CDATA[
 ;
                 ]]>let documentOptions =                <t t-esc="json.dumps([(doc.id, doc.name) for doc in documents])"/>
@@ -286,7 +286,7 @@
     <div class="col-md-3">
         <label>Item Type:</label>
         <select class="form-control" onchange="updateItemOptions(${itemCounter})" id="type-${itemCounter}">
-            <option value="box">Box</option>
+            <option value="container">Container</option>
             <option value="document">Document</option>
             <option value="file">File</option>
         </select>
@@ -294,7 +294,7 @@
     <div class="col-md-4">
         <label>Select Item:</label>
         <select class="form-control" id="item-select-${itemCounter}">
-            <option value="">Select a box...</option>
+            <option value="">Select a container...</option>
         </select>
     </div>
     <div class="col-md-3">
@@ -327,9 +327,9 @@
                     
                     select.innerHTML = '';
                     
-                    if (type === 'box') {
-                        select.innerHTML = '<option value="">Select a box...</option>';
-                        boxOptions.forEach(([id, name]) => {
+                    if (type === 'container') {
+                        select.innerHTML = '<option value="">Select a container...</option>';
+                        containerOptions.forEach(([id, name]) => {
                             select.innerHTML += `<option value="${id}">${name}</option>`;
                         });
                     } else if (type === 'document') {
@@ -368,8 +368,8 @@
                                 description: description
                             };
                             
-                            if (type === 'box' && itemSelect.value) {
-                                item.box_id = itemSelect.value;
+                            if (type === 'container' && itemSelect.value) {
+                                item.container_id = itemSelect.value;
                             } else if (type === 'document' && itemSelect.value) {
                                 item.document_id = itemSelect.value;
                             }

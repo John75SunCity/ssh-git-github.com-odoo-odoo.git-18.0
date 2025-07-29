@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data noupdate="1">
-        <!-- Sequence for Records Box -->
-        <record id="seq_records_box" model="ir.sequence">
-            <field name="name">Records Box Sequence</field>
-            <field name="code">records.box</field>
-            <field name="prefix">BOX</field>
+        <!-- Sequence for Records Container -->
+        <record id="seq_records_container" model="ir.sequence">
+            <field name="name">Records Container Sequence</field>
+            <field name="code">records.container</field>
+            <field name="prefix">CONT</field>
             <field name="padding">4</field>
             <field name="company_id" eval="False"/>
         </record>
@@ -46,11 +46,11 @@
             <field name="company_id" eval="False"/>
         </record>
 
-        <!-- Sequence for Box Numbers -->
-        <record id="seq_records_box_barcode" model="ir.sequence">
-            <field name="name">Records Box Number Sequence</field>
-            <field name="code">records.box.number</field>
-            <field name="prefix">BX</field>
+        <!-- Sequence for Container Numbers -->
+        <record id="seq_records_container_barcode" model="ir.sequence">
+            <field name="name">Records Container Number Sequence</field>
+            <field name="code">records.container.number</field>
+            <field name="prefix">CN</field>
             <field name="padding">8</field>
             <field name="company_id" eval="False"/>
         </record>

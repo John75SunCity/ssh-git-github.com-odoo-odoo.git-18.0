@@ -6,7 +6,7 @@ This directory contains submodules for external Odoo modules used in the project
 - **queue_job**: Asynchronous task processing (e.g., for background shredding or bale invoicing to improve performance).
 - **server_tools**: Additional server utilities for system management and monitoring.
 - **reporting_engine**: Advanced reporting capabilities (e.g., custom NAID-compliant destruction certificates and inventory reports).
-- **stock_logistics**: Enhanced inventory features for better tracking of physical assets like document boxes and paper bales.
+- **stock_logistics**: Enhanced inventory features for better tracking of physical assets like document containers and paper bales.
 - **web**: Enhanced UI components for a modern, user-friendly interface (e.g., responsive dashboards and visualizations like trailer loading).
 
 ## Setup and Usage

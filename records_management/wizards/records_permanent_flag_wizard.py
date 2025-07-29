@@ -16,7 +16,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
     # Core fields
     name = fields.Char(string="Flag Name", default="Permanent Flag Wizard")
-    record_ids = fields.Many2many('records.box', string='Records to Flag')
+    record_ids = fields.Many2many('records.container', string='Records to Flag')
     permanent_flag = fields.Boolean(string='Mark as Permanent', default=True)
     reason = fields.Text(string='Reason for Change', required=True)
 

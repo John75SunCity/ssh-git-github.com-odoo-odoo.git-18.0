@@ -130,12 +130,12 @@ class RecordsBulkOperationWizard(models.TransientModel):
 
     # Additional fields specific to bulk operations
     record_model = fields.Selection([
-        ('records.box', 'Records Boxes'),
+        ('records.container', 'Records Containers'),
         ('records.document', 'Documents'),
         ('pickup.request', 'Pickup Requests'),
     ], string='Target Model', required=True)
     
-    record_ids = fields.Many2many('records.box', string='Selected Records')
+    record_ids = fields.Many2many('records.container', string='Selected Records')
     operation = fields.Selection([
         ('update_status', 'Update Status'),
         ('update_location', 'Update Location'),

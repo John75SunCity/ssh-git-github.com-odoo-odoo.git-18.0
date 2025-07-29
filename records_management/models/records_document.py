@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 class RecordsDocument(models.Model):
     """
     Records Document Management
-    Individual document tracking within records boxes
+    Individual document tracking within records containers
     """
     
     _name = 'records.document'

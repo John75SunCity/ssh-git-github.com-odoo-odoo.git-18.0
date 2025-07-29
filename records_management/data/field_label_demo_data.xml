@@ -7,7 +7,7 @@
             <field name="name">Corporate Standard (Global)</field>
             <field name="description">Standard corporate terminology for all customers</field>
             <field name="priority">10</field>
-            <field name="label_box_number">File Box ID</field>
+            <field name="label_container_number">File Container ID</field>
             <field name="label_item_description">Document Category</field>
             <field name="label_content_description">Document Contents</field>
             <field name="label_date_from">Period Start</field>

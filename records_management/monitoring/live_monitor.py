@@ -326,7 +326,7 @@ class RecordsManagementMonitor(models.Model):
             
             # Check critical models
             critical_models = [
-                'records.box', 'records.document', 'shredding.service', 
+                'records.container', 'records.document', 'shredding.service', 
                 'pickup.request', 'customer.inventory'
             ]
             

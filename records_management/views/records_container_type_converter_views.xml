@@ -6,10 +6,10 @@
             <field name="name">records.container.type.converter.form</field>
             <field name="model">records.container.type.converter</field>
             <field name="arch" type="xml">
-                <form string="Bulk Box Type Converter">
+                <form string="Bulk Container Type Converter">
                     <group>
                         <group>
-                            <field name="box_ids" widget="many2many_tags" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="container_ids" widget="many2many_tags" options="{'no_create': True, 'no_open': True}"/>
                             <field name="current_type" invisible="1"/>
                             <label for="current_type" string="Current Type" invisible="current_type == False"/>
                             <div invisible="current_type == False">
@@ -17,7 +17,7 @@
                             </div>
                         </group>
                         <group>
-                            <field name="new_box_type_code" required="1"/>
+                            <field name="new_container_type_code" required="1"/>
                             <field name="update_location"/>
                         </group>
                     </group>
@@ -27,11 +27,11 @@
                     </group>
 
                     <group string="Optional Information">
-                        <field name="reason" placeholder="Why are you converting these boxes? (Optional)"/>
+                        <field name="reason" placeholder="Why are you converting these containers? (Optional)"/>
                     </group>
 
                     <footer>
-                        <button name="action_convert_boxes" string="Convert Boxes" type="object" class="btn-primary"/>
+                        <button name="action_convert_containers" string="Convert Containers" type="object" class="btn-primary"/>
                         <button name="action_preview_changes" string="Preview Changes" type="object" class="btn-secondary"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
@@ -39,17 +39,17 @@
             </field>
         </record>
 
-        <!-- Action for Box Type Converter Wizard -->
-        <record id="action_box_type_converter" model="ir.actions.act_window">
-            <field name="name">Bulk Convert Box Types</field>
-            <field name="res_model">records.box.type.converter</field>
+        <!-- Action for Container Type Converter Wizard -->
+        <record id="action_container_type_converter" model="ir.actions.act_window">
+            <field name="name">Bulk Convert Container Types</field>
+            <field name="res_model">records.container.type.converter</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="context">{}</field>
         </record>
 
         <!-- Menu item for standalone access -->
-        <menuitem id="menu_box_type_converter" name="Bulk Convert Box Types" parent="menu_records_operations" action="action_box_type_converter" sequence="30"/>
+        <menuitem id="menu_container_type_converter" name="Bulk Convert Container Types" parent="menu_records_operations" action="action_container_type_converter" sequence="30"/>
 
     </data>
 </odoo>

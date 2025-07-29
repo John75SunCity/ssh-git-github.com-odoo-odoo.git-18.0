@@ -3,18 +3,18 @@
     <!-- 📦 ENTERPRISE STORAGE BOXES - Advanced Warehouse Management -->
 
     <!-- 🎨 Kanban Board for Visual Box Management -->
-    <record id="view_records_box_kanban" model="ir.ui.view">
-        <field name="name">records.box.kanban</field>
-        <field name="model">records.box</field>
+    <record id="view_records_container_kanban" model="ir.ui.view">
+        <field name="name">records.container.kanban</field>
+        <field name="model">records.container</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="state" class="o_kanban_box_dashboard">
+            <kanban default_group_by="state" class="o_kanban_container_dashboard">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="location_id"/>
                 <field name="state"/>
                 <field name="stored_date"/>
                 <field name="destruction_date"/>
-                <field name="box_type"/>
+                <field name="container_type"/>
                 <field name="document_count"/>
                 <field name="estimated_weight"/>
                 <templates>
@@ -40,8 +40,8 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <div>
-                                            <i class="fa fa-cube" title="Box Type"/>
-                                            <field name="box_type"/>
+                                            <i class="fa fa-cube" title="Container Type"/>
+                                            <field name="container_type"/>
                                         </div>
                                         <div>
                                             <i class="fa fa-weight" title="Weight"/>
@@ -77,12 +77,12 @@
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Box</a>
+                                <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Container</a>
                                 <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">📄 View Documents</a>
-                                <a role="menuitem" type="object" name="action_retrieve_box" class="dropdown-item">📍 Retrieve Box</a>
+                                <a role="menuitem" type="object" name="action_retrieve_container" class="dropdown-item">📍 Retrieve Container</a>
                                 <a role="menuitem" type="object" name="action_generate_barcode" class="dropdown-item">🏷️ Print Barcode</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_destroy_box" class="dropdown-item">🗑️ Destroy Box</a>
+                                <a role="menuitem" type="object" name="action_destroy_container" class="dropdown-item">🗑️ Destroy Container</a>
                             </div>
                         </div>
                     </t>
@@ -92,17 +92,17 @@
     </record>
 
     <!-- 📋 Enhanced List View with Smart Columns and Bulk Actions -->
-    <record id="view_records_box_tree" model="ir.ui.view">
-        <field name="name">records.box.list</field>
-        <field name="model">records.box</field>
+    <record id="view_records_container_tree" model="ir.ui.view">
+        <field name="name">records.container.list</field>
+        <field name="model">records.container</field>
         <field name="arch" type="xml">
             <list decoration-success="state == 'stored'" decoration-info="state == 'indexed'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'received'" multi_edit="1">
                 <header>
-                    <button name="action_bulk_convert_box_type" type="object" string="🔄 Bulk Convert Types" class="btn-primary"/>
+                    <button name="action_bulk_convert_container_type" type="object" string="🔄 Bulk Convert Types" class="btn-primary"/>
                 </header>
-                <field name="name" string="📦 Box ID"/>
-                <field name="box_type_code" string="📊 Type"/>
-                <field name="box_type_display" string="📦 Box Type"/>
+                <field name="name" string="📦 Container ID"/>
+                <field name="container_type_code" string="📊 Type"/>
+                <field name="container_type_display" string="📦 Container Type"/>
                 <field name="monthly_rate" string="💰 Rate/Mo" widget="monetary"/>
                 <field name="customer_id" string="👤 Customer"/>
                 <field name="department_id" string="🏢 Department"/>
@@ -119,16 +119,16 @@
     </record>
 
     <!-- 📝 Enhanced Form View with Advanced Features -->
-    <record id="view_records_box_form" model="ir.ui.view">
-        <field name="name">records.box.form</field>
-        <field name="model">records.box</field>
+    <record id="view_records_container_form" model="ir.ui.view">
+        <field name="name">records.container.form</field>
+        <field name="model">records.container</field>
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_index_box" type="object" string="📋 Index Box" class="btn-primary" invisible="state != 'received'"/>
-                    <button name="action_store_box" type="object" string="📦 Store Box" class="btn-primary" invisible="state != 'indexed'"/>
-                    <button name="action_retrieve_box" type="object" string="📍 Retrieve Box" class="btn-secondary" invisible="state != 'stored'"/>
-                    <button name="action_destroy_box" type="object" string="🗑️ Destroy Box" class="btn-warning" invisible="state not in ['stored', 'retrieved']"/>
+                    <button name="action_index_container" type="object" string="📋 Index Container" class="btn-primary" invisible="state != 'received'"/>
+                    <button name="action_store_container" type="object" string="📦 Store Container" class="btn-primary" invisible="state != 'indexed'"/>
+                    <button name="action_retrieve_container" type="object" string="📍 Retrieve Container" class="btn-secondary" invisible="state != 'stored'"/>
+                    <button name="action_destroy_container" type="object" string="🗑️ Destroy Container" class="btn-warning" invisible="state not in ['stored', 'retrieved']"/>
                     <button name="action_generate_barcode" type="object" string="🏷️ Print Barcode" class="btn-info"/>
                     <field name="state" widget="statusbar" statusbar_visible="received,indexed,stored,retrieved,destroyed"/>
                 </header>
@@ -140,10 +140,10 @@
                     </div>
 
                     <group>
-                        <group string="📦 Box Information">
-                            <field name="name" placeholder="e.g., BOX-2024-001"/>
-                            <field name="box_type_code" required="1"/>
-                            <field name="box_type_display" readonly="1"/>
+                        <group string="📦 Container Information">
+                            <field name="name" placeholder="e.g., CONT-2024-001"/>
+                            <field name="container_type_code" required="1"/>
+                            <field name="container_type_display" readonly="1"/>
                             <field name="monthly_rate" readonly="1" widget="monetary"/>
                             <field name="customer_id"/>
                             <field name="department_id"/>
@@ -191,7 +191,7 @@
                         </page>
                         <page string="📝 Notes &amp; Details" name="details">
                             <group>
-                                <field name="description" placeholder="Box contents, special instructions, or notes..."/>
+                                <field name="description" placeholder="Container contents, special instructions, or notes..."/>
                                 <field name="retention_policy_id"/>
                                 <field name="size_category"/>
                                 <field name="weight"/>
@@ -208,12 +208,12 @@
         </field>
     </record>
 
-    <!-- 📅 Calendar View for Box Management -->
-    <record id="view_records_box_calendar" model="ir.ui.view">
-        <field name="name">records.box.calendar</field>
-        <field name="model">records.box</field>
+    <!-- 📅 Calendar View for Container Management -->
+    <record id="view_records_container_calendar" model="ir.ui.view">
+        <field name="name">records.container.calendar</field>
+        <field name="model">records.container</field>
         <field name="arch" type="xml">
-            <calendar string="📅 Box Storage Calendar" date_start="stored_date" date_stop="destruction_date" color="customer_id">
+            <calendar string="📅 Container Storage Calendar" date_start="stored_date" date_stop="destruction_date" color="customer_id">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="state"/>
@@ -222,11 +222,11 @@
     </record>
 
     <!-- 📈 Graph View for Analytics -->
-    <record id="view_records_box_graph" model="ir.ui.view">
-        <field name="name">records.box.graph</field>
-        <field name="model">records.box</field>
+    <record id="view_records_container_graph" model="ir.ui.view">
+        <field name="name">records.container.graph</field>
+        <field name="model">records.container</field>
         <field name="arch" type="xml">
-            <graph string="📊 Box Analytics">
+            <graph string="📊 Container Analytics">
                 <field name="customer_id" type="row"/>
                 <field name="state" type="col"/>
             </graph>
@@ -234,12 +234,12 @@
     </record>
 
     <!-- 🔍 Enhanced Search with Smart Filters -->
-    <record id="view_records_box_search" model="ir.ui.view">
-        <field name="name">records.box.search</field>
-        <field name="model">records.box</field>
+    <record id="view_records_container_search" model="ir.ui.view">
+        <field name="name">records.container.search</field>
+        <field name="model">records.container</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" string="Box" filter_domain="['|', ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
+                <field name="name" string="Container" filter_domain="['|', ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
                 <field name="customer_id"/>
                 <field name="department_id"/>
                 <field name="location_id"/>
@@ -266,24 +266,24 @@
         </field>
     </record>
 
-    <!-- 🚀 ENTERPRISE ACTION - Complete Box Management -->
-    <record id="action_records_box" model="ir.actions.act_window">
-        <field name="name">📦 Storage Boxes</field>
-        <field name="res_model">records.box</field>
+    <!-- 🚀 ENTERPRISE ACTION - Complete Container Management -->
+    <record id="action_records_container" model="ir.actions.act_window">
+        <field name="name">📦 Storage Containers</field>
+        <field name="res_model">records.container</field>
         <field name="view_mode">kanban,list,form,calendar,graph</field>
-        <field name="search_view_id" ref="view_records_box_search"/>
+        <field name="search_view_id" ref="view_records_container_search"/>
         <field name="context">{
             'search_default_stored': 1,
             'search_default_this_year': 1
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                📦 Create your first storage box!
+                📦 Create your first storage container!
             </p>
             <p>
-                <b>Enterprise Box Management:</b>
+                <b>Enterprise Container Management:</b>
                 <br/>
-                • 📦 Visual kanban boards for box tracking<br/>
+                • 📦 Visual kanban boards for container tracking<br/>
                 • 🏷️ Automated barcode generation and printing<br/>
                 • 📍 Real-time location tracking with movement history<br/>
                 • 📄 Document association and content management<br/>

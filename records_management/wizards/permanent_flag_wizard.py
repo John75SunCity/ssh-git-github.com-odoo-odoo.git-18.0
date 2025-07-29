@@ -29,7 +29,7 @@ class PermanentFlagWizard(models.TransientModel):
     )
     
     # Additional fields for enhanced functionality
-    box_id = fields.Many2one('records.box', string='Box')
+    box_id = fields.Many2one('records.container', string='Container')
     customer_id = fields.Many2one('res.partner', string='Customer')
     permanent_flag = fields.Boolean(string='Permanent Flag', default=True)
     permanent_flag_set_by = fields.Many2one('res.users', string='Set By', default=lambda self: self.env.user)

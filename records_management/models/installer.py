@@ -180,7 +180,7 @@ class RecordsManagementInstaller(models.TransientModel):
     def _setup_sequences(self):
         """Setup number sequences for various records"""
         sequences = [
-            ('records.box', 'Box Number', 'BOX'),
+            ('records.container', 'Container Number', 'CONT'),
             ('records.billing', 'Billing Reference', 'BILL'),
             ('pickup.request', 'Pickup Request', 'PICK'),
             ('shredding.service', 'Shredding Service', 'SHRED'),

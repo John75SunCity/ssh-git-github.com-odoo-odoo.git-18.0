@@ -5,7 +5,7 @@ Records Management Models Import Order
 Import order follows Odoo 18.0 best practices:
 1. Base models with Many2one fields first (comodels for inverse relationships)
 2. Core business models
-3. Compliance and audit models  
+3. Compliance and audit models
 4. Extensions and integrations
 5. Wizards and utilities last
 
@@ -31,8 +31,7 @@ from . import records_approval_workflow
 from . import records_approval_step
 
 # Container and storage models
-# Customer portal inventory additions
-from . import container
+from . import records_container
 from . import box_contents
 
 # =============================================================================
@@ -44,14 +43,16 @@ from . import records_document
 from . import records_digital_scan
 
 # Records storage management
-# Main records storage containers/boxes
-from . import records_box
-# Movement tracking for records boxes
-from . import records_box_movement
+# Main records storage containers
+from . import records_container
+
+# Movement tracking for records containers
+from . import records_container_movement
 
 # Container operations
 # Movement tracking for containers
 from . import records_container_movement
+
 # Transfer operations
 from . import records_container_transfer
 

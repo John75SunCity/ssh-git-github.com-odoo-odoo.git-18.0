@@ -111,7 +111,7 @@ class PickupRoute(models.Model):
                                   compute='_compute_actual_duration', store=True)
     
     # Load tracking
-    total_boxes = fields.Integer(string='Total Boxes', 
+    total_containers = fields.Integer(string='Total Containers', 
                                 compute='_compute_load_metrics', store=True)
     total_weight = fields.Float(string='Total Weight (lbs)',
                                compute='_compute_load_metrics', store=True)
@@ -172,12 +172,12 @@ class PickupRoute(models.Model):
             else:
                 route.actual_duration = 0.0
     
-    @api.depends('route_stop_ids', 'route_stop_ids.box_count', 
+    @api.depends('route_stop_ids', 'route_stop_ids.container_count', 
                  'route_stop_ids.estimated_weight', 'route_stop_ids.estimated_volume')
     def _compute_load_metrics(self):
         """Compute total load metrics"""
         for route in self:
-            route.total_boxes = sum(route.route_stop_ids.mapped('box_count'))
+            route.total_containers = sum(route.route_stop_ids.mapped('container_count'))
             route.total_weight = sum(route.route_stop_ids.mapped('estimated_weight'))
             route.total_volume = sum(route.route_stop_ids.mapped('estimated_volume'))
     
@@ -443,7 +443,7 @@ class PickupRouteStop(models.Model):
     # ==========================================
     # LOAD INFORMATION
     # ==========================================
-    box_count = fields.Integer(string='Box Count', default=0)
+    container_count = fields.Integer(string='Container Count', default=0)
     estimated_weight = fields.Float(string='Estimated Weight (lbs)', default=0.0)
     estimated_volume = fields.Float(string='Estimated Volume (ft³)', default=0.0)
     

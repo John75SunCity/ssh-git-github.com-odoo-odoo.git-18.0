@@ -1,42 +1,42 @@
 # -*- coding: utf-8 -*-
 """
-Records Box Type Converter Wizard
+Records Container Type Converter Wizard
 """
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
 
-class RecordsBoxTypeConverter(models.TransientModel):
+class RecordsContainerTypeConverter(models.TransientModel):
     """
-    Records Box Type Converter Wizard
+    Records Container Type Converter Wizard
     """
 
-    _name = "records.box.type.converter"
-    _description = "Records Box Type Converter Wizard"
+    _name = "records.container.type.converter"
+    _description = "Records Container Type Converter Wizard"
 
     # Core fields
     name = fields.Char(string="Converter Name", default="Container Type Converter")
     container_ids = fields.Many2many('records.container', string='Containers to Convert')
     from_type = fields.Selection([
-        ('01', 'Type 01 - Standard Box'),
-        ('03', 'Type 03 - Map Box'),
-        ('04', 'Type 04 - Pallet/Wide Boxes'),
+        ('01', 'Type 01 - Standard Container'),
+        ('03', 'Type 03 - Map Container'),
+        ('04', 'Type 04 - Pallet/Wide Containers'),
         ('05', 'Type 05 - Pathology'),
-        ('06', 'Type 06 - Specialty Box')
-    ], string='From Box Type', required=True)
+        ('06', 'Type 06 - Specialty Container')
+    ], string='From Container Type', required=True)
     to_type = fields.Selection([
-        ('01', 'Type 01 - Standard Box'),
-        ('03', 'Type 03 - Map Box'),
-        ('04', 'Type 04 - Pallet/Wide Boxes'),
+        ('01', 'Type 01 - Standard Container'),
+        ('03', 'Type 03 - Map Container'),
+        ('04', 'Type 04 - Pallet/Wide Containers'),
         ('05', 'Type 05 - Pathology'),
-        ('06', 'Type 06 - Specialty Box')
-    ], string='To Box Type', required=True)
+        ('06', 'Type 06 - Specialty Container')
+    ], string='To Container Type', required=True)
     reason = fields.Text(string='Reason for Conversion', required=True)
     update_billing = fields.Boolean(string='Update Billing Rates', default=True, 
-                                   help='Update billing rates based on new box type')
+                                   help='Update billing rates based on new container type')
 
-    def action_convert_boxes(self):
+    def action_convert_containers(self):
         """Convert the selected containers to new type with rate adjustments"""
         self.ensure_one()
         
