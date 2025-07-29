@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Records Container Management
+Records Box Management - Shredding Line Items
 """
 
 from odoo import models, fields, api, _
@@ -10,14 +10,15 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class RecordsContainer(models.Model):
+class RecordsBox(models.Model):
     """
-    Records Container Management
-    Core model for tracking physical records storage containers
+    Records Box/Container Management
+    Core model for tracking physical records storage containers and boxes
+    Used for both individual boxes and containers in the records management system
     """
     
-    _name = 'records.container'
-    _description = 'Records Container'
+    _name = 'records.box'
+    _description = 'Records Box/Container Storage'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name desc'
     _rec_name = "name"
