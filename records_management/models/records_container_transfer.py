@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-Records Box Transfer Log
+Records Container Transfer Log
 """
 
 from odoo import models, fields, api, _
 
 
-class RecordsBoxTransfer(models.Model):
+class RecordsContainerTransfer(models.Model):
     """
-    Records Box Transfer Log
+    Records Container Transfer Log
     """
 
-    _name = "rec.box.xfer.temp"
-    _description = "Records Box Transfer Log"
+    _name = "records.container.transfer"
+    _description = "Records Container Transfer Log"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"
 

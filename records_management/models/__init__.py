@@ -35,11 +35,14 @@ from . import bin_unlock_service
 from . import customer_billing_profile
 
 # Rate Management System (NEW UNIFIED SYSTEM)
-from . import shredding_rates  # Contains comprehensive rate management system
+# Contains comprehensive rate management system
+from . import shredding_rates
 
 # Legacy Rate Models (compatibility layers - redirect to new unified system)
-from . import customer_retrieval_rates  # Legacy: redirects to customer.rate.profile
-from . import global_rates  # Legacy: redirects to base.rates
+# Legacy: redirects to customer.rate.profile
+from . import customer_retrieval_rates
+# Legacy: redirects to base.rates
+from . import global_rates
 
 # Legacy bale models (for compatibility)
 from . import bale
@@ -48,7 +51,7 @@ from . import load
 
 # Box Related Models (must be before custody for Many2one references)
 from . import records_container_movement
-from . import records_box_transfer
+from . import records_container_transfer
 
 # Vehicle Management (must be before pickup routes)
 from . import records_vehicle
