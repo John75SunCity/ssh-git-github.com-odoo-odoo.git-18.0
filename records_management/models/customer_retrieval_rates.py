@@ -61,6 +61,10 @@ class CustomerRetrievalRates(models.Model):
         string="Per Container Rate", help="Charge for accessing a container"
     )
     partner_id = fields.Many2one("res.partner", string="Customer", required=True)
+    profile_type = fields.Selection(
+        related="profile_type",
+        store=True,
+    )
 
     @api.depends("partner_id", "rate_type", "profile_type")
     def _compute_name(self):
