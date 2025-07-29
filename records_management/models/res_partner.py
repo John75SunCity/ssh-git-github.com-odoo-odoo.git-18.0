@@ -83,13 +83,6 @@ class ResPartner(models.Model):
         help='Reason why key issuance is restricted for this customer'
     )
     
-    key_restriction_status = fields.Selection([
-        ('allowed', 'Allowed'),
-        ('restricted', 'Restricted'),
-        ('suspended', 'Suspended'),
-        ('banned', 'Banned')
-    ], string='Key Restriction Status', default='allowed')
-    
     # Container count (referenced by shredding_rates.py)
     container_count = fields.Integer(
         string='Container Count',
