@@ -68,6 +68,10 @@ class CustomerRetrievalRates(models.Model):
                 name_parts = [record.partner_id.name]
                 if record.rate_type:
                     name_parts.append(record.rate_type.title())
+                if record.profile_type:
+                    name_parts.append(
+                        f"({record.profile_type.replace('_', ' ').title()})"
+                    )
                 record.name = " - ".join(name_parts)
             else:
                 record.name = "New Rate"

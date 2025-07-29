@@ -230,3 +230,4 @@ from . import res_config_settings
 from . import installer
 from . import ir_actions_report
 from . import ir_module
+from . import customer_rate_profile
