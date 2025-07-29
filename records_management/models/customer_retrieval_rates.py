@@ -19,7 +19,7 @@ class CustomerRetrievalRates(models.Model):
 
     _name = "customer.retrieval.rates"
     _description = "Customer Retrieval Rates (Legacy - Use customer.rate.profile)"
-    _inherit = "customer.rate.profile"
+    _inherit = ["customer.rate.profile", "mail.thread", "mail.activity.mixin"]
 
     def create(self, vals):
         """Override to set service category to retrieval"""
@@ -33,7 +33,9 @@ class CustomerRetrievalRates(models.Model):
         return super().create(vals)
 
     # Legacy field mappings for backward compatibility
-    customer_id = fields.Many2one("res.partner", related="partner_id", readonly=False)
+    customer_id = fields.Many2one(
+        "res.partner", related="partner_id", readonly=False, string="Legacy Customer"
+    )
     rate_type = fields.Selection(
         [
             ("standard", "Standard Rate"),

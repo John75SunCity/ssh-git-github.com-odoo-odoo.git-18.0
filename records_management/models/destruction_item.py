@@ -23,7 +23,9 @@ class DestructionItem(models.Model):
     active = fields.Boolean(default=True)
 
     # Relationships
-    shredding_service_id = fields.Many2one("shred.svc", string="Shredding Service")
+    shredding_service_id = fields.Many2one(
+        "shredding.service", string="Shredding Service", ondelete="cascade"
+    )
     destruction_record_id = fields.Many2one(
         "naid.destruction.record", string="Destruction Record"
     )
