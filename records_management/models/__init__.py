@@ -35,7 +35,6 @@ from . import records_approval_workflow
 from . import records_approval_step
 
 # Container and storage models (in dependency order)
-from . import container
 from . import records_container
 from . import container_contents
 
@@ -77,13 +76,10 @@ from . import destruction_item
 from . import work_order_shredding
 from . import document_retrieval_work_order
 from . import file_retrieval_work_order
-from . import doc_ret_work_order
 
 # Service rates and billing
 from . import shredding_rates
 from . import customer_retrieval_rates
-from . import document_retrieval_rates
-from . import global_rates
 
 # Key management services
 from . import bin_key_management
@@ -97,7 +93,6 @@ from . import bin_unlock_service
 
 # Modern paper recycling system
 from . import paper_bale_recycling
-from . import paper_bale_recycling_new
 from . import paper_load_shipment
 
 # Legacy bale models (for data migration compatibility)
