@@ -142,7 +142,7 @@
                     
                     <group>
                         <group string="🔧 Task Information">
-                            <field name="name" placeholder="e.g., Box Retrieval - Building A"/>
+                            <field name="name" placeholder="e.g., Container Retrieval - Building A"/>
                             <field name="task_type"/>
                             <field name="description"/>
                             <field name="priority"/>
@@ -180,7 +180,7 @@
                                     <field name="safety_requirements"/>
                                 </group>
                                 <group string="📦 Records Information">
-                                    <field name="boxes_to_retrieve"/>
+                                    <field name="containers_to_retrieve"/>
                                     <field name="documents_to_deliver"/>
                                     <field name="confidentiality_level"/>
                                     <field name="chain_of_custody_required"/>

@@ -12,7 +12,7 @@ class TransitoryItems(models.Model):
     """
     Transitory Items - Customer-declared inventory awaiting pickup
 
-    Tracks managed records boxes, files, and items that customers add to their account
+    Tracks managed records containers, files, and items that customers add to their account
     before we physically pick them up and assign barcodes. These items should be
     charged the same as regular inventory and count toward storage capacity planning.
     """
@@ -30,7 +30,7 @@ class TransitoryItems(models.Model):
         string="Item Description",
         required=True,
         tracking=True,
-        help="Customer description of the item/box/file",
+        help="Customer description of the item/container/file",
     )
     reference = fields.Char(
         string="Customer Reference",
@@ -38,22 +38,22 @@ class TransitoryItems(models.Model):
         help="Customer's internal reference number",
     )
 
-    # Customer box numbering system
-    box_number = fields.Char(
-        string="Box Number",
+    # Customer container numbering system
+    container_number = fields.Char(
+        string="Container Number",
         tracking=True,
-        help="Customer's internal box reference (e.g., 0010, HR0010)",
+        help="Customer's internal container reference (e.g., 0010, HR0010)",
     )
-    box_set_suffix = fields.Char(
+    container_set_suffix = fields.Char(
         string="Set Suffix",
         tracking=True,
-        help="Auto-generated suffix for duplicate box numbers (A, B, C)",
+        help="Auto-generated suffix for duplicate container numbers (A, B, C)",
     )
-    full_box_reference = fields.Char(
-        string="Full Box Reference",
-        compute="_compute_full_box_reference",
+    full_container_reference = fields.Char(
+        string="Full Container Reference",
+        compute="_compute_full_container_reference",
         store=True,
-        help="Complete box reference including suffix",
+        help="Complete container reference including suffix",
     )
 
     # Barcode for transitory tracking
@@ -95,7 +95,7 @@ class TransitoryItems(models.Model):
     # ==========================================
     item_type = fields.Selection(
         [
-            ("records_box", "Records Box"),
+            ("records_container", "Records Container"),
             ("file_folder", "File/Folder"),
             ("document_set", "Document Set"),
             ("media", "Media (Tapes/Disks)"),
@@ -105,14 +105,14 @@ class TransitoryItems(models.Model):
         string="Item Type",
         required=True,
         tracking=True,
-        default="records_box",
+        default="records_container",
     )
 
     # Hierarchical structure for file folders
     parent_container_id = fields.Many2one(
         "transitory.items",
         string="Parent Container",
-        domain="[('item_type', '=', 'records_box'), ('customer_id', '=', customer_id)]",
+        domain="[('item_type', '=', 'records_container'), ('customer_id', '=', customer_id)]",
         tracking=True,
         help="Which container this file/folder belongs to",
     )
@@ -120,13 +120,13 @@ class TransitoryItems(models.Model):
         "transitory.items",
         "parent_container_id",
         string="Files/Folders in this Container",
-        domain="[('item_type', '!=', 'records_box')]",
+        domain="[('item_type', '!=', 'records_container')]",
     )
     folder_level = fields.Integer(
         string="Folder Level",
         compute="_compute_folder_level",
         store=True,
-        help="Depth level: 0=Box, 1=Folder in Box, 2=Subfolder, etc.",
+        help="Depth level: 0=Container, 1=Folder in Container, 2=Subfolder, etc.",
     )
 
     # Display helpers for hierarchy
@@ -136,7 +136,7 @@ class TransitoryItems(models.Model):
     hierarchy_display = fields.Char(
         string="Hierarchy Path",
         compute="_compute_hierarchy_display",
-        help="Full path: Box > Folder > Subfolder",
+        help="Full path: Container > Folder > Subfolder",
     )
 
     quantity = fields.Integer(
@@ -144,7 +144,7 @@ class TransitoryItems(models.Model):
         default=1,
         required=True,
         tracking=True,
-        help="Number of items (boxes, files, etc.)",
+        help="Number of items (containers, files, etc.)",
     )
     estimated_weight = fields.Float(
         string="Estimated Weight (lbs)",
@@ -422,25 +422,25 @@ class TransitoryItems(models.Model):
         help="Storage space impact for capacity planning",
     )
 
-    @api.depends("box_number", "box_set_suffix")
-    def _compute_full_box_reference(self):
-        """Compute full box reference including set suffix"""
+    @api.depends("container_number", "container_set_suffix")
+    def _compute_full_container_reference(self):
+        """Compute full container reference including set suffix"""
         for record in self:
-            if record.box_number:
-                if record.box_set_suffix:
-                    record.full_box_reference = (
-                        f"{record.box_number}-{record.box_set_suffix}"
+            if record.container_number:
+                if record.container_set_suffix:
+                    record.full_container_reference = (
+                        f"{record.container_number}-{record.container_set_suffix}"
                     )
                 else:
-                    record.full_box_reference = record.box_number
+                    record.full_container_reference = record.container_number
             else:
-                record.full_box_reference = False
+                record.full_container_reference = False
 
     @api.depends("parent_container_id")
     def _compute_folder_level(self):
-        """Compute hierarchy level (0=Box, 1=Folder, 2=Subfolder, etc.)"""
+        """Compute hierarchy level (0=Container, 1=Folder, 2=Subfolder, etc.)"""
         for record in self:
-            if record.item_type == "records_box":
+            if record.item_type == "records_container":
                 record.folder_level = 0
             elif record.parent_container_id:
                 record.folder_level = record.parent_container_id.folder_level + 1
@@ -451,8 +451,8 @@ class TransitoryItems(models.Model):
     def _compute_hierarchy_display(self):
         """Compute full hierarchy path for display"""
         for record in self:
-            if record.item_type == "records_box":
-                record.hierarchy_display = record.full_box_reference or record.name
+            if record.item_type == "records_container":
+                record.hierarchy_display = record.full_container_reference or record.name
             elif record.parent_container_id:
                 parent_path = (
                     record.parent_container_id.hierarchy_display
@@ -527,16 +527,16 @@ class TransitoryItems(models.Model):
                 "import_source": "admin_created" if created_by_admin else "csv_import",
             }
 
-            # If creating folders in a box, set parent
-            if parent_container_id and item_data.get("item_type") != "records_box":
+            # If creating folders in a container, set parent
+            if parent_container_id and item_data.get("item_type") != "records_container":
                 vals["parent_container_id"] = parent_container_id
-                vals["item_type"] = "file_folder"  # Default for items in boxes
+                vals["item_type"] = "file_folder"  # Default for items in containers
 
             # Map common fields
             field_mapping = {
                 "name": "name",
                 "description": "content_description",
-                "box_number": "box_number",
+                "container_number": "container_number",
                 "item_type": "item_type",
                 "quantity": "quantity",
                 "estimated_weight": "estimated_weight",
@@ -564,7 +564,7 @@ class TransitoryItems(models.Model):
                         "id": new_item.id,
                         "barcode": new_item.transitory_barcode,
                         "name": new_item.name,
-                        "full_reference": new_item.full_box_reference,
+                        "full_reference": new_item.full_container_reference,
                         "hierarchy_display": new_item.hierarchy_display,
                         "success": True,
                     }
@@ -597,7 +597,7 @@ class TransitoryItems(models.Model):
             Created folder records
         """
         container = self.browse(container_id)
-        if not container.exists() or container.item_type != "records_box":
+        if not container.exists() or container.item_type != "records_container":
             raise UserError(_("Invalid container specified"))
 
         folder_data = []
@@ -674,7 +674,7 @@ class TransitoryItems(models.Model):
         """
         domain = [
             ("customer_id", "=", customer_id),
-            ("item_type", "=", "records_box"),
+            ("item_type", "=", "records_container"),
             ("state", "in", ("declared", "scheduled")),
         ]
 
@@ -690,8 +690,8 @@ class TransitoryItems(models.Model):
                 {
                     "id": container.id,
                     "name": container.name,
-                    "box_number": container.box_number,
-                    "full_reference": container.full_box_reference,
+                    "container_number": container.container_number,
+                    "full_reference": container.full_container_reference,
                     "folder_count": folder_count,
                     "barcode": container.transitory_barcode,
                     "description": container.content_description,
@@ -761,29 +761,29 @@ class TransitoryItems(models.Model):
         }
 
     @api.model
-    def get_box_number_suggestions(
+    def get_container_number_suggestions(
         self, customer_id, department_id=None, search_term=""
     ):
-        """Get box number suggestions for autocomplete"""
+        """Get container number suggestions for autocomplete"""
         domain = [("customer_id", "=", customer_id)]
         if department_id:
             domain.append(("department_id", "=", department_id))
 
         # Search both transitory items and actual containers
-        transitory_boxes = self.search(domain)
+        transitory_containers = self.search(domain)
         actual_containers = self.env["records.container"].search(domain)
 
         suggestions = []
 
-        # Get existing box numbers
-        for item in transitory_boxes:
-            if item.box_number and (
-                not search_term or search_term.lower() in item.box_number.lower()
+        # Get existing container numbers
+        for item in transitory_containers:
+            if item.container_number and (
+                not search_term or search_term.lower() in item.container_number.lower()
             ):
                 suggestions.append(
                     {
-                        "box_number": item.box_number,
-                        "full_reference": item.full_box_reference,
+                        "container_number": item.container_number,
+                        "full_reference": item.full_container_reference,
                         "description": item.name,
                         "source": "transitory",
                     }
@@ -791,17 +791,17 @@ class TransitoryItems(models.Model):
 
         for container in actual_containers:
             if (
-                hasattr(container, "customer_box_number")
-                and container.customer_box_number
+                hasattr(container, "customer_container_number")
+                and container.customer_container_number
             ):
                 if (
                     not search_term
-                    or search_term.lower() in container.customer_box_number.lower()
+                    or search_term.lower() in container.customer_container_number.lower()
                 ):
                     suggestions.append(
                         {
-                            "box_number": container.customer_box_number,
-                            "full_reference": container.customer_box_number,
+                            "container_number": container.customer_container_number,
+                            "full_reference": container.customer_container_number,
                             "description": container.description or container.name,
                             "source": "records_container",
                         }
@@ -811,21 +811,24 @@ class TransitoryItems(models.Model):
         unique_suggestions = []
         seen_numbers = set()
         for suggestion in suggestions:
-            if suggestion["box_number"] not in seen_numbers:
+            if suggestion["container_number"] not in seen_numbers:
                 unique_suggestions.append(suggestion)
-                seen_numbers.add(suggestion["box_number"])
+                seen_numbers.add(suggestion["container_number"])
 
-        return sorted(unique_suggestions, key=lambda x: x["box_number"])
+        return sorted(unique_suggestions, key=lambda x: x["container_number"])
 
     @api.model
-    def check_box_number_exists(self, customer_id, box_number, department_id=None):
-        """Check if box number already exists and suggest alternatives"""
-        domain = [("customer_id", "=", customer_id), ("box_number", "=", box_number)]
+    def check_container_number_exists(self, customer_id, container_number, department_id=None):
+        """Check if container number already exists and suggest alternatives"""
+        domain = [("customer_id", "=", customer_id), ("container_number", "=", container_number)]
         if department_id:
             domain.append(("department_id", "=", department_id))
 
         existing_transitory = self.search(domain)
-        existing_containers = self.env["records.container"].search(domain)
+        existing_containers = self.env["records.container"].search([
+            ("customer_id", "=", customer_id),
+            ("customer_container_number", "=", container_number)
+        ])
 
         result = {
             "exists": bool(existing_transitory or existing_containers),
@@ -839,7 +842,7 @@ class TransitoryItems(models.Model):
                     {
                         "type": "transitory",
                         "name": item.name,
-                        "full_reference": item.full_box_reference,
+                        "full_reference": item.full_container_reference,
                         "state": item.state,
                     }
                 )
@@ -851,7 +854,7 @@ class TransitoryItems(models.Model):
                         "type": "records_container",
                         "name": container.name,
                         "full_reference": getattr(
-                            container, "customer_box_number", container.name
+                            container, "customer_container_number", container.name
                         ),
                         "state": getattr(container, "state", "active"),
                     }
@@ -861,8 +864,8 @@ class TransitoryItems(models.Model):
             # Generate suffix suggestions
             existing_suffixes = []
             for item in existing_transitory:
-                if item.box_set_suffix:
-                    existing_suffixes.append(item.box_set_suffix)
+                if item.container_set_suffix:
+                    existing_suffixes.append(item.container_set_suffix)
 
             # Generate next suffix (A, B, C, etc.)
             alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -870,7 +873,7 @@ class TransitoryItems(models.Model):
                 if letter not in existing_suffixes:
                     result["suggested_alternatives"].append(
                         {
-                            "full_reference": f"{box_number}-{letter}",
+                            "full_reference": f"{container_number}-{letter}",
                             "suffix": letter,
                             "type": "set_suffix",
                         }
@@ -879,7 +882,7 @@ class TransitoryItems(models.Model):
 
             # Also suggest next numeric sequence
             numeric_suggestions = self._get_next_numeric_suggestions(
-                customer_id, box_number, department_id
+                customer_id, container_number, department_id
             )
             result["suggested_alternatives"].extend(numeric_suggestions)
 
@@ -904,22 +907,22 @@ class TransitoryItems(models.Model):
         for i in range(1, 6):  # Suggest next 5 numbers
             next_number = number + i
             padded_number = str(next_number).zfill(number_length)
-            next_box_number = f"{prefix}{padded_number}"
+            next_container_number = f"{prefix}{padded_number}"
 
             # Check if this number exists
             domain = [
                 ("customer_id", "=", customer_id),
-                ("box_number", "=", next_box_number),
+                ("container_number", "=", next_container_number),
             ]
             if department_id:
                 domain.append(("department_id", "=", department_id))
 
             if not self.search(domain) and not self.env["records.container"].search(
-                domain
+                [('customer_container_number', '=', next_container_number)]
             ):
                 suggestions.append(
                     {
-                        "full_reference": next_box_number,
+                        "full_reference": next_container_number,
                         "suffix": None,
                         "type": "next_number",
                     }
@@ -932,7 +935,7 @@ class TransitoryItems(models.Model):
         """Generate unique barcode for transitory item
 
         Args:
-            prefix: Barcode prefix (TB=Box, TF=Folder, TI=Item)
+            prefix: Barcode prefix (TC=Container, TF=Folder, TI=Item)
         """
         sequence = self.env["ir.sequence"].next_by_code("transitory.items.barcode")
         if not sequence:
@@ -1093,9 +1096,9 @@ class TransitoryItems(models.Model):
             # Generate transitory barcode
             if not vals.get("transitory_barcode"):
                 # Different barcode prefixes for different types
-                item_type = vals.get("item_type", "records_box")
-                if item_type == "records_box":
-                    prefix = "TB"  # Transitory Box
+                item_type = vals.get("item_type", "records_container")
+                if item_type == "records_container":
+                    prefix = "TC"  # Transitory Container
                 elif item_type == "file_folder":
                     prefix = "TF"  # Transitory Folder
                 else:
@@ -1103,28 +1106,28 @@ class TransitoryItems(models.Model):
 
                 vals["transitory_barcode"] = self._generate_transitory_barcode(prefix)
 
-            # Handle box number and suffix logic (only for boxes)
+            # Handle container number and suffix logic (only for containers)
             if (
-                vals.get("box_number")
+                vals.get("container_number")
                 and vals.get("customer_id")
-                and vals.get("item_type") == "records_box"
+                and vals.get("item_type") == "records_container"
             ):
-                existing_check = self.check_box_number_exists(
-                    vals["customer_id"], vals["box_number"], vals.get("department_id")
+                existing_check = self.check_container_number_exists(
+                    vals["customer_id"], vals["container_number"], vals.get("department_id")
                 )
 
-                # If box number exists and no suffix provided, auto-generate suffix
-                if existing_check["exists"] and not vals.get("box_set_suffix"):
+                # If container number exists and no suffix provided, auto-generate suffix
+                if existing_check["exists"] and not vals.get("container_set_suffix"):
                     if existing_check["suggested_alternatives"]:
                         first_suggestion = existing_check["suggested_alternatives"][0]
                         if first_suggestion["type"] == "set_suffix":
-                            vals["box_set_suffix"] = first_suggestion["suffix"]
+                            vals["container_set_suffix"] = first_suggestion["suffix"]
 
             # Set default storage rate based on item type
             if not vals.get("monthly_storage_rate") and vals.get("item_type"):
                 item_type = vals["item_type"]
-                if item_type == "records_box":
-                    vals["monthly_storage_rate"] = 1.50  # Same as regular box storage
+                if item_type == "records_container":
+                    vals["monthly_storage_rate"] = 1.50  # Same as regular container storage
                 elif item_type in ("file_folder", "document_set"):
                     vals["monthly_storage_rate"] = 0.75
                 elif item_type == "media":
@@ -1136,16 +1139,16 @@ class TransitoryItems(models.Model):
             if vals.get("created_by_admin"):
                 vals["admin_notes"] = f"Created by admin: {self.env.user.name}"
 
-            # Validate parent box relationship
+            # Validate parent container relationship
             if (
                 vals.get("parent_container_id")
-                and vals.get("item_type") == "records_box"
+                and vals.get("item_type") == "records_container"
             ):
                 raise UserError(
                     _("Records containers cannot be inside other containers")
                 )
 
-            # Ensure file folders have a parent box (unless created by admin)
+            # Ensure file folders have a parent container (unless created by admin)
             if (
                 vals.get("item_type") == "file_folder"
                 and not vals.get("parent_container_id")

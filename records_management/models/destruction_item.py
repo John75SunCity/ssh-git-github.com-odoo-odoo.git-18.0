@@ -28,7 +28,7 @@ class DestructionItem(models.Model):
 
     # Item details
     item_type = fields.Selection([
-        ('box', 'Records Box'),
+        ('container', 'Records Container'),
         ('media', 'Digital Media'),
         ('equipment', 'IT Equipment'),
         ('documents', 'Loose Documents')

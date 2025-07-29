@@ -69,14 +69,14 @@ class DocumentRetrievalWorkOrder(models.Model):
     retrieval_type = fields.Selection([
         ('document', 'Document Retrieval'),
         ('file', 'File Retrieval'),
-        ('box', 'Box Retrieval'),
+        ('container', 'Container Retrieval'),
         ('scan', 'Scan on Demand'),
         ('copy', 'Copy Services')
     ], string='Retrieval Type', default='document', required=True, tracking=True)
     
     item_count = fields.Integer(string='Number of Items', default=1, tracking=True)
     estimated_pages = fields.Integer(string='Estimated Pages', tracking=True)
-    box_count = fields.Integer(string='Number of Boxes', default=1, tracking=True)
+    container_count = fields.Integer(string='Number of Containers', default=1, tracking=True)
     
     # ==========================================
     # DELIVERY INFORMATION
@@ -127,11 +127,11 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ==========================================
     # COMPUTED FIELDS
     # ==========================================
-    @api.depends('item_count', 'estimated_pages', 'box_count')
+    @api.depends('item_count', 'estimated_pages', 'container_count')
     def _compute_total_items(self):
         """Compute total items for retrieval"""
         for record in self:
-            record.total_items = record.item_count + record.box_count
+            record.total_items = record.item_count + record.container_count
     
     total_items = fields.Integer(string='Total Items', compute='_compute_total_items', store=True)
     
@@ -228,14 +228,14 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ==========================================
     # VALIDATION
     # ==========================================
-    @api.constrains('item_count', 'box_count')
+    @api.constrains('item_count', 'container_count')
     def _check_counts(self):
         """Validate counts"""
         for record in self:
             if record.item_count < 0:
                 raise ValidationError(_('Item count cannot be negative'))
-            if record.box_count < 0:
-                raise ValidationError(_('Box count cannot be negative'))
+            if record.container_count < 0:
+                raise ValidationError(_('Container count cannot be negative'))
     
     @api.constrains('request_date', 'needed_by_date')
     def _check_dates(self):

@@ -55,7 +55,7 @@ class RecordsVehicle(models.Model):
                                           tracking=True)
     
     # Additional capacity fields
-    max_boxes = fields.Integer(string='Max Boxes', help='Maximum number of boxes')
+    max_containers = fields.Integer(string='Max Containers', help='Maximum number of containers')
     
     # ==========================================
     # PHYSICAL SPECIFICATIONS

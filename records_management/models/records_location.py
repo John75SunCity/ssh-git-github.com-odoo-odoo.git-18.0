@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 class RecordsLocation(models.Model):
     """
     Records Location Management
-    Physical storage locations for records boxes
+    Physical storage locations for records containers
     """
 
     _name = "records.location"
@@ -68,7 +68,7 @@ class RecordsLocation(models.Model):
     # ==========================================
     # PHYSICAL SPECIFICATIONS
     # ==========================================
-    max_capacity = fields.Integer(string="Maximum Capacity (boxes)", tracking=True)
+    max_capacity = fields.Integer(string="Maximum Capacity (containers)", tracking=True)
     current_occupancy = fields.Integer(
         string="Current Occupancy", compute="_compute_current_occupancy", store=True
     )

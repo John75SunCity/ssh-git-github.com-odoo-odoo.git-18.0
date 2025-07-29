@@ -84,7 +84,7 @@ class PortalRequest(models.Model):
     actual_completion_date = fields.Date(string='Actual Completion', tracking=True)
     
     # For destruction requests
-    box_count = fields.Integer(string='Number of Boxes', tracking=True)
+    container_count = fields.Integer(string='Number of Containers', tracking=True)
     witness_required = fields.Boolean(string='Witness Required', tracking=True)
     
     # ==========================================

@@ -140,7 +140,7 @@ var FieldLabelCustomizer = publicWidget.Widget.extend({
      */
     _getDefaultLabel: function (fieldName) {
         var defaultLabels = {
-            'box_number': 'Box Number',
+            'container_number': 'Container Number',
             'item_description': 'Item Description',
             'content_description': 'Content Description',
             'date_from': 'Date From',
@@ -160,7 +160,7 @@ var FieldLabelCustomizer = publicWidget.Widget.extend({
             'compliance_notes': 'Compliance Notes',
             'weight_estimate': 'Estimated Weight',
             'size_estimate': 'Estimated Size',
-            'parent_box': 'Parent Box',
+            'parent_container': 'Parent Container',
             'folder_type': 'Item Type',
             'hierarchy_display': 'Location Path'
         };

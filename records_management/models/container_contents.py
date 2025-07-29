@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-Box Contents - File Folders and Filed Items
+Container Contents - File Folders and Filed Items
 """
 
 from odoo import models, fields, api, _
 
 
-class BoxContents(models.Model):
+class ContainerContents(models.Model):
     """
-    Box Contents - File Folders and Filed Items
+    Container Contents - File Folders and Filed Items
     """
 
-    _name = "box.contents"
-    _description = "Box Contents - File Folders and Filed Items"
+    _name = "container.contents"
+    _description = "Container Contents - File Folders and Filed Items"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"
 

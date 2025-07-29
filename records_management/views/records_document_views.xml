@@ -11,7 +11,7 @@
                 <field name="name"/>
                 <field name="document_type_id"/>
                 <field name="customer_id"/>
-                <field name="box_id"/>
+                <field name="container_id"/>
                 <field name="state"/>
                 <field name="retention_policy_id"/>
                 <field name="destruction_eligible_date"/>
@@ -43,7 +43,7 @@
                                         </div>
                                         <div>
                                             <i class="fa fa-cube"/>
-                                            <field name="box_id"/>
+                                            <field name="container_id"/>
                                         </div>
                                         <div t-if="record.destruction_eligible_date.raw_value">
                                             <i class="fa fa-calendar-times"/>
@@ -91,7 +91,7 @@
                 <field name="name" string="📄 Document"/>
                 <field name="document_type_id" string="📂 Type"/>
                 <field name="customer_id" string="👤 Customer"/>
-                <field name="box_id" string="📦 Box"/>
+                <field name="container_id" string="📦 Container"/>
                 <field name="permanent_flag" string="🛡️ Permanent" widget="boolean"/>
                 <field name="retention_policy_id" string="📅 Retention Policy"/>
                 <field name="destruction_eligible_date" string="💥 Destruction Date"/>
@@ -142,7 +142,7 @@
                             <field name="document_type_id"/>
                             <field name="customer_id"/>
                             <field name="department_id"/>
-                            <field name="box_id"/>
+                            <field name="container_id"/>
                         </group>
                         <group string="🔒 Security &amp; Compliance">
                             <field name="permanent_flag" widget="boolean_toggle"/>
@@ -257,7 +257,7 @@
                 <field name="name" string="Document" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
                 <field name="customer_id"/>
                 <field name="document_type_id"/>
-                <field name="box_id"/>
+                <field name="container_id"/>
 
                 <filter string="📋 Active Documents" name="active" domain="[('state', '=', 'active')]"/>
                 <filter string="💥 Pending Destruction" name="pending_destruction" domain="[('state', '=', 'pending_destruction')]"/>
@@ -275,7 +275,7 @@
                 <group expand="0" string="📊 Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
                     <filter string="Document Type" name="group_by_type" context="{'group_by': 'document_type_id'}"/>
-                    <filter string="Box" name="group_by_box" context="{'group_by': 'box_id'}"/>
+                    <filter string="Container" name="group_by_container" context="{'group_by': 'container_id'}"/>
                     <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                     <filter string="Destruction Date" name="group_by_destruction" context="{'group_by': 'destruction_eligible_date:month'}"/>
                 </group>

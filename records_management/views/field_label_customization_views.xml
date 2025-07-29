@@ -38,12 +38,12 @@
                             <page string="Core Fields" name="core_fields">
                                 <group>
                                     <group string="Identification Fields">
-                                        <field name="label_box_number" placeholder="Box Number"/>
+                                        <field name="label_container_number" placeholder="Container Number"/>
                                         <field name="label_item_description" placeholder="Item Description"/>
                                         <field name="label_content_description" placeholder="Content Description"/>
                                     </group>
                                     <group string="Hierarchy Fields">
-                                        <field name="label_parent_box" placeholder="Parent Box"/>
+                                        <field name="label_parent_container" placeholder="Parent Container"/>
                                         <field name="label_folder_type" placeholder="Item Type"/>
                                         <field name="label_hierarchy_display" placeholder="Location Path"/>
                                     </group>
@@ -205,7 +205,7 @@
                             <page string="Field Visibility" name="visibility">
                                 <group>
                                     <group string="Core Fields">
-                                        <field name="show_box_number"/>
+                                        <field name="show_container_number"/>
                                         <field name="show_description"/>
                                         <field name="show_content_description"/>
                                     </group>
@@ -238,7 +238,7 @@
                             <page string="Required Fields" name="requirements">
                                 <group>
                                     <group string="Core Requirements">
-                                        <field name="require_box_number"/>
+                                        <field name="require_container_number"/>
                                         <field name="require_description"/>
                                         <field name="require_content_description"/>
                                     </group>
@@ -291,7 +291,7 @@
                             <group string="Statistics">
                                 <field name="total_transitory_items"/>
                                 <field name="active_transitory_items"/>
-                                <field name="total_records_boxes"/>
+                                <field name="total_records_containers"/>
                             </group>
                         </group>
                     </page>

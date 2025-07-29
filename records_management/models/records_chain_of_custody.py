@@ -14,7 +14,7 @@ _logger = logging.getLogger(__name__)
 class RecordsChainOfCustody(models.Model):
     """
     Comprehensive Chain of Custody Management with NAID AAA Compliance
-    Tracks complete custody history for documents, boxes, and destruction processes
+    Tracks complete custody history for documents, containers, and destruction processes
     """
 
     _name = "records.chain.of.custody.log"
@@ -439,7 +439,7 @@ class RecordsChainOfCustody(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "At least one item (box, container, document, or work order) must be specified for custody"
+                        "At least one item (container, document, or work order) must be specified for custody"
                     )
                 )
 

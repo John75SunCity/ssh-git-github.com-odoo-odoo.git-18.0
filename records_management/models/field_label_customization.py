@@ -42,8 +42,8 @@ class FieldLabelCustomization(models.Model):
     # ==========================================
     
     # Core identification fields
-    label_box_number = fields.Char(string='Box Number Label', default='Box Number',
-                                  help="Custom label for box number field")
+    label_container_number = fields.Char(string='Container Number Label', default='Container Number',
+                                  help="Custom label for container number field")
     label_item_description = fields.Char(string='Item Description Label', default='Item Description',
                                         help="Custom label for item description")
     label_content_description = fields.Char(string='Content Description Label', default='Content Description',
@@ -88,8 +88,8 @@ class FieldLabelCustomization(models.Model):
                                      help="Custom label for size estimate")
     
     # Hierarchical folder fields
-    label_parent_box = fields.Char(string='Parent Box Label', default='Parent Box',
-                                  help="Custom label for parent box reference")
+    label_parent_container = fields.Char(string='Parent Container Label', default='Parent Container',
+                                  help="Custom label for parent container reference")
     label_folder_type = fields.Char(string='Folder Type Label', default='Item Type',
                                    help="Custom label for folder/item type")
     label_hierarchy_display = fields.Char(string='Hierarchy Display Label', default='Location Path',
@@ -105,14 +105,14 @@ class FieldLabelCustomization(models.Model):
     scope_display = fields.Char(string='Scope', compute='_compute_scope_display',
                                help="Display scope: Global, Customer, or Department")
 
-    @api.depends('label_box_number', 'label_item_description', 'label_content_description',
+    @api.depends('label_container_number', 'label_item_description', 'label_content_description',
                  'label_date_from', 'label_date_to', 'label_sequence_from', 'label_sequence_to',
                  'label_destruction_date', 'label_record_type', 'label_confidentiality',
                  'label_project_code', 'label_client_reference', 'label_file_count')
     def _compute_customized_count(self):
         """Count how many labels have been customized from defaults"""
         default_labels = {
-            'label_box_number': 'Box Number',
+            'label_container_number': 'Container Number',
             'label_item_description': 'Item Description',
             'label_content_description': 'Content Description',
             'label_date_from': 'Date From',
@@ -132,7 +132,7 @@ class FieldLabelCustomization(models.Model):
             'label_compliance_notes': 'Compliance Notes',
             'label_weight_estimate': 'Estimated Weight',
             'label_size_estimate': 'Estimated Size',
-            'label_parent_box': 'Parent Box',
+            'label_parent_container': 'Parent Container',
             'label_folder_type': 'Item Type',
             'label_hierarchy_display': 'Location Path',
         }
@@ -195,7 +195,7 @@ class FieldLabelCustomization(models.Model):
         
         # Start with default labels
         labels = {
-            'box_number': 'Box Number',
+            'container_number': 'Container Number',
             'item_description': 'Item Description',
             'content_description': 'Content Description',
             'date_from': 'Date From',
@@ -215,7 +215,7 @@ class FieldLabelCustomization(models.Model):
             'compliance_notes': 'Compliance Notes',
             'weight_estimate': 'Estimated Weight',
             'size_estimate': 'Estimated Size',
-            'parent_box': 'Parent Box',
+            'parent_container': 'Parent Container',
             'folder_type': 'Item Type',
             'hierarchy_display': 'Location Path',
         }
@@ -244,7 +244,7 @@ class FieldLabelCustomization(models.Model):
         """Apply corporate terminology preset"""
         self.ensure_one()
         self.write({
-            'label_box_number': 'File Box ID',
+            'label_container_number': 'File Container ID',
             'label_item_description': 'Document Category',
             'label_content_description': 'Document Contents',
             'label_date_from': 'Period Start',
@@ -261,7 +261,7 @@ class FieldLabelCustomization(models.Model):
         """Apply legal terminology preset"""
         self.ensure_one()
         self.write({
-            'label_box_number': 'Matter Box',
+            'label_container_number': 'Matter Container',
             'label_item_description': 'Case Documents',
             'label_content_description': 'File Contents',
             'label_date_from': 'Case Start Date',
@@ -278,7 +278,7 @@ class FieldLabelCustomization(models.Model):
         """Apply healthcare terminology preset"""
         self.ensure_one()
         self.write({
-            'label_box_number': 'Medical Records Box',
+            'label_container_number': 'Medical Records Container',
             'label_item_description': 'Patient Records',
             'label_content_description': 'Medical File Contents',
             'label_date_from': 'Treatment Start',
@@ -295,7 +295,7 @@ class FieldLabelCustomization(models.Model):
         """Apply financial services terminology preset"""
         self.ensure_one()
         self.write({
-            'label_box_number': 'Account File Box',
+            'label_container_number': 'Account File Container',
             'label_item_description': 'Financial Records',
             'label_content_description': 'Account Documentation',
             'label_date_from': 'Account Period Start',
@@ -315,7 +315,7 @@ class FieldLabelCustomization(models.Model):
         """Reset all labels to default values"""
         self.ensure_one()
         default_values = {
-            'label_box_number': 'Box Number',
+            'label_container_number': 'Container Number',
             'label_item_description': 'Item Description',
             'label_content_description': 'Content Description',
             'label_date_from': 'Date From',
@@ -335,7 +335,7 @@ class FieldLabelCustomization(models.Model):
             'label_compliance_notes': 'Compliance Notes',
             'label_weight_estimate': 'Estimated Weight',
             'label_size_estimate': 'Estimated Size',
-            'label_parent_box': 'Parent Box',
+            'label_parent_container': 'Parent Container',
             'label_folder_type': 'Item Type',
             'label_hierarchy_display': 'Location Path',
         }

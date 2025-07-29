@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Records Box Management - Shredding Line Items
+Records Container Management - Shredding Line Items
 """
 
 from odoo import models, fields, api, _
@@ -205,9 +205,9 @@ class RecordsContainer(models.Model):
     # ==========================================
     notes = fields.Text(string="Notes", tracking=True)
     special_instructions = fields.Text(string="Special Instructions", tracking=True)
-    customer_box_number = fields.Char(
-        string="Customer Box Number",
-        help="Customer-facing identification number for their box.",
+    customer_container_number = fields.Char(
+        string="Customer Container Number",
+        help="Customer-facing identification number for their container.",
     )
     destruction_eligible_date = fields.Char(
         string="Destruction Eligible Date", help="Date when eligible for destruction"
@@ -218,9 +218,9 @@ class RecordsContainer(models.Model):
     storage_cost = fields.Float(
         string="Storage Cost", default=0.0, help="Monthly storage cost"
     )
-    customer_box_type = fields.Char(
-        string="Customer Box Type",
-        help="Type of storage box as defined by the customer.",
+    customer_container_type = fields.Char(
+        string="Customer Container Type",
+        help="Type of storage container as defined by the customer.",
     )
     current_location_barcode = fields.Char(
         string="Current Location Barcode", help="Current location barcode"

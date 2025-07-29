@@ -111,7 +111,7 @@ class NAIDDestructionRecord(models.Model):
     
     total_weight = fields.Float(string='Total Weight (lbs)', 
                                compute='_compute_total_weight', store=True)
-    total_boxes = fields.Integer(string='Total Boxes', 
+    total_containers = fields.Integer(string='Total Containers', 
                                 compute='_compute_totals', store=True)
     
     # ==========================================
@@ -137,7 +137,7 @@ class NAIDDestructionRecord(models.Model):
     @api.depends('destruction_item_ids')
     def _compute_totals(self):
         for record in self:
-            record.total_boxes = len(record.destruction_item_ids)
+            record.total_containers = len(record.destruction_item_ids)
     
     # ==========================================
     # WORKFLOW METHODS

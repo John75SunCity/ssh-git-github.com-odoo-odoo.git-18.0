@@ -32,7 +32,7 @@ from . import records_approval_step
 
 # Container and storage models
 from . import records_container
-from . import box_contents
+from . import container_contents
 
 # =============================================================================
 # CORE BUSINESS MODELS

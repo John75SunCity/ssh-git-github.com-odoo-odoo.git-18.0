@@ -25,7 +25,7 @@
             <field name="name">Legal Industry Standard (Global)</field>
             <field name="description">Legal industry terminology</field>
             <field name="priority">5</field>
-            <field name="label_box_number">Matter Box</field>
+            <field name="label_container_number">Matter Container</field>
             <field name="label_item_description">Case Documents</field>
             <field name="label_content_description">File Contents</field>
             <field name="label_date_from">Case Start Date</field>
@@ -43,7 +43,7 @@
             <field name="name">Healthcare Industry Standard (Global)</field>
             <field name="description">Healthcare industry terminology</field>
             <field name="priority">5</field>
-            <field name="label_box_number">Medical Records Box</field>
+            <field name="label_container_number">Medical Records Container</field>
             <field name="label_item_description">Patient Records</field>
             <field name="label_content_description">Medical File Contents</field>
             <field name="label_date_from">Treatment Start</field>
@@ -61,7 +61,7 @@
             <field name="name">Financial Services Standard (Global)</field>
             <field name="description">Financial services industry terminology</field>
             <field name="priority">5</field>
-            <field name="label_box_number">Account File Box</field>
+            <field name="label_container_number">Account File Container</field>
             <field name="label_item_description">Financial Records</field>
             <field name="label_content_description">Account Documentation</field>
             <field name="label_date_from">Account Period Start</field>

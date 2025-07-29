@@ -173,7 +173,7 @@ class ShreddingService(models.Model):
     total_weight = fields.Float(
         string="Total Weight", compute="_compute_total_weight", store=True
     )
-    box_count = fields.Integer(string="Number of Boxes", tracking=True)
+    container_count = fields.Integer(string="Number of Containers", tracking=True)
     bag_count = fields.Integer(string="Number of Bags", tracking=True)
 
     # ==========================================

@@ -3,7 +3,7 @@
     <data noupdate="1">
         <!-- Essential Records Management Products -->
         
-        <!-- Document Storage Box - Basic -->
+        <!-- Document Storage Container - Basic -->
                 <!-- Document Storage Container - Basic -->
         <record id="product_storage_container" model="product.product">
             <field name="name">Document Storage Container</field>

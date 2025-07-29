@@ -4,10 +4,10 @@
         <!-- Menu Items with Actions - Load after base menus and actions are defined -->
         
         <!-- Records and Documents -->
-        <menuitem id="menu_records_boxes"
-                  name="Storage Boxes"
+        <menuitem id="menu_records_containers"
+                  name="Storage Containers"
                   parent="menu_records_operations"
-                  action="action_records_box"
+                  action="action_records_container"
                   sequence="10"
                   groups="records_management.group_records_user"/>
 
@@ -65,7 +65,7 @@
         <menuitem id="menu_records_reports"
                   name="Storage Reports"
                   parent="menu_records_reporting"
-                  action="report_box_contents"
+                  action="report_container_contents"
                   sequence="10"
                   groups="records_management.group_records_user"/>
 
