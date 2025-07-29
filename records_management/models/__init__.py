@@ -103,7 +103,6 @@ from . import paper_load_shipment
 # Legacy bale models (for data migration compatibility)
 from . import bale
 from . import paper_bale
-from . import records_management_bale
 from . import load
 
 # =============================================================================
