@@ -89,29 +89,40 @@ class ResConfigSettings(models.TransientModel):
         help='Enable POS restaurant module integration'
     )
     
+    # Related fields for POS module integration (with explicit config parameters as backup)
     pos_module_pos_discount = fields.Boolean(
+        string='POS Module Discount',
         related='module_pos_discount',
-        readonly=False
+        readonly=False,
+        help='Related field for POS discount module integration'
     )
     
     pos_module_pos_loyalty = fields.Boolean(
+        string='POS Module Loyalty', 
         related='module_pos_loyalty',
-        readonly=False
+        readonly=False,
+        help='Related field for POS loyalty module integration'
     )
     
     pos_module_pos_mercury = fields.Boolean(
-        related='module_pos_mercury',
-        readonly=False
+        string='POS Module Mercury',
+        related='module_pos_mercury', 
+        readonly=False,
+        help='Related field for POS mercury module integration'
     )
     
     pos_module_pos_reprint = fields.Boolean(
+        string='POS Module Reprint',
         related='module_pos_reprint',
-        readonly=False
+        readonly=False,
+        help='Related field for POS reprint module integration'
     )
     
     pos_module_pos_restaurant = fields.Boolean(
+        string='POS Module Restaurant',
         related='module_pos_restaurant',
-        readonly=False
+        readonly=False, 
+        help='Related field for POS restaurant module integration'
     )
     
     # Customer display type for POS integration (this fixes the KeyError)
