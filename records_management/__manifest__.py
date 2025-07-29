@@ -99,47 +99,39 @@ Records Management System - Enterprise Edition
     'author': 'John75SunCity',
     'website': 'https://github.com/John75SunCity',
     'depends': [
-        # Core Odoo Dependencies (Required)
+        # Core Odoo Dependencies (Required - Always Available)
         'base',
         'mail',
         'web',
         'portal',
         
-        # Product and Inventory Management
+        # Business Logic Dependencies (Required - Standard Modules)
         'product',
         'stock',
-        'barcodes',
-        
-        # Accounting and Sales
         'account',  # For invoicing/billing
         'sale',     # For quotes/self-quotes
         
-        # Website and E-commerce
-        'website',  # For website forms/quoting
-        
-        # Point of Sale
-        'point_of_sale',  # For walk-in services
-        
-        # Communication
+        # Communication Dependencies
         'sms',  # For SMS notifications
         
-        # Electronic Signatures (if available)
-        'sign',  # For electronic signatures (NAID compliance)
+        # Web/Portal Dependencies
+        'website',  # For website forms/quoting
         
-        # Human Resources
-        'hr',  # For employee training/access
+        # POS Dependencies
+        'point_of_sale',  # For walk-in services
         
-        # Project Management
-        'project',  # For project tasks
-        'calendar',  # For meeting/event scheduling
+        # Optional/Enterprise Dependencies (May not be available in all editions)
+        'barcodes',  # For barcode scanning - sometimes optional
+        'sign',      # For electronic signatures (NAID compliance) - Enterprise only
+        'hr',        # For employee training/access - usually available
+        'project',   # For project tasks - usually available
+        'calendar',  # For meeting/event scheduling - usually available
+        'survey',    # For customer feedback forms/suggestions - usually available
         
-        # Survey and Feedback
-        'survey',  # For customer feedback forms/suggestions
-        
-        # Additional modules (commented out if not available in Odoo 18.0)
-        # 'frontdesk',  # For visitor check-in integration - may not exist in 18.0
-        # 'industry_fsm',  # For field service management - may not exist in 18.0
-        # 'web_tour',  # For portal app tours - may not exist in 18.0
+        # Commented out problematic dependencies
+        # 'frontdesk',     # Third-party module - not guaranteed in all installations
+        # 'industry_fsm',  # Enterprise module - may not exist in all 18.0 editions
+        # 'web_tour',      # May be integrated into web module in 18.0
     ],
     'external_dependencies': {
         'python': [
