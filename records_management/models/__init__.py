@@ -104,7 +104,7 @@ from . import survey_improvement_action
 # Products and Configuration
 from . import product
 from . import barcode_product
-from . import res_config_settings
+from . import res_config_settings_extension
 from . import visitor
 
 # Business Logic

@@ -68,6 +68,46 @@ class ResPartner(models.Model):
         compute='_compute_records_stats',
         help='Total number of records boxes in storage'
     )
+    
+    # ==========================================
+    # BIN KEY MANAGEMENT FIELDS (Missing fields that bin_unlock_service references)
+    # ==========================================
+    key_issuance_allowed = fields.Boolean(
+        string='Key Issuance Allowed',
+        default=True,
+        help='Whether this customer is allowed to receive bin keys'
+    )
+    
+    key_restriction_reason = fields.Text(
+        string='Key Restriction Reason',
+        help='Reason why key issuance is restricted for this customer'
+    )
+    
+    key_restriction_status = fields.Selection([
+        ('allowed', 'Allowed'),
+        ('restricted', 'Restricted'),
+        ('suspended', 'Suspended'),
+        ('banned', 'Banned')
+    ], string='Key Restriction Status', default='allowed')
+    
+    # Container count (referenced by shredding_rates.py)
+    container_count = fields.Integer(
+        string='Container Count',
+        compute='_compute_container_count',
+        help='Number of containers for this customer'
+    )
+    
+    @api.depends()
+    def _compute_container_count(self):
+        """Compute container count for customer"""
+        for partner in self:
+            if partner.is_company:
+                containers = self.env['records.container'].search([
+                    ('customer_id', '=', partner.id)
+                ])
+                partner.container_count = len(containers)
+            else:
+                partner.container_count = 0
 
     @api.depends()
     def _compute_transitory_stats(self):
