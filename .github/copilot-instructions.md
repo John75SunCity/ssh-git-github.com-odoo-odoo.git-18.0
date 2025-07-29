@@ -2,14 +2,14 @@
 
 ## 🎯 Project Overview
 
-This is a **comprehensive enterprise-grade Odoo 18.0 Records Management module** with NAID AAA compliance features. The codebase implements systematic patterns for field management, strict inheritance hierarchies, and comprehensive workflow tracking across 50+ models and 1,400+ fields.
+This is a **comprehensive### **Development and Deployment Workflow**enterprise-grade Odoo 18.0 Records Management module** with NAID AAA compliance features. The codebase implements systematic patterns for field management, strict inheritance hierarchies, and comprehensive workflow tracking across 50+ models and 1,400+ fields.
 
 ### **Critical Deployment Architecture**
-⚠️ **DISCONNECTED DEVELOPMENT ENVIRONMENT** ⚠️
-- **No Direct Odoo Connection**: This VS Code workspace has NO live connection to an Odoo instance
-- **GitHub-Driven Deployment**: All changes must be committed and pushed to GitHub repository
-- **Odoo.sh Auto-Rebuild**: GitHub pushes trigger automatic database rebuilds in Odoo.sh platform
-- **Testing Workflow**: Code → GitHub → Odoo.sh rebuild → Live testing in cloud environment
+- **Primary Method: Odoo.sh & GitHub** - The most reliable workflow is pushing to GitHub to trigger an automatic build and deployment on Odoo.sh for testing.
+- **Cloud Development: GitHub Codespaces** - A fully configured cloud environment is available via GitHub Codespaces for rapid development.
+- **Local Development Option**: A minimal local setup is possible but requires a separate Odoo 18.0 installation. The primary testing and validation loop remains through Odoo.sh.
+- **GitHub-Driven Deployment**: All changes must be committed and pushed to the GitHub repository to be deployed on Odoo.sh.
+- **Testing Workflow**: Code → GitHub → Odoo.sh rebuild → Live testing in cloud environment.
 
 ### **Core Architecture Principles**
 - **Service-Oriented Architecture**: Clear separation between core records management, compliance tracking, and customer portal services
