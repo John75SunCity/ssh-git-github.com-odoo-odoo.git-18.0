@@ -174,9 +174,9 @@ from . import field_label_customization
 # =============================================================================
 
 # Odoo core model extensions
+from . import res_config_settings
 from . import res_partner
 from . import res_partner_key_restriction
-from . import res_config_settings_extension
 
 # Stock and inventory extensions
 from . import stock_lot
@@ -223,11 +223,7 @@ from . import records_deletion_request
 # CONFIGURATION AND UTILITIES (Load last)
 # =============================================================================
 
-# Configuration settings
-from . import res_config_settings
-
 # Module management
 from . import installer
 from . import ir_actions_report
 from . import ir_module
-from . import customer_rate_profile

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.7.0.0",  # Major feature update: 102 models, AI analytics, comprehensive POS integration
+    "version": "18.0.8.0.0",  # Bug fix update: Fixed import errors and field dependencies
     "category": "Document Management",
     "summary": "Enterprise-Grade Records Management: 102 Models, AI-Ready Analytics, NAID AAA Compliance, Advanced Customer Portal & POS Integration",
     "description": """
