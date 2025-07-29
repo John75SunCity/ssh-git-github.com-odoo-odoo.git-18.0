@@ -227,10 +227,16 @@ class DocumentRetrievalWorkOrder(models.Model):
                 order.retrieval_item_ids.mapped("document_count")
             )
             order.total_pages = sum(order.retrieval_item_ids.mapped("page_count"))
-            order.total_containers = sum(order.retrieval_item_ids.mapped("container_count"))
+            order.total_containers = sum(
+                order.retrieval_item_ids.mapped("container_count")
+            )
 
     @api.depends(
-        "rate_id", "total_documents", "total_pages", "total_containers", "work_order_type"
+        "rate_id",
+        "total_documents",
+        "total_pages",
+        "total_containers",
+        "work_order_type",
     )
     def _compute_costs(self):
         """Compute estimated cost based on rate and quantities"""

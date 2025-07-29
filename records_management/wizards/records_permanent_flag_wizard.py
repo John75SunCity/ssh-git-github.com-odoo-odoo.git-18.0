@@ -16,24 +16,23 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
     # Core fields
     name = fields.Char(string="Flag Name", default="Permanent Flag Wizard")
-    record_ids = fields.Many2many('records.container', string='Records to Flag')
-    permanent_flag = fields.Boolean(string='Mark as Permanent', default=True)
-    reason = fields.Text(string='Reason for Change', required=True)
+    record_ids = fields.Many2many("records.container", string="Records to Flag")
+    permanent_flag = fields.Boolean(string="Mark as Permanent", default=True)
+    reason = fields.Text(string="Reason for Change", required=True)
 
     def action_apply_flag(self):
         """Apply the permanent flag to selected records"""
         self.ensure_one()
         for record in self.record_ids:
-            record.write({
-                'permanent_flag': self.permanent_flag,
-                'permanent_reason': self.reason
-            })
+            record.write(
+                {"permanent_flag": self.permanent_flag, "permanent_reason": self.reason}
+            )
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Success',
-                'message': f'Updated permanent flag for {len(self.record_ids)} records',
-                'type': 'success'
-            }
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Success",
+                "message": f"Updated permanent flag for {len(self.record_ids)} records",
+                "type": "success",
+            },
         }

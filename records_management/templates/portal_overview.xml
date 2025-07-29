@@ -14,7 +14,7 @@
                         <p class="lead mb-4">
                             Experience our modern portal designed for seamless records management and NAID AAA certified shredding services.
                         </p>
-                        
+
                         <!-- Interactive Tour Button -->
                         <div class="tour-controls mb-4">
                             <button type="button" class="btn btn-warning btn-lg mr-3" id="start_portal_tour" onclick="startEnhancedTour()">
@@ -102,10 +102,14 @@
                                         advanced filters, bulk operations, and real-time status tracking.
                                     </p>
                                     <ul class="list-unstyled">
-                                        <li><i class="fa fa-check text-success"></i> Smart Search &amp; Filters</li>
-                                        <li><i class="fa fa-check text-success"></i> Bulk Actions</li>
-                                        <li><i class="fa fa-check text-success"></i> Real-time Updates</li>
-                                        <li><i class="fa fa-check text-success"></i> Export Capabilities</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Smart Search &amp; Filters</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Bulk Actions</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Real-time Updates</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Export Capabilities</li>
                                     </ul>
                                 </div>
                                 <div class="card-footer bg-transparent">
@@ -129,10 +133,14 @@
                                         and download invoices with complete transparency.
                                     </p>
                                     <ul class="list-unstyled">
-                                        <li><i class="fa fa-check text-success"></i> Instant PDF Quotes</li>
-                                        <li><i class="fa fa-check text-success"></i> PO Management</li>
-                                        <li><i class="fa fa-check text-success"></i> Billing Transparency</li>
-                                        <li><i class="fa fa-check text-success"></i> Change Requests</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Instant PDF Quotes</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> PO Management</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Billing Transparency</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Change Requests</li>
                                     </ul>
                                 </div>
                                 <div class="card-footer bg-transparent">
@@ -156,10 +164,14 @@
                                         real-time FSM tracking, and automated certificate generation.
                                     </p>
                                     <ul class="list-unstyled">
-                                        <li><i class="fa fa-check text-success"></i> E-Signature Integration</li>
-                                        <li><i class="fa fa-check text-success"></i> Real-time Tracking</li>
-                                        <li><i class="fa fa-check text-success"></i> Automated Certificates</li>
-                                        <li><i class="fa fa-check text-success"></i> SMS Notifications</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> E-Signature Integration</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Real-time Tracking</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Automated Certificates</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> SMS Notifications</li>
                                     </ul>
                                 </div>
                                 <div class="card-footer bg-transparent">
@@ -183,10 +195,14 @@
                                         and track user activity with comprehensive audit trails.
                                     </p>
                                     <ul class="list-unstyled">
-                                        <li><i class="fa fa-check text-success"></i> CSV Bulk Import</li>
-                                        <li><i class="fa fa-check text-success"></i> Role-based Access</li>
-                                        <li><i class="fa fa-check text-success"></i> Department Assignment</li>
-                                        <li><i class="fa fa-check text-success"></i> Activity Tracking</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> CSV Bulk Import</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Role-based Access</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Department Assignment</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Activity Tracking</li>
                                     </ul>
                                 </div>
                                 <div class="card-footer bg-transparent">
@@ -210,10 +226,14 @@
                                         timestamps, chain of custody, and regulatory compliance reporting.
                                     </p>
                                     <ul class="list-unstyled">
-                                        <li><i class="fa fa-check text-success"></i> NAID AAA Certified</li>
-                                        <li><i class="fa fa-check text-success"></i> Complete Audit Trails</li>
-                                        <li><i class="fa fa-check text-success"></i> Chain of Custody</li>
-                                        <li><i class="fa fa-check text-success"></i> Compliance Reports</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> NAID AAA Certified</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Complete Audit Trails</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Chain of Custody</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Compliance Reports</li>
                                     </ul>
                                 </div>
                                 <div class="card-footer bg-transparent">
@@ -237,10 +257,14 @@
                                         usage patterns, and intelligent suggestions based on your activity.
                                     </p>
                                     <ul class="list-unstyled">
-                                        <li><i class="fa fa-check text-success"></i> Smart Recommendations</li>
-                                        <li><i class="fa fa-check text-success"></i> Predictive Analytics</li>
-                                        <li><i class="fa fa-check text-success"></i> Usage Patterns</li>
-                                        <li><i class="fa fa-check text-success"></i> Intelligent Alerts</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Smart Recommendations</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Predictive Analytics</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Usage Patterns</li>
+                                        <li>
+                                            <i class="fa fa-check text-success"></i> Intelligent Alerts</li>
                                     </ul>
                                 </div>
                                 <div class="card-footer bg-transparent">
@@ -298,8 +322,7 @@
                                             <div class="card-body py-2">
                                                 <h6 class="mb-1" t-esc="suggestion.title"/>
                                                 <p class="text-muted mb-2" t-esc="suggestion.description"/>
-                                                <a href="#" class="btn btn-sm btn-outline-warning" 
-                                                   t-att-onclick="suggestion.action">
+                                                <a href="#" class="btn btn-sm btn-outline-warning" t-att-onclick="suggestion.action">
                                                     <i class="fa fa-arrow-right"></i> Take Action
                                                 </a>
                                             </div>
@@ -326,9 +349,7 @@
                             </div>
                             <div class="modal-body text-center">
                                 <div class="embed-responsive embed-responsive-16by9">
-                                    <iframe class="embed-responsive-item" 
-                                            src="/web/static/src/video/portal_tutorial.mp4" 
-                                            allowfullscreen=""></iframe>
+                                    <iframe class="embed-responsive-item" src="/web/static/src/video/portal_tutorial.mp4" allowfullscreen=""></iframe>
                                 </div>
                                 <p class="mt-3 text-muted">
                                     Learn how to navigate and use all portal features effectively

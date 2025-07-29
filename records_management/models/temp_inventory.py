@@ -392,7 +392,9 @@ class TransitoryItems(models.Model):
             if not vals.get("monthly_storage_rate") and vals.get("item_type"):
                 item_type = vals["item_type"]
                 if item_type == "records_container":
-                    vals["monthly_storage_rate"] = 1.50  # Same as regular container storage
+                    vals["monthly_storage_rate"] = (
+                        1.50  # Same as regular container storage
+                    )
                 elif item_type in ("file_folder", "document_set"):
                     vals["monthly_storage_rate"] = 0.75
                 elif item_type == "media":

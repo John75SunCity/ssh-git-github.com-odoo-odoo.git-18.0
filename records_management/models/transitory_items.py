@@ -452,7 +452,9 @@ class TransitoryItems(models.Model):
         """Compute full hierarchy path for display"""
         for record in self:
             if record.item_type == "records_container":
-                record.hierarchy_display = record.full_container_reference or record.name
+                record.hierarchy_display = (
+                    record.full_container_reference or record.name
+                )
             elif record.parent_container_id:
                 parent_path = (
                     record.parent_container_id.hierarchy_display
@@ -528,7 +530,10 @@ class TransitoryItems(models.Model):
             }
 
             # If creating folders in a container, set parent
-            if parent_container_id and item_data.get("item_type") != "records_container":
+            if (
+                parent_container_id
+                and item_data.get("item_type") != "records_container"
+            ):
                 vals["parent_container_id"] = parent_container_id
                 vals["item_type"] = "file_folder"  # Default for items in containers
 
@@ -796,7 +801,8 @@ class TransitoryItems(models.Model):
             ):
                 if (
                     not search_term
-                    or search_term.lower() in container.customer_container_number.lower()
+                    or search_term.lower()
+                    in container.customer_container_number.lower()
                 ):
                     suggestions.append(
                         {
@@ -818,17 +824,24 @@ class TransitoryItems(models.Model):
         return sorted(unique_suggestions, key=lambda x: x["container_number"])
 
     @api.model
-    def check_container_number_exists(self, customer_id, container_number, department_id=None):
+    def check_container_number_exists(
+        self, customer_id, container_number, department_id=None
+    ):
         """Check if container number already exists and suggest alternatives"""
-        domain = [("customer_id", "=", customer_id), ("container_number", "=", container_number)]
+        domain = [
+            ("customer_id", "=", customer_id),
+            ("container_number", "=", container_number),
+        ]
         if department_id:
             domain.append(("department_id", "=", department_id))
 
         existing_transitory = self.search(domain)
-        existing_containers = self.env["records.container"].search([
-            ("customer_id", "=", customer_id),
-            ("customer_container_number", "=", container_number)
-        ])
+        existing_containers = self.env["records.container"].search(
+            [
+                ("customer_id", "=", customer_id),
+                ("customer_container_number", "=", container_number),
+            ]
+        )
 
         result = {
             "exists": bool(existing_transitory or existing_containers),
@@ -918,7 +931,7 @@ class TransitoryItems(models.Model):
                 domain.append(("department_id", "=", department_id))
 
             if not self.search(domain) and not self.env["records.container"].search(
-                [('customer_container_number', '=', next_container_number)]
+                [("customer_container_number", "=", next_container_number)]
             ):
                 suggestions.append(
                     {
@@ -1113,7 +1126,9 @@ class TransitoryItems(models.Model):
                 and vals.get("item_type") == "records_container"
             ):
                 existing_check = self.check_container_number_exists(
-                    vals["customer_id"], vals["container_number"], vals.get("department_id")
+                    vals["customer_id"],
+                    vals["container_number"],
+                    vals.get("department_id"),
                 )
 
                 # If container number exists and no suffix provided, auto-generate suffix
@@ -1127,7 +1142,9 @@ class TransitoryItems(models.Model):
             if not vals.get("monthly_storage_rate") and vals.get("item_type"):
                 item_type = vals["item_type"]
                 if item_type == "records_container":
-                    vals["monthly_storage_rate"] = 1.50  # Same as regular container storage
+                    vals["monthly_storage_rate"] = (
+                        1.50  # Same as regular container storage
+                    )
                 elif item_type in ("file_folder", "document_set"):
                     vals["monthly_storage_rate"] = 0.75
                 elif item_type == "media":

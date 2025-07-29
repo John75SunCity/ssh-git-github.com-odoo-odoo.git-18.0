@@ -13,21 +13,22 @@ class ContainerContents(models.Model):
 
     _name = "container.contents"
     _description = "Container Contents - File Folders and Filed Items"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name"
 
     # Core fields
     name = fields.Char(string="Name", required=True, tracking=True)
-    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
+    user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
 
     # Basic state management
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done')
-    ], string='State', default='draft', tracking=True)
+    state = fields.Selection(
+        [("draft", "Draft"), ("confirmed", "Confirmed"), ("done", "Done")],
+        string="State",
+        default="draft",
+        tracking=True,
+    )
 
     # Common fields
     description = fields.Text()
@@ -36,8 +37,8 @@ class ContainerContents(models.Model):
 
     def action_confirm(self):
         """Confirm the record"""
-        self.write({'state': 'confirmed'})
+        self.write({"state": "confirmed"})
 
     def action_done(self):
         """Mark as done"""
-        self.write({'state': 'done'})
+        self.write({"state": "done"})

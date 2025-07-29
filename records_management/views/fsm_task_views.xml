@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- 🔧 ENTERPRISE FIELD SERVICE MANAGEMENT - Mobile Operations -->
-    
+
     <!-- 🎨 FSM Task Kanban Dashboard -->
     <record id="view_fsm_task_kanban" model="ir.ui.view">
         <field name="name">fsm.task.kanban</field>
@@ -22,23 +22,38 @@
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-                                        <strong>🔧 <field name="name"/></strong>
+                                        <strong>🔧                                            <field name="name"/>
+                                        </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        👤 <field name="customer_id"/>
+                                        👤                                        <field name="customer_id"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" title="More options"/></a>
+                                    <a class="o_kanban_manage_toggle_button" href="#">
+                                        <i class="fa fa-ellipsis-v" title="More options"/>
+                                    </a>
                                 </div>
                             </div>
                             <div class="o_kanban_card_content">
                                 <div class="row">
                                     <div class="col-8">
-                                        <div><i class="fa fa-wrench" title="Task Type"/> <field name="task_type"/></div>
-                                        <div><i class="fa fa-calendar" title="Scheduled Date"/> <field name="scheduled_date"/></div>
-                                        <div><i class="fa fa-user" title="Assigned Technician"/> <field name="assigned_technician"/></div>
-                                        <div><i class="fa fa-map-marker" title="Location"/> <field name="location_address"/></div>
+                                        <div>
+                                            <i class="fa fa-wrench" title="Task Type"/>
+                                            <field name="task_type"/>
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-calendar" title="Scheduled Date"/>
+                                            <field name="scheduled_date"/>
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-user" title="Assigned Technician"/>
+                                            <field name="assigned_technician"/>
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-map-marker" title="Location"/>
+                                            <field name="location_address"/>
+                                        </div>
                                     </div>
                                     <div class="col-4">
                                         <span class="badge" t-att-class="record.priority.raw_value === 'high' ? 'badge-danger' : record.priority.raw_value === 'medium' ? 'badge-warning' : 'badge-secondary'">
@@ -81,10 +96,7 @@
         <field name="name">fsm.task.list</field>
         <field name="model">fsm.task</field>
         <field name="arch" type="xml">
-            <list decoration-success="task_status == 'completed'" 
-                  decoration-warning="task_status == 'in_progress'"
-                  decoration-danger="priority == 'high'"
-                  decoration-info="task_status == 'scheduled'">
+            <list decoration-success="task_status == 'completed'" decoration-warning="task_status == 'in_progress'" decoration-danger="priority == 'high'" decoration-info="task_status == 'scheduled'">
                 <field name="name" string="🔧 Task"/>
                 <field name="task_type" string="🛠️ Type"/>
                 <field name="customer_id" string="👤 Customer"/>
@@ -94,12 +106,8 @@
                 <field name="task_status" string="🎯 Status" widget="badge"/>
                 <field name="estimated_duration" string="⏱️ Duration"/>
                 <field name="location_address" string="📍 Location"/>
-                <button name="action_start_task" type="object" string="Start" 
-                        icon="fa-play" class="btn-link" 
-                        invisible="task_status != 'scheduled'"/>
-                <button name="action_complete_task" type="object" string="Complete" 
-                        icon="fa-check" class="btn-link" 
-                        invisible="task_status != 'in_progress'"/>
+                <button name="action_start_task" type="object" string="Start" icon="fa-play" class="btn-link" invisible="task_status != 'scheduled'"/>
+                <button name="action_complete_task" type="object" string="Complete" icon="fa-check" class="btn-link" invisible="task_status != 'in_progress'"/>
             </list>
         </field>
     </record>
@@ -111,12 +119,9 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_start_task" type="object" string="▶️ Start Task" 
-                            class="btn-primary" invisible="task_status != 'scheduled'"/>
-                    <button name="action_pause_task" type="object" string="⏸️ Pause Task" 
-                            class="btn-warning" invisible="task_status != 'in_progress'"/>
-                    <button name="action_complete_task" type="object" string="✅ Complete Task" 
-                            class="btn-success" invisible="task_status != 'in_progress'"/>
+                    <button name="action_start_task" type="object" string="▶️ Start Task" class="btn-primary" invisible="task_status != 'scheduled'"/>
+                    <button name="action_pause_task" type="object" string="⏸️ Pause Task" class="btn-warning" invisible="task_status != 'in_progress'"/>
+                    <button name="action_complete_task" type="object" string="✅ Complete Task" class="btn-success" invisible="task_status != 'in_progress'"/>
                     <button name="action_reschedule" type="object" string="📅 Reschedule" class="btn-secondary"/>
                     <field name="task_status" widget="statusbar" statusbar_visible="scheduled,in_progress,completed,cancelled"/>
                 </header>
@@ -131,15 +136,14 @@
                         <button class="oe_stat_button" type="object" name="action_view_location" icon="fa-map-marker">
                             <field string="GPS Tracking" name="location_update_count" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" icon="fa-mobile" 
-                                invisible="not mobile_optimized">
+                        <button class="oe_stat_button" icon="fa-mobile" invisible="not mobile_optimized">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">📱</span>
                                 <span class="o_stat_text">Mobile Ready</span>
                             </div>
                         </button>
                     </div>
-                    
+
                     <group>
                         <group string="🔧 Task Information">
                             <field name="name" placeholder="e.g., Container Retrieval - Building A"/>
@@ -154,7 +158,7 @@
                             <field name="supervisor"/>
                         </group>
                     </group>
-                    
+
                     <group>
                         <group string="📅 Scheduling">
                             <field name="scheduled_date"/>
@@ -169,7 +173,7 @@
                             <field name="parking_instructions"/>
                         </group>
                     </group>
-                    
+
                     <notebook>
                         <page string="📋 Task Details" name="details">
                             <group>
@@ -322,10 +326,7 @@
         <field name="name">fsm.task.calendar</field>
         <field name="model">fsm.task</field>
         <field name="arch" type="xml">
-            <calendar string="📅 Field Service Schedule" 
-                      date_start="scheduled_date" 
-                      date_stop="actual_completion_time"
-                      color="assigned_technician">
+            <calendar string="📅 Field Service Schedule" date_start="scheduled_date" date_stop="actual_completion_time" color="assigned_technician">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="task_type"/>
@@ -346,30 +347,28 @@
                 <field name="assigned_technician"/>
                 <field name="task_type"/>
                 <field name="location_address"/>
-                
+
                 <filter string="📅 Scheduled" name="scheduled" domain="[('task_status', '=', 'scheduled')]"/>
                 <filter string="🔄 In Progress" name="in_progress" domain="[('task_status', '=', 'in_progress')]"/>
                 <filter string="✅ Completed" name="completed" domain="[('task_status', '=', 'completed')]"/>
                 <filter string="❌ Cancelled" name="cancelled" domain="[('task_status', '=', 'cancelled')]"/>
-                
+
                 <separator/>
                 <filter string="🔴 High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
                 <filter string="🟡 Medium Priority" name="medium_priority" domain="[('priority', '=', 'medium')]"/>
                 <filter string="🟢 Low Priority" name="low_priority" domain="[('priority', '=', 'low')]"/>
-                
+
                 <separator/>
                 <filter string="📱 Mobile Optimized" name="mobile_optimized" domain="[('mobile_optimized', '=', True)]"/>
                 <filter string="📍 GPS Enabled" name="gps_enabled" domain="[('gps_tracking_enabled', '=', True)]"/>
                 <filter string="🔒 Confidential" name="confidential" domain="[('confidentiality_level', 'in', ['high', 'confidential'])]"/>
-                
+
                 <separator/>
                 <filter string="📅 Today" name="today" domain="[('scheduled_date', '=', context_today())]"/>
-                <filter string="📆 This Week" name="this_week" 
-                        domain="[('scheduled_date', '&gt;=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), 
+                <filter string="📆 This Week" name="this_week" domain="[('scheduled_date', '&gt;=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), 
                                 ('scheduled_date', '&lt;', (context_today() + relativedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
-                <filter string="🗓️ This Month" name="this_month" 
-                        domain="[('scheduled_date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
-                
+                <filter string="🗓️ This Month" name="this_month" domain="[('scheduled_date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+
                 <group expand="0" string="📊 Group By">
                     <filter string="Technician" name="group_by_technician" context="{'group_by': 'assigned_technician'}"/>
                     <filter string="Task Type" name="group_by_task_type" context="{'group_by': 'task_type'}"/>
@@ -397,7 +396,8 @@
                 🔧 Schedule your first field service task!
             </p>
             <p>
-                <b>Enterprise Field Service Management:</b><br/>
+                <b>Enterprise Field Service Management:</b>
+                <br/>
                 • 📱 Mobile-optimized technician workflows<br/>
                 • 📍 Real-time GPS tracking and location services<br/>
                 • ⏱️ Comprehensive time tracking and analytics<br/>
@@ -407,7 +407,7 @@
                 • 📦 Chain of custody for sensitive materials<br/>
                 • 💰 Complete cost tracking and billing integration<br/>
                 • 📊 Performance analytics and efficiency metrics
-            </p>
-        </field>
-    </record>
+</p>
+</field>
+</record>
 </odoo>

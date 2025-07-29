@@ -2,116 +2,42 @@
 <odoo>
     <data>
         <!-- Menu Items with Actions - Load after base menus and actions are defined -->
-        
-        <!-- Records and Documents -->
-        <menuitem id="menu_records_containers"
-                  name="Storage Containers"
-                  parent="menu_records_operations"
-                  action="action_records_container"
-                  sequence="10"
-                  groups="records_management.group_records_user"/>
 
-        <menuitem id="menu_records_documents"
-                  name="Documents"
-                  parent="menu_records_operations"
-                  action="action_records_document"
-                  sequence="20"
-                  groups="records_management.group_records_user"/>
+        <!-- Records and Documents -->
+        <menuitem id="menu_records_containers" name="Storage Containers" parent="menu_records_operations" action="action_records_container" sequence="10" groups="records_management.group_records_user"/>
+
+        <menuitem id="menu_records_documents" name="Documents" parent="menu_records_operations" action="action_records_document" sequence="20" groups="records_management.group_records_user"/>
 
         <!-- Service Operations -->
-        <menuitem id="menu_pickup_requests"
-                  name="Pickup Requests"
-                  parent="menu_records_operations"
-                  action="action_pickup_request"
-                  sequence="30"
-                  groups="records_management.group_records_user"/>
+        <menuitem id="menu_pickup_requests" name="Pickup Requests" parent="menu_records_operations" action="action_pickup_request" sequence="30" groups="records_management.group_records_user"/>
 
-        <menuitem id="menu_shredding_services"
-                  name="Shredding Services"
-                  parent="menu_records_operations"
-                  action="action_shredding_service"
-                  sequence="40"
-                  groups="records_management.group_records_user"/>
+        <menuitem id="menu_shredding_services" name="Shredding Services" parent="menu_records_operations" action="action_shredding_service" sequence="40" groups="records_management.group_records_user"/>
 
-        <menuitem id="menu_stock_lots"
-                  name="Serial Numbers"
-                  parent="menu_records_operations"
-                  action="action_stock_lot"
-                  sequence="50"
-                  groups="records_management.group_records_user"/>
+        <menuitem id="menu_stock_lots" name="Serial Numbers" parent="menu_records_operations" action="action_stock_lot" sequence="50" groups="records_management.group_records_user"/>
 
         <!-- ==== INVENTORY & MANAGEMENT SECTION ==== -->
-        <menuitem id="menu_records_inventory"
-                  name="Inventory"
-                  parent="menu_records_management_root"
-                  sequence="20"
-                  groups="records_management.group_records_user"/>
+        <menuitem id="menu_records_inventory" name="Inventory" parent="menu_records_management_root" sequence="20" groups="records_management.group_records_user"/>
 
-        <menuitem id="menu_customer_inventory"
-                  name="Customer Inventory"
-                  parent="menu_records_inventory"
-                  action="action_customer_inventory_report"
-                  sequence="10"
-                  groups="records_management.group_records_user"/>
+        <menuitem id="menu_customer_inventory" name="Customer Inventory" parent="menu_records_inventory" action="action_customer_inventory_report" sequence="10" groups="records_management.group_records_user"/>
 
-        <menuitem id="menu_records_retention"
-                  name="Retention Policies"
-                  parent="menu_records_inventory"
-                  action="action_records_retention_policy"
-                  sequence="20"
-                  groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_retention" name="Retention Policies" parent="menu_records_inventory" action="action_records_retention_policy" sequence="20" groups="records_management.group_records_manager"/>
 
         <!-- ==== REPORTING SECTION ITEMS ==== -->
-        <menuitem id="menu_records_reports"
-                  name="Storage Reports"
-                  parent="menu_records_reporting"
-                  action="report_container_contents"
-                  sequence="10"
-                  groups="records_management.group_records_user"/>
+        <menuitem id="menu_records_reports" name="Storage Reports" parent="menu_records_reporting" action="report_container_contents" sequence="10" groups="records_management.group_records_user"/>
 
-        <menuitem id="menu_inventory_reports"
-                  name="Inventory Reports"
-                  parent="menu_records_reporting"
-                  action="action_customer_inventory_report"
-                  sequence="20"
-                  groups="records_management.group_records_user"/>
+        <menuitem id="menu_inventory_reports" name="Inventory Reports" parent="menu_records_reporting" action="action_customer_inventory_report" sequence="20" groups="records_management.group_records_user"/>
 
         <!-- ==== CONFIGURATION SECTION ITEMS ==== -->
-        <menuitem id="menu_records_location"
-                  name="Storage Locations"
-                  parent="menu_records_master_data"
-                  action="action_records_location"
-                  sequence="10"
-                  groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_location" name="Storage Locations" parent="menu_records_master_data" action="action_records_location" sequence="10" groups="records_management.group_records_manager"/>
 
-        <menuitem id="menu_records_document_type"
-                  name="Document Types"
-                  parent="menu_records_master_data"
-                  action="action_records_document_type"
-                  sequence="20"
-                  groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_document_type" name="Document Types" parent="menu_records_master_data" action="action_records_document_type" sequence="20" groups="records_management.group_records_manager"/>
 
-        <menuitem id="menu_records_tags"
-                  name="Classification Tags"
-                  parent="menu_records_master_data"
-                  action="action_records_tag_simple"
-                  sequence="30"
-                  groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_tags" name="Classification Tags" parent="menu_records_master_data" action="action_records_tag_simple" sequence="30" groups="records_management.group_records_manager"/>
 
         <!-- Product Configuration Items -->
-        <menuitem id="menu_records_products_list"
-                  name="Service Products"
-                  parent="menu_records_products"
-                  action="product.product_template_action"
-                  sequence="10"
-                  groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_products_list" name="Service Products" parent="menu_records_products" action="product.product_template_action" sequence="10" groups="records_management.group_records_manager"/>
 
-        <menuitem id="menu_records_product_variants"
-                  name="Product Variants"
-                  parent="menu_records_products"
-                  action="product.product_normal_action"
-                  sequence="20"
-                  groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_product_variants" name="Product Variants" parent="menu_records_products" action="product.product_normal_action" sequence="20" groups="records_management.group_records_manager"/>
 
     </data>
 </odoo>
