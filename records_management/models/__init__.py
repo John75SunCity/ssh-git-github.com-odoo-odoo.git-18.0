@@ -16,6 +16,9 @@ This ensures proper ORM setup and prevents KeyError exceptions during module loa
 # BASE MODELS (Many2one targets - must be loaded first)
 # =============================================================================
 
+# Configuration settings (foundational)
+from . import res_config_settings
+
 # Core structure models
 from . import records_tag
 from . import records_location
@@ -31,7 +34,8 @@ from . import records_policy_version
 from . import records_approval_workflow
 from . import records_approval_step
 
-# Container and storage models
+# Container and storage models (in dependency order)
+from . import container
 from . import records_container
 from . import container_contents
 
@@ -43,18 +47,8 @@ from . import container_contents
 from . import records_document
 from . import records_digital_scan
 
-# Records storage management
-# Main records storage containers
-from . import records_container
-
-# Movement tracking for records containers
+# Container operations (in dependency order)
 from . import records_container_movement
-
-# Container operations
-# Movement tracking for containers
-from . import records_container_movement
-
-# Transfer operations
 from . import records_container_transfer
 
 # Customer and inventory management
@@ -173,8 +167,7 @@ from . import field_label_customization
 # INTEGRATIONS AND EXTENSIONS
 # =============================================================================
 
-# Odoo core model extensions
-from . import res_config_settings
+# Odoo core model extensions (base models first)
 from . import res_partner
 from . import res_partner_key_restriction
 
