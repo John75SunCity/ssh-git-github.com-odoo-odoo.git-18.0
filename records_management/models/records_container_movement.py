@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Records Box Movement Management - Enterprise Grade
+Records Container Movement Management - Enterprise Grade
 """
 
 from odoo import models, fields, api, _
@@ -10,10 +10,10 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class RecordsBoxMovement(models.Model):
+class RecordsContainerMovement(models.Model):
     """
-    Comprehensive Records Box Movement History
-    Tracks all box location changes, transfers, and audit trails
+    Comprehensive Records Container Movement History
+    Tracks all container location changes, transfers, and audit trails
     """
 
     _name = "records.container.movement"
@@ -35,7 +35,7 @@ class RecordsBoxMovement(models.Model):
     active = fields.Boolean(default=True, tracking=True)
 
     # ==========================================
-    # BOX AND LOCATION RELATIONSHIPS
+    # CONTAINER AND LOCATION RELATIONSHIPS
     # ==========================================
     container_id = fields.Many2one('records.container', string='Records Container', 
                             required=True, tracking=True, ondelete='cascade')
@@ -125,10 +125,10 @@ class RecordsBoxMovement(models.Model):
     # ==========================================
     # COMPUTED FIELDS
     # ==========================================
-    box_barcode = fields.Char(related='box_id.name', string='Box Number', readonly=True)
-    customer_id = fields.Many2one('res.partner', related='box_id.customer_id', string='Customer', readonly=True)
-    box_current_location = fields.Many2one('records.location', related='box_id.location_id', 
-                                          string='Current Box Location', readonly=True)
+    container_barcode = fields.Char(related='container_id.name', string='Container Number', readonly=True)
+    customer_id = fields.Many2one('res.partner', related='container_id.customer_id', string='Customer', readonly=True)
+    container_current_location = fields.Many2one('records.location', related='container_id.location_id', 
+                                          string='Current Container Location', readonly=True)
     
     duration = fields.Float(string='Duration (Hours)', compute='_compute_duration', store=True)
     movement_status = fields.Char(string='Movement Status', compute='_compute_movement_status')
@@ -166,7 +166,7 @@ class RecordsBoxMovement(models.Model):
             raise UserError(_('Only draft movements can be confirmed'))
         
         if self.name == _('New'):
-            self.name = self.env['ir.sequence'].next_by_code('records.box.movement') or _('New')
+            self.name = self.env['ir.sequence'].next_by_code('records.container.movement') or _('New')
         
         self.write({'state': 'confirmed'})
         self.message_post(body=_('Movement confirmed by %s') % self.env.user.name)
@@ -184,13 +184,13 @@ class RecordsBoxMovement(models.Model):
         self.message_post(body=_('Movement started by %s') % self.env.user.name)
     
     def action_complete_movement(self):
-        """Complete the movement and update box location"""
+        """Complete the movement and update container location"""
         self.ensure_one()
         if self.state != 'in_transit':
             raise UserError(_('Only movements in transit can be completed'))
         
-        # Update box location
-        self.box_id.write({'location_id': self.to_location_id.id})
+        # Update container location
+        self.container_id.write({'location_id': self.to_location_id.id})
         
         # Complete movement
         self.write({
@@ -202,8 +202,8 @@ class RecordsBoxMovement(models.Model):
         self._create_custody_record()
         
         self.message_post(
-            body=_('Movement completed. Box %s moved to %s') % 
-                 (self.box_id.name, self.to_location_id.name)
+            body=_('Movement completed. Container %s moved to %s') % 
+                 (self.container_id.name, self.to_location_id.name)
         )
     
     def action_cancel_movement(self):
@@ -223,7 +223,7 @@ class RecordsBoxMovement(models.Model):
         custody_vals = {
             'name': f"Custody for {self.name}",
             'movement_id': self.id,
-            'box_id': self.box_id.id,
+            'container_id': self.container_id.id,
             'from_location_id': self.from_location_id.id if self.from_location_id else False,
             'to_location_id': self.to_location_id.id,
             'transfer_date': self.actual_completion_time or fields.Datetime.now(),
@@ -239,7 +239,7 @@ class RecordsBoxMovement(models.Model):
         """Override create to set sequence number"""
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('records.box.movement') or _('New')
+                vals['name'] = self.env['ir.sequence'].next_by_code('records.container.movement') or _('New')
         return super().create(vals_list)
 
     # ==========================================

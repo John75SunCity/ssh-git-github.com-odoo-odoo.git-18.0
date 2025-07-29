@@ -38,10 +38,12 @@ class RecordsChainOfCustody(models.Model):
     # ==========================================
     # CUSTODY RELATIONSHIPS
     # ==========================================
-    movement_id = fields.Many2one('records.box.movement', string='Related Movement',
+    movement_id = fields.Many2one('records.container.movement', string='Related Movement',
                                  tracking=True, ondelete='cascade')
     box_id = fields.Many2one('records.box', string='Records Box',
                             tracking=True, ondelete='cascade')
+    container_id = fields.Many2one('records.container', string='Records Container',
+                                  tracking=True, ondelete='cascade')
     document_id = fields.Many2one('records.document', string='Document',
                                  tracking=True, ondelete='cascade')
     shredding_service_id = fields.Many2one('shred.svc', string='Shredding Service',
@@ -301,6 +303,8 @@ class RecordsChainOfCustody(models.Model):
         domain = []
         if self.box_id:
             domain = [('box_id', '=', self.box_id.id)]
+        elif self.container_id:
+            domain = [('container_id', '=', self.container_id.id)]
         elif self.document_id:
             domain = [('document_id', '=', self.document_id.id)]
         elif self.work_order_id:
@@ -334,12 +338,12 @@ class RecordsChainOfCustody(models.Model):
                 if record.actual_return_date < record.transfer_date:
                     raise ValidationError(_('Return date cannot be before transfer date'))
 
-    @api.constrains('box_id', 'document_id', 'work_order_id')
+    @api.constrains('box_id', 'container_id', 'document_id', 'work_order_id')
     def _check_custody_item(self):
         """Ensure at least one item is specified"""
         for record in self:
-            if not any([record.box_id, record.document_id, record.work_order_id]):
-                raise ValidationError(_('At least one item (box, document, or work order) must be specified for custody'))
+            if not any([record.box_id, record.container_id, record.document_id, record.work_order_id]):
+                raise ValidationError(_('At least one item (box, container, document, or work order) must be specified for custody'))
 
     @api.constrains('from_location_id', 'to_location_id')
     def _check_locations(self):
