@@ -75,8 +75,19 @@ class ResConfigSettings(models.TransientModel):
         help='Background image for customer display screen'
     )
     
+    customer_display_bg_img_name = fields.Char(
+        string='Customer Display Background Image Filename',
+        config_parameter='records_management.customer_display_bg_img_name',
+        help='Filename of the background image for customer display screen'
+    )
+    
     pos_customer_display_bg_img = fields.Binary(
         related='customer_display_bg_img',
+        readonly=False
+    )
+    
+    pos_customer_display_bg_img_name = fields.Char(
+        related='customer_display_bg_img_name',
         readonly=False
     )
     
