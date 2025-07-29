@@ -96,6 +96,12 @@ class ResPartner(models.Model):
         compute='_compute_container_count',
         help='Number of containers for this customer'
     )
+    total_monthly_revenue = fields.Float(string="Total Monthly Revenue", default=0.0, help="Total monthly revenue from this customer")
+    billing_account_number = fields.Char(string="Billing Account Number", help="Billing account number")
+    preferred_pickup_day = fields.Char(string="Preferred Pickup Day", help="Preferred day for pickups")
+    service_level = fields.Char(string="Service Level", help="Service level agreement")
+    credit_limit = fields.Float(string="Credit Limit", default=0.0, help="Credit limit for this customer")
+    payment_terms_days = fields.Integer(string="Payment Terms Days", default=30, help="Payment terms in days")
     
     @api.depends()
     def _compute_container_count(self):

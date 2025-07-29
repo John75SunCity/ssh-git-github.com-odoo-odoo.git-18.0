@@ -76,6 +76,8 @@ class Billing(models.Model):
     # ==========================================
     notes = fields.Text(string='Notes', tracking=True)
     internal_notes = fields.Text(string='Internal Notes')
+    discount_amount = fields.Float(string="Discount Amount", default=0.0, help="Discount amount")
+    payment_status = fields.Char(string="Payment Status", help="Payment status")
 
     # ==========================================
     # COMPUTED FIELDS

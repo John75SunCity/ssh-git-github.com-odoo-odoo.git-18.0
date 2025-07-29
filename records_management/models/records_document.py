@@ -298,3 +298,13 @@ class RecordsDocument(models.Model):
         for record in self:
             if record.page_count and record.page_count < 0:
                 raise ValidationError(_('Page count cannot be negative'))
+
+    @api.depends('received_date', 'document_type_id')
+    def _compute_destruction_eligible_date(self):
+        """Calculate destruction eligible date based on retention policy"""
+        for record in self:
+            if record.received_date and record.document_type_id and record.document_type_id.retention_years:
+                from dateutil.relativedelta import relativedelta
+                record.destruction_eligible_date = record.received_date + relativedelta(years=record.document_type_id.retention_years)
+            else:
+                record.destruction_eligible_date = False

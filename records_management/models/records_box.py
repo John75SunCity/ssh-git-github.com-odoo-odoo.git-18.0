@@ -133,8 +133,15 @@ class RecordsContainer(models.Model):
     # ==========================================
     notes = fields.Text(string='Notes', tracking=True)
     special_instructions = fields.Text(string='Special Instructions', tracking=True)
+    box_number = fields.Char(string="Box Number", help="Box identification number")
+    destruction_eligible_date = fields.Char(string="Destruction Eligible Date", help="Date when eligible for destruction")
+    last_accessed_date = fields.Char(string="Last Accessed Date", help="Last access date")
+    storage_cost = fields.Float(string="Storage Cost", default=0.0, help="Monthly storage cost")
+    box_type = fields.Char(string="Box Type", help="Type of storage box")
+    current_location_barcode = fields.Char(string="Current Location Barcode", help="Current location barcode")
     
     # ==========================================
+    box_ids = fields.One2many('records.box', 'parent_container_id', string='Child Boxes')
     # COMPUTED FIELDS
     # ==========================================
     @api.depends('document_ids')

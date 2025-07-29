@@ -391,3 +391,9 @@ class BinUnlockService(models.Model):
             if record.service_start_time and record.service_end_time:
                 if record.service_end_time <= record.service_start_time:
                     raise ValidationError(_('Service end time must be after start time'))
+
+    @api.depends('service_rate', 'service_duration')
+    def _compute_total_cost(self):
+        """Calculate total service cost"""
+        for record in self:
+            record.total_cost = (record.service_rate or 0.0) * (record.service_duration or 0.0)

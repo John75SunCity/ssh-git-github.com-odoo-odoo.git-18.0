@@ -291,3 +291,15 @@ class RecordsAdvancedBillingPeriod(models.Model):
         for record in self:
             if record.start_date >= record.end_date:
                 raise ValidationError(_('Start date must be before end date'))
+
+    @api.depends('billing_line_ids', 'billing_line_ids.subtotal')
+    def _compute_subtotal(self):
+        """Calculate billing subtotal"""
+        for record in self:
+            record.subtotal = sum(record.billing_line_ids.mapped('subtotal'))
+
+    @api.depends('billing_ids', 'billing_ids.total_amount')
+    def _compute_total(self):
+        """Calculate total from billing lines"""
+        for record in self:
+            record.total_amount = sum(record.billing_ids.mapped('total_amount'))

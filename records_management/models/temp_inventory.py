@@ -120,6 +120,8 @@ class TransitoryItems(models.Model):
     storage_impact = fields.Float(string='Storage Impact',
                                  compute='_compute_storage_values', store=True,
                                  help="Storage space impact for capacity planning")
+    retrieval_item_ids = fields.Char(string="Retrieval Item Ids", help="Items for retrieval")
+    rate_id = fields.Many2one("res.partner", string="Rate Id", help="Applicable rate")
 
     @api.depends('creation_date')
     def _compute_days_in_system(self):

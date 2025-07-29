@@ -53,6 +53,7 @@ class CustomerRetrievalRates(models.Model):
                                 help='Additional charge per page')
     per_box_rate = fields.Float(string='Per Box Rate',
                                help='Charge for accessing a box')
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True)
     
     @api.depends('partner_id', 'rate_type', 'profile_type')
     def _compute_name(self):

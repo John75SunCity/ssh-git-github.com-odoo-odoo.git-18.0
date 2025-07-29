@@ -250,3 +250,12 @@ class RecordsLocation(models.Model):
                     if current == record:
                         raise ValidationError(_('Cannot create circular location hierarchy'))
                     current = current.parent_location_id
+
+    @api.depends('box_count', 'max_capacity')
+    def _compute_utilization(self):
+        """Calculate current utilization percentage"""
+        for record in self:
+            if record.max_capacity and record.max_capacity > 0:
+                record.current_utilization = (record.box_count / record.max_capacity) * 100
+            else:
+                record.current_utilization = 0.0

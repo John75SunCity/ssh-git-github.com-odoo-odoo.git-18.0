@@ -172,6 +172,7 @@ class ShreddingService(models.Model):
                                 tracking=True)
     
     # ==========================================
+    witness_ids = fields.Many2many('res.users', string='Witnesses')
     # COMPUTED FIELDS
     # ==========================================
     @api.depends('actual_start_time', 'actual_completion_time')

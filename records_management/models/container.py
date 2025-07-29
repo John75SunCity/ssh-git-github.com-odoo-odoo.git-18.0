@@ -118,6 +118,7 @@ class RecordsContainer(models.Model):
     certification_expiry = fields.Date(string='Certification Expiry', tracking=True)
 
     # ==========================================
+    box_ids = fields.One2many('records.box', 'parent_container_id', string='Boxes')
     # COMPUTED FIELDS
     # ==========================================
     @api.depends('length', 'width', 'height')
@@ -231,3 +232,8 @@ class RecordsContainer(models.Model):
             if record.naid_certified and record.certification_expiry:
                 if record.certification_expiry < fields.Date.today():
                     raise ValidationError(_('NAID certification has expired'))
+    @api.depends('box_ids')
+    def _compute_box_count(self):
+        """Count boxes in container"""
+        for record in self:
+            record.box_count = len(record.box_ids)
