@@ -33,8 +33,8 @@ access_shred_svc_user,shred.svc.user,model_shredding_service,records_management.
 access_shred_svc_manager,shred.svc.manager,model_shredding_service,records_management.group_records_manager,1,1,1,1
 access_destruction_item_user,destruction.item.user,model_destruction_item,records_management.group_records_user,1,1,1,0
 access_destruction_item_manager,destruction.item.manager,model_destruction_item,records_management.group_records_manager,1,1,1,1
-access_wo_shred_user,wo.shred.user,model_work_order_shredding,records_management.group_records_user,1,1,1,0
-access_wo_shred_manager,wo.shred.manager,model_work_order_shredding,records_management.group_records_manager,1,1,1,1
+access_work_order_shredding_user,work.order.shredding.user,model_work_order_shredding,records_management.group_records_user,1,1,1,0
+access_work_order_shredding_manager,work.order.shredding.manager,model_work_order_shredding,records_management.group_records_manager,1,1,1,1
 access_paper_bale_user,paper.bale.user,model_paper_bale,records_management.group_records_user,1,1,1,0
 access_paper_bale_manager,paper.bale.manager,model_paper_bale,records_management.group_records_manager,1,1,1,1
 access_paper_bale_recycling_user,paper.bale.recycling.user,model_paper_bale_recycling,records_management.group_records_user,1,1,1,0
@@ -112,8 +112,8 @@ access_portal_feedback_user,portal.feedback.user,model_portal_feedback,records_m
 access_portal_feedback_manager,portal.feedback.manager,model_portal_feedback,records_management.group_records_manager,1,1,1,1
 access_rec_dept_bill_cont_user,rec.dept.bill.cont.user,model_records_department_billing_contact,records_management.group_records_user,1,1,1,0
 access_rec_dept_bill_cont_manager,rec.dept.bill.cont.manager,model_records_department_billing_contact,records_management.group_records_manager,1,1,1,1
-access_srv_improve_temp_user,srv.improve.temp.user,model_srv_improve_temp,records_management.group_records_user,1,1,1,0
-access_srv_improve_temp_manager,srv.improve.temp.manager,model_srv_improve_temp,records_management.group_records_manager,1,1,1,1
+access_survey_improvement_action_user,survey.improvement.action.user,model_survey_improvement_action,records_management.group_records_user,1,1,1,0
+access_survey_improvement_action_manager,survey.improvement.action.manager,model_survey_improvement_action,records_management.group_records_manager,1,1,1,1
 access_container_contents_user,container.contents.user,model_container_contents,records_management.group_records_user,1,1,1,0
 access_container_contents_manager,container.contents.manager,model_container_contents,records_management.group_records_manager,1,1,1,1
 access_records_billing_user,records.billing.user,model_records_billing,records_management.group_records_user,1,1,1,0

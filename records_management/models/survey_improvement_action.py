@@ -11,7 +11,7 @@ class SurveyImprovementAction(models.Model):
     Survey Improvement Action
     """
 
-    _name = "srv.improve.temp"
+    _name = "survey.improvement.action"
     _description = "Survey Improvement Action"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

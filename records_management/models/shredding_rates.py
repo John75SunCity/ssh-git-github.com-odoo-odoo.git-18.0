@@ -352,18 +352,18 @@ class CustomerRateProfileExtension(models.Model):
         for record in self:
             if record.partner_id:
                 name_parts = [record.partner_id.name]
-                
+
                 # Add profile type if available
-                if hasattr(record, 'profile_type') and record.profile_type:
+                if hasattr(record, "profile_type") and record.profile_type:
                     name_parts.append(record.profile_type.title())
-                
+
                 # Add service details if available
                 if record.service_category and record.service_type:
                     service_name = dict(record._fields["service_type"].selection).get(
                         record.service_type, record.service_type
                     )
                     name_parts.append(service_name)
-                
+
                 record.name = " - ".join(name_parts)
             else:
                 record.name = "New Rate Profile"
