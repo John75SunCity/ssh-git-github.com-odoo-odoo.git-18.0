@@ -23,7 +23,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
     # CORE FIELDS
     # ==========================================
     name = fields.Char(string="Assignment Reference", default="Bin Assignment")
-    work_order_id = fields.Many2one("wo.shred", string="Work Order", required=True)
+    work_order_id = fields.Many2one("work.order.shredding", string="Work Order", required=True)
     customer_id = fields.Many2one(
         "res.partner",
         string="Customer",
