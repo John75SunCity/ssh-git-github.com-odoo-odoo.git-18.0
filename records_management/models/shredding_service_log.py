@@ -39,7 +39,7 @@ class ShreddingServiceLog(models.Model):
     activity_description = fields.Char(string="Activity Description", required=True)
 
     # Related entities
-    shredding_service_id = fields.Many2one("shred.svc",
+    shredding_service_id = fields.Many2one("shredding.service",
         string="Shredding Service",
         required=True,
         ondelete="cascade"
