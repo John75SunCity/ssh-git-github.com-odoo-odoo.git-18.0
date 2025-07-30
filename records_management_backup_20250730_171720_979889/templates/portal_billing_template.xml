@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Portal Billing Dashboard Template -->
+        <template id="portal_billing_dashboard" name="Portal Billing Dashboard">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Billing Information</t>
+                </t>
+                
+                <div class="container mt-3">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Billing Summary</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-info"><i class="fa fa-file-text-o"/></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Current Month</span>
+                                                    <span class="info-box-number" t-esc="current_month_total"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="info-box">
+                                                <span class="info-box-icon bg-success"><i class="fa fa-money"/></span>
+                                                <div class="info-box-content">
+                                                    <span class="info-box-text">Outstanding Balance</span>
+                                                    <span class="info-box-number" t-esc="outstanding_balance"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Invoices -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Recent Invoices</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Invoice #</th>
+                                                    <th>Date</th>
+                                                    <th>Amount</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="invoices" t-as="invoice">
+                                                    <tr>
+                                                        <td><t t-esc="invoice.name"/></td>
+                                                        <td><t t-esc="invoice.invoice_date"/></td>
+                                                        <td><t t-esc="invoice.amount_total"/></td>
+                                                        <td>
+                                                            <span t-att-class="'badge badge-' + ('success' if invoice.payment_state == 'paid' else 'warning')">
+                                                                <t t-esc="invoice.payment_state"/>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <a t-attf-href="/my/invoices/#{invoice.id}" class="btn btn-sm btn-primary">View</a>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Portal Billing Details Template -->
+        <template id="portal_billing_details" name="Portal Billing Details">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Billing Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5>Service Details</h5>
+                                    <table class="table table-sm">
+                                        <t t-foreach="billing_lines" t-as="line">
+                                            <tr>
+                                                <td><t t-esc="line.description"/></td>
+                                                <td class="text-right"><t t-esc="line.amount"/></td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6>Contact Information</h6>
+                                            <p t-if="billing_contact.name">
+                                                <strong><t t-esc="billing_contact.name"/></strong><br/>
+                                                <t t-esc="billing_contact.email"/><br/>
+                                                <t t-esc="billing_contact.phone"/>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

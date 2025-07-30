@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Document Retrieval Menu Structure -->
+
+        <!-- Work Orders submenu under Operations -->
+        <menuitem id="menu_document_retrieval_work_orders" name="Document Retrieval Orders" parent="menu_records_operations" action="action_document_retrieval_work_order" sequence="15" groups="records_management.group_records_user"/>
+
+        <!-- Rates Configuration submenus under Configuration -->
+        <menuitem id="menu_document_retrieval_rates" name="Document Retrieval Rates" parent="menu_records_configuration" sequence="60" groups="records_management.group_records_manager"/>
+
+        <menuitem id="menu_document_retrieval_base_rates" name="Base Rates" parent="menu_document_retrieval_rates" action="action_document_retrieval_rates" sequence="10" groups="records_management.group_records_manager"/>
+
+        <menuitem id="menu_customer_retrieval_rates" name="Customer-Specific Rates" parent="menu_document_retrieval_rates" action="action_customer_retrieval_rates" sequence="20" groups="records_management.group_records_manager"/>
+    </data>
+</odoo>

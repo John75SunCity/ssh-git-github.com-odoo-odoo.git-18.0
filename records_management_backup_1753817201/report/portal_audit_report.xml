@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portal Audit Trail Report Template - NAID AAA Compliant -->
+    <template id="portal_audit_report">
+        <t t-call="web.external_layout">
+            <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)"/>
+            <div class="page">
+                <!-- Header Section with NAID Compliance Badge -->
+                <div class="row mb-4">
+                    <div class="col-8">
+                        <h1 class="text-primary">
+                            <i class="fa fa-shield text-success"/> NAID AAA Audit Trail Report
+                        </h1>
+                        <h2 class="text-muted">Request: <span t-field="o.name" class="text-dark"/></h2>
+                    </div>
+                    <div class="col-4 text-right">
+                        <div class="alert alert-info">
+                            <strong>NAID AAA Certified</strong><br/>
+                            <small>Secure Document Management</small>
+                        </div>
+                        <p class="text-muted">
+                            <strong>Report Generated:</strong><br/>
+                            <span t-esc="datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')"/>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Request Summary Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fa fa-info-circle"/> Request Summary</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td><strong>Request ID:</strong></td>
+                                        <td><span t-field="o.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Customer:</strong></td>
+                                        <td><span t-field="o.partner_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Request Type:</strong></td>
+                                        <td><span t-field="o.request_type"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Priority:</strong></td>
+                                        <td>
+                                            <span t-if="o.priority == 'high'" class="badge badge-danger">High</span>
+                                            <span t-elif="o.priority == 'medium'" class="badge badge-warning">Medium</span>
+                                            <span t-else="" class="badge badge-success">Low</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td><strong>Current Status:</strong></td>
+                                        <td>
+                                            <span t-if="o.state == 'draft'" class="badge badge-secondary">Draft</span>
+                                            <span t-elif="o.state == 'submitted'" class="badge badge-info">Submitted</span>
+                                            <span t-elif="o.state == 'in_progress'" class="badge badge-warning">In Progress</span>
+                                            <span t-elif="o.state == 'completed'" class="badge badge-success">Completed</span>
+                                            <span t-elif="o.state == 'cancelled'" class="badge badge-danger">Cancelled</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Submission Date:</strong></td>
+                                        <td><span t-field="o.create_date" t-options="{'widget': 'datetime'}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Last Updated:</strong></td>
+                                        <td><span t-field="o.write_date" t-options="{'widget': 'datetime'}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Assigned To:</strong></td>
+                                        <td><span t-field="o.assigned_to.name" t-if="o.assigned_to"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-3" t-if="o.description">
+                            <div class="col-12">
+                                <strong>Description:</strong>
+                                <p class="text-muted mt-2" t-field="o.description"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Trail Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h4 class="mb-0"><i class="fa fa-history"/> Detailed Audit Trail</h4>
+                        <small>Chronological log of all activities and state changes</small>
+                    </div>
+                    <div class="card-body">
+                        <div t-if="o.audit_log">
+                            <div t-raw="o.audit_log" class="audit-log-content"/>
+                        </div>
+                        <div t-else="">
+                            <div class="alert alert-info">
+                                <i class="fa fa-info-circle"/> No detailed audit log available. System tracking below shows key milestones.
+                            </div>
+                        </div>
+
+                        <!-- Message Thread Audit Trail -->
+                        <div class="mt-4" t-if="o.message_ids">
+                            <h5><i class="fa fa-comments"/> Activity Timeline</h5>
+                            <div class="timeline">
+                                <t t-foreach="o.message_ids.sorted('date', reverse=True)" t-as="message">
+                                    <div class="timeline-item" t-if="message.message_type in ['notification', 'comment']">
+                                        <div class="timeline-marker bg-primary"></div>
+                                        <div class="timeline-content">
+                                            <div class="timeline-header">
+                                                <strong t-esc="message.author_id.name or 'System'"/>
+                                                <small class="text-muted float-right">
+                                                    <span t-field="message.date" t-options="{'widget': 'datetime'}"/>
+                                                </small>
+                                            </div>
+                                            <div class="timeline-body">
+                                                <span t-raw="message.body"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital Signatures Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0"><i class="fa fa-certificate"/> Digital Signatures &amp; Approvals</h4>
+                        <small>NAID AAA compliant electronic signature verification</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="signature-block">
+                                    <h5><i class="fa fa-user"/> Customer/Requestor Signature</h5>
+                                    <div t-if="o.requestor_signature_date">
+                                        <div class="alert alert-success">
+                                            <i class="fa fa-check-circle"/> <strong>Digitally Signed</strong><br/>
+                                            <strong>Date:</strong> <span t-field="o.requestor_signature_date" t-options="{'widget': 'datetime'}"/><br/>
+                                            <strong>Signer:</strong> <span t-field="o.partner_id.name"/><br/>
+                                            <t t-if="o.requestor_signature_ip">
+                                                <strong>IP Address:</strong> <span t-field="o.requestor_signature_ip"/><br/>
+                                            </t>
+                                            <small class="text-muted">Signature verified and timestamped</small>
+                                        </div>
+                                        <div t-if="o.requestor_signature" class="signature-image mt-2">
+                                            <img t-att-src="'data:image/png;base64,' + o.requestor_signature.decode('utf-8')" 
+                                                 class="img-fluid border" style="max-height: 100px;" alt="Customer Signature"/>
+                                        </div>
+                                    </div>
+                                    <div t-else="" class="alert alert-warning">
+                                        <i class="fa fa-exclamation-triangle"/> Pending customer signature
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="signature-block">
+                                    <h5><i class="fa fa-user-shield"/> Administrator Approval</h5>
+                                    <div t-if="o.admin_signature_date">
+                                        <div class="alert alert-success">
+                                            <i class="fa fa-check-circle"/> <strong>Approved &amp; Signed</strong><br/>
+                                            <strong>Date:</strong> <span t-field="o.admin_signature_date" t-options="{'widget': 'datetime'}"/><br/>
+                                            <strong>Administrator:</strong> <span t-field="o.assigned_to.name"/><br/>
+                                            <small class="text-muted">Administrative approval confirmed</small>
+                                        </div>
+                                        <div t-if="o.admin_signature" class="signature-image mt-2">
+                                            <img t-att-src="'data:image/png;base64,' + o.admin_signature.decode('utf-8')" 
+                                                 class="img-fluid border" style="max-height: 100px;" alt="Admin Signature"/>
+                                        </div>
+                                    </div>
+                                    <div t-else="" class="alert alert-info">
+                                        <i class="fa fa-clock-o"/> Pending administrative approval
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compliance Information Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0"><i class="fa fa-shield"/> NAID AAA Compliance Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <ul class="list-unstyled">
+                                    <li><i class="fa fa-check text-success"/> Secure audit trail maintained</li>
+                                    <li><i class="fa fa-check text-success"/> Digital signatures verified</li>
+                                    <li><i class="fa fa-check text-success"/> Timestamps recorded in UTC</li>
+                                    <li><i class="fa fa-check text-success"/> User access logged</li>
+                                    <li><i class="fa fa-check text-success"/> Document chain of custody maintained</li>
+                                    <li><i class="fa fa-check text-success"/> Regulatory compliance verified</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="compliance-seal">
+                                    <div class="badge badge-success badge-lg p-3">
+                                        <i class="fa fa-shield fa-2x d-block mb-2"/>
+                                        <strong>NAID AAA</strong><br/>
+                                        <small>Certified Secure</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Related Documents Section -->
+                <div class="card mb-4" t-if="o.attachment_ids">
+                    <div class="card-header bg-secondary text-white">
+                        <h4 class="mb-0"><i class="fa fa-paperclip"/> Related Documents &amp; Attachments</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Document Name</th>
+                                        <th>File Type</th>
+                                        <th>Size</th>
+                                        <th>Upload Date</th>
+                                        <th>Uploaded By</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.attachment_ids" t-as="attachment">
+                                        <tr>
+                                            <td><span t-field="attachment.name"/></td>
+                                            <td><span t-field="attachment.mimetype"/></td>
+                                            <td><span t-esc="'%.2f KB' % (attachment.file_size / 1024.0)"/></td>
+                                            <td><span t-field="attachment.create_date" t-options="{'widget': 'datetime'}"/></td>
+                                            <td><span t-field="attachment.create_uid.name"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Footer with Verification -->
+                <div class="card mt-4">
+                    <div class="card-footer bg-light">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <p class="mb-0">
+                                    <strong>Report Verification:</strong> This audit trail report has been generated automatically 
+                                    from the Sun City Shred Records Management System and is compliant with NAID AAA standards 
+                                    for secure document destruction and chain of custody requirements.
+                                </p>
+                                <small class="text-muted">
+                                    All timestamps are recorded in UTC. Digital signatures are cryptographically verified. 
+                                    This report serves as legal documentation of the request lifecycle and compliance adherence.
+                                </small>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <div class="qr-code-placeholder border p-3 text-center">
+                                    <small class="text-muted">QR Code for<br/>Digital Verification</small>
+                                    <div class="mt-2">
+                                        <i class="fa fa-qrcode fa-3x text-muted"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom CSS for Report Styling -->
+            <style>
+                .timeline {
+                    position: relative;
+                    padding-left: 30px;
+                }
+                .timeline-item {
+                    position: relative;
+                    margin-bottom: 20px;
+                }
+                .timeline-marker {
+                    position: absolute;
+                    left: -35px;
+                    top: 5px;
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                }
+                .timeline-content {
+                    background: #f8f9fa;
+                    padding: 15px;
+                    border-radius: 5px;
+                    border-left: 3px solid #007bff;
+                }
+                .timeline-header {
+                    margin-bottom: 10px;
+                    border-bottom: 1px solid #dee2e6;
+                    padding-bottom: 5px;
+                }
+                .signature-block {
+                    border: 1px solid #dee2e6;
+                    padding: 20px;
+                    border-radius: 5px;
+                    height: 100%;
+                }
+                .signature-image {
+                    text-align: center;
+                }
+                .compliance-seal {
+                    margin-top: 20px;
+                }
+                .badge-lg {
+                    font-size: 1.1em;
+                    padding: 15px;
+                }
+                .audit-log-content {
+                    background: #f8f9fa;
+                    padding: 15px;
+                    border-radius: 5px;
+                    font-family: monospace;
+                    font-size: 0.9em;
+                    max-height: 300px;
+                    overflow-y: auto;
+                    border: 1px solid #dee2e6;
+                }
+                .qr-code-placeholder {
+                    background: #f8f9fa;
+                    min-height: 120px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                }
+                @media print {
+                    .page-break {
+                        page-break-before: always;
+                    }
+                }
+            </style>
+        </t>
+    </template>
+
+    <!-- Report Action Definition -->
+    <report
+        id="action_portal_audit_report"
+        string="NAID AAA Audit Trail Report"
+        model="portal.request"
+        report_type="qweb-pdf"
+        name="records_management.portal_audit_report"
+        file="records_management.portal_audit_report"
+        print_report_name="'NAID_Audit_Trail_%s_%s' % (object.name, datetime.datetime.now().strftime('%Y%m%d'))"
+        paperformat="base.paperformat_us"
+        attachment_use="False"
+        menu="False"
+    />
+
+    <!-- Additional Report for HTML View -->
+    <report
+        id="action_portal_audit_report_html"
+        string="NAID AAA Audit Trail (Web View)"
+        model="portal.request"
+        report_type="qweb-html"
+        name="records_management.portal_audit_report"
+        file="records_management.portal_audit_report"
+        menu="False"
+    />
+
+</odoo>

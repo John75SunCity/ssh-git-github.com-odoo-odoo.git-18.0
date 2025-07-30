@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Essential Records Management Products -->
+
+        <!-- Document Storage Container - Basic -->
+        <!-- Document Storage Container - Basic -->
+        <record id="product_storage_container" model="product.product">
+            <field name="name">Document Storage Container</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-CONTAINER</field>
+            <field name="list_price">5.0</field>
+            <field name="standard_price">1.5</field>
+            <field name="description">Standard archive container for document storage</field>
+        </record>
+
+        <!-- Document Storage Service - Basic -->
+        <record id="product_storage_service" model="product.product">
+            <field name="name">Monthly Storage Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-STORAGE</field>
+            <field name="list_price">25.00</field>
+            <field name="standard_price">15.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">Monthly document storage service</field>
+        </record>
+
+        <!-- Document Shredding Service - Basic -->
+        <record id="product_shredding_service" model="product.product">
+            <field name="name">Document Shredding Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-SHRED</field>
+            <field name="list_price">50.00</field>
+            <field name="standard_price">30.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">Secure document destruction service</field>
+        </record>
+    </data>
+</odoo>

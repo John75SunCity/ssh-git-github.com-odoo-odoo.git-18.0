@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Product Template for Document Storage Box -->
+        <record id="records_management_product_template_box" model="product.template" forcecreate="False">
+            <field name="name">Document Storage Box</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-BOX-001</field>
+            <field name="list_price">15.00</field>
+            <field name="standard_price">10.00</field>
+            <field name="weight">1.5</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">Standard archive box for document storage and management. Durable cardboard construction suitable for long-term storage.</field>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">True</field>
+        </record>
+
+        <!-- Product Template for Document File -->
+        <record id="records_management_product_template_file" model="product.template" forcecreate="False">
+            <field name="name">Document File</field>
+            <field name="type">consu</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-FILE-001</field>
+            <field name="list_price">5.00</field>
+            <field name="standard_price">3.50</field>
+            <field name="weight">0.5</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">Standard file folder for document storage and management. High-quality manila folders with tabs for easy identification.</field>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">True</field>
+        </record>
+
+        <!-- Storage Service Product -->
+        <record id="records_management_product_template_storage_service" model="product.template" forcecreate="False">
+            <field name="name">Document Storage Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-STOR-SVC-001</field>
+            <field name="list_price">25.00</field>
+            <field name="standard_price">15.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">Monthly document storage service including climate-controlled storage, security monitoring, and retrieval services.</field>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+        </record>
+
+        <!-- Shredding Service Product -->
+        <record id="records_management_product_template_shredding_service" model="product.template" forcecreate="False">
+            <field name="name">Document Shredding Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-SHRED-SVC-001</field>
+            <field name="list_price">50.00</field>
+            <field name="standard_price">30.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">Secure document destruction service with certificate of destruction. HIPAA and SOX compliant shredding.</field>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+        </record>
+    </data>
+</odoo>

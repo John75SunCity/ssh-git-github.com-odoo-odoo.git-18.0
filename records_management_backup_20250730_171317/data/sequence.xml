@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Additional sequence variations for records management -->
+        <record id="seq_shredding_service" model="ir.sequence">
+            <field name="name">Shredding Service</field>
+            <field name="code">shredding.service</field>
+            <field name="prefix">SHRED/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
+        <record id="seq_records_customer_inventory" model="ir.sequence">
+            <field name="name">Customer Inventory Report</field>
+            <field name="code">customer.inventory.report</field>
+            <field name="prefix">INV/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
+        <record id="seq_records_bale" model="ir.sequence">
+            <field name="name">Paper Bale</field>
+            <field name="code">records_management.bale</field>
+            <field name="prefix">BALE/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
+        <record id="seq_records_load" model="ir.sequence">
+            <field name="name">Paper Load</field>
+            <field name="code">records_management.load</field>
+            <field name="prefix">LOAD/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

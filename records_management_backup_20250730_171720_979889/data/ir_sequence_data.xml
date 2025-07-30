@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Records Container -->
+        <record id="seq_records_container" model="ir.sequence">
+            <field name="name">Records Container Sequence</field>
+            <field name="code">records.container</field>
+            <field name="prefix">CONT</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Records Document -->
+        <record id="seq_records_document" model="ir.sequence">
+            <field name="name">Records Document Sequence</field>
+            <field name="code">records.document</field>
+            <field name="prefix">DOC</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Pickup Requests -->
+        <record id="seq_pickup_request" model="ir.sequence">
+            <field name="name">Pickup Request Sequence</field>
+            <field name="code">pickup.request</field>
+            <field name="prefix">PICKUP</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Shredding Service -->
+        <record id="seq_shredding_service" model="ir.sequence">
+            <field name="name">Shredding Service Sequence</field>
+            <field name="code">shredding.service</field>
+            <field name="prefix">SHRED</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Deletion Requests -->
+        <record id="seq_records_deletion_request" model="ir.sequence">
+            <field name="name">Records Deletion Request Sequence</field>
+            <field name="code">records.deletion.request</field>
+            <field name="prefix">DEL</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Container Numbers -->
+        <record id="seq_records_container_barcode" model="ir.sequence">
+            <field name="name">Records Container Number Sequence</field>
+            <field name="code">records.container.number</field>
+            <field name="prefix">CN</field>
+            <field name="padding">8</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Shredding Work Orders -->
+        <record id="seq_work_order_shredding" model="ir.sequence">
+            <field name="name">Shredding Work Order Sequence</field>
+            <field name="code">work.order.shredding</field>
+            <field name="prefix">WO</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Shredding Bin Barcodes -->
+        <record id="seq_shredding_bin_barcode" model="ir.sequence">
+            <field name="name">Shredding Bin Barcode Sequence</field>
+            <field name="code">shredding.bin.barcode</field>
+            <field name="prefix"></field>
+            <field name="padding">10</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Document Retrieval Work Orders -->
+        <record id="seq_document_retrieval_work_order" model="ir.sequence">
+            <field name="name">Document Retrieval Work Order Sequence</field>
+            <field name="code">document.retrieval.work.order</field>
+            <field name="prefix">RET</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for NAID Certificates -->
+        <record id="seq_naid_certificate" model="ir.sequence">
+            <field name="name">NAID Certificate Sequence</field>
+            <field name="code">naid.certificate</field>
+            <field name="prefix">NAID</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

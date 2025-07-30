@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Document Retrieval Rates Data -->
+        <!-- This file contains default rates for document retrieval services -->
+
+        <!-- Placeholder for future document retrieval rate records -->
+        <!-- Will be populated when specific retrieval rates are configured -->
+
+    </data>
+</odoo>

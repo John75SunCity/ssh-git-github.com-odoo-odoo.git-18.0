@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Global Corporate Field Label Configuration -->
+        <record id="field_labels_corporate_global" model="field.label.customization">
+            <field name="name">Corporate Standard (Global)</field>
+            <field name="description">Standard corporate terminology for all customers</field>
+            <field name="priority">10</field>
+            <field name="label_container_number">File Container ID</field>
+            <field name="label_item_description">Document Category</field>
+            <field name="label_content_description">Document Contents</field>
+            <field name="label_date_from">Period Start</field>
+            <field name="label_date_to">Period End</field>
+            <field name="label_record_type">Document Classification</field>
+            <field name="label_confidentiality">Security Level</field>
+            <field name="label_project_code">Cost Center</field>
+            <field name="label_client_reference">Matter Number</field>
+            <field name="label_authorized_by">Department Head</field>
+            <field name="label_created_by_dept">Originating Department</field>
+        </record>
+
+        <!-- Legal Industry Field Label Configuration -->
+        <record id="field_labels_legal_global" model="field.label.customization">
+            <field name="name">Legal Industry Standard (Global)</field>
+            <field name="description">Legal industry terminology</field>
+            <field name="priority">5</field>
+            <field name="label_container_number">Matter Container</field>
+            <field name="label_item_description">Case Documents</field>
+            <field name="label_content_description">File Contents</field>
+            <field name="label_date_from">Case Start Date</field>
+            <field name="label_date_to">Case End Date</field>
+            <field name="label_record_type">Document Type</field>
+            <field name="label_confidentiality">Attorney-Client Privilege</field>
+            <field name="label_project_code">Matter Code</field>
+            <field name="label_client_reference">Client Matter Number</field>
+            <field name="label_authorized_by">Supervising Attorney</field>
+            <field name="label_destruction_date">Retention Expiry</field>
+        </record>
+
+        <!-- Healthcare Industry Field Label Configuration -->
+        <record id="field_labels_healthcare_global" model="field.label.customization">
+            <field name="name">Healthcare Industry Standard (Global)</field>
+            <field name="description">Healthcare industry terminology</field>
+            <field name="priority">5</field>
+            <field name="label_container_number">Medical Records Container</field>
+            <field name="label_item_description">Patient Records</field>
+            <field name="label_content_description">Medical File Contents</field>
+            <field name="label_date_from">Treatment Start</field>
+            <field name="label_date_to">Treatment End</field>
+            <field name="label_record_type">Record Category</field>
+            <field name="label_confidentiality">HIPAA Classification</field>
+            <field name="label_project_code">Department Code</field>
+            <field name="label_client_reference">Patient ID</field>
+            <field name="label_authorized_by">Chief Medical Officer</field>
+            <field name="label_special_handling">HIPAA Special Instructions</field>
+        </record>
+
+        <!-- Financial Services Field Label Configuration -->
+        <record id="field_labels_financial_global" model="field.label.customization">
+            <field name="name">Financial Services Standard (Global)</field>
+            <field name="description">Financial services industry terminology</field>
+            <field name="priority">5</field>
+            <field name="label_container_number">Account File Container</field>
+            <field name="label_item_description">Financial Records</field>
+            <field name="label_content_description">Account Documentation</field>
+            <field name="label_date_from">Account Period Start</field>
+            <field name="label_date_to">Account Period End</field>
+            <field name="label_record_type">Financial Document Type</field>
+            <field name="label_confidentiality">Regulatory Classification</field>
+            <field name="label_project_code">Account Number</field>
+            <field name="label_client_reference">Customer Account</field>
+            <field name="label_authorized_by">Branch Manager</field>
+            <field name="label_compliance_notes">Regulatory Notes</field>
+        </record>
+
+    </data>
+</odoo>

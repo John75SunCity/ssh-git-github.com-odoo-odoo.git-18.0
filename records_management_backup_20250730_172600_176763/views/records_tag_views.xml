@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Minimal Records Tag Views - Phase 1 Deployment -->
+    
+    <!-- Simple List View (was Tree in older Odoo versions) -->
+    <record id="records_tag_tree_view_simple" model="ir.ui.view">
+        <field name="name">records.tag.list.simple</field>
+        <field name="model">records.tag</field>
+        <field name="arch" type="xml">
+            <list string="Records Tags">
+                <field name="name"/>
+                <field name="color"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Simple Form View -->
+    <record id="records_tag_form_view_simple" model="ir.ui.view">
+        <field name="name">records.tag.form.simple</field>
+        <field name="model">records.tag</field>
+        <field name="arch" type="xml">
+            <form string="Record Tag">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Simple Search View -->
+    <record id="records_tag_search_view_simple" model="ir.ui.view">
+        <field name="name">records.tag.search.simple</field>
+        <field name="model">records.tag</field>
+        <field name="arch" type="xml">
+            <search string="Search Records Tags">
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Simple Action -->
+    <record id="action_records_tag_simple" model="ir.actions.act_window">
+        <field name="name">Records Tags</field>
+        <field name="res_model">records.tag</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="records_tag_tree_view_simple"/>
+        <field name="search_view_id" ref="records_tag_search_view_simple"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first record tag!
+            </p>
+        </field>
+    </record>
+
+</odoo>

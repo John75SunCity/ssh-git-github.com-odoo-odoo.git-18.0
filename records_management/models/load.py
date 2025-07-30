@@ -1,80 +1,70 @@
 # -*- coding: utf-8 -*-
-"""
-Paper Load - RECYCLING REVENUE FIELD ENHANCEMENT COMPLETE ✅
-"""
-
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
-
+from odoo.exceptions import UserError, ValidationError
 
 class Load(models.Model):
-    """
-    Paper Load - RECYCLING REVENUE FIELD ENHANCEMENT COMPLETE ✅
-    """
-
-    _name = "load"
-    _description = "Paper Load - RECYCLING REVENUE FIELD ENHANCEMENT COMPLETE ✅"
+    _name = 'load'
+    _description = 'Load'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = "name"
-
-    # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
-    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
-    active = fields.Boolean(default=True)
-
-    # Basic state management
+    _order = 'name desc'
+    _rec_name = 'name'
+    
+    # Basic Information
+    name = fields.Char(string='Name', required=True, tracking=True, index=True)
+    description = fields.Text(string='Description')
+    sequence = fields.Integer(string='Sequence', default=10)
+    
+    # State Management
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('prepared', 'Prepared'),
-        ('loading', 'Loading'),
-        ('shipped', 'Shipped'),
-        ('sold', 'Sold'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done')
-    ], string='State', default='draft', tracking=True)
-
-    # Common fields
-    description = fields.Text()
-    notes = fields.Text()
-    date = fields.Date(default=fields.Date.today)
-
-    def action_confirm(self):
-        """Confirm the record"""
-        self.write({'state': 'confirmed'})
-
-    def action_done(self):
-        """Mark as done"""
-        self.write({'state': 'done'})
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived')
+    ], string='Status', default='draft', tracking=True)
     
-    def action_prepare_load(self):
-        """Prepare load for shipping"""
-        self.ensure_one()
-        if self.state != 'draft':
-            raise ValidationError(_('Can only prepare draft loads'))
-        self.write({'state': 'prepared'})
-        self.message_post(body=_('Load prepared for shipping'))
+    # Company and User
+    company_id = fields.Many2one('res.company', string='Company', 
+                                 default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', string='Responsible User', 
+                              default=lambda self: self.env.user)
     
-    def action_start_loading(self):
-        """Start the loading process"""
-        self.ensure_one()
-        if self.state not in ['draft', 'prepared']:
-            raise ValidationError(_('Can only start loading from draft or prepared state'))
-        self.write({'state': 'loading'})
-        self.message_post(body=_('Loading process started'))
+    # Timestamps
+    date_created = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    date_modified = fields.Datetime(string='Modified Date')
     
-    def action_ship_load(self):
-        """Ship the load"""
-        self.ensure_one()
-        if self.state != 'loading':
-            raise ValidationError(_('Can only ship loads that are currently loading'))
-        self.write({'state': 'shipped'})
-        self.message_post(body=_('Load shipped'))
+    # Control Fields
+    active = fields.Boolean(string='Active', default=True)
+    notes = fields.Text(string='Internal Notes')
     
-    def action_mark_sold(self):
-        """Mark load as sold"""
-        self.ensure_one()
-        if self.state != 'shipped':
-            raise ValidationError(_('Can only mark shipped loads as sold'))
-        self.write({'state': 'sold'})
-        self.message_post(body=_('Load marked as sold'))
+    # Computed Fields
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    
+    @api.depends('name')
+    def _compute_display_name(self):
+        """Compute display name."""
+        for record in self:
+            record.display_name = record.name or _('New')
+    
+    def write(self, vals):
+        """Override write to update modification date."""
+        vals['date_modified'] = fields.Datetime.now()
+        return super().write(vals)
+    
+    def action_activate(self):
+        """Activate the record."""
+        self.write({'state': 'active'})
+    
+    def action_deactivate(self):
+        """Deactivate the record."""
+        self.write({'state': 'inactive'})
+    
+    def action_archive(self):
+        """Archive the record."""
+        self.write({'state': 'archived', 'active': False})
+    
+    @api.model
+    def create(self, vals):
+        """Override create to set default values."""
+        if not vals.get('name'):
+            vals['name'] = _('New Record')
+        return super().create(vals)
