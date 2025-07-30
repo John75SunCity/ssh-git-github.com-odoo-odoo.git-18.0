@@ -137,6 +137,7 @@ class ResConfigSettings(models.TransientModel):
     
     pos_customer_display_type = fields.Selection(
         related='customer_display_type',
+        string='POS Customer Display Type',
         readonly=False
     )
     
@@ -155,11 +156,13 @@ class ResConfigSettings(models.TransientModel):
     
     pos_customer_display_bg_img = fields.Binary(
         related='customer_display_bg_img',
+        string='POS Customer Display Background Image',
         readonly=False
     )
     
     pos_customer_display_bg_img_name = fields.Char(
         related='customer_display_bg_img_name',
+        string='POS Customer Display Background Image Filename',
         readonly=False
     )
     

@@ -60,23 +60,9 @@ class CustomerRetrievalRates(models.Model):
     per_container_rate = fields.Float(
         string="Per Container Rate", help="Charge for accessing a container"
     )
-    partner_id = fields.Many2one("res.partner", string="Customer", required=True)
 
-    @api.depends("partner_id", "rate_type", "profile_type")
-    def _compute_name(self):
-        """Compute display name - Legacy compatibility"""
-        for record in self:
-            if record.partner_id:
-                name_parts = [record.partner_id.name]
-                if record.rate_type:
-                    name_parts.append(record.rate_type.title())
-                if record.profile_type:
-                    name_parts.append(
-                        f"({record.profile_type.replace('_', ' ').title()})"
-                    )
-                record.name = " - ".join(name_parts)
-            else:
-                record.name = "New Rate"
+    # Let parent class handle name computation since we inherit from customer.rate.profile
+    # The parent _compute_name method will work correctly with inherited fields
 
     def calculate_retrieval_cost(
         self,

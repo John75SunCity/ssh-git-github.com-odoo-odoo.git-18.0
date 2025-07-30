@@ -216,35 +216,13 @@ class BaseRates(models.Model):
         )
 
 
-class CustomerRateProfile(models.Model):
+class CustomerRateProfileExtension(models.Model):
     """
-    Customer Rate Profiles - Negotiated rates for specific customers
-    Overrides base rates with flexible adjustment methods
+    Extension for Customer Rate Profiles - Add shredding-specific fields
+    This extends the base customer.rate.profile model with additional functionality
     """
 
-    _name = "customer.rate.profile"
-    _description = "Customer Rate Profile"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "partner_id, service_category, service_type"
-
-    # Core identification
-    name = fields.Char(string="Profile Name", compute="_compute_name", store=True)
-    company_id = fields.Many2one(
-        "res.company", default=lambda self: self.env.company, required=True
-    )
-    user_id = fields.Many2one(
-        "res.users", default=lambda self: self.env.user, tracking=True
-    )
-    active = fields.Boolean(default=True)
-
-    # Customer relationship
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Customer",
-        required=True,
-        tracking=True,
-        domain=[("customer_rank", ">", 0)],
-    )
+    _inherit = "customer.rate.profile"
 
     # Service matching (matches base rates)
     service_category = fields.Selection(
@@ -368,15 +346,25 @@ class CustomerRateProfile(models.Model):
     approved_by = fields.Many2one("res.users", string="Approved By", tracking=True)
     approval_date = fields.Date(string="Approval Date", tracking=True)
 
-    @api.depends("partner_id", "service_category", "service_type")
+    @api.depends("partner_id", "service_category", "service_type", "profile_type")
     def _compute_name(self):
-        """Generate profile name"""
+        """Generate profile name - Extended version with service details"""
         for record in self:
-            if record.partner_id and record.service_category and record.service_type:
-                service_name = dict(record._fields["service_type"].selection).get(
-                    record.service_type, record.service_type
-                )
-                record.name = f"{record.partner_id.name} - {service_name}"
+            if record.partner_id:
+                name_parts = [record.partner_id.name]
+                
+                # Add profile type if available
+                if hasattr(record, 'profile_type') and record.profile_type:
+                    name_parts.append(record.profile_type.title())
+                
+                # Add service details if available
+                if record.service_category and record.service_type:
+                    service_name = dict(record._fields["service_type"].selection).get(
+                        record.service_type, record.service_type
+                    )
+                    name_parts.append(service_name)
+                
+                record.name = " - ".join(name_parts)
             else:
                 record.name = "New Rate Profile"
 
