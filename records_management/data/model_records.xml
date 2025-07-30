@@ -108,7 +108,7 @@
         <!-- These will be created by the demo.xml file after customers are available -->
 
         <!-- Demo Shredding Service Templates -->
-        <record id="demo_shredding_service_template" model="shred.svc">
+        <record id="demo_shredding_service_template" model="shredding.service">
             <field name="name">Standard Document Shredding</field>
             <field name="customer_id" ref="demo_customer_abc_corp"/>
             <field name="service_type">onsite</field>
