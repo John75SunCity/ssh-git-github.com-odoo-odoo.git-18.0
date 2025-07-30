@@ -150,8 +150,6 @@ class TransitoryFieldConfig(models.Model):
         "show_description",
         "show_content_description",
         "show_destruction_date",
-        "show_review_date",
-        "show_retention_policy",
         "require_container_number",
         "require_description",
         "require_content_description",

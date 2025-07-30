@@ -328,17 +328,12 @@ class CustomerRateProfileExtension(models.Model):
     expiration_date = fields.Date(string="Expiration Date", tracking=True)
     contract_reference = fields.Char(string="Contract Reference", tracking=True)
 
-    # Rate management
+    # Rate management - extend parent state with additional options
     state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("active", "Active"),
-            ("expired", "Expired"),
+        selection_add=[
             ("superseded", "Superseded"),
+            ("expired", "Expired"),
         ],
-        string="Status",
-        default="draft",
-        tracking=True,
     )
 
     # Additional details

@@ -41,7 +41,7 @@ class CustomerRateProfile(models.Model):
         default=lambda self: self.env.company,
     )
     user_id = fields.Many2one(
-        "res.users", string="Responsible User", default=lambda self: self.env.user
+        "res.users", string="Rate Manager", default=lambda self: self.env.user
     )
     state = fields.Selection(
         [("draft", "Draft"), ("active", "Active"), ("archived", "Archived")],
