@@ -62,7 +62,6 @@ class PosConfig(models.Model):
         """Archive the record."""
         self.write({'state': 'archived', 'active': False})
     
-    @api.model
     def create(self, vals):
         """Override create to set default values."""
         if not vals.get('name'):

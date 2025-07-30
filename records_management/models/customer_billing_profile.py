@@ -276,9 +276,7 @@ class CustomerBillingProfile(models.Model):
 
     # ==========================================
     # CRON METHODS
-    # ==========================================
-    @api.model
-    def _cron_generate_scheduled_invoices(self):
+    # ==========================================def _cron_generate_scheduled_invoices(self):
         """Cron job to generate scheduled invoices"""
         active_profiles = self.search([('state', '=', 'active')])
 
