@@ -272,7 +272,7 @@ class ShreddingService(models.Model):
             raise UserError(_("Only draft services can be confirmed"))
 
         if self.name == _("New"):
-            self.name = self.env["ir.sequence"].next_by_code("shred.svc") or _("New")
+            self.name = self.env["ir.sequence"].next_by_code("shredding.service") or _("New")
 
         self.write({"state": "confirmed"})
         self.message_post(

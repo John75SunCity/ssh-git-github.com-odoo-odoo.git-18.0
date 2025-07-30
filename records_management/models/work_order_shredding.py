@@ -11,7 +11,7 @@ class WorkOrderShredding(models.Model):
     Shredding Work Order
     """
 
-    _name = "wo.shred"
+    _name = "work.order.shredding"
     _description = "Shredding Work Order"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

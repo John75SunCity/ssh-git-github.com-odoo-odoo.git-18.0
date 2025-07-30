@@ -11,7 +11,7 @@ class StockLot(models.Model):
     Stock Lot Attribute
     """
 
-    _name = "stock.lot.attr"
+    _name = "stock.lot.attribute"
     _description = "Stock Lot Attribute"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

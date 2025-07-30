@@ -11,7 +11,7 @@ class IrActionsReport(models.Model):
     Temporary Model
     """
 
-    _name = "stock.recv.label"
+    _name = "stock.report_reception_report_label"
     _description = "Temporary Model"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

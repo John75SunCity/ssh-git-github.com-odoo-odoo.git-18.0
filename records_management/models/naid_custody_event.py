@@ -11,7 +11,7 @@ class NAIDCustodyEvent(models.Model):
     NAID Custody Event
     """
 
-    _name = "naid.coc.event"
+    _name = "naid.custody.event"
     _description = "NAID Custody Event"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

@@ -11,7 +11,7 @@ class NAIDAuditLog(models.Model):
     NAID AAA Compliance Audit Log
     """
 
-    _name = "naid.audit"
+    _name = "naid.audit.log"
     _description = "NAID AAA Compliance Audit Log"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "name"

@@ -53,7 +53,7 @@ class MobileBinKeyWizard(models.Model):
             self.message_post(body=_('Lookup data refreshed'))
             return {
                 'type': 'ir.actions.act_window',
-                'res_model': 'mobile.bin.wiz',
+                'res_model': 'mobile.bin.key.wizard',
                 'res_id': self.id,
                 'view_mode': 'form',
                 'target': 'new',

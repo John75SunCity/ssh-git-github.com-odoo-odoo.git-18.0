@@ -44,19 +44,19 @@
         </record>
 
         <!-- Demo Document Types -->
-        <record id="demo_document_type_contracts" model="rec.doc.type">
+        <record id="demo_document_type_contracts" model="records.document.type">
             <field name="name">Contracts</field>
             <field name="description">Legal contracts and agreements</field>
             <field name="state">confirmed</field>
         </record>
 
-        <record id="demo_document_type_invoices" model="rec.doc.type">
+        <record id="demo_document_type_invoices" model="records.document.type">
             <field name="name">Invoices</field>
             <field name="description">Financial invoices and receipts</field>
             <field name="state">confirmed</field>
         </record>
 
-        <record id="demo_document_type_hr_files" model="rec.doc.type">
+        <record id="demo_document_type_hr_files" model="records.document.type">
             <field name="name">HR Personnel Files</field>
             <field name="description">Human resources and employee records</field>
             <field name="state">confirmed</field>
