@@ -147,7 +147,7 @@ class TransitoryFieldConfig(models.Model):
 
     @api.depends(
         "show_container_number",
-        "show_description", 
+        "show_description",
         "show_content_description",
         "show_date_ranges",
         "show_sequence_ranges",
@@ -161,7 +161,7 @@ class TransitoryFieldConfig(models.Model):
         "show_created_by_dept",
         "show_authorized_by",
         "show_special_handling",
-        "show_compliance_notes", 
+        "show_compliance_notes",
         "show_weight_estimate",
         "show_size_estimate",
         "require_container_number",
