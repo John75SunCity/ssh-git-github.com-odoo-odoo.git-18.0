@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.11.0.0",  # CRITICAL: Fixed model reference shred.svc -> shredding.service
+    "version": "18.0.07.36",  # CRITICAL: Fixed model reference shred.svc -> shredding.service
     "category": "Document Management",
     "summary": "Enterprise-Grade Records Management: 102 Models, AI-Ready Analytics, NAID AAA Compliance, Advanced Customer Portal & POS Integration",
     "description": """
