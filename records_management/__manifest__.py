@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.9.0.0",  # Wizard import fixes and cleanup
+    "version": "18.0.10.0.0",  # Fixed email import issue in monitoring system
     "category": "Document Management",
     "summary": "Enterprise-Grade Records Management: 102 Models, AI-Ready Analytics, NAID AAA Compliance, Advanced Customer Portal & POS Integration",
     "description": """

@@ -26,8 +26,8 @@ from odoo import models, fields, api, tools, http
 from odoo.exceptions import UserError
 import requests
 import smtplib
-from email.mime.text import MimeText
-from email.mime.multipart import MimeMultipart
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 _logger = logging.getLogger(__name__)
 
