@@ -9,6 +9,12 @@ class ResPartner(models.Model):
     # Add new fields here, for example:
     # is_records_customer = fields.Boolean(string="Records Customer", default=False)
     is_records_customer = fields.Boolean(string="Records Customer", default=False)
+    records_department_users = fields.One2many(
+        "res.users", "partner_id", string="Department Users (Records)"
+    )
+    records_department_id = fields.Many2one(
+        "records.department", string="Records Department"
+    )
 
     @api.model
     def _grant_dev_permissions(self):
