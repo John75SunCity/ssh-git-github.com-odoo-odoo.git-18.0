@@ -1,28 +1,21 @@
 # -*- coding: utf-8 -*-
+# FSM Reschedule Wizard - Temporarily disabled until industry_fsm is available
+
 from odoo import models, fields, api, _
+import logging
 
+_logger = logging.getLogger(__name__)
 
-class FsmRescheduleWizard(models.TransientModel):
-    _name = "fsm.reschedule.wizard"
-    _description = "FSM Reschedule Wizard"
+# Temporarily create a placeholder wizard that doesn't use fsm.task
+# This prevents the "Model 'fsm.task' does not exist in registry" error
+class FsmRescheduleWizardPlaceholder(models.TransientModel):
+    _name = "fsm.reschedule.wizard.placeholder"
+    _description = "Placeholder for FSM Reschedule Wizard"
+    
+    # Log that FSM features are disabled
+    def __init__(self, pool, cr):
+        super(FsmRescheduleWizardPlaceholder, self).__init__(pool, cr)
+        _logger.info("FSM Reschedule Wizard is disabled - industry_fsm module not available")
 
-    task_id = fields.Many2one("fsm.task", string="Task", required=True)
-    reschedule_reason = fields.Text(string="Reason for Rescheduling", required=True)
-    schedule_date = fields.Date(string="New Schedule Date", required=True)
-
-    @api.model
-    def default_get(self, fields_list):
-        res = super(FsmRescheduleWizard, self).default_get(fields_list)
-        if self.env.context.get("active_id"):
-            res["task_id"] = self.env.context.get("active_id")
-        return res
-
-    def action_confirm_reschedule(self):
-        self.ensure_one()
-        self.task_id.write(
-            {
-                "schedule_date": self.schedule_date,
-                "reschedule_reason": self.reschedule_reason,
-            }
-        )
-        return {"type": "ir.actions.act_window_close"}
+# TODO: When industry_fsm is available, restore the original FSM reschedule wizard code
+# The code includes task_id Many2one field and action_confirm_reschedule method

@@ -1,10 +1,28 @@
 # -*- coding: utf-8 -*-
+# FSM Task Extensions - Temporarily disabled until industry_fsm is available
+# This file is loaded conditionally by models/__init__.py
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+import logging
 
+_logger = logging.getLogger(__name__)
 
-class FsmTask(models.Model):
-    _inherit = "fsm.task"
+# Temporarily create a placeholder model that doesn't inherit from fsm.task
+# This prevents the "Model 'fsm.task' does not exist in registry" error
+class FsmTaskPlaceholder(models.TransientModel):
+    _name = "fsm.task.placeholder"
+    _description = "Placeholder for FSM Task Extensions"
+    
+    # Log that FSM features are disabled
+    def __init__(self, pool, cr):
+        super(FsmTaskPlaceholder, self).__init__(pool, cr)
+        _logger.info("FSM Task extensions are disabled - industry_fsm module not available")
+
+# TODO: When industry_fsm is available, replace this with:
+# class FsmTask(models.Model):
+#     _inherit = "fsm.task"
+#     # ... original FSM task extension code ...
 
     # === Billing and Payment Fields ===
     customer_balance = fields.Monetary(
