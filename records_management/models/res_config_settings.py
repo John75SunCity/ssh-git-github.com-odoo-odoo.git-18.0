@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields
 
 class ResConfigSettings(models.Model):
     _inherit = 'res.config.settings'
@@ -7,11 +7,11 @@ class ResConfigSettings(models.Model):
     _order = 'name'
     _rec_name = 'name'
     
-    # Core fields
-    name = fields.Char(string='Name', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user)
-    active = fields.Boolean(string='Active', default=True)
+    # Example of a configuration field
+    module_records_management_setting = fields.Boolean(
+        "Example Setting",
+        config_parameter='records_management.setting'
+    )
     
     # State management
     state = fields.Selection([
