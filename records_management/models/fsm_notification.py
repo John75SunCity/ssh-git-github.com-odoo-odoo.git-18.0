@@ -13,9 +13,12 @@ class FsmNotificationPlaceholder(models.TransientModel):
     _name = "fsm.notification.placeholder"
     _description = "Placeholder for FSM Notification Manager"
     
-    # Log that FSM features are disabled
-    def __init__(self, pool, cr):
-        super(FsmNotificationPlaceholder, self).__init__(pool, cr)
+    # Simple placeholder field to make this a valid model
+    name = fields.Char("Placeholder Name", default="FSM Notification Placeholder")
+    
+    @api.model
+    def _log_fsm_disabled(self):
+        """Log that FSM features are disabled"""
         _logger.info("FSM Notification extensions are disabled - industry_fsm module not available")
 
 # TODO: When industry_fsm is available, restore the original FSM notification code

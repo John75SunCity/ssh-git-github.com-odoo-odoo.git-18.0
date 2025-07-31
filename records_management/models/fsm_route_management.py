@@ -15,9 +15,12 @@ class FsmRouteManagementPlaceholder(models.TransientModel):
     _name = "fsm.route.management.placeholder"
     _description = "Placeholder for FSM Route Management"
     
-    # Log that FSM features are disabled
-    def __init__(self, pool, cr):
-        super(FsmRouteManagementPlaceholder, self).__init__(pool, cr)
+    # Simple placeholder field to make this a valid model
+    name = fields.Char("Placeholder Name", default="FSM Route Management Placeholder")
+    
+    @api.model
+    def _log_fsm_disabled(self):
+        """Log that FSM features are disabled"""
         _logger.info("FSM Route Management extensions are disabled - industry_fsm module not available")
 
 # TODO: When industry_fsm is available, restore the original FSM route management code

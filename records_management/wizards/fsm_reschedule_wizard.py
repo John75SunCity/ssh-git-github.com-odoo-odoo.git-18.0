@@ -12,9 +12,12 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
     _name = "fsm.reschedule.wizard.placeholder"
     _description = "Placeholder for FSM Reschedule Wizard"
     
-    # Log that FSM features are disabled
-    def __init__(self, pool, cr):
-        super(FsmRescheduleWizardPlaceholder, self).__init__(pool, cr)
+    # Simple placeholder field to make this a valid model
+    name = fields.Char("Placeholder Name", default="FSM Reschedule Wizard Placeholder")
+    
+    @api.model
+    def _log_fsm_disabled(self):
+        """Log that FSM features are disabled"""
         _logger.info("FSM Reschedule Wizard is disabled - industry_fsm module not available")
 
 # TODO: When industry_fsm is available, restore the original FSM reschedule wizard code
