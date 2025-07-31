@@ -129,9 +129,12 @@ Records Management System - Enterprise Edition
         "project",  # For project tasks - usually available
         "calendar",  # For meeting/event scheduling - usually available
         "survey",  # For customer feedback forms/suggestions - usually available
+        # Field Service Management Dependencies
+        "industry_fsm",
+        "industry_fsm_sale",
+        "industry_fsm_stock",
         # Commented out problematic dependencies
         # 'frontdesk',     # Third-party module - not guaranteed in all installations
-        # 'industry_fsm',  # Enterprise module - may not exist in all 18.0 editions
         # 'web_tour',      # May be integrated into web module in 18.0
     ],
     "external_dependencies": {

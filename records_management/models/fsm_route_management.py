@@ -54,7 +54,10 @@ class FsmRouteManagement(models.Model):
                 "project_id": original_task.project_id.id,
                 "company_id": original_task.company_id.id,
                 "user_id": original_task.user_id.id,
-                # Copy other relevant fields from the original task
+                # Enhancement: Copy other relevant fields from the original task
+                "sale_order_id": original_task.sale_order_id.id,
+                "employee_id": original_task.employee_id.id,
+                "task_type": original_task.task_type,
             }
         )
         return True
