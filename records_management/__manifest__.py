@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.07.36",  # CRITICAL: Fixed model reference shred.svc -> shredding.service
+    "version": "18.0.07.37",  # Incremented version for the fix
     "category": "Document Management",
     "summary": "Enterprise-Grade Records Management: 102 Models, AI-Ready Analytics, NAID AAA Compliance, Advanced Customer Portal & POS Integration",
     "description": """
@@ -31,7 +31,7 @@ Records Management System - Enterprise Edition
 • **Individual Task Rescheduling**: Wizard-driven rescheduling with reason tracking.
 • **Enhanced Billing Visibility**: View customer balance and invoice status directly on FSM tasks.
 
-�🔒 **NAID AAA COMPLIANCE & SECURITY**:
+🔒 **NAID AAA COMPLIANCE & SECURITY**:
 • Complete Audit Trail with Encrypted Signatures
 • Chain of Custody Tracking with Tamper-Proof Logs
 • ISO 15489 Document Lifecycle Management
@@ -140,7 +140,6 @@ Records Management System - Enterprise Edition
             "cryptography",  # For encryption and security
             "requests",  # For monitoring webhook notifications
             # 'pulp',      # For optimization - uncomment when ready for production
-            # 'torch',     # For AI features - optional dependency
         ],
         # Binary dependencies (if any)
         # 'bin': [
@@ -148,9 +147,9 @@ Records Management System - Enterprise Edition
         # ],
     },
     "data": [
-        # Demo data moved to demo section
-        "security/records_management_security.xml",
+        # Security and data files
         "security/ir.model.access.csv",
+        "security/records_management_security.xml",
         "security/additional_models_access.xml",
         "data/ir_sequence_data.xml",
         "data/sequence.xml",
@@ -159,91 +158,88 @@ Records Management System - Enterprise Edition
         "data/storage_fee.xml",
         "data/scheduled_actions.xml",
         "data/paper_products.xml",
-        "data/portal_mail_templates.xml",  # New: Email/SMS templates for notifications
-        "data/naid_compliance_data.xml",  # New: NAID data for audits/signatures
-        "data/feedback_survey_data.xml",  # New: Default feedback survey
-        "data/advanced_billing_demo.xml",  # New: Advanced billing demo data
-        "data/field_label_demo_data.xml",  # New: Field label customization demo data
-        "data/model_records.xml",  # Model demo records - now fixed with proper field definitions
-        # Load base menu structure first (parent menus only, no actions)
+        "data/portal_mail_templates.xml",
+        "data/naid_compliance_data.xml",
+        "data/feedback_survey_data.xml",
+        "data/advanced_billing_demo.xml",
+        "data/field_label_demo_data.xml",
+        "data/model_records.xml",
+        # Views
         "views/records_management_base_menus.xml",
-        # Load all action-containing view files
         "views/records_container_views.xml",
         "views/records_tag_views.xml",
         "views/records_location_views.xml",
         "views/records_document_type_views.xml",
         "views/records_document_views.xml",
-        "views/records_digital_scan_views.xml",  # New: Digital scan views
-        "views/records_vehicle_views.xml",  # New: Vehicle management views
+        "views/records_digital_scan_views.xml",
+        "views/records_vehicle_views.xml",
         "views/pickup_request_views.xml",
         "views/shredding_views.xml",
         "views/stock_lot_views.xml",
         "views/customer_inventory_views.xml",
-        "report/records_reports.xml",  # Contains report actions
-        # Load menu items with actions after actions are defined
-        "views/records_management_menus.xml",
-        "views/records_retention_policy_views.xml",
-        # Additional views that depend on base menus
-        "views/hard_drive_scan_views.xml",  # New: Hard drive scanning views
         "views/res_partner_views.xml",
         "views/billing_views.xml",
         "views/departmental_billing_views.xml",
         "views/barcode_views.xml",
         "views/paper_bale_views.xml",
-        "views/paper_bale_recycling_views.xml",  # New: Paper recycling bale views
-        "views/paper_load_shipment_views.xml",  # New: Load shipment views
+        "views/paper_bale_recycling_views.xml",
+        "views/paper_load_shipment_views.xml",
         "views/pos_config_views.xml",
         "views/visitor_pos_wizard_views.xml",
-        "views/portal_request_views.xml",  # New: Views for portal requests
-        "views/fsm_task_views.xml",  # New: FSM task views
-        "views/portal_feedback_views.xml",  # New: Feedback views
-        "views/records_container_type_converter_views.xml",  # New: Container type conversion wizard
-        "views/permanent_flag_wizard_views.xml",  # New: Permanent flag security wizard
-        "views/document_retrieval_work_order_views.xml",  # New: Document retrieval work orders
-        "views/shredding_rates_views.xml",  # New: Shredding rates views
-        "views/shredding_inventory_views.xml",  # New: Shredding inventory views
-        "views/advanced_billing_views.xml",  # New: Advanced billing views
-        "views/customer_billing_profile_views.xml",  # New: Customer billing profile views
-        "views/field_label_customization_views.xml",  # New: Field label customization views
-        "views/bin_key_management_views.xml",  # New: Bin key management views
-        "views/partner_bin_key_views.xml",  # New: Partner bin key views
-        "views/mobile_bin_key_wizard_views.xml",  # New: Mobile bin key wizard views
-        "views/key_restriction_views.xml",  # New: Key restriction management views
-        "views/key_restriction_checker_views.xml",  # New: Key restriction checker views
+        "views/records_management_menus.xml",
+        "views/records_retention_policy_views.xml",
+        "views/hard_drive_scan_views.xml",
+        "views/fsm_task_views.xml",
+        "views/portal_request_views.xml",
+        "views/portal_feedback_views.xml",
+        "views/records_container_type_converter_views.xml",
+        "views/permanent_flag_wizard_views.xml",
+        "views/document_retrieval_work_order_views.xml",
+        "views/shredding_rates_views.xml",
+        "views/shredding_inventory_views.xml",
+        "views/advanced_billing_views.xml",
+        "views/customer_billing_profile_views.xml",
+        "views/field_label_customization_views.xml",
+        "views/bin_key_management_views.xml",
+        "views/partner_bin_key_views.xml",
+        "views/mobile_bin_key_wizard_views.xml",
+        "views/key_restriction_views.xml",
+        "views/key_restriction_checker_views.xml",
+        # Reports
+        "report/records_reports.xml",
         "report/destruction_certificate_report.xml",
         "report/bale_label_report.xml",
-        "report/portal_audit_report.xml",  # New: Audit reports for NAID
-        "views/departmental_billing_menus.xml",  # Loaded after main menus for proper dependencies
-        "views/barcode_menus.xml",  # Loaded after main menus for proper dependencies
-        "views/portal_request_menus.xml",  # Loaded after main menus for proper dependencies
-        "views/portal_feedback_menus.xml",  # Loaded after main menus for proper dependencies
-        "views/paper_recycling_menus.xml",  # New: Paper recycling menus
-        "views/document_retrieval_menus.xml",  # New: Document retrieval menus
+        "report/portal_audit_report.xml",
+        "views/departmental_billing_menus.xml",
+        "views/barcode_menus.xml",
+        "views/portal_request_menus.xml",
+        "views/portal_feedback_menus.xml",
+        "views/paper_recycling_menus.xml",
+        "views/document_retrieval_menus.xml",
+        # Templates
         "templates/my_portal_inventory.xml",
-        "templates/portal_quote_template.xml",  # New: Quote generation
-        "templates/portal_billing_template.xml",  # New: Billing updates
-        "templates/portal_inventory_template.xml",  # New: Inventory views
-        "templates/portal_overview.xml",  # New: Portal overview/tour
-        "templates/portal_feedback_template.xml",  # New: Feedback form
-        "templates/portal_centralized_docs.xml",  # New: Centralized docs dashboard
-        "templates/portal_document_retrieval.xml",  # New: Document retrieval portal
-        "data/user_setup.xml",  # New: User setup data
+        "templates/portal_quote_template.xml",
+        "templates/portal_billing_template.xml",
+        "templates/portal_inventory_template.xml",
+        "templates/portal_overview.xml",
+        "templates/portal_feedback_template.xml",
+        "templates/portal_centralized_docs.xml",
+        "templates/portal_document_retrieval.xml",
+        "data/user_setup.xml",
+        # Wizards
         "wizards/fsm_reschedule_wizard_views.xml",
         "data/fsm_mail_templates.xml",
         "data/fsm_automated_actions.xml",
     ],
     "demo": [
         "demo/odoo.xml",
-        "demo/demo_records.xml",  # Comprehensive demo data for development and testing
-        "demo/demo_users.xml",  # New: Demo data for users
+        "demo/demo_records.xml",
+        "demo/demo_users.xml",
     ],
-    "qweb": [],
     "application": True,
     "installable": True,
     "auto_install": False,
-    "sequence": 1000,  # Load after all dependencies are loaded
-    "license": "LGPL-3",
-    "post_init_hook": "post_init_hook",  # For any setup that needs to run after other modules
+    "post_init_hook": "post_init_hook",
     "assets": {
         "web.assets_backend": [
             "records_management/static/src/scss/records_management.scss",
