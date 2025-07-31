@@ -68,3 +68,22 @@ class FsmRouteManagement(models.Model):
         while next_day.weekday() >= 5:  # Saturday = 5, Sunday = 6
             next_day += timedelta(days=1)
         return next_day
+
+    @api.model
+    def create(self, vals):
+        """Override create to set default values and handle specific logic."""
+        if "schedule_date" in vals:
+            vals["schedule_date"] = self._convert_to_utc(vals["schedule_date"])
+        record = super(FsmRouteManagement, self).create(vals)
+        # Additional logic after record creation, if necessary
+        return record
+
+    @api.model
+    def _convert_to_utc(self, local_dt):
+        """Converts a local datetime to UTC."""
+        if isinstance(local_dt, str):
+            local_dt = datetime.strptime(local_dt, "%Y-%m-%d %H:%M:%S")
+        # Assuming the server is set to the local timezone
+        local_tz = self.env.context.get("tz") or "UTC"
+        utc_dt = local_tz.localize(local_dt).astimezone(tz=timezone.utc)
+        return utc_dt.strftime("%Y-%m-%d %H:%M:%S")

@@ -105,38 +105,7 @@ Records Management System - Enterprise Edition
     "author": "John75SunCity",
     "website": "https://github.com/John75SunCity",
     "license": "LGPL-3",
-    "depends": [
-        # Core Odoo Dependencies (Required - Always Available)
-        "base",
-        "mail",
-        "web",
-        "portal",
-        # Business Logic Dependencies (Required - Standard Modules)
-        "product",
-        "stock",
-        "account",  # For invoicing/billing
-        "sale",  # For quotes/self-quotes
-        # Communication Dependencies
-        "sms",  # For SMS notifications
-        # Web/Portal Dependencies
-        "website",  # For website forms/quoting
-        # POS Dependencies
-        "point_of_sale",  # For walk-in services
-        # Optional/Enterprise Dependencies (May not be available in all editions)
-        "barcodes",  # For barcode scanning - sometimes optional
-        "sign",  # For electronic signatures (NAID compliance) - Enterprise only
-        "hr",  # For employee training/access - usually available
-        "project",  # For project tasks - usually available
-        "calendar",  # For meeting/event scheduling - usually available
-        "survey",  # For customer feedback forms/suggestions - usually available
-        # Field Service Management Dependencies
-        "industry_fsm",
-        "industry_fsm_sale",
-        "industry_fsm_stock",
-        # Commented out problematic dependencies
-        # 'frontdesk',     # Third-party module - not guaranteed in all installations
-        # 'web_tour',      # May be integrated into web module in 18.0
-    ],
+    
     "external_dependencies": {
         "python": [
             "qrcode",  # For QR code generation
