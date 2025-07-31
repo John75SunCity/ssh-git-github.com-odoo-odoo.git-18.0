@@ -4,7 +4,6 @@ from odoo import models, fields, api
 class ResConfigSettings(models.Model):
     _inherit = 'res.config.settings'
     _description = 'Res Config Settings'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
     _rec_name = 'name'
     

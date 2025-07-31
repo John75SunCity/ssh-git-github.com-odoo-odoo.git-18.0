@@ -5,7 +5,6 @@ from odoo.exceptions import UserError, ValidationError
 class PosConfig(models.Model):
     _inherit = 'pos.config'
     _description = 'Pos Config'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name desc'
     _rec_name = 'name'
     
