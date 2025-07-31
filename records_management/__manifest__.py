@@ -105,7 +105,34 @@ Records Management System - Enterprise Edition
     "author": "John75SunCity",
     "website": "https://github.com/John75SunCity",
     "license": "LGPL-3",
-    
+    # CRITICAL: Dependencies must be loaded BEFORE this module
+    "depends": [
+        # Core Odoo modules (always load first)
+        "base",
+        "mail",
+        "web",
+        # Business modules
+        "product",
+        "stock",
+        "account",
+        "sale",
+        "purchase",
+        # Portal and website
+        "portal",
+        "website",
+        # Field Service Management - CRITICAL for fsm.task models
+        "industry_fsm",
+        # Point of Sale integration
+        "point_of_sale",
+        # Electronic signatures
+        "sign",
+        # SMS and communication
+        "sms",
+        # HR for employee management
+        "hr",
+        # Survey for feedback system
+        "survey",
+    ],
     "external_dependencies": {
         "python": [
             "qrcode",  # For QR code generation
