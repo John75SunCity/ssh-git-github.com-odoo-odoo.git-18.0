@@ -78,6 +78,8 @@ access_naid_audit_log_user,naid.audit.log.user,model_naid_audit_log,records_mana
 access_naid_audit_log_manager,naid.audit.log.manager,model_naid_audit_log,records_management.group_records_manager,1,1,1,1
 access_naid_chain_custody_user,naid.chain.custody.user,model_naid_chain_custody,records_management.group_records_user,1,1,1,0
 access_naid_chain_custody_manager,naid.chain.custody.manager,model_naid_chain_custody,records_management.group_records_manager,1,1,1,1
+access_records_chain_of_custody_user,access_records_chain_of_custody_user,model_records_chain_of_custody,records_management.group_records_user,1,1,1,0
+access_records_chain_of_custody_manager,access_records_chain_of_custody_manager,model_records_chain_of_custody,records_management.group_records_manager,1,1,1,1
 access_naid_coc_event_user,naid.coc.event.user,model_naid_custody_event,records_management.group_records_user,1,1,1,0
 access_naid_coc_event_manager,naid.coc.event.manager,model_naid_custody_event,records_management.group_records_manager,1,1,1,1
 access_naid_audit_user,naid.audit.user,model_naid_audit_log,records_management.group_records_user,1,1,1,0
@@ -120,7 +122,6 @@ access_records_location_inspection_user,records.location.inspection.user,model_r
 access_records_location_inspection_manager,records.location.inspection.manager,model_records_location_inspection,records_management.group_records_manager,1,1,1,1
 access_shredding_service_log_user,shredding.service.log.user,model_shredding_service_log,records_management.group_records_user,1,0,0,0
 access_shredding_service_log_manager,shredding.service.log.manager,model_shredding_service_log,records_management.group_records_manager,1,1,1,1
-
 access_records_management_base_menus_user,records.management.base.menus.user,model_records_management_base_menus,records_management.group_records_user,1,1,1,0
 access_records_management_base_menus_manager,records.management.base.menus.manager,model_records_management_base_menus,records_management.group_records_manager,1,1,1,1
 access_shredding_rates_user,shredding.rates.user,model_shredding_rates,records_management.group_records_user,1,1,1,0
