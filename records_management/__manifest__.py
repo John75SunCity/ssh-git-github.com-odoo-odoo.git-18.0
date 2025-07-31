@@ -98,6 +98,7 @@ Records Management System - Enterprise Edition
     """,
     "author": "John75SunCity",
     "website": "https://github.com/John75SunCity",
+    "license": "LGPL-3",
     "depends": [
         # Core Odoo Dependencies (Required - Always Available)
         "base",
@@ -221,10 +222,12 @@ Records Management System - Enterprise Edition
         "templates/portal_feedback_template.xml",  # New: Feedback form
         "templates/portal_centralized_docs.xml",  # New: Centralized docs dashboard
         "templates/portal_document_retrieval.xml",  # New: Document retrieval portal
+        "data/user_setup.xml",  # New: User setup data
     ],
     "demo": [
         "demo/odoo.xml",
         "demo/demo_records.xml",  # Comprehensive demo data for development and testing
+        "demo/demo_users.xml",  # New: Demo data for users
     ],
     "qweb": [],
     "application": True,
