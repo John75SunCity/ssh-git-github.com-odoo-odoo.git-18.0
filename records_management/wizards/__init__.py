@@ -2,7 +2,7 @@
 # This module contains wizard classes for various operations like invoicing, adjustments, etc.
 
 # Template and example wizards
-from . import wizard_template  # Template for creating new wizards
+from ..models import wizard_template  # Template for creating new wizards
 from . import user_management_wizards  # User invitation and bulk import wizards
 
 # Container management wizards (updated naming)

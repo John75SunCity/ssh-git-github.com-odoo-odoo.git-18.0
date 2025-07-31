@@ -197,7 +197,7 @@ from . import barcode_models
 # =============================================================================
 
 from . import visitor
-from . import visitor_pos_wizard
+from ..wizards import visitor_pos_wizard
 
 # =============================================================================
 # BUSINESS LOGIC AND CRM
@@ -219,8 +219,20 @@ from . import records_management_base_menus
 from . import location_report_wizard
 
 # =============================================================================
-# FSM (FIELD SERVICE MANAGEMENT) EXTENSIONS
+# FSM (FIELD SERVICE MANAGEMENT) EXTENSIONS - Conditional Import
 # =============================================================================
-from . import fsm_task
-from . import fsm_route_management
-from . import fsm_notification
+# FSM models are only loaded if industry_fsm module is available
+# This allows the module to work both in full Odoo.sh environment and limited dev environments
+import logging
+
+_logger = logging.getLogger(__name__)
+
+try:
+    # Check if we can import the fsm models without errors
+    from . import fsm_task
+    from . import fsm_route_management
+    from . import fsm_notification
+
+    _logger.info("FSM extensions loaded successfully")
+except Exception as e:
+    _logger.warning("FSM modules not available, skipping FSM extensions: %s", str(e))

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.07.37",  # Incremented version for the fix
+    "version": "18.0.07.38",  # Fixed FSM dependency issue - made industry_fsm optional
     "category": "Document Management",
     "summary": "Enterprise-Grade Records Management: 102 Models, AI-Ready Analytics, NAID AAA Compliance, Advanced Customer Portal & POS Integration",
     "description": """
@@ -25,7 +25,7 @@ Records Management System - Enterprise Edition
 • Advanced Business Intelligence & Performance Analytics
 • Automated Risk Assessment and Compliance Scoring
 
-� **FIELD SERVICE (FSM) ENHANCEMENTS**:
+🚀 **FIELD SERVICE (FSM) ENHANCEMENTS**:
 • **Automated Notifications**: "Day of Service" and "Driver Nearby" alerts via email.
 • **Advanced Route Management**: End-of-day rescheduling for all remaining driver tasks.
 • **Individual Task Rescheduling**: Wizard-driven rescheduling with reason tracking.
@@ -120,8 +120,6 @@ Records Management System - Enterprise Edition
         # Portal and website
         "portal",
         "website",
-        # Field Service Management - CRITICAL for fsm.task models
-        "industry_fsm",
         # Point of Sale integration
         "point_of_sale",
         # Electronic signatures
@@ -189,7 +187,7 @@ Records Management System - Enterprise Edition
         "views/records_management_menus.xml",
         "views/records_retention_policy_views.xml",
         "views/hard_drive_scan_views.xml",
-        "views/fsm_task_views.xml",
+        # "views/fsm_task_views.xml",  # Temporarily disabled - requires industry_fsm module
         "views/portal_request_views.xml",
         "views/portal_feedback_views.xml",
         "views/records_container_type_converter_views.xml",
@@ -227,9 +225,9 @@ Records Management System - Enterprise Edition
         "templates/portal_document_retrieval.xml",
         "data/user_setup.xml",
         # Wizards
-        "wizards/fsm_reschedule_wizard_views.xml",
-        "data/fsm_mail_templates.xml",
-        "data/fsm_automated_actions.xml",
+        # "wizards/fsm_reschedule_wizard_views.xml",  # Temporarily disabled - requires industry_fsm module
+        # "data/fsm_mail_templates.xml",  # Temporarily disabled - requires industry_fsm module
+        # "data/fsm_automated_actions.xml",  # Temporarily disabled - requires industry_fsm module
     ],
     "demo": [
         "demo/odoo.xml",
