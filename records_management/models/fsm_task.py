@@ -8,19 +8,23 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+
 # Temporarily create a placeholder model that doesn't inherit from fsm.task
 # This prevents the "Model 'fsm.task' does not exist in registry" error
 class FsmTaskPlaceholder(models.TransientModel):
     _name = "fsm.task.placeholder"
     _description = "Placeholder for FSM Task Extensions"
-    
+
     # Simple placeholder field to make this a valid model
     name = fields.Char("Placeholder Name", default="FSM Task Placeholder")
-    
+
     @api.model
     def _log_fsm_disabled(self):
         """Log that FSM features are disabled"""
-        _logger.info("FSM Task extensions are disabled - industry_fsm module not available")
+        _logger.info(
+            "FSM Task extensions are disabled - industry_fsm module not available"
+        )
+
 
 # TODO: When industry_fsm is available, replace this with:
 # class FsmTask(models.Model):
