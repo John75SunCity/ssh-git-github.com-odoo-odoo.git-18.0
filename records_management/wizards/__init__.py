@@ -28,6 +28,9 @@ from . import (
 # Shredding and destruction wizards
 from . import hard_drive_scan_wizard  # Hard drive serial number scanner
 
+# FSM Wizards
+from . import fsm_reschedule_wizard
+
 # Future wizard imports will be added here as they are developed:
 # from . import invoice_wizard        # Automated invoicing wizard
 # from . import adjustment_wizard     # Inventory adjustment wizard

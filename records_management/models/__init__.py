@@ -217,3 +217,10 @@ from . import ir_module
 
 from . import records_management_base_menus
 from . import location_report_wizard
+
+# =============================================================================
+# FSM (FIELD SERVICE MANAGEMENT) EXTENSIONS
+# =============================================================================
+from . import fsm_task
+from . import fsm_route_management
+from . import fsm_notification

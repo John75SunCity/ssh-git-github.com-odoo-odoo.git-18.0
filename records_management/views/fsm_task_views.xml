@@ -321,6 +321,28 @@
         </field>
     </record>
 
+    <!-- Inherit FSM Task Form View to add new fields and buttons -->
+    <record id="fsm_task_form_view_inherit" model="ir.ui.view">
+        <field name="name">fsm.task.form.inherit</field>
+        <field name="model">fsm.task</field>
+        <field name="inherit_id" ref="industry_fsm.project_task_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_reschedule_wizard" string="Reschedule Job" type="object" class="btn-warning"/>
+                <button name="action_reschedule_remaining_tasks" string="Reschedule Remaining" type="object" class="btn-danger"/>
+            </xpath>
+            <xpath expr="//group[@name='fsm_info']" position="after">
+                <group string="Billing Information">
+                    <field name="customer_balance"/>
+                    <field name="invoice_payment_status"/>
+                </group>
+                <group string="Rescheduling">
+                    <field name="reschedule_reason"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
     <!-- 📅 Calendar View for Technician Scheduling -->
     <record id="view_fsm_task_calendar" model="ir.ui.view">
         <field name="name">fsm.task.calendar</field>

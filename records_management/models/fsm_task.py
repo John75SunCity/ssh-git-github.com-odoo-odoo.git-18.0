@@ -1,69 +1,86 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
+
 
 class FsmTask(models.Model):
-    _name = 'fsm.task'
-    _description = 'Fsm Task'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'name desc'
-    _rec_name = 'name'
-    
-    # Basic Information
-    name = fields.Char(string='Name', required=True, tracking=True, index=True)
-    description = fields.Text(string='Description')
-    sequence = fields.Integer(string='Sequence', default=10)
-    
-    # State Management
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('active', 'Active'),
-        ('inactive', 'Inactive'),
-        ('archived', 'Archived')
-    ], string='Status', default='draft', tracking=True)
-    
-    # Company and User
-    company_id = fields.Many2one('res.company', string='Company', 
-                                 default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible User', 
-                              default=lambda self: self.env.user)
-    
-    # Timestamps
-    date_created = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    date_modified = fields.Datetime(string='Modified Date')
-    
-    # Control Fields
-    active = fields.Boolean(string='Active', default=True)
-    notes = fields.Text(string='Internal Notes')
-    
-    # Computed Fields
-    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-    
-    @api.depends('name')
-    def _compute_display_name(self):
-        """Compute display name."""
-        for record in self:
-            record.display_name = record.name or _('New')
-    
-    def write(self, vals):
-        """Override write to update modification date."""
-        vals['date_modified'] = fields.Datetime.now()
-        return super().write(vals)
-    
-    def action_activate(self):
-        """Activate the record."""
-        self.write({'state': 'active'})
-    
-    def action_deactivate(self):
-        """Deactivate the record."""
-        self.write({'state': 'inactive'})
-    
-    def action_archive(self):
-        """Archive the record."""
-        self.write({'state': 'archived', 'active': False})
-    
-    def create(self, vals):
-        """Override create to set default values."""
-        if not vals.get('name'):
-            vals['name'] = _('New Record')
-        return super().create(vals)
+    _inherit = "fsm.task"
+
+    # === Billing and Payment Fields ===
+    customer_balance = fields.Monetary(
+        compute="_compute_customer_balance",
+        string="Customer Balance",
+        currency_field="company_currency_id",
+        help="Shows the customer's current account balance.",
+    )
+    invoice_payment_status = fields.Selection(
+        related="sale_order_id.invoice_ids.payment_state",
+        string="Payment Status",
+        store=True,
+        readonly=True,
+        help="The payment status of the invoice associated with this task.",
+    )
+    company_currency_id = fields.Many2one(
+        related="company_id.currency_id", string="Company Currency", readonly=True
+    )
+
+    # === Rescheduling Fields ===
+    reschedule_reason = fields.Text(
+        string="Reschedule Reason", help="Reason for rescheduling this task."
+    )
+
+    @api.depends("partner_id")
+    def _compute_customer_balance(self):
+        for task in self:
+            if task.partner_id:
+                # This computes the balance from the partner's journal items.
+                # It's a standard way to get the due balance in Odoo.
+                balance = 0.0
+                domain = [
+                    ("partner_id", "=", task.partner_id.id),
+                    (
+                        "account_id.account_type",
+                        "in",
+                        ["asset_receivable", "liability_payable"],
+                    ),
+                ]
+                account_move_lines = self.env["account.move.line"].search(domain)
+                for line in account_move_lines:
+                    balance += line.debit - line.credit
+                task.customer_balance = balance
+            else:
+                task.customer_balance = 0.0
+
+    # === Action Methods for Buttons ===
+    def action_reschedule_wizard(self):
+        """Opens a wizard to reschedule the task."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Reschedule Task"),
+            "res_model": "fsm.reschedule.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_task_id": self.id,
+            },
+        }
+
+    def action_reschedule_remaining_tasks(self):
+        """Reschedules all remaining tasks for the current driver for the next business day."""
+        self.ensure_one()
+        # This action will be handled by the fsm.route.management model
+        self.env["fsm.route.management"].reschedule_remaining_for_driver(
+            self.employee_id
+        )
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Tasks Rescheduled"),
+                "message": _(
+                    "All remaining tasks have been moved to the next business day."
+                ),
+                "type": "success",
+            },
+        }

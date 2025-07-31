@@ -25,7 +25,13 @@ Records Management System - Enterprise Edition
 • Advanced Business Intelligence & Performance Analytics
 • Automated Risk Assessment and Compliance Scoring
 
-🔒 **NAID AAA COMPLIANCE & SECURITY**:
+� **FIELD SERVICE (FSM) ENHANCEMENTS**:
+• **Automated Notifications**: "Day of Service" and "Driver Nearby" alerts via email.
+• **Advanced Route Management**: End-of-day rescheduling for all remaining driver tasks.
+• **Individual Task Rescheduling**: Wizard-driven rescheduling with reason tracking.
+• **Enhanced Billing Visibility**: View customer balance and invoice status directly on FSM tasks.
+
+�🔒 **NAID AAA COMPLIANCE & SECURITY**:
 • Complete Audit Trail with Encrypted Signatures
 • Chain of Custody Tracking with Tamper-Proof Logs
 • ISO 15489 Document Lifecycle Management
@@ -223,6 +229,9 @@ Records Management System - Enterprise Edition
         "templates/portal_centralized_docs.xml",  # New: Centralized docs dashboard
         "templates/portal_document_retrieval.xml",  # New: Document retrieval portal
         "data/user_setup.xml",  # New: User setup data
+        "wizards/fsm_reschedule_wizard_views.xml",
+        "data/fsm_mail_templates.xml",
+        "data/fsm_automated_actions.xml",
     ],
     "demo": [
         "demo/odoo.xml",
