@@ -125,9 +125,8 @@
 
         <record id="cron_cleanup_audit_logs" model="ir.cron">
             <field name="name">Cleanup Old Audit Logs</field>
-            <field name="model_id" ref="model_naid_audit_log"/>
             <field name="state">code</field>
-            <field name="code">model.cleanup_old_logs()</field>
+            <field name="code">env['naid.audit.log'].cleanup_old_logs()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
             <field name="active">True</field>
@@ -135,9 +134,8 @@
 
         <record id="cron_compliance_check" model="ir.cron">
             <field name="name">NAID Compliance Check</field>
-            <field name="model_id" ref="model_naid_compliance_enhanced"/>
             <field name="state">code</field>
-            <field name="code">model.check_compliance()</field>
+            <field name="code">env['naid.compliance'].check_compliance()</field>
             <field name="interval_number">4</field>
             <field name="interval_type">hours</field>
             <field name="active">True</field>

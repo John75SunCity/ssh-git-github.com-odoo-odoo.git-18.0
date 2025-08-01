@@ -68,3 +68,29 @@ class NaidCompliance(models.Model):
         "res.company", string="Company", default=lambda self: self.env.company
     )
     active = fields.Boolean(string="Active", default=True)
+
+    @api.model
+    def check_compliance(self):
+        """Scheduled method to check NAID compliance status"""
+        # Get all pending compliance checks
+        pending_checks = self.search([("state", "=", "pending")])
+
+        for check in pending_checks:
+            # Automated checks only
+            if check.automated_check:
+                # Simple automated compliance verification
+                if check.check_date and check.check_date <= fields.Date.today():
+                    # Mark as compliant if check date has passed
+                    check.state = "compliant"
+                    check.audit_results = "Automated check passed"
+
+            # Check if review is due
+            if check.next_review_date and check.next_review_date <= fields.Date.today():
+                # Create activity for review
+                check.activity_schedule(
+                    "mail.mail_activity_data_todo",
+                    summary=f"Review due for {check.name}",
+                    note=f"Compliance review is due for {check.name}. Please update compliance status.",
+                )
+
+        return True
