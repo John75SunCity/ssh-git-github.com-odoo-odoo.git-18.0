@@ -62,8 +62,15 @@ class DocumentRetrievalWorkOrder(models.Model):
         """Archive the record."""
         self.write({'state': 'archived', 'active': False})
     
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set default values."""
-        if not vals.get('name'):
-            vals['name'] = _('New Record')
-        return super().create(vals)
+        # Handle both single dict and list of dicts
+        if not isinstance(vals_list, list):
+            vals_list = [vals_list]
+        
+        for vals in vals_list:
+            if not vals.get('name'):
+                vals['name'] = _('New Record')
+        
+        return super().create(vals_list)
