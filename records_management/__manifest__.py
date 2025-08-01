@@ -147,7 +147,7 @@ Records Management System - Enterprise Edition
     "data": [
         # Security groups must be loaded first
         "security/groups.xml",
-        "security/records_management_security.xml", 
+        "security/records_management_security.xml",
         "security/additional_models_access.xml",
         # Then access rules CSV
         "security/ir.model.access.csv",
