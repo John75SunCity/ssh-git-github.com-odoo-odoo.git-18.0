@@ -237,6 +237,7 @@ Records Management System - Enterprise Edition
     "application": True,
     "installable": True,
     "auto_install": False,
+    "sequence": 1000,  # Load after core modules
     "post_init_hook": "post_init_hook",
     "assets": {
         "web.assets_backend": [

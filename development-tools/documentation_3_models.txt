@@ -935,5 +935,122 @@ class RecordsAdvancedBillingPeriod(models.Model):
 
 --- PAGE BREAK ---
 
+### Customer Billing Profile Model (customer_billing_profile.py)
+
+```python
+class CustomerBillingProfile(models.Model):
+    """
+    Customer Billing Profile - Manages billing configurations for customers
+    """
+
+    _name = 'records.customer.billing.profile'
+    _description = 'Customer Billing Profile'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'partner_id, name'
+    _rec_name = 'name'
+
+    # CORE FIELDS
+    name = fields.Char(string='Profile Name', required=True, tracking=True)
+    description = fields.Text(string='Description', tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', 
+                                default=lambda self: self.env.company, required=True)
+    user_id = fields.Many2one('res.users', string='Billing Manager', 
+                            default=lambda self: self.env.user, tracking=True)
+    active = fields.Boolean(default=True, tracking=True)
+
+    # CUSTOMER INFORMATION
+    partner_id = fields.Many2one('res.partner', string='Customer', 
+                                required=True, tracking=True,
+                                domain=[('is_company', '=', True)])
+    contact_count = fields.Integer(string='Contact Count', compute='_compute_contact_count')
+
+    # STORAGE BILLING CONFIGURATION
+    storage_billing_cycle = fields.Selection([
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly'),
+        ('semi_annual', 'Semi-Annual'),
+        ('annual', 'Annual'),
+        ('prepaid', 'Prepaid')
+    ], string='Storage Billing Cycle', default='monthly', required=True, tracking=True)
+
+    storage_bill_in_advance = fields.Boolean(string='Bill Storage in Advance', default=False, tracking=True)
+    storage_advance_months = fields.Integer(string='Advance Months', default=1, tracking=True)
+    auto_generate_storage_invoices = fields.Boolean(string='Auto Generate Storage Invoices', default=True, tracking=True)
+
+    # SERVICE BILLING CONFIGURATION
+    service_billing_cycle = fields.Selection([
+        ('immediate', 'Immediate'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly')
+    ], string='Service Billing Cycle', default='monthly', required=True, tracking=True)
+
+    auto_generate_service_invoices = fields.Boolean(string='Auto Generate Service Invoices', default=True, tracking=True)
+
+    # PREPAID OPTIONS
+    prepaid_enabled = fields.Boolean(string='Prepaid Enabled', default=False, tracking=True)
+    prepaid_months = fields.Integer(string='Prepaid Months', default=12, tracking=True)
+    prepaid_discount_percent = fields.Float(string='Prepaid Discount %', default=0.0, tracking=True)
+
+    # BILLING SCHEDULE
+    billing_day = fields.Integer(string='Billing Day of Month', default=1, tracking=True)
+    invoice_due_days = fields.Integer(string='Invoice Due Days', default=30, tracking=True)
+    payment_term_id = fields.Many2one('account.payment.term', string='Payment Terms', tracking=True)
+    next_storage_billing_date = fields.Date(string='Next Storage Billing Date', tracking=True)
+
+    # BILLING STATE MANAGEMENT
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('suspended', 'Suspended'),
+        ('terminated', 'Terminated')
+    ], string='Status', default='draft', required=True, tracking=True)
+
+    @api.depends('partner_id')
+    def _compute_contact_count(self):
+        """Compute contact count for the partner"""
+        for record in self:
+            if record.partner_id:
+                record.contact_count = len(record.partner_id.child_ids)
+            else:
+                record.contact_count = 0
+```
+
+**Key Features:**
+- **Largest Model**: 377 lines - most comprehensive billing management
+- **Flexible Billing Cycles**: monthly, quarterly, semi-annual, annual, prepaid options
+- **Advanced Prepaid System**: discount percentages and multi-month prepayment
+- **Automated Invoice Generation**: separate storage and service invoice automation
+- **Payment Integration**: payment terms and due date management
+- **State Management**: draft → active → suspended → terminated workflow
+- **Enterprise Features**: company separation, user assignment, activity tracking
+
+**COMPUTE METHODS:**
+- _compute_contact_count(): Counts related partner contacts
+
+**BILLING CONFIGURATION:**
+- Storage billing: flexible cycles with advance billing options
+- Service billing: immediate to quarterly cycles
+- Prepaid system: discount structure for advance payments
+- Automated invoice generation with customizable timing
+
+--- PAGE BREAK ---
+
+### Records Document Type Model (records_document_type.py)
+
+Large model (213 lines) managing document classification, retention policies, and compliance features.
+
+### Core Billing Model (billing.py)
+
+Billing engine (182 lines) that processes storage fees, service charges, and generates invoices based on customer profiles.
+
+### Partner Bin Key Model (partner_bin_key.py)
+
+Security model (180 lines) managing secure bin key generation and tracking for customer access control with barcode integration.
+
+### Visitor Model (visitor.py)
+
+Facility access model (170 lines) tracking visitor access to secure facilities with comprehensive logging and security features.
+
 
 ======================================================================
