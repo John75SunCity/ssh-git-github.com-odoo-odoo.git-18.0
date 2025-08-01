@@ -2,6 +2,7 @@
 from odoo import models, fields, api
 
 class WizardTemplate(models.TransientModel):
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _name = 'wizard.template'
     _description = 'Wizard Template'
     
