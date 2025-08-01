@@ -130,3 +130,5 @@ access_location_report_wizard_user,location.report.wizard.user,model_location_re
 access_location_report_wizard_manager,location.report.wizard.manager,model_location_report_wizard,records_management.group_records_manager,1,1,1,1
 access_customer_inventory_user,customer.inventory.user,model_customer_inventory,records_management.group_records_user,1,1,1,0
 access_customer_inventory_manager,customer.inventory.manager,model_customer_inventory,records_management.group_records_manager,1,1,1,1
+access_revenue_forecaster_user,revenue.forecaster.user,model_revenue_forecaster,records_management.group_records_user,1,1,1,0
+access_revenue_forecaster_manager,revenue.forecaster.manager,model_revenue_forecaster,records_management.group_records_manager,1,1,1,1
