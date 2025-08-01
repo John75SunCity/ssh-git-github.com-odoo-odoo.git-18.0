@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+# TEST FILE - Extension Validation for records.location model
+# TESTING WORKSPACE - DO NOT USE IN PRODUCTION
+
 from odoo import models, fields, api, _
 
 
-class RecordsLocation(models.Model):
+class RecordsLocationTest(models.Model):
     _name = "records.location"
     _description = "Records Storage Location"
     _inherit = ["mail.thread", "mail.activity.mixin"]

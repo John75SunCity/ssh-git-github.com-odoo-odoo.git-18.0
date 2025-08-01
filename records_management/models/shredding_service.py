@@ -43,6 +43,12 @@ class ShreddingService(models.Model):
     # Control Fields
     active = fields.Boolean(string="Active", default=True)
     notes = fields.Text(string="Internal Notes")
+    customer_id = fields.Many2one(
+        "res.partner",
+        string="Customer",
+        required=True,
+        help="Customer requesting shredding service",
+    )
 
     # Service Type and Shredding Method
     service_type = fields.Selection(
