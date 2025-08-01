@@ -153,6 +153,7 @@ class PartnerBinKey(models.Model):
 
     @api.depends("bin_key_history_ids")
     def _compute_active_bin_key_count(self):
+        """Compute count of active bin keys from history records - FIXED DEPENDENCIES"""
         for record in self:
             # Count active bin key history records
             active_keys = record.bin_key_history_ids.filtered(lambda x: x.active)
