@@ -12,11 +12,11 @@
                 <field name="customer_id"/>
                 <field name="location_id"/>
                 <field name="state"/>
-                <field name="stored_date"/>
+                <field name="creation_date"/>
                 <field name="destruction_date"/>
                 <field name="container_type"/>
-                <field name="document_count"/>
-                <field name="estimated_weight"/>
+                <field name="capacity"/>
+                <field name="current_usage"/>
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
@@ -45,7 +45,7 @@
                                         </div>
                                         <div>
                                             <i class="fa fa-weight" title="Weight"/>
-                                            <field name="estimated_weight"/>
+                                            <field name="current_usage"/>
  lbs
                                         </div>
                                         <div>
@@ -53,8 +53,8 @@
                                             <field name="location_id"/>
                                         </div>
                                         <div>
-                                            <i class="fa fa-calendar" title="Storage Date"/>
-                                            <field name="stored_date"/>
+                                            <i class="fa fa-calendar" title="Creation Date"/>
+                                            <field name="creation_date"/>
                                         </div>
                                     </div>
                                     <div class="col-4">
@@ -108,10 +108,10 @@
                 <field name="department_id" string="🏢 Department"/>
                 <field name="location_id" string="📍 Location"/>
                 <field name="state" string="🎯 Status" widget="badge"/>
-                <field name="stored_date" string="📅 Stored"/>
+                <field name="creation_date" string="📅 Created"/>
                 <field name="destruction_date" string="💥 Destruction" optional="hide"/>
                 <field name="barcode" string="🏷️ Barcode"/>
-                <field name="document_count" string="📄 Docs" sum="Total Documents"/>
+                <field name="capacity" string="💾 Capacity" sum="Total Documents"/>
                 <button name="action_view_documents" type="object" string="View Docs" icon="fa-file-text-o" class="btn-link"/>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fa-barcode" class="btn-link"/>
             </list>
@@ -135,7 +135,7 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o">
-                            <field string="Documents" name="document_count" widget="statinfo"/>
+                            <field string="Capacity" name="capacity" widget="statinfo"/>
                         </button>
                     </div>
 
@@ -152,7 +152,7 @@
                         <group string="📍 Location &amp; Status">
                             <field name="location_id"/>
                             <field name="state"/>
-                            <field name="stored_date"/>
+                            <field name="creation_date"/>
                             <field name="destruction_date" invisible="not destruction_date"/>
                         </group>
                     </group>
@@ -213,7 +213,7 @@
         <field name="name">records.container.calendar</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-            <calendar string="📅 Container Storage Calendar" date_start="stored_date" date_stop="destruction_date" color="customer_id">
+            <calendar string="📅 Container Storage Calendar" date_start="creation_date" date_stop="destruction_date" color="customer_id">
                 <field name="name"/>
                 <field name="customer_id"/>
                 <field name="state"/>
@@ -251,8 +251,8 @@
                 <filter string="💥 Destroyed" name="destroyed" domain="[('state', '=', 'destroyed')]"/>
 
                 <separator/>
-                <filter string="📅 Stored This Month" name="this_month" domain="[('stored_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
-                <filter string="🗓️ Stored This Year" name="this_year" domain="[('stored_date', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
+                <filter string="📅 Stored This Month" name="this_month" domain="[('creation_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                <filter string="🗓️ Stored This Year" name="this_year" domain="[('creation_date', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
                 <filter string="⚠️ Near Destruction" name="near_destruction" domain="[('destruction_date', '&lt;=', (context_today() + relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="📊 Group By">
@@ -260,7 +260,7 @@
                     <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
                     <filter string="Location" name="group_by_location" context="{'group_by': 'location_id'}"/>
                     <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
-                    <filter string="Storage Date" name="group_by_stored_date" context="{'group_by': 'stored_date:month'}"/>
+                    <filter string="Creation Date" name="group_by_creation_date" context="{'group_by': 'creation_date:month'}"/>
                 </group>
             </search>
         </field>
