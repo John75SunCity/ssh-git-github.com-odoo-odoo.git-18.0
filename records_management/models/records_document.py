@@ -28,6 +28,9 @@ class RecordsDocument(models.Model):
     user_id = fields.Many2one('res.users', string='Responsible User', 
                               default=lambda self: self.env.user)
     
+    # Customer Inventory relation
+    customer_inventory_id = fields.Many2one('customer.inventory', string='Customer Inventory')
+    
     # Timestamps
     date_created = fields.Datetime(string='Created Date', default=fields.Datetime.now)
     date_modified = fields.Datetime(string='Modified Date')

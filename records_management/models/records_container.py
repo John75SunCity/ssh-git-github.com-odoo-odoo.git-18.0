@@ -14,6 +14,7 @@ class RecordsContainer(models.Model):
     ], string='Container Type', required=True)
     location_id = fields.Many2one('records.location', string='Location')
     customer_id = fields.Many2one('res.partner', string='Customer')
+    customer_inventory_id = fields.Many2one('customer.inventory', string='Customer Inventory')
     capacity = fields.Float(string='Capacity')
     current_usage = fields.Float(string='Current Usage')
     creation_date = fields.Date(string='Creation Date', default=fields.Date.today)
