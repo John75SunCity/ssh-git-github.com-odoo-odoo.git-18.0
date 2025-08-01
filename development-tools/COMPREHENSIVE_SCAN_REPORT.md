@@ -1,6 +1,6 @@
 # COMPREHENSIVE RECORDS MANAGEMENT MODULE SCAN REPORT
 
-**Generated:** Fri Aug  1 07:50:10 UTC 2025
+**Generated:** Fri Aug  1 07:56:49 UTC 2025
 **Module Path:** /workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management
 
 ## 📊 EXECUTIVE SUMMARY
@@ -8,7 +8,7 @@
 - **Models:** 103
 - **Fields:** 1126
 - **Views:** 53
-- **Security Rules:** 127
+- **Security Rules:** 209
 - **Issues Found:** 0
 - **Recommendations:** 3
 
@@ -300,7 +300,7 @@
 
 ### wizard.template (`wizard_template.py`)
 - **Fields:** 1
-- **Inheritance:** []
+- **Inheritance:** ['mail.thread', 'mail.activity.mixin']
 
 ### unlock.service.history (`unlock_service_history.py`)
 - **Fields:** 10
@@ -444,7 +444,7 @@
 ## 💡 RECOMMENDATIONS
 
 ### MEDIUM: Add mail.thread inheritance
-10 models lack mail.thread inheritance for tracking
+9 models lack mail.thread inheritance for tracking
 
 **Affected items:**
 - hr_employee.py
@@ -453,7 +453,6 @@
 - fsm.task.placeholder
 - records.billing.contact
 - pos_config.py
-- wizard.template
 - stock.move.sms.validation
 - res_partner.py
 - fsm.route.management.placeholder
@@ -475,20 +474,20 @@
 - ... and 45 more
 
 ### HIGH: Add missing security rules
-41 models lack access control rules
+22 models lack access control rules
 
 **Affected items:**
-- customer.rate.profile
-- shredding.picklist.item
-- stock.move.sms.validation
+- scrm.records.management
+- customer.inventory.report
+- file.retrieval.work.order
+- naid.compliance
 - stock.report_reception_report_label
-- naid.performance.history
-- load
-- temp.inventory
-- prod.ext
-- installer
-- records_management.bale
-- ... and 31 more
+- stock.lot.attribute
+- naid.destruction.record
+- wizard.template
+- survey.user.input.enhanced
+- stock.picking.records.extension
+- ... and 12 more
 
 ## 🔗 DEPENDENCIES ANALYSIS
 

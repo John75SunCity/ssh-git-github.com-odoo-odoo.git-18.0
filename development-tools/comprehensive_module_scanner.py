@@ -750,8 +750,8 @@ class RecordsManagementScanner:
         print(f"✅ Comprehensive report generated: {report_path}")
         print(f"📄 Report size: {os.path.getsize(report_path)} bytes")
 
-        # Also generate JSON report for machine processing
-        json_report_path = os.path.join(self.module_path, "scan_results.json")
+        # Also generate JSON report for machine processing in development-tools
+        json_report_path = "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/development-tools/scan_results.json"
         with open(json_report_path, "w", encoding="utf-8") as f:
             # Convert sets to lists for JSON serialization
             json_results = self.convert_for_json(self.results)
