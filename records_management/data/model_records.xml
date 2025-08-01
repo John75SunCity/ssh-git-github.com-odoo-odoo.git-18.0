@@ -111,7 +111,7 @@
         <record id="demo_shredding_service_template" model="shredding.service">
             <field name="name">Standard Document Shredding</field>
             <field name="customer_id" ref="demo_customer_abc_corp"/>
-            <field name="service_type">onsite</field>
+            <field name="service_type">on_site</field>
             <field name="state">draft</field>
             <field name="description">Standard on-site document destruction service with NAID AAA compliance</field>
         </record>
@@ -120,14 +120,14 @@
         <record id="demo_paper_bale_001" model="paper.bale.recycling">
             <field name="name">Bale-001-Demo</field>
             <field name="gross_weight">500.0</field>
-            <field name="state">baling</field>
+            <field name="state">draft</field>
             <field name="bale_date" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')"/>
         </record>
 
         <!-- Demo Chain of Custody Log Template -->
         <record id="demo_custody_log_template" model="records.chain.of.custody">
             <field name="name">Template Custody Transfer</field>
-            <field name="custody_event">transfer</field>
+            <field name="custody_event">transport</field>
             <field name="notes">Template for custody transfer procedures</field>
         </record>
 
@@ -138,7 +138,7 @@
             <field name="request_type">destruction</field>
             <field name="state">draft</field>
             <field name="description">Template for customer document destruction requests</field>
-            <field name="priority">normal</field>
+            <field name="priority">medium</field>
         </record>
 
         <record id="demo_portal_request_retrieval" model="portal.request">
@@ -147,7 +147,7 @@
             <field name="request_type">retrieval</field>
             <field name="state">draft</field>
             <field name="description">Template for customer document retrieval requests</field>
-            <field name="priority">normal</field>
+            <field name="priority">medium</field>
         </record>
 
         <!-- Demo System Configuration -->
