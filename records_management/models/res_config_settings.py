@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields
+from odoo import models, fields, api
 
 class ResConfigSettings(models.Model):
     _inherit = 'res.config.settings'
@@ -27,10 +27,10 @@ class ResConfigSettings(models.Model):
     # Computed fields
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     
-    @api.depends('name')
+    @api.depends('module_records_management_setting')
     def _compute_display_name(self):
         for record in self:
-            record.display_name = record.name or 'New'
+            record.display_name = 'Records Management Settings'
     
     # Action methods
     def action_confirm(self):
