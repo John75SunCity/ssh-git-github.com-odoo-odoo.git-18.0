@@ -51,6 +51,7 @@ from . import records_container_movement
 from . import records_container_transfer
 
 # Customer and inventory management
+from . import customer_inventory
 from . import customer_inventory_report
 from . import temp_inventory
 
