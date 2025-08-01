@@ -18,6 +18,19 @@ class FieldLabelCustomization(models.Model):
     # Priority for label customization (required by demo data)
     priority = fields.Integer(string="Priority", default=10)
 
+    # Label Customization Fields
+    label_container_number = fields.Char(string="Container Number Label")
+    label_item_description = fields.Char(string="Item Description Label")
+    label_content_description = fields.Char(string="Content Description Label")
+    label_date_from = fields.Char(string="Date From Label")
+    label_date_to = fields.Char(string="Date To Label")
+    label_record_type = fields.Char(string="Record Type Label")
+    label_confidentiality = fields.Char(string="Confidentiality Label")
+    label_project_code = fields.Char(string="Project Code Label")
+    label_client_reference = fields.Char(string="Client Reference Label")
+    label_authorized_by = fields.Char(string="Authorized By Label")
+    label_created_by_dept = fields.Char(string="Created By Department Label")
+
     # State Management
     state = fields.Selection(
         [
