@@ -53,3 +53,33 @@ class HrEmployee(models.Model):
 
     def action_reset_to_draft(self):
         self.write({"state": "draft"})
+
+    @api.model
+    def check_expiring_credentials(self):
+        """Scheduled method to check expiring employee credentials"""
+        # Check for employees with credentials expiring soon
+        from datetime import timedelta
+
+        warning_days = 30  # Alert 30 days before expiration
+        cutoff_date = fields.Date.add(fields.Date.today(), days=warning_days)
+
+        # For now, just create activity for HR manager to check credentials
+        # In a full implementation, this would check actual credential fields
+        employees = self.search([("active", "=", True)])
+
+        hr_manager = self.env.ref("hr.group_hr_manager", raise_if_not_found=False)
+        if hr_manager and hr_manager.users:
+            for employee in employees:
+                # Check if employee needs credential review (simplified logic)
+                if not employee.user_id:
+                    continue
+
+                # Create activity for periodic credential review
+                employee.activity_schedule(
+                    "mail.mail_activity_data_todo",
+                    summary=f"Credential Review: {employee.name}",
+                    note=f"Please review and update credentials for {employee.name}",
+                    user_id=hr_manager.users[0].id,
+                )
+
+        return True

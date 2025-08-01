@@ -253,7 +253,7 @@ scheduled_actions_xml = """
             <field name="code">model.health_check()</field>
             <field name="interval_number">15</field>
             <field name="interval_type">minutes</field>
-            <field name="numbercall">-1</field>
+            <field name="number_calls">-1</field>
             <field name="doall" eval="False"/>
             <field name="active" eval="True"/>
         </record>
@@ -266,7 +266,7 @@ scheduled_actions_xml = """
             <field name="code">model.cleanup_old_logs(days=30)</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
+            <field name="number_calls">-1</field>
             <field name="doall" eval="False"/>
             <field name="active" eval="True"/>
         </record>
@@ -277,6 +277,6 @@ scheduled_actions_xml = """
 print("Monitoring system views and security configuration ready!")
 print("\nTo implement:")
 print("1. Add security XML to security/monitoring_security.xml")
-print("2. Add access CSV to security/monitoring_access.csv") 
+print("2. Add access CSV to security/monitoring_access.csv")
 print("3. Add views XML to views/monitoring_views.xml")
 print("4. Add scheduled actions to data/monitoring_crons.xml")
