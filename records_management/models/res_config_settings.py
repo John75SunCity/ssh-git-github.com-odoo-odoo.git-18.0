@@ -1,43 +1,45 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
-class ResConfigSettings(models.Model):
+class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
-    _description = 'Res Config Settings'
-    _order = 'name'
-    _rec_name = 'name'
     
-    # Example of a configuration field
+    # Records Management Configuration Settings
     module_records_management_setting = fields.Boolean(
-        "Example Setting",
+        "Enable Records Management Features",
         config_parameter='records_management.setting'
     )
     
-    # State management
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
+    # Document retention default period
+    default_retention_period = fields.Integer(
+        "Default Retention Period (Years)",
+        config_parameter='records_management.default_retention_period',
+        default=7
+    )
     
-    # Documentation
-    notes = fields.Text(string='Notes')
+    # Automatic shredding configuration
+    auto_shredding_enabled = fields.Boolean(
+        "Enable Automatic Shredding",
+        config_parameter='records_management.auto_shredding_enabled'
+    )
     
-    # Computed fields
-    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    # NAID compliance configuration
+    naid_compliance_enabled = fields.Boolean(
+        "Enable NAID AAA Compliance",
+        config_parameter='records_management.naid_compliance_enabled',
+        default=True
+    )
     
-    @api.depends('module_records_management_setting')
-    def _compute_display_name(self):
-        for record in self:
-            record.display_name = 'Records Management Settings'
+    # Portal configuration
+    portal_feedback_enabled = fields.Boolean(
+        "Enable Customer Portal Feedback",
+        config_parameter='records_management.portal_feedback_enabled',
+        default=True
+    )
     
-    # Action methods
-    def action_confirm(self):
-        self.write({'state': 'confirmed'})
-    
-    def action_cancel(self):
-        self.write({'state': 'cancelled'})
-    
-    def action_reset_to_draft(self):
-        self.write({'state': 'draft'})
+    # Billing configuration
+    auto_billing_enabled = fields.Boolean(
+        "Enable Automatic Billing",
+        config_parameter='records_management.auto_billing_enabled',
+        default=True
+    )
