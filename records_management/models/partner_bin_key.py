@@ -107,7 +107,7 @@ class PartnerBinKey(models.Model):
     charge_amount = fields.Float(string="Charge Amount", digits=(12, 2))
     context = fields.Char(string="Context")
     country_id = fields.Many2one("res.country", string="Country")
-    customer = fields.Char(string="Customer")
+    customer = fields.Char(string="Customer Name")
     emergency_contact = fields.Char(string="Emergency Contact")
     emergency_contacts = fields.Char(string="Emergency Contacts")
     has_bin_key = fields.Char(string="Has Bin Key")
@@ -123,7 +123,7 @@ class PartnerBinKey(models.Model):
     service_number = fields.Char(string="Service Number")
     status = fields.Selection(
         [("new", "New"), ("in_progress", "In Progress"), ("completed", "Completed")],
-        string="Status",
+        string="Processing Status",
         default="new",
     )
     target = fields.Char(string="Target")

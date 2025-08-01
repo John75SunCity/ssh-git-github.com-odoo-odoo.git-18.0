@@ -15,7 +15,7 @@ class NaidDestructionRecord(models.Model):
         ('incineration', 'Incineration'),
         ('pulverization', 'Pulverization')
     ], string='Destruction Method', required=True)
-    responsible_user_id = fields.Many2one('res.users', string='Responsible User')
+    responsible_user_id = fields.Many2one('res.users', string="Destruction Manager")
     notes = fields.Text(string='Notes')
     state = fields.Selection([
         ('draft', 'Draft'),

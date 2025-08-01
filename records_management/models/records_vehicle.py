@@ -32,8 +32,7 @@ class RecordsVehicle(models.Model):
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
     )
-    user_id = fields.Many2one(
-        "res.users", string="Responsible User", default=lambda self: self.env.user
+    user_id = fields.Many2one("res.users", string="Assigned User", default=lambda self: self.env.user
     )
 
     # Timestamps
@@ -85,7 +84,7 @@ class RecordsVehicle(models.Model):
             ("in_service", "In Service"),
             ("maintenance", "Under Maintenance"),
         ],
-        string="Status",
+        string="Operational Status",
         default="available",
         tracking=True,
     )

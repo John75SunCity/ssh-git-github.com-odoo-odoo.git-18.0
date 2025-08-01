@@ -19,7 +19,7 @@ class HrEmployee(models.Model):
         ('confirmed', 'Confirmed'),
         ('done', 'Done'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
+    ], string='Records Status', default='draft', tracking=True)
     
     # Documentation
     notes = fields.Text(string='Notes')
