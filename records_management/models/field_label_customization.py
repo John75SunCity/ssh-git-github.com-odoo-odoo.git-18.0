@@ -62,6 +62,7 @@ class FieldLabelCustomization(models.Model):
     label_weight_estimate = fields.Char(string="Weight Estimate Label")
 
 
+
     # State Management
     state = fields.Selection(
         [
