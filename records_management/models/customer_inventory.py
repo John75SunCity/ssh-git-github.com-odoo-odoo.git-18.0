@@ -58,7 +58,7 @@ class CustomerInventory(models.Model):
     notes = fields.Char(string='Notes')
     report_date = fields.Date(string='Report Date')
     res_model = fields.Char(string='Res Model')
-    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View')
     sent = fields.Char(string='Sent')
     small_volume = fields.Char(string='Small Volume')
     status = fields.Selection([('new', 'New'), ('in_progress', 'In Progress'), ('completed', 'Completed')], string='Status', default='new')

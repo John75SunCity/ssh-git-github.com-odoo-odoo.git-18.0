@@ -10,7 +10,7 @@ class PosConfig(models.Model):
     _rec_name = "name"
 
     # Basic Information
-    name = fields.Char(string="Name", required=True, tracking=True, index=True)
+    name = fields.Char(string="Name", required=True, index=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
 
@@ -23,8 +23,7 @@ class PosConfig(models.Model):
             ("archived", "Archived"),
         ],
         string="Status",
-        default="draft",
-        tracking=True,
+        default="draft"
     )
 
     # Company and User
