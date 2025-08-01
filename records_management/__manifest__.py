@@ -133,10 +133,11 @@ Records Management System - Enterprise Edition
     ],
     "external_dependencies": {
         "python": [
-            "qrcode",  # For QR code generation
-            "Pillow",  # For image processing
-            "cryptography",  # For encryption and security
-            "requests",  # For monitoring webhook notifications
+            # Core dependencies - should be available in most environments
+            # "qrcode",  # For QR code generation - made optional for deployment
+            # "Pillow",  # For image processing - made optional for deployment
+            # "cryptography",  # For encryption and security - made optional for deployment
+            # "requests",  # For monitoring webhook notifications - made optional for deployment
             # 'pulp',      # For optimization - uncomment when ready for production
         ],
         # Binary dependencies (if any)
@@ -240,6 +241,7 @@ Records Management System - Enterprise Edition
     "installable": True,
     "auto_install": False,
     "sequence": 1000,  # Load after core modules
+    "pre_init_hook": "pre_init_hook",
     "post_init_hook": "post_init_hook",
     "assets": {
         "web.assets_backend": [
