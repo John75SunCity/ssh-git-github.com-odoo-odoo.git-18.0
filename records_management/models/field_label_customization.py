@@ -15,6 +15,9 @@ class FieldLabelCustomization(models.Model):
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
 
+    # Priority for label customization (required by demo data)
+    priority = fields.Integer(string="Priority", default=10)
+
     # State Management
     state = fields.Selection(
         [
