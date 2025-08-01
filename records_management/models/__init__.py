@@ -83,6 +83,9 @@ from . import customer_retrieval_rates
 
 # Key management services
 from . import bin_key_management
+from . import bin_key_history  # Must be before partner_bin_key (One2many target)
+from . import unlock_service_history  # Must be before partner_bin_key (One2many target)
+from . import photo  # Must be before mobile_bin_key_wizard (One2many target)
 from . import partner_bin_key
 from . import mobile_bin_key_wizard
 from . import bin_unlock_service
