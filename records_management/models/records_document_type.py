@@ -171,7 +171,6 @@ class RecordsDocumentType(models.Model):
         for record in self:
             record.display_name = record.name or _("New")
 
-    @api.depends("document_ids")  # Add missing depends decorator
     def _compute_document_count(self):
         """Computes the number of documents for this type."""
         for record in self:
