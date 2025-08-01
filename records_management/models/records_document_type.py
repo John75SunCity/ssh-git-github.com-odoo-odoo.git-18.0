@@ -178,7 +178,7 @@ class RecordsDocumentType(models.Model):
                 [("document_type_id", "=", record.id)]
             )
 
-    @api.depends("document_count", "document_type_utilization")
+    @api.depends("document_count")
     def _compute_document_type_utilization(self):
         """Computes the utilization of this document type across all documents."""
         for record in self:
