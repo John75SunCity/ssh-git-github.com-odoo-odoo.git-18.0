@@ -32,7 +32,8 @@ class RecordsVehicle(models.Model):
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
     )
-    user_id = fields.Many2one("res.users", string="Assigned User", default=lambda self: self.env.user
+    user_id = fields.Many2one(
+        "res.users", string="Assigned User", default=lambda self: self.env.user
     )
 
     # Timestamps

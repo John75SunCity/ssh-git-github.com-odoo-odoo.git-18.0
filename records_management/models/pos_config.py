@@ -23,7 +23,7 @@ class PosConfig(models.Model):
             ("archived", "Archived"),
         ],
         string="Status",
-        default="draft"
+        default="draft",
     )
 
     # Company and User
