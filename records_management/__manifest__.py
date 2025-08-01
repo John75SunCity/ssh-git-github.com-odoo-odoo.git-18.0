@@ -206,6 +206,7 @@ Records Management System - Enterprise Edition
         "views/mobile_bin_key_wizard_views.xml",
         "views/key_restriction_views.xml",
         "views/key_restriction_checker_views.xml",
+        "views/custom_box_volume_calculator_views.xml",
         # Reports
         "report/records_reports.xml",
         "report/destruction_certificate_report.xml",

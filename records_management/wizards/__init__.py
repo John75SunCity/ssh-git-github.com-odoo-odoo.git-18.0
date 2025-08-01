@@ -8,6 +8,9 @@ from . import user_management_wizards  # User invitation and bulk import wizards
 # Container management wizards (updated naming)
 from . import records_container_type_converter  # Bulk container type conversion wizard
 from . import work_order_bin_assignment_wizard  # Work order bin assignment wizard
+from . import (
+    custom_box_volume_calculator,
+)  # Custom box volume calculator for fair pricing
 
 # Rate management and forecasting wizards
 from . import (
