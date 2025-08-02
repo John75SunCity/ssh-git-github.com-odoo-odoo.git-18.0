@@ -65,12 +65,29 @@
     }
   },
   "remoteUser": "odoo",
-  "forwardPorts": [8069, 8071, 8072, 5432],
+  "forwardPorts": [
+    8069,
+    8071,
+    8072,
+    5432
+  ],
   "portsAttributes": {
-    "8069": { "label": "Odoo HTTP", "onAutoForward": "notify" },
-    "8071": { "label": "Odoo HTTPS", "onAutoForward": "notify" },
-    "8072": { "label": "Odoo Longpolling", "onAutoForward": "notify" },
-    "5432": { "label": "Postgres DB", "onAutoForward": "silent" }
+    "8069": {
+      "label": "Odoo HTTP",
+      "onAutoForward": "notify"
+    },
+    "8071": {
+      "label": "Odoo HTTPS",
+      "onAutoForward": "notify"
+    },
+    "8072": {
+      "label": "Odoo Longpolling",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "Postgres DB",
+      "onAutoForward": "silent"
+    }
   },
   "postCreateCommand": "git submodule update --init --recursive && apt-get update && apt-get install -y postgresql postgresql-client python3-dev libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev && su - postgres -c 'pg_ctlcluster 14 main start && createuser -s odoo' || echo 'DB setup skipped' && pip install -r requirements.txt && echo 'Setup complete! Run Odoo with: odoo -c /workspace/odoo.conf --addons-path=/workspace/records_management,/workspace/addons/queue_job,/workspace/addons/server_tools,/workspace/addons/reporting_engine,/workspace/addons/stock_logistics,/workspace/addons/web'",
   "remoteEnv": {
