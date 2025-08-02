@@ -89,6 +89,7 @@ from . import bin_key_management
 from . import partner_bin_key
 from . import bin_key_history
 from . import unlock_service_history
+from . import photo
 from . import mobile_bin_key_wizard
 from . import bin_unlock_service
 

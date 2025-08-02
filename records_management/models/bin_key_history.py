@@ -41,10 +41,11 @@ class BinKeyHistory(models.Model):
     )
     active = fields.Boolean(string="Active", default=True)
 
-    @api.model
-    def create(self, vals):
-        if vals.get("name", "New") == "New":
-            vals["name"] = (
-                self.env["ir.sequence"].next_by_code("bin.key.history") or "New"
-            )
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("name", "New") == "New":
+                vals["name"] = (
+                    self.env["ir.sequence"].next_by_code("bin.key.history") or "New"
+                )
+        return super().create(vals_list)
