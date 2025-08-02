@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.07.39",  # Critical fix: TransientModel inheritance
+    "version": "18.0.08.01",  # Enterprise module dependencies - complete core apps integration
     "category": "Document Management",
-    "summary": "Enterprise-Grade Records Management: 102 Models, AI-Ready Analytics, NAID AAA Compliance, Advanced Customer Portal & POS Integration",
+    "summary": "Enterprise-Grade Records Management: 102 Models, Complete Odoo Integration, AI-Ready Analytics, NAID AAA Compliance, Advanced Customer Portal & Full Business Suite Integration",
     "description": """
 Records Management System - Enterprise Edition
 ============================================
@@ -107,29 +107,37 @@ Records Management System - Enterprise Edition
     "license": "LGPL-3",
     # CRITICAL: Dependencies must be loaded BEFORE this module
     "depends": [
-        # Core Odoo modules (always load first)
+        # ====== CORE FRAMEWORK MODULES (ALWAYS FIRST) ======
         "base",
         "mail",
         "web",
-        # Business modules
+        # ====== BUSINESS CORE MODULES ======
         "product",
         "stock",
         "account",
         "sale",
         "purchase",
-        # Portal and website
+        # ====== CUSTOMER ENGAGEMENT ======
         "portal",
         "website",
-        # Point of Sale integration
         "point_of_sale",
-        # Electronic signatures
-        "sign",
-        # SMS and communication
-        "sms",
-        # HR for employee management
+        "sign",  # Electronic signatures
+        "sms",  # SMS notifications
+        "survey",  # Feedback and surveys
+        # ====== HUMAN RESOURCES ======
         "hr",
-        # Survey for feedback system
-        "survey",
+        "hr_timesheet",  # Timesheets
+        "hr_payroll",  # Payroll management
+        # ====== SALES & ECOMMERCE ======
+        "sale_management",  # Enhanced sales features
+        "website_sale",  # E-commerce functionality
+        "sale_subscription",  # Subscriptions management
+        "sale_renting",  # Rental management
+        # ====== FIELD SERVICE ======
+        "industry_fsm",  # Field service management
+        # ====== QUALITY & LEARNING ======
+        "quality_control",  # Quality management
+        "website_slides",  # E-learning platform
     ],
     "external_dependencies": {
         "python": [
