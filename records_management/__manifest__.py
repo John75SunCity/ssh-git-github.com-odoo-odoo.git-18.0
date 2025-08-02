@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.08.02",  # Enterprise module dependencies - complete core apps integration
+    "version": "18.0.08.03",  # Security fixes for missing models and groups
     "category": "Document Management",
     "summary": "Enterprise-Grade Records Management: 102 Models, Complete Odoo Integration, AI-Ready Analytics, NAID AAA Compliance, Advanced Customer Portal & Full Business Suite Integration",
     "description": """

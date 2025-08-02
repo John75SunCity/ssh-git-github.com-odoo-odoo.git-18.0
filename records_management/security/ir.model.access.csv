@@ -27,8 +27,7 @@ access_pickup_request_item_user,pickup.request.item.user,model_pickup_request_it
 access_pickup_request_item_manager,pickup.request.item.manager,model_pickup_request_item,records_management.group_records_manager,1,1,1,1
 access_pickup_route_user,pickup.route.user,model_pickup_route,records_management.group_records_user,1,1,1,0
 access_pickup_route_manager,pickup.route.manager,model_pickup_route,records_management.group_records_manager,1,1,1,1
-access_pickup_route_stop_user,pickup.route.stop.user,model_pickup_route_stop,records_management.group_records_user,1,1,1,0
-access_pickup_route_stop_manager,pickup.route.stop.manager,model_pickup_route_stop,records_management.group_records_manager,1,1,1,1
+
 access_shred_svc_user,shred.svc.user,model_shredding_service,records_management.group_records_user,1,1,1,0
 access_shred_svc_manager,shred.svc.manager,model_shredding_service,records_management.group_records_manager,1,1,1,1
 access_destruction_item_user,destruction.item.user,model_destruction_item,records_management.group_records_user,1,1,1,0
@@ -51,8 +50,8 @@ access_visitor_pos_wiz_user,visitor.pos.wiz.user,model_visitor_pos_wizard,record
 access_visitor_pos_wiz_manager,visitor.pos.wiz.manager,model_visitor_pos_wizard,records_management.group_records_manager,1,1,1,1
 access_visitor_user,visitor.user,model_visitor,records_management.group_records_user,1,1,1,0
 access_visitor_manager,visitor.manager,model_visitor,records_management.group_records_manager,1,1,1,1
-access_shredding_base_rates_user,shredding.base.rates.user,model_shredding_base_rates,records_management.group_records_user,1,0,0,0
-access_shredding_base_rates_manager,shredding.base.rates.manager,model_shredding_base_rates,records_management.group_records_manager,1,1,1,1
+access_base_rates_user,base.rates.user,model_base_rates,records_management.group_records_user,1,0,0,0
+access_base_rates_manager,base.rates.manager,model_base_rates,records_management.group_records_manager,1,1,1,1
 access_shredding_bin_user,shredding.bin.user,model_shredding_bin,records_management.group_records_user,1,1,1,0
 access_shredding_bin_manager,shredding.bin.manager,model_shredding_bin,records_management.group_records_manager,1,1,1,1
 access_shredding_hard_drive_user,shredding.hard_drive.user,model_shredding_hard_drive,records_management.group_records_user,1,1,1,0
@@ -114,8 +113,8 @@ access_records_billing_user,records.billing.user,model_records_billing,records_m
 access_records_billing_manager,records.billing.manager,model_records_billing,records_management.group_records_manager,1,1,1,1
 access_records_billing_config_user,records.billing.config.user,model_records_billing_config,records_management.group_records_user,1,1,1,0
 access_records_billing_config_manager,records.billing.config.manager,model_records_billing_config,records_management.group_records_manager,1,1,1,1
-access_key_restriction_wizard_user,key.restriction.wizard.user,model_key_restriction_wizard,records_management.group_records_user,1,1,1,1
-access_key_restriction_wizard_manager,key.restriction.wizard.manager,model_key_restriction_wizard,records_management.group_records_manager,1,1,1,1
+access_key_restriction_checker_user,key.restriction.checker.user,model_key_restriction_checker,records_management.group_records_user,1,1,1,1
+access_key_restriction_checker_manager,key.restriction.checker.manager,model_key_restriction_checker,records_management.group_records_manager,1,1,1,1
 access_records_location_inspection_user,records.location.inspection.user,model_records_location_inspection,records_management.group_records_user,1,1,1,0
 access_records_location_inspection_manager,records.location.inspection.manager,model_records_location_inspection,records_management.group_records_manager,1,1,1,1
 access_shredding_service_log_user,shredding.service.log.user,model_shredding_service_log,records_management.group_records_user,1,0,0,0
