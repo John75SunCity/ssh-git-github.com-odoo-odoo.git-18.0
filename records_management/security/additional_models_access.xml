@@ -1,19 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
-        <!-- Security Access Rules for Models -->
-        <!-- Note: Model access rules moved to ir.model.access.csv for better compatibility -->
-        
-        <!-- Placeholder to keep file structure valid -->
-        <record model="ir.model.access" id="access_placeholder_temp">
-            <field name="name">placeholder.temp</field>
-            <field name="model_id" ref="base.model_ir_model"/>
-            <field name="group_id" ref="base.group_user"/>
+        <!-- Security Access Rules for New Models -->
+        <!-- These rules will be added after the models are registered -->
+
+        <!-- Records Deletion Request Access -->
+        <record model="ir.model.access" id="access_records_deletion_request_user">
+            <field name="name">rec.del.req.user</field>
+            <field name="model_id" ref="model_records_deletion_request_enhanced"/>
+            <field name="group_id" ref="records_management.group_records_user"/>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">0</field>
+        </record>
+
+        <record model="ir.model.access" id="access_records_deletion_request_manager">
+            <field name="name">rec.del.req.manager</field>
+            <field name="model_id" ref="model_records_deletion_request_enhanced"/>
+            <field name="group_id" ref="records_management.group_records_manager"/>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+
+        <!-- User Management Wizards Access -->
+        <record model="ir.model.access" id="access_records_user_invitation_wizard_manager">
+            <field name="name">records.user.invitation.wizard.manager</field>
+            <field name="model_id" ref="model_records_user_invitation_wizard"/>
+            <field name="group_id" ref="records_management.group_records_manager"/>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+
+        <record model="ir.model.access" id="access_records_bulk_user_import_manager">
+            <field name="name">records.bulk.user.import.manager</field>
+            <field name="model_id" ref="model_records_bulk_user_import"/>
+            <field name="group_id" ref="records_management.group_records_manager"/>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+
+        <!-- Billing Models Access -->
+        <record model="ir.model.access" id="access_records_billing_config_user">
+            <field name="name">records.billing.config.user</field>
+            <field name="model_id" ref="model_records_billing_config"/>
+            <field name="group_id" ref="records_management.group_records_user"/>
             <field name="perm_read">1</field>
             <field name="perm_write">0</field>
             <field name="perm_create">0</field>
             <field name="perm_unlink">0</field>
         </record>
-        
+
+        <record model="ir.model.access" id="access_records_billing_config_manager">
+            <field name="name">records.billing.config.manager</field>
+            <field name="model_id" ref="model_records_billing_config"/>
+            <field name="group_id" ref="records_management.group_records_manager"/>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+
+        <!-- Add other billing model access rules here when needed -->
+
     </data>
 </odoo>

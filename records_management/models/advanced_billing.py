@@ -24,7 +24,7 @@ class AdvancedBilling(models.Model):
     # Billing fields
     partner_id = fields.Many2one("res.partner", string="Customer", required=True)
     billing_period_id = fields.Many2one(
-        "records.advanced.billing.period", string="Billing Period"
+        "advanced.billing.period", string="Billing Period"
     )
     currency_id = fields.Many2one("res.currency", string="Currency")
     invoice_id = fields.Many2one("account.move", string="Invoice")

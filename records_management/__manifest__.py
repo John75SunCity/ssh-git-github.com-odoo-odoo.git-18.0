@@ -133,11 +133,10 @@ Records Management System - Enterprise Edition
     ],
     "external_dependencies": {
         "python": [
-            # Core dependencies - should be available in most environments
-            # "qrcode",  # For QR code generation - made optional for deployment
-            # "Pillow",  # For image processing - made optional for deployment
-            # "cryptography",  # For encryption and security - made optional for deployment
-            # "requests",  # For monitoring webhook notifications - made optional for deployment
+            "qrcode",  # For QR code generation
+            "Pillow",  # For image processing
+            "cryptography",  # For encryption and security
+            "requests",  # For monitoring webhook notifications
             # 'pulp',      # For optimization - uncomment when ready for production
         ],
         # Binary dependencies (if any)
@@ -146,12 +145,10 @@ Records Management System - Enterprise Edition
         # ],
     },
     "data": [
-        # Security groups must be loaded first
-        "security/groups.xml",
+        # Security and data files
+        "security/ir.model.access.csv",
         "security/records_management_security.xml",
         "security/additional_models_access.xml",
-        # Then access rules CSV
-        "security/ir.model.access.csv",
         "data/ir_sequence_data.xml",
         "data/sequence.xml",
         "data/tag_data.xml",
@@ -206,7 +203,6 @@ Records Management System - Enterprise Edition
         "views/mobile_bin_key_wizard_views.xml",
         "views/key_restriction_views.xml",
         "views/key_restriction_checker_views.xml",
-        "views/custom_box_volume_calculator_views.xml",
         # Reports
         "report/records_reports.xml",
         "report/destruction_certificate_report.xml",
@@ -241,8 +237,6 @@ Records Management System - Enterprise Edition
     "application": True,
     "installable": True,
     "auto_install": False,
-    "sequence": 1000,  # Load after core modules
-    "pre_init_hook": "pre_init_hook",
     "post_init_hook": "post_init_hook",
     "assets": {
         "web.assets_backend": [

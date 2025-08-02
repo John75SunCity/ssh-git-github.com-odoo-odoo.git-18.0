@@ -28,10 +28,10 @@ class RecordsContainer(models.Model):
     )
 
     # Container Specifications
-    max_boxes = fields.Integer(
-        string="Maximum Boxes",
-        default=50,
-        help="Maximum number of boxes this container can hold",
+    max_files = fields.Integer(
+        string="Maximum Files",
+        default=30,
+        help="Maximum number of files this container can hold",
     )
     length = fields.Float(string="Length (cm)", help="Container length in centimeters")
     width = fields.Float(string="Width (cm)", help="Container width in centimeters")
@@ -139,3 +139,128 @@ class RecordsContainer(models.Model):
             }
         )
         return {"type": "ir.actions.client", "tag": "reload"}
+
+    # Missing Action Methods Referenced in Views
+    def action_view_documents(self):
+        """View documents associated with this container"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": f"Documents in {self.name}",
+            "res_model": "records.document",
+            "view_mode": "tree,form",
+            "domain": [("container_id", "=", self.id)],
+            "context": {"default_container_id": self.id},
+        }
+
+    def action_generate_barcode(self):
+        """Generate and display barcode for this container"""
+        self.ensure_one()
+        # Auto-generate barcode if not exists
+        if not hasattr(self, "barcode") or not self.barcode:
+            # Generate barcode based on container ID
+            barcode = f"CONT-{self.id:06d}"
+            if hasattr(self, "barcode"):
+                self.write({"barcode": barcode})
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Barcode Generated",
+                "message": f"Barcode for container {self.name} is ready for printing",
+                "type": "success",
+                "sticky": False,
+            },
+        }
+
+    def action_retrieve_container(self):
+        """Mark container as retrieved"""
+        self.ensure_one()
+        if self.state == "stored":
+            self.write({"state": "active"})
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Container Retrieved",
+                    "message": f"Container {self.name} has been marked as retrieved",
+                    "type": "success",
+                },
+            }
+        else:
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Invalid Operation",
+                    "message": f"Container {self.name} cannot be retrieved from state: {self.state}",
+                    "type": "warning",
+                },
+            }
+
+    def action_destroy_container(self):
+        """Mark container for destruction"""
+        self.ensure_one()
+        if self.state in ["stored", "active"]:
+            self.write({"state": "destroyed", "destruction_date": fields.Date.today()})
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Container Destroyed",
+                    "message": f"Container {self.name} has been marked for destruction",
+                    "type": "info",
+                },
+            }
+        else:
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Invalid Operation",
+                    "message": f"Container {self.name} cannot be destroyed from state: {self.state}",
+                    "type": "warning",
+                },
+            }
+
+    def action_bulk_convert_container_type(self):
+        """Bulk convert container types (for multiple selection)"""
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Bulk Convert Container Types",
+            "res_model": "container.type.converter.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_container_ids": self.ids},
+        }
+
+    def action_index_container(self):
+        """Index container contents"""
+        self.ensure_one()
+        if self.state == "active":
+            self.write({"state": "stored"})
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Container Indexed",
+                    "message": f"Container {self.name} has been indexed and stored",
+                    "type": "success",
+                },
+            }
+
+    def action_store_container(self):
+        """Store container in designated location"""
+        self.ensure_one()
+        if self.state == "active":
+            self.write({"state": "stored"})
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Container Stored",
+                    "message": f'Container {self.name} has been stored at {self.location_id.name if self.location_id else "designated location"}',
+                    "type": "success",
+                },
+            }

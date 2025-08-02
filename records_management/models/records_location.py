@@ -26,40 +26,12 @@ class RecordsLocation(models.Model):
         tracking=True,
     )
 
-    location_type = fields.Selection(
-        [
-            ("warehouse", "Warehouse"),
-            ("office", "Office"),
-            ("storage", "Storage Facility"),
-            ("archive", "Archive"),
-            ("vault", "Secure Vault"),
-        ],
-        string="Location Type",
-        default="storage",
-        tracking=True,
-    )
-
     active = fields.Boolean(string="Active", default=True)
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
     )
 
-    # Physical Properties and Location Details
-    building = fields.Char(string="Building", tracking=True)
-    zone = fields.Char(string="Zone", tracking=True)
-    climate_controlled = fields.Boolean(string="Climate Controlled", default=False)
-    access_level = fields.Selection(
-        [
-            ("public", "Public"),
-            ("restricted", "Restricted"),
-            ("secure", "Secure"),
-            ("high_security", "High Security"),
-        ],
-        string="Access Level",
-        default="restricted",
-        tracking=True,
-    )
-    max_capacity = fields.Float(string="Maximum Capacity")
+    # Physical Properties
     capacity = fields.Float(string="Capacity")
     current_usage = fields.Float(string="Current Usage")
 

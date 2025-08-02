@@ -52,7 +52,7 @@ except Exception as e:
         <!-- Monthly Customer Inventory Reports -->
         <record id="ir_cron_generate_monthly_inventory_reports" model="ir.cron">
             <field name="name">Generate Monthly Customer Inventory Reports</field>
-            <field name="model_id" ref="model_customer_inventory_report"/>
+            <field name="model_id" ref="model_cust_inv_rpt"/>
             <field name="state">code</field>
             <field name="code">
 # Generate monthly inventory reports for all customers

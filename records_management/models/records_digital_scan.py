@@ -71,7 +71,7 @@ class RecordsDigitalScan(models.Model):
     message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_join=True)
     my_scans = fields.Char(string='My Scans')
     res_model = fields.Char(string='Res Model')
-    search_view_id = fields.Many2one('ir.ui.view', string='Search View')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
     view_mode = fields.Char(string='View Mode')
 
 def action_confirm(self):

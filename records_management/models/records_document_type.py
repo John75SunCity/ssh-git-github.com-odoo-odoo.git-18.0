@@ -32,8 +32,7 @@ class RecordsDocumentType(models.Model):
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
     )
-    user_id = fields.Many2one(
-        "res.users", string="Assigned User", default=lambda self: self.env.user
+    user_id = fields.Many2one("res.users", string="Assigned User", default=lambda self: self.env.user
     )
 
     # Timestamps
@@ -178,7 +177,9 @@ class RecordsDocumentType(models.Model):
                 [("document_type_id", "=", record.id)]
             )
 
-    @api.depends("document_count")
+    @api.depends('document_count', 'document_type_utilization')
+
+
     def _compute_document_type_utilization(self):
         """Computes the utilization of this document type across all documents."""
         for record in self:
@@ -207,15 +208,8 @@ class RecordsDocumentType(models.Model):
         """Archive the record."""
         self.write({"state": "archived", "active": False})
 
-    @api.model_create_multi
-    def create(self, vals_list):
+    def create(self, vals):
         """Override create to set default values."""
-        # Handle both single dict and list of dicts
-        if not isinstance(vals_list, list):
-            vals_list = [vals_list]
-
-        for vals in vals_list:
-            if not vals.get("name"):
-                vals["name"] = _("New Record")
-
-        return super().create(vals_list)
+        if not vals.get("name"):
+            vals["name"] = _("New Record")
+        return super().create(vals)

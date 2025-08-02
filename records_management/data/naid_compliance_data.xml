@@ -21,7 +21,7 @@
         </record>
 
         <!-- NAID Compliance Policies -->
-        <record id="policy_access_control" model="naid.compliance">
+        <record id="policy_access_control" model="naid.compliance.enhanced">
             <field name="name">Access Control</field>
             <field name="sequence">10</field>
             <field name="policy_type">access_control</field>
@@ -34,82 +34,82 @@
             <field name="review_frequency_months">6</field>
         </record>
 
-        <record id="policy_document_handling" model="naid.compliance">
+        <record id="policy_document_handling" model="naid.compliance.enhanced">
             <field name="name">Document Handling</field>
             <field name="sequence">20</field>
             <field name="policy_type">document_handling</field>
-            <field name="description">Confidential documents must be handled, transported, and stored according to established security protocols.</field>
+            <field name="description">All documents must be properly tracked, secured, and handled according to their classification level throughout the entire lifecycle.</field>
             <field name="mandatory">True</field>
             <field name="automated_check">False</field>
             <field name="check_frequency">weekly</field>
-            <field name="implementation_notes">Use secure containers, maintain chain of custody logs, require dual authorization for sensitive materials.</field>
-            <field name="violation_consequences">Document breach investigation, client notification, potential legal action.</field>
-            <field name="review_frequency_months">3</field>
+            <field name="implementation_notes">Use chain of custody forms, implement proper storage procedures, maintain handling logs.</field>
+            <field name="violation_consequences">Retraining required, disciplinary action, potential contract termination.</field>
+            <field name="review_frequency_months">12</field>
         </record>
 
-        <record id="policy_destruction_process" model="naid.compliance">
+        <record id="policy_destruction_process" model="naid.compliance.enhanced">
             <field name="name">Destruction Process</field>
             <field name="sequence">30</field>
-            <field name="policy_type">destruction</field>
-            <field name="description">All document destruction must follow NAID AAA standards with proper witnessing and certificate generation.</field>
-            <field name="mandatory">True</field>
-            <field name="automated_check">True</field>
-            <field name="check_frequency">per_operation</field>
-            <field name="implementation_notes">Use certified destruction equipment, maintain witness logs, generate destruction certificates within 24 hours.</field>
-            <field name="violation_consequences">Immediate process review, client notification, potential certification suspension.</field>
-            <field name="review_frequency_months">12</field>
-        </record>
-
-        <record id="policy_employee_screening" model="naid.compliance">
-            <field name="name">Employee Screening</field>
-            <field name="sequence">40</field>
-            <field name="policy_type">employee_screening</field>
-            <field name="description">All employees must undergo background checks and security clearance verification before handling confidential materials.</field>
-            <field name="mandatory">True</field>
-            <field name="automated_check">False</field>
-            <field name="check_frequency">annually</field>
-            <field name="implementation_notes">Conduct criminal background checks, verify references, maintain updated security clearance records.</field>
-            <field name="violation_consequences">Immediate suspension, security review, potential termination and law enforcement notification.</field>
-            <field name="review_frequency_months">12</field>
-        </record>
-
-        <record id="policy_facility_security" model="naid.compliance">
-            <field name="name">Facility Security</field>
-            <field name="sequence">50</field>
-            <field name="policy_type">facility_security</field>
-            <field name="description">Physical facilities must maintain appropriate security measures including surveillance, access controls, and environmental protections.</field>
+            <field name="policy_type">destruction_process</field>
+            <field name="description">All destruction activities must be witnessed, documented, and conducted using approved methods that meet or exceed required security levels.</field>
             <field name="mandatory">True</field>
             <field name="automated_check">True</field>
             <field name="check_frequency">daily</field>
-            <field name="implementation_notes">Install security cameras, maintain alarm systems, conduct regular security patrols, environmental monitoring.</field>
-            <field name="violation_consequences">Immediate security assessment, facility lockdown if necessary, insurance notification.</field>
+            <field name="implementation_notes">Require minimum two witnesses, document particle sizes, maintain equipment calibration.</field>
+            <field name="violation_consequences">Stop work order, investigation, potential re-destruction of affected materials.</field>
             <field name="review_frequency_months">6</field>
         </record>
 
-        <record id="policy_equipment_maintenance" model="naid.compliance">
-            <field name="name">Equipment Maintenance</field>
-            <field name="sequence">60</field>
-            <field name="policy_type">equipment</field>
-            <field name="description">All destruction and security equipment must be regularly maintained, calibrated, and certified according to manufacturer specifications.</field>
+        <record id="policy_employee_screening" model="naid.compliance.enhanced">
+            <field name="name">Employee Screening</field>
+            <field name="sequence">40</field>
+            <field name="policy_type">employee_screening</field>
+            <field name="description">All employees must undergo comprehensive background checks and receive NAID-specific training before handling confidential materials.</field>
             <field name="mandatory">True</field>
             <field name="automated_check">True</field>
             <field name="check_frequency">monthly</field>
-            <field name="implementation_notes">Schedule preventive maintenance, maintain equipment logs, ensure proper calibration, verify certifications.</field>
-            <field name="violation_consequences">Equipment shutdown, maintenance review, potential service interruption.</field>
+            <field name="implementation_notes">Conduct criminal background checks, verify employment history, provide NAID training certification.</field>
+            <field name="violation_consequences">Immediate removal from confidential projects, retraining, potential termination.</field>
+            <field name="review_frequency_months">12</field>
+        </record>
+
+        <record id="policy_facility_security" model="naid.compliance.enhanced">
+            <field name="name">Facility Security</field>
+            <field name="sequence">50</field>
+            <field name="policy_type">facility_security</field>
+            <field name="description">Facilities must maintain appropriate physical security measures including surveillance, access controls, and environmental monitoring.</field>
+            <field name="mandatory">True</field>
+            <field name="automated_check">False</field>
+            <field name="check_frequency">daily</field>
+            <field name="implementation_notes">Install security cameras, implement alarm systems, conduct regular patrols, maintain entry logs.</field>
+            <field name="violation_consequences">Security audit, facility improvements required, potential contract suspension.</field>
+            <field name="review_frequency_months">6</field>
+        </record>
+
+        <record id="policy_equipment_maintenance" model="naid.compliance.enhanced">
+            <field name="name">Equipment Maintenance</field>
+            <field name="sequence">60</field>
+            <field name="policy_type">equipment_maintenance</field>
+            <field name="description">All destruction equipment must be properly maintained, calibrated, and inspected to ensure consistent performance according to specifications.</field>
+            <field name="mandatory">True</field>
+            <field name="automated_check">False</field>
+            <field name="check_frequency">weekly</field>
+            <field name="implementation_notes">Follow manufacturer schedules, document all maintenance, test particle sizes regularly.</field>
+            <field name="violation_consequences">Equipment shutdown, recalibration required, affected materials may require re-destruction.</field>
             <field name="review_frequency_months">3</field>
         </record>
 
-        <record id="policy_audit_requirements" model="naid.compliance">
+        <record id="policy_audit_requirements" model="naid.compliance.enhanced">
             <field name="name">Audit Requirements</field>
             <field name="sequence">70</field>
-            <field name="policy_type">audit</field>
-            <field name="description">Regular internal and external audits must be conducted to ensure compliance with all NAID AAA standards and client requirements.</field>
+            <field name="policy_type">audit_requirements</field>
+            <field name="description">Comprehensive audit trails must be maintained for all activities, with regular internal and external audits conducted.</field>
             <field name="mandatory">True</field>
-            <field name="automated_check">False</field>
-            <field name="check_frequency">quarterly</field>
-            <field name="implementation_notes">Schedule regular audits, maintain audit logs, address findings promptly, document corrective actions.</field>
-            <field name="violation_consequences">Compliance review, client notification, potential certification impact.</field>
-            <field name="review_frequency_months">12</field>
+            <field name="automated_check">True</field>
+            <field name="check_frequency">daily</field>
+            <field name="implementation_notes">Maintain detailed logs, conduct quarterly internal audits, prepare for annual NAID audits.</field>
+            <field name="violation_consequences">Compliance violation notice, corrective action plan required, potential certification loss.</field>
+            <field name="review_frequency_months">3</field>
         </record>
 
         <!-- Scheduled Actions for NAID Compliance -->
@@ -125,9 +125,9 @@
 
         <record id="cron_cleanup_audit_logs" model="ir.cron">
             <field name="name">Cleanup Old Audit Logs</field>
-            <field name="model_id" ref="base.model_ir_cron"/>
+            <field name="model_id" ref="model_naid_audit_log"/>
             <field name="state">code</field>
-            <field name="code">env['naid.audit.log'].cleanup_old_logs()</field>
+            <field name="code">model.cleanup_old_logs()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
             <field name="active">True</field>
@@ -135,9 +135,9 @@
 
         <record id="cron_compliance_check" model="ir.cron">
             <field name="name">NAID Compliance Check</field>
-            <field name="model_id" ref="base.model_ir_cron"/>
+            <field name="model_id" ref="model_naid_compliance_enhanced"/>
             <field name="state">code</field>
-            <field name="code">env['naid.compliance'].check_compliance()</field>
+            <field name="code">model.check_compliance()</field>
             <field name="interval_number">4</field>
             <field name="interval_type">hours</field>
             <field name="active">True</field>

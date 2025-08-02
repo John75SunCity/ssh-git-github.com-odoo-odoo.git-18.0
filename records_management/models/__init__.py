@@ -51,7 +51,6 @@ from . import records_container_movement
 from . import records_container_transfer
 
 # Customer and inventory management
-from . import customer_inventory
 from . import customer_inventory_report
 from . import temp_inventory
 
@@ -84,9 +83,6 @@ from . import customer_retrieval_rates
 
 # Key management services
 from . import bin_key_management
-from . import bin_key_history  # Must be before partner_bin_key (One2many target)
-from . import unlock_service_history  # Must be before partner_bin_key (One2many target)
-from . import photo  # Must be before mobile_bin_key_wizard (One2many target)
 from . import partner_bin_key
 from . import mobile_bin_key_wizard
 from . import bin_unlock_service
@@ -141,9 +137,6 @@ from . import department_billing
 # Advanced billing features
 from . import advanced_billing
 from . import customer_billing_profile
-
-# Revenue forecasting and analytics
-from . import revenue_forecaster
 
 # =============================================================================
 # PORTAL AND CUSTOMER INTERACTION
