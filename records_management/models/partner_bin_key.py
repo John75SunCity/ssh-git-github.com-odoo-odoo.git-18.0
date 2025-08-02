@@ -152,20 +152,10 @@ class PartnerBinKey(models.Model):
         for record in self:
             record.active_bin_key_count = len(record.active_bin_key_ids)
 
-    @api.depends("line_ids", "line_ids.amount")  # TODO: Adjust field dependencies
-    def _compute_total_bin_keys_issued(self):
-        for record in self:
-            record.total_bin_keys_issued = sum(record.line_ids.mapped("amount"))
-
-    @api.depends("line_ids", "line_ids.amount")  # TODO: Adjust field dependencies
-    def _compute_total_unlock_charges(self):
-        for record in self:
-            record.total_unlock_charges = sum(record.line_ids.mapped("amount"))
-
-    @api.depends("unlock_service_ids")
+    @api.depends("unlock_service_history_ids")
     def _compute_unlock_service_count(self):
         for record in self:
-            record.unlock_service_count = len(record.unlock_service_ids)
+            record.unlock_service_count = len(record.unlock_service_history_ids)
 
     # ==========================================
     # WORKFLOW ACTION METHODS
