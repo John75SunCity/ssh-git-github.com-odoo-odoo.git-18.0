@@ -3,6 +3,7 @@
 ## 🚀 Established Deployment Strategy (Option A)
 
 ### **Primary Deployment Method: VS Code Source Control**
+
 For all pushes that need to trigger **Odoo.sh database rebuilds**:
 
 1. **Use VS Code Source Control Panel** (`Ctrl+Shift+G`)
@@ -10,10 +11,11 @@ For all pushes that need to trigger **Odoo.sh database rebuilds**:
 3. **Verify Odoo.sh rebuild** is triggered automatically
 
 ### **GitLens Usage: Visualization & Code Analysis**
+
 GitLens is configured for development enhancement, NOT deployment:
 
 - ✅ **Code lens and blame information**
-- ✅ **Git history and branch visualization** 
+- ✅ **Git history and branch visualization**
 - ✅ **Commit exploration and diff analysis**
 - ✅ **Repository insights and contributor stats**
 - ❌ **NOT for deployment pushes** (may not trigger Odoo.sh rebuilds)
@@ -21,6 +23,7 @@ GitLens is configured for development enhancement, NOT deployment:
 ## 🔧 Configuration Summary
 
 ### **Removed AI Extensions:**
+
 - ❌ Codeium (uninstalled)
 - ❌ Tabnine (uninstalled)  
 - ❌ Jupyter (uninstalled)
@@ -28,6 +31,7 @@ GitLens is configured for development enhancement, NOT deployment:
 - ❌ All AI API keys removed from settings
 
 ### **Retained Core Extensions:**
+
 - ✅ GitHub Copilot (AI assistance for coding)
 - ✅ GitLens (Git visualization and history)
 - ✅ Python development stack
@@ -37,6 +41,7 @@ GitLens is configured for development enhancement, NOT deployment:
 ## 📋 Deployment Checklist
 
 ### **Before Every Deployment:**
+
 1. **Validate locally**: Run `python development-tools/module_validation.py`
 2. **Check field consistency**: Run `python development-tools/comprehensive_field_analysis.py`
 3. **Stage in Source Control**: Use VS Code Source Control panel
@@ -44,6 +49,7 @@ GitLens is configured for development enhancement, NOT deployment:
 5. **Push via Source Control**: Triggers Odoo.sh rebuild automatically
 
 ### **Critical Files for Odoo.sh Monitoring:**
+
 - `records_management/__manifest__.py` (version changes)
 - `records_management/models/*.py` (model changes)
 - `records_management/views/*.xml` (view changes)

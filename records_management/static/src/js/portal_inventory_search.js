@@ -182,7 +182,7 @@ class PortalInventorySearch {
             
             // Perform RPC search
             const results = await rpc('/web/dataset/search_read', {
-                model: 'records.box',
+                model: 'records.container',
                 domain: domain,
                 fields: [
                     'name', 'barcode', 'description', 'state', 'location_id', 
@@ -341,7 +341,7 @@ class PortalInventorySearch {
             const domain = this.buildFilterDomain(filters);
             
             const results = await rpc('/web/dataset/search_read', {
-                model: 'records.box',
+                model: 'records.container',
                 domain: domain,
                 fields: [
                     'name', 'barcode', 'description', 'state', 'location_id',
@@ -394,7 +394,7 @@ class PortalInventorySearch {
             const domain = this.buildQuickFilterDomain(filter);
             
             const results = await rpc('/web/dataset/search_read', {
-                model: 'records.box',
+                model: 'records.container',
                 domain: domain,
                 fields: [
                     'name', 'barcode', 'description', 'state', 'location_id',
