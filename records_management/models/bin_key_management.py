@@ -15,6 +15,13 @@ class BinKeyManagement(models.Model):
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
 
+    # Relationship to Partner Bin Key
+    partner_bin_key_id = fields.Many2one(
+        "partner.bin.key",
+        string="Partner Bin Key",
+        help="Link to the partner bin key record",
+    )
+
     # State Management
     state = fields.Selection(
         [
