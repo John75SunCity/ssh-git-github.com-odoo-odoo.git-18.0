@@ -77,9 +77,9 @@ from . import work_order_shredding
 from . import document_retrieval_work_order
 from . import file_retrieval_work_order
 
-# Service rates and billing
-from . import shredding_rates
-from . import customer_retrieval_rates
+# Service rates and billing (consolidated system)
+from . import base_rates
+from . import customer_negotiated_rates
 
 # Key management services
 from . import bin_key_management
