@@ -64,7 +64,9 @@ class CustomerInventory(models.Model):
     document_ids = fields.One2many(
         "records.document", "customer_inventory_id", string="Document Ids"
     )
-    document_type_id = fields.Many2one("document.type", string="Document Type Id")
+    document_type_id = fields.Many2one(
+        "records.document.type", string="Document Type Id"
+    )
     documents = fields.Char(string="Documents")
     draft = fields.Char(string="Draft")
     group_by_customer = fields.Char(string="Group By Customer")
@@ -76,7 +78,7 @@ class CustomerInventory(models.Model):
     help = fields.Char(string="Help")
     large_volume = fields.Char(string="Large Volume")
     last_quarter = fields.Char(string="Last Quarter")
-    location_id = fields.Many2one("location", string="Location Id")
+    location_id = fields.Many2one("records.location", string="Location Id")
     medium_volume = fields.Char(string="Medium Volume")
     notes = fields.Char(string="Notes")
     report_date = fields.Date(string="Report Date")
