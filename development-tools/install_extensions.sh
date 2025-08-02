@@ -44,7 +44,6 @@ code --install-extension trinhanhngoc.vscode-odoo
 
 # Additional useful tools
 code --install-extension ms-vscode.hexeditor
-code --install-extension ms-toolsai.jupyter
 code --install-extension davidanson.vscode-markdownlint
 code --install-extension dbaeumer.vscode-eslint
 code --install-extension donjayamanne.githistory
