@@ -106,3 +106,4 @@ class CustomerInventory(models.Model):
             record.total_documents = sum(record.line_ids.mapped("amount"))
 
     # TODO: Add specific fields for this model
+    # GitLens test comment - optimized for Odoo development workflow
