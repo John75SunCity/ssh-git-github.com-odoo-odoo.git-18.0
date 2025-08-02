@@ -12,8 +12,12 @@ class RecordsRetentionPolicy(models.Model):
 
     # Basic Information
     name = fields.Char(string="Name", required=True, tracking=True, index=True)
+    code = fields.Char(string="Code", index=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
+    retention_period = fields.Integer(
+        string="Retention Period (Years)", help="Number of years to retain records"
+    )
 
     # State Management
     state = fields.Selection(

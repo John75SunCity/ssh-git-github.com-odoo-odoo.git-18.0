@@ -35,7 +35,14 @@ class FsmTask(models.Model):
     # Customer Information
     partner_id = fields.Many2one("res.partner", string="Customer", required=True)
     customer_balance = fields.Monetary(
-        string="Customer Balance", compute="_compute_customer_balance"
+        string="Customer Balance",
+        compute="_compute_customer_balance",
+        currency_field="currency_id",
+    )
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
     )
 
     # Timing and Scheduling

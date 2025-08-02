@@ -12,6 +12,30 @@ class RecordsLocation(models.Model):
     name = fields.Char(string="Location Name", required=True, tracking=True)
     code = fields.Char(string="Location Code", index=True)
     description = fields.Text(string="Description")
+    building = fields.Char(string="Building")
+    zone = fields.Char(string="Zone")
+
+    # Location specifications
+    location_type = fields.Selection(
+        [
+            ("warehouse", "Warehouse"),
+            ("office", "Office"),
+            ("storage", "Storage"),
+            ("vault", "Vault"),
+        ],
+        string="Location Type",
+    )
+    access_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("restricted", "Restricted"),
+            ("confidential", "Confidential"),
+            ("top_secret", "Top Secret"),
+        ],
+        string="Access Level",
+    )
+    climate_controlled = fields.Boolean(string="Climate Controlled", default=False)
+    max_capacity = fields.Integer(string="Max Capacity")
 
     # Status and Control
     status = fields.Selection(

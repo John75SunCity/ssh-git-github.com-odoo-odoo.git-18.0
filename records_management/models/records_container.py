@@ -33,6 +33,21 @@ class RecordsContainer(models.Model):
         default=30,
         help="Maximum number of files this container can hold",
     )
+    max_boxes = fields.Integer(
+        string="Max Boxes", help="Maximum number of boxes this container can hold"
+    )
+    description = fields.Text(string="Description")
+    gross_weight = fields.Float(string="Gross Weight")
+    bale_date = fields.Date(string="Bale Date")
+    service_type = fields.Selection(
+        [
+            ("storage", "Storage"),
+            ("retrieval", "Retrieval"),
+            ("destruction", "Destruction"),
+            ("scanning", "Scanning"),
+        ],
+        string="Service Type",
+    )
     length = fields.Float(string="Length (cm)", help="Container length in centimeters")
     width = fields.Float(string="Width (cm)", help="Container width in centimeters")
     height = fields.Float(string="Height (cm)", help="Container height in centimeters")
