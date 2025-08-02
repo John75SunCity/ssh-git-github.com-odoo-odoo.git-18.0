@@ -46,7 +46,7 @@ class PartnerBinKey(models.Model):
     # ==========================================
     partner_id = fields.Many2one(
         "res.partner",
-        string="Customer",
+        string="Assigned Customer",  # Changed to avoid conflict with customer field
         required=True,
         tracking=True,
         domain=[("is_company", "=", True)],
@@ -68,7 +68,7 @@ class PartnerBinKey(models.Model):
             ("lost", "Lost"),
             ("returned", "Returned"),
         ],
-        string="Status",
+        string="Key Status",  # Changed to avoid conflict with status field
         default="available",
         tracking=True,
         required=True,
@@ -90,6 +90,12 @@ class PartnerBinKey(models.Model):
     action_view_active_key = fields.Char(string="Action View Active Key")
     action_view_bin_keys = fields.Char(string="Action View Bin Keys")
     action_view_unlock_services = fields.Char(string="Action View Unlock Services")
+    active_bin_key_ids = fields.One2many(
+        "bin.key.management",
+        "partner_bin_key_id",
+        string="Active Bin Keys",
+        domain=[("active", "=", True)],
+    )
     active_bin_key_count = fields.Integer(
         string="Active Bin Key Count",
         compute="_compute_active_bin_key_count",
@@ -107,7 +113,6 @@ class PartnerBinKey(models.Model):
     charge_amount = fields.Float(string="Charge Amount", digits=(12, 2))
     context = fields.Char(string="Context")
     country_id = fields.Many2one("res.country", string="Country Id")
-    customer = fields.Char(string="Customer")
     emergency_contact = fields.Char(string="Emergency Contact")
     emergency_contacts = fields.Char(string="Emergency Contacts")
     has_bin_key = fields.Char(string="Has Bin Key")
@@ -123,7 +128,7 @@ class PartnerBinKey(models.Model):
     service_number = fields.Char(string="Service Number")
     status = fields.Selection(
         [("new", "New"), ("in_progress", "In Progress"), ("completed", "Completed")],
-        string="Status",
+        string="Service Status",  # Changed to avoid conflict with state field
         default="new",
     )
     target = fields.Char(string="Target")

@@ -38,7 +38,7 @@ class PaperBale(models.Model):
         "res.company", string="Company", default=lambda self: self.env.company
     )
     user_id = fields.Many2one(
-        "res.users", string="Responsible User", default=lambda self: self.env.user
+        "res.users", string="Bale Manager", default=lambda self: self.env.user
     )
     active = fields.Boolean(string="Active", default=True)
 

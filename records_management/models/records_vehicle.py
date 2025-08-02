@@ -23,7 +23,7 @@ class RecordsVehicle(models.Model):
             ("inactive", "Inactive"),
             ("archived", "Archived"),
         ],
-        string="Status",
+        string="Vehicle State",  # Changed to avoid conflict with status field
         default="draft",
         tracking=True,
     )
@@ -33,7 +33,7 @@ class RecordsVehicle(models.Model):
         "res.company", string="Company", default=lambda self: self.env.company
     )
     user_id = fields.Many2one(
-        "res.users", string="Responsible User", default=lambda self: self.env.user
+        "res.users", string="Vehicle Manager", default=lambda self: self.env.user
     )
 
     # Timestamps
@@ -85,7 +85,7 @@ class RecordsVehicle(models.Model):
             ("in_service", "In Service"),
             ("maintenance", "Under Maintenance"),
         ],
-        string="Status",
+        string="Service Status",  # Changed to avoid conflict with state field
         default="available",
         tracking=True,
     )

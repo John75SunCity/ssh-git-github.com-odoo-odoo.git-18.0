@@ -33,7 +33,7 @@ class RecordsDocument(models.Model):
         "res.company", string="Company", default=lambda self: self.env.company
     )
     user_id = fields.Many2one(
-        "res.users", string="Responsible User", default=lambda self: self.env.user
+        "res.users", string="Document Manager", default=lambda self: self.env.user
     )
 
     # Customer Relationships

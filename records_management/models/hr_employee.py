@@ -1,43 +1,48 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
+
 class HrEmployee(models.Model):
-    _inherit = 'hr.employee'
-    _description = 'Hr Employee'
-    _order = 'name'
-    _rec_name = 'name'
-    
-    # Core fields
-    name = fields.Char(string='Name', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user)
-    active = fields.Boolean(string='Active', default=True)
-    
-    # State management
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
-    
+    _inherit = "hr.employee"
+    _description = "Hr Employee Records Management Extension"
+
+    # Records Management specific fields (don't redefine base fields)
+    records_manager_id = fields.Many2one(
+        "res.users",
+        string="Records Manager",
+        help="User responsible for this employee's records management",
+    )
+
+    # NAID compliance fields
+    naid_security_clearance = fields.Selection(
+        [
+            ("none", "None"),
+            ("basic", "Basic"),
+            ("advanced", "Advanced"),
+            ("certified", "Certified"),
+        ],
+        string="NAID Security Level",
+        default="none",
+        tracking=True,
+    )
+
+    # Records access permissions
+    records_access_level = fields.Selection(
+        [("read", "Read Only"), ("write", "Read/Write"), ("admin", "Administrator")],
+        string="Records Access Level",
+        default="read",
+        tracking=True,
+    )
+
     # Documentation
-    notes = fields.Text(string='Notes')
-    
-    # Computed fields
-    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-    
-    @api.depends('name')
-    def _compute_display_name(self):
-        for record in self:
-            record.display_name = record.name or 'New'
-    
+    records_notes = fields.Text(string="Records Management Notes")
+
     # Action methods
-    def action_confirm(self):
-        self.write({'state': 'confirmed'})
-    
-    def action_cancel(self):
-        self.write({'state': 'cancelled'})
-    
-    def action_reset_to_draft(self):
-        self.write({'state': 'draft'})
+    def action_grant_records_access(self):
+        """Grant enhanced records access to employee"""
+        if self.records_access_level == "read":
+            self.records_access_level = "write"
+
+    def action_revoke_records_access(self):
+        """Revoke records access from employee"""
+        self.records_access_level = "read"
