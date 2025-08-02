@@ -32,7 +32,8 @@ class RecordsDocumentType(models.Model):
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
     )
-    user_id = fields.Many2one("res.users", string="Assigned User", default=lambda self: self.env.user
+    user_id = fields.Many2one(
+        "res.users", string="Assigned User", default=lambda self: self.env.user
     )
 
     # Timestamps
@@ -177,9 +178,7 @@ class RecordsDocumentType(models.Model):
                 [("document_type_id", "=", record.id)]
             )
 
-    @api.depends('document_count', 'document_type_utilization')
-
-
+    @api.depends("document_count", "document_type_utilization")
     def _compute_document_type_utilization(self):
         """Computes the utilization of this document type across all documents."""
         for record in self:
@@ -195,6 +194,32 @@ class RecordsDocumentType(models.Model):
         """Override write to update modification date."""
         vals["date_modified"] = fields.Datetime.now()
         return super().write(vals)
+
+    def action_view_type_documents(self):
+        """View all documents of this type."""
+        self.ensure_one()
+
+        # Create activity to track document viewing
+        self.activity_schedule(
+            "mail.mail_activity_data_todo",
+            summary=_("Documents viewed for type: %s") % self.name,
+            note=_("All documents of this type have been reviewed and analyzed."),
+            user_id=self.user_id.id,
+        )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Documents of Type: %s") % self.name,
+            "res_model": "records.document",
+            "view_mode": "tree,form",
+            "target": "current",
+            "domain": [("document_type_id", "=", self.id)],
+            "context": {
+                "default_document_type_id": self.id,
+                "search_default_document_type_id": self.id,
+                "search_default_group_by_state": True,
+            },
+        }
 
     def action_activate(self):
         """Activate the record."""

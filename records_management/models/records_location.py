@@ -41,6 +41,49 @@ class RecordsLocation(models.Model):
     )
 
     # Action Methods
+    def action_location_report(self):
+        """Generate location utilization report."""
+        self.ensure_one()
+
+        # Create report generation activity
+        self.activity_schedule(
+            "mail.mail_activity_data_done",
+            summary=_("Location report generated: %s") % self.name,
+            note=_("Location utilization and capacity report has been generated."),
+            user_id=self.env.user.id,
+        )
+
+        self.message_post(
+            body=_("Location report generated for: %s") % self.name,
+            message_type="notification",
+        )
+
+        return {
+            "type": "ir.actions.report",
+            "report_name": "records_management.location_utilization_report",
+            "report_type": "qweb-pdf",
+            "data": {"ids": self.ids},
+            "context": self.env.context,
+        }
+
+    def action_view_boxes(self):
+        """View all boxes stored in this location."""
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Boxes in Location: %s") % self.name,
+            "res_model": "records.box",
+            "view_mode": "tree,form",
+            "target": "current",
+            "domain": [("location_id", "=", self.id)],
+            "context": {
+                "default_location_id": self.id,
+                "search_default_location_id": self.id,
+                "search_default_group_by_status": True,
+            },
+        }
+
     def action_set_maintenance(self):
         """Set location to maintenance mode."""
         self.write({"status": "maintenance"})

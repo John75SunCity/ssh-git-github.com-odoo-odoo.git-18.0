@@ -285,6 +285,86 @@ class ShreddingService(models.Model):
             },
         }
 
+    def action_view_certificates(self):
+        """View all destruction certificates for this service."""
+        self.ensure_one()
+
+        # Create activity to track certificate viewing
+        self.activity_schedule(
+            "mail.mail_activity_data_todo",
+            summary=_("Destruction certificates reviewed: %s") % self.name,
+            note=_("All destruction certificates for this service have been reviewed."),
+            user_id=self.user_id.id,
+        )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Destruction Certificates: %s") % self.name,
+            "res_model": "destruction.certificate",
+            "view_mode": "tree,form",
+            "target": "current",
+            "domain": [("shredding_service_id", "=", self.id)],
+            "context": {
+                "default_shredding_service_id": self.id,
+                "search_default_shredding_service_id": self.id,
+                "search_default_group_by_date": True,
+            },
+        }
+
+    def action_view_items(self):
+        """View all items included in this shredding service."""
+        self.ensure_one()
+
+        # Create activity to track item viewing
+        self.activity_schedule(
+            "mail.mail_activity_data_done",
+            summary=_("Shredding items reviewed: %s") % self.name,
+            note=_("All items included in this shredding service have been reviewed."),
+            user_id=self.user_id.id,
+        )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Shredding Items: %s") % self.name,
+            "res_model": "shredding.item",
+            "view_mode": "tree,form",
+            "target": "current",
+            "domain": [("shredding_service_id", "=", self.id)],
+            "context": {
+                "default_shredding_service_id": self.id,
+                "search_default_shredding_service_id": self.id,
+                "search_default_group_by_type": True,
+            },
+        }
+
+    def action_view_witnesses(self):
+        """View all witnesses for this shredding service."""
+        self.ensure_one()
+
+        # Create activity to track witness viewing
+        self.activity_schedule(
+            "mail.mail_activity_data_done",
+            summary=_("Witnesses reviewed: %s") % self.name,
+            note=_(
+                "All witnesses for this shredding service have been reviewed and verified."
+            ),
+            user_id=self.user_id.id,
+        )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Shredding Witnesses: %s") % self.name,
+            "res_model": "shredding.witness",
+            "view_mode": "tree,form",
+            "target": "current",
+            "domain": [("shredding_service_id", "=", self.id)],
+            "context": {
+                "default_shredding_service_id": self.id,
+                "search_default_shredding_service_id": self.id,
+                "search_default_verified": True,
+            },
+        }
+
     def create(self, vals):
         """Override create to set default values."""
         if not vals.get("name"):

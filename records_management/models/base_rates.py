@@ -239,3 +239,106 @@ class BaseRates(models.Model):
         """Get specific rate value"""
         self.ensure_one()
         return getattr(self, rate_type, 0.0)
+
+    # =============================================================================
+    # ADDITIONAL BASE RATES ACTION METHODS
+    # =============================================================================
+
+    def action_apply_scenario(self):
+        """Apply rate scenario changes."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Apply Rate Scenario"),
+            "res_model": "rate.analysis.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_base_rate_id": self.id,
+                "default_action_type": "apply_scenario",
+            },
+        }
+
+    def action_approve_changes(self):
+        """Approve rate changes."""
+        self.ensure_one()
+        if self.state != "draft":
+            raise UserError(_("Only draft rates can be approved."))
+
+        self.write({"state": "confirmed"})
+        self.message_post(body=_("Rate changes approved and activated."))
+        return True
+
+    def action_cancel_implementation(self):
+        """Cancel implementation of rate changes."""
+        self.ensure_one()
+        if self.state == "confirmed":
+            self.write({"state": "cancelled"})
+            self.message_post(body=_("Rate implementation cancelled."))
+        return True
+
+    def action_export_forecast(self):
+        """Export rate forecast analysis."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.report",
+            "report_name": "records_management.base_rates_forecast_report",
+            "report_type": "qweb-pdf",
+            "context": {"active_ids": [self.id]},
+        }
+
+    def action_implement_changes(self):
+        """Implement approved rate changes."""
+        self.ensure_one()
+        if self.state != "confirmed":
+            raise UserError(_("Only confirmed rates can be implemented."))
+
+        # Set this as current rate set
+        self._set_as_current()
+        self.message_post(body=_("Rate changes implemented successfully."))
+        return True
+
+    def action_run_forecast(self):
+        """Run revenue forecast analysis."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Revenue Forecast"),
+            "res_model": "revenue.forecaster",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_base_rate_id": self.id,
+                "default_forecast_period": 12,  # 12 months
+            },
+        }
+
+    def action_view_customers_using_rate(self):
+        """View customers using this rate."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Customers Using This Rate"),
+            "res_model": "res.partner",
+            "view_mode": "tree,form",
+            "domain": [("is_records_customer", "=", True)],
+            "context": {
+                "search_default_records_customers": 1,
+                "search_default_base_rate_id": self.id,
+            },
+        }
+
+    def action_view_negotiated_rates(self):
+        """View negotiated rates based on this base rate."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Negotiated Rates"),
+            "res_model": "customer.negotiated.rates",
+            "view_mode": "tree,form",
+            "domain": [("base_rate_id", "=", self.id)],
+            "context": {
+                "default_base_rate_id": self.id,
+                "search_default_base_rate_id": self.id,
+            },
+        }

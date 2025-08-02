@@ -116,6 +116,133 @@ class RecordsVehicle(models.Model):
         vals["date_modified"] = fields.Datetime.now()
         return super().write(vals)
 
+    def action_set_available(self):
+        """Set vehicle status to available."""
+        self.ensure_one()
+        if self.state == "archived":
+            raise UserError(_("Cannot set archived vehicle as available."))
+
+        # Update status and notes
+        self.write(
+            {
+                "status": "available",
+                "state": "active",
+                "notes": (self.notes or "")
+                + _("\nSet to available on %s")
+                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            }
+        )
+
+        # Create availability activity
+        self.activity_schedule(
+            "mail.mail_activity_data_done",
+            summary=_("Vehicle available: %s") % self.name,
+            note=_(
+                "Vehicle has been set to available status and is ready for service."
+            ),
+            user_id=self.user_id.id,
+        )
+
+        self.message_post(
+            body=_("Vehicle set to available status: %s") % self.name,
+            message_type="notification",
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Vehicle Available"),
+                "message": _("Vehicle %s is now available for service.") % self.name,
+                "type": "success",
+                "sticky": False,
+            },
+        }
+
+    def action_set_in_use(self):
+        """Set vehicle status to in use."""
+        self.ensure_one()
+        if self.status == "maintenance":
+            raise UserError(_("Cannot use vehicle that is under maintenance."))
+
+        # Update status and notes
+        self.write(
+            {
+                "status": "in_service",
+                "state": "active",
+                "notes": (self.notes or "")
+                + _("\nSet to in service on %s")
+                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            }
+        )
+
+        # Create in-service activity
+        self.activity_schedule(
+            "mail.mail_activity_data_todo",
+            summary=_("Vehicle in service: %s") % self.name,
+            note=_("Vehicle is currently in service and unavailable for other routes."),
+            user_id=self.user_id.id,
+        )
+
+        self.message_post(
+            body=_("Vehicle set to in service: %s") % self.name,
+            message_type="notification",
+        )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Vehicle Routes"),
+            "res_model": "pickup.route",
+            "view_mode": "tree,form",
+            "target": "current",
+            "domain": [("vehicle_id", "=", self.id)],
+            "context": {
+                "default_vehicle_id": self.id,
+                "search_default_vehicle_id": self.id,
+            },
+        }
+
+    def action_set_maintenance(self):
+        """Set vehicle status to maintenance."""
+        self.ensure_one()
+
+        # Update status and notes
+        self.write(
+            {
+                "status": "maintenance",
+                "state": "inactive",
+                "notes": (self.notes or "")
+                + _("\nSent for maintenance on %s")
+                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            }
+        )
+
+        # Create maintenance activity
+        self.activity_schedule(
+            "mail.mail_activity_data_todo",
+            summary=_("Vehicle maintenance required: %s") % self.name,
+            note=_("Vehicle requires maintenance and is temporarily out of service."),
+            user_id=self.user_id.id,
+            date_deadline=fields.Date.today() + fields.timedelta(days=3),
+        )
+
+        self.message_post(
+            body=_("Vehicle sent for maintenance: %s") % self.name,
+            message_type="notification",
+        )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Vehicle Maintenance"),
+            "res_model": "records.vehicle",
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "current",
+            "context": {
+                "form_view_initial_mode": "edit",
+            },
+        }
+
     def action_activate(self):
         """Activate the record."""
         self.write({"state": "active", "status": "available"})
