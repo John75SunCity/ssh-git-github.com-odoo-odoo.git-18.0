@@ -73,7 +73,7 @@ class RecordsLocation(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": _("Boxes in Location: %s") % self.name,
-            "res_model": "records.box",
+            "res_model": "records.container",
             "view_mode": "tree,form",
             "target": "current",
             "domain": [("location_id", "=", self.id)],

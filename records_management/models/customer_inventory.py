@@ -49,7 +49,9 @@ class CustomerInventory(models.Model):
     action_view_documents = fields.Char(string="Action View Documents")
     action_view_locations = fields.Char(string="Action View Locations")
     active_locations = fields.Char(string="Active Locations")
-    box_ids = fields.One2many("records.box", "customer_inventory_id", string="Box Ids")
+    box_ids = fields.One2many(
+        "records.container", "customer_inventory_id", string="Containers"
+    )
     boxes = fields.Char(string="Boxes")
     button_box = fields.Char(string="Button Box")
     card = fields.Char(string="Card")

@@ -166,7 +166,7 @@ class CustomerInventoryReport(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": _("Inventory Boxes: %s") % self.name,
-            "res_model": "records.box",
+            "res_model": "records.container",
             "view_mode": "tree,form",
             "target": "current",
             "domain": [("inventory_report_id", "=", self.id)],
