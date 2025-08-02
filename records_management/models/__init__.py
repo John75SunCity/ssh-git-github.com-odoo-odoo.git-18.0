@@ -143,6 +143,7 @@ from . import department_billing
 # Advanced billing features
 from . import advanced_billing
 from . import customer_billing_profile
+from . import revenue_forecaster
 
 # =============================================================================
 # PORTAL AND CUSTOMER INTERACTION
