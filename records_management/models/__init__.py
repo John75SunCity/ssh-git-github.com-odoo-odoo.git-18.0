@@ -25,7 +25,6 @@ from . import records_location
 from . import records_department
 from . import records_department_billing_contact
 from . import records_storage_department_user
-from . import customer_rate_profile
 
 # Document and policy models
 from . import records_document_type

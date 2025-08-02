@@ -193,7 +193,6 @@ Records Management System - Enterprise Edition
         "views/records_container_type_converter_views.xml",
         "views/permanent_flag_wizard_views.xml",
         "views/document_retrieval_work_order_views.xml",
-        "views/shredding_rates_views.xml",
         "views/shredding_inventory_views.xml",
         "views/advanced_billing_views.xml",
         "views/customer_billing_profile_views.xml",

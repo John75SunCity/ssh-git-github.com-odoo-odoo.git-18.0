@@ -51,8 +51,6 @@ access_visitor_pos_wiz_user,visitor.pos.wiz.user,model_visitor_pos_wizard,record
 access_visitor_pos_wiz_manager,visitor.pos.wiz.manager,model_visitor_pos_wizard,records_management.group_records_manager,1,1,1,1
 access_visitor_user,visitor.user,model_visitor,records_management.group_records_user,1,1,1,0
 access_visitor_manager,visitor.manager,model_visitor,records_management.group_records_manager,1,1,1,1
-access_customer_retrieval_rates_user,customer.retrieval.rates.user,model_customer_retrieval_rates,records_management.group_records_user,1,1,1,0
-access_customer_retrieval_rates_manager,customer.retrieval.rates.manager,model_customer_retrieval_rates,records_management.group_records_manager,1,1,1,1
 access_shredding_base_rates_user,shredding.base.rates.user,model_shredding_base_rates,records_management.group_records_user,1,0,0,0
 access_shredding_base_rates_manager,shredding.base.rates.manager,model_shredding_base_rates,records_management.group_records_manager,1,1,1,1
 access_shredding_bin_user,shredding.bin.user,model_shredding_bin,records_management.group_records_user,1,1,1,0
@@ -124,8 +122,6 @@ access_shredding_service_log_user,shredding.service.log.user,model_shredding_ser
 access_shredding_service_log_manager,shredding.service.log.manager,model_shredding_service_log,records_management.group_records_manager,1,1,1,1
 access_records_management_base_menus_user,records.management.base.menus.user,model_records_management_base_menus,records_management.group_records_user,1,1,1,0
 access_records_management_base_menus_manager,records.management.base.menus.manager,model_records_management_base_menus,records_management.group_records_manager,1,1,1,1
-access_shredding_rates_user,shredding.rates.user,model_shredding_rates,records_management.group_records_user,1,1,1,0
-access_shredding_rates_manager,shredding.rates.manager,model_shredding_rates,records_management.group_records_manager,1,1,1,1
 access_location_report_wizard_user,location.report.wizard.user,model_location_report_wizard,records_management.group_records_user,1,1,1,0
 access_location_report_wizard_manager,location.report.wizard.manager,model_location_report_wizard,records_management.group_records_manager,1,1,1,1
 access_customer_inventory_user,customer.inventory.user,model_customer_inventory,records_management.group_records_user,1,1,1,0

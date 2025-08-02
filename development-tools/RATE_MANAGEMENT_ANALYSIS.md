@@ -3,11 +3,13 @@
 ## 🎯 Current State Analysis
 
 ### Rate-Related Files Discovered
+
 1. **shredding_rates.py** - Comprehensive shredding rate structure
-2. **customer_rate_profile.py** - Basic customer profile (missing rate fields) 
+2. **customer_rate_profile.py** - Basic customer profile (missing rate fields)
 3. **customer_retrieval_rates.py** - Simple retrieval rates (missing actual rate fields)
 
 ### Billing-Related Files (May contain rate logic)
+
 1. **advanced_billing.py** - Complex billing automation
 2. **billing_automation.py** - Service billing automation
 3. **billing_models.py** - Configuration models
@@ -19,7 +21,9 @@
 ## 📊 Rate Structure Analysis
 
 ### shredding_rates.py (COMPREHENSIVE)
+
 **Fields:**
+
 - `external_per_bin_rate` - External service bin rate
 - `external_service_call_rate` - External service call rate  
 - `managed_permanent_removal_rate` - Managed permanent removal
@@ -31,31 +35,38 @@
 - `type` - standard/customer/promotional
 
 **Business Logic:**
+
 - Complete rate structure for all services
 - Customer-specific rate support
 - Discount percentage functionality
 - Effective/expiry date tracking
 
 ### customer_rate_profile.py (INCOMPLETE)
+
 **Current Fields:**
+
 - Basic model structure only
 - No actual rate fields
 - Missing business logic
 - Only state management
 
 **Issues:**
+
 - Name suggests rate management but contains no rates
 - Duplicate functionality with shredding_rates.py
 - Missing core rate fields
 
-### customer_retrieval_rates.py (INCOMPLETE) 
+### customer_retrieval_rates.py (INCOMPLETE)
+
 **Current Fields:**
+
 - Basic model structure only
 - No actual rate fields  
 - Missing business logic
 - Only state management
 
 **Issues:**
+
 - Name suggests retrieval rates but contains no rate fields
 - Functionality already covered in shredding_rates.py
 - Redundant model
@@ -64,7 +75,8 @@
 
 > "there should be a comprehensive base rates and customer specific negotiated rates, and the others rates files should be purged"
 
-### Interpretation:
+### Interpretation
+
 1. **Base Rates** - Standard system-wide rates for all services
 2. **Customer Negotiated Rates** - Customer-specific overrides of base rates
 3. **Purge Others** - Remove redundant/incomplete rate files
@@ -72,6 +84,7 @@
 ## 🏗️ Proposed Consolidated Architecture
 
 ### 1. Base Rates Model (`base.rates`)
+
 ```python
 class BaseRates(models.Model):
     _name = 'base.rates'
@@ -95,6 +108,7 @@ class BaseRates(models.Model):
 ```
 
 ### 2. Customer Negotiated Rates Model (`customer.negotiated.rates`)
+
 ```python
 class CustomerNegotiatedRates(models.Model):
     _name = 'customer.negotiated.rates'
@@ -116,40 +130,47 @@ class CustomerNegotiatedRates(models.Model):
 
 ## 🗑️ Files to Purge
 
-### Redundant Rate Files:
+### Redundant Rate Files
+
 1. **customer_rate_profile.py** - No actual rate fields, redundant
 2. **customer_retrieval_rates.py** - No actual rate fields, covered by base rates
 
-### Keep & Enhance:
+### Keep & Enhance
+
 1. **shredding_rates.py** → Rename to **base_rates.py** and enhance
 
 ## 📋 Implementation Plan
 
 ### Phase 1: Create Consolidated Models
+
 1. Create `base_rates.py` based on shredding_rates.py structure
 2. Create `customer_negotiated_rates.py` for customer overrides
 3. Add proper rate lookup logic
 
 ### Phase 2: Data Migration
+
 1. Migrate existing shredding_rates data to base_rates
 2. Migrate customer-specific rates to negotiated_rates
 3. Update all references
 
 ### Phase 3: Cleanup
+
 1. Remove customer_rate_profile.py
 2. Remove customer_retrieval_rates.py  
-3. Update __init__.py imports
+3. Update **init**.py imports
 4. Update view files
 5. Update security rules
 
 ### Phase 4: Integration
+
 1. Update billing models to use new rate structure
 2. Add rate lookup methods
 3. Test customer-specific rate overrides
 
 ## 🔧 Technical Considerations
 
-### Rate Lookup Logic:
+### Rate Lookup Logic
+
 ```python
 def get_customer_rate(self, partner_id, rate_type):
     # 1. Check customer negotiated rates first
@@ -162,7 +183,8 @@ def get_customer_rate(self, partner_id, rate_type):
     return getattr(negotiated, rate_type, None) or self.get_base_rate(rate_type)
 ```
 
-### Benefits:
+### Benefits
+
 - **Clarity**: Clear separation between base and customer rates
 - **Maintainability**: Single source of truth for each rate type
 - **Flexibility**: Easy to add new rate types
@@ -179,12 +201,14 @@ def get_customer_rate(self, partner_id, rate_type):
 
 ## 🚨 Risk Mitigation
 
-### Data Safety:
+### Data Safety
+
 - Create backup of current rate data before changes
 - Test migration on copy before production
 - Validate all rate lookups work correctly
 
-### Business Continuity:
+### Business Continuity
+
 - Ensure billing continues to work during transition
 - Test customer-specific rate overrides
 - Validate rate calculations
@@ -192,8 +216,9 @@ def get_customer_rate(self, partner_id, rate_type):
 ## 📈 Implementation Priority
 
 **HIGH PRIORITY** - This consolidation will:
+
 - Eliminate user confusion about rate management
-- Simplify system architecture 
+- Simplify system architecture
 - Improve maintainability
 - Provide clear base + negotiated rate structure as requested
 
