@@ -93,12 +93,10 @@ class RecordsDigitalScan(models.Model):
     search_view_id = fields.Many2one("ir.ui.view", string="Search View")
     view_mode = fields.Char(string="View Mode")
 
+    def action_confirm(self):
+        """Confirm the record"""
+        self.write({"state": "confirmed"})
 
-def action_confirm(self):
-    """Confirm the record"""
-    self.write({"state": "confirmed"})
-
-
-def action_done(self):
-    """Mark as done"""
-    self.write({"state": "done"})
+    def action_done(self):
+        """Mark as done"""
+        self.write({"state": "done"})
