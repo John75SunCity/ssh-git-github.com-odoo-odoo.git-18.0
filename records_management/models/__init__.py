@@ -34,6 +34,7 @@ from . import records_approval_workflow
 from . import records_approval_step
 
 # Container and storage models (in dependency order)
+from . import customer_inventory
 from . import records_container
 from . import container_contents
 from . import records_container_type_converter

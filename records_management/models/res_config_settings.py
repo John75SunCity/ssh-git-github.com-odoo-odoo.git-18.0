@@ -11,19 +11,6 @@ class ResConfigSettings(models.TransientModel):
         "Example Setting", config_parameter="records_management.setting"
     )
 
-    # State management
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("confirmed", "Confirmed"),
-            ("done", "Done"),
-            ("cancelled", "Cancelled"),
-        ],
-        string="Status",
-        default="draft",
-        tracking=True,
-    )
-
     # Documentation
     notes = fields.Text(string="Notes")
 

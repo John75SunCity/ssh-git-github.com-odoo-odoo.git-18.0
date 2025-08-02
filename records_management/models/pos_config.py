@@ -6,26 +6,13 @@ from odoo.exceptions import UserError, ValidationError
 class PosConfig(models.Model):
     _inherit = "pos.config"
     _description = "Pos Config"
-    _order = "name desc"
-    _rec_name = "name"
 
-    # Basic Information
-    name = fields.Char(string="Name", required=True, tracking=True, index=True)
+    # Additional fields for records management integration
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
 
-    # State Management
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("active", "Active"),
-            ("inactive", "Inactive"),
-            ("archived", "Archived"),
-        ],
-        string="Status",
-        default="draft",
-        tracking=True,
-    )
+    # State Management (extending existing state field)
+    # Note: We don't redefine existing 'name' or 'state' fields to avoid tracking warnings
 
     # Company and User
     company_id = fields.Many2one(
