@@ -2,11 +2,9 @@
 from odoo import models, fields, api
 
 
-class ResConfigSettings(models.Model):
+class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
     _description = "Res Config Settings"
-    _order = "name"
-    _rec_name = "name"
 
     # Example of a configuration field
     module_records_management_setting = fields.Boolean(
