@@ -36,6 +36,7 @@ from . import records_approval_step
 # Container and storage models (in dependency order)
 from . import records_container
 from . import container_contents
+from . import records_container_type_converter
 
 # =============================================================================
 # CORE BUSINESS MODELS
@@ -67,6 +68,7 @@ from . import records_vehicle
 from . import shredding_service
 from . import shredding_hard_drive
 from . import shredding_inventory
+from . import shredding_inventory_item
 from . import shredding_service_log
 from . import shredding_bin_models
 from . import destruction_item
@@ -79,6 +81,7 @@ from . import file_retrieval_work_order
 # Service rates and billing (consolidated system)
 from . import base_rates
 from . import customer_negotiated_rates
+from . import records_billing_config
 
 # Key management services
 from . import bin_key_management
@@ -188,6 +191,7 @@ from . import hr_employee_naid
 # =============================================================================
 
 from . import product
+from . import product_template
 from . import barcode_product
 from . import barcode_models
 
@@ -196,7 +200,7 @@ from . import barcode_models
 # =============================================================================
 
 from . import visitor
-from ..wizards import visitor_pos_wizard
+from . import visitor_pos_wizard
 
 # =============================================================================
 # BUSINESS LOGIC AND CRM
@@ -216,6 +220,15 @@ from . import ir_module
 
 from . import records_management_base_menus
 from . import location_report_wizard
+
+# =============================================================================
+# WIZARDS AND UTILITIES
+# =============================================================================
+
+from . import fsm_reschedule_wizard
+from . import hard_drive_scan_wizard
+from . import key_restriction_checker
+from . import records_permanent_flag_wizard
 
 # =============================================================================
 # FSM (FIELD SERVICE MANAGEMENT) EXTENSIONS - Conditional Import
