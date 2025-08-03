@@ -286,44 +286,83 @@ class PortalFeedback(models.Model):
         string="Display Name", compute="_compute_display_name", store=True
     )
     # === COMPREHENSIVE MISSING FIELDS ===
-    active = fields.Boolean(string='Flag', default=True, tracking=True)
-    sequence = fields.Integer(string='Sequence', default=10, tracking=True)
-    notes = fields.Text(string='Description', tracking=True)
-    state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
-    created_date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
-    updated_date = fields.Date(string='Date', tracking=True)
+    active = fields.Boolean(string="Flag", default=True, tracking=True)
+    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
+    notes = fields.Text(string="Description", tracking=True)
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
+    created_date = fields.Date(string="Date", default=fields.Date.today, tracking=True)
+    updated_date = fields.Date(string="Date", tracking=True)
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    rating = fields.Selection([('1', 'Poor'), ('2', 'Fair'), ('3', 'Good'), ('4', 'Very Good'), ('5', 'Excellent')], string='Rating')
-    feedback_text = fields.Text(string='Feedback')
-    resolved = fields.Boolean(string='Resolved', default=False)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    rating = fields.Selection(
+        [
+            ("1", "Poor"),
+            ("2", "Fair"),
+            ("3", "Good"),
+            ("4", "Very Good"),
+            ("5", "Excellent"),
+        ],
+        string="Rating",
+    )
+    feedback_text = fields.Text(string="Feedback")
+    resolved = fields.Boolean(string="Resolved", default=False)
     # === COMPREHENSIVE MISSING FIELDS ===
-    currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
-    workflow_state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Workflow State', default='draft')
-    next_action_date = fields.Date(string='Next Action Date')
-    deadline_date = fields.Date(string='Deadline')
-    completion_date = fields.Datetime(string='Completion Date')
-    responsible_user_id = fields.Many2one('res.users', string='Responsible User')
-    assigned_team_id = fields.Many2one('hr.department', string='Assigned Team')
-    supervisor_id = fields.Many2one('res.users', string='Supervisor')
-    quality_checked = fields.Boolean(string='Quality Checked')
-    quality_score = fields.Float(string='Quality Score', digits=(3, 2))
-    validation_required = fields.Boolean(string='Validation Required')
-    validated_by_id = fields.Many2one('res.users', string='Validated By')
-    validation_date = fields.Datetime(string='Validation Date')
-    reference_number = fields.Char(string='Reference Number')
-    external_reference = fields.Char(string='External Reference')
-    documentation_complete = fields.Boolean(string='Documentation Complete')
-    attachment_ids = fields.One2many('ir.attachment', 'res_id', string='Attachments')
-    performance_score = fields.Float(string='Performance Score', digits=(5, 2))
-    efficiency_rating = fields.Selection([('poor', 'Poor'), ('fair', 'Fair'), ('good', 'Good'), ('excellent', 'Excellent')], string='Efficiency Rating')
-    last_review_date = fields.Date(string='Last Review Date')
-    next_review_date = fields.Date(string='Next Review Date')
-
-
-
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+    workflow_state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Workflow State",
+        default="draft",
+    )
+    next_action_date = fields.Date(string="Next Action Date")
+    deadline_date = fields.Date(string="Deadline")
+    completion_date = fields.Datetime(string="Completion Date")
+    responsible_user_id = fields.Many2one("res.users", string="Responsible User")
+    assigned_team_id = fields.Many2one("hr.department", string="Assigned Team")
+    supervisor_id = fields.Many2one("res.users", string="Supervisor")
+    quality_checked = fields.Boolean(string="Quality Checked")
+    quality_score = fields.Float(string="Quality Score", digits=(3, 2))
+    validation_required = fields.Boolean(string="Validation Required")
+    validated_by_id = fields.Many2one("res.users", string="Validated By")
+    validation_date = fields.Datetime(string="Validation Date")
+    reference_number = fields.Char(string="Reference Number")
+    external_reference = fields.Char(string="External Reference")
+    documentation_complete = fields.Boolean(string="Documentation Complete")
+    attachment_ids = fields.One2many("ir.attachment", "res_id", string="Attachments")
+    performance_score = fields.Float(string="Performance Score", digits=(5, 2))
+    efficiency_rating = fields.Selection(
+        [
+            ("poor", "Poor"),
+            ("fair", "Fair"),
+            ("good", "Good"),
+            ("excellent", "Excellent"),
+        ],
+        string="Efficiency Rating",
+    )
+    last_review_date = fields.Date(string="Last Review Date")
+    next_review_date = fields.Date(string="Next Review Date")
 
     @api.depends("name")
     def _compute_display_name(self):
@@ -334,7 +373,106 @@ class PortalFeedback(models.Model):
     def write(self, vals):
         """Override write to update modification date."""
         vals["date_modified"] = fields.Datetime.now()
-        return super().write(vals)
+
+    # Portal Feedback System Fields
+    activity_date = fields.Date("Activity Date")
+    activity_exception_decoration = fields.Selection(
+        [("warning", "Warning"), ("danger", "Danger")], "Activity Exception Decoration"
+    )
+    activity_state = fields.Selection(
+        [("overdue", "Overdue"), ("today", "Today"), ("planned", "Planned")],
+        "Activity State",
+    )
+    activity_type = fields.Selection(
+        [("call", "Call"), ("meeting", "Meeting"), ("todo", "To Do")], "Activity Type"
+    )
+    followup_activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        "Follow-up Activities",
+        domain=[("res_model", "=", "portal.feedback")],
+    )
+    completed = fields.Boolean("Completed", default=False)
+    csat_score = fields.Integer("CSAT Score", help="Customer Satisfaction Score (1-10)")
+    customer_email = fields.Char("Customer Email")
+    customer_feedback_count = fields.Integer("Customer Feedback Count", default=0)
+    customer_phone = fields.Char("Customer Phone")
+    escalation_level = fields.Selection(
+        [
+            ("none", "None"),
+            ("level_1", "Level 1"),
+            ("level_2", "Level 2"),
+            ("level_3", "Level 3"),
+        ],
+        default="none",
+    )
+    feedback_category_id = fields.Many2one("feedback.category", "Feedback Category")
+    feedback_channel = fields.Selection(
+        [
+            ("portal", "Portal"),
+            ("email", "Email"),
+            ("phone", "Phone"),
+            ("survey", "Survey"),
+        ],
+        default="portal",
+    )
+    feedback_complexity = fields.Selection(
+        [("simple", "Simple"), ("moderate", "Moderate"), ("complex", "Complex")],
+        default="simple",
+    )
+    feedback_impact_level = fields.Selection(
+        [("low", "Low"), ("medium", "Medium"), ("high", "High")], default="medium"
+    )
+    feedback_priority = fields.Selection(
+        [("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")],
+        default="medium",
+    )
+    feedback_resolution_time = fields.Float("Resolution Time (Hours)")
+    feedback_subcategory_id = fields.Many2one(
+        "feedback.subcategory", "Feedback Subcategory"
+    )
+    feedback_type = fields.Selection(
+        [
+            ("compliment", "Compliment"),
+            ("complaint", "Complaint"),
+            ("suggestion", "Suggestion"),
+            ("inquiry", "Inquiry"),
+        ],
+        default="inquiry",
+    )
+    follow_up_required = fields.Boolean("Follow-up Required", default=False)
+    internal_escalation_required = fields.Boolean(
+        "Internal Escalation Required", default=False
+    )
+    nps_score = fields.Integer("NPS Score", help="Net Promoter Score (-100 to 100)")
+    quality_rating = fields.Selection(
+        [
+            ("1", "1 - Poor"),
+            ("2", "2 - Fair"),
+            ("3", "3 - Good"),
+            ("4", "4 - Very Good"),
+            ("5", "5 - Excellent"),
+        ],
+        "Quality Rating",
+    )
+    resolution_notes = fields.Text("Resolution Notes")
+    response_deadline = fields.Datetime("Response Deadline")
+    response_sent = fields.Boolean("Response Sent", default=False)
+    response_time_target = fields.Float("Response Time Target (Hours)", default=24.0)
+    satisfaction_rating = fields.Selection(
+        [
+            ("very_dissatisfied", "Very Dissatisfied"),
+            ("dissatisfied", "Dissatisfied"),
+            ("neutral", "Neutral"),
+            ("satisfied", "Satisfied"),
+            ("very_satisfied", "Very Satisfied"),
+        ],
+        "Satisfaction Rating",
+    )
+    service_improvement_suggestion = fields.Text("Service Improvement Suggestion")
+    stakeholder_notification_required = fields.Boolean(
+        "Stakeholder Notification Required", default=False
+    )
 
     def action_activate(self):
         """Activate the record."""

@@ -21,6 +21,16 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
     sequence = fields.Integer(string='Sequence', default=10)
     updated_date = fields.Datetime(string='Updated Date')
+    # Records Permanent Flag Wizard Fields
+    action_type = fields.Selection([('flag', 'Flag as Permanent'), ('unflag', 'Remove Permanent Flag')], default='flag')
+    box_id = fields.Many2one('records.box', 'Box')
+    customer_id = fields.Many2one('res.partner', 'Customer')
+    document_count = fields.Integer('Document Count', default=0)
+    permanent_flag = fields.Boolean('Permanent Flag', default=True)
+    approval_required = fields.Boolean('Approval Required', default=True)
+    justification_notes = fields.Text('Justification Notes')
+    legal_basis = fields.Selection([('regulatory', 'Regulatory'), ('litigation', 'Litigation'), ('historical', 'Historical')], default='regulatory')
+    notification_sent = fields.Boolean('Notification Sent', default=False)
 
 
     def action_confirm(self):

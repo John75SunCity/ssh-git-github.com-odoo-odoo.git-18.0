@@ -439,36 +439,59 @@ class BarcodeProduct(models.Model):
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    sequence = fields.Integer(string='Sequence', default=10)
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    sequence = fields.Integer(string="Sequence", default=10)
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
     # === COMPREHENSIVE MISSING FIELDS ===
-    product_family_id = fields.Many2one('product.family', string='Product Family')
-    product_line_id = fields.Many2one('product.line', string='Product Line')
-    manufacturer_id = fields.Many2one('res.partner', string='Manufacturer')
-    supplier_ids = fields.Many2many('res.partner', string='Suppliers')
-    barcode_type = fields.Selection([('ean13', 'EAN-13'), ('upc', 'UPC'), ('code128', 'Code 128'), ('qr', 'QR Code')], string='Barcode Type')
-    barcode_verification_status = fields.Selection([('valid', 'Valid'), ('invalid', 'Invalid'), ('pending', 'Pending')], string='Barcode Status')
-    alternative_barcodes = fields.Text(string='Alternative Barcodes')
-    barcode_generation_date = fields.Datetime(string='Barcode Generated')
-    storage_location_ids = fields.Many2many('stock.location', string='Storage Locations')
-    minimum_stock_level = fields.Float(string='Minimum Stock', digits=(10, 2))
-    maximum_stock_level = fields.Float(string='Maximum Stock', digits=(10, 2))
-    quality_control_required = fields.Boolean(string='QC Required')
-    quality_standards_ids = fields.Many2many('quality.standard', string='Quality Standards')
-    regulatory_compliance_ids = fields.Many2many('regulatory.compliance', string='Regulatory Compliance')
-    hazmat_classification = fields.Char(string='Hazmat Classification')
-    msds_document_id = fields.Many2one('ir.attachment', string='MSDS Document')
-    expiry_tracking_enabled = fields.Boolean(string='Expiry Tracking')
-    standard_cost = fields.Monetary(string='Standard Cost', currency_field='currency_id')
-    average_cost = fields.Monetary(string='Average Cost', currency_field='currency_id', compute='_compute_average_cost')
-    profit_margin_percentage = fields.Float(string='Profit Margin %', digits=(5, 2))
-    discount_policy_id = fields.Many2one('discount.policy', string='Discount Policy')
-
-
+    product_family_id = fields.Many2one("product.family", string="Product Family")
+    product_line_id = fields.Many2one("product.line", string="Product Line")
+    manufacturer_id = fields.Many2one("res.partner", string="Manufacturer")
+    supplier_ids = fields.Many2many("res.partner", string="Suppliers")
+    barcode_type = fields.Selection(
+        [
+            ("ean13", "EAN-13"),
+            ("upc", "UPC"),
+            ("code128", "Code 128"),
+            ("qr", "QR Code"),
+        ],
+        string="Barcode Type",
+    )
+    barcode_verification_status = fields.Selection(
+        [("valid", "Valid"), ("invalid", "Invalid"), ("pending", "Pending")],
+        string="Barcode Status",
+    )
+    alternative_barcodes = fields.Text(string="Alternative Barcodes")
+    barcode_generation_date = fields.Datetime(string="Barcode Generated")
+    storage_location_ids = fields.Many2many(
+        "stock.location", string="Storage Locations"
+    )
+    minimum_stock_level = fields.Float(string="Minimum Stock", digits=(10, 2))
+    maximum_stock_level = fields.Float(string="Maximum Stock", digits=(10, 2))
+    quality_control_required = fields.Boolean(string="QC Required")
+    quality_standards_ids = fields.Many2many(
+        "quality.standard", string="Quality Standards"
+    )
+    regulatory_compliance_ids = fields.Many2many(
+        "regulatory.compliance", string="Regulatory Compliance"
+    )
+    hazmat_classification = fields.Char(string="Hazmat Classification")
+    msds_document_id = fields.Many2one("ir.attachment", string="MSDS Document")
+    expiry_tracking_enabled = fields.Boolean(string="Expiry Tracking")
+    standard_cost = fields.Monetary(
+        string="Standard Cost", currency_field="currency_id"
+    )
+    average_cost = fields.Monetary(
+        string="Average Cost",
+        currency_field="currency_id",
+        compute="_compute_average_cost",
+    )
+    profit_margin_percentage = fields.Float(string="Profit Margin %", digits=(5, 2))
+    discount_policy_id = fields.Many2one("discount.policy", string="Discount Policy")
 
     @api.depends("container_ids", "usage_count", "last_used_date")
     def _compute_analytics(self):
@@ -554,54 +577,156 @@ class BarcodeProduct(models.Model):
                     )
                 elif record.inspection_frequency == "quarterly":
                     record.next_inspection_date = fields.Date.add(
-    # Barcode Product Management Fields
-    activity_exception_decoration = fields.Selection([('warning', 'Warning'), ('danger', 'Danger')], 'Activity Exception Decoration')
-    activity_state = fields.Selection([('overdue', 'Overdue'), ('today', 'Today'), ('planned', 'Planned')], 'Activity State')
-    batch_id = fields.Many2one('product.batch', 'Batch')
-    bin_status = fields.Selection([('available', 'Available'), ('occupied', 'Occupied'), ('maintenance', 'Maintenance')], default='available')
-    bin_volume = fields.Float('Bin Volume (cubic ft)', default=0.0)
-    box_status = fields.Selection([('active', 'Active'), ('archived', 'Archived'), ('destroyed', 'Destroyed')], default='active')
-    certificate_provided = fields.Boolean('Certificate Provided', default=False)
-    compliance_certification_date = fields.Date('Compliance Certification Date')
-    container_capacity = fields.Float('Container Capacity', default=0.0)
-    container_type_classification = fields.Selection([('standard', 'Standard'), ('security', 'Security'), ('climate', 'Climate Controlled')], default='standard')
-    creation_method = fields.Selection([('manual', 'Manual'), ('barcode_scan', 'Barcode Scan'), ('import', 'Import')], default='manual')
-    customer_reference_code = fields.Char('Customer Reference Code')
-    destruction_hold_status = fields.Boolean('Destruction Hold', default=False)
-    destruction_scheduled_date = fields.Date('Scheduled Destruction Date')
-    digital_copy_available = fields.Boolean('Digital Copy Available', default=False)
-    document_category_id = fields.Many2one('document.category', 'Document Category')
-    document_count_verified = fields.Integer('Verified Document Count', default=0)
-    document_type_classification = fields.Selection([('permanent', 'Permanent'), ('temporary', 'Temporary'), ('confidential', 'Confidential')], default='temporary')
-    environmental_conditions = fields.Selection([('standard', 'Standard'), ('climate_controlled', 'Climate Controlled'), ('fireproof', 'Fireproof')], default='standard')
-    file_folder_type = fields.Selection([('hanging', 'Hanging'), ('manila', 'Manila'), ('expanding', 'Expanding')], default='manila')
-    gps_location_verified = fields.Boolean('GPS Location Verified', default=False)
-    handling_instructions = fields.Text('Handling Instructions')
-    inventory_reconciliation_date = fields.Date('Last Inventory Reconciliation')
-    last_access_date = fields.Datetime('Last Access Date')
-    last_audit_date = fields.Date('Last Audit Date')
-    last_movement_date = fields.Datetime('Last Movement Date')
-    last_verification_date = fields.Date('Last Verification Date')
-    legal_hold_status = fields.Boolean('Legal Hold', default=False)
-    location_verification_required = fields.Boolean('Location Verification Required', default=False)
-    media_type = fields.Selection([('paper', 'Paper'), ('digital', 'Digital'), ('microfilm', 'Microfilm'), ('mixed', 'Mixed')], default='paper')
-    movement_history_ids = fields.One2many('movement.history', 'product_id', 'Movement History')
-    physical_condition = fields.Selection([('excellent', 'Excellent'), ('good', 'Good'), ('fair', 'Fair'), ('poor', 'Poor')], default='good')
-    priority_level = fields.Selection([('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('critical', 'Critical')], default='medium')
-    product_lifecycle_stage = fields.Selection([('active', 'Active'), ('inactive', 'Inactive'), ('retention', 'Retention'), ('disposal', 'Disposal')], default='active')
-    quality_control_passed = fields.Boolean('Quality Control Passed', default=True)
-    records_retention_category = fields.Selection([('temporary', 'Temporary'), ('permanent', 'Permanent'), ('vital', 'Vital')], default='temporary')
-    retrieval_frequency = fields.Selection([('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly'), ('rarely', 'Rarely')], default='rarely')
-    security_classification = fields.Selection([('public', 'Public'), ('internal', 'Internal'), ('confidential', 'Confidential'), ('restricted', 'Restricted')], default='internal')
-    storage_environment_id = fields.Many2one('storage.environment', 'Storage Environment')
-    tracking_method = fields.Selection([('barcode', 'Barcode'), ('rfid', 'RFID'), ('qr_code', 'QR Code')], default='barcode')
-    verification_status = fields.Selection([('pending', 'Pending'), ('verified', 'Verified'), ('failed', 'Failed')], default='pending')
-                        record.last_inspection_date, days=90
+                        fields.Date.today(), months=3
                     )
-                else:
-                    record.next_inspection_date = False
-            else:
-                record.next_inspection_date = False
+
+    # Barcode Product Management Fields
+    activity_exception_decoration = fields.Selection(
+        [("warning", "Warning"), ("danger", "Danger")], "Activity Exception Decoration"
+    )
+    activity_state = fields.Selection(
+        [("overdue", "Overdue"), ("today", "Today"), ("planned", "Planned")],
+        "Activity State",
+    )
+    batch_id = fields.Many2one("product.batch", "Batch")
+    bin_status = fields.Selection(
+        [
+            ("available", "Available"),
+            ("occupied", "Occupied"),
+            ("maintenance", "Maintenance"),
+        ],
+        default="available",
+    )
+    bin_volume = fields.Float("Bin Volume (cubic ft)", default=0.0)
+    box_status = fields.Selection(
+        [("active", "Active"), ("archived", "Archived"), ("destroyed", "Destroyed")],
+        default="active",
+    )
+    certificate_provided = fields.Boolean("Certificate Provided", default=False)
+    compliance_certification_date = fields.Date("Compliance Certification Date")
+    container_capacity = fields.Float("Container Capacity", default=0.0)
+    container_type_classification = fields.Selection(
+        [
+            ("standard", "Standard"),
+            ("security", "Security"),
+            ("climate", "Climate Controlled"),
+        ],
+        default="standard",
+    )
+    creation_method = fields.Selection(
+        [("manual", "Manual"), ("barcode_scan", "Barcode Scan"), ("import", "Import")],
+        default="manual",
+    )
+    customer_reference_code = fields.Char("Customer Reference Code")
+    destruction_hold_status = fields.Boolean("Destruction Hold", default=False)
+    destruction_scheduled_date = fields.Date("Scheduled Destruction Date")
+    digital_copy_available = fields.Boolean("Digital Copy Available", default=False)
+    document_category_id = fields.Many2one("document.category", "Document Category")
+    document_count_verified = fields.Integer("Verified Document Count", default=0)
+    document_type_classification = fields.Selection(
+        [
+            ("permanent", "Permanent"),
+            ("temporary", "Temporary"),
+            ("confidential", "Confidential"),
+        ],
+        default="temporary",
+    )
+    environmental_conditions = fields.Selection(
+        [
+            ("standard", "Standard"),
+            ("climate_controlled", "Climate Controlled"),
+            ("fireproof", "Fireproof"),
+        ],
+        default="standard",
+    )
+    file_folder_type = fields.Selection(
+        [("hanging", "Hanging"), ("manila", "Manila"), ("expanding", "Expanding")],
+        default="manila",
+    )
+    gps_location_verified = fields.Boolean("GPS Location Verified", default=False)
+    handling_instructions = fields.Text("Handling Instructions")
+    inventory_reconciliation_date = fields.Date("Last Inventory Reconciliation")
+    last_access_date = fields.Datetime("Last Access Date")
+    last_audit_date = fields.Date("Last Audit Date")
+    last_movement_date = fields.Datetime("Last Movement Date")
+    last_verification_date = fields.Date("Last Verification Date")
+    legal_hold_status = fields.Boolean("Legal Hold", default=False)
+    location_verification_required = fields.Boolean(
+        "Location Verification Required", default=False
+    )
+    media_type = fields.Selection(
+        [
+            ("paper", "Paper"),
+            ("digital", "Digital"),
+            ("microfilm", "Microfilm"),
+            ("mixed", "Mixed"),
+        ],
+        default="paper",
+    )
+    movement_history_ids = fields.One2many(
+        "movement.history", "product_id", "Movement History"
+    )
+    physical_condition = fields.Selection(
+        [
+            ("excellent", "Excellent"),
+            ("good", "Good"),
+            ("fair", "Fair"),
+            ("poor", "Poor"),
+        ],
+        default="good",
+    )
+    priority_level = fields.Selection(
+        [
+            ("low", "Low"),
+            ("medium", "Medium"),
+            ("high", "High"),
+            ("critical", "Critical"),
+        ],
+        default="medium",
+    )
+    product_lifecycle_stage = fields.Selection(
+        [
+            ("active", "Active"),
+            ("inactive", "Inactive"),
+            ("retention", "Retention"),
+            ("disposal", "Disposal"),
+        ],
+        default="active",
+    )
+    quality_control_passed = fields.Boolean("Quality Control Passed", default=True)
+    records_retention_category = fields.Selection(
+        [("temporary", "Temporary"), ("permanent", "Permanent"), ("vital", "Vital")],
+        default="temporary",
+    )
+    retrieval_frequency = fields.Selection(
+        [
+            ("daily", "Daily"),
+            ("weekly", "Weekly"),
+            ("monthly", "Monthly"),
+            ("rarely", "Rarely"),
+        ],
+        default="rarely",
+    )
+    security_classification = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+        ],
+        default="internal",
+    )
+    storage_environment_id = fields.Many2one(
+        "storage.environment", "Storage Environment"
+    )
+    tracking_method = fields.Selection(
+        [("barcode", "Barcode"), ("rfid", "RFID"), ("qr_code", "QR Code")],
+        default="barcode",
+    )
+    verification_status = fields.Selection(
+        [("pending", "Pending"), ("verified", "Verified"), ("failed", "Failed")],
+        default="pending",
+    )
 
     @api.depends("manufacturing_cost", "shipping_cost", "handling_cost")
     def _compute_total_cost(self):

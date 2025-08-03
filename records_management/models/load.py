@@ -266,12 +266,13 @@ class Load(models.Model):
     revision_number = fields.Integer(string="Revision Number", default=1)
     approval_required = fields.Boolean(string="Approval Required", default=False)
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
-
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
 
     @api.depends("name")
     def _compute_display_name(self):
@@ -415,6 +416,56 @@ class Load(models.Model):
     def write(self, vals):
         """Override write to update modification date and track revisions."""
         vals["date_modified"] = fields.Datetime.now()
+
+    # Load Management Fields
+    activity_exception_decoration = fields.Selection(
+        [("warning", "Warning"), ("danger", "Danger")], "Activity Exception Decoration"
+    )
+    activity_state = fields.Selection(
+        [("overdue", "Overdue"), ("today", "Today"), ("planned", "Planned")],
+        "Activity State",
+    )
+    message_type = fields.Selection(
+        [("email", "Email"), ("comment", "Comment"), ("notification", "Notification")],
+        "Message Type",
+    )
+    bale_number = fields.Char("Bale Number")
+    capacity_utilization = fields.Float("Capacity Utilization %", default=0.0)
+    contamination_notes = fields.Text("Contamination Notes")
+    contamination_report = fields.Text("Contamination Report")
+    date = fields.Date("Load Date")
+    delivery_confirmation_required = fields.Boolean(
+        "Delivery Confirmation Required", default=True
+    )
+    delivery_instructions = fields.Text("Delivery Instructions")
+    driver_certification_verified = fields.Boolean(
+        "Driver Certification Verified", default=False
+    )
+    estimated_arrival_time = fields.Datetime("Estimated Arrival Time")
+    load_configuration = fields.Text("Load Configuration")
+    load_optimization_algorithm = fields.Selection(
+        [("weight", "Weight Based"), ("volume", "Volume Based"), ("mixed", "Mixed")],
+        default="mixed",
+    )
+    load_securing_method = fields.Text("Load Securing Method")
+    material_compatibility_verified = fields.Boolean(
+        "Material Compatibility Verified", default=False
+    )
+    route_optimization_data = fields.Text("Route Optimization Data")
+    safety_inspection_completed = fields.Boolean(
+        "Safety Inspection Completed", default=False
+    )
+    temperature_monitoring_required = fields.Boolean(
+        "Temperature Monitoring Required", default=False
+    )
+    transportation_hazards = fields.Text("Transportation Hazards")
+    vehicle_inspection_completed = fields.Boolean(
+        "Vehicle Inspection Completed", default=False
+    )
+    weight_distribution_notes = fields.Text("Weight Distribution Notes")
+
+    def write(self, vals):
+        """Override write method to track changes."""
         if any(
             key in vals
             for key in ["market_price_per_ton", "buyer_company", "total_weight"]

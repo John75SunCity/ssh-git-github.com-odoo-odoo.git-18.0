@@ -51,6 +51,22 @@ class ShreddingHardDrive(models.Model):
     weight = fields.Float(string='Weight (lbs)', digits=(10, 2))
     approved_by = fields.Many2one('res.users', string='Approved By')
     completed = fields.Boolean(string='Completed', default=False)
+    # Shredding Hard Drive Management Fields
+    certificate_line_text = fields.Text('Certificate Line Text')
+    customer_location_notes = fields.Text('Customer Location Notes')
+    destroyed = fields.Boolean('Destroyed', default=False)
+    facility_verification_notes = fields.Text('Facility Verification Notes')
+    hashed_serial = fields.Char('Hashed Serial Number')
+    chain_of_custody_verified = fields.Boolean('Chain of Custody Verified', default=False)
+    data_classification = fields.Selection([('public', 'Public'), ('internal', 'Internal'), ('confidential', 'Confidential'), ('top_secret', 'Top Secret')], default='internal')
+    degaussing_required = fields.Boolean('Degaussing Required', default=False)
+    destruction_method_verified = fields.Boolean('Destruction Method Verified', default=False)
+    destruction_witness_required = fields.Boolean('Destruction Witness Required', default=False)
+    encryption_level = fields.Selection([('none', 'None'), ('basic', 'Basic'), ('advanced', 'Advanced'), ('military', 'Military Grade')], default='none')
+    forensic_analysis_completed = fields.Boolean('Forensic Analysis Completed', default=False)
+    nist_compliance_verified = fields.Boolean('NIST Compliance Verified', default=False)
+    physical_destruction_level = fields.Selection([('level_1', 'Level 1'), ('level_2', 'Level 2'), ('level_3', 'Level 3')], default='level_2')
+    sanitization_standard = fields.Selection([('dod_5220', 'DoD 5220.22-M'), ('nist_800_88', 'NIST 800-88'), ('custom', 'Custom')], default='nist_800_88')
 
 
 

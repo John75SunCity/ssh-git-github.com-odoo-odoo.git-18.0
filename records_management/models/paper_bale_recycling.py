@@ -49,25 +49,40 @@ class PaperBaleRecycling(models.Model):
         string="Display Name", compute="_compute_display_name", store=True
     )
     # === COMPREHENSIVE MISSING FIELDS ===
-    active = fields.Boolean(string='Flag', default=True, tracking=True)
-    sequence = fields.Integer(string='Sequence', default=10, tracking=True)
-    notes = fields.Text(string='Description', tracking=True)
-    state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
-    created_date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
-    updated_date = fields.Date(string='Date', tracking=True)
+    active = fields.Boolean(string="Flag", default=True, tracking=True)
+    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
+    notes = fields.Text(string="Description", tracking=True)
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
+    created_date = fields.Date(string="Date", default=fields.Date.today, tracking=True)
+    updated_date = fields.Date(string="Date", tracking=True)
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    bale_number = fields.Char(string='Bale Number')
-    weight = fields.Float(string='Weight (lbs)', digits=(10, 2))
-    pickup_date = fields.Date(string='Pickup Date')
-    delivery_date = fields.Date(string='Delivery Date')
-    recycling_facility = fields.Char(string='Recycling Facility')
-    contamination_level = fields.Selection([('clean', 'Clean'), ('light', 'Light'), ('heavy', 'Heavy')], string='Contamination Level')
-    price_per_ton = fields.Monetary(string='Price per Ton', currency_field='currency_id')
-
-
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    bale_number = fields.Char(string="Bale Number")
+    weight = fields.Float(string="Weight (lbs)", digits=(10, 2))
+    pickup_date = fields.Date(string="Pickup Date")
+    delivery_date = fields.Date(string="Delivery Date")
+    recycling_facility = fields.Char(string="Recycling Facility")
+    contamination_level = fields.Selection(
+        [("clean", "Clean"), ("light", "Light"), ("heavy", "Heavy")],
+        string="Contamination Level",
+    )
+    price_per_ton = fields.Monetary(
+        string="Price per Ton", currency_field="currency_id"
+    )
 
     @api.depends("name")
     def _compute_display_name(self):
@@ -78,7 +93,54 @@ class PaperBaleRecycling(models.Model):
     def write(self, vals):
         """Override write to update modification date."""
         vals["date_modified"] = fields.Datetime.now()
-        return super().write(vals)
+
+    # Paper Bale Recycling Management Fields
+    contamination = fields.Selection(
+        [
+            ("none", "None"),
+            ("minimal", "Minimal"),
+            ("moderate", "Moderate"),
+            ("high", "High"),
+        ],
+        default="none",
+    )
+    contamination_notes = fields.Text("Contamination Notes")
+    gps_coordinates = fields.Char("GPS Coordinates")
+    load_number = fields.Char("Load Number")
+    load_shipment_id = fields.Many2one("paper.load.shipment", "Load Shipment")
+    bale_compression_ratio = fields.Float("Compression Ratio", default=1.0)
+    bale_density = fields.Float("Bale Density (lbs/cubic ft)", default=0.0)
+    environmental_impact_score = fields.Float("Environmental Impact Score", default=0.0)
+    fiber_quality_grade = fields.Selection(
+        [("grade_a", "Grade A"), ("grade_b", "Grade B"), ("grade_c", "Grade C")],
+        default="grade_b",
+    )
+    moisture_content = fields.Float("Moisture Content %", default=0.0)
+    processing_facility_certification = fields.Char("Processing Facility Certification")
+    quality_control_passed = fields.Boolean("Quality Control Passed", default=False)
+    recycling_efficiency_percentage = fields.Float(
+        "Recycling Efficiency %", default=0.0
+    )
+    recycling_method = fields.Selection(
+        [
+            ("pulping", "Pulping"),
+            ("de_inking", "De-inking"),
+            ("flotation", "Flotation"),
+        ],
+        default="pulping",
+    )
+    sorting_completion_date = fields.Date("Sorting Completion Date")
+    transportation_carbon_footprint = fields.Float(
+        "Transportation Carbon Footprint", default=0.0
+    )
+    waste_stream_classification = fields.Selection(
+        [
+            ("pre_consumer", "Pre-consumer"),
+            ("post_consumer", "Post-consumer"),
+            ("mixed", "Mixed"),
+        ],
+        default="mixed",
+    )
 
     def action_activate(self):
         """Activate the record."""

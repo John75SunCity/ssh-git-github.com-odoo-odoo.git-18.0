@@ -144,6 +144,16 @@ class BaseRates(models.Model):
     sequence = fields.Integer(string='Sequence', default=10)
     created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
     updated_date = fields.Datetime(string='Updated Date')
+    # Base Rates Management Fields
+    base_rate = fields.Monetary('Base Rate', currency_field='currency_id')
+    customer_count = fields.Integer('Customer Count', default=0)
+    expiration_date = fields.Date('Expiration Date')
+    minimum_charge = fields.Monetary('Minimum Charge', currency_field='currency_id')
+    negotiated_rate_count = fields.Integer('Negotiated Rate Count', default=0)
+    currency_id = fields.Many2one('res.currency', 'Currency', default=lambda self: self.env.company.currency_id)
+    rate_adjustment_percentage = fields.Float('Rate Adjustment %', default=0.0)
+    rate_tier_category = fields.Selection([('standard', 'Standard'), ('premium', 'Premium'), ('enterprise', 'Enterprise')], default='standard')
+    volume_discount_applicable = fields.Boolean('Volume Discount Applicable', default=False)
 
 
     @api.constrains("effective_date", "expiry_date")

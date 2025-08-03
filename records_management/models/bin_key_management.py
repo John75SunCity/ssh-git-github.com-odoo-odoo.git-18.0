@@ -201,6 +201,28 @@ class BinKeyManagement(models.Model):
     authorized_by = fields.Many2one('res.users', string='Authorized By')
     created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
     updated_date = fields.Datetime(string='Updated Date')
+    # Bin Key Management Fields
+    billable = fields.Boolean('Billable', default=True)
+    bin_location = fields.Char('Bin Location')
+    bin_locations = fields.Text('Multiple Bin Locations')
+    charge_amount = fields.Monetary('Charge Amount', currency_field='currency_id')
+    emergency_contact = fields.Many2one('res.partner', 'Emergency Contact')
+    access_authorization_level = fields.Selection([('basic', 'Basic'), ('elevated', 'Elevated'), ('admin', 'Admin')], default='basic')
+    access_log_retention_days = fields.Integer('Access Log Retention (Days)', default=365)
+    bin_access_frequency = fields.Selection([('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')], default='weekly')
+    bin_security_level = fields.Selection([('standard', 'Standard'), ('high', 'High'), ('maximum', 'Maximum')], default='standard')
+    currency_id = fields.Many2one('res.currency', 'Currency', default=lambda self: self.env.company.currency_id)
+    customer_key_count = fields.Integer('Customer Key Count', default=1)
+    key_audit_trail_enabled = fields.Boolean('Key Audit Trail Enabled', default=True)
+    key_duplication_allowed = fields.Boolean('Key Duplication Allowed', default=False)
+    key_expiration_date = fields.Date('Key Expiration Date')
+    key_holder_verification_required = fields.Boolean('Key Holder Verification Required', default=True)
+    key_replacement_fee = fields.Monetary('Key Replacement Fee', currency_field='currency_id')
+    key_restriction_notes = fields.Text('Key Restriction Notes')
+    key_security_deposit = fields.Monetary('Key Security Deposit', currency_field='currency_id')
+    lock_change_required = fields.Boolean('Lock Change Required', default=False)
+    master_key_override = fields.Boolean('Master Key Override Available', default=False)
+    multi_user_access_allowed = fields.Boolean('Multi-user Access Allowed', default=False)
 
 
     def action_replace_key(self):

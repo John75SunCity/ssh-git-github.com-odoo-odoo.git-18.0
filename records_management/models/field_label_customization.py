@@ -49,12 +49,13 @@ class FieldLabelCustomization(models.Model):
         string="Display Name", compute="_compute_display_name", store=True
     )
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
-
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
 
     @api.depends("name")
     def _compute_display_name(self):
@@ -65,7 +66,49 @@ class FieldLabelCustomization(models.Model):
     def write(self, vals):
         """Override write to update modification date."""
         vals["date_modified"] = fields.Datetime.now()
-        return super().write(vals)
+
+    # Field Label Customization Fields
+    customer_id = fields.Many2one("res.partner", "Customer")
+    customized_label_count = fields.Integer("Customized Label Count", default=0)
+    department_id = fields.Many2one("hr.department", "Department")
+    label_authorized_by = fields.Many2one("res.users", "Label Authorized By")
+    label_client_reference = fields.Char("Label Client Reference")
+    auto_apply_labels = fields.Boolean("Auto Apply Labels", default=False)
+    custom_field_mapping = fields.Text("Custom Field Mapping")
+    default_label_template = fields.Selection(
+        [("standard", "Standard"), ("compact", "Compact"), ("detailed", "Detailed")],
+        default="standard",
+    )
+    department_specific_labels = fields.Boolean(
+        "Department Specific Labels", default=False
+    )
+    field_group_customization = fields.Text("Field Group Customization")
+    label_approval_required = fields.Boolean("Label Approval Required", default=False)
+    label_configuration_version = fields.Char("Label Configuration Version")
+    label_format_template = fields.Text("Label Format Template")
+    label_language_preference = fields.Selection(
+        [("en", "English"), ("es", "Spanish"), ("fr", "French")], default="en"
+    )
+    label_position_rules = fields.Text("Label Position Rules")
+    label_preview_enabled = fields.Boolean("Label Preview Enabled", default=True)
+    label_printing_preferences = fields.Text("Label Printing Preferences")
+    label_size_customization = fields.Selection(
+        [("small", "Small"), ("medium", "Medium"), ("large", "Large")], default="medium"
+    )
+    label_style_customization = fields.Text("Label Style Customization")
+    label_translation_enabled = fields.Boolean(
+        "Label Translation Enabled", default=False
+    )
+    multi_language_support = fields.Boolean("Multi-language Support", default=False)
+    permission_based_labels = fields.Boolean("Permission Based Labels", default=False)
+    qr_code_integration = fields.Boolean("QR Code Integration", default=False)
+    template_inheritance_enabled = fields.Boolean(
+        "Template Inheritance Enabled", default=False
+    )
+    user_specific_customization = fields.Boolean(
+        "User Specific Customization", default=False
+    )
+    validation_rules_enabled = fields.Boolean("Validation Rules Enabled", default=False)
 
     def action_activate(self):
         """Activate the record."""

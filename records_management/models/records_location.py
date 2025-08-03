@@ -80,6 +80,18 @@ class RecordsLocation(models.Model):
     shelf = fields.Char(string='Shelf')
     utilization = fields.Float(string='Utilization %', digits=(5, 2))
     temperature_controlled = fields.Boolean(string='Temperature Controlled')
+    # Records Location Management Fields
+    access_instructions = fields.Text('Access Instructions')
+    available_spaces = fields.Integer('Available Spaces', default=0)
+    available_utilization = fields.Float('Available Utilization %', default=0.0)
+    box_count = fields.Integer('Box Count', default=0)
+    box_ids = fields.One2many('records.box', 'location_id', 'Boxes')
+    climate_monitoring_enabled = fields.Boolean('Climate Monitoring Enabled', default=False)
+    emergency_access_procedures = fields.Text('Emergency Access Procedures')
+    fire_suppression_system = fields.Selection([('sprinkler', 'Sprinkler'), ('gas', 'Gas'), ('foam', 'Foam')], default='sprinkler')
+    location_certification = fields.Char('Location Certification')
+    security_level = fields.Selection([('basic', 'Basic'), ('enhanced', 'Enhanced'), ('maximum', 'Maximum')], default='basic')
+    temperature_humidity_controlled = fields.Boolean('Temperature/Humidity Controlled', default=False)
 
 
 

@@ -243,18 +243,24 @@ class PaperLoadShipment(models.Model):
         string="Net Weight (lbs)", compute="_compute_net_weight", store=True
     )
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    bale_number = fields.Char(string='Bale Number')
-    weight = fields.Float(string='Weight (lbs)', digits=(10, 2))
-    delivery_date = fields.Date(string='Delivery Date')
-    recycling_facility = fields.Char(string='Recycling Facility')
-    contamination_level = fields.Selection([('clean', 'Clean'), ('light', 'Light'), ('heavy', 'Heavy')], string='Contamination Level')
-    price_per_ton = fields.Monetary(string='Price per Ton', currency_field='currency_id')
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
-
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    bale_number = fields.Char(string="Bale Number")
+    weight = fields.Float(string="Weight (lbs)", digits=(10, 2))
+    delivery_date = fields.Date(string="Delivery Date")
+    recycling_facility = fields.Char(string="Recycling Facility")
+    contamination_level = fields.Selection(
+        [("clean", "Clean"), ("light", "Light"), ("heavy", "Heavy")],
+        string="Contamination Level",
+    )
+    price_per_ton = fields.Monetary(
+        string="Price per Ton", currency_field="currency_id"
+    )
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
 
     @api.depends("name")
     def _compute_display_name(self):
@@ -394,7 +400,67 @@ class PaperLoadShipment(models.Model):
     def write(self, vals):
         """Override write to update modification date."""
         vals["date_modified"] = fields.Datetime.now()
-        return super().write(vals)
+
+    # Paper Load Shipment Management Fields
+    company_signature_date = fields.Date("Company Signature Date")
+    delivery_notes = fields.Text("Delivery Notes")
+    destination_address = fields.Text("Destination Address")
+    driver_license = fields.Char("Driver License Number")
+    driver_phone = fields.Char("Driver Phone")
+    cargo_insurance_required = fields.Boolean("Cargo Insurance Required", default=False)
+    customs_documentation = fields.Text("Customs Documentation")
+    delivery_confirmation_method = fields.Selection(
+        [
+            ("signature", "Signature"),
+            ("photo", "Photo"),
+            ("gps", "GPS"),
+            ("code", "Confirmation Code"),
+        ],
+        default="signature",
+    )
+    delivery_priority = fields.Selection(
+        [("standard", "Standard"), ("expedited", "Expedited"), ("urgent", "Urgent")],
+        default="standard",
+    )
+    delivery_window_end = fields.Datetime("Delivery Window End")
+    delivery_window_start = fields.Datetime("Delivery Window Start")
+    environmental_conditions = fields.Selection(
+        [
+            ("standard", "Standard"),
+            ("climate_controlled", "Climate Controlled"),
+            ("hazmat", "Hazmat"),
+        ],
+        default="standard",
+    )
+    load_securing_equipment = fields.Text("Load Securing Equipment")
+    manifest_number = fields.Char("Manifest Number")
+    pickup_confirmation_required = fields.Boolean(
+        "Pickup Confirmation Required", default=True
+    )
+    route_optimization_enabled = fields.Boolean(
+        "Route Optimization Enabled", default=True
+    )
+    shipment_tracking_enabled = fields.Boolean(
+        "Shipment Tracking Enabled", default=True
+    )
+    special_handling_instructions = fields.Text("Special Handling Instructions")
+    temperature_monitoring_required = fields.Boolean(
+        "Temperature Monitoring Required", default=False
+    )
+    third_party_logistics_provider = fields.Many2one(
+        "res.partner", "Third Party Logistics Provider"
+    )
+    transportation_mode = fields.Selection(
+        [("road", "Road"), ("rail", "Rail"), ("air", "Air"), ("sea", "Sea")],
+        default="road",
+    )
+    vehicle_capacity_utilized = fields.Float("Vehicle Capacity Utilized %", default=0.0)
+    vehicle_inspection_completed = fields.Boolean(
+        "Vehicle Inspection Completed", default=False
+    )
+    weight_distribution_verified = fields.Boolean(
+        "Weight Distribution Verified", default=False
+    )
 
     def action_activate(self):
         """Activate the record."""

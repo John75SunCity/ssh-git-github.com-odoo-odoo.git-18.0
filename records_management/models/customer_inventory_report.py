@@ -50,6 +50,19 @@ class CustomerInventoryReport(models.Model):
     document_count = fields.Integer(string='Document Count', default=0)
     total_amount = fields.Monetary(string='Total Amount', currency_field='currency_id')
     currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
+    # Customer Inventory Report Fields
+    active_locations = fields.Integer('Active Locations', default=0)
+    container_ids = fields.Many2many('records.container', string='Containers')
+    document_ids = fields.Many2many('records.document', string='Documents')
+    document_type_id = fields.Many2one('records.document.type', 'Document Type')
+    location_id = fields.Many2one('records.location', 'Location')
+    archived_document_count = fields.Integer('Archived Document Count', default=0)
+    compliance_status_summary = fields.Text('Compliance Status Summary')
+    destruction_eligible_count = fields.Integer('Destruction Eligible Count', default=0)
+    last_inventory_audit_date = fields.Date('Last Inventory Audit Date')
+    pending_retrieval_count = fields.Integer('Pending Retrieval Count', default=0)
+    retention_policy_violations = fields.Integer('Retention Policy Violations', default=0)
+    total_storage_cost = fields.Monetary('Total Storage Cost', currency_field='currency_id')
 
 
 

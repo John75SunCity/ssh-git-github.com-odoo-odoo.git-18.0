@@ -212,6 +212,26 @@ class RecordsRetentionPolicy(models.Model):
     message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
     created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
     updated_date = fields.Datetime(string='Updated Date')
+    # Records Retention Policy Management Fields
+    approval_status = fields.Selection([('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')], default='pending')
+    changed_by = fields.Many2one('res.users', 'Changed By')
+    compliance_rate = fields.Float('Compliance Rate %', default=0.0)
+    destruction_efficiency_rate = fields.Float('Destruction Efficiency Rate %', default=0.0)
+    destruction_method = fields.Selection([('shred', 'Shred'), ('incinerate', 'Incinerate'), ('pulp', 'Pulp'), ('degauss', 'Degauss')], default='shred')
+    audit_frequency = fields.Selection([('monthly', 'Monthly'), ('quarterly', 'Quarterly'), ('annually', 'Annually')], default='annually')
+    compliance_framework = fields.Selection([('gdpr', 'GDPR'), ('hipaa', 'HIPAA'), ('sox', 'SOX'), ('custom', 'Custom')], default='custom')
+    destruction_approval_required = fields.Boolean('Destruction Approval Required', default=True)
+    legal_hold_override = fields.Boolean('Legal Hold Override', default=False)
+    policy_automation_enabled = fields.Boolean('Policy Automation Enabled', default=False)
+    policy_enforcement_level = fields.Selection([('advisory', 'Advisory'), ('mandatory', 'Mandatory'), ('strict', 'Strict')], default='mandatory')
+    policy_review_cycle = fields.Selection([('annual', 'Annual'), ('biennial', 'Biennial'), ('triennial', 'Triennial')], default='annual')
+    regulatory_compliance_verified = fields.Boolean('Regulatory Compliance Verified', default=False)
+    retention_calculation_method = fields.Selection([('creation_date', 'Creation Date'), ('last_access', 'Last Access'), ('custom', 'Custom')], default='creation_date')
+    retention_extension_allowed = fields.Boolean('Retention Extension Allowed', default=True)
+    retention_monitoring_enabled = fields.Boolean('Retention Monitoring Enabled', default=True)
+    risk_assessment_completed = fields.Boolean('Risk Assessment Completed', default=False)
+    stakeholder_notification_required = fields.Boolean('Stakeholder Notification Required', default=True)
+    version_control_enabled = fields.Boolean('Version Control Enabled', default=True)
 
 
     def action_view_exceptions(self):

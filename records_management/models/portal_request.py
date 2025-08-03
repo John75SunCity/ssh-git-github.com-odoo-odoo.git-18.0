@@ -235,40 +235,72 @@ class PortalRequest(models.Model):
         string="Display Name", compute="_compute_display_name", store=True
     )
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    rating = fields.Selection([('1', 'Poor'), ('2', 'Fair'), ('3', 'Good'), ('4', 'Very Good'), ('5', 'Excellent')], string='Rating')
-    feedback_text = fields.Text(string='Feedback')
-    response_date = fields.Datetime(string='Response Date')
-    resolved = fields.Boolean(string='Resolved', default=False)
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    rating = fields.Selection(
+        [
+            ("1", "Poor"),
+            ("2", "Fair"),
+            ("3", "Good"),
+            ("4", "Very Good"),
+            ("5", "Excellent"),
+        ],
+        string="Rating",
+    )
+    feedback_text = fields.Text(string="Feedback")
+    response_date = fields.Datetime(string="Response Date")
+    resolved = fields.Boolean(string="Resolved", default=False)
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
     # === COMPREHENSIVE MISSING FIELDS ===
-    request_type_id = fields.Many2one('portal.request.type', string='Request Type')
-    urgency_level = fields.Selection([('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('critical', 'Critical')], string='Urgency', default='medium')
-    category_id = fields.Many2one('portal.request.category', string='Category')
-    subcategory_id = fields.Many2one('portal.request.subcategory', string='Subcategory')
-    customer_reference = fields.Char(string='Customer Reference')
-    customer_po_number = fields.Char(string='Customer PO Number')
-    delivery_address_id = fields.Many2one('res.partner', string='Delivery Address')
-    billing_address_id = fields.Many2one('res.partner', string='Billing Address')
-    assigned_department_id = fields.Many2one('hr.department', string='Assigned Department')
-    processor_id = fields.Many2one('res.users', string='Request Processor')
-    approved_by_id = fields.Many2one('res.users', string='Approved By')
-    signed_document_ids = fields.One2many('signed.document', 'request_id', string='Signed Documents')
-    certificate_required = fields.Boolean(string='Certificate Required')
-    certificate_id = fields.Many2one('certificate', 'request_id', string='Certificate')
-    tracking_number = fields.Char(string='Tracking Number')
-    communication_log_ids = fields.One2many('communication.log', 'request_id', string='Communication Log')
-    customer_notification_sent = fields.Boolean(string='Customer Notified')
-    internal_notes = fields.Text(string='Internal Notes')
-    completion_percentage = fields.Float(string='Completion %', digits=(5, 2))
-    delivery_method = fields.Selection([('pickup', 'Customer Pickup'), ('delivery', 'Delivery'), ('email', 'Email'), ('portal', 'Portal')], string='Delivery Method')
-    delivery_date = fields.Date(string='Delivery Date')
-    delivery_confirmation = fields.Boolean(string='Delivery Confirmed')
-
-
+    request_type_id = fields.Many2one("portal.request.type", string="Request Type")
+    urgency_level = fields.Selection(
+        [
+            ("low", "Low"),
+            ("medium", "Medium"),
+            ("high", "High"),
+            ("critical", "Critical"),
+        ],
+        string="Urgency",
+        default="medium",
+    )
+    category_id = fields.Many2one("portal.request.category", string="Category")
+    subcategory_id = fields.Many2one("portal.request.subcategory", string="Subcategory")
+    customer_reference = fields.Char(string="Customer Reference")
+    customer_po_number = fields.Char(string="Customer PO Number")
+    delivery_address_id = fields.Many2one("res.partner", string="Delivery Address")
+    billing_address_id = fields.Many2one("res.partner", string="Billing Address")
+    assigned_department_id = fields.Many2one(
+        "hr.department", string="Assigned Department"
+    )
+    processor_id = fields.Many2one("res.users", string="Request Processor")
+    approved_by_id = fields.Many2one("res.users", string="Approved By")
+    signed_document_ids = fields.One2many(
+        "signed.document", "request_id", string="Signed Documents"
+    )
+    certificate_required = fields.Boolean(string="Certificate Required")
+    certificate_id = fields.Many2one("certificate", "request_id", string="Certificate")
+    tracking_number = fields.Char(string="Tracking Number")
+    communication_log_ids = fields.One2many(
+        "communication.log", "request_id", string="Communication Log"
+    )
+    customer_notification_sent = fields.Boolean(string="Customer Notified")
+    internal_notes = fields.Text(string="Internal Notes")
+    completion_percentage = fields.Float(string="Completion %", digits=(5, 2))
+    delivery_method = fields.Selection(
+        [
+            ("pickup", "Customer Pickup"),
+            ("delivery", "Delivery"),
+            ("email", "Email"),
+            ("portal", "Portal"),
+        ],
+        string="Delivery Method",
+    )
+    delivery_date = fields.Date(string="Delivery Date")
+    delivery_confirmation = fields.Boolean(string="Delivery Confirmed")
 
     @api.depends("name")
     def _compute_display_name(self):
@@ -279,50 +311,125 @@ class PortalRequest(models.Model):
     def write(self, vals):
         """Override write to update modification date."""
         vals["date_modified"] = fields.Datetime.now()
+
     # Portal Request Management Fields
-    attachment_ids = fields.Many2many('ir.attachment', 'portal_request_attachment_rel', 'request_id', 'attachment_id', 'Attachments')
-    access_restrictions = fields.Text('Access Restrictions')
-    actual_date = fields.Date('Actual Date')
-    approval_action = fields.Selection([('approve', 'Approve'), ('reject', 'Reject'), ('defer', 'Defer')], 'Approval Action')
-    approval_deadline = fields.Date('Approval Deadline')
-    approval_history_ids = fields.One2many('approval.history', 'request_id', 'Approval History')
-    approval_level_required = fields.Selection([('basic', 'Basic'), ('advanced', 'Advanced'), ('executive', 'Executive')], default='basic')
-    auto_approval_eligible = fields.Boolean('Auto Approval Eligible', default=False)
-    billing_impact_assessment = fields.Text('Billing Impact Assessment')
-    business_justification = fields.Text('Business Justification')
-    compliance_approval_required = fields.Boolean('Compliance Approval Required', default=False)
-    compliance_verification_notes = fields.Text('Compliance Verification Notes')
-    cost_center_id = fields.Many2one('account.analytic.account', 'Cost Center')
-    cost_impact_amount = fields.Monetary('Cost Impact', currency_field='currency_id')
-    customer_confirmation_required = fields.Boolean('Customer Confirmation Required', default=True)
-    customer_contact_method = fields.Selection([('email', 'Email'), ('phone', 'Phone'), ('portal', 'Portal')], default='email')
-    customer_notification_sent = fields.Boolean('Customer Notification Sent', default=False)
-    department_approval_required = fields.Boolean('Department Approval Required', default=False)
-    document_verification_required = fields.Boolean('Document Verification Required', default=False)
-    escalation_level = fields.Selection([('none', 'None'), ('supervisor', 'Supervisor'), ('manager', 'Manager'), ('director', 'Director')], default='none')
-    estimated_completion_time = fields.Float('Estimated Completion Time (Hours)')
-    external_reference = fields.Char('External Reference')
-    follow_up_action_required = fields.Boolean('Follow-up Action Required', default=False)
-    impact_assessment = fields.Selection([('low', 'Low'), ('medium', 'Medium'), ('high', 'High')], default='low')
-    internal_notes = fields.Text('Internal Notes')
-    legal_review_required = fields.Boolean('Legal Review Required', default=False)
-    manager_approval_required = fields.Boolean('Manager Approval Required', default=False)
-    notification_preferences = fields.Text('Notification Preferences')
-    portal_visibility = fields.Selection([('customer', 'Customer Only'), ('department', 'Department'), ('public', 'Public')], default='customer')
-    processing_notes = fields.Text('Processing Notes')
-    quality_assurance_required = fields.Boolean('Quality Assurance Required', default=False)
-    request_category_id = fields.Many2one('request.category', 'Request Category')
-    request_complexity = fields.Selection([('simple', 'Simple'), ('moderate', 'Moderate'), ('complex', 'Complex')], default='simple')
-    request_source = fields.Selection([('portal', 'Customer Portal'), ('email', 'Email'), ('phone', 'Phone'), ('api', 'API')], default='portal')
-    request_subcategory_id = fields.Many2one('request.subcategory', 'Request Subcategory')
-    resource_allocation_notes = fields.Text('Resource Allocation Notes')
-    risk_assessment_level = fields.Selection([('low', 'Low'), ('medium', 'Medium'), ('high', 'High')], default='low')
-    security_clearance_required = fields.Boolean('Security Clearance Required', default=False)
-    service_level_agreement = fields.Selection([('standard', 'Standard'), ('expedited', 'Expedited'), ('priority', 'Priority')], default='standard')
-    stakeholder_notification_list = fields.Text('Stakeholder Notification List')
-    status_change_log = fields.Text('Status Change Log')
-    third_party_approval_required = fields.Boolean('Third Party Approval Required', default=False)
-        return super().write(vals)
+    attachment_ids = fields.Many2many(
+        "ir.attachment",
+        "portal_request_attachment_rel",
+        "request_id",
+        "attachment_id",
+        "Attachments",
+    )
+    access_restrictions = fields.Text("Access Restrictions")
+    actual_date = fields.Date("Actual Date")
+    approval_action = fields.Selection(
+        [("approve", "Approve"), ("reject", "Reject"), ("defer", "Defer")],
+        "Approval Action",
+    )
+    approval_deadline = fields.Date("Approval Deadline")
+    approval_history_ids = fields.One2many(
+        "approval.history", "request_id", "Approval History"
+    )
+    approval_level_required = fields.Selection(
+        [("basic", "Basic"), ("advanced", "Advanced"), ("executive", "Executive")],
+        default="basic",
+    )
+    auto_approval_eligible = fields.Boolean("Auto Approval Eligible", default=False)
+    billing_impact_assessment = fields.Text("Billing Impact Assessment")
+    business_justification = fields.Text("Business Justification")
+    compliance_approval_required = fields.Boolean(
+        "Compliance Approval Required", default=False
+    )
+    compliance_verification_notes = fields.Text("Compliance Verification Notes")
+    cost_center_id = fields.Many2one("account.analytic.account", "Cost Center")
+    cost_impact_amount = fields.Monetary("Cost Impact", currency_field="currency_id")
+    customer_confirmation_required = fields.Boolean(
+        "Customer Confirmation Required", default=True
+    )
+    customer_contact_method = fields.Selection(
+        [("email", "Email"), ("phone", "Phone"), ("portal", "Portal")], default="email"
+    )
+    customer_notification_sent = fields.Boolean(
+        "Customer Notification Sent", default=False
+    )
+    department_approval_required = fields.Boolean(
+        "Department Approval Required", default=False
+    )
+    document_verification_required = fields.Boolean(
+        "Document Verification Required", default=False
+    )
+    escalation_level = fields.Selection(
+        [
+            ("none", "None"),
+            ("supervisor", "Supervisor"),
+            ("manager", "Manager"),
+            ("director", "Director"),
+        ],
+        default="none",
+    )
+    estimated_completion_time = fields.Float("Estimated Completion Time (Hours)")
+    external_reference = fields.Char("External Reference")
+    follow_up_action_required = fields.Boolean(
+        "Follow-up Action Required", default=False
+    )
+    impact_assessment = fields.Selection(
+        [("low", "Low"), ("medium", "Medium"), ("high", "High")], default="low"
+    )
+    internal_notes = fields.Text("Internal Notes")
+    legal_review_required = fields.Boolean("Legal Review Required", default=False)
+    manager_approval_required = fields.Boolean(
+        "Manager Approval Required", default=False
+    )
+    notification_preferences = fields.Text("Notification Preferences")
+    portal_visibility = fields.Selection(
+        [
+            ("customer", "Customer Only"),
+            ("department", "Department"),
+            ("public", "Public"),
+        ],
+        default="customer",
+    )
+    processing_notes = fields.Text("Processing Notes")
+    quality_assurance_required = fields.Boolean(
+        "Quality Assurance Required", default=False
+    )
+    request_category_id = fields.Many2one("request.category", "Request Category")
+    request_complexity = fields.Selection(
+        [("simple", "Simple"), ("moderate", "Moderate"), ("complex", "Complex")],
+        default="simple",
+    )
+    request_source = fields.Selection(
+        [
+            ("portal", "Customer Portal"),
+            ("email", "Email"),
+            ("phone", "Phone"),
+            ("api", "API"),
+        ],
+        default="portal",
+    )
+    request_subcategory_id = fields.Many2one(
+        "request.subcategory", "Request Subcategory"
+    )
+    resource_allocation_notes = fields.Text("Resource Allocation Notes")
+    risk_assessment_level = fields.Selection(
+        [("low", "Low"), ("medium", "Medium"), ("high", "High")], default="low"
+    )
+    security_clearance_required = fields.Boolean(
+        "Security Clearance Required", default=False
+    )
+    service_level_agreement = fields.Selection(
+        [
+            ("standard", "Standard"),
+            ("expedited", "Expedited"),
+            ("priority", "Priority"),
+        ],
+        default="standard",
+    )
+    stakeholder_notification_list = fields.Text("Stakeholder Notification List")
+    status_change_log = fields.Text("Status Change Log")
+    third_party_approval_required = fields.Boolean(
+        "Third Party Approval Required", default=False
+    )
 
     def action_activate(self):
         """Activate the record."""

@@ -124,12 +124,8 @@ class DocumentRetrievalWorkOrder(models.Model):
     quality_checked_by = fields.Many2one("res.users", string="Quality Checked By")
     quality_check_date = fields.Datetime(string="Quality Check Date")
     compliance_notes = fields.Text(string="Compliance Notes")
+
     # === COMPREHENSIVE MISSING FIELDS ===
-    currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        default=lambda self: self.env.company.currency_id,
-    )
     workflow_state = fields.Selection(
         [
             ("draft", "Draft"),

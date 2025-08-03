@@ -90,6 +90,21 @@ class ShreddingInventoryItem(models.Model):
     customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)
     document_count = fields.Integer(string='Document Count', default=0)
     total_amount = fields.Monetary(string='Total Amount', currency_field='currency_id')
+    # Shredding Inventory Item Fields
+    approval_date = fields.Date('Approval Date')
+    customer_approved = fields.Boolean('Customer Approved', default=False)
+    destroyed_by = fields.Many2one('hr.employee', 'Destroyed By')
+    destruction_date = fields.Date('Destruction Date')
+    destruction_notes = fields.Text('Destruction Notes')
+    batch_processing_required = fields.Boolean('Batch Processing Required', default=False)
+    certificate_generation_required = fields.Boolean('Certificate Generation Required', default=True)
+    chain_of_custody_number = fields.Char('Chain of Custody Number')
+    contamination_check_completed = fields.Boolean('Contamination Check Completed', default=False)
+    destruction_method_verified = fields.Boolean('Destruction Method Verified', default=False)
+    item_classification = fields.Selection([('paper', 'Paper'), ('media', 'Media'), ('electronic', 'Electronic')], default='paper')
+    quality_verification_completed = fields.Boolean('Quality Verification Completed', default=False)
+    security_level_verified = fields.Boolean('Security Level Verified', default=False)
+    witness_verification_required = fields.Boolean('Witness Verification Required', default=False)
 
 
 

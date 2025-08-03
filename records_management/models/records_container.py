@@ -99,6 +99,25 @@ class RecordsContainer(models.Model):
     barcode = fields.Char(string='Barcode', copy=False)
     current_weight = fields.Float(string='Current Weight', digits=(10, 2))
     last_access_date = fields.Date(string='Last Access Date')
+    # Records Container Management Fields
+    container_type_code = fields.Char('Container Type Code')
+    container_type_display = fields.Char('Container Type Display')
+    department_id = fields.Many2one('hr.department', 'Department')
+    document_ids = fields.One2many('records.document', 'container_id', 'Documents')
+    document_type_id = fields.Many2one('records.document.type', 'Document Type')
+    access_frequency = fields.Selection([('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly'), ('rarely', 'Rarely')], default='rarely')
+    capacity_utilization = fields.Float('Capacity Utilization %', default=0.0)
+    climate_controlled = fields.Boolean('Climate Controlled', default=False)
+    container_condition = fields.Selection([('excellent', 'Excellent'), ('good', 'Good'), ('fair', 'Fair'), ('poor', 'Poor')], default='good')
+    container_material = fields.Selection([('cardboard', 'Cardboard'), ('plastic', 'Plastic'), ('metal', 'Metal')], default='cardboard')
+    container_size_category = fields.Selection([('small', 'Small'), ('medium', 'Medium'), ('large', 'Large'), ('extra_large', 'Extra Large')], default='medium')
+    last_inventory_date = fields.Date('Last Inventory Date')
+    maximum_weight_capacity = fields.Float('Maximum Weight Capacity (lbs)', default=35.0)
+    movement_history_ids = fields.One2many('container.movement.history', 'container_id', 'Movement History')
+    security_seal_applied = fields.Boolean('Security Seal Applied', default=False)
+    security_seal_number = fields.Char('Security Seal Number')
+    storage_environment_requirements = fields.Text('Storage Environment Requirements')
+    weight_verification_required = fields.Boolean('Weight Verification Required', default=True)
 
 
 
