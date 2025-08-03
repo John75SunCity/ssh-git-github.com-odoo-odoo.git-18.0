@@ -95,6 +95,184 @@ class VisitorPosWizard(models.TransientModel):
         default="draft",
     )
 
+    # === ADDITIONAL ESSENTIAL FIELDS FROM VIEW ANALYSIS ===
+
+    # Audit and Compliance
+    audit_level = fields.Selection(
+        [
+            ("basic", "Basic"),
+            ("standard", "Standard"),
+            ("enhanced", "Enhanced"),
+            ("comprehensive", "Comprehensive"),
+        ],
+        string="Audit Level",
+        default="standard",
+    )
+    audit_notes = fields.Text(string="Audit Notes")
+    audit_required = fields.Boolean(string="Audit Required", default=False)
+    authorization_code = fields.Char(string="Authorization Code")
+
+    # Financial Details
+    base_amount = fields.Monetary(string="Base Amount", currency_field="currency_id")
+    certificate_required = fields.Boolean(string="Certificate Required", default=False)
+    discount_percent = fields.Float(string="Discount Percentage", digits=(5, 2))
+    subtotal = fields.Monetary(string="Subtotal", currency_field="currency_id")
+    tax_amount = fields.Monetary(string="Tax Amount", currency_field="currency_id")
+    tax_id = fields.Many2one("account.tax", string="Tax")
+    total_amount = fields.Monetary(string="Total Amount", currency_field="currency_id")
+    unit_price = fields.Monetary(string="Unit Price", currency_field="currency_id")
+
+    # Service Configuration
+    collection_date = fields.Date(string="Collection Date")
+    destruction_method = fields.Selection(
+        [
+            ("shredding", "Shredding"),
+            ("pulping", "Pulping"),
+            ("burning", "Secure Burning"),
+            ("disintegration", "Disintegration"),
+        ],
+        string="Destruction Method",
+    )
+    document_type = fields.Selection(
+        [
+            ("general", "General Documents"),
+            ("confidential", "Confidential"),
+            ("classified", "Classified"),
+            ("financial", "Financial Records"),
+        ],
+        string="Document Type",
+    )
+    estimated_service_time = fields.Float(string="Estimated Service Time (hours)")
+    express_service = fields.Boolean(string="Express Service", default=False)
+    express_surcharge = fields.Monetary(
+        string="Express Surcharge", currency_field="currency_id"
+    )
+    pickup_required = fields.Boolean(string="Pickup Required", default=True)
+    scanning_required = fields.Boolean(string="Scanning Required", default=False)
+    special_requirements = fields.Text(string="Special Requirements")
+
+    # Processing Information
+    collected = fields.Boolean(string="Collected", default=False)
+    processed_by = fields.Many2one("res.users", string="Processed By")
+    quality_check_by = fields.Many2one("res.users", string="Quality Check By")
+    quantity = fields.Float(string="Quantity", default=1.0)
+    required = fields.Boolean(string="Required", default=True)
+    resolved = fields.Boolean(string="Resolved", default=False)
+    step_description = fields.Text(string="Step Description")
+    step_status = fields.Selection(
+        [
+            ("pending", "Pending"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Step Status",
+        default="pending",
+    )
+
+    # Compliance and Security
+    chain_of_custody = fields.Text(string="Chain of Custody Notes")
+    chain_of_custody_id = fields.Many2one(
+        "records.chain.of.custody", string="Chain of Custody"
+    )
+    compliance_documentation = fields.Text(string="Compliance Documentation")
+    confidentiality_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+        ],
+        string="Confidentiality Level",
+        default="internal",
+    )
+    naid_audit_id = fields.Many2one("naid.audit.log", string="NAID Audit Log")
+    naid_certificate_required = fields.Boolean(
+        string="NAID Certificate Required", default=False
+    )
+    naid_compliance_required = fields.Boolean(
+        string="NAID Compliance Required", default=False
+    )
+    witness_required = fields.Boolean(string="Witness Required", default=False)
+    witness_verification = fields.Text(string="Witness Verification")
+
+    # System Integration
+    customer_record_created = fields.Boolean(
+        string="Customer Record Created", default=False
+    )
+    customer_record_id = fields.Many2one("res.partner", string="Customer Record")
+    invoice_generated = fields.Boolean(string="Invoice Generated", default=False)
+    invoice_required = fields.Boolean(string="Invoice Required", default=True)
+    naid_audit_created = fields.Boolean(string="NAID Audit Created", default=False)
+    pos_order_created = fields.Boolean(string="POS Order Created", default=False)
+    records_request_created = fields.Boolean(
+        string="Records Request Created", default=False
+    )
+    records_request_id = fields.Many2one("portal.request", string="Records Request")
+
+    # Timing and Processing
+    customer_processing_time = fields.Float(string="Customer Processing Time (minutes)")
+    duration_seconds = fields.Integer(string="Duration (seconds)")
+    estimated_volume = fields.Float(string="Estimated Volume (cubic feet)")
+    service_configuration_time = fields.Float(
+        string="Service Configuration Time (minutes)"
+    )
+    step_time = fields.Datetime(string="Step Time")
+    total_processing_time = fields.Float(string="Total Processing Time (minutes)")
+    wizard_start_time = fields.Datetime(
+        string="Wizard Start Time", default=fields.Datetime.now
+    )
+
+    # Contact and Communication
+    final_verification_by = fields.Many2one("res.users", string="Final Verification By")
+    receipt_email = fields.Char(string="Receipt Email")
+    supervisor_approval = fields.Boolean(string="Supervisor Approval", default=False)
+
+    # Error Handling
+    error_details = fields.Text(string="Error Details")
+    error_message = fields.Char(string="Error Message")
+    error_time = fields.Datetime(string="Error Time")
+    error_type = fields.Selection(
+        [
+            ("validation", "Validation Error"),
+            ("system", "System Error"),
+            ("user", "User Error"),
+            ("integration", "Integration Error"),
+        ],
+        string="Error Type",
+    )
+
+    # Additional relationships
+    product_id = fields.Many2one("product.template", string="Service Product")
+    transaction_id = fields.Char(string="Transaction ID")
+    payment_reference = fields.Char(string="Payment Reference")
+    payment_method_id = fields.Many2one(
+        "account.payment.method", string="Payment Method"
+    )
+
+    # Notes and documentation
+    notes = fields.Text(string="Additional Notes")
+    resolution_notes = fields.Text(string="Resolution Notes")
+    retention_period = fields.Integer(string="Retention Period (days)")
+
+    # Computed fields for display
+    @api.depends("visitor_id")
+    def _compute_visitor_details(self):
+        """Compute visitor-related display fields"""
+        for record in self:
+            if record.visitor_id:
+                record.visitor_name = record.visitor_id.name
+                record.visitor_email = (
+                    record.visitor_id.email
+                    if hasattr(record.visitor_id, "email")
+                    else ""
+                )
+                record.visitor_phone = (
+                    record.visitor_id.phone
+                    if hasattr(record.visitor_id, "phone")
+                    else ""
+                )
+
     def action_check_in_visitor(self):
         """Check in visitor."""
         self.ensure_one()

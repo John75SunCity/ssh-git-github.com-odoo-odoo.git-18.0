@@ -15,6 +15,243 @@ class PortalFeedback(models.Model):
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
 
+    # Essential Portal Feedback Fields
+    customer_id = fields.Many2one(
+        "res.partner", string="Customer", required=True, tracking=True
+    )
+    feedback_type = fields.Selection(
+        [
+            ("service_rating", "Service Rating"),
+            ("complaint", "Complaint"),
+            ("suggestion", "Suggestion"),
+            ("compliment", "Compliment"),
+            ("general", "General Feedback"),
+            ("technical_issue", "Technical Issue"),
+            ("billing_inquiry", "Billing Inquiry"),
+        ],
+        string="Feedback Type",
+        required=True,
+        tracking=True,
+    )
+
+    # Ratings and Scores
+    overall_rating = fields.Selection(
+        [
+            ("1", "Very Poor"),
+            ("2", "Poor"),
+            ("3", "Average"),
+            ("4", "Good"),
+            ("5", "Excellent"),
+        ],
+        string="Overall Rating",
+        tracking=True,
+    )
+
+    service_quality_rating = fields.Selection(
+        [
+            ("1", "Very Poor"),
+            ("2", "Poor"),
+            ("3", "Average"),
+            ("4", "Good"),
+            ("5", "Excellent"),
+        ],
+        string="Service Quality Rating",
+    )
+
+    communication_rating = fields.Selection(
+        [
+            ("1", "Very Poor"),
+            ("2", "Poor"),
+            ("3", "Average"),
+            ("4", "Good"),
+            ("5", "Excellent"),
+        ],
+        string="Communication Rating",
+    )
+
+    timeliness_rating = fields.Selection(
+        [
+            ("1", "Very Poor"),
+            ("2", "Poor"),
+            ("3", "Average"),
+            ("4", "Good"),
+            ("5", "Excellent"),
+        ],
+        string="Timeliness Rating",
+    )
+
+    # Customer Satisfaction Metrics
+    nps_score = fields.Selection(
+        [
+            ("0", "0"),
+            ("1", "1"),
+            ("2", "2"),
+            ("3", "3"),
+            ("4", "4"),
+            ("5", "5"),
+            ("6", "6"),
+            ("7", "7"),
+            ("8", "8"),
+            ("9", "9"),
+            ("10", "10"),
+        ],
+        string="NPS Score (0-10)",
+    )
+
+    ces_score = fields.Selection(
+        [
+            ("1", "Very Difficult"),
+            ("2", "Difficult"),
+            ("3", "Neutral"),
+            ("4", "Easy"),
+            ("5", "Very Easy"),
+        ],
+        string="Customer Effort Score",
+    )
+
+    # Feedback Details
+    feedback_subject = fields.Char(string="Subject", required=True)
+    feedback_description = fields.Text(string="Detailed Feedback", required=True)
+
+    # Service Related
+    service_date = fields.Date(string="Service Date")
+    service_type = fields.Selection(
+        [
+            ("document_storage", "Document Storage"),
+            ("document_retrieval", "Document Retrieval"),
+            ("shredding", "Shredding Service"),
+            ("scanning", "Document Scanning"),
+            ("pickup_delivery", "Pickup/Delivery"),
+            ("portal_access", "Portal Access"),
+            ("billing", "Billing"),
+            ("other", "Other"),
+        ],
+        string="Service Type",
+    )
+
+    # Response Management
+    response_required = fields.Boolean(string="Response Required", default=True)
+    responded = fields.Boolean(string="Responded", default=False)
+    response_date = fields.Datetime(string="Response Date")
+    response_text = fields.Text(string="Response")
+    assigned_to = fields.Many2one("res.users", string="Assigned To")
+
+    # Priority and Escalation
+    priority = fields.Selection(
+        [("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")],
+        string="Priority",
+        default="medium",
+    )
+
+    escalated = fields.Boolean(string="Escalated", default=False)
+    escalation_reason = fields.Text(string="Escalation Reason")
+    escalated_to = fields.Many2one("res.users", string="Escalated To")
+
+    # Follow-up
+    follow_up_required = fields.Boolean(string="Follow-up Required", default=False)
+    follow_up_date = fields.Date(string="Follow-up Date")
+    follow_up_notes = fields.Text(string="Follow-up Notes")
+
+    # Analytics and Insights
+    sentiment = fields.Selection(
+        [
+            ("very_negative", "Very Negative"),
+            ("negative", "Negative"),
+            ("neutral", "Neutral"),
+            ("positive", "Positive"),
+            ("very_positive", "Very Positive"),
+        ],
+        string="Sentiment",
+        compute="_compute_sentiment",
+    )
+
+    competitive_mention = fields.Boolean(string="Competitive Mention", default=False)
+    improvement_area = fields.Selection(
+        [
+            ("service_quality", "Service Quality"),
+            ("communication", "Communication"),
+            ("timeliness", "Timeliness"),
+            ("pricing", "Pricing"),
+            ("technology", "Technology"),
+            ("staff", "Staff"),
+            ("other", "Other"),
+        ],
+        string="Main Improvement Area",
+    )
+
+    # Contact Information
+    contact_method = fields.Selection(
+        [
+            ("portal", "Portal"),
+            ("email", "Email"),
+            ("phone", "Phone"),
+            ("in_person", "In Person"),
+            ("survey", "Survey"),
+        ],
+        string="Contact Method",
+        default="portal",
+    )
+
+    # Resolution
+    resolution_status = fields.Selection(
+        [
+            ("open", "Open"),
+            ("in_progress", "In Progress"),
+            ("resolved", "Resolved"),
+            ("closed", "Closed"),
+            ("escalated", "Escalated"),
+        ],
+        string="Resolution Status",
+        default="open",
+        tracking=True,
+    )
+
+    resolution_notes = fields.Text(string="Resolution Notes")
+    customer_satisfied_with_resolution = fields.Boolean(
+        string="Customer Satisfied with Resolution"
+    )
+
+    # Related Records
+    service_request_id = fields.Many2one(
+        "portal.request", string="Related Service Request"
+    )
+    account_manager = fields.Many2one("res.users", string="Account Manager")
+
+    # System Fields
+    submission_date = fields.Datetime(
+        string="Submission Date", default=fields.Datetime.now
+    )
+    company_id = fields.Many2one(
+        "res.company", string="Company", default=lambda self: self.env.company
+    )
+
+    @api.depends("overall_rating", "nps_score", "feedback_type")
+    def _compute_sentiment(self):
+        """Compute sentiment based on ratings and feedback type"""
+        for record in self:
+            if record.feedback_type == "complaint":
+                record.sentiment = "negative"
+            elif record.feedback_type == "compliment":
+                record.sentiment = "positive"
+            elif record.overall_rating:
+                rating = int(record.overall_rating)
+                if rating <= 2:
+                    record.sentiment = "negative"
+                elif rating == 3:
+                    record.sentiment = "neutral"
+                else:
+                    record.sentiment = "positive"
+            elif record.nps_score:
+                nps = int(record.nps_score)
+                if nps <= 6:
+                    record.sentiment = "negative"
+                elif nps <= 8:
+                    record.sentiment = "neutral"
+                else:
+                    record.sentiment = "positive"
+            else:
+                record.sentiment = "neutral"
+
     # State Management
     state = fields.Selection(
         [

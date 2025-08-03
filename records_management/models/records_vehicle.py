@@ -93,6 +93,16 @@ class RecordsVehicle(models.Model):
         "pickup.route", "vehicle_id", string="Pickup Routes"
     )
 
+    # Route and Schedule Information (Missing fields from view analysis)
+    route_date = fields.Date(string="Route Date", tracking=True)
+    start_time = fields.Datetime(string="Start Time", tracking=True)
+    vehicle_capacity_volume = fields.Float(
+        string="Vehicle Capacity Volume (cubic meters)", tracking=True
+    )
+    vehicle_capacity_weight = fields.Float(
+        string="Vehicle Capacity Weight (kg)", tracking=True
+    )
+
     # Dimensions
     length = fields.Float("Length (m)")
     width = fields.Float("Width (m)")

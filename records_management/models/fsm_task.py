@@ -19,6 +19,111 @@ class FsmTask(models.Model):
     name = fields.Char(string="Task Name", required=True, tracking=True)
     description = fields.Text(string="Description")
 
+    # Essential FSM Fields (from view analysis)
+    task_type = fields.Selection(
+        [
+            ("pickup", "Item Pickup"),
+            ("delivery", "Item Delivery"),
+            ("shredding", "On-Site Shredding"),
+            ("scanning", "Document Scanning"),
+            ("storage", "Storage Service"),
+            ("retrieval", "Item Retrieval"),
+            ("maintenance", "Equipment Maintenance"),
+            ("consultation", "Customer Consultation"),
+        ],
+        string="Task Type",
+        required=True,
+        tracking=True,
+    )
+
+    assigned_technician = fields.Many2one(
+        "res.users", string="Assigned Technician", tracking=True
+    )
+    scheduled_date = fields.Datetime(
+        string="Scheduled Date", required=True, tracking=True
+    )
+    priority = fields.Selection(
+        [("0", "Low"), ("1", "Normal"), ("2", "High"), ("3", "Very High")],
+        string="Priority",
+        default="1",
+        tracking=True,
+    )
+
+    customer_id = fields.Many2one("res.partner", string="Customer", required=True)
+    location_address = fields.Text(string="Location Address")
+
+    # Scheduling and Timing
+    actual_start_time = fields.Datetime(string="Actual Start Time")
+    actual_completion_time = fields.Datetime(string="Actual Completion Time")
+    estimated_duration = fields.Float(
+        string="Estimated Duration (hours)", digits=(8, 2)
+    )
+    actual_duration = fields.Float(
+        string="Actual Duration (hours)",
+        digits=(8, 2),
+        compute="_compute_actual_duration",
+    )
+    arrival_time = fields.Datetime(string="Arrival Time")
+
+    # Contact Information
+    contact_person = fields.Char(string="Contact Person")
+    contact_phone = fields.Char(string="Contact Phone")
+    contact_email = fields.Char(string="Contact Email")
+    backup_contact = fields.Char(string="Backup Contact")
+
+    # Service Details
+    service_description = fields.Text(string="Service Description")
+    special_instructions = fields.Text(string="Special Instructions")
+    equipment_needed = fields.Text(string="Equipment Needed")
+    materials_required = fields.Text(string="Materials Required")
+
+    # Location and Route
+    route_id = fields.Many2one("fsm.route", string="Route")
+    gps_coordinates = fields.Char(string="GPS Coordinates")
+    access_instructions = fields.Text(string="Access Instructions")
+
+    # Quality and Compliance
+    quality_check_required = fields.Boolean(
+        string="Quality Check Required", default=False
+    )
+    quality_check_passed = fields.Boolean(string="Quality Check Passed", default=False)
+    compliance_verified = fields.Boolean(string="Compliance Verified", default=False)
+
+    # Documentation
+    photos_required = fields.Boolean(string="Photos Required", default=False)
+    photos_taken = fields.Integer(string="Photos Taken", default=0)
+    documents_collected = fields.Integer(string="Documents Collected", default=0)
+
+    # Financial
+    estimated_cost = fields.Monetary(
+        string="Estimated Cost", currency_field="currency_id"
+    )
+    actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id")
+    billable_amount = fields.Monetary(
+        string="Billable Amount", currency_field="currency_id"
+    )
+
+    # Status and Progress
+    completion_percentage = fields.Float(string="Completion Percentage", digits=(5, 2))
+    stage_id = fields.Many2one("fsm.stage", string="Stage")
+
+    # Technician Notes
+    technician_notes = fields.Text(string="Technician Notes")
+    customer_feedback = fields.Text(string="Customer Feedback")
+    internal_notes = fields.Text(string="Internal Notes")
+
+    @api.depends("actual_start_time", "actual_completion_time")
+    def _compute_actual_duration(self):
+        """Compute actual duration based on start and completion times"""
+        for record in self:
+            if record.actual_start_time and record.actual_completion_time:
+                duration = record.actual_completion_time - record.actual_start_time
+                record.actual_duration = (
+                    duration.total_seconds() / 3600
+                )  # Convert to hours
+            else:
+                record.actual_duration = 0.0
+
     # Task Status
     task_status = fields.Selection(
         [

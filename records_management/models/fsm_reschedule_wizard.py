@@ -13,6 +13,14 @@ class FsmRescheduleWizard(models.TransientModel):
     new_date = fields.Datetime(string="New Date", required=True)
     reason = fields.Text(string="Reason")
 
+    # Missing fields from view analysis
+    reschedule_reason = fields.Text(
+        string="Reschedule Reason"
+    )  # Alternative to reason field
+    schedule_date = fields.Datetime(
+        string="Schedule Date"
+    )  # Alternative to new_date field
+
     def action_confirm_reschedule(self):
         """Reschedule the FSM task."""
         self.ensure_one()

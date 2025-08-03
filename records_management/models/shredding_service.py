@@ -15,6 +15,183 @@ class ShreddingService(models.Model):
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
 
+    # Essential Shredding Service Fields (from view analysis)
+    customer_id = fields.Many2one(
+        "res.partner", string="Customer", required=True, tracking=True
+    )
+    service_location_type = fields.Selection(
+        [("onsite", "On-Site"), ("offsite", "Off-Site")],
+        string="Service Location",
+        required=True,
+        default="onsite",
+        tracking=True,
+    )
+    service_type = fields.Selection(
+        [
+            ("box_shredding", "Box Shredding"),
+            ("bin_shredding", "Bin Shredding"),
+            ("hard_drive_destruction", "Hard Drive Destruction"),
+            ("uniform_destruction", "Uniform Destruction"),
+            ("pickup", "Pickup Service"),
+            ("scheduled", "Scheduled Service"),
+            ("emergency", "Emergency Shredding"),
+            ("purge", "Purge Service"),
+        ],
+        string="Service Type",
+        required=True,
+        tracking=True,
+    )
+
+    status = fields.Selection(
+        [
+            ("scheduled", "Scheduled"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+            ("rescheduled", "Rescheduled"),
+        ],
+        string="Status",
+        default="scheduled",
+        tracking=True,
+    )
+
+    # Scheduling
+    scheduled_date = fields.Datetime(
+        string="Scheduled Date", required=True, tracking=True
+    )
+    actual_start_time = fields.Datetime(string="Actual Start Time")
+    actual_completion_time = fields.Datetime(string="Actual Completion Time")
+    estimated_duration = fields.Float(
+        string="Estimated Duration (hours)", digits=(8, 2)
+    )
+
+    # Destruction Details
+    destruction_method = fields.Selection(
+        [
+            ("cross_cut", "Cross Cut Shredding"),
+            ("strip_cut", "Strip Cut Shredding"),
+            ("disintegration", "Disintegration"),
+            ("pulverization", "Pulverization"),
+            ("incineration", "Incineration"),
+            ("degaussing", "Degaussing (Electronic Media)"),
+        ],
+        string="Destruction Method",
+        required=True,
+        tracking=True,
+    )
+
+    # NAID Compliance
+    naid_compliance_level = fields.Selection(
+        [
+            ("aaa", "NAID AAA"),
+            ("aa", "NAID AA"),
+            ("a", "NAID A"),
+            ("standard", "Standard"),
+        ],
+        string="NAID Compliance Level",
+        required=True,
+        default="standard",
+    )
+
+    certificate_required = fields.Boolean(string="Certificate Required", default=True)
+    witness_required = fields.Boolean(string="Witness Required", default=False)
+
+    # Service Details
+    container_count = fields.Integer(string="Container Count", default=0)
+    total_weight = fields.Float(string="Total Weight (lbs)", digits=(10, 2))
+    document_types = fields.Text(string="Document Types")
+    uniform_destruction_details = fields.Text(string="Uniform Destruction Details")
+
+    # Uniform-Specific Fields
+    uniform_type = fields.Selection(
+        [
+            ("corporate", "Corporate Uniforms"),
+            ("medical", "Medical Scrubs"),
+            ("security", "Security Uniforms"),
+            ("hospitality", "Hospitality Uniforms"),
+            ("school", "School Uniforms"),
+            ("industrial", "Industrial Workwear"),
+            ("other", "Other Uniform Types"),
+        ],
+        string="Uniform Type",
+        help="Type of uniforms being destroyed",
+    )
+    uniform_count = fields.Integer(string="Number of Uniforms", default=0)
+    uniform_brands = fields.Text(string="Uniform Brands/Labels")
+    uniform_destruction_reason = fields.Selection(
+        [
+            ("expired", "Expired/End of Use"),
+            ("damaged", "Damaged Beyond Repair"),
+            ("rebrand", "Company Rebranding"),
+            ("policy", "Policy Change"),
+            ("contaminated", "Contaminated"),
+            ("recalled", "Product Recall"),
+        ],
+        string="Destruction Reason",
+    )
+
+    # Location and Logistics
+    service_location = fields.Text(string="Service Location")
+    onsite_requirements = fields.Text(
+        string="On-Site Requirements", help="Special requirements for on-site service"
+    )
+    access_instructions = fields.Text(string="Site Access Instructions")
+    assigned_technician = fields.Many2one("res.users", string="Assigned Technician")
+    vehicle_id = fields.Many2one("fleet.vehicle", string="Service Vehicle")
+
+    # Financial
+    service_cost = fields.Monetary(string="Service Cost", currency_field="currency_id")
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+
+    # Documentation
+    certificate_generated = fields.Boolean(
+        string="Certificate Generated", default=False
+    )
+    photos_taken = fields.Integer(string="Photos Taken", default=0)
+    chain_of_custody_maintained = fields.Boolean(
+        string="Chain of Custody Maintained", default=True
+    )
+
+    # Quality and Compliance
+    quality_check_passed = fields.Boolean(string="Quality Check Passed", default=False)
+    compliance_verified = fields.Boolean(string="Compliance Verified", default=False)
+    audit_trail_ids = fields.One2many(
+        "shredding.audit.trail", "service_id", string="Audit Trail"
+    )
+
+    # Customer Service
+    customer_notification_sent = fields.Boolean(
+        string="Customer Notification Sent", default=False
+    )
+    customer_feedback = fields.Text(string="Customer Feedback")
+    customer_rating = fields.Selection(
+        [
+            ("1", "Poor"),
+            ("2", "Fair"),
+            ("3", "Good"),
+            ("4", "Very Good"),
+            ("5", "Excellent"),
+        ],
+        string="Customer Rating",
+    )
+
+    # Related Records
+    work_order_id = fields.Many2one("work.order.shredding", string="Work Order")
+    invoice_id = fields.Many2one("account.move", string="Invoice")
+    pickup_request_id = fields.Many2one("pickup.request", string="Pickup Request")
+
+    # System Fields
+    company_id = fields.Many2one(
+        "res.company", string="Company", default=lambda self: self.env.company
+    )
+    user_id = fields.Many2one(
+        "res.users", string="Service Manager", default=lambda self: self.env.user
+    )
+
     # State Management
     state = fields.Selection(
         [
@@ -23,17 +200,9 @@ class ShreddingService(models.Model):
             ("inactive", "Inactive"),
             ("archived", "Archived"),
         ],
-        string="Status",
+        string="State",
         default="draft",
         tracking=True,
-    )
-
-    # Company and User
-    company_id = fields.Many2one(
-        "res.company", string="Company", default=lambda self: self.env.company
-    )
-    user_id = fields.Many2one(
-        "res.users", string="Assigned User", default=lambda self: self.env.user
     )
 
     # Timestamps
@@ -44,28 +213,12 @@ class ShreddingService(models.Model):
     active = fields.Boolean(string="Active", default=True)
     notes = fields.Text(string="Internal Notes")
 
-    # Service Type and Shredding Method
-    service_type = fields.Selection(
-        [("on_site", "On-Site"), ("off_site", "Off-Site"), ("drop_off", "Drop-Off")],
-        string="Service Type",
-        required=True,
-        default="on_site",
-        tracking=True,
-    )
-    shredding_method = fields.Selection(
-        [
-            ("strip_cut", "Strip-Cut"),
-            ("micro_cut", "Micro-Cut"),
-            ("pulverization", "Pulverization"),
-        ],
-        string="Shredding Method",
-        default="strip_cut",
-        tracking=True,
-    )
-
     # Computed Fields
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
+    )
+    is_uniform_service = fields.Boolean(
+        string="Is Uniform Service", compute="_compute_is_uniform_service", store=True
     )
 
     @api.depends("name")
@@ -73,6 +226,12 @@ class ShreddingService(models.Model):
         """Compute display name."""
         for record in self:
             record.display_name = record.name or _("New")
+
+    @api.depends("service_type")
+    def _compute_is_uniform_service(self):
+        """Determine if this is a uniform destruction service."""
+        for record in self:
+            record.is_uniform_service = record.service_type == "uniform_destruction"
 
     def write(self, vals):
         """Override write to update modification date."""
@@ -92,9 +251,134 @@ class ShreddingService(models.Model):
         self.write({"state": "archived", "active": False})
 
     # =========================================================================
+    # UNIFORM DESTRUCTION SPECIFIC METHODS
+    # =========================================================================
+
+    def action_process_uniform_destruction(self):
+        """Process uniform destruction with special handling."""
+        self.ensure_one()
+        if self.service_type != "uniform_destruction":
+            raise UserError(
+                _("This action is only available for uniform destruction services.")
+            )
+
+        if not self.uniform_type:
+            raise UserError(_("Uniform type must be specified before processing."))
+
+        self.write(
+            {
+                "state": "active",
+                "notes": (self.notes or "")
+                + _("\nUniform destruction process initiated on %s for %s uniforms")
+                % (
+                    fields.Datetime.now(),
+                    dict(self._fields["uniform_type"].selection)[self.uniform_type],
+                ),
+            }
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Uniform Destruction Started"),
+                "message": _("Uniform destruction process has been initiated for %s")
+                % self.uniform_type,
+                "type": "success",
+            },
+        }
+
+    def action_validate_uniform_inventory(self):
+        """Validate uniform inventory before destruction."""
+        self.ensure_one()
+        if not self.is_uniform_service:
+            raise UserError(_("This action is only available for uniform services."))
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Uniform Inventory Validation"),
+            "res_model": "uniform.inventory.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_service_id": self.id,
+                "default_uniform_type": self.uniform_type,
+                "default_uniform_count": self.uniform_count,
+            },
+        }
+
+    # =========================================================================
+    # ON-SITE / OFF-SITE SERVICE METHODS
+    # =========================================================================
+
+    def action_schedule_onsite_service(self):
+        """Schedule on-site shredding service."""
+        self.ensure_one()
+        if self.service_location_type != "onsite":
+            raise UserError(_("This action is only available for on-site services."))
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Schedule On-Site Service"),
+            "res_model": "onsite.scheduling.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_service_id": self.id,
+                "default_customer_id": self.customer_id.id,
+                "default_service_type": self.service_type,
+            },
+        }
+
+    def action_prepare_offsite_transport(self):
+        """Prepare materials for off-site transport."""
+        self.ensure_one()
+        if self.service_location_type != "offsite":
+            raise UserError(_("This action is only available for off-site services."))
+
+        self.write(
+            {
+                "notes": (self.notes or "")
+                + _("\nOff-site transport preparation completed on %s")
+                % fields.Datetime.now()
+            }
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Transport Prepared"),
+                "message": _("Materials prepared for off-site destruction transport"),
+                "type": "success",
+            },
+        }
+
+    def action_validate_site_access(self):
+        """Validate access requirements for on-site service."""
+        self.ensure_one()
+        if self.service_location_type != "onsite":
+            raise UserError(
+                _("Site access validation is only required for on-site services.")
+            )
+
+        if not self.access_instructions:
+            raise UserError(
+                _("Access instructions must be provided for on-site services.")
+            )
+
+        self.write(
+            {
+                "notes": (self.notes or "")
+                + _("\nSite access validated on %s") % fields.Datetime.now()
+            }
+        )
+
+        return True
+
+    # =========================================================================
     # COMPREHENSIVE SHREDDING SERVICE ACTION METHODS
     # =========================================================================
-    # 🎯 PREMIUM SERVICE VALIDATION: All 11 action methods verified and implemented
 
     def action_view_hard_drives(self):
         """View hard drives associated with this shredding service"""
@@ -365,8 +649,9 @@ class ShreddingService(models.Model):
             },
         }
 
+    @api.model
     def create(self, vals):
         """Override create to set default values."""
         if not vals.get("name"):
-            vals["name"] = _("New Record")
+            vals["name"] = _("New Shredding Service")
         return super().create(vals)

@@ -38,10 +38,133 @@ class BarcodeProduct(models.Model):
         tracking=True,
     )
 
+    # Essential Barcode Product Fields (from view analysis)
+    product_category = fields.Selection(
+        [
+            ("container", "Container"),
+            ("bin", "Shred Bin"),
+            ("folder", "File Folder"),
+            ("location", "Location Tag"),
+        ],
+        string="Product Category",
+        required=True,
+    )
+
+    barcode_pattern = fields.Char(
+        string="Barcode Pattern", help="Pattern for barcode generation"
+    )
+    barcode_length = fields.Integer(string="Barcode Length", default=10)
+    barcode = fields.Char(string="Barcode", tracking=True)
+
+    # Pricing Fields
+    storage_rate = fields.Monetary(string="Storage Rate", currency_field="currency_id")
+    shred_rate = fields.Monetary(string="Shredding Rate", currency_field="currency_id")
+    retrieval_rate = fields.Monetary(
+        string="Retrieval Rate", currency_field="currency_id"
+    )
+    scanning_rate = fields.Monetary(
+        string="Scanning Rate", currency_field="currency_id"
+    )
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+
+    # Physical Specifications
+    box_size = fields.Selection(
+        [
+            ("letter", "Letter Size"),
+            ("legal", "Legal Size"),
+            ("banker", "Banker Box"),
+            ("archive", "Archive Box"),
+            ("custom", "Custom Size"),
+        ],
+        string="Box Size",
+    )
+
+    capacity = fields.Float(string="Storage Capacity (cubic feet)", digits=(10, 2))
+    weight_limit = fields.Float(string="Weight Limit (lbs)", digits=(10, 2))
+    dimensions = fields.Char(string="Dimensions (L x W x H)")
+
+    # Business Logic Fields
+    auto_generate = fields.Boolean(string="Auto Generate Barcode", default=True)
+    allowed_characters = fields.Char(string="Allowed Characters", default="0123456789")
+    access_frequency = fields.Selection(
+        [
+            ("daily", "Daily"),
+            ("weekly", "Weekly"),
+            ("monthly", "Monthly"),
+            ("yearly", "Yearly"),
+            ("permanent", "Permanent Storage"),
+        ],
+        string="Access Frequency",
+        default="monthly",
+    )
+
+    # Tracking and Analytics
+    average_storage_duration = fields.Float(
+        string="Average Storage Duration (days)", compute="_compute_analytics"
+    )
+    usage_count = fields.Integer(string="Usage Count", default=0)
+    last_used_date = fields.Date(string="Last Used Date")
+
+    # Service Configuration
+    billing_frequency = fields.Selection(
+        [("monthly", "Monthly"), ("quarterly", "Quarterly"), ("annually", "Annually")],
+        string="Billing Frequency",
+        default="monthly",
+    )
+
+    service_level = fields.Selection(
+        [
+            ("standard", "Standard"),
+            ("premium", "Premium"),
+            ("enterprise", "Enterprise"),
+        ],
+        string="Service Level",
+        default="standard",
+    )
+
+    # Compliance and Security
+    destruction_required = fields.Boolean(string="Destruction Required", default=False)
+    chain_of_custody_required = fields.Boolean(
+        string="Chain of Custody Required", default=True
+    )
+    audit_trail_enabled = fields.Boolean(string="Audit Trail Enabled", default=True)
+
+    # Related Records
+    container_ids = fields.One2many(
+        "records.container", "product_id", string="Associated Containers"
+    )
+    document_type_ids = fields.Many2many(
+        "records.document.type", string="Allowed Document Types"
+    )
+
     # Common fields
     description = fields.Text()
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
+
+    @api.depends("container_ids", "usage_count", "last_used_date")
+    def _compute_analytics(self):
+        """Compute analytics for storage duration"""
+        for record in self:
+            if record.container_ids:
+                # Calculate average storage duration from containers
+                durations = []
+                for container in record.container_ids:
+                    if container.created_date and container.last_activity_date:
+                        duration = (
+                            container.last_activity_date - container.created_date
+                        ).days
+                        durations.append(duration)
+
+                record.average_storage_duration = (
+                    sum(durations) / len(durations) if durations else 0
+                )
+            else:
+                record.average_storage_duration = 0
 
     def action_activate(self):
         """Activate barcode product for use."""
@@ -248,4 +371,5 @@ class BarcodeProduct(models.Model):
 
     def action_done(self):
         """Mark as done"""
+        self.write({"state": "done"})
         self.write({"state": "done"})
