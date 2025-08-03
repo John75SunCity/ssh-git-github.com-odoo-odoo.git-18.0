@@ -240,6 +240,14 @@ class RecordsDepartmentBillingContact(models.Model):
     description = fields.Text()
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    sequence = fields.Integer(string='Sequence', default=10)
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     @api.depends("budget_allocated", "amount")
     def _compute_budget_remaining(self):

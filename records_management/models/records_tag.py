@@ -49,6 +49,13 @@ class RecordsTag(models.Model):
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
     )
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     @api.depends("name")
     def _compute_display_name(self):

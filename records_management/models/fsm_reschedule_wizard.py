@@ -20,6 +20,17 @@ class FsmRescheduleWizard(models.TransientModel):
     schedule_date = fields.Datetime(
         string="Schedule Date"
     )  # Alternative to new_date field
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    active = fields.Boolean(string='Active', default=True)
+    state = fields.Selection([('draft', 'Draft'), ('processing', 'Processing'), ('completed', 'Completed')], string='State', default='draft')
+    notes = fields.Text(string='Notes')
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    sequence = fields.Integer(string='Sequence', default=10)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     def action_confirm_reschedule(self):
         """Reschedule the FSM task."""

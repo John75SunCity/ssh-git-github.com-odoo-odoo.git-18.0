@@ -585,10 +585,43 @@ class NaidCompliance(models.Model):
         # Calculate next audit date (typically annual)
         next_audit_date = fields.Date.today().replace(year=fields.Date.today().year + 1)
 
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    sequence = fields.Integer(string="Sequence", default=10)
+    notes = fields.Text(string="Notes")
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
+    # === COMPREHENSIVE MISSING FIELDS ===
+    workflow_state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Workflow State', default='draft')
+    next_action_date = fields.Date(string='Next Action Date')
+    deadline_date = fields.Date(string='Deadline')
+    completion_date = fields.Datetime(string='Completion Date')
+    responsible_user_id = fields.Many2one('res.users', string='Responsible User')
+    assigned_team_id = fields.Many2one('hr.department', string='Assigned Team')
+    supervisor_id = fields.Many2one('res.users', string='Supervisor')
+    quality_checked = fields.Boolean(string='Quality Checked')
+    quality_score = fields.Float(string='Quality Score', digits=(3, 2))
+    validation_required = fields.Boolean(string='Validation Required')
+    validated_by_id = fields.Many2one('res.users', string='Validated By')
+    validation_date = fields.Datetime(string='Validation Date')
+    reference_number = fields.Char(string='Reference Number')
+    external_reference = fields.Char(string='External Reference')
+    documentation_complete = fields.Boolean(string='Documentation Complete')
+    attachment_ids = fields.One2many('ir.attachment', 'res_id', string='Attachments')
+    performance_score = fields.Float(string='Performance Score', digits=(5, 2))
+    efficiency_rating = fields.Selection([('poor', 'Poor'), ('fair', 'Fair'), ('good', 'Good'), ('excellent', 'Excellent')], string='Efficiency Rating')
+
+
+    def schedule_next_audit(self):
+        """Schedule next audit."""
         # Create new compliance record for next audit
         next_audit_vals = {
             "name": f"Scheduled Audit - {fields.Date.today().year + 1}",
-            "check_date": next_audit_date,
+            "check_date": self.next_audit_date,
             "compliance_level": self.compliance_level,
             "state": "pending",
         }
@@ -598,13 +631,13 @@ class NaidCompliance(models.Model):
         # Schedule activity for next audit
         next_audit.activity_schedule(
             "mail.mail_activity_data_todo",
-            date_deadline=next_audit_date,
+            date_deadline=self.next_audit_date,
             summary="Annual NAID Compliance Audit Due",
             note="Annual NAID compliance audit is due. Please conduct comprehensive review and documentation.",
             user_id=self.user_id.id,
         )
 
-        self.message_post(body=f"Next NAID audit scheduled for {next_audit_date}")
+        self.message_post(body=f"Next NAID audit scheduled for {self.next_audit_date}")
         return True
 
     def action_view_audit_details(self):

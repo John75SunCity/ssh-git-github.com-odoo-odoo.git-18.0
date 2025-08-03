@@ -70,9 +70,18 @@ class RevenueForecaster(models.Model):
             ("cancelled", "Cancelled"),
         ],
         string="Status",
-        default="draft",
-        tracking=True,
     )
+
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    sequence = fields.Integer(string="Sequence", default=10)
+    notes = fields.Text(string="Notes")
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
 
     @api.depends("projected_revenue", "actual_revenue")
     def _compute_variance(self):

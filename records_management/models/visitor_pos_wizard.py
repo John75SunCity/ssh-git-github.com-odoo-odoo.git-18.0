@@ -254,6 +254,62 @@ class VisitorPosWizard(models.TransientModel):
     notes = fields.Text(string="Additional Notes")
     resolution_notes = fields.Text(string="Resolution Notes")
     retention_period = fields.Integer(string="Retention Period (days)")
+    # === COMPREHENSIVE MISSING FIELDS ===
+    active = fields.Boolean(string="Flag", default=True, tracking=True)
+    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
+    notes = fields.Text(string="Description", tracking=True)
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
+    created_date = fields.Date(string="Date", default=fields.Date.today, tracking=True)
+    updated_date = fields.Date(string="Date", tracking=True)
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # === SPECIFIC RECOMMENDED FIELDS ===
+    compliance_officer = fields.Char(string="Compliance Officer")
+    digitization_format = fields.Selection(
+        [("pdf", "PDF"), ("image", "Image"), ("text", "Text")],
+        string="Digitization Format",
+    )
+    document_count = fields.Integer(string="Document Count", default=0)
+    document_name = fields.Char(string="Document Name")
+    integration_error_ids = fields.One2many(
+        "integration.error", "pos_wizard_id", string="Integration Errors"
+    )
+    payment_split_ids = fields.One2many(
+        "payment.split", "pos_wizard_id", string="Payment Splits"
+    )
+    payment_terms = fields.Char(string="Payment Terms")
+    processing_log_ids = fields.One2many(
+        "processing.log", "pos_wizard_id", string="Processing Logs"
+    )
+    required_document_ids = fields.One2many(
+        "required.document", "pos_wizard_id", string="Required Documents"
+    )
+    service_item_ids = fields.One2many(
+        "service.item", "pos_wizard_id", string="Service Items"
+    )
+    shredding_type = fields.Selection(
+        [("onsite", "On-site"), ("offsite", "Off-site"), ("witnessed", "Witnessed")],
+        string="Shredding Type",
+    )
+    step_name = fields.Char(string="Step Name")
+    total_discount = fields.Monetary(
+        string="Total Discount", currency_field="currency_id"
+    )
 
     # Computed fields for display
     @api.depends("visitor_id")

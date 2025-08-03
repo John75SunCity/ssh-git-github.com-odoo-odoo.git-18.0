@@ -569,6 +569,13 @@ class RecordsDocument(models.Model):
                 + fields.timedelta(days=30),
             },
         }
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     def action_unmark_permanent(self):
         """Remove permanent retention marking from document."""

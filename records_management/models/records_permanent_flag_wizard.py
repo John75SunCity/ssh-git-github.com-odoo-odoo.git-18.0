@@ -11,6 +11,17 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     name = fields.Char(string="Flag Name", required=True, default="Permanent Flag")
     document_ids = fields.Many2many("records.document", string="Documents")
     reason = fields.Text(string="Reason")
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    active = fields.Boolean(string='Active', default=True)
+    state = fields.Selection([('draft', 'Draft'), ('processing', 'Processing'), ('completed', 'Completed')], string='State', default='draft')
+    notes = fields.Text(string='Notes')
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    sequence = fields.Integer(string='Sequence', default=10)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     def action_confirm(self):
         """Apply permanent flag to documents."""

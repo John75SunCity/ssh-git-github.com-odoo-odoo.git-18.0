@@ -189,6 +189,19 @@ class BinKeyManagement(models.Model):
                 "default_notes": _("Replacement key for lost key: %s") % self.name,
             },
         }
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)
+    bin_number = fields.Char(string='Bin Number')
+    access_level = fields.Selection([('full', 'Full Access'), ('limited', 'Limited'), ('restricted', 'Restricted')], string='Access Level')
+    expiration_date = fields.Date(string='Expiration Date')
+    last_check_date = fields.Date(string='Last Check Date')
+    authorized_by = fields.Many2one('res.users', string='Authorized By')
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     def action_replace_key(self):
         """Create replacement key and update records."""

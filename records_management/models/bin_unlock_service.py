@@ -38,6 +38,26 @@ class BinUnlockService(models.Model):
     
     # Computed Fields
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    # === COMPREHENSIVE MISSING FIELDS ===
+    active = fields.Boolean(string='Flag', default=True, tracking=True)
+    sequence = fields.Integer(string='Sequence', default=10, tracking=True)
+    notes = fields.Text(string='Description', tracking=True)
+    state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
+    created_date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
+    updated_date = fields.Date(string='Date', tracking=True)
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)
+    service_date = fields.Date(string='Service Date')
+    technician_id = fields.Many2one('hr.employee', string='Technician')
+    billable = fields.Boolean(string='Billable', default=True)
+    charge_amount = fields.Monetary(string='Charge Amount', currency_field='currency_id')
+    currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
+    completed = fields.Boolean(string='Completed', default=False)
+
+
     
     @api.depends('name')
     def _compute_display_name(self):

@@ -79,6 +79,14 @@ class MobileBinKeyWizard(models.Model):
     unlock_reason = fields.Char(string="Unlock Reason")
     unlock_reason_description = fields.Char(string="Unlock Reason Description")
     view_mode = fields.Char(string="View Mode")
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    sequence = fields.Integer(string='Sequence', default=10)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     def action_confirm(self):
         """Confirm the record"""

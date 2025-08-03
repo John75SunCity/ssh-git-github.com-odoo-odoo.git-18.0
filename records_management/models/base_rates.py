@@ -140,6 +140,11 @@ class BaseRates(models.Model):
                 record.days_until_expiry = delta.days
             else:
                 record.days_until_expiry = 0
+    # === BUSINESS CRITICAL FIELDS ===
+    sequence = fields.Integer(string='Sequence', default=10)
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     @api.constrains("effective_date", "expiry_date")
     def _check_date_logic(self):

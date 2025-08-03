@@ -252,6 +252,16 @@ class RecordsVehicle(models.Model):
                 "form_view_initial_mode": "edit",
             },
         }
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    capacity = fields.Float(string='Capacity', digits=(10, 2))
+    fuel_type = fields.Selection([('gas', 'Gasoline'), ('diesel', 'Diesel'), ('electric', 'Electric')], string='Fuel Type')
+    maintenance_date = fields.Date(string='Last Maintenance')
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     def action_activate(self):
         """Activate the record."""

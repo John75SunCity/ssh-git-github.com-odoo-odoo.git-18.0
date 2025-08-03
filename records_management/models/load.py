@@ -265,6 +265,13 @@ class Load(models.Model):
     )
     revision_number = fields.Integer(string="Revision Number", default=1)
     approval_required = fields.Boolean(string="Approval Required", default=False)
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     @api.depends("name")
     def _compute_display_name(self):

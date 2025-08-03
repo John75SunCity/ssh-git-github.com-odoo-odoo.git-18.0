@@ -76,6 +76,22 @@ class ShreddingInventoryItem(models.Model):
     description = fields.Text(string="Description")
     notes = fields.Text(string="Notes")
     date = fields.Date(string="Date", default=fields.Date.today)
+    # === COMPREHENSIVE MISSING FIELDS ===
+    active = fields.Boolean(string='Flag', default=True, tracking=True)
+    sequence = fields.Integer(string='Sequence', default=10, tracking=True)
+    notes = fields.Text(string='Description', tracking=True)
+    state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
+    created_date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
+    updated_date = fields.Date(string='Date', tracking=True)
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)
+    document_count = fields.Integer(string='Document Count', default=0)
+    total_amount = fields.Monetary(string='Total Amount', currency_field='currency_id')
+
+
 
     @api.depends("name", "container_id", "document_id")
     def _compute_display_name(self):

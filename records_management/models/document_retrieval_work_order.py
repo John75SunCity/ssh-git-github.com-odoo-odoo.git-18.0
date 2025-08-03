@@ -48,12 +48,137 @@ class DocumentRetrievalWorkOrder(models.Model):
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
     )
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
+
+    # === DOCUMENT RETRIEVAL SPECIFIC FIELDS ===
+    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    retrieval_type = fields.Selection(
+        [
+            ("permanent", "Permanent Retrieval"),
+            ("temporary", "Temporary Retrieval"),
+            ("copy", "Copy Request"),
+            ("scan", "Scan to Digital"),
+        ],
+        string="Retrieval Type",
+        default="permanent",
+    )
+
+    # Document Management
+    document_ids = fields.One2many(
+        "records.document", "retrieval_work_order_id", string="Documents to Retrieve"
+    )
+    container_ids = fields.Many2many("records.container", string="Containers Involved")
+    location_ids = fields.Many2many("records.location", string="Retrieval Locations")
+    total_document_count = fields.Integer(
+        string="Total Documents", compute="_compute_totals", store=True
+    )
+
+    # Scheduling & Resources
+    requested_date = fields.Date(string="Requested Date", default=fields.Date.today)
+    target_completion_date = fields.Date(string="Target Completion Date")
+    technician_id = fields.Many2one("hr.employee", string="Assigned Technician")
+    estimated_hours = fields.Float(string="Estimated Hours", digits=(5, 2))
+    actual_hours = fields.Float(string="Actual Hours", digits=(5, 2))
+
+    # Customer Service
+    delivery_method = fields.Selection(
+        [
+            ("pickup", "Customer Pickup"),
+            ("delivery", "Courier Delivery"),
+            ("scan_email", "Scan & Email"),
+            ("portal_access", "Portal Access"),
+        ],
+        string="Delivery Method",
+        default="pickup",
+    )
+    delivery_address_id = fields.Many2one("res.partner", string="Delivery Address")
+    customer_contact_phone = fields.Char(string="Contact Phone")
+    special_instructions = fields.Text(string="Special Instructions")
+
+    # Billing & Financial
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+    estimated_cost = fields.Monetary(
+        string="Estimated Cost", currency_field="currency_id"
+    )
+    actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id")
+    billable_amount = fields.Monetary(
+        string="Billable Amount", currency_field="currency_id"
+    )
+    invoice_required = fields.Boolean(string="Invoice Required", default=True)
+
+    # Quality & Compliance
+    quality_check_required = fields.Boolean(
+        string="Quality Check Required", default=True
+    )
+    quality_checked_by = fields.Many2one("res.users", string="Quality Checked By")
+    quality_check_date = fields.Datetime(string="Quality Check Date")
+    compliance_notes = fields.Text(string="Compliance Notes")
+    # === COMPREHENSIVE MISSING FIELDS ===
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+    workflow_state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Workflow State",
+        default="draft",
+    )
+    next_action_date = fields.Date(string="Next Action Date")
+    deadline_date = fields.Date(string="Deadline")
+    completion_date = fields.Datetime(string="Completion Date")
+    responsible_user_id = fields.Many2one("res.users", string="Responsible User")
+    assigned_team_id = fields.Many2one("hr.department", string="Assigned Team")
+    supervisor_id = fields.Many2one("res.users", string="Supervisor")
+    quality_checked = fields.Boolean(string="Quality Checked")
+    quality_score = fields.Float(string="Quality Score", digits=(3, 2))
+    validation_required = fields.Boolean(string="Validation Required")
+    validated_by_id = fields.Many2one("res.users", string="Validated By")
+    validation_date = fields.Datetime(string="Validation Date")
+    reference_number = fields.Char(string="Reference Number")
+    external_reference = fields.Char(string="External Reference")
+    documentation_complete = fields.Boolean(string="Documentation Complete")
+    attachment_ids = fields.One2many("ir.attachment", "res_id", string="Attachments")
+    performance_score = fields.Float(string="Performance Score", digits=(5, 2))
+    efficiency_rating = fields.Selection(
+        [
+            ("poor", "Poor"),
+            ("fair", "Fair"),
+            ("good", "Good"),
+            ("excellent", "Excellent"),
+        ],
+        string="Efficiency Rating",
+    )
+    last_review_date = fields.Date(string="Last Review Date")
+    next_review_date = fields.Date(string="Next Review Date")
 
     @api.depends("name")
     def _compute_display_name(self):
         """Compute display name."""
         for record in self:
             record.display_name = record.name or _("New")
+
+    @api.depends("document_ids")
+    def _compute_totals(self):
+        """Compute total counts and amounts."""
+        for record in self:
+            record.total_document_count = len(record.document_ids)
 
     def write(self, vals):
         """Override write to update modification date."""

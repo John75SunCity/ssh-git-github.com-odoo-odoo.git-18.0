@@ -63,6 +63,25 @@ class RecordsLocation(models.Model):
     container_ids = fields.One2many(
         "records.container", "location_id", string="Containers"
     )
+    # === COMPREHENSIVE MISSING FIELDS ===
+    active = fields.Boolean(string='Flag', default=True, tracking=True)
+    sequence = fields.Integer(string='Sequence', default=10, tracking=True)
+    notes = fields.Text(string='Description', tracking=True)
+    state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
+    created_date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
+    updated_date = fields.Date(string='Date', tracking=True)
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse')
+    aisle = fields.Char(string='Aisle')
+    rack = fields.Char(string='Rack')
+    shelf = fields.Char(string='Shelf')
+    utilization = fields.Float(string='Utilization %', digits=(5, 2))
+    temperature_controlled = fields.Boolean(string='Temperature Controlled')
+
+
 
     # Action Methods
     def action_location_report(self):

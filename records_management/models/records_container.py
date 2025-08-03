@@ -85,6 +85,22 @@ class RecordsContainer(models.Model):
         string="Container Size Type",
         compute="_compute_container_size_type",
     )
+    # === COMPREHENSIVE MISSING FIELDS ===
+    active = fields.Boolean(string='Flag', default=True, tracking=True)
+    sequence = fields.Integer(string='Sequence', default=10, tracking=True)
+    notes = fields.Text(string='Description', tracking=True)
+    state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
+    created_date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
+    updated_date = fields.Date(string='Date', tracking=True)
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    barcode = fields.Char(string='Barcode', copy=False)
+    current_weight = fields.Float(string='Current Weight', digits=(10, 2))
+    last_access_date = fields.Date(string='Last Access Date')
+
+
 
     @api.depends("length", "width", "height")
     def _compute_dimensions_inches(self):

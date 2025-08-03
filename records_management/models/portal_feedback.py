@@ -285,6 +285,45 @@ class PortalFeedback(models.Model):
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
     )
+    # === COMPREHENSIVE MISSING FIELDS ===
+    active = fields.Boolean(string='Flag', default=True, tracking=True)
+    sequence = fields.Integer(string='Sequence', default=10, tracking=True)
+    notes = fields.Text(string='Description', tracking=True)
+    state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
+    created_date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
+    updated_date = fields.Date(string='Date', tracking=True)
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    rating = fields.Selection([('1', 'Poor'), ('2', 'Fair'), ('3', 'Good'), ('4', 'Very Good'), ('5', 'Excellent')], string='Rating')
+    feedback_text = fields.Text(string='Feedback')
+    resolved = fields.Boolean(string='Resolved', default=False)
+    # === COMPREHENSIVE MISSING FIELDS ===
+    currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
+    workflow_state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Workflow State', default='draft')
+    next_action_date = fields.Date(string='Next Action Date')
+    deadline_date = fields.Date(string='Deadline')
+    completion_date = fields.Datetime(string='Completion Date')
+    responsible_user_id = fields.Many2one('res.users', string='Responsible User')
+    assigned_team_id = fields.Many2one('hr.department', string='Assigned Team')
+    supervisor_id = fields.Many2one('res.users', string='Supervisor')
+    quality_checked = fields.Boolean(string='Quality Checked')
+    quality_score = fields.Float(string='Quality Score', digits=(3, 2))
+    validation_required = fields.Boolean(string='Validation Required')
+    validated_by_id = fields.Many2one('res.users', string='Validated By')
+    validation_date = fields.Datetime(string='Validation Date')
+    reference_number = fields.Char(string='Reference Number')
+    external_reference = fields.Char(string='External Reference')
+    documentation_complete = fields.Boolean(string='Documentation Complete')
+    attachment_ids = fields.One2many('ir.attachment', 'res_id', string='Attachments')
+    performance_score = fields.Float(string='Performance Score', digits=(5, 2))
+    efficiency_rating = fields.Selection([('poor', 'Poor'), ('fair', 'Fair'), ('good', 'Good'), ('excellent', 'Excellent')], string='Efficiency Rating')
+    last_review_date = fields.Date(string='Last Review Date')
+    next_review_date = fields.Date(string='Next Review Date')
+
+
+
 
     @api.depends("name")
     def _compute_display_name(self):

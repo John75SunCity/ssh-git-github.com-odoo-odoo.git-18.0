@@ -1,0 +1,444 @@
+🔍 SMART FIELD GAP ANALYSIS
+============================================================
+📄 Step 1: Scanning model files...
+   ✓ installer: 7 fields
+   ✓ account.move.records.extension: 9 fields
+   ✓ bin.key.history: 10 fields
+   ✓ fsm.reschedule.wizard: 6 fields
+   ✓ naid.destruction.record: 8 fields
+   ✓ advanced.billing: 25 fields
+   ✓ base.rates: 27 fields
+   ✓ records.approval.step: 17 fields
+   ✓ field.label.customization: 12 fields
+   ✓ records.container.transfer: 9 fields
+   ✓ partner.bin.key: 50 fields
+   ✓ transitory.items: 7 fields
+   ✓ revenue.forecaster: 16 fields
+   ✓ records.billing.config: 106 fields
+   ✓ stock.picking.records.extension: 9 fields
+   ✓ customer.negotiated.rates: 39 fields
+   ✓ records.department.billing.enhanced: 9 fields
+   ✓ records.chain.of.custody: 14 fields
+   ✓ records.deletion.request.enhanced: 9 fields
+   ✓ barcode.models.enhanced: 9 fields
+   ✓ barcode.product: 116 fields
+   ✓ naid.compliance: 122 fields
+   ✓ survey.user.input.enhanced: 9 fields
+   ✓ records.management.base.menus: 13 fields
+   ✓ survey.improvement.action: 12 fields
+   ✓ records.container: 26 fields
+   ✓ records.billing.service: 10 fields
+   ✓ document.retrieval.work.order: 12 fields
+   ✓ shredding.hard_drive: 9 fields
+   ✓ fsm.notification.placeholder: 1 fields
+   ✓ records.permanent.flag.wizard: 3 fields
+   ✓ ir.module.ext: 9 fields
+   ✓ records.storage.department.user: 9 fields
+   ✓ shredding.service.log: 12 fields
+   ✓ paper.bale: 52 fields
+   ✓ records.location: 15 fields
+   ✓ stock.report_reception_report_label: 9 fields
+   ✓ records.container.type.converter: 10 fields
+   ✓ paper.bale.recycling: 12 fields
+   ✓ mobile.bin.key.wizard: 42 fields
+   ✓ photo: 15 fields
+   ✓ scrm.records.management: 9 fields
+   ✓ records.billing.config: 9 fields
+   ✓ records.location.inspection: 9 fields
+   ✓ records.digital.scan: 35 fields
+   ✓ shredding.inventory.item: 19 fields
+   ✓ bin.unlock.service: 12 fields
+   ✓ destruction.item: 12 fields
+   ✓ naid.chain.custody: 9 fields
+   ✓ naid.audit.log: 9 fields
+   ✓ container.contents: 12 fields
+   ✓ stock.lot.attribute: 13 fields
+   ✓ prod.ext: 9 fields
+   ✓ shredding.inventory.batch: 26 fields
+   ✓ paper.load.shipment: 74 fields
+   ✓ shredding.bin: 9 fields
+   ✓ records_management.bale: 9 fields
+   ✓ records.billing: 24 fields
+   ✓ res.partner.key.restriction: 7 fields
+   ✓ naid.audit.log: 9 fields
+   ✓ fsm.task: 50 fields
+   ✓ records.approval.workflow: 9 fields
+   ✓ visitor: 27 fields
+   ✓ survey.feedback.theme: 9 fields
+   ✓ portal.request: 45 fields
+   ✓ shredding.service: 52 fields
+   ✓ naid.performance.history: 9 fields
+   ✓ work.order.shredding: 10 fields
+   ✓ hr.emp.naid: 9 fields
+   ✓ records.security.audit: 9 fields
+   ✓ records.retention.policy: 15 fields
+   ✓ records.customer.billing.profile: 49 fields
+   ✓ bin.key.management: 14 fields
+   ✓ records.vehicle: 32 fields
+   ✓ wizard.template: 1 fields
+   ✓ unlock.service.history: 16 fields
+   ✓ stock.move.sms.validation: 4 fields
+   ✓ records.access.log: 9 fields
+   ✓ portal.feedback: 48 fields
+   ✓ pickup.request.item: 9 fields
+   ✓ records.document: 74 fields
+   ✓ temp.inventory: 12 fields
+   ✓ naid.compliance.checklist: 9 fields
+   ✓ records.audit.log: 9 fields
+   ✓ customer.inventory: 50 fields
+   ✓ load: 68 fields
+   ✓ file.retrieval.work.order: 12 fields
+   ✓ visitor.pos.wizard: 95 fields
+   ✓ records.tag: 13 fields
+   ✓ naid.custody.event: 9 fields
+   ✓ records.department.billing.contact: 53 fields
+   ✓ proj.task.ext: 9 fields
+   ✓ pickup.request: 12 fields
+   ✓ fsm.route.management.placeholder: 1 fields
+   ✓ pickup.route: 13 fields
+   ✓ location.report.wizard: 19 fields
+   ✓ naid.certificate: 12 fields
+   ✓ key.restriction.checker: 3 fields
+   ✓ records.document.type: 32 fields
+   ✓ records.container.movement: 7 fields
+   ✓ transitory.field.config: 7 fields
+   ✓ customer.feedback: 19 fields
+   ✓ records.department: 15 fields
+   ✓ customer.inventory.report: 9 fields
+   ✓ records.policy.version: 9 fields
+
+📊 Found 103 models with 2049 total fields
+
+📄 Step 2: Scanning view files...
+   🚨 records_document_type_views.xml -> records.document.type: 1 missing fields
+   🚨 records_document_type_views.xml -> records.document.type: 4 missing fields
+   🚨 records_document_type_views.xml -> records.document.type: 1 missing fields
+   🚨 records_document_type_views.xml -> records.document.type: 1 missing fields
+   🚨 visitor_pos_wizard_views.xml -> visitor.pos.wizard: 17 missing fields
+   🚨 visitor_pos_wizard_views.xml -> visitor.pos.wizard: 1 missing fields
+   🚨 visitor_pos_wizard_views.xml -> visitor.pos.wizard: 1 missing fields
+   🚨 visitor_pos_wizard_views.xml -> visitor.pos.wizard: 1 missing fields
+   🚨 visitor_pos_wizard_views.xml -> visitor.pos.wizard: 1 missing fields
+   🚨 records_vehicle_views.xml -> records.vehicle: 1 missing fields
+   🚨 records_vehicle_views.xml -> records.vehicle: 4 missing fields
+   🚨 records_vehicle_views.xml -> records.vehicle: 1 missing fields
+   🚨 customer_inventory_views.xml -> customer.inventory.report: 13 missing fields
+   🚨 customer_inventory_views.xml -> customer.inventory.report: 8 missing fields
+   🚨 customer_inventory_views.xml -> customer.inventory.report: 18 missing fields
+   🚨 customer_inventory_views.xml -> customer.inventory.report: 4 missing fields
+   🚨 customer_inventory_views.xml -> customer.inventory.report: 2 missing fields
+   🚨 portal_feedback_views.xml -> portal.feedback: 10 missing fields
+   🚨 portal_feedback_views.xml -> portal.feedback: 5 missing fields
+   🚨 portal_feedback_views.xml -> portal.feedback: 57 missing fields
+   🚨 portal_feedback_views.xml -> portal.feedback: 1 missing fields
+   🚨 portal_feedback_views.xml -> portal.feedback: 2 missing fields
+   🚨 portal_feedback_views.xml -> portal.feedback: 2 missing fields
+   🚨 portal_feedback_views.xml -> portal.feedback: 3 missing fields
+   🚨 naid_compliance_views.xml -> naid.compliance: 1 missing fields
+   🚨 naid_compliance_views.xml -> naid.compliance: 1 missing fields
+   🚨 naid_compliance_views.xml -> naid.compliance: 47 missing fields
+   🚨 naid_compliance_views.xml -> naid.compliance: 1 missing fields
+   🚨 naid_compliance_views.xml -> naid.compliance: 1 missing fields
+   🚨 advanced_billing_views.xml -> records.customer.billing.profile: 1 missing fields
+   🚨 advanced_billing_views.xml -> records.customer.billing.profile: 5 missing fields
+   🚨 advanced_billing_views.xml -> records.billing.service: 1 missing fields
+   🚨 bin_key_management_views.xml -> bin.key.management: 9 missing fields
+   🚨 bin_key_management_views.xml -> bin.key.management: 24 missing fields
+   🚨 bin_key_management_views.xml -> bin.key.management: 11 missing fields
+   🚨 bin_key_management_views.xml -> bin.unlock.service: 10 missing fields
+   🚨 bin_key_management_views.xml -> bin.unlock.service: 18 missing fields
+   🚨 paper_load_shipment_views.xml -> paper.load.shipment: 1 missing fields
+   🚨 paper_load_shipment_views.xml -> paper.load.shipment: 28 missing fields
+   🚨 paper_load_shipment_views.xml -> paper.load.shipment: 1 missing fields
+   🚨 paper_load_shipment_views.xml -> paper.load.shipment: 1 missing fields
+   🚨 field_label_customization_views.xml -> field.label.customization: 29 missing fields
+   🚨 field_label_customization_views.xml -> field.label.customization: 6 missing fields
+   🚨 field_label_customization_views.xml -> field.label.customization: 3 missing fields
+   🚨 field_label_customization_views.xml -> transitory.field.config: 37 missing fields
+   🚨 key_restriction_views.xml -> bin.unlock.service: 5 missing fields
+   🚨 key_restriction_views.xml -> bin.unlock.service: 3 missing fields
+   🚨 key_restriction_views.xml -> bin.unlock.service: 1 missing fields
+   🚨 records_container_type_converter_views.xml -> records.container.type.converter: 2 missing fields
+   🚨 shredding_inventory_views.xml -> shredding.inventory.item: 1 missing fields
+   🚨 shredding_inventory_views.xml -> shredding.inventory.item: 17 missing fields
+   🚨 portal_request_views.xml -> portal.request: 1 missing fields
+   🚨 portal_request_views.xml -> portal.request: 1 missing fields
+   🚨 portal_request_views.xml -> portal.request: 69 missing fields
+   🚨 portal_request_views.xml -> portal.request: 1 missing fields
+   🚨 portal_request_views.xml -> portal.request: 1 missing fields
+   🚨 document_retrieval_work_order_views.xml -> document.retrieval.work.order: 8 missing fields
+   🚨 document_retrieval_work_order_views.xml -> document.retrieval.work.order: 38 missing fields
+   🚨 document_retrieval_work_order_views.xml -> document.retrieval.work.order: 11 missing fields
+   🚨 document_retrieval_work_order_views.xml -> document.retrieval.work.order: 3 missing fields
+   🚨 shredding_service_views.xml -> shredding.service: 2 missing fields
+   🚨 records_tag_views.xml -> records.tag: 1 missing fields
+   🚨 records_tag_views.xml -> records.tag: 1 missing fields
+   🚨 records_tag_views.xml -> records.tag: 1 missing fields
+   🚨 records_container_views.xml -> records.container: 1 missing fields
+   🚨 records_container_views.xml -> records.container: 6 missing fields
+   🚨 records_container_views.xml -> records.container: 23 missing fields
+   🚨 records_container_views.xml -> records.container: 1 missing fields
+   🚨 records_container_views.xml -> records.container: 1 missing fields
+   🚨 records_container_views.xml -> records.container: 2 missing fields
+   🚨 fsm_reschedule_wizard_views.xml -> fsm.reschedule.wizard: 1 missing fields
+   🚨 customer_billing_profile_views.xml -> records.customer.billing.profile: 1 missing fields
+   🚨 customer_billing_profile_views.xml -> records.customer.billing.profile: 4 missing fields
+   🚨 customer_billing_profile_views.xml -> records.customer.billing.profile: 1 missing fields
+   🚨 permanent_flag_wizard_views.xml -> records.permanent.flag.wizard: 9 missing fields
+   🚨 paper_bale_recycling_views.xml -> paper.bale.recycling: 10 missing fields
+   🚨 paper_bale_recycling_views.xml -> paper.bale.recycling: 24 missing fields
+   🚨 paper_bale_recycling_views.xml -> paper.bale.recycling: 12 missing fields
+   🚨 paper_bale_recycling_views.xml -> paper.bale.recycling: 5 missing fields
+   🚨 records_retention_policy_views.xml -> records.retention.policy: 7 missing fields
+   🚨 records_retention_policy_views.xml -> records.retention.policy: 29 missing fields
+   🚨 records_retention_policy_views.xml -> records.retention.policy: 3 missing fields
+   🚨 paper_bale_views.xml -> paper.bale: 4 missing fields
+   🚨 paper_bale_views.xml -> paper.bale: 3 missing fields
+   🚨 paper_bale_views.xml -> paper.bale: 62 missing fields
+   🚨 paper_bale_views.xml -> paper.bale: 2 missing fields
+   🚨 records_location_views.xml -> records.location: 7 missing fields
+   🚨 records_location_views.xml -> records.location: 5 missing fields
+   🚨 records_location_views.xml -> records.location: 17 missing fields
+   🚨 records_location_views.xml -> records.location: 1 missing fields
+   🚨 hard_drive_scan_views.xml -> shredding.hard_drive: 12 missing fields
+   🚨 hard_drive_scan_views.xml -> shredding.hard_drive: 17 missing fields
+   🚨 shredding_views.xml -> shredding.service: 1 missing fields
+   🚨 shredding_views.xml -> shredding.service: 2 missing fields
+   🚨 shredding_views.xml -> shredding.service: 63 missing fields
+   🚨 shredding_views.xml -> shredding.service: 1 missing fields
+   🚨 shredding_views.xml -> shredding.service: 1 missing fields
+   🚨 shredding_views.xml -> shredding.service: 1 missing fields
+   🚨 fsm_task_views.xml -> fsm.task: 1 missing fields
+   🚨 fsm_task_views.xml -> fsm.task: 1 missing fields
+   🚨 fsm_task_views.xml -> fsm.task: 76 missing fields
+   🚨 fsm_task_views.xml -> fsm.task: 1 missing fields
+   🚨 fsm_task_views.xml -> fsm.task: 1 missing fields
+   🚨 fsm_task_views.xml -> fsm.task: 1 missing fields
+   🚨 rate_management_views.xml -> base.rates: 7 missing fields
+   🚨 rate_management_views.xml -> base.rates: 9 missing fields
+   🚨 rate_management_views.xml -> revenue.forecaster: 30 missing fields
+   🚨 departmental_billing_views.xml -> records.department.billing.contact: 11 missing fields
+   🚨 departmental_billing_views.xml -> records.department.billing.contact: 6 missing fields
+   🚨 departmental_billing_views.xml -> records.department.billing.contact: 33 missing fields
+   🚨 departmental_billing_views.xml -> records.department.billing.contact: 3 missing fields
+   🚨 departmental_billing_views.xml -> records.department.billing.contact: 3 missing fields
+   🚨 barcode_views.xml -> barcode.product: 5 missing fields
+   🚨 barcode_views.xml -> barcode.product: 2 missing fields
+   🚨 barcode_views.xml -> barcode.product: 61 missing fields
+   🚨 barcode_views.xml -> barcode.product: 1 missing fields
+   🚨 barcode_views.xml -> barcode.product: 1 missing fields
+   🚨 barcode_views.xml -> barcode.product: 1 missing fields
+   🚨 billing_views.xml -> records.billing.config: 10 missing fields
+   🚨 billing_views.xml -> records.billing.config: 8 missing fields
+   🚨 billing_views.xml -> records.billing.config: 97 missing fields
+   🚨 billing_views.xml -> records.billing.config: 5 missing fields
+   🚨 billing_views.xml -> records.billing.config: 4 missing fields
+   🚨 mobile_bin_key_wizard_views.xml -> mobile.bin.key.wizard: 1 missing fields
+   🚨 load_views.xml -> load: 5 missing fields
+   🚨 load_views.xml -> load: 2 missing fields
+   🚨 load_views.xml -> load: 42 missing fields
+   🚨 load_views.xml -> load: 2 missing fields
+   🚨 load_views.xml -> load: 2 missing fields
+   🚨 load_views.xml -> load: 1 missing fields
+   🚨 load_views.xml -> load: 2 missing fields
+   🚨 records_digital_scan_views.xml -> records.digital.scan: 1 missing fields
+   🚨 records_digital_scan_views.xml -> records.digital.scan: 1 missing fields
+   🚨 records_digital_scan_views.xml -> records.digital.scan: 1 missing fields
+   🚨 records_document_views.xml -> records.document: 6 missing fields
+   🚨 records_document_views.xml -> records.document: 5 missing fields
+   🚨 records_document_views.xml -> records.document: 35 missing fields
+   🚨 records_document_views.xml -> records.document: 2 missing fields
+   🚨 records_document_views.xml -> records.document: 2 missing fields
+   🚨 key_restriction_checker_views.xml -> key.restriction.checker: 11 missing fields
+
+🎯 CRITICAL GAPS ANALYSIS
+============================================================
+Found 1039 missing fields across 38 models
+
+📋 records.billing.config (95 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): accounting_system_sync, amount, annual_revenue, audit_trail_enabled, auto_apply
+      ... and 85 more
+
+📋 fsm.task (73 missing fields):
+   🔄 Framework (inherit): activity_ids, activity_type, message_follower_ids, message_ids, photo_attachment
+   ✅ Business (add): backup_technician, barcode_scanning, billable, billable_to_customer, chain_of_custody_required
+      ... and 62 more
+
+📋 portal.request (69 missing fields):
+   🔄 Framework (inherit): activity_ids, attachment_ids, message_follower_ids, message_ids
+   ✅ Business (add): access_restrictions, actual_date, approval_action, approval_deadline, approval_history_ids
+      ... and 59 more
+
+📋 shredding.service (63 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): action, certificate_date, certificate_notes, certificate_number, certificate_type
+      ... and 54 more
+
+📋 barcode.product (63 missing fields):
+   🔄 Framework (inherit): activity_exception_decoration, activity_ids, activity_state, message_follower_ids, message_ids
+   ✅ Business (add): batch_id, bin_status, bin_volume, box_status, certificate_provided
+      ... and 52 more
+
+📋 paper.bale (60 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): action_date, action_type, carbon_neutral, chain_of_custody_verified, confidentiality_level
+      ... and 51 more
+
+📋 portal.feedback (57 missing fields):
+   🔄 Framework (inherit): activity_date, activity_exception_decoration, activity_ids, activity_state, activity_type
+      ... and 4 more
+   ✅ Business (add): completed, completion_date, csat_score, customer_email, customer_feedback_count
+      ... and 42 more
+
+📋 naid.compliance (47 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): audit_result, audit_scope, audit_type, auditor_name, benchmark
+      ... and 38 more
+
+📋 document.retrieval.work.order (39 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): actual_delivery_date, barcode, base_delivery_cost, base_retrieval_cost, box_id
+      ... and 30 more
+
+📋 transitory.field.config (37 missing fields):
+   ✅ Business (add): config_preset, customer_id, department_id, field_label_config_id, require_client_reference
+      ... and 31 more
+
+📋 load (37 missing fields):
+   🔄 Framework (inherit): activity_exception_decoration, activity_ids, activity_state, message_follower_ids, message_ids
+      ... and 1 more
+   ✅ Business (add): bale_number, capacity_utilization, contamination_notes, contamination_report, date
+      ... and 25 more
+
+📋 records.document (35 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): created_date, customer_id, days_until_destruction, department_id, destruction_authorized_by
+      ... and 26 more
+
+📋 records.department.billing.contact (32 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): approval_notes, approval_status, approved_by, billing_role, budget_alert_threshold
+      ... and 23 more
+
+📋 field.label.customization (29 missing fields):
+   ✅ Business (add): customer_id, customized_label_count, department_id, label_authorized_by, label_client_reference
+      ... and 22 more
+
+📋 paper.load.shipment (28 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): bale_number, company_signature_date, delivery_notes, destination_address, driver_license
+      ... and 19 more
+
+📋 records.retention.policy (27 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): approval_status, changed_by, compliance_rate, destruction_efficiency_rate, destruction_method
+      ... and 16 more
+
+📋 revenue.forecaster (27 missing fields):
+   ✅ Business (add): annual_revenue_impact, category_adjustment_value, competitor_rate_factor, container_count, current_monthly_revenue
+      ... and 21 more
+
+📋 bin.key.management (24 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): billable, bin_location, bin_locations, charge_amount, emergency_contact
+      ... and 15 more
+
+📋 records.container (23 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): barcode, container_type_code, container_type_display, department_id, document_ids
+      ... and 14 more
+
+📋 bin.unlock.service (21 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): billable, bin_location, charge_amount, completed, customer_key_restricted
+      ... and 12 more
+
+📋 paper.bale.recycling (21 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): bale_number, contamination, contamination_notes, gps_coordinates, load_number
+      ... and 12 more
+
+📋 visitor.pos.wizard (17 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): compliance_officer, digitization_format, document_count, document_name, integration_error_ids
+      ... and 8 more
+
+📋 customer.inventory.report (17 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): active_locations, container_ids, created_date, customer_id, document_ids
+      ... and 8 more
+
+📋 shredding.inventory.item (17 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): approval_date, customer_approved, destroyed_by, destruction_date, destruction_notes
+      ... and 8 more
+
+📋 shredding.hard_drive (17 missing fields):
+   ✅ Business (add): certificate_line_text, customer_location_notes, destroyed, destruction_date, destruction_method
+      ... and 11 more
+
+📋 records.location (15 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): access_instructions, available_spaces, available_utilization, box_count, box_ids
+      ... and 6 more
+
+📋 key.restriction.checker (11 missing fields):
+   ✅ Business (add): action_required, bin_identifier, check_performed, customer_id, customer_name
+      ... and 5 more
+
+📋 records.permanent.flag.wizard (9 missing fields):
+   ✅ Business (add): action_type, box_id, customer_id, document_count, permanent_flag
+      ... and 3 more
+
+📋 base.rates (9 missing fields):
+   ✅ Business (add): base_rate, customer_count, expiration_date, minimum_charge, negotiated_rate_count
+      ... and 3 more
+
+📋 records.customer.billing.profile (5 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+   ✅ Business (add): prepaid_balance
+
+📋 records.document.type (4 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+
+📋 records.vehicle (4 missing fields):
+   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
+
+📋 records.container.type.converter (2 missing fields):
+   ✅ Business (add): update_location
+
+📋 records.billing.service (1 missing fields):
+
+📋 records.tag (1 missing fields):
+
+📋 fsm.reschedule.wizard (1 missing fields):
+
+📋 mobile.bin.key.wizard (1 missing fields):
+
+📋 records.digital.scan (1 missing fields):
+
+🔧 FIELD ADDITION RECOMMENDATIONS
+============================================================
+
+📝 visitor.pos.wizard:
+   # Add these 13 fields:
+   compliance_officer = fields.Char(string='Field')
+   digitization_format = fields.Char(string='Field')
+   document_count = fields.Char(string='Field')
+   document_name = fields.Char(string='Field')
+   integration_error_ids = fields.One2many('related.model', 'inverse_field', string='Related Records')
+   payment_split_ids = fields.One2many('related.model', 'inverse_field', string='Related Records')
+   payment_terms = fields.Char(string='Field')
+   processing_log_ids = fields.One2many('related.model', 'inverse_field', string='Related Records')
+   required_document_ids = fields.One2many('related.model', 'inverse_field', string='Related Records')
+   service_item_ids = fields.One2many('related.model', 'inverse_field', string='Related Records')
+   shredding_type = fields.Char(string='Field')
+   step_name = fields.Char(string='Field')
+   total_discount = fields.Char(string='Field')
+
+🚀 NEXT STEPS:
+1. Review recommendations above
+2. Add critical business fields to models
+3. Test with targeted deployment
+4. Fix any remaining runtime errors

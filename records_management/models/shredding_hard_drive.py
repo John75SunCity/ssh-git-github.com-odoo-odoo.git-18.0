@@ -33,6 +33,26 @@ class ShreddingHardDrive(models.Model):
     description = fields.Text()
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
+    # === COMPREHENSIVE MISSING FIELDS ===
+    active = fields.Boolean(string='Flag', default=True, tracking=True)
+    sequence = fields.Integer(string='Sequence', default=10, tracking=True)
+    notes = fields.Text(string='Description', tracking=True)
+    state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
+    created_date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
+    updated_date = fields.Date(string='Date', tracking=True)
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)
+    destruction_date = fields.Date(string='Destruction Date')
+    certificate_number = fields.Char(string='Certificate Number')
+    destruction_method = fields.Selection([('shred', 'Shredding'), ('burn', 'Burning'), ('pulp', 'Pulping')], string='Destruction Method')
+    weight = fields.Float(string='Weight (lbs)', digits=(10, 2))
+    approved_by = fields.Many2one('res.users', string='Approved By')
+    completed = fields.Boolean(string='Completed', default=False)
+
+
 
     def action_confirm(self):
         """Confirm the record"""

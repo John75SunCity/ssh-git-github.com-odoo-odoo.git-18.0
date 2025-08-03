@@ -242,6 +242,19 @@ class PaperLoadShipment(models.Model):
     net_weight = fields.Float(
         string="Net Weight (lbs)", compute="_compute_net_weight", store=True
     )
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    bale_number = fields.Char(string='Bale Number')
+    weight = fields.Float(string='Weight (lbs)', digits=(10, 2))
+    delivery_date = fields.Date(string='Delivery Date')
+    recycling_facility = fields.Char(string='Recycling Facility')
+    contamination_level = fields.Selection([('clean', 'Clean'), ('light', 'Light'), ('heavy', 'Heavy')], string='Contamination Level')
+    price_per_ton = fields.Monetary(string='Price per Ton', currency_field='currency_id')
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     @api.depends("name")
     def _compute_display_name(self):

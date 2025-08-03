@@ -100,6 +100,11 @@ class RecordsDigitalScan(models.Model):
     res_model = fields.Char(string="Res Model")
     search_view_id = fields.Many2one("ir.ui.view", string="Search View")
     view_mode = fields.Char(string="View Mode")
+    # === BUSINESS CRITICAL FIELDS ===
+    sequence = fields.Integer(string='Sequence', default=10)
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     def action_confirm(self):
         """Confirm the record"""

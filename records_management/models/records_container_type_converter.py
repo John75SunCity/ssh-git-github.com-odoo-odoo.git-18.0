@@ -24,6 +24,23 @@ class RecordsContainerTypeConverter(models.Model):
         string="Target Container Type"
     )  # Alternative name for target_type
     conversion_notes = fields.Text(string="Conversion Notes")
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)
+    location_id = fields.Many2one('stock.location', string='Location', tracking=True)
+    barcode = fields.Char(string='Barcode', copy=False)
+    container_type = fields.Selection([('box', 'Box'), ('bin', 'Bin'), ('folder', 'Folder')], string='Container Type')
+    capacity = fields.Float(string='Capacity', digits=(10, 2))
+    current_weight = fields.Float(string='Current Weight', digits=(10, 2))
+    last_access_date = fields.Date(string='Last Access Date')
+    sequence = fields.Integer(string='Sequence', default=10)
+    active = fields.Boolean(string='Active', default=True)
+    notes = fields.Text(string='Notes')
+    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
+    updated_date = fields.Datetime(string='Updated Date')
+
 
     @api.depends("source_type", "target_type", "container_ids")
     def _compute_summary_line(self):
