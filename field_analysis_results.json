@@ -1,0 +1,762 @@
+{
+  "records.document.type": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/records_document_type.py"
+  },
+  "records.location.report.wizard": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": null
+  },
+  "visitor.pos.wizard": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/visitor_pos_wizard.py"
+  },
+  "records.vehicle": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/records_vehicle.py"
+  },
+  "customer.inventory.report": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/customer_inventory_report.py"
+  },
+  "portal.feedback": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/portal_feedback.py"
+  },
+  "naid.compliance": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/naid_compliance.py"
+  },
+  "records.customer.billing.profile": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": null
+  },
+  "bin.key.management": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/bin_key_management.py"
+  },
+  "paper.load.shipment": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/paper_load_shipment.py"
+  },
+  "field.label.customization": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/field_label_customization.py"
+  },
+  "res.partner": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/res_partner.py"
+  },
+  "records.container.type.converter": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/records_container_type_converter.py"
+  },
+  "shredding.inventory.item": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/shredding_inventory_item.py"
+  },
+  "portal.request": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/portal_request.py"
+  },
+  "document.retrieval.work.order": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/document_retrieval_work_order.py"
+  },
+  "pos.config": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/pos_config.py"
+  },
+  "shredding.service": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/shredding_service.py"
+  },
+  "records.tag": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/records_tag.py"
+  },
+  "records.container": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/records_container.py"
+  },
+  "fsm.reschedule.wizard": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/fsm_reschedule_wizard.py"
+  },
+  "stock.lot": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/stock_lot.py"
+  },
+  "records.permanent.flag.wizard": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/records_permanent_flag_wizard.py"
+  },
+  "paper.bale.recycling": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/paper_bale_recycling.py"
+  },
+  "records.retention.policy": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/records_retention_policy.py"
+  },
+  "paper.bale": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/paper_bale.py"
+  },
+  "records.location": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/records_location.py"
+  },
+  "product.template": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/product_template.py"
+  },
+  "hard_drive.scan.wizard": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/hard_drive_scan_wizard.py"
+  },
+  "fsm.task": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/fsm_task.py"
+  },
+  "base.rates": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/base_rates.py"
+  },
+  "records.department.billing.contact": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/records_department_billing_contact.py"
+  },
+  "barcode.product": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/barcode_product.py"
+  },
+  "records.billing.config": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/records_billing_config.py"
+  },
+  "mobile.bin.key.wizard": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/mobile_bin_key_wizard.py"
+  },
+  "records.digital.scan": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/records_digital_scan.py"
+  },
+  "records.document": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/records_document.py"
+  },
+  "key.restriction.checker": {
+    "total_fields": 0,
+    "categories": {
+      "framework": 0,
+      "view_only": 0,
+      "computed": 0,
+      "one2many": 0,
+      "many2one": 0,
+      "business": 0
+    },
+    "fields_by_category": {
+      "framework": [],
+      "view_only": [],
+      "computed": [],
+      "one2many": [],
+      "many2one": [],
+      "business": []
+    },
+    "model_file": "records_management/models/key_restriction_checker.py"
+  }
+}

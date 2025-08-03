@@ -1,0 +1,2296 @@
+🔍 COMPREHENSIVE FIELD ANALYSIS STARTING...
+============================================================
+
+📄 STEP 1: Analyzing Python Model Files...
+  ✓ installer: 7 fields
+  ✓ account.move.records.extension: 8 fields
+  ✓ bin.key.history: 9 fields
+  ✓ fsm.reschedule.wizard: 4 fields
+  ✓ naid.destruction.record: 8 fields
+  ✓ advanced.billing: 21 fields
+  ✓ base.rates: 25 fields
+  ✓ records.approval.step: 17 fields
+  ✓ hr.employee: 4 fields
+  ✓ field.label.customization: 11 fields
+  ✓ records.container.transfer: 8 fields
+  ✓ partner.bin.key: 50 fields
+  ✓ transitory.items: 7 fields
+  ✓ revenue.forecaster: 16 fields
+  ✓ records.billing.config: 3 fields
+  ✓ stock.picking.records.extension: 8 fields
+  ✓ customer.negotiated.rates: 35 fields
+  ✓ records.department.billing.enhanced: 8 fields
+  ✓ records.chain.of.custody: 14 fields
+  ✓ records.deletion.request.enhanced: 8 fields
+  ✓ barcode.models.enhanced: 8 fields
+  ✓ barcode.product: 8 fields
+  ✓ naid.compliance: 11 fields
+  ✓ survey.user.input.enhanced: 8 fields
+  ✓ records.management.base.menus: 13 fields
+  ✓ survey.improvement.action: 11 fields
+  ✓ records.container: 25 fields
+  ✓ records.billing.service: 9 fields
+  ✓ document.retrieval.work.order: 11 fields
+  ✓ shredding.hard_drive: 8 fields
+  ✓ fsm.notification.placeholder: 1 fields
+  ✓ records.permanent.flag.wizard: 3 fields
+  ✓ ir.module.ext: 8 fields
+  ✓ records.storage.department.user: 8 fields
+  ✓ shredding.service.log: 11 fields
+  ✓ paper.bale: 14 fields
+  ✓ records.location: 15 fields
+  ✓ stock.report_reception_report_label: 8 fields
+  ? res_config_settings.py: 2 fields (unknown model name)
+  ✓ records.container.type.converter: 3 fields
+  ✓ paper.bale.recycling: 11 fields
+  ✓ mobile.bin.key.wizard: 41 fields
+  ✓ photo: 14 fields
+  ✓ scrm.records.management: 8 fields
+  ✓ records.billing.config: 8 fields
+  ✓ records.location.inspection: 8 fields
+  ✓ records.digital.scan: 33 fields
+  ✓ shredding.inventory.item: 18 fields
+  ✓ bin.unlock.service: 11 fields
+  ✓ destruction.item: 11 fields
+  ✓ naid.chain.custody: 8 fields
+  ✓ naid.audit.log: 8 fields
+  ✓ container.contents: 11 fields
+  ✓ stock.lot.attribute: 12 fields
+  ✓ prod.ext: 8 fields
+  ✓ shredding.inventory.batch: 17 fields
+  ✓ paper.load.shipment: 11 fields
+  ✓ shredding.bin: 8 fields
+  ✓ records_management.bale: 8 fields
+  ✓ records.billing: 23 fields
+  ✓ res.partner.key.restriction: 7 fields
+  ✓ naid.audit.log: 8 fields
+  ✓ fsm.task: 14 fields
+  ✓ records.approval.workflow: 8 fields
+  ✓ visitor: 26 fields
+  ✓ survey.feedback.theme: 8 fields
+  ✓ portal.request: 11 fields
+  ✓ shredding.service: 13 fields
+  ✓ naid.performance.history: 8 fields
+  ✓ work.order.shredding: 9 fields
+  ✓ hr.emp.naid: 8 fields
+  ✓ records.security.audit: 8 fields
+  ✓ records.retention.policy: 13 fields
+  ✓ records.customer.billing.profile: 33 fields
+  ✓ bin.key.management: 12 fields
+  ✓ records.vehicle: 26 fields
+  ✓ pos.config: 9 fields
+  ✓ wizard.template: 1 fields
+  ✓ unlock.service.history: 15 fields
+  ✓ stock.move.sms.validation: 4 fields
+  ✓ records.access.log: 8 fields
+  ✓ portal.feedback: 11 fields
+  ✓ pickup.request.item: 8 fields
+  ✓ records.document: 12 fields
+  ✓ temp.inventory: 11 fields
+  ✓ naid.compliance.checklist: 8 fields
+  ✓ res.partner: 3 fields
+  ✓ records.audit.log: 8 fields
+  ✓ customer.inventory: 50 fields
+  ✓ load: 11 fields
+  ✓ file.retrieval.work.order: 11 fields
+  ✓ visitor.pos.wizard: 3 fields
+  ✓ records.tag: 12 fields
+  ✓ naid.custody.event: 8 fields
+  ✓ records.department.billing.contact: 8 fields
+  ✓ proj.task.ext: 8 fields
+  ✓ pickup.request: 11 fields
+  ✓ fsm.route.management.placeholder: 1 fields
+  ✓ pickup.route: 12 fields
+  ✓ location.report.wizard: 18 fields
+  ✓ naid.certificate: 11 fields
+  ✓ key.restriction.checker: 3 fields
+  ✓ records.document.type: 31 fields
+  ✓ records.container.movement: 7 fields
+  ✓ transitory.field.config: 7 fields
+  ✓ customer.feedback: 18 fields
+  ✓ records.department: 14 fields
+  ✓ customer.inventory.report: 8 fields
+  ✓ records.policy.version: 8 fields
+
+📋 STEP 2: Analyzing XML View Files...
+  ✓ records_document_type_views.xml: 32 field references for records.document.type
+  ✓ pickup_request_views.xml: 4 field references for __unknown__
+  ✓ location_report_wizard_views.xml: 10 field references for records.location.report.wizard
+  ✓ visitor_pos_wizard_views.xml: 113 field references for visitor.pos.wizard
+  ✓ records_vehicle_views.xml: 32 field references for records.vehicle
+  ✓ customer_inventory_views.xml: 26 field references for customer.inventory.report
+  ✓ portal_feedback_views.xml: 84 field references for portal.feedback
+  ✓ naid_compliance_views.xml: 98 field references for naid.compliance
+  ✓ advanced_billing_views.xml: 57 field references for records.customer.billing.profile
+  ✓ bin_key_management_views.xml: 39 field references for bin.key.management
+  ✓ paper_load_shipment_views.xml: 56 field references for paper.load.shipment
+  ✓ field_label_customization_views.xml: 77 field references for field.label.customization
+  ✓ partner_bin_key_views.xml: 34 field references for res.partner
+  ✓ key_restriction_views.xml: 19 field references for res.partner
+  ✓ paper_recycling_menus.xml: 7 field references for __unknown__
+  ✓ records_container_type_converter_views.xml: 13 field references for records.container.type.converter
+  ✓ shredding_inventory_views.xml: 34 field references for shredding.inventory.item
+  ✓ portal_request_views.xml: 98 field references for portal.request
+  ✓ document_retrieval_work_order_views.xml: 49 field references for document.retrieval.work.order
+  ✓ pos_config_views.xml: 91 field references for pos.config
+  ✓ shredding_service_views.xml: 5 field references for shredding.service
+  ✓ records_tag_views.xml: 9 field references for records.tag
+  ✓ records_container_views.xml: 39 field references for records.container
+  ✓ fsm_reschedule_wizard_views.xml: 9 field references for fsm.reschedule.wizard
+  ✓ stock_lot_views.xml: 70 field references for stock.lot
+  ✓ customer_billing_profile_views.xml: 42 field references for records.customer.billing.profile
+  ✓ permanent_flag_wizard_views.xml: 12 field references for records.permanent.flag.wizard
+  ✓ paper_bale_recycling_views.xml: 30 field references for paper.bale.recycling
+  ✓ records_retention_policy_views.xml: 34 field references for records.retention.policy
+  ✓ paper_bale_views.xml: 82 field references for paper.bale
+  ✓ records_location_views.xml: 26 field references for records.location
+  ✓ product_template_views.xml: 98 field references for product.template
+  ✓ hard_drive_scan_views.xml: 29 field references for hard_drive.scan.wizard
+  ✓ shredding_views.xml: 90 field references for shredding.service
+  ✓ fsm_task_views.xml: 106 field references for fsm.task
+  ✓ rate_management_views.xml: 62 field references for base.rates
+  ✓ departmental_billing_views.xml: 52 field references for records.department.billing.contact
+  ✓ barcode_views.xml: 103 field references for barcode.product
+  ✓ billing_views.xml: 106 field references for records.billing.config
+  ✓ mobile_bin_key_wizard_views.xml: 36 field references for mobile.bin.key.wizard
+  ✓ load_views.xml: 71 field references for __unknown__
+  ✓ records_digital_scan_views.xml: 21 field references for records.digital.scan
+  ✓ records_document_views.xml: 59 field references for records.document
+  ✓ key_restriction_checker_views.xml: 18 field references for key.restriction.checker
+
+🔎 STEP 3: Comparing Fields and Finding Missing...
+
+📊 STEP 4: RESULTS SUMMARY
+============================================================
+❌ MISSING FIELDS FOUND: 1829 total
+
+🚨 Model: records.document.type
+   - activity_ids
+   - arch
+   - help
+   - message_follower_ids
+   - message_ids
+   - model
+   - res_model
+   - view_mode
+
+🚨 Model: records.location.report.wizard
+   - arch
+   - current_utilization
+   - include_child_locations
+   - location_id
+   - location_name
+   - model
+   - name
+   - report_date
+   - total_capacity
+   - utilization_percentage
+
+🚨 Model: visitor.pos.wizard
+   - activity_ids
+   - amount
+   - arch
+   - audit_level
+   - audit_notes
+   - audit_required
+   - authorization_code
+   - base_amount
+   - cashier_id
+   - certificate_required
+   - chain_of_custody
+   - chain_of_custody_id
+   - check_in_time
+   - collected
+   - collection_date
+   - compliance_documentation
+   - compliance_officer
+   - confidentiality_level
+   - context
+   - create_new_customer
+   - customer_category
+   - customer_credit_limit
+   - customer_payment_terms
+   - customer_processing_time
+   - customer_record_created
+   - customer_record_id
+   - destruction_method
+   - digitization_format
+   - discount_percent
+   - document_count
+   - document_name
+   - document_type
+   - duration_seconds
+   - error_details
+   - error_message
+   - error_time
+   - error_type
+   - estimated_service_time
+   - estimated_volume
+   - existing_customer_id
+   - express_service
+   - express_surcharge
+   - final_verification_by
+   - help
+   - integration_error_ids
+   - invoice_generated
+   - invoice_id
+   - invoice_required
+   - message_follower_ids
+   - message_ids
+   - model
+   - naid_audit_created
+   - naid_audit_id
+   - naid_certificate_required
+   - naid_compliance_required
+   - notes
+   - payment_method_id
+   - payment_reference
+   - payment_split_ids
+   - payment_terms
+   - pickup_required
+   - pos_config_id
+   - pos_order_created
+   - pos_order_id
+   - pos_session_id
+   - processed_by
+   - processing_log_ids
+   - processing_priority
+   - product_id
+   - purpose_of_visit
+   - quality_check_by
+   - quantity
+   - receipt_email
+   - records_request_created
+   - records_request_id
+   - required
+   - required_document_ids
+   - res_model
+   - resolution_notes
+   - resolved
+   - retention_period
+   - scanning_required
+   - search_view_id
+   - service_configuration_time
+   - service_item_ids
+   - service_location
+   - service_type
+   - shredding_type
+   - special_requirements
+   - step_description
+   - step_name
+   - step_status
+   - step_time
+   - subtotal
+   - supervisor_approval
+   - target
+   - tax_amount
+   - tax_id
+   - total_amount
+   - total_discount
+   - total_processing_time
+   - transaction_id
+   - unit_price
+   - view_id
+   - view_mode
+   - visitor_email
+   - visitor_id
+   - visitor_name
+   - visitor_phone
+   - witness_required
+   - witness_verification
+   - wizard_start_time
+
+🚨 Model: records.vehicle
+   - activity_ids
+   - arch
+   - help
+   - message_follower_ids
+   - message_ids
+   - model
+   - res_model
+   - route_date
+   - search_view_id
+   - start_time
+   - vehicle_capacity_volume
+   - vehicle_capacity_weight
+   - view_mode
+
+🚨 Model: customer.inventory.report
+   - active_locations
+   - activity_ids
+   - arch
+   - container_ids
+   - context
+   - created_date
+   - customer_id
+   - document_ids
+   - document_type_id
+   - help
+   - location_id
+   - message_follower_ids
+   - message_ids
+   - model
+   - report_date
+   - res_model
+   - search_view_id
+   - status
+   - stored_date
+   - total_boxes
+   - total_documents
+   - view_mode
+   - volume_category
+
+🚨 Model: portal.feedback
+   - account_manager
+   - activity_date
+   - activity_exception_decoration
+   - activity_ids
+   - activity_state
+   - activity_type
+   - arch
+   - assigned_to
+   - attachment_ids
+   - ces_score
+   - communication_rating
+   - competitive_mention
+   - completed
+   - completion_date
+   - context
+   - csat_score
+   - customer_email
+   - customer_feedback_count
+   - customer_id
+   - customer_phone
+   - customer_segment
+   - customer_tier
+   - escalated
+   - escalated_to
+   - escalation_date
+   - escalation_reason
+   - feedback_category
+   - feedback_description
+   - feedback_subject
+   - feedback_type
+   - file_size
+   - followup_activity_ids
+   - followup_assigned_to
+   - followup_date
+   - followup_method
+   - followup_required
+   - help
+   - impact_assessment
+   - improvement_action_count
+   - improvement_opportunity
+   - improvement_suggestions
+   - internal_actions
+   - keyword_tags
+   - likelihood_to_recommend
+   - likelihood_to_return
+   - message_follower_ids
+   - message_ids
+   - mimetype
+   - model
+   - negative_aspects
+   - nps_score
+   - overall_rating
+   - positive_aspects
+   - priority
+   - product_id
+   - related_ticket_count
+   - res_model
+   - resolution_category
+   - resolution_date
+   - resolution_time_hours
+   - resolved_by
+   - responded_by
+   - response_date
+   - response_description
+   - response_method
+   - response_time_hours
+   - response_time_rating
+   - retention_risk
+   - revenue_impact
+   - root_cause_category
+   - satisfaction_level
+   - search_view_id
+   - sentiment_analysis
+   - service_quality_rating
+   - service_request_id
+   - staff_professionalism_rating
+   - status
+   - submission_date
+   - trend_analysis
+   - urgency_level
+   - value_for_money_rating
+   - view_mode
+
+🚨 Model: naid.compliance
+   - access_control_verified
+   - activity_ids
+   - arch
+   - audit_count
+   - audit_date
+   - audit_frequency
+   - audit_history_ids
+   - audit_reminder
+   - audit_required
+   - audit_result
+   - audit_scope
+   - audit_type
+   - auditor_name
+   - auto_renewal
+   - background_checks
+   - benchmark
+   - certificate_count
+   - certificate_ids
+   - certificate_issued
+   - certificate_number
+   - certificate_status
+   - certificate_tracking
+   - certificate_type
+   - certificate_valid
+   - certification_date
+   - chain_of_custody
+   - client_name
+   - compliance_alerts
+   - compliance_checklist_ids
+   - compliance_officer
+   - compliance_score
+   - compliance_status
+   - compliance_trend
+   - compliance_verified
+   - context
+   - days_since_last_audit
+   - days_until_expiry
+   - destruction_count
+   - destruction_date
+   - destruction_method
+   - destruction_record_ids
+   - destruction_verification
+   - documentation_score
+   - equipment_certification
+   - escalation_contacts
+   - expiry_date
+   - expiry_notification
+   - facility_manager
+   - facility_name
+   - findings_count
+   - help
+   - incident_management
+   - information_handling
+   - issue_date
+   - issuing_authority
+   - last_audit_date
+   - last_verified
+   - management_alerts
+   - material_type
+   - measurement_date
+   - message_follower_ids
+   - message_ids
+   - metric_type
+   - model
+   - naid_level
+   - naid_member_id
+   - next_audit_date
+   - notes
+   - notification_recipients
+   - operational_score
+   - overall_compliance_score
+   - performance_history_ids
+   - personnel_screening
+   - physical_security_score
+   - process_verification
+   - quality_control
+   - regulatory_notifications
+   - renewal_reminder
+   - requirement_name
+   - requirement_type
+   - res_model
+   - responsible_person
+   - risk_level
+   - score
+   - search_view_id
+   - secure_storage
+   - security_clearance
+   - security_officer
+   - security_score
+   - surveillance_system
+   - third_party_auditor
+   - training_completed
+   - trend
+   - variance
+   - verification_method
+   - view_mode
+   - witness_present
+
+🚨 Model: records.customer.billing.profile
+   - activity_ids
+   - amount
+   - arch
+   - billing_direction
+   - billing_type
+   - box_id
+   - currency_id
+   - help
+   - invoice_date
+   - invoice_id
+   - message_follower_ids
+   - message_ids
+   - model
+   - period_end_date
+   - period_start_date
+   - prepaid_balance
+   - quantity
+   - res_model
+   - retrieval_work_order_id
+   - search_view_id
+   - service_amount
+   - service_date
+   - service_line_ids
+   - shredding_work_order_id
+   - storage_amount
+   - storage_line_ids
+   - target
+   - total_amount
+   - type
+   - unit_price
+   - view_mode
+
+🚨 Model: bin.key.management
+   - activity_ids
+   - arch
+   - billable
+   - bin_location
+   - bin_locations
+   - charge_amount
+   - completed
+   - context
+   - emergency_contact
+   - expected_return_date
+   - help
+   - invoice_created
+   - issue_date
+   - issue_location
+   - items_retrieved
+   - key_holder_id
+   - key_number
+   - message_follower_ids
+   - message_ids
+   - model
+   - partner_company
+   - partner_id
+   - photo_ids
+   - reason_description
+   - replaced_by_id
+   - replacement_of_id
+   - res_model
+   - return_date
+   - service_date
+   - service_number
+   - status
+   - technician_id
+   - unlock_reason
+   - unlock_service_count
+   - unlock_service_ids
+   - view_mode
+
+🚨 Model: paper.load.shipment
+   - activity_ids
+   - arch
+   - bale_count
+   - bale_ids
+   - bale_number
+   - cardboard_count
+   - cardboard_weight
+   - company_signature_date
+   - customer_id
+   - delivery_notes
+   - destination_address
+   - driver_license
+   - driver_name
+   - driver_phone
+   - driver_signature_date
+   - gps_delivery_location
+   - gps_pickup_location
+   - help
+   - invoice_amount
+   - invoice_date
+   - load_number
+   - manifest_date
+   - manifest_generated
+   - manifest_number
+   - message_follower_ids
+   - message_ids
+   - mixed_paper_count
+   - mixed_paper_weight
+   - mobile_entry
+   - mobile_manifest
+   - model
+   - paper_grade
+   - payment_amount
+   - payment_due_date
+   - payment_notes
+   - payment_received_date
+   - pickup_date
+   - pickup_time
+   - production_date
+   - res_model
+   - search_view_id
+   - signed_by
+   - status
+   - total_weight_kg
+   - total_weight_lbs
+   - transportation_company
+   - truck_info
+   - view_mode
+   - weighed_by
+   - weight_lbs
+   - white_paper_count
+   - white_paper_weight
+
+🚨 Model: field.label.customization
+   - active_transitory_items
+   - allow_transitory_items
+   - arch
+   - config_preset
+   - customer_id
+   - customized_label_count
+   - department_id
+   - field_label_config_id
+   - help
+   - inherit_id
+   - label_authorized_by
+   - label_client_reference
+   - label_compliance_notes
+   - label_confidentiality
+   - label_container_number
+   - label_content_description
+   - label_created_by_dept
+   - label_date_from
+   - label_date_to
+   - label_destruction_date
+   - label_file_count
+   - label_filing_system
+   - label_folder_type
+   - label_hierarchy_display
+   - label_item_description
+   - label_parent_container
+   - label_project_code
+   - label_record_type
+   - label_sequence_from
+   - label_sequence_to
+   - label_size_estimate
+   - label_special_handling
+   - label_weight_estimate
+   - max_transitory_items
+   - model
+   - priority
+   - require_client_reference
+   - require_confidentiality
+   - require_container_number
+   - require_content_description
+   - require_date_from
+   - require_date_to
+   - require_description
+   - require_destruction_date
+   - require_project_code
+   - require_record_type
+   - require_sequence_from
+   - require_sequence_to
+   - required_field_count
+   - res_model
+   - scope_display
+   - show_authorized_by
+   - show_client_reference
+   - show_compliance_notes
+   - show_confidentiality
+   - show_container_number
+   - show_content_description
+   - show_created_by_dept
+   - show_date_ranges
+   - show_description
+   - show_destruction_date
+   - show_file_count
+   - show_filing_system
+   - show_project_code
+   - show_record_type
+   - show_sequence_ranges
+   - show_size_estimate
+   - show_special_handling
+   - show_weight_estimate
+   - total_records_containers
+   - total_transitory_items
+   - transitory_field_config_id
+   - view_mode
+   - visible_field_count
+
+🚨 Model: res.partner
+   - action
+   - active_bin_key_count
+   - allow_reason
+   - arch
+   - billable
+   - bin_key_history_ids
+   - bin_location
+   - binding_model_id
+   - binding_view_types
+   - category_id
+   - charge_amount
+   - context
+   - country_id
+   - customer_key_restricted
+   - effective_date
+   - emergency_contact
+   - has_bin_key
+   - inherit_id
+   - invoice_created
+   - is_emergency_key_contact
+   - issue_date
+   - issue_location
+   - key_issuance_allowed
+   - key_issue_date
+   - key_number
+   - key_restriction_approved_by
+   - key_restriction_date
+   - key_restriction_notes
+   - key_restriction_reason
+   - key_restriction_status
+   - model
+   - name
+   - partner_id
+   - res_model
+   - restricted_unlock_count
+   - restriction_notes
+   - restriction_reason
+   - return_date
+   - service_date
+   - service_number
+   - status
+   - target
+   - total_bin_keys_issued
+   - total_unlock_charges
+   - unlock_reason
+   - unlock_reason_code
+   - unlock_service_count
+   - unlock_service_history_ids
+   - view_mode
+
+🚨 Model: records.container.type.converter
+   - arch
+   - container_ids
+   - context
+   - current_type
+   - model
+   - new_container_type_code
+   - reason
+   - res_model
+   - summary_line
+   - target
+   - update_location
+   - view_mode
+
+🚨 Model: shredding.inventory.item
+   - activity_ids
+   - approval_date
+   - arch
+   - customer_approved
+   - destroyed_by
+   - destruction_date
+   - destruction_notes
+   - location_id
+   - message_follower_ids
+   - message_ids
+   - model
+   - original_location_id
+   - permanent_removal_cost
+   - picked_by
+   - picked_date
+   - res_model
+   - retrieval_cost
+   - retrieval_notes
+   - retrieved_by
+   - retrieved_date
+   - shredding_cost
+   - supervisor_approved
+   - type
+   - view_mode
+
+🚨 Model: portal.request
+   - access_restrictions
+   - activity_ids
+   - actual_completion_date
+   - actual_cost
+   - actual_date
+   - approval_action
+   - approval_date
+   - approval_deadline
+   - approval_history_ids
+   - approval_level
+   - approval_level_required
+   - approver
+   - arch
+   - assigned_to
+   - attachment_count
+   - attachment_ids
+   - auto_approve_threshold
+   - billable_hours
+   - billing_method
+   - billing_required
+   - chain_of_custody_required
+   - comments
+   - communication_count
+   - communication_date
+   - communication_log_ids
+   - communication_type
+   - completion_percentage
+   - compliance_score
+   - confidential
+   - confidentiality_level
+   - context
+   - customer_complaints
+   - customer_id
+   - customer_rating
+   - customer_satisfaction
+   - customer_wait_time
+   - department
+   - escalation_approver
+   - escalation_contact
+   - estimated_cost
+   - estimated_hours
+   - file_size
+   - file_type
+   - final_approver
+   - first_response_time
+   - from_person
+   - help
+   - hourly_rate
+   - invoice_generated
+   - material_costs
+   - materials_required
+   - message_follower_ids
+   - message_ids
+   - milestone_name
+   - model
+   - naid_compliance_required
+   - overall_satisfaction
+   - primary_approver
+   - priority
+   - processing_time
+   - quality_score
+   - related_request_count
+   - request_status
+   - request_type
+   - requires_approval
+   - res_model
+   - resolution_efficiency
+   - resolution_time
+   - response_required
+   - response_time
+   - rework_required
+   - search_view_id
+   - secondary_approver
+   - service_category
+   - sla_breach_risk
+   - sla_deadline
+   - sla_milestone_ids
+   - sla_status
+   - sla_target_hours
+   - special_instructions
+   - status
+   - subject
+   - submission_date
+   - supervisor
+   - target_completion_date
+   - target_date
+   - time_elapsed
+   - time_remaining
+   - time_taken
+   - to_person
+   - total_amount
+   - upload_date
+   - uploaded_by
+   - variance
+   - view_mode
+
+🚨 Model: document.retrieval.work.order
+   - activity_ids
+   - actual_delivery_date
+   - arch
+   - barcode
+   - base_delivery_cost
+   - base_retrieval_cost
+   - box_id
+   - color
+   - context
+   - current_location
+   - customer_id
+   - customer_rates_id
+   - customer_signature
+   - customer_signature_date
+   - delivered_by
+   - delivery_address
+   - delivery_contact
+   - delivery_date
+   - delivery_notes
+   - delivery_phone
+   - delivery_time
+   - department_id
+   - document_id
+   - driver_id
+   - has_custom_rates
+   - help
+   - internal_notes
+   - item_count
+   - item_type
+   - message_follower_ids
+   - message_ids
+   - model
+   - priority
+   - priority_item_cost
+   - priority_order_cost
+   - request_date
+   - requested_by
+   - res_model
+   - retrieval_item_ids
+   - retrieval_notes
+   - search_view_id
+   - status
+   - technician_id
+   - total_cost
+   - view_id
+   - view_mode
+
+🚨 Model: pos.config
+   - activity_exception_decoration
+   - activity_ids
+   - activity_state
+   - arch
+   - auto_create_customer
+   - available_in_pos
+   - avg_transaction_time
+   - avg_transaction_value
+   - barcode_nomenclature_id
+   - barcode_scanner_enabled
+   - busiest_day_of_week
+   - context
+   - currency_id
+   - current_session_id
+   - current_session_state
+   - customer_count
+   - customer_satisfaction_score
+   - date
+   - document_scanning_rate
+   - document_storage_rate
+   - enable_document_services
+   - enable_walk_in_service
+   - help
+   - iface_available_categ_ids
+   - iface_cashdrawer
+   - iface_customer_facing_display
+   - iface_display_categ_images
+   - iface_electronic_scale
+   - iface_orderline_notes
+   - iface_payment_terminal
+   - iface_print_auto
+   - iface_print_skip_screen
+   - iface_printbill
+   - iface_scan_via_proxy
+   - iface_splitbill
+   - iface_start_categ_id
+   - iface_tipproduct
+   - invoice_journal_id
+   - journal_id
+   - last_session_closing_date
+   - limit_categories
+   - list_price
+   - loyalty_program_usage
+   - message_follower_ids
+   - message_ids
+   - model
+   - module_pos_discount
+   - module_pos_loyalty
+   - module_pos_mercury
+   - module_pos_reprint
+   - module_pos_restaurant
+   - most_sold_product_id
+   - name
+   - open_session_ids
+   - order_count
+   - payment_method_ids
+   - peak_hour_sales
+   - performance_data_ids
+   - picking_type_id
+   - pos_category_id
+   - pricelist_id
+   - product_id
+   - proxy_ip
+   - receipt_footer
+   - receipt_header
+   - require_customer_info
+   - requires_appointment
+   - res_model
+   - restrict_price_control
+   - rush_service_multiplier
+   - scan_product_check
+   - search_view_id
+   - sequence_id
+   - sequence_line_id
+   - service_product_ids
+   - service_type
+   - session_count
+   - session_user_id
+   - shredding_service_rate
+   - split_transactions
+   - state
+   - stock_location_id
+   - total_sales
+   - total_transactions
+   - transaction_count
+   - type
+   - use_payment_terminal
+   - view_mode
+   - walk_in_customer_id
+   - walk_in_pricelist_id
+
+🚨 Model: shredding.service
+   - action
+   - activity_ids
+   - actual_completion_time
+   - actual_start_time
+   - arch
+   - assigned_technician
+   - audit_trail_ids
+   - certificate_count
+   - certificate_date
+   - certificate_notes
+   - certificate_number
+   - certificate_required
+   - certificate_type
+   - chain_of_custody_ids
+   - chain_of_custody_maintained
+   - chain_of_custody_number
+   - company
+   - compliance_status
+   - confidentiality_level
+   - context
+   - customer_id
+   - customer_representative
+   - destroyed
+   - destruction_efficiency
+   - destruction_item_ids
+   - destruction_method
+   - destruction_notes
+   - destruction_photographed
+   - destruction_standard
+   - environmental_compliance
+   - equipment_calibration_date
+   - estimated_duration
+   - from_person
+   - hard_drive_ids
+   - hard_drive_scanned_count
+   - hard_drive_verified_count
+   - help
+   - included_in_certificate
+   - item_count
+   - item_type
+   - location
+   - message_follower_ids
+   - message_ids
+   - model
+   - naid_compliance_level
+   - naid_compliance_verified
+   - naid_member_id
+   - particle_size
+   - partner_id
+   - photo_id_verified
+   - post_destruction_weight
+   - pre_destruction_weight
+   - quality_control_passed
+   - quantity
+   - res_model
+   - scanned_at_customer
+   - scanned_at_customer_date
+   - scheduled_date
+   - seal_number
+   - search_view_id
+   - security_officer
+   - serial_number
+   - service_location
+   - shredding_equipment
+   - signature_required
+   - signature_verified
+   - status
+   - supervising_manager
+   - third_party_verified
+   - timestamp
+   - to_person
+   - transfer_date
+   - transfer_location
+   - unit_of_measure
+   - verification_date
+   - verified
+   - verified_at_facility_date
+   - verified_before_destruction
+   - verified_by_customer
+   - video_recorded
+   - view_mode
+   - witness_count
+   - witness_name
+   - witness_required
+   - witness_title
+   - witness_verification_ids
+
+🚨 Model: records.tag
+   - arch
+   - help
+   - model
+   - res_model
+   - search_view_id
+   - view_id
+   - view_mode
+
+🚨 Model: records.container
+   - activity_ids
+   - arch
+   - barcode
+   - container_type_code
+   - container_type_display
+   - context
+   - department_id
+   - document_ids
+   - document_type_id
+   - from_location_id
+   - help
+   - message_follower_ids
+   - message_ids
+   - model
+   - monthly_rate
+   - moved_by_id
+   - movement_date
+   - movement_ids
+   - movement_type
+   - priority
+   - request_date
+   - res_model
+   - retention_policy_id
+   - search_view_id
+   - service_request_ids
+   - size_category
+   - to_location_id
+   - view_mode
+   - weight
+
+🚨 Model: fsm.reschedule.wizard
+   - arch
+   - model
+   - res_model
+   - reschedule_reason
+   - schedule_date
+   - target
+   - view_mode
+
+🚨 Model: stock.lot
+   - action_type
+   - activity_ids
+   - arch
+   - attribute_ids
+   - attribute_name
+   - attribute_type
+   - attribute_value
+   - available_quantity
+   - average_movement_time
+   - check_date
+   - company_id
+   - context
+   - create_date
+   - current_location
+   - customer_reference
+   - date
+   - days_in_inventory
+   - delivery_order_id
+   - destination_location
+   - expiration_date
+   - final_customer
+   - help
+   - in_date
+   - inventory_date
+   - last_purchase_price
+   - location_dest_id
+   - location_from
+   - location_id
+   - location_to
+   - manufacturing_order_id
+   - market_value
+   - measure
+   - measurement_unit
+   - message_follower_ids
+   - message_ids
+   - model
+   - name
+   - notes
+   - product_id
+   - product_qty
+   - product_uom_id
+   - product_uom_qty
+   - purchase_order_id
+   - quality_check_count
+   - quality_check_ids
+   - quality_point_id
+   - quality_state
+   - quality_verified
+   - quant_count
+   - quant_ids
+   - quantity
+   - ref
+   - reference
+   - res_model
+   - reserved_quantity
+   - search_view_id
+   - source_location
+   - state
+   - stock_move_count
+   - stock_move_ids
+   - supplier_lot_id
+   - test_type
+   - timestamp
+   - total_movements
+   - total_value
+   - traceability_log_ids
+   - unit_cost
+   - user_id
+   - verification_date
+   - view_mode
+
+🚨 Model: records.permanent.flag.wizard
+   - action_type
+   - arch
+   - box_id
+   - customer_id
+   - document_count
+   - model
+   - permanent_flag
+   - permanent_flag_set_by
+   - permanent_flag_set_date
+   - user_password
+
+🚨 Model: paper.bale.recycling
+   - activity_ids
+   - arch
+   - bale_number
+   - contamination
+   - contamination_notes
+   - gps_coordinates
+   - help
+   - load_number
+   - load_shipment_id
+   - message_follower_ids
+   - message_ids
+   - mobile_entry
+   - model
+   - moisture_level
+   - paper_grade
+   - processed_from_service
+   - production_date
+   - res_model
+   - scale_reading
+   - search_view_id
+   - status
+   - storage_location
+   - view_mode
+   - weighed_by
+   - weight_kg
+   - weight_lbs
+
+🚨 Model: records.retention.policy
+   - activity_ids
+   - approval_status
+   - arch
+   - changed_by
+   - compliance_rate
+   - destruction_efficiency_rate
+   - destruction_method
+   - document_count
+   - effective_date
+   - exception_count
+   - help
+   - is_current_version
+   - legal_basis
+   - message_follower_ids
+   - message_ids
+   - model
+   - next_mandatory_review
+   - policy_effectiveness_score
+   - policy_risk_score
+   - policy_status
+   - policy_type
+   - policy_version
+   - res_model
+   - retention_years
+   - review_cycle_months
+   - review_date
+   - risk_level
+   - search_view_id
+   - version_date
+   - version_history_ids
+   - version_number
+   - view_mode
+
+🚨 Model: paper.bale
+   - action_date
+   - action_type
+   - activity_ids
+   - arch
+   - bale_number
+   - bale_status
+   - carbon_footprint_saved
+   - carbon_neutral
+   - chain_of_custody_verified
+   - confidentiality_level
+   - contamination_found
+   - contamination_level
+   - contamination_percentage
+   - context
+   - customer_name
+   - destruction_date
+   - document_count
+   - document_name
+   - document_type
+   - energy_saved
+   - environmental_certification
+   - estimated_value
+   - grade_assigned
+   - help
+   - inspection_date
+   - inspection_type
+   - inspector
+   - loaded_by
+   - loaded_on_trailer
+   - loading_date
+   - loading_history_ids
+   - loading_notes
+   - loading_order
+   - loading_position
+   - market_price_per_lb
+   - measured_by
+   - measurement_date
+   - measurement_type
+   - message_follower_ids
+   - message_ids
+   - model
+   - moisture_content
+   - moisture_reading
+   - naid_compliance_verified
+   - notes
+   - paper_grade
+   - paper_type
+   - passed_inspection
+   - performed_by
+   - processing_cost
+   - processing_time
+   - quality_inspection_ids
+   - quality_inspector
+   - quality_notes
+   - quality_score
+   - res_model
+   - revenue_potential
+   - scale_used
+   - search_view_id
+   - source_document_ids
+   - source_facility
+   - special_handling
+   - sustainable_source
+   - trailer_info
+   - trailer_load_count
+   - trees_saved_equivalent
+   - variance_from_previous
+   - view_mode
+   - water_saved
+   - weigh_date
+   - weighed_by
+   - weight_contributed
+   - weight_efficiency
+   - weight_history_count
+   - weight_measurement_ids
+   - weight_recorded
+   - weight_unit
+
+🚨 Model: records.location
+   - access_instructions
+   - activity_ids
+   - arch
+   - available_spaces
+   - available_utilization
+   - box_count
+   - box_ids
+   - context
+   - current_utilization
+   - customer_id
+   - help
+   - message_follower_ids
+   - message_ids
+   - model
+   - parent_location_id
+   - res_model
+   - search_view_id
+   - security_level
+   - state
+   - stored_date
+   - view_mode
+
+🚨 Model: product.template
+   - active
+   - activity_ids
+   - additional_box_cost
+   - additional_document_cost
+   - api_integration
+   - arch
+   - auto_invoice
+   - average_sale_price
+   - avg_deal_size
+   - base_cost
+   - billing_frequency
+   - box_retrieval_time
+   - box_storage_included
+   - can_be_expensed
+   - categ_id
+   - certificate_of_destruction
+   - climate_controlled
+   - compliance_guarantee
+   - context
+   - currency_id
+   - customer_count
+   - customer_retention_rate
+   - customization_allowed
+   - data_recovery_guarantee
+   - default_code
+   - description
+   - detailed_type
+   - digital_conversion_included
+   - discount_percentage
+   - display_name
+   - document_retrieval_time
+   - document_storage_included
+   - effective_date
+   - emergency_response_time
+   - emergency_retrieval
+   - expiry_date
+   - external_service_id
+   - first_sale_date
+   - geographic_coverage
+   - help
+   - is_featured_service
+   - is_template_service
+   - labor_cost
+   - last_sale_date
+   - list_price
+   - lst_price
+   - material_cost
+   - max_boxes_included
+   - max_documents_included
+   - message_follower_ids
+   - message_ids
+   - min_quantity
+   - minimum_billing_period
+   - model
+   - naid_compliance_level
+   - name
+   - overhead_cost
+   - period
+   - pickup_delivery_included
+   - price_history_count
+   - price_margin
+   - pricing_rule_ids
+   - product_variant_count
+   - product_variant_ids
+   - profit
+   - profit_margin
+   - prorate_partial_periods
+   - purchase_ok
+   - qty_available
+   - requires_approval
+   - res_model
+   - revenue
+   - rule_name
+   - rule_type
+   - sale_ok
+   - sales_analytics_ids
+   - sales_count
+   - sales_velocity
+   - same_day_service
+   - search_view_id
+   - security_guarantee
+   - shredding_included
+   - sla_terms
+   - standard_price
+   - standard_response_time
+   - sync_enabled
+   - template_category
+   - total_revenue_ytd
+   - total_sales_ytd
+   - type
+   - uom_id
+   - uom_po_id
+   - uptime_guarantee
+   - view_mode
+   - volume
+   - webhook_notifications
+   - weight
+   - witness_destruction
+
+🚨 Model: hard_drive.scan.wizard
+   - arch
+   - bulk_serial_input
+   - certificate_line_text
+   - context
+   - customer_location_notes
+   - destroyed
+   - destruction_date
+   - destruction_method
+   - facility_verification_notes
+   - hashed_serial
+   - help
+   - included_in_certificate
+   - model
+   - name
+   - res_model
+   - scan_count
+   - scan_location
+   - scan_notes
+   - scanned_at_customer
+   - scanned_at_customer_by
+   - scanned_at_customer_date
+   - scanned_serials
+   - serial_number
+   - service_id
+   - target
+   - verified_at_facility_by
+   - verified_at_facility_date
+   - verified_before_destruction
+   - view_mode
+
+🚨 Model: fsm.task
+   - activity_ids
+   - activity_type
+   - actual_completion_time
+   - actual_start_time
+   - arch
+   - arrival_time
+   - assigned_technician
+   - backup_contact
+   - backup_technician
+   - barcode_scanning
+   - billable
+   - billable_amount
+   - billable_to_customer
+   - chain_of_custody_required
+   - checklist_item
+   - communication_date
+   - communication_log_ids
+   - communication_type
+   - completed
+   - completion_notes
+   - completion_status
+   - completion_time
+   - confidentiality_level
+   - contact_email
+   - contact_person
+   - contact_phone
+   - containers_to_retrieve
+   - context
+   - current_location
+   - customer_id
+   - customer_satisfaction
+   - customer_signature_obtained
+   - deliverables_completed
+   - departure_time
+   - documents_to_deliver
+   - duration
+   - efficiency_score
+   - email_updates_enabled
+   - end_time
+   - equipment_required
+   - estimated_duration
+   - facility_access_code
+   - follow_up_required
+   - gps_tracking_enabled
+   - help
+   - inherit_id
+   - issues_encountered
+   - labor_cost
+   - location
+   - location_address
+   - location_coordinates
+   - location_update_count
+   - material_cost
+   - material_count
+   - material_name
+   - material_usage_ids
+   - message_follower_ids
+   - message_ids
+   - mobile_update_ids
+   - model
+   - next_service_scheduled
+   - notes
+   - notify_customer_on_arrival
+   - notify_customer_on_completion
+   - offline_sync_enabled
+   - parking_instructions
+   - photo_attachment
+   - photos_required
+   - primary_contact
+   - priority
+   - quality_rating
+   - quantity_used
+   - required
+   - res_model
+   - response_required
+   - safety_requirements
+   - scheduled_date
+   - search_view_id
+   - service_type
+   - signature_required
+   - sms_updates_enabled
+   - special_instructions
+   - start_time
+   - status
+   - subject
+   - supervisor
+   - supplier
+   - task_checklist_ids
+   - task_type
+   - technician
+   - time_log_count
+   - time_log_ids
+   - timestamp
+   - total_cost
+   - total_time_spent
+   - travel_time
+   - unit_cost
+   - update_type
+   - view_mode
+   - work_time
+
+🚨 Model: base.rates
+   - advance_notice_days
+   - annual_revenue_impact
+   - approval_date
+   - approval_notes
+   - approved_by
+   - arch
+   - base_rate
+   - category_adjustment_value
+   - communication_template
+   - competitor_rate_factor
+   - container_count
+   - context
+   - current_monthly_revenue
+   - custom_end_date
+   - custom_start_date
+   - customer_count
+   - customer_impact_count
+   - customer_retention_rate
+   - customer_segment
+   - domain
+   - expiration_date
+   - forecast_line_ids
+   - forecast_period
+   - global_adjustment_type
+   - global_adjustment_value
+   - help
+   - implementation_method
+   - inflation_rate
+   - market_growth_rate
+   - minimum_charge
+   - model
+   - negotiated_rate_count
+   - notification_required
+   - partner_id
+   - phase_duration_months
+   - projected_monthly_revenue
+   - rate_structure
+   - requires_approval
+   - res_model
+   - revenue_change
+   - revenue_change_percentage
+   - revenue_difference
+   - revenue_impact
+   - revenue_percentage_change
+   - risk_assessment
+   - risk_level
+   - risk_mitigation_plan
+   - rollback_plan
+   - scenario_type
+   - service_category
+   - service_type
+   - specific_customer_ids
+   - target
+   - view_mode
+
+🚨 Model: records.department.billing.contact
+   - activity_ids
+   - amount
+   - approval_authority
+   - approval_count
+   - approval_date
+   - approval_history_ids
+   - approval_limit
+   - approval_notes
+   - approval_status
+   - approved_by
+   - arch
+   - billing_role
+   - budget_alert_threshold
+   - budget_utilization
+   - cc_additional_emails
+   - cc_department_head
+   - cc_finance_team
+   - charge_amount
+   - charge_date
+   - contact_name
+   - context
+   - current_month_actual
+   - current_month_budget
+   - current_month_charges
+   - current_month_forecast
+   - current_month_variance
+   - department_charge_ids
+   - department_charges_count
+   - department_id
+   - email
+   - email_notifications
+   - help
+   - message_follower_ids
+   - message_ids
+   - model
+   - monthly_budget
+   - monthly_statements
+   - phone
+   - res_model
+   - search_view_id
+   - service_description
+   - service_type
+   - vendor
+   - view_mode
+   - weekly_reports
+   - ytd_actual
+   - ytd_budget
+   - ytd_variance
+   - ytd_variance_percentage
+
+🚨 Model: barcode.product
+   - access_frequency
+   - activity_exception_decoration
+   - activity_ids
+   - activity_state
+   - allowed_characters
+   - arch
+   - auto_generate
+   - average_storage_duration
+   - barcode
+   - barcode_length
+   - barcode_pattern
+   - barcode_prefix
+   - barcode_suffix
+   - batch_id
+   - bin_status
+   - bin_volume
+   - box_size
+   - box_status
+   - capacity
+   - certificate_provided
+   - check_digit_required
+   - climate_controlled
+   - color
+   - context
+   - customer_id
+   - customer_location_id
+   - dimensions
+   - discount_percentage
+   - effective_date
+   - end_barcode
+   - end_date
+   - expiry_date
+   - fill_level
+   - fill_percentage
+   - fireproof_rating
+   - generated_by
+   - generation_batch_size
+   - generation_date
+   - generation_history_ids
+   - help
+   - indoor_outdoor
+   - last_access_date
+   - last_generated_barcode
+   - last_pickup_date
+   - location_id
+   - lockable
+   - material_type
+   - max_file_folders
+   - max_quantity
+   - max_stack_height
+   - message_follower_ids
+   - message_ids
+   - min_quantity
+   - mobile
+   - model
+   - monthly_rate
+   - monthly_revenue
+   - monthly_volume
+   - naid_compliant
+   - next_pickup_date
+   - next_sequence_number
+   - pickup_frequency
+   - price_multiplier
+   - pricing_tier_ids
+   - product_category
+   - product_code
+   - profit_margin
+   - quantity_generated
+   - recommended_retention_years
+   - res_model
+   - rush_service_rate
+   - search_view_id
+   - season_name
+   - seasonal_pricing_ids
+   - security_level
+   - service_rate
+   - setup_fee
+   - shred_bin_count
+   - shred_bin_ids
+   - shred_rate
+   - shred_security_level
+   - stackable
+   - start_barcode
+   - start_date
+   - storage_box_count
+   - storage_box_ids
+   - storage_rate
+   - suitable_document_types
+   - tier_name
+   - total_generated
+   - unit_price
+   - utilization_rate
+   - validate_check_digit
+   - validate_format
+   - validate_uniqueness
+   - view_mode
+   - volume_discount_rate
+   - volume_discount_threshold
+   - weight_capacity
+   - weight_limit
+   - witness_destruction
+
+🚨 Model: records.billing.config
+   - accounting_system_sync
+   - activity_ids
+   - amount
+   - annual_revenue
+   - arch
+   - audit_trail_enabled
+   - auto_apply
+   - auto_billing
+   - average_monthly_billing
+   - base_rate
+   - billable
+   - billing_accuracy_rate
+   - billing_cycle_start
+   - billing_failure_alerts
+   - billing_frequency
+   - billing_history_count
+   - billing_model
+   - billing_rate_ids
+   - cc_accounting
+   - collection_rate
+   - compliance_reporting
+   - consolidate_charges
+   - context
+   - cost_amount
+   - currency_id
+   - customer_count
+   - customer_id
+   - customer_notifications
+   - customer_satisfaction_score
+   - data_retention_period
+   - discount_percentage
+   - discount_rule_ids
+   - discount_type
+   - discount_value
+   - effective_date
+   - encryption_enabled
+   - escalation_notifications
+   - finance_team_notifications
+   - generation_date
+   - grace_period_days
+   - help
+   - include_usage_details
+   - invoice_count
+   - invoice_email_template
+   - invoice_generation_log_ids
+   - invoice_number
+   - invoice_status
+   - invoice_template
+   - last_invoice_date
+   - late_fee_percentage
+   - manager_notifications
+   - message_follower_ids
+   - message_ids
+   - minimum_charge
+   - minimum_threshold
+   - model
+   - monthly_revenue
+   - multi_currency_support
+   - next_billing_date
+   - payment_delay_average
+   - payment_gateway_integration
+   - payment_method
+   - payment_overdue_alerts
+   - payment_terms
+   - period
+   - period_end
+   - period_start
+   - profit_margin
+   - prorate_monthly
+   - quantity
+   - quarterly_revenue
+   - rate_type
+   - rate_unit
+   - reminder_schedule
+   - res_model
+   - revenue_amount
+   - revenue_analytics_ids
+   - revenue_variance_alerts
+   - rule_name
+   - search_view_id
+   - send_invoice_email
+   - service_category
+   - service_type
+   - status
+   - tax_calculation_method
+   - tier_threshold
+   - total_cost
+   - total_revenue
+   - track_access_frequency
+   - track_box_storage
+   - track_destruction_services
+   - track_digital_services
+   - track_document_count
+   - track_pickup_delivery
+   - track_retrieval_requests
+   - track_special_handling
+   - tracking_date
+   - unit_of_measure
+   - unit_rate
+   - usage_threshold_alerts
+   - usage_tracking_ids
+   - valid_from
+   - valid_until
+   - view_mode
+
+🚨 Model: mobile.bin.key.wizard
+   - arch
+   - model
+
+🚨 Model: records.digital.scan
+   - arch
+   - model
+
+🚨 Model: records.document
+   - action_type
+   - activity_ids
+   - arch
+   - audit_trail_count
+   - audit_trail_ids
+   - chain_of_custody_count
+   - chain_of_custody_ids
+   - compliance_verified
+   - container_id
+   - context
+   - created_date
+   - customer_id
+   - days_until_destruction
+   - department_id
+   - destruction_authorized_by
+   - destruction_certificate_id
+   - destruction_date
+   - destruction_eligible_date
+   - destruction_facility
+   - destruction_method
+   - destruction_notes
+   - destruction_witness
+   - digital_scan_ids
+   - digitized
+   - document_category
+   - document_type_id
+   - event_date
+   - event_type
+   - file_format
+   - file_size
+   - help
+   - last_access_date
+   - location
+   - media_type
+   - message_follower_ids
+   - message_ids
+   - model
+   - naid_destruction_verified
+   - original_format
+   - permanent_flag
+   - permanent_flag_set_by
+   - permanent_flag_set_date
+   - received_date
+   - res_model
+   - resolution
+   - responsible_person
+   - retention_policy_id
+   - scan_date
+   - search_view_id
+   - signature_verified
+   - storage_date
+   - storage_location
+   - timestamp
+   - view_mode
+
+🚨 Model: key.restriction.checker
+   - action_required
+   - arch
+   - bin_identifier
+   - check_performed
+   - context
+   - customer_id
+   - customer_name
+   - key_allowed
+   - model
+   - res_model
+   - restriction_date
+   - restriction_notes
+   - restriction_reason
+   - status_message
+   - target
+   - type
+   - view_mode
+
+
+📋 STEP 5: DETAILED MODEL ANALYSIS
+============================================================
+Models analyzed: 106
+  account.move.records.extension: 8 fields
+  advanced.billing: 21 fields
+  barcode.models.enhanced: 8 fields
+  barcode.product: 8 fields
+  base.rates: 25 fields
+  bin.key.history: 9 fields
+  bin.key.management: 12 fields
+  bin.unlock.service: 11 fields
+  container.contents: 11 fields
+  customer.feedback: 18 fields
+  customer.inventory: 50 fields
+  customer.inventory.report: 8 fields
+  customer.negotiated.rates: 35 fields
+  destruction.item: 11 fields
+  document.retrieval.work.order: 11 fields
+  field.label.customization: 11 fields
+  file.retrieval.work.order: 11 fields
+  fsm.notification.placeholder: 1 fields
+  fsm.reschedule.wizard: 4 fields
+  fsm.route.management.placeholder: 1 fields
+  fsm.task: 14 fields
+  hr.emp.naid: 8 fields
+  hr.employee: 4 fields
+  installer: 7 fields
+  ir.module.ext: 8 fields
+  key.restriction.checker: 3 fields
+  load: 11 fields
+  location.report.wizard: 18 fields
+  mobile.bin.key.wizard: 41 fields
+  naid.audit.log: 8 fields
+  naid.certificate: 11 fields
+  naid.chain.custody: 8 fields
+  naid.compliance: 11 fields
+  naid.compliance.checklist: 8 fields
+  naid.custody.event: 8 fields
+  naid.destruction.record: 8 fields
+  naid.performance.history: 8 fields
+  paper.bale: 14 fields
+  paper.bale.recycling: 11 fields
+  paper.load.shipment: 11 fields
+  partner.bin.key: 50 fields
+  photo: 14 fields
+  pickup.request: 11 fields
+  pickup.request.item: 8 fields
+  pickup.route: 12 fields
+  portal.feedback: 11 fields
+  portal.request: 11 fields
+  pos.config: 9 fields
+  prod.ext: 8 fields
+  proj.task.ext: 8 fields
+  records.access.log: 8 fields
+  records.approval.step: 17 fields
+  records.approval.workflow: 8 fields
+  records.audit.log: 8 fields
+  records.billing: 23 fields
+  records.billing.config: 8 fields
+  records.billing.service: 9 fields
+  records.chain.of.custody: 14 fields
+  records.container: 25 fields
+  records.container.movement: 7 fields
+  records.container.transfer: 8 fields
+  records.container.type.converter: 3 fields
+  records.customer.billing.profile: 33 fields
+  records.deletion.request.enhanced: 8 fields
+  records.department: 14 fields
+  records.department.billing.contact: 8 fields
+  records.department.billing.enhanced: 8 fields
+  records.digital.scan: 33 fields
+  records.document: 12 fields
+  records.document.type: 31 fields
+  records.location: 15 fields
+  records.location.inspection: 8 fields
+  records.management.base.menus: 13 fields
+  records.permanent.flag.wizard: 3 fields
+  records.policy.version: 8 fields
+  records.retention.policy: 13 fields
+  records.security.audit: 8 fields
+  records.storage.department.user: 8 fields
+  records.tag: 12 fields
+  records.vehicle: 26 fields
+  records_management.bale: 8 fields
+  res.partner: 3 fields
+  res.partner.key.restriction: 7 fields
+  revenue.forecaster: 16 fields
+  scrm.records.management: 8 fields
+  shredding.bin: 8 fields
+  shredding.hard_drive: 8 fields
+  shredding.inventory.batch: 17 fields
+  shredding.inventory.item: 18 fields
+  shredding.service: 13 fields
+  shredding.service.log: 11 fields
+  stock.lot.attribute: 12 fields
+  stock.move.sms.validation: 4 fields
+  stock.picking.records.extension: 8 fields
+  stock.report_reception_report_label: 8 fields
+  survey.feedback.theme: 8 fields
+  survey.improvement.action: 11 fields
+  survey.user.input.enhanced: 8 fields
+  temp.inventory: 11 fields
+  transitory.field.config: 7 fields
+  transitory.items: 7 fields
+  unlock.service.history: 15 fields
+  visitor: 26 fields
+  visitor.pos.wizard: 3 fields
+  wizard.template: 1 fields
+  work.order.shredding: 9 fields
+
+View references analyzed: 39
+  barcode.product: 103 field references
+  base.rates: 62 field references
+  bin.key.management: 39 field references
+  customer.inventory.report: 26 field references
+  document.retrieval.work.order: 49 field references
+  field.label.customization: 77 field references
+  fsm.reschedule.wizard: 9 field references
+  fsm.task: 106 field references
+  hard_drive.scan.wizard: 29 field references
+  key.restriction.checker: 18 field references
+  mobile.bin.key.wizard: 36 field references
+  naid.compliance: 98 field references
+  paper.bale: 82 field references
+  paper.bale.recycling: 30 field references
+  paper.load.shipment: 56 field references
+  portal.feedback: 84 field references
+  portal.request: 98 field references
+  pos.config: 91 field references
+  product.template: 98 field references
+  records.billing.config: 106 field references
+  records.container: 39 field references
+  records.container.type.converter: 13 field references
+  records.customer.billing.profile: 64 field references
+  records.department.billing.contact: 52 field references
+  records.digital.scan: 21 field references
+  records.document: 59 field references
+  records.document.type: 32 field references
+  records.location: 26 field references
+  records.location.report.wizard: 10 field references
+  records.permanent.flag.wizard: 12 field references
+  records.retention.policy: 34 field references
+  records.tag: 9 field references
+  records.vehicle: 32 field references
+  res.partner: 49 field references
+  shredding.inventory.item: 34 field references
+  shredding.service: 91 field references
+  stock.lot: 70 field references
+  visitor.pos.wizard: 113 field references
+
+⚠️  Unknown context fields: 73
+   - activity_exception_decoration
+   - activity_ids
+   - activity_state
+   - actual_delivery
+   - actual_sale_price
+   - arch
+   - author_id
+   - average_bale_weight
+   - bale_count
+   - bale_ids
+   - bale_number
+   - bill_of_lading
+   - buyer_company
+   - capacity_utilization
+   - contamination_level
+   - contamination_notes
+   - contamination_report
+   - context
+   - date
+   - delivery_contact
+   - delivery_date
+   - delivery_phone
+   - destination_address
+   - domain
+   - driver_id
+   - driver_name
+   - estimated_delivery
+   - estimated_revenue
+   - hazmat_required
+   - help
+   - image
+   - invoice_number
+   - load_date
+   - load_quality_grade
+   - loading_dock_requirements
+   - market_price_per_ton
+   - message_follower_ids
+   - message_ids
+   - message_type
+   - model
+   - moisture_content
+   - moisture_test_report
+   - name
+   - payment_terms
+   - photo_ids
+   - photo_type
+   - price_variance
+   - priority
+   - production_date
+   - quality_certificate
+   - quality_grade
+   - res_model
+   - route_code
+   - sale_contract_number
+   - sales_contract_number
+   - search_view_id
+   - shipping_date
+   - special_delivery_instructions
+   - special_instructions
+   - state
+   - subject
+   - temperature_controlled
+   - total_weight
+   - trailer_id
+   - trailer_number
+   - transport_company
+   - truck_license_plate
+   - value_per_ton
+   - view_id
+   - view_mode
+   - weight
+   - weight_certificate
+   - weight_ticket_count
