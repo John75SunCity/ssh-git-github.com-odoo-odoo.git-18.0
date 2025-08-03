@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <tree string="Shredding Inventory Items">
                     <field name="display_name"/>
-                    <field name="box_id"/>
+                    <field name="container_id"/>
                     <field name="document_id"/>
                     <field name="current_location_id"/>
                     <field name="status"/>
@@ -34,8 +34,8 @@
                             <group>
                                 <field name="work_order_id"/>
                                 <field name="sequence"/>
-                                <field name="box_id" invisible="document_id"/>
-                                <field name="document_id" invisible="box_id"/>
+                                <field name="container_id" invisible="document_id"/>
+                                <field name="document_id" invisible="container_id"/>
                             </group>
                             <group>
                                 <field name="current_location_id"/>
@@ -99,7 +99,7 @@
             <field name="arch" type="xml">
                 <tree string="Picklist Items" editable="bottom">
                     <field name="display_name"/>
-                    <field name="box_id"/>
+                    <field name="container_id"/>
                     <field name="document_id"/>
                     <field name="location_id"/>
                     <field name="status"/>
@@ -127,8 +127,8 @@
                             <group>
                                 <field name="work_order_id"/>
                                 <field name="sequence"/>
-                                <field name="box_id" invisible="document_id"/>
-                                <field name="document_id" invisible="box_id"/>
+                                <field name="container_id" invisible="document_id"/>
+                                <field name="document_id" invisible="container_id"/>
                                 <field name="location_id"/>
                             </group>
                             <group>

@@ -36,8 +36,16 @@ class MobileBinKeyWizard(models.Model):
     date = fields.Date(default=fields.Date.today)
     action_execute = fields.Char(string="Action Execute")
     action_type = fields.Selection(
-        [], string="Action Type"
-    )  # TODO: Define selection options
+        [
+            ("unlock", "Unlock Bin"),
+            ("lock", "Lock Bin"),
+            ("inspect", "Inspect Contents"),
+            ("relocate", "Relocate Bin"),
+            ("service", "Service Request"),
+        ],
+        string="Action Type",
+        default="unlock",
+    )
     billable = fields.Boolean(string="Billable", default=False)
     bin_locations = fields.Char(string="Bin Locations")
     code = fields.Char(string="Code")

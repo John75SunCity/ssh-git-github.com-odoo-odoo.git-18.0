@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.08.04",  # Force new build to cancel deep rebuild with optimized settings
+    "version": "18.0.08.05",  # Container/Box model cleanup + missing field fixes
     "category": "Document Management",
     "summary": "Enterprise-Grade Records Management: 102 Models, Complete Odoo Integration, AI-Ready Analytics, NAID AAA Compliance, Advanced Customer Portal & Full Business Suite Integration",
     "description": """

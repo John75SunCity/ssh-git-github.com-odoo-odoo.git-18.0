@@ -136,8 +136,8 @@
                     </group>
 
                     <notebook>
-                        <page string="📦 Boxes Overview" name="boxes">
-                            <field name="box_ids" mode="list">
+                        <page string="📦 Containers Overview" name="containers">
+                            <field name="container_ids" mode="list">
                                 <list>
                                     <field name="name"/>
                                     <field name="location_id"/>

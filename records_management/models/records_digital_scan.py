@@ -79,8 +79,16 @@ class RecordsDigitalScan(models.Model):
     group_format = fields.Char(string="Group Format")
     group_scanned_by = fields.Char(string="Group Scanned By")
     group_state = fields.Selection(
-        [], string="Group State"
-    )  # TODO: Define selection options
+        [
+            ("draft", "Draft"),
+            ("scanning", "Scanning"),
+            ("processing", "Processing"),
+            ("completed", "Completed"),
+            ("failed", "Failed"),
+        ],
+        string="Group State",
+        default="draft",
+    )
     help = fields.Char(string="Help")
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers", auto_join=True

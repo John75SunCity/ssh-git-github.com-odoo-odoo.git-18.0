@@ -49,7 +49,7 @@ class CustomerInventory(models.Model):
     action_view_documents = fields.Char(string="Action View Documents")
     action_view_locations = fields.Char(string="Action View Locations")
     active_locations = fields.Char(string="Active Locations")
-    box_ids = fields.One2many(
+    container_ids = fields.One2many(
         "records.container", "customer_inventory_id", string="Containers"
     )
     boxes = fields.Char(string="Boxes")
@@ -72,8 +72,16 @@ class CustomerInventory(models.Model):
     group_by_customer = fields.Char(string="Group By Customer")
     group_by_date = fields.Date(string="Group By Date")
     group_by_status = fields.Selection(
-        [], string="Group By Status"
-    )  # TODO: Define selection options
+        [
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("pending", "Pending"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Group By Status",
+        default="draft",
+    )
     group_by_volume = fields.Char(string="Group By Volume")
     help = fields.Char(string="Help")
     large_volume = fields.Char(string="Large Volume")
@@ -93,21 +101,20 @@ class CustomerInventory(models.Model):
     )
     stored_date = fields.Date(string="Stored Date")
     this_month = fields.Char(string="This Month")
-    total_boxes = fields.Char(string="Total Boxes")
-    total_documents = fields.Char(string="Total Documents")
+    total_boxes = fields.Char(string="Total Boxes", compute="_compute_total_boxes")
+    total_documents = fields.Char(
+        string="Total Documents", compute="_compute_total_documents"
+    )
     very_large_volume = fields.Char(string="Very Large Volume")
     view_mode = fields.Char(string="View Mode")
     volume_category = fields.Char(string="Volume Category")
 
-    @api.depends("line_ids", "line_ids.amount")  # TODO: Adjust field dependencies
+    @api.depends("container_ids")
     def _compute_total_boxes(self):
         for record in self:
-            record.total_boxes = sum(record.line_ids.mapped("amount"))
+            record.total_boxes = str(len(record.container_ids))
 
-    @api.depends("line_ids", "line_ids.amount")  # TODO: Adjust field dependencies
+    @api.depends("document_ids")
     def _compute_total_documents(self):
         for record in self:
-            record.total_documents = sum(record.line_ids.mapped("amount"))
-
-    # TODO: Add specific fields for this model
-    # GitLens test comment - optimized for Odoo development workflow
+            record.total_documents = str(len(record.document_ids))
