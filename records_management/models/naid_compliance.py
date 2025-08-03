@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 
 class NaidCompliance(models.Model):
@@ -136,6 +137,224 @@ class NaidCompliance(models.Model):
         "maintenance.equipment", string="Certified Equipment"
     )
 
+    # === COMPREHENSIVE NAID COMPLIANCE FIELDS ===
+
+    # Enhanced NAID Configuration
+    naid_member_id = fields.Char(string="NAID Member ID", tracking=True)
+    auto_renewal = fields.Boolean(string="Auto Renewal", default=False, tracking=True)
+
+    # Enhanced Audit Management
+    last_audit_date = fields.Date(string="Last Audit Date", tracking=True)
+    next_audit_date = fields.Date(
+        string="Next Audit Date", compute="_compute_next_audit_date", store=True
+    )
+
+    # Compliance Team
+    compliance_officer = fields.Many2one(
+        "hr.employee", string="Compliance Officer", tracking=True
+    )
+    facility_manager = fields.Many2one(
+        "hr.employee", string="Facility Manager", tracking=True
+    )
+    security_officer = fields.Many2one(
+        "hr.employee", string="Security Officer", tracking=True
+    )
+    third_party_auditor = fields.Many2one(
+        "res.partner", string="Third Party Auditor", tracking=True
+    )
+
+    # Physical Security Standards
+    physical_security_score = fields.Float(
+        string="Physical Security Score", digits=(3, 1)
+    )
+    surveillance_system = fields.Boolean(string="Surveillance System", default=False)
+    secure_storage = fields.Boolean(string="Secure Storage", default=False)
+
+    # Personnel Security
+    personnel_screening = fields.Boolean(string="Personnel Screening", default=False)
+    background_checks = fields.Boolean(string="Background Checks", default=False)
+    training_completed = fields.Boolean(string="Training Completed", default=False)
+    security_clearance = fields.Boolean(string="Security Clearance", default=False)
+
+    # Information Security
+    information_handling = fields.Boolean(string="Information Handling", default=False)
+    chain_of_custody = fields.Boolean(string="Chain of Custody", default=False)
+    destruction_verification = fields.Boolean(
+        string="Destruction Verification", default=False
+    )
+    certificate_tracking = fields.Boolean(string="Certificate Tracking", default=False)
+
+    # Operational Security
+    equipment_certification = fields.Boolean(
+        string="Equipment Certification", default=False
+    )
+    process_verification = fields.Boolean(string="Process Verification", default=False)
+    quality_control = fields.Boolean(string="Quality Control", default=False)
+    incident_management = fields.Boolean(string="Incident Management", default=False)
+
+    # Count Fields for Stat Buttons
+    audit_count = fields.Integer(
+        string="Audit Count", compute="_compute_counts", store=True
+    )
+    certificate_count = fields.Integer(
+        string="Certificate Count", compute="_compute_counts", store=True
+    )
+    destruction_count = fields.Integer(
+        string="Destruction Count", compute="_compute_counts", store=True
+    )
+
+    # Audit Records and History
+    audit_history_ids = fields.One2many(
+        "naid.audit.record", "compliance_id", string="Audit History"
+    )
+    certificate_ids = fields.One2many(
+        "naid.certificate", "compliance_id", string="Certificates"
+    )
+
+    # Risk Assessment
+    risk_level = fields.Selection(
+        [
+            ("low", "Low Risk"),
+            ("medium", "Medium Risk"),
+            ("high", "High Risk"),
+            ("critical", "Critical Risk"),
+        ],
+        string="Risk Level",
+        default="medium",
+        tracking=True,
+    )
+    risk_assessment_date = fields.Date(string="Risk Assessment Date")
+    mitigation_plans = fields.Text(string="Mitigation Plans")
+
+    # Compliance Scoring
+    compliance_score = fields.Float(
+        string="Compliance Score (%)",
+        digits=(5, 2),
+        compute="_compute_compliance_score",
+        store=True,
+    )
+    security_score = fields.Float(string="Security Score (%)", digits=(5, 2))
+    operational_score = fields.Float(string="Operational Score (%)", digits=(5, 2))
+
+    # Training and Certification
+    training_program_id = fields.Many2one("hr.training", string="Training Program")
+    training_records = fields.Text(string="Training Records")
+    certification_status = fields.Selection(
+        [
+            ("pending", "Pending"),
+            ("in_progress", "In Progress"),
+            ("certified", "Certified"),
+            ("expired", "Expired"),
+            ("revoked", "Revoked"),
+        ],
+        string="Certification Status",
+        default="pending",
+        tracking=True,
+    )
+
+    # Insurance and Legal
+    insurance_coverage = fields.Monetary(
+        string="Insurance Coverage", currency_field="currency_id"
+    )
+    liability_limit = fields.Monetary(
+        string="Liability Limit", currency_field="currency_id"
+    )
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+    legal_requirements = fields.Text(string="Legal Requirements")
+
+    # Environmental and Safety
+    environmental_compliance = fields.Boolean(
+        string="Environmental Compliance", default=True
+    )
+    safety_protocols = fields.Text(string="Safety Protocols")
+    emergency_procedures = fields.Text(string="Emergency Procedures")
+
+    # Quality Management
+    quality_management_system = fields.Boolean(
+        string="Quality Management System", default=False
+    )
+    iso_certification = fields.Char(string="ISO Certification")
+    quality_metrics = fields.Text(string="Quality Metrics")
+
+    # Technology and Systems
+    security_system_version = fields.Char(string="Security System Version")
+    monitoring_tools = fields.Text(string="Monitoring Tools")
+    backup_systems = fields.Boolean(string="Backup Systems", default=False)
+
+    # Customer and Stakeholder Management
+    customer_notifications = fields.Boolean(
+        string="Customer Notifications", default=True
+    )
+    stakeholder_communication = fields.Text(string="Stakeholder Communication")
+    public_disclosure = fields.Boolean(string="Public Disclosure", default=False)
+
+    # Continuous Improvement
+    improvement_plan = fields.Text(string="Improvement Plan")
+    lessons_learned = fields.Text(string="Lessons Learned")
+    best_practices = fields.Text(string="Best Practices")
+
+    # Vendor and Supplier Management
+    vendor_compliance = fields.Boolean(string="Vendor Compliance", default=False)
+    supplier_audits = fields.Boolean(string="Supplier Audits", default=False)
+    third_party_certifications = fields.Text(string="Third Party Certifications")
+
+    # Reporting and Documentation
+    reporting_frequency = fields.Selection(
+        [
+            ("weekly", "Weekly"),
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("annually", "Annually"),
+        ],
+        string="Reporting Frequency",
+        default="quarterly",
+    )
+    documentation_standard = fields.Selection(
+        [
+            ("naid", "NAID Standard"),
+            ("iso", "ISO Standard"),
+            ("custom", "Custom Standard"),
+        ],
+        string="Documentation Standard",
+        default="naid",
+    )
+
+    # Performance Metrics
+    destruction_volume = fields.Float(
+        string="Destruction Volume (tons)", digits=(10, 2)
+    )
+    processing_time = fields.Float(
+        string="Average Processing Time (hours)", digits=(5, 2)
+    )
+    customer_satisfaction = fields.Float(
+        string="Customer Satisfaction (%)", digits=(5, 2)
+    )
+
+    # Compliance Dates and Deadlines
+    last_review_date = fields.Date(string="Last Review Date")
+    next_review_date = fields.Date(
+        string="Next Review Date", compute="_compute_next_review_date", store=True
+    )
+    compliance_deadline = fields.Date(string="Compliance Deadline")
+
+    # Geographic and Regional
+    region = fields.Selection(
+        [
+            ("north", "North Region"),
+            ("south", "South Region"),
+            ("east", "East Region"),
+            ("west", "West Region"),
+            ("central", "Central Region"),
+        ],
+        string="Region",
+    )
+    jurisdiction = fields.Char(string="Jurisdiction")
+    regulatory_body = fields.Char(string="Regulatory Body")
+
     @api.depends("certification_date", "expiry_date")
     def _compute_certificate_status(self):
         """Compute if certificate is valid"""
@@ -188,6 +407,82 @@ class NaidCompliance(models.Model):
             else:
                 record.last_audit_date = False
 
+    @api.depends("last_audit_date", "audit_frequency")
+    def _compute_next_audit_date(self):
+        """Compute next audit date based on frequency."""
+        for record in self:
+            if record.last_audit_date and record.audit_frequency:
+                if record.audit_frequency == "monthly":
+                    record.next_audit_date = fields.Date.add(
+                        record.last_audit_date, days=30
+                    )
+                elif record.audit_frequency == "quarterly":
+                    record.next_audit_date = fields.Date.add(
+                        record.last_audit_date, days=90
+                    )
+                elif record.audit_frequency == "semi_annual":
+                    record.next_audit_date = fields.Date.add(
+                        record.last_audit_date, days=180
+                    )
+                elif record.audit_frequency == "annual":
+                    record.next_audit_date = fields.Date.add(
+                        record.last_audit_date, days=365
+                    )
+                else:
+                    record.next_audit_date = False
+            else:
+                record.next_audit_date = False
+
+    @api.depends("audit_history_ids", "certificate_ids")
+    def _compute_counts(self):
+        """Compute counts for stat buttons."""
+        for record in self:
+            record.audit_count = len(record.audit_history_ids)
+            record.certificate_count = len(record.certificate_ids)
+            # Count related destruction records
+            record.destruction_count = self.env["shredding.service"].search_count(
+                [("naid_compliance_id", "=", record.id)]
+            )
+
+    @api.depends("physical_security_score", "security_score", "operational_score")
+    def _compute_compliance_score(self):
+        """Compute overall compliance score."""
+        for record in self:
+            scores = [
+                record.physical_security_score or 0,
+                record.security_score or 0,
+                record.operational_score or 0,
+            ]
+            record.compliance_score = (
+                sum(scores) / len([s for s in scores if s > 0]) if any(scores) else 0
+            )
+
+    @api.depends("last_review_date", "reporting_frequency")
+    def _compute_next_review_date(self):
+        """Compute next review date based on frequency."""
+        for record in self:
+            if record.last_review_date and record.reporting_frequency:
+                if record.reporting_frequency == "weekly":
+                    record.next_review_date = fields.Date.add(
+                        record.last_review_date, days=7
+                    )
+                elif record.reporting_frequency == "monthly":
+                    record.next_review_date = fields.Date.add(
+                        record.last_review_date, days=30
+                    )
+                elif record.reporting_frequency == "quarterly":
+                    record.next_review_date = fields.Date.add(
+                        record.last_review_date, days=90
+                    )
+                elif record.reporting_frequency == "annually":
+                    record.next_review_date = fields.Date.add(
+                        record.last_review_date, days=365
+                    )
+                else:
+                    record.next_review_date = False
+            else:
+                record.next_review_date = False
+
     # Additional fields for comprehensive compliance management
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
@@ -228,8 +523,6 @@ class NaidCompliance(models.Model):
         """Download NAID certificate."""
         self.ensure_one()
         if not self.certificate_id:
-            from odoo.exceptions import UserError
-
             raise UserError("No certificate associated with this compliance record.")
 
         return {
@@ -269,8 +562,6 @@ class NaidCompliance(models.Model):
         """Renew existing NAID certificate."""
         self.ensure_one()
         if not self.certificate_id:
-            from odoo.exceptions import UserError
-
             raise UserError(
                 "No certificate to renew. Please generate a new certificate first."
             )
