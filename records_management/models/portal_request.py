@@ -328,7 +328,7 @@ class PortalRequest(models.Model):
     )
     approval_deadline = fields.Date("Approval Deadline")
     approval_history_ids = fields.One2many(
-        "approval.history", "request_id", "Approval History"
+        "approval.history", "request_id", string="Approval History"
     )
     approval_level_required = fields.Selection(
         [("basic", "Basic"), ("advanced", "Advanced"), ("executive", "Executive")],

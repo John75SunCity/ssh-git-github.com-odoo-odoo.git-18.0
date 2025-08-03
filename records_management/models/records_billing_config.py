@@ -448,83 +448,147 @@ class RecordsBillingConfig(models.Model):
                     # Add 90 days as approximation
                     next_date = start_date
                     while next_date <= today:
+                        next_date = fields.Date.add(next_date, days=90)
                 elif record.billing_frequency == "semi_annually":
                     # Add 180 days as approximation
                     next_date = start_date
                     while next_date <= today:
+                        next_date = fields.Date.add(next_date, days=180)
                 elif record.billing_frequency == "annually":
                     # Add 365 days as approximation
                     next_date = start_date
                     while next_date <= today:
+                        next_date = fields.Date.add(next_date, days=365)
                 else:
+                    # Default to monthly if unknown frequency
+                    next_date = start_date
+                    while next_date <= today:
+                        next_date = fields.Date.add(next_date, days=30)
 
                 record.next_billing_date = next_date
             else:
                 record.next_billing_date = False
+
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    sequence = fields.Integer(string='Sequence', default=10)
-    notes = fields.Text(string='Notes')
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    sequence = fields.Integer(string="Sequence", default=10)
+    notes = fields.Text(string="Notes")
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
     # === COMPREHENSIVE MISSING FIELDS ===
-    customer_category_ids = fields.Many2many('customer.category', string='Customer Categories')
-    default_payment_terms_id = fields.Many2one('account.payment.term', string='Default Payment Terms')
-    credit_limit_amount = fields.Monetary(string='Credit Limit', currency_field='currency_id')
-    service_catalog_ids = fields.Many2many('product.template', string='Service Catalog')
-    pricing_tier_ids = fields.One2many('pricing.tier', 'billing_config_id', string='Pricing Tiers')
-    discount_policy_ids = fields.One2many('discount.policy', 'billing_config_id', string='Discount Policies')
-    surcharge_policy_ids = fields.One2many('surcharge.policy', 'billing_config_id', string='Surcharge Policies')
-    auto_invoice_generation = fields.Boolean(string='Auto Invoice Generation', default=True)
-    invoice_template_id = fields.Many2one('mail.template', string='Invoice Template')
-    payment_reminder_days = fields.Integer(string='Payment Reminder Days', default=7)
-    accounting_integration_enabled = fields.Boolean(string='Accounting Integration', default=True)
-    revenue_account_id = fields.Many2one('account.account', string='Revenue Account')
-    receivable_account_id = fields.Many2one('account.account', string='Receivable Account')
-    tax_configuration_ids = fields.One2many('tax.configuration', 'billing_config_id', string='Tax Configurations')
-    billing_dashboard_enabled = fields.Boolean(string='Billing Dashboard', default=True)
-    kpi_tracking_enabled = fields.Boolean(string='KPI Tracking', default=True)
-    custom_report_ids = fields.One2many('custom.report', 'billing_config_id', string='Custom Reports')
-    analytics_retention_days = fields.Integer(string='Analytics Retention Days', default=365)
-    approval_workflow_enabled = fields.Boolean(string='Approval Workflow', default=False)
-    approval_threshold_amount = fields.Monetary(string='Approval Threshold', currency_field='currency_id')
-    approval_user_ids = fields.Many2many('res.users', string='Approval Users')
-    escalation_enabled = fields.Boolean(string='Escalation Enabled', default=False)
+    customer_category_ids = fields.Many2many(
+        "customer.category", string="Customer Categories"
+    )
+    default_payment_terms_id = fields.Many2one(
+        "account.payment.term", string="Default Payment Terms"
+    )
+    credit_limit_amount = fields.Monetary(
+        string="Credit Limit", currency_field="currency_id"
+    )
+    service_catalog_ids = fields.Many2many("product.template", string="Service Catalog")
+    pricing_tier_ids = fields.One2many(
+        "pricing.tier", "billing_config_id", string="Pricing Tiers"
+    )
+    discount_policy_ids = fields.One2many(
+        "discount.policy", "billing_config_id", string="Discount Policies"
+    )
+    surcharge_policy_ids = fields.One2many(
+        "surcharge.policy", "billing_config_id", string="Surcharge Policies"
+    )
+    auto_invoice_generation = fields.Boolean(
+        string="Auto Invoice Generation", default=True
+    )
+    invoice_template_id = fields.Many2one("mail.template", string="Invoice Template")
+    payment_reminder_days = fields.Integer(string="Payment Reminder Days", default=7)
+    accounting_integration_enabled = fields.Boolean(
+        string="Accounting Integration", default=True
+    )
+    revenue_account_id = fields.Many2one("account.account", string="Revenue Account")
+    receivable_account_id = fields.Many2one(
+        "account.account", string="Receivable Account"
+    )
+    tax_configuration_ids = fields.One2many(
+        "tax.configuration", "billing_config_id", string="Tax Configurations"
+    )
+    billing_dashboard_enabled = fields.Boolean(string="Billing Dashboard", default=True)
+    kpi_tracking_enabled = fields.Boolean(string="KPI Tracking", default=True)
+    custom_report_ids = fields.One2many(
+        "custom.report", "billing_config_id", string="Custom Reports"
+    )
+    analytics_retention_days = fields.Integer(
+        string="Analytics Retention Days", default=365
+    )
+    approval_workflow_enabled = fields.Boolean(
+        string="Approval Workflow", default=False
+    )
+    approval_threshold_amount = fields.Monetary(
+        string="Approval Threshold", currency_field="currency_id"
+    )
+    approval_user_ids = fields.Many2many("res.users", string="Approval Users")
+    escalation_enabled = fields.Boolean(string="Escalation Enabled", default=False)
     # Advanced Billing Configuration Fields
-    amount = fields.Monetary('Total Amount', currency_field='currency_id')
-    auto_billing_enabled = fields.Boolean('Auto Billing Enabled', default=True)
-    billing_alert_threshold = fields.Float('Billing Alert Threshold', default=1000.0)
-    billing_automation_level = fields.Selection([('manual', 'Manual'), ('semi', 'Semi-Auto'), ('full', 'Fully Automated')], default='semi')
-    billing_cycle_id = fields.Many2one('billing.cycle', 'Billing Cycle')
-    billing_discount_percentage = fields.Float('Billing Discount %', default=0.0)
-    billing_method = fields.Selection([('invoice', 'Invoice'), ('auto_charge', 'Auto Charge')], default='invoice')
-    billing_notification_enabled = fields.Boolean('Billing Notifications', default=True)
-    billing_override_allowed = fields.Boolean('Override Allowed', default=False)
-    billing_portal_access = fields.Boolean('Portal Access', default=True)
-    billing_preferences = fields.Text('Billing Preferences')
-    billing_rules_version = fields.Char('Billing Rules Version')
-    billing_tier = fields.Selection([('basic', 'Basic'), ('premium', 'Premium'), ('enterprise', 'Enterprise')], default='basic')
-    credit_limit_warning = fields.Boolean('Credit Limit Warning', default=True)
-    custom_billing_rules = fields.Text('Custom Billing Rules')
-    customer_tier_level = fields.Selection([('bronze', 'Bronze'), ('silver', 'Silver'), ('gold', 'Gold'), ('platinum', 'Platinum')], default='bronze')
-    department_allocation_rules = fields.Text('Department Allocation Rules')
-    discount_eligibility_rules = fields.Text('Discount Eligibility Rules')
-    escalation_threshold_amount = fields.Monetary('Escalation Threshold', currency_field='currency_id')
-    expense_tracking_enabled = fields.Boolean('Expense Tracking', default=True)
-    invoice_consolidation_period = fields.Selection([('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')], default='monthly')
-    late_fee_calculation = fields.Text('Late Fee Calculation Rules')
-    minimum_billing_amount = fields.Monetary('Minimum Billing Amount', currency_field='currency_id')
-    payment_gateway_integration = fields.Boolean('Payment Gateway Integration', default=False)
-    prepaid_balance_warning = fields.Boolean('Prepaid Balance Warning', default=True)
-    pro_rata_calculation = fields.Boolean('Pro-rata Calculation', default=True)
-    tax_calculation_method = fields.Selection([('inclusive', 'Tax Inclusive'), ('exclusive', 'Tax Exclusive')], default='exclusive')
-    usage_tracking_enabled = fields.Boolean('Usage Tracking', default=True)
-    
+    amount = fields.Monetary("Total Amount", currency_field="currency_id")
+    auto_billing_enabled = fields.Boolean("Auto Billing Enabled", default=True)
+    billing_alert_threshold = fields.Float("Billing Alert Threshold", default=1000.0)
+    billing_automation_level = fields.Selection(
+        [("manual", "Manual"), ("semi", "Semi-Auto"), ("full", "Fully Automated")],
+        default="semi",
+    )
+    billing_cycle_id = fields.Many2one("billing.cycle", "Billing Cycle")
+    billing_discount_percentage = fields.Float("Billing Discount %", default=0.0)
+    billing_method = fields.Selection(
+        [("invoice", "Invoice"), ("auto_charge", "Auto Charge")], default="invoice"
+    )
+    billing_notification_enabled = fields.Boolean("Billing Notifications", default=True)
+    billing_override_allowed = fields.Boolean("Override Allowed", default=False)
+    billing_portal_access = fields.Boolean("Portal Access", default=True)
+    billing_preferences = fields.Text("Billing Preferences")
+    billing_rules_version = fields.Char("Billing Rules Version")
+    billing_tier = fields.Selection(
+        [("basic", "Basic"), ("premium", "Premium"), ("enterprise", "Enterprise")],
+        default="basic",
+    )
+    credit_limit_warning = fields.Boolean("Credit Limit Warning", default=True)
+    custom_billing_rules = fields.Text("Custom Billing Rules")
+    customer_tier_level = fields.Selection(
+        [
+            ("bronze", "Bronze"),
+            ("silver", "Silver"),
+            ("gold", "Gold"),
+            ("platinum", "Platinum"),
+        ],
+        default="bronze",
+    )
+    department_allocation_rules = fields.Text("Department Allocation Rules")
+    discount_eligibility_rules = fields.Text("Discount Eligibility Rules")
+    escalation_threshold_amount = fields.Monetary(
+        "Escalation Threshold", currency_field="currency_id"
+    )
+    expense_tracking_enabled = fields.Boolean("Expense Tracking", default=True)
+    invoice_consolidation_period = fields.Selection(
+        [("daily", "Daily"), ("weekly", "Weekly"), ("monthly", "Monthly")],
+        default="monthly",
+    )
+    late_fee_calculation = fields.Text("Late Fee Calculation Rules")
+    minimum_billing_amount = fields.Monetary(
+        "Minimum Billing Amount", currency_field="currency_id"
+    )
+    payment_gateway_integration = fields.Boolean(
+        "Payment Gateway Integration", default=False
+    )
+    prepaid_balance_warning = fields.Boolean("Prepaid Balance Warning", default=True)
+    pro_rata_calculation = fields.Boolean("Pro-rata Calculation", default=True)
+    tax_calculation_method = fields.Selection(
+        [("inclusive", "Tax Inclusive"), ("exclusive", "Tax Exclusive")],
+        default="exclusive",
+    )
+    usage_tracking_enabled = fields.Boolean("Usage Tracking", default=True)
+
     # Framework Integration Fields
-
-
 
     @api.depends("invoice_ids", "billing_line_ids")
     def _compute_statistics(self):
