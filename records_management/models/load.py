@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import timedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -405,9 +406,61 @@ class Load(models.Model):
             record.weight_ticket_count = tickets
 
     def write(self, vals):
-        """Override write to update modification date."""
+        """Override write to update modification date and track revisions."""
         vals["date_modified"] = fields.Datetime.now()
+        if any(
+            key in vals
+            for key in ["market_price_per_ton", "buyer_company", "total_weight"]
+        ):
+            vals["last_updated_by"] = self.env.user.id
+            vals["revision_number"] = self.revision_number + 1
         return super().write(vals)
+
+    @api.constrains("market_price_per_ton")
+    def _check_market_price(self):
+        """Validate market price is positive."""
+        for record in self:
+            if record.market_price_per_ton and record.market_price_per_ton < 0:
+                raise ValidationError(_("Market price per ton must be positive."))
+
+    @api.constrains("loading_start_time", "loading_end_time")
+    def _check_loading_times(self):
+        """Validate loading times are logical."""
+        for record in self:
+            if record.loading_start_time and record.loading_end_time:
+                if record.loading_end_time <= record.loading_start_time:
+                    raise ValidationError(
+                        _("Loading end time must be after start time.")
+                    )
+
+    @api.constrains("estimated_delivery", "actual_delivery")
+    def _check_delivery_times(self):
+        """Validate delivery times."""
+        for record in self:
+            if record.estimated_delivery and record.actual_delivery:
+                if record.actual_delivery < record.estimated_delivery - timedelta(
+                    days=30
+                ):
+                    raise ValidationError(
+                        _("Actual delivery time seems too early compared to estimate.")
+                    )
+
+    @api.model
+    def get_load_performance_summary(self):
+        """Get performance summary for dashboard."""
+        loads = self.search([("state", "in", ["delivered", "sold"])])
+        return {
+            "total_loads": len(loads),
+            "total_revenue": sum(loads.mapped("estimated_revenue")),
+            "average_efficiency": loads.mapped("efficiency_rating"),
+            "on_time_delivery_rate": (
+                len(loads.filtered(lambda l: l.delivery_variance_hours <= 0))
+                / len(loads)
+                * 100
+                if loads
+                else 0
+            ),
+        }
 
     def action_activate(self):
         """Activate the record."""
@@ -425,24 +478,10 @@ class Load(models.Model):
     # LOAD ACTION METHODS
     # =============================================================================
 
-    def action_cancel(self):
-        """Cancel the load."""
-        self.ensure_one()
-        self.write({"state": "inactive"})
-        self.message_post(body=_("Load cancelled."))
-        return True
-
-    def action_mark_sold(self):
-        """Mark load as sold."""
-        self.ensure_one()
-        self.write({"state": "archived"})  # Using archived as "sold" state
-        self.message_post(body=_("Load marked as sold."))
-        return True
-
     def action_prepare_load(self):
         """Prepare load for shipping."""
         self.ensure_one()
-        self.write({"state": "draft"})  # Using draft as "preparing" state
+        self.write({"state": "ready", "loading_start_time": fields.Datetime.now()})
         self.message_post(body=_("Load preparation started."))
 
         # Create preparation activity
@@ -457,18 +496,57 @@ class Load(models.Model):
     def action_ship_load(self):
         """Ship the load."""
         self.ensure_one()
-        if self.state != "active":
-            raise UserError(_("Only active loads can be shipped."))
+        if self.state != "loading":
+            raise UserError(_("Only loads in loading state can be shipped."))
 
-        self.write({"state": "inactive"})  # Using inactive as "shipped" state
+        self.write(
+            {
+                "state": "shipped",
+                "shipping_date": fields.Date.today(),
+                "loading_end_time": fields.Datetime.now(),
+            }
+        )
         self.message_post(body=_("Load shipped successfully."))
         return True
 
     def action_start_loading(self):
         """Start loading process."""
         self.ensure_one()
-        self.write({"state": "active"})
+        if self.state != "ready":
+            raise UserError(_("Load must be in ready state to start loading."))
+
+        self.write({"state": "loading", "loading_start_time": fields.Datetime.now()})
         self.message_post(body=_("Loading process started."))
+        return True
+
+    def action_mark_delivered(self):
+        """Mark load as delivered."""
+        self.ensure_one()
+        if self.state != "shipped":
+            raise UserError(_("Only shipped loads can be marked as delivered."))
+
+        self.write({"state": "delivered", "actual_delivery": fields.Datetime.now()})
+        self.message_post(body=_("Load delivered successfully."))
+        return True
+
+    def action_mark_sold(self):
+        """Mark load as sold."""
+        self.ensure_one()
+        if self.state not in ["shipped", "delivered"]:
+            raise UserError(_("Only shipped or delivered loads can be marked as sold."))
+
+        self.write({"state": "sold"})
+        self.message_post(body=_("Load marked as sold."))
+        return True
+
+    def action_cancel(self):
+        """Cancel the load."""
+        self.ensure_one()
+        if self.state in ["sold", "delivered"]:
+            raise UserError(_("Cannot cancel sold or delivered loads."))
+
+        self.write({"state": "cancelled"})
+        self.message_post(body=_("Load cancelled."))
         return True
 
     def action_view_bales(self):

@@ -25,78 +25,118 @@ class NaidCompliance(models.Model):
         ],
         default="pending",
     )
-    
-    # Essential NAID Compliance Fields (from view analysis)
-    naid_level = fields.Selection([
-        ('aaa', 'NAID AAA'),
-        ('pending', 'Pending Certification'),
-        ('expired', 'Expired')
-    ], string='NAID Certification Level', required=True, tracking=True)
-    
-    compliance_status = fields.Selection([
-        ('compliant', 'Compliant'),
-        ('non_compliant', 'Non-Compliant'),
-        ('pending_review', 'Pending Review'),
-        ('remediation_required', 'Remediation Required'),
-        ('under_audit', 'Under Audit')
-    ], string='Compliance Status', default='pending_review', tracking=True)
-    
-    # Certification Dates
-    certification_date = fields.Date(string='Certification Date', tracking=True)
-    expiry_date = fields.Date(string='Expiry Date', tracking=True)
-    
-    # Audit Management
-    audit_required = fields.Boolean(string='Audit Required', default=True)
-    audit_date = fields.Date(string='Audit Date')
-    audit_frequency = fields.Selection([
-        ('monthly', 'Monthly'),
-        ('quarterly', 'Quarterly'),
-        ('semi_annual', 'Semi-Annual'),
-        ('annual', 'Annual')
-    ], string='Audit Frequency', default='annual')
-    
-    # Certificate Management
-    certificate_valid = fields.Boolean(string='Certificate Valid', compute='_compute_certificate_status')
-    certificate_number = fields.Char(string='Certificate Number')
-    
-    # Facility Information
-    facility_name = fields.Char(string='Facility Name', required=True)
-    facility_address = fields.Text(string='Facility Address')
-    facility_contact = fields.Many2one('res.partner', string='Facility Contact')
-    
-    # Compliance Requirements
-    physical_security_verified = fields.Boolean(string='Physical Security Verified', default=False)
-    access_control_verified = fields.Boolean(string='Access Control Verified', default=False)
-    personnel_screening_verified = fields.Boolean(string='Personnel Screening Verified', default=False)
-    destruction_process_verified = fields.Boolean(string='Destruction Process Verified', default=False)
-    
-    # Documentation
-    compliance_documentation = fields.Text(string='Compliance Documentation')
-    audit_trail_enabled = fields.Boolean(string='Audit Trail Enabled', default=True)
-    chain_of_custody_maintained = fields.Boolean(string='Chain of Custody Maintained', default=True)
-    
-    # Reporting and Analytics
-    compliance_score = fields.Float(string='Compliance Score (%)', digits=(5, 2), compute='_compute_compliance_score')
-    risk_level = fields.Selection([
-        ('low', 'Low Risk'),
-        ('medium', 'Medium Risk'),
-        ('high', 'High Risk'),
-        ('critical', 'Critical Risk')
-    ], string='Risk Level', compute='_compute_risk_level')
-    
-    # Audit History
-    audit_history_ids = fields.One2many('naid.audit.log', 'compliance_id', string='Audit History')
-    last_audit_date = fields.Date(string='Last Audit Date', compute='_compute_last_audit')
-    
-    # Reminder and Notifications
-    audit_reminder = fields.Date(string='Audit Reminder Date')
-    notification_sent = fields.Boolean(string='Notification Sent', default=False)
-    
-    # Related Records
-    employee_ids = fields.Many2many('hr.employee', string='Certified Employees')
-    equipment_ids = fields.Many2many('maintenance.equipment', string='Certified Equipment')
 
-    @api.depends('certification_date', 'expiry_date')
+    # Essential NAID Compliance Fields (from view analysis)
+    naid_level = fields.Selection(
+        [
+            ("aaa", "NAID AAA"),
+            ("pending", "Pending Certification"),
+            ("expired", "Expired"),
+        ],
+        string="NAID Certification Level",
+        required=True,
+        tracking=True,
+    )
+
+    compliance_status = fields.Selection(
+        [
+            ("compliant", "Compliant"),
+            ("non_compliant", "Non-Compliant"),
+            ("pending_review", "Pending Review"),
+            ("remediation_required", "Remediation Required"),
+            ("under_audit", "Under Audit"),
+        ],
+        string="Compliance Status",
+        default="pending_review",
+        tracking=True,
+    )
+
+    # Certification Dates
+    certification_date = fields.Date(string="Certification Date", tracking=True)
+    expiry_date = fields.Date(string="Expiry Date", tracking=True)
+
+    # Audit Management
+    audit_required = fields.Boolean(string="Audit Required", default=True)
+    audit_date = fields.Date(string="Audit Date")
+    audit_frequency = fields.Selection(
+        [
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("semi_annual", "Semi-Annual"),
+            ("annual", "Annual"),
+        ],
+        string="Audit Frequency",
+        default="annual",
+    )
+
+    # Certificate Management
+    certificate_valid = fields.Boolean(
+        string="Certificate Valid", compute="_compute_certificate_status"
+    )
+    certificate_number = fields.Char(string="Certificate Number")
+
+    # Facility Information
+    facility_name = fields.Char(string="Facility Name", required=True)
+    facility_address = fields.Text(string="Facility Address")
+    facility_contact = fields.Many2one("res.partner", string="Facility Contact")
+
+    # Compliance Requirements
+    physical_security_verified = fields.Boolean(
+        string="Physical Security Verified", default=False
+    )
+    access_control_verified = fields.Boolean(
+        string="Access Control Verified", default=False
+    )
+    personnel_screening_verified = fields.Boolean(
+        string="Personnel Screening Verified", default=False
+    )
+    destruction_process_verified = fields.Boolean(
+        string="Destruction Process Verified", default=False
+    )
+
+    # Documentation
+    compliance_documentation = fields.Text(string="Compliance Documentation")
+    audit_trail_enabled = fields.Boolean(string="Audit Trail Enabled", default=True)
+    chain_of_custody_maintained = fields.Boolean(
+        string="Chain of Custody Maintained", default=True
+    )
+
+    # Reporting and Analytics
+    compliance_score = fields.Float(
+        string="Compliance Score (%)",
+        digits=(5, 2),
+        compute="_compute_compliance_score",
+    )
+    risk_level = fields.Selection(
+        [
+            ("low", "Low Risk"),
+            ("medium", "Medium Risk"),
+            ("high", "High Risk"),
+            ("critical", "Critical Risk"),
+        ],
+        string="Risk Level",
+        compute="_compute_risk_level",
+    )
+
+    # Audit History
+    audit_history_ids = fields.One2many(
+        "naid.audit.log", "compliance_id", string="Audit History"
+    )
+    last_audit_date = fields.Date(
+        string="Last Audit Date", compute="_compute_last_audit"
+    )
+
+    # Reminder and Notifications
+    audit_reminder = fields.Date(string="Audit Reminder Date")
+    notification_sent = fields.Boolean(string="Notification Sent", default=False)
+
+    # Related Records
+    employee_ids = fields.Many2many("hr.employee", string="Certified Employees")
+    equipment_ids = fields.Many2many(
+        "maintenance.equipment", string="Certified Equipment"
+    )
+
+    @api.depends("certification_date", "expiry_date")
     def _compute_certificate_status(self):
         """Compute if certificate is valid"""
         for record in self:
@@ -106,7 +146,12 @@ class NaidCompliance(models.Model):
             else:
                 record.certificate_valid = False
 
-    @api.depends('physical_security_verified', 'access_control_verified', 'personnel_screening_verified', 'destruction_process_verified')
+    @api.depends(
+        "physical_security_verified",
+        "access_control_verified",
+        "personnel_screening_verified",
+        "destruction_process_verified",
+    )
     def _compute_compliance_score(self):
         """Compute compliance score based on verification checks"""
         for record in self:
@@ -114,30 +159,32 @@ class NaidCompliance(models.Model):
                 record.physical_security_verified,
                 record.access_control_verified,
                 record.personnel_screening_verified,
-                record.destruction_process_verified
+                record.destruction_process_verified,
             ]
             score = (sum(checks) / len(checks)) * 100 if checks else 0
             record.compliance_score = score
 
-    @api.depends('compliance_score', 'certificate_valid')
+    @api.depends("compliance_score", "certificate_valid")
     def _compute_risk_level(self):
         """Compute risk level based on compliance score and certificate status"""
         for record in self:
             if not record.certificate_valid:
-                record.risk_level = 'critical'
+                record.risk_level = "critical"
             elif record.compliance_score < 50:
-                record.risk_level = 'high'
+                record.risk_level = "high"
             elif record.compliance_score < 75:
-                record.risk_level = 'medium'
+                record.risk_level = "medium"
             else:
-                record.risk_level = 'low'
+                record.risk_level = "low"
 
-    @api.depends('audit_history_ids')
+    @api.depends("audit_history_ids")
     def _compute_last_audit(self):
         """Compute last audit date from audit history"""
         for record in self:
             if record.audit_history_ids:
-                record.last_audit_date = max(record.audit_history_ids.mapped('audit_date'))
+                record.last_audit_date = max(
+                    record.audit_history_ids.mapped("audit_date")
+                )
             else:
                 record.last_audit_date = False
 
@@ -261,7 +308,7 @@ class NaidCompliance(models.Model):
         next_audit.activity_schedule(
             "mail.mail_activity_data_todo",
             date_deadline=next_audit_date,
-            summary=f"Annual NAID Compliance Audit Due",
+            summary="Annual NAID Compliance Audit Due",
             note="Annual NAID compliance audit is due. Please conduct comprehensive review and documentation.",
             user_id=self.user_id.id,
         )
@@ -320,7 +367,5 @@ class NaidCompliance(models.Model):
             "context": {
                 "default_compliance_id": self.id,
                 "search_default_compliance_id": self.id,
-            },
-        }
             },
         }

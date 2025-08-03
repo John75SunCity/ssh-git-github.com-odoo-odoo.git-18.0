@@ -23,6 +23,211 @@ class RecordsDepartmentBillingContact(models.Model):
     user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
 
+    # === ENHANCED DEPARTMENT BILLING CONTACT FIELDS ===
+
+    # Contact Information
+    contact_person = fields.Char(string="Contact Person", tracking=True)
+    email = fields.Char(string="Email", tracking=True)
+    phone = fields.Char(string="Phone", tracking=True)
+    mobile = fields.Char(string="Mobile", tracking=True)
+    department_name = fields.Char(
+        string="Department Name", required=True, tracking=True
+    )
+    department_code = fields.Char(string="Department Code", tracking=True)
+
+    # Billing Authority and Approval
+    approval_authority = fields.Boolean(
+        string="Has Approval Authority", default=False, tracking=True
+    )
+    approval_limit = fields.Monetary(
+        string="Approval Limit", currency_field="currency_id", tracking=True
+    )
+    approval_date = fields.Date(string="Last Approval Date", tracking=True)
+    approval_history_ids = fields.One2many(
+        "approval.history", "contact_id", string="Approval History"
+    )
+
+    # Financial Information
+    amount = fields.Monetary(
+        string="Current Amount", currency_field="currency_id", tracking=True
+    )
+    budget_allocated = fields.Monetary(
+        string="Budget Allocated", currency_field="currency_id", tracking=True
+    )
+    budget_remaining = fields.Monetary(
+        string="Budget Remaining",
+        compute="_compute_budget_remaining",
+        store=True,
+        currency_field="currency_id",
+    )
+    monthly_budget = fields.Monetary(
+        string="Monthly Budget", currency_field="currency_id", tracking=True
+    )
+    annual_budget = fields.Monetary(
+        string="Annual Budget", currency_field="currency_id", tracking=True
+    )
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+
+    # Payment Terms and Billing
+    payment_terms = fields.Selection(
+        [
+            ("net_15", "Net 15"),
+            ("net_30", "Net 30"),
+            ("net_45", "Net 45"),
+            ("net_60", "Net 60"),
+            ("immediate", "Immediate"),
+            ("custom", "Custom"),
+        ],
+        string="Payment Terms",
+        default="net_30",
+        tracking=True,
+    )
+    billing_frequency = fields.Selection(
+        [
+            ("weekly", "Weekly"),
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("annually", "Annually"),
+            ("on_demand", "On Demand"),
+        ],
+        string="Billing Frequency",
+        default="monthly",
+        tracking=True,
+    )
+    last_billed_date = fields.Date(string="Last Billed Date", tracking=True)
+    next_billing_date = fields.Date(
+        string="Next Billing Date",
+        compute="_compute_next_billing_date",
+        store=True,
+        tracking=True,
+    )
+
+    # Cost Centers and Accounting
+    cost_center_id = fields.Many2one(
+        "account.analytic.account", string="Cost Center", tracking=True
+    )
+    gl_account_id = fields.Many2one(
+        "account.account", string="GL Account", tracking=True
+    )
+    accounting_period = fields.Selection(
+        [("monthly", "Monthly"), ("quarterly", "Quarterly"), ("yearly", "Yearly")],
+        string="Accounting Period",
+        default="monthly",
+        tracking=True,
+    )
+
+    # Service Configuration
+    service_type = fields.Selection(
+        [
+            ("storage", "Storage Services"),
+            ("retrieval", "Retrieval Services"),
+            ("destruction", "Destruction Services"),
+            ("scanning", "Scanning Services"),
+            ("pickup", "Pickup Services"),
+            ("delivery", "Delivery Services"),
+            ("all", "All Services"),
+        ],
+        string="Service Type",
+        default="all",
+        tracking=True,
+    )
+    service_level = fields.Selection(
+        [
+            ("basic", "Basic"),
+            ("standard", "Standard"),
+            ("premium", "Premium"),
+            ("enterprise", "Enterprise"),
+        ],
+        string="Service Level",
+        default="standard",
+        tracking=True,
+    )
+
+    # Notification and Communication Preferences
+    notification_preferences = fields.Selection(
+        [
+            ("email", "Email Only"),
+            ("phone", "Phone Only"),
+            ("both", "Email and Phone"),
+            ("none", "No Notifications"),
+        ],
+        string="Notification Preferences",
+        default="email",
+        tracking=True,
+    )
+    send_invoice_reminders = fields.Boolean(
+        string="Send Invoice Reminders", default=True, tracking=True
+    )
+    send_budget_alerts = fields.Boolean(
+        string="Send Budget Alerts", default=True, tracking=True
+    )
+    alert_threshold_percentage = fields.Float(
+        string="Budget Alert Threshold (%)", default=80.0, tracking=True
+    )
+
+    # Billing Address
+    billing_address_line1 = fields.Char(string="Billing Address Line 1", tracking=True)
+    billing_address_line2 = fields.Char(string="Billing Address Line 2", tracking=True)
+    billing_city = fields.Char(string="Billing City", tracking=True)
+    billing_state = fields.Char(string="Billing State", tracking=True)
+    billing_zip = fields.Char(string="Billing ZIP", tracking=True)
+    billing_country_id = fields.Many2one(
+        "res.country", string="Billing Country", tracking=True
+    )
+
+    # Performance Metrics
+    average_response_time_hours = fields.Float(
+        string="Average Response Time (Hours)",
+        compute="_compute_performance_metrics",
+        store=True,
+    )
+    approval_efficiency_rating = fields.Selection(
+        [
+            ("excellent", "Excellent"),
+            ("good", "Good"),
+            ("fair", "Fair"),
+            ("poor", "Poor"),
+        ],
+        string="Approval Efficiency",
+        compute="_compute_performance_metrics",
+        store=True,
+    )
+    total_approvals_count = fields.Integer(
+        string="Total Approvals", compute="_compute_approval_stats", store=True
+    )
+    monthly_approval_average = fields.Float(
+        string="Monthly Approval Average", compute="_compute_approval_stats", store=True
+    )
+
+    # Enhanced State Management
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("suspended", "Suspended"),
+            ("confirmed", "Confirmed"),
+            ("done", "Done"),
+            ("archived", "Archived"),
+        ],
+        string="State",
+        default="draft",
+        tracking=True,
+    )
+
+    # Delegation and Backup Contacts
+    backup_contact_id = fields.Many2one(
+        "records.department.billing.contact", string="Backup Contact", tracking=True
+    )
+    delegation_start_date = fields.Date(string="Delegation Start Date", tracking=True)
+    delegation_end_date = fields.Date(string="Delegation End Date", tracking=True)
+    can_delegate_approval = fields.Boolean(
+        string="Can Delegate Approval", default=False, tracking=True
+    )
+
     # Basic state management
     state = fields.Selection(
         [("draft", "Draft"), ("confirmed", "Confirmed"), ("done", "Done")],
@@ -35,6 +240,87 @@ class RecordsDepartmentBillingContact(models.Model):
     description = fields.Text()
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
+
+    @api.depends("budget_allocated", "amount")
+    def _compute_budget_remaining(self):
+        """Compute remaining budget."""
+        for record in self:
+            record.budget_remaining = (record.budget_allocated or 0) - (
+                record.amount or 0
+            )
+
+    @api.depends("last_billed_date", "billing_frequency")
+    def _compute_next_billing_date(self):
+        """Compute next billing date based on frequency."""
+        for record in self:
+            if record.last_billed_date and record.billing_frequency:
+                from datetime import timedelta
+
+                if record.billing_frequency == "weekly":
+                    record.next_billing_date = record.last_billed_date + timedelta(
+                        weeks=1
+                    )
+                elif record.billing_frequency == "monthly":
+                    record.next_billing_date = record.last_billed_date + timedelta(
+                        days=30
+                    )
+                elif record.billing_frequency == "quarterly":
+                    record.next_billing_date = record.last_billed_date + timedelta(
+                        days=90
+                    )
+                elif record.billing_frequency == "annually":
+                    record.next_billing_date = record.last_billed_date + timedelta(
+                        days=365
+                    )
+                else:
+                    record.next_billing_date = False
+            else:
+                record.next_billing_date = False
+
+    @api.depends("approval_history_ids")
+    def _compute_performance_metrics(self):
+        """Compute performance metrics."""
+        for record in self:
+            if record.approval_history_ids:
+                # Calculate average response time
+                response_times = []
+                for approval in record.approval_history_ids:
+                    if approval.response_time_hours:
+                        response_times.append(approval.response_time_hours)
+
+                if response_times:
+                    record.average_response_time_hours = sum(response_times) / len(
+                        response_times
+                    )
+                    avg_time = record.average_response_time_hours
+                    if avg_time <= 2:
+                        record.approval_efficiency_rating = "excellent"
+                    elif avg_time <= 8:
+                        record.approval_efficiency_rating = "good"
+                    elif avg_time <= 24:
+                        record.approval_efficiency_rating = "fair"
+                    else:
+                        record.approval_efficiency_rating = "poor"
+                else:
+                    record.average_response_time_hours = 0
+                    record.approval_efficiency_rating = "fair"
+            else:
+                record.average_response_time_hours = 0
+                record.approval_efficiency_rating = "fair"
+
+    @api.depends("approval_history_ids")
+    def _compute_approval_stats(self):
+        """Compute approval statistics."""
+        for record in self:
+            record.total_approvals_count = len(record.approval_history_ids)
+            if record.approval_history_ids:
+                # Calculate monthly average (assuming created in last 12 months)
+                months_active = 12  # Simplified calculation
+                record.monthly_approval_average = (
+                    record.total_approvals_count / months_active
+                )
+            else:
+                record.monthly_approval_average = 0
 
     def action_approve_charge(self):
         """Approve individual charge for department."""
