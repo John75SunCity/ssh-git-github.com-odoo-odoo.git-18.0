@@ -282,7 +282,7 @@ class PortalRequest(models.Model):
         "signed.document", "request_id", string="Signed Documents"
     )
     certificate_required = fields.Boolean(string="Certificate Required")
-    certificate_id = fields.Many2one("certificate", "request_id", string="Certificate")
+    certificate_id = fields.Many2one("naid.certificate", string="Certificate")
     tracking_number = fields.Char(string="Tracking Number")
     communication_log_ids = fields.One2many(
         "communication.log", "request_id", string="Communication Log"
@@ -349,9 +349,6 @@ class PortalRequest(models.Model):
     customer_contact_method = fields.Selection(
         [("email", "Email"), ("phone", "Phone"), ("portal", "Portal")], default="email"
     )
-    customer_notification_sent = fields.Boolean(
-        "Customer Notification Sent", default=False
-    )
     department_approval_required = fields.Boolean(
         "Department Approval Required", default=False
     )
@@ -375,7 +372,6 @@ class PortalRequest(models.Model):
     impact_assessment = fields.Selection(
         [("low", "Low"), ("medium", "Medium"), ("high", "High")], default="low"
     )
-    internal_notes = fields.Text("Internal Notes")
     legal_review_required = fields.Boolean("Legal Review Required", default=False)
     manager_approval_required = fields.Boolean(
         "Manager Approval Required", default=False
@@ -389,7 +385,6 @@ class PortalRequest(models.Model):
         ],
         default="customer",
     )
-    processing_notes = fields.Text("Processing Notes")
     quality_assurance_required = fields.Boolean(
         "Quality Assurance Required", default=False
     )

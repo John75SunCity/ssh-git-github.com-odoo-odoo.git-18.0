@@ -56,15 +56,11 @@ class ShreddingPicklistItem(models.Model):
     _rec_name = "display_name"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
     )
     sequence = fields.Integer(string="Sequence", default=10)
 
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
-    active = fields.Boolean(default=True)
 
     # Workflow relationships
     container_id = fields.Many2one("records.container", string="Container")
@@ -90,9 +86,6 @@ class ShreddingPicklistItem(models.Model):
     )
 
     # Common fields
-    description = fields.Text()
-    notes = fields.Text()
-    date = fields.Date(default=fields.Date.today)
 
     @api.depends("name", "container_id", "document_id")
     def _compute_display_name(self):

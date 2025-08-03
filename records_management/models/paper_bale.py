@@ -197,7 +197,6 @@ class PaperBale(models.Model):
         default="mixed",
     )
     storage_location = fields.Char(string="Storage Location")
-    trailer_id = fields.Many2one("records.vehicle", string="Trailer")
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
     )
@@ -243,7 +242,6 @@ class PaperBale(models.Model):
     chain_of_custody_verified = fields.Boolean('Chain of Custody Verified', default=False)
     confidentiality_level = fields.Selection([('public', 'Public'), ('internal', 'Internal'), ('confidential', 'Confidential')], default='internal')
     contamination_assessment = fields.Text('Contamination Assessment')
-    contamination_level = fields.Selection([('none', 'None'), ('low', 'Low'), ('medium', 'Medium'), ('high', 'High')], default='none')
     customer_approval_required = fields.Boolean('Customer Approval Required', default=False)
     customer_notification_sent = fields.Boolean('Customer Notification Sent', default=False)
     destruction_method_verified = fields.Boolean('Destruction Method Verified', default=False)

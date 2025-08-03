@@ -232,6 +232,7 @@ class RecordsRetentionPolicy(models.Model):
     risk_assessment_completed = fields.Boolean('Risk Assessment Completed', default=False)
     stakeholder_notification_required = fields.Boolean('Stakeholder Notification Required', default=True)
     version_control_enabled = fields.Boolean('Version Control Enabled', default=True)
+    # Records Retention Policy Management Fields
 
 
     def action_view_exceptions(self):

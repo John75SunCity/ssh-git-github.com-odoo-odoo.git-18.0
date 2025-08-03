@@ -269,20 +269,6 @@ class RecordsDocument(models.Model):
     urgent_retrieval = fields.Boolean(string="Urgent Retrieval", tracking=True)
 
     # Enhanced State Management
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("received", "Received"),
-            ("processing", "Processing"),
-            ("stored", "Stored"),
-            ("retrieved", "Retrieved"),
-            ("destroyed", "Destroyed"),
-            ("archived", "Archived"),
-        ],
-        string="Status",
-        default="draft",
-        tracking=True,
-    )
 
     @api.depends("name")
     def _compute_display_name(self):
@@ -588,9 +574,7 @@ class RecordsDocument(models.Model):
     document_integrity_verified = fields.Boolean('Document Integrity Verified', default=False)
     document_size_mb = fields.Float('Document Size (MB)', default=0.0)
     document_status = fields.Selection([('active', 'Active'), ('archived', 'Archived'), ('pending_destruction', 'Pending Destruction')], default='active')
-    file_format = fields.Selection([('pdf', 'PDF'), ('doc', 'DOC'), ('docx', 'DOCX'), ('xls', 'XLS'), ('xlsx', 'XLSX'), ('other', 'Other')], default='pdf')
     indexing_completed = fields.Boolean('Indexing Completed', default=False)
-    last_accessed_date = fields.Datetime('Last Accessed Date')
     legal_hold_applied = fields.Boolean('Legal Hold Applied', default=False)
     metadata_extraction_completed = fields.Boolean('Metadata Extraction Completed', default=False)
     ocr_processing_completed = fields.Boolean('OCR Processing Completed', default=False)
@@ -603,6 +587,7 @@ class RecordsDocument(models.Model):
     search_keywords = fields.Text('Search Keywords')
     security_marking = fields.Selection([('unclassified', 'Unclassified'), ('restricted', 'Restricted'), ('confidential', 'Confidential'), ('secret', 'Secret')], default='unclassified')
     version_control_enabled = fields.Boolean('Version Control Enabled', default=False)
+    # Document Management Fields
 
 
     def action_unmark_permanent(self):

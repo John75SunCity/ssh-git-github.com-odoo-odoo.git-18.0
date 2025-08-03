@@ -181,7 +181,6 @@ class CustomerNegotiatedRates(models.Model):
     @api.depends("expiry_date")
     def _compute_days_until_expiry(self):
         """Calculate days until expiry"""
-        today = fields.Date.today()
         for record in self:
             if record.expiry_date:
                 delta = record.expiry_date - today

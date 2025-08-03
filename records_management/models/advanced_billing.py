@@ -94,16 +94,8 @@ class RecordsAdvancedBillingPeriod(models.Model):
     _description = "Advanced Billing Period"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
-    name = fields.Char(string="Name", required=True)
     start_date = fields.Date(string="Start Date", required=True)
     end_date = fields.Date(string="End Date", required=True)
-    company_id = fields.Many2one(
-        "res.company", string="Company", default=lambda self: self.env.company
-    )
-    user_id = fields.Many2one(
-        "res.users", string="User", default=lambda self: self.env.user
-    )
-    active = fields.Boolean(string="Active", default=True)
 
     billing_ids = fields.One2many(
         "advanced.billing", "billing_period_id", string="Billings"

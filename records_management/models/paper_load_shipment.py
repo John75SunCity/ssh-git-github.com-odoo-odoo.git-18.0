@@ -433,7 +433,6 @@ class PaperLoadShipment(models.Model):
         default="standard",
     )
     load_securing_equipment = fields.Text("Load Securing Equipment")
-    manifest_number = fields.Char("Manifest Number")
     pickup_confirmation_required = fields.Boolean(
         "Pickup Confirmation Required", default=True
     )
@@ -443,7 +442,6 @@ class PaperLoadShipment(models.Model):
     shipment_tracking_enabled = fields.Boolean(
         "Shipment Tracking Enabled", default=True
     )
-    special_handling_instructions = fields.Text("Special Handling Instructions")
     temperature_monitoring_required = fields.Boolean(
         "Temperature Monitoring Required", default=False
     )
@@ -461,6 +459,8 @@ class PaperLoadShipment(models.Model):
     weight_distribution_verified = fields.Boolean(
         "Weight Distribution Verified", default=False
     )
+
+    # Paper Load Shipment Management Fields
 
     def action_activate(self):
         """Activate the record."""

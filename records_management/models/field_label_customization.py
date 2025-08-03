@@ -109,6 +109,7 @@ class FieldLabelCustomization(models.Model):
         "User Specific Customization", default=False
     )
     validation_rules_enabled = fields.Boolean("Validation Rules Enabled", default=False)
+    # Field Label Customization Fields
 
     def action_activate(self):
         """Activate the record."""

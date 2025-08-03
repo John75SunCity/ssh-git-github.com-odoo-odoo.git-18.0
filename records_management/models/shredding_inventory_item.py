@@ -77,9 +77,6 @@ class ShreddingInventoryItem(models.Model):
     notes = fields.Text(string="Notes")
     date = fields.Date(string="Date", default=fields.Date.today)
     # === COMPREHENSIVE MISSING FIELDS ===
-    active = fields.Boolean(string='Flag', default=True, tracking=True)
-    sequence = fields.Integer(string='Sequence', default=10, tracking=True)
-    notes = fields.Text(string='Description', tracking=True)
     state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
     created_date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
     updated_date = fields.Date(string='Date', tracking=True)
@@ -105,6 +102,7 @@ class ShreddingInventoryItem(models.Model):
     quality_verification_completed = fields.Boolean('Quality Verification Completed', default=False)
     security_level_verified = fields.Boolean('Security Level Verified', default=False)
     witness_verification_required = fields.Boolean('Witness Verification Required', default=False)
+    # Shredding Inventory Item Fields
 
 
 

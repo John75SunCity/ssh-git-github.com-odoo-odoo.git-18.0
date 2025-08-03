@@ -52,16 +52,19 @@ class KeyRestrictionChecker(models.Model):
     last_check_date = fields.Date(string="Last Check Date")
     authorized_by = fields.Many2one("res.users", string="Authorized By")
     # Key Restriction Checker Fields
-    action_required = fields.Boolean('Action Required', default=False)
-    bin_identifier = fields.Char('Bin Identifier')
-    check_performed = fields.Boolean('Check Performed', default=False)
-    customer_name = fields.Char('Customer Name')
-    key_allowed = fields.Boolean('Key Allowed', default=True)
-    access_level_verified = fields.Boolean('Access Level Verified', default=False)
-    authorization_bypass_used = fields.Boolean('Authorization Bypass Used', default=False)
-    override_reason = fields.Text('Override Reason')
-    restriction_type = fields.Selection([('temporal', 'Temporal'), ('user_based', 'User Based'), ('location_based', 'Location Based')], default='user_based')
-    security_violation_detected = fields.Boolean('Security Violation Detected', default=False)
+    action_required = fields.Boolean("Action Required", default=False)
+    bin_identifier = fields.Char("Bin Identifier")
+    check_performed = fields.Boolean("Check Performed", default=False)
+    customer_name = fields.Char("Customer Name")
+    key_allowed = fields.Boolean("Key Allowed", default=True)
+    access_level_verified = fields.Boolean("Access Level Verified", default=False)
+    authorization_bypass_used = fields.Boolean(
+        "Authorization Bypass Used", default=False
+    )
+    override_reason = fields.Text("Override Reason")
+    security_violation_detected = fields.Boolean(
+        "Security Violation Detected", default=False
+    )
 
     def action_check_customer(self):
         """Check customer restrictions."""

@@ -223,6 +223,7 @@ class BinKeyManagement(models.Model):
     lock_change_required = fields.Boolean('Lock Change Required', default=False)
     master_key_override = fields.Boolean('Master Key Override Available', default=False)
     multi_user_access_allowed = fields.Boolean('Multi-user Access Allowed', default=False)
+    # Bin Key Management Fields
 
 
     def action_replace_key(self):

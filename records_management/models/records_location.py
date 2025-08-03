@@ -64,7 +64,6 @@ class RecordsLocation(models.Model):
         "records.container", "location_id", string="Containers"
     )
     # === COMPREHENSIVE MISSING FIELDS ===
-    active = fields.Boolean(string='Flag', default=True, tracking=True)
     sequence = fields.Integer(string='Sequence', default=10, tracking=True)
     notes = fields.Text(string='Description', tracking=True)
     state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
@@ -92,6 +91,7 @@ class RecordsLocation(models.Model):
     location_certification = fields.Char('Location Certification')
     security_level = fields.Selection([('basic', 'Basic'), ('enhanced', 'Enhanced'), ('maximum', 'Maximum')], default='basic')
     temperature_humidity_controlled = fields.Boolean('Temperature/Humidity Controlled', default=False)
+    # Records Location Management Fields
 
 
 

@@ -31,6 +31,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     justification_notes = fields.Text('Justification Notes')
     legal_basis = fields.Selection([('regulatory', 'Regulatory'), ('litigation', 'Litigation'), ('historical', 'Historical')], default='regulatory')
     notification_sent = fields.Boolean('Notification Sent', default=False)
+    # Records Permanent Flag Wizard Fields
 
 
     def action_confirm(self):

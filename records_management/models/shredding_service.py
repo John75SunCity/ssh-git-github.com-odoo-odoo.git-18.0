@@ -814,9 +814,10 @@ class ShreddingService(models.Model):
             },
         }
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set default values."""
-        if not vals.get("name"):
-            vals["name"] = _("New Shredding Service")
-        return super().create(vals)
+        for vals in vals_list:
+            if not vals.get("name"):
+                vals["name"] = _("New Shredding Service")
+        return super().create(vals_list)

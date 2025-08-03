@@ -266,9 +266,6 @@ class PortalFeedback(models.Model):
     )
 
     # Company and User
-    company_id = fields.Many2one(
-        "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users", string="Assigned User", default=lambda self: self.env.user
     )
@@ -286,20 +283,6 @@ class PortalFeedback(models.Model):
         string="Display Name", compute="_compute_display_name", store=True
     )
     # === COMPREHENSIVE MISSING FIELDS ===
-    active = fields.Boolean(string="Flag", default=True, tracking=True)
-    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
-    notes = fields.Text(string="Description", tracking=True)
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("in_progress", "In Progress"),
-            ("completed", "Completed"),
-            ("cancelled", "Cancelled"),
-        ],
-        string="Status",
-        default="draft",
-        tracking=True,
-    )
     created_date = fields.Date(string="Date", default=fields.Date.today, tracking=True)
     updated_date = fields.Date(string="Date", tracking=True)
     # === BUSINESS CRITICAL FIELDS ===
@@ -431,20 +414,9 @@ class PortalFeedback(models.Model):
     feedback_subcategory_id = fields.Many2one(
         "feedback.subcategory", "Feedback Subcategory"
     )
-    feedback_type = fields.Selection(
-        [
-            ("compliment", "Compliment"),
-            ("complaint", "Complaint"),
-            ("suggestion", "Suggestion"),
-            ("inquiry", "Inquiry"),
-        ],
-        default="inquiry",
-    )
-    follow_up_required = fields.Boolean("Follow-up Required", default=False)
     internal_escalation_required = fields.Boolean(
         "Internal Escalation Required", default=False
     )
-    nps_score = fields.Integer("NPS Score", help="Net Promoter Score (-100 to 100)")
     quality_rating = fields.Selection(
         [
             ("1", "1 - Poor"),
@@ -455,7 +427,6 @@ class PortalFeedback(models.Model):
         ],
         "Quality Rating",
     )
-    resolution_notes = fields.Text("Resolution Notes")
     response_deadline = fields.Datetime("Response Deadline")
     response_sent = fields.Boolean("Response Sent", default=False)
     response_time_target = fields.Float("Response Time Target (Hours)", default=24.0)

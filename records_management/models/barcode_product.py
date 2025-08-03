@@ -396,9 +396,6 @@ class BarcodeProduct(models.Model):
     )
 
     # Tracking and Analytics
-    average_storage_duration = fields.Float(
-        string="Average Storage Duration (days)", compute="_compute_analytics"
-    )
     usage_count = fields.Integer(string="Usage Count", default=0)
     last_used_date = fields.Date(string="Last Used Date")
 
@@ -683,15 +680,6 @@ class BarcodeProduct(models.Model):
             ("critical", "Critical"),
         ],
         default="medium",
-    )
-    product_lifecycle_stage = fields.Selection(
-        [
-            ("active", "Active"),
-            ("inactive", "Inactive"),
-            ("retention", "Retention"),
-            ("disposal", "Disposal"),
-        ],
-        default="active",
     )
     quality_control_passed = fields.Boolean("Quality Control Passed", default=True)
     records_retention_category = fields.Selection(

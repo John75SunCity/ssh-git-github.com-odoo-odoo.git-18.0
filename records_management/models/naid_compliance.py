@@ -144,7 +144,6 @@ class NaidCompliance(models.Model):
     auto_renewal = fields.Boolean(string="Auto Renewal", default=False, tracking=True)
 
     # Enhanced Audit Management
-    last_audit_date = fields.Date(string="Last Audit Date", tracking=True)
     next_audit_date = fields.Date(
         string="Next Audit Date", compute="_compute_next_audit_date", store=True
     )
@@ -204,35 +203,15 @@ class NaidCompliance(models.Model):
     )
 
     # Audit Records and History
-    audit_history_ids = fields.One2many(
-        "naid.audit.record", "compliance_id", string="Audit History"
-    )
     certificate_ids = fields.One2many(
         "naid.certificate", "compliance_id", string="Certificates"
     )
 
     # Risk Assessment
-    risk_level = fields.Selection(
-        [
-            ("low", "Low Risk"),
-            ("medium", "Medium Risk"),
-            ("high", "High Risk"),
-            ("critical", "Critical Risk"),
-        ],
-        string="Risk Level",
-        default="medium",
-        tracking=True,
-    )
     risk_assessment_date = fields.Date(string="Risk Assessment Date")
     mitigation_plans = fields.Text(string="Mitigation Plans")
 
     # Compliance Scoring
-    compliance_score = fields.Float(
-        string="Compliance Score (%)",
-        digits=(5, 2),
-        compute="_compute_compliance_score",
-        store=True,
-    )
     security_score = fields.Float(string="Security Score (%)", digits=(5, 2))
     operational_score = fields.Float(string="Operational Score (%)", digits=(5, 2))
 
@@ -336,9 +315,6 @@ class NaidCompliance(models.Model):
 
     # Compliance Dates and Deadlines
     last_review_date = fields.Date(string="Last Review Date")
-    next_review_date = fields.Date(
-        string="Next Review Date", compute="_compute_next_review_date", store=True
-    )
     compliance_deadline = fields.Date(string="Compliance Deadline")
 
     # Geographic and Regional
@@ -583,7 +559,6 @@ class NaidCompliance(models.Model):
         self.ensure_one()
 
         # Calculate next audit date (typically annual)
-        next_audit_date = fields.Date.today().replace(year=fields.Date.today().year + 1)
 
     # === BUSINESS CRITICAL FIELDS ===
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
@@ -622,7 +597,6 @@ class NaidCompliance(models.Model):
     benchmark = fields.Selection([('aaa', 'NAID AAA'), ('aa', 'NAID AA'), ('a', 'NAID A')], default='aaa')
     certificate_expiration_date = fields.Date('Certificate Expiration Date')
     certificate_issue_date = fields.Date('Certificate Issue Date')
-    certificate_number = fields.Char('Certificate Number')
     certificate_status = fields.Selection([('active', 'Active'), ('expired', 'Expired'), ('suspended', 'Suspended'), ('revoked', 'Revoked')], default='active')
     compliance_documentation_complete = fields.Boolean('Compliance Documentation Complete', default=False)
     compliance_manager_id = fields.Many2one('hr.employee', 'Compliance Manager')
@@ -637,11 +611,9 @@ class NaidCompliance(models.Model):
     equipment_certification_current = fields.Boolean('Equipment Certification Current', default=False)
     facility_security_assessment = fields.Text('Facility Security Assessment')
     internal_audit_frequency = fields.Selection([('monthly', 'Monthly'), ('quarterly', 'Quarterly'), ('annual', 'Annual')], default='quarterly')
-    last_audit_date = fields.Date('Last Audit Date')
     next_audit_due_date = fields.Date('Next Audit Due Date')
     non_conformance_count = fields.Integer('Non-conformance Count', default=0)
     operational_procedures_current = fields.Boolean('Operational Procedures Current', default=False)
-    quality_management_system = fields.Selection([('iso_9001', 'ISO 9001'), ('custom', 'Custom'), ('none', 'None')], default='iso_9001')
     regulatory_compliance_verified = fields.Boolean('Regulatory Compliance Verified', default=False)
     risk_assessment_completed = fields.Boolean('Risk Assessment Completed', default=False)
     security_clearance_level = fields.Selection([('public', 'Public'), ('secret', 'Secret'), ('top_secret', 'Top Secret')], default='public')

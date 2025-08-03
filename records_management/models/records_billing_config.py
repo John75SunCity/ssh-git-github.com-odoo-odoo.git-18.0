@@ -448,19 +448,15 @@ class RecordsBillingConfig(models.Model):
                     # Add 90 days as approximation
                     next_date = start_date
                     while next_date <= today:
-                        next_date = fields.Date.add(next_date, days=90)
                 elif record.billing_frequency == "semi_annually":
                     # Add 180 days as approximation
                     next_date = start_date
                     while next_date <= today:
-                        next_date = fields.Date.add(next_date, days=180)
                 elif record.billing_frequency == "annually":
                     # Add 365 days as approximation
                     next_date = start_date
                     while next_date <= today:
-                        next_date = fields.Date.add(next_date, days=365)
                 else:
-                    next_date = fields.Date.add(start_date, days=30)
 
                 record.next_billing_date = next_date
             else:
@@ -497,17 +493,12 @@ class RecordsBillingConfig(models.Model):
     approval_user_ids = fields.Many2many('res.users', string='Approval Users')
     escalation_enabled = fields.Boolean(string='Escalation Enabled', default=False)
     # Advanced Billing Configuration Fields
-    accounting_system_sync = fields.Boolean('Sync with Accounting System', default=True)
     amount = fields.Monetary('Total Amount', currency_field='currency_id')
-    annual_revenue = fields.Monetary('Annual Revenue', currency_field='currency_id')
-    audit_trail_enabled = fields.Boolean('Audit Trail Enabled', default=True)
-    auto_apply = fields.Boolean('Auto Apply Rates', default=False)
     auto_billing_enabled = fields.Boolean('Auto Billing Enabled', default=True)
     billing_alert_threshold = fields.Float('Billing Alert Threshold', default=1000.0)
     billing_automation_level = fields.Selection([('manual', 'Manual'), ('semi', 'Semi-Auto'), ('full', 'Fully Automated')], default='semi')
     billing_cycle_id = fields.Many2one('billing.cycle', 'Billing Cycle')
     billing_discount_percentage = fields.Float('Billing Discount %', default=0.0)
-    billing_frequency = fields.Selection([('monthly', 'Monthly'), ('quarterly', 'Quarterly'), ('annual', 'Annual')], default='monthly')
     billing_method = fields.Selection([('invoice', 'Invoice'), ('auto_charge', 'Auto Charge')], default='invoice')
     billing_notification_enabled = fields.Boolean('Billing Notifications', default=True)
     billing_override_allowed = fields.Boolean('Override Allowed', default=False)
@@ -515,36 +506,23 @@ class RecordsBillingConfig(models.Model):
     billing_preferences = fields.Text('Billing Preferences')
     billing_rules_version = fields.Char('Billing Rules Version')
     billing_tier = fields.Selection([('basic', 'Basic'), ('premium', 'Premium'), ('enterprise', 'Enterprise')], default='basic')
-    credit_limit_amount = fields.Monetary('Credit Limit', currency_field='currency_id')
     credit_limit_warning = fields.Boolean('Credit Limit Warning', default=True)
-    currency_id = fields.Many2one('res.currency', 'Currency', default=lambda self: self.env.company.currency_id)
     custom_billing_rules = fields.Text('Custom Billing Rules')
-    customer_category_ids = fields.Many2many('res.partner.category', 'billing_config_category_rel', 'config_id', 'category_id', 'Customer Categories')
     customer_tier_level = fields.Selection([('bronze', 'Bronze'), ('silver', 'Silver'), ('gold', 'Gold'), ('platinum', 'Platinum')], default='bronze')
-    default_payment_terms_id = fields.Many2one('account.payment.term', 'Default Payment Terms')
     department_allocation_rules = fields.Text('Department Allocation Rules')
     discount_eligibility_rules = fields.Text('Discount Eligibility Rules')
-    early_payment_discount = fields.Float('Early Payment Discount %', default=0.0)
     escalation_threshold_amount = fields.Monetary('Escalation Threshold', currency_field='currency_id')
     expense_tracking_enabled = fields.Boolean('Expense Tracking', default=True)
     invoice_consolidation_period = fields.Selection([('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')], default='monthly')
-    invoice_delivery_method = fields.Selection([('email', 'Email'), ('portal', 'Portal'), ('mail', 'Mail')], default='email')
     late_fee_calculation = fields.Text('Late Fee Calculation Rules')
     minimum_billing_amount = fields.Monetary('Minimum Billing Amount', currency_field='currency_id')
     payment_gateway_integration = fields.Boolean('Payment Gateway Integration', default=False)
     prepaid_balance_warning = fields.Boolean('Prepaid Balance Warning', default=True)
-    pricing_tier_ids = fields.Many2many('pricing.tier', 'billing_pricing_tier_rel', 'config_id', 'tier_id', 'Pricing Tiers')
     pro_rata_calculation = fields.Boolean('Pro-rata Calculation', default=True)
-    revenue_recognition_method = fields.Selection([('immediate', 'Immediate'), ('deferred', 'Deferred'), ('milestone', 'Milestone')], default='immediate')
-    service_catalog_ids = fields.Many2many('service.catalog', 'billing_service_catalog_rel', 'config_id', 'service_id', 'Service Catalog')
     tax_calculation_method = fields.Selection([('inclusive', 'Tax Inclusive'), ('exclusive', 'Tax Exclusive')], default='exclusive')
     usage_tracking_enabled = fields.Boolean('Usage Tracking', default=True)
-    volume_discount_enabled = fields.Boolean('Volume Discount', default=False)
     
     # Framework Integration Fields
-    activity_ids = fields.One2many('mail.activity', 'res_id', 'Activities', domain=[('res_model', '=', 'records.billing.config')])
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', 'Followers', domain=[('res_model', '=', 'records.billing.config')])
-    message_ids = fields.One2many('mail.message', 'res_id', 'Messages', domain=[('res_model', '=', 'records.billing.config')])
 
 
 

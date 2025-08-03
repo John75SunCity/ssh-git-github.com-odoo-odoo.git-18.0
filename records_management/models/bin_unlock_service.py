@@ -49,20 +49,6 @@ class BinUnlockService(models.Model):
         string="Display Name", compute="_compute_display_name", store=True
     )
     # === COMPREHENSIVE MISSING FIELDS ===
-    active = fields.Boolean(string="Flag", default=True, tracking=True)
-    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
-    notes = fields.Text(string="Description", tracking=True)
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("in_progress", "In Progress"),
-            ("completed", "Completed"),
-            ("cancelled", "Cancelled"),
-        ],
-        string="Status",
-        default="draft",
-        tracking=True,
-    )
     created_date = fields.Date(string="Date", default=fields.Date.today, tracking=True)
     updated_date = fields.Date(string="Date", tracking=True)
     # === BUSINESS CRITICAL FIELDS ===
@@ -127,6 +113,7 @@ class BinUnlockService(models.Model):
     time_limit_exceeded = fields.Boolean("Time Limit Exceeded", default=False)
     unlock_authorization_code = fields.Char("Unlock Authorization Code")
     witness_required = fields.Boolean("Witness Required", default=False)
+    # Bin Unlock Service Fields
 
     def action_activate(self):
         """Activate the record."""

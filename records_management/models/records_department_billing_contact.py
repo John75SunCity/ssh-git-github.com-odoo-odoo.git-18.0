@@ -229,12 +229,6 @@ class RecordsDepartmentBillingContact(models.Model):
     )
 
     # Basic state management
-    state = fields.Selection(
-        [("draft", "Draft"), ("confirmed", "Confirmed"), ("done", "Done")],
-        string="State",
-        default="draft",
-        tracking=True,
-    )
 
     # Common fields
     description = fields.Text()
@@ -257,7 +251,6 @@ class RecordsDepartmentBillingContact(models.Model):
     contact_authorization_level = fields.Selection([('view', 'View Only'), ('approve', 'Approve'), ('admin', 'Admin')], default='view')
     contact_preferences = fields.Text('Contact Preferences')
     cost_center_access = fields.Many2many('account.analytic.account', 'billing_contact_cost_center_rel', 'contact_id', 'cost_center_id', 'Cost Center Access')
-    currency_id = fields.Many2one('res.currency', 'Currency', default=lambda self: self.env.company.currency_id)
     department_budget_responsibility = fields.Boolean('Department Budget Responsibility', default=False)
     emergency_contact_backup = fields.Many2one('res.partner', 'Emergency Contact Backup')
     expense_approval_workflow = fields.Selection([('single', 'Single Approval'), ('dual', 'Dual Approval'), ('committee', 'Committee')], default='single')
@@ -273,6 +266,7 @@ class RecordsDepartmentBillingContact(models.Model):
     signature_authority = fields.Boolean('Signature Authority', default=False)
     spending_limit_override = fields.Boolean('Spending Limit Override', default=False)
     vendor_approval_authority = fields.Boolean('Vendor Approval Authority', default=False)
+    # Department Billing Contact Fields
 
 
     @api.depends("budget_allocated", "amount")

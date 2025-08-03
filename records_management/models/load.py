@@ -149,20 +149,6 @@ class Load(models.Model):
     special_instructions = fields.Text(string="Special Instructions")
 
     # Load State Management (Enhanced)
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("ready", "Ready for Loading"),
-            ("loading", "Loading in Progress"),
-            ("shipped", "Shipped"),
-            ("delivered", "Delivered"),
-            ("sold", "Sold"),
-            ("cancelled", "Cancelled"),
-        ],
-        string="Status",
-        default="draft",
-        tracking=True,
-    )
 
     # Relationships
     bale_ids = fields.One2many("paper.bale", "load_id", string="Paper Bales")

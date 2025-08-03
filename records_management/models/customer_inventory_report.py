@@ -36,10 +36,7 @@ class CustomerInventoryReport(models.Model):
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
     # === COMPREHENSIVE MISSING FIELDS ===
-    active = fields.Boolean(string='Flag', default=True, tracking=True)
     sequence = fields.Integer(string='Sequence', default=10, tracking=True)
-    notes = fields.Text(string='Description', tracking=True)
-    state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
     created_date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
     updated_date = fields.Date(string='Date', tracking=True)
     # === BUSINESS CRITICAL FIELDS ===
@@ -63,6 +60,7 @@ class CustomerInventoryReport(models.Model):
     pending_retrieval_count = fields.Integer('Pending Retrieval Count', default=0)
     retention_policy_violations = fields.Integer('Retention Policy Violations', default=0)
     total_storage_cost = fields.Monetary('Total Storage Cost', currency_field='currency_id')
+    # Customer Inventory Report Fields
 
 
 

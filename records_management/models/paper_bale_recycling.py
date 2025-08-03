@@ -49,20 +49,6 @@ class PaperBaleRecycling(models.Model):
         string="Display Name", compute="_compute_display_name", store=True
     )
     # === COMPREHENSIVE MISSING FIELDS ===
-    active = fields.Boolean(string="Flag", default=True, tracking=True)
-    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
-    notes = fields.Text(string="Description", tracking=True)
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("in_progress", "In Progress"),
-            ("completed", "Completed"),
-            ("cancelled", "Cancelled"),
-        ],
-        string="Status",
-        default="draft",
-        tracking=True,
-    )
     created_date = fields.Date(string="Date", default=fields.Date.today, tracking=True)
     updated_date = fields.Date(string="Date", tracking=True)
     # === BUSINESS CRITICAL FIELDS ===
@@ -141,6 +127,8 @@ class PaperBaleRecycling(models.Model):
         ],
         default="mixed",
     )
+
+    # Paper Bale Recycling Management Fields
 
     def action_activate(self):
         """Activate the record."""

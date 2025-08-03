@@ -156,58 +156,22 @@ class CustomerBillingProfile(models.Model):
             else:
                 record.contact_count = 0
 
-    storage_bill_in_advance = fields.Boolean(
-        string="Bill Storage in Advance", default=True, tracking=True
-    )
-    storage_advance_months = fields.Integer(
-        string="Storage Advance Months", default=1, tracking=True
-    )
 
     # ==========================================
     # SERVICE BILLING CONFIGURATION
     # ==========================================
-    service_billing_cycle = fields.Selection(
-        [
-            ("monthly", "Monthly"),
-            ("quarterly", "Quarterly"),
-            ("semi_annual", "Semi-Annual"),
-            ("annual", "Annual"),
-            ("on_demand", "On Demand"),
-        ],
-        string="Service Billing Cycle",
-        default="monthly",
-        required=True,
-        tracking=True,
-    )
 
     # ==========================================
     # PREPAID BILLING OPTIONS
     # ==========================================
-    prepaid_enabled = fields.Boolean(string="Prepaid Billing Enabled", tracking=True)
-    prepaid_months = fields.Integer(string="Prepaid Months", default=12, tracking=True)
-    prepaid_discount_percent = fields.Float(
-        string="Prepaid Discount %", digits=(5, 2), tracking=True
-    )
 
     # ==========================================
     # BILLING SCHEDULE
     # ==========================================
-    billing_day = fields.Integer(
-        string="Billing Day of Month", default=1, required=True, tracking=True
-    )
-    invoice_due_days = fields.Integer(
-        string="Invoice Due Days", default=30, required=True, tracking=True
-    )
 
     # ==========================================
     # AUTOMATION SETTINGS
     # ==========================================
-    auto_generate_storage_invoices = fields.Boolean(
-        string="Auto Generate Storage Invoices", default=True, tracking=True
-    )
-    auto_generate_service_invoices = fields.Boolean(
-        string="Auto Generate Service Invoices", default=True, tracking=True
-    )
     auto_send_invoices = fields.Boolean(
         string="Auto Send Invoices", default=False, tracking=True
     )
@@ -218,7 +182,6 @@ class CustomerBillingProfile(models.Model):
     # ==========================================
     # PAYMENT TERMS
     # ==========================================
-    payment_term_id = fields.Many2one("account.payment.term", string="Payment Terms")
 
     # ==========================================
     # RELATED RECORDS
@@ -236,9 +199,6 @@ class CustomerBillingProfile(models.Model):
         for record in self:
             record.contact_count = len(record.billing_contact_ids)
 
-    contact_count = fields.Integer(
-        string="Contact Count", compute="_compute_contact_count"
-    )
 
     @api.depends("storage_billing_cycle", "storage_advance_months")
     def _compute_next_storage_billing_date(self):
@@ -248,25 +208,10 @@ class CustomerBillingProfile(models.Model):
             # For now, just set to False - implement date calculation as needed
             record.next_storage_billing_date = False
 
-    next_storage_billing_date = fields.Date(
-        string="Next Storage Billing Date", compute="_compute_next_storage_billing_date"
-    )
 
     # ==========================================
     # WORKFLOW MANAGEMENT
     # ==========================================
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("active", "Active"),
-            ("suspended", "Suspended"),
-            ("terminated", "Terminated"),
-        ],
-        string="Status",
-        default="draft",
-        tracking=True,
-        required=True,
-    )
 
     # ==========================================
     # ONCHANGE METHODS
@@ -530,7 +475,6 @@ class BillingContact(models.Model):
     # ==========================================
     # CORE FIELDS
     # ==========================================
-    name = fields.Char(string="Contact Name", required=True)
     email = fields.Char(string="Email", required=True)
     phone = fields.Char(string="Phone")
 
@@ -561,7 +505,6 @@ class BillingContact(models.Model):
     # ==========================================
     primary_contact = fields.Boolean(string="Primary Contact", default=False)
     sequence = fields.Integer(string="Sequence", default=10)
-    active = fields.Boolean(default=True)
 
     # ==========================================
     # VALIDATION

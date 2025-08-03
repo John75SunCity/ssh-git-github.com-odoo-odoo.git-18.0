@@ -34,10 +34,7 @@ class ShreddingHardDrive(models.Model):
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
     # === COMPREHENSIVE MISSING FIELDS ===
-    active = fields.Boolean(string='Flag', default=True, tracking=True)
     sequence = fields.Integer(string='Sequence', default=10, tracking=True)
-    notes = fields.Text(string='Description', tracking=True)
-    state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
     created_date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
     updated_date = fields.Date(string='Date', tracking=True)
     # === BUSINESS CRITICAL FIELDS ===
@@ -67,6 +64,7 @@ class ShreddingHardDrive(models.Model):
     nist_compliance_verified = fields.Boolean('NIST Compliance Verified', default=False)
     physical_destruction_level = fields.Selection([('level_1', 'Level 1'), ('level_2', 'Level 2'), ('level_3', 'Level 3')], default='level_2')
     sanitization_standard = fields.Selection([('dod_5220', 'DoD 5220.22-M'), ('nist_800_88', 'NIST 800-88'), ('custom', 'Custom')], default='nist_800_88')
+    # Shredding Hard Drive Management Fields
 
 
 

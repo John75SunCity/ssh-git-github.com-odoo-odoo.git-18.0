@@ -133,7 +133,6 @@ class BaseRates(models.Model):
     @api.depends("expiry_date")
     def _compute_days_until_expiry(self):
         """Calculate days until expiry"""
-        today = fields.Date.today()
         for record in self:
             if record.expiry_date:
                 delta = record.expiry_date - today
@@ -154,6 +153,7 @@ class BaseRates(models.Model):
     rate_adjustment_percentage = fields.Float('Rate Adjustment %', default=0.0)
     rate_tier_category = fields.Selection([('standard', 'Standard'), ('premium', 'Premium'), ('enterprise', 'Enterprise')], default='standard')
     volume_discount_applicable = fields.Boolean('Volume Discount Applicable', default=False)
+    # Base Rates Management Fields
 
 
     @api.constrains("effective_date", "expiry_date")
