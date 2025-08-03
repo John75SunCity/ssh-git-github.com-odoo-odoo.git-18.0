@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from dateutil.relativedelta import relativedelta
 
 
 class NaidCompliance(models.Model):
@@ -737,6 +738,66 @@ class NaidCompliance(models.Model):
                 record.destruction_count = destruction_records
             else:
                 record.destruction_count = 0
+
+    @api.depends("compliance_alerts")
+    def _compute_alert_count(self):
+        """Compute total number of compliance alerts"""
+        for record in self:
+            record.alert_count = len(record.compliance_alerts)
+
+    @api.depends("compliance_alerts")
+    def _compute_critical_alerts(self):
+        """Compute number of critical alerts"""
+        for record in self:
+            critical_alerts = record.compliance_alerts.filtered(
+                lambda alert: alert.severity == "critical"
+            )
+            record.critical_alerts_count = len(critical_alerts)
+
+    @api.depends("compliance_checklist_ids")
+    def _compute_checklist_completion(self):
+        """Compute checklist completion percentage"""
+        for record in self:
+            if record.compliance_checklist_ids:
+                completed_items = record.compliance_checklist_ids.filtered("completed")
+                total_items = len(record.compliance_checklist_ids)
+                record.checklist_completion_rate = (
+                    (len(completed_items) / total_items) * 100 if total_items > 0 else 0
+                )
+            else:
+                record.checklist_completion_rate = 0
+
+    @api.depends("last_audit_date", "audit_frequency")
+    def _compute_next_audit_date(self):
+        """Compute next audit date based on frequency and last audit"""
+        for record in self:
+            if record.last_audit_date and record.audit_frequency:
+                if record.audit_frequency == "monthly":
+                    days_to_add = 30
+                elif record.audit_frequency == "quarterly":
+                    days_to_add = 90
+                elif record.audit_frequency == "semi_annually":
+                    days_to_add = 180
+                elif record.audit_frequency == "annually":
+                    days_to_add = 365
+                else:
+                    days_to_add = 365  # Default to annual
+
+                record.next_audit_date = fields.Date.add(
+                    record.last_audit_date, days=days_to_add
+                )
+            else:
+                record.next_audit_date = False
+
+    @api.depends("next_audit_date")
+    def _compute_audit_due(self):
+        """Compute if audit is due"""
+        for record in self:
+            if record.next_audit_date:
+                today = fields.Date.today()
+                record.audit_due = record.next_audit_date <= today
+            else:
+                record.audit_due = False
 
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
