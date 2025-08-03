@@ -2,6 +2,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 from dateutil.relativedelta import relativedelta
+from datetime import timedelta
 
 
 class NaidCompliance(models.Model):
@@ -324,7 +325,139 @@ class NaidCompliance(models.Model):
     information_handling = fields.Boolean(string="Information Handling", default=False)
     chain_of_custody = fields.Boolean(string="Chain of Custody", default=False)
     destruction_verification = fields.Boolean(
-        string="Destruction Verification", default=False
+        string="Destruction Verification Complete", default=False
+    )
+
+    # === CRITICAL MISSING FIELDS FOR VIEWS COMPATIBILITY ===
+
+    # Destruction Management (Referenced in views)
+    destruction_method = fields.Selection(
+        [
+            ("shredding", "Shredding"),
+            ("incineration", "Incineration"),
+            ("pulping", "Pulping"),
+            ("disintegration", "Disintegration"),
+            ("degaussing", "Degaussing (Magnetic Media)"),
+            ("overwriting", "Overwriting (Digital)"),
+        ],
+        string="Destruction Method",
+        tracking=True,
+    )
+
+    destruction_record_ids = fields.One2many(
+        "naid.destruction.record", "compliance_id", string="Destruction Records"
+    )
+
+    # Documentation and Scoring
+    documentation_score = fields.Float(
+        string="Documentation Score (%)",
+        digits=(5, 2),
+        compute="_compute_documentation_score",
+        help="Overall documentation completeness score",
+    )
+
+    # Communication and Escalation
+    escalation_contacts = fields.Many2many(
+        "res.partner",
+        "naid_compliance_escalation_rel",
+        string="Escalation Contacts",
+        help="Contacts to notify for compliance issues",
+    )
+
+    # Notification Management
+    expiry_notification = fields.Boolean(
+        string="Expiry Notification Enabled",
+        default=True,
+        help="Send notifications when compliance items are about to expire",
+    )
+
+    # Additional Critical Business Fields
+    compliance_officer = fields.Many2one(
+        "res.users",
+        string="Compliance Officer",
+        help="Primary responsible for compliance oversight",
+    )
+
+    regulatory_authority = fields.Char(
+        string="Regulatory Authority", help="Governing regulatory body"
+    )
+
+    compliance_framework = fields.Selection(
+        [
+            ("naid_aaa", "NAID AAA"),
+            ("iso_15489", "ISO 15489"),
+            ("hipaa", "HIPAA"),
+            ("gdpr", "GDPR"),
+            ("sox", "Sarbanes-Oxley"),
+            ("custom", "Custom Framework"),
+        ],
+        string="Compliance Framework",
+        default="naid_aaa",
+    )
+
+    # Monitoring and Analytics
+    monitoring_frequency = fields.Selection(
+        [
+            ("daily", "Daily"),
+            ("weekly", "Weekly"),
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+        ],
+        string="Monitoring Frequency",
+        default="weekly",
+    )
+
+    # Performance Metrics
+    compliance_trend = fields.Selection(
+        [("improving", "Improving"), ("stable", "Stable"), ("declining", "Declining")],
+        string="Compliance Trend",
+        compute="_compute_compliance_trend",
+    )
+
+    # Integration and Workflow
+    auto_remediation_enabled = fields.Boolean(
+        string="Auto Remediation Enabled",
+        default=False,
+        help="Automatically trigger remediation workflows",
+    )
+
+    # Reporting and Communication
+    stakeholder_notifications = fields.Boolean(
+        string="Stakeholder Notifications", default=True
+    )
+
+    compliance_dashboard_visible = fields.Boolean(
+        string="Dashboard Visible", default=True
+    )
+
+    # Certification Management
+    certification_renewal_date = fields.Date(string="Certification Renewal Date")
+
+    certification_authority = fields.Char(string="Certification Authority")
+
+    # Audit Trail
+    change_history = fields.Text(
+        string="Change History", help="Track significant compliance changes"
+    )
+
+    # Emergency and Incident Management
+    incident_response_plan = fields.Text(string="Incident Response Plan")
+
+    emergency_contacts = fields.Many2many(
+        "res.partner", "naid_compliance_emergency_rel", string="Emergency Contacts"
+    )
+
+    # Cost and Resource Management
+    compliance_budget = fields.Monetary(
+        string="Compliance Budget", currency_field="currency_id"
+    )
+
+    actual_compliance_cost = fields.Monetary(
+        string="Actual Compliance Cost", currency_field="currency_id"
+    )
+
+    budget_variance = fields.Float(
+        string="Budget Variance (%)", compute="_compute_budget_variance"
     )
     certificate_tracking = fields.Boolean(string="Certificate Tracking", default=False)
 
@@ -475,6 +608,153 @@ class NaidCompliance(models.Model):
     )
     jurisdiction = fields.Char(string="Jurisdiction")
     regulatory_body = fields.Char(string="Regulatory Body")
+
+    # === CRITICAL MISSING FIELDS FOR VIEW COMPATIBILITY ===
+
+    # Audit and Findings Management
+    findings_count = fields.Integer(
+        string="Findings Count",
+        compute="_compute_findings_count",
+        help="Number of audit findings identified",
+    )
+    issue_date = fields.Date(
+        string="Issue Date",
+        tracking=True,
+        help="Date when the compliance issue was identified",
+    )
+    issuing_authority = fields.Char(
+        string="Issuing Authority",
+        tracking=True,
+        help="Authority that issued the compliance certificate",
+    )
+    last_verified = fields.Date(
+        string="Last Verified",
+        tracking=True,
+        help="Date when compliance was last verified",
+    )
+
+    # Alert and Notification Management
+    management_alerts = fields.Boolean(
+        string="Management Alerts",
+        default=False,
+        help="Enable alerts for management team",
+    )
+    notification_recipients = fields.Text(
+        string="Notification Recipients",
+        help="List of recipients for compliance notifications",
+    )
+    regulatory_notifications = fields.Boolean(
+        string="Regulatory Notifications",
+        default=False,
+        help="Enable regulatory body notifications",
+    )
+    renewal_reminder = fields.Boolean(
+        string="Renewal Reminder",
+        default=True,
+        help="Enable renewal reminder notifications",
+    )
+
+    # Destruction and Material Management
+    material_type = fields.Selection(
+        [
+            ("paper", "Paper Documents"),
+            ("electronic", "Electronic Media"),
+            ("mixed", "Mixed Media"),
+            ("hard_drive", "Hard Drives"),
+            ("tape", "Magnetic Tapes"),
+            ("optical", "Optical Media"),
+        ],
+        string="Material Type",
+        help="Type of material being destroyed",
+    )
+
+    witness_present = fields.Boolean(
+        string="Witness Present",
+        default=False,
+        help="Whether a witness was present during destruction",
+    )
+
+    # Performance and Metrics
+    measurement_date = fields.Date(
+        string="Measurement Date", help="Date when performance measurements were taken"
+    )
+    metric_type = fields.Selection(
+        [
+            ("security", "Security Metric"),
+            ("operational", "Operational Metric"),
+            ("compliance", "Compliance Metric"),
+            ("financial", "Financial Metric"),
+            ("quality", "Quality Metric"),
+        ],
+        string="Metric Type",
+        help="Type of performance metric",
+    )
+
+    overall_compliance_score = fields.Float(
+        string="Overall Compliance Score (%)",
+        digits=(5, 2),
+        compute="_compute_overall_compliance_score",
+        help="Overall compliance performance score",
+    )
+    performance_history_ids = fields.One2many(
+        "naid.performance.history", "compliance_id", string="Performance History"
+    )
+    score = fields.Float(string="Score", digits=(5, 2), help="Individual metric score")
+    trend = fields.Selection(
+        [
+            ("improving", "Improving"),
+            ("stable", "Stable"),
+            ("declining", "Declining"),
+            ("critical", "Critical"),
+        ],
+        string="Trend",
+        help="Performance trend indicator",
+    )
+
+    variance = fields.Float(
+        string="Variance (%)", digits=(5, 2), help="Variance from expected performance"
+    )
+
+    # Additional Performance Fields
+    benchmark = fields.Float(
+        string="Benchmark Score",
+        digits=(5, 2),
+        help="Benchmark score for performance comparison",
+    )
+
+    # Requirements and Verification
+    requirement_name = fields.Char(
+        string="Requirement Name", help="Name of the compliance requirement"
+    )
+    requirement_type = fields.Selection(
+        [
+            ("mandatory", "Mandatory"),
+            ("recommended", "Recommended"),
+            ("optional", "Optional"),
+            ("regulatory", "Regulatory"),
+            ("internal", "Internal Policy"),
+        ],
+        string="Requirement Type",
+        help="Type of compliance requirement",
+    )
+
+    responsible_person = fields.Many2one(
+        "hr.employee",
+        string="Responsible Person",
+        help="Person responsible for this compliance requirement",
+    )
+    verification_method = fields.Selection(
+        [
+            ("document_review", "Document Review"),
+            ("physical_inspection", "Physical Inspection"),
+            ("interview", "Interview"),
+            ("observation", "Observation"),
+            ("testing", "Testing"),
+            ("certification", "Certification"),
+        ],
+        string="Verification Method",
+        help="Method used to verify compliance",
+    )
 
     @api.depends("certification_date", "expiry_date")
     def _compute_certificate_status(self):
@@ -1011,6 +1291,38 @@ class NaidCompliance(models.Model):
                 record.compliance_percentage = 0.0
 
     # =============================================================================
+    # MISSING COMPUTE METHODS FOR VIEW COMPATIBILITY
+    # =============================================================================
+
+    @api.depends("audit_history_ids")
+    def _compute_findings_count(self):
+        """Compute number of audit findings"""
+        for record in self:
+            if record.audit_history_ids:
+                # Count findings from audit history
+                findings = sum(record.audit_history_ids.mapped("findings_count") or [0])
+                record.findings_count = findings
+            else:
+                record.findings_count = 0
+
+    @api.depends("compliance_score", "security_score", "operational_score")
+    def _compute_overall_compliance_score(self):
+        """Compute overall compliance score from individual metrics"""
+        for record in self:
+            scores = []
+            if record.compliance_score:
+                scores.append(record.compliance_score)
+            if record.security_score:
+                scores.append(record.security_score)
+            if record.operational_score:
+                scores.append(record.operational_score)
+
+            if scores:
+                record.overall_compliance_score = sum(scores) / len(scores)
+            else:
+                record.overall_compliance_score = 0.0
+
+    # =============================================================================
     # NAID COMPLIANCE ACTION METHODS
     # =============================================================================
 
@@ -1353,6 +1665,199 @@ class NaidCompliance(models.Model):
             "view_mode": "form",
             "target": "current",
         }
+
+    # ============================================================================
+    # COMPUTE METHODS FOR NEW CRITICAL FIELDS
+    # ============================================================================
+
+    @api.depends("destruction_record_ids", "compliance_checklist_ids", "audit_score")
+    def _compute_documentation_score(self):
+        """Compute overall documentation completeness score"""
+        for record in self:
+            total_score = 0
+            component_count = 0
+
+            # Destruction records completeness (25% weight)
+            if record.destruction_record_ids:
+                complete_records = record.destruction_record_ids.filtered(
+                    lambda r: r.documentation_complete
+                )
+                destruction_score = (
+                    len(complete_records) / len(record.destruction_record_ids)
+                ) * 100
+                total_score += destruction_score * 0.25
+                component_count += 1
+
+            # Compliance checklist completeness (35% weight)
+            if record.compliance_checklist_ids:
+                completed_items = record.compliance_checklist_ids.filtered(
+                    lambda c: c.is_completed
+                )
+                checklist_score = (
+                    len(completed_items) / len(record.compliance_checklist_ids)
+                ) * 100
+                total_score += checklist_score * 0.35
+                component_count += 1
+
+            # Audit score (40% weight)
+            if record.audit_score:
+                total_score += record.audit_score * 0.40
+                component_count += 1
+
+            # Calculate weighted average
+            if component_count > 0:
+                record.documentation_score = total_score / component_count
+            else:
+                record.documentation_score = 0.0
+
+    @api.depends("compliance_status", "audit_score", "risk_level")
+    def _compute_compliance_trend(self):
+        """Compute compliance trend based on historical data"""
+        for record in self:
+            # Get recent compliance records for trend analysis
+            recent_compliance = self.search(
+                [
+                    ("id", "!=", record.id),
+                    ("create_date", ">=", fields.Date.today() - timedelta(days=90)),
+                ],
+                order="create_date desc",
+                limit=5,
+            )
+
+            if len(recent_compliance) >= 3:
+                # Simple trend analysis based on audit scores
+                current_score = record.audit_score or 0
+                recent_scores = [c.audit_score or 0 for c in recent_compliance[:3]]
+                avg_recent = (
+                    sum(recent_scores) / len(recent_scores) if recent_scores else 0
+                )
+
+                if current_score > avg_recent + 5:  # 5% improvement threshold
+                    record.compliance_trend = "improving"
+                elif current_score < avg_recent - 5:  # 5% decline threshold
+                    record.compliance_trend = "declining"
+                else:
+                    record.compliance_trend = "stable"
+            else:
+                # Not enough historical data
+                if record.audit_score and record.audit_score >= 85:
+                    record.compliance_trend = "stable"
+                elif record.audit_score and record.audit_score < 70:
+                    record.compliance_trend = "declining"
+                else:
+                    record.compliance_trend = "stable"
+
+    @api.depends("compliance_budget", "actual_compliance_cost")
+    def _compute_budget_variance(self):
+        """Compute budget variance percentage"""
+        for record in self:
+            if record.compliance_budget and record.compliance_budget > 0:
+                variance = (
+                    (record.actual_compliance_cost - record.compliance_budget)
+                    / record.compliance_budget
+                ) * 100
+                record.budget_variance = variance
+            else:
+                record.budget_variance = 0.0
+
+    # ============================================================================
+    # ACTION METHODS FOR NEW FUNCTIONALITY
+    # ============================================================================
+
+    def action_notify_escalation_contacts(self):
+        """Send notifications to escalation contacts"""
+        self.ensure_one()
+        if not self.escalation_contacts:
+            raise UserError(_("No escalation contacts defined"))
+
+        template = self.env.ref(
+            "records_management.email_template_compliance_escalation", False
+        )
+        if template:
+            for contact in self.escalation_contacts:
+                template.with_context(partner_to=contact.id).send_mail(
+                    self.id, force_send=True
+                )
+
+        self.message_post(
+            body=_("Escalation notifications sent to %d contacts")
+            % len(self.escalation_contacts)
+        )
+        return True
+
+    def action_update_destruction_method(self):
+        """Update destruction method for all related records"""
+        self.ensure_one()
+        if not self.destruction_method:
+            raise UserError(_("Please select a destruction method first"))
+
+        # Update related destruction records
+        destruction_records = self.destruction_record_ids.filtered(
+            lambda r: not r.destruction_method
+        )
+        destruction_records.write({"destruction_method": self.destruction_method})
+
+        self.message_post(
+            body=_("Updated destruction method for %d records")
+            % len(destruction_records)
+        )
+        return True
+
+    def action_generate_compliance_report(self):
+        """Generate comprehensive compliance report"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.report",
+            "report_name": "records_management.report_naid_compliance_detailed",
+            "report_type": "qweb-pdf",
+            "res_ids": [self.id],
+            "context": {"active_id": self.id},
+        }
+
+    def action_schedule_expiry_notifications(self):
+        """Schedule automated expiry notifications"""
+        self.ensure_one()
+        if not self.expiry_notification:
+            self.expiry_notification = True
+
+        # Create scheduled action for notifications
+        cron_job = self.env["ir.cron"].create(
+            {
+                "name": f"Compliance Expiry Notifications - {self.name}",
+                "model_id": self.env.ref("records_management.model_naid_compliance").id,
+                "code": f"model.browse({self.id}).send_expiry_notifications()",
+                "interval_number": 1,
+                "interval_type": "weeks",
+                "numbercall": -1,
+                "active": True,
+            }
+        )
+
+        self.message_post(
+            body=_("Expiry notifications scheduled (Cron Job ID: %s)") % cron_job.id
+        )
+        return True
+
+    def send_expiry_notifications(self):
+        """Send expiry notifications for compliance items"""
+        for record in self:
+            if record.expiry_notification and record.certification_renewal_date:
+                days_until_expiry = (
+                    record.certification_renewal_date - fields.Date.today()
+                ).days
+
+                if days_until_expiry <= 30 and days_until_expiry > 0:  # 30 days warning
+                    template = self.env.ref(
+                        "records_management.email_template_compliance_expiry", False
+                    )
+                    if template:
+                        template.send_mail(record.id, force_send=True)
+
+                    # Notify escalation contacts
+                    if record.escalation_contacts:
+                        record.action_notify_escalation_contacts()
+
+        return True
 
     def action_generate_compliance_report(self):
         """Generate comprehensive compliance status report"""
