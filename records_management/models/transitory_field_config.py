@@ -145,6 +145,109 @@ class TransitoryFieldConfig(models.Model):
     require_security_level = fields.Boolean("Require Security Level", default=False)
     require_service_type = fields.Boolean("Require Service Type", default=True)
 
+    # === MISSING FIELDS FROM VIEW ANALYSIS ===
+    require_description = fields.Boolean("Require Description", default=True)
+    require_destruction_date = fields.Boolean("Require Destruction Date", default=False)
+    require_project_code = fields.Boolean("Require Project Code", default=False)
+    require_record_type = fields.Boolean("Require Record Type", default=True)
+    require_sequence_from = fields.Boolean("Require Sequence From", default=False)
+    require_sequence_to = fields.Boolean("Require Sequence To", default=False)
+
+    # Configuration Form Processing
+    form_processor_id = fields.Many2one("res.users", "Form Processor")
+    form_processing_date = fields.Datetime("Form Processing Date")
+    form_validation_status = fields.Selection(
+        [("pending", "Pending"), ("validated", "Validated"), ("rejected", "Rejected")],
+        string="Form Validation Status",
+        default="pending",
+    )
+
+    # Field Label Configuration Extensions
+    label_configuration_active = fields.Boolean(
+        "Label Configuration Active", default=True
+    )
+    label_template_id = fields.Many2one("ir.attachment", "Label Template")
+    label_print_format = fields.Selection(
+        [("standard", "Standard"), ("compact", "Compact"), ("detailed", "Detailed")],
+        string="Label Print Format",
+        default="standard",
+    )
+
+    # Workflow Configuration
+    workflow_automation_enabled = fields.Boolean(
+        "Workflow Automation Enabled", default=False
+    )
+    workflow_trigger_conditions = fields.Text("Workflow Trigger Conditions")
+    workflow_notification_recipients = fields.Many2many(
+        "res.users", string="Workflow Notification Recipients"
+    )
+
+    # Advanced Field Dependencies
+    conditional_field_display = fields.Text("Conditional Field Display Rules")
+    dynamic_field_generation = fields.Boolean("Dynamic Field Generation", default=False)
+    field_cascade_rules = fields.Text("Field Cascade Rules")
+
+    # Configuration Templates
+    configuration_template_name = fields.Char("Configuration Template Name")
+    template_description = fields.Text("Template Description")
+    template_version = fields.Char("Template Version", default="1.0")
+
+    # System Integration
+    api_endpoint_configuration = fields.Text("API Endpoint Configuration")
+    external_system_mapping = fields.Text("External System Field Mapping")
+    data_synchronization_rules = fields.Text("Data Synchronization Rules")
+
+    # Performance & Analytics
+    configuration_usage_count = fields.Integer("Configuration Usage Count", default=0)
+    average_processing_time = fields.Float(
+        "Average Processing Time (minutes)", digits=(5, 2)
+    )
+    user_satisfaction_rating = fields.Float("User Satisfaction Rating", digits=(3, 2))
+
+    # Compliance & Security Extensions
+    data_retention_period = fields.Integer(
+        "Data Retention Period (days)", default=2555
+    )  # 7 years
+    encryption_level = fields.Selection(
+        [
+            ("none", "None"),
+            ("basic", "Basic"),
+            ("advanced", "Advanced"),
+            ("military", "Military Grade"),
+        ],
+        string="Encryption Level",
+        default="basic",
+    )
+    access_log_enabled = fields.Boolean("Access Log Enabled", default=True)
+
+    # === VIEW DISPLAY CONTROL FIELDS ===
+    show_container_number = fields.Boolean("Show Container Number", default=True)
+    show_description = fields.Boolean("Show Description", default=True)
+    show_content_description = fields.Boolean("Show Content Description", default=True)
+    show_date_ranges = fields.Boolean("Show Date Ranges", default=False)
+    show_sequence_ranges = fields.Boolean("Show Sequence Ranges", default=False)
+    show_destruction_date = fields.Boolean("Show Destruction Date", default=False)
+    show_record_type = fields.Boolean("Show Record Type", default=True)
+    show_confidentiality = fields.Boolean("Show Confidentiality Level", default=False)
+    show_project_code = fields.Boolean("Show Project Code", default=False)
+    show_client_reference = fields.Boolean("Show Client Reference", default=True)
+    show_file_count = fields.Boolean("Show File Count", default=True)
+    show_filing_system = fields.Boolean("Show Filing System", default=False)
+    show_created_by_dept = fields.Boolean("Show Created By Department", default=True)
+    show_authorized_by = fields.Boolean("Show Authorized By", default=True)
+    show_special_handling = fields.Boolean("Show Special Handling", default=False)
+    show_compliance_notes = fields.Boolean("Show Compliance Notes", default=False)
+    show_weight_estimate = fields.Boolean("Show Weight Estimate", default=False)
+    show_size_estimate = fields.Boolean("Show Size Estimate", default=False)
+
+    # Additional computed field for required field count based on show fields
+    required_field_count = fields.Integer(
+        "Required Field Count", compute="_compute_required_field_count"
+    )
+    visible_field_count = fields.Integer(
+        "Visible Field Count", compute="_compute_visible_field_count"
+    )
+
     # Field Configuration Options
     enable_barcode_scanning = fields.Boolean("Enable Barcode Scanning", default=False)
     enable_digital_signature = fields.Boolean("Enable Digital Signature", default=False)
@@ -234,6 +337,12 @@ class TransitoryFieldConfig(models.Model):
         "require_retention_policy",
         "require_security_level",
         "require_service_type",
+        "require_description",
+        "require_destruction_date",
+        "require_project_code",
+        "require_record_type",
+        "require_sequence_from",
+        "require_sequence_to",
     )
     def _compute_field_counts(self):
         """Compute count of required and optional fields"""
@@ -251,6 +360,12 @@ class TransitoryFieldConfig(models.Model):
                 config.require_retention_policy,
                 config.require_security_level,
                 config.require_service_type,
+                config.require_description,
+                config.require_destruction_date,
+                config.require_project_code,
+                config.require_record_type,
+                config.require_sequence_from,
+                config.require_sequence_to,
             ]
 
             config.required_fields_count = sum(1 for field in required_fields if field)
@@ -357,6 +472,168 @@ class TransitoryFieldConfig(models.Model):
     def _compute_display_name(self):
         for record in self:
             record.display_name = record.name or "New"
+
+    # === ADDITIONAL COMPUTE METHODS FOR NEW FIELDS ===
+
+    @api.depends("configuration_usage_count", "created_date")
+    def _compute_configuration_statistics(self):
+        """Compute configuration usage statistics"""
+        for config in self:
+            # Calculate usage efficiency
+            days_active = (fields.Datetime.now() - config.created_date).days or 1
+            config.average_processing_time = max(
+                config.configuration_usage_count / days_active * 1.5, 0.5
+            )
+
+    @api.depends("form_validation_status", "label_configuration_active")
+    def _compute_form_processing_metrics(self):
+        """Compute form processing quality metrics"""
+        for config in self:
+            if (
+                config.form_validation_status == "validated"
+                and config.label_configuration_active
+            ):
+                config.user_satisfaction_rating = 4.5
+            elif config.form_validation_status == "pending":
+                config.user_satisfaction_rating = 3.0
+            else:
+                config.user_satisfaction_rating = 2.0
+
+    @api.depends("workflow_automation_enabled", "api_endpoint_configuration")
+    def _compute_integration_status(self):
+        """Compute system integration status"""
+        for config in self:
+            integration_score = 0
+            if config.workflow_automation_enabled:
+                integration_score += 25
+            if config.api_endpoint_configuration:
+                integration_score += 25
+            if config.external_system_mapping:
+                integration_score += 25
+            if config.data_synchronization_rules:
+                integration_score += 25
+
+            # Store as a computed helper field
+            config.configuration_usage_count = integration_score
+
+    @api.depends("encryption_level", "access_log_enabled")
+    def _compute_security_compliance(self):
+        """Compute security and compliance metrics"""
+        for config in self:
+            security_score = 0
+
+            # Encryption adds security points
+            encryption_points = {"none": 0, "basic": 20, "advanced": 35, "military": 50}
+            security_score += encryption_points.get(config.encryption_level, 0)
+
+            # Access logging adds security
+            if config.access_log_enabled:
+                security_score += 15
+
+            # Data retention compliance
+            if config.data_retention_period >= 2555:  # 7 years
+                security_score += 10
+
+            # Update satisfaction rating based on security
+            if security_score >= 60:
+                config.user_satisfaction_rating = max(
+                    config.user_satisfaction_rating, 4.0
+                )
+            elif security_score >= 40:
+                config.user_satisfaction_rating = max(
+                    config.user_satisfaction_rating, 3.5
+                )
+
+    @api.depends(
+        "show_container_number",
+        "show_description",
+        "show_content_description",
+        "show_date_ranges",
+        "show_sequence_ranges",
+        "show_destruction_date",
+        "show_record_type",
+        "show_confidentiality",
+        "show_project_code",
+        "show_client_reference",
+        "show_file_count",
+        "show_filing_system",
+        "show_created_by_dept",
+        "show_authorized_by",
+        "show_special_handling",
+        "show_compliance_notes",
+        "show_weight_estimate",
+        "show_size_estimate",
+    )
+    def _compute_required_field_count(self):
+        """Compute count of visible/required fields based on show settings"""
+        for config in self:
+            show_fields = [
+                config.show_container_number,
+                config.show_description,
+                config.show_content_description,
+                config.show_date_ranges,
+                config.show_sequence_ranges,
+                config.show_destruction_date,
+                config.show_record_type,
+                config.show_confidentiality,
+                config.show_project_code,
+                config.show_client_reference,
+                config.show_file_count,
+                config.show_filing_system,
+                config.show_created_by_dept,
+                config.show_authorized_by,
+                config.show_special_handling,
+                config.show_compliance_notes,
+                config.show_weight_estimate,
+                config.show_size_estimate,
+            ]
+            config.required_field_count = sum(1 for field in show_fields if field)
+
+    @api.depends(
+        "show_container_number",
+        "show_description",
+        "show_content_description",
+        "show_date_ranges",
+        "show_sequence_ranges",
+        "show_destruction_date",
+        "show_record_type",
+        "show_confidentiality",
+        "show_project_code",
+        "show_client_reference",
+        "show_file_count",
+        "show_filing_system",
+        "show_created_by_dept",
+        "show_authorized_by",
+        "show_special_handling",
+        "show_compliance_notes",
+        "show_weight_estimate",
+        "show_size_estimate",
+    )
+    def _compute_visible_field_count(self):
+        """Compute count of visible fields in the form"""
+        for config in self:
+            # Count all show fields that are enabled
+            visible_fields = [
+                config.show_container_number,
+                config.show_description,
+                config.show_content_description,
+                config.show_date_ranges,
+                config.show_sequence_ranges,
+                config.show_destruction_date,
+                config.show_record_type,
+                config.show_confidentiality,
+                config.show_project_code,
+                config.show_client_reference,
+                config.show_file_count,
+                config.show_filing_system,
+                config.show_created_by_dept,
+                config.show_authorized_by,
+                config.show_special_handling,
+                config.show_compliance_notes,
+                config.show_weight_estimate,
+                config.show_size_estimate,
+            ]
+            config.visible_field_count = sum(1 for field in visible_fields if field)
 
     # ===== ACTION METHODS =====
 
@@ -583,4 +860,185 @@ class TransitoryFieldConfig(models.Model):
             "context": {
                 "default_config_id": self.id,
             },
+        }
+
+    # === ENHANCED ACTION METHODS FOR NEW FIELDS ===
+
+    def action_validate_form_processing(self):
+        """Validate form processing configuration"""
+        self.ensure_one()
+
+        if not self.form_processor_id:
+            raise UserError(_("Form processor must be assigned before validation"))
+
+        self.write(
+            {
+                "form_validation_status": "validated",
+                "form_processing_date": fields.Datetime.now(),
+                "user_satisfaction_rating": 4.0,
+            }
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Form Processing Validated"),
+                "message": _("Form processing configuration validated successfully"),
+                "type": "success",
+            },
+        }
+
+    def action_activate_label_configuration(self):
+        """Activate label configuration for this setup"""
+        self.ensure_one()
+
+        self.write(
+            {
+                "label_configuration_active": True,
+                "configuration_usage_count": self.configuration_usage_count + 1,
+            }
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Label Configuration Activated"),
+                "message": _("Label configuration is now active"),
+                "type": "success",
+            },
+        }
+
+    def action_setup_workflow_automation(self):
+        """Setup workflow automation for this configuration"""
+        self.ensure_one()
+
+        self.write(
+            {
+                "workflow_automation_enabled": True,
+                "average_processing_time": 15.0,  # Automated workflows are faster
+            }
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Workflow Automation Enabled"),
+                "message": _("Workflow automation has been configured"),
+                "type": "success",
+            },
+        }
+
+    def action_generate_configuration_template(self):
+        """Generate reusable template from current configuration"""
+        self.ensure_one()
+
+        template_name = f"Template: {self.name}"
+        template_version = "1.0"
+
+        self.write(
+            {
+                "configuration_template_name": template_name,
+                "template_version": template_version,
+                "template_description": f"Auto-generated template from {self.name}",
+            }
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Template Generated"),
+                "message": f"Configuration template '{template_name}' created",
+                "type": "success",
+            },
+        }
+
+    def action_configure_system_integration(self):
+        """Configure system integration settings"""
+        self.ensure_one()
+
+        integration_config = {
+            "api_endpoints": ["POST /api/v1/records", "GET /api/v1/status"],
+            "field_mappings": {
+                "external_ref": "reference_number",
+                "client_id": "customer_id",
+                "dept_code": "department_id",
+            },
+            "sync_frequency": "hourly",
+        }
+
+        self.write(
+            {
+                "api_endpoint_configuration": str(integration_config),
+                "external_system_mapping": "Standard field mapping applied",
+                "data_synchronization_rules": "Hourly sync with validation",
+            }
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Integration Configured"),
+                "message": _("System integration settings have been configured"),
+                "type": "success",
+            },
+        }
+
+    def action_enhance_security_configuration(self):
+        """Enhance security and compliance settings"""
+        self.ensure_one()
+
+        self.write(
+            {
+                "encryption_level": "advanced",
+                "access_log_enabled": True,
+                "data_retention_period": 2555,  # 7 years compliance
+                "user_satisfaction_rating": 4.5,  # High security = high satisfaction
+            }
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Security Enhanced"),
+                "message": _("Security and compliance settings have been enhanced"),
+                "type": "success",
+            },
+        }
+
+    def action_setup_field_labels(self):
+        """Setup and customize field labels for this configuration"""
+        self.ensure_one()
+
+        # Create or find the field label customization record
+        field_label_config = self.env["field.label.customization"].search(
+            [("config_id", "=", self.id)], limit=1
+        )
+
+        if not field_label_config:
+            field_label_config = self.env["field.label.customization"].create(
+                {
+                    "name": f"Labels for {self.name}",
+                    "config_id": self.id,
+                    "customer_id": self.customer_id.id,
+                    "department_id": self.department_id.id,
+                }
+            )
+
+        # Update the field_label_config_id if not set
+        if not self.field_label_config_id:
+            self.write({"field_label_config_id": field_label_config.id})
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Customize Field Labels",
+            "res_model": "field.label.customization",
+            "res_id": field_label_config.id,
+            "view_mode": "form",
+            "target": "current",
         }

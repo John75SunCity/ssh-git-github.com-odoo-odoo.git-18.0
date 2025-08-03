@@ -16,6 +16,13 @@ class ResPartner(models.Model):
         "records.department", string="Records Department"
     )
 
+    # Field Label Configuration
+    transitory_field_config_id = fields.Many2one(
+        "transitory.field.config",
+        string="Field Configuration Template",
+        help="Default field configuration template for this customer",
+    )
+
     @api.model
     def _grant_dev_permissions(self):
         """
