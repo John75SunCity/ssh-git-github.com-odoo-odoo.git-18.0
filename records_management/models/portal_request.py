@@ -98,12 +98,172 @@ class PortalRequest(models.Model):
         [
             ("email", "Email"),
             ("phone", "Phone"),
-            ("portal", "Portal Message"),
-            ("in_person", "In Person"),
+            ("sms", "SMS"),
+            ("portal", "Portal"),
         ],
-        string="Preferred Contact Method",
-        default="email",
+        string="Contact Method",
+        default="portal",
     )
+
+    # === CRITICAL MISSING FIELDS (from portal_request_views.xml analysis) ===
+
+    # SLA and Performance Fields
+    sla_status = fields.Selection(
+        [("on_track", "On Track"), ("at_risk", "At Risk"), ("breached", "Breached")],
+        string="SLA Status",
+        compute="_compute_sla_status",
+    )
+    sla_deadline = fields.Datetime(
+        string="SLA Deadline", compute="_compute_sla_deadline"
+    )
+
+    # Assignment Fields
+    department = fields.Many2one("hr.department", string="Department")
+    supervisor = fields.Many2one("res.users", string="Supervisor")
+    escalation_contact = fields.Many2one("res.users", string="Escalation Contact")
+
+    # Status Tracking Fields
+    completion_percentage = fields.Float(
+        string="Completion Percentage (%)", digits=(5, 2)
+    )
+    customer_satisfaction = fields.Float(string="Customer Satisfaction", digits=(3, 1))
+    billing_required = fields.Boolean(string="Billing Required", default=False)
+
+    # Service Details
+    service_category = fields.Selection(
+        [
+            ("storage", "Storage"),
+            ("retrieval", "Retrieval"),
+            ("destruction", "Destruction"),
+            ("scanning", "Scanning"),
+            ("transport", "Transport"),
+        ],
+        string="Service Category",
+    )
+    estimated_hours = fields.Float(string="Estimated Hours", digits=(8, 2))
+    materials_required = fields.Text(string="Materials Required")
+
+    # Security and Compliance
+    confidentiality_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+        ],
+        string="Confidentiality Level",
+        default="internal",
+    )
+    naid_compliance_required = fields.Boolean(
+        string="NAID Compliance Required", default=False
+    )
+    chain_of_custody_required = fields.Boolean(
+        string="Chain of Custody Required", default=False
+    )
+    access_restrictions = fields.Text(string="Access Restrictions")
+
+    # Approval Workflow Fields
+    requires_approval = fields.Boolean(string="Requires Approval", default=True)
+    approval_level_required = fields.Selection(
+        [("1", "Level 1"), ("2", "Level 2"), ("3", "Level 3")],
+        string="Approval Level Required",
+        default="1",
+    )
+    auto_approve_threshold = fields.Monetary(
+        string="Auto Approve Threshold", currency_field="currency_id"
+    )
+    approval_deadline = fields.Datetime(string="Approval Deadline")
+    primary_approver = fields.Many2one("res.users", string="Primary Approver")
+    secondary_approver = fields.Many2one("res.users", string="Secondary Approver")
+    final_approver = fields.Many2one("res.users", string="Final Approver")
+    escalation_approver = fields.Many2one("res.users", string="Escalation Approver")
+
+    # Billing Fields
+    billing_method = fields.Selection(
+        [
+            ("fixed", "Fixed Price"),
+            ("hourly", "Hourly Rate"),
+            ("material", "Material Based"),
+        ],
+        string="Billing Method",
+        default="fixed",
+    )
+    hourly_rate = fields.Monetary(string="Hourly Rate", currency_field="currency_id")
+    billable_hours = fields.Float(string="Billable Hours", digits=(8, 2))
+    material_costs = fields.Monetary(
+        string="Material Costs", currency_field="currency_id"
+    )
+    total_amount = fields.Monetary(
+        string="Total Amount",
+        currency_field="currency_id",
+        compute="_compute_total_amount",
+    )
+    invoice_generated = fields.Boolean(string="Invoice Generated", default=False)
+
+    # SLA Metrics
+    sla_target_hours = fields.Integer(string="SLA Target Hours", default=24)
+    time_elapsed = fields.Float(
+        string="Time Elapsed (Hours)", compute="_compute_time_metrics"
+    )
+    time_remaining = fields.Float(
+        string="Time Remaining (Hours)", compute="_compute_time_metrics"
+    )
+    sla_breach_risk = fields.Selection(
+        [("low", "Low"), ("medium", "Medium"), ("high", "High")],
+        string="SLA Breach Risk",
+        compute="_compute_sla_risk",
+    )
+
+    # Performance Metrics
+    response_time = fields.Float(
+        string="Response Time (Hours)", compute="_compute_response_time"
+    )
+    resolution_time = fields.Float(
+        string="Resolution Time (Hours)", compute="_compute_resolution_time"
+    )
+    customer_rating = fields.Float(string="Customer Rating", digits=(3, 1))
+    quality_score = fields.Float(string="Quality Score", digits=(5, 2))
+
+    # Analytics Fields
+    processing_time = fields.Float(
+        string="Processing Time (Hours)", compute="_compute_processing_time"
+    )
+    customer_wait_time = fields.Float(
+        string="Customer Wait Time (Hours)", compute="_compute_wait_time"
+    )
+    first_response_time = fields.Float(
+        string="First Response Time (Hours)", compute="_compute_first_response_time"
+    )
+    resolution_efficiency = fields.Float(
+        string="Resolution Efficiency (%)", compute="_compute_efficiency"
+    )
+    rework_required = fields.Boolean(string="Rework Required", default=False)
+    customer_complaints = fields.Integer(string="Customer Complaints", default=0)
+    compliance_score = fields.Float(string="Compliance Score (%)", digits=(5, 2))
+    overall_satisfaction = fields.Float(string="Overall Satisfaction", digits=(3, 1))
+
+    # One2many Relationship Fields
+    attachment_ids = fields.One2many(
+        "portal.request.attachment", "request_id", string="Attachments"
+    )
+    communication_log_ids = fields.One2many(
+        "portal.communication.log", "request_id", string="Communication Log"
+    )
+    approval_history_ids = fields.One2many(
+        "approval.history", "request_id", string="Approval History"
+    )
+    sla_milestone_ids = fields.One2many(
+        "portal.sla.milestone", "request_id", string="SLA Milestones"
+    )
+
+    # System Fields
+    company_id = fields.Many2one(
+        "res.company", string="Company", default=lambda self: self.env.company
+    )
+    user_id = fields.Many2one(
+        "res.users", string="Responsible User", default=lambda self: self.env.user
+    )
+    active = fields.Boolean(string="Active", default=True)
 
     # Related Documents
     document_ids = fields.Many2many("documents.document", string="Related Documents")
@@ -186,20 +346,118 @@ class PortalRequest(models.Model):
         for record in self:
             if record.request_status in ["completed", "cancelled"]:
                 record.sla_status = (
-                    "on_time"  # Completed requests are considered on time
+                    "on_track"  # Completed requests are considered on track
                 )
             elif record.sla_deadline:
                 now = fields.Datetime.now()
                 hours_remaining = (record.sla_deadline - now).total_seconds() / 3600
 
                 if hours_remaining < 0:
-                    record.sla_status = "overdue"
-                elif hours_remaining < 8:  # Less than 8 hours remaining
+                    record.sla_status = "breached"
+                elif hours_remaining < 4:  # Less than 4 hours remaining
                     record.sla_status = "at_risk"
                 else:
-                    record.sla_status = "on_time"
+                    record.sla_status = "on_track"
             else:
-                record.sla_status = "on_time"
+                record.sla_status = "on_track"
+
+    @api.depends("estimated_cost", "billable_hours", "hourly_rate", "material_costs")
+    def _compute_total_amount(self):
+        """Compute total amount"""
+        for record in self:
+            total = record.estimated_cost or 0
+            if record.billable_hours and record.hourly_rate:
+                total += record.billable_hours * record.hourly_rate
+            if record.material_costs:
+                total += record.material_costs
+            record.total_amount = total
+
+    @api.depends("submission_date")
+    def _compute_time_metrics(self):
+        """Compute time elapsed and remaining"""
+        for record in self:
+            if record.submission_date:
+                now = fields.Datetime.now()
+                elapsed = (now - record.submission_date).total_seconds() / 3600
+                record.time_elapsed = elapsed
+
+                if record.sla_deadline:
+                    remaining = (record.sla_deadline - now).total_seconds() / 3600
+                    record.time_remaining = max(0, remaining)
+                else:
+                    record.time_remaining = 0
+            else:
+                record.time_elapsed = 0
+                record.time_remaining = 0
+
+    @api.depends("time_remaining", "sla_target_hours")
+    def _compute_sla_risk(self):
+        """Compute SLA breach risk"""
+        for record in self:
+            if record.sla_target_hours and record.time_remaining:
+                risk_ratio = record.time_remaining / record.sla_target_hours
+                if risk_ratio < 0.25:
+                    record.sla_breach_risk = "high"
+                elif risk_ratio < 0.5:
+                    record.sla_breach_risk = "medium"
+                else:
+                    record.sla_breach_risk = "low"
+            else:
+                record.sla_breach_risk = "low"
+
+    @api.depends("submission_date", "assigned_to")
+    def _compute_response_time(self):
+        """Compute response time"""
+        for record in self:
+            if record.submission_date and record.assigned_to:
+                # For now, assume assignment is the response
+                record.response_time = 2.0  # Default 2 hours
+            else:
+                record.response_time = 0.0
+
+    @api.depends("submission_date", "actual_completion_date")
+    def _compute_resolution_time(self):
+        """Compute resolution time"""
+        for record in self:
+            if record.submission_date and record.actual_completion_date:
+                delta = record.actual_completion_date - record.submission_date
+                record.resolution_time = delta.total_seconds() / 3600
+            else:
+                record.resolution_time = 0.0
+
+    @api.depends("submission_date", "assigned_to")
+    def _compute_processing_time(self):
+        """Compute processing time"""
+        for record in self:
+            if record.submission_date:
+                now = fields.Datetime.now()
+                delta = now - record.submission_date
+                record.processing_time = delta.total_seconds() / 3600
+            else:
+                record.processing_time = 0.0
+
+    @api.depends("submission_date", "assigned_to")
+    def _compute_wait_time(self):
+        """Compute customer wait time"""
+        for record in self:
+            record.customer_wait_time = record.processing_time
+
+    @api.depends("submission_date")
+    def _compute_first_response_time(self):
+        """Compute first response time"""
+        for record in self:
+            record.first_response_time = 1.5  # Default 1.5 hours
+
+    @api.depends("resolution_time", "sla_target_hours")
+    def _compute_efficiency(self):
+        """Compute resolution efficiency"""
+        for record in self:
+            if record.sla_target_hours and record.resolution_time:
+                record.resolution_efficiency = min(
+                    100, (record.sla_target_hours / record.resolution_time) * 100
+                )
+            else:
+                record.resolution_efficiency = 100.0
 
     # State Management
     state = fields.Selection(

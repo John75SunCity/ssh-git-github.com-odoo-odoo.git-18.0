@@ -232,6 +232,16 @@ class RecordsRetentionPolicy(models.Model):
     risk_assessment_completed = fields.Boolean('Risk Assessment Completed', default=False)
     stakeholder_notification_required = fields.Boolean('Stakeholder Notification Required', default=True)
     version_control_enabled = fields.Boolean('Version Control Enabled', default=True)
+    action = fields.Selection([('archive', 'Archive'), ('destroy', 'Destroy'), ('review', 'Review')], string='Action')
+    applicable_document_type_ids = fields.Many2many('records.document.type', string='Applicable Document Types')
+    compliance_officer = fields.Many2one('res.users', string='Compliance Officer')
+    compliance_rate = fields.Float('Compliance Rate (%)', default=0.0)
+    legal_reviewer = fields.Many2one('res.users', string='Legal Reviewer')
+    review_frequency = fields.Selection([('monthly', 'Monthly'), ('quarterly', 'Quarterly'), ('yearly', 'Yearly')], string='Review Frequency', default='yearly')
+    notification_enabled = fields.Boolean('Notifications Enabled', default=True)
+    priority = fields.Selection([('low', 'Low'), ('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
+
+
     # Records Retention Policy Management Fields
 
 

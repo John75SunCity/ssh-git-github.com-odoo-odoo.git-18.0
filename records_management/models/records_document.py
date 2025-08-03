@@ -587,6 +587,19 @@ class RecordsDocument(models.Model):
     search_keywords = fields.Text('Search Keywords')
     security_marking = fields.Selection([('unclassified', 'Unclassified'), ('restricted', 'Restricted'), ('confidential', 'Confidential'), ('secret', 'Secret')], default='unclassified')
     version_control_enabled = fields.Boolean('Version Control Enabled', default=False)
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    audit_trail_count = fields.Integer('Audit Trail Count', compute='_compute_audit_trail_count')
+    chain_of_custody_count = fields.Integer('Chain of Custody Count', compute='_compute_chain_of_custody_count')
+    compliance_verified = fields.Boolean('Compliance Verified', default=False)
+    file_format = fields.Char('File Format')
+    file_size = fields.Float('File Size (MB)')
+    resolution = fields.Char('Resolution')
+    scan_date = fields.Datetime('Scan Date')
+    signature_verified = fields.Boolean('Signature Verified', default=False)
+
+
     # Document Management Fields
 
 

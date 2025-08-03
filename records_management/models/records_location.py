@@ -91,6 +91,14 @@ class RecordsLocation(models.Model):
     location_certification = fields.Char('Location Certification')
     security_level = fields.Selection([('basic', 'Basic'), ('enhanced', 'Enhanced'), ('maximum', 'Maximum')], default='basic')
     temperature_humidity_controlled = fields.Boolean('Temperature/Humidity Controlled', default=False)
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    customer_id = fields.Many2one('res.partner', string='Customer')
+    state = fields.Selection([('active', 'Active'), ('inactive', 'Inactive')], string='State', default='active')
+    storage_date = fields.Date('Storage Date')
+
+
     # Records Location Management Fields
 
 

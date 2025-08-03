@@ -98,6 +98,144 @@ class RecordsBillingConfig(models.Model):
     )
     auto_apply = fields.Boolean(string="Auto Apply Configuration", default=True)
 
+    # === CRITICAL MISSING FIELDS (from billing_views.xml analysis) ===
+
+    # Framework Integration Fields
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # Business Critical Fields
+    amount = fields.Monetary(string="Total Amount", currency_field="currency_id")
+
+    # Usage Tracking Fields
+    track_box_storage = fields.Boolean(string="Track Box Storage", default=True)
+    track_document_count = fields.Boolean(string="Track Document Count", default=True)
+    track_access_frequency = fields.Boolean(
+        string="Track Access Frequency", default=False
+    )
+    track_special_handling = fields.Boolean(
+        string="Track Special Handling", default=True
+    )
+    track_pickup_delivery = fields.Boolean(string="Track Pickup/Delivery", default=True)
+    track_retrieval_requests = fields.Boolean(
+        string="Track Retrieval Requests", default=True
+    )
+    track_destruction_services = fields.Boolean(
+        string="Track Destruction Services", default=True
+    )
+    track_digital_services = fields.Boolean(
+        string="Track Digital Services", default=False
+    )
+
+    # Invoice Generation Fields
+    invoice_template = fields.Many2one("mail.template", string="Invoice Template")
+    consolidate_charges = fields.Boolean(string="Consolidate Charges", default=True)
+    prorate_monthly = fields.Boolean(string="Prorate Monthly", default=True)
+    include_usage_details = fields.Boolean(string="Include Usage Details", default=True)
+    send_invoice_email = fields.Boolean(string="Send Invoice Email", default=True)
+    invoice_email_template = fields.Many2one(
+        "mail.template", string="Invoice Email Template"
+    )
+    cc_accounting = fields.Boolean(string="CC Accounting Team", default=True)
+    reminder_schedule = fields.Selection(
+        [
+            ("none", "No Reminders"),
+            ("weekly", "Weekly"),
+            ("biweekly", "Bi-weekly"),
+            ("monthly", "Monthly"),
+        ],
+        string="Reminder Schedule",
+        default="weekly",
+    )
+
+    # Revenue Analytics Fields
+    monthly_revenue = fields.Monetary(
+        string="Monthly Revenue",
+        currency_field="currency_id",
+        compute="_compute_revenue",
+    )
+    quarterly_revenue = fields.Monetary(
+        string="Quarterly Revenue",
+        currency_field="currency_id",
+        compute="_compute_revenue",
+    )
+    annual_revenue = fields.Monetary(
+        string="Annual Revenue",
+        currency_field="currency_id",
+        compute="_compute_revenue",
+    )
+    average_monthly_billing = fields.Monetary(
+        string="Average Monthly Billing",
+        currency_field="currency_id",
+        compute="_compute_averages",
+    )
+    billing_accuracy_rate = fields.Float(
+        string="Billing Accuracy Rate (%)", compute="_compute_accuracy"
+    )
+    collection_rate = fields.Float(
+        string="Collection Rate (%)", compute="_compute_collection"
+    )
+    payment_delay_average = fields.Integer(
+        string="Payment Delay Average (Days)", compute="_compute_delays"
+    )
+    customer_satisfaction_score = fields.Float(
+        string="Customer Satisfaction Score", compute="_compute_satisfaction"
+    )
+
+    # Notification and Alert Fields
+    billing_failure_alerts = fields.Boolean(
+        string="Billing Failure Alerts", default=True
+    )
+    payment_overdue_alerts = fields.Boolean(
+        string="Payment Overdue Alerts", default=True
+    )
+    usage_threshold_alerts = fields.Boolean(
+        string="Usage Threshold Alerts", default=True
+    )
+    revenue_variance_alerts = fields.Boolean(
+        string="Revenue Variance Alerts", default=True
+    )
+    finance_team_notifications = fields.Boolean(
+        string="Finance Team Notifications", default=True
+    )
+    manager_notifications = fields.Boolean(string="Manager Notifications", default=True)
+    customer_notifications = fields.Boolean(
+        string="Customer Notifications", default=True
+    )
+    escalation_notifications = fields.Boolean(
+        string="Escalation Notifications", default=True
+    )
+
+    # Advanced Integration Fields
+    payment_gateway_integration = fields.Boolean(
+        string="Payment Gateway Integration", default=False
+    )
+    tax_calculation_method = fields.Selection(
+        [("inclusive", "Tax Inclusive"), ("exclusive", "Tax Exclusive")],
+        string="Tax Calculation Method",
+        default="exclusive",
+    )
+    multi_currency_support = fields.Boolean(
+        string="Multi-Currency Support", default=False
+    )
+
+    # One2many Relationship Fields
+    usage_tracking_ids = fields.One2many(
+        "records.usage.tracking", "config_id", string="Usage Tracking"
+    )
+    invoice_generation_log_ids = fields.One2many(
+        "invoice.generation.log", "config_id", string="Invoice Generation Log"
+    )
+    discount_rule_ids = fields.One2many(
+        "discount.rule", "config_id", string="Discount Rules"
+    )
+    revenue_analytics_ids = fields.One2many(
+        "revenue.analytics", "config_id", string="Revenue Analytics"
+    )
+
     # Analytics and Reporting
     annual_revenue = fields.Monetary(
         string="Annual Revenue",
@@ -418,6 +556,7 @@ class RecordsBillingConfig(models.Model):
             if record.billing_line_ids:
                 total_amount = sum(record.billing_line_ids.mapped("amount"))
                 record.monthly_revenue = total_amount
+                record.quarterly_revenue = total_amount * 3
                 record.annual_revenue = total_amount * 12
             else:
                 # Estimate from base rate and frequency
@@ -429,6 +568,86 @@ class RecordsBillingConfig(models.Model):
                 }.get(record.billing_frequency, 12)
                 record.annual_revenue = (record.base_rate or 0) * multiplier
                 record.monthly_revenue = record.annual_revenue / 12
+                record.quarterly_revenue = record.annual_revenue / 4
+
+    @api.depends("invoice_ids")
+    def _compute_accuracy(self):
+        """Compute billing accuracy rate"""
+        for record in self:
+            if record.invoice_ids:
+                total_invoices = len(record.invoice_ids)
+                accurate_invoices = len(
+                    record.invoice_ids.filtered(lambda inv: inv.state != "cancel")
+                )
+                record.billing_accuracy_rate = (
+                    (accurate_invoices / total_invoices) * 100
+                    if total_invoices > 0
+                    else 0
+                )
+            else:
+                record.billing_accuracy_rate = 100.0
+
+    @api.depends("invoice_ids")
+    def _compute_collection(self):
+        """Compute collection rate"""
+        for record in self:
+            if record.invoice_ids:
+                total_amount = sum(record.invoice_ids.mapped("amount_total"))
+                paid_amount = sum(
+                    record.invoice_ids.filtered(
+                        lambda inv: inv.payment_state == "paid"
+                    ).mapped("amount_total")
+                )
+                record.collection_rate = (
+                    (paid_amount / total_amount) * 100 if total_amount > 0 else 0
+                )
+            else:
+                record.collection_rate = 100.0
+
+    @api.depends("invoice_ids")
+    def _compute_delays(self):
+        """Compute payment delay average"""
+        for record in self:
+            if record.invoice_ids:
+                paid_invoices = record.invoice_ids.filtered(
+                    lambda inv: inv.payment_state == "paid"
+                )
+                if paid_invoices:
+                    delays = []
+                    for invoice in paid_invoices:
+                        if invoice.invoice_date_due and invoice.payment_date:
+                            delay = (
+                                invoice.payment_date - invoice.invoice_date_due
+                            ).days
+                            delays.append(max(0, delay))  # Only count positive delays
+                    record.payment_delay_average = (
+                        sum(delays) / len(delays) if delays else 0
+                    )
+                else:
+                    record.payment_delay_average = 0
+            else:
+                record.payment_delay_average = 0
+
+    @api.depends("partner_id")
+    def _compute_satisfaction(self):
+        """Compute customer satisfaction score"""
+        for record in self:
+            if record.partner_id:
+                # Look for feedback records related to this customer
+                feedback_records = self.env["customer.feedback"].search(
+                    [("partner_id", "=", record.partner_id.id)]
+                )
+                if feedback_records:
+                    avg_rating = sum(feedback_records.mapped("rating")) / len(
+                        feedback_records
+                    )
+                    record.customer_satisfaction_score = (
+                        avg_rating * 20
+                    )  # Convert 1-5 scale to 0-100
+                else:
+                    record.customer_satisfaction_score = 85.0  # Default good score
+            else:
+                record.customer_satisfaction_score = 0.0
 
     @api.depends("billing_frequency", "billing_cycle_start")
     def _compute_next_billing_date(self):

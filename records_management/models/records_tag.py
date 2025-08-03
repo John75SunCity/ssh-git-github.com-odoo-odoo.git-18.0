@@ -55,6 +55,16 @@ class RecordsTag(models.Model):
     message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
     created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
     updated_date = fields.Datetime(string='Updated Date')
+    description = fields.Text('Description')
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    category = fields.Selection([('general', 'General'), ('legal', 'Legal'), ('financial', 'Financial'), ('hr', 'HR')], string='Category')
+    priority = fields.Selection([('low', 'Low'), ('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
+    auto_assign = fields.Boolean('Auto Assign', default=False)
+    icon = fields.Char('Icon')
+
+
 
 
     @api.depends("name")

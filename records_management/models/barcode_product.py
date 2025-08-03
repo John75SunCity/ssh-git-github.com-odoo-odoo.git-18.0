@@ -102,7 +102,183 @@ class BarcodeProduct(models.Model):
         default="monthly",
     )
 
+    # Customer and Location Management
+    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    customer_location_id = fields.Many2one(
+        "records.location", string="Customer Location", tracking=True
+    )
+
+    # Pricing and Promotions
+    discount_percentage = fields.Float(
+        string="Discount Percentage",
+        digits=(5, 2),
+        help="Percentage discount applied to the base rate",
+    )
+    effective_date = fields.Date(
+        string="Effective Date",
+        help="Date when this barcode product configuration becomes effective",
+    )
+
+    # Barcode Range Management
+    end_barcode = fields.Char(
+        string="End Barcode", help="End of barcode range for batch generation"
+    )
+
     # === COMPREHENSIVE BARCODE PRODUCT FIELDS ===
+
+    # Pricing Tier Management (One2many relationships)
+    pricing_tier_ids = fields.One2many(
+        "barcode.product.pricing.tier", "product_id", string="Pricing Tiers"
+    )
+    seasonal_pricing_ids = fields.One2many(
+        "barcode.product.seasonal.pricing", "product_id", string="Seasonal Pricing"
+    )
+
+    # Barcode Generation Settings
+    next_sequence_number = fields.Integer(
+        string="Next Sequence Number",
+        default=1,
+        help="Next number in sequence for barcode generation",
+    )
+    last_generated_barcode = fields.Char(string="Last Generated Barcode", readonly=True)
+    total_generated = fields.Integer(string="Total Generated", default=0, readonly=True)
+    generation_batch_size = fields.Integer(string="Generation Batch Size", default=100)
+
+    # Validation Rules
+    validate_format = fields.Boolean(string="Validate Format", default=True)
+    validate_uniqueness = fields.Boolean(string="Validate Uniqueness", default=True)
+    validate_check_digit = fields.Boolean(string="Validate Check Digit", default=True)
+
+    # Generation History (One2many relationship)
+    generation_history_ids = fields.One2many(
+        "barcode.product.generation.history", "product_id", string="Generation History"
+    )
+
+    # Storage Box Configuration
+    storage_box_ids = fields.One2many(
+        "barcode.product.storage.box", "product_id", string="Storage Boxes"
+    )
+
+    # Shredding Configuration
+    shred_security_level = fields.Selection(
+        [
+            ("level_1", "Level 1 - Strip Cut"),
+            ("level_2", "Level 2 - Cross Cut"),
+            ("level_3", "Level 3 - Particle Cut"),
+            ("level_4", "Level 4 - Micro Cut"),
+            ("level_5", "Level 5 - Crypto Cut"),
+            ("level_6", "Level 6 - High Security"),
+        ],
+        string="Shred Security Level",
+        default="level_2",
+    )
+
+    # Physical and Safety Features
+    fill_level = fields.Float(
+        string="Fill Level",
+        digits=(5, 2),
+        default=0.0,
+        help="Current fill level as percentage",
+    )
+    fireproof_rating = fields.Selection(
+        [
+            ("class_a", "Class A - Ordinary Combustibles"),
+            ("class_b", "Class B - Flammable Liquids"),
+            ("class_c", "Class C - Electrical Equipment"),
+            ("class_d", "Class D - Combustible Metals"),
+            ("none", "No Fire Protection"),
+        ],
+        string="Fireproof Rating",
+        default="class_a",
+    )
+    indoor_outdoor = fields.Selection(
+        [
+            ("indoor", "Indoor Use Only"),
+            ("outdoor", "Outdoor Use Only"),
+            ("both", "Indoor/Outdoor Use"),
+        ],
+        string="Indoor/Outdoor",
+        default="indoor",
+    )
+    last_pickup_date = fields.Date(
+        string="Last Pickup Date", help="Date of last pickup service"
+    )
+    lockable = fields.Boolean(
+        string="Lockable",
+        default=True,
+        help="Indicates if the product has locking mechanism",
+    )
+
+    # Additional Configuration Fields
+    stackable = fields.Boolean(
+        string="Stackable", default=True, help="Indicates if the product can be stacked"
+    )
+    suitable_document_types = fields.Many2many(
+        "records.document.type",
+        string="Suitable Document Types",
+        help="Document types suitable for this product",
+    )
+    naid_compliant = fields.Boolean(
+        string="NAID Compliant", default=True, help="Meets NAID compliance standards"
+    )
+    witness_destruction = fields.Boolean(
+        string="Witness Destruction",
+        default=False,
+        help="Destruction process is witnessed",
+    )
+    certificate_provided = fields.Boolean(
+        string="Certificate Provided",
+        default=True,
+        help="Destruction certificate is provided",
+    )
+    mobile = fields.Boolean(
+        string="Mobile", default=False, help="Product is mobile/portable"
+    )
+    weight_capacity = fields.Float(
+        string="Weight Capacity (lbs)",
+        digits=(10, 2),
+        help="Maximum weight capacity in pounds",
+    )
+    next_pickup_date = fields.Date(
+        string="Next Pickup Date", help="Scheduled date for next pickup service"
+    )
+    service_rate = fields.Monetary(
+        string="Service Rate",
+        currency_field="currency_id",
+        help="Rate for service calls",
+    )
+
+    # Final Missing Fields
+    max_file_folders = fields.Integer(
+        string="Max File Folders",
+        default=50,
+        help="Maximum number of file folders that can be stored",
+    )
+    max_stack_height = fields.Integer(
+        string="Max Stack Height", default=6, help="Maximum stack height for storage"
+    )
+    pickup_frequency = fields.Selection(
+        [
+            ("daily", "Daily"),
+            ("weekly", "Weekly"),
+            ("biweekly", "Bi-weekly"),
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("on_demand", "On Demand"),
+        ],
+        string="Pickup Frequency",
+        default="monthly",
+    )
+    recommended_retention_years = fields.Integer(
+        string="Recommended Retention (Years)",
+        default=7,
+        help="Recommended retention period in years",
+    )
+
+    # Shred Bin Configuration (One2many relationship)
+    shred_bin_ids = fields.One2many(
+        "barcode.product.shred.bin", "product_id", string="Shred Bins"
+    )
 
     # Enhanced Product Details
     product_code = fields.Char(string="Product Code", tracking=True)
@@ -362,7 +538,7 @@ class BarcodeProduct(models.Model):
     documentation_available = fields.Boolean(
         string="Documentation Available", default=True
     )
-    user_manual_url = fields.Url(string="User Manual URL")
+    user_manual_url = fields.Char(string="User Manual URL")
 
     # Warranty and Support
     warranty_period_months = fields.Integer(
@@ -925,6 +1101,103 @@ class BarcodeProduct(models.Model):
             },
         }
 
+
+class BarcodeProductPricingTier(models.Model):
+    """Pricing tier configuration for barcode products"""
+
+    _name = "barcode.product.pricing.tier"
+    _description = "Barcode Product Pricing Tier"
+    _order = "min_quantity"
+
+    product_id = fields.Many2one(
+        "barcode.product", string="Product", required=True, ondelete="cascade"
+    )
+    tier_name = fields.Char(string="Tier Name", required=True)
+    min_quantity = fields.Integer(string="Minimum Quantity", required=True)
+    max_quantity = fields.Integer(string="Maximum Quantity")
+    unit_price = fields.Monetary(
+        string="Unit Price", required=True, currency_field="currency_id"
+    )
+    discount_percentage = fields.Float(string="Discount %", digits=(5, 2))
+    effective_date = fields.Date(string="Effective Date", required=True)
+    expiry_date = fields.Date(string="Expiry Date")
+    currency_id = fields.Many2one(related="product_id.currency_id", string="Currency")
+
+
+class BarcodeProductSeasonalPricing(models.Model):
+    """Seasonal pricing configuration for barcode products"""
+
+    _name = "barcode.product.seasonal.pricing"
+    _description = "Barcode Product Seasonal Pricing"
+    _order = "start_date"
+
+    product_id = fields.Many2one(
+        "barcode.product", string="Product", required=True, ondelete="cascade"
+    )
+    season_name = fields.Char(string="Season Name", required=True)
+    start_date = fields.Date(string="Start Date", required=True)
+    end_date = fields.Date(string="End Date", required=True)
+    price_multiplier = fields.Float(
+        string="Price Multiplier", required=True, default=1.0, digits=(5, 2)
+    )
+    active = fields.Boolean(string="Active", default=True)
+
+
+class BarcodeProductGenerationHistory(models.Model):
+    """History of barcode generation batches"""
+
+    _name = "barcode.product.generation.history"
+    _description = "Barcode Generation History"
+    _order = "generation_date desc"
+
+    product_id = fields.Many2one(
+        "barcode.product", string="Product", required=True, ondelete="cascade"
+    )
+    generation_date = fields.Datetime(
+        string="Generation Date", required=True, default=fields.Datetime.now
+    )
+    batch_id = fields.Char(string="Batch ID", required=True)
+    quantity_generated = fields.Integer(string="Quantity Generated", required=True)
+    start_barcode = fields.Char(string="Start Barcode", required=True)
+    end_barcode = fields.Char(string="End Barcode", required=True)
+    generated_by = fields.Many2one(
+        "res.users",
+        string="Generated By",
+        required=True,
+        default=lambda self: self.env.user,
+    )
+
+
+class BarcodeProductStorageBox(models.Model):
+    """Storage box configuration for barcode products"""
+
+    _name = "barcode.product.storage.box"
+    _description = "Barcode Product Storage Box"
+    _order = "barcode"
+
+    product_id = fields.Many2one(
+        "barcode.product", string="Product", required=True, ondelete="cascade"
+    )
+    barcode = fields.Char(string="Barcode", required=True)
+    location_id = fields.Many2one("records.location", string="Location", required=True)
+    customer_id = fields.Many2one("res.partner", string="Customer", required=True)
+    box_status = fields.Selection(
+        [
+            ("available", "Available"),
+            ("occupied", "Occupied"),
+            ("reserved", "Reserved"),
+            ("maintenance", "Maintenance"),
+            ("retired", "Retired"),
+        ],
+        string="Box Status",
+        default="available",
+        required=True,
+    )
+    fill_percentage = fields.Float(string="Fill Percentage", digits=(5, 2), default=0.0)
+    last_access_date = fields.Date(string="Last Access Date")
+    monthly_rate = fields.Monetary(string="Monthly Rate", currency_field="currency_id")
+    currency_id = fields.Many2one(related="product_id.currency_id", string="Currency")
+
     def action_confirm(self):
         """Confirm the record"""
         self.write({"state": "confirmed"})
@@ -933,3 +1206,48 @@ class BarcodeProduct(models.Model):
         """Mark as done"""
         self.write({"state": "done"})
         self.write({"state": "done"})
+
+
+class BarcodeProductShredBin(models.Model):
+    """Shred bin configuration for barcode products"""
+
+    _name = "barcode.product.shred.bin"
+    _description = "Barcode Product Shred Bin"
+    _order = "name"
+
+    product_id = fields.Many2one(
+        "barcode.product", string="Product", required=True, ondelete="cascade"
+    )
+    name = fields.Char(string="Bin Name", required=True)
+    barcode = fields.Char(string="Bin Barcode")
+    location_id = fields.Many2one("records.location", string="Location")
+    customer_id = fields.Many2one("res.partner", string="Customer")
+    bin_status = fields.Selection(
+        [
+            ("available", "Available"),
+            ("in_use", "In Use"),
+            ("full", "Full"),
+            ("scheduled_pickup", "Scheduled for Pickup"),
+            ("maintenance", "Maintenance"),
+        ],
+        string="Bin Status",
+        default="available",
+    )
+    capacity_lbs = fields.Float(string="Capacity (lbs)", digits=(10, 2))
+    current_weight = fields.Float(string="Current Weight (lbs)", digits=(10, 2))
+    fill_percentage = fields.Float(
+        string="Fill %", compute="_compute_fill_percentage", store=True
+    )
+    last_pickup_date = fields.Date(string="Last Pickup Date")
+    next_pickup_date = fields.Date(string="Next Pickup Date")
+
+    @api.depends("capacity_lbs", "current_weight")
+    def _compute_fill_percentage(self):
+        """Compute fill percentage based on current weight"""
+        for record in self:
+            if record.capacity_lbs and record.current_weight:
+                record.fill_percentage = (
+                    record.current_weight / record.capacity_lbs
+                ) * 100
+            else:
+                record.fill_percentage = 0.0

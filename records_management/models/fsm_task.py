@@ -98,6 +98,83 @@ class FsmTask(models.Model):
     estimated_cost = fields.Monetary(
         string="Estimated Cost", currency_field="currency_id"
     )
+
+    # === CRITICAL MISSING FIELDS (from fsm_task_views.xml analysis) ===
+
+    # Status and Workflow Fields
+    task_status = fields.Selection(
+        [
+            ("scheduled", "Scheduled"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+            ("on_hold", "On Hold"),
+        ],
+        string="Task Status",
+        default="scheduled",
+        tracking=True,
+    )
+
+    # Additional Personnel Fields
+    backup_technician = fields.Many2one("res.users", string="Backup Technician")
+    supervisor = fields.Many2one("res.users", string="Supervisor")
+
+    # Enhanced Location Fields
+    location_coordinates = fields.Char(string="Location Coordinates")
+    facility_access_code = fields.Char(string="Facility Access Code")
+    parking_instructions = fields.Text(string="Parking Instructions")
+
+    # Service Details
+    service_type = fields.Selection(
+        [
+            ("pickup", "Pickup Service"),
+            ("delivery", "Delivery Service"),
+            ("onsite_shredding", "On-site Shredding"),
+            ("consultation", "Consultation"),
+            ("maintenance", "Maintenance"),
+            ("inspection", "Inspection"),
+        ],
+        string="Service Type",
+    )
+    equipment_required = fields.Text(string="Equipment Required")
+
+    # Communication and Documentation
+    checklist_item = fields.Text(string="Checklist Items")
+    communication_date = fields.Datetime(string="Communication Date")
+    communication_log_ids = fields.One2many(
+        "fsm.communication.log", "task_id", string="Communication Log"
+    )
+    communication_type = fields.Selection(
+        [
+            ("email", "Email"),
+            ("phone", "Phone"),
+            ("sms", "SMS"),
+            ("in_person", "In Person"),
+        ],
+        string="Communication Type",
+    )
+    completed = fields.Boolean(string="Completed", compute="_compute_completed")
+
+    # Additional Critical Fields Referenced in Views
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+    company_id = fields.Many2one(
+        "res.company", string="Company", default=lambda self: self.env.company
+    )
+    user_id = fields.Many2one(
+        "res.users", string="Responsible User", default=lambda self: self.env.user
+    )
+    active = fields.Boolean(string="Active", default=True)
+
+    # Mail thread integration fields (already inherited but explicit for clarity)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
     actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id")
     billable_amount = fields.Monetary(
         string="Billable Amount", currency_field="currency_id"
@@ -123,6 +200,12 @@ class FsmTask(models.Model):
                 )  # Convert to hours
             else:
                 record.actual_duration = 0.0
+
+    @api.depends("task_status")
+    def _compute_completed(self):
+        """Compute completed based on task status"""
+        for record in self:
+            record.completed = record.task_status == "completed"
 
     # Task Status
     task_status = fields.Selection(
@@ -176,68 +259,86 @@ class FsmTask(models.Model):
         "res.users", string="Assigned Technician", default=lambda self: self.env.user
     )
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    sequence = fields.Integer(string='Sequence', default=10)
-    notes = fields.Text(string='Notes')
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    sequence = fields.Integer(string="Sequence", default=10)
+    notes = fields.Text(string="Notes")
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
     # === COMPREHENSIVE MISSING FIELDS ===
-    task_type_id = fields.Many2one('fsm.task.type', string='Task Type')
-    priority_level = fields.Selection([('low', 'Low'), ('normal', 'Normal'), ('high', 'High'), ('urgent', 'Urgent')], string='Priority', default='normal')
-    scheduled_start_date = fields.Datetime(string='Scheduled Start')
-    scheduled_end_date = fields.Datetime(string='Scheduled End')
-    actual_start_date = fields.Datetime(string='Actual Start')
-    actual_end_date = fields.Datetime(string='Actual End')
-    technician_ids = fields.Many2many('hr.employee', string='Assigned Technicians')
-    equipment_ids = fields.Many2many('maintenance.equipment', string='Required Equipment')
-    material_ids = fields.One2many('fsm.task.material', 'task_id', string='Materials')
-    vehicle_id = fields.Many2one('fleet.vehicle', string='Service Vehicle')
-    customer_location_id = fields.Many2one('res.partner', string='Service Location')
-    customer_contact_id = fields.Many2one('res.partner', string='Customer Contact')
-    customer_phone = fields.Char(string='Customer Phone')
-    customer_email = fields.Char(string='Customer Email')
-    service_category_id = fields.Many2one('fsm.service.category', string='Service Category')
-    warranty_applicable = fields.Boolean(string='Warranty Applicable')
-    warranty_expiry_date = fields.Date(string='Warranty Expiry')
-    service_level_agreement = fields.Text(string='SLA Terms')
-    invoice_status = fields.Selection([('not_invoiced', 'Not Invoiced'), ('invoiced', 'Invoiced'), ('paid', 'Paid')], string='Invoice Status', default='not_invoiced')
+    task_type_id = fields.Many2one("fsm.task.type", string="Task Type")
+    priority_level = fields.Selection(
+        [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")],
+        string="Priority",
+        default="normal",
+    )
+    scheduled_start_date = fields.Datetime(string="Scheduled Start")
+    scheduled_end_date = fields.Datetime(string="Scheduled End")
+    actual_start_date = fields.Datetime(string="Actual Start")
+    actual_end_date = fields.Datetime(string="Actual End")
+    technician_ids = fields.Many2many("hr.employee", string="Assigned Technicians")
+    equipment_ids = fields.Many2many(
+        "maintenance.equipment", string="Required Equipment"
+    )
+    material_ids = fields.One2many("fsm.task.material", "task_id", string="Materials")
+    vehicle_id = fields.Many2one("fleet.vehicle", string="Service Vehicle")
+    customer_location_id = fields.Many2one("res.partner", string="Service Location")
+    customer_contact_id = fields.Many2one("res.partner", string="Customer Contact")
+    customer_phone = fields.Char(string="Customer Phone")
+    customer_email = fields.Char(string="Customer Email")
+    service_category_id = fields.Many2one(
+        "fsm.service.category", string="Service Category"
+    )
+    warranty_applicable = fields.Boolean(string="Warranty Applicable")
+    warranty_expiry_date = fields.Date(string="Warranty Expiry")
+    service_level_agreement = fields.Text(string="SLA Terms")
+    invoice_status = fields.Selection(
+        [("not_invoiced", "Not Invoiced"), ("invoiced", "Invoiced"), ("paid", "Paid")],
+        string="Invoice Status",
+        default="not_invoiced",
+    )
     # FSM Task Management Fields
-    activity_type = fields.Selection([('call', 'Call'), ('meeting', 'Meeting'), ('todo', 'To Do')], 'Activity Type')
-    photo_attachment = fields.Binary('Photo Attachment')
-    backup_technician = fields.Many2one('hr.employee', 'Backup Technician')
-    barcode_scanning = fields.Boolean('Barcode Scanning Required', default=False)
-    billable = fields.Boolean('Billable', default=True)
-    billable_to_customer = fields.Boolean('Billable to Customer', default=True)
-    chain_of_custody_required = fields.Boolean('Chain of Custody Required', default=False)
-    completion_certificate = fields.Binary('Completion Certificate')
-    completion_photos = fields.Text('Completion Photos URLs')
-    customer_signature = fields.Binary('Customer Signature')
-    customer_signature_date = fields.Datetime('Customer Signature Date')
-    customer_verification_code = fields.Char('Customer Verification Code')
-    document_collection_required = fields.Boolean('Document Collection Required', default=False)
-    emergency_contact_id = fields.Many2one('res.partner', 'Emergency Contact')
-    follow_up_required = fields.Boolean('Follow-up Required', default=False)
-    gps_end_location = fields.Char('GPS End Location')
-    gps_start_location = fields.Char('GPS Start Location')
-    invoice_notes = fields.Text('Invoice Notes')
-    location_access_code = fields.Char('Location Access Code')
-    location_access_instructions = fields.Text('Location Access Instructions')
-    mobile_signature = fields.Binary('Mobile Signature')
-    naid_compliance_required = fields.Boolean('NAID Compliance Required', default=False)
-    onsite_contact_id = fields.Many2one('res.partner', 'Onsite Contact')
-    pre_task_checklist = fields.Text('Pre-task Checklist')
-    route_optimization_data = fields.Text('Route Optimization Data')
-    safety_requirements = fields.Text('Safety Requirements')
-    task_checklist_completed = fields.Boolean('Task Checklist Completed', default=False)
-    travel_time_actual = fields.Float('Actual Travel Time (Hours)')
-    travel_time_estimated = fields.Float('Estimated Travel Time (Hours)')
-    vehicle_required = fields.Boolean('Vehicle Required', default=True)
-    verification_photos = fields.Text('Verification Photos URLs')
-    work_completion_notes = fields.Text('Work Completion Notes')
-
-
+    activity_type = fields.Selection(
+        [("call", "Call"), ("meeting", "Meeting"), ("todo", "To Do")], "Activity Type"
+    )
+    photo_attachment = fields.Binary("Photo Attachment")
+    backup_technician = fields.Many2one("hr.employee", "Backup Technician")
+    barcode_scanning = fields.Boolean("Barcode Scanning Required", default=False)
+    billable = fields.Boolean("Billable", default=True)
+    billable_to_customer = fields.Boolean("Billable to Customer", default=True)
+    chain_of_custody_required = fields.Boolean(
+        "Chain of Custody Required", default=False
+    )
+    completion_certificate = fields.Binary("Completion Certificate")
+    completion_photos = fields.Text("Completion Photos URLs")
+    customer_signature = fields.Binary("Customer Signature")
+    customer_signature_date = fields.Datetime("Customer Signature Date")
+    customer_verification_code = fields.Char("Customer Verification Code")
+    document_collection_required = fields.Boolean(
+        "Document Collection Required", default=False
+    )
+    emergency_contact_id = fields.Many2one("res.partner", "Emergency Contact")
+    follow_up_required = fields.Boolean("Follow-up Required", default=False)
+    gps_end_location = fields.Char("GPS End Location")
+    gps_start_location = fields.Char("GPS Start Location")
+    invoice_notes = fields.Text("Invoice Notes")
+    location_access_code = fields.Char("Location Access Code")
+    location_access_instructions = fields.Text("Location Access Instructions")
+    mobile_signature = fields.Binary("Mobile Signature")
+    naid_compliance_required = fields.Boolean("NAID Compliance Required", default=False)
+    onsite_contact_id = fields.Many2one("res.partner", "Onsite Contact")
+    pre_task_checklist = fields.Text("Pre-task Checklist")
+    route_optimization_data = fields.Text("Route Optimization Data")
+    safety_requirements = fields.Text("Safety Requirements")
+    task_checklist_completed = fields.Boolean("Task Checklist Completed", default=False)
+    travel_time_actual = fields.Float("Actual Travel Time (Hours)")
+    travel_time_estimated = fields.Float("Estimated Travel Time (Hours)")
+    vehicle_required = fields.Boolean("Vehicle Required", default=True)
+    verification_photos = fields.Text("Verification Photos URLs")
+    work_completion_notes = fields.Text("Work Completion Notes")
 
     @api.depends("partner_id")
     def _compute_customer_balance(self):
