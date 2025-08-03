@@ -112,6 +112,7 @@ from . import load
 
 # Core NAID compliance
 from . import naid_compliance
+from . import naid_compliance_support_models
 from . import naid_audit
 from . import naid_custody
 from . import naid_custody_event

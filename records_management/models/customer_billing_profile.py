@@ -156,7 +156,6 @@ class CustomerBillingProfile(models.Model):
             else:
                 record.contact_count = 0
 
-
     # ==========================================
     # SERVICE BILLING CONFIGURATION
     # ==========================================
@@ -199,7 +198,6 @@ class CustomerBillingProfile(models.Model):
         for record in self:
             record.contact_count = len(record.billing_contact_ids)
 
-
     @api.depends("storage_billing_cycle", "storage_advance_months")
     def _compute_next_storage_billing_date(self):
         """Compute next storage billing date"""
@@ -207,7 +205,6 @@ class CustomerBillingProfile(models.Model):
             # This would calculate based on billing cycle and current date
             # For now, just set to False - implement date calculation as needed
             record.next_storage_billing_date = False
-
 
     # ==========================================
     # WORKFLOW MANAGEMENT
