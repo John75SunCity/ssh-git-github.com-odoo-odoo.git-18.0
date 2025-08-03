@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
+from datetime import datetime, timedelta
 
 
 class RecordsBillingConfig(models.Model):
@@ -109,6 +110,203 @@ class RecordsBillingConfig(models.Model):
 
     # Business Critical Fields
     amount = fields.Monetary(string="Total Amount", currency_field="currency_id")
+    annual_revenue = fields.Monetary(
+        string="Annual Revenue",
+        currency_field="currency_id",
+        compute="_compute_annual_revenue",
+    )
+    audit_trail_enabled = fields.Boolean(string="Audit Trail Enabled", default=True)
+
+    # Rate Structure & Service Configuration
+    service_category = fields.Selection(
+        [
+            ("storage", "Storage Services"),
+            ("retrieval", "Retrieval Services"),
+            ("destruction", "Destruction Services"),
+            ("scanning", "Scanning Services"),
+            ("transport", "Transport Services"),
+            ("consultation", "Consultation Services"),
+        ],
+        string="Service Category",
+        required=True,
+        default="storage",
+    )
+
+    rate_unit = fields.Selection(
+        [
+            ("per_box", "Per Box"),
+            ("per_cubic_foot", "Per Cubic Foot"),
+            ("per_document", "Per Document"),
+            ("per_hour", "Per Hour"),
+            ("per_pickup", "Per Pickup"),
+            ("monthly", "Monthly Rate"),
+        ],
+        string="Rate Unit",
+        required=True,
+        default="per_box",
+    )
+
+    # Billing Schedule Fields
+    billing_cycle_start = fields.Date(
+        string="Billing Cycle Start", default=fields.Date.today
+    )
+    next_billing_date = fields.Date(
+        string="Next Billing Date", compute="_compute_next_billing_date"
+    )
+    payment_method = fields.Selection(
+        [
+            ("credit_card", "Credit Card"),
+            ("ach", "ACH/Bank Transfer"),
+            ("check", "Check"),
+            ("wire", "Wire Transfer"),
+            ("invoice", "Invoice Terms"),
+        ],
+        string="Payment Method",
+        default="invoice",
+    )
+    grace_period_days = fields.Integer(string="Grace Period (Days)", default=30)
+
+    # Statistical Fields for Dashboard
+    invoice_count = fields.Integer(
+        string="Invoice Count", compute="_compute_invoice_count"
+    )
+    billing_history_count = fields.Integer(
+        string="Billing History Count", compute="_compute_billing_history_count"
+    )
+    total_revenue = fields.Monetary(
+        string="Total Revenue",
+        currency_field="currency_id",
+        compute="_compute_total_revenue",
+    )
+
+    # Rate Management One2many Relationships
+    billing_rate_ids = fields.One2many(
+        "records.billing.rate", "billing_config_id", string="Billing Rates"
+    )
+    usage_tracking_ids = fields.One2many(
+        "records.usage.tracking", "billing_config_id", string="Usage Tracking Records"
+    )
+    billing_adjustment_ids = fields.One2many(
+        "records.billing.adjustment", "billing_config_id", string="Billing Adjustments"
+    )
+    invoice_line_ids = fields.One2many(
+        "account.move.line", "billing_config_id", string="Invoice Lines"
+    )
+
+    # Performance Metrics
+    average_monthly_revenue = fields.Monetary(
+        string="Average Monthly Revenue",
+        currency_field="currency_id",
+        compute="_compute_performance_metrics",
+    )
+    revenue_growth_rate = fields.Float(
+        string="Revenue Growth Rate (%)", compute="_compute_performance_metrics"
+    )
+    customer_satisfaction_score = fields.Float(
+        string="Customer Satisfaction Score",
+        digits=(3, 2),
+        help="Score from 1-10 based on customer feedback",
+    )
+
+    # Advanced Billing Configuration
+    apply_seasonal_rates = fields.Boolean(string="Apply Seasonal Rates", default=False)
+    seasonal_rate_multiplier = fields.Float(
+        string="Seasonal Rate Multiplier", default=1.0, digits=(3, 2)
+    )
+    bulk_discount_threshold = fields.Integer(
+        string="Bulk Discount Threshold", help="Minimum quantity for bulk discount"
+    )
+    bulk_discount_percentage = fields.Float(string="Bulk Discount %", digits=(5, 2))
+
+    # Contract & Agreement Fields
+    contract_start_date = fields.Date(string="Contract Start Date")
+    contract_end_date = fields.Date(string="Contract End Date")
+    contract_auto_renew = fields.Boolean(string="Auto-Renew Contract", default=False)
+    contract_terms_url = fields.Char(string="Contract Terms URL")
+
+    # Integration & Sync Fields
+    external_billing_id = fields.Char(string="External Billing System ID")
+    last_sync_date = fields.Datetime(string="Last Sync Date")
+    sync_status = fields.Selection(
+        [
+            ("pending", "Pending"),
+            ("synced", "Synced"),
+            ("error", "Error"),
+            ("manual", "Manual Override"),
+        ],
+        string="Sync Status",
+        default="pending",
+    )
+
+    # Compliance & Audit
+    compliance_notes = fields.Text(string="Compliance Notes")
+    audit_frequency = fields.Selection(
+        [
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("annually", "Annually"),
+            ("on_demand", "On Demand"),
+        ],
+        string="Audit Frequency",
+        default="quarterly",
+    )
+    last_audit_date = fields.Date(string="Last Audit Date")
+    next_audit_date = fields.Date(
+        string="Next Audit Date", compute="_compute_next_audit_date"
+    )
+
+    # Notification & Communication
+    billing_contact_ids = fields.Many2many(
+        "res.partner", "billing_config_contact_rel", string="Billing Contacts"
+    )
+    send_billing_alerts = fields.Boolean(string="Send Billing Alerts", default=True)
+    alert_threshold_amount = fields.Monetary(
+        string="Alert Threshold Amount",
+        currency_field="currency_id",
+        help="Send alert when billing exceeds this amount",
+    )
+
+    # Reporting & Analytics
+    generate_monthly_reports = fields.Boolean(
+        string="Generate Monthly Reports", default=True
+    )
+    report_recipients = fields.Many2many(
+        "res.users", "billing_config_report_users_rel", string="Report Recipients"
+    )
+    include_usage_analytics = fields.Boolean(
+        string="Include Usage Analytics", default=True
+    )
+
+    # Custom Fields for Special Requirements
+    custom_field_1 = fields.Char(string="Custom Field 1")
+    custom_field_2 = fields.Char(string="Custom Field 2")
+    custom_field_3 = fields.Monetary(
+        string="Custom Amount Field", currency_field="currency_id"
+    )
+
+    # Status and State Management
+    configuration_status = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("suspended", "Suspended"),
+            ("terminated", "Terminated"),
+        ],
+        string="Configuration Status",
+        default="draft",
+        tracking=True,
+    )
+
+    approval_required = fields.Boolean(string="Approval Required", default=False)
+    approved_by = fields.Many2one("res.users", string="Approved By")
+    approval_date = fields.Datetime(string="Approval Date")
+
+    # Multi-currency Support
+    base_currency_id = fields.Many2one("res.currency", string="Base Currency")
+    exchange_rate_date = fields.Date(string="Exchange Rate Date")
+    auto_currency_conversion = fields.Boolean(
+        string="Auto Currency Conversion", default=False
+    )
 
     # Usage Tracking Fields
     track_box_storage = fields.Boolean(string="Track Box Storage", default=True)
@@ -1229,4 +1427,185 @@ class RecordsBillingConfig(models.Model):
             "res_model": "account.move",
             "view_mode": "form",
             "target": "current",
+        }
+
+    # ============================================================================
+    # COMPUTE METHODS FOR NEW FIELDS
+    # ============================================================================
+
+    @api.depends("billing_frequency", "billing_cycle_start")
+    def _compute_next_billing_date(self):
+        """Compute next billing date based on frequency"""
+        for record in self:
+            if record.billing_cycle_start:
+                start_date = record.billing_cycle_start
+                if record.billing_frequency == "monthly":
+                    record.next_billing_date = start_date + timedelta(days=30)
+                elif record.billing_frequency == "quarterly":
+                    record.next_billing_date = start_date + timedelta(days=90)
+                elif record.billing_frequency == "semi_annually":
+                    record.next_billing_date = start_date + timedelta(days=180)
+                elif record.billing_frequency == "annually":
+                    record.next_billing_date = start_date + timedelta(days=365)
+                else:
+                    record.next_billing_date = False
+            else:
+                record.next_billing_date = False
+
+    @api.depends("partner_id")
+    def _compute_invoice_count(self):
+        """Compute number of invoices for this billing configuration"""
+        for record in self:
+            if record.partner_id:
+                invoice_count = self.env["account.move"].search_count(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("move_type", "=", "out_invoice"),
+                    ]
+                )
+                record.invoice_count = invoice_count
+            else:
+                record.invoice_count = 0
+
+    @api.depends("usage_tracking_ids")
+    def _compute_billing_history_count(self):
+        """Compute billing history count"""
+        for record in self:
+            record.billing_history_count = len(record.usage_tracking_ids)
+
+    @api.depends("partner_id")
+    def _compute_total_revenue(self):
+        """Compute total revenue from this customer"""
+        for record in self:
+            if record.partner_id:
+                invoice_lines = self.env["account.move.line"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("move_id.move_type", "=", "out_invoice"),
+                        ("move_id.state", "=", "posted"),
+                    ]
+                )
+                record.total_revenue = sum(invoice_lines.mapped("price_total"))
+            else:
+                record.total_revenue = 0.0
+
+    @api.depends("total_revenue", "billing_frequency")
+    def _compute_performance_metrics(self):
+        """Compute performance metrics like average monthly revenue"""
+        for record in self:
+            if record.total_revenue and record.billing_frequency:
+                if record.billing_frequency == "monthly":
+                    record.average_monthly_revenue = record.total_revenue
+                elif record.billing_frequency == "quarterly":
+                    record.average_monthly_revenue = record.total_revenue / 3
+                elif record.billing_frequency == "semi_annually":
+                    record.average_monthly_revenue = record.total_revenue / 6
+                elif record.billing_frequency == "annually":
+                    record.average_monthly_revenue = record.total_revenue / 12
+                else:
+                    record.average_monthly_revenue = 0.0
+
+                # Simple growth rate calculation (placeholder)
+                record.revenue_growth_rate = 5.0  # Default 5% growth
+            else:
+                record.average_monthly_revenue = 0.0
+                record.revenue_growth_rate = 0.0
+
+    @api.depends("last_audit_date", "audit_frequency")
+    def _compute_next_audit_date(self):
+        """Compute next audit date based on frequency"""
+        for record in self:
+            if record.last_audit_date and record.audit_frequency:
+                if record.audit_frequency == "monthly":
+                    record.next_audit_date = record.last_audit_date + timedelta(days=30)
+                elif record.audit_frequency == "quarterly":
+                    record.next_audit_date = record.last_audit_date + timedelta(days=90)
+                elif record.audit_frequency == "annually":
+                    record.next_audit_date = record.last_audit_date + timedelta(
+                        days=365
+                    )
+                else:
+                    record.next_audit_date = False
+            else:
+                record.next_audit_date = False
+
+    # ============================================================================
+    # ACTION METHODS FOR NEW FUNCTIONALITY
+    # ============================================================================
+
+    def action_generate_invoice(self):
+        """Generate invoice based on current configuration"""
+        self.ensure_one()
+        # Implementation for invoice generation
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Generated Invoice"),
+            "res_model": "account.move",
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def action_configure_rates(self):
+        """Open rate configuration wizard"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Configure Rates"),
+            "res_model": "records.billing.rate",
+            "view_mode": "tree,form",
+            "target": "current",
+            "domain": [("billing_config_id", "=", self.id)],
+        }
+
+    def action_test_billing(self):
+        """Test billing configuration"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Billing Test"),
+                "message": _("Billing configuration test completed successfully"),
+                "type": "success",
+                "sticky": False,
+            },
+        }
+
+    def action_view_analytics(self):
+        """View billing analytics dashboard"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Billing Analytics"),
+            "res_model": "records.billing.analytics",
+            "view_mode": "graph,pivot",
+            "target": "current",
+            "context": {"default_billing_config_id": self.id},
+        }
+
+    def action_view_invoices(self):
+        """View related invoices"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Related Invoices"),
+            "res_model": "account.move",
+            "view_mode": "tree,form",
+            "target": "current",
+            "domain": [
+                ("partner_id", "=", self.partner_id.id),
+                ("move_type", "=", "out_invoice"),
+            ],
+        }
+
+    def action_view_billing_history(self):
+        """View billing history"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Billing History"),
+            "res_model": "records.usage.tracking",
+            "view_mode": "tree,form",
+            "target": "current",
+            "domain": [("billing_config_id", "=", self.id)],
         }

@@ -148,6 +148,226 @@ class DocumentRetrievalWorkOrder(models.Model):
     validated_by_id = fields.Many2one("res.users", string="Validated By")
     validation_date = fields.Datetime(string="Validation Date")
     reference_number = fields.Char(string="Reference Number")
+
+    # === CRITICAL MISSING FIELDS FOR VIEWS COMPATIBILITY ===
+
+    # Customer Inventory Tracking System
+    container_id = fields.Many2one(
+        "records.container",
+        string="Container ID",
+        help="Internal barcoded container tracking",
+    )
+    box_number = fields.Char(
+        string="Customer Box Number", help="Customer's own box numbering system"
+    )
+
+    # Barcode Integration
+    barcode = fields.Char(string="Barcode", help="System-generated or scanned barcode")
+
+    # Cost Structure Fields
+    base_delivery_cost = fields.Monetary(
+        string="Base Delivery Cost",
+        currency_field="currency_id",
+        help="Standard delivery fee",
+    )
+    base_retrieval_cost = fields.Monetary(
+        string="Base Retrieval Cost",
+        currency_field="currency_id",
+        help="Standard retrieval fee",
+    )
+
+    # Visual and Organization
+    color = fields.Integer(string="Color Index", help="Color coding for organization")
+
+    # Document Details
+    document_description = fields.Text(string="Document Description")
+    document_type_id = fields.Many2one("records.document.type", string="Document Type")
+    file_count = fields.Integer(string="File Count", help="Number of files in request")
+
+    # Processing Workflow
+    processing_status = fields.Selection(
+        [
+            ("pending", "Pending"),
+            ("locating", "Locating Items"),
+            ("retrieving", "Retrieving"),
+            ("packaging", "Packaging"),
+            ("ready", "Ready for Delivery"),
+            ("delivered", "Delivered"),
+        ],
+        string="Processing Status",
+        default="pending",
+        tracking=True,
+    )
+
+    # Location and Logistics
+    storage_location_id = fields.Many2one("records.location", string="Storage Location")
+    pickup_location = fields.Char(string="Pickup Location")
+    delivery_method = fields.Selection(
+        [
+            ("courier", "Courier Delivery"),
+            ("customer_pickup", "Customer Pickup"),
+            ("mail", "Mail Delivery"),
+            ("digital", "Digital Delivery"),
+        ],
+        string="Delivery Method",
+        default="courier",
+    )
+
+    # Time Tracking
+    estimated_hours = fields.Float(string="Estimated Hours", digits=(5, 2))
+    actual_hours = fields.Float(string="Actual Hours", digits=(5, 2))
+    start_time = fields.Datetime(string="Start Time")
+    end_time = fields.Datetime(string="End Time")
+
+    # Customer Communication
+    customer_notified = fields.Boolean(string="Customer Notified", default=False)
+    notification_sent_date = fields.Datetime(string="Notification Sent Date")
+    customer_confirmation = fields.Boolean(
+        string="Customer Confirmation", default=False
+    )
+
+    # Retrieval Specifics
+    retrieval_type = fields.Selection(
+        [
+            ("permanent", "Permanent Retrieval"),
+            ("temporary", "Temporary Access"),
+            ("copy", "Copy Only"),
+            ("scan", "Scan to Digital"),
+        ],
+        string="Retrieval Type",
+        default="temporary",
+    )
+
+    return_required = fields.Boolean(string="Return Required", default=True)
+    return_deadline = fields.Date(string="Return Deadline")
+
+    # Security and Access Control
+    security_level = fields.Selection(
+        [
+            ("standard", "Standard"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+            ("top_secret", "Top Secret"),
+        ],
+        string="Security Level",
+        default="standard",
+    )
+
+    access_authorization = fields.Text(string="Access Authorization")
+    authorized_by = fields.Many2one("res.users", string="Authorized By")
+
+    # Special Handling
+    fragile_items = fields.Boolean(string="Fragile Items", default=False)
+    special_handling_required = fields.Boolean(
+        string="Special Handling Required", default=False
+    )
+    handling_instructions = fields.Text(string="Handling Instructions")
+
+    # Packaging and Transport
+    packaging_type = fields.Selection(
+        [
+            ("standard_box", "Standard Box"),
+            ("secure_container", "Secure Container"),
+            ("envelope", "Envelope"),
+            ("custom", "Custom Packaging"),
+        ],
+        string="Packaging Type",
+        default="standard_box",
+    )
+
+    transport_requirements = fields.Text(string="Transport Requirements")
+    insurance_required = fields.Boolean(string="Insurance Required", default=False)
+    insurance_value = fields.Monetary(
+        string="Insurance Value", currency_field="currency_id"
+    )
+
+    # Digital Processing
+    scan_required = fields.Boolean(string="Scan Required", default=False)
+    scan_resolution = fields.Selection(
+        [
+            ("standard", "Standard (300 DPI)"),
+            ("high", "High (600 DPI)"),
+            ("archive", "Archive Quality (1200 DPI)"),
+        ],
+        string="Scan Resolution",
+        default="standard",
+    )
+
+    digital_format = fields.Selection(
+        [("pdf", "PDF"), ("tiff", "TIFF"), ("jpeg", "JPEG"), ("png", "PNG")],
+        string="Digital Format",
+        default="pdf",
+    )
+
+    # Performance Metrics
+    efficiency_score = fields.Float(string="Efficiency Score", digits=(3, 2))
+    customer_satisfaction = fields.Selection(
+        [
+            ("1", "Very Poor"),
+            ("2", "Poor"),
+            ("3", "Average"),
+            ("4", "Good"),
+            ("5", "Excellent"),
+        ],
+        string="Customer Satisfaction",
+    )
+
+    # Audit and Compliance
+    chain_of_custody_maintained = fields.Boolean(
+        string="Chain of Custody Maintained", default=True
+    )
+    audit_trail = fields.Text(string="Audit Trail")
+    compliance_verified = fields.Boolean(string="Compliance Verified", default=False)
+
+    # Integration Fields
+    external_tracking_id = fields.Char(string="External Tracking ID")
+    third_party_service = fields.Char(string="Third Party Service")
+
+    # Statistical and Reporting
+    complexity_level = fields.Selection(
+        [
+            ("simple", "Simple"),
+            ("moderate", "Moderate"),
+            ("complex", "Complex"),
+            ("very_complex", "Very Complex"),
+        ],
+        string="Complexity Level",
+        default="simple",
+    )
+
+    volume_category = fields.Selection(
+        [
+            ("single_item", "Single Item"),
+            ("small_batch", "Small Batch (2-10)"),
+            ("medium_batch", "Medium Batch (11-50)"),
+            ("large_batch", "Large Batch (51+)"),
+        ],
+        string="Volume Category",
+        default="single_item",
+    )
+
+    # Emergency and Priority Handling
+    emergency_request = fields.Boolean(string="Emergency Request", default=False)
+    emergency_contact = fields.Char(string="Emergency Contact")
+    emergency_reason = fields.Text(string="Emergency Reason")
+
+    after_hours_service = fields.Boolean(string="After Hours Service", default=False)
+    weekend_service = fields.Boolean(string="Weekend Service", default=False)
+
+    # Customer Portal Integration
+    portal_visible = fields.Boolean(string="Portal Visible", default=True)
+    customer_updates_enabled = fields.Boolean(
+        string="Customer Updates Enabled", default=True
+    )
+    tracking_url = fields.Char(string="Tracking URL")
+
+    # Environmental and Sustainability
+    eco_friendly_packaging = fields.Boolean(
+        string="Eco-Friendly Packaging", default=False
+    )
+    carbon_footprint_offset = fields.Boolean(
+        string="Carbon Footprint Offset", default=False
+    )
     external_reference = fields.Char(string="External Reference")
     documentation_complete = fields.Boolean(string="Documentation Complete")
     attachment_ids = fields.One2many("ir.attachment", "res_id", string="Attachments")
@@ -816,6 +1036,205 @@ class DocumentRetrievalWorkOrder(models.Model):
 
     def action_assign_team(self):
         """Open wizard to assign team to the work order"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Assign Team",
+            "res_model": "document.retrieval.team.assignment.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_work_order_id": self.id},
+        }
+
+    # ============================================================================
+    # COMPUTE METHODS FOR NEW FIELDS
+    # ============================================================================
+
+    @api.depends("start_time", "end_time")
+    def _compute_actual_hours(self):
+        """Compute actual hours based on start and end time"""
+        for record in self:
+            if record.start_time and record.end_time:
+                delta = record.end_time - record.start_time
+                record.actual_hours = delta.total_seconds() / 3600.0
+            else:
+                record.actual_hours = 0.0
+
+    @api.depends("file_count")
+    def _compute_volume_category(self):
+        """Compute volume category based on file count"""
+        for record in self:
+            count = record.file_count
+            if count <= 1:
+                record.volume_category = "single_item"
+            elif count <= 10:
+                record.volume_category = "small_batch"
+            elif count <= 50:
+                record.volume_category = "medium_batch"
+            else:
+                record.volume_category = "large_batch"
+
+    @api.depends("estimated_hours", "special_handling_required", "security_level")
+    def _compute_complexity_level(self):
+        """Compute complexity level based on various factors"""
+        for record in self:
+            complexity_score = 0
+
+            # Base complexity from estimated hours
+            if record.estimated_hours:
+                if record.estimated_hours <= 1:
+                    complexity_score += 1
+                elif record.estimated_hours <= 4:
+                    complexity_score += 2
+                elif record.estimated_hours <= 8:
+                    complexity_score += 3
+                else:
+                    complexity_score += 4
+
+            # Add complexity for special handling
+            if record.special_handling_required:
+                complexity_score += 1
+
+            # Add complexity for security level
+            if record.security_level in ["restricted", "top_secret"]:
+                complexity_score += 2
+            elif record.security_level == "confidential":
+                complexity_score += 1
+
+            # Determine final complexity
+            if complexity_score <= 2:
+                record.complexity_level = "simple"
+            elif complexity_score <= 4:
+                record.complexity_level = "moderate"
+            elif complexity_score <= 6:
+                record.complexity_level = "complex"
+            else:
+                record.complexity_level = "very_complex"
+
+    @api.depends("actual_hours", "estimated_hours")
+    def _compute_efficiency_score(self):
+        """Compute efficiency score based on estimated vs actual time"""
+        for record in self:
+            if record.estimated_hours and record.actual_hours:
+                if record.actual_hours <= record.estimated_hours:
+                    # Completed on time or early
+                    record.efficiency_score = min(
+                        100.0, (record.estimated_hours / record.actual_hours) * 100
+                    )
+                else:
+                    # Took longer than estimated
+                    record.efficiency_score = max(
+                        0.0,
+                        100.0
+                        - (
+                            (record.actual_hours - record.estimated_hours)
+                            / record.estimated_hours
+                            * 50
+                        ),
+                    )
+            else:
+                record.efficiency_score = 0.0
+
+    @api.depends("container_id")
+    def _compute_storage_location(self):
+        """Auto-compute storage location from container"""
+        for record in self:
+            if record.container_id and record.container_id.location_id:
+                record.storage_location_id = record.container_id.location_id
+            else:
+                record.storage_location_id = False
+
+    @api.depends("retrieval_type", "return_required")
+    def _compute_return_deadline(self):
+        """Compute return deadline based on retrieval type"""
+        for record in self:
+            if record.retrieval_type == "temporary" and record.return_required:
+                from datetime import timedelta
+
+                # Default 30 days for temporary retrieval
+                if record.request_date:
+                    record.return_deadline = record.request_date + timedelta(days=30)
+                else:
+                    record.return_deadline = fields.Date.today() + timedelta(days=30)
+            else:
+                record.return_deadline = False
+
+    @api.depends("notification_sent_date")
+    def _compute_customer_notified(self):
+        """Auto-set customer notified flag"""
+        for record in self:
+            record.customer_notified = bool(record.notification_sent_date)
+
+    # ============================================================================
+    # ACTION METHODS FOR NEW FUNCTIONALITY
+    # ============================================================================
+
+    def action_locate_container(self):
+        """Locate the container based on box number"""
+        self.ensure_one()
+        if not self.box_number:
+            raise UserError(_("Please specify the customer box number first"))
+
+        # Find container by box number
+        container = self.env["records.container"].search(
+            [("box_number", "=", self.box_number)], limit=1
+        )
+
+        if container:
+            self.container_id = container.id
+            self.storage_location_id = (
+                container.location_id.id if container.location_id else False
+            )
+            self.message_post(
+                body=_("Container %s located at %s for box number %s")
+                % (
+                    container.name,
+                    container.location_id.name if container.location_id else "Unknown",
+                    self.box_number,
+                )
+            )
+        else:
+            raise UserError(_("No container found for box number %s") % self.box_number)
+
+        return True
+
+    def action_notify_customer(self):
+        """Send notification to customer about retrieval status"""
+        self.ensure_one()
+        template = self.env.ref(
+            "records_management.email_template_retrieval_notification", False
+        )
+        if template:
+            template.send_mail(self.id, force_send=True)
+            self.notification_sent_date = fields.Datetime.now()
+            self.customer_notified = True
+        return True
+
+    def action_generate_tracking_url(self):
+        """Generate tracking URL for customer portal"""
+        self.ensure_one()
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        self.tracking_url = f"{base_url}/my/retrieval/{self.id}"
+        return True
+
+    def action_emergency_escalate(self):
+        """Escalate as emergency request"""
+        self.ensure_one()
+        self.write({"emergency_request": True, "priority": "urgent"})
+
+        # Notify management
+        manager_group = self.env.ref("records_management.group_records_manager")
+        if manager_group and manager_group.users:
+            self.activity_schedule(
+                "mail.mail_activity_data_todo",
+                summary=_("Emergency Retrieval Request: %s") % self.name,
+                note=_(
+                    "This retrieval request has been marked as emergency. Immediate attention required."
+                ),
+                user_id=manager_group.users[0].id,
+            )
+
+        return True
         self.ensure_one()
 
         return {

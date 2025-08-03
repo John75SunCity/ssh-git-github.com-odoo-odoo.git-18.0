@@ -132,8 +132,14 @@ class DocumentRetrievalTeam(models.Model):
     )
 
     # Availability
-    available_from = fields.Time(string="Available From")
-    available_to = fields.Time(string="Available To")
+    available_from = fields.Float(
+        string="Available From (Hours)",
+        help="Available from time in 24-hour format (e.g., 9.5 for 9:30 AM)",
+    )
+    available_to = fields.Float(
+        string="Available To (Hours)",
+        help="Available to time in 24-hour format (e.g., 17.5 for 5:30 PM)",
+    )
     working_days = fields.Selection(
         [
             ("weekdays", "Monday to Friday"),

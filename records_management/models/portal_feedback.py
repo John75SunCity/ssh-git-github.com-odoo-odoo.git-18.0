@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
+from datetime import datetime, timedelta
 
 
 class PortalFeedback(models.Model):
@@ -152,6 +153,162 @@ class PortalFeedback(models.Model):
     follow_up_date = fields.Date(string="Follow-up Date")
     follow_up_completed = fields.Boolean(string="Follow-up Completed", default=False)
     follow_up_notes = fields.Text(string="Follow-up Notes")
+
+    # Critical Missing Fields for Views Compatibility
+    followup_required = fields.Boolean(string="Followup Required", default=False)
+    followup_date = fields.Date(string="Followup Date")
+    followup_method = fields.Selection(
+        [
+            ("phone", "Phone Call"),
+            ("email", "Email"),
+            ("meeting", "Meeting"),
+            ("portal", "Portal Message"),
+        ],
+        string="Followup Method",
+        default="email",
+    )
+    followup_assigned_to = fields.Many2one("res.users", string="Followup Assigned To")
+
+    # Impact Assessment
+    impact_assessment = fields.Selection(
+        [
+            ("low", "Low Impact"),
+            ("medium", "Medium Impact"),
+            ("high", "High Impact"),
+            ("critical", "Critical Impact"),
+        ],
+        string="Impact Assessment",
+        default="medium",
+    )
+
+    # Statistical Fields Referenced in Views
+    customer_feedback_count = fields.Integer(
+        string="Customer Feedback Count", compute="_compute_customer_feedback_count"
+    )
+    related_ticket_count = fields.Integer(
+        string="Related Ticket Count", compute="_compute_related_ticket_count"
+    )
+    improvement_action_count = fields.Integer(
+        string="Improvement Action Count", compute="_compute_improvement_action_count"
+    )
+    activity_exception_decoration = fields.Selection(
+        [("today", "Today"), ("overdue", "Overdue"), ("planned", "Planned")],
+        string="Activity Exception",
+        compute="_compute_activity_exception",
+    )
+
+    # Satisfaction Metrics
+    satisfaction_level = fields.Selection(
+        [
+            ("very_dissatisfied", "Very Dissatisfied"),
+            ("dissatisfied", "Dissatisfied"),
+            ("neutral", "Neutral"),
+            ("satisfied", "Satisfied"),
+            ("very_satisfied", "Very Satisfied"),
+        ],
+        string="Satisfaction Level",
+        compute="_compute_satisfaction_level",
+    )
+
+    # Communication and Contact
+    contact_preference = fields.Selection(
+        [
+            ("phone", "Phone"),
+            ("email", "Email"),
+            ("sms", "SMS"),
+            ("portal", "Portal"),
+            ("mail", "Regular Mail"),
+        ],
+        string="Contact Preference",
+        default="email",
+    )
+
+    # Resolution Tracking
+    resolution_target_date = fields.Date(string="Resolution Target Date")
+    resolution_actual_date = fields.Date(string="Resolution Actual Date")
+    resolution_time_hours = fields.Float(
+        string="Resolution Time (Hours)", compute="_compute_resolution_time"
+    )
+
+    # Customer Communication History
+    communication_log_ids = fields.One2many(
+        "portal.feedback.communication", "feedback_id", string="Communication Log"
+    )
+
+    # Service Level Agreement
+    sla_type = fields.Selection(
+        [
+            ("standard", "Standard SLA"),
+            ("priority", "Priority SLA"),
+            ("premium", "Premium SLA"),
+            ("enterprise", "Enterprise SLA"),
+        ],
+        string="SLA Type",
+        default="standard",
+    )
+    sla_deadline = fields.Datetime(
+        string="SLA Deadline", compute="_compute_sla_deadline"
+    )
+    sla_status = fields.Selection(
+        [
+            ("within_sla", "Within SLA"),
+            ("approaching_breach", "Approaching Breach"),
+            ("breached", "SLA Breached"),
+        ],
+        string="SLA Status",
+        compute="_compute_sla_status",
+    )
+
+    # Quality Assurance
+    qa_reviewed = fields.Boolean(string="QA Reviewed", default=False)
+    qa_score = fields.Float(string="QA Score", digits=(3, 2))
+    qa_notes = fields.Text(string="QA Notes")
+    qa_reviewer = fields.Many2one("res.users", string="QA Reviewer")
+
+    # Root Cause Analysis
+    root_cause_identified = fields.Boolean(
+        string="Root Cause Identified", default=False
+    )
+    root_cause_description = fields.Text(string="Root Cause Description")
+    preventive_action_required = fields.Boolean(
+        string="Preventive Action Required", default=False
+    )
+    preventive_action_description = fields.Text(string="Preventive Action Description")
+
+    # Customer Journey Mapping
+    customer_journey_stage = fields.Selection(
+        [
+            ("awareness", "Awareness"),
+            ("consideration", "Consideration"),
+            ("purchase", "Purchase"),
+            ("onboarding", "Onboarding"),
+            ("usage", "Usage"),
+            ("support", "Support"),
+            ("renewal", "Renewal"),
+            ("advocacy", "Advocacy"),
+        ],
+        string="Customer Journey Stage",
+    )
+
+    # Business Intelligence
+    feedback_trend = fields.Selection(
+        [("improving", "Improving"), ("stable", "Stable"), ("declining", "Declining")],
+        string="Feedback Trend",
+        compute="_compute_feedback_trend",
+    )
+
+    # Integration Fields
+    external_ticket_id = fields.Char(string="External Ticket ID")
+    external_system = fields.Selection(
+        [
+            ("zendesk", "Zendesk"),
+            ("salesforce", "Salesforce"),
+            ("servicenow", "ServiceNow"),
+            ("freshdesk", "Freshdesk"),
+            ("other", "Other"),
+        ],
+        string="External System",
+    )
 
     # === COMPREHENSIVE MISSING FIELDS ENHANCEMENT ===
 
@@ -1013,3 +1170,171 @@ class PortalFeedback(models.Model):
                 vals["name"] = _("New Record")
 
         return super().create(vals_list)
+
+    # ============================================================================
+    # COMPUTE METHODS FOR NEW FIELDS
+    # ============================================================================
+
+    @api.depends("customer_id")
+    def _compute_customer_feedback_count(self):
+        """Compute number of feedback entries for this customer"""
+        for record in self:
+            if record.customer_id:
+                count = self.search_count(
+                    [
+                        ("customer_id", "=", record.customer_id.id),
+                        ("id", "!=", record.id),
+                    ]
+                )
+                record.customer_feedback_count = count
+            else:
+                record.customer_feedback_count = 0
+
+    def _compute_related_ticket_count(self):
+        """Compute number of related tickets"""
+        for record in self:
+            # Placeholder - would connect to actual ticket system
+            record.related_ticket_count = 0
+
+    def _compute_improvement_action_count(self):
+        """Compute number of improvement actions"""
+        for record in self:
+            # Placeholder - would connect to improvement action model
+            record.improvement_action_count = 0
+
+    @api.depends("activity_ids")
+    def _compute_activity_exception(self):
+        """Compute activity exception status"""
+        for record in self:
+            if record.activity_ids:
+                overdue = record.activity_ids.filtered(
+                    lambda a: a.date_deadline < fields.Date.today()
+                )
+                today = record.activity_ids.filtered(
+                    lambda a: a.date_deadline == fields.Date.today()
+                )
+                if overdue:
+                    record.activity_exception_decoration = "overdue"
+                elif today:
+                    record.activity_exception_decoration = "today"
+                else:
+                    record.activity_exception_decoration = "planned"
+            else:
+                record.activity_exception_decoration = False
+
+    @api.depends("overall_rating", "service_quality_rating", "response_time_rating")
+    def _compute_satisfaction_level(self):
+        """Compute overall satisfaction level"""
+        for record in self:
+            if record.overall_rating:
+                rating = int(record.overall_rating)
+                if rating >= 5:
+                    record.satisfaction_level = "very_satisfied"
+                elif rating >= 4:
+                    record.satisfaction_level = "satisfied"
+                elif rating >= 3:
+                    record.satisfaction_level = "neutral"
+                elif rating >= 2:
+                    record.satisfaction_level = "dissatisfied"
+                else:
+                    record.satisfaction_level = "very_dissatisfied"
+            else:
+                record.satisfaction_level = "neutral"
+
+    @api.depends("submission_date", "resolution_actual_date")
+    def _compute_resolution_time(self):
+        """Compute resolution time in hours"""
+        for record in self:
+            if record.submission_date and record.resolution_actual_date:
+                delta = record.resolution_actual_date - record.submission_date
+                record.resolution_time_hours = delta.total_seconds() / 3600
+            else:
+                record.resolution_time_hours = 0.0
+
+    @api.depends("submission_date", "sla_type")
+    def _compute_sla_deadline(self):
+        """Compute SLA deadline based on type"""
+        for record in self:
+            if record.submission_date:
+                from datetime import timedelta
+
+                if record.sla_type == "standard":
+                    hours = 48
+                elif record.sla_type == "priority":
+                    hours = 24
+                elif record.sla_type == "premium":
+                    hours = 12
+                elif record.sla_type == "enterprise":
+                    hours = 4
+                else:
+                    hours = 48
+                record.sla_deadline = record.submission_date + timedelta(hours=hours)
+            else:
+                record.sla_deadline = False
+
+    @api.depends("sla_deadline", "resolution_actual_date")
+    def _compute_sla_status(self):
+        """Compute SLA status"""
+        for record in self:
+            if record.sla_deadline:
+                now = fields.Datetime.now()
+                if record.resolution_actual_date:
+                    if record.resolution_actual_date <= record.sla_deadline:
+                        record.sla_status = "within_sla"
+                    else:
+                        record.sla_status = "breached"
+                else:
+                    if now < record.sla_deadline:
+                        # Check if approaching breach (within 25% of deadline)
+                        time_left = record.sla_deadline - now
+                        total_time = record.sla_deadline - record.submission_date
+                        if (
+                            time_left.total_seconds() / total_time.total_seconds()
+                            < 0.25
+                        ):
+                            record.sla_status = "approaching_breach"
+                        else:
+                            record.sla_status = "within_sla"
+                    else:
+                        record.sla_status = "breached"
+            else:
+                record.sla_status = "within_sla"
+
+    @api.depends("customer_id")
+    def _compute_feedback_trend(self):
+        """Compute feedback trend for this customer"""
+        for record in self:
+            if record.customer_id:
+                # Get recent feedback for trend analysis
+                recent_feedback = self.search(
+                    [
+                        ("customer_id", "=", record.customer_id.id),
+                        (
+                            "submission_date",
+                            ">=",
+                            fields.Date.today() - timedelta(days=90),
+                        ),
+                    ],
+                    order="submission_date desc",
+                    limit=5,
+                )
+
+                if len(recent_feedback) >= 3:
+                    ratings = [
+                        int(f.overall_rating)
+                        for f in recent_feedback
+                        if f.overall_rating
+                    ]
+                    if len(ratings) >= 3:
+                        if ratings[0] > ratings[-1]:  # Latest > Oldest
+                            record.feedback_trend = "improving"
+                        elif ratings[0] < ratings[-1]:  # Latest < Oldest
+                            record.feedback_trend = "declining"
+                        else:
+                            record.feedback_trend = "stable"
+                    else:
+                        record.feedback_trend = "stable"
+                else:
+                    record.feedback_trend = "stable"
+            else:
+                record.feedback_trend = "stable"
