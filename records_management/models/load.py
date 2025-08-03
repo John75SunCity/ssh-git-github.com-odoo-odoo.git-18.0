@@ -448,6 +448,141 @@ class Load(models.Model):
     vehicle_inspection_completed = fields.Boolean(
         "Vehicle Inspection Completed", default=False
     )
+
+    # === MISSING LOAD MANAGEMENT FIELDS ===
+
+    # Delivery and Contact Information
+    delivery_contact = fields.Char(string="Delivery Contact Person", tracking=True)
+    delivery_date = fields.Date(string="Scheduled Delivery Date", tracking=True)
+    delivery_phone = fields.Char(string="Delivery Contact Phone", tracking=True)
+    destination_address = fields.Text(string="Destination Address", tracking=True)
+    driver_name = fields.Char(string="Driver Name", tracking=True)
+
+    # Equipment and Vehicle Details
+    equipment_type = fields.Selection(
+        [
+            ("truck", "Truck"),
+            ("trailer", "Trailer"),
+            ("container", "Container"),
+            ("rail_car", "Rail Car"),
+        ],
+        string="Equipment Type",
+        tracking=True,
+    )
+
+    fuel_cost = fields.Monetary(
+        string="Fuel Cost", currency_field="currency_id", tracking=True
+    )
+
+    # GPS and Location Tracking
+    gps_destination_lat = fields.Float(
+        string="GPS Destination Latitude", digits=(10, 7)
+    )
+    gps_destination_lng = fields.Float(
+        string="GPS Destination Longitude", digits=(10, 7)
+    )
+    gps_pickup_lat = fields.Float(string="GPS Pickup Latitude", digits=(10, 7))
+    gps_pickup_lng = fields.Float(string="GPS Pickup Longitude", digits=(10, 7))
+
+    # Load Planning and Configuration
+    load_configuration_notes = fields.Text(string="Load Configuration Notes")
+    load_plan_id = fields.Many2one("load.planning", string="Load Plan")
+
+    # Operational Details
+    loading_bay = fields.Char(string="Loading Bay/Dock", tracking=True)
+
+    # Performance and Tracking
+    on_time_delivery = fields.Boolean(
+        string="On Time Delivery", default=False, tracking=True
+    )
+
+    # Equipment and Resource Management
+    equipment_id = fields.Many2one(
+        "maintenance.equipment", string="Equipment Used", tracking=True
+    )
+
+    # Quality and Inspection
+    quality_inspection_notes = fields.Text(string="Quality Inspection Notes")
+
+    # Reference and Documentation
+    reference_number = fields.Char(string="Reference Number", tracking=True)
+
+    # Route and Navigation
+    route_id = fields.Many2one("delivery.route", string="Delivery Route")
+
+    # Scheduling and Timing
+    scheduled_pickup_time = fields.Datetime(
+        string="Scheduled Pickup Time", tracking=True
+    )
+
+    # Load Status and State
+    status_notes = fields.Text(string="Status Notes")
+
+    # Transportation Details
+    trailer_number = fields.Char(string="Trailer Number", tracking=True)
+    truck_number = fields.Char(string="Truck Number", tracking=True)
+
+    # Vehicle and Driver Information
+    vehicle_id = fields.Many2one("fleet.vehicle", string="Vehicle", tracking=True)
+
+    # Weight and Measurement Details
+    weight_variance = fields.Float(string="Weight Variance (%)", digits=(5, 2))
+
+    # Additional Computed Fields
+    delivery_efficiency = fields.Float(
+        string="Delivery Efficiency (%)",
+        digits=(5, 2),
+        compute="_compute_delivery_efficiency",
+    )
+    load_utilization = fields.Float(
+        string="Load Utilization (%)",
+        digits=(5, 2),
+        compute="_compute_load_utilization",
+    )
+
+    @api.depends("estimated_delivery", "actual_delivery")
+    def _compute_delivery_efficiency(self):
+        """Compute delivery efficiency based on estimated vs actual delivery times"""
+        for record in self:
+            if record.estimated_delivery and record.actual_delivery:
+                estimated_hours = (
+                    (record.estimated_delivery - record.shipping_date).total_seconds()
+                    / 3600
+                    if record.shipping_date
+                    else 0
+                )
+                actual_hours = (
+                    (record.actual_delivery - record.shipping_date).total_seconds()
+                    / 3600
+                    if record.shipping_date
+                    else 0
+                )
+
+                if actual_hours and estimated_hours:
+                    record.delivery_efficiency = (estimated_hours / actual_hours) * 100
+                else:
+                    record.delivery_efficiency = 0
+            else:
+                record.delivery_efficiency = 0
+
+    @api.depends("total_weight", "vehicle_id")
+    def _compute_load_utilization(self):
+        """Compute load utilization percentage based on vehicle capacity"""
+        for record in self:
+            if (
+                record.total_weight
+                and record.vehicle_id
+                and hasattr(record.vehicle_id, "capacity_weight")
+            ):
+                if record.vehicle_id.capacity_weight > 0:
+                    record.load_utilization = (
+                        record.total_weight / record.vehicle_id.capacity_weight
+                    ) * 100
+                else:
+                    record.load_utilization = 0
+            else:
+                record.load_utilization = 0
+
     weight_distribution_notes = fields.Text("Weight Distribution Notes")
 
     def write(self, vals):

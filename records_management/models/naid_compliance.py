@@ -807,6 +807,209 @@ class NaidCompliance(models.Model):
     )
     active = fields.Boolean(string="Active", default=True)
 
+    # === MISSING FIELDS FROM VIEW ANALYSIS ===
+
+    # Compliance Trends and Analytics
+    compliance_trend = fields.Selection(
+        [
+            ("improving", "Improving"),
+            ("stable", "Stable"),
+            ("declining", "Declining"),
+            ("critical", "Critical"),
+        ],
+        string="Compliance Trend",
+        compute="_compute_compliance_trend",
+    )
+
+    compliance_verified = fields.Boolean(
+        string="Compliance Verified", default=False, tracking=True
+    )
+
+    # Time-based Analytics
+    days_since_last_audit = fields.Integer(
+        string="Days Since Last Audit", compute="_compute_days_since_audit"
+    )
+    days_until_expiry = fields.Integer(
+        string="Days Until Expiry", compute="_compute_days_until_expiry"
+    )
+
+    # Destruction and Processing
+    destruction_date = fields.Date(string="Destruction Date", tracking=True)
+    destruction_facility = fields.Char(string="Destruction Facility")
+    destruction_witness = fields.Many2one("hr.employee", string="Destruction Witness")
+    destruction_notes = fields.Text(string="Destruction Notes")
+
+    # Advanced Compliance Fields
+    archive_date = fields.Date(string="Archive Date")
+    assessment_frequency = fields.Selection(
+        [
+            ("weekly", "Weekly"),
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("annually", "Annually"),
+        ],
+        string="Assessment Frequency",
+        default="quarterly",
+    )
+
+    authorization_level = fields.Selection(
+        [
+            ("basic", "Basic"),
+            ("advanced", "Advanced"),
+            ("executive", "Executive"),
+            ("administrator", "Administrator"),
+        ],
+        string="Authorization Level",
+        default="basic",
+    )
+
+    certificate_valid_until = fields.Date(
+        string="Certificate Valid Until", tracking=True
+    )
+    certification_body = fields.Char(string="Certification Body", default="NAID")
+
+    # Customer and Partner Information
+    customer_notification_date = fields.Date(string="Customer Notification Date")
+    customer_representative = fields.Many2one(
+        "res.partner", string="Customer Representative"
+    )
+
+    # Documentation and Evidence
+    evidence_collected = fields.Boolean(string="Evidence Collected", default=False)
+    evidence_storage_location = fields.Char(string="Evidence Storage Location")
+
+    # Workflow and Processing
+    follow_up_date = fields.Date(string="Follow-up Date")
+    follow_up_required = fields.Boolean(string="Follow-up Required", default=False)
+
+    # Integration and Systems
+    integration_status = fields.Selection(
+        [
+            ("not_integrated", "Not Integrated"),
+            ("partially_integrated", "Partially Integrated"),
+            ("fully_integrated", "Fully Integrated"),
+        ],
+        string="Integration Status",
+        default="not_integrated",
+    )
+
+    # Notification and Communication
+    notification_frequency = fields.Selection(
+        [
+            ("immediate", "Immediate"),
+            ("daily", "Daily"),
+            ("weekly", "Weekly"),
+            ("monthly", "Monthly"),
+        ],
+        string="Notification Frequency",
+        default="weekly",
+    )
+
+    # Record Management
+    record_type = fields.Selection(
+        [
+            ("physical", "Physical Records"),
+            ("digital", "Digital Records"),
+            ("hybrid", "Hybrid Records"),
+        ],
+        string="Record Type",
+        default="physical",
+    )
+
+    retention_schedule = fields.Char(string="Retention Schedule")
+
+    # Review and Approval
+    review_cycle = fields.Selection(
+        [
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("semi_annually", "Semi-Annually"),
+            ("annually", "Annually"),
+        ],
+        string="Review Cycle",
+        default="quarterly",
+    )
+
+    reviewer_id = fields.Many2one("hr.employee", string="Reviewer")
+
+    # Security and Access
+    security_clearance_required = fields.Boolean(
+        string="Security Clearance Required", default=False
+    )
+
+    # Service and Support
+    service_level_agreement = fields.Text(string="Service Level Agreement")
+    support_contact = fields.Many2one("res.partner", string="Support Contact")
+
+    # Validation and Quality
+    validation_notes = fields.Text(string="Validation Notes")
+
+    # Computed Analytics Fields
+    compliance_percentage = fields.Float(
+        string="Compliance Percentage (%)",
+        digits=(5, 2),
+        compute="_compute_compliance_percentage",
+    )
+
+    @api.depends("last_audit_date")
+    def _compute_days_since_audit(self):
+        """Compute days since last audit"""
+        for record in self:
+            if record.last_audit_date:
+                today = fields.Date.today()
+                delta = today - record.last_audit_date
+                record.days_since_last_audit = delta.days
+            else:
+                record.days_since_last_audit = 0
+
+    @api.depends("certificate_valid_until", "expiry_date")
+    def _compute_days_until_expiry(self):
+        """Compute days until certificate expiry"""
+        for record in self:
+            expiry_date = record.certificate_valid_until or record.expiry_date
+            if expiry_date:
+                today = fields.Date.today()
+                delta = expiry_date - today
+                record.days_until_expiry = delta.days
+            else:
+                record.days_until_expiry = 0
+
+    @api.depends(
+        "compliance_score", "audit_score", "security_score", "operational_score"
+    )
+    def _compute_compliance_trend(self):
+        """Compute compliance trend based on historical scores"""
+        for record in self:
+            # Simple trend analysis - could be enhanced with historical data
+            current_score = record.compliance_score or 0
+
+            if current_score >= 90:
+                record.compliance_trend = "improving"
+            elif current_score >= 75:
+                record.compliance_trend = "stable"
+            elif current_score >= 50:
+                record.compliance_trend = "declining"
+            else:
+                record.compliance_trend = "critical"
+
+    @api.depends("compliance_score", "checklist_completion_rate", "audit_score")
+    def _compute_compliance_percentage(self):
+        """Compute overall compliance percentage"""
+        for record in self:
+            scores = []
+
+            if record.compliance_score:
+                scores.append(record.compliance_score)
+            if record.checklist_completion_rate:
+                scores.append(record.checklist_completion_rate)
+            if record.audit_score:
+                scores.append(record.audit_score)
+
+            if scores:
+                record.compliance_percentage = sum(scores) / len(scores)
+            else:
+                record.compliance_percentage = 0.0
+
     # =============================================================================
     # NAID COMPLIANCE ACTION METHODS
     # =============================================================================
