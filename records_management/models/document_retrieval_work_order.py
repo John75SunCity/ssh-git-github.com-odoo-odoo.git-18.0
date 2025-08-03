@@ -161,6 +161,237 @@ class DocumentRetrievalWorkOrder(models.Model):
         ],
         string="Efficiency Rating",
     )
+
+    # === COMPREHENSIVE DOCUMENT RETRIEVAL FIELDS ===
+
+    # Enhanced Request Management
+    urgency_level = fields.Selection(
+        [
+            ("low", "Low Priority"),
+            ("medium", "Medium Priority"),
+            ("high", "High Priority"),
+            ("critical", "Critical"),
+        ],
+        string="Urgency Level",
+        default="medium",
+    )
+
+    retrieval_reason = fields.Selection(
+        [
+            ("legal", "Legal Request"),
+            ("audit", "Audit Purpose"),
+            ("business", "Business Need"),
+            ("compliance", "Compliance Review"),
+            ("research", "Research"),
+            ("other", "Other"),
+        ],
+        string="Retrieval Reason",
+        required=True,
+    )
+
+    # Advanced Document Management
+    document_categories = fields.Text(string="Document Categories")
+    date_range_from = fields.Date(string="Document Date Range From")
+    date_range_to = fields.Date(string="Document Date Range To")
+    keyword_search = fields.Text(string="Search Keywords")
+    file_types_requested = fields.Char(string="File Types Requested")
+    estimated_volume = fields.Float(string="Estimated Volume (boxes)", digits=(5, 2))
+    actual_volume = fields.Float(string="Actual Volume (boxes)", digits=(5, 2))
+
+    # Enhanced Customer Information
+    requestor_name = fields.Char(string="Requestor Name")
+    requestor_email = fields.Char(string="Requestor Email")
+    requestor_phone = fields.Char(string="Requestor Phone")
+    department_requesting = fields.Many2one(
+        "hr.department", string="Requesting Department"
+    )
+    authorization_level = fields.Selection(
+        [
+            ("basic", "Basic Access"),
+            ("elevated", "Elevated Access"),
+            ("restricted", "Restricted Access"),
+            ("confidential", "Confidential"),
+        ],
+        string="Authorization Level",
+        default="basic",
+    )
+
+    # Enhanced Delivery & Logistics
+    delivery_date_requested = fields.Date(string="Requested Delivery Date")
+    actual_delivery_date = fields.Date(string="Actual Delivery Date")
+    delivery_time_window = fields.Char(string="Delivery Time Window")
+    delivery_contact_name = fields.Char(string="Delivery Contact Name")
+    delivery_instructions = fields.Text(string="Delivery Instructions")
+    shipping_carrier = fields.Char(string="Shipping Carrier")
+    tracking_number = fields.Char(string="Tracking Number")
+    delivery_confirmation = fields.Boolean(string="Delivery Confirmed", default=False)
+
+    # Enhanced Billing & Pricing
+    hourly_rate = fields.Monetary(string="Hourly Rate", currency_field="currency_id")
+    rush_service_fee = fields.Monetary(
+        string="Rush Service Fee", currency_field="currency_id"
+    )
+    delivery_fee = fields.Monetary(string="Delivery Fee", currency_field="currency_id")
+    scanning_fee = fields.Monetary(string="Scanning Fee", currency_field="currency_id")
+    storage_access_fee = fields.Monetary(
+        string="Storage Access Fee", currency_field="currency_id"
+    )
+    total_estimated_fee = fields.Monetary(
+        string="Total Estimated Fee",
+        currency_field="currency_id",
+        compute="_compute_total_fees",
+    )
+    total_actual_fee = fields.Monetary(
+        string="Total Actual Fee", currency_field="currency_id"
+    )
+    discount_applied = fields.Monetary(
+        string="Discount Applied", currency_field="currency_id"
+    )
+    payment_terms = fields.Char(string="Payment Terms")
+
+    # Enhanced Resource Management
+    vehicle_required = fields.Boolean(string="Vehicle Required", default=False)
+    vehicle_id = fields.Many2one("records.vehicle", string="Assigned Vehicle")
+    equipment_needed = fields.Text(string="Equipment Needed")
+    team_members = fields.Many2many("hr.employee", string="Team Members")
+    backup_technician_id = fields.Many2one("hr.employee", string="Backup Technician")
+    skill_requirements = fields.Text(string="Required Skills")
+
+    # Enhanced Security & Compliance
+    security_clearance_required = fields.Boolean(
+        string="Security Clearance Required", default=False
+    )
+    witness_required = fields.Boolean(string="Witness Required", default=False)
+    witness_name = fields.Char(string="Witness Name")
+    chain_of_custody = fields.Boolean(string="Chain of Custody Required", default=True)
+    security_escort_required = fields.Boolean(
+        string="Security Escort Required", default=False
+    )
+    confidentiality_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal Use"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+        ],
+        string="Confidentiality Level",
+        default="internal",
+    )
+
+    # Enhanced Progress Tracking
+    progress_percentage = fields.Float(
+        string="Progress (%)", digits=(5, 2), compute="_compute_progress"
+    )
+    milestone_reached = fields.Char(string="Current Milestone")
+    blockers_identified = fields.Text(string="Identified Blockers")
+    risk_factors = fields.Text(string="Risk Factors")
+    mitigation_actions = fields.Text(string="Mitigation Actions")
+
+    # Enhanced Communication
+    customer_notifications_sent = fields.Integer(string="Notifications Sent", default=0)
+    last_customer_contact = fields.Datetime(string="Last Customer Contact")
+    communication_preference = fields.Selection(
+        [
+            ("email", "Email"),
+            ("phone", "Phone"),
+            ("sms", "SMS"),
+            ("portal", "Customer Portal"),
+        ],
+        string="Communication Preference",
+        default="email",
+    )
+
+    # Enhanced Quality Management
+    accuracy_score = fields.Float(string="Accuracy Score (%)", digits=(5, 2))
+    completeness_score = fields.Float(string="Completeness Score (%)", digits=(5, 2))
+    timeliness_score = fields.Float(string="Timeliness Score (%)", digits=(5, 2))
+    customer_satisfaction_score = fields.Float(
+        string="Customer Satisfaction (%)", digits=(5, 2)
+    )
+    quality_issues_count = fields.Integer(string="Quality Issues", default=0)
+    rework_required = fields.Boolean(string="Rework Required", default=False)
+    rework_reason = fields.Text(string="Rework Reason")
+
+    # Enhanced Digital Services
+    digital_copy_requested = fields.Boolean(
+        string="Digital Copy Requested", default=False
+    )
+    scan_resolution = fields.Selection(
+        [
+            ("low", "Low (150 DPI)"),
+            ("medium", "Medium (300 DPI)"),
+            ("high", "High (600 DPI)"),
+            ("ultra", "Ultra High (1200 DPI)"),
+        ],
+        string="Scan Resolution",
+        default="medium",
+    )
+    file_format = fields.Selection(
+        [
+            ("pdf", "PDF"),
+            ("tiff", "TIFF"),
+            ("jpeg", "JPEG"),
+            ("png", "PNG"),
+        ],
+        string="Digital File Format",
+        default="pdf",
+    )
+    ocr_required = fields.Boolean(string="OCR Required", default=False)
+    digital_delivery_method = fields.Selection(
+        [
+            ("email", "Email"),
+            ("portal", "Customer Portal"),
+            ("ftp", "FTP"),
+            ("cloud", "Cloud Storage"),
+        ],
+        string="Digital Delivery Method",
+        default="portal",
+    )
+
+    # Enhanced Analytics & Reporting
+    retrieval_efficiency = fields.Float(
+        string="Retrieval Efficiency (%)", digits=(5, 2), compute="_compute_efficiency"
+    )
+    cost_per_document = fields.Monetary(
+        string="Cost per Document",
+        currency_field="currency_id",
+        compute="_compute_cost_metrics",
+    )
+    time_per_document = fields.Float(
+        string="Time per Document (minutes)",
+        digits=(5, 2),
+        compute="_compute_time_metrics",
+    )
+    value_score = fields.Float(
+        string="Value Score", digits=(5, 2), compute="_compute_value_score"
+    )
+
+    # Enhanced Integration
+    related_orders_count = fields.Integer(
+        string="Related Orders", compute="_compute_related_orders"
+    )
+    parent_order_id = fields.Many2one(
+        "document.retrieval.work.order", string="Parent Order"
+    )
+    child_order_ids = fields.One2many(
+        "document.retrieval.work.order", "parent_order_id", string="Child Orders"
+    )
+    fsm_task_id = fields.Many2one("fsm.task", string="Related FSM Task")
+    invoice_id = fields.Many2one("account.move", string="Generated Invoice")
+    portal_request_id = fields.Many2one("portal.request", string="Portal Request")
+    external_reference = fields.Char(string="External Reference")
+    documentation_complete = fields.Boolean(string="Documentation Complete")
+    attachment_ids = fields.One2many("ir.attachment", "res_id", string="Attachments")
+    performance_score = fields.Float(string="Performance Score", digits=(5, 2))
+    efficiency_rating = fields.Selection(
+        [
+            ("poor", "Poor"),
+            ("fair", "Fair"),
+            ("good", "Good"),
+            ("excellent", "Excellent"),
+        ],
+        string="Efficiency Rating",
+    )
     last_review_date = fields.Date(string="Last Review Date")
     next_review_date = fields.Date(string="Next Review Date")
 
@@ -313,6 +544,324 @@ class DocumentRetrievalWorkOrder(models.Model):
             },
         }
 
+    # ===== ACTION METHODS =====
+
+    def action_start_retrieval(self):
+        """Start the document retrieval process"""
+        self.ensure_one()
+        if self.state != "draft":
+            raise UserError(_("Can only start retrieval for draft orders"))
+
+        # Validate required fields
+        if not self.assigned_team_id:
+            raise UserError(_("Please assign a team before starting retrieval"))
+
+        self.write(
+            {
+                "state": "in_progress",
+                "start_date": fields.Datetime.now(),
+            }
+        )
+
+        # Create activity for team lead
+        if self.assigned_team_id.team_lead_id:
+            self.activity_schedule(
+                "mail.mail_activity_data_todo",
+                user_id=self.assigned_team_id.team_lead_id.user_id.id,
+                summary=f"Document Retrieval Started: {self.name}",
+                note=f"Document retrieval work order has been started. Priority: {self.priority_level}",
+            )
+
+        return True
+
+    def action_pause_retrieval(self):
+        """Pause the document retrieval process"""
+        self.ensure_one()
+        if self.state != "in_progress":
+            raise UserError(_("Can only pause active retrieval orders"))
+
+        self.write(
+            {
+                "state": "paused",
+                "pause_reason": self.env.context.get("pause_reason", "Manual pause"),
+            }
+        )
+
+        return True
+
+    def action_resume_retrieval(self):
+        """Resume the document retrieval process"""
+        self.ensure_one()
+        if self.state != "paused":
+            raise UserError(_("Can only resume paused retrieval orders"))
+
+        self.write(
+            {
+                "state": "in_progress",
+                "pause_reason": False,
+            }
+        )
+
+        return True
+
+    def action_complete_retrieval(self):
+        """Complete the document retrieval process"""
+        self.ensure_one()
+        if self.state not in ["in_progress", "paused"]:
+            raise UserError(_("Can only complete active retrieval orders"))
+
+        # Validate completion requirements
+        if self.quality_required and not self.quality_checked:
+            raise UserError(_("Quality check is required before completion"))
+
+        # Calculate actual completion metrics
+        completion_date = fields.Datetime.now()
+        if self.start_date:
+            total_hours = (completion_date - self.start_date).total_seconds() / 3600.0
+            self.actual_hours = total_hours
+
+        self.write(
+            {
+                "state": "completed",
+                "completion_date": completion_date,
+                "progress_percentage": 100.0,
+            }
+        )
+
+        # Create completion activity
+        self.activity_schedule(
+            "mail.mail_activity_data_todo",
+            summary=f"Document Retrieval Completed: {self.name}",
+            note=f"Document retrieval work order has been completed successfully.",
+        )
+
+        # Update customer if portal request
+        if self.portal_request_id:
+            self.portal_request_id.write(
+                {
+                    "state": "completed",
+                    "completion_date": completion_date,
+                }
+            )
+
+        return True
+
+    def action_cancel_retrieval(self):
+        """Cancel the document retrieval process"""
+        self.ensure_one()
+        if self.state in ["completed", "cancelled"]:
+            raise UserError(_("Cannot cancel completed or already cancelled orders"))
+
+        # Get cancellation reason from context or prompt user
+        cancel_reason = self.env.context.get("cancel_reason", "Cancelled by user")
+
+        self.write(
+            {
+                "state": "cancelled",
+                "cancellation_reason": cancel_reason,
+                "cancellation_date": fields.Datetime.now(),
+            }
+        )
+
+        # Update customer if portal request
+        if self.portal_request_id:
+            self.portal_request_id.write(
+                {
+                    "state": "cancelled",
+                    "cancellation_reason": cancel_reason,
+                }
+            )
+
+        return True
+
+    def action_reset_to_draft(self):
+        """Reset order back to draft state"""
+        self.ensure_one()
+        if self.state == "completed":
+            raise UserError(_("Cannot reset completed orders"))
+
+        self.write(
+            {
+                "state": "draft",
+                "start_date": False,
+                "completion_date": False,
+                "cancellation_date": False,
+                "progress_percentage": 0.0,
+            }
+        )
+
+        return True
+
+    def action_schedule_delivery(self):
+        """Schedule delivery of retrieved documents"""
+        self.ensure_one()
+        if self.state != "completed":
+            raise UserError(_("Can only schedule delivery for completed orders"))
+
+        if not self.delivery_method:
+            raise UserError(_("Please select a delivery method"))
+
+        # Auto-schedule based on method
+        if self.delivery_method == "pickup":
+            # Customer pickup - no scheduling needed
+            self.delivery_status = "ready_pickup"
+        elif self.delivery_method in ["courier", "mail"]:
+            # Schedule delivery
+            self.delivery_status = "scheduled"
+            if not self.delivery_date_scheduled:
+                # Auto-schedule for next business day
+                import datetime
+
+                next_day = fields.Date.today() + datetime.timedelta(days=1)
+                self.delivery_date_scheduled = next_day
+        elif self.delivery_method == "digital":
+            # Immediate digital delivery
+            self.action_deliver_digital()
+
+        return True
+
+    def action_deliver_digital(self):
+        """Handle digital delivery of documents"""
+        self.ensure_one()
+        if not self.digital_delivery_method:
+            raise UserError(_("Please specify digital delivery method"))
+
+        # Mark as delivered digitally
+        self.write(
+            {
+                "delivery_status": "delivered",
+                "delivery_date_actual": fields.Datetime.now(),
+                "digital_delivery_completed": True,
+            }
+        )
+
+        # Send notification to customer
+        if self.customer_id:
+            # Create message/email notification
+            self.message_post(
+                body=f"Documents have been delivered digitally via {self.digital_delivery_method}",
+                message_type="notification",
+                partner_ids=[self.customer_id.id],
+            )
+
+        return True
+
+    def action_generate_invoice(self):
+        """Generate invoice for the retrieval service"""
+        self.ensure_one()
+        if self.state != "completed":
+            raise UserError(_("Can only invoice completed orders"))
+
+        if self.invoice_id:
+            raise UserError(_("Invoice already generated"))
+
+        # Create invoice
+        invoice_vals = {
+            "partner_id": self.customer_id.id,
+            "move_type": "out_invoice",
+            "invoice_date": fields.Date.today(),
+            "ref": self.name,
+            "invoice_line_ids": [
+                (
+                    0,
+                    0,
+                    {
+                        "name": f"Document Retrieval Service - {self.name}",
+                        "quantity": 1,
+                        "price_unit": self.total_estimated_fee,
+                        "account_id": self.env["account.account"]
+                        .search([("user_type_id.name", "=", "Income")], limit=1)
+                        .id,
+                    },
+                )
+            ],
+        }
+
+        invoice = self.env["account.move"].create(invoice_vals)
+        self.invoice_id = invoice.id
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Invoice",
+            "res_model": "account.move",
+            "res_id": invoice.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def action_quality_check(self):
+        """Perform quality check on retrieved documents"""
+        self.ensure_one()
+        if self.state != "in_progress":
+            raise UserError(_("Can only perform quality check on active orders"))
+
+        # Update quality metrics
+        self.write(
+            {
+                "quality_checked": True,
+                "quality_check_date": fields.Datetime.now(),
+                "quality_check_by": self.env.user.id,
+            }
+        )
+
+        # If quality issues found, create activity
+        if self.quality_issues:
+            self.activity_schedule(
+                "mail.mail_activity_data_todo",
+                summary=f"Quality Issues Found: {self.name}",
+                note=f"Quality check revealed issues: {self.quality_issues}",
+            )
+
+        return True
+
+    def action_assign_team(self):
+        """Open wizard to assign team to the work order"""
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Assign Team",
+            "res_model": "document.retrieval.team.assignment.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_work_order_id": self.id,
+                "default_current_team_id": self.assigned_team_id.id,
+            },
+        }
+
+    def action_view_retrieval_items(self):
+        """View individual retrieval items"""
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Retrieval Items",
+            "res_model": "document.retrieval.item",
+            "view_mode": "tree,form",
+            "domain": [("work_order_id", "=", self.id)],
+            "context": {
+                "default_work_order_id": self.id,
+            },
+        }
+
+    def action_update_progress(self):
+        """Update progress based on completed items"""
+        self.ensure_one()
+
+        # Count completed items
+        total_items = len(self.retrieval_item_ids)
+        if total_items > 0:
+            completed_items = len(
+                self.retrieval_item_ids.filtered(
+                    lambda x: x.status in ["delivered", "completed"]
+                )
+            )
+            progress = (completed_items / total_items) * 100
+            self.progress_percentage = progress
+
+        return True
+
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to set default values."""
@@ -325,3 +874,116 @@ class DocumentRetrievalWorkOrder(models.Model):
                 vals["name"] = _("New Record")
 
         return super().create(vals_list)
+
+    # === COMPREHENSIVE COMPUTE METHODS ===
+
+    @api.depends(
+        "hourly_rate",
+        "rush_service_fee",
+        "delivery_fee",
+        "scanning_fee",
+        "storage_access_fee",
+    )
+    def _compute_total_fees(self):
+        """Compute total estimated fees"""
+        for record in self:
+            record.total_estimated_fee = (
+                (
+                    record.hourly_rate * record.estimated_hours
+                    if record.hourly_rate and record.estimated_hours
+                    else 0
+                )
+                + (record.rush_service_fee or 0)
+                + (record.delivery_fee or 0)
+                + (record.scanning_fee or 0)
+                + (record.storage_access_fee or 0)
+            )
+
+    @api.depends("state", "completion_date", "target_completion_date")
+    def _compute_progress(self):
+        """Compute progress percentage based on state and milestones"""
+        for record in self:
+            if record.state == "draft":
+                record.progress_percentage = 0
+            elif record.state == "active":
+                # Calculate based on time elapsed vs total time
+                if record.target_completion_date and record.requested_date:
+                    total_days = (
+                        record.target_completion_date - record.requested_date
+                    ).days
+                    elapsed_days = (fields.Date.today() - record.requested_date).days
+                    if total_days > 0:
+                        record.progress_percentage = min(
+                            (elapsed_days / total_days) * 100, 95
+                        )
+                    else:
+                        record.progress_percentage = 50
+                else:
+                    record.progress_percentage = 25
+            elif record.state == "inactive":
+                record.progress_percentage = 100
+            else:
+                record.progress_percentage = 100
+
+    @api.depends("actual_hours", "estimated_hours")
+    def _compute_efficiency(self):
+        """Compute retrieval efficiency based on time performance"""
+        for record in self:
+            if record.estimated_hours and record.actual_hours:
+                record.retrieval_efficiency = (
+                    record.estimated_hours / record.actual_hours
+                ) * 100
+            else:
+                record.retrieval_efficiency = 0
+
+    @api.depends("total_actual_fee", "total_document_count")
+    def _compute_cost_metrics(self):
+        """Compute cost per document"""
+        for record in self:
+            if record.total_document_count and record.total_actual_fee:
+                record.cost_per_document = (
+                    record.total_actual_fee / record.total_document_count
+                )
+            else:
+                record.cost_per_document = 0
+
+    @api.depends("actual_hours", "total_document_count")
+    def _compute_time_metrics(self):
+        """Compute time per document in minutes"""
+        for record in self:
+            if record.total_document_count and record.actual_hours:
+                record.time_per_document = (
+                    record.actual_hours * 60
+                ) / record.total_document_count
+            else:
+                record.time_per_document = 0
+
+    @api.depends(
+        "customer_satisfaction_score",
+        "retrieval_efficiency",
+        "accuracy_score",
+        "timeliness_score",
+    )
+    def _compute_value_score(self):
+        """Compute overall value score based on multiple metrics"""
+        for record in self:
+            scores = [
+                record.customer_satisfaction_score or 0,
+                record.retrieval_efficiency or 0,
+                record.accuracy_score or 0,
+                record.timeliness_score or 0,
+            ]
+            valid_scores = [s for s in scores if s > 0]
+            record.value_score = (
+                sum(valid_scores) / len(valid_scores) if valid_scores else 0
+            )
+
+    @api.depends("parent_order_id", "child_order_ids")
+    def _compute_related_orders(self):
+        """Compute count of related orders"""
+        for record in self:
+            related_count = 0
+            if record.parent_order_id:
+                related_count += 1
+            related_count += len(record.child_order_ids)
+            record.related_orders_count = related_count

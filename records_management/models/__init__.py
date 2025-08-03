@@ -190,6 +190,7 @@ from . import account_move
 # Project and FSM integration
 from . import project_task
 from . import fsm_task
+from . import document_retrieval_support_models
 
 # POS integration
 from . import pos_config
@@ -242,20 +243,20 @@ from . import key_restriction_checker
 from . import records_permanent_flag_wizard
 
 # =============================================================================
-# FSM (FIELD SERVICE MANAGEMENT) EXTENSIONS - Conditional Import
+# OPTIONAL EXTENSIONS AND INTEGRATIONS
 # =============================================================================
-# FSM models are only loaded if industry_fsm module is available
-# This allows the module to work both in full Odoo.sh environment and limited dev environments
+
 import logging
 
 _logger = logging.getLogger(__name__)
 
 try:
-    # Check if we can import the fsm models without errors
-    from . import fsm_task
+    # Check if we can import additional FSM models without errors
     from . import fsm_route_management
     from . import fsm_notification
 
-    _logger.info("FSM extensions loaded successfully")
-except Exception as e:
-    _logger.warning("FSM modules not available, skipping FSM extensions: %s", str(e))
+    _logger.info("Additional FSM extensions loaded successfully")
+except ImportError as e:
+    _logger.warning(
+        "Additional FSM modules not available, skipping FSM extensions: %s", str(e)
+    )

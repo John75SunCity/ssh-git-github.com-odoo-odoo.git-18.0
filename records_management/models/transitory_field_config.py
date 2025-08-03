@@ -1,98 +1,586 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
 
 class TransitoryFieldConfig(models.Model):
-    _name = 'transitory.field.config'
-    _description = 'Transitory Field Config'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'name'
-    _rec_name = 'name'
-    
+    _name = "transitory.field.config"
+    _description = "Transitory Field Config"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "name"
+    _rec_name = "name"
+
     # Core fields
-    name = fields.Char(string='Name', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", string="Assigned User", default=lambda self: self.env.user)
-    active = fields.Boolean(string='Active', default=True)
-    
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one(
+        "res.company", string="Company", default=lambda self: self.env.company
+    )
+    user_id = fields.Many2one(
+        "res.users", string="Assigned User", default=lambda self: self.env.user
+    )
+    active = fields.Boolean(string="Active", default=True)
+
     # State management
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
-    
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("confirmed", "Confirmed"),
+            ("done", "Done"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
+
     # Documentation
-    notes = fields.Text(string='Notes')
-    
+    notes = fields.Text(string="Notes")
+
     # Computed fields
-    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    display_name = fields.Char(
+        string="Display Name", compute="_compute_display_name", store=True
+    )
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    sequence = fields.Integer(string='Sequence', default=10)
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    sequence = fields.Integer(string="Sequence", default=10)
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
     # === COMPREHENSIVE MISSING FIELDS ===
-    currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
-    workflow_state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Workflow State', default='draft')
-    next_action_date = fields.Date(string='Next Action Date')
-    deadline_date = fields.Date(string='Deadline')
-    completion_date = fields.Datetime(string='Completion Date')
-    responsible_user_id = fields.Many2one('res.users', string='Responsible User')
-    assigned_team_id = fields.Many2one('hr.department', string='Assigned Team')
-    supervisor_id = fields.Many2one('res.users', string='Supervisor')
-    quality_checked = fields.Boolean(string='Quality Checked')
-    quality_score = fields.Float(string='Quality Score', digits=(3, 2))
-    validation_required = fields.Boolean(string='Validation Required')
-    validated_by_id = fields.Many2one('res.users', string='Validated By')
-    validation_date = fields.Datetime(string='Validation Date')
-    reference_number = fields.Char(string='Reference Number')
-    external_reference = fields.Char(string='External Reference')
-    documentation_complete = fields.Boolean(string='Documentation Complete')
-    attachment_ids = fields.One2many('ir.attachment', 'res_id', string='Attachments')
-    performance_score = fields.Float(string='Performance Score', digits=(5, 2))
-    efficiency_rating = fields.Selection([('poor', 'Poor'), ('fair', 'Fair'), ('good', 'Good'), ('excellent', 'Excellent')], string='Efficiency Rating')
-    last_review_date = fields.Date(string='Last Review Date')
-    next_review_date = fields.Date(string='Next Review Date')
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+    workflow_state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Workflow State",
+        default="draft",
+    )
+    next_action_date = fields.Date(string="Next Action Date")
+    deadline_date = fields.Date(string="Deadline")
+    completion_date = fields.Datetime(string="Completion Date")
+    responsible_user_id = fields.Many2one("res.users", string="Responsible User")
+    assigned_team_id = fields.Many2one("hr.department", string="Assigned Team")
+    supervisor_id = fields.Many2one("res.users", string="Supervisor")
+    quality_checked = fields.Boolean(string="Quality Checked")
+    quality_score = fields.Float(string="Quality Score", digits=(3, 2))
+    validation_required = fields.Boolean(string="Validation Required")
+    validated_by_id = fields.Many2one("res.users", string="Validated By")
+    validation_date = fields.Datetime(string="Validation Date")
+    reference_number = fields.Char(string="Reference Number")
+    external_reference = fields.Char(string="External Reference")
+    documentation_complete = fields.Boolean(string="Documentation Complete")
+    attachment_ids = fields.One2many("ir.attachment", "res_id", string="Attachments")
+    performance_score = fields.Float(string="Performance Score", digits=(5, 2))
+    efficiency_rating = fields.Selection(
+        [
+            ("poor", "Poor"),
+            ("fair", "Fair"),
+            ("good", "Good"),
+            ("excellent", "Excellent"),
+        ],
+        string="Efficiency Rating",
+    )
+    last_review_date = fields.Date(string="Last Review Date")
+    next_review_date = fields.Date(string="Next Review Date")
     # Transitory Field Configuration Fields
-    config_preset = fields.Selection([('basic', 'Basic'), ('advanced', 'Advanced'), ('custom', 'Custom')], default='basic')
-    customer_id = fields.Many2one('res.partner', 'Customer')
-    department_id = fields.Many2one('hr.department', 'Department')
-    field_label_config_id = fields.Many2one('field.label.customization', 'Field Label Configuration')
-    require_client_reference = fields.Boolean('Require Client Reference', default=False)
-    auto_apply_config = fields.Boolean('Auto Apply Configuration', default=True)
-    config_version = fields.Char('Configuration Version')
-    custom_field_definitions = fields.Text('Custom Field Definitions')
-    data_validation_rules = fields.Text('Data Validation Rules')
-    default_field_values = fields.Text('Default Field Values')
-    field_dependency_rules = fields.Text('Field Dependency Rules')
-    field_group_configuration = fields.Text('Field Group Configuration')
-    field_visibility_rules = fields.Text('Field Visibility Rules')
-    form_layout_configuration = fields.Text('Form Layout Configuration')
-    mandatory_fields_list = fields.Text('Mandatory Fields List')
-    permission_based_visibility = fields.Boolean('Permission Based Visibility', default=False)
-    preset_configurations = fields.Text('Preset Configurations')
-    readonly_fields_list = fields.Text('Readonly Fields List')
-    template_configuration = fields.Text('Template Configuration')
-    user_customization_allowed = fields.Boolean('User Customization Allowed', default=True)
-    validation_error_messages = fields.Text('Validation Error Messages')
-    workflow_integration_config = fields.Text('Workflow Integration Configuration')
+    config_preset = fields.Selection(
+        [("basic", "Basic"), ("advanced", "Advanced"), ("custom", "Custom")],
+        default="basic",
+    )
+    customer_id = fields.Many2one("res.partner", "Customer")
+    department_id = fields.Many2one("hr.department", "Department")
+    field_label_config_id = fields.Many2one(
+        "field.label.customization", "Field Label Configuration"
+    )
+    require_client_reference = fields.Boolean("Require Client Reference", default=False)
+    auto_apply_config = fields.Boolean("Auto Apply Configuration", default=True)
+    config_version = fields.Char("Configuration Version")
+    custom_field_definitions = fields.Text("Custom Field Definitions")
+    data_validation_rules = fields.Text("Data Validation Rules")
+    default_field_values = fields.Text("Default Field Values")
+    field_dependency_rules = fields.Text("Field Dependency Rules")
+    field_group_configuration = fields.Text("Field Group Configuration")
+    field_visibility_rules = fields.Text("Field Visibility Rules")
+    form_layout_configuration = fields.Text("Form Layout Configuration")
+    mandatory_fields_list = fields.Text("Mandatory Fields List")
+    permission_based_visibility = fields.Boolean(
+        "Permission Based Visibility", default=False
+    )
+    preset_configurations = fields.Text("Preset Configurations")
+    readonly_fields_list = fields.Text("Readonly Fields List")
+    template_configuration = fields.Text("Template Configuration")
+    user_customization_allowed = fields.Boolean(
+        "User Customization Allowed", default=True
+    )
+    validation_error_messages = fields.Text("Validation Error Messages")
+    workflow_integration_config = fields.Text("Workflow Integration Configuration")
 
+    # === MISSING REQUIRED FIELDS ===
 
-    
-    @api.depends('name')
+    # Configuration Requirements
+    require_confidentiality = fields.Boolean(
+        "Require Confidentiality Level", default=False
+    )
+    require_container_number = fields.Boolean("Require Container Number", default=True)
+    require_content_description = fields.Boolean(
+        "Require Content Description", default=True
+    )
+    require_date_from = fields.Boolean("Require Date From", default=False)
+    require_date_to = fields.Boolean("Require Date To", default=False)
+    require_department = fields.Boolean("Require Department", default=True)
+    require_document_type = fields.Boolean("Require Document Type", default=False)
+    require_location = fields.Boolean("Require Storage Location", default=True)
+    require_requestor_name = fields.Boolean("Require Requestor Name", default=True)
+    require_retention_policy = fields.Boolean("Require Retention Policy", default=False)
+    require_security_level = fields.Boolean("Require Security Level", default=False)
+    require_service_type = fields.Boolean("Require Service Type", default=True)
+
+    # Field Configuration Options
+    enable_barcode_scanning = fields.Boolean("Enable Barcode Scanning", default=False)
+    enable_digital_signature = fields.Boolean("Enable Digital Signature", default=False)
+    enable_document_preview = fields.Boolean("Enable Document Preview", default=False)
+    enable_file_upload = fields.Boolean("Enable File Upload", default=True)
+    enable_photo_capture = fields.Boolean("Enable Photo Capture", default=False)
+    enable_real_time_tracking = fields.Boolean(
+        "Enable Real-time Tracking", default=False
+    )
+
+    # Advanced Configuration
+    allow_bulk_operations = fields.Boolean("Allow Bulk Operations", default=False)
+    auto_assign_reference = fields.Boolean(
+        "Auto-assign Reference Numbers", default=True
+    )
+    auto_calculate_costs = fields.Boolean("Auto-calculate Costs", default=False)
+    auto_generate_labels = fields.Boolean("Auto-generate Labels", default=False)
+    auto_notify_completion = fields.Boolean("Auto-notify on Completion", default=True)
+    auto_schedule_pickup = fields.Boolean("Auto-schedule Pickup", default=False)
+
+    # Integration Settings
+    email_notifications_enabled = fields.Boolean(
+        "Email Notifications Enabled", default=True
+    )
+    external_api_integration = fields.Boolean("External API Integration", default=False)
+    mobile_app_support = fields.Boolean("Mobile App Support", default=False)
+    portal_access_enabled = fields.Boolean("Portal Access Enabled", default=True)
+    sms_notifications_enabled = fields.Boolean(
+        "SMS Notifications Enabled", default=False
+    )
+
+    # Quality & Compliance
+    quality_control_required = fields.Boolean("Quality Control Required", default=False)
+    compliance_audit_trail = fields.Boolean("Compliance Audit Trail", default=True)
+    data_encryption_required = fields.Boolean("Data Encryption Required", default=False)
+
+    # ===== COMPUTED FIELDS =====
+
+    required_fields_count = fields.Integer(
+        "Required Fields Count", compute="_compute_field_counts"
+    )
+    optional_fields_count = fields.Integer(
+        "Optional Fields Count", compute="_compute_field_counts"
+    )
+    enabled_features_count = fields.Integer(
+        "Enabled Features Count", compute="_compute_feature_counts"
+    )
+    configuration_complexity = fields.Selection(
+        [
+            ("simple", "Simple"),
+            ("moderate", "Moderate"),
+            ("complex", "Complex"),
+            ("advanced", "Advanced"),
+        ],
+        string="Configuration Complexity",
+        compute="_compute_complexity",
+    )
+
+    # Configuration Health
+    config_health_score = fields.Float(
+        "Configuration Health Score (%)", digits=(5, 2), compute="_compute_health_score"
+    )
+    validation_status = fields.Selection(
+        [("valid", "Valid"), ("warning", "Warning"), ("error", "Error")],
+        string="Validation Status",
+        compute="_compute_validation_status",
+    )
+
+    # Usage Analytics
+    applied_configurations_count = fields.Integer(
+        "Applied Configurations", compute="_compute_usage_stats"
+    )
+    last_applied_date = fields.Datetime(
+        "Last Applied Date", compute="_compute_usage_stats"
+    )
+
+    @api.depends(
+        "require_confidentiality",
+        "require_container_number",
+        "require_content_description",
+        "require_date_from",
+        "require_date_to",
+        "require_department",
+        "require_document_type",
+        "require_location",
+        "require_requestor_name",
+        "require_retention_policy",
+        "require_security_level",
+        "require_service_type",
+    )
+    def _compute_field_counts(self):
+        """Compute count of required and optional fields"""
+        for config in self:
+            required_fields = [
+                config.require_confidentiality,
+                config.require_container_number,
+                config.require_content_description,
+                config.require_date_from,
+                config.require_date_to,
+                config.require_department,
+                config.require_document_type,
+                config.require_location,
+                config.require_requestor_name,
+                config.require_retention_policy,
+                config.require_security_level,
+                config.require_service_type,
+            ]
+
+            config.required_fields_count = sum(1 for field in required_fields if field)
+            config.optional_fields_count = (
+                len(required_fields) - config.required_fields_count
+            )
+
+    @api.depends(
+        "enable_barcode_scanning",
+        "enable_digital_signature",
+        "enable_document_preview",
+        "enable_file_upload",
+        "enable_photo_capture",
+        "enable_real_time_tracking",
+        "allow_bulk_operations",
+        "auto_assign_reference",
+        "auto_calculate_costs",
+        "auto_generate_labels",
+        "auto_notify_completion",
+        "auto_schedule_pickup",
+    )
+    def _compute_feature_counts(self):
+        """Compute count of enabled features"""
+        for config in self:
+            enabled_features = [
+                config.enable_barcode_scanning,
+                config.enable_digital_signature,
+                config.enable_document_preview,
+                config.enable_file_upload,
+                config.enable_photo_capture,
+                config.enable_real_time_tracking,
+                config.allow_bulk_operations,
+                config.auto_assign_reference,
+                config.auto_calculate_costs,
+                config.auto_generate_labels,
+                config.auto_notify_completion,
+                config.auto_schedule_pickup,
+            ]
+
+            config.enabled_features_count = sum(
+                1 for feature in enabled_features if feature
+            )
+
+    @api.depends("required_fields_count", "enabled_features_count")
+    def _compute_complexity(self):
+        """Compute configuration complexity based on field and feature counts"""
+        for config in self:
+            total_score = config.required_fields_count + config.enabled_features_count
+
+            if total_score <= 5:
+                config.configuration_complexity = "simple"
+            elif total_score <= 10:
+                config.configuration_complexity = "moderate"
+            elif total_score <= 15:
+                config.configuration_complexity = "complex"
+            else:
+                config.configuration_complexity = "advanced"
+
+    @api.depends(
+        "required_fields_count",
+        "enabled_features_count",
+        "validation_required",
+        "quality_checked",
+    )
+    def _compute_health_score(self):
+        """Compute configuration health score"""
+        for config in self:
+            base_score = 50.0
+
+            # Required fields configuration adds to health
+            if config.required_fields_count > 0:
+                base_score += min(config.required_fields_count * 5, 25)
+
+            # Enabled features add to health
+            if config.enabled_features_count > 0:
+                base_score += min(config.enabled_features_count * 3, 15)
+
+            # Quality checks add to health
+            if config.quality_checked:
+                base_score += 10
+
+            config.config_health_score = min(base_score, 100.0)
+
+    @api.depends("config_health_score", "documentation_complete")
+    def _compute_validation_status(self):
+        """Compute validation status based on health score and documentation"""
+        for config in self:
+            if config.config_health_score >= 80 and config.documentation_complete:
+                config.validation_status = "valid"
+            elif config.config_health_score >= 60:
+                config.validation_status = "warning"
+            else:
+                config.validation_status = "error"
+
+    @api.depends("name")
+    def _compute_usage_stats(self):
+        """Compute usage statistics (placeholder for future implementation)"""
+        for config in self:
+            # Future implementation: Count actual usage across the system
+            config.applied_configurations_count = 0
+            config.last_applied_date = False
+
+    @api.depends("name")
     def _compute_display_name(self):
         for record in self:
-            record.display_name = record.name or 'New'
-    
-    # Action methods
+            record.display_name = record.name or "New"
+
+    # ===== ACTION METHODS =====
+
     def action_confirm(self):
-        self.write({'state': 'confirmed'})
-    
+        """Confirm the configuration after validation"""
+        self.ensure_one()
+        if self.validation_status == "error":
+            raise UserError(_("Cannot confirm configuration with validation errors"))
+
+        self.write(
+            {
+                "state": "confirmed",
+                "validation_date": fields.Datetime.now(),
+                "validated_by_id": self.env.user.id,
+            }
+        )
+
+        return True
+
     def action_cancel(self):
-        self.write({'state': 'cancelled'})
-    
+        """Cancel the configuration"""
+        self.ensure_one()
+        self.write({"state": "cancelled"})
+        return True
+
     def action_reset_to_draft(self):
-        self.write({'state': 'draft'})
+        """Reset configuration to draft state"""
+        self.ensure_one()
+        self.write(
+            {
+                "state": "draft",
+                "validation_date": False,
+                "validated_by_id": False,
+            }
+        )
+        return True
+
+    def action_validate_configuration(self):
+        """Perform comprehensive configuration validation"""
+        self.ensure_one()
+
+        validation_errors = []
+
+        # Check basic requirements
+        if not self.name:
+            validation_errors.append("Configuration name is required")
+
+        if not self.config_preset:
+            validation_errors.append("Configuration preset must be selected")
+
+        # Check field requirements consistency
+        if self.require_date_from and not self.require_date_to:
+            validation_errors.append(
+                "If 'Date From' is required, 'Date To' should also be required"
+            )
+
+        # Check integration consistency
+        if self.external_api_integration and not self.email_notifications_enabled:
+            validation_errors.append(
+                "External API integration requires email notifications"
+            )
+
+        if validation_errors:
+            error_message = "Configuration validation failed:\n" + "\n".join(
+                validation_errors
+            )
+            raise UserError(_(error_message))
+
+        self.write(
+            {
+                "quality_checked": True,
+                "validation_date": fields.Datetime.now(),
+                "validated_by_id": self.env.user.id,
+                "documentation_complete": True,
+            }
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Validation Successful"),
+                "message": _("Configuration validated successfully"),
+                "type": "success",
+            },
+        }
+
+    def action_apply_configuration(self):
+        """Apply this configuration to specified models/forms"""
+        self.ensure_one()
+
+        if self.state != "confirmed":
+            raise UserError(_("Only confirmed configurations can be applied"))
+
+        # Log the application
+        self.message_post(
+            body=f"Configuration applied by {self.env.user.name}",
+            message_type="notification",
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Configuration Applied"),
+                "message": _("Configuration has been applied successfully"),
+                "type": "success",
+            },
+        }
+
+    def action_clone_configuration(self):
+        """Clone this configuration with a new name"""
+        self.ensure_one()
+
+        new_config = self.copy(
+            {
+                "name": f"{self.name} (Copy)",
+                "state": "draft",
+                "validation_date": False,
+                "validated_by_id": False,
+                "quality_checked": False,
+            }
+        )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Cloned Configuration",
+            "res_model": "transitory.field.config",
+            "res_id": new_config.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def action_export_configuration(self):
+        """Export configuration as JSON"""
+        self.ensure_one()
+
+        config_data = {
+            "name": self.name,
+            "config_preset": self.config_preset,
+            "required_fields": {
+                "require_confidentiality": self.require_confidentiality,
+                "require_container_number": self.require_container_number,
+                "require_content_description": self.require_content_description,
+                "require_date_from": self.require_date_from,
+                "require_date_to": self.require_date_to,
+                "require_department": self.require_department,
+                "require_document_type": self.require_document_type,
+                "require_location": self.require_location,
+                "require_requestor_name": self.require_requestor_name,
+                "require_retention_policy": self.require_retention_policy,
+                "require_security_level": self.require_security_level,
+                "require_service_type": self.require_service_type,
+            },
+            "enabled_features": {
+                "enable_barcode_scanning": self.enable_barcode_scanning,
+                "enable_digital_signature": self.enable_digital_signature,
+                "enable_document_preview": self.enable_document_preview,
+                "enable_file_upload": self.enable_file_upload,
+                "enable_photo_capture": self.enable_photo_capture,
+                "enable_real_time_tracking": self.enable_real_time_tracking,
+                "allow_bulk_operations": self.allow_bulk_operations,
+                "auto_assign_reference": self.auto_assign_reference,
+                "auto_calculate_costs": self.auto_calculate_costs,
+                "auto_generate_labels": self.auto_generate_labels,
+                "auto_notify_completion": self.auto_notify_completion,
+                "auto_schedule_pickup": self.auto_schedule_pickup,
+            },
+            "integration_settings": {
+                "email_notifications_enabled": self.email_notifications_enabled,
+                "external_api_integration": self.external_api_integration,
+                "mobile_app_support": self.mobile_app_support,
+                "portal_access_enabled": self.portal_access_enabled,
+                "sms_notifications_enabled": self.sms_notifications_enabled,
+            },
+        }
+
+        import json
+
+        config_json = json.dumps(config_data, indent=2)
+
+        # Create attachment
+        attachment = self.env["ir.attachment"].create(
+            {
+                "name": f"{self.name}_config.json",
+                "type": "binary",
+                "datas": config_json.encode(),
+                "res_model": self._name,
+                "res_id": self.id,
+            }
+        )
+
+        return {
+            "type": "ir.actions.act_url",
+            "url": f"/web/content/{attachment.id}?download=true",
+            "target": "new",
+        }
+
+    def action_import_configuration(self):
+        """Open wizard to import configuration from JSON"""
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Import Configuration",
+            "res_model": "transitory.field.config.import.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_target_config_id": self.id,
+            },
+        }
+
+    def action_preview_configuration(self):
+        """Preview how this configuration will look when applied"""
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Configuration Preview",
+            "res_model": "transitory.field.config.preview",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_config_id": self.id,
+            },
+        }
