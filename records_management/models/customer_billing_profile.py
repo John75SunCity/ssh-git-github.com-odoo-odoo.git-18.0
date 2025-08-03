@@ -475,6 +475,7 @@ class BillingContact(models.Model):
     # ==========================================
     # CORE FIELDS
     # ==========================================
+    name = fields.Char(string="Contact Name", required=True)
     email = fields.Char(string="Email", required=True)
     phone = fields.Char(string="Phone")
 

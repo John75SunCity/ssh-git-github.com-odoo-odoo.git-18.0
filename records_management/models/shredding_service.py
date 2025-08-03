@@ -96,6 +96,83 @@ class ShreddingService(models.Model):
     certificate_required = fields.Boolean(string="Certificate Required", default=True)
     witness_required = fields.Boolean(string="Witness Required", default=False)
 
+    # === MISSING FIELDS FROM VIEW ANALYSIS ===
+
+    # Chain of Custody and Compliance
+    chain_of_custody_number = fields.Char(
+        string="Chain of Custody Number",
+        tracking=True,
+        help="Unique identifier for chain of custody tracking",
+    )
+    compliance_status = fields.Selection(
+        [
+            ("pending", "Pending Review"),
+            ("compliant", "Compliant"),
+            ("non_compliant", "Non-Compliant"),
+            ("requires_attention", "Requires Attention"),
+        ],
+        string="Compliance Status",
+        default="pending",
+        tracking=True,
+    )
+    confidentiality_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal Use"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+            ("top_secret", "Top Secret"),
+        ],
+        string="Confidentiality Level",
+        default="confidential",
+        required=True,
+    )
+    customer_representative = fields.Many2one(
+        "res.partner",
+        string="Customer Representative",
+        help="Customer contact person for this service",
+    )
+
+    # Staff Assignment
+    assigned_technician = fields.Many2one(
+        "hr.employee",
+        string="Assigned Technician",
+        help="Technician assigned to perform the service",
+    )
+    supervising_manager = fields.Many2one(
+        "hr.employee",
+        string="Supervising Manager",
+        help="Manager supervising the service",
+    )
+
+    # Service Location and Timing
+    service_location = fields.Many2one(
+        "records.location",
+        string="Service Location",
+        help="Location where the service will be performed",
+    )
+    estimated_duration = fields.Float(
+        string="Estimated Duration (hours)",
+        digits=(5, 2),
+        help="Estimated time to complete the service",
+    )
+    actual_start_time = fields.Datetime(string="Actual Start Time", tracking=True)
+    actual_completion_time = fields.Datetime(
+        string="Actual Completion Time", tracking=True
+    )
+
+    # NAID Compliance Enhancement
+    naid_compliance_verified = fields.Boolean(
+        string="NAID Compliance Verified",
+        default=False,
+        help="Indicates if NAID compliance has been verified",
+    )
+    chain_of_custody_maintained = fields.Boolean(
+        string="Chain of Custody Maintained",
+        default=True,
+        help="Indicates if chain of custody has been properly maintained",
+    )
+
     # Service Details
     container_count = fields.Integer(string="Container Count", default=0)
     total_weight = fields.Float(string="Total Weight (lbs)", digits=(10, 2))
@@ -154,6 +231,97 @@ class ShreddingService(models.Model):
     photos_taken = fields.Integer(string="Photos Taken", default=0)
     chain_of_custody_maintained = fields.Boolean(
         string="Chain of Custody Maintained", default=True
+    )
+
+    # === COMPREHENSIVE MISSING FIELDS FROM VIEW ANALYSIS ===
+
+    # Destruction Items and Witness Management (One2many relationships)
+    destruction_item_ids = fields.One2many(
+        "shredding.destruction.item", "service_id", string="Destruction Items"
+    )
+    witness_verification_ids = fields.One2many(
+        "shredding.witness.verification", "service_id", string="Witness Verifications"
+    )
+
+    # Equipment and Process Details
+    shredding_equipment = fields.Char(
+        string="Shredding Equipment", help="Equipment used for destruction"
+    )
+    particle_size = fields.Selection(
+        [
+            ("level_1", "Level 1 - 12mm"),
+            ("level_2", "Level 2 - 6mm"),
+            ("level_3", "Level 3 - 4mm"),
+            ("level_4", "Level 4 - 2mm"),
+            ("level_5", "Level 5 - 0.8mm"),
+            ("level_6", "Level 6 - 1mm x 5mm"),
+        ],
+        string="Particle Size",
+        help="Security level particle size specification",
+    )
+    destruction_standard = fields.Selection(
+        [
+            ("din_66399", "DIN 66399"),
+            ("nist_800_88", "NIST 800-88"),
+            ("dod_5220", "DoD 5220.22-M"),
+            ("hipaa", "HIPAA"),
+            ("sox", "SOX"),
+        ],
+        string="Destruction Standard",
+        help="Industry standard compliance for destruction",
+    )
+    equipment_calibration_date = fields.Date(
+        string="Equipment Calibration Date",
+        help="Last calibration date of destruction equipment",
+    )
+
+    # Weight and Efficiency Tracking
+    pre_destruction_weight = fields.Float(
+        string="Pre-Destruction Weight (lbs)", digits=(10, 2)
+    )
+    post_destruction_weight = fields.Float(
+        string="Post-Destruction Weight (lbs)", digits=(10, 2)
+    )
+    destruction_efficiency = fields.Float(
+        string="Destruction Efficiency (%)",
+        digits=(5, 2),
+        compute="_compute_destruction_efficiency",
+        store=True,
+    )
+    quality_control_passed = fields.Boolean(
+        string="Quality Control Passed", default=False
+    )
+
+    # Detailed Process Notes
+    destruction_notes = fields.Text(
+        string="Destruction Notes", help="Detailed notes about the destruction process"
+    )
+
+    # Certificate Management
+    certificate_number = fields.Char(string="Certificate Number", tracking=True)
+    certificate_date = fields.Date(string="Certificate Date", default=fields.Date.today)
+    certificate_type = fields.Selection(
+        [
+            ("standard", "Standard Certificate"),
+            ("witnessed", "Witnessed Certificate"),
+            ("naid_aaa", "NAID AAA Certificate"),
+            ("custom", "Custom Certificate"),
+        ],
+        string="Certificate Type",
+        default="standard",
+    )
+    naid_member_id = fields.Char(
+        string="NAID Member ID", help="NAID membership identification number"
+    )
+
+    # Verification and Documentation
+    destruction_photographed = fields.Boolean(
+        string="Destruction Photographed", default=False
+    )
+    video_recorded = fields.Boolean(string="Video Recorded", default=False)
+    third_party_verified = fields.Boolean(string="Third Party Verified", default=False)
+    environmental_compliance = fields.Boolean(
+        string="Environmental Compliance", default=True
     )
 
     # Quality and Compliance
@@ -291,6 +459,157 @@ class ShreddingService(models.Model):
         default="pending",
     )
 
+    # === CRITICAL MISSING FIELDS FROM VIEW ANALYSIS ===
+
+    # Chain of Custody Transfer Details
+    from_person = fields.Char(
+        string="From Person", help="Person transferring custody of items"
+    )
+    to_person = fields.Char(
+        string="To Person", help="Person receiving custody of items"
+    )
+    transfer_date = fields.Datetime(
+        string="Transfer Date", help="Date and time of custody transfer"
+    )
+    transfer_location = fields.Char(
+        string="Transfer Location", help="Location where custody transfer occurred"
+    )
+    seal_number = fields.Char(
+        string="Seal Number", help="Security seal number for chain of custody"
+    )
+    signature_required = fields.Boolean(
+        string="Signature Required",
+        default=True,
+        help="Whether signature is required for this transfer",
+    )
+    verified = fields.Boolean(
+        string="Verified",
+        default=False,
+        help="Whether the chain of custody has been verified",
+    )
+
+    # Hard Drive Management
+    hard_drive_ids = fields.One2many(
+        "shredding.hard_drive",
+        "service_id",
+        string="Hard Drives",
+        help="Hard drives associated with this shredding service",
+    )
+    hard_drive_scanned_count = fields.Integer(
+        string="Hard Drives Scanned",
+        compute="_compute_hard_drive_counts",
+        store=True,
+        help="Number of hard drives scanned at customer location",
+    )
+    hard_drive_verified_count = fields.Integer(
+        string="Hard Drives Verified",
+        compute="_compute_hard_drive_counts",
+        store=True,
+        help="Number of hard drives verified at facility",
+    )
+
+    # Certificate and Item Tracking
+    included_in_certificate = fields.Boolean(
+        string="Included in Certificate",
+        default=True,
+        help="Whether this service is included in destruction certificate",
+    )
+    item_count = fields.Integer(
+        string="Item Count",
+        compute="_compute_item_count",
+        store=True,
+        help="Number of items scheduled for destruction",
+    )
+    witness_count = fields.Integer(
+        string="Witness Count",
+        compute="_compute_witness_count",
+        store=True,
+        help="Number of witnesses for destruction process",
+    )
+    certificate_count = fields.Integer(
+        string="Certificate Count",
+        compute="_compute_certificate_count",
+        store=True,
+        help="Number of destruction certificates generated",
+    )
+
+    # Location and Personnel Tracking
+    location = fields.Char(
+        string="Location", help="Current location of items for destruction"
+    )
+    security_officer = fields.Many2one(
+        "hr.employee",
+        string="Security Officer",
+        help="Security officer overseeing the destruction process",
+    )
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Partner associated with the destruction service",
+    )
+
+    # Timing and Status Tracking
+    scanned_at_customer = fields.Boolean(
+        string="Scanned at Customer",
+        default=False,
+        help="Whether items were scanned at customer location",
+    )
+    scanned_at_customer_date = fields.Datetime(
+        string="Customer Scan Date",
+        help="Date when items were scanned at customer location",
+    )
+    verified_at_facility_date = fields.Datetime(
+        string="Facility Verification Date",
+        help="Date when items were verified at facility",
+    )
+    timestamp = fields.Datetime(
+        string="Timestamp",
+        default=fields.Datetime.now,
+        help="Timestamp for tracking purposes",
+    )
+
+    @api.depends(
+        "hard_drive_ids",
+        "hard_drive_ids.scanned_at_customer",
+        "hard_drive_ids.verified_before_destruction",
+    )
+    def _compute_hard_drive_counts(self):
+        """Compute hard drive scanning and verification counts"""
+        for record in self:
+            scanned_count = len(record.hard_drive_ids.filtered("scanned_at_customer"))
+            verified_count = len(
+                record.hard_drive_ids.filtered("verified_before_destruction")
+            )
+            record.hard_drive_scanned_count = scanned_count
+            record.hard_drive_verified_count = verified_count
+
+    @api.depends("destruction_item_ids")
+    def _compute_item_count(self):
+        """Compute total number of destruction items"""
+        for record in self:
+            record.item_count = len(record.destruction_item_ids)
+
+    @api.depends("witness_verification_ids")
+    def _compute_witness_count(self):
+        """Compute total number of witnesses"""
+        for record in self:
+            record.witness_count = len(record.witness_verification_ids)
+
+    @api.depends("certificate_of_destruction_id")
+    def _compute_certificate_count(self):
+        """Compute total number of certificates"""
+        for record in self:
+            # Count certificates related to this service
+            record.certificate_count = 1 if record.certificate_of_destruction_id else 0
+
+    @api.depends("service_charge", "additional_fees")
+    def _compute_total_amount(self):
+        """Compute total amount."""
+        for record in self:
+            record.total_amount = (record.service_charge or 0.0) + (
+                record.additional_fees or 0.0
+            )
+
     @api.depends("name")
     def _compute_display_name(self):
         """Compute display name."""
@@ -302,6 +621,21 @@ class ShreddingService(models.Model):
         """Determine if this is a uniform destruction service."""
         for record in self:
             record.is_uniform_service = record.service_type == "uniform_destruction"
+
+    @api.depends("pre_destruction_weight", "post_destruction_weight")
+    def _compute_destruction_efficiency(self):
+        """Compute destruction efficiency percentage."""
+        for record in self:
+            if record.pre_destruction_weight and record.post_destruction_weight:
+                # Calculate efficiency based on weight reduction
+                weight_reduction = (
+                    record.pre_destruction_weight - record.post_destruction_weight
+                )
+                record.destruction_efficiency = (
+                    weight_reduction / record.pre_destruction_weight
+                ) * 100
+            else:
+                record.destruction_efficiency = 0.0
 
     def write(self, vals):
         """Override write to update modification date."""
@@ -821,3 +1155,100 @@ class ShreddingService(models.Model):
             if not vals.get("name"):
                 vals["name"] = _("New Shredding Service")
         return super().create(vals_list)
+
+
+class ShreddingDestructionItem(models.Model):
+    """Items scheduled for destruction in a shredding service"""
+
+    _name = "shredding.destruction.item"
+    _description = "Shredding Destruction Item"
+    _order = "sequence, id"
+
+    service_id = fields.Many2one(
+        "shredding.service",
+        string="Shredding Service",
+        required=True,
+        ondelete="cascade",
+    )
+    sequence = fields.Integer(string="Sequence", default=10)
+    item_type = fields.Selection(
+        [
+            ("documents", "Documents"),
+            ("hard_drives", "Hard Drives"),
+            ("uniforms", "Uniforms"),
+            ("media", "Media/Tapes"),
+            ("other", "Other Items"),
+        ],
+        string="Item Type",
+        required=True,
+    )
+    description = fields.Text(string="Description", required=True)
+    confidentiality_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+            ("top_secret", "Top Secret"),
+        ],
+        string="Confidentiality Level",
+        default="confidential",
+    )
+    quantity = fields.Float(string="Quantity", digits=(10, 2), required=True)
+    unit_of_measure = fields.Selection(
+        [
+            ("boxes", "Boxes"),
+            ("bags", "Bags"),
+            ("lbs", "Pounds"),
+            ("pieces", "Pieces"),
+            ("drives", "Hard Drives"),
+        ],
+        string="Unit of Measure",
+        default="boxes",
+    )
+    verified_by_customer = fields.Boolean(string="Verified by Customer", default=False)
+    chain_of_custody_number = fields.Char(string="Chain of Custody Number")
+    destroyed = fields.Boolean(string="Destroyed", default=False)
+    destruction_date = fields.Datetime(string="Destruction Date")
+    verified_before_destruction = fields.Boolean(
+        string="Verified Before Destruction", default=False
+    )
+
+    def action_mark_destroyed(self):
+        """Mark this item as destroyed"""
+        self.write({"destroyed": True, "destruction_date": fields.Datetime.now()})
+
+
+class ShreddingWitnessVerification(models.Model):
+    """Witness verification records for shredding services"""
+
+    _name = "shredding.witness.verification"
+    _description = "Shredding Witness Verification"
+    _order = "verification_date desc"
+
+    service_id = fields.Many2one(
+        "shredding.service",
+        string="Shredding Service",
+        required=True,
+        ondelete="cascade",
+    )
+    witness_name = fields.Char(string="Witness Name", required=True)
+    witness_title = fields.Char(string="Witness Title")
+    company = fields.Char(string="Company")
+    verification_date = fields.Datetime(
+        string="Verification Date", default=fields.Datetime.now
+    )
+    signature_verified = fields.Boolean(string="Signature Verified", default=False)
+    photo_id_verified = fields.Boolean(string="Photo ID Verified", default=False)
+    witness_present = fields.Boolean(string="Witness Present", default=True)
+    notes = fields.Text(string="Verification Notes")
+
+    def action_verify_witness(self):
+        """Mark witness as verified"""
+        self.write(
+            {
+                "signature_verified": True,
+                "photo_id_verified": True,
+                "verification_date": fields.Datetime.now(),
+            }
+        )

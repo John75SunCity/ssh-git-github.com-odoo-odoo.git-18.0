@@ -189,6 +189,150 @@ class FsmTask(models.Model):
     customer_feedback = fields.Text(string="Customer Feedback")
     internal_notes = fields.Text(string="Internal Notes")
 
+    # === CRITICAL MISSING FIELDS FROM VIEW ANALYSIS ===
+
+    # Task Completion and Status Management
+    completion_notes = fields.Text(string="Completion Notes")
+    completion_status = fields.Selection(
+        [
+            ("pending", "Pending"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+            ("on_hold", "On Hold"),
+        ],
+        string="Completion Status",
+        default="pending",
+    )
+    completion_time = fields.Datetime(string="Completion Time")
+    confidentiality_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+        ],
+        string="Confidentiality Level",
+        default="internal",
+    )
+
+    # Container and Document Management
+    containers_to_retrieve = fields.Integer(string="Containers to Retrieve", default=0)
+    documents_to_deliver = fields.Integer(string="Documents to Deliver", default=0)
+    current_location = fields.Char(string="Current Location")
+    customer_satisfaction = fields.Selection(
+        [
+            ("1", "Very Poor"),
+            ("2", "Poor"),
+            ("3", "Average"),
+            ("4", "Good"),
+            ("5", "Excellent"),
+        ],
+        string="Customer Satisfaction",
+    )
+    customer_signature_obtained = fields.Boolean(
+        string="Customer Signature Obtained", default=False
+    )
+    deliverables_completed = fields.Boolean(
+        string="Deliverables Completed", default=False
+    )
+
+    # Time and Performance Tracking
+    departure_time = fields.Datetime(string="Departure Time")
+    duration = fields.Float(string="Duration (hours)", digits=(8, 2))
+    efficiency_score = fields.Float(string="Efficiency Score", digits=(5, 2))
+    email_updates_enabled = fields.Boolean(
+        string="Email Updates Enabled", default=False
+    )
+    end_time = fields.Datetime(string="End Time")
+    gps_tracking_enabled = fields.Boolean(string="GPS Tracking Enabled", default=False)
+    issues_encountered = fields.Text(string="Issues Encountered")
+    labor_cost = fields.Monetary(string="Labor Cost", currency_field="currency_id")
+    location = fields.Char(string="Location")
+    location_update_count = fields.Integer(string="Location Update Count", default=0)
+    material_cost = fields.Monetary(
+        string="Material Cost", currency_field="currency_id"
+    )
+    material_count = fields.Integer(string="Material Count", default=0)
+    material_name = fields.Char(string="Material Name")
+    material_usage_ids = fields.One2many(
+        "fsm.material.usage", "task_id", string="Material Usage"
+    )
+    mobile_update_ids = fields.One2many(
+        "fsm.mobile.update", "task_id", string="Mobile Updates"
+    )
+    next_service_scheduled = fields.Boolean(
+        string="Next Service Scheduled", default=False
+    )
+    notify_customer_on_arrival = fields.Boolean(
+        string="Notify Customer on Arrival", default=False
+    )
+    notify_customer_on_completion = fields.Boolean(
+        string="Notify Customer on Completion", default=False
+    )
+    offline_sync_enabled = fields.Boolean(string="Offline Sync Enabled", default=False)
+    primary_contact = fields.Char(string="Primary Contact")
+    quality_rating = fields.Selection(
+        [
+            ("1", "Poor"),
+            ("2", "Fair"),
+            ("3", "Good"),
+            ("4", "Very Good"),
+            ("5", "Excellent"),
+        ],
+        string="Quality Rating",
+    )
+    quantity_used = fields.Float(string="Quantity Used", digits=(10, 2))
+    required = fields.Boolean(string="Required", default=False)
+    response_required = fields.Boolean(string="Response Required", default=False)
+    signature_required = fields.Boolean(string="Signature Required", default=False)
+    sms_updates_enabled = fields.Boolean(string="SMS Updates Enabled", default=False)
+    start_time = fields.Datetime(string="Start Time")
+    status = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("scheduled", "Scheduled"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="draft",
+    )
+    subject = fields.Char(string="Subject")
+    supplier = fields.Many2one("res.partner", string="Supplier")
+    task_checklist_ids = fields.One2many(
+        "fsm.task.checklist", "task_id", string="Task Checklist"
+    )
+    technician = fields.Many2one("hr.employee", string="Technician")
+    time_log_count = fields.Integer(string="Time Log Count", default=0)
+    time_log_ids = fields.One2many("fsm.time.log", "task_id", string="Time Logs")
+    timestamp = fields.Datetime(string="Timestamp", default=fields.Datetime.now)
+    total_cost = fields.Monetary(
+        string="Total Cost", currency_field="currency_id", compute="_compute_total_cost"
+    )
+    total_time_spent = fields.Float(string="Total Time Spent (hours)", digits=(8, 2))
+    travel_time = fields.Float(string="Travel Time (hours)", digits=(8, 2))
+    unit_cost = fields.Monetary(string="Unit Cost", currency_field="currency_id")
+    update_type = fields.Selection(
+        [
+            ("status", "Status Update"),
+            ("location", "Location Update"),
+            ("photo", "Photo Update"),
+            ("note", "Note Update"),
+        ],
+        string="Update Type",
+    )
+    work_time = fields.Float(string="Work Time (hours)", digits=(8, 2))
+
+    @api.depends("labor_cost", "material_cost")
+    def _compute_total_cost(self):
+        """Compute total cost from labor and material costs"""
+        for record in self:
+            record.total_cost = (record.labor_cost or 0.0) + (
+                record.material_cost or 0.0
+            )
+
     @api.depends("actual_start_time", "actual_completion_time")
     def _compute_actual_duration(self):
         """Compute actual duration based on start and completion times"""
@@ -506,3 +650,122 @@ class FsmTask(models.Model):
                 "search_default_task_id": self.id,
             },
         }
+
+
+# === RELATED MODELS FOR FSM TASK SYSTEM ===
+
+
+class FsmMaterialUsage(models.Model):
+    """Material usage tracking for FSM tasks"""
+
+    _name = "fsm.material.usage"
+    _description = "FSM Material Usage"
+    _order = "task_id, material_name"
+
+    task_id = fields.Many2one(
+        "fsm.task", string="FSM Task", required=True, ondelete="cascade"
+    )
+    material_name = fields.Char(string="Material Name", required=True)
+    quantity_used = fields.Float(string="Quantity Used", digits=(10, 2), required=True)
+    unit_cost = fields.Monetary(string="Unit Cost", currency_field="currency_id")
+    total_cost = fields.Monetary(
+        string="Total Cost", currency_field="currency_id", compute="_compute_total_cost"
+    )
+    supplier = fields.Many2one("res.partner", string="Supplier")
+    billable_to_customer = fields.Boolean(string="Billable to Customer", default=True)
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+
+    @api.depends("quantity_used", "unit_cost")
+    def _compute_total_cost(self):
+        for record in self:
+            record.total_cost = (record.quantity_used or 0.0) * (
+                record.unit_cost or 0.0
+            )
+
+
+class FsmMobileUpdate(models.Model):
+    """Mobile updates for FSM tasks"""
+
+    _name = "fsm.mobile.update"
+    _description = "FSM Mobile Update"
+    _order = "timestamp desc"
+
+    task_id = fields.Many2one(
+        "fsm.task", string="FSM Task", required=True, ondelete="cascade"
+    )
+    timestamp = fields.Datetime(string="Timestamp", default=fields.Datetime.now)
+    update_type = fields.Selection(
+        [
+            ("status", "Status Update"),
+            ("location", "Location Update"),
+            ("photo", "Photo Update"),
+            ("note", "Note Update"),
+        ],
+        string="Update Type",
+        required=True,
+    )
+    location = fields.Char(string="Location")
+    status = fields.Char(string="Status")
+    notes = fields.Text(string="Notes")
+    photo_attachment = fields.Binary(string="Photo Attachment")
+
+
+class FsmTaskChecklist(models.Model):
+    """Task checklist for FSM tasks"""
+
+    _name = "fsm.task.checklist"
+    _description = "FSM Task Checklist"
+    _order = "task_id, sequence"
+
+    task_id = fields.Many2one(
+        "fsm.task", string="FSM Task", required=True, ondelete="cascade"
+    )
+    sequence = fields.Integer(string="Sequence", default=10)
+    checklist_item = fields.Char(string="Checklist Item", required=True)
+    required = fields.Boolean(string="Required", default=False)
+    completed = fields.Boolean(string="Completed", default=False)
+    completion_time = fields.Datetime(string="Completion Time")
+    notes = fields.Text(string="Notes")
+
+
+class FsmTimeLog(models.Model):
+    """Time logging for FSM tasks"""
+
+    _name = "fsm.time.log"
+    _description = "FSM Time Log"
+    _order = "start_time desc"
+
+    task_id = fields.Many2one(
+        "fsm.task", string="FSM Task", required=True, ondelete="cascade"
+    )
+    start_time = fields.Datetime(string="Start Time", required=True)
+    end_time = fields.Datetime(string="End Time")
+    duration = fields.Float(
+        string="Duration (hours)", digits=(8, 2), compute="_compute_duration"
+    )
+    activity_type = fields.Selection(
+        [
+            ("travel", "Travel Time"),
+            ("work", "Work Time"),
+            ("break", "Break Time"),
+            ("waiting", "Waiting Time"),
+        ],
+        string="Activity Type",
+        required=True,
+    )
+    technician = fields.Many2one("hr.employee", string="Technician", required=True)
+    description = fields.Text(string="Description")
+    billable = fields.Boolean(string="Billable", default=True)
+
+    @api.depends("start_time", "end_time")
+    def _compute_duration(self):
+        for record in self:
+            if record.start_time and record.end_time:
+                duration = record.end_time - record.start_time
+                record.duration = duration.total_seconds() / 3600  # Convert to hours
+            else:
+                record.duration = 0.0

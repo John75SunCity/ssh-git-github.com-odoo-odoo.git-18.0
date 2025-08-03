@@ -145,6 +145,9 @@ from . import advanced_billing
 from . import customer_billing_profile
 from . import revenue_forecaster
 
+# Billing support models (new comprehensive system)
+from . import billing_support_models
+
 # =============================================================================
 # PORTAL AND CUSTOMER INTERACTION
 # =============================================================================
@@ -153,6 +156,9 @@ from . import revenue_forecaster
 from . import portal_request
 from . import portal_feedback
 from . import customer_feedback
+
+# Portal feedback support models (comprehensive system)
+from . import portal_feedback_support_models
 
 # Survey and improvement tracking
 from . import survey_user_input

@@ -148,8 +148,142 @@ class RecordsBillingConfig(models.Model):
             ("monthly", "Monthly"),
         ],
         string="Reminder Schedule",
-        default="weekly",
+        default="none",
     )
+
+    # === COMPREHENSIVE MISSING FIELDS ENHANCEMENT ===
+
+    # Revenue and Financial Management
+    annual_revenue = fields.Monetary(
+        string="Annual Revenue",
+        currency_field="currency_id",
+        compute="_compute_annual_revenue",
+    )
+    revenue_forecast = fields.Monetary(
+        string="Revenue Forecast", currency_field="currency_id"
+    )
+    budget_allocation = fields.Monetary(
+        string="Budget Allocation", currency_field="currency_id"
+    )
+    cost_center = fields.Char(string="Cost Center")
+    profit_margin = fields.Float(string="Profit Margin (%)", digits=(5, 2))
+    tax_rate = fields.Float(string="Tax Rate (%)", digits=(5, 2))
+    discount_percentage = fields.Float(string="Discount Percentage", digits=(5, 2))
+    markup_percentage = fields.Float(string="Markup Percentage", digits=(5, 2))
+
+    # Audit and Compliance
+    audit_trail_enabled = fields.Boolean(string="Audit Trail Enabled", default=True)
+    compliance_reporting = fields.Boolean(string="Compliance Reporting", default=True)
+    retention_compliance = fields.Boolean(string="Retention Compliance", default=True)
+    naid_compliance = fields.Boolean(string="NAID Compliance", default=False)
+    invoice_validation = fields.Boolean(string="Invoice Validation", default=True)
+    billing_approval_required = fields.Boolean(
+        string="Billing Approval Required", default=False
+    )
+
+    # Advanced Rate Configuration
+    multi_tier_rates = fields.Boolean(string="Multi-Tier Rates", default=False)
+    seasonal_rates = fields.Boolean(string="Seasonal Rates", default=False)
+    promotional_rates = fields.Boolean(string="Promotional Rates", default=False)
+    emergency_rates = fields.Boolean(string="Emergency Rates", default=False)
+    overtime_rates = fields.Boolean(string="Overtime Rates", default=False)
+    weekend_rates = fields.Boolean(string="Weekend Rates", default=False)
+    holiday_rates = fields.Boolean(string="Holiday Rates", default=False)
+
+    # Service-Specific Billing
+    pickup_service_rate = fields.Monetary(
+        string="Pickup Service Rate", currency_field="currency_id"
+    )
+    delivery_service_rate = fields.Monetary(
+        string="Delivery Service Rate", currency_field="currency_id"
+    )
+    digital_conversion_rate = fields.Monetary(
+        string="Digital Conversion Rate", currency_field="currency_id"
+    )
+    indexing_rate = fields.Monetary(
+        string="Indexing Rate", currency_field="currency_id"
+    )
+    consultation_rate = fields.Monetary(
+        string="Consultation Rate", currency_field="currency_id"
+    )
+    training_rate = fields.Monetary(
+        string="Training Rate", currency_field="currency_id"
+    )
+    rush_service_rate = fields.Monetary(
+        string="Rush Service Rate", currency_field="currency_id"
+    )
+
+    # Volume and Usage-Based Pricing
+    volume_thresholds = fields.Text(string="Volume Thresholds (JSON)")
+    usage_metrics = fields.Text(string="Usage Metrics Configuration")
+    billing_cycles = fields.Integer(string="Billing Cycles", default=12)
+    minimum_commitment = fields.Monetary(
+        string="Minimum Commitment", currency_field="currency_id"
+    )
+    overage_rate = fields.Monetary(string="Overage Rate", currency_field="currency_id")
+    base_allowance = fields.Integer(string="Base Allowance (boxes)")
+
+    # Contract and Agreement Management
+    contract_start_date = fields.Date(string="Contract Start Date")
+    contract_end_date = fields.Date(string="Contract End Date")
+    auto_renewal = fields.Boolean(string="Auto Renewal", default=False)
+    renewal_notice_period = fields.Integer(
+        string="Renewal Notice Period (days)", default=30
+    )
+    contract_value = fields.Monetary(
+        string="Contract Value", currency_field="currency_id"
+    )
+    payment_guarantee = fields.Monetary(
+        string="Payment Guarantee", currency_field="currency_id"
+    )
+
+    # Billing Periods and Timing
+    billing_day = fields.Integer(string="Billing Day of Month", default=1)
+    due_days = fields.Integer(string="Payment Due Days", default=30)
+    grace_period = fields.Integer(string="Grace Period (days)", default=5)
+    cutoff_date = fields.Date(string="Billing Cutoff Date")
+    next_billing_date = fields.Date(string="Next Billing Date")
+    last_billing_date = fields.Date(string="Last Billing Date")
+
+    # Advanced Features and Automation
+    auto_invoicing = fields.Boolean(string="Auto Invoicing", default=False)
+    invoice_approval = fields.Boolean(string="Invoice Approval Required", default=False)
+    electronic_delivery = fields.Boolean(string="Electronic Delivery", default=True)
+    portal_access = fields.Boolean(string="Portal Access", default=True)
+    real_time_billing = fields.Boolean(string="Real-time Billing", default=False)
+    batch_processing = fields.Boolean(string="Batch Processing", default=True)
+
+    # Integration and Synchronization
+    erp_integration = fields.Boolean(string="ERP Integration", default=False)
+    crm_sync = fields.Boolean(string="CRM Sync", default=False)
+    inventory_sync = fields.Boolean(string="Inventory Sync", default=True)
+    financial_sync = fields.Boolean(string="Financial Sync", default=True)
+    api_enabled = fields.Boolean(string="API Enabled", default=False)
+    webhook_notifications = fields.Boolean(
+        string="Webhook Notifications", default=False
+    )
+
+    # Currency and International
+    multi_currency = fields.Boolean(string="Multi-Currency Support", default=False)
+    exchange_rate_source = fields.Selection(
+        [
+            ("manual", "Manual"),
+            ("ecb", "European Central Bank"),
+            ("fed", "Federal Reserve"),
+            ("bank", "Bank Rate"),
+        ],
+        string="Exchange Rate Source",
+        default="manual",
+    )
+    currency_hedging = fields.Boolean(string="Currency Hedging", default=False)
+
+    # Reporting and Analytics
+    detailed_reporting = fields.Boolean(string="Detailed Reporting", default=True)
+    management_dashboard = fields.Boolean(string="Management Dashboard", default=True)
+    kpi_tracking = fields.Boolean(string="KPI Tracking", default=False)
+    trend_analysis = fields.Boolean(string="Trend Analysis", default=False)
+    forecasting = fields.Boolean(string="Revenue Forecasting", default=False)
+    benchmarking = fields.Boolean(string="Industry Benchmarking", default=False)
 
     # Revenue Analytics Fields
     monthly_revenue = fields.Monetary(
@@ -218,6 +352,104 @@ class RecordsBillingConfig(models.Model):
         string="Tax Calculation Method",
         default="exclusive",
     )
+
+    # === ADDITIONAL CRITICAL BUSINESS FIELDS ===
+
+    # Customer and Account Management
+    account_manager = fields.Many2one("res.users", string="Account Manager")
+    billing_contact = fields.Many2one("res.partner", string="Billing Contact")
+    technical_contact = fields.Many2one("res.partner", string="Technical Contact")
+    billing_address = fields.Text(string="Billing Address")
+    shipping_address = fields.Text(string="Shipping Address")
+    credit_limit = fields.Monetary(string="Credit Limit", currency_field="currency_id")
+    credit_rating = fields.Selection(
+        [
+            ("excellent", "Excellent"),
+            ("good", "Good"),
+            ("fair", "Fair"),
+            ("poor", "Poor"),
+        ],
+        string="Credit Rating",
+        default="good",
+    )
+
+    # Service Level and Quality Management
+    service_level_agreement = fields.Text(string="Service Level Agreement")
+    response_time_guaranteed = fields.Integer(
+        string="Response Time (hours)", default=24
+    )
+    uptime_guarantee = fields.Float(string="Uptime Guarantee (%)", default=99.5)
+    quality_metrics_enabled = fields.Boolean(
+        string="Quality Metrics Enabled", default=True
+    )
+    performance_monitoring = fields.Boolean(
+        string="Performance Monitoring", default=True
+    )
+    service_credits = fields.Boolean(string="Service Credits", default=False)
+
+    # Document and Records Management Integration
+    document_classification = fields.Boolean(
+        string="Document Classification", default=True
+    )
+    retention_schedule = fields.Boolean(string="Retention Schedule", default=True)
+    destruction_billing = fields.Boolean(string="Destruction Billing", default=True)
+    digital_delivery = fields.Boolean(string="Digital Delivery", default=False)
+    physical_delivery = fields.Boolean(string="Physical Delivery", default=True)
+    expedited_service = fields.Boolean(string="Expedited Service", default=False)
+
+    # Security and Compliance Enhancement
+    security_clearance_required = fields.Boolean(
+        string="Security Clearance Required", default=False
+    )
+    chain_of_custody_billing = fields.Boolean(
+        string="Chain of Custody Billing", default=False
+    )
+    witness_destruction = fields.Boolean(string="Witness Destruction", default=False)
+    certificate_generation = fields.Boolean(
+        string="Certificate Generation", default=True
+    )
+    compliance_audit_billing = fields.Boolean(
+        string="Compliance Audit Billing", default=False
+    )
+    regulatory_reporting = fields.Boolean(string="Regulatory Reporting", default=False)
+
+    # Operational Efficiency
+    bulk_processing = fields.Boolean(string="Bulk Processing", default=True)
+    priority_processing = fields.Boolean(string="Priority Processing", default=False)
+    off_hours_service = fields.Boolean(string="Off Hours Service", default=False)
+    mobile_service = fields.Boolean(string="Mobile Service", default=True)
+    remote_access = fields.Boolean(string="Remote Access", default=False)
+    automated_workflows = fields.Boolean(string="Automated Workflows", default=True)
+
+    # Financial Controls and Validation
+    spending_limits = fields.Boolean(string="Spending Limits", default=False)
+    budget_alerts = fields.Boolean(string="Budget Alerts", default=True)
+    cost_allocation = fields.Boolean(string="Cost Allocation", default=False)
+    department_billing = fields.Boolean(string="Department Billing", default=False)
+    project_billing = fields.Boolean(string="Project Billing", default=False)
+    time_tracking = fields.Boolean(string="Time Tracking", default=False)
+
+    # Advanced Analytics and Reporting
+    cost_analysis = fields.Boolean(string="Cost Analysis", default=True)
+    profitability_analysis = fields.Boolean(
+        string="Profitability Analysis", default=False
+    )
+    customer_analytics = fields.Boolean(string="Customer Analytics", default=True)
+    usage_analytics = fields.Boolean(string="Usage Analytics", default=True)
+    predictive_analytics = fields.Boolean(string="Predictive Analytics", default=False)
+    business_intelligence = fields.Boolean(
+        string="Business Intelligence", default=False
+    )
+
+    # System Configuration and Maintenance
+    backup_billing_data = fields.Boolean(string="Backup Billing Data", default=True)
+    data_archival = fields.Boolean(string="Data Archival", default=True)
+    system_maintenance = fields.Boolean(string="System Maintenance", default=True)
+    disaster_recovery = fields.Boolean(string="Disaster Recovery", default=False)
+    load_balancing = fields.Boolean(string="Load Balancing", default=False)
+    scalability_planning = fields.Boolean(string="Scalability Planning", default=False)
+
+    # Legacy and Migration Support
     multi_currency_support = fields.Boolean(
         string="Multi-Currency Support", default=False
     )
@@ -687,6 +919,40 @@ class RecordsBillingConfig(models.Model):
                 record.next_billing_date = next_date
             else:
                 record.next_billing_date = False
+
+    @api.depends("base_rate", "billing_frequency", "billing_line_ids")
+    def _compute_annual_revenue(self):
+        """Compute annual revenue projection"""
+        for record in self:
+            if record.billing_line_ids:
+                # Use actual billing data
+                total_monthly = sum(record.billing_line_ids.mapped("amount"))
+                record.annual_revenue = total_monthly * 12
+            elif record.base_rate and record.billing_frequency:
+                # Project from base rate and frequency
+                frequency_multiplier = {
+                    "monthly": 12,
+                    "quarterly": 4,
+                    "semi_annually": 2,
+                    "annually": 1,
+                }.get(record.billing_frequency, 12)
+                record.annual_revenue = record.base_rate * frequency_multiplier
+            else:
+                record.annual_revenue = 0.0
+
+    @api.depends("billing_line_ids", "billing_line_ids.amount")
+    def _compute_averages(self):
+        """Compute average billing amounts"""
+        for record in self:
+            if record.billing_line_ids:
+                total_amount = sum(record.billing_line_ids.mapped("amount"))
+                record.average_monthly_billing = (
+                    total_amount / len(record.billing_line_ids)
+                    if record.billing_line_ids
+                    else 0.0
+                )
+            else:
+                record.average_monthly_billing = record.base_rate or 0.0
 
     # === BUSINESS CRITICAL FIELDS ===
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")

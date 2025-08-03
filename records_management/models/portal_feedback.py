@@ -147,7 +147,260 @@ class PortalFeedback(models.Model):
     escalation_reason = fields.Text(string="Escalation Reason")
     escalated_to = fields.Many2one("res.users", string="Escalated To")
 
-    # Follow-up
+    # Follow-up Management
+    follow_up_required = fields.Boolean(string="Follow-up Required", default=False)
+    follow_up_date = fields.Date(string="Follow-up Date")
+    follow_up_completed = fields.Boolean(string="Follow-up Completed", default=False)
+    follow_up_notes = fields.Text(string="Follow-up Notes")
+
+    # === COMPREHENSIVE MISSING FIELDS ENHANCEMENT ===
+
+    # Customer Segmentation and Analysis
+    customer_segment = fields.Selection(
+        [
+            ("enterprise", "Enterprise"),
+            ("mid_market", "Mid-Market"),
+            ("small_business", "Small Business"),
+            ("individual", "Individual"),
+        ],
+        string="Customer Segment",
+        compute="_compute_customer_segment",
+    )
+
+    customer_tier = fields.Selection(
+        [
+            ("platinum", "Platinum"),
+            ("gold", "Gold"),
+            ("silver", "Silver"),
+            ("bronze", "Bronze"),
+        ],
+        string="Customer Tier",
+        compute="_compute_customer_tier",
+    )
+
+    # Escalation and Timeline Management
+    escalation_date = fields.Datetime(string="Escalation Date")
+    escalation_level = fields.Selection(
+        [
+            ("level_1", "Level 1 - Standard"),
+            ("level_2", "Level 2 - Supervisor"),
+            ("level_3", "Level 3 - Manager"),
+            ("level_4", "Level 4 - Executive"),
+        ],
+        string="Escalation Level",
+        default="level_1",
+    )
+
+    # Feedback Classification and Analysis
+    feedback_category = fields.Selection(
+        [
+            ("service_quality", "Service Quality"),
+            ("delivery_time", "Delivery Time"),
+            ("pricing", "Pricing"),
+            ("staff_behavior", "Staff Behavior"),
+            ("portal_usability", "Portal Usability"),
+            ("technical_support", "Technical Support"),
+            ("billing_accuracy", "Billing Accuracy"),
+            ("security_compliance", "Security & Compliance"),
+            ("communication", "Communication"),
+            ("accessibility", "Accessibility"),
+        ],
+        string="Feedback Category",
+        required=True,
+    )
+
+    # File Management and Attachments
+    file_size = fields.Float(
+        string="Attachment Size (MB)", compute="_compute_file_size"
+    )
+    attachment_count = fields.Integer(
+        string="Attachment Count", compute="_compute_attachment_count"
+    )
+    has_attachments = fields.Boolean(
+        string="Has Attachments", compute="_compute_has_attachments"
+    )
+
+    # Impact Assessment
+    business_impact = fields.Selection(
+        [
+            ("low", "Low Impact"),
+            ("medium", "Medium Impact"),
+            ("high", "High Impact"),
+            ("critical", "Critical Impact"),
+        ],
+        string="Business Impact",
+        default="low",
+    )
+
+    financial_impact = fields.Monetary(
+        string="Financial Impact", currency_field="currency_id"
+    )
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+
+    # Resolution and Action Management
+    resolution_category = fields.Selection(
+        [
+            ("process_improvement", "Process Improvement"),
+            ("training_required", "Training Required"),
+            ("system_enhancement", "System Enhancement"),
+            ("policy_change", "Policy Change"),
+            ("no_action", "No Action Required"),
+            ("customer_education", "Customer Education"),
+        ],
+        string="Resolution Category",
+    )
+
+    action_taken = fields.Text(string="Action Taken")
+    preventive_measures = fields.Text(string="Preventive Measures")
+    lesson_learned = fields.Text(string="Lesson Learned")
+
+    # Quality Management
+    quality_score = fields.Float(string="Quality Score", digits=(3, 1))
+    improvement_suggestion = fields.Text(string="Improvement Suggestion")
+    process_affected = fields.Char(string="Process Affected")
+
+    # Communication Tracking
+    communication_method = fields.Selection(
+        [
+            ("portal", "Customer Portal"),
+            ("email", "Email"),
+            ("phone", "Phone"),
+            ("chat", "Live Chat"),
+            ("in_person", "In Person"),
+            ("social_media", "Social Media"),
+        ],
+        string="Communication Method",
+        default="portal",
+    )
+
+    initial_contact_date = fields.Datetime(
+        string="Initial Contact Date", default=fields.Datetime.now
+    )
+    last_contact_date = fields.Datetime(string="Last Contact Date")
+    contact_attempts = fields.Integer(string="Contact Attempts", default=1)
+
+    # Service Level and Performance
+    sla_deadline = fields.Datetime(
+        string="SLA Deadline", compute="_compute_sla_deadline"
+    )
+    sla_met = fields.Boolean(string="SLA Met", compute="_compute_sla_met")
+    response_time_hours = fields.Float(
+        string="Response Time (Hours)", compute="_compute_response_time"
+    )
+    resolution_time_hours = fields.Float(
+        string="Resolution Time (Hours)", compute="_compute_resolution_time"
+    )
+
+    # Customer Journey and Experience
+    customer_journey_stage = fields.Selection(
+        [
+            ("onboarding", "Onboarding"),
+            ("active_usage", "Active Usage"),
+            ("renewal", "Renewal"),
+            ("expansion", "Expansion"),
+            ("at_risk", "At Risk"),
+            ("churned", "Churned"),
+        ],
+        string="Customer Journey Stage",
+    )
+
+    touchpoint = fields.Selection(
+        [
+            ("website", "Website"),
+            ("mobile_app", "Mobile App"),
+            ("customer_portal", "Customer Portal"),
+            ("support_center", "Support Center"),
+            ("sales_team", "Sales Team"),
+            ("service_delivery", "Service Delivery"),
+        ],
+        string="Touchpoint",
+    )
+
+    # Analytics and Reporting
+    sentiment_score = fields.Float(string="Sentiment Score", digits=(3, 2))
+    keywords = fields.Char(string="Keywords")
+    trending_topic = fields.Boolean(string="Trending Topic", default=False)
+
+    # Integration and External Systems
+    external_ticket_id = fields.Char(string="External Ticket ID")
+    crm_opportunity_id = fields.Many2one("crm.lead", string="Related Opportunity")
+    project_task_id = fields.Many2one("project.task", string="Related Task")
+
+    # Compliance and Audit
+    gdpr_compliant = fields.Boolean(string="GDPR Compliant", default=True)
+    data_retention_date = fields.Date(
+        string="Data Retention Date", compute="_compute_data_retention_date"
+    )
+    audit_trail_enabled = fields.Boolean(string="Audit Trail Enabled", default=True)
+
+    # Automation and Workflow
+    auto_response_sent = fields.Boolean(string="Auto Response Sent", default=False)
+    workflow_state = fields.Selection(
+        [
+            ("new", "New"),
+            ("acknowledged", "Acknowledged"),
+            ("in_progress", "In Progress"),
+            ("resolved", "Resolved"),
+            ("closed", "Closed"),
+            ("reopened", "Reopened"),
+        ],
+        string="Workflow State",
+        default="new",
+    )
+
+    # Satisfaction and NPS Tracking
+    nps_score = fields.Selection(
+        [
+            ("0", "0"),
+            ("1", "1"),
+            ("2", "2"),
+            ("3", "3"),
+            ("4", "4"),
+            ("5", "5"),
+            ("6", "6"),
+            ("7", "7"),
+            ("8", "8"),
+            ("9", "9"),
+            ("10", "10"),
+        ],
+        string="NPS Score",
+    )
+
+    nps_category = fields.Selection(
+        [
+            ("detractor", "Detractor (0-6)"),
+            ("passive", "Passive (7-8)"),
+            ("promoter", "Promoter (9-10)"),
+        ],
+        string="NPS Category",
+        compute="_compute_nps_category",
+    )
+
+    # Department and Team Management
+    department_responsible = fields.Many2one(
+        "hr.department", string="Responsible Department"
+    )
+    team_lead = fields.Many2one("res.users", string="Team Lead")
+    specialist_required = fields.Boolean(string="Specialist Required", default=False)
+
+    # Multi-language and Accessibility
+    language_preference = fields.Selection(
+        [
+            ("en_US", "English"),
+            ("es_ES", "Spanish"),
+            ("fr_FR", "French"),
+            ("de_DE", "German"),
+            ("zh_CN", "Chinese"),
+        ],
+        string="Language Preference",
+        default="en_US",
+    )
+
+    accessibility_needs = fields.Text(string="Accessibility Needs")
     follow_up_required = fields.Boolean(string="Follow-up Required", default=False)
     follow_up_date = fields.Date(string="Follow-up Date")
     follow_up_notes = fields.Text(string="Follow-up Notes")
@@ -251,6 +504,182 @@ class PortalFeedback(models.Model):
                     record.sentiment = "positive"
             else:
                 record.sentiment = "neutral"
+
+    # === COMPREHENSIVE COMPUTE METHODS ===
+
+    @api.depends("customer_id", "customer_id.category_id")
+    def _compute_customer_segment(self):
+        """Compute customer segment based on customer data"""
+        for record in self:
+            if record.customer_id:
+                # Simple logic based on customer categories or other factors
+                if record.customer_id.is_company:
+                    # Could be enhanced with more sophisticated logic
+                    if hasattr(record.customer_id, "annual_revenue"):
+                        revenue = getattr(record.customer_id, "annual_revenue", 0)
+                        if revenue > 10000000:  # $10M+
+                            record.customer_segment = "enterprise"
+                        elif revenue > 1000000:  # $1M+
+                            record.customer_segment = "mid_market"
+                        else:
+                            record.customer_segment = "small_business"
+                    else:
+                        record.customer_segment = "small_business"
+                else:
+                    record.customer_segment = "individual"
+            else:
+                record.customer_segment = False
+
+    @api.depends("customer_id", "overall_rating", "nps_score")
+    def _compute_customer_tier(self):
+        """Compute customer tier based on feedback quality and relationship"""
+        for record in self:
+            if record.customer_id:
+                # Enhanced logic for customer tier calculation
+                total_feedback = self.search_count(
+                    [("customer_id", "=", record.customer_id.id)]
+                )
+                avg_rating = 3  # Default
+
+                if record.overall_rating:
+                    customer_feedback = self.search(
+                        [
+                            ("customer_id", "=", record.customer_id.id),
+                            ("overall_rating", "!=", False),
+                        ]
+                    )
+                    if customer_feedback:
+                        ratings = [int(f.overall_rating) for f in customer_feedback]
+                        avg_rating = sum(ratings) / len(ratings)
+
+                # Tier logic
+                if avg_rating >= 4.5 and total_feedback >= 10:
+                    record.customer_tier = "platinum"
+                elif avg_rating >= 4.0 and total_feedback >= 5:
+                    record.customer_tier = "gold"
+                elif avg_rating >= 3.0:
+                    record.customer_tier = "silver"
+                else:
+                    record.customer_tier = "bronze"
+            else:
+                record.customer_tier = False
+
+    @api.depends("nps_score")
+    def _compute_nps_category(self):
+        """Compute NPS category based on score"""
+        for record in self:
+            if record.nps_score:
+                score = int(record.nps_score)
+                if score <= 6:
+                    record.nps_category = "detractor"
+                elif score <= 8:
+                    record.nps_category = "passive"
+                else:
+                    record.nps_category = "promoter"
+            else:
+                record.nps_category = False
+
+    @api.depends("attachment_ids")
+    def _compute_file_size(self):
+        """Compute total file size of attachments"""
+        for record in self:
+            if record.attachment_ids:
+                total_size = sum(record.attachment_ids.mapped("file_size"))
+                record.file_size = total_size / (1024 * 1024)  # Convert to MB
+            else:
+                record.file_size = 0.0
+
+    @api.depends("attachment_ids")
+    def _compute_attachment_count(self):
+        """Compute number of attachments"""
+        for record in self:
+            record.attachment_count = len(record.attachment_ids)
+
+    @api.depends("attachment_ids")
+    def _compute_has_attachments(self):
+        """Compute if record has attachments"""
+        for record in self:
+            record.has_attachments = bool(record.attachment_ids)
+
+    @api.depends("feedback_category", "priority")
+    def _compute_sla_deadline(self):
+        """Compute SLA deadline based on category and priority"""
+        for record in self:
+            if record.date_created:
+                hours_to_add = 24  # Default
+
+                # Priority-based SLA
+                if record.priority == "urgent":
+                    hours_to_add = 2
+                elif record.priority == "high":
+                    hours_to_add = 8
+                elif record.priority == "medium":
+                    hours_to_add = 24
+                else:  # low
+                    hours_to_add = 72
+
+                # Category adjustments
+                if record.feedback_category in [
+                    "technical_support",
+                    "billing_accuracy",
+                ]:
+                    hours_to_add = (
+                        hours_to_add // 2
+                    )  # Faster response for critical categories
+
+                # Calculate deadline
+                from datetime import timedelta
+
+                record.sla_deadline = record.date_created + timedelta(
+                    hours=hours_to_add
+                )
+            else:
+                record.sla_deadline = False
+
+    @api.depends("sla_deadline", "response_date")
+    def _compute_sla_met(self):
+        """Compute if SLA was met"""
+        for record in self:
+            if record.sla_deadline and record.response_date:
+                record.sla_met = record.response_date <= record.sla_deadline
+            else:
+                record.sla_met = False
+
+    @api.depends("date_created", "response_date")
+    def _compute_response_time(self):
+        """Compute response time in hours"""
+        for record in self:
+            if record.date_created and record.response_date:
+                delta = record.response_date - record.date_created
+                record.response_time_hours = delta.total_seconds() / 3600
+            else:
+                record.response_time_hours = 0.0
+
+    @api.depends("date_created", "state")
+    def _compute_resolution_time(self):
+        """Compute resolution time in hours"""
+        for record in self:
+            if record.date_created and record.state == "resolved":
+                # Use current time as resolution time if not set
+                resolution_time = fields.Datetime.now()
+                delta = resolution_time - record.date_created
+                record.resolution_time_hours = delta.total_seconds() / 3600
+            else:
+                record.resolution_time_hours = 0.0
+
+    @api.depends("date_created")
+    def _compute_data_retention_date(self):
+        """Compute data retention date for GDPR compliance"""
+        for record in self:
+            if record.date_created:
+                from datetime import timedelta
+
+                # Default 7 years retention for feedback data
+                record.data_retention_date = record.date_created.date() + timedelta(
+                    days=2555
+                )  # ~7 years
+            else:
+                record.data_retention_date = False
 
     # State Management
     state = fields.Selection(

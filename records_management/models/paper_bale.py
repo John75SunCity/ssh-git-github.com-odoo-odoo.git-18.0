@@ -147,6 +147,209 @@ class PaperBale(models.Model):
     )
     load_shipment_id = fields.Many2one("paper.load.shipment", string="Load Shipment")
 
+    # === CRITICAL MISSING FIELDS FROM VIEW ANALYSIS ===
+
+    # Source Document Tracking
+    source_document_ids = fields.One2many(
+        "paper.bale.source.document", "bale_id", string="Source Documents"
+    )
+    document_count = fields.Integer(
+        string="Document Count", compute="_compute_document_count", store=True
+    )
+    document_name = fields.Char(string="Document Name")
+    document_type = fields.Selection(
+        [
+            ("financial", "Financial Records"),
+            ("legal", "Legal Documents"),
+            ("medical", "Medical Records"),
+            ("corporate", "Corporate Files"),
+            ("mixed", "Mixed Documents"),
+        ],
+        string="Document Type",
+    )
+    customer_name = fields.Char(string="Customer Name")
+    destruction_date = fields.Date(string="Destruction Date")
+    weight_contributed = fields.Float(string="Weight Contributed (lbs)", digits=(10, 2))
+    naid_compliance_verified = fields.Boolean(
+        string="NAID Compliance Verified", default=False
+    )
+    confidentiality_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+        ],
+        string="Confidentiality Level",
+        default="confidential",
+    )
+
+    # Trailer Loading Management
+    trailer_load_count = fields.Integer(
+        string="Trailer Load Count", compute="_compute_trailer_load_count", store=True
+    )
+    loading_date = fields.Datetime(string="Loading Date")
+    loaded_by = fields.Many2one("hr.employee", string="Loaded By")
+    loading_position = fields.Char(string="Loading Position")
+    loading_order = fields.Integer(string="Loading Order")
+    special_handling = fields.Text(string="Special Handling Instructions")
+    loading_notes = fields.Text(string="Loading Notes")
+    loading_history_ids = fields.One2many(
+        "paper.bale.loading.history", "bale_id", string="Loading History"
+    )
+    trailer_info = fields.Char(string="Trailer Information")
+
+    # Quality Inspection System
+    quality_inspection_ids = fields.One2many(
+        "paper.bale.quality.inspection", "bale_id", string="Quality Inspections"
+    )
+    inspection_date = fields.Date(string="Inspection Date")
+    inspector = fields.Many2one("hr.employee", string="Inspector")
+    inspection_type = fields.Selection(
+        [
+            ("incoming", "Incoming Inspection"),
+            ("quality_control", "Quality Control"),
+            ("pre_loading", "Pre-Loading Check"),
+            ("final", "Final Inspection"),
+        ],
+        string="Inspection Type",
+    )
+    contamination_found = fields.Boolean(string="Contamination Found", default=False)
+    contamination_percentage = fields.Float(string="Contamination %", digits=(5, 2))
+    moisture_reading = fields.Float(string="Moisture Reading %", digits=(5, 2))
+    grade_assigned = fields.Selection(
+        [
+            ("A", "Grade A - Premium"),
+            ("B", "Grade B - Standard"),
+            ("C", "Grade C - Low Grade"),
+            ("reject", "Reject"),
+        ],
+        string="Grade Assigned",
+    )
+    passed_inspection = fields.Boolean(string="Passed Inspection", default=False)
+
+    # Weight Management System
+    weight_measurement_ids = fields.One2many(
+        "paper.bale.weight.measurement", "bale_id", string="Weight Measurements"
+    )
+    weight_history_count = fields.Integer(
+        string="Weight History Count",
+        compute="_compute_weight_history_count",
+        store=True,
+    )
+    measurement_date = fields.Datetime(string="Measurement Date")
+    weight_recorded = fields.Float(string="Weight Recorded (lbs)", digits=(10, 2))
+    scale_used = fields.Char(string="Scale Used")
+    measured_by = fields.Many2one("hr.employee", string="Measured By")
+    measurement_type = fields.Selection(
+        [
+            ("initial", "Initial Weighing"),
+            ("verification", "Verification Weighing"),
+            ("final", "Final Weighing"),
+            ("reweigh", "Re-weighing"),
+        ],
+        string="Measurement Type",
+    )
+    variance_from_previous = fields.Float(
+        string="Variance from Previous (lbs)", digits=(10, 2)
+    )
+
+    # Paper Classification & Processing
+    paper_type = fields.Selection(
+        [
+            ("office", "Office Paper"),
+            ("newspaper", "Newspaper"),
+            ("magazine", "Magazine"),
+            ("cardboard", "Cardboard"),
+            ("mixed", "Mixed Paper"),
+        ],
+        string="Paper Type",
+    )
+    paper_grade = fields.Selection(
+        [
+            ("1", "Grade 1 - High Quality"),
+            ("2", "Grade 2 - Standard"),
+            ("3", "Grade 3 - Mixed"),
+            ("4", "Grade 4 - Low Quality"),
+        ],
+        string="Paper Grade",
+    )
+    contamination_level = fields.Selection(
+        [
+            ("none", "No Contamination"),
+            ("low", "Low (<2%)"),
+            ("medium", "Medium (2-5%)"),
+            ("high", "High (>5%)"),
+        ],
+        string="Contamination Level",
+    )
+    moisture_content = fields.Float(string="Moisture Content %", digits=(5, 2))
+    source_facility = fields.Char(string="Source Facility")
+    weighed_by = fields.Many2one("hr.employee", string="Weighed By")
+    weigh_date = fields.Date(string="Weigh Date")
+    quality_notes = fields.Text(string="Quality Notes")
+
+    # Performance Analytics
+    processing_time = fields.Float(string="Processing Time (hours)", digits=(8, 2))
+    weight_efficiency = fields.Float(string="Weight Efficiency %", digits=(5, 2))
+    quality_score = fields.Float(string="Quality Score", digits=(5, 2))
+    estimated_value = fields.Monetary(
+        string="Estimated Value", currency_field="currency_id"
+    )
+    market_price_per_lb = fields.Monetary(
+        string="Market Price per lb", currency_field="currency_id"
+    )
+    revenue_potential = fields.Monetary(
+        string="Revenue Potential", currency_field="currency_id"
+    )
+    processing_cost = fields.Monetary(
+        string="Processing Cost", currency_field="currency_id"
+    )
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+
+    # Environmental Impact Tracking
+    carbon_footprint_saved = fields.Float(string="CO2 Saved (lbs)", digits=(10, 2))
+    trees_saved_equivalent = fields.Float(
+        string="Trees Saved Equivalent", digits=(8, 2)
+    )
+    energy_saved = fields.Float(string="Energy Saved (kWh)", digits=(10, 2))
+    water_saved = fields.Float(string="Water Saved (gallons)", digits=(10, 2))
+    environmental_certification = fields.Char(string="Environmental Certification")
+    sustainable_source = fields.Boolean(string="Sustainable Source", default=False)
+    chain_of_custody_verified = fields.Boolean(
+        string="Chain of Custody Verified", default=False
+    )
+    carbon_neutral = fields.Boolean(string="Carbon Neutral", default=False)
+
+    # Additional Weight and Unit Fields
+    weight_unit = fields.Selection(
+        [("lbs", "Pounds"), ("kg", "Kilograms"), ("tons", "Tons")],
+        string="Weight Unit",
+        default="lbs",
+    )
+
+    @api.depends("source_document_ids")
+    def _compute_document_count(self):
+        """Compute total number of source documents"""
+        for record in self:
+            record.document_count = len(record.source_document_ids)
+
+    @api.depends("loading_history_ids")
+    def _compute_trailer_load_count(self):
+        """Compute trailer loading history count"""
+        for record in self:
+            record.trailer_load_count = len(record.loading_history_ids)
+
+    @api.depends("weight_measurement_ids")
+    def _compute_weight_history_count(self):
+        """Compute weight measurement history count"""
+        for record in self:
+            record.weight_history_count = len(record.weight_measurement_ids)
+
     @api.depends("weight_lbs", "dimensions")
     def _compute_density(self):
         """Compute density of the bale"""
@@ -205,71 +408,139 @@ class PaperBale(models.Model):
     )
     active = fields.Boolean(string="Active", default=True)
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    pickup_date = fields.Date(string='Pickup Date')
-    price_per_ton = fields.Monetary(string='Price per Ton', currency_field='currency_id')
-    sequence = fields.Integer(string='Sequence', default=10)
-    notes = fields.Text(string='Notes')
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    pickup_date = fields.Date(string="Pickup Date")
+    price_per_ton = fields.Monetary(
+        string="Price per Ton", currency_field="currency_id"
+    )
+    sequence = fields.Integer(string="Sequence", default=10)
+    notes = fields.Text(string="Notes")
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
     # === COMPREHENSIVE MISSING FIELDS ===
-    workflow_state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Workflow State', default='draft')
-    next_action_date = fields.Date(string='Next Action Date')
-    deadline_date = fields.Date(string='Deadline')
-    completion_date = fields.Datetime(string='Completion Date')
-    responsible_user_id = fields.Many2one('res.users', string='Responsible User')
-    assigned_team_id = fields.Many2one('hr.department', string='Assigned Team')
-    supervisor_id = fields.Many2one('res.users', string='Supervisor')
-    quality_checked = fields.Boolean(string='Quality Checked')
-    quality_score = fields.Float(string='Quality Score', digits=(3, 2))
-    validation_required = fields.Boolean(string='Validation Required')
-    validated_by_id = fields.Many2one('res.users', string='Validated By')
-    validation_date = fields.Datetime(string='Validation Date')
-    reference_number = fields.Char(string='Reference Number')
-    external_reference = fields.Char(string='External Reference')
-    documentation_complete = fields.Boolean(string='Documentation Complete')
-    attachment_ids = fields.One2many('ir.attachment', 'res_id', string='Attachments')
-    performance_score = fields.Float(string='Performance Score', digits=(5, 2))
-    efficiency_rating = fields.Selection([('poor', 'Poor'), ('fair', 'Fair'), ('good', 'Good'), ('excellent', 'Excellent')], string='Efficiency Rating')
-    last_review_date = fields.Date(string='Last Review Date')
-    next_review_date = fields.Date(string='Next Review Date')
+    workflow_state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Workflow State",
+        default="draft",
+    )
+    next_action_date = fields.Date(string="Next Action Date")
+    deadline_date = fields.Date(string="Deadline")
+    completion_date = fields.Datetime(string="Completion Date")
+    responsible_user_id = fields.Many2one("res.users", string="Responsible User")
+    assigned_team_id = fields.Many2one("hr.department", string="Assigned Team")
+    supervisor_id = fields.Many2one("res.users", string="Supervisor")
+    quality_checked = fields.Boolean(string="Quality Checked")
+    quality_score = fields.Float(string="Quality Score", digits=(3, 2))
+    validation_required = fields.Boolean(string="Validation Required")
+    validated_by_id = fields.Many2one("res.users", string="Validated By")
+    validation_date = fields.Datetime(string="Validation Date")
+    reference_number = fields.Char(string="Reference Number")
+    external_reference = fields.Char(string="External Reference")
+    documentation_complete = fields.Boolean(string="Documentation Complete")
+    attachment_ids = fields.One2many("ir.attachment", "res_id", string="Attachments")
+    performance_score = fields.Float(string="Performance Score", digits=(5, 2))
+    efficiency_rating = fields.Selection(
+        [
+            ("poor", "Poor"),
+            ("fair", "Fair"),
+            ("good", "Good"),
+            ("excellent", "Excellent"),
+        ],
+        string="Efficiency Rating",
+    )
+    last_review_date = fields.Date(string="Last Review Date")
+    next_review_date = fields.Date(string="Next Review Date")
     # Paper Bale Management Fields
-    action_date = fields.Date('Action Date')
-    action_type = fields.Selection([('sort', 'Sort'), ('compress', 'Compress'), ('transport', 'Transport')], 'Action Type')
-    carbon_neutral = fields.Boolean('Carbon Neutral', default=False)
-    chain_of_custody_verified = fields.Boolean('Chain of Custody Verified', default=False)
-    confidentiality_level = fields.Selection([('public', 'Public'), ('internal', 'Internal'), ('confidential', 'Confidential')], default='internal')
-    contamination_assessment = fields.Text('Contamination Assessment')
-    customer_approval_required = fields.Boolean('Customer Approval Required', default=False)
-    customer_notification_sent = fields.Boolean('Customer Notification Sent', default=False)
-    destruction_method_verified = fields.Boolean('Destruction Method Verified', default=False)
-    environmental_impact_assessment = fields.Text('Environmental Impact Assessment')
-    estimated_processing_time = fields.Float('Estimated Processing Time (Hours)')
-    final_weight_verified = fields.Boolean('Final Weight Verified', default=False)
-    gps_pickup_location = fields.Char('GPS Pickup Location')
-    handling_requirements = fields.Text('Handling Requirements')
-    load_optimization_notes = fields.Text('Load Optimization Notes')
-    moisture_content_percentage = fields.Float('Moisture Content %', default=0.0)
-    packaging_requirements = fields.Text('Packaging Requirements')
-    pre_processing_required = fields.Boolean('Pre-processing Required', default=False)
-    processing_completion_date = fields.Date('Processing Completion Date')
-    processing_facility_id = fields.Many2one('processing.facility', 'Processing Facility')
-    quality_control_passed = fields.Boolean('Quality Control Passed', default=False)
-    recycling_category = fields.Selection([('office_paper', 'Office Paper'), ('newsprint', 'Newsprint'), ('cardboard', 'Cardboard'), ('mixed', 'Mixed')], default='mixed')
-    recycling_certificate_required = fields.Boolean('Recycling Certificate Required', default=True)
-    security_level_required = fields.Selection([('standard', 'Standard'), ('secure', 'Secure'), ('confidential', 'Confidential')], default='standard')
-    sorting_completion_date = fields.Date('Sorting Completion Date')
-    sorting_required = fields.Boolean('Sorting Required', default=True)
-    storage_duration_days = fields.Integer('Storage Duration (Days)', default=30)
-    temperature_requirements = fields.Text('Temperature Requirements')
-    transportation_method = fields.Selection([('truck', 'Truck'), ('rail', 'Rail'), ('container', 'Container')], default='truck')
-    volume_optimization_ratio = fields.Float('Volume Optimization Ratio', default=1.0)
-    waste_stream_classification = fields.Selection([('commercial', 'Commercial'), ('industrial', 'Industrial'), ('institutional', 'Institutional')], default='commercial')
-    weight_verification_method = fields.Selection([('scale', 'Scale'), ('estimate', 'Estimate')], default='scale')
-
-
+    action_date = fields.Date("Action Date")
+    action_type = fields.Selection(
+        [("sort", "Sort"), ("compress", "Compress"), ("transport", "Transport")],
+        "Action Type",
+    )
+    carbon_neutral = fields.Boolean("Carbon Neutral", default=False)
+    chain_of_custody_verified = fields.Boolean(
+        "Chain of Custody Verified", default=False
+    )
+    confidentiality_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal"),
+            ("confidential", "Confidential"),
+        ],
+        default="internal",
+    )
+    contamination_assessment = fields.Text("Contamination Assessment")
+    customer_approval_required = fields.Boolean(
+        "Customer Approval Required", default=False
+    )
+    customer_notification_sent = fields.Boolean(
+        "Customer Notification Sent", default=False
+    )
+    destruction_method_verified = fields.Boolean(
+        "Destruction Method Verified", default=False
+    )
+    environmental_impact_assessment = fields.Text("Environmental Impact Assessment")
+    estimated_processing_time = fields.Float("Estimated Processing Time (Hours)")
+    final_weight_verified = fields.Boolean("Final Weight Verified", default=False)
+    gps_pickup_location = fields.Char("GPS Pickup Location")
+    handling_requirements = fields.Text("Handling Requirements")
+    load_optimization_notes = fields.Text("Load Optimization Notes")
+    moisture_content_percentage = fields.Float("Moisture Content %", default=0.0)
+    packaging_requirements = fields.Text("Packaging Requirements")
+    pre_processing_required = fields.Boolean("Pre-processing Required", default=False)
+    processing_completion_date = fields.Date("Processing Completion Date")
+    processing_facility_id = fields.Many2one(
+        "processing.facility", "Processing Facility"
+    )
+    quality_control_passed = fields.Boolean("Quality Control Passed", default=False)
+    recycling_category = fields.Selection(
+        [
+            ("office_paper", "Office Paper"),
+            ("newsprint", "Newsprint"),
+            ("cardboard", "Cardboard"),
+            ("mixed", "Mixed"),
+        ],
+        default="mixed",
+    )
+    recycling_certificate_required = fields.Boolean(
+        "Recycling Certificate Required", default=True
+    )
+    security_level_required = fields.Selection(
+        [
+            ("standard", "Standard"),
+            ("secure", "Secure"),
+            ("confidential", "Confidential"),
+        ],
+        default="standard",
+    )
+    sorting_completion_date = fields.Date("Sorting Completion Date")
+    sorting_required = fields.Boolean("Sorting Required", default=True)
+    storage_duration_days = fields.Integer("Storage Duration (Days)", default=30)
+    temperature_requirements = fields.Text("Temperature Requirements")
+    transportation_method = fields.Selection(
+        [("truck", "Truck"), ("rail", "Rail"), ("container", "Container")],
+        default="truck",
+    )
+    volume_optimization_ratio = fields.Float("Volume Optimization Ratio", default=1.0)
+    waste_stream_classification = fields.Selection(
+        [
+            ("commercial", "Commercial"),
+            ("industrial", "Industrial"),
+            ("institutional", "Institutional"),
+        ],
+        default="commercial",
+    )
+    weight_verification_method = fields.Selection(
+        [("scale", "Scale"), ("estimate", "Estimate")], default="scale"
+    )
 
     # =============================================================================
     # PAPER BALE ACTION METHODS
@@ -470,3 +741,143 @@ class PaperBale(models.Model):
             "total_water_saved": sum(active_bales.mapped("water_saved")),
             "total_carbon_saved": sum(active_bales.mapped("carbon_footprint_saved")),
         }
+
+
+# === RELATED MODELS FOR PAPER BALE SYSTEM ===
+
+
+class PaperBaleSourceDocument(models.Model):
+    """Source documents that contributed to a paper bale"""
+
+    _name = "paper.bale.source.document"
+    _description = "Paper Bale Source Document"
+    _order = "destruction_date desc"
+
+    bale_id = fields.Many2one(
+        "paper.bale", string="Paper Bale", required=True, ondelete="cascade"
+    )
+    document_name = fields.Char(string="Document Name", required=True)
+    document_type = fields.Selection(
+        [
+            ("financial", "Financial Records"),
+            ("legal", "Legal Documents"),
+            ("medical", "Medical Records"),
+            ("corporate", "Corporate Files"),
+            ("mixed", "Mixed Documents"),
+        ],
+        string="Document Type",
+        required=True,
+    )
+    customer_name = fields.Char(string="Customer Name")
+    destruction_date = fields.Date(string="Destruction Date")
+    weight_contributed = fields.Float(string="Weight Contributed (lbs)", digits=(10, 2))
+    naid_compliance_verified = fields.Boolean(
+        string="NAID Compliance Verified", default=False
+    )
+    confidentiality_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+        ],
+        string="Confidentiality Level",
+        default="confidential",
+    )
+
+
+class PaperBaleLoadingHistory(models.Model):
+    """Loading history for paper bales"""
+
+    _name = "paper.bale.loading.history"
+    _description = "Paper Bale Loading History"
+    _order = "action_date desc"
+
+    bale_id = fields.Many2one(
+        "paper.bale", string="Paper Bale", required=True, ondelete="cascade"
+    )
+    action_date = fields.Datetime(string="Action Date", default=fields.Datetime.now)
+    action_type = fields.Selection(
+        [
+            ("loaded", "Loaded onto Trailer"),
+            ("unloaded", "Unloaded from Trailer"),
+            ("repositioned", "Repositioned"),
+            ("inspection", "Loading Inspection"),
+        ],
+        string="Action Type",
+        required=True,
+    )
+    performed_by = fields.Many2one("hr.employee", string="Performed By")
+    trailer_info = fields.Char(string="Trailer Information")
+    notes = fields.Text(string="Notes")
+
+
+class PaperBaleQualityInspection(models.Model):
+    """Quality inspection records for paper bales"""
+
+    _name = "paper.bale.quality.inspection"
+    _description = "Paper Bale Quality Inspection"
+    _order = "inspection_date desc"
+
+    bale_id = fields.Many2one(
+        "paper.bale", string="Paper Bale", required=True, ondelete="cascade"
+    )
+    inspection_date = fields.Date(string="Inspection Date", required=True)
+    inspector = fields.Many2one("hr.employee", string="Inspector", required=True)
+    inspection_type = fields.Selection(
+        [
+            ("incoming", "Incoming Inspection"),
+            ("quality_control", "Quality Control"),
+            ("pre_loading", "Pre-Loading Check"),
+            ("final", "Final Inspection"),
+        ],
+        string="Inspection Type",
+        required=True,
+    )
+    contamination_found = fields.Boolean(string="Contamination Found", default=False)
+    moisture_reading = fields.Float(string="Moisture Reading %", digits=(5, 2))
+    grade_assigned = fields.Selection(
+        [
+            ("A", "Grade A - Premium"),
+            ("B", "Grade B - Standard"),
+            ("C", "Grade C - Low Grade"),
+            ("reject", "Reject"),
+        ],
+        string="Grade Assigned",
+    )
+    passed_inspection = fields.Boolean(string="Passed Inspection", default=False)
+    notes = fields.Text(string="Inspection Notes")
+
+
+class PaperBaleWeightMeasurement(models.Model):
+    """Weight measurement history for paper bales"""
+
+    _name = "paper.bale.weight.measurement"
+    _description = "Paper Bale Weight Measurement"
+    _order = "measurement_date desc"
+
+    bale_id = fields.Many2one(
+        "paper.bale", string="Paper Bale", required=True, ondelete="cascade"
+    )
+    measurement_date = fields.Datetime(
+        string="Measurement Date", default=fields.Datetime.now
+    )
+    weight_recorded = fields.Float(
+        string="Weight Recorded (lbs)", digits=(10, 2), required=True
+    )
+    scale_used = fields.Char(string="Scale Used")
+    measured_by = fields.Many2one("hr.employee", string="Measured By")
+    measurement_type = fields.Selection(
+        [
+            ("initial", "Initial Weighing"),
+            ("verification", "Verification Weighing"),
+            ("final", "Final Weighing"),
+            ("reweigh", "Re-weighing"),
+        ],
+        string="Measurement Type",
+        required=True,
+    )
+    variance_from_previous = fields.Float(
+        string="Variance from Previous (lbs)", digits=(10, 2)
+    )
+    notes = fields.Text(string="Measurement Notes")
