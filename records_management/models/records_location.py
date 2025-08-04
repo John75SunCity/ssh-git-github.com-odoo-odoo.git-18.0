@@ -1,22 +1,44 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class RecordsLocation(models.Model):
     _name = "records.location"
     _description = "Records Storage Location"
     _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name"
+    _order = "sequence, name"
     _rec_name = "name"
 
-    # Basic Information
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+
     name = fields.Char(string="Location Name", required=True, tracking=True, index=True)
     code = fields.Char(string="Location Code", required=True, index=True, tracking=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10, tracking=True)
+    active = fields.Boolean(string="Active", default=True, tracking=True)
 
-    # Location Hierarchy
+    # Framework Required Fields
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Responsible User",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+
+    # ============================================================================
+    # PHYSICAL LOCATION DETAILS
+    # ============================================================================
+
+    # Building Information
     building = fields.Char(string="Building", tracking=True)
     floor = fields.Char(string="Floor", tracking=True)
     zone = fields.Char(string="Zone", tracking=True)
@@ -25,56 +47,91 @@ class RecordsLocation(models.Model):
     shelf = fields.Char(string="Shelf", tracking=True)
     position = fields.Char(string="Position", tracking=True)
 
-    # Location Classification
+    # Address Information
+    street = fields.Char(string="Street")
+    street2 = fields.Char(string="Street 2")
+    city = fields.Char(string="City")
+    state_id = fields.Many2one("res.country.state", string="State")
+    zip = fields.Char(string="ZIP Code")
+    country_id = fields.Many2one("res.country", string="Country")
+
+    # Computed Location Fields
+    full_address = fields.Char(
+        string="Full Address",
+        compute="_compute_full_address",
+        store=True,
+    )
+    location_path = fields.Char(
+        string="Location Path",
+        compute="_compute_location_path",
+        store=True,
+    )
+    display_name = fields.Char(
+        string="Display Name",
+        compute="_compute_display_name",
+        store=True,
+    )
+
+    # ============================================================================
+    # LOCATION CLASSIFICATION
+    # ============================================================================
+
     location_type = fields.Selection(
         [
             ("warehouse", "Warehouse"),
             ("office", "Office"),
-            ("storage_facility", "Storage Facility"),
-            ("vault", "Security Vault"),
-            ("climate_storage", "Climate Controlled Storage"),
+            ("vault", "Vault"),
+            ("cold_storage", "Cold Storage"),
             ("archive", "Archive"),
-            ("offsite", "Offsite Storage"),
-            ("mobile", "Mobile Storage"),
+            ("staging", "Staging Area"),
+            ("shipping", "Shipping/Receiving"),
+            ("destruction", "Destruction Area"),
+            ("quarantine", "Quarantine"),
+            ("temporary", "Temporary Storage"),
         ],
         string="Location Type",
         required=True,
         tracking=True,
     )
 
-    # Security and Access Control
+    # Security Classifications
     access_level = fields.Selection(
         [
             ("public", "Public Access"),
             ("restricted", "Restricted Access"),
             ("confidential", "Confidential"),
+            ("secret", "Secret"),
             ("top_secret", "Top Secret"),
-            ("biometric", "Biometric Access"),
         ],
         string="Access Level",
         default="restricted",
-        required=True,
         tracking=True,
     )
+
     security_level = fields.Selection(
         [
-            ("basic", "Basic Security"),
-            ("enhanced", "Enhanced Security"),
-            ("maximum", "Maximum Security"),
-            ("high_security", "High Security Vault"),
+            ("level_1", "Level 1 - Basic"),
+            ("level_2", "Level 2 - Standard"),
+            ("level_3", "Level 3 - High"),
+            ("level_4", "Level 4 - Maximum"),
         ],
         string="Security Level",
-        default="basic",
-        required=True,
+        default="level_2",
         tracking=True,
     )
+
+    # ============================================================================
+    # ACCESS CONTROL
+    # ============================================================================
+
+    # Physical Access Requirements
     access_card_required = fields.Boolean(
         string="Access Card Required",
         default=True,
         tracking=True,
     )
     biometric_access = fields.Boolean(
-        string="Biometric Access",
+        string="Biometric Access Required",
         default=False,
         tracking=True,
     )
@@ -84,167 +141,70 @@ class RecordsLocation(models.Model):
         tracking=True,
     )
 
-    # Physical Specifications
+    # Access Control Lists
+    authorized_user_ids = fields.Many2many(
+        "res.users",
+        "location_authorized_users_rel",
+        string="Authorized Users",
+    )
+    authorized_group_ids = fields.Many2many(
+        "res.groups",
+        string="Authorized Groups",
+    )
+
+    # ============================================================================
+    # CAPACITY & USAGE TRACKING
+    # ============================================================================
+
+    # Capacity Management
     total_capacity = fields.Float(
-        string="Total Capacity (cubic feet)",
-        required=True,
+        string="Total Capacity (Cubic Ft)",
+        digits=(10, 2),
         tracking=True,
-        help="Total storage capacity in cubic feet",
     )
     current_usage = fields.Float(
-        string="Current Usage (cubic feet)",
+        string="Current Usage (Cubic Ft)",
         compute="_compute_usage_metrics",
         store=True,
-        help="Currently used storage space",
+        digits=(10, 2),
     )
     available_capacity = fields.Float(
-        string="Available Capacity (cubic feet)",
+        string="Available Capacity",
         compute="_compute_usage_metrics",
         store=True,
-        help="Available storage space",
+        digits=(10, 2),
     )
-    utilization_percentage = fields.Float(
-        string="Utilization %",
+    usage_percentage = fields.Float(
+        string="Usage Percentage",
         compute="_compute_usage_metrics",
         store=True,
         digits=(5, 2),
-        help="Percentage of capacity currently used",
     )
+
+    # Weight Tracking
     max_weight_capacity = fields.Float(
         string="Max Weight Capacity (lbs)",
-        tracking=True,
-        help="Maximum weight capacity in pounds",
-    )
-    max_capacity = fields.Char(
-        string="Max Capacity", help="Maximum storage capacity description"
+        digits=(10, 2),
     )
     current_weight = fields.Float(
         string="Current Weight (lbs)",
         compute="_compute_weight_metrics",
         store=True,
-        help="Current total weight of stored items",
+        digits=(10, 2),
+    )
+    available_weight = fields.Float(
+        string="Available Weight Capacity",
+        compute="_compute_weight_metrics",
+        store=True,
+        digits=(10, 2),
     )
 
-    # Environmental Controls
-    climate_controlled = fields.Boolean(
-        string="Climate Controlled",
-        default=False,
-        tracking=True,
+    # Item Counts
+    box_count = fields.Integer(
+        string="Box Count",
+        compute="_compute_item_counts",
+        store=True,
     )
-    temperature_controlled = fields.Boolean(
-        string="Temperature Controlled",
-        default=False,
-        tracking=True,
-    )
-    humidity_controlled = fields.Boolean(
-        string="Humidity Controlled",
-        default=False,
-        tracking=True,
-    )
-    target_temperature = fields.Float(
-        string="Target Temperature (°F)",
-        default=70.0,
-        tracking=True,
-    )
-    target_humidity = fields.Float(
-        string="Target Humidity (%)",
-        default=45.0,
-        tracking=True,
-    )
-    climate_monitoring_enabled = fields.Boolean(
-        string="Climate Monitoring Enabled",
-        default=False,
-        tracking=True,
-    )
-
-    # Safety and Protection
-    fire_suppression_system = fields.Selection(
-        [
-            ("none", "None"),
-            ("sprinkler", "Sprinkler System"),
-            ("gas", "Gas Suppression"),
-            ("foam", "Foam System"),
-            ("dry_chemical", "Dry Chemical"),
-        ],
-        string="Fire Suppression System",
-        default="sprinkler",
-        tracking=True,
-    )
-    fireproof_rating = fields.Selection(
-        [
-            ("none", "Not Fireproof"),
-            ("30min", "30 Minutes"),
-            ("1hour", "1 Hour"),
-            ("2hour", "2 Hours"),
-            ("4hour", "4 Hours"),
-        ],
-        string="Fireproof Rating",
-        default="none",
-        tracking=True,
-    )
-    flood_protection = fields.Boolean(
-        string="Flood Protection",
-        default=False,
-        tracking=True,
-    )
-    earthquake_resistant = fields.Boolean(
-        string="Earthquake Resistant",
-        default=False,
-        tracking=True,
-    )
-
-    # Status and State Management
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("active", "Active"),
-            ("maintenance", "Under Maintenance"),
-            ("full", "Full Capacity"),
-            ("restricted", "Access Restricted"),
-            ("retired", "Retired"),
-        ],
-        string="Status",
-        default="draft",
-        required=True,
-        tracking=True,
-    )
-    active = fields.Boolean(string="Active", default=True)
-
-    # Company and User Management
-    company_id = fields.Many2one(
-        "res.company",
-        string="Company",
-        default=lambda self: self.env.company,
-        required=True,
-    )
-    responsible_user_id = fields.Many2one(
-        "res.users",
-        string="Location Manager",
-        default=lambda self: self.env.user,
-        tracking=True,
-    )
-    backup_manager_id = fields.Many2one(
-        "res.users",
-        string="Backup Manager",
-        tracking=True,
-    )
-
-    # Warehouse Integration
-    warehouse_id = fields.Many2one(
-        "stock.warehouse",
-        string="Warehouse",
-        tracking=True,
-    )
-
-    # Related Records and Counts
-    container_ids = fields.One2many(
-        "records.container", "location_id", string="Containers"
-    )
-    document_ids = fields.One2many(
-        "records.document", "location_id", string="Documents"
-    )
-
-    # Computed Counts
     container_count = fields.Integer(
         string="Container Count",
         compute="_compute_item_counts",
@@ -256,226 +216,163 @@ class RecordsLocation(models.Model):
         store=True,
     )
 
-    # Location Services and Features
-    pickup_service_available = fields.Boolean(
-        string="Pickup Service Available",
-        default=True,
-        tracking=True,
-    )
-    delivery_service_available = fields.Boolean(
-        string="Delivery Service Available",
-        default=True,
-        tracking=True,
-    )
-    scanning_services = fields.Boolean(
-        string="On-site Scanning Services",
+    # ============================================================================
+    # ENVIRONMENTAL CONDITIONS
+    # ============================================================================
+
+    # Climate Control
+    climate_controlled = fields.Boolean(
+        string="Climate Controlled",
         default=False,
         tracking=True,
     )
-    shredding_services = fields.Boolean(
-        string="On-site Shredding Services",
-        default=False,
+    temperature_min = fields.Float(
+        string="Min Temperature (°F)",
+        digits=(5, 2),
+    )
+    temperature_max = fields.Float(
+        string="Max Temperature (°F)",
+        digits=(5, 2),
+    )
+    target_temperature = fields.Float(
+        string="Target Temperature (°F)",
+        digits=(5, 2),
+    )
+    humidity_min = fields.Float(
+        string="Min Humidity (%)",
+        digits=(5, 2),
+    )
+    humidity_max = fields.Float(
+        string="Max Humidity (%)",
+        digits=(5, 2),
+    )
+    target_humidity = fields.Float(
+        string="Target Humidity (%)",
+        digits=(5, 2),
+    )
+
+    # Environmental Features
+    fire_suppression = fields.Boolean(string="Fire Suppression System", default=False)
+    flood_protection = fields.Boolean(string="Flood Protection", default=False)
+    pest_control = fields.Boolean(string="Pest Control", default=False)
+    earthquake_resistant = fields.Boolean(string="Earthquake Resistant", default=False)
+
+    # ============================================================================
+    # STATUS & OPERATIONAL STATE
+    # ============================================================================
+
+    # Operational Status
+    status = fields.Selection(
+        [
+            ("available", "Available"),
+            ("occupied", "Occupied"),
+            ("full", "Full"),
+            ("maintenance", "Under Maintenance"),
+            ("restricted", "Restricted"),
+            ("decommissioned", "Decommissioned"),
+        ],
+        string="Status",
+        default="available",
         tracking=True,
     )
 
-    # Operational Information
-    operating_hours = fields.Text(
-        string="Operating Hours", help="Location operating hours and availability"
-    )
-    access_instructions = fields.Text(
-        string="Access Instructions", help="Instructions for accessing this location"
-    )
-    emergency_procedures = fields.Text(
-        string="Emergency Access Procedures",
-        help="Emergency access and evacuation procedures",
-    )
-    special_handling_notes = fields.Text(
-        string="Special Handling Notes", help="Special handling requirements or notes"
+    # Maintenance Information
+    last_inspection_date = fields.Date(string="Last Inspection")
+    next_inspection_date = fields.Date(string="Next Inspection")
+    maintenance_notes = fields.Text(string="Maintenance Notes")
+    inspection_frequency = fields.Integer(
+        string="Inspection Frequency (Days)",
+        default=90,
     )
 
-    # Compliance and Certification
-    location_certification = fields.Char(
-        string="Location Certification",
-        tracking=True,
-        help="Certification or compliance standards met",
+    # ============================================================================
+    # OPERATIONAL FEATURES
+    # ============================================================================
+
+    # Location Features
+    has_loading_dock = fields.Boolean(string="Has Loading Dock", default=False)
+    has_elevator_access = fields.Boolean(string="Elevator Access", default=False)
+    wheelchair_accessible = fields.Boolean(string="Wheelchair Accessible", default=False)
+    has_backup_power = fields.Boolean(string="Backup Power", default=False)
+    has_security_cameras = fields.Boolean(string="Security Cameras", default=False)
+
+    # Operational Hours
+    operating_hours_start = fields.Float(string="Operating Hours Start", default=8.0)
+    operating_hours_end = fields.Float(string="Operating Hours End", default=17.0)
+    after_hours_access = fields.Boolean(string="After Hours Access", default=False)
+
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+
+    # Parent/Child Relationships
+    parent_location_id = fields.Many2one(
+        "records.location",
+        string="Parent Location",
+        index=True,
     )
-    last_inspection_date = fields.Date(
-        string="Last Inspection Date",
-        tracking=True,
-    )
-    next_inspection_date = fields.Date(
-        string="Next Inspection Date",
-        tracking=True,
-    )
-    naid_certified = fields.Boolean(
-        string="NAID Certified",
-        default=False,
-        tracking=True,
-    )
-    iso_certified = fields.Boolean(
-        string="ISO Certified",
-        default=False,
-        tracking=True,
+    child_location_ids = fields.One2many(
+        "records.location",
+        "parent_location_id",
+        string="Child Locations",
     )
 
-    # Financial Information
-    monthly_cost = fields.Monetary(
-        string="Monthly Cost",
-        currency_field="currency_id",
-        tracking=True,
-        help="Monthly cost for this location",
+    # Related Records
+    box_ids = fields.One2many(
+        "records.box",
+        "location_id",
+        string="Boxes",
     )
-    cost_per_cubic_foot = fields.Monetary(
-        string="Cost per Cubic Foot",
-        currency_field="currency_id",
-        tracking=True,
-        help="Monthly cost per cubic foot of storage",
+    container_ids = fields.One2many(
+        "records.container",
+        "location_id",
+        string="Containers",
     )
-    currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        default=lambda self: self.env.company.currency_id,
+    document_ids = fields.One2many(
+        "records.document",
+        "location_id",
+        string="Documents",
     )
 
-    # Timestamps
-    created_date = fields.Datetime(
-        string="Created Date",
-        default=fields.Datetime.now,
-        readonly=True,
+    # Service References
+    pickup_request_ids = fields.One2many(
+        "pickup.request",
+        "location_id",
+        string="Pickup Requests",
     )
-    updated_date = fields.Datetime(
-        string="Last Updated",
-        readonly=True,
-    )
-    commissioned_date = fields.Date(
-        string="Commissioned Date",
-        tracking=True,
-        help="Date when location was put into service",
+    work_order_ids = fields.One2many(
+        "work.order",
+        "location_id",
+        string="Work Orders",
     )
 
-    # GPS and Physical Address
-    street = fields.Char(string="Street Address")
-    street2 = fields.Char(string="Street Address 2")
-    city = fields.Char(string="City")
-    state_id = fields.Many2one("res.country.state", string="State")
-    zip_code = fields.Char(string="ZIP Code")
-    country_id = fields.Many2one("res.country", string="Country")
-    latitude = fields.Float(string="Latitude", digits=(10, 7))
-    longitude = fields.Float(string="Longitude", digits=(10, 7))
-
-    # === MISSING FIELDS FOR RECORDS.LOCATION ===
-
-    # Framework Integration Fields (required by mail.thread)
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
-    )
+    # Mail Thread Framework Fields
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
+        "mail.followers", "res_id", string="Followers"
     )
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-        domain=lambda self: [("res_model", "=", self._name)],
-    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
-    # Space Management Fields
-    available_spaces = fields.Integer(
-        string="Available Spaces",
-        compute="_compute_space_metrics",
-        store=True,
-        help="Number of available storage spaces",
-    )
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
 
-    available_utilization = fields.Float(
-        string="Available Utilization (%)",
-        compute="_compute_space_metrics",
-        store=True,
-        digits=(5, 2),
-        help="Percentage of available space utilization",
-    )
-
-    box_count = fields.Integer(
-        string="Box Count",
-        compute="_compute_container_metrics",
-        store=True,
-        help="Total number of boxes stored in this location",
-    )
-
-    capacity = fields.Float(
-        string="Storage Capacity", help="Maximum storage capacity of the location"
-    )
-
-    current_utilization = fields.Float(
-        string="Current Utilization (%)",
-        compute="_compute_utilization_metrics",
-        store=True,
-        digits=(5, 2),
-        help="Current space utilization percentage",
-    )
-
-    # Additional Location Management
-    location_manager = fields.Many2one(
-        "res.users",
-        string="Location Manager",
-        help="Person responsible for managing this location",
-    )
-
-    last_inspection_date = fields.Date(
-        string="Last Inspection Date",
-        tracking=True,
-        help="Date of last location inspection",
-    )
-
-    next_inspection_date = fields.Date(
-        string="Next Inspection Date",
-        compute="_compute_next_inspection_date",
-        store=True,
-        help="Computed next inspection date",
-    )
-
-    # Display and Computed Fields
-    display_name = fields.Char(
-        string="Display Name",
-        compute="_compute_display_name",
-        store=True,
-    )
-    full_address = fields.Char(
-        string="Full Address",
-        compute="_compute_full_address",
-        store=True,
-    )
-    location_path = fields.Char(
-        string="Location Path",
-        compute="_compute_location_path",
-        store=True,
-        help="Full hierarchical path of the location",
-    )
-
-    # Enhanced State Management and Compute Methods
-
-    @api.depends("name", "code", "building", "zone")
+    @api.depends("name", "code", "building", "floor", "zone")
     def _compute_display_name(self):
-        """Compute display name with location details."""
+        """Compute display name for location"""
         for record in self:
             parts = [record.name]
             if record.code:
                 parts.append(f"[{record.code}]")
             if record.building:
-                parts.append(f"- {record.building}")
-            if record.zone:
-                parts.append(f"Zone {record.zone}")
-            record.display_name = " ".join(parts)
+                parts.append(record.building)
+            if record.floor:
+                parts.append(f"Floor {record.floor}")
+            record.display_name = " - ".join(parts)
 
-    @api.depends("street", "street2", "city", "state_id", "zip_code", "country_id")
+    @api.depends("street", "street2", "city", "state_id", "zip", "country_id")
     def _compute_full_address(self):
-        """Compute full address."""
+        """Compute full address string"""
         for record in self:
             address_parts = []
             if record.street:
@@ -486,602 +383,289 @@ class RecordsLocation(models.Model):
                 address_parts.append(record.city)
             if record.state_id:
                 address_parts.append(record.state_id.name)
-            if record.zip_code:
-                address_parts.append(record.zip_code)
+            if record.zip:
+                address_parts.append(record.zip)
             if record.country_id:
                 address_parts.append(record.country_id.name)
             record.full_address = ", ".join(address_parts)
 
     @api.depends("building", "floor", "zone", "aisle", "rack", "shelf", "position")
     def _compute_location_path(self):
-        """Compute hierarchical location path."""
+        """Compute hierarchical location path"""
         for record in self:
             path_parts = []
-            if record.building:
-                path_parts.append(f"Building: {record.building}")
-            if record.floor:
-                path_parts.append(f"Floor: {record.floor}")
-            if record.zone:
-                path_parts.append(f"Zone: {record.zone}")
-            if record.aisle:
-                path_parts.append(f"Aisle: {record.aisle}")
-            if record.rack:
-                path_parts.append(f"Rack: {record.rack}")
-            if record.shelf:
-                path_parts.append(f"Shelf: {record.shelf}")
-            if record.position:
-                path_parts.append(f"Position: {record.position}")
-            record.location_path = " > ".join(path_parts)
+            for field in ["building", "floor", "zone", "aisle", "rack", "shelf", "position"]:
+                value = getattr(record, field)
+                if value:
+                    path_parts.append(f"{field.title()}: {value}")
+            record.location_path = " / ".join(path_parts)
 
-    @api.depends("container_ids", "document_ids", "total_capacity")
+    @api.depends("box_ids", "container_ids", "total_capacity")
     def _compute_usage_metrics(self):
-        """Compute usage and capacity metrics."""
+        """Compute capacity usage metrics"""
         for record in self:
-            # Calculate current usage from containers and documents
-            total_used = 0.0
-
-            # Add container volumes (primary inventory tracking)
+            current_usage = 0.0
+            
+            # Calculate usage from boxes
+            for box in record.box_ids:
+                if hasattr(box, 'volume') and box.volume:
+                    current_usage += box.volume
+            
+            # Calculate usage from containers
             for container in record.container_ids:
-                if hasattr(container, "volume") and container.volume:
-                    total_used += container.volume
-                else:
-                    # Standard container estimate: 1 cubic foot
-                    total_used += 1.0
-
-            # Add document volumes (estimated)
-            for document in record.document_ids:
-                if hasattr(document, "volume") and document.volume:
-                    total_used += document.volume
-                else:
-                    # Estimate 0.1 cubic feet per document if no volume specified
-                    total_used += 0.1
-
-            record.current_usage = total_used
-            record.available_capacity = max(0, record.total_capacity - total_used)
-
-            if record.total_capacity > 0:
-                record.utilization_percentage = (
-                    total_used / record.total_capacity
-                ) * 100
+                if hasattr(container, 'volume') and container.volume:
+                    current_usage += container.volume
+            
+            record.current_usage = current_usage
+            
+            if record.total_capacity:
+                record.available_capacity = record.total_capacity - current_usage
+                record.usage_percentage = (current_usage / record.total_capacity) * 100
             else:
-                record.utilization_percentage = 0.0
+                record.available_capacity = 0.0
+                record.usage_percentage = 0.0
 
-    @api.depends("container_ids", "document_ids")
+    @api.depends("box_ids", "container_ids", "max_weight_capacity")
     def _compute_weight_metrics(self):
-        """Compute weight metrics."""
+        """Compute weight metrics"""
         for record in self:
-            total_weight = 0.0
-
-            # Add container weights (primary tracking)
+            current_weight = 0.0
+            
+            # Calculate weight from boxes
+            for box in record.box_ids:
+                if hasattr(box, 'weight') and box.weight:
+                    current_weight += box.weight
+            
+            # Calculate weight from containers
             for container in record.container_ids:
-                if hasattr(container, "weight") and container.weight:
-                    total_weight += container.weight
-                else:
-                    # Standard container estimate: 30 lbs
-                    total_weight += 30.0
+                if hasattr(container, 'weight') and container.weight:
+                    current_weight += container.weight
+            
+            record.current_weight = current_weight
+            
+            if record.max_weight_capacity:
+                record.available_weight = record.max_weight_capacity - current_weight
+            else:
+                record.available_weight = 0.0
 
-            # Add document weights (estimated)
-            for document in record.document_ids:
-                if hasattr(document, "weight") and document.weight:
-                    total_weight += document.weight
-                else:
-                    # Estimate 0.1 lbs per document
-                    total_weight += 0.1
-
-            record.current_weight = total_weight
-
-    @api.depends("container_ids", "document_ids")
+    @api.depends("box_ids", "container_ids", "document_ids")
     def _compute_item_counts(self):
-        """Compute counts of stored items."""
+        """Compute item counts"""
         for record in self:
+            record.box_count = len(record.box_ids)
             record.container_count = len(record.container_ids)
             record.document_count = len(record.document_ids)
 
-    def write(self, vals):
-        """Override write to update modification date."""
-        vals["updated_date"] = fields.Datetime.now()
-        return super().write(vals)
-
-    @api.constrains("total_capacity")
-    def _check_total_capacity(self):
-        """Validate total capacity is positive."""
-        for record in self:
-            if record.total_capacity <= 0:
-                raise ValidationError(_("Total capacity must be greater than zero."))
-
-    @api.constrains("target_temperature")
-    def _check_target_temperature(self):
-        """Validate temperature range."""
-        for record in self:
-            if record.temperature_controlled and (
-                record.target_temperature < 32 or record.target_temperature > 100
-            ):
-                raise ValidationError(
-                    _("Target temperature must be between 32°F and 100°F.")
-                )
-
-    @api.constrains("target_humidity")
-    def _check_target_humidity(self):
-        """Validate humidity range."""
-        for record in self:
-            if record.humidity_controlled and (
-                record.target_humidity < 0 or record.target_humidity > 100
-            ):
-                raise ValidationError(_("Target humidity must be between 0% and 100%."))
-
-    @api.onchange("climate_controlled")
-    def _onchange_climate_controlled(self):
-        """Update related fields when climate control is enabled."""
-        if self.climate_controlled:
-            self.temperature_controlled = True
-            self.humidity_controlled = True
-            self.climate_monitoring_enabled = True
-        else:
-            self.temperature_controlled = False
-            self.humidity_controlled = False
-            self.climate_monitoring_enabled = False
-
-    @api.onchange("access_level")
-    def _onchange_access_level(self):
-        """Update security settings based on access level."""
-        if self.access_level in ["confidential", "top_secret", "biometric"]:
-            self.security_level = "maximum"
-            self.access_card_required = True
-            self.escort_required = True
-            if self.access_level == "biometric":
-                self.biometric_access = True
-
-    @api.onchange("location_type")
-    def _onchange_location_type(self):
-        """Set default values based on location type."""
-        if self.location_type == "vault":
-            self.access_level = "confidential"
-            self.security_level = "maximum"
-            self.fireproof_rating = "2hour"
-            self.fire_suppression_system = "gas"
-        elif self.location_type == "climate_storage":
-            self.climate_controlled = True
-            self.temperature_controlled = True
-            self.humidity_controlled = True
-        elif self.location_type == "archive":
-            self.climate_controlled = True
-            self.fireproof_rating = "1hour"
-
-    # Action Methods
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
 
     def action_activate(self):
-        """Activate the location."""
+        """Activate location for use"""
         self.ensure_one()
-        self.write({"state": "active"})
-
-        self.message_post(
-            body=_("Location activated: %s") % self.name,
-            message_type="notification",
-        )
-
+        if self.status == "decommissioned":
+            raise UserError(_("Cannot activate a decommissioned location"))
+        
+        self.write({
+            "active": True,
+            "status": "available",
+        })
+        
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
                 "title": _("Location Activated"),
-                "message": _("Location %s is now active and available for storage.")
-                % self.name,
+                "message": _("Location has been activated successfully."),
                 "type": "success",
-                "sticky": False,
             },
         }
 
     def action_set_maintenance(self):
-        """Set location to maintenance mode."""
+        """Set location to maintenance mode"""
         self.ensure_one()
-        self.write({"state": "maintenance"})
-
-        # Create maintenance activity
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("Location maintenance: %s") % self.name,
-            note=_("Location is under maintenance. Access may be restricted."),
-            user_id=self.responsible_user_id.id or self.env.user.id,
-        )
-
-        self.message_post(
-            body=_("Location set to maintenance mode: %s") % self.name,
-            message_type="notification",
-        )
-
-    def action_set_restricted(self):
-        """Restrict access to location."""
-        self.ensure_one()
-        self.write({"state": "restricted"})
-
-        self.message_post(
-            body=_("Location access restricted: %s") % self.name,
-            message_type="notification",
-        )
-
-    def action_mark_full(self):
-        """Mark location as full capacity."""
-        self.ensure_one()
-
-        if self.utilization_percentage < 95:
-            raise UserError(
-                _("Location is not at full capacity (%.1f%% utilized).")
-                % self.utilization_percentage
-            )
-
-        self.write({"state": "full"})
-
-        self.message_post(
-            body=_("Location marked as full capacity: %s") % self.name,
-            message_type="notification",
-        )
-
-    def action_view_containers(self):
-        """View all containers in this location."""
-        self.ensure_one()
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Containers in Location: %s") % self.name,
-            "res_model": "records.container",
-            "view_mode": "tree,form",
-            "target": "current",
-            "domain": [("location_id", "=", self.id)],
-            "context": {
-                "default_location_id": self.id,
-                "search_default_location_id": self.id,
-                "search_default_group_by_status": True,
-            },
-        }
-
-    def action_view_documents(self):
-        """View all documents stored in this location."""
-        self.ensure_one()
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Documents in Location: %s") % self.name,
-            "res_model": "records.document",
-            "view_mode": "tree,form",
-            "target": "current",
-            "domain": [("location_id", "=", self.id)],
-            "context": {
-                "default_location_id": self.id,
-                "search_default_location_id": self.id,
-                "search_default_group_by_state": True,
-            },
-        }
-
-    def action_view_boxes(self):
-        """View all containers stored in this location (customer box_number view)."""
-        self.ensure_one()
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Customer Boxes in Location: %s") % self.name,
-            "res_model": "records.container",
-            "view_mode": "tree,form",
-            "target": "current",
-            "domain": [("location_id", "=", self.id)],
-            "context": {
-                "default_location_id": self.id,
-                "search_default_location_id": self.id,
-                "search_default_group_by_status": True,
-                "show_customer_view": True,  # Flag to show box_number prominently
-            },
-        }
-
-    def action_location_report(self):
-        """Generate comprehensive location report."""
-        self.ensure_one()
-
-        # Create report generation activity
-        self.activity_schedule(
-            "mail.mail_activity_data_done",
-            summary=_("Location report generated: %s") % self.name,
-            note=_(
-                "Comprehensive location utilization and inventory report has been generated."
-            ),
-            user_id=self.responsible_user_id.id or self.env.user.id,
-        )
-
-        self.message_post(
-            body=_("Location report generated for: %s") % self.name,
-            message_type="notification",
-        )
-
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.location_comprehensive_report",
-            "report_type": "qweb-pdf",
-            "data": {"ids": self.ids},
-            "context": self.env.context,
-        }
-
-    def action_schedule_inspection(self):
-        """Schedule location inspection."""
-        self.ensure_one()
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Schedule Inspection"),
-            "res_model": "location.inspection.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_location_id": self.id,
-                "default_inspection_date": fields.Date.today()
-                + fields.timedelta(days=30),
-                "default_inspector_id": self.responsible_user_id.id,
-            },
-        }
-
-    def action_climate_monitoring(self):
-        """Access climate monitoring dashboard."""
-        self.ensure_one()
-
-        if not self.climate_monitoring_enabled:
-            raise UserError(_("Climate monitoring is not enabled for this location."))
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Climate Monitoring: %s") % self.name,
-            "res_model": "climate.monitoring.log",
-            "view_mode": "graph,tree,form",
-            "target": "current",
-            "domain": [("location_id", "=", self.id)],
-            "context": {
-                "search_default_location_id": self.id,
-                "search_default_last_30_days": True,
-                "search_default_group_by_date": True,
-            },
-        }
-
-    def action_emergency_access(self):
-        """Initiate emergency access procedures."""
-        self.ensure_one()
-
-        # Create emergency access activity
-        self.activity_schedule(
-            "mail.mail_activity_data_urgent",
-            summary=_("Emergency access initiated: %s") % self.name,
-            note=_("Emergency access procedures have been initiated for location: %s")
-            % self.name,
-            user_id=self.responsible_user_id.id or self.env.user.id,
-        )
-
-        self.message_post(
-            body=_("Emergency access initiated for location: %s") % self.name,
-            message_type="notification",
-        )
-
+        self.write({
+            "status": "maintenance",
+            "last_inspection_date": fields.Date.today(),
+        })
+        
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Emergency Access"),
-                "message": _("Emergency access procedures initiated for %s.")
-                % self.name,
+                "title": _("Maintenance Mode"),
+                "message": _("Location set to maintenance mode."),
                 "type": "warning",
-                "sticky": True,
             },
         }
 
-    def action_optimize_layout(self):
-        """Optimize location layout and storage."""
+    def action_mark_full(self):
+        """Mark location as full"""
         self.ensure_one()
+        self.write({"status": "full"})
+        
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Location Full"),
+                "message": _("Location marked as full."),
+                "type": "info",
+            },
+        }
 
+    def action_view_contents(self):
+        """View all contents of this location"""
+        self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Optimize Layout"),
-            "res_model": "location.optimization.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_location_id": self.id,
-                "default_current_utilization": self.utilization_percentage,
-                "default_container_count": self.container_count,
-            },
+            "name": _("Location Contents"),
+            "res_model": "records.box",
+            "view_mode": "tree,form",
+            "domain": [("location_id", "=", self.id)],
+            "context": {"default_location_id": self.id},
         }
 
-    def action_bulk_move_items(self):
-        """Bulk move items from this location."""
+    def action_location_report(self):
+        """Generate location utilization report"""
         self.ensure_one()
-
-        total_items = self.container_count + self.document_count
-        if total_items == 0:
-            raise UserError(_("No items found in this location to move."))
-
         return {
-            "type": "ir.actions.act_window",
-            "name": _("Bulk Move Items"),
-            "res_model": "bulk.location.move.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_source_location_id": self.id,
-                "default_item_count": total_items,
+            "type": "ir.actions.report",
+            "report_name": "records_management.location_report",
+            "report_type": "qweb-pdf",
+            "data": {"location_id": self.id},
+            "context": self.env.context,
+        }
+
+    def action_schedule_inspection(self):
+        """Schedule next inspection"""
+        self.ensure_one()
+        next_date = fields.Date.today() + fields.timedelta(days=self.inspection_frequency)
+        
+        self.write({"next_inspection_date": next_date})
+        
+        # Create calendar event for inspection
+        self.env["calendar.event"].create({
+            "name": f"Location Inspection - {self.name}",
+            "start": next_date,
+            "allday": True,
+            "user_id": self.user_id.id,
+            "description": f"Scheduled inspection for location {self.name}",
+        })
+        
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Inspection Scheduled"),
+                "message": _("Next inspection scheduled for %s") % next_date,
+                "type": "success",
             },
         }
 
-    def get_location_statistics(self):
-        """Get comprehensive location statistics."""
-        self.ensure_one()
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
 
-        stats = {
-            "total_capacity": self.total_capacity,
-            "current_usage": self.current_usage,
-            "available_capacity": self.available_capacity,
-            "utilization_percentage": self.utilization_percentage,
-            "container_count": self.container_count,
-            "document_count": self.document_count,
-            "current_weight": self.current_weight,
-            "max_weight_capacity": self.max_weight_capacity,
-            "weight_utilization": (
-                (self.current_weight / self.max_weight_capacity * 100)
-                if self.max_weight_capacity > 0
-                else 0
-            ),
-            "monthly_cost": self.monthly_cost,
-            "cost_per_item": (
-                self.monthly_cost / (self.container_count + self.document_count)
-                if (self.container_count + self.document_count) > 0
-                else 0
-            ),
-        }
+    @api.constrains("total_capacity", "current_usage")
+    def _check_capacity_limits(self):
+        """Ensure capacity limits are respected"""
+        for record in self:
+            if record.total_capacity and record.current_usage > record.total_capacity:
+                raise ValidationError(
+                    _("Current usage cannot exceed total capacity for location %s")
+                    % record.name
+                )
 
-        return stats
+    @api.constrains("temperature_min", "temperature_max")
+    def _check_temperature_ranges(self):
+        """Validate temperature ranges"""
+        for record in self:
+            if record.temperature_min and record.temperature_max:
+                if record.temperature_min >= record.temperature_max:
+                    raise ValidationError(_("Minimum temperature must be less than maximum temperature"))
 
-    def create(self, vals):
-        """Override create to set default values and initialize location."""
-        if not vals.get("name"):
-            vals["name"] = _("New Location %s") % fields.Datetime.now().strftime(
-                "%Y%m%d-%H%M%S"
-            )
+    @api.constrains("humidity_min", "humidity_max")
+    def _check_humidity_ranges(self):
+        """Validate humidity ranges"""
+        for record in self:
+            if record.humidity_min and record.humidity_max:
+                if record.humidity_min >= record.humidity_max:
+                    raise ValidationError(_("Minimum humidity must be less than maximum humidity"))
+                if record.humidity_min < 0 or record.humidity_max > 100:
+                    raise ValidationError(_("Humidity values must be between 0 and 100"))
 
-        if not vals.get("code"):
-            code_base = vals.get("name", "LOC").upper().replace(" ", "")[:10]
-            vals["code"] = f"{code_base}_{fields.Datetime.now().strftime('%m%d')}"
+    @api.constrains("parent_location_id")
+    def _check_parent_recursion(self):
+        """Prevent recursive parent relationships"""
+        if not self._check_recursion():
+            raise ValidationError(_("You cannot create recursive location hierarchies"))
 
-        # Set default capacity if not provided
-        if not vals.get("total_capacity"):
-            location_type_defaults = {
-                "warehouse": 10000,  # cubic feet
-                "storage_facility": 5000,
-                "vault": 1000,
-                "office": 500,
-                "archive": 2000,
-                "mobile": 200,
-            }
-            vals["total_capacity"] = location_type_defaults.get(
-                vals.get("location_type"), 1000
-            )
+    # ============================================================================
+    # ONCHANGE METHODS
+    # ============================================================================
 
-        # Auto-configure based on location type
-        if vals.get("location_type") == "vault":
-            vals.update(
-                {
-                    "access_level": "confidential",
-                    "security_level": "maximum",
-                    "fireproof_rating": "2hour",
-                    "fire_suppression_system": "gas",
-                }
-            )
-        elif vals.get("location_type") == "climate_storage":
-            vals.update(
-                {
-                    "climate_controlled": True,
-                    "temperature_controlled": True,
-                    "humidity_controlled": True,
-                    "climate_monitoring_enabled": True,
-                }
-            )
+    @api.onchange("climate_controlled")
+    def _onchange_climate_controlled(self):
+        """Set default temperature/humidity when climate control enabled"""
+        if self.climate_controlled:
+            if not self.target_temperature:
+                self.target_temperature = 70.0
+            if not self.target_humidity:
+                self.target_humidity = 45.0
+        else:
+            self.target_temperature = False
+            self.target_humidity = False
 
-        # Create the record
-        record = super().create(vals)
+    @api.onchange("location_type")
+    def _onchange_location_type(self):
+        """Set defaults based on location type"""
+        if self.location_type == "vault":
+            self.security_level = "level_4"
+            self.biometric_access = True
+            self.fire_suppression = True
+        elif self.location_type == "cold_storage":
+            self.climate_controlled = True
+            self.target_temperature = 32.0
 
-        # Create location creation activity
-        record.activity_schedule(
-            "mail.mail_activity_data_done",
-            summary=_("Location created: %s") % record.name,
-            note=_("New storage location has been created and configured."),
-            user_id=record.responsible_user_id.id,
-        )
-
-        return record
+    # ============================================================================
+    # LIFECYCLE METHODS
+    # ============================================================================
 
     @api.model
-    def get_locations_summary(self):
-        """Get summary of all locations."""
-        locations = self.search([("active", "=", True)])
-
-        summary = {
-            "total_locations": len(locations),
-            "total_capacity": sum(loc.total_capacity for loc in locations),
-            "total_usage": sum(loc.current_usage for loc in locations),
-            "average_utilization": (
-                sum(loc.utilization_percentage for loc in locations) / len(locations)
-                if locations
-                else 0
-            ),
-            "locations_by_type": {},
-            "locations_by_state": {},
-            "high_utilization_locations": len(
-                locations.filtered(lambda l: l.utilization_percentage > 90)
-            ),
-            "maintenance_locations": len(
-                locations.filtered(lambda l: l.state == "maintenance")
-            ),
-        }
-
-        # Group by type
-        location_types = [
-            "warehouse",
-            "office",
-            "storage_facility",
-            "vault",
-            "climate_storage",
-            "archive",
-        ]
-        for loc_type in location_types:
-            type_locations = locations.filtered(
-                lambda l, t=loc_type: l.location_type == t
+    def create(self, vals):
+        """Override create to set defaults"""
+        if not vals.get("code"):
+            vals["code"] = self.env["ir.sequence"].next_by_code("records.location") or "LOC"
+        
+        # Set next inspection date if not provided
+        if not vals.get("next_inspection_date") and vals.get("inspection_frequency"):
+            vals["next_inspection_date"] = fields.Date.today() + fields.timedelta(
+                days=vals["inspection_frequency"]
             )
-            summary["locations_by_type"][loc_type] = len(type_locations)
+        
+        return super().create(vals)
 
-        # Group by state
-        location_states = [
-            "draft",
-            "active",
-            "maintenance",
-            "full",
-            "restricted",
-            "retired",
-        ]
-        for loc_state in location_states:
-            state_locations = locations.filtered(lambda l, s=loc_state: l.state == s)
-            summary["locations_by_state"][loc_state] = len(state_locations)
-
-        return summary
+    def write(self, vals):
+        """Override write to track changes"""
+        if "status" in vals:
+            for record in self:
+                old_status = dict(record._fields["status"].selection).get(record.status)
+                new_status = dict(record._fields["status"].selection).get(vals["status"])
+                record.message_post(
+                    body=_("Location status changed from %s to %s") % (old_status, new_status)
+                )
+        
+        return super().write(vals)
 
     def name_get(self):
-        """Custom name_get to show additional information."""
+        """Custom name_get to show location hierarchy"""
         result = []
         for record in self:
             name = record.name
             if record.code:
                 name = f"[{record.code}] {name}"
-            if record.location_type:
-                name += f" ({record.location_type.title()})"
-            if record.utilization_percentage:
-                name += f" - {record.utilization_percentage:.1f}% utilized"
-            result.append((record.id, name))
-        return result
-        # Group by state
-        location_states = [
-            "draft",
-            "active",
-            "maintenance",
-            "full",
-            "restricted",
-            "retired",
-        ]
-        for loc_state in location_states:
-            state_locations = locations.filtered(lambda l, s=loc_state: l.state == s)
-            summary["locations_by_state"][loc_state] = len(state_locations)
-
-        return summary
-
-    def name_get(self):
-        """Custom name_get to show additional information."""
-        result = []
-        for record in self:
-            name = record.name
-            if record.code:
-                name = f"[{record.code}] {name}"
-            if record.location_type:
-                name += f" ({record.location_type.title()})"
-            if record.utilization_percentage:
-                name += f" - {record.utilization_percentage:.1f}% utilized"
+            if record.parent_location_id:
+                name = f"{record.parent_location_id.name} / {name}"
             result.append((record.id, name))
         return result
