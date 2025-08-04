@@ -370,11 +370,6 @@ class RecordsContainer(models.Model):
         currency_field="currency_id",
         tracking=True,
     )
-    currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        default=lambda self: self.env.company.currency_id,
-    )
 
     # Timestamps
     created_date = fields.Datetime(
@@ -452,19 +447,16 @@ class RecordsContainer(models.Model):
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
 
     # Business Process Fields
@@ -501,31 +493,6 @@ class RecordsContainer(models.Model):
     )
 
     # Additional Business Fields
-    container_condition = fields.Selection(
-        [
-            ("excellent", "Excellent"),
-            ("good", "Good"),
-            ("fair", "Fair"),
-            ("poor", "Poor"),
-            ("damaged", "Damaged"),
-        ],
-        string="Container Condition",
-        default="good",
-        tracking=True,
-    )
-
-    security_level = fields.Selection(
-        [
-            ("public", "Public"),
-            ("confidential", "Confidential"),
-            ("restricted", "Restricted"),
-            ("classified", "Classified"),
-        ],
-        string="Security Level",
-        default="public",
-        tracking=True,
-    )
-
     access_frequency = fields.Selection(
         [
             ("never", "Never"),
@@ -568,7 +535,7 @@ class RecordsContainer(models.Model):
 
     container_value = fields.Monetary(
         string="Container Value",
-        currency_field="company_currency_id",
+        currency_field="currency_id",
         help="Estimated value of container contents",
     )
 
