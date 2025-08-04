@@ -252,16 +252,21 @@ class RecordsVehicle(models.Model):
                 "form_view_initial_mode": "edit",
             },
         }
-    # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    capacity = fields.Float(string='Capacity', digits=(10, 2))
-    fuel_type = fields.Selection([('gas', 'Gasoline'), ('diesel', 'Diesel'), ('electric', 'Electric')], string='Fuel Type')
-    maintenance_date = fields.Date(string='Last Maintenance')
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
 
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    capacity = fields.Float(string="Capacity", digits=(10, 2))
+    fuel_type = fields.Selection(
+        [("gas", "Gasoline"), ("diesel", "Diesel"), ("electric", "Electric")],
+        string="Fuel Type",
+    )
+    maintenance_date = fields.Date(string="Last Maintenance")
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
 
     def action_activate(self):
         """Activate the record."""
@@ -275,8 +280,10 @@ class RecordsVehicle(models.Model):
         """Archive the record."""
         self.write({"state": "archived", "active": False})
 
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set default values."""
-        if not vals.get("name"):
-            vals["name"] = _("New Vehicle")
-        return super().create(vals)
+        for vals in vals_list:
+            if not vals.get("name"):
+                vals["name"] = _("New Vehicle")
+        return super().create(vals_list)

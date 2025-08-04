@@ -130,12 +130,15 @@ class RecordsDocument(models.Model):
     # ============================================================================
 
     # Storage Location
-    location_id = fields.Many2one("records.location", string="Storage Location", tracking=True)
-    container_id = fields.Many2one("records.container", string="Container", tracking=True)
+    location_id = fields.Many2one(
+        "records.location", string="Storage Location", tracking=True
+    )
+    container_id = fields.Many2one(
+        "records.container", string="Container", tracking=True
+    )
     shelf_position = fields.Char(string="Shelf Position")
     storage_location = fields.Char(
-        string="Storage Description", 
-        help="Additional location information"
+        string="Storage Description", help="Additional location information"
     )
 
     # Physical Properties
@@ -183,17 +186,14 @@ class RecordsDocument(models.Model):
     # NAID Compliance
     naid_compliant = fields.Boolean(string="NAID Compliant", default=True)
     naid_destruction_verified = fields.Boolean(
-        string="NAID Destruction Verified", 
-        default=False
+        string="NAID Destruction Verified", default=False
     )
     chain_of_custody_required = fields.Boolean(
         string="Chain of Custody Required", default=True
     )
 
     # Audit Trail
-    audit_trail_required = fields.Boolean(
-        string="Audit Trail Required", default=True
-    )
+    audit_trail_required = fields.Boolean(string="Audit Trail Required", default=True)
     compliance_notes = fields.Text(string="Compliance Notes")
     last_audit_date = fields.Date(string="Last Audit Date")
 
@@ -208,10 +208,10 @@ class RecordsDocument(models.Model):
 
     # Digital Status
     digitized = fields.Boolean(
-        string="Digitized", 
-        default=False, 
+        string="Digitized",
+        default=False,
         tracking=True,
-        help="Indicates if document has been digitized"
+        help="Indicates if document has been digitized",
     )
     scan_quality = fields.Selection(
         [
@@ -231,9 +231,7 @@ class RecordsDocument(models.Model):
 
     # Workflow Flags
     permanent_flag = fields.Boolean(
-        string="Permanent Record", 
-        default=False, 
-        tracking=True
+        string="Permanent Record", default=False, tracking=True
     )
     urgent_retrieval = fields.Boolean(string="Urgent Retrieval", tracking=True)
     retrieval_priority = fields.Selection(
@@ -351,16 +349,20 @@ class RecordsDocument(models.Model):
         """Schedule document for destruction"""
         self.ensure_one()
         if self.legal_hold:
-            raise UserError(_("Cannot schedule destruction for documents on legal hold."))
-        
+            raise UserError(
+                _("Cannot schedule destruction for documents on legal hold.")
+            )
+
         if self.permanent_flag:
             raise UserError(_("Cannot schedule destruction for permanent records."))
-        
-        self.write({
-            'destruction_date': self.retention_end_date,
-            'state': 'pending',
-        })
-        
+
+        self.write(
+            {
+                "destruction_date": self.retention_end_date,
+                "state": "pending",
+            }
+        )
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -405,19 +407,23 @@ class RecordsDocument(models.Model):
     def action_archive_document(self):
         """Archive the document"""
         self.ensure_one()
-        self.write({
-            'state': 'archived',
-            'active': False,
-        })
+        self.write(
+            {
+                "state": "archived",
+                "active": False,
+            }
+        )
         self.message_post(body=_("Document has been archived."))
 
     def action_restore_document(self):
         """Restore archived document"""
         self.ensure_one()
-        self.write({
-            'state': 'active',
-            'active': True,
-        })
+        self.write(
+            {
+                "state": "active",
+                "active": True,
+            }
+        )
         self.message_post(body=_("Document has been restored from archive."))
 
     # ============================================================================
@@ -429,8 +435,8 @@ class RecordsDocument(models.Model):
         """Ensure dates are logical"""
         for record in self:
             if (
-                record.document_date 
-                and record.destruction_date 
+                record.document_date
+                and record.destruction_date
                 and record.document_date > record.destruction_date
             ):
                 raise ValidationError(
@@ -457,26 +463,30 @@ class RecordsDocument(models.Model):
     # LIFECYCLE METHODS
     # ============================================================================
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set defaults"""
-        if not vals.get("document_number"):
-            vals["document_number"] = self.env["ir.sequence"].next_by_code("records.document") or _("New")
-        
-        # Set received date if not provided
-        if not vals.get("received_date"):
-            vals["received_date"] = fields.Date.today()
-            
-        return super().create(vals)
+        for vals in vals_list:
+            if not vals.get("document_number"):
+                vals["document_number"] = self.env["ir.sequence"].next_by_code(
+                    "records.document"
+                ) or _("New")
+
+            # Set received date if not provided
+            if not vals.get("received_date"):
+                vals["received_date"] = fields.Date.today()
+
+        return super().create(vals_list)
 
     def write(self, vals):
         """Override write to track important changes"""
-        if 'state' in vals:
+        if "state" in vals:
             for record in self:
                 record.message_post(
-                    body=_("Document status changed from %s to %s") % (
-                        dict(record._fields['state'].selection).get(record.state),
-                        dict(record._fields['state'].selection).get(vals['state'])
+                    body=_("Document status changed from %s to %s")
+                    % (
+                        dict(record._fields["state"].selection).get(record.state),
+                        dict(record._fields["state"].selection).get(vals["state"]),
                     )
                 )
         return super().write(vals)
@@ -486,6 +496,7 @@ class RecordsDocument(models.Model):
         for record in self:
             if record.chain_of_custody_ids:
                 raise UserError(
-                    _("Cannot delete document '%s' as it has chain of custody records.") % record.name
+                    _("Cannot delete document '%s' as it has chain of custody records.")
+                    % record.name
                 )
         return super().unlink()

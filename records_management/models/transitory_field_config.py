@@ -570,21 +570,23 @@ class TransitoryFieldConfig(models.Model):
     # LIFECYCLE METHODS
     # ============================================================================
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set defaults"""
-        if not vals.get("code"):
-            vals["code"] = (
-                self.env["ir.sequence"].next_by_code("transitory.field.config") or "TFC"
-            )
+        for vals in vals_list:
+            if not vals.get("code"):
+                vals["code"] = (
+                    self.env["ir.sequence"].next_by_code("transitory.field.config")
+                    or "TFC"
+                )
 
-        # Set next review date if not provided
-        if not vals.get("next_review_date") and vals.get("review_frequency"):
-            vals["next_review_date"] = fields.Date.today() + fields.timedelta(
-                days=vals["review_frequency"]
-            )
+            # Set next review date if not provided
+            if not vals.get("next_review_date") and vals.get("review_frequency"):
+                vals["next_review_date"] = fields.Date.today() + fields.timedelta(
+                    days=vals["review_frequency"]
+                )
 
-        return super().create(vals)
+        return super().create(vals_list)
 
     def write(self, vals):
         """Override write to track changes"""

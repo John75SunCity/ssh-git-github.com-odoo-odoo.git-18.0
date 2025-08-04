@@ -16,7 +16,9 @@ class PortalFeedback(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
 
-    name = fields.Char(string="Feedback Reference", required=True, tracking=True, index=True)
+    name = fields.Char(
+        string="Feedback Reference", required=True, tracking=True, index=True
+    )
     subject = fields.Char(string="Subject", required=True, tracking=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
@@ -55,10 +57,18 @@ class PortalFeedback(models.Model):
     # ============================================================================
 
     # Customer Information
-    partner_id = fields.Many2one("res.partner", string="Customer", required=True, tracking=True)
-    customer_name = fields.Char(string="Customer Name", related="partner_id.name", store=True)
-    customer_email = fields.Char(string="Customer Email", related="partner_id.email", store=True)
-    customer_phone = fields.Char(string="Customer Phone", related="partner_id.phone", store=True)
+    partner_id = fields.Many2one(
+        "res.partner", string="Customer", required=True, tracking=True
+    )
+    customer_name = fields.Char(
+        string="Customer Name", related="partner_id.name", store=True
+    )
+    customer_email = fields.Char(
+        string="Customer Email", related="partner_id.email", store=True
+    )
+    customer_phone = fields.Char(
+        string="Customer Phone", related="partner_id.phone", store=True
+    )
 
     # Feedback Classification
     feedback_type = fields.Selection(
@@ -122,10 +132,9 @@ class PortalFeedback(models.Model):
         string="Overall Rating",
         tracking=True,
     )
-    
+
     service_rating = fields.Integer(
-        string="Service Rating (1-10)",
-        help="Service quality rating from 1 to 10"
+        string="Service Rating (1-10)", help="Service quality rating from 1 to 10"
     )
 
     # AI-Ready Sentiment Analysis
@@ -158,7 +167,7 @@ class PortalFeedback(models.Model):
         required=True,
         tracking=True,
     )
-    
+
     response_date = fields.Datetime(string="Response Date", tracking=True)
     resolution_date = fields.Datetime(string="Resolution Date", tracking=True)
     follow_up_date = fields.Date(string="Follow-up Date", tracking=True)
@@ -170,7 +179,7 @@ class PortalFeedback(models.Model):
         compute="_compute_response_metrics",
         store=True,
     )
-    
+
     resolution_time_hours = fields.Float(
         string="Resolution Time (Hours)",
         compute="_compute_response_metrics",
@@ -237,7 +246,7 @@ class PortalFeedback(models.Model):
     # Documentation
     reference_documents = fields.Text(string="Reference Documents")
     related_tickets = fields.Text(string="Related Tickets")
-    
+
     # Binary Fields
     mimetype = fields.Char(string="MIME Type")
 
@@ -266,7 +275,7 @@ class PortalFeedback(models.Model):
 
     # Analytics Tags
     tag_ids = fields.Many2many("portal.feedback.tag", string="Tags")
-    
+
     # Currency Configuration
     currency_id = fields.Many2one(
         "res.currency",
@@ -279,7 +288,9 @@ class PortalFeedback(models.Model):
     # ============================================================================
 
     # Related Records
-    portal_request_id = fields.Many2one("portal.request", string="Related Portal Request")
+    portal_request_id = fields.Many2one(
+        "portal.request", string="Related Portal Request"
+    )
     project_task_id = fields.Many2one("project.task", string="Related Task")
     sale_order_id = fields.Many2one("sale.order", string="Related Sale Order")
 
@@ -311,12 +322,31 @@ class PortalFeedback(models.Model):
 
             # Simple keyword-based sentiment analysis (can be replaced with ML)
             positive_keywords = [
-                "excellent", "great", "good", "amazing", "satisfied", "happy",
-                "perfect", "outstanding", "wonderful", "fantastic", "pleased"
+                "excellent",
+                "great",
+                "good",
+                "amazing",
+                "satisfied",
+                "happy",
+                "perfect",
+                "outstanding",
+                "wonderful",
+                "fantastic",
+                "pleased",
             ]
             negative_keywords = [
-                "terrible", "bad", "awful", "disappointed", "angry", "frustrated",
-                "horrible", "unsatisfied", "poor", "worst", "hate", "complaint"
+                "terrible",
+                "bad",
+                "awful",
+                "disappointed",
+                "angry",
+                "frustrated",
+                "horrible",
+                "unsatisfied",
+                "poor",
+                "worst",
+                "hate",
+                "complaint",
             ]
 
             text_lower = record.comments.lower()
@@ -375,14 +405,16 @@ class PortalFeedback(models.Model):
     def action_submit_feedback(self):
         """Submit feedback for processing"""
         self.ensure_one()
-        self.write({
-            "state": "submitted",
-            "feedback_date": fields.Datetime.now(),
-        })
-        
+        self.write(
+            {
+                "state": "submitted",
+                "feedback_date": fields.Datetime.now(),
+            }
+        )
+
         # Auto-assign based on category and priority
         self._auto_assign_feedback()
-        
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -397,11 +429,13 @@ class PortalFeedback(models.Model):
     def action_start_processing(self):
         """Start processing the feedback"""
         self.ensure_one()
-        self.write({
-            "state": "in_progress",
-            "response_date": fields.Datetime.now(),
-        })
-        
+        self.write(
+            {
+                "state": "in_progress",
+                "response_date": fields.Datetime.now(),
+            }
+        )
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -418,15 +452,17 @@ class PortalFeedback(models.Model):
         self.ensure_one()
         if not self.resolution_notes:
             raise UserError(_("Please enter resolution notes before resolving."))
-        
-        self.write({
-            "state": "resolved",
-            "resolution_date": fields.Datetime.now(),
-        })
-        
+
+        self.write(
+            {
+                "state": "resolved",
+                "resolution_date": fields.Datetime.now(),
+            }
+        )
+
         # Send resolution notification to customer
         self._send_resolution_notification()
-        
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -504,7 +540,9 @@ class PortalFeedback(models.Model):
         """Send resolution notification to customer"""
         for record in self:
             if record.partner_id.email:
-                template = self.env.ref("records_management.mail_template_feedback_resolution", False)
+                template = self.env.ref(
+                    "records_management.mail_template_feedback_resolution", False
+                )
                 if template:
                     template.send_mail(record.id, force_send=True)
 
@@ -516,14 +554,18 @@ class PortalFeedback(models.Model):
     def _check_service_rating(self):
         """Ensure service rating is between 1 and 10"""
         for record in self:
-            if record.service_rating and (record.service_rating < 1 or record.service_rating > 10):
+            if record.service_rating and (
+                record.service_rating < 1 or record.service_rating > 10
+            ):
                 raise ValidationError(_("Service rating must be between 1 and 10."))
 
     @api.constrains("sentiment_score")
     def _check_sentiment_score(self):
         """Ensure sentiment score is between -1 and 1"""
         for record in self:
-            if record.sentiment_score and (record.sentiment_score < -1 or record.sentiment_score > 1):
+            if record.sentiment_score and (
+                record.sentiment_score < -1 or record.sentiment_score > 1
+            ):
                 raise ValidationError(_("Sentiment score must be between -1 and 1."))
 
     @api.constrains("feedback_date", "response_date", "resolution_date")
@@ -532,30 +574,39 @@ class PortalFeedback(models.Model):
         for record in self:
             if record.feedback_date and record.response_date:
                 if record.response_date < record.feedback_date:
-                    raise ValidationError(_("Response date cannot be before feedback date."))
-            
+                    raise ValidationError(
+                        _("Response date cannot be before feedback date.")
+                    )
+
             if record.response_date and record.resolution_date:
                 if record.resolution_date < record.response_date:
-                    raise ValidationError(_("Resolution date cannot be before response date."))
+                    raise ValidationError(
+                        _("Resolution date cannot be before response date.")
+                    )
 
     # ============================================================================
     # LIFECYCLE METHODS
     # ============================================================================
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set defaults and generate sequence"""
-        if not vals.get("name"):
-            vals["name"] = self.env["ir.sequence"].next_by_code("portal.feedback") or _("New")
-        
-        # Auto-set priority based on sentiment
-        if vals.get("comments") and not vals.get("priority"):
-            # Simple keyword-based priority detection
-            urgent_keywords = ["urgent", "immediate", "emergency", "critical"]
-            if any(keyword in vals["comments"].lower() for keyword in urgent_keywords):
-                vals["priority"] = "urgent"
-        
-        return super().create(vals)
+        for vals in vals_list:
+            if not vals.get("name"):
+                vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "portal.feedback"
+                ) or _("New")
+
+            # Auto-set priority based on sentiment
+            if vals.get("comments") and not vals.get("priority"):
+                # Simple keyword-based priority detection
+                urgent_keywords = ["urgent", "immediate", "emergency", "critical"]
+                if any(
+                    keyword in vals["comments"].lower() for keyword in urgent_keywords
+                ):
+                    vals["priority"] = "urgent"
+
+        return super().create(vals_list)
 
     def write(self, vals):
         """Override write to track important changes"""
@@ -564,14 +615,16 @@ class PortalFeedback(models.Model):
                 old_state = dict(record._fields["state"].selection).get(record.state)
                 new_state = dict(record._fields["state"].selection).get(vals["state"])
                 record.message_post(
-                    body=_("Feedback status changed from %s to %s") % (old_state, new_state)
+                    body=_("Feedback status changed from %s to %s")
+                    % (old_state, new_state)
                 )
-        
+
         return super().write(vals)
 
 
 class PortalFeedbackTag(models.Model):
     """Tags for categorizing feedback"""
+
     _name = "portal.feedback.tag"
     _description = "Portal Feedback Tag"
     _order = "name"

@@ -22,8 +22,12 @@ class RecordsDepartmentBillingContact(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Contact Name", required=True, tracking=True, index=True)
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.company, required=True)
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -34,13 +38,10 @@ class RecordsDepartmentBillingContact(models.Model):
         string="Contact Partner",
         required=True,
         tracking=True,
-        domain="[('is_company', '=', False)]"
+        domain="[('is_company', '=', False)]",
     )
     department_id = fields.Many2one(
-        "records.department",
-        string="Department",
-        required=True,
-        tracking=True
+        "records.department", string="Department", required=True, tracking=True
     )
     email = fields.Char(string="Email", related="partner_id.email", store=True)
     phone = fields.Char(string="Phone", related="partner_id.phone", store=True)
@@ -49,73 +50,106 @@ class RecordsDepartmentBillingContact(models.Model):
     # ============================================================================
     # BILLING ROLE AND AUTHORIZATION
     # ============================================================================
-    billing_role = fields.Selection([
-        ("primary", "Primary Contact"),
-        ("secondary", "Secondary Contact"),
-        ("approver", "Approver"),
-        ("reviewer", "Reviewer"),
-        ("backup", "Backup Contact")
-    ], string="Billing Role", required=True, tracking=True)
+    billing_role = fields.Selection(
+        [
+            ("primary", "Primary Contact"),
+            ("secondary", "Secondary Contact"),
+            ("approver", "Approver"),
+            ("reviewer", "Reviewer"),
+            ("backup", "Backup Contact"),
+        ],
+        string="Billing Role",
+        required=True,
+        tracking=True,
+    )
 
-    authorization_level = fields.Selection([
-        ("basic", "Basic Authorization"),
-        ("intermediate", "Intermediate Authorization"),
-        ("advanced", "Advanced Authorization"),
-        ("full", "Full Authorization")
-    ], string="Authorization Level", default="basic", tracking=True)
+    authorization_level = fields.Selection(
+        [
+            ("basic", "Basic Authorization"),
+            ("intermediate", "Intermediate Authorization"),
+            ("advanced", "Advanced Authorization"),
+            ("full", "Full Authorization"),
+        ],
+        string="Authorization Level",
+        default="basic",
+        tracking=True,
+    )
 
     approval_limit = fields.Monetary(
         string="Approval Limit",
         currency_field="currency_id",
-        help="Maximum amount this contact can approve"
+        help="Maximum amount this contact can approve",
     )
 
     # ============================================================================
     # BILLING PREFERENCES
     # ============================================================================
-    notification_preferences = fields.Selection([
-        ("email", "Email Only"),
-        ("sms", "SMS Only"),
-        ("both", "Email and SMS"),
-        ("none", "No Notifications")
-    ], string="Notification Preferences", default="email")
+    notification_preferences = fields.Selection(
+        [
+            ("email", "Email Only"),
+            ("sms", "SMS Only"),
+            ("both", "Email and SMS"),
+            ("none", "No Notifications"),
+        ],
+        string="Notification Preferences",
+        default="email",
+    )
 
-    billing_frequency = fields.Selection([
-        ("weekly", "Weekly"),
-        ("monthly", "Monthly"),
-        ("quarterly", "Quarterly"),
-        ("annually", "Annually")
-    ], string="Billing Frequency", default="monthly")
+    billing_frequency = fields.Selection(
+        [
+            ("weekly", "Weekly"),
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("annually", "Annually"),
+        ],
+        string="Billing Frequency",
+        default="monthly",
+    )
 
-    invoice_delivery_preference = fields.Selection([
-        ("email", "Email"),
-        ("postal", "Postal Mail"),
-        ("portal", "Customer Portal"),
-        ("both", "Email and Postal")
-    ], string="Invoice Delivery", default="email")
+    invoice_delivery_preference = fields.Selection(
+        [
+            ("email", "Email"),
+            ("postal", "Postal Mail"),
+            ("portal", "Customer Portal"),
+            ("both", "Email and Postal"),
+        ],
+        string="Invoice Delivery",
+        default="email",
+    )
 
     # ============================================================================
     # SERVICE AND WORKFLOW
     # ============================================================================
-    service_type = fields.Selection([
-        ("storage", "Storage Services"),
-        ("shredding", "Shredding Services"),
-        ("scanning", "Scanning Services"),
-        ("retrieval", "Retrieval Services"),
-        ("all", "All Services")
-    ], string="Service Type", default="all")
+    service_type = fields.Selection(
+        [
+            ("storage", "Storage Services"),
+            ("shredding", "Shredding Services"),
+            ("scanning", "Scanning Services"),
+            ("retrieval", "Retrieval Services"),
+            ("all", "All Services"),
+        ],
+        string="Service Type",
+        default="all",
+    )
 
-    state = fields.Selection([
-        ("draft", "Draft"),
-        ("active", "Active"),
-        ("suspended", "Suspended"),
-        ("inactive", "Inactive")
-    ], string="Status", default="draft", tracking=True)
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("suspended", "Suspended"),
+            ("inactive", "Inactive"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
 
     # ============================================================================
     # DATES AND SCHEDULING
     # ============================================================================
-    start_date = fields.Date(string="Start Date", default=fields.Date.today, tracking=True)
+    start_date = fields.Date(
+        string="Start Date", default=fields.Date.today, tracking=True
+    )
     end_date = fields.Date(string="End Date")
     last_contact_date = fields.Date(string="Last Contact Date")
 
@@ -123,37 +157,17 @@ class RecordsDepartmentBillingContact(models.Model):
     # FINANCIAL INFORMATION
     # ============================================================================
     currency_id = fields.Many2one("res.currency", related="company_id.currency_id")
-    total_approved_amount = fields.Monetary(
-        string="Total Approved Amount",
-        currency_field="currency_id",
-        compute="_compute_financial_totals",
-        store=True
-    )
 
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    department_charge_ids = fields.One2many(
-        "department.charge",
-        "billing_contact_id",
-        string="Department Charges"
-    )
     approval_history_ids = fields.One2many(
-        "approval.history",
-        "contact_id",
-        string="Approval History"
-    )
-
-    # ============================================================================
+        "approval.history", "contact_id", string="Approval History"
+    )  # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
-    charge_count = fields.Integer(
-        string="Charge Count",
-        compute="_compute_charge_count"
-    )
     approval_count = fields.Integer(
-        string="Approval Count",
-        compute="_compute_approval_count"
+        string="Approval Count", compute="_compute_approval_count"
     )
 
     # ============================================================================
@@ -166,19 +180,6 @@ class RecordsDepartmentBillingContact(models.Model):
     # ============================================================================
     # COMPUTED METHODS
     # ============================================================================
-    @api.depends("department_charge_ids", "department_charge_ids.amount")
-    def _compute_financial_totals(self):
-        """Calculate total approved amounts"""
-        for record in self:
-            record.total_approved_amount = sum(
-                record.department_charge_ids.mapped("amount")
-            )
-
-    def _compute_charge_count(self):
-        """Count related department charges"""
-        for record in self:
-            record.charge_count = len(record.department_charge_ids)
-
     def _compute_approval_count(self):
         """Count approval history records"""
         for record in self:
@@ -209,18 +210,6 @@ class RecordsDepartmentBillingContact(models.Model):
         self.write({"state": "inactive", "end_date": fields.Date.today()})
         self.message_post(body="Billing contact deactivated")
 
-    def action_view_charges(self):
-        """View related department charges"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Department Charges",
-            "res_model": "department.charge",
-            "view_mode": "tree,form",
-            "domain": [("billing_contact_id", "=", self.id)],
-            "context": {"default_billing_contact_id": self.id}
-        }
-
     def action_view_approvals(self):
         """View approval history"""
         self.ensure_one()
@@ -230,7 +219,7 @@ class RecordsDepartmentBillingContact(models.Model):
             "res_model": "approval.history",
             "view_mode": "tree,form",
             "domain": [("contact_id", "=", self.id)],
-            "context": {"default_contact_id": self.id}
+            "context": {"default_contact_id": self.id},
         }
 
     # ============================================================================
@@ -261,13 +250,14 @@ class RecordsDepartmentBillingContact(models.Model):
     # ============================================================================
     # ODOO FRAMEWORK INTEGRATION
     # ============================================================================
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create for automatic name generation"""
-        if "name" not in vals and "partner_id" in vals:
-            partner = self.env["res.partner"].browse(vals["partner_id"])
-            vals["name"] = f"Billing Contact - {partner.name}"
-        return super().create(vals)
+        for vals in vals_list:
+            if "name" not in vals and "partner_id" in vals:
+                partner = self.env["res.partner"].browse(vals["partner_id"])
+                vals["name"] = f"Billing Contact - {partner.name}"
+        return super().create(vals_list)
 
     def write(self, vals):
         """Override write for state change tracking"""
@@ -297,17 +287,21 @@ class RecordsDepartmentBillingContact(models.Model):
         return result
 
     @api.model
-    def _name_search(self, name, args=None, operator="ilike", limit=100, name_get_uid=None):
+    def _name_search(
+        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
+    ):
         """Enhanced search by partner name, department, or role"""
         args = args or []
         domain = []
         if name:
             domain = [
-                "|", "|", "|",
+                "|",
+                "|",
+                "|",
                 ("partner_id.name", operator, name),
                 ("department_id.name", operator, name),
                 ("billing_role", operator, name),
-                ("email", operator, name)
+                ("email", operator, name),
             ]
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
@@ -315,5 +309,7 @@ class RecordsDepartmentBillingContact(models.Model):
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")

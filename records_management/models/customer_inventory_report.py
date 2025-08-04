@@ -813,30 +813,31 @@ class CustomerInventoryReport(models.Model):
     # LIFECYCLE METHODS
     # ============================================================================
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set defaults"""
-        if not vals.get("report_number"):
-            vals["report_number"] = (
-                self.env["ir.sequence"].next_by_code("customer.inventory.report")
-                or "CIR"
-            )
-
-        # Set period dates based on report period if not provided
-        if not vals.get("period_start_date") and vals.get("report_period"):
-            today = fields.Date.today()
-            if vals["report_period"] == "monthly":
-                vals["period_start_date"] = today.replace(day=1)
-                vals["period_end_date"] = today
-            elif vals["report_period"] == "quarterly":
-                # Start of quarter
-                quarter_start = today.replace(
-                    month=((today.month - 1) // 3) * 3 + 1, day=1
+        for vals in vals_list:
+            if not vals.get("report_number"):
+                vals["report_number"] = (
+                    self.env["ir.sequence"].next_by_code("customer.inventory.report")
+                    or "CIR"
                 )
-                vals["period_start_date"] = quarter_start
-                vals["period_end_date"] = today
 
-        return super().create(vals)
+            # Set period dates based on report period if not provided
+            if not vals.get("period_start_date") and vals.get("report_period"):
+                today = fields.Date.today()
+                if vals["report_period"] == "monthly":
+                    vals["period_start_date"] = today.replace(day=1)
+                    vals["period_end_date"] = today
+                elif vals["report_period"] == "quarterly":
+                    # Start of quarter
+                    quarter_start = today.replace(
+                        month=((today.month - 1) // 3) * 3 + 1, day=1
+                    )
+                    vals["period_start_date"] = quarter_start
+                    vals["period_end_date"] = today
+
+        return super().create(vals_list)
 
     def write(self, vals):
         """Override write to track changes"""

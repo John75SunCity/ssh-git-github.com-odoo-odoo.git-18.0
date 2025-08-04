@@ -607,21 +607,23 @@ class RecordsDocumentType(models.Model):
     # LIFECYCLE METHODS
     # ============================================================================
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set defaults"""
-        if not vals.get("code"):
-            vals["code"] = (
-                self.env["ir.sequence"].next_by_code("records.document.type") or "RDT"
-            )
+        for vals in vals_list:
+            if not vals.get("code"):
+                vals["code"] = (
+                    self.env["ir.sequence"].next_by_code("records.document.type")
+                    or "RDT"
+                )
 
-        # Set next review date
-        if not vals.get("next_review_date"):
-            vals["next_review_date"] = fields.Date.today() + fields.timedelta(
-                days=365
-            )  # Annual review
+            # Set next review date
+            if not vals.get("next_review_date"):
+                vals["next_review_date"] = fields.Date.today() + fields.timedelta(
+                    days=365
+                )  # Annual review
 
-        return super().create(vals)
+        return super().create(vals_list)
 
     def write(self, vals):
         """Override write to track changes"""

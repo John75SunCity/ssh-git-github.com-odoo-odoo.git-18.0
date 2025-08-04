@@ -514,20 +514,23 @@ class DocumentRetrievalWorkOrder(models.Model):
     # LIFECYCLE METHODS
     # ============================================================================
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set defaults and generate sequence"""
-        if not vals.get("name"):
-            vals["name"] = self.env["ir.sequence"].next_by_code(
-                "document.retrieval.work.order"
-            ) or _("New")
+        for vals in vals_list:
+            if not vals.get("name"):
+                vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "document.retrieval.work.order"
+                ) or _("New")
 
-        # Set default deadline if not provided
-        if not vals.get("deadline") and vals.get("requested_date"):
-            requested = fields.Datetime.from_string(vals["requested_date"])
-            vals["deadline"] = requested + timedelta(days=7)  # Default 7-day deadline
+            # Set default deadline if not provided
+            if not vals.get("deadline") and vals.get("requested_date"):
+                requested = fields.Datetime.from_string(vals["requested_date"])
+                vals["deadline"] = requested + timedelta(
+                    days=7
+                )  # Default 7-day deadline
 
-        return super().create(vals)
+        return super().create(vals_list)
 
     def write(self, vals):
         """Override write to track important changes"""
