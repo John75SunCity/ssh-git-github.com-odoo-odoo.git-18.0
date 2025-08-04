@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- 💰 ENTERPRISE DEPARTMENTAL BILLING - Multi-Level Cost Allocation -->
-    
+
     <!-- 🎨 Departmental Billing Kanban Dashboard -->
     <record id="view_department_billing_contact_kanban" model="ir.ui.view">
         <field name="name">records.department.billing.contact.kanban</field>
@@ -21,26 +21,39 @@
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-                                        <strong>💼 <field name="contact_name"/></strong>
+                                        <strong>💼                                            <field name="contact_name"/>
+                                        </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        🏢 <field name="department_id"/>
+                                        🏢                                        <field name="department_id"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" title="More options"/></a>
+                                    <a class="o_kanban_manage_toggle_button" href="#">
+                                        <i class="fa fa-ellipsis-v" title="More options"/>
+                                    </a>
                                 </div>
                             </div>
                             <div class="o_kanban_card_content">
                                 <div class="row">
                                     <div class="col-8">
-                                        <div><i class="fa fa-user-circle"/> <field name="billing_role"/></div>
-                                        <div><i class="fa fa-dollar"/> Budget: $<field name="monthly_budget"/></div>
-                                        <div><i class="fa fa-credit-card"/> Used: $<field name="current_month_charges"/></div>
+                                        <div>
+                                            <i class="fa fa-user-circle"/>
+                                            <field name="billing_role"/>
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-dollar"/>
+ Budget: $<field name="monthly_budget"/>
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-credit-card"/>
+ Used: $<field name="current_month_charges"/>
+                                        </div>
                                     </div>
                                     <div class="col-4">
                                         <span class="badge" t-att-class="record.budget_utilization.raw_value &gt; 90 ? 'badge-danger' : record.budget_utilization.raw_value &gt; 75 ? 'badge-warning' : 'badge-success'">
-                                            <field name="budget_utilization"/>% Used
+                                            <field name="budget_utilization"/>
+% Used
                                         </span>
                                         <span class="badge badge-primary" t-if="record.approval_authority.raw_value">
                                             ✅ Approver
@@ -48,12 +61,7 @@
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-6">
-                                        <button class="btn btn-primary btn-sm" type="object" name="action_view_department_charges">
-                                            📊 Charges
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
+                                    <div class="col-12">
                                         <button class="btn btn-info btn-sm" type="object" name="action_view_approvals">
                                             ✅ Approvals
                                         </button>
@@ -62,7 +70,6 @@
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Contact</a>
-                                <a role="menuitem" type="object" name="action_view_department_charges" class="dropdown-item">📊 View Charges</a>
                                 <a role="menuitem" type="object" name="action_view_approvals" class="dropdown-item">✅ View Approvals</a>
                                 <a role="menuitem" type="object" name="action_budget_report" class="dropdown-item">📋 Budget Report</a>
                                 <div class="dropdown-divider"/>
@@ -80,9 +87,7 @@
         <field name="name">records.department.billing.contact.list</field>
         <field name="model">records.department.billing.contact</field>
         <field name="arch" type="xml">
-            <list decoration-danger="budget_utilization &gt; 90" 
-                  decoration-warning="budget_utilization &gt; 75"
-                  decoration-success="budget_utilization &lt;= 50">
+            <list decoration-danger="budget_utilization &gt; 90" decoration-warning="budget_utilization &gt; 75" decoration-success="budget_utilization &lt;= 50">
                 <field name="contact_name" string="💼 Contact"/>
                 <field name="department_id" string="🏢 Department"/>
                 <field name="billing_role" string="🎯 Role"/>
@@ -93,10 +98,7 @@
                 <field name="budget_utilization" string="📊 Utilization %" widget="percentage"/>
                 <field name="approval_authority" string="✅ Approver" widget="boolean_toggle"/>
                 <field name="active" string="🔄 Active" widget="boolean_toggle"/>
-                <button name="action_view_department_charges" type="object" string="View Charges" 
-                        icon="fa-bar-chart" class="btn-link"/>
-                <button name="action_budget_report" type="object" string="Budget Report" 
-                        icon="fa-file-pdf-o" class="btn-link"/>
+                <button name="action_budget_report" type="object" string="Budget Report" icon="fa-file-pdf-o" class="btn-link"/>
             </list>
         </field>
     </record>
@@ -110,26 +112,23 @@
                 <header>
                     <button name="action_budget_report" type="object" string="📋 Generate Budget Report" class="btn-primary"/>
                     <button name="action_send_bill_notification" type="object" string="📧 Send Bill Notification" class="btn-secondary"/>
-                    <button name="action_approve_charges" type="object" string="✅ Approve Pending Charges" 
-                            class="btn-info" invisible="not approval_authority"/>
                     <field name="active" widget="boolean_toggle"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_department_charges" icon="fa-bar-chart">
-                            <field string="Dept Charges" name="department_charges_count" widget="statinfo"/>
-                        </button>
                         <button class="oe_stat_button" type="object" name="action_view_approvals" icon="fa-check-circle">
                             <field string="Approvals" name="approval_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-percent">
                             <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value"><field name="budget_utilization"/>%</span>
+                                <span class="o_stat_value">
+                                    <field name="budget_utilization"/>
+%</span>
                                 <span class="o_stat_text">Budget Used</span>
                             </div>
                         </button>
                     </div>
-                    
+
                     <group>
                         <group string="💼 Contact Information">
                             <field name="contact_name" placeholder="Contact Full Name"/>
@@ -146,21 +145,8 @@
                             <field name="approval_limit"/>
                         </group>
                     </group>
-                    
+
                     <notebook>
-                        <page string="📊 Department Charges" name="charges">
-                            <field name="department_charge_ids" mode="list">
-                                <list>
-                                    <field name="charge_date"/>
-                                    <field name="service_type"/>
-                                    <field name="description"/>
-                                    <field name="amount"/>
-                                    <field name="approval_status"/>
-                                    <field name="approved_by"/>
-                                    <button name="action_approve_charge" type="object" string="Approve" icon="fa-check" class="btn-link"/>
-                                </list>
-                            </field>
-                        </page>
                         <page string="✅ Approval History" name="approvals">
                             <field name="approval_history_ids" mode="list">
                                 <list>
@@ -236,20 +222,20 @@
                 <field name="contact_name" string="Contact"/>
                 <field name="department_id"/>
                 <field name="email"/>
-                
+
                 <filter string="💼 Active Contacts" name="active" domain="[('active', '=', True)]"/>
                 <filter string="✅ Approvers" name="approvers" domain="[('approval_authority', '=', True)]"/>
                 <filter string="📧 Email Notifications" name="email_notifications" domain="[('email_notifications', '=', True)]"/>
-                
+
                 <separator/>
                 <filter string="🟢 Under Budget" name="under_budget" domain="[('budget_utilization', '&lt;', 75)]"/>
                 <filter string="🟡 Near Budget" name="near_budget" domain="[('budget_utilization', '&gt;=', 75), ('budget_utilization', '&lt;', 90)]"/>
                 <filter string="🔴 Over Budget" name="over_budget" domain="[('budget_utilization', '&gt;=', 90)]"/>
-                
+
                 <separator/>
                 <filter string="💰 High Budget" name="high_budget" domain="[('monthly_budget', '&gt;', 10000)]"/>
                 <filter string="📊 Medium Budget" name="medium_budget" domain="[('monthly_budget', '&gt;', 1000), ('monthly_budget', '&lt;=', 10000)]"/>
-                
+
                 <group expand="0" string="📊 Group By">
                     <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
                     <filter string="Billing Role" name="group_by_role" context="{'group_by': 'billing_role'}"/>
@@ -275,7 +261,8 @@
                 💰 Set up your first departmental billing contact!
             </p>
             <p>
-                <b>Enterprise Departmental Billing:</b><br/>
+                <b>Enterprise Departmental Billing:</b>
+                <br/>
                 • 💼 Multi-level departmental cost allocation<br/>
                 • 📊 Real-time budget tracking and alerts<br/>
                 • ✅ Hierarchical approval workflows<br/>
@@ -284,7 +271,7 @@
                 • 🎯 Role-based billing authorization<br/>
                 • 📈 Budget variance analysis and forecasting<br/>
                 • 📱 Mobile-optimized budget management
-            </p>
-        </field>
-    </record>
+</p>
+</field>
+</record>
 </odoo>
