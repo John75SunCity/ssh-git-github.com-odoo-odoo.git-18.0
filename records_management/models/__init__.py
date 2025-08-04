@@ -106,6 +106,7 @@ from . import paper_load_shipment
 # Legacy bale models (for data migration compatibility)
 from . import bale
 from . import paper_bale
+from . import paper_bale_source_document
 from . import load
 
 # =============================================================================
@@ -157,6 +158,7 @@ from . import billing_support_models
 
 # Portal requests and feedback
 from . import portal_request
+from . import signed_document
 from . import portal_feedback
 from . import customer_feedback
 
@@ -216,6 +218,7 @@ from . import barcode_models
 
 from . import visitor
 from . import visitor_pos_wizard
+from . import required_document
 
 # =============================================================================
 # BUSINESS LOGIC AND CRM

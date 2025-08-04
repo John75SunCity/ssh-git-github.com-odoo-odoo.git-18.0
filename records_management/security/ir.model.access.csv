@@ -142,3 +142,12 @@ access_document_retrieval_equipment_user,document.retrieval.equipment.user,model
 access_document_retrieval_equipment_manager,document.retrieval.equipment.manager,model_document_retrieval_equipment,records_management.group_records_manager,1,1,1,1
 access_document_retrieval_metrics_user,document.retrieval.metrics.user,model_document_retrieval_metrics,records_management.group_records_user,1,0,0,0
 access_document_retrieval_metrics_manager,document.retrieval.metrics.manager,model_document_retrieval_metrics,records_management.group_records_manager,1,1,1,1
+
+# New Missing Models (Fix for KeyError exceptions)
+access_paper_bale_source_document_user,paper.bale.source.document.user,model_paper_bale_source_document,records_management.group_records_user,1,1,1,0
+access_paper_bale_source_document_manager,paper.bale.source.document.manager,model_paper_bale_source_document,records_management.group_records_manager,1,1,1,1
+access_signed_document_user,signed.document.user,model_signed_document,records_management.group_records_user,1,1,1,0
+access_signed_document_manager,signed.document.manager,model_signed_document,records_management.group_records_manager,1,1,1,1
+access_signed_document_portal,signed.document.portal,model_signed_document,base.group_portal,1,0,0,0
+access_required_document_user,required.document.user,model_required_document,records_management.group_records_user,1,1,1,0
+access_required_document_manager,required.document.manager,model_required_document,records_management.group_records_manager,1,1,1,1
