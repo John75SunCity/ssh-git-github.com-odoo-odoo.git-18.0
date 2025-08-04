@@ -292,7 +292,9 @@ class RecordsLocation(models.Model):
     # Location Features
     has_loading_dock = fields.Boolean(string="Has Loading Dock", default=False)
     has_elevator_access = fields.Boolean(string="Elevator Access", default=False)
-    wheelchair_accessible = fields.Boolean(string="Wheelchair Accessible", default=False)
+    wheelchair_accessible = fields.Boolean(
+        string="Wheelchair Accessible", default=False
+    )
     has_backup_power = fields.Boolean(string="Backup Power", default=False)
     has_security_cameras = fields.Boolean(string="Security Cameras", default=False)
 
@@ -389,7 +391,15 @@ class RecordsLocation(models.Model):
         """Compute hierarchical location path"""
         for record in self:
             path_parts = []
-            for field in ["building", "floor", "zone", "aisle", "rack", "shelf", "position"]:
+            for field in [
+                "building",
+                "floor",
+                "zone",
+                "aisle",
+                "rack",
+                "shelf",
+                "position",
+            ]:
                 value = getattr(record, field)
                 if value:
                     path_parts.append(f"{field.title()}: {value}")
@@ -400,14 +410,14 @@ class RecordsLocation(models.Model):
         """Compute capacity usage metrics"""
         for record in self:
             current_usage = 0.0
-            
+
             # Calculate usage from containers
             for container in record.container_ids:
-                if hasattr(container, 'volume') and container.volume:
+                if hasattr(container, "volume") and container.volume:
                     current_usage += container.volume
-            
+
             record.current_usage = current_usage
-            
+
             if record.total_capacity:
                 record.available_capacity = record.total_capacity - current_usage
                 record.usage_percentage = (current_usage / record.total_capacity) * 100
@@ -420,14 +430,14 @@ class RecordsLocation(models.Model):
         """Compute weight metrics"""
         for record in self:
             current_weight = 0.0
-            
+
             # Calculate weight from containers
             for container in record.container_ids:
-                if hasattr(container, 'weight') and container.weight:
+                if hasattr(container, "weight") and container.weight:
                     current_weight += container.weight
-            
+
             record.current_weight = current_weight
-            
+
             if record.max_weight_capacity:
                 record.available_weight = record.max_weight_capacity - current_weight
             else:
@@ -437,7 +447,9 @@ class RecordsLocation(models.Model):
     def _compute_item_counts(self):
         """Compute item counts"""
         for record in self:
-            record.box_count = len(record.container_ids)  # Keep box_count name for customer-facing UI
+            record.box_count = len(
+                record.container_ids
+            )  # Keep box_count name for customer-facing UI
             record.container_count = len(record.container_ids)
             record.document_count = len(record.document_ids)
 
@@ -450,12 +462,14 @@ class RecordsLocation(models.Model):
         self.ensure_one()
         if self.status == "decommissioned":
             raise UserError(_("Cannot activate a decommissioned location"))
-        
-        self.write({
-            "active": True,
-            "status": "available",
-        })
-        
+
+        self.write(
+            {
+                "active": True,
+                "status": "available",
+            }
+        )
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -469,11 +483,13 @@ class RecordsLocation(models.Model):
     def action_set_maintenance(self):
         """Set location to maintenance mode"""
         self.ensure_one()
-        self.write({
-            "status": "maintenance",
-            "last_inspection_date": fields.Date.today(),
-        })
-        
+        self.write(
+            {
+                "status": "maintenance",
+                "last_inspection_date": fields.Date.today(),
+            }
+        )
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -488,7 +504,7 @@ class RecordsLocation(models.Model):
         """Mark location as full"""
         self.ensure_one()
         self.write({"status": "full"})
-        
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -525,19 +541,23 @@ class RecordsLocation(models.Model):
     def action_schedule_inspection(self):
         """Schedule next inspection"""
         self.ensure_one()
-        next_date = fields.Date.today() + fields.timedelta(days=self.inspection_frequency)
-        
+        next_date = fields.Date.today() + fields.timedelta(
+            days=self.inspection_frequency
+        )
+
         self.write({"next_inspection_date": next_date})
-        
+
         # Create calendar event for inspection
-        self.env["calendar.event"].create({
-            "name": f"Location Inspection - {self.name}",
-            "start": next_date,
-            "allday": True,
-            "user_id": self.user_id.id,
-            "description": f"Scheduled inspection for location {self.name}",
-        })
-        
+        self.env["calendar.event"].create(
+            {
+                "name": f"Location Inspection - {self.name}",
+                "start": next_date,
+                "allday": True,
+                "user_id": self.user_id.id,
+                "description": f"Scheduled inspection for location {self.name}",
+            }
+        )
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -568,7 +588,9 @@ class RecordsLocation(models.Model):
         for record in self:
             if record.temperature_min and record.temperature_max:
                 if record.temperature_min >= record.temperature_max:
-                    raise ValidationError(_("Minimum temperature must be less than maximum temperature"))
+                    raise ValidationError(
+                        _("Minimum temperature must be less than maximum temperature")
+                    )
 
     @api.constrains("humidity_min", "humidity_max")
     def _check_humidity_ranges(self):
@@ -576,9 +598,13 @@ class RecordsLocation(models.Model):
         for record in self:
             if record.humidity_min and record.humidity_max:
                 if record.humidity_min >= record.humidity_max:
-                    raise ValidationError(_("Minimum humidity must be less than maximum humidity"))
+                    raise ValidationError(
+                        _("Minimum humidity must be less than maximum humidity")
+                    )
                 if record.humidity_min < 0 or record.humidity_max > 100:
-                    raise ValidationError(_("Humidity values must be between 0 and 100"))
+                    raise ValidationError(
+                        _("Humidity values must be between 0 and 100")
+                    )
 
     @api.constrains("parent_location_id")
     def _check_parent_recursion(self):
@@ -621,14 +647,16 @@ class RecordsLocation(models.Model):
     def create(self, vals):
         """Override create to set defaults"""
         if not vals.get("code"):
-            vals["code"] = self.env["ir.sequence"].next_by_code("records.location") or "LOC"
-        
+            vals["code"] = (
+                self.env["ir.sequence"].next_by_code("records.location") or "LOC"
+            )
+
         # Set next inspection date if not provided
         if not vals.get("next_inspection_date") and vals.get("inspection_frequency"):
             vals["next_inspection_date"] = fields.Date.today() + fields.timedelta(
                 days=vals["inspection_frequency"]
             )
-        
+
         return super().create(vals)
 
     def write(self, vals):
@@ -636,11 +664,14 @@ class RecordsLocation(models.Model):
         if "status" in vals:
             for record in self:
                 old_status = dict(record._fields["status"].selection).get(record.status)
-                new_status = dict(record._fields["status"].selection).get(vals["status"])
-                record.message_post(
-                    body=_("Location status changed from %s to %s") % (old_status, new_status)
+                new_status = dict(record._fields["status"].selection).get(
+                    vals["status"]
                 )
-        
+                record.message_post(
+                    body=_("Location status changed from %s to %s")
+                    % (old_status, new_status)
+                )
+
         return super().write(vals)
 
     def name_get(self):

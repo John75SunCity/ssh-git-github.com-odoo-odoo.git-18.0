@@ -14,7 +14,9 @@ class RecordsDocumentType(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
 
-    name = fields.Char(string="Document Type Name", required=True, tracking=True, index=True)
+    name = fields.Char(
+        string="Document Type Name", required=True, tracking=True, index=True
+    )
     code = fields.Char(string="Document Code", index=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
@@ -380,27 +382,37 @@ class RecordsDocumentType(models.Model):
         """Compute document count and storage volume"""
         for record in self:
             record.document_count = len(record.document_ids)
-            
+
             # Calculate total storage volume
             total_volume = 0.0
             for doc in record.document_ids:
-                if hasattr(doc, 'storage_volume') and doc.storage_volume:
+                if hasattr(doc, "storage_volume") and doc.storage_volume:
                     total_volume += doc.storage_volume
             record.total_storage_volume = total_volume
 
-    @api.depends("document_ids", "document_ids.processing_time", "document_ids.retrieval_time")
+    @api.depends(
+        "document_ids", "document_ids.processing_time", "document_ids.retrieval_time"
+    )
     def _compute_processing_metrics(self):
         """Compute average processing and retrieval times"""
         for record in self:
-            docs_with_processing = record.document_ids.filtered(lambda d: d.processing_time)
+            docs_with_processing = record.document_ids.filtered(
+                lambda d: d.processing_time
+            )
             if docs_with_processing:
-                record.average_processing_time = sum(docs_with_processing.mapped('processing_time')) / len(docs_with_processing)
+                record.average_processing_time = sum(
+                    docs_with_processing.mapped("processing_time")
+                ) / len(docs_with_processing)
             else:
                 record.average_processing_time = 0.0
-            
-            docs_with_retrieval = record.document_ids.filtered(lambda d: d.retrieval_time)
+
+            docs_with_retrieval = record.document_ids.filtered(
+                lambda d: d.retrieval_time
+            )
             if docs_with_retrieval:
-                record.average_retrieval_time = sum(docs_with_retrieval.mapped('retrieval_time')) / len(docs_with_retrieval)
+                record.average_retrieval_time = sum(
+                    docs_with_retrieval.mapped("retrieval_time")
+                ) / len(docs_with_retrieval)
             else:
                 record.average_retrieval_time = 0.0
 
@@ -409,44 +421,56 @@ class RecordsDocumentType(models.Model):
         """Compute utilization metrics"""
         for record in self:
             current_month = fields.Date.today().replace(day=1)
-            
+
             # Monthly intake (documents created this month)
             monthly_docs = record.document_ids.filtered(
                 lambda d: d.create_date and d.create_date.date() >= current_month
             )
             record.monthly_intake = len(monthly_docs)
-            
+
             # Monthly destruction (documents destroyed this month)
             destroyed_docs = record.document_ids.filtered(
-                lambda d: hasattr(d, 'destruction_date') and d.destruction_date and d.destruction_date >= current_month
+                lambda d: hasattr(d, "destruction_date")
+                and d.destruction_date
+                and d.destruction_date >= current_month
             )
             record.monthly_destruction = len(destroyed_docs)
-            
+
             # Utilization rate (active documents vs total capacity)
             active_docs = record.document_ids.filtered(lambda d: d.active)
             if record.document_count > 0:
-                record.utilization_rate = (len(active_docs) / record.document_count) * 100
+                record.utilization_rate = (
+                    len(active_docs) / record.document_count
+                ) * 100
             else:
                 record.utilization_rate = 0.0
 
-    @api.depends("document_count", "storage_cost_per_box", "processing_cost_per_document")
+    @api.depends(
+        "document_count", "storage_cost_per_box", "processing_cost_per_document"
+    )
     def _compute_cost_metrics(self):
         """Compute cost metrics"""
         for record in self:
             # Estimate boxes needed (assuming 100 documents per box)
-            estimated_boxes = record.document_count / 100 if record.document_count else 0
-            
+            estimated_boxes = (
+                record.document_count / 100 if record.document_count else 0
+            )
+
             # Total storage cost (monthly)
             if record.storage_cost_per_box:
-                record.total_storage_cost = estimated_boxes * record.storage_cost_per_box
+                record.total_storage_cost = (
+                    estimated_boxes * record.storage_cost_per_box
+                )
             else:
                 record.total_storage_cost = 0.0
-            
+
             # Monthly processing cost
             processing_cost = 0.0
             if record.processing_cost_per_document and record.monthly_intake:
-                processing_cost = record.monthly_intake * record.processing_cost_per_document
-            
+                processing_cost = (
+                    record.monthly_intake * record.processing_cost_per_document
+                )
+
             record.monthly_cost = record.total_storage_cost + processing_cost
 
     # ============================================================================
@@ -458,7 +482,7 @@ class RecordsDocumentType(models.Model):
         self.ensure_one()
         if not self.retention_policy_id:
             raise UserError(_("Retention policy must be set before activation."))
-        
+
         self.write({"state": "active"})
         return {
             "type": "ir.actions.client",
@@ -474,12 +498,15 @@ class RecordsDocumentType(models.Model):
         """Deprecate document type"""
         self.ensure_one()
         self.write({"state": "deprecated"})
-        
+
         # Notify users about deprecation
         self.message_post(
-            body=_("Document type %s has been deprecated. No new documents should use this type.") % self.name
+            body=_(
+                "Document type %s has been deprecated. No new documents should use this type."
+            )
+            % self.name
         )
-        
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -516,7 +543,7 @@ class RecordsDocumentType(models.Model):
     def action_schedule_audit(self):
         """Schedule next audit"""
         self.ensure_one()
-        
+
         # Calculate next audit date based on frequency
         frequency_days = {
             "monthly": 30,
@@ -524,24 +551,28 @@ class RecordsDocumentType(models.Model):
             "semi_annual": 180,
             "annual": 365,
         }
-        
+
         days = frequency_days.get(self.audit_frequency, 365)
         next_date = fields.Date.today() + fields.timedelta(days=days)
-        
-        self.write({
-            "last_audit_date": fields.Date.today(),
-            "next_audit_date": next_date,
-        })
-        
+
+        self.write(
+            {
+                "last_audit_date": fields.Date.today(),
+                "next_audit_date": next_date,
+            }
+        )
+
         # Create calendar event
-        self.env["calendar.event"].create({
-            "name": f"Document Type Audit - {self.name}",
-            "start": next_date,
-            "allday": True,
-            "user_id": self.user_id.id,
-            "description": f"Scheduled audit for document type {self.name}",
-        })
-        
+        self.env["calendar.event"].create(
+            {
+                "name": f"Document Type Audit - {self.name}",
+                "start": next_date,
+                "allday": True,
+                "user_id": self.user_id.id,
+                "description": f"Scheduled audit for document type {self.name}",
+            }
+        )
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -568,7 +599,9 @@ class RecordsDocumentType(models.Model):
         """Ensure retention logic is consistent"""
         for record in self:
             if record.permanent_retention and record.default_retention_years:
-                raise ValidationError(_("Cannot set retention years for permanent retention documents."))
+                raise ValidationError(
+                    _("Cannot set retention years for permanent retention documents.")
+                )
 
     # ============================================================================
     # LIFECYCLE METHODS
@@ -578,26 +611,31 @@ class RecordsDocumentType(models.Model):
     def create(self, vals):
         """Override create to set defaults"""
         if not vals.get("code"):
-            vals["code"] = self.env["ir.sequence"].next_by_code("records.document.type") or "RDT"
-        
+            vals["code"] = (
+                self.env["ir.sequence"].next_by_code("records.document.type") or "RDT"
+            )
+
         # Set next review date
         if not vals.get("next_review_date"):
-            vals["next_review_date"] = fields.Date.today() + fields.timedelta(days=365)  # Annual review
-        
+            vals["next_review_date"] = fields.Date.today() + fields.timedelta(
+                days=365
+            )  # Annual review
+
         return super().create(vals)
 
     def write(self, vals):
         """Override write to track changes"""
         # Update modification timestamp
         vals["date_modified"] = fields.Datetime.now()
-        
+
         # Track state changes
         if "state" in vals:
             for record in self:
                 old_state = dict(record._fields["state"].selection).get(record.state)
                 new_state = dict(record._fields["state"].selection).get(vals["state"])
                 record.message_post(
-                    body=_("Document type status changed from %s to %s") % (old_state, new_state)
+                    body=_("Document type status changed from %s to %s")
+                    % (old_state, new_state)
                 )
-        
+
         return super().write(vals)

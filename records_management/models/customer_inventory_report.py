@@ -396,29 +396,35 @@ class CustomerInventoryReport(models.Model):
         """Compute inventory metrics for the customer and period"""
         for record in self:
             if not record.customer_id:
-                record.update({
-                    'total_documents': 0,
-                    'active_documents': 0,
-                    'archived_documents': 0,
-                    'total_boxes': 0,
-                    'active_boxes': 0,
-                    'destroyed_boxes': 0,
-                })
+                record.update(
+                    {
+                        "total_documents": 0,
+                        "active_documents": 0,
+                        "archived_documents": 0,
+                        "total_boxes": 0,
+                        "active_boxes": 0,
+                        "destroyed_boxes": 0,
+                    }
+                )
                 continue
 
             # Document counts
-            domain = [('customer_id', '=', record.customer_id.id)]
-            all_docs = self.env['records.document'].search(domain)
+            domain = [("customer_id", "=", record.customer_id.id)]
+            all_docs = self.env["records.document"].search(domain)
             record.total_documents = len(all_docs)
             record.active_documents = len(all_docs.filtered(lambda d: d.active))
             record.archived_documents = len(all_docs.filtered(lambda d: not d.active))
 
             # Box counts
-            box_domain = [('customer_id', '=', record.customer_id.id)]
-            all_boxes = self.env['records.container'].search(box_domain)
+            box_domain = [("customer_id", "=", record.customer_id.id)]
+            all_boxes = self.env["records.container"].search(box_domain)
             record.total_boxes = len(all_boxes)
-            record.active_boxes = len(all_boxes.filtered(lambda b: b.state in ['active', 'stored']))
-            record.destroyed_boxes = len(all_boxes.filtered(lambda b: b.state == 'destroyed'))
+            record.active_boxes = len(
+                all_boxes.filtered(lambda b: b.state in ["active", "stored"])
+            )
+            record.destroyed_boxes = len(
+                all_boxes.filtered(lambda b: b.state == "destroyed")
+            )
 
     @api.depends("customer_id")
     def _compute_storage_metrics(self):
@@ -430,7 +436,9 @@ class CustomerInventoryReport(models.Model):
                 continue
 
             # Calculate total storage volume
-            boxes = self.env['records.container'].search([('customer_id', '=', record.customer_id.id)])
+            boxes = self.env["records.container"].search(
+                [("customer_id", "=", record.customer_id.id)]
+            )
             total_volume = sum(box.volume for box in boxes if box.volume)
             record.total_storage_volume = total_volume
 
@@ -438,7 +446,11 @@ class CustomerInventoryReport(models.Model):
             if total_volume > 0:
                 # Assume capacity based on box count * average capacity
                 estimated_capacity = len(boxes) * 2.0  # 2 cubic feet per box average
-                record.storage_utilization = min((total_volume / estimated_capacity) * 100, 100) if estimated_capacity else 0
+                record.storage_utilization = (
+                    min((total_volume / estimated_capacity) * 100, 100)
+                    if estimated_capacity
+                    else 0
+                )
             else:
                 record.storage_utilization = 0.0
 
@@ -446,20 +458,28 @@ class CustomerInventoryReport(models.Model):
     def _compute_activity_metrics(self):
         """Compute activity metrics for the period"""
         for record in self:
-            if not (record.customer_id and record.period_start_date and record.period_end_date):
-                record.update({
-                    'documents_added': 0,
-                    'documents_retrieved': 0,
-                    'documents_destroyed': 0,
-                })
+            if not (
+                record.customer_id
+                and record.period_start_date
+                and record.period_end_date
+            ):
+                record.update(
+                    {
+                        "documents_added": 0,
+                        "documents_retrieved": 0,
+                        "documents_destroyed": 0,
+                    }
+                )
                 continue
 
             # Documents added during period
-            added_docs = self.env['records.document'].search([
-                ('customer_id', '=', record.customer_id.id),
-                ('create_date', '>=', record.period_start_date),
-                ('create_date', '<=', record.period_end_date),
-            ])
+            added_docs = self.env["records.document"].search(
+                [
+                    ("customer_id", "=", record.customer_id.id),
+                    ("create_date", ">=", record.period_start_date),
+                    ("create_date", "<=", record.period_end_date),
+                ]
+            )
             record.documents_added = len(added_docs)
 
             # Simplified metrics for retrieved and destroyed
@@ -472,18 +492,20 @@ class CustomerInventoryReport(models.Model):
         """Compute financial metrics"""
         for record in self:
             if not record.customer_id:
-                record.update({
-                    'storage_costs': 0.0,
-                    'service_costs': 0.0,
-                    'destruction_costs': 0.0,
-                    'total_costs': 0.0,
-                })
+                record.update(
+                    {
+                        "storage_costs": 0.0,
+                        "service_costs": 0.0,
+                        "destruction_costs": 0.0,
+                        "total_costs": 0.0,
+                    }
+                )
                 continue
 
             # Simplified cost calculation
             # In real implementation, would pull from invoices and service records
             monthly_storage = record.total_boxes * 5.0  # $5 per box per month
-            
+
             # Calculate months in period
             if record.period_start_date and record.period_end_date:
                 days = (record.period_end_date - record.period_start_date).days
@@ -492,9 +514,15 @@ class CustomerInventoryReport(models.Model):
                 months = 1.0
 
             record.storage_costs = monthly_storage * months
-            record.service_costs = record.service_requests_count * 25.0  # $25 per service request
-            record.destruction_costs = record.destroyed_boxes * 15.0  # $15 per box destruction
-            record.total_costs = record.storage_costs + record.service_costs + record.destruction_costs
+            record.service_costs = (
+                record.service_requests_count * 25.0
+            )  # $25 per service request
+            record.destruction_costs = (
+                record.destroyed_boxes * 15.0
+            )  # $15 per box destruction
+            record.total_costs = (
+                record.storage_costs + record.service_costs + record.destruction_costs
+            )
 
     @api.depends("total_costs", "previous_period_cost")
     def _compute_variance_metrics(self):
@@ -502,7 +530,9 @@ class CustomerInventoryReport(models.Model):
         for record in self:
             if record.previous_period_cost:
                 record.cost_variance = record.total_costs - record.previous_period_cost
-                record.cost_variance_percentage = (record.cost_variance / record.previous_period_cost) * 100
+                record.cost_variance_percentage = (
+                    record.cost_variance / record.previous_period_cost
+                ) * 100
             else:
                 record.cost_variance = 0.0
                 record.cost_variance_percentage = 0.0
@@ -512,11 +542,13 @@ class CustomerInventoryReport(models.Model):
         """Compute compliance metrics"""
         for record in self:
             if not record.customer_id:
-                record.update({
-                    'compliance_score': 100.0,
-                    'retention_violations': 0,
-                    'security_issues': 0,
-                })
+                record.update(
+                    {
+                        "compliance_score": 100.0,
+                        "retention_violations": 0,
+                        "security_issues": 0,
+                    }
+                )
                 continue
 
             # Simplified compliance calculation
@@ -526,7 +558,7 @@ class CustomerInventoryReport(models.Model):
 
             record.retention_violations = violations
             record.security_issues = security_issues
-            
+
             # Calculate compliance score
             total_issues = violations + security_issues
             if total_issues == 0:
@@ -539,9 +571,9 @@ class CustomerInventoryReport(models.Model):
         """Compute location metrics"""
         for record in self:
             if record.customer_id:
-                locations = self.env['records.location'].search([
-                    ('box_ids.customer_id', '=', record.customer_id.id)
-                ])
+                locations = self.env["records.location"].search(
+                    [("box_ids.customer_id", "=", record.customer_id.id)]
+                )
                 record.total_locations = len(locations.ids)
             else:
                 record.total_locations = 0
@@ -550,12 +582,18 @@ class CustomerInventoryReport(models.Model):
     def _compute_service_metrics(self):
         """Compute service metrics"""
         for record in self:
-            if record.customer_id and record.period_start_date and record.period_end_date:
-                service_requests = self.env['portal.request'].search([
-                    ('partner_id', '=', record.customer_id.id),
-                    ('request_date', '>=', record.period_start_date),
-                    ('request_date', '<=', record.period_end_date),
-                ])
+            if (
+                record.customer_id
+                and record.period_start_date
+                and record.period_end_date
+            ):
+                service_requests = self.env["portal.request"].search(
+                    [
+                        ("partner_id", "=", record.customer_id.id),
+                        ("request_date", ">=", record.period_start_date),
+                        ("request_date", "<=", record.period_end_date),
+                    ]
+                )
                 record.service_requests_count = len(service_requests)
             else:
                 record.service_requests_count = 0
@@ -570,9 +608,13 @@ class CustomerInventoryReport(models.Model):
                 if record.total_boxes > 0:
                     services.append(f"Document Storage ({record.total_boxes} boxes)")
                 if record.service_requests_count > 0:
-                    services.append(f"Service Requests ({record.service_requests_count} this period)")
-                
-                record.active_services = "\n".join(services) if services else "No active services"
+                    services.append(
+                        f"Service Requests ({record.service_requests_count} this period)"
+                    )
+
+                record.active_services = (
+                    "\n".join(services) if services else "No active services"
+                )
             else:
                 record.active_services = ""
 
@@ -581,8 +623,12 @@ class CustomerInventoryReport(models.Model):
         """Compute related records"""
         for record in self:
             if record.customer_id:
-                boxes = self.env['records.container'].search([('customer_id', '=', record.customer_id.id)])
-                documents = self.env['records.document'].search([('customer_id', '=', record.customer_id.id)])
+                boxes = self.env["records.container"].search(
+                    [("customer_id", "=", record.customer_id.id)]
+                )
+                documents = self.env["records.document"].search(
+                    [("customer_id", "=", record.customer_id.id)]
+                )
                 record.box_ids = [(6, 0, boxes.ids)]
                 record.document_ids = [(6, 0, documents.ids)]
             else:
@@ -596,84 +642,94 @@ class CustomerInventoryReport(models.Model):
     def action_generate_report(self):
         """Generate the inventory report"""
         self.ensure_one()
-        if self.state != 'draft':
+        if self.state != "draft":
             raise UserError(_("Only draft reports can be generated."))
 
         start_time = fields.Datetime.now()
-        
-        self.write({
-            'state': 'generating',
-            'report_generation_date': start_time,
-            'generated_by_id': self.env.user.id,
-        })
-        
+
+        self.write(
+            {
+                "state": "generating",
+                "report_generation_date": start_time,
+                "generated_by_id": self.env.user.id,
+            }
+        )
+
         # Simulate report generation
         # In real implementation, this would generate the actual report file
-        
+
         end_time = fields.Datetime.now()
         duration = (end_time - start_time).total_seconds() / 60.0
-        
-        self.write({
-            'state': 'ready',
-            'generation_duration': duration,
-            'report_filename': f"{self.name}.pdf",
-        })
-        
+
+        self.write(
+            {
+                "state": "ready",
+                "generation_duration": duration,
+                "report_filename": f"{self.name}.pdf",
+            }
+        )
+
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Report Generated'),
-                'message': _('Inventory report has been generated successfully.'),
-                'type': 'success',
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Report Generated"),
+                "message": _("Inventory report has been generated successfully."),
+                "type": "success",
             },
         }
 
     def action_send_to_customer(self):
         """Send report to customer"""
         self.ensure_one()
-        if self.state != 'ready':
+        if self.state != "ready":
             raise UserError(_("Only ready reports can be sent."))
 
         if not self.customer_contact_id and not self.customer_id.email:
             raise UserError(_("Customer must have an email address to send report."))
 
         # Send email with report
-        template = self.env.ref('records_management.mail_template_inventory_report', False)
+        template = self.env.ref(
+            "records_management.mail_template_inventory_report", False
+        )
         if template:
             template.send_mail(self.id, force_send=True)
 
-        self.write({
-            'state': 'sent',
-            'delivery_date': fields.Datetime.now(),
-            'delivery_method': 'email',
-        })
+        self.write(
+            {
+                "state": "sent",
+                "delivery_date": fields.Datetime.now(),
+                "delivery_method": "email",
+            }
+        )
 
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Report Sent'),
-                'message': _('Report has been sent to customer successfully.'),
-                'type': 'success',
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Report Sent"),
+                "message": _("Report has been sent to customer successfully."),
+                "type": "success",
             },
         }
 
     def action_confirm_delivery(self):
         """Confirm report delivery"""
         self.ensure_one()
-        self.write({
-            'delivery_confirmed': True,
-            'state': 'confirmed',
-        })
+        self.write(
+            {
+                "delivery_confirmed": True,
+                "state": "confirmed",
+            }
+        )
 
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Delivery Confirmed'),
-                'message': _('Report delivery has been confirmed.'),
-                'type': 'success',
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Delivery Confirmed"),
+                "message": _("Report delivery has been confirmed."),
+                "type": "success",
             },
         }
 
@@ -681,23 +737,23 @@ class CustomerInventoryReport(models.Model):
         """View customer's records"""
         self.ensure_one()
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Customer Records'),
-            'res_model': 'records.container',
-            'view_mode': 'tree,form',
-            'domain': [('customer_id', '=', self.customer_id.id)],
-            'context': {'default_customer_id': self.customer_id.id},
+            "type": "ir.actions.act_window",
+            "name": _("Customer Records"),
+            "res_model": "records.container",
+            "view_mode": "tree,form",
+            "domain": [("customer_id", "=", self.customer_id.id)],
+            "context": {"default_customer_id": self.customer_id.id},
         }
 
     def action_schedule_next_report(self):
         """Schedule next period report"""
         self.ensure_one()
-        
+
         # Calculate next period dates
-        if self.report_period == 'monthly':
+        if self.report_period == "monthly":
             next_start = self.period_end_date + fields.timedelta(days=1)
             next_end = next_start + fields.timedelta(days=30)
-        elif self.report_period == 'quarterly':
+        elif self.report_period == "quarterly":
             next_start = self.period_end_date + fields.timedelta(days=1)
             next_end = next_start + fields.timedelta(days=90)
         else:
@@ -705,45 +761,53 @@ class CustomerInventoryReport(models.Model):
             next_end = next_start + fields.timedelta(days=365)
 
         # Create next report
-        next_report = self.create({
-            'name': f"{self.customer_id.name} - {self.report_period.title()} Report - {next_end.strftime('%Y-%m')}",
-            'customer_id': self.customer_id.id,
-            'customer_contact_id': self.customer_contact_id.id,
-            'report_period': self.report_period,
-            'period_start_date': next_start,
-            'period_end_date': next_end,
-            'report_format': self.report_format,
-            'delivery_method': self.delivery_method,
-            'previous_period_cost': self.total_costs,
-        })
+        next_report = self.create(
+            {
+                "name": f"{self.customer_id.name} - {self.report_period.title()} Report - {next_end.strftime('%Y-%m')}",
+                "customer_id": self.customer_id.id,
+                "customer_contact_id": self.customer_contact_id.id,
+                "report_period": self.report_period,
+                "period_start_date": next_start,
+                "period_end_date": next_end,
+                "report_format": self.report_format,
+                "delivery_method": self.delivery_method,
+                "previous_period_cost": self.total_costs,
+            }
+        )
 
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Next Period Report'),
-            'res_model': 'customer.inventory.report',
-            'res_id': next_report.id,
-            'view_mode': 'form',
-            'target': 'current',
+            "type": "ir.actions.act_window",
+            "name": _("Next Period Report"),
+            "res_model": "customer.inventory.report",
+            "res_id": next_report.id,
+            "view_mode": "form",
+            "target": "current",
         }
 
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
 
-    @api.constrains('period_start_date', 'period_end_date')
+    @api.constrains("period_start_date", "period_end_date")
     def _check_period_dates(self):
         """Ensure period dates are logical"""
         for record in self:
             if record.period_start_date and record.period_end_date:
                 if record.period_end_date <= record.period_start_date:
-                    raise ValidationError(_("Period end date must be after start date."))
+                    raise ValidationError(
+                        _("Period end date must be after start date.")
+                    )
 
-    @api.constrains('service_quality_score')
+    @api.constrains("service_quality_score")
     def _check_quality_score(self):
         """Ensure quality score is within valid range"""
         for record in self:
-            if record.service_quality_score and not (0 <= record.service_quality_score <= 10):
-                raise ValidationError(_("Service quality score must be between 0 and 10."))
+            if record.service_quality_score and not (
+                0 <= record.service_quality_score <= 10
+            ):
+                raise ValidationError(
+                    _("Service quality score must be between 0 and 10.")
+                )
 
     # ============================================================================
     # LIFECYCLE METHODS
@@ -752,31 +816,37 @@ class CustomerInventoryReport(models.Model):
     @api.model
     def create(self, vals):
         """Override create to set defaults"""
-        if not vals.get('report_number'):
-            vals['report_number'] = self.env['ir.sequence'].next_by_code('customer.inventory.report') or 'CIR'
-        
+        if not vals.get("report_number"):
+            vals["report_number"] = (
+                self.env["ir.sequence"].next_by_code("customer.inventory.report")
+                or "CIR"
+            )
+
         # Set period dates based on report period if not provided
-        if not vals.get('period_start_date') and vals.get('report_period'):
+        if not vals.get("period_start_date") and vals.get("report_period"):
             today = fields.Date.today()
-            if vals['report_period'] == 'monthly':
-                vals['period_start_date'] = today.replace(day=1)
-                vals['period_end_date'] = today
-            elif vals['report_period'] == 'quarterly':
+            if vals["report_period"] == "monthly":
+                vals["period_start_date"] = today.replace(day=1)
+                vals["period_end_date"] = today
+            elif vals["report_period"] == "quarterly":
                 # Start of quarter
-                quarter_start = today.replace(month=((today.month - 1) // 3) * 3 + 1, day=1)
-                vals['period_start_date'] = quarter_start
-                vals['period_end_date'] = today
+                quarter_start = today.replace(
+                    month=((today.month - 1) // 3) * 3 + 1, day=1
+                )
+                vals["period_start_date"] = quarter_start
+                vals["period_end_date"] = today
 
         return super().create(vals)
 
     def write(self, vals):
         """Override write to track changes"""
-        if 'state' in vals:
+        if "state" in vals:
             for record in self:
-                old_state = dict(record._fields['state'].selection).get(record.state)
-                new_state = dict(record._fields['state'].selection).get(vals['state'])
+                old_state = dict(record._fields["state"].selection).get(record.state)
+                new_state = dict(record._fields["state"].selection).get(vals["state"])
                 record.message_post(
-                    body=_("Report status changed from %s to %s") % (old_state, new_state)
+                    body=_("Report status changed from %s to %s")
+                    % (old_state, new_state)
                 )
 
         return super().write(vals)

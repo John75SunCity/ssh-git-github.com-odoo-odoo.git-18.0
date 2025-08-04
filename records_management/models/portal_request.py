@@ -57,8 +57,12 @@ class PortalRequest(models.Model):
     # ============================================================================
 
     # Customer Information
-    partner_id = fields.Many2one("res.partner", string="Customer", required=True, tracking=True)
-    customer_name = fields.Char(string="Customer Name", related="partner_id.name", store=True)
+    partner_id = fields.Many2one(
+        "res.partner", string="Customer", required=True, tracking=True
+    )
+    customer_name = fields.Char(
+        string="Customer Name", related="partner_id.name", store=True
+    )
     contact_person = fields.Many2one("res.partner", string="Contact Person")
     contact_email = fields.Char(string="Contact Email")
     contact_phone = fields.Char(string="Contact Phone")
@@ -119,11 +123,11 @@ class PortalRequest(models.Model):
     document_description = fields.Text(string="Document Description")
     document_location = fields.Char(string="Document Location")
     document_count = fields.Integer(string="Document Count", default=0)
-    
+
     # Service Details
     service_location = fields.Text(string="Service Location")
     estimated_volume = fields.Float(string="Estimated Volume", digits=(8, 2))
-    
+
     # Missing fields from gap analysis
     to_person = fields.Char(string="To Person")
     upload_date = fields.Datetime(string="Upload Date")
@@ -141,7 +145,7 @@ class PortalRequest(models.Model):
         required=True,
         tracking=True,
     )
-    
+
     due_date = fields.Datetime(string="Due Date", tracking=True)
     scheduled_date = fields.Datetime(string="Scheduled Date", tracking=True)
     completion_date = fields.Datetime(string="Completion Date", tracking=True)
@@ -152,7 +156,7 @@ class PortalRequest(models.Model):
         compute="_compute_sla_metrics",
         store=True,
     )
-    
+
     sla_status = fields.Selection(
         [
             ("on_time", "On Time"),
@@ -170,7 +174,7 @@ class PortalRequest(models.Model):
         compute="_compute_time_metrics",
         store=True,
     )
-    
+
     response_time = fields.Float(
         string="Response Time (Hours)",
         compute="_compute_time_metrics",
@@ -213,12 +217,12 @@ class PortalRequest(models.Model):
         string="Estimated Cost",
         currency_field="currency_id",
     )
-    
+
     actual_cost = fields.Monetary(
         string="Actual Cost",
         currency_field="currency_id",
     )
-    
+
     total_amount = fields.Monetary(
         string="Total Amount",
         currency_field="currency_id",
@@ -277,7 +281,9 @@ class PortalRequest(models.Model):
     # ============================================================================
 
     # Quality Control
-    quality_check_required = fields.Boolean(string="Quality Check Required", default=False)
+    quality_check_required = fields.Boolean(
+        string="Quality Check Required", default=False
+    )
     quality_approved = fields.Boolean(string="Quality Approved", default=False)
     quality_notes = fields.Text(string="Quality Notes")
 
@@ -292,7 +298,7 @@ class PortalRequest(models.Model):
         ],
         string="Customer Rating",
     )
-    
+
     customer_feedback = fields.Text(string="Customer Feedback")
     satisfaction_survey_sent = fields.Boolean(string="Survey Sent", default=False)
 
@@ -311,7 +317,7 @@ class PortalRequest(models.Model):
         "records.document",
         string="Related Documents",
     )
-    
+
     box_ids = fields.Many2many(
         "records.container",
         string="Related Boxes",
@@ -385,7 +391,12 @@ class PortalRequest(models.Model):
                 record.processing_time = delta.total_seconds() / 3600
 
                 # Response time (time to first response/action)
-                if record.state in ["under_review", "approved", "in_progress", "completed"]:
+                if record.state in [
+                    "under_review",
+                    "approved",
+                    "in_progress",
+                    "completed",
+                ]:
                     # Estimate first response as state change (simplified)
                     record.response_time = 2.0  # Default 2 hours response time
                 else:
@@ -409,20 +420,22 @@ class PortalRequest(models.Model):
         self.ensure_one()
         if not self.request_details:
             raise UserError(_("Please provide request details before submitting."))
-        
-        self.write({
-            "state": "submitted",
-            "request_date": fields.Datetime.now(),
-        })
-        
+
+        self.write(
+            {
+                "state": "submitted",
+                "request_date": fields.Datetime.now(),
+            }
+        )
+
         # Auto-assign if enabled
         if self.auto_assign:
             self._auto_assign_request()
-        
+
         # Send notifications
         if self.auto_notify:
             self._send_submission_notification()
-        
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -437,16 +450,18 @@ class PortalRequest(models.Model):
     def action_approve_request(self):
         """Approve the request"""
         self.ensure_one()
-        self.write({
-            "state": "approved",
-            "approved": True,
-            "approved_by": self.env.user.id,
-            "approval_date": fields.Datetime.now(),
-        })
-        
+        self.write(
+            {
+                "state": "approved",
+                "approved": True,
+                "approved_by": self.env.user.id,
+                "approval_date": fields.Datetime.now(),
+            }
+        )
+
         # Notify customer of approval
         self._send_approval_notification()
-        
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -474,7 +489,7 @@ class PortalRequest(models.Model):
         """Start processing the request"""
         self.ensure_one()
         self.write({"state": "in_progress"})
-        
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -491,19 +506,21 @@ class PortalRequest(models.Model):
         self.ensure_one()
         if not self.resolution_notes:
             raise UserError(_("Please enter resolution notes before completing."))
-        
-        self.write({
-            "state": "completed",
-            "completion_date": fields.Datetime.now(),
-        })
-        
+
+        self.write(
+            {
+                "state": "completed",
+                "completion_date": fields.Datetime.now(),
+            }
+        )
+
         # Send completion notification
         self._send_completion_notification()
-        
+
         # Send satisfaction survey
         if not self.satisfaction_survey_sent:
             self._send_satisfaction_survey()
-        
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -549,7 +566,7 @@ class PortalRequest(models.Model):
         self.ensure_one()
         if not self.is_billable:
             raise UserError(_("This request is not billable."))
-        
+
         return {
             "type": "ir.actions.act_window",
             "name": _("Create Invoice"),
@@ -584,21 +601,27 @@ class PortalRequest(models.Model):
     def _send_submission_notification(self):
         """Send notification when request is submitted"""
         for record in self:
-            template = self.env.ref("records_management.mail_template_request_submission", False)
+            template = self.env.ref(
+                "records_management.mail_template_request_submission", False
+            )
             if template and record.partner_id.email:
                 template.send_mail(record.id, force_send=True)
 
     def _send_approval_notification(self):
         """Send notification when request is approved"""
         for record in self:
-            template = self.env.ref("records_management.mail_template_request_approval", False)
+            template = self.env.ref(
+                "records_management.mail_template_request_approval", False
+            )
             if template and record.partner_id.email:
                 template.send_mail(record.id, force_send=True)
 
     def _send_completion_notification(self):
         """Send notification when request is completed"""
         for record in self:
-            template = self.env.ref("records_management.mail_template_request_completion", False)
+            template = self.env.ref(
+                "records_management.mail_template_request_completion", False
+            )
             if template and record.partner_id.email:
                 template.send_mail(record.id, force_send=True)
                 record.customer_notified = True
@@ -607,7 +630,9 @@ class PortalRequest(models.Model):
     def _send_satisfaction_survey(self):
         """Send customer satisfaction survey"""
         for record in self:
-            survey_template = self.env.ref("records_management.mail_template_satisfaction_survey", False)
+            survey_template = self.env.ref(
+                "records_management.mail_template_satisfaction_survey", False
+            )
             if survey_template and record.partner_id.email:
                 survey_template.send_mail(record.id, force_send=True)
                 record.satisfaction_survey_sent = True
@@ -623,10 +648,12 @@ class PortalRequest(models.Model):
             if record.request_date and record.due_date:
                 if record.due_date < record.request_date:
                     raise ValidationError(_("Due date cannot be before request date."))
-            
+
             if record.request_date and record.completion_date:
                 if record.completion_date < record.request_date:
-                    raise ValidationError(_("Completion date cannot be before request date."))
+                    raise ValidationError(
+                        _("Completion date cannot be before request date.")
+                    )
 
     @api.constrains("estimated_cost", "actual_cost")
     def _check_positive_costs(self):
@@ -645,14 +672,16 @@ class PortalRequest(models.Model):
     def create(self, vals):
         """Override create to set defaults and generate sequence"""
         if not vals.get("name"):
-            vals["name"] = self.env["ir.sequence"].next_by_code("portal.request") or _("New")
-        
+            vals["name"] = self.env["ir.sequence"].next_by_code("portal.request") or _(
+                "New"
+            )
+
         # Set contact information from partner if not provided
         if vals.get("partner_id") and not vals.get("contact_email"):
             partner = self.env["res.partner"].browse(vals["partner_id"])
             vals["contact_email"] = partner.email
             vals["contact_phone"] = partner.phone
-        
+
         return super().create(vals)
 
     def write(self, vals):
@@ -662,7 +691,8 @@ class PortalRequest(models.Model):
                 old_state = dict(record._fields["state"].selection).get(record.state)
                 new_state = dict(record._fields["state"].selection).get(vals["state"])
                 record.message_post(
-                    body=_("Request status changed from %s to %s") % (old_state, new_state)
+                    body=_("Request status changed from %s to %s")
+                    % (old_state, new_state)
                 )
-        
+
         return super().write(vals)

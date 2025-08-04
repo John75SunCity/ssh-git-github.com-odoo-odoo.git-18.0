@@ -14,7 +14,9 @@ class TransitoryFieldConfig(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
 
-    name = fields.Char(string="Configuration Name", required=True, tracking=True, index=True)
+    name = fields.Char(
+        string="Configuration Name", required=True, tracking=True, index=True
+    )
     code = fields.Char(string="Configuration Code", index=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
@@ -86,12 +88,10 @@ class TransitoryFieldConfig(models.Model):
     customer_id = fields.Many2one("res.partner", string="Customer")
     department_id = fields.Many2one("hr.department", string="Department")
     user_customization_allowed = fields.Boolean(
-        string="Allow User Customization", 
-        default=True
+        string="Allow User Customization", default=True
     )
     permission_based_visibility = fields.Boolean(
-        string="Permission Based Visibility", 
-        default=False
+        string="Permission Based Visibility", default=False
     )
 
     # ============================================================================
@@ -101,7 +101,9 @@ class TransitoryFieldConfig(models.Model):
     # Document & Records Requirements
     require_client_reference = fields.Boolean(string="Client Reference", default=False)
     require_container_number = fields.Boolean(string="Container Number", default=True)
-    require_content_description = fields.Boolean(string="Content Description", default=True)
+    require_content_description = fields.Boolean(
+        string="Content Description", default=True
+    )
     require_document_type = fields.Boolean(string="Document Type", default=False)
     require_record_type = fields.Boolean(string="Record Type", default=True)
     require_description = fields.Boolean(string="Description", default=True)
@@ -117,7 +119,9 @@ class TransitoryFieldConfig(models.Model):
     require_destruction_date = fields.Boolean(string="Destruction Date", default=False)
 
     # Security & Compliance Requirements
-    require_confidentiality = fields.Boolean(string="Confidentiality Level", default=False)
+    require_confidentiality = fields.Boolean(
+        string="Confidentiality Level", default=False
+    )
     require_security_level = fields.Boolean(string="Security Level", default=False)
     require_retention_policy = fields.Boolean(string="Retention Policy", default=False)
 
@@ -203,7 +207,9 @@ class TransitoryFieldConfig(models.Model):
     validation_date = fields.Datetime(string="Validation Date")
 
     # Documentation
-    documentation_complete = fields.Boolean(string="Documentation Complete", default=False)
+    documentation_complete = fields.Boolean(
+        string="Documentation Complete", default=False
+    )
     notes = fields.Text(string="Configuration Notes")
 
     # ============================================================================
@@ -216,8 +222,7 @@ class TransitoryFieldConfig(models.Model):
 
     # Related Configurations
     field_label_config_id = fields.Many2one(
-        "field.label.customization", 
-        string="Field Label Configuration"
+        "field.label.customization", string="Field Label Configuration"
     )
     parent_config_id = fields.Many2one(
         "transitory.field.config",
@@ -238,7 +243,7 @@ class TransitoryFieldConfig(models.Model):
 
     # Configuration Lifecycle
     created_date = fields.Datetime(
-        string="Created Date", 
+        string="Created Date",
         default=fields.Datetime.now,
         readonly=True,
     )
@@ -262,7 +267,7 @@ class TransitoryFieldConfig(models.Model):
         store=True,
     )
     performance_score = fields.Float(
-        string="Performance Score", 
+        string="Performance Score",
         digits=(5, 2),
         compute="_compute_performance_metrics",
         store=True,
@@ -324,16 +329,20 @@ class TransitoryFieldConfig(models.Model):
             if record.config_preset:
                 parts.append(f"({record.config_preset.title()})")
             if record.target_model:
-                model_name = dict(record._fields["target_model"].selection).get(record.target_model)
+                model_name = dict(record._fields["target_model"].selection).get(
+                    record.target_model
+                )
                 parts.append(f"- {model_name}")
             record.display_name = " ".join(parts)
 
-    @api.depends("mandatory_fields_list", "readonly_fields_list", "field_visibility_rules")
+    @api.depends(
+        "mandatory_fields_list", "readonly_fields_list", "field_visibility_rules"
+    )
     def _compute_complexity_metrics(self):
         """Compute configuration complexity score"""
         for record in self:
             complexity = 0.0
-            
+
             # Base complexity from field requirements
             field_requirements = [
                 record.require_client_reference,
@@ -346,7 +355,7 @@ class TransitoryFieldConfig(models.Model):
                 record.require_security_level,
             ]
             complexity += sum(field_requirements) * 0.1
-            
+
             # Additional complexity from custom configurations
             if record.custom_field_definitions:
                 complexity += 0.5
@@ -354,7 +363,7 @@ class TransitoryFieldConfig(models.Model):
                 complexity += 0.3
             if record.data_validation_rules:
                 complexity += 0.2
-            
+
             record.complexity_score = min(complexity, 10.0)  # Cap at 10.0
 
     @api.depends("quality_score", "validation_required", "documentation_complete")
@@ -362,11 +371,11 @@ class TransitoryFieldConfig(models.Model):
         """Compute configuration health score"""
         for record in self:
             health = 0.0
-            
+
             # Quality score contribution (40%)
             if record.quality_score:
                 health += (record.quality_score / 10.0) * 4.0
-            
+
             # Validation status (30%)
             if record.validation_required:
                 if record.validated_by_id and record.validation_date:
@@ -375,13 +384,13 @@ class TransitoryFieldConfig(models.Model):
                     health += 1.0  # Penalty for required but not validated
             else:
                 health += 3.0  # No validation required is good
-            
+
             # Documentation completeness (30%)
             if record.documentation_complete:
                 health += 3.0
             elif record.notes:
                 health += 1.5  # Partial documentation
-            
+
             record.health_score = min(health, 10.0)
 
     @api.depends("child_config_ids")
@@ -398,12 +407,14 @@ class TransitoryFieldConfig(models.Model):
         for record in self:
             # Calculate performance based on usage, health, and complexity
             if record.complexity_score > 0:
-                performance = (record.health_score * record.usage_count) / record.complexity_score
+                performance = (
+                    record.health_score * record.usage_count
+                ) / record.complexity_score
             else:
                 performance = record.health_score
-            
+
             record.performance_score = min(performance, 100.0)
-            
+
             # Determine efficiency rating
             if performance >= 8.0:
                 record.efficiency_rating = "excellent"
@@ -421,11 +432,15 @@ class TransitoryFieldConfig(models.Model):
     def action_activate_config(self):
         """Activate the configuration"""
         self.ensure_one()
-        if not self.validation_required or (self.validated_by_id and self.validation_date):
-            self.write({
-                "state": "active",
-                "activation_date": fields.Datetime.now(),
-            })
+        if not self.validation_required or (
+            self.validated_by_id and self.validation_date
+        ):
+            self.write(
+                {
+                    "state": "active",
+                    "activation_date": fields.Datetime.now(),
+                }
+            )
             return {
                 "type": "ir.actions.client",
                 "tag": "display_notification",
@@ -441,12 +456,14 @@ class TransitoryFieldConfig(models.Model):
     def action_validate_config(self):
         """Validate the configuration"""
         self.ensure_one()
-        self.write({
-            "validated_by_id": self.env.user.id,
-            "validation_date": fields.Datetime.now(),
-            "quality_checked": True,
-        })
-        
+        self.write(
+            {
+                "validated_by_id": self.env.user.id,
+                "validation_date": fields.Datetime.now(),
+                "quality_checked": True,
+            }
+        )
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -479,13 +496,11 @@ class TransitoryFieldConfig(models.Model):
         self.ensure_one()
         if self.state != "active":
             raise UserError(_("Only active configurations can be applied."))
-        
+
         # This would implement the actual application logic
         # For now, just mark as applied
-        self.message_post(
-            body=_("Configuration applied to %s") % self.target_model
-        )
-        
+        self.message_post(body=_("Configuration applied to %s") % self.target_model)
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -500,21 +515,25 @@ class TransitoryFieldConfig(models.Model):
         """Schedule next configuration review"""
         self.ensure_one()
         next_review = fields.Date.today() + fields.timedelta(days=self.review_frequency)
-        
-        self.write({
-            "last_review_date": fields.Date.today(),
-            "next_review_date": next_review,
-        })
-        
+
+        self.write(
+            {
+                "last_review_date": fields.Date.today(),
+                "next_review_date": next_review,
+            }
+        )
+
         # Create calendar event for review
-        self.env["calendar.event"].create({
-            "name": f"Configuration Review - {self.name}",
-            "start": next_review,
-            "allday": True,
-            "user_id": self.user_id.id,
-            "description": f"Scheduled review for configuration {self.name}",
-        })
-        
+        self.env["calendar.event"].create(
+            {
+                "name": f"Configuration Review - {self.name}",
+                "start": next_review,
+                "allday": True,
+                "user_id": self.user_id.id,
+                "description": f"Scheduled review for configuration {self.name}",
+            }
+        )
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -535,13 +554,17 @@ class TransitoryFieldConfig(models.Model):
         for record in self:
             if record.expiry_date and record.activation_date:
                 if record.expiry_date <= record.activation_date:
-                    raise ValidationError(_("Expiry date must be after activation date."))
+                    raise ValidationError(
+                        _("Expiry date must be after activation date.")
+                    )
 
     @api.constrains("parent_config_id")
     def _check_parent_recursion(self):
         """Prevent recursive parent relationships"""
         if not self._check_recursion():
-            raise ValidationError(_("You cannot create recursive configuration hierarchies."))
+            raise ValidationError(
+                _("You cannot create recursive configuration hierarchies.")
+            )
 
     # ============================================================================
     # LIFECYCLE METHODS
@@ -551,14 +574,16 @@ class TransitoryFieldConfig(models.Model):
     def create(self, vals):
         """Override create to set defaults"""
         if not vals.get("code"):
-            vals["code"] = self.env["ir.sequence"].next_by_code("transitory.field.config") or "TFC"
-        
+            vals["code"] = (
+                self.env["ir.sequence"].next_by_code("transitory.field.config") or "TFC"
+            )
+
         # Set next review date if not provided
         if not vals.get("next_review_date") and vals.get("review_frequency"):
             vals["next_review_date"] = fields.Date.today() + fields.timedelta(
                 days=vals["review_frequency"]
             )
-        
+
         return super().create(vals)
 
     def write(self, vals):
@@ -568,10 +593,11 @@ class TransitoryFieldConfig(models.Model):
                 old_state = dict(record._fields["state"].selection).get(record.state)
                 new_state = dict(record._fields["state"].selection).get(vals["state"])
                 record.message_post(
-                    body=_("Configuration status changed from %s to %s") % (old_state, new_state)
+                    body=_("Configuration status changed from %s to %s")
+                    % (old_state, new_state)
                 )
-        
+
         # Update timestamp when configuration changes
         vals["updated_date"] = fields.Datetime.now()
-        
+
         return super().write(vals)
