@@ -539,6 +539,78 @@ class RecordsContainer(models.Model):
         help="Estimated value of container contents",
     )
 
+    # ============================================================================
+    # MISSING FIELDS FROM SMART GAP ANALYSIS - RECORDS CONTAINER ENHANCEMENT
+    # ============================================================================
+
+    # Movement and Service Management
+    movement_type = fields.Selection([
+        ('inbound', 'Inbound'),
+        ('outbound', 'Outbound'), 
+        ('internal', 'Internal Transfer'),
+        ('storage', 'Storage Movement'),
+        ('retrieval', 'Retrieval Movement')
+    ], string="Movement Type", tracking=True)
+    
+    priority = fields.Selection([
+        ('low', 'Low'),
+        ('normal', 'Normal'),
+        ('high', 'High'),
+        ('urgent', 'Urgent')
+    ], string="Priority", default='normal', tracking=True)
+    
+    request_date = fields.Date(
+        string="Request Date",
+        tracking=True,
+        help="Date when service was requested"
+    )
+    
+    # Policy and Service Management
+    retention_policy_id = fields.Many2one(
+        "records.retention.policy",
+        string="Retention Policy",
+        tracking=True,
+        help="Records retention policy applied to this container"
+    )
+    
+    service_request_ids = fields.One2many(
+        "portal.request",
+        "container_id",
+        string="Service Requests",
+        help="Service requests related to this container"
+    )
+    
+    # Additional Business Fields
+    total_weight = fields.Float(
+        string="Total Weight",
+        compute="_compute_total_weight_enhanced",
+        store=True,
+        help="Total weight including container and all contents"
+    )
+    
+    volume_utilization = fields.Float(
+        string="Volume Utilization (%)",
+        compute="_compute_volume_utilization",
+        store=True,
+        digits=(5, 2),
+        help="Percentage of volume being utilized"
+    )
+    
+    cost_per_cubic_foot = fields.Monetary(
+        string="Cost per Cubic Foot",
+        currency_field="currency_id",
+        compute="_compute_cost_metrics",
+        store=True,
+        help="Storage cost per cubic foot"
+    )
+    
+    retention_end_date = fields.Date(
+        string="Retention End Date",
+        compute="_compute_retention_dates",
+        store=True,
+        help="Date when retention period ends"
+    )
+
     # ============ COMPUTE METHODS ============
 
     @api.depends("length", "width", "height")
@@ -692,6 +764,52 @@ class RecordsContainer(models.Model):
                 ) * 100
             else:
                 record.current_usage = 0.0
+
+    # ============================================================================
+    # NEW COMPUTE METHODS FOR ENHANCED FUNCTIONALITY
+    # ============================================================================
+
+    @api.depends("weight_current", "document_ids", "document_ids.weight")
+    def _compute_total_weight_enhanced(self):
+        """Enhanced total weight calculation"""
+        for record in self:
+            container_weight = record.weight_empty or 0.0
+            document_weight = sum(record.document_ids.mapped("weight") or [0.0])
+            record.total_weight = container_weight + document_weight
+
+    @api.depends("volume", "document_ids")  
+    def _compute_volume_utilization(self):
+        """Compute volume utilization percentage"""
+        for record in self:
+            if record.volume and record.volume > 0:
+                # Estimate volume used based on document count and average volume per document
+                avg_doc_volume = 0.1  # cubic inches per document (estimated)
+                used_volume = len(record.document_ids) * avg_doc_volume
+                record.volume_utilization = min(100.0, (used_volume / record.volume) * 100)
+            else:
+                record.volume_utilization = 0.0
+
+    @api.depends("storage_cost_monthly", "volume_cubic_feet")
+    def _compute_cost_metrics(self):
+        """Compute cost per cubic foot"""
+        for record in self:
+            if record.volume_cubic_feet and record.volume_cubic_feet > 0:
+                record.cost_per_cubic_foot = (record.storage_cost_monthly or 0.0) / record.volume_cubic_feet
+            else:
+                record.cost_per_cubic_foot = 0.0
+
+    @api.depends("retention_policy_id", "stored_date")
+    def _compute_retention_dates(self):
+        """Compute retention end date based on policy"""
+        for record in self:
+            if record.retention_policy_id and record.stored_date:
+                years_to_add = record.retention_policy_id.retention_period_years or 0
+                if years_to_add > 0:
+                    record.retention_end_date = fields.Date.add(record.stored_date, years=years_to_add)
+                else:
+                    record.retention_end_date = False
+            else:
+                record.retention_end_date = False
 
     # ============ ONCHANGE METHODS ============
 
