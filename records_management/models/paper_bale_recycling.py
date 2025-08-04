@@ -53,19 +53,16 @@ class PaperBaleRecycling(models.Model):
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
 
     # Business Process Fields
@@ -146,6 +143,77 @@ class PaperBaleRecycling(models.Model):
         string="Quality Grade",
         default="standard",
         tracking=True,
+    )
+
+    # ============================================================================
+    # MISSING FIELDS FROM SMART GAP ANALYSIS - PAPER BALE RECYCLING ENHANCEMENT
+    # ============================================================================
+
+    # Load and Shipment Management
+    load_shipment_id = fields.Many2one(
+        "paper.load.shipment",
+        string="Load Shipment",
+        tracking=True,
+        help="Associated load shipment for this bale"
+    )
+    
+    # Environmental and Quality Control
+    moisture_level = fields.Float(
+        string="Moisture Level (%)",
+        digits=(5, 2),
+        tracking=True,
+        help="Moisture content percentage in the bale"
+    )
+    
+    # Processing Status
+    processed_from_service = fields.Selection([
+        ('pickup', 'Pickup Service'),
+        ('delivery', 'Delivery Service'),
+        ('processing', 'Processing Service'),
+        ('recycling', 'Recycling Service'),
+        ('disposal', 'Disposal Service')
+    ], string="Processed From Service", tracking=True)
+    
+    # Scale and Measurement
+    scale_reading = fields.Float(
+        string="Scale Reading",
+        digits=(10, 2),
+        help="Raw scale reading for this bale"
+    )
+    
+    # Processing Status
+    status = fields.Selection([
+        ('received', 'Received'),
+        ('inspected', 'Inspected'),
+        ('processed', 'Processed'),
+        ('shipped', 'Shipped'),
+        ('recycled', 'Recycled')
+    ], string="Processing Status", default='received', tracking=True)
+    
+    # Additional Business Fields
+    contamination_type = fields.Selection([
+        ('plastic', 'Plastic'),
+        ('metal', 'Metal'),
+        ('organic', 'Organic Matter'),
+        ('mixed', 'Mixed Contamination'),
+        ('other', 'Other')
+    ], string="Contamination Type", tracking=True)
+    
+    processing_facility = fields.Char(
+        string="Processing Facility",
+        help="Name of the facility where this bale was processed"
+    )
+    
+    recycling_grade = fields.Selection([
+        ('a', 'Grade A'),
+        ('b', 'Grade B'),
+        ('c', 'Grade C'),
+        ('reject', 'Reject')
+    ], string="Recycling Grade", default='b', tracking=True)
+    
+    final_destination = fields.Char(
+        string="Final Destination",
+        help="Final destination where the recycled material was sent"
     )
 
     moisture_content = fields.Float(
