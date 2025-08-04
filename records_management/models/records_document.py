@@ -147,6 +147,9 @@ class RecordsDocument(models.Model):
     location_id = fields.Many2one(
         "records.location", string="Storage Location", tracking=True
     )
+    retrieval_work_order_id = fields.Many2one(
+        "document.retrieval.work.order", string="Retrieval Work Order", tracking=True
+    )
     box_number = fields.Char(string="Box Number", tracking=True)
     shelf_location = fields.Char(string="Shelf Location", tracking=True)
     barcode = fields.Char(string="Document Barcode", tracking=True)
