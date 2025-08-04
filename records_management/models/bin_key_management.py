@@ -246,73 +246,74 @@ class BinKeyManagement(models.Model):
         "res.partner",
         string="Partner",
         tracking=True,
-        help="Partner associated with this key management record"
+        help="Partner associated with this key management record",
     )
-    
+
     # Key Replacement Tracking
     replaced_by_id = fields.Many2one(
-        "bin.key.management",
-        string="Replaced By",
-        help="Record that replaced this key"
+        "bin.key.management", string="Replaced By", help="Record that replaced this key"
     )
-    
+
     replacement_of_id = fields.Many2one(
-        "bin.key.management", 
+        "bin.key.management",
         string="Replacement Of",
-        help="Original key that this record replaces"
+        help="Original key that this record replaces",
     )
-    
+
     # Service Date Management
     return_date = fields.Date(
-        string="Return Date",
-        tracking=True,
-        help="Date when the key was returned"
+        string="Return Date", tracking=True, help="Date when the key was returned"
     )
-    
+
     service_date = fields.Date(
-        string="Service Date",
-        tracking=True,
-        help="Date when key service was performed"
+        string="Service Date", tracking=True, help="Date when key service was performed"
     )
-    
+
     # Key Management Status
-    status = fields.Selection([
-        ('available', 'Available'),
-        ('issued', 'Issued'),
-        ('returned', 'Returned'),
-        ('lost', 'Lost'),
-        ('replaced', 'Replaced')
-    ], string="Key Status", default='available', tracking=True)
-    
-    # Service Documentation
-    service_type = fields.Selection([
-        ('issue', 'Key Issue'),
-        ('return', 'Key Return'),
-        ('replacement', 'Key Replacement'),
-        ('maintenance', 'Key Maintenance')
-    ], string="Service Type", default='issue', tracking=True)
-    
-    service_notes = fields.Text(
-        string="Service Notes",
-        help="Detailed notes about the key service performed"
+    status = fields.Selection(
+        [
+            ("available", "Available"),
+            ("issued", "Issued"),
+            ("returned", "Returned"),
+            ("lost", "Lost"),
+            ("replaced", "Replaced"),
+        ],
+        string="Key Status",
+        default="available",
+        tracking=True,
     )
-    
+
+    # Service Documentation
+    service_type = fields.Selection(
+        [
+            ("issue", "Key Issue"),
+            ("return", "Key Return"),
+            ("replacement", "Key Replacement"),
+            ("maintenance", "Key Maintenance"),
+        ],
+        string="Service Type",
+        default="issue",
+        tracking=True,
+    )
+
+    service_notes = fields.Text(
+        string="Service Notes", help="Detailed notes about the key service performed"
+    )
+
     # Security and Access Control
     security_code = fields.Char(
-        string="Security Code",
-        help="Internal security code for this key"
+        string="Security Code", help="Internal security code for this key"
     )
-    
+
     access_restrictions = fields.Text(
-        string="Access Restrictions",
-        help="Special access restrictions or requirements"
+        string="Access Restrictions", help="Special access restrictions or requirements"
     )
-    
+
     # Financial Tracking
     service_fee = fields.Monetary(
         string="Service Fee",
         currency_field="currency_id",
-        help="Fee charged for this key service"
+        help="Fee charged for this key service",
     )
     # Bin Key Management Fields
     billable = fields.Boolean("Billable", default=True)

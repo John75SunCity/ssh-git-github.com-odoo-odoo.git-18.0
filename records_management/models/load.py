@@ -373,6 +373,81 @@ class Load(models.Model):
     created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
     updated_date = fields.Datetime(string="Updated Date")
 
+    # ============================================================================
+    # MISSING FIELDS FROM SMART GAP ANALYSIS - LOAD ENHANCEMENT
+    # ============================================================================
+
+    # Route and Logistics Management
+    route_code = fields.Char(
+        string="Route Code", tracking=True, help="Code identifying the delivery route"
+    )
+
+    # Contract and Sales Management
+    sales_contract_number = fields.Char(
+        string="Sales Contract Number",
+        tracking=True,
+        help="Reference number for the sales contract",
+    )
+
+    # Delivery Instructions
+    special_delivery_instructions = fields.Text(
+        string="Special Delivery Instructions",
+        help="Special instructions for delivery personnel",
+    )
+
+    # Communication and Documentation
+    subject = fields.Char(
+        string="Load Subject", help="Brief description or subject line for this load"
+    )
+
+    # Transportation Management
+    transport_company = fields.Many2one(
+        "res.partner",
+        string="Transport Company",
+        tracking=True,
+        help="Company responsible for transportation",
+    )
+
+    # Additional Business Fields
+    load_category = fields.Selection(
+        [
+            ("standard", "Standard Load"),
+            ("express", "Express Load"),
+            ("bulk", "Bulk Load"),
+            ("special", "Special Handling"),
+        ],
+        string="Load Category",
+        default="standard",
+        tracking=True,
+    )
+
+    delivery_confirmation = fields.Boolean(
+        string="Delivery Confirmation",
+        default=False,
+        help="Whether delivery has been confirmed",
+    )
+
+    load_status = fields.Selection(
+        [
+            ("preparing", "Preparing"),
+            ("loading", "Loading"),
+            ("in_transit", "In Transit"),
+            ("delivered", "Delivered"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Load Status",
+        default="preparing",
+        tracking=True,
+    )
+
+    estimated_arrival = fields.Datetime(
+        string="Estimated Arrival", help="Estimated arrival time at destination"
+    )
+
+    delivery_notes = fields.Text(
+        string="Delivery Notes", help="Notes about the delivery process"
+    )
+
     @api.depends("name")
     def _compute_display_name(self):
         """Compute display name."""

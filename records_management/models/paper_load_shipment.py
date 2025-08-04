@@ -359,6 +359,71 @@ class PaperLoadShipment(models.Model):
         [("clean", "Clean"), ("light", "Light"), ("heavy", "Heavy")],
         string="Contamination Level",
     )
+
+    # ============================================================================
+    # MISSING FIELDS FROM SMART GAP ANALYSIS - PAPER LOAD SHIPMENT ENHANCEMENT
+    # ============================================================================
+
+    # Payment and Financial Management
+    payment_notes = fields.Text(
+        string="Payment Notes", help="Notes regarding payment terms and conditions"
+    )
+
+    payment_received_date = fields.Date(
+        string="Payment Received Date",
+        tracking=True,
+        help="Date when payment was received",
+    )
+
+    # Timing and Scheduling
+    pickup_time = fields.Datetime(
+        string="Pickup Time", tracking=True, help="Actual time of pickup"
+    )
+
+    production_date = fields.Date(
+        string="Production Date",
+        tracking=True,
+        help="Date when shipment was produced/prepared",
+    )
+
+    # Signature and Confirmation
+    signed_by = fields.Many2one(
+        "res.users",
+        string="Signed By",
+        tracking=True,
+        help="User who signed for the shipment",
+    )
+
+    # Delivery and Receipt Management
+    delivery_receipt = fields.Binary(
+        string="Delivery Receipt", help="Digital copy of delivery receipt"
+    )
+
+    delivery_confirmation_date = fields.Datetime(
+        string="Delivery Confirmation Date",
+        tracking=True,
+        help="Date and time when delivery was confirmed",
+    )
+
+    # Shipment References
+    shipment_reference = fields.Char(
+        string="Shipment Reference", help="External reference number for this shipment"
+    )
+
+    # Processing Status
+    processing_status = fields.Selection(
+        [
+            ("pending", "Pending Processing"),
+            ("in_process", "In Process"),
+            ("completed", "Processing Completed"),
+            ("quality_check", "Quality Check"),
+            ("approved", "Approved"),
+        ],
+        string="Processing Status",
+        default="pending",
+        tracking=True,
+    )
+
     price_per_ton = fields.Monetary(
         string="Price per Ton", currency_field="currency_id"
     )
