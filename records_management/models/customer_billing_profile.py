@@ -349,6 +349,108 @@ class CustomerBillingProfile(models.Model):
             # For now, just set to False - implement date calculation as needed
             record.next_storage_billing_date = False
 
+    # === ADDITIONAL COMPUTE METHODS ===
+
+    @api.depends("partner_id")
+    def _compute_current_balance(self):
+        """Compute current outstanding balance for customer"""
+        for record in self:
+            if record.partner_id:
+                # Get outstanding invoice balance
+                invoices = self.env["account.move"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("state", "=", "posted"),
+                        ("payment_state", "in", ["not_paid", "partial"]),
+                    ]
+                )
+                record.current_balance = sum(invoices.mapped("amount_residual"))
+            else:
+                record.current_balance = 0.0
+
+    @api.depends("partner_id")
+    def _compute_billing_analytics(self):
+        """Compute billing analytics metrics"""
+        for record in self:
+            if record.partner_id:
+                # Calculate average monthly revenue from last 12 months
+                from datetime import datetime, timedelta
+
+                twelve_months_ago = datetime.now() - timedelta(days=365)
+
+                invoices = self.env["account.move"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("state", "=", "posted"),
+                        ("invoice_date", ">=", twelve_months_ago.date()),
+                    ]
+                )
+
+                if invoices:
+                    total_revenue = sum(invoices.mapped("amount_total"))
+                    record.average_monthly_revenue = total_revenue / 12
+                else:
+                    record.average_monthly_revenue = 0.0
+
+                # Calculate YTD total
+                year_start = datetime.now().replace(month=1, day=1).date()
+                ytd_invoices = self.env["account.move"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("state", "=", "posted"),
+                        ("invoice_date", ">=", year_start),
+                    ]
+                )
+                record.total_billed_ytd = sum(ytd_invoices.mapped("amount_total"))
+            else:
+                record.average_monthly_revenue = 0.0
+                record.total_billed_ytd = 0.0
+
+    @api.depends("partner_id", "last_payment_date")
+    def _compute_payment_reliability(self):
+        """Compute payment reliability score based on payment history"""
+        for record in self:
+            if record.partner_id:
+                # Get payment history from last 12 months
+                from datetime import datetime, timedelta
+
+                twelve_months_ago = datetime.now() - timedelta(days=365)
+
+                invoices = self.env["account.move"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("state", "=", "posted"),
+                        ("invoice_date", ">=", twelve_months_ago.date()),
+                    ]
+                )
+
+                if invoices:
+                    on_time_payments = 0
+                    total_payments = 0
+
+                    for invoice in invoices:
+                        if invoice.payment_state == "paid":
+                            total_payments += 1
+                            # Check if paid within due date
+                            if invoice.invoice_date_due and invoice.date:
+                                days_to_pay = (
+                                    invoice.date - invoice.invoice_date_due
+                                ).days
+                                if days_to_pay <= 0:  # Paid on time or early
+                                    on_time_payments += 1
+
+                    if total_payments > 0:
+                        reliability_ratio = on_time_payments / total_payments
+                        record.payment_reliability_score = reliability_ratio * 10
+                    else:
+                        record.payment_reliability_score = 5.0  # Neutral score
+                else:
+                    record.payment_reliability_score = (
+                        5.0  # Neutral score for new customers
+                    )
+            else:
+                record.payment_reliability_score = 0.0
+
     # ==========================================
     # WORKFLOW MANAGEMENT
     # ==========================================
