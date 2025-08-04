@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 
 class DocumentRetrievalWorkOrder(models.Model):
@@ -14,19 +14,12 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-
     name = fields.Char(string="Work Order #", required=True, tracking=True, index=True)
     reference = fields.Char(string="Reference", index=True, tracking=True)
     description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10)
     active = fields.Boolean(string="Active", default=True)
-
-    # Framework Required Fields
     company_id = fields.Many2one(
-        "res.company",
-        string="Company",
-        default=lambda self: self.env.company,
-        required=True,
+        "res.company", default=lambda self: self.env.company, required=True
     )
     user_id = fields.Many2one(
         "res.users",
@@ -35,7 +28,6 @@ class DocumentRetrievalWorkOrder(models.Model):
         tracking=True,
     )
 
-    # State Management
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -52,8 +44,6 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     # CUSTOMER & REQUEST DETAILS
     # ============================================================================
-
-    # Customer Information
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
     )
@@ -64,7 +54,6 @@ class DocumentRetrievalWorkOrder(models.Model):
     customer_phone = fields.Char(string="Phone", related="partner_id.phone", store=True)
     customer_email = fields.Char(string="Email", related="partner_id.email", store=True)
 
-    # Request Classification
     request_type = fields.Selection(
         [
             ("retrieval", "Document Retrieval"),
@@ -95,21 +84,16 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     # DOCUMENT & LOCATION DETAILS
     # ============================================================================
-
-    # Document Information
     document_id = fields.Many2one("records.document", string="Document", tracking=True)
     document_type = fields.Char(string="Document Type")
     document_description = fields.Text(string="Document Description")
     box_id = fields.Many2one("records.container", string="Storage Box", tracking=True)
-
-    # Location Information
     location_id = fields.Many2one(
         "records.location", string="Storage Location", tracking=True
     )
     current_location = fields.Char(string="Current Location")
     retrieval_location = fields.Char(string="Retrieval Location")
 
-    # Item Details
     item_type = fields.Selection(
         [
             ("document", "Document"),
@@ -127,50 +111,25 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     # SCHEDULING & TIMING
     # ============================================================================
-
-    # Scheduling
     requested_date = fields.Datetime(
-        string="Requested Date",
-        required=True,
-        tracking=True,
+        string="Requested Date", required=True, tracking=True
     )
     scheduled_date = fields.Datetime(string="Scheduled Date", tracking=True)
     start_date = fields.Datetime(string="Start Date", tracking=True)
     completion_date = fields.Datetime(string="Completion Date", tracking=True)
     deadline = fields.Datetime(string="Deadline", tracking=True)
-
-    # Time Tracking
     estimated_hours = fields.Float(string="Estimated Hours", digits=(5, 2))
     actual_hours = fields.Float(string="Actual Hours", digits=(5, 2))
-
-    # Computed Time Metrics
-    processing_time = fields.Float(
-        string="Processing Time (Hours)",
-        compute="_compute_processing_metrics",
-        store=True,
-    )
-
-    is_overdue = fields.Boolean(
-        string="Overdue",
-        compute="_compute_overdue_status",
-        store=True,
-    )
 
     # ============================================================================
     # WORK ORDER EXECUTION
     # ============================================================================
-
-    # Work Instructions
     work_instructions = fields.Text(string="Work Instructions")
     special_requirements = fields.Text(string="Special Requirements")
     safety_notes = fields.Text(string="Safety Notes")
-
-    # Execution Details
     technician_notes = fields.Text(string="Technician Notes")
     completion_notes = fields.Text(string="Completion Notes")
     quality_check_notes = fields.Text(string="Quality Check Notes")
-
-    # Quality Control
     quality_approved = fields.Boolean(string="Quality Approved", default=False)
     quality_approved_by = fields.Many2one("res.users", string="Quality Approved By")
     quality_approval_date = fields.Datetime(string="Quality Approval Date")
@@ -178,29 +137,16 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     # COSTS & BILLING
     # ============================================================================
-
-    # Currency Configuration
     currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        default=lambda self: self.env.company.currency_id,
+        "res.currency", default=lambda self: self.env.company.currency_id
     )
-
-    # Cost Information
     estimated_cost = fields.Monetary(
-        string="Estimated Cost",
-        currency_field="currency_id",
+        string="Estimated Cost", currency_field="currency_id"
     )
-    actual_cost = fields.Monetary(
-        string="Actual Cost",
-        currency_field="currency_id",
-    )
+    actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id")
     billable_amount = fields.Monetary(
-        string="Billable Amount",
-        currency_field="currency_id",
+        string="Billable Amount", currency_field="currency_id"
     )
-
-    # Billing Status
     is_billable = fields.Boolean(string="Billable", default=True)
     invoiced = fields.Boolean(string="Invoiced", default=False)
     invoice_id = fields.Many2one("account.move", string="Invoice")
@@ -208,17 +154,11 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     # EQUIPMENT & RESOURCES
     # ============================================================================
-
-    # Equipment Requirements
     equipment_required = fields.Text(string="Equipment Required")
     vehicle_required = fields.Boolean(string="Vehicle Required", default=False)
     vehicle_id = fields.Many2one("records.vehicle", string="Assigned Vehicle")
-
-    # Tools and Supplies
     tools_required = fields.Text(string="Tools Required")
     supplies_needed = fields.Text(string="Supplies Needed")
-
-    # Team Assignment
     team_members = fields.Many2many(
         "res.users",
         "work_order_team_rel",
@@ -230,8 +170,6 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     # CUSTOMER INTERACTION
     # ============================================================================
-
-    # Communication
     customer_contacted = fields.Boolean(string="Customer Contacted", default=False)
     contact_method = fields.Selection(
         [
@@ -243,14 +181,12 @@ class DocumentRetrievalWorkOrder(models.Model):
         string="Contact Method",
     )
 
-    # Approval & Authorization
     customer_approval_required = fields.Boolean(
         string="Customer Approval Required", default=False
     )
     customer_approved = fields.Boolean(string="Customer Approved", default=False)
     approval_notes = fields.Text(string="Approval Notes")
 
-    # Delivery Information
     delivery_method = fields.Selection(
         [
             ("pickup", "Customer Pickup"),
@@ -269,27 +205,17 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-
-    # Related Records
     portal_request_id = fields.Many2one("portal.request", string="Portal Request")
     retrieval_items_ids = fields.One2many(
-        "document.retrieval.item",
-        "work_order_id",
-        string="Retrieval Items",
+        "document.retrieval.item", "work_order_id", string="Retrieval Items"
     )
-
-    # Project Integration
     project_id = fields.Many2one("project.project", string="Project")
     task_id = fields.Many2one("project.task", string="Related Task")
-
-    # Chain of Custody
     custody_log_ids = fields.One2many(
-        "records.chain.of.custody",
-        "work_order_id",
-        string="Chain of Custody",
+        "records.chain.of.custody", "work_order_id", string="Chain of Custody"
     )
 
-    # Mail Thread Framework Fields
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
@@ -297,8 +223,16 @@ class DocumentRetrievalWorkOrder(models.Model):
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
-    # COMPUTE METHODS
+    # COMPUTED FIELDS
     # ============================================================================
+    processing_time = fields.Float(
+        string="Processing Time (Hours)",
+        compute="_compute_processing_metrics",
+        store=True,
+    )
+    is_overdue = fields.Boolean(
+        string="Overdue", compute="_compute_overdue_status", store=True
+    )
 
     @api.depends("start_date", "completion_date")
     def _compute_processing_metrics(self):
@@ -324,53 +258,25 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-
     def action_schedule(self):
         """Schedule the work order"""
         self.ensure_one()
         if not self.scheduled_date:
             raise UserError(_("Please set a scheduled date before scheduling."))
 
-        self.write(
-            {
-                "state": "scheduled",
-            }
-        )
-
-        # Create calendar event for technician
+        self.write({"state": "scheduled"})
         self._create_calendar_event()
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Work Order Scheduled"),
-                "message": _("Work order has been scheduled successfully."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
+        return self._show_notification(
+            _("Work Order Scheduled"), _("Work order has been scheduled successfully.")
+        )
 
     def action_start_work(self):
         """Start work on the order"""
         self.ensure_one()
-        self.write(
-            {
-                "state": "in_progress",
-                "start_date": fields.Datetime.now(),
-            }
+        self.write({"state": "in_progress", "start_date": fields.Datetime.now()})
+        return self._show_notification(
+            _("Work Started"), _("Work order execution has begun.")
         )
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Work Started"),
-                "message": _("Work order execution has begun."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
 
     def action_complete_work(self):
         """Complete the work order"""
@@ -378,26 +284,11 @@ class DocumentRetrievalWorkOrder(models.Model):
         if not self.completion_notes:
             raise UserError(_("Please enter completion notes before completing."))
 
-        self.write(
-            {
-                "state": "completed",
-                "completion_date": fields.Datetime.now(),
-            }
-        )
-
-        # Notify customer of completion
+        self.write({"state": "completed", "completion_date": fields.Datetime.now()})
         self._notify_customer_completion()
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Work Completed"),
-                "message": _("Work order has been completed successfully."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
+        return self._show_notification(
+            _("Work Completed"), _("Work order has been completed successfully.")
+        )
 
     def action_quality_check(self):
         """Perform quality check"""
@@ -408,9 +299,7 @@ class DocumentRetrievalWorkOrder(models.Model):
             "res_model": "quality.check.wizard",
             "view_mode": "form",
             "target": "new",
-            "context": {
-                "default_work_order_id": self.id,
-            },
+            "context": {"default_work_order_id": self.id},
         }
 
     def action_view_retrieval_items(self):
@@ -447,6 +336,18 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     # PRIVATE METHODS
     # ============================================================================
+    def _show_notification(self, title, message):
+        """Show success notification"""
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": title,
+                "message": message,
+                "type": "success",
+                "sticky": False,
+            },
+        }
 
     def _create_calendar_event(self):
         """Create calendar event for scheduled work"""
@@ -477,7 +378,6 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
-
     @api.constrains("requested_date", "scheduled_date", "deadline")
     def _check_date_sequence(self):
         """Ensure dates are in logical sequence"""
@@ -487,33 +387,26 @@ class DocumentRetrievalWorkOrder(models.Model):
                     raise ValidationError(
                         _("Scheduled date cannot be before requested date.")
                     )
-
             if record.scheduled_date and record.deadline:
                 if record.deadline < record.scheduled_date:
                     raise ValidationError(
                         _("Deadline cannot be before scheduled date.")
                     )
 
-    @api.constrains("estimated_hours", "actual_hours")
-    def _check_hours_positive(self):
-        """Ensure hours are positive"""
+    @api.constrains("estimated_hours", "actual_hours", "item_count")
+    def _check_positive_values(self):
+        """Ensure numeric values are positive"""
         for record in self:
             if record.estimated_hours and record.estimated_hours <= 0:
                 raise ValidationError(_("Estimated hours must be positive."))
             if record.actual_hours and record.actual_hours < 0:
                 raise ValidationError(_("Actual hours cannot be negative."))
-
-    @api.constrains("item_count")
-    def _check_item_count_positive(self):
-        """Ensure item count is positive"""
-        for record in self:
             if record.item_count and record.item_count <= 0:
                 raise ValidationError(_("Item count must be positive."))
 
     # ============================================================================
     # LIFECYCLE METHODS
     # ============================================================================
-
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to set defaults and generate sequence"""
@@ -522,14 +415,9 @@ class DocumentRetrievalWorkOrder(models.Model):
                 vals["name"] = self.env["ir.sequence"].next_by_code(
                     "document.retrieval.work.order"
                 ) or _("New")
-
-            # Set default deadline if not provided
             if not vals.get("deadline") and vals.get("requested_date"):
                 requested = fields.Datetime.from_string(vals["requested_date"])
-                vals["deadline"] = requested + timedelta(
-                    days=7
-                )  # Default 7-day deadline
-
+                vals["deadline"] = requested + timedelta(days=7)
         return super().create(vals_list)
 
     def write(self, vals):
@@ -542,5 +430,4 @@ class DocumentRetrievalWorkOrder(models.Model):
                     body=_("Work order status changed from %s to %s")
                     % (old_state, new_state)
                 )
-
         return super().write(vals)
