@@ -336,9 +336,9 @@ class RecordsLocation(models.Model):
         string="Pickup Requests",
     )
     work_order_ids = fields.One2many(
-        "work.order",
+        "document.retrieval.work.order",
         "location_id",
-        string="Work Orders",
+        string="Document Retrieval Work Orders",
     )
 
     # Mail Thread Framework Fields

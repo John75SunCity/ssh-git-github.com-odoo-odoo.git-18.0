@@ -36,6 +36,9 @@ class PickupRequest(models.Model):
     help = fields.Char(string='Help')
     res_model = fields.Char(string='Res Model')
     view_mode = fields.Char(string='View Mode')
+    
+    # Location tracking
+    location_id = fields.Many2one("records.location", string="Pickup Location", tracking=True)
 
     def action_confirm(self):
         """Confirm the record"""
