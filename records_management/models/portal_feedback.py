@@ -148,6 +148,112 @@ class PortalFeedback(models.Model):
     escalation_reason = fields.Text(string="Escalation Reason")
     escalated_to = fields.Many2one("res.users", string="Escalated To")
 
+    # === CRITICAL MISSING FIELDS FROM VIEWS ===
+    satisfaction_level = fields.Selection(
+        [
+            ("very_unsatisfied", "Very Unsatisfied"),
+            ("unsatisfied", "Unsatisfied"),
+            ("neutral", "Neutral"),
+            ("satisfied", "Satisfied"),
+            ("very_satisfied", "Very Satisfied"),
+        ],
+        string="Satisfaction Level",
+        tracking=True,
+    )
+
+    response_time_rating = fields.Selection(
+        [
+            ("1", "Very Poor"),
+            ("2", "Poor"),
+            ("3", "Average"),
+            ("4", "Good"),
+            ("5", "Excellent"),
+        ],
+        string="Response Time Rating",
+    )
+
+    submission_date = fields.Datetime(
+        string="Submission Date", default=fields.Datetime.now, tracking=True
+    )
+
+    status = fields.Selection(
+        [
+            ("new", "New"),
+            ("reviewed", "Reviewed"),
+            ("responded", "Responded"),
+            ("escalated", "Escalated"),
+            ("closed", "Closed"),
+        ],
+        string="Status",
+        default="new",
+        tracking=True,
+    )
+
+    activity_state = fields.Selection(
+        [
+            ("today", "Today"),
+            ("overdue", "Overdue"),
+            ("planned", "Planned"),
+            ("done", "Done"),
+        ],
+        string="Activity State",
+        compute="_compute_activity_state",
+    )
+
+    # === ADDITIONAL MISSING FIELDS FROM GAP ANALYSIS ===
+    improvement_opportunity = fields.Text(
+        string="Improvement Opportunity",
+        help="Identified opportunities for improvement",
+    )
+    improvement_suggestions = fields.Text(
+        string="Improvement Suggestions", help="Specific suggestions for improvement"
+    )
+    internal_actions = fields.Text(
+        string="Internal Actions", help="Internal actions taken based on feedback"
+    )
+    keyword_tags = fields.Char(
+        string="Keyword Tags", help="Keywords for categorizing feedback"
+    )
+    likelihood_to_recommend = fields.Selection(
+        [
+            ("0", "0 - Very Unlikely"),
+            ("1", "1"),
+            ("2", "2"),
+            ("3", "3"),
+            ("4", "4"),
+            ("5", "5"),
+            ("6", "6"),
+            ("7", "7"),
+            ("8", "8"),
+            ("9", "9"),
+            ("10", "10 - Very Likely"),
+        ],
+        string="Likelihood to Recommend (NPS)",
+        help="Net Promoter Score rating",
+    )
+
+    @api.depends("activity_ids")
+    def _compute_activity_state(self):
+        """Compute activity state based on activities"""
+        for record in self:
+            if record.activity_ids:
+                today = fields.Date.today()
+                overdue = record.activity_ids.filtered(
+                    lambda a: a.date_deadline < today
+                )
+                today_activities = record.activity_ids.filtered(
+                    lambda a: a.date_deadline == today
+                )
+
+                if overdue:
+                    record.activity_state = "overdue"
+                elif today_activities:
+                    record.activity_state = "today"
+                else:
+                    record.activity_state = "planned"
+            else:
+                record.activity_state = "done"
+
     # Follow-up Management
     follow_up_required = fields.Boolean(string="Follow-up Required", default=False)
     follow_up_date = fields.Date(string="Follow-up Date")

@@ -70,6 +70,116 @@ class RevenueForecaster(models.Model):
             ("cancelled", "Cancelled"),
         ],
         string="Status",
+        default="draft",
+    )
+
+    # === MISSING FIELDS FROM VIEWS ===
+    custom_end_date = fields.Date(
+        string="Custom End Date", help="Custom end date when forecast period is custom"
+    )
+    custom_start_date = fields.Date(
+        string="Custom Start Date",
+        help="Custom start date when forecast period is custom",
+    )
+    customer_impact_count = fields.Integer(
+        string="Customer Impact Count",
+        help="Number of customers affected by this forecast",
+    )
+    customer_retention_rate = fields.Float(
+        string="Customer Retention Rate %",
+        default=95.0,
+        help="Expected customer retention rate",
+    )
+    customer_segment = fields.Selection(
+        [
+            ("all", "All Customers"),
+            ("enterprise", "Enterprise"),
+            ("mid_market", "Mid Market"),
+            ("small_business", "Small Business"),
+            ("specific_customers", "Specific Customers"),
+        ],
+        string="Customer Segment",
+        default="all",
+    )
+
+    specific_customer_ids = fields.Many2many(
+        "res.partner",
+        string="Specific Customers",
+        help="Specific customers when segment is specific_customers",
+    )
+
+    risk_assessment = fields.Selection(
+        [
+            ("low", "Low Risk"),
+            ("medium", "Medium Risk"),
+            ("high", "High Risk"),
+            ("very_high", "Very High Risk"),
+        ],
+        string="Risk Assessment",
+        default="medium",
+    )
+
+    scenario_type = fields.Selection(
+        [
+            ("baseline", "Baseline Scenario"),
+            ("optimistic", "Optimistic Scenario"),
+            ("pessimistic", "Pessimistic Scenario"),
+            ("global_increase", "Global Rate Increase"),
+            ("global_decrease", "Global Rate Decrease"),
+            ("category_specific", "Category Specific Change"),
+        ],
+        string="Scenario Type",
+        default="baseline",
+    )
+
+    global_adjustment_type = fields.Selection(
+        [("percentage", "Percentage"), ("fixed_amount", "Fixed Amount")],
+        string="Global Adjustment Type",
+        default="percentage",
+    )
+
+    global_adjustment_value = fields.Float(
+        string="Global Adjustment Value",
+        help="Adjustment value (percentage or fixed amount)",
+    )
+
+    service_category = fields.Selection(
+        [
+            ("storage", "Storage"),
+            ("retrieval", "Retrieval"),
+            ("destruction", "Destruction"),
+            ("scanning", "Scanning"),
+        ],
+        string="Service Category",
+    )
+
+    category_adjustment_value = fields.Float(
+        string="Category Adjustment Value %",
+        help="Adjustment value for specific category",
+    )
+
+    market_growth_rate = fields.Float(
+        string="Market Growth Rate %", default=3.0, help="Expected market growth rate"
+    )
+
+    inflation_rate = fields.Float(
+        string="Inflation Rate %", default=2.5, help="Expected inflation rate"
+    )
+
+    competitor_rate_factor = fields.Float(
+        string="Competitor Rate Factor",
+        default=1.0,
+        help="Competitive rate adjustment factor",
+    )
+
+    analysis_complete = fields.Boolean(
+        string="Analysis Complete",
+        default=False,
+        help="Whether the forecast analysis is complete",
+    )
+
+    forecast_line_ids = fields.One2many(
+        "revenue.forecast.line", "forecast_id", string="Forecast Lines"
     )
 
     # === BUSINESS CRITICAL FIELDS ===
@@ -156,3 +266,67 @@ class RevenueForecaster(models.Model):
 
     def action_reset_to_draft(self):
         self.write({"state": "draft"})
+
+
+class RevenueForecastLine(models.Model):
+    """Revenue Forecast Line for detailed customer impact analysis"""
+
+    _name = "revenue.forecast.line"
+    _description = "Revenue Forecast Line"
+
+    forecast_id = fields.Many2one(
+        "revenue.forecaster", string="Forecast", required=True, ondelete="cascade"
+    )
+    partner_id = fields.Many2one("res.partner", string="Customer", required=True)
+    customer_segment = fields.Selection(
+        [
+            ("enterprise", "Enterprise"),
+            ("mid_market", "Mid Market"),
+            ("small_business", "Small Business"),
+        ],
+        string="Customer Segment",
+    )
+
+    container_count = fields.Integer(
+        string="Container Count", help="Number of containers for this customer"
+    )
+    current_monthly_revenue = fields.Monetary(
+        string="Current Monthly Revenue", currency_field="currency_id"
+    )
+    projected_monthly_revenue = fields.Monetary(
+        string="Projected Monthly Revenue", currency_field="currency_id"
+    )
+    revenue_change = fields.Monetary(
+        string="Revenue Change",
+        compute="_compute_revenue_change",
+        currency_field="currency_id",
+        store=True,
+    )
+    revenue_change_percentage = fields.Float(
+        string="Revenue Change %", compute="_compute_revenue_change", store=True
+    )
+    risk_level = fields.Selection(
+        [("low", "Low"), ("medium", "Medium"), ("high", "High")],
+        string="Risk Level",
+        default="medium",
+    )
+
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+
+    @api.depends("current_monthly_revenue", "projected_monthly_revenue")
+    def _compute_revenue_change(self):
+        """Compute revenue change amount and percentage"""
+        for line in self:
+            line.revenue_change = (line.projected_monthly_revenue or 0.0) - (
+                line.current_monthly_revenue or 0.0
+            )
+            if line.current_monthly_revenue:
+                line.revenue_change_percentage = (
+                    line.revenue_change / line.current_monthly_revenue
+                ) * 100
+            else:
+                line.revenue_change_percentage = 0.0

@@ -99,6 +99,153 @@ class FieldLabelCustomization(models.Model):
             self.access_control_enabled = True
             self.label_approval_required = True
 
+    # === CRITICAL MISSING FIELDS FROM VIEWS ===
+    customer_id = fields.Many2one(
+        "res.partner", string="Customer", help="Customer this customization applies to"
+    )
+    department_id = fields.Many2one(
+        "hr.department",
+        string="Department",
+        help="Department this customization applies to",
+    )
+    priority = fields.Selection(
+        [("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")],
+        string="Priority",
+        default="medium",
+    )
+
+    scope_display = fields.Char(
+        string="Scope Display", compute="_compute_scope_display", store=True
+    )
+    customized_label_count = fields.Integer(
+        string="Customized Label Count", compute="_compute_customized_label_count"
+    )
+
+    # === ALL MISSING LABEL FIELDS FROM VIEWS ===
+    label_container_number = fields.Char(
+        string="Label: Container Number", default="Container Number"
+    )
+    label_item_description = fields.Char(
+        string="Label: Item Description", default="Item Description"
+    )
+    label_content_description = fields.Char(
+        string="Label: Content Description", default="Content Description"
+    )
+    label_parent_container = fields.Char(
+        string="Label: Parent Container", default="Parent Container"
+    )
+    label_folder_type = fields.Char(string="Label: Folder Type", default="Folder Type")
+    label_hierarchy_display = fields.Char(
+        string="Label: Hierarchy Display", default="Hierarchy Display"
+    )
+
+    # Date Labels
+    label_date_from = fields.Char(string="Label: Date From", default="Date From")
+    label_date_to = fields.Char(string="Label: Date To", default="Date To")
+    label_destruction_date = fields.Char(
+        string="Label: Destruction Date", default="Destruction Date"
+    )
+
+    # Sequence Labels
+    label_sequence_from = fields.Char(
+        string="Label: Sequence From", default="Sequence From"
+    )
+    label_sequence_to = fields.Char(string="Label: Sequence To", default="Sequence To")
+
+    # Classification Labels
+    label_record_type = fields.Char(string="Label: Record Type", default="Record Type")
+    label_confidentiality = fields.Char(
+        string="Label: Confidentiality", default="Confidentiality Level"
+    )
+    label_filing_system = fields.Char(
+        string="Label: Filing System", default="Filing System"
+    )
+
+    # Reference Labels
+    label_project_code = fields.Char(
+        string="Label: Project Code", default="Project Code"
+    )
+    label_client_reference = fields.Char(
+        string="Label: Client Reference", default="Client Reference"
+    )
+    label_file_count = fields.Char(string="Label: File Count", default="File Count")
+
+    # Administrative Labels
+    label_created_by_dept = fields.Char(
+        string="Label: Created By Department", default="Created By Department"
+    )
+    label_authorized_by = fields.Char(
+        string="Label: Authorized By", default="Authorized By"
+    )
+
+    # Special Labels
+    label_special_handling = fields.Char(
+        string="Label: Special Handling", default="Special Handling"
+    )
+    label_compliance_notes = fields.Char(
+        string="Label: Compliance Notes", default="Compliance Notes"
+    )
+
+    # Physical Labels
+    label_weight_estimate = fields.Char(
+        string="Label: Weight Estimate", default="Weight Estimate"
+    )
+    label_size_estimate = fields.Char(
+        string="Label: Size Estimate", default="Size Estimate"
+    )
+
+    @api.depends("customer_id", "department_id")
+    def _compute_scope_display(self):
+        """Compute scope display based on customer and department"""
+        for record in self:
+            scope_parts = []
+            if record.customer_id:
+                scope_parts.append(f"Customer: {record.customer_id.name}")
+            if record.department_id:
+                scope_parts.append(f"Dept: {record.department_id.name}")
+            record.scope_display = " | ".join(scope_parts) if scope_parts else "Global"
+
+    @api.depends(
+        "label_container_number", "label_item_description", "label_content_description"
+    )
+    def _compute_customized_label_count(self):
+        """Count how many labels have been customized"""
+        for record in self:
+            count = 0
+            default_labels = {
+                "label_container_number": "Container Number",
+                "label_item_description": "Item Description",
+                "label_content_description": "Content Description",
+                "label_parent_container": "Parent Container",
+                "label_folder_type": "Folder Type",
+                "label_hierarchy_display": "Hierarchy Display",
+                "label_date_from": "Date From",
+                "label_date_to": "Date To",
+                "label_destruction_date": "Destruction Date",
+                "label_sequence_from": "Sequence From",
+                "label_sequence_to": "Sequence To",
+                "label_record_type": "Record Type",
+                "label_confidentiality": "Confidentiality Level",
+                "label_filing_system": "Filing System",
+                "label_project_code": "Project Code",
+                "label_client_reference": "Client Reference",
+                "label_file_count": "File Count",
+                "label_created_by_dept": "Created By Department",
+                "label_authorized_by": "Authorized By",
+                "label_special_handling": "Special Handling",
+                "label_compliance_notes": "Compliance Notes",
+                "label_weight_estimate": "Weight Estimate",
+                "label_size_estimate": "Size Estimate",
+            }
+
+            for field_name, default_value in default_labels.items():
+                if getattr(record, field_name) != default_value:
+                    count += 1
+
+            record.customized_label_count = count
+
+    # === WORKFLOW MANAGEMENT ===
+
     @api.onchange("machine_learning_enabled")
     def _onchange_machine_learning_enabled(self):
         """Enable smart suggestions when ML is enabled"""

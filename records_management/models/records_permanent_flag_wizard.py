@@ -32,7 +32,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         [("flag", "Flag as Permanent"), ("unflag", "Remove Permanent Flag")],
         default="flag",
     )
-    box_id = fields.Many2one("records.box", "Box")
+    container_id = fields.Many2one("records.container", "Container")
     customer_id = fields.Many2one("res.partner", "Customer")
     document_count = fields.Integer("Document Count", default=0)
     permanent_flag = fields.Boolean("Permanent Flag", default=True)

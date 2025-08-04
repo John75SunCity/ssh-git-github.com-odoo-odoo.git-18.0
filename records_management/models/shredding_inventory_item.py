@@ -77,34 +77,234 @@ class ShreddingInventoryItem(models.Model):
     notes = fields.Text(string="Notes")
     date = fields.Date(string="Date", default=fields.Date.today)
     # === COMPREHENSIVE MISSING FIELDS ===
-    state = fields.Selection([('draft', 'Draft'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Status', default='draft', tracking=True)
-    created_date = fields.Date(string='Date', default=fields.Date.today, tracking=True)
-    updated_date = fields.Date(string='Date', tracking=True)
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
+    created_date = fields.Date(string="Date", default=fields.Date.today, tracking=True)
+    updated_date = fields.Date(string="Date", tracking=True)
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)
-    document_count = fields.Integer(string='Document Count', default=0)
-    total_amount = fields.Monetary(string='Total Amount', currency_field='currency_id')
-    # Shredding Inventory Item Fields
-    approval_date = fields.Date('Approval Date')
-    customer_approved = fields.Boolean('Customer Approved', default=False)
-    destroyed_by = fields.Many2one('hr.employee', 'Destroyed By')
-    destruction_date = fields.Date('Destruction Date')
-    destruction_notes = fields.Text('Destruction Notes')
-    batch_processing_required = fields.Boolean('Batch Processing Required', default=False)
-    certificate_generation_required = fields.Boolean('Certificate Generation Required', default=True)
-    chain_of_custody_number = fields.Char('Chain of Custody Number')
-    contamination_check_completed = fields.Boolean('Contamination Check Completed', default=False)
-    destruction_method_verified = fields.Boolean('Destruction Method Verified', default=False)
-    item_classification = fields.Selection([('paper', 'Paper'), ('media', 'Media'), ('electronic', 'Electronic')], default='paper')
-    quality_verification_completed = fields.Boolean('Quality Verification Completed', default=False)
-    security_level_verified = fields.Boolean('Security Level Verified', default=False)
-    witness_verification_required = fields.Boolean('Witness Verification Required', default=False)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    document_count = fields.Integer(string="Document Count", default=0)
+    total_amount = fields.Monetary(string="Total Amount", currency_field="currency_id")
     # Shredding Inventory Item Fields
 
+    # === ENTERPRISE-GRADE ANALYTICS & COMPLIANCE FIELDS ===
+    audit_trail_enabled = fields.Boolean(
+        string="Audit Trail Enabled",
+        default=True,
+        help="Enable audit trail for this item",
+    )
+    last_audit_date = fields.Date(string="Last Audit Date", help="Date of last audit")
+    compliance_notes = fields.Text(
+        string="Compliance Notes", help="Compliance-related notes"
+    )
+    retention_policy = fields.Selection(
+        [
+            ("1year", "1 Year"),
+            ("3years", "3 Years"),
+            ("5years", "5 Years"),
+            ("7years", "7 Years"),
+            ("permanent", "Permanent"),
+        ],
+        string="Retention Policy",
+        default="7years",
+        help="Retention policy for this item",
+    )
+    destruction_certificate_number = fields.Char(
+        string="Destruction Certificate Number",
+        help="Certificate number for destruction event",
+    )
+    destruction_certificate_issued = fields.Boolean(
+        string="Certificate Issued", default=False
+    )
+    destruction_certificate_date = fields.Date(string="Certificate Date")
+    destruction_certificate_file = fields.Binary(string="Certificate File")
 
+    # === COMPUTED FIELDS ===
+    days_since_destruction = fields.Integer(
+        string="Days Since Destruction",
+        compute="_compute_days_since_destruction",
+        store=True,
+    )
+    is_overdue_for_destruction = fields.Boolean(
+        string="Overdue for Destruction",
+        compute="_compute_is_overdue_for_destruction",
+        store=True,
+    )
+
+    @api.depends("destruction_date")
+    def _compute_days_since_destruction(self):
+        from datetime import date
+
+        for record in self:
+            if record.destruction_date:
+                record.days_since_destruction = (
+                    date.today() - record.destruction_date
+                ).days
+            else:
+                record.days_since_destruction = 0
+
+    @api.depends("destruction_date")
+    def _compute_is_overdue_for_destruction(self):
+        for record in self:
+            # Example: Overdue if not destroyed after 30 days from created_date
+            if record.destruction_date:
+                record.is_overdue_for_destruction = False
+            elif record.created_date:
+                from datetime import date, timedelta
+
+                overdue = (date.today() - record.created_date) > timedelta(days=30)
+                record.is_overdue_for_destruction = overdue
+            else:
+                record.is_overdue_for_destruction = False
+
+    # === VALIDATION CONSTRAINTS ===
+    @api.constrains("quantity")
+    def _check_quantity(self):
+        for record in self:
+            if record.quantity < 0:
+                raise ValidationError(_("Quantity must be non-negative."))
+
+    @api.constrains("destruction_date")
+    def _check_destruction_date(self):
+        for record in self:
+            if (
+                record.destruction_date
+                and record.destruction_date < record.created_date
+            ):
+                raise ValidationError(
+                    _("Destruction date cannot be before creation date.")
+                )
+
+    # === ACTION METHODS (WORKFLOW) ===
+    def action_issue_certificate(self):
+        """Issue destruction certificate and mark as issued."""
+        self.ensure_one()
+        if not self.destruction_date:
+            raise UserError(_("Cannot issue certificate before destruction."))
+        self.destruction_certificate_issued = True
+        self.destruction_certificate_date = fields.Date.today()
+        self.message_post(body=_("Destruction certificate issued."))
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Certificate Issued"),
+                "message": _("Destruction certificate has been issued."),
+                "type": "success",
+                "sticky": False,
+            },
+        }
+
+    def action_audit_item(self):
+        """Audit this shredding inventory item."""
+        self.ensure_one()
+        self.last_audit_date = fields.Date.today()
+        self.message_post(body=_("Audit completed for this item."))
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Audit Complete"),
+                "message": _("Audit completed for this item."),
+                "type": "info",
+                "sticky": False,
+            },
+        }
+
+    approval_date = fields.Date("Approval Date")
+    customer_approved = fields.Boolean("Customer Approved", default=False)
+    destroyed_by = fields.Many2one("hr.employee", "Destroyed By")
+    destruction_date = fields.Date("Destruction Date")
+    destruction_notes = fields.Text("Destruction Notes")
+    batch_processing_required = fields.Boolean(
+        "Batch Processing Required", default=False
+    )
+    certificate_generation_required = fields.Boolean(
+        "Certificate Generation Required", default=True
+    )
+    chain_of_custody_number = fields.Char("Chain of Custody Number")
+    contamination_check_completed = fields.Boolean(
+        "Contamination Check Completed", default=False
+    )
+    destruction_method_verified = fields.Boolean(
+        "Destruction Method Verified", default=False
+    )
+    item_classification = fields.Selection(
+        [("paper", "Paper"), ("media", "Media"), ("electronic", "Electronic")],
+        default="paper",
+    )
+    quality_verification_completed = fields.Boolean(
+        "Quality Verification Completed", default=False
+    )
+    security_level_verified = fields.Boolean("Security Level Verified", default=False)
+    witness_verification_required = fields.Boolean(
+        "Witness Verification Required", default=False
+    )
+
+    # === MISSING VIEW-RELATED FIELDS ===
+    original_location_id = fields.Many2one(
+        "records.location",
+        string="Original Location",
+        help="Original location before retrieval",
+    )
+    permanent_removal_cost = fields.Monetary(
+        string="Permanent Removal Cost",
+        currency_field="currency_id",
+        help="Cost for permanent removal",
+    )
+    retrieval_cost = fields.Monetary(
+        string="Retrieval Cost",
+        currency_field="currency_id",
+        help="Cost for retrieval service",
+    )
+    retrieval_notes = fields.Text(
+        string="Retrieval Notes", help="Notes about retrieval process"
+    )
+    retrieved_by = fields.Many2one(
+        "hr.employee", string="Retrieved By", help="Employee who retrieved the item"
+    )
+    retrieved_date = fields.Date(
+        string="Retrieved Date", help="Date when item was retrieved"
+    )
+    storage_cost = fields.Monetary(
+        string="Storage Cost",
+        currency_field="currency_id",
+        help="Cost for storage before destruction",
+    )
+    transport_cost = fields.Monetary(
+        string="Transport Cost",
+        currency_field="currency_id",
+        help="Cost for transporting item",
+    )
+    weight = fields.Float(
+        string="Weight", digits=(10, 2), help="Weight of the item in kg"
+    )
+
+    # === FINAL MISSING FIELDS ===
+    shredding_cost = fields.Monetary(
+        string="Shredding Cost",
+        currency_field="currency_id",
+        help="Cost for shredding service",
+    )
+    supervisor_approved = fields.Boolean(
+        string="Supervisor Approved",
+        default=False,
+        help="Whether supervisor has approved this item",
+    )
 
     @api.depends("name", "container_id", "document_id")
     def _compute_display_name(self):

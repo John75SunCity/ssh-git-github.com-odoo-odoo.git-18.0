@@ -23,6 +23,140 @@ class RecordsDepartmentBillingContact(models.Model):
     user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
 
+    # === CRITICAL MISSING FIELDS FROM VIEWS ===
+    contact_name = fields.Char(
+        string="Contact Name",
+        required=True,
+        tracking=True,
+        help="Full name of the billing contact person",
+    )
+    department_id = fields.Many2one(
+        "hr.department",
+        string="Department",
+        required=True,
+        tracking=True,
+        help="Department this contact belongs to",
+    )
+    billing_role = fields.Selection(
+        [
+            ("primary", "Primary Contact"),
+            ("secondary", "Secondary Contact"),
+            ("approver", "Approver"),
+            ("finance", "Finance Contact"),
+            ("manager", "Department Manager"),
+        ],
+        string="Billing Role",
+        required=True,
+        default="primary",
+        tracking=True,
+    )
+
+    current_month_charges = fields.Monetary(
+        string="Current Month Charges",
+        currency_field="currency_id",
+        compute="_compute_current_month_charges",
+        store=True,
+        help="Total charges for current month",
+    )
+    budget_utilization = fields.Float(
+        string="Budget Utilization %",
+        compute="_compute_budget_utilization",
+        store=True,
+        help="Percentage of budget utilized",
+    )
+
+    # === ADDITIONAL MISSING FIELDS ===
+    department_charge_ids = fields.One2many(
+        "records.department.charge", "contact_id", string="Department Charges"
+    )
+
+    # === MORE MISSING FIELDS FROM VIEWS ===
+    cc_finance_team = fields.Boolean(
+        string="CC Finance Team",
+        default=True,
+        help="Copy finance team on billing communications",
+    )
+    cc_department_head = fields.Boolean(
+        string="CC Department Head",
+        default=True,
+        help="Copy department head on billing communications",
+    )
+    cc_additional_emails = fields.Char(
+        string="CC Additional Emails",
+        help="Additional email addresses to copy on billing communications",
+    )
+    service_description = fields.Text(
+        string="Service Description",
+        help="Description of services this contact is responsible for",
+    )
+
+    # === ADDITIONAL MISSING ANALYTICS FIELDS ===
+    charge_amount = fields.Monetary(
+        string="Charge Amount",
+        currency_field="currency_id",
+        help="Current charge amount",
+    )
+
+    # === REMAINING MISSING VIEW FIELDS ===
+    charge_date = fields.Date(string="Charge Date", help="Date of the charge")
+    current_month_actual = fields.Monetary(
+        string="Current Month Actual",
+        currency_field="currency_id",
+        help="Actual charges for current month",
+    )
+    current_month_budget = fields.Monetary(
+        string="Current Month Budget",
+        currency_field="currency_id",
+        help="Budgeted amount for current month",
+    )
+    current_month_forecast = fields.Monetary(
+        string="Current Month Forecast",
+        currency_field="currency_id",
+        help="Forecasted charges for current month",
+    )
+    current_month_variance = fields.Monetary(
+        string="Current Month Variance",
+        compute="_compute_current_month_variance",
+        currency_field="currency_id",
+        help="Variance between budget and actual",
+    )
+
+    # === ADDITIONAL CONTACT MANAGEMENT FIELDS ===
+    billing_address = fields.Text(
+        string="Billing Address", help="Physical billing address for this contact"
+    )
+    notification_preferences = fields.Selection(
+        [
+            ("email", "Email Only"),
+            ("sms", "SMS Only"),
+            ("both", "Email and SMS"),
+            ("none", "No Notifications"),
+        ],
+        string="Notification Preferences",
+        default="email",
+    )
+
+    # === FINAL MISSING FIELDS ===
+    email_notifications = fields.Boolean(
+        string="Email Notifications",
+        default=True,
+        help="Send email notifications to this contact",
+    )
+    monthly_statements = fields.Boolean(
+        string="Monthly Statements",
+        default=True,
+        help="Send monthly billing statements",
+    )
+    vendor = fields.Char(string="Vendor", help="Associated vendor for this contact")
+    weekly_reports = fields.Boolean(
+        string="Weekly Reports", default=False, help="Send weekly billing reports"
+    )
+    ytd_actual = fields.Monetary(
+        string="YTD Actual",
+        currency_field="currency_id",
+        help="Year-to-date actual charges",
+    )
+
     # === ENHANCED DEPARTMENT BILLING CONTACT FIELDS ===
 
     # Contact Information
@@ -148,17 +282,6 @@ class RecordsDepartmentBillingContact(models.Model):
     )
 
     # Notification and Communication Preferences
-    notification_preferences = fields.Selection(
-        [
-            ("email", "Email Only"),
-            ("phone", "Phone Only"),
-            ("both", "Email and Phone"),
-            ("none", "No Notifications"),
-        ],
-        string="Notification Preferences",
-        default="email",
-        tracking=True,
-    )
     send_invoice_reminders = fields.Boolean(
         string="Send Invoice Reminders", default=True, tracking=True
     )
@@ -235,39 +358,92 @@ class RecordsDepartmentBillingContact(models.Model):
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
     # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    sequence = fields.Integer(string='Sequence', default=10)
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    sequence = fields.Integer(string="Sequence", default=10)
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
     # Department Billing Contact Fields
-    approval_notes = fields.Text('Approval Notes')
-    approval_status = fields.Selection([('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')], default='pending')
-    approved_by = fields.Many2one('res.users', 'Approved By')
-    billing_role = fields.Selection([('primary', 'Primary Contact'), ('secondary', 'Secondary Contact'), ('backup', 'Backup Contact')], default='primary')
-    budget_alert_threshold = fields.Monetary('Budget Alert Threshold', currency_field='currency_id')
-    budget_approval_limit = fields.Monetary('Budget Approval Limit', currency_field='currency_id')
-    contact_authorization_level = fields.Selection([('view', 'View Only'), ('approve', 'Approve'), ('admin', 'Admin')], default='view')
-    contact_preferences = fields.Text('Contact Preferences')
-    cost_center_access = fields.Many2many('account.analytic.account', 'billing_contact_cost_center_rel', 'contact_id', 'cost_center_id', 'Cost Center Access')
-    department_budget_responsibility = fields.Boolean('Department Budget Responsibility', default=False)
-    emergency_contact_backup = fields.Many2one('res.partner', 'Emergency Contact Backup')
-    expense_approval_workflow = fields.Selection([('single', 'Single Approval'), ('dual', 'Dual Approval'), ('committee', 'Committee')], default='single')
-    invoice_approval_authority = fields.Boolean('Invoice Approval Authority', default=False)
-    invoice_delivery_preference = fields.Selection([('email', 'Email'), ('portal', 'Portal'), ('mail', 'Mail')], default='email')
-    maximum_transaction_limit = fields.Monetary('Maximum Transaction Limit', currency_field='currency_id')
-    notification_frequency = fields.Selection([('immediate', 'Immediate'), ('daily', 'Daily'), ('weekly', 'Weekly')], default='daily')
-    payment_authorization_level = fields.Monetary('Payment Authorization Level', currency_field='currency_id')
-    po_approval_required = fields.Boolean('PO Approval Required', default=False)
-    procurement_authority = fields.Boolean('Procurement Authority', default=False)
-    quarterly_review_required = fields.Boolean('Quarterly Review Required', default=True)
-    reporting_frequency = fields.Selection([('weekly', 'Weekly'), ('monthly', 'Monthly'), ('quarterly', 'Quarterly')], default='monthly')
-    signature_authority = fields.Boolean('Signature Authority', default=False)
-    spending_limit_override = fields.Boolean('Spending Limit Override', default=False)
-    vendor_approval_authority = fields.Boolean('Vendor Approval Authority', default=False)
+    approval_notes = fields.Text("Approval Notes")
+    approval_status = fields.Selection(
+        [("pending", "Pending"), ("approved", "Approved"), ("rejected", "Rejected")],
+        default="pending",
+    )
+    approved_by = fields.Many2one("res.users", "Approved By")
+    billing_role = fields.Selection(
+        [
+            ("primary", "Primary Contact"),
+            ("secondary", "Secondary Contact"),
+            ("backup", "Backup Contact"),
+        ],
+        default="primary",
+    )
+    budget_alert_threshold = fields.Monetary(
+        "Budget Alert Threshold", currency_field="currency_id"
+    )
+    budget_approval_limit = fields.Monetary(
+        "Budget Approval Limit", currency_field="currency_id"
+    )
+    contact_authorization_level = fields.Selection(
+        [("view", "View Only"), ("approve", "Approve"), ("admin", "Admin")],
+        default="view",
+    )
+    contact_preferences = fields.Text("Contact Preferences")
+    cost_center_access = fields.Many2many(
+        "account.analytic.account",
+        "billing_contact_cost_center_rel",
+        "contact_id",
+        "cost_center_id",
+        "Cost Center Access",
+    )
+    department_budget_responsibility = fields.Boolean(
+        "Department Budget Responsibility", default=False
+    )
+    emergency_contact_backup = fields.Many2one(
+        "res.partner", "Emergency Contact Backup"
+    )
+    expense_approval_workflow = fields.Selection(
+        [
+            ("single", "Single Approval"),
+            ("dual", "Dual Approval"),
+            ("committee", "Committee"),
+        ],
+        default="single",
+    )
+    invoice_approval_authority = fields.Boolean(
+        "Invoice Approval Authority", default=False
+    )
+    invoice_delivery_preference = fields.Selection(
+        [("email", "Email"), ("portal", "Portal"), ("mail", "Mail")], default="email"
+    )
+    maximum_transaction_limit = fields.Monetary(
+        "Maximum Transaction Limit", currency_field="currency_id"
+    )
+    notification_frequency = fields.Selection(
+        [("immediate", "Immediate"), ("daily", "Daily"), ("weekly", "Weekly")],
+        default="daily",
+    )
+    payment_authorization_level = fields.Monetary(
+        "Payment Authorization Level", currency_field="currency_id"
+    )
+    po_approval_required = fields.Boolean("PO Approval Required", default=False)
+    procurement_authority = fields.Boolean("Procurement Authority", default=False)
+    quarterly_review_required = fields.Boolean(
+        "Quarterly Review Required", default=True
+    )
+    reporting_frequency = fields.Selection(
+        [("weekly", "Weekly"), ("monthly", "Monthly"), ("quarterly", "Quarterly")],
+        default="monthly",
+    )
+    signature_authority = fields.Boolean("Signature Authority", default=False)
+    spending_limit_override = fields.Boolean("Spending Limit Override", default=False)
+    vendor_approval_authority = fields.Boolean(
+        "Vendor Approval Authority", default=False
+    )
     # Department Billing Contact Fields
-
 
     @api.depends("budget_allocated", "amount")
     def _compute_budget_remaining(self):
@@ -304,6 +480,39 @@ class RecordsDepartmentBillingContact(models.Model):
                     record.next_billing_date = False
             else:
                 record.next_billing_date = False
+
+    # === COMPUTE METHODS FOR NEW FIELDS ===
+    @api.depends("department_charge_ids", "department_charge_ids.amount")
+    def _compute_current_month_charges(self):
+        """Compute current month charges"""
+        from datetime import date
+
+        current_month_start = date.today().replace(day=1)
+
+        for record in self:
+            charges = record.department_charge_ids.filtered(
+                lambda c: c.charge_date and c.charge_date >= current_month_start
+            )
+            record.current_month_charges = sum(charges.mapped("amount"))
+
+    @api.depends("monthly_budget", "current_month_charges")
+    def _compute_budget_utilization(self):
+        """Compute budget utilization percentage"""
+        for record in self:
+            if record.monthly_budget and record.monthly_budget > 0:
+                record.budget_utilization = (
+                    record.current_month_charges / record.monthly_budget
+                ) * 100
+            else:
+                record.budget_utilization = 0.0
+
+    @api.depends("current_month_budget", "current_month_actual")
+    def _compute_current_month_variance(self):
+        """Compute variance between budgeted and actual amounts for current month"""
+        for record in self:
+            record.current_month_variance = (record.current_month_actual or 0.0) - (
+                record.current_month_budget or 0.0
+            )
 
     @api.depends("approval_history_ids")
     def _compute_performance_metrics(self):

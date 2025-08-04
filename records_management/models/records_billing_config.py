@@ -99,6 +99,230 @@ class RecordsBillingConfig(models.Model):
     )
     auto_apply = fields.Boolean(string="Auto Apply Configuration", default=True)
 
+    # === CRITICAL MISSING VIEW FIELDS ===
+    last_invoice_date = fields.Date(
+        string="Last Invoice Date",
+        compute="_compute_last_invoice_date",
+        store=True,
+        help="Date of the last generated invoice",
+    )
+
+    # === MISSING FRAMEWORK INTEGRATION FIELDS ===
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Responsible User",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+
+    # === ADDITIONAL BUSINESS CRITICAL FIELDS ===
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("suspended", "Suspended"),
+            ("archived", "Archived"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
+
+    sequence = fields.Integer(string="Sequence", default=10)
+    notes = fields.Text(string="Internal Notes")
+    description = fields.Text(string="Description")
+
+    # === BILLING ANALYTICS FIELDS ===
+    last_billing_amount = fields.Monetary(
+        string="Last Billing Amount",
+        currency_field="currency_id",
+        help="Amount of the last billing cycle",
+    )
+    ytd_revenue = fields.Monetary(
+        string="YTD Revenue",
+        currency_field="currency_id",
+        compute="_compute_ytd_revenue",
+        store=True,
+    )
+    billing_accuracy_rate = fields.Float(
+        string="Billing Accuracy Rate",
+        digits=(5, 2),
+        help="Percentage of accurate billing transactions",
+    )
+
+    # === SERVICE INTEGRATION FIELDS ===
+    default_service_ids = fields.Many2many(
+        "product.product",
+        string="Default Services",
+        domain=[("type", "=", "service")],
+        help="Default services for this billing configuration",
+    )
+
+    # === COMPUTE METHODS ===
+    @api.depends("partner_id")
+    def _compute_last_invoice_date(self):
+        """Compute the last invoice date for this customer"""
+        for record in self:
+            if record.partner_id:
+                last_invoice = self.env["account.move"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("move_type", "=", "out_invoice"),
+                        ("state", "=", "posted"),
+                    ],
+                    order="invoice_date desc",
+                    limit=1,
+                )
+                record.last_invoice_date = (
+                    last_invoice.invoice_date if last_invoice else False
+                )
+            else:
+                record.last_invoice_date = False
+
+    @api.depends("partner_id")
+    def _compute_ytd_revenue(self):
+        """Compute year-to-date revenue"""
+        from datetime import date
+
+        year_start = date.today().replace(month=1, day=1)
+
+        for record in self:
+            if record.partner_id:
+                invoices = self.env["account.move"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("move_type", "=", "out_invoice"),
+                        ("state", "=", "posted"),
+                        ("invoice_date", ">=", year_start),
+                    ]
+                )
+                record.ytd_revenue = sum(invoices.mapped("amount_total"))
+            else:
+                record.ytd_revenue = 0.0
+
+    # === ADDITIONAL COMPUTE METHODS ===
+    @api.depends("partner_id", "billing_frequency")
+    def _compute_monthly_analytics(self):
+        """Compute monthly recurring revenue"""
+        for record in self:
+            if record.partner_id and record.billing_frequency:
+                # Calculate based on base rate and frequency
+                if record.billing_frequency == "monthly":
+                    record.monthly_recurring_revenue = record.base_rate or 0.0
+                elif record.billing_frequency == "quarterly":
+                    record.monthly_recurring_revenue = (record.base_rate or 0.0) / 3
+                elif record.billing_frequency == "annually":
+                    record.monthly_recurring_revenue = (record.base_rate or 0.0) / 12
+                else:
+                    record.monthly_recurring_revenue = 0.0
+            else:
+                record.monthly_recurring_revenue = 0.0
+
+    @api.depends("billing_cycle_start", "billing_frequency")
+    def _compute_billing_cycle_count(self):
+        """Compute number of completed billing cycles"""
+        from datetime import date
+
+        for record in self:
+            if record.billing_cycle_start:
+                days_since_start = (date.today() - record.billing_cycle_start).days
+                if record.billing_frequency == "monthly":
+                    record.billing_cycle_count = days_since_start // 30
+                elif record.billing_frequency == "quarterly":
+                    record.billing_cycle_count = days_since_start // 90
+                elif record.billing_frequency == "annually":
+                    record.billing_cycle_count = days_since_start // 365
+                else:
+                    record.billing_cycle_count = 0
+            else:
+                record.billing_cycle_count = 0
+
+    @api.depends("partner_id")
+    def _compute_overdue_amount(self):
+        """Compute overdue amount for this configuration"""
+        for record in self:
+            if record.partner_id:
+                overdue_invoices = self.env["account.move"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("move_type", "=", "out_invoice"),
+                        ("state", "=", "posted"),
+                        ("payment_state", "in", ["not_paid", "partial"]),
+                        ("invoice_date_due", "<", fields.Date.today()),
+                    ]
+                )
+                record.overdue_amount = sum(overdue_invoices.mapped("amount_residual"))
+            else:
+                record.overdue_amount = 0.0
+
+    @api.depends("base_rate", "billing_frequency")
+    def _compute_next_invoice_amount(self):
+        """Compute estimated amount for next invoice"""
+        for record in self:
+            # Simple calculation based on base rate
+            record.next_invoice_amount = record.base_rate or 0.0
+
+    @api.depends("partner_id", "billing_frequency")
+    def _compute_revenue_analytics(self):
+        """Compute comprehensive revenue analytics"""
+        for record in self:
+            if record.partner_id:
+                # Get revenue for different periods
+                from datetime import date, timedelta
+
+                today = date.today()
+
+                # Monthly revenue (last 30 days)
+                month_start = today - timedelta(days=30)
+                monthly_invoices = self.env["account.move"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("move_type", "=", "out_invoice"),
+                        ("state", "=", "posted"),
+                        ("invoice_date", ">=", month_start),
+                    ]
+                )
+                record.monthly_revenue = sum(monthly_invoices.mapped("amount_total"))
+
+                # Quarterly revenue (last 90 days)
+                quarter_start = today - timedelta(days=90)
+                quarterly_invoices = self.env["account.move"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("move_type", "=", "out_invoice"),
+                        ("state", "=", "posted"),
+                        ("invoice_date", ">=", quarter_start),
+                    ]
+                )
+                record.quarterly_revenue = sum(
+                    quarterly_invoices.mapped("amount_total")
+                )
+
+                # Average monthly billing (last 12 months)
+                year_start = today - timedelta(days=365)
+                yearly_invoices = self.env["account.move"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("move_type", "=", "out_invoice"),
+                        ("state", "=", "posted"),
+                        ("invoice_date", ">=", year_start),
+                    ]
+                )
+                total_yearly = sum(yearly_invoices.mapped("amount_total"))
+                record.average_monthly_billing = (
+                    total_yearly / 12 if total_yearly else 0.0
+                )
+            else:
+                record.monthly_revenue = 0.0
+                record.quarterly_revenue = 0.0
+                record.average_monthly_billing = 0.0
+
     # === CRITICAL MISSING FIELDS (from billing_views.xml analysis) ===
 
     # Framework Integration Fields
@@ -191,6 +415,114 @@ class RecordsBillingConfig(models.Model):
     )
     invoice_line_ids = fields.One2many(
         "account.move.line", "billing_config_id", string="Invoice Lines"
+    )
+
+    # === ADDITIONAL MISSING RELATIONSHIPS ===
+    contract_ids = fields.One2many(
+        "records.billing.contract", "billing_config_id", string="Related Contracts"
+    )
+
+    discount_ids = fields.One2many(
+        "records.billing.discount", "billing_config_id", string="Applied Discounts"
+    )
+
+    # === MISSING COMPUTED ANALYTICS ===
+    monthly_recurring_revenue = fields.Monetary(
+        string="Monthly Recurring Revenue",
+        currency_field="currency_id",
+        compute="_compute_monthly_analytics",
+        store=True,
+    )
+
+    billing_cycle_count = fields.Integer(
+        string="Billing Cycles Count",
+        compute="_compute_billing_cycle_count",
+        help="Number of completed billing cycles",
+    )
+
+    overdue_amount = fields.Monetary(
+        string="Overdue Amount",
+        currency_field="currency_id",
+        compute="_compute_overdue_amount",
+        help="Total overdue amount for this configuration",
+    )
+
+    next_invoice_amount = fields.Monetary(
+        string="Next Invoice Amount",
+        currency_field="currency_id",
+        compute="_compute_next_invoice_amount",
+        help="Estimated amount for next invoice",
+    )
+
+    # === MASSIVE MISSING FIELDS FROM VIEWS ===
+
+    # Invoice Generation Log Fields
+    invoice_generation_log_ids = fields.One2many(
+        "records.invoice.generation.log",
+        "billing_config_id",
+        string="Invoice Generation Logs",
+    )
+
+    # Discount Rule Fields
+    discount_rule_ids = fields.One2many(
+        "records.billing.discount.rule", "billing_config_id", string="Discount Rules"
+    )
+
+    # Additional Revenue Analytics
+    monthly_revenue = fields.Monetary(
+        string="Monthly Revenue",
+        currency_field="currency_id",
+        compute="_compute_revenue_analytics",
+        store=True,
+    )
+    quarterly_revenue = fields.Monetary(
+        string="Quarterly Revenue",
+        currency_field="currency_id",
+        compute="_compute_revenue_analytics",
+        store=True,
+    )
+    average_monthly_billing = fields.Monetary(
+        string="Average Monthly Billing",
+        currency_field="currency_id",
+        compute="_compute_revenue_analytics",
+        store=True,
+    )
+
+    # Contract Management
+    contract_reference = fields.Char(string="Contract Reference")
+    service_level_agreement = fields.Text(string="Service Level Agreement")
+    performance_metrics_enabled = fields.Boolean(
+        string="Performance Metrics Enabled", default=True
+    )
+
+    # Additional Financial Fields
+    credit_limit = fields.Monetary(string="Credit Limit", currency_field="currency_id")
+    current_balance = fields.Monetary(
+        string="Current Balance", currency_field="currency_id"
+    )
+    credit_terms = fields.Char(string="Credit Terms")
+
+    # System Integration
+    erp_integration_enabled = fields.Boolean(
+        string="ERP Integration Enabled", default=False
+    )
+    api_access_enabled = fields.Boolean(string="API Access Enabled", default=False)
+
+    # === BILLING EFFICIENCY METRICS ===
+    automation_enabled = fields.Boolean(
+        string="Automation Enabled",
+        default=True,
+        help="Enable automated billing processes",
+    )
+
+    billing_template_id = fields.Many2one(
+        "records.billing.template",
+        string="Billing Template",
+        help="Template used for invoice generation",
+    )
+
+    tax_configuration_id = fields.Many2one(
+        "account.tax", string="Default Tax", help="Default tax applied to billing"
     )
 
     # Performance Metrics
