@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Department Billing Contact
+Records Department Billing Contact Management
 """
 
 from odoo import models, fields, api, _
@@ -9,722 +9,311 @@ from odoo.exceptions import UserError, ValidationError
 
 class RecordsDepartmentBillingContact(models.Model):
     """
-    Department Billing Contact
+    Department Billing Contact - Manages billing contacts and approval workflows
     """
 
     _name = "records.department.billing.contact"
-    _description = "Department Billing Contact"
+    _description = "Records Department Billing Contact"
     _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name"
+    _order = "partner_id, name"
+    _rec_name = "name"
 
-    # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
-    active = fields.Boolean(default=True)
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(string="Contact Name", required=True, tracking=True, index=True)
+    company_id = fields.Many2one("res.company", default=lambda self: self.env.company, required=True)
+    user_id = fields.Many2one("res.users", default=lambda self: self.env.user, tracking=True)
+    active = fields.Boolean(string="Active", default=True)
 
-    # === CRITICAL MISSING FIELDS FROM VIEWS ===
-    contact_name = fields.Char(
-        string="Contact Name",
+    # ============================================================================
+    # CONTACT INFORMATION
+    # ============================================================================
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Contact Partner",
         required=True,
         tracking=True,
-        help="Full name of the billing contact person",
+        domain="[('is_company', '=', False)]"
     )
     department_id = fields.Many2one(
-        "hr.department",
+        "records.department",
         string="Department",
         required=True,
-        tracking=True,
-        help="Department this contact belongs to",
+        tracking=True
     )
-    billing_role = fields.Selection(
-        [
-            ("primary", "Primary Contact"),
-            ("secondary", "Secondary Contact"),
-            ("approver", "Approver"),
-            ("finance", "Finance Contact"),
-            ("manager", "Department Manager"),
-        ],
-        string="Billing Role",
-        required=True,
-        default="primary",
-        tracking=True,
-    )
+    email = fields.Char(string="Email", related="partner_id.email", store=True)
+    phone = fields.Char(string="Phone", related="partner_id.phone", store=True)
+    mobile = fields.Char(string="Mobile", related="partner_id.mobile", store=True)
 
-    current_month_charges = fields.Monetary(
-        string="Current Month Charges",
+    # ============================================================================
+    # BILLING ROLE AND AUTHORIZATION
+    # ============================================================================
+    billing_role = fields.Selection([
+        ("primary", "Primary Contact"),
+        ("secondary", "Secondary Contact"),
+        ("approver", "Approver"),
+        ("reviewer", "Reviewer"),
+        ("backup", "Backup Contact")
+    ], string="Billing Role", required=True, tracking=True)
+
+    authorization_level = fields.Selection([
+        ("basic", "Basic Authorization"),
+        ("intermediate", "Intermediate Authorization"),
+        ("advanced", "Advanced Authorization"),
+        ("full", "Full Authorization")
+    ], string="Authorization Level", default="basic", tracking=True)
+
+    approval_limit = fields.Monetary(
+        string="Approval Limit",
         currency_field="currency_id",
-        compute="_compute_current_month_charges",
-        store=True,
-        help="Total charges for current month",
-    )
-    budget_utilization = fields.Float(
-        string="Budget Utilization %",
-        compute="_compute_budget_utilization",
-        store=True,
-        help="Percentage of budget utilized",
+        help="Maximum amount this contact can approve"
     )
 
-    # === ADDITIONAL MISSING FIELDS ===
+    # ============================================================================
+    # BILLING PREFERENCES
+    # ============================================================================
+    notification_preferences = fields.Selection([
+        ("email", "Email Only"),
+        ("sms", "SMS Only"),
+        ("both", "Email and SMS"),
+        ("none", "No Notifications")
+    ], string="Notification Preferences", default="email")
+
+    billing_frequency = fields.Selection([
+        ("weekly", "Weekly"),
+        ("monthly", "Monthly"),
+        ("quarterly", "Quarterly"),
+        ("annually", "Annually")
+    ], string="Billing Frequency", default="monthly")
+
+    invoice_delivery_preference = fields.Selection([
+        ("email", "Email"),
+        ("postal", "Postal Mail"),
+        ("portal", "Customer Portal"),
+        ("both", "Email and Postal")
+    ], string="Invoice Delivery", default="email")
+
+    # ============================================================================
+    # SERVICE AND WORKFLOW
+    # ============================================================================
+    service_type = fields.Selection([
+        ("storage", "Storage Services"),
+        ("shredding", "Shredding Services"),
+        ("scanning", "Scanning Services"),
+        ("retrieval", "Retrieval Services"),
+        ("all", "All Services")
+    ], string="Service Type", default="all")
+
+    state = fields.Selection([
+        ("draft", "Draft"),
+        ("active", "Active"),
+        ("suspended", "Suspended"),
+        ("inactive", "Inactive")
+    ], string="Status", default="draft", tracking=True)
+
+    # ============================================================================
+    # DATES AND SCHEDULING
+    # ============================================================================
+    start_date = fields.Date(string="Start Date", default=fields.Date.today, tracking=True)
+    end_date = fields.Date(string="End Date")
+    last_contact_date = fields.Date(string="Last Contact Date")
+
+    # ============================================================================
+    # FINANCIAL INFORMATION
+    # ============================================================================
+    currency_id = fields.Many2one("res.currency", related="company_id.currency_id")
+    total_approved_amount = fields.Monetary(
+        string="Total Approved Amount",
+        currency_field="currency_id",
+        compute="_compute_financial_totals",
+        store=True
+    )
+
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
     department_charge_ids = fields.One2many(
-        "records.billing.line", "contact_id", string="Department Charges"
+        "department.charge",
+        "billing_contact_id",
+        string="Department Charges"
     )
     approval_history_ids = fields.One2many(
-        "approval.history", "contact_id", string="Approval History"
-    )
-
-    # === MORE MISSING FIELDS FROM VIEWS ===
-    cc_finance_team = fields.Boolean(
-        string="CC Finance Team",
-        default=True,
-        help="Copy finance team on billing communications",
-    )
-    cc_department_head = fields.Boolean(
-        string="CC Department Head",
-        default=True,
-        help="Copy department head on billing communications",
-    )
-    cc_additional_emails = fields.Char(
-        string="CC Additional Emails",
-        help="Additional email addresses to copy on billing communications",
-    )
-    service_description = fields.Text(
-        string="Service Description",
-        help="Description of services this contact is responsible for",
-    )
-
-    # === ADDITIONAL MISSING ANALYTICS FIELDS ===
-    charge_amount = fields.Monetary(
-        string="Charge Amount",
-        currency_field="currency_id",
-        help="Current charge amount",
-    )
-
-    # === REMAINING MISSING VIEW FIELDS ===
-    charge_date = fields.Date(string="Charge Date", help="Date of the charge")
-    current_month_actual = fields.Monetary(
-        string="Current Month Actual",
-        currency_field="currency_id",
-        help="Actual charges for current month",
-    )
-    current_month_budget = fields.Monetary(
-        string="Current Month Budget",
-        currency_field="currency_id",
-        help="Budgeted amount for current month",
-    )
-    current_month_forecast = fields.Monetary(
-        string="Current Month Forecast",
-        currency_field="currency_id",
-        help="Forecasted charges for current month",
-    )
-    current_month_variance = fields.Monetary(
-        string="Current Month Variance",
-        compute="_compute_current_month_variance",
-        currency_field="currency_id",
-        help="Variance between budget and actual",
-    )
-
-    # === ADDITIONAL CONTACT MANAGEMENT FIELDS ===
-    billing_address = fields.Text(
-        string="Billing Address", help="Physical billing address for this contact"
-    )
-    notification_preferences = fields.Selection(
-        [
-            ("email", "Email Only"),
-            ("sms", "SMS Only"),
-            ("both", "Email and SMS"),
-            ("none", "No Notifications"),
-        ],
-        string="Notification Preferences",
-        default="email",
-    )
-
-    # === FINAL MISSING FIELDS ===
-    email_notifications = fields.Boolean(
-        string="Email Notifications",
-        default=True,
-        help="Send email notifications to this contact",
-    )
-    monthly_statements = fields.Boolean(
-        string="Monthly Statements",
-        default=True,
-        help="Send monthly billing statements",
-    )
-    vendor = fields.Char(string="Vendor", help="Associated vendor for this contact")
-    weekly_reports = fields.Boolean(
-        string="Weekly Reports", default=False, help="Send weekly billing reports"
-    )
-    ytd_actual = fields.Monetary(
-        string="YTD Actual",
-        currency_field="currency_id",
-        help="Year-to-date actual charges",
-    )
-
-    # === ENHANCED DEPARTMENT BILLING CONTACT FIELDS ===
-
-    # Contact Information
-    contact_person = fields.Char(string="Contact Person", tracking=True)
-    email = fields.Char(string="Email", tracking=True)
-    phone = fields.Char(string="Phone", tracking=True)
-    mobile = fields.Char(string="Mobile", tracking=True)
-    department_name = fields.Char(
-        string="Department Name", required=True, tracking=True
-    )
-    department_code = fields.Char(string="Department Code", tracking=True)
-
-    # Billing Authority and Approval
-    approval_authority = fields.Boolean(
-        string="Has Approval Authority", default=False, tracking=True
-    )
-    approval_limit = fields.Monetary(
-        string="Approval Limit", currency_field="currency_id", tracking=True
-    )
-    approval_date = fields.Date(string="Last Approval Date", tracking=True)
-
-    # Financial Information
-    amount = fields.Monetary(
-        string="Current Amount", currency_field="currency_id", tracking=True
-    )
-    budget_allocated = fields.Monetary(
-        string="Budget Allocated", currency_field="currency_id", tracking=True
-    )
-    budget_remaining = fields.Monetary(
-        string="Budget Remaining",
-        compute="_compute_budget_remaining",
-        store=True,
-        currency_field="currency_id",
-    )
-    monthly_budget = fields.Monetary(
-        string="Monthly Budget", currency_field="currency_id", tracking=True
-    )
-    annual_budget = fields.Monetary(
-        string="Annual Budget", currency_field="currency_id", tracking=True
-    )
-    currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        default=lambda self: self.env.company.currency_id,
-    )
-
-    # Payment Terms and Billing
-    payment_terms = fields.Selection(
-        [
-            ("net_15", "Net 15"),
-            ("net_30", "Net 30"),
-            ("net_45", "Net 45"),
-            ("net_60", "Net 60"),
-            ("immediate", "Immediate"),
-            ("custom", "Custom"),
-        ],
-        string="Payment Terms",
-        default="net_30",
-        tracking=True,
-    )
-    billing_frequency = fields.Selection(
-        [
-            ("weekly", "Weekly"),
-            ("monthly", "Monthly"),
-            ("quarterly", "Quarterly"),
-            ("annually", "Annually"),
-            ("on_demand", "On Demand"),
-        ],
-        string="Billing Frequency",
-        default="monthly",
-        tracking=True,
-    )
-    last_billed_date = fields.Date(string="Last Billed Date", tracking=True)
-    next_billing_date = fields.Date(
-        string="Next Billing Date",
-        compute="_compute_next_billing_date",
-        store=True,
-        tracking=True,
-    )
-
-    # Cost Centers and Accounting
-    cost_center_id = fields.Many2one(
-        "account.analytic.account", string="Cost Center", tracking=True
-    )
-    gl_account_id = fields.Many2one(
-        "account.account", string="GL Account", tracking=True
-    )
-    accounting_period = fields.Selection(
-        [("monthly", "Monthly"), ("quarterly", "Quarterly"), ("yearly", "Yearly")],
-        string="Accounting Period",
-        default="monthly",
-        tracking=True,
-    )
-
-    # Service Configuration
-    service_type = fields.Selection(
-        [
-            ("storage", "Storage Services"),
-            ("retrieval", "Retrieval Services"),
-            ("destruction", "Destruction Services"),
-            ("scanning", "Scanning Services"),
-            ("pickup", "Pickup Services"),
-            ("delivery", "Delivery Services"),
-            ("all", "All Services"),
-        ],
-        string="Service Type",
-        default="all",
-        tracking=True,
-    )
-    service_level = fields.Selection(
-        [
-            ("basic", "Basic"),
-            ("standard", "Standard"),
-            ("premium", "Premium"),
-            ("enterprise", "Enterprise"),
-        ],
-        string="Service Level",
-        default="standard",
-        tracking=True,
-    )
-
-    # Notification and Communication Preferences
-    send_invoice_reminders = fields.Boolean(
-        string="Send Invoice Reminders", default=True, tracking=True
-    )
-    send_budget_alerts = fields.Boolean(
-        string="Send Budget Alerts", default=True, tracking=True
-    )
-    alert_threshold_percentage = fields.Float(
-        string="Budget Alert Threshold (%)", default=80.0, tracking=True
-    )
-
-    # Billing Address
-    billing_address_line1 = fields.Char(string="Billing Address Line 1", tracking=True)
-    billing_address_line2 = fields.Char(string="Billing Address Line 2", tracking=True)
-    billing_city = fields.Char(string="Billing City", tracking=True)
-    billing_state = fields.Char(string="Billing State", tracking=True)
-    billing_zip = fields.Char(string="Billing ZIP", tracking=True)
-    billing_country_id = fields.Many2one(
-        "res.country", string="Billing Country", tracking=True
-    )
-
-    # Performance Metrics
-    average_response_time_hours = fields.Float(
-        string="Average Response Time (Hours)",
-        compute="_compute_performance_metrics",
-        store=True,
-    )
-    approval_efficiency_rating = fields.Selection(
-        [
-            ("excellent", "Excellent"),
-            ("good", "Good"),
-            ("fair", "Fair"),
-            ("poor", "Poor"),
-        ],
-        string="Approval Efficiency",
-        compute="_compute_performance_metrics",
-        store=True,
-    )
-    total_approvals_count = fields.Integer(
-        string="Total Approvals", compute="_compute_approval_stats", store=True
-    )
-    monthly_approval_average = fields.Float(
-        string="Monthly Approval Average", compute="_compute_approval_stats", store=True
-    )
-
-    # Enhanced State Management
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("active", "Active"),
-            ("suspended", "Suspended"),
-            ("confirmed", "Confirmed"),
-            ("done", "Done"),
-            ("archived", "Archived"),
-        ],
-        string="State",
-        default="draft",
-        tracking=True,
-    )
-
-    # Delegation and Backup Contacts
-    backup_contact_id = fields.Many2one(
-        "records.department.billing.contact", string="Backup Contact", tracking=True
-    )
-    delegation_start_date = fields.Date(string="Delegation Start Date", tracking=True)
-    delegation_end_date = fields.Date(string="Delegation End Date", tracking=True)
-    can_delegate_approval = fields.Boolean(
-        string="Can Delegate Approval", default=False, tracking=True
-    )
-
-    # Basic state management
-
-    # Common fields
-    description = fields.Text()
-    notes = fields.Text()
-    date = fields.Date(default=fields.Date.today)
-    # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    sequence = fields.Integer(string="Sequence", default=10)
-    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
-    updated_date = fields.Datetime(string="Updated Date")
-    # Department Billing Contact Fields
-    approval_notes = fields.Text("Approval Notes")
-    approval_status = fields.Selection(
-        [("pending", "Pending"), ("approved", "Approved"), ("rejected", "Rejected")],
-        default="pending",
-    )
-    approved_by = fields.Many2one("res.users", "Approved By")
-    billing_role = fields.Selection(
-        [
-            ("primary", "Primary Contact"),
-            ("secondary", "Secondary Contact"),
-            ("backup", "Backup Contact"),
-        ],
-        default="primary",
-    )
-    budget_alert_threshold = fields.Monetary(
-        "Budget Alert Threshold", currency_field="currency_id"
-    )
-    budget_approval_limit = fields.Monetary(
-        "Budget Approval Limit", currency_field="currency_id"
-    )
-    contact_authorization_level = fields.Selection(
-        [("view", "View Only"), ("approve", "Approve"), ("admin", "Admin")],
-        default="view",
-    )
-    contact_preferences = fields.Text("Contact Preferences")
-    cost_center_access = fields.Many2many(
-        "account.analytic.account",
-        "billing_contact_cost_center_rel",
+        "approval.history",
         "contact_id",
-        "cost_center_id",
-        "Cost Center Access",
+        string="Approval History"
     )
-    department_budget_responsibility = fields.Boolean(
-        "Department Budget Responsibility", default=False
-    )
-    emergency_contact_backup = fields.Many2one(
-        "res.partner", "Emergency Contact Backup"
-    )
-    expense_approval_workflow = fields.Selection(
-        [
-            ("single", "Single Approval"),
-            ("dual", "Dual Approval"),
-            ("committee", "Committee"),
-        ],
-        default="single",
-    )
-    invoice_approval_authority = fields.Boolean(
-        "Invoice Approval Authority", default=False
-    )
-    invoice_delivery_preference = fields.Selection(
-        [("email", "Email"), ("portal", "Portal"), ("mail", "Mail")], default="email"
-    )
-    maximum_transaction_limit = fields.Monetary(
-        "Maximum Transaction Limit", currency_field="currency_id"
-    )
-    notification_frequency = fields.Selection(
-        [("immediate", "Immediate"), ("daily", "Daily"), ("weekly", "Weekly")],
-        default="daily",
-    )
-    payment_authorization_level = fields.Monetary(
-        "Payment Authorization Level", currency_field="currency_id"
-    )
-    po_approval_required = fields.Boolean("PO Approval Required", default=False)
-    procurement_authority = fields.Boolean("Procurement Authority", default=False)
-    quarterly_review_required = fields.Boolean(
-        "Quarterly Review Required", default=True
-    )
-    reporting_frequency = fields.Selection(
-        [("weekly", "Weekly"), ("monthly", "Monthly"), ("quarterly", "Quarterly")],
-        default="monthly",
-    )
-    signature_authority = fields.Boolean("Signature Authority", default=False)
-    spending_limit_override = fields.Boolean("Spending Limit Override", default=False)
-    vendor_approval_authority = fields.Boolean(
-        "Vendor Approval Authority", default=False
-    )
-    # Department Billing Contact Fields
 
-    @api.depends("budget_allocated", "amount")
-    def _compute_budget_remaining(self):
-        """Compute remaining budget."""
-        for record in self:
-            record.budget_remaining = (record.budget_allocated or 0) - (
-                record.amount or 0
-            )
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
+    charge_count = fields.Integer(
+        string="Charge Count",
+        compute="_compute_charge_count"
+    )
+    approval_count = fields.Integer(
+        string="Approval Count",
+        compute="_compute_approval_count"
+    )
 
-    @api.depends("last_billed_date", "billing_frequency")
-    def _compute_next_billing_date(self):
-        """Compute next billing date based on frequency."""
-        for record in self:
-            if record.last_billed_date and record.billing_frequency:
-                from datetime import timedelta
+    # ============================================================================
+    # DESCRIPTIVE FIELDS
+    # ============================================================================
+    notes = fields.Text(string="Internal Notes")
+    special_instructions = fields.Text(string="Special Instructions")
+    communication_preferences = fields.Text(string="Communication Preferences")
 
-                if record.billing_frequency == "weekly":
-                    record.next_billing_date = record.last_billed_date + timedelta(
-                        weeks=1
-                    )
-                elif record.billing_frequency == "monthly":
-                    record.next_billing_date = record.last_billed_date + timedelta(
-                        days=30
-                    )
-                elif record.billing_frequency == "quarterly":
-                    record.next_billing_date = record.last_billed_date + timedelta(
-                        days=90
-                    )
-                elif record.billing_frequency == "annually":
-                    record.next_billing_date = record.last_billed_date + timedelta(
-                        days=365
-                    )
-                else:
-                    record.next_billing_date = False
-            else:
-                record.next_billing_date = False
-
-    # === COMPUTE METHODS FOR NEW FIELDS ===
+    # ============================================================================
+    # COMPUTED METHODS
+    # ============================================================================
     @api.depends("department_charge_ids", "department_charge_ids.amount")
-    def _compute_current_month_charges(self):
-        """Compute current month charges"""
-        from datetime import date
-
-        current_month_start = date.today().replace(day=1)
-
+    def _compute_financial_totals(self):
+        """Calculate total approved amounts"""
         for record in self:
-            charges = record.department_charge_ids.filtered(
-                lambda c: c.charge_date and c.charge_date >= current_month_start
-            )
-            record.current_month_charges = sum(charges.mapped("amount"))
-
-    @api.depends("monthly_budget", "current_month_charges")
-    def _compute_budget_utilization(self):
-        """Compute budget utilization percentage"""
-        for record in self:
-            if record.monthly_budget and record.monthly_budget > 0:
-                record.budget_utilization = (
-                    record.current_month_charges / record.monthly_budget
-                ) * 100
-            else:
-                record.budget_utilization = 0.0
-
-    @api.depends("current_month_budget", "current_month_actual")
-    def _compute_current_month_variance(self):
-        """Compute variance between budgeted and actual amounts for current month"""
-        for record in self:
-            record.current_month_variance = (record.current_month_actual or 0.0) - (
-                record.current_month_budget or 0.0
+            record.total_approved_amount = sum(
+                record.department_charge_ids.mapped("amount")
             )
 
-    @api.depends("approval_history_ids")
-    def _compute_performance_metrics(self):
-        """Compute performance metrics."""
+    def _compute_charge_count(self):
+        """Count related department charges"""
         for record in self:
-            if record.approval_history_ids:
-                # Calculate average response time
-                response_times = []
-                for approval in record.approval_history_ids:
-                    if approval.response_time_hours:
-                        response_times.append(approval.response_time_hours)
+            record.charge_count = len(record.department_charge_ids)
 
-                if response_times:
-                    record.average_response_time_hours = sum(response_times) / len(
-                        response_times
-                    )
-                    avg_time = record.average_response_time_hours
-                    if avg_time <= 2:
-                        record.approval_efficiency_rating = "excellent"
-                    elif avg_time <= 8:
-                        record.approval_efficiency_rating = "good"
-                    elif avg_time <= 24:
-                        record.approval_efficiency_rating = "fair"
-                    else:
-                        record.approval_efficiency_rating = "poor"
-                else:
-                    record.average_response_time_hours = 0
-                    record.approval_efficiency_rating = "fair"
-            else:
-                record.average_response_time_hours = 0
-                record.approval_efficiency_rating = "fair"
-
-    @api.depends("approval_history_ids")
-    def _compute_approval_stats(self):
-        """Compute approval statistics."""
+    def _compute_approval_count(self):
+        """Count approval history records"""
         for record in self:
-            record.total_approvals_count = len(record.approval_history_ids)
-            if record.approval_history_ids:
-                # Calculate monthly average (assuming created in last 12 months)
-                months_active = 12  # Simplified calculation
-                record.monthly_approval_average = (
-                    record.total_approvals_count / months_active
-                )
-            else:
-                record.monthly_approval_average = 0
+            record.approval_count = len(record.approval_history_ids)
 
-    def action_approve_charge(self):
-        """Approve individual charge for department."""
+    # ============================================================================
+    # BUSINESS LOGIC METHODS
+    # ============================================================================
+    def action_activate(self):
+        """Activate the billing contact"""
         self.ensure_one()
-        if self.state != "confirmed":
-            raise UserError(_("Only confirmed contacts can approve charges."))
+        if self.state != "draft":
+            raise UserError("Only draft contacts can be activated")
+        self.write({"state": "active"})
+        self.message_post(body="Billing contact activated")
 
-        # Create charge approval activity
-        self.activity_schedule(
-            "mail.mail_activity_data_done",
-            summary=_("Charge approved by: %s") % self.name,
-            note=_(
-                "Individual charge has been approved by department billing contact."
-            ),
-            user_id=self.user_id.id,
-        )
-
-        self.message_post(
-            body=_("Charge approved by department contact: %s") % self.name,
-            message_type="notification",
-        )
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Charge Approved"),
-                "message": _("Charge has been approved by %s") % self.name,
-                "type": "success",
-                "sticky": False,
-            },
-        }
-
-    def action_approve_charges(self):
-        """Approve multiple charges for department."""
+    def action_suspend(self):
+        """Suspend the billing contact"""
         self.ensure_one()
-        if self.state != "confirmed":
-            raise UserError(_("Only confirmed contacts can approve charges."))
+        if self.state != "active":
+            raise UserError("Only active contacts can be suspended")
+        self.write({"state": "suspended"})
+        self.message_post(body="Billing contact suspended")
 
-        # Create bulk approval activity
-        self.activity_schedule(
-            "mail.mail_activity_data_done",
-            summary=_("Bulk charges approved by: %s") % self.name,
-            note=_(
-                "Multiple charges have been approved by department billing contact."
-            ),
-            user_id=self.user_id.id,
-        )
+    def action_deactivate(self):
+        """Deactivate the billing contact"""
+        self.ensure_one()
+        self.write({"state": "inactive", "end_date": fields.Date.today()})
+        self.message_post(body="Billing contact deactivated")
 
-        self.message_post(
-            body=_("Bulk charges approved by: %s") % self.name,
-            message_type="notification",
-        )
-
+    def action_view_charges(self):
+        """View related department charges"""
+        self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Approve Charges"),
+            "name": "Department Charges",
             "res_model": "department.charge",
             "view_mode": "tree,form",
-            "target": "current",
-            "domain": [("contact_id", "=", self.id), ("state", "=", "pending")],
-            "context": {
-                "default_contact_id": self.id,
-                "search_default_contact_id": self.id,
-                "search_default_pending": True,
-            },
-        }
-
-    def action_budget_report(self):
-        """Generate department budget report."""
-        self.ensure_one()
-
-        # Create budget report activity
-        self.activity_schedule(
-            "mail.mail_activity_data_done",
-            summary=_("Budget report generated by: %s") % self.name,
-            note=_("Department budget report has been generated and reviewed."),
-            user_id=self.user_id.id,
-        )
-
-        self.message_post(
-            body=_("Budget report generated by: %s") % self.name,
-            message_type="notification",
-        )
-
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.department_budget_report",
-            "report_type": "qweb-pdf",
-            "data": {"ids": self.ids},
-            "context": self.env.context,
-        }
-
-    def action_send_bill_notification(self):
-        """Send billing notification to department."""
-        self.ensure_one()
-
-        # Create notification activity
-        self.activity_schedule(
-            "mail.mail_activity_data_done",
-            summary=_("Bill notification sent by: %s") % self.name,
-            note=_("Billing notification has been sent to department members."),
-            user_id=self.user_id.id,
-        )
-
-        self.message_post(
-            body=_("Bill notification sent by: %s") % self.name,
-            message_type="notification",
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Send Notification"),
-            "res_model": "mail.compose.message",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_model": "records.department.billing.contact",
-                "default_res_id": self.id,
-                "default_composition_mode": "comment",
-                "default_subject": _("Billing Notification from %s") % self.name,
-                "default_body": _(
-                    "Please review the attached billing information for your department."
-                ),
-            },
+            "domain": [("billing_contact_id", "=", self.id)],
+            "context": {"default_billing_contact_id": self.id}
         }
 
     def action_view_approvals(self):
-        """View all approvals by this contact."""
+        """View approval history"""
         self.ensure_one()
-
         return {
             "type": "ir.actions.act_window",
-            "name": _("Approvals by: %s") % self.name,
-            "res_model": "department.charge.approval",
+            "name": "Approval History",
+            "res_model": "approval.history",
             "view_mode": "tree,form",
-            "target": "current",
-            "domain": [("approved_by", "=", self.id)],
-            "context": {
-                "default_approved_by": self.id,
-                "search_default_approved_by": self.id,
-                "search_default_group_by_date": True,
-            },
-        }
-
-    def action_view_department_charges(self):
-        """View all charges for this department contact."""
-        self.ensure_one()
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Department Charges: %s") % self.name,
-            "res_model": "department.charge",
-            "view_mode": "tree,form",
-            "target": "current",
             "domain": [("contact_id", "=", self.id)],
-            "context": {
-                "default_contact_id": self.id,
-                "search_default_contact_id": self.id,
-                "search_default_group_by_status": True,
-            },
+            "context": {"default_contact_id": self.id}
         }
 
-    def action_confirm(self):
-        """Confirm the record"""
-        self.write({"state": "confirmed"})
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("start_date", "end_date")
+    def _check_dates(self):
+        """Validate date consistency"""
+        for record in self:
+            if record.start_date and record.end_date:
+                if record.start_date > record.end_date:
+                    raise ValidationError("Start date cannot be after end date")
 
-    def action_done(self):
-        """Mark as done"""
-        self.write({"state": "done"})
+    @api.constrains("approval_limit")
+    def _check_approval_limit(self):
+        """Validate approval limit"""
+        for record in self:
+            if record.approval_limit and record.approval_limit < 0:
+                raise ValidationError("Approval limit must be positive")
+
+    @api.constrains("email")
+    def _check_email(self):
+        """Validate email format"""
+        for record in self:
+            if record.email and "@" not in record.email:
+                raise ValidationError("Invalid email format")
+
+    # ============================================================================
+    # ODOO FRAMEWORK INTEGRATION
+    # ============================================================================
+    @api.model
+    def create(self, vals):
+        """Override create for automatic name generation"""
+        if "name" not in vals and "partner_id" in vals:
+            partner = self.env["res.partner"].browse(vals["partner_id"])
+            vals["name"] = f"Billing Contact - {partner.name}"
+        return super().create(vals)
+
+    def write(self, vals):
+        """Override write for state change tracking"""
+        if "state" in vals:
+            for record in self:
+                old_state = record.state
+                new_state = vals["state"]
+                if old_state != new_state:
+                    record.message_post(
+                        body=f"Status changed from {old_state} to {new_state}"
+                    )
+        return super().write(vals)
+
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    def name_get(self):
+        """Custom name display"""
+        result = []
+        for record in self:
+            name = f"{record.partner_id.name}"
+            if record.department_id:
+                name += f" - {record.department_id.name}"
+            if record.billing_role:
+                name += f" ({record.billing_role})"
+            result.append((record.id, name))
+        return result
+
+    @api.model
+    def _name_search(self, name, args=None, operator="ilike", limit=100, name_get_uid=None):
+        """Enhanced search by partner name, department, or role"""
+        args = args or []
+        domain = []
+        if name:
+            domain = [
+                "|", "|", "|",
+                ("partner_id.name", operator, name),
+                ("department_id.name", operator, name),
+                ("billing_role", operator, name),
+                ("email", operator, name)
+            ]
+        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
+
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
