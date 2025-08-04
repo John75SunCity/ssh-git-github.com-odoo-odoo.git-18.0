@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-from datetime import datetime, timedelta
 
 
 class PortalRequest(models.Model):
@@ -14,14 +13,11 @@ class PortalRequest(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-
     name = fields.Char(string="Request #", required=True, tracking=True, index=True)
     reference = fields.Char(string="Reference", index=True, tracking=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
     active = fields.Boolean(string="Active", default=True)
-
-    # Framework Required Fields
     company_id = fields.Many2one(
         "res.company",
         string="Company",
@@ -35,7 +31,9 @@ class PortalRequest(models.Model):
         tracking=True,
     )
 
-    # State Management
+    # ============================================================================
+    # STATE MANAGEMENT
+    # ============================================================================
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -49,650 +47,339 @@ class PortalRequest(models.Model):
         ],
         string="Status",
         default="draft",
+        required=True,
         tracking=True,
+        index=True,
     )
 
     # ============================================================================
-    # CUSTOMER & REQUEST DETAILS
+    # REQUEST DETAILS
     # ============================================================================
-
-    # Customer Information
-    partner_id = fields.Many2one(
-        "res.partner", string="Customer", required=True, tracking=True
-    )
-    customer_name = fields.Char(
-        string="Customer Name", related="partner_id.name", store=True
-    )
-    contact_person = fields.Many2one("res.partner", string="Contact Person")
-    contact_email = fields.Char(string="Contact Email")
-    contact_phone = fields.Char(string="Contact Phone")
-
-    # Request Classification
     request_type = fields.Selection(
         [
-            ("document_retrieval", "Document Retrieval"),
-            ("document_storage", "Document Storage"),
-            ("document_destruction", "Document Destruction"),
-            ("document_scanning", "Document Scanning"),
-            ("pickup_request", "Pickup Request"),
-            ("service_request", "Service Request"),
-            ("billing_inquiry", "Billing Inquiry"),
-            ("access_request", "Access Request"),
-            ("complaint", "Complaint"),
+            ("destruction", "Document Destruction"),
+            ("retrieval", "Document Retrieval"),
+            ("storage", "Document Storage"),
+            ("pickup", "Document Pickup"),
+            ("shredding", "On-Site Shredding"),
+            ("consultation", "Consultation"),
+            ("audit", "Compliance Audit"),
             ("other", "Other"),
         ],
         string="Request Type",
         required=True,
         tracking=True,
-    )
-
-    category = fields.Selection(
-        [
-            ("urgent", "Urgent"),
-            ("standard", "Standard"),
-            ("bulk", "Bulk Operation"),
-            ("scheduled", "Scheduled"),
-        ],
-        string="Category",
-        default="standard",
+        index=True,
     )
 
     priority = fields.Selection(
-        [
-            ("low", "Low"),
-            ("medium", "Medium"),
-            ("high", "High"),
-            ("urgent", "Urgent"),
-        ],
+        [("0", "Low"), ("1", "Normal"), ("2", "High"), ("3", "Urgent")],
         string="Priority",
-        default="medium",
+        default="1",
         tracking=True,
+        index=True,
     )
 
-    # ============================================================================
-    # REQUEST CONTENT & DETAILS
-    # ============================================================================
-
-    # Request Details
-    request_details = fields.Text(string="Request Details", required=True)
-    special_instructions = fields.Text(string="Special Instructions")
+    urgency_reason = fields.Text(string="Urgency Reason")
     internal_notes = fields.Text(string="Internal Notes")
-    resolution_notes = fields.Text(string="Resolution Notes")
-
-    # Document Management
-    document_description = fields.Text(string="Document Description")
-    document_location = fields.Char(string="Document Location")
-    document_count = fields.Integer(string="Document Count", default=0)
-
-    # Service Details
-    service_location = fields.Text(string="Service Location")
-    estimated_volume = fields.Float(string="Estimated Volume", digits=(8, 2))
-
-    # Missing fields from gap analysis
-    to_person = fields.Char(string="To Person")
-    upload_date = fields.Datetime(string="Upload Date")
-    uploaded_by = fields.Many2one("res.users", string="Uploaded By")
-    variance = fields.Float(string="Variance", digits=(5, 2))
+    public_notes = fields.Text(string="Public Notes", tracking=True)
 
     # ============================================================================
-    # DATES & SCHEDULING
+    # CUSTOMER & CONTACT INFORMATION
     # ============================================================================
+    partner_id = fields.Many2one("res.partner", string="Customer", required=True, tracking=True, index=True)
+    contact_person = fields.Char(string="Contact Person", tracking=True)
+    contact_email = fields.Char(string="Contact Email", tracking=True)
+    contact_phone = fields.Char(string="Contact Phone", tracking=True)
+    notification_email = fields.Char(string="Notification Email")
 
-    # Request Dates
-    request_date = fields.Datetime(
-        string="Request Date",
-        default=fields.Datetime.now,
-        required=True,
-        tracking=True,
-    )
-
-    due_date = fields.Datetime(string="Due Date", tracking=True)
+    # ============================================================================
+    # SCHEDULING & TIMING
+    # ============================================================================
+    requested_date = fields.Datetime(string="Requested Date", tracking=True)
     scheduled_date = fields.Datetime(string="Scheduled Date", tracking=True)
+    deadline = fields.Datetime(string="Deadline", tracking=True)
     completion_date = fields.Datetime(string="Completion Date", tracking=True)
-
-    # SLA Management
-    sla_deadline = fields.Datetime(
-        string="SLA Deadline",
-        compute="_compute_sla_metrics",
-        store=True,
-    )
-
-    sla_status = fields.Selection(
-        [
-            ("on_time", "On Time"),
-            ("at_risk", "At Risk"),
-            ("overdue", "Overdue"),
-        ],
-        string="SLA Status",
-        compute="_compute_sla_metrics",
-        store=True,
-    )
-
-    # Time Tracking
-    processing_time = fields.Float(
-        string="Processing Time (Hours)",
-        compute="_compute_time_metrics",
-        store=True,
-    )
-
-    response_time = fields.Float(
-        string="Response Time (Hours)",
-        compute="_compute_time_metrics",
-        store=True,
-    )
+    estimated_hours = fields.Float(string="Estimated Hours")
+    actual_hours = fields.Float(string="Actual Hours")
 
     # ============================================================================
-    # APPROVAL & WORKFLOW
+    # FINANCIAL INFORMATION
     # ============================================================================
-
-    # Approval Process
-    requires_approval = fields.Boolean(string="Requires Approval", default=False)
-    approved = fields.Boolean(string="Approved", default=False, tracking=True)
-    approved_by = fields.Many2one("res.users", string="Approved By")
-    approval_date = fields.Datetime(string="Approval Date")
-    rejection_reason = fields.Text(string="Rejection Reason")
-
-    # E-Signature Integration
-    signature_required = fields.Boolean(string="Signature Required", default=False)
-    signature_completed = fields.Boolean(string="Signature Completed", default=False)
-    signed_document_id = fields.Many2one("signed.document", string="Signed Document")
-
-    # Workflow Automation
-    auto_assign = fields.Boolean(string="Auto Assign", default=True)
-    auto_notify = fields.Boolean(string="Auto Notify", default=True)
-
-    # ============================================================================
-    # COSTS & BILLING
-    # ============================================================================
-
-    # Currency Configuration
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
     )
-
-    # Cost Information
-    estimated_cost = fields.Monetary(
-        string="Estimated Cost",
-        currency_field="currency_id",
-    )
-
-    actual_cost = fields.Monetary(
-        string="Actual Cost",
-        currency_field="currency_id",
-    )
-
-    total_amount = fields.Monetary(
-        string="Total Amount",
-        currency_field="currency_id",
-        compute="_compute_total_amount",
-        store=True,
-    )
-
-    # Billing Status
-    is_billable = fields.Boolean(string="Billable", default=True)
-    invoiced = fields.Boolean(string="Invoiced", default=False)
-    invoice_id = fields.Many2one("account.move", string="Invoice")
-
-    # ============================================================================
-    # ATTACHMENTS & DOCUMENTATION
-    # ============================================================================
-
-    # File Attachments
-    attachment_ids = fields.One2many("ir.attachment", "res_id", string="Attachments")
-    attachment_count = fields.Integer(
-        string="Attachment Count",
-        compute="_compute_attachment_count",
-    )
-
-    # Documentation
-    supporting_documents = fields.Text(string="Supporting Documents")
-    reference_documents = fields.Text(string="Reference Documents")
-
-    # ============================================================================
-    # COMMUNICATION & NOTIFICATIONS
-    # ============================================================================
-
-    # Communication Tracking
-    communication_method = fields.Selection(
+    estimated_cost = fields.Monetary(string="Estimated Cost", currency_field="currency_id", tracking=True)
+    actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id", tracking=True)
+    billing_status = fields.Selection(
         [
-            ("portal", "Customer Portal"),
-            ("email", "Email"),
-            ("phone", "Phone"),
-            ("in_person", "In Person"),
+            ("not_billable", "Not Billable"),
+            ("to_bill", "To Bill"),
+            ("billed", "Billed"),
+            ("paid", "Paid"),
         ],
-        string="Communication Method",
-        default="portal",
+        string="Billing Status",
+        default="not_billable",
+        tracking=True,
     )
-
-    # Notification Settings
-    notify_customer = fields.Boolean(string="Notify Customer", default=True)
-    customer_notified = fields.Boolean(string="Customer Notified", default=False)
-    notification_sent_date = fields.Datetime(string="Notification Sent Date")
-
-    # Follow-up
-    requires_followup = fields.Boolean(string="Requires Follow-up", default=False)
-    followup_date = fields.Date(string="Follow-up Date")
-    followup_completed = fields.Boolean(string="Follow-up Completed", default=False)
 
     # ============================================================================
-    # QUALITY & SATISFACTION
+    # DOCUMENT & SERVICE SPECIFICATIONS
     # ============================================================================
+    document_count = fields.Integer(string="Document Count")
+    box_count = fields.Integer(string="Box Count")
+    weight_estimate = fields.Float(string="Weight Estimate (lbs)")
+    service_location = fields.Char(string="Service Location")
+    access_instructions = fields.Text(string="Access Instructions")
+    special_requirements = fields.Text(string="Special Requirements")
 
-    # Quality Control
-    quality_check_required = fields.Boolean(
-        string="Quality Check Required", default=False
-    )
-    quality_approved = fields.Boolean(string="Quality Approved", default=False)
-    quality_notes = fields.Text(string="Quality Notes")
+    # ============================================================================
+    # APPROVAL & WORKFLOW
+    # ============================================================================
+    approval_required = fields.Boolean(string="Approval Required", default=False)
+    approved_by = fields.Many2one("res.users", string="Approved By", tracking=True)
+    approval_date = fields.Datetime(string="Approval Date", tracking=True)
+    rejection_reason = fields.Text(string="Rejection Reason", tracking=True)
 
-    # Customer Satisfaction
-    customer_rating = fields.Selection(
-        [
-            ("1", "1 - Very Poor"),
-            ("2", "2 - Poor"),
-            ("3", "3 - Average"),
-            ("4", "4 - Good"),
-            ("5", "5 - Excellent"),
-        ],
-        string="Customer Rating",
-    )
+    # ============================================================================
+    # E-SIGNATURE FIELDS
+    # ============================================================================
+    signature_required = fields.Boolean(string="Signature Required", default=False)
+    customer_signature = fields.Binary(string="Customer Signature")
+    customer_signature_date = fields.Datetime(string="Customer Signature Date")
+    technician_signature = fields.Binary(string="Technician Signature")
+    technician_signature_date = fields.Datetime(string="Technician Signature Date")
+    signed_document = fields.Binary(string="Signed Document")
 
-    customer_feedback = fields.Text(string="Customer Feedback")
-    satisfaction_survey_sent = fields.Boolean(string="Survey Sent", default=False)
+    # ============================================================================
+    # COMPLIANCE & TRACKING
+    # ============================================================================
+    requires_naid_compliance = fields.Boolean(string="NAID Compliance Required", default=False)
+    compliance_notes = fields.Text(string="Compliance Notes")
+    audit_trail = fields.Text(string="Audit Trail")
+    certificate_of_destruction = fields.Binary(string="Certificate of Destruction")
+    tracking_number = fields.Char(string="Tracking Number", index=True)
 
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
+    # Service connections
+    shredding_service_id = fields.Many2one("shredding.service", string="Related Shredding Service")
+    pickup_request_id = fields.Many2one("pickup.request", string="Related Pickup Request")
+    work_order_id = fields.Many2one("document.retrieval.work.order", string="Related Work Order")
 
-    # Related Records
-    portal_feedback_id = fields.Many2one("portal.feedback", string="Related Feedback")
-    work_order_id = fields.Many2one("work.order", string="Work Order")
-    pickup_request_id = fields.Many2one("pickup.request", string="Pickup Request")
-    project_task_id = fields.Many2one("project.task", string="Related Task")
-
-    # Document References
-    document_ids = fields.Many2many(
-        "records.document",
-        string="Related Documents",
+    # Document attachments
+    attachment_ids = fields.One2many(
+        "ir.attachment",
+        "res_id",
+        string="Attachments",
+        domain=[("res_model", "=", "portal.request")],
     )
 
-    box_ids = fields.Many2many(
-        "records.container",
-        string="Related Boxes",
-    )
+    # Child requests
+    parent_request_id = fields.Many2one("portal.request", string="Parent Request")
+    child_request_ids = fields.One2many("portal.request", "parent_request_id", string="Child Requests")
 
-    # Mail Thread Framework Fields
+    # Mail framework fields
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
-    # COMPUTE METHODS
+    # COMPUTED FIELDS
     # ============================================================================
+    @api.depends("child_request_ids")
+    def _compute_child_request_count(self):
+        for record in self:
+            record.child_request_count = len(record.child_request_ids)
 
     @api.depends("attachment_ids")
     def _compute_attachment_count(self):
-        """Compute number of attachments"""
         for record in self:
             record.attachment_count = len(record.attachment_ids)
 
-    @api.depends("request_type", "priority", "request_date")
-    def _compute_sla_metrics(self):
-        """Compute SLA deadline and status"""
+    @api.depends("state", "deadline")
+    def _compute_is_overdue(self):
+        now = fields.Datetime.now()
         for record in self:
-            if not record.request_date:
-                record.sla_deadline = False
-                record.sla_status = "on_time"
-                continue
+            record.is_overdue = (
+                record.deadline and record.deadline < now and record.state not in ["completed", "cancelled"]
+            )
 
-            # Set SLA based on request type and priority
-            hours = 24  # Default 24 hours
-            if record.priority == "urgent":
-                hours = 4
-            elif record.priority == "high":
-                hours = 8
-            elif record.request_type in ["document_retrieval", "pickup_request"]:
-                hours = 48
-
-            record.sla_deadline = record.request_date + timedelta(hours=hours)
-
-            # Determine SLA status
-            now = fields.Datetime.now()
-            if record.completion_date:
-                # Request completed
-                if record.completion_date <= record.sla_deadline:
-                    record.sla_status = "on_time"
-                else:
-                    record.sla_status = "overdue"
+    @api.depends("actual_hours", "estimated_hours")
+    def _compute_time_variance(self):
+        for record in self:
+            if record.estimated_hours:
+                record.time_variance = ((record.actual_hours - record.estimated_hours) / record.estimated_hours) * 100
             else:
-                # Request in progress
-                time_remaining = (record.sla_deadline - now).total_seconds() / 3600
-                if time_remaining > 2:  # More than 2 hours remaining
-                    record.sla_status = "on_time"
-                elif time_remaining > 0:  # Less than 2 hours but not overdue
-                    record.sla_status = "at_risk"
-                else:  # Past deadline
-                    record.sla_status = "overdue"
+                record.time_variance = 0.0
 
-    @api.depends("request_date", "completion_date", "state")
-    def _compute_time_metrics(self):
-        """Compute processing and response time metrics"""
-        for record in self:
-            if record.request_date:
-                now = fields.Datetime.now()
-                end_time = record.completion_date or now
+    child_request_count = fields.Integer(compute="_compute_child_request_count", string="Child Requests")
+    attachment_count = fields.Integer(compute="_compute_attachment_count", string="Attachments")
+    is_overdue = fields.Boolean(compute="_compute_is_overdue", string="Overdue")
+    time_variance = fields.Float(compute="_compute_time_variance", string="Time Variance (%)")
 
-                # Processing time (total time from request to completion)
-                delta = end_time - record.request_date
-                record.processing_time = delta.total_seconds() / 3600
+    # ============================================================================
+    # DEFAULT & SEQUENCE METHODS
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("name"):
+                vals["name"] = self.env["ir.sequence"].next_by_code("portal.request") or "REQ/"
+        return super().create(vals_list)
 
-                # Response time (time to first response/action)
-                if record.state in [
-                    "under_review",
-                    "approved",
-                    "in_progress",
-                    "completed",
-                ]:
-                    # Estimate first response as state change (simplified)
-                    record.response_time = 2.0  # Default 2 hours response time
-                else:
-                    record.response_time = 0.0
-            else:
-                record.processing_time = 0.0
-                record.response_time = 0.0
-
-    @api.depends("estimated_cost", "actual_cost")
-    def _compute_total_amount(self):
-        """Compute total amount for billing"""
-        for record in self:
-            record.total_amount = record.actual_cost or record.estimated_cost or 0.0
+    def _get_default_values(self):
+        return {
+            "state": "draft",
+            "priority": "1",
+            "request_type": "other",
+            "active": True,
+        }
 
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
+    def action_submit(self):
+        self._check_required_fields()
+        self.write({"state": "submitted", "requested_date": fields.Datetime.now()})
+        self._send_submission_notification()
 
-    def action_submit_request(self):
-        """Submit the request for processing"""
+    def action_review(self):
         self.ensure_one()
-        if not self.request_details:
-            raise UserError(_("Please provide request details before submitting."))
+        if self.state != "submitted":
+            raise UserError(_("Only submitted requests can be reviewed."))
+        self.write({"state": "under_review"})
 
-        self.write(
-            {
-                "state": "submitted",
-                "request_date": fields.Datetime.now(),
-            }
-        )
-
-        # Auto-assign if enabled
-        if self.auto_assign:
-            self._auto_assign_request()
-
-        # Send notifications
-        if self.auto_notify:
-            self._send_submission_notification()
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Request Submitted"),
-                "message": _("Your request has been submitted successfully."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
-
-    def action_approve_request(self):
-        """Approve the request"""
+    def action_approve(self):
         self.ensure_one()
         self.write(
             {
                 "state": "approved",
-                "approved": True,
                 "approved_by": self.env.user.id,
                 "approval_date": fields.Datetime.now(),
             }
         )
-
-        # Notify customer of approval
+        self._create_work_order()
         self._send_approval_notification()
 
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Request Approved"),
-                "message": _("Request has been approved successfully."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
-
-    def action_reject_request(self):
-        """Reject the request with reason"""
+    def action_reject(self):
         self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Reject Request"),
-            "res_model": "portal.request.rejection.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {"default_request_id": self.id},
-        }
+        self.write({"state": "rejected"})
+        self._send_rejection_notification()
 
-    def action_start_processing(self):
-        """Start processing the request"""
+    def action_start_progress(self):
         self.ensure_one()
+        if self.state != "approved":
+            raise UserError(_("Only approved requests can be started."))
         self.write({"state": "in_progress"})
 
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Processing Started"),
-                "message": _("Request processing has been initiated."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
-
-    def action_complete_request(self):
-        """Complete the request"""
+    def action_complete(self):
         self.ensure_one()
-        if not self.resolution_notes:
-            raise UserError(_("Please enter resolution notes before completing."))
-
-        self.write(
-            {
-                "state": "completed",
-                "completion_date": fields.Datetime.now(),
-            }
-        )
-
-        # Send completion notification
+        self.write({"state": "completed", "completion_date": fields.Datetime.now()})
+        self._finalize_billing()
         self._send_completion_notification()
 
-        # Send satisfaction survey
-        if not self.satisfaction_survey_sent:
-            self._send_satisfaction_survey()
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Request Completed"),
-                "message": _("Request has been completed successfully."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
-
-    def action_create_work_order(self):
-        """Create work order from request"""
+    def action_cancel(self):
         self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Create Work Order"),
-            "res_model": "work.order",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_name": f"Work Order - {self.name}",
-                "default_partner_id": self.partner_id.id,
-                "default_request_id": self.id,
-                "default_description": self.request_details,
-            },
-        }
+        if self.state in ["completed"]:
+            raise UserError(_("Completed requests cannot be cancelled."))
+        self.write({"state": "cancelled"})
+
+    def action_duplicate(self):
+        self.ensure_one()
+        return self.copy({"name": False, "state": "draft"})
 
     def action_view_attachments(self):
-        """View request attachments"""
-        self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Attachments"),
+            "name": "Attachments",
             "res_model": "ir.attachment",
             "view_mode": "tree,form",
-            "target": "current",
             "domain": [("res_model", "=", self._name), ("res_id", "=", self.id)],
-        }
-
-    def action_create_invoice(self):
-        """Create invoice for billable request"""
-        self.ensure_one()
-        if not self.is_billable:
-            raise UserError(_("This request is not billable."))
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Create Invoice"),
-            "res_model": "account.move",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_partner_id": self.partner_id.id,
-                "default_move_type": "out_invoice",
-                "default_ref": self.name,
-            },
+            "context": {"default_res_model": self._name, "default_res_id": self.id},
         }
 
     # ============================================================================
-    # PRIVATE METHODS
+    # NOTIFICATION METHODS
     # ============================================================================
-
-    def _auto_assign_request(self):
-        """Auto-assign request based on type and priority"""
-        for record in self:
-            if record.request_type == "billing_inquiry":
-                # Assign to billing team
-                billing_user = self.env.ref("records_management.user_billing", False)
-                if billing_user:
-                    record.user_id = billing_user
-            elif record.priority == "urgent":
-                # Assign to manager
-                manager = self.env.ref("records_management.user_manager", False)
-                if manager:
-                    record.user_id = manager
-
     def _send_submission_notification(self):
-        """Send notification when request is submitted"""
-        for record in self:
-            template = self.env.ref(
-                "records_management.mail_template_request_submission", False
-            )
-            if template and record.partner_id.email:
-                template.send_mail(record.id, force_send=True)
+        template = self.env.ref(
+            "records_management.email_template_portal_request_submitted",
+            raise_if_not_found=False,
+        )
+        if template:
+            template.send_mail(self.id, force_send=True)
 
     def _send_approval_notification(self):
-        """Send notification when request is approved"""
-        for record in self:
-            template = self.env.ref(
-                "records_management.mail_template_request_approval", False
-            )
-            if template and record.partner_id.email:
-                template.send_mail(record.id, force_send=True)
+        template = self.env.ref(
+            "records_management.email_template_portal_request_approved",
+            raise_if_not_found=False,
+        )
+        if template:
+            template.send_mail(self.id, force_send=True)
+
+    def _send_rejection_notification(self):
+        template = self.env.ref(
+            "records_management.email_template_portal_request_rejected",
+            raise_if_not_found=False,
+        )
+        if template:
+            template.send_mail(self.id, force_send=True)
 
     def _send_completion_notification(self):
-        """Send notification when request is completed"""
-        for record in self:
-            template = self.env.ref(
-                "records_management.mail_template_request_completion", False
-            )
-            if template and record.partner_id.email:
-                template.send_mail(record.id, force_send=True)
-                record.customer_notified = True
-                record.notification_sent_date = fields.Datetime.now()
+        template = self.env.ref(
+            "records_management.email_template_portal_request_completed",
+            raise_if_not_found=False,
+        )
+        if template:
+            template.send_mail(self.id, force_send=True)
 
-    def _send_satisfaction_survey(self):
-        """Send customer satisfaction survey"""
-        for record in self:
-            survey_template = self.env.ref(
-                "records_management.mail_template_satisfaction_survey", False
+    # ============================================================================
+    # BUSINESS LOGIC METHODS
+    # ============================================================================
+    def _check_required_fields(self):
+        required_fields = ["partner_id", "request_type"]
+        for field in required_fields:
+            if not getattr(self, field):
+                raise UserError(_("Field '%s' is required before submission.") % self._fields[field].string)
+
+    def _create_work_order(self):
+        if self.request_type in ["destruction", "retrieval", "shredding"]:
+            work_order = self.env["document.retrieval.work.order"].create(
+                {
+                    "name": f"WO-{self.name}",
+                    "partner_id": self.partner_id.id,
+                    "request_type": self.request_type,
+                    "portal_request_id": self.id,
+                    "estimated_hours": self.estimated_hours,
+                }
             )
-            if survey_template and record.partner_id.email:
-                survey_template.send_mail(record.id, force_send=True)
-                record.satisfaction_survey_sent = True
+            self.work_order_id = work_order.id
+
+    def _finalize_billing(self):
+        if self.billing_status == "to_bill" and self.actual_cost > 0:
+            self.billing_status = "billed"
 
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
-
-    @api.constrains("request_date", "due_date", "completion_date")
-    def _check_date_sequence(self):
-        """Ensure dates are in logical sequence"""
+    @api.constrains("deadline", "requested_date")
+    def _check_dates(self):
         for record in self:
-            if record.request_date and record.due_date:
-                if record.due_date < record.request_date:
-                    raise ValidationError(_("Due date cannot be before request date."))
-
-            if record.request_date and record.completion_date:
-                if record.completion_date < record.request_date:
-                    raise ValidationError(
-                        _("Completion date cannot be before request date.")
-                    )
+            if record.deadline and record.requested_date and record.deadline < record.requested_date:
+                raise ValidationError(_("Deadline cannot be before the requested date."))
 
     @api.constrains("estimated_cost", "actual_cost")
-    def _check_positive_costs(self):
-        """Ensure costs are positive"""
+    def _check_costs(self):
         for record in self:
-            if record.estimated_cost and record.estimated_cost < 0:
-                raise ValidationError(_("Estimated cost must be positive."))
-            if record.actual_cost and record.actual_cost < 0:
-                raise ValidationError(_("Actual cost must be positive."))
+            if record.estimated_cost < 0 or record.actual_cost < 0:
+                raise ValidationError(_("Costs cannot be negative."))
 
-    # ============================================================================
-    # LIFECYCLE METHODS
-    # ============================================================================
-
-    @api.model_create_multi
-    def create(self, vals):
-        """Override create to set defaults and generate sequence"""
-        if not vals.get("name"):
-            vals["name"] = self.env["ir.sequence"].next_by_code("portal.request") or _(
-                "New"
-            )
-
-        # Set contact information from partner if not provided
-        if vals.get("partner_id") and not vals.get("contact_email"):
-            partner = self.env["res.partner"].browse(vals["partner_id"])
-            vals["contact_email"] = partner.email
-            vals["contact_phone"] = partner.phone
-
-        return super().create(vals)
-
-    def write(self, vals):
-        """Override write to track important changes"""
-        if "state" in vals:
-            for record in self:
-                old_state = dict(record._fields["state"].selection).get(record.state)
-                new_state = dict(record._fields["state"].selection).get(vals["state"])
-                record.message_post(
-                    body=_("Request status changed from %s to %s")
-                    % (old_state, new_state)
-                )
-
-        return super().write(vals)
+    @api.constrains("estimated_hours", "actual_hours")
+    def _check_hours(self):
+        for record in self:
+            if record.estimated_hours < 0 or record.actual_hours < 0:
+                raise ValidationError(_("Hours cannot be negative."))

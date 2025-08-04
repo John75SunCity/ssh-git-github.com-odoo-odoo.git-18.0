@@ -10,12 +10,19 @@ class PaperBaleRecycling(models.Model):
     _order = "name desc"
     _rec_name = "name"
 
-    # Basic Information
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
     name = fields.Char(string="Name", required=True, tracking=True, index=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
+    company_id = fields.Many2one("res.company", string="Company", default=lambda self: self.env.company)
+    user_id = fields.Many2one("res.users", string="Assigned User", default=lambda self: self.env.user)
 
-    # State Management
+    # ============================================================================
+    # STATE MANAGEMENT
+    # ============================================================================
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -28,512 +35,233 @@ class PaperBaleRecycling(models.Model):
         tracking=True,
     )
 
-    # Company and User
-    company_id = fields.Many2one(
-        "res.company", string="Company", default=lambda self: self.env.company
-    )
-    user_id = fields.Many2one(
-        "res.users", string="Assigned User", default=lambda self: self.env.user
-    )
-
-    # Timestamps
-    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now)
-    date_modified = fields.Datetime(string="Modified Date")
-
-    # Control Fields
-    active = fields.Boolean(string="Active", default=True)
-    notes = fields.Text(string="Internal Notes")
-
     # ============================================================================
-    # MISSING FIELDS FROM SMART GAP ANALYSIS - PAPER BALE RECYCLING ENHANCEMENT
+    # BALE INFORMATION
     # ============================================================================
-
-    # Framework Integration Fields (required by mail.thread)
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        string="Followers",
-    )
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-    )
-
-    # Business Process Fields
-    bale_number = fields.Char(
-        string="Bale Number",
-        required=True,
-        index=True,
-        tracking=True,
-        help="Unique identifier for the paper bale",
-    )
-
-    contamination = fields.Float(
-        string="Contamination Level (%)",
-        digits=(5, 2),
-        tracking=True,
-        help="Percentage of contamination in the bale",
-    )
-
-    contamination_notes = fields.Text(
-        string="Contamination Notes",
-        help="Details about contamination found in the bale",
-    )
-
-    gps_coordinates = fields.Char(
-        string="GPS Coordinates",
-        help="GPS location where bale was collected or processed",
-    )
-
-    load_number = fields.Char(
-        string="Load Number",
-        tracking=True,
-        help="Reference number for the load this bale belongs to",
-    )
-
-    # Production and Quality Management
-    paper_grade = fields.Selection(
+    bale_id = fields.Char(string="Bale ID", required=True, index=True, tracking=True)
+    bale_weight = fields.Float(string="Bale Weight (lbs)", required=True, tracking=True)
+    paper_type = fields.Selection(
         [
-            ("white", "White Paper"),
             ("mixed", "Mixed Paper"),
+            ("white", "White Office Paper"),
+            ("newspaper", "Newspaper"),
             ("cardboard", "Cardboard"),
+            ("magazine", "Magazine/Glossy"),
+            ("confidential", "Confidential Documents"),
         ],
-        string="Paper Grade",
+        string="Paper Type",
         required=True,
         default="mixed",
-        tracking=True,
-        help="Classification of paper type for recycling processing",
     )
 
-    production_date = fields.Date(
-        string="Production Date",
-        default=fields.Date.today,
-        tracking=True,
-        help="Date when the paper bale was created at our facility",
-    )
-
-    # Mobile and Service Integration
-    mobile_entry = fields.Boolean(
-        string="Mobile Entry",
-        default=False,
-        help="Indicates if this entry was created via mobile device",
-    )
-
-    # Weight and Measurement
-    weight_net = fields.Float(
-        string="Net Weight (lbs)",
-        digits=(10, 2),
-        help="Net weight of the paper bale",
-    )
-
-    # Additional Quality Fields
-    quality_grade = fields.Selection(
+    grade_quality = fields.Selection(
         [
-            ("premium", "Premium"),
-            ("standard", "Standard"),
-            ("economy", "Economy"),
-            ("reject", "Reject"),
+            ("grade_1", "Grade 1 - Highest"),
+            ("grade_2", "Grade 2 - High"),
+            ("grade_3", "Grade 3 - Standard"),
+            ("grade_4", "Grade 4 - Low"),
         ],
-        string="Quality Grade",
-        default="standard",
+        string="Grade Quality",
+        default="grade_3",
+        tracking=True,
+    )
+
+    contamination_level = fields.Float(string="Contamination Level (%)", default=0.0)
+    moisture_content = fields.Float(string="Moisture Content (%)", default=0.0)
+
+    # ============================================================================
+    # RECYCLING PROCESS
+    # ============================================================================
+    processing_date = fields.Date(string="Processing Date", tracking=True)
+    recycling_facility_id = fields.Many2one(
+        "res.partner", string="Recycling Facility", domain=[("is_company", "=", True)]
+    )
+
+    collection_date = fields.Date(string="Collection Date", tracking=True)
+    transport_method = fields.Selection(
+        [
+            ("truck", "Truck Transport"),
+            ("rail", "Rail Transport"),
+            ("barge", "Barge Transport"),
+            ("combination", "Combination"),
+        ],
+        string="Transport Method",
+        default="truck",
+    )
+
+    processing_status = fields.Selection(
+        [
+            ("pending", "Pending Processing"),
+            ("in_process", "In Process"),
+            ("completed", "Completed"),
+            ("rejected", "Rejected"),
+        ],
+        string="Processing Status",
+        default="pending",
         tracking=True,
     )
 
     # ============================================================================
-    # MISSING FIELDS FROM SMART GAP ANALYSIS - PAPER BALE RECYCLING ENHANCEMENT
+    # ENVIRONMENTAL & COMPLIANCE
     # ============================================================================
+    carbon_footprint_reduction = fields.Float(string="Carbon Footprint Reduction (tons CO2)")
+    water_savings = fields.Float(string="Water Savings (gallons)")
+    energy_savings = fields.Float(string="Energy Savings (kWh)")
+    landfill_diversion = fields.Float(string="Landfill Diversion (lbs)")
 
-    # Load and Shipment Management
-    load_shipment_id = fields.Many2one(
-        "paper.load.shipment",
-        string="Load Shipment",
-        tracking=True,
-        help="Associated load shipment for this bale"
+    environmental_certificate = fields.Binary(string="Environmental Certificate")
+    recycling_certificate = fields.Binary(string="Recycling Certificate")
+    chain_of_custody = fields.Text(string="Chain of Custody Documentation")
+
+    # ============================================================================
+    # FINANCIAL TRACKING
+    # ============================================================================
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
     )
-    
-    # Environmental and Quality Control
-    moisture_level = fields.Float(
-        string="Moisture Level (%)",
-        digits=(5, 2),
-        tracking=True,
-        help="Moisture content percentage in the bale"
+    market_price_per_ton = fields.Monetary(string="Market Price per Ton", currency_field="currency_id")
+    total_revenue = fields.Monetary(
+        string="Total Revenue",
+        currency_field="currency_id",
+        compute="_compute_total_revenue",
+        store=True,
     )
-    
-    # Processing Status
-    processed_from_service = fields.Selection([
-        ('pickup', 'Pickup Service'),
-        ('delivery', 'Delivery Service'),
-        ('processing', 'Processing Service'),
-        ('recycling', 'Recycling Service'),
-        ('disposal', 'Disposal Service')
-    ], string="Processed From Service", tracking=True)
-    
-    # Scale and Measurement
-    scale_reading = fields.Float(
-        string="Scale Reading",
-        digits=(10, 2),
-        help="Raw scale reading for this bale"
-    )
-    
-    # Processing Status
-    status = fields.Selection([
-        ('received', 'Received'),
-        ('inspected', 'Inspected'),
-        ('processed', 'Processed'),
-        ('shipped', 'Shipped'),
-        ('recycled', 'Recycled')
-    ], string="Processing Status", default='received', tracking=True)
-    
-    # Additional Business Fields
-    contamination_type = fields.Selection([
-        ('plastic', 'Plastic'),
-        ('metal', 'Metal'),
-        ('organic', 'Organic Matter'),
-        ('mixed', 'Mixed Contamination'),
-        ('other', 'Other')
-    ], string="Contamination Type", tracking=True)
-    
-    processing_facility = fields.Char(
-        string="Processing Facility",
-        help="Name of the facility where this bale was processed"
-    )
-    
-    recycling_grade = fields.Selection([
-        ('a', 'Grade A'),
-        ('b', 'Grade B'),
-        ('c', 'Grade C'),
-        ('reject', 'Reject')
-    ], string="Recycling Grade", default='b', tracking=True)
-    
-    final_destination = fields.Char(
-        string="Final Destination",
-        help="Final destination where the recycled material was sent"
+    processing_cost = fields.Monetary(string="Processing Cost", currency_field="currency_id")
+    transport_cost = fields.Monetary(string="Transport Cost", currency_field="currency_id")
+    net_profit = fields.Monetary(
+        string="Net Profit",
+        currency_field="currency_id",
+        compute="_compute_net_profit",
+        store=True,
     )
 
-    moisture_content = fields.Float(
-        string="Moisture Content (%)",
-        digits=(5, 2),
-        help="Moisture percentage in the bale",
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+    source_paper_bales = fields.Many2many("paper.bale", string="Source Paper Bales")
+    shredding_service_ids = fields.One2many(
+        "shredding.service", "recycling_bale_id", string="Related Shredding Services"
     )
 
-    # Process Fields
-    processing_facility = fields.Char(
-        string="Processing Facility", help="Facility where the bale was processed"
-    )
+    # Mail framework fields
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
-    batch_id = fields.Char(
-        string="Batch ID", help="Batch identifier for quality tracking"
-    )
-
-    # Customer and Location
-    collection_location = fields.Char(
-        string="Collection Location", help="Location where materials were collected"
-    )
-
-    destination_facility = fields.Char(
-        string="Destination Facility",
-        help="Facility where bale will be sent for processing",
-    )
-
-    # Computed Fields
-    display_name = fields.Char(
-        string="Display Name", compute="_compute_display_name", store=True
-    )
-
-    @api.depends("name")
-    def _compute_display_name(self):
-        """Compute display name."""
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
+    @api.depends("bale_weight", "market_price_per_ton")
+    def _compute_total_revenue(self):
         for record in self:
-            record.display_name = record.name or _("New")
+            if record.bale_weight and record.market_price_per_ton:
+                weight_tons = record.bale_weight / 2000  # Convert lbs to tons
+                record.total_revenue = weight_tons * record.market_price_per_ton
+            else:
+                record.total_revenue = 0.0
 
-    def write(self, vals):
-        """Override write to update modification date."""
-        vals["date_modified"] = fields.Datetime.now()
-        return super().write(vals)
+    @api.depends("total_revenue", "processing_cost", "transport_cost")
+    def _compute_net_profit(self):
+        for record in self:
+            record.net_profit = record.total_revenue - record.processing_cost - record.transport_cost
 
-    # Action Methods
-    def action_activate(self):
-        """Activate the record."""
-        self.write({"state": "active"})
+    @api.depends("source_paper_bales")
+    def _compute_source_bale_count(self):
+        for record in self:
+            record.source_bale_count = len(record.source_paper_bales)
 
-    def action_deactivate(self):
-        """Deactivate the record."""
-        self.write({"state": "inactive"})
+    source_bale_count = fields.Integer(compute="_compute_source_bale_count", string="Source Bales")
 
-    def action_archive(self):
-        """Archive the record."""
-        self.write({"state": "archived", "active": False})
-
-    def action_assign_to_load(self):
-        """Assign paper bale to a shipping load."""
-        self.ensure_one()
-        if self.state != "active":
-            raise UserError(_("Only active paper bales can be assigned to loads."))
-
-        # Update state and notes
-        self.write(
-            {
-                "notes": (self.notes or "")
-                + _("\nAssigned to load on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
-        )
-
-        # Create activity for load assignment
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("Paper bale assigned to load: %s") % self.name,
-            note=_(
-                "Paper bale has been assigned to shipping load and is ready for transport."
-            ),
-            user_id=self.user_id.id,
-        )
-
-        self.message_post(
-            body=_("Paper bale assigned to shipping load: %s") % self.name,
-            message_type="notification",
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Assign to Load"),
-            "res_model": "load",
-            "view_mode": "tree,form",
-            "target": "current",
-            "context": {
-                "default_name": _("Load for: %s") % self.name,
-                "search_default_active": True,
-            },
-        }
-
-    def action_mark_delivered(self):
-        """Mark paper bale as delivered to recycling facility."""
-        self.ensure_one()
-        if self.state == "archived":
-            raise UserError(_("Cannot mark archived paper bale as delivered."))
-
-        # Update state and notes
-        self.write(
-            {
-                "state": "inactive",  # Delivered state
-                "notes": (self.notes or "")
-                + _("\nDelivered to recycling facility on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            }
-        )
-
-        # Create delivery confirmation activity
-        self.activity_schedule(
-            "mail.mail_activity_data_done",
-            summary=_("Paper bale delivered: %s") % self.name,
-            note=_("Paper bale has been successfully delivered to recycling facility."),
-            user_id=self.user_id.id,
-        )
-
-        self.message_post(
-            body=_("Paper bale delivered to recycling facility: %s") % self.name,
-            message_type="notification",
-        )
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Delivery Confirmed"),
-                "message": _(
-                    "Paper bale %s has been successfully delivered to the recycling facility."
-                )
-                % self.name,
-                "type": "success",
-                "sticky": False,
-            },
-        }
-
-    def action_mark_paid(self):
-        """Mark paper bale payment as received."""
-        self.ensure_one()
-        if self.state == "archived":
-            raise UserError(_("Cannot mark payment for archived paper bale."))
-
-        # Update notes with payment information
-        self.write(
-            {
-                "notes": (self.notes or "")
-                + _("\nPayment received on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
-        )
-
-        # Create payment confirmation activity
-        self.activity_schedule(
-            "mail.mail_activity_data_done",
-            summary=_("Payment received for paper bale: %s") % self.name,
-            note=_(
-                "Payment has been received and processed for this paper bale recycling."
-            ),
-            user_id=self.user_id.id,
-        )
-
-        self.message_post(
-            body=_("Payment received for paper bale: %s") % self.name,
-            message_type="notification",
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Payment Processing"),
-            "res_model": "account.payment",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_payment_type": "inbound",
-                "default_communication": _("Payment for paper bale: %s") % self.name,
-                "default_ref": self.name,
-            },
-        }
-
-    def action_ready_to_ship(self):
-        """Mark paper bale as ready for shipping."""
-        self.ensure_one()
-        if self.state != "active":
-            raise UserError(_("Only active paper bales can be marked ready to ship."))
-
-        # Update notes with ready status
-        self.write(
-            {
-                "notes": (self.notes or "")
-                + _("\nMarked ready to ship on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
-        )
-
-        # Create shipping readiness activity
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("Paper bale ready to ship: %s") % self.name,
-            note=_(
-                "Paper bale is processed and ready for shipping to recycling facility."
-            ),
-            user_id=self.user_id.id,
-        )
-
-        self.message_post(
-            body=_("Paper bale marked ready to ship: %s") % self.name,
-            message_type="notification",
-        )
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Ready to Ship"),
-                "message": _(
-                    "Paper bale %s is now ready for shipping to the recycling facility."
-                )
-                % self.name,
-                "type": "info",
-                "sticky": False,
-            },
-        }
-
-    def action_ship_bale(self):
-        """Process shipping of paper bale."""
-        self.ensure_one()
-        if self.state != "active":
-            raise UserError(_("Only active paper bales can be shipped."))
-
-        # Update notes with shipping information
-        self.write(
-            {
-                "notes": (self.notes or "")
-                + _("\nShipped on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
-        )
-
-        # Create shipping activity
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("Paper bale shipped: %s") % self.name,
-            note=_(
-                "Paper bale has been shipped and is in transit to recycling facility."
-            ),
-            user_id=self.user_id.id,
-        )
-
-        self.message_post(
-            body=_("Paper bale shipped to recycling facility: %s") % self.name,
-            message_type="notification",
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Shipping Documentation"),
-            "res_model": "paper.bale.recycling",
-            "res_id": self.id,
-            "view_mode": "form",
-            "target": "current",
-            "context": {
-                "form_view_initial_mode": "edit",
-            },
-        }
-
-    def action_store_bale(self):
-        """Store paper bale in warehouse facility."""
-        self.ensure_one()
-        if self.state == "archived":
-            raise UserError(_("Cannot store archived paper bale."))
-
-        # Update state to stored (active) and notes
-        self.write(
-            {
-                "state": "active",
-                "notes": (self.notes or "")
-                + _("\nStored in warehouse on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            }
-        )
-
-        # Create storage activity
-        self.activity_schedule(
-            "mail.mail_activity_data_done",
-            summary=_("Paper bale stored: %s") % self.name,
-            note=_("Paper bale has been properly stored in warehouse facility."),
-            user_id=self.user_id.id,
-        )
-
-        self.message_post(
-            body=_("Paper bale stored in warehouse: %s") % self.name,
-            message_type="notification",
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Warehouse Storage"),
-            "res_model": "stock.location",
-            "view_mode": "tree,form",
-            "target": "current",
-            "context": {
-                "search_default_internal": True,
-                "default_usage": "internal",
-            },
-        }
-
+    # ============================================================================
+    # DEFAULT METHODS
+    # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create to set default values."""
-        # Handle both single dict and list of dicts
-        if not isinstance(vals_list, list):
-            vals_list = [vals_list]
-
         for vals in vals_list:
-            if not vals.get("name"):
-                vals["name"] = _("New Record")
-
+            if not vals.get("bale_id"):
+                vals["bale_id"] = self.env["ir.sequence"].next_by_code("paper.bale.recycling") or "PBR/"
         return super().create(vals_list)
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_start_processing(self):
+        self.ensure_one()
+        if self.state != "active":
+            raise UserError(_("Only active bales can be processed."))
+        self.write({"processing_status": "in_process", "processing_date": fields.Date.today()})
+
+    def action_complete_processing(self):
+        self.ensure_one()
+        if self.processing_status != "in_process":
+            raise UserError(_("Only bales in process can be completed."))
+        self.write({"processing_status": "completed"})
+
+    def action_reject_bale(self):
+        self.ensure_one()
+        self.write({"processing_status": "rejected"})
+
+    def action_view_source_bales(self):
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Source Paper Bales",
+            "res_model": "paper.bale",
+            "view_mode": "tree,form",
+            "domain": [("id", "in", self.source_paper_bales.ids)],
+        }
+
+    def action_generate_certificate(self):
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Generate Environmental Certificate",
+            "res_model": "environmental.certificate.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_recycling_id": self.id},
+        }
+
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    def calculate_environmental_impact(self):
+        """Calculate environmental impact metrics"""
+        self.ensure_one()
+
+        # Standard environmental benefits per ton of recycled paper
+        ton_weight = self.bale_weight / 2000
+
+        self.write(
+            {
+                "carbon_footprint_reduction": ton_weight * 1.0,  # 1 ton CO2 per ton paper
+                "water_savings": ton_weight * 7000,  # 7000 gallons per ton
+                "energy_savings": ton_weight * 4100,  # 4100 kWh per ton
+                "landfill_diversion": self.bale_weight,  # Full weight diverted
+            }
+        )
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("contamination_level", "moisture_content")
+    def _check_percentages(self):
+        for record in self:
+            if record.contamination_level < 0 or record.contamination_level > 100:
+                raise ValidationError(_("Contamination level must be between 0 and 100%."))
+            if record.moisture_content < 0 or record.moisture_content > 100:
+                raise ValidationError(_("Moisture content must be between 0 and 100%."))
+
+    @api.constrains("bale_weight")
+    def _check_bale_weight(self):
+        for record in self:
+            if record.bale_weight <= 0:
+                raise ValidationError(_("Bale weight must be greater than zero."))
+
+    @api.constrains("bale_id")
+    def _check_bale_id_uniqueness(self):
+        for record in self:
+            if record.bale_id:
+                existing = self.search([("bale_id", "=", record.bale_id), ("id", "!=", record.id)])
+                if existing:
+                    raise ValidationError(_("Bale ID must be unique."))

@@ -15,14 +15,11 @@ class RecordsRetentionPolicy(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-
     name = fields.Char(string="Policy Name", required=True, tracking=True, index=True)
     code = fields.Char(string="Policy Code", index=True, tracking=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
     active = fields.Boolean(string="Active", default=True)
-
-    # Framework Required Fields
     company_id = fields.Many2one(
         "res.company",
         string="Company",
@@ -36,7 +33,9 @@ class RecordsRetentionPolicy(models.Model):
         tracking=True,
     )
 
-    # State Management
+    # ============================================================================
+    # STATE MANAGEMENT
+    # ============================================================================
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -50,484 +49,234 @@ class RecordsRetentionPolicy(models.Model):
     )
 
     # ============================================================================
-    # RETENTION POLICY DETAILS
+    # RETENTION CONFIGURATION
     # ============================================================================
+    retention_years = fields.Integer(string="Retention Period (Years)", required=True, default=7)
+    retention_months = fields.Integer(string="Additional Months", default=0)
+    retention_days = fields.Integer(string="Additional Days", default=0)
 
-    # Retention Period
-    retention_period_years = fields.Integer(
-        string="Retention Period (Years)",
+    # Trigger events
+    trigger_event = fields.Selection(
+        [
+            ("creation", "Document Creation"),
+            ("closure", "Document Closure"),
+            ("last_access", "Last Access"),
+            ("fiscal_year_end", "Fiscal Year End"),
+            ("contract_end", "Contract End"),
+            ("custom", "Custom Event"),
+        ],
+        string="Trigger Event",
+        default="creation",
         required=True,
-        help="Number of years to retain documents (0 = permanent)",
     )
 
-    retention_period_months = fields.Integer(
-        string="Additional Months",
-        default=0,
-        help="Additional months beyond years",
-    )
-
-    # Policy Type
+    # ============================================================================
+    # POLICY SCOPE
+    # ============================================================================
     policy_type = fields.Selection(
         [
-            ("legal", "Legal Requirement"),
-            ("business", "Business Need"),
+            ("general", "General Policy"),
+            ("legal", "Legal Requirements"),
             ("regulatory", "Regulatory Compliance"),
-            ("operational", "Operational"),
+            ("business", "Business Policy"),
+            ("tax", "Tax Requirements"),
+            ("custom", "Custom Policy"),
         ],
         string="Policy Type",
-        required=True,
+        default="general",
         tracking=True,
     )
 
-    # Document Categories
-    document_type_ids = fields.Many2many(
-        "records.document.type",
-        string="Applicable Document Types",
-        help="Document types this policy applies to",
-    )
-
-    # Geographic Scope
-    jurisdiction = fields.Selection(
-        [
-            ("federal", "Federal"),
-            ("state", "State"),
-            ("local", "Local"),
-            ("international", "International"),
-        ],
-        string="Jurisdiction",
-        default="federal",
-    )
+    document_types = fields.Many2many("records.document.type", string="Applicable Document Types")
+    record_categories = fields.Char(string="Record Categories")
+    exclusions = fields.Text(string="Exclusions")
 
     # ============================================================================
-    # DATES & VERSIONING
+    # COMPLIANCE & REGULATIONS
     # ============================================================================
+    regulatory_basis = fields.Text(string="Regulatory Basis")
+    legal_requirements = fields.Text(string="Legal Requirements")
+    compliance_standards = fields.Char(string="Compliance Standards")
 
-    # Effective Dates
-    effective_date = fields.Date(
-        string="Effective Date",
-        required=True,
-        tracking=True,
-    )
-
-    expiration_date = fields.Date(
-        string="Expiration Date",
-        tracking=True,
-    )
-
-    # Version Control
-    version_number = fields.Char(string="Version Number", default="1.0", tracking=True)
-    version_date = fields.Date(string="Version Date", default=fields.Date.today)
-
-    # Parent/Child Versioning
-    parent_policy_id = fields.Many2one(
-        "records.retention.policy",
-        string="Previous Version",
-    )
-
-    version_history_ids = fields.One2many(
-        "records.policy.version",
-        "policy_id",
-        string="Version History",
-    )
-
-    # Review Dates
-    last_review_date = fields.Date(string="Last Review Date", tracking=True)
-    next_review_date = fields.Date(string="Next Review Date", tracking=True)
+    # Regulatory flags
+    sox_requirement = fields.Boolean(string="SOX Requirement", default=False)
+    hipaa_requirement = fields.Boolean(string="HIPAA Requirement", default=False)
+    gdpr_requirement = fields.Boolean(string="GDPR Requirement", default=False)
+    industry_specific = fields.Boolean(string="Industry Specific", default=False)
 
     # ============================================================================
-    # COMPLIANCE & LEGAL
+    # DESTRUCTION RULES
     # ============================================================================
-
-    # Legal Requirements
-    legal_citation = fields.Text(string="Legal Citation")
-    regulatory_authority = fields.Char(string="Regulatory Authority")
-    compliance_notes = fields.Text(string="Compliance Notes")
-
-    # Approval Process
-    requires_approval = fields.Boolean(
-        string="Requires Approval",
-        default=True,
-        help="Whether policy changes require approval",
-    )
-
-    approved = fields.Boolean(string="Approved", default=False, tracking=True)
-    approved_by = fields.Many2one("res.users", string="Approved By")
-    approval_date = fields.Date(string="Approval Date")
-
-    # Review Requirements
-    review_frequency = fields.Selection(
-        [
-            ("monthly", "Monthly"),
-            ("quarterly", "Quarterly"),
-            ("annually", "Annually"),
-            ("biannually", "Bi-annually"),
-        ],
-        string="Review Frequency",
-        default="annually",
-    )
-
-    # ============================================================================
-    # DESTRUCTION & DISPOSAL
-    # ============================================================================
-
-    # Destruction Settings
+    destruction_required = fields.Boolean(string="Destruction Required", default=True)
     destruction_method = fields.Selection(
         [
-            ("shredding", "Shredding"),
+            ("shred", "Shredding"),
+            ("pulp", "Pulping"),
             ("incineration", "Incineration"),
-            ("pulping", "Pulping"),
             ("digital_wipe", "Digital Wiping"),
+            ("secure_delete", "Secure Deletion"),
         ],
         string="Destruction Method",
-        default="shredding",
+        default="shred",
     )
 
-    auto_destruction = fields.Boolean(
-        string="Auto Destruction",
-        default=False,
-        help="Automatically schedule destruction when retention period expires",
-    )
-
-    destruction_approval_required = fields.Boolean(
-        string="Destruction Approval Required",
-        default=True,
-    )
-
-    # Exceptions
-    exceptions_allowed = fields.Boolean(
-        string="Exceptions Allowed",
-        default=False,
-        help="Allow exceptions to this retention policy",
-    )
-
-    exception_approval_required = fields.Boolean(
-        string="Exception Approval Required",
-        default=True,
-    )
+    auto_destruction = fields.Boolean(string="Auto Destruction", default=False)
+    destruction_approval_required = fields.Boolean(string="Destruction Approval Required", default=True)
+    certificate_required = fields.Boolean(string="Certificate of Destruction Required", default=True)
 
     # ============================================================================
-    # ANALYTICS & METRICS
+    # LEGAL HOLD PROVISIONS
     # ============================================================================
+    legal_hold_override = fields.Boolean(string="Legal Hold Can Override", default=True)
+    litigation_hold_period = fields.Integer(string="Litigation Hold Period (Years)", default=0)
+    hold_notification_required = fields.Boolean(string="Hold Notification Required", default=True)
 
-    # Document Metrics
-    document_count = fields.Integer(
-        string="Documents Covered",
-        compute="_compute_document_metrics",
-        store=True,
+    # ============================================================================
+    # REVIEW & MAINTENANCE
+    # ============================================================================
+    review_frequency = fields.Selection(
+        [
+            ("annual", "Annual"),
+            ("biannual", "Bi-Annual"),
+            ("quarterly", "Quarterly"),
+            ("as_needed", "As Needed"),
+        ],
+        string="Review Frequency",
+        default="annual",
     )
 
-    documents_eligible_for_destruction = fields.Integer(
-        string="Eligible for Destruction",
-        compute="_compute_destruction_metrics",
-        store=True,
-    )
-
-    # Compliance Metrics
-    compliance_score = fields.Float(
-        string="Compliance Score (%)",
-        digits=(5, 2),
-        compute="_compute_compliance_metrics",
-        store=True,
-    )
-
-    policy_violations = fields.Integer(
-        string="Policy Violations",
-        compute="_compute_violation_metrics",
-        store=True,
-    )
-
-    exception_count = fields.Integer(
-        string="Active Exceptions",
-        compute="_compute_exception_metrics",
-        store=True,
-    )
+    last_review_date = fields.Date(string="Last Review Date")
+    next_review_date = fields.Date(string="Next Review Date", compute="_compute_next_review_date", store=True)
+    review_notes = fields.Text(string="Review Notes")
 
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
+    policy_rules = fields.One2many("records.retention.rule", "policy_id", string="Retention Rules")
+    affected_documents = fields.One2many("records.document", "retention_policy_id", string="Affected Documents")
 
-    # Related Records
-    document_ids = fields.One2many(
-        "records.document",
-        "retention_policy_id",
-        string="Covered Documents",
-    )
-
-    exception_ids = fields.One2many(
-        "retention.policy.exception",
-        "policy_id",
-        string="Policy Exceptions",
-    )
-
-    # Mail Thread Framework Fields
+    # Mail framework fields
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
-    # COMPUTE METHODS
+    # COMPUTED FIELDS
     # ============================================================================
-
-    @api.depends("document_ids")
-    def _compute_document_metrics(self):
-        """Compute document metrics for this policy"""
+    @api.depends("last_review_date", "review_frequency")
+    def _compute_next_review_date(self):
         for record in self:
-            try:
-                record.document_count = len(record.document_ids)
-            except Exception:
-                # Fallback if relationship doesn't exist yet
-                record.document_count = 0
-
-    @api.depends("document_ids", "retention_period_years", "retention_period_months")
-    def _compute_destruction_metrics(self):
-        """Compute documents eligible for destruction"""
-        for record in self:
-            try:
-                if record.retention_period_years == 0:  # Permanent retention
-                    record.documents_eligible_for_destruction = 0
+            if record.last_review_date and record.review_frequency:
+                if record.review_frequency == "annual":
+                    record.next_review_date = record.last_review_date + relativedelta(years=1)
+                elif record.review_frequency == "biannual":
+                    record.next_review_date = record.last_review_date + relativedelta(months=6)
+                elif record.review_frequency == "quarterly":
+                    record.next_review_date = record.last_review_date + relativedelta(months=3)
                 else:
-                    cutoff_date = fields.Date.today() - relativedelta(
-                        years=record.retention_period_years,
-                        months=record.retention_period_months,
-                    )
-                    eligible_docs = record.document_ids.filtered(
-                        lambda d: d.creation_date and d.creation_date <= cutoff_date
-                    )
-                    record.documents_eligible_for_destruction = len(eligible_docs)
-            except Exception:
-                record.documents_eligible_for_destruction = 0
+                    record.next_review_date = False
+            else:
+                record.next_review_date = False
 
-    @api.depends("document_ids")
-    def _compute_compliance_metrics(self):
-        """Compute compliance score"""
+    @api.depends("retention_years", "retention_months", "retention_days")
+    def _compute_total_retention_days(self):
         for record in self:
-            try:
-                if not record.document_ids:
-                    record.compliance_score = 100.0
-                else:
-                    # Simple compliance calculation - can be enhanced
-                    compliant_docs = record.document_ids.filtered(
-                        lambda d: d.compliant_with_policy
-                    )
-                    record.compliance_score = (
-                        len(compliant_docs) / len(record.document_ids) * 100
-                    )
-            except Exception:
-                record.compliance_score = 100.0
+            total_days = record.retention_years * 365 + record.retention_months * 30 + record.retention_days
+            record.total_retention_days = total_days
 
-    @api.depends("exception_ids")
-    def _compute_violation_metrics(self):
-        """Compute policy violations"""
+    @api.depends("policy_rules")
+    def _compute_rule_count(self):
         for record in self:
-            try:
-                violations = record.exception_ids.filtered(
-                    lambda e: e.exception_type == "violation"
-                )
-                record.policy_violations = len(violations)
-            except Exception:
-                record.policy_violations = 0
+            record.rule_count = len(record.policy_rules)
 
-    @api.depends("exception_ids")
-    def _compute_exception_metrics(self):
-        """Compute active exceptions"""
+    @api.depends("affected_documents")
+    def _compute_document_count(self):
         for record in self:
-            try:
-                active_exceptions = record.exception_ids.filtered(
-                    lambda e: e.state == "active"
-                )
-                record.exception_count = len(active_exceptions)
-            except Exception:
-                record.exception_count = 0
+            record.document_count = len(record.affected_documents)
+
+    total_retention_days = fields.Integer(compute="_compute_total_retention_days", string="Total Retention (Days)")
+    rule_count = fields.Integer(compute="_compute_rule_count", string="Rules")
+    document_count = fields.Integer(compute="_compute_document_count", string="Documents")
+
+    # ============================================================================
+    # DEFAULT METHODS
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("code"):
+                vals["code"] = self.env["ir.sequence"].next_by_code("records.retention.policy") or "RRP/"
+        return super().create(vals_list)
 
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-
-    def action_activate_policy(self):
-        """Activate the retention policy"""
+    def action_activate(self):
         self.ensure_one()
-        if not self.approved:
-            raise UserError(_("Policy must be approved before activation."))
-
         self.write({"state": "active"})
 
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Policy Activated"),
-                "message": _("Retention policy has been activated successfully."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
-
-    def action_view_documents(self):
-        """View documents covered by this policy"""
+    def action_deactivate(self):
         self.ensure_one()
+        self.write({"state": "inactive"})
+
+    def action_review(self):
+        self.ensure_one()
+        self.write({"last_review_date": fields.Date.today(), "review_notes": ""})
+
+    def action_view_affected_documents(self):
         return {
             "type": "ir.actions.act_window",
-            "name": _("Covered Documents"),
+            "name": "Affected Documents",
             "res_model": "records.document",
             "view_mode": "tree,form",
-            "target": "current",
             "domain": [("retention_policy_id", "=", self.id)],
+            "context": {"default_retention_policy_id": self.id},
         }
 
-    def action_view_exceptions(self):
-        """View policy exceptions"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Policy Exceptions"),
-            "res_model": "retention.policy.exception",
-            "view_mode": "tree,form",
-            "target": "current",
-            "domain": [("policy_id", "=", self.id)],
-        }
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    def calculate_destruction_date(self, reference_date):
+        """Calculate destruction date based on policy"""
+        if not reference_date:
+            return False
 
-    def action_schedule_review(self):
-        """Schedule policy review"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Schedule Review"),
-            "res_model": "calendar.event",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_name": f"Policy Review: {self.name}",
-                "default_description": f"Scheduled review for retention policy {self.name}",
-                "default_user_id": self.user_id.id,
-            },
-        }
+        if isinstance(reference_date, str):
+            reference_date = datetime.strptime(reference_date, "%Y-%m-%d").date()
 
-    def action_compliance_report(self):
-        """Generate compliance report"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.retention_policy_compliance_report",
-            "report_type": "qweb-pdf",
-            "data": {"policy_id": self.id},
-            "context": {"active_id": self.id},
-        }
+        return reference_date + relativedelta(
+            years=self.retention_years,
+            months=self.retention_months,
+            days=self.retention_days,
+        )
 
-    def action_bulk_apply_policy(self):
-        """Apply policy to multiple documents"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Apply Policy to Documents"),
-            "res_model": "retention.policy.bulk.apply.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {"default_policy_id": self.id},
-        }
+    def is_eligible_for_destruction(self, document):
+        """Check if document is eligible for destruction"""
+        if not self.destruction_required:
+            return False
+
+        if document.legal_hold:
+            return False
+
+        destruction_date = self.calculate_destruction_date(document.create_date)
+        return fields.Date.today() >= destruction_date
 
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
-
-    @api.constrains("retention_period_years", "retention_period_months")
+    @api.constrains("retention_years", "retention_months", "retention_days")
     def _check_retention_period(self):
-        """Ensure retention period is valid"""
         for record in self:
-            if record.retention_period_years < 0:
-                raise ValidationError(_("Retention period years cannot be negative."))
-            if (
-                record.retention_period_months < 0
-                or record.retention_period_months > 11
-            ):
-                raise ValidationError(
-                    _("Retention period months must be between 0 and 11.")
-                )
+            if record.retention_years < 0 or record.retention_months < 0 or record.retention_days < 0:
+                raise ValidationError(_("Retention periods cannot be negative."))
 
-    @api.constrains("effective_date", "expiration_date")
-    def _check_date_sequence(self):
-        """Ensure dates are in logical sequence"""
+            if record.retention_years == 0 and record.retention_months == 0 and record.retention_days == 0:
+                raise ValidationError(_("At least one retention period must be specified."))
+
+    @api.constrains("code")
+    def _check_code_uniqueness(self):
         for record in self:
-            if record.effective_date and record.expiration_date:
-                if record.expiration_date <= record.effective_date:
-                    raise ValidationError(
-                        _("Expiration date must be after effective date.")
-                    )
-
-    @api.constrains("version_number")
-    def _check_version_format(self):
-        """Ensure version number follows semantic versioning format"""
-        import re
-
-        for record in self:
-            if record.version_number:
-                pattern = r"^\d+\.\d+(\.\d+)?$"
-                if not re.match(pattern, record.version_number):
-                    raise ValidationError(
-                        _(
-                            "Version number must follow format: X.Y or X.Y.Z (e.g., 1.0 or 1.2.3)"
-                        )
-                    )
-
-    # ============================================================================
-    # LIFECYCLE METHODS
-    # ============================================================================
-
-    @api.model_create_multi
-    def create(self, vals):
-        """Override create to set defaults"""
-        if not vals.get("name"):
-            vals["name"] = _("New Retention Policy")
-
-        if not vals.get("code"):
-            vals["code"] = (
-                self.env["ir.sequence"].next_by_code("retention.policy") or "RP001"
-            )
-
-        # Set next review date based on frequency
-        if vals.get("review_frequency") and not vals.get("next_review_date"):
-            effective_date = fields.Date.from_string(
-                vals.get("effective_date", fields.Date.today())
-            )
-            if vals["review_frequency"] == "monthly":
-                vals["next_review_date"] = effective_date + relativedelta(months=1)
-            elif vals["review_frequency"] == "quarterly":
-                vals["next_review_date"] = effective_date + relativedelta(months=3)
-            elif vals["review_frequency"] == "biannually":
-                vals["next_review_date"] = effective_date + relativedelta(months=6)
-            else:  # annually
-                vals["next_review_date"] = effective_date + relativedelta(years=1)
-
-        return super().create(vals)
-
-    def write(self, vals):
-        """Override write to track important changes"""
-        if "state" in vals:
-            for record in self:
-                old_state = dict(record._fields["state"].selection).get(record.state)
-                new_state = dict(record._fields["state"].selection).get(vals["state"])
-                record.message_post(
-                    body=_("Policy status changed from %s to %s")
-                    % (old_state, new_state)
-                )
-
-        return super().write(vals)
-
-    def name_get(self):
-        """Custom name_get to show additional information"""
-        result = []
-        for record in self:
-            name = record.name
-            if record.retention_period_years is not False:
-                if record.retention_period_years == 0:
-                    name += " (Permanent)"
-                else:
-                    name += f" ({record.retention_period_years}Y"
-                    if record.retention_period_months:
-                        name += f"{record.retention_period_months}M"
-                    name += ")"
-            if record.document_count:
-                name += f" [{record.document_count} docs]"
-            result.append((record.id, name))
-        return result
+            if record.code:
+                existing = self.search([("code", "=", record.code), ("id", "!=", record.id)])
+                if existing:
+                    raise ValidationError(_("Policy code must be unique."))
