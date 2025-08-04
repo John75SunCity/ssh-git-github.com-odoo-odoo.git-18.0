@@ -23,6 +23,7 @@ from . import res_config_settings
 from . import records_tag
 from . import records_location
 from . import records_department
+from . import approval_history
 from . import records_department_billing_contact
 from . import records_storage_department_user
 

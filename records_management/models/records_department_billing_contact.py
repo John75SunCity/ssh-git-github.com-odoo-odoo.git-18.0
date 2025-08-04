@@ -69,6 +69,9 @@ class RecordsDepartmentBillingContact(models.Model):
     department_charge_ids = fields.One2many(
         "records.billing.line", "contact_id", string="Department Charges"
     )
+    approval_history_ids = fields.One2many(
+        "approval.history", "contact_id", string="Approval History"
+    )
 
     # === MORE MISSING FIELDS FROM VIEWS ===
     cc_finance_team = fields.Boolean(
@@ -177,9 +180,6 @@ class RecordsDepartmentBillingContact(models.Model):
         string="Approval Limit", currency_field="currency_id", tracking=True
     )
     approval_date = fields.Date(string="Last Approval Date", tracking=True)
-    approval_history_ids = fields.One2many(
-        "approval.history", "contact_id", string="Approval History"
-    )
 
     # Financial Information
     amount = fields.Monetary(
