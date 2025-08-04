@@ -1,896 +1,782 @@
 # -*- coding: utf-8 -*-
-"""
-Customer Inventory Report
-"""
-
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
 
 class CustomerInventoryReport(models.Model):
-    """
-    Customer Inventory Report
-    """
-
     _name = "customer.inventory.report"
     _description = "Customer Inventory Report"
     _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name"
+    _order = "report_date desc, name"
+    _rec_name = "name"
 
-    # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
-    active = fields.Boolean(default=True)
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
 
-    # Basic state management
+    name = fields.Char(string="Report Name", required=True, tracking=True, index=True)
+    report_number = fields.Char(string="Report Number", index=True)
+    description = fields.Text(string="Report Description")
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True, tracking=True)
+
+    # Framework Required Fields
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Report Creator",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+
+    # State Management
     state = fields.Selection(
-        [("draft", "Draft"), ("confirmed", "Confirmed"), ("done", "Done")],
-        string="State",
+        [
+            ("draft", "Draft"),
+            ("generating", "Generating"),
+            ("ready", "Ready"),
+            ("sent", "Sent to Customer"),
+            ("confirmed", "Confirmed"),
+            ("archived", "Archived"),
+        ],
+        string="Status",
         default="draft",
         tracking=True,
     )
 
-    # Common fields
-    description = fields.Text()
-    notes = fields.Text()
-    date = fields.Date(default=fields.Date.today)
-    # === COMPREHENSIVE MISSING FIELDS ===
-    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
-    created_date = fields.Date(string="Date", default=fields.Date.today, tracking=True)
-    updated_date = fields.Date(string="Date", tracking=True)
-    # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    # ============================================================================
+    # CUSTOMER & REPORT DETAILS
+    # ============================================================================
+
+    # Customer Information
+    customer_id = fields.Many2one(
+        "res.partner",
+        string="Customer",
+        required=True,
+        tracking=True,
+        domain=[("is_company", "=", True)],
     )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
-    document_count = fields.Integer(string="Document Count", default=0)
-    total_amount = fields.Monetary(string="Total Amount", currency_field="currency_id")
+    customer_name = fields.Char(
+        string="Customer Name",
+        related="customer_id.name",
+        store=True,
+    )
+    customer_contact_id = fields.Many2one(
+        "res.partner",
+        string="Customer Contact",
+        domain="[('parent_id', '=', customer_id)]",
+    )
+
+    # Report Period
+    report_period = fields.Selection(
+        [
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("semi_annual", "Semi-Annual"),
+            ("annual", "Annual"),
+            ("custom", "Custom Period"),
+        ],
+        string="Report Period",
+        default="monthly",
+        required=True,
+    )
+
+    report_date = fields.Date(
+        string="Report Date",
+        default=fields.Date.today,
+        required=True,
+    )
+    period_start_date = fields.Date(string="Period Start Date", required=True)
+    period_end_date = fields.Date(string="Period End Date", required=True)
+
+    # ============================================================================
+    # INVENTORY METRICS
+    # ============================================================================
+
+    # Document Counts
+    total_documents = fields.Integer(
+        string="Total Documents",
+        compute="_compute_inventory_metrics",
+        store=True,
+    )
+    active_documents = fields.Integer(
+        string="Active Documents",
+        compute="_compute_inventory_metrics",
+        store=True,
+    )
+    archived_documents = fields.Integer(
+        string="Archived Documents",
+        compute="_compute_inventory_metrics",
+        store=True,
+    )
+
+    # Box Counts
+    total_boxes = fields.Integer(
+        string="Total Boxes",
+        compute="_compute_inventory_metrics",
+        store=True,
+    )
+    active_boxes = fields.Integer(
+        string="Active Boxes",
+        compute="_compute_inventory_metrics",
+        store=True,
+    )
+    destroyed_boxes = fields.Integer(
+        string="Destroyed Boxes",
+        compute="_compute_inventory_metrics",
+        store=True,
+    )
+
+    # Storage Metrics
+    total_storage_volume = fields.Float(
+        string="Total Storage Volume (Cubic Ft)",
+        compute="_compute_storage_metrics",
+        store=True,
+        digits=(10, 2),
+    )
+    storage_utilization = fields.Float(
+        string="Storage Utilization (%)",
+        compute="_compute_storage_metrics",
+        store=True,
+        digits=(5, 2),
+    )
+
+    # Activity Metrics
+    documents_added = fields.Integer(
+        string="Documents Added This Period",
+        compute="_compute_activity_metrics",
+        store=True,
+    )
+    documents_retrieved = fields.Integer(
+        string="Documents Retrieved This Period",
+        compute="_compute_activity_metrics",
+        store=True,
+    )
+    documents_destroyed = fields.Integer(
+        string="Documents Destroyed This Period",
+        compute="_compute_activity_metrics",
+        store=True,
+    )
+
+    # ============================================================================
+    # FINANCIAL INFORMATION
+    # ============================================================================
+
+    # Currency Configuration
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
     )
 
-    # === MISSING CRITICAL BUSINESS FIELDS ===
-    report_generation_date = fields.Datetime(
-        string="Report Generation Date",
-        default=fields.Datetime.now,
-        help="Date and time when the report was generated",
+    # Cost Breakdown
+    storage_costs = fields.Monetary(
+        string="Storage Costs",
+        currency_field="currency_id",
+        compute="_compute_financial_metrics",
+        store=True,
     )
-    report_period_start = fields.Date(
-        string="Report Period Start",
-        help="Start date of the inventory period covered by this report",
+    service_costs = fields.Monetary(
+        string="Service Costs",
+        currency_field="currency_id",
+        compute="_compute_financial_metrics",
+        store=True,
     )
-    report_period_end = fields.Date(
-        string="Report Period End",
-        help="End date of the inventory period covered by this report",
+    destruction_costs = fields.Monetary(
+        string="Destruction Costs",
+        currency_field="currency_id",
+        compute="_compute_financial_metrics",
+        store=True,
     )
-    inventory_snapshot_id = fields.Many2one(
-        "inventory.snapshot",
-        string="Inventory Snapshot",
-        help="Related inventory snapshot record",
-    )
-    report_status_details = fields.Text(
-        string="Report Status Details",
-        help="Detailed status information about the report generation process",
-    )
-    customer_notification_sent = fields.Boolean(
-        string="Customer Notification Sent",
-        default=False,
-        help="Whether customer has been notified about this report",
-    )
-    report_distribution_method = fields.Selection(
-        [
-            ("email", "Email"),
-            ("portal", "Customer Portal"),
-            ("physical", "Physical Mail"),
-            ("pickup", "Customer Pickup"),
-        ],
-        string="Report Distribution Method",
-        default="email",
-        help="Method for distributing the report to customer",
+    total_costs = fields.Monetary(
+        string="Total Costs",
+        currency_field="currency_id",
+        compute="_compute_financial_metrics",
+        store=True,
     )
 
-    # === ENHANCED INVENTORY DETAILS ===
-    total_containers = fields.Integer(
-        string="Total Containers",
-        compute="_compute_inventory_totals",
-        store=True,
-        help="Total number of containers in inventory",
+    # Period Comparisons
+    previous_period_cost = fields.Monetary(
+        string="Previous Period Cost",
+        currency_field="currency_id",
     )
-    total_documents = fields.Integer(
-        string="Total Documents",
-        compute="_compute_inventory_totals",
+    cost_variance = fields.Monetary(
+        string="Cost Variance",
+        currency_field="currency_id",
+        compute="_compute_variance_metrics",
         store=True,
-        help="Total number of documents in inventory",
     )
-    total_storage_cubic_feet = fields.Float(
-        string="Total Storage (Cubic Feet)",
-        digits=(10, 2),
-        compute="_compute_inventory_totals",
+    cost_variance_percentage = fields.Float(
+        string="Cost Variance %",
+        compute="_compute_variance_metrics",
         store=True,
-        help="Total storage space used in cubic feet",
-    )
-    average_document_age_days = fields.Integer(
-        string="Average Document Age (Days)",
-        compute="_compute_document_metrics",
-        store=True,
-        help="Average age of documents in days",
+        digits=(5, 2),
     )
 
-    # === COST AND BILLING INTEGRATION ===
-    monthly_storage_cost = fields.Monetary(
-        string="Monthly Storage Cost",
-        currency_field="currency_id",
-        help="Monthly storage cost for items in this report",
-    )
-    retrieval_activity_cost = fields.Monetary(
-        string="Retrieval Activity Cost",
-        currency_field="currency_id",
-        help="Cost of retrieval activities during report period",
-    )
-    destruction_activity_cost = fields.Monetary(
-        string="Destruction Activity Cost",
-        currency_field="currency_id",
-        help="Cost of destruction activities during report period",
-    )
-    total_period_cost = fields.Monetary(
-        string="Total Period Cost",
-        compute="_compute_total_costs",
-        currency_field="currency_id",
-        store=True,
-        help="Total cost for the reporting period",
-    )
+    # ============================================================================
+    # COMPLIANCE & QUALITY
+    # ============================================================================
 
-    # === COMPLIANCE AND AUDIT ===
+    # Compliance Status
     compliance_status = fields.Selection(
         [
-            ("compliant", "Compliant"),
+            ("compliant", "Fully Compliant"),
             ("minor_issues", "Minor Issues"),
             ("major_issues", "Major Issues"),
             ("non_compliant", "Non-Compliant"),
         ],
         string="Compliance Status",
         default="compliant",
-        help="Overall compliance status for items in this report",
+        tracking=True,
     )
-    retention_policy_violations = fields.Integer(
+
+    compliance_score = fields.Float(
+        string="Compliance Score (%)",
+        digits=(5, 2),
+        compute="_compute_compliance_metrics",
+        store=True,
+    )
+
+    retention_violations = fields.Integer(
         string="Retention Policy Violations",
-        default=0,
-        help="Number of retention policy violations found",
+        compute="_compute_compliance_metrics",
+        store=True,
     )
-    security_incidents = fields.Integer(
-        string="Security Incidents",
-        default=0,
-        help="Number of security incidents during report period",
-    )
-    audit_findings = fields.Text(
-        string="Audit Findings", help="Detailed audit findings and recommendations"
+    security_issues = fields.Integer(
+        string="Security Issues",
+        compute="_compute_compliance_metrics",
+        store=True,
     )
 
-    # === CUSTOMER SERVICE AND COMMUNICATION ===
-    customer_contact_id = fields.Many2one(
-        "res.partner",
-        string="Customer Contact",
-        help="Primary customer contact for this report",
+    # Quality Metrics
+    service_quality_score = fields.Float(
+        string="Service Quality Score",
+        digits=(3, 2),
+        default=5.0,
     )
-    report_delivery_preference = fields.Selection(
+    customer_satisfaction = fields.Selection(
         [
-            ("immediate", "Immediate"),
-            ("weekly", "Weekly"),
-            ("monthly", "Monthly"),
-            ("quarterly", "Quarterly"),
+            ("1", "Very Dissatisfied"),
+            ("2", "Dissatisfied"),
+            ("3", "Neutral"),
+            ("4", "Satisfied"),
+            ("5", "Very Satisfied"),
         ],
-        string="Report Delivery Preference",
-        default="monthly",
-        help="Customer preference for report delivery frequency",
-    )
-    customer_feedback_received = fields.Boolean(
-        string="Customer Feedback Received",
-        default=False,
-        help="Whether customer has provided feedback on this report",
-    )
-    customer_satisfaction_score = fields.Selection(
-        [
-            ("1", "Very Poor"),
-            ("2", "Poor"),
-            ("3", "Average"),
-            ("4", "Good"),
-            ("5", "Excellent"),
-        ],
-        string="Customer Satisfaction Score",
-        help="Customer satisfaction rating for this report",
+        string="Customer Satisfaction",
     )
 
-    # === ANALYTICS AND TRENDS ===
-    inventory_growth_percentage = fields.Float(
-        string="Inventory Growth %",
+    # ============================================================================
+    # REPORT GENERATION & DELIVERY
+    # ============================================================================
+
+    # Generation Information
+    report_generation_date = fields.Datetime(
+        string="Generation Date",
+        readonly=True,
+    )
+    generated_by_id = fields.Many2one(
+        "res.users",
+        string="Generated By",
+        readonly=True,
+    )
+    generation_duration = fields.Float(
+        string="Generation Time (Minutes)",
         digits=(5, 2),
-        compute="_compute_growth_metrics",
-        store=True,
-        help="Percentage growth in inventory since last report",
+        readonly=True,
     )
-    document_activity_level = fields.Selection(
+
+    # Delivery Information
+    delivery_method = fields.Selection(
         [
-            ("low", "Low Activity"),
-            ("moderate", "Moderate Activity"),
-            ("high", "High Activity"),
-            ("very_high", "Very High Activity"),
+            ("email", "Email"),
+            ("portal", "Customer Portal"),
+            ("mail", "Physical Mail"),
+            ("pickup", "Customer Pickup"),
         ],
-        string="Document Activity Level",
-        compute="_compute_activity_level",
+        string="Delivery Method",
+        default="email",
+    )
+    delivery_date = fields.Datetime(string="Delivery Date")
+    delivery_confirmed = fields.Boolean(string="Delivery Confirmed", default=False)
+
+    # Report Format
+    report_format = fields.Selection(
+        [
+            ("pdf", "PDF Report"),
+            ("excel", "Excel Spreadsheet"),
+            ("csv", "CSV Data"),
+            ("json", "JSON Data"),
+        ],
+        string="Report Format",
+        default="pdf",
+    )
+
+    # ============================================================================
+    # LOCATIONS & SERVICES
+    # ============================================================================
+
+    # Location Summary
+    primary_location_id = fields.Many2one(
+        "records.location",
+        string="Primary Storage Location",
+    )
+    total_locations = fields.Integer(
+        string="Total Storage Locations",
+        compute="_compute_location_metrics",
         store=True,
-        help="Level of document access activity",
-    )
-    predicted_next_period_cost = fields.Monetary(
-        string="Predicted Next Period Cost",
-        currency_field="currency_id",
-        help="Predicted cost for next reporting period",
     )
 
-    # === OPERATIONAL DETAILS ===
-    report_generation_duration = fields.Float(
-        string="Report Generation Duration (Hours)",
-        digits=(5, 2),
-        help="Time taken to generate this report",
-    )
-    data_sources_count = fields.Integer(
-        string="Data Sources Count",
-        default=1,
-        help="Number of data sources used for this report",
-    )
-    report_complexity_score = fields.Float(
-        string="Report Complexity Score",
-        digits=(3, 1),
-        compute="_compute_complexity_score",
+    # Service Summary
+    active_services = fields.Text(
+        string="Active Services",
+        compute="_compute_service_summary",
         store=True,
-        help="Complexity score based on data volume and processing requirements",
     )
-    automated_generation = fields.Boolean(
-        string="Automated Generation",
-        default=False,
-        help="Whether this report was generated automatically",
+    service_requests_count = fields.Integer(
+        string="Service Requests This Period",
+        compute="_compute_service_metrics",
+        store=True,
     )
 
-    # Customer Inventory Report Fields
-    active_locations = fields.Integer("Active Locations", default=0)
-    container_ids = fields.Many2many("records.container", string="Containers")
-    document_ids = fields.Many2many("records.document", string="Documents")
-    document_type_id = fields.Many2one("records.document.type", "Document Type")
-    location_id = fields.Many2one("records.location", "Location")
-    archived_document_count = fields.Integer("Archived Document Count", default=0)
-    compliance_status_summary = fields.Text("Compliance Status Summary")
-    destruction_eligible_count = fields.Integer("Destruction Eligible Count", default=0)
-    last_inventory_audit_date = fields.Date("Last Inventory Audit Date")
-    pending_retrieval_count = fields.Integer("Pending Retrieval Count", default=0)
-    retention_policy_violations = fields.Integer(
-        "Retention Policy Violations", default=0
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+
+    # Related Records
+    box_ids = fields.Many2many(
+        "records.container",
+        string="Customer Boxes",
+        compute="_compute_related_records",
+        store=True,
     )
-    total_storage_cost = fields.Monetary(
-        "Total Storage Cost", currency_field="currency_id"
+    document_ids = fields.Many2many(
+        "records.document",
+        string="Customer Documents",
+        compute="_compute_related_records",
+        store=True,
     )
-    # Customer Inventory Report Fields
-
-    # === COMPUTE METHODS ===
-
-    @api.depends("customer_id", "report_period_start", "report_period_end")
-    def _compute_inventory_totals(self):
-        """Compute total containers, documents, and storage space"""
-        for report in self:
-            if report.customer_id:
-                # Get all containers for customer
-                containers = self.env["records.container"].search(
-                    [("customer_id", "=", report.customer_id.id)]
-                )
-                report.total_containers = len(containers)
-
-                # Get all documents for customer
-                documents = self.env["records.document"].search(
-                    [("customer_id", "=", report.customer_id.id)]
-                )
-                report.total_documents = len(documents)
-
-                # Calculate total storage space
-                total_cubic_feet = sum(containers.mapped("cubic_feet_capacity") or [0])
-                report.total_storage_cubic_feet = total_cubic_feet
-            else:
-                report.total_containers = 0
-                report.total_documents = 0
-                report.total_storage_cubic_feet = 0.0
-
-    @api.depends("customer_id", "report_period_start")
-    def _compute_document_metrics(self):
-        """Compute document-related metrics"""
-        for report in self:
-            if report.customer_id and report.report_period_start:
-                documents = self.env["records.document"].search(
-                    [("customer_id", "=", report.customer_id.id)]
-                )
-                if documents:
-                    # Calculate average document age
-                    today = fields.Date.today()
-                    total_age = 0
-                    valid_docs = 0
-                    for doc in documents:
-                        if hasattr(doc, "creation_date") and doc.creation_date:
-                            age = (today - doc.creation_date).days
-                            total_age += age
-                            valid_docs += 1
-
-                    if valid_docs > 0:
-                        report.average_document_age_days = total_age // valid_docs
-                    else:
-                        report.average_document_age_days = 0
-                else:
-                    report.average_document_age_days = 0
-            else:
-                report.average_document_age_days = 0
-
-    @api.depends(
-        "monthly_storage_cost", "retrieval_activity_cost", "destruction_activity_cost"
+    service_request_ids = fields.One2many(
+        "portal.request",
+        "customer_id",
+        string="Service Requests",
+        domain="[('request_date', '>=', period_start_date), ('request_date', '<=', period_end_date)]",
     )
-    def _compute_total_costs(self):
-        """Compute total costs for the reporting period"""
-        for report in self:
-            report.total_period_cost = (
-                (report.monthly_storage_cost or 0)
-                + (report.retrieval_activity_cost or 0)
-                + (report.destruction_activity_cost or 0)
-            )
 
-    @api.depends("total_documents", "total_containers")
-    def _compute_growth_metrics(self):
-        """Compute inventory growth percentage"""
-        for report in self:
-            if report.customer_id:
-                # Find previous report for same customer
-                previous_report = self.search(
-                    [
-                        ("customer_id", "=", report.customer_id.id),
-                        ("report_generation_date", "<", report.report_generation_date),
-                        ("id", "!=", report.id),
-                    ],
-                    order="report_generation_date desc",
-                    limit=1,
-                )
+    # Report Attachments
+    report_file = fields.Binary(string="Generated Report File")
+    report_filename = fields.Char(string="Report Filename")
 
-                if previous_report and previous_report.total_documents > 0:
-                    growth = (
-                        (report.total_documents - previous_report.total_documents)
-                        / previous_report.total_documents
-                    ) * 100
-                    report.inventory_growth_percentage = growth
-                else:
-                    report.inventory_growth_percentage = 0.0
+    # Mail Thread Framework Fields
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # NOTES & COMMENTS
+    # ============================================================================
+
+    notes = fields.Text(string="Internal Notes")
+    customer_notes = fields.Text(string="Customer Notes")
+    recommendations = fields.Text(string="Recommendations")
+    next_actions = fields.Text(string="Next Actions")
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+
+    @api.depends("customer_id", "period_start_date", "period_end_date")
+    def _compute_inventory_metrics(self):
+        """Compute inventory metrics for the customer and period"""
+        for record in self:
+            if not record.customer_id:
+                record.update({
+                    'total_documents': 0,
+                    'active_documents': 0,
+                    'archived_documents': 0,
+                    'total_boxes': 0,
+                    'active_boxes': 0,
+                    'destroyed_boxes': 0,
+                })
+                continue
+
+            # Document counts
+            domain = [('customer_id', '=', record.customer_id.id)]
+            all_docs = self.env['records.document'].search(domain)
+            record.total_documents = len(all_docs)
+            record.active_documents = len(all_docs.filtered(lambda d: d.active))
+            record.archived_documents = len(all_docs.filtered(lambda d: not d.active))
+
+            # Box counts
+            box_domain = [('customer_id', '=', record.customer_id.id)]
+            all_boxes = self.env['records.container'].search(box_domain)
+            record.total_boxes = len(all_boxes)
+            record.active_boxes = len(all_boxes.filtered(lambda b: b.state in ['active', 'stored']))
+            record.destroyed_boxes = len(all_boxes.filtered(lambda b: b.state == 'destroyed'))
+
+    @api.depends("customer_id")
+    def _compute_storage_metrics(self):
+        """Compute storage utilization metrics"""
+        for record in self:
+            if not record.customer_id:
+                record.total_storage_volume = 0.0
+                record.storage_utilization = 0.0
+                continue
+
+            # Calculate total storage volume
+            boxes = self.env['records.container'].search([('customer_id', '=', record.customer_id.id)])
+            total_volume = sum(box.volume for box in boxes if box.volume)
+            record.total_storage_volume = total_volume
+
+            # Storage utilization (simplified calculation)
+            if total_volume > 0:
+                # Assume capacity based on box count * average capacity
+                estimated_capacity = len(boxes) * 2.0  # 2 cubic feet per box average
+                record.storage_utilization = min((total_volume / estimated_capacity) * 100, 100) if estimated_capacity else 0
             else:
-                report.inventory_growth_percentage = 0.0
+                record.storage_utilization = 0.0
 
-    @api.depends("retrieval_activity_cost", "total_documents")
-    def _compute_activity_level(self):
-        """Compute document activity level based on retrieval costs"""
-        for report in self:
-            if report.total_documents and report.retrieval_activity_cost:
-                cost_per_doc = report.retrieval_activity_cost / report.total_documents
-                if cost_per_doc <= 1.0:
-                    report.document_activity_level = "low"
-                elif cost_per_doc <= 5.0:
-                    report.document_activity_level = "moderate"
-                elif cost_per_doc <= 15.0:
-                    report.document_activity_level = "high"
-                else:
-                    report.document_activity_level = "very_high"
+    @api.depends("customer_id", "period_start_date", "period_end_date")
+    def _compute_activity_metrics(self):
+        """Compute activity metrics for the period"""
+        for record in self:
+            if not (record.customer_id and record.period_start_date and record.period_end_date):
+                record.update({
+                    'documents_added': 0,
+                    'documents_retrieved': 0,
+                    'documents_destroyed': 0,
+                })
+                continue
+
+            # Documents added during period
+            added_docs = self.env['records.document'].search([
+                ('customer_id', '=', record.customer_id.id),
+                ('create_date', '>=', record.period_start_date),
+                ('create_date', '<=', record.period_end_date),
+            ])
+            record.documents_added = len(added_docs)
+
+            # Simplified metrics for retrieved and destroyed
+            # In a real implementation, you'd track these activities
+            record.documents_retrieved = 0  # Would be computed from retrieval requests
+            record.documents_destroyed = 0  # Would be computed from destruction records
+
+    @api.depends("customer_id", "period_start_date", "period_end_date")
+    def _compute_financial_metrics(self):
+        """Compute financial metrics"""
+        for record in self:
+            if not record.customer_id:
+                record.update({
+                    'storage_costs': 0.0,
+                    'service_costs': 0.0,
+                    'destruction_costs': 0.0,
+                    'total_costs': 0.0,
+                })
+                continue
+
+            # Simplified cost calculation
+            # In real implementation, would pull from invoices and service records
+            monthly_storage = record.total_boxes * 5.0  # $5 per box per month
+            
+            # Calculate months in period
+            if record.period_start_date and record.period_end_date:
+                days = (record.period_end_date - record.period_start_date).days
+                months = max(days / 30.0, 1.0)
             else:
-                report.document_activity_level = "low"
+                months = 1.0
 
-    @api.depends("total_documents", "total_containers", "data_sources_count")
-    def _compute_complexity_score(self):
-        """Compute report complexity score"""
-        for report in self:
-            base_score = 1.0
+            record.storage_costs = monthly_storage * months
+            record.service_costs = record.service_requests_count * 25.0  # $25 per service request
+            record.destruction_costs = record.destroyed_boxes * 15.0  # $15 per box destruction
+            record.total_costs = record.storage_costs + record.service_costs + record.destruction_costs
 
-            # Factor in document count
-            if report.total_documents:
-                if report.total_documents > 10000:
-                    base_score += 3.0
-                elif report.total_documents > 1000:
-                    base_score += 2.0
-                elif report.total_documents > 100:
-                    base_score += 1.0
-
-            # Factor in container count
-            if report.total_containers:
-                if report.total_containers > 1000:
-                    base_score += 2.0
-                elif report.total_containers > 100:
-                    base_score += 1.0
-                elif report.total_containers > 10:
-                    base_score += 0.5
-
-            # Factor in data sources
-            if report.data_sources_count > 1:
-                base_score += (report.data_sources_count - 1) * 0.5
-
-            report.report_complexity_score = min(base_score, 10.0)  # Cap at 10.0
-
-    # === ONCHANGE METHODS ===
-
-    @api.onchange("report_period_start", "report_period_end")
-    def _onchange_report_period(self):
-        """Update report name when period changes"""
-        if self.report_period_start and self.report_period_end and self.customer_id:
-            period_str = f"{self.report_period_start} to {self.report_period_end}"
-            self.name = f"Inventory Report - {self.customer_id.name} - {period_str}"
-
-    @api.onchange("customer_id")
-    def _onchange_customer_id(self):
-        """Update fields when customer changes"""
-        if self.customer_id:
-            # Set customer contact
-            contacts = self.customer_id.child_ids.filtered(
-                lambda c: c.is_company == False
-            )
-            if contacts:
-                self.customer_contact_id = contacts[0]
+    @api.depends("total_costs", "previous_period_cost")
+    def _compute_variance_metrics(self):
+        """Compute variance metrics"""
+        for record in self:
+            if record.previous_period_cost:
+                record.cost_variance = record.total_costs - record.previous_period_cost
+                record.cost_variance_percentage = (record.cost_variance / record.previous_period_cost) * 100
             else:
-                self.customer_contact_id = self.customer_id
+                record.cost_variance = 0.0
+                record.cost_variance_percentage = 0.0
 
-    @api.onchange("compliance_status")
-    def _onchange_compliance_status(self):
-        """Update related fields based on compliance status"""
-        if self.compliance_status in ["major_issues", "non_compliant"]:
-            self.customer_notification_sent = (
-                False  # Require explicit notification for issues
-            )
+    @api.depends("customer_id")
+    def _compute_compliance_metrics(self):
+        """Compute compliance metrics"""
+        for record in self:
+            if not record.customer_id:
+                record.update({
+                    'compliance_score': 100.0,
+                    'retention_violations': 0,
+                    'security_issues': 0,
+                })
+                continue
 
-    # === VALIDATION METHODS ===
+            # Simplified compliance calculation
+            # In real implementation, would check actual compliance records
+            violations = 0  # Would be computed from compliance audits
+            security_issues = 0  # Would be computed from security logs
 
-    @api.constrains("report_period_start", "report_period_end")
-    def _check_report_period(self):
-        """Validate report period dates"""
-        for report in self:
-            if report.report_period_start and report.report_period_end:
-                if report.report_period_start > report.report_period_end:
-                    raise ValidationError(
-                        _("Report period start date cannot be after end date.")
-                    )
+            record.retention_violations = violations
+            record.security_issues = security_issues
+            
+            # Calculate compliance score
+            total_issues = violations + security_issues
+            if total_issues == 0:
+                record.compliance_score = 100.0
+            else:
+                record.compliance_score = max(100.0 - (total_issues * 10), 0.0)
 
-                # Check for reasonable period length (not more than 1 year)
-                period_days = (
-                    report.report_period_end - report.report_period_start
-                ).days
-                if period_days > 365:
-                    raise ValidationError(_("Report period cannot exceed 365 days."))
+    @api.depends("customer_id")
+    def _compute_location_metrics(self):
+        """Compute location metrics"""
+        for record in self:
+            if record.customer_id:
+                locations = self.env['records.location'].search([
+                    ('box_ids.customer_id', '=', record.customer_id.id)
+                ])
+                record.total_locations = len(locations.ids)
+            else:
+                record.total_locations = 0
 
-    @api.constrains("customer_satisfaction_score", "customer_feedback_received")
-    def _check_satisfaction_score(self):
-        """Ensure satisfaction score is only set when feedback is received"""
-        for report in self:
-            if (
-                report.customer_satisfaction_score
-                and not report.customer_feedback_received
-            ):
-                raise ValidationError(
-                    _(
-                        "Customer satisfaction score can only be set when feedback has been received."
-                    )
-                )
+    @api.depends("customer_id", "period_start_date", "period_end_date")
+    def _compute_service_metrics(self):
+        """Compute service metrics"""
+        for record in self:
+            if record.customer_id and record.period_start_date and record.period_end_date:
+                service_requests = self.env['portal.request'].search([
+                    ('partner_id', '=', record.customer_id.id),
+                    ('request_date', '>=', record.period_start_date),
+                    ('request_date', '<=', record.period_end_date),
+                ])
+                record.service_requests_count = len(service_requests)
+            else:
+                record.service_requests_count = 0
 
-    def action_confirm_report(self):
-        """Confirm inventory report for processing."""
+    @api.depends("customer_id")
+    def _compute_service_summary(self):
+        """Compute active services summary"""
+        for record in self:
+            if record.customer_id:
+                # Build summary of active services
+                services = []
+                if record.total_boxes > 0:
+                    services.append(f"Document Storage ({record.total_boxes} boxes)")
+                if record.service_requests_count > 0:
+                    services.append(f"Service Requests ({record.service_requests_count} this period)")
+                
+                record.active_services = "\n".join(services) if services else "No active services"
+            else:
+                record.active_services = ""
+
+    @api.depends("customer_id")
+    def _compute_related_records(self):
+        """Compute related records"""
+        for record in self:
+            if record.customer_id:
+                boxes = self.env['records.container'].search([('customer_id', '=', record.customer_id.id)])
+                documents = self.env['records.document'].search([('customer_id', '=', record.customer_id.id)])
+                record.box_ids = [(6, 0, boxes.ids)]
+                record.document_ids = [(6, 0, documents.ids)]
+            else:
+                record.box_ids = [(6, 0, [])]
+                record.document_ids = [(6, 0, [])]
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+
+    def action_generate_report(self):
+        """Generate the inventory report"""
         self.ensure_one()
-        if self.state != "draft":
-            raise UserError(_("Only draft reports can be confirmed."))
+        if self.state != 'draft':
+            raise UserError(_("Only draft reports can be generated."))
 
-        # Update state and notes
-        self.write(
-            {
-                "state": "confirmed",
-                "notes": (self.notes or "")
-                + _("\nReport confirmed on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            }
-        )
-
-        # Create confirmation activity
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("Inventory report confirmed: %s") % self.name,
-            note=_(
-                "Customer inventory report has been confirmed and is ready for processing."
-            ),
-            user_id=self.user_id.id,
-        )
-
-        self.message_post(
-            body=_("Inventory report confirmed: %s") % self.name,
-            message_type="notification",
-        )
-
+        start_time = fields.Datetime.now()
+        
+        self.write({
+            'state': 'generating',
+            'report_generation_date': start_time,
+            'generated_by_id': self.env.user.id,
+        })
+        
+        # Simulate report generation
+        # In real implementation, this would generate the actual report file
+        
+        end_time = fields.Datetime.now()
+        duration = (end_time - start_time).total_seconds() / 60.0
+        
+        self.write({
+            'state': 'ready',
+            'generation_duration': duration,
+            'report_filename': f"{self.name}.pdf",
+        })
+        
         return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Report Confirmed"),
-                "message": _(
-                    "Inventory report %s has been confirmed and is ready for processing."
-                )
-                % self.name,
-                "type": "success",
-                "sticky": False,
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Report Generated'),
+                'message': _('Inventory report has been generated successfully.'),
+                'type': 'success',
             },
-        }
-
-    def action_generate_pdf_report(self):
-        """Generate PDF version of inventory report."""
-        self.ensure_one()
-
-        # Create PDF generation activity
-        self.activity_schedule(
-            "mail.mail_activity_data_done",
-            summary=_("PDF report generated: %s") % self.name,
-            note=_(
-                "PDF version of inventory report has been generated and is ready for distribution."
-            ),
-            user_id=self.user_id.id,
-        )
-
-        self.message_post(
-            body=_("PDF report generated: %s") % self.name, message_type="notification"
-        )
-
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.customer_inventory_report",
-            "report_type": "qweb-pdf",
-            "data": {"ids": self.ids},
-            "context": self.env.context,
         }
 
     def action_send_to_customer(self):
-        """Send inventory report to customer."""
+        """Send report to customer"""
         self.ensure_one()
-        if self.state != "confirmed":
-            raise UserError(_("Only confirmed reports can be sent to customers."))
+        if self.state != 'ready':
+            raise UserError(_("Only ready reports can be sent."))
 
-        # Update state and notes
-        self.write(
-            {
-                "state": "done",
-                "notes": (self.notes or "")
-                + _("\nSent to customer on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            }
-        )
+        if not self.customer_contact_id and not self.customer_id.email:
+            raise UserError(_("Customer must have an email address to send report."))
 
-        # Create send activity
-        self.activity_schedule(
-            "mail.mail_activity_data_done",
-            summary=_("Report sent to customer: %s") % self.name,
-            note=_("Inventory report has been successfully sent to the customer."),
-            user_id=self.user_id.id,
-        )
+        # Send email with report
+        template = self.env.ref('records_management.mail_template_inventory_report', False)
+        if template:
+            template.send_mail(self.id, force_send=True)
 
-        self.message_post(
-            body=_("Inventory report sent to customer: %s") % self.name,
-            message_type="notification",
-        )
+        self.write({
+            'state': 'sent',
+            'delivery_date': fields.Datetime.now(),
+            'delivery_method': 'email',
+        })
 
         return {
-            "type": "ir.actions.act_window",
-            "name": _("Send Report"),
-            "res_model": "mail.compose.message",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_model": "customer.inventory.report",
-                "default_res_id": self.id,
-                "default_composition_mode": "comment",
-                "default_subject": _("Inventory Report: %s") % self.name,
-                "default_body": _("Please find attached your inventory report."),
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Report Sent'),
+                'message': _('Report has been sent to customer successfully.'),
+                'type': 'success',
             },
         }
 
-    def action_view_boxes(self):
-        """View all boxes included in this inventory report."""
+    def action_confirm_delivery(self):
+        """Confirm report delivery"""
         self.ensure_one()
-
-        # Create activity to track box viewing
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("Inventory boxes reviewed: %s") % self.name,
-            note=_("All boxes included in this inventory report have been reviewed."),
-            user_id=self.user_id.id,
-        )
+        self.write({
+            'delivery_confirmed': True,
+            'state': 'confirmed',
+        })
 
         return {
-            "type": "ir.actions.act_window",
-            "name": _("Inventory Boxes: %s") % self.name,
-            "res_model": "records.container",
-            "view_mode": "tree,form",
-            "target": "current",
-            "domain": [("inventory_report_id", "=", self.id)],
-            "context": {
-                "default_inventory_report_id": self.id,
-                "search_default_inventory_report_id": self.id,
-                "search_default_group_by_location": True,
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Delivery Confirmed'),
+                'message': _('Report delivery has been confirmed.'),
+                'type': 'success',
             },
         }
 
-    def action_view_documents(self):
-        """View all documents included in this inventory report."""
+    def action_view_customer_records(self):
+        """View customer's records"""
         self.ensure_one()
-
-        # Create activity to track document viewing
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("Inventory documents reviewed: %s") % self.name,
-            note=_(
-                "All documents included in this inventory report have been reviewed."
-            ),
-            user_id=self.user_id.id,
-        )
-
         return {
-            "type": "ir.actions.act_window",
-            "name": _("Inventory Documents: %s") % self.name,
-            "res_model": "records.document",
-            "view_mode": "tree,form",
-            "target": "current",
-            "domain": [("inventory_report_id", "=", self.id)],
-            "context": {
-                "default_inventory_report_id": self.id,
-                "search_default_inventory_report_id": self.id,
-                "search_default_group_by_type": True,
-            },
+            'type': 'ir.actions.act_window',
+            'name': _('Customer Records'),
+            'res_model': 'records.container',
+            'view_mode': 'tree,form',
+            'domain': [('customer_id', '=', self.customer_id.id)],
+            'context': {'default_customer_id': self.customer_id.id},
         }
-
-    def action_view_locations(self):
-        """View all locations included in this inventory report."""
-        self.ensure_one()
-
-        # Create activity to track location viewing
-        self.activity_schedule(
-            "mail.mail_activity_data_done",
-            summary=_("Inventory locations reviewed: %s") % self.name,
-            note=_(
-                "All locations included in this inventory report have been reviewed."
-            ),
-            user_id=self.user_id.id,
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Inventory Locations: %s") % self.name,
-            "res_model": "records.location",
-            "view_mode": "tree,form",
-            "target": "current",
-            "domain": [("inventory_report_id", "=", self.id)],
-            "context": {
-                "default_inventory_report_id": self.id,
-                "search_default_inventory_report_id": self.id,
-                "search_default_group_by_zone": True,
-            },
-        }
-
-    def action_confirm(self):
-        """Confirm the record"""
-        self.write({"state": "confirmed"})
-
-    def action_done(self):
-        """Mark as done"""
-        self.write({"state": "done"})
-
-    # === ENHANCED ACTION METHODS ===
-
-    def action_generate_analytics_summary(self):
-        """Generate comprehensive analytics summary"""
-        self.ensure_one()
-
-        analytics_summary = f"""
-        INVENTORY ANALYTICS SUMMARY
-        ===========================
-        Report: {self.name}
-        Customer: {self.customer_id.name if self.customer_id else 'Not specified'}
-        Period: {self.report_period_start} to {self.report_period_end}
-        
-        INVENTORY METRICS:
-        - Total Containers: {self.total_containers:,}
-        - Total Documents: {self.total_documents:,}
-        - Storage Space: {self.total_storage_cubic_feet:.2f} cubic feet
-        - Average Document Age: {self.average_document_age_days} days
-        
-        COST ANALYSIS:
-        - Monthly Storage: ${self.monthly_storage_cost:.2f}
-        - Retrieval Activities: ${self.retrieval_activity_cost:.2f}
-        - Destruction Activities: ${self.destruction_activity_cost:.2f}
-        - Total Period Cost: ${self.total_period_cost:.2f}
-        
-        TRENDS & ACTIVITY:
-        - Inventory Growth: {self.inventory_growth_percentage:.1f}%
-        - Activity Level: {self.document_activity_level.title()}
-        - Complexity Score: {self.report_complexity_score:.1f}/10.0
-        
-        COMPLIANCE STATUS:
-        - Overall Status: {self.compliance_status.title()}
-        - Retention Violations: {self.retention_policy_violations}
-        - Security Incidents: {self.security_incidents}
-        """
-
-        # Create attachment with analytics summary
-        attachment = self.env["ir.attachment"].create(
-            {
-                "name": f"analytics_summary_{self.name}.txt",
-                "datas": analytics_summary.encode(),
-                "res_model": self._name,
-                "res_id": self.id,
-            }
-        )
-
-        self.message_post(
-            body=_("Analytics summary generated and attached."),
-            subject=_("Analytics Summary"),
-            attachment_ids=[attachment.id],
-        )
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Analytics Generated"),
-                "message": _("Comprehensive analytics summary has been generated."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
-
-    def action_send_compliance_alert(self):
-        """Send compliance alert if issues are found"""
-        self.ensure_one()
-
-        if self.compliance_status in ["minor_issues", "major_issues", "non_compliant"]:
-            # Mark notification as sent
-            self.customer_notification_sent = True
-
-            # Create compliance alert message
-            alert_message = f"""
-            COMPLIANCE ALERT - {self.compliance_status.upper()}
-            
-            Report: {self.name}
-            Customer: {self.customer_id.name}
-            Status: {self.compliance_status.title()}
-            
-            Issues Found:
-            - Retention Policy Violations: {self.retention_policy_violations}
-            - Security Incidents: {self.security_incidents}
-            
-            Audit Findings:
-            {self.audit_findings or 'No detailed findings recorded'}
-            
-            Please review and take appropriate action.
-            """
-
-            self.message_post(
-                body=alert_message,
-                subject=f"COMPLIANCE ALERT: {self.name}",
-                message_type="email",
-                partner_ids=(
-                    [self.customer_contact_id.id] if self.customer_contact_id else []
-                ),
-            )
-
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": _("Compliance Alert Sent"),
-                    "message": _("Compliance alert has been sent to customer."),
-                    "type": "warning",
-                    "sticky": True,
-                },
-            }
-        else:
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": _("No Issues Found"),
-                    "message": _("Report is compliant - no alert needed."),
-                    "type": "info",
-                    "sticky": False,
-                },
-            }
 
     def action_schedule_next_report(self):
-        """Schedule the next inventory report based on delivery preference"""
+        """Schedule next period report"""
         self.ensure_one()
+        
+        # Calculate next period dates
+        if self.report_period == 'monthly':
+            next_start = self.period_end_date + fields.timedelta(days=1)
+            next_end = next_start + fields.timedelta(days=30)
+        elif self.report_period == 'quarterly':
+            next_start = self.period_end_date + fields.timedelta(days=1)
+            next_end = next_start + fields.timedelta(days=90)
+        else:
+            next_start = self.period_end_date + fields.timedelta(days=1)
+            next_end = next_start + fields.timedelta(days=365)
 
-        # Calculate next report date based on preference
-        next_date_mapping = {
-            "immediate": 1,
-            "weekly": 7,
-            "monthly": 30,
-            "quarterly": 90,
-        }
-
-        days_to_add = next_date_mapping.get(self.report_delivery_preference, 30)
-        next_report_date = fields.Date.add(fields.Date.today(), days=days_to_add)
-
-        # Create next report record
-        next_report = self.copy(
-            {
-                "name": f"Scheduled Report - {self.customer_id.name} - {next_report_date}",
-                "state": "draft",
-                "report_generation_date": False,
-                "report_period_start": self.report_period_end or fields.Date.today(),
-                "report_period_end": next_report_date,
-                "customer_notification_sent": False,
-                "customer_feedback_received": False,
-            }
-        )
-
-        # Create activity for next report
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=f"Generate Next Inventory Report: {next_report.name}",
-            note=f"Scheduled inventory report for {self.customer_id.name}.\nDelivery preference: {self.report_delivery_preference}",
-            date_deadline=next_report_date,
-            user_id=self.user_id.id,
-        )
+        # Create next report
+        next_report = self.create({
+            'name': f"{self.customer_id.name} - {self.report_period.title()} Report - {next_end.strftime('%Y-%m')}",
+            'customer_id': self.customer_id.id,
+            'customer_contact_id': self.customer_contact_id.id,
+            'report_period': self.report_period,
+            'period_start_date': next_start,
+            'period_end_date': next_end,
+            'report_format': self.report_format,
+            'delivery_method': self.delivery_method,
+            'previous_period_cost': self.total_costs,
+        })
 
         return {
-            "type": "ir.actions.act_window",
-            "name": _("Next Scheduled Report"),
-            "res_model": "customer.inventory.report",
-            "res_id": next_report.id,
-            "view_mode": "form",
-            "target": "current",
+            'type': 'ir.actions.act_window',
+            'name': _('Next Period Report'),
+            'res_model': 'customer.inventory.report',
+            'res_id': next_report.id,
+            'view_mode': 'form',
+            'target': 'current',
         }
 
-    def action_request_customer_feedback(self):
-        """Request feedback from customer on this report"""
-        self.ensure_one()
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
 
-        if not self.customer_contact_id:
-            raise UserError(
-                _("Please set a customer contact before requesting feedback.")
-            )
+    @api.constrains('period_start_date', 'period_end_date')
+    def _check_period_dates(self):
+        """Ensure period dates are logical"""
+        for record in self:
+            if record.period_start_date and record.period_end_date:
+                if record.period_end_date <= record.period_start_date:
+                    raise ValidationError(_("Period end date must be after start date."))
 
-        # Create feedback request message
-        feedback_message = f"""
-        Dear {self.customer_contact_id.name},
-        
-        Your inventory report "{self.name}" has been completed and is ready for your review.
-        
-        Report Summary:
-        - Total Documents: {self.total_documents:,}
-        - Total Containers: {self.total_containers:,}
-        - Period Cost: ${self.total_period_cost:.2f}
-        
-        We would appreciate your feedback on this report to help us improve our services.
-        
-        Please log into your customer portal to review the full report and provide feedback.
-        
-        Thank you for your business!
-        """
+    @api.constrains('service_quality_score')
+    def _check_quality_score(self):
+        """Ensure quality score is within valid range"""
+        for record in self:
+            if record.service_quality_score and not (0 <= record.service_quality_score <= 10):
+                raise ValidationError(_("Service quality score must be between 0 and 10."))
 
-        # Send message to customer
-        self.message_post(
-            body=feedback_message,
-            subject=f"Inventory Report Ready for Review: {self.name}",
-            message_type="email",
-            partner_ids=[self.customer_contact_id.id],
-        )
+    # ============================================================================
+    # LIFECYCLE METHODS
+    # ============================================================================
 
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Feedback Requested"),
-                "message": _("Feedback request has been sent to customer."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
+    @api.model
+    def create(self, vals):
+        """Override create to set defaults"""
+        if not vals.get('report_number'):
+            vals['report_number'] = self.env['ir.sequence'].next_by_code('customer.inventory.report') or 'CIR'
+        
+        # Set period dates based on report period if not provided
+        if not vals.get('period_start_date') and vals.get('report_period'):
+            today = fields.Date.today()
+            if vals['report_period'] == 'monthly':
+                vals['period_start_date'] = today.replace(day=1)
+                vals['period_end_date'] = today
+            elif vals['report_period'] == 'quarterly':
+                # Start of quarter
+                quarter_start = today.replace(month=((today.month - 1) // 3) * 3 + 1, day=1)
+                vals['period_start_date'] = quarter_start
+                vals['period_end_date'] = today
+
+        return super().create(vals)
+
+    def write(self, vals):
+        """Override write to track changes"""
+        if 'state' in vals:
+            for record in self:
+                old_state = dict(record._fields['state'].selection).get(record.state)
+                new_state = dict(record._fields['state'].selection).get(vals['state'])
+                record.message_post(
+                    body=_("Report status changed from %s to %s") % (old_state, new_state)
+                )
+
+        return super().write(vals)

@@ -96,7 +96,7 @@ class DocumentRetrievalWorkOrder(models.Model):
     document_id = fields.Many2one("records.document", string="Document", tracking=True)
     document_type = fields.Char(string="Document Type")
     document_description = fields.Text(string="Document Description")
-    box_id = fields.Many2one("records.box", string="Storage Box", tracking=True)
+    box_id = fields.Many2one("records.container", string="Storage Box", tracking=True)
     
     # Location Information
     location_id = fields.Many2one("records.location", string="Storage Location", tracking=True)

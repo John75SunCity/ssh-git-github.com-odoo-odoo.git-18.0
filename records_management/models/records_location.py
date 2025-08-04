@@ -318,11 +318,6 @@ class RecordsLocation(models.Model):
     )
 
     # Related Records
-    box_ids = fields.One2many(
-        "records.box",
-        "location_id",
-        string="Boxes",
-    )
     container_ids = fields.One2many(
         "records.container",
         "location_id",
@@ -400,16 +395,11 @@ class RecordsLocation(models.Model):
                     path_parts.append(f"{field.title()}: {value}")
             record.location_path = " / ".join(path_parts)
 
-    @api.depends("box_ids", "container_ids", "total_capacity")
+    @api.depends("container_ids", "total_capacity")
     def _compute_usage_metrics(self):
         """Compute capacity usage metrics"""
         for record in self:
             current_usage = 0.0
-            
-            # Calculate usage from boxes
-            for box in record.box_ids:
-                if hasattr(box, 'volume') and box.volume:
-                    current_usage += box.volume
             
             # Calculate usage from containers
             for container in record.container_ids:
@@ -425,16 +415,11 @@ class RecordsLocation(models.Model):
                 record.available_capacity = 0.0
                 record.usage_percentage = 0.0
 
-    @api.depends("box_ids", "container_ids", "max_weight_capacity")
+    @api.depends("container_ids", "max_weight_capacity")
     def _compute_weight_metrics(self):
         """Compute weight metrics"""
         for record in self:
             current_weight = 0.0
-            
-            # Calculate weight from boxes
-            for box in record.box_ids:
-                if hasattr(box, 'weight') and box.weight:
-                    current_weight += box.weight
             
             # Calculate weight from containers
             for container in record.container_ids:
@@ -448,11 +433,11 @@ class RecordsLocation(models.Model):
             else:
                 record.available_weight = 0.0
 
-    @api.depends("box_ids", "container_ids", "document_ids")
+    @api.depends("container_ids", "document_ids")
     def _compute_item_counts(self):
         """Compute item counts"""
         for record in self:
-            record.box_count = len(record.box_ids)
+            record.box_count = len(record.container_ids)  # Keep box_count name for customer-facing UI
             record.container_count = len(record.container_ids)
             record.document_count = len(record.document_ids)
 
@@ -520,7 +505,7 @@ class RecordsLocation(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": _("Location Contents"),
-            "res_model": "records.box",
+            "res_model": "records.container",
             "view_mode": "tree,form",
             "domain": [("location_id", "=", self.id)],
             "context": {"default_location_id": self.id},

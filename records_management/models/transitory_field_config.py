@@ -73,7 +73,7 @@ class TransitoryFieldConfig(models.Model):
     target_model = fields.Selection(
         [
             ("portal.request", "Portal Request"),
-            ("records.box", "Records Box"),
+            ("records.container", "Records Container"),
             ("pickup.request", "Pickup Request"),
             ("work.order", "Work Order"),
             ("customer.feedback", "Customer Feedback"),

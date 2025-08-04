@@ -313,7 +313,7 @@ class PortalRequest(models.Model):
     )
     
     box_ids = fields.Many2many(
-        "records.box",
+        "records.container",
         string="Related Boxes",
     )
 
