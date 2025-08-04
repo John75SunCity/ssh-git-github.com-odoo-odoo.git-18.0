@@ -1,444 +1,1398 @@
-🔍 SMART FIELD GAP ANALYSIS
-============================================================
-📄 Step 1: Scanning model files...
-   ✓ installer: 7 fields
-   ✓ account.move.records.extension: 9 fields
-   ✓ bin.key.history: 10 fields
-   ✓ fsm.reschedule.wizard: 6 fields
-   ✓ naid.destruction.record: 8 fields
-   ✓ advanced.billing: 25 fields
-   ✓ base.rates: 27 fields
-   ✓ records.approval.step: 17 fields
-   ✓ field.label.customization: 12 fields
-   ✓ records.container.transfer: 9 fields
-   ✓ partner.bin.key: 50 fields
-   ✓ transitory.items: 7 fields
-   ✓ revenue.forecaster: 16 fields
-   ✓ records.billing.config: 33 fields
-   ✓ stock.picking.records.extension: 9 fields
-   ✓ customer.negotiated.rates: 39 fields
-   ✓ records.department.billing.enhanced: 9 fields
-   ✓ records.chain.of.custody: 14 fields
-   ✓ records.deletion.request.enhanced: 9 fields
-   ✓ barcode.models.enhanced: 9 fields
-   ✓ barcode.product: 35 fields
-   ✓ naid.compliance: 44 fields
-   ✓ survey.user.input.enhanced: 9 fields
-   ✓ records.management.base.menus: 13 fields
-   ✓ survey.improvement.action: 12 fields
-   ✓ records.container: 26 fields
-   ✓ records.billing.service: 10 fields
-   ✓ document.retrieval.work.order: 12 fields
-   ✓ shredding.hard_drive: 9 fields
-   ✓ fsm.notification.placeholder: 1 fields
-   ✓ records.permanent.flag.wizard: 3 fields
-   ✓ ir.module.ext: 9 fields
-   ✓ records.storage.department.user: 9 fields
-   ✓ shredding.service.log: 12 fields
-   ✓ paper.bale: 52 fields
-   ✓ records.location: 15 fields
-   ✓ stock.report_reception_report_label: 9 fields
-   ✓ records.container.type.converter: 10 fields
-   ✓ paper.bale.recycling: 12 fields
-   ✓ mobile.bin.key.wizard: 42 fields
-   ✓ photo: 15 fields
-   ✓ scrm.records.management: 9 fields
-   ✓ records.billing.config: 9 fields
-   ✓ records.location.inspection: 9 fields
-   ✓ records.digital.scan: 35 fields
-   ✓ shredding.inventory.item: 19 fields
-   ✓ bin.unlock.service: 12 fields
-   ✓ destruction.item: 12 fields
-   ✓ naid.chain.custody: 9 fields
-   ✓ naid.audit.log: 9 fields
-   ✓ container.contents: 12 fields
-   ✓ stock.lot.attribute: 13 fields
-   ✓ prod.ext: 9 fields
-   ✓ shredding.inventory.batch: 26 fields
-   ✓ paper.load.shipment: 74 fields
-   ✓ shredding.bin: 9 fields
-   ✓ records_management.bale: 9 fields
-   ✓ records.billing: 24 fields
-   ✓ res.partner.key.restriction: 7 fields
-   ✓ naid.audit.log: 9 fields
-   ✓ fsm.task: 50 fields
-   ✓ records.approval.workflow: 9 fields
-   ✓ visitor: 27 fields
-   ✓ survey.feedback.theme: 9 fields
-   ✓ portal.request: 45 fields
-   ✓ shredding.service: 52 fields
-   ✓ naid.performance.history: 9 fields
-   ✓ work.order.shredding: 10 fields
-   ✓ hr.emp.naid: 9 fields
-   ✓ records.security.audit: 9 fields
-   ✓ records.retention.policy: 15 fields
-   ✓ records.customer.billing.profile: 49 fields
-   ✓ bin.key.management: 14 fields
-   ✓ records.vehicle: 32 fields
-   ✓ wizard.template: 1 fields
-   ✓ unlock.service.history: 16 fields
-   ✓ stock.move.sms.validation: 4 fields
-   ✓ records.access.log: 9 fields
-   ✓ portal.feedback: 48 fields
-   ✓ pickup.request.item: 9 fields
-   ✓ records.document: 74 fields
-   ✓ temp.inventory: 12 fields
-   ✓ naid.compliance.checklist: 9 fields
-   ✓ records.audit.log: 9 fields
-   ✓ customer.inventory: 50 fields
-   ✓ load: 68 fields
-   ✓ file.retrieval.work.order: 12 fields
-   ✓ visitor.pos.wizard: 95 fields
-   ✓ records.tag: 13 fields
-   ✓ naid.custody.event: 9 fields
-   ✓ records.department.billing.contact: 53 fields
-   ✓ proj.task.ext: 9 fields
-   ✓ pickup.request: 12 fields
-   ✓ fsm.route.management.placeholder: 1 fields
-   ✓ pickup.route: 13 fields
-   ✓ location.report.wizard: 19 fields
-   ✓ naid.certificate: 12 fields
-   ✓ key.restriction.checker: 3 fields
-   ✓ records.document.type: 32 fields
-   ✓ records.container.movement: 7 fields
-   ✓ transitory.field.config: 7 fields
-   ✓ customer.feedback: 19 fields
-   ✓ records.department: 15 fields
-   ✓ customer.inventory.report: 9 fields
-   ✓ records.policy.version: 9 fields
-
-📊 Found 103 models with 1909 total fields
-
-📄 Step 2: Scanning view files...
-   🚨 records_document_type_views.xml -> records.document.type: 1 missing fields
-   🚨 records_document_type_views.xml -> records.document.type: 4 missing fields
-   🚨 records_document_type_views.xml -> records.document.type: 1 missing fields
-   🚨 records_document_type_views.xml -> records.document.type: 1 missing fields
-   🚨 visitor_pos_wizard_views.xml -> visitor.pos.wizard: 17 missing fields
-   🚨 visitor_pos_wizard_views.xml -> visitor.pos.wizard: 1 missing fields
-   🚨 visitor_pos_wizard_views.xml -> visitor.pos.wizard: 1 missing fields
-   🚨 visitor_pos_wizard_views.xml -> visitor.pos.wizard: 1 missing fields
-   🚨 visitor_pos_wizard_views.xml -> visitor.pos.wizard: 1 missing fields
-   🚨 records_vehicle_views.xml -> records.vehicle: 1 missing fields
-   🚨 records_vehicle_views.xml -> records.vehicle: 4 missing fields
-   🚨 records_vehicle_views.xml -> records.vehicle: 1 missing fields
-   🚨 customer_inventory_views.xml -> customer.inventory.report: 13 missing fields
-   🚨 customer_inventory_views.xml -> customer.inventory.report: 8 missing fields
-   🚨 customer_inventory_views.xml -> customer.inventory.report: 18 missing fields
-   🚨 customer_inventory_views.xml -> customer.inventory.report: 4 missing fields
-   🚨 customer_inventory_views.xml -> customer.inventory.report: 2 missing fields
-   🚨 portal_feedback_views.xml -> portal.feedback: 10 missing fields
-   🚨 portal_feedback_views.xml -> portal.feedback: 5 missing fields
-   🚨 portal_feedback_views.xml -> portal.feedback: 57 missing fields
-   🚨 portal_feedback_views.xml -> portal.feedback: 1 missing fields
-   🚨 portal_feedback_views.xml -> portal.feedback: 2 missing fields
-   🚨 portal_feedback_views.xml -> portal.feedback: 2 missing fields
-   🚨 portal_feedback_views.xml -> portal.feedback: 3 missing fields
-   🚨 naid_compliance_views.xml -> naid.compliance: 1 missing fields
-   🚨 naid_compliance_views.xml -> naid.compliance: 1 missing fields
-   🚨 naid_compliance_views.xml -> naid.compliance: 71 missing fields
-   🚨 naid_compliance_views.xml -> naid.compliance: 2 missing fields
-   🚨 naid_compliance_views.xml -> naid.compliance: 3 missing fields
-   🚨 advanced_billing_views.xml -> records.customer.billing.profile: 1 missing fields
-   🚨 advanced_billing_views.xml -> records.customer.billing.profile: 5 missing fields
-   🚨 advanced_billing_views.xml -> records.billing.service: 1 missing fields
-   🚨 bin_key_management_views.xml -> bin.key.management: 9 missing fields
-   🚨 bin_key_management_views.xml -> bin.key.management: 24 missing fields
-   🚨 bin_key_management_views.xml -> bin.key.management: 11 missing fields
-   🚨 bin_key_management_views.xml -> bin.unlock.service: 10 missing fields
-   🚨 bin_key_management_views.xml -> bin.unlock.service: 18 missing fields
-   🚨 paper_load_shipment_views.xml -> paper.load.shipment: 1 missing fields
-   🚨 paper_load_shipment_views.xml -> paper.load.shipment: 28 missing fields
-   🚨 paper_load_shipment_views.xml -> paper.load.shipment: 1 missing fields
-   🚨 paper_load_shipment_views.xml -> paper.load.shipment: 1 missing fields
-   🚨 field_label_customization_views.xml -> field.label.customization: 29 missing fields
-   🚨 field_label_customization_views.xml -> field.label.customization: 6 missing fields
-   🚨 field_label_customization_views.xml -> field.label.customization: 3 missing fields
-   🚨 field_label_customization_views.xml -> transitory.field.config: 37 missing fields
-   🚨 key_restriction_views.xml -> bin.unlock.service: 5 missing fields
-   🚨 key_restriction_views.xml -> bin.unlock.service: 3 missing fields
-   🚨 key_restriction_views.xml -> bin.unlock.service: 1 missing fields
-   🚨 records_container_type_converter_views.xml -> records.container.type.converter: 2 missing fields
-   🚨 shredding_inventory_views.xml -> shredding.inventory.item: 1 missing fields
-   🚨 shredding_inventory_views.xml -> shredding.inventory.item: 17 missing fields
-   🚨 portal_request_views.xml -> portal.request: 1 missing fields
-   🚨 portal_request_views.xml -> portal.request: 1 missing fields
-   🚨 portal_request_views.xml -> portal.request: 69 missing fields
-   🚨 portal_request_views.xml -> portal.request: 1 missing fields
-   🚨 portal_request_views.xml -> portal.request: 1 missing fields
-   🚨 document_retrieval_work_order_views.xml -> document.retrieval.work.order: 8 missing fields
-   🚨 document_retrieval_work_order_views.xml -> document.retrieval.work.order: 38 missing fields
-   🚨 document_retrieval_work_order_views.xml -> document.retrieval.work.order: 11 missing fields
-   🚨 document_retrieval_work_order_views.xml -> document.retrieval.work.order: 3 missing fields
-   🚨 shredding_service_views.xml -> shredding.service: 2 missing fields
-   🚨 records_tag_views.xml -> records.tag: 1 missing fields
-   🚨 records_tag_views.xml -> records.tag: 1 missing fields
-   🚨 records_tag_views.xml -> records.tag: 1 missing fields
-   🚨 records_container_views.xml -> records.container: 1 missing fields
-   🚨 records_container_views.xml -> records.container: 6 missing fields
-   🚨 records_container_views.xml -> records.container: 23 missing fields
-   🚨 records_container_views.xml -> records.container: 1 missing fields
-   🚨 records_container_views.xml -> records.container: 1 missing fields
-   🚨 records_container_views.xml -> records.container: 2 missing fields
-   🚨 fsm_reschedule_wizard_views.xml -> fsm.reschedule.wizard: 1 missing fields
-   🚨 customer_billing_profile_views.xml -> records.customer.billing.profile: 1 missing fields
-   🚨 customer_billing_profile_views.xml -> records.customer.billing.profile: 4 missing fields
-   🚨 customer_billing_profile_views.xml -> records.customer.billing.profile: 1 missing fields
-   🚨 permanent_flag_wizard_views.xml -> records.permanent.flag.wizard: 9 missing fields
-   🚨 paper_bale_recycling_views.xml -> paper.bale.recycling: 10 missing fields
-   🚨 paper_bale_recycling_views.xml -> paper.bale.recycling: 24 missing fields
-   🚨 paper_bale_recycling_views.xml -> paper.bale.recycling: 12 missing fields
-   🚨 paper_bale_recycling_views.xml -> paper.bale.recycling: 5 missing fields
-   🚨 records_retention_policy_views.xml -> records.retention.policy: 7 missing fields
-   🚨 records_retention_policy_views.xml -> records.retention.policy: 29 missing fields
-   🚨 records_retention_policy_views.xml -> records.retention.policy: 3 missing fields
-   🚨 paper_bale_views.xml -> paper.bale: 4 missing fields
-   🚨 paper_bale_views.xml -> paper.bale: 3 missing fields
-   🚨 paper_bale_views.xml -> paper.bale: 62 missing fields
-   🚨 paper_bale_views.xml -> paper.bale: 2 missing fields
-   🚨 records_location_views.xml -> records.location: 7 missing fields
-   🚨 records_location_views.xml -> records.location: 5 missing fields
-   🚨 records_location_views.xml -> records.location: 17 missing fields
-   🚨 records_location_views.xml -> records.location: 1 missing fields
-   🚨 hard_drive_scan_views.xml -> shredding.hard_drive: 12 missing fields
-   🚨 hard_drive_scan_views.xml -> shredding.hard_drive: 17 missing fields
-   🚨 shredding_views.xml -> shredding.service: 1 missing fields
-   🚨 shredding_views.xml -> shredding.service: 2 missing fields
-   🚨 shredding_views.xml -> shredding.service: 63 missing fields
-   🚨 shredding_views.xml -> shredding.service: 1 missing fields
-   🚨 shredding_views.xml -> shredding.service: 1 missing fields
-   🚨 shredding_views.xml -> shredding.service: 1 missing fields
-   🚨 fsm_task_views.xml -> fsm.task: 1 missing fields
-   🚨 fsm_task_views.xml -> fsm.task: 1 missing fields
-   🚨 fsm_task_views.xml -> fsm.task: 76 missing fields
-   🚨 fsm_task_views.xml -> fsm.task: 1 missing fields
-   🚨 fsm_task_views.xml -> fsm.task: 1 missing fields
-   🚨 fsm_task_views.xml -> fsm.task: 1 missing fields
-   🚨 rate_management_views.xml -> base.rates: 7 missing fields
-   🚨 rate_management_views.xml -> base.rates: 9 missing fields
-   🚨 rate_management_views.xml -> revenue.forecaster: 30 missing fields
-   🚨 departmental_billing_views.xml -> records.department.billing.contact: 11 missing fields
-   🚨 departmental_billing_views.xml -> records.department.billing.contact: 6 missing fields
-   🚨 departmental_billing_views.xml -> records.department.billing.contact: 33 missing fields
-   🚨 departmental_billing_views.xml -> records.department.billing.contact: 3 missing fields
-   🚨 departmental_billing_views.xml -> records.department.billing.contact: 3 missing fields
-   🚨 barcode_views.xml -> barcode.product: 5 missing fields
-   🚨 barcode_views.xml -> barcode.product: 3 missing fields
-   🚨 barcode_views.xml -> barcode.product: 80 missing fields
-   🚨 barcode_views.xml -> barcode.product: 1 missing fields
-   🚨 barcode_views.xml -> barcode.product: 2 missing fields
-   🚨 barcode_views.xml -> barcode.product: 3 missing fields
-   🚨 billing_views.xml -> records.billing.config: 10 missing fields
-   🚨 billing_views.xml -> records.billing.config: 8 missing fields
-   🚨 billing_views.xml -> records.billing.config: 97 missing fields
-   🚨 billing_views.xml -> records.billing.config: 5 missing fields
-   🚨 billing_views.xml -> records.billing.config: 4 missing fields
-   🚨 mobile_bin_key_wizard_views.xml -> mobile.bin.key.wizard: 1 missing fields
-   🚨 load_views.xml -> load: 5 missing fields
-   🚨 load_views.xml -> load: 2 missing fields
-   🚨 load_views.xml -> load: 42 missing fields
-   🚨 load_views.xml -> load: 2 missing fields
-   🚨 load_views.xml -> load: 2 missing fields
-   🚨 load_views.xml -> load: 1 missing fields
-   🚨 load_views.xml -> load: 2 missing fields
-   🚨 records_digital_scan_views.xml -> records.digital.scan: 1 missing fields
-   🚨 records_digital_scan_views.xml -> records.digital.scan: 1 missing fields
-   🚨 records_digital_scan_views.xml -> records.digital.scan: 1 missing fields
-   🚨 records_document_views.xml -> records.document: 6 missing fields
-   🚨 records_document_views.xml -> records.document: 5 missing fields
-   🚨 records_document_views.xml -> records.document: 35 missing fields
-   🚨 records_document_views.xml -> records.document: 2 missing fields
-   🚨 records_document_views.xml -> records.document: 2 missing fields
-   🚨 key_restriction_checker_views.xml -> key.restriction.checker: 11 missing fields
-
-🎯 CRITICAL GAPS ANALYSIS
-============================================================
-Found 1081 missing fields across 38 models
-
-📋 records.billing.config (95 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): accounting_system_sync, amount, annual_revenue, audit_trail_enabled, auto_apply
-      ... and 85 more
-
-📋 barcode.product (81 missing fields):
-   🔄 Framework (inherit): activity_exception_decoration, activity_ids, activity_state, message_follower_ids, message_ids
-   ✅ Business (add): barcode_prefix, barcode_suffix, batch_id, bin_status, bin_volume
-      ... and 70 more
-
-📋 fsm.task (73 missing fields):
-   🔄 Framework (inherit): activity_ids, activity_type, message_follower_ids, message_ids, photo_attachment
-   ✅ Business (add): backup_technician, barcode_scanning, billable, billable_to_customer, chain_of_custody_required
-      ... and 62 more
-
-📋 naid.compliance (71 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): audit_result, audit_scope, audit_type, auditor_name, auto_renewal
-      ... and 62 more
-
-📋 portal.request (69 missing fields):
-   🔄 Framework (inherit): activity_ids, attachment_ids, message_follower_ids, message_ids
-   ✅ Business (add): access_restrictions, actual_date, approval_action, approval_deadline, approval_history_ids
-      ... and 59 more
-
-📋 shredding.service (63 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): action, certificate_date, certificate_notes, certificate_number, certificate_type
-      ... and 54 more
-
-📋 paper.bale (60 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): action_date, action_type, carbon_neutral, chain_of_custody_verified, confidentiality_level
-      ... and 51 more
-
-📋 portal.feedback (57 missing fields):
-   🔄 Framework (inherit): activity_date, activity_exception_decoration, activity_ids, activity_state, activity_type
-      ... and 4 more
-   ✅ Business (add): completed, completion_date, csat_score, customer_email, customer_feedback_count
-      ... and 42 more
-
-📋 document.retrieval.work.order (39 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): actual_delivery_date, barcode, base_delivery_cost, base_retrieval_cost, box_id
-      ... and 30 more
-
-📋 transitory.field.config (37 missing fields):
-   ✅ Business (add): config_preset, customer_id, department_id, field_label_config_id, require_client_reference
-      ... and 31 more
-
-📋 load (37 missing fields):
-   🔄 Framework (inherit): activity_exception_decoration, activity_ids, activity_state, message_follower_ids, message_ids
-      ... and 1 more
-   ✅ Business (add): bale_number, capacity_utilization, contamination_notes, contamination_report, date
-      ... and 25 more
-
-📋 records.document (35 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): created_date, customer_id, days_until_destruction, department_id, destruction_authorized_by
-      ... and 26 more
-
-📋 records.department.billing.contact (32 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): approval_notes, approval_status, approved_by, billing_role, budget_alert_threshold
-      ... and 23 more
-
-📋 field.label.customization (29 missing fields):
-   ✅ Business (add): customer_id, customized_label_count, department_id, label_authorized_by, label_client_reference
-      ... and 22 more
-
-📋 paper.load.shipment (28 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): bale_number, company_signature_date, delivery_notes, destination_address, driver_license
-      ... and 19 more
-
-📋 records.retention.policy (27 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): approval_status, changed_by, compliance_rate, destruction_efficiency_rate, destruction_method
-      ... and 16 more
-
-📋 revenue.forecaster (27 missing fields):
-   ✅ Business (add): annual_revenue_impact, category_adjustment_value, competitor_rate_factor, container_count, current_monthly_revenue
-      ... and 21 more
-
-📋 bin.key.management (24 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): billable, bin_location, bin_locations, charge_amount, emergency_contact
-      ... and 15 more
-
-📋 records.container (23 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): barcode, container_type_code, container_type_display, department_id, document_ids
-      ... and 14 more
-
-📋 bin.unlock.service (21 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): billable, bin_location, charge_amount, completed, customer_key_restricted
-      ... and 12 more
-
-📋 paper.bale.recycling (21 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): bale_number, contamination, contamination_notes, gps_coordinates, load_number
-      ... and 12 more
-
-📋 visitor.pos.wizard (17 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): compliance_officer, digitization_format, document_count, document_name, integration_error_ids
-      ... and 8 more
-
-📋 customer.inventory.report (17 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): active_locations, container_ids, created_date, customer_id, document_ids
-      ... and 8 more
-
-📋 shredding.inventory.item (17 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): approval_date, customer_approved, destroyed_by, destruction_date, destruction_notes
-      ... and 8 more
-
-📋 shredding.hard_drive (17 missing fields):
-   ✅ Business (add): certificate_line_text, customer_location_notes, destroyed, destruction_date, destruction_method
-      ... and 11 more
-
-📋 records.location (15 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): access_instructions, available_spaces, available_utilization, box_count, box_ids
-      ... and 6 more
-
-📋 key.restriction.checker (11 missing fields):
-   ✅ Business (add): action_required, bin_identifier, check_performed, customer_id, customer_name
-      ... and 5 more
-
-📋 records.permanent.flag.wizard (9 missing fields):
-   ✅ Business (add): action_type, box_id, customer_id, document_count, permanent_flag
-      ... and 3 more
-
-📋 base.rates (9 missing fields):
-   ✅ Business (add): base_rate, customer_count, expiration_date, minimum_charge, negotiated_rate_count
-      ... and 3 more
-
-📋 records.customer.billing.profile (5 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-   ✅ Business (add): prepaid_balance
-
-📋 records.document.type (4 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-
-📋 records.vehicle (4 missing fields):
-   🔄 Framework (inherit): activity_ids, message_follower_ids, message_ids
-
-📋 records.container.type.converter (2 missing fields):
-   ✅ Business (add): update_location
-
-📋 records.billing.service (1 missing fields):
-
-📋 records.tag (1 missing fields):
-
-📋 fsm.reschedule.wizard (1 missing fields):
-
-📋 mobile.bin.key.wizard (1 missing fields):
-
-📋 records.digital.scan (1 missing fields):
-
-🔧 FIELD ADDITION RECOMMENDATIONS
+🔍 COMPREHENSIVE FIELD ANALYSIS STARTING...
 ============================================================
 
-📝 visitor.pos.wizard:
-   # Add these 13 fields:
-   compliance_officer = fields.Char(string='Field')
-   digitization_format = fields.Char(string='Field')
-   document_count = fields.Char(string='Field')
-   document_name = fields.Char(string='Field')
-   integration_error_ids = fields.One2many('related.model', 'inverse_field', string='Related Records')
-   payment_split_ids = fields.One2many('related.model', 'inverse_field', string='Related Records')
-   payment_terms = fields.Char(string='Field')
-   processing_log_ids = fields.One2many('related.model', 'inverse_field', string='Related Records')
-   required_document_ids = fields.One2many('related.model', 'inverse_field', string='Related Records')
-   service_item_ids = fields.One2many('related.model', 'inverse_field', string='Related Records')
-   shredding_type = fields.Char(string='Field')
-   step_name = fields.Char(string='Field')
-   total_discount = fields.Char(string='Field')
+📄 STEP 1: Analyzing Python Model Files...
+  ✓ installer: 7 fields
+  ✓ account.move.records.extension: 8 fields
+  ✓ bin.key.history: 9 fields
+  ✓ fsm.reschedule.wizard: 15 fields
+  ✓ document.retrieval.item: 47 fields
+  ✓ naid.destruction.record: 8 fields
+  ✓ advanced.billing: 21 fields
+  ✓ base.rates: 37 fields
+  ✓ records.approval.step: 17 fields
+  ✓ hr.employee: 4 fields
+  ✓ field.label.customization: 98 fields
+  ✓ records.container.transfer: 8 fields
+  ✓ partner.bin.key: 50 fields
+  ✓ transitory.items: 7 fields
+  ✓ revenue.forecaster: 69 fields
+  ✓ records.billing.config: 340 fields
+  ✓ stock.picking.records.extension: 8 fields
+  ✓ customer.negotiated.rates: 35 fields
+  ✓ naid.compliance.alert: 91 fields
+  ✓ records.department.billing.enhanced: 8 fields
+  ✓ records.chain.of.custody: 14 fields
+  ✓ records.deletion.request.enhanced: 8 fields
+  ✓ barcode.models.enhanced: 8 fields
+  ✓ barcode.product: 231 fields
+  ✓ naid.compliance: 256 fields
+  ✓ survey.user.input.enhanced: 8 fields
+  ✓ records.management.base.menus: 13 fields
+  ✓ survey.improvement.action: 11 fields
+  ✓ records.container: 68 fields
+  ✓ records.billing.service: 9 fields
+  ✓ document.retrieval.item: 80 fields
+  ✓ document.retrieval.work.order: 206 fields
+  ✓ shredding.hard_drive: 36 fields
+  ✓ portal.feedback.resolution: 50 fields
+  ✓ fsm.notification.placeholder: 1 fields
+  ✓ records.permanent.flag.wizard: 46 fields
+  ✓ ir.module.ext: 8 fields
+  ✓ records.storage.department.user: 8 fields
+  ✓ shredding.service.log: 11 fields
+  ✓ paper.bale: 161 fields
+  ✓ records.location: 73 fields
+  ✓ stock.report_reception_report_label: 8 fields
+  ? res_config_settings.py: 2 fields (unknown model name)
+  ✓ records.container.type.converter: 25 fields
+  ✓ paper.bale.recycling: 40 fields
+  ✓ mobile.bin.key.wizard: 47 fields
+  ✓ photo: 14 fields
+  ✓ scrm.records.management: 8 fields
+  ✓ records.billing.config: 8 fields
+  ✓ records.location.inspection: 8 fields
+  ✓ records.digital.scan: 36 fields
+  ✓ shredding.inventory.item: 62 fields
+  ✓ bin.unlock.service: 60 fields
+  ✓ destruction.item: 11 fields
+  ✓ naid.chain.custody: 8 fields
+  ✓ naid.audit.log: 8 fields
+  ✓ container.contents: 11 fields
+  ✓ stock.lot.attribute: 12 fields
+  ✓ prod.ext: 8 fields
+  ✓ shredding.inventory.batch: 17 fields
+  ✓ paper.load.shipment: 105 fields
+  ✓ shredding.bin: 8 fields
+  ✓ records_management.bale: 8 fields
+  ✓ records.billing: 23 fields
+  ✓ res.partner.key.restriction: 7 fields
+  ✓ naid.audit.log: 8 fields
+  ✓ fsm.task: 171 fields
+  ✓ records.approval.workflow: 8 fields
+  ✓ visitor: 26 fields
+  ✓ survey.feedback.theme: 8 fields
+  ✓ portal.request: 149 fields
+  ✓ shredding.service: 170 fields
+  ✓ naid.performance.history: 8 fields
+  ✓ work.order.shredding: 9 fields
+  ✓ hr.emp.naid: 8 fields
+  ✓ records.security.audit: 8 fields
+  ✓ records.retention.policy: 65 fields
+  ✓ records.customer.billing.profile: 54 fields
+  ✓ bin.key.management: 44 fields
+  ✓ records.vehicle: 38 fields
+  ✓ pos.config: 9 fields
+  ✓ wizard.template: 1 fields
+  ✓ unlock.service.history: 15 fields
+  ✓ stock.move.sms.validation: 4 fields
+  ✓ records.access.log: 8 fields
+  ✓ portal.feedback: 173 fields
+  ✓ pickup.request.item: 8 fields
+  ✓ records.document: 118 fields
+  ✓ temp.inventory: 11 fields
+  ✓ naid.compliance.checklist: 8 fields
+  ✓ res.partner: 4 fields
+  ✓ records.audit.log: 8 fields
+  ✓ customer.inventory: 50 fields
+  ✓ load: 118 fields
+  ✓ file.retrieval.work.order: 11 fields
+  ✓ records.billing.line: 44 fields
+  ✓ visitor.pos.wizard: 112 fields
+  ✓ records.tag: 21 fields
+  ✓ naid.custody.event: 8 fields
+  ✓ records.department.billing.contact: 102 fields
+  ✓ proj.task.ext: 8 fields
+  ✓ pickup.request: 11 fields
+  ✓ fsm.route.management.placeholder: 1 fields
+  ✓ pickup.route: 12 fields
+  ✓ location.report.wizard: 18 fields
+  ✓ naid.certificate: 11 fields
+  ✓ key.restriction.checker: 38 fields
+  ✓ records.document.type: 68 fields
+  ✓ records.container.movement: 12 fields
+  ✓ transitory.field.config: 146 fields
+  ✓ customer.feedback: 18 fields
+  ✓ records.department: 14 fields
+  ✓ customer.inventory.report: 59 fields
+  ✓ records.policy.version: 8 fields
 
-🚀 NEXT STEPS:
-1. Review recommendations above
-2. Add critical business fields to models
-3. Test with targeted deployment
-4. Fix any remaining runtime errors
+📋 STEP 2: Analyzing XML View Files...
+  ✓ records_document_type_views.xml: 32 field references for records.document.type
+  ✓ pickup_request_views.xml: 4 field references for __unknown__
+  ✓ location_report_wizard_views.xml: 10 field references for records.location.report.wizard
+  ✓ visitor_pos_wizard_views.xml: 113 field references for visitor.pos.wizard
+  ✓ records_vehicle_views.xml: 32 field references for records.vehicle
+  ✓ customer_inventory_views.xml: 26 field references for customer.inventory.report
+  ✓ portal_feedback_views.xml: 84 field references for portal.feedback
+  ✓ naid_compliance_views.xml: 98 field references for naid.compliance
+  ✓ advanced_billing_views.xml: 57 field references for records.customer.billing.profile
+  ✓ bin_key_management_views.xml: 39 field references for bin.key.management
+  ✓ paper_load_shipment_views.xml: 56 field references for paper.load.shipment
+  ✓ field_label_customization_views.xml: 77 field references for field.label.customization
+  ✓ partner_bin_key_views.xml: 34 field references for res.partner
+  ✓ key_restriction_views.xml: 19 field references for res.partner
+  ✓ paper_recycling_menus.xml: 7 field references for __unknown__
+  ✓ records_container_type_converter_views.xml: 13 field references for records.container.type.converter
+  ✓ shredding_inventory_views.xml: 34 field references for shredding.inventory.item
+  ✓ portal_request_views.xml: 98 field references for portal.request
+  ✓ document_retrieval_work_order_views.xml: 49 field references for document.retrieval.work.order
+  ✓ pos_config_views.xml: 91 field references for pos.config
+  ✓ shredding_service_views.xml: 5 field references for shredding.service
+  ✓ records_tag_views.xml: 9 field references for records.tag
+  ✓ records_container_views.xml: 39 field references for records.container
+  ✓ fsm_reschedule_wizard_views.xml: 9 field references for fsm.reschedule.wizard
+  ✓ stock_lot_views.xml: 70 field references for stock.lot
+  ✓ customer_billing_profile_views.xml: 42 field references for records.customer.billing.profile
+  ✓ permanent_flag_wizard_views.xml: 12 field references for records.permanent.flag.wizard
+  ✓ paper_bale_recycling_views.xml: 30 field references for paper.bale.recycling
+  ✓ records_retention_policy_views.xml: 34 field references for records.retention.policy
+  ✓ paper_bale_views.xml: 82 field references for paper.bale
+  ✓ records_location_views.xml: 26 field references for records.location
+  ✓ product_template_views.xml: 98 field references for product.template
+  ✓ hard_drive_scan_views.xml: 29 field references for hard_drive.scan.wizard
+  ✓ shredding_views.xml: 90 field references for shredding.service
+  ✓ fsm_task_views.xml: 106 field references for fsm.task
+  ✓ rate_management_views.xml: 62 field references for base.rates
+  ✓ departmental_billing_views.xml: 52 field references for records.department.billing.contact
+  ✓ barcode_views.xml: 103 field references for barcode.product
+  ✓ billing_views.xml: 106 field references for records.billing.config
+  ✓ mobile_bin_key_wizard_views.xml: 36 field references for mobile.bin.key.wizard
+  ✓ load_views.xml: 71 field references for __unknown__
+  ✓ records_digital_scan_views.xml: 21 field references for records.digital.scan
+  ✓ records_document_views.xml: 59 field references for records.document
+  ✓ key_restriction_checker_views.xml: 18 field references for key.restriction.checker
+
+🔎 STEP 3: Comparing Fields and Finding Missing...
+
+📊 STEP 4: RESULTS SUMMARY
+============================================================
+❌ MISSING FIELDS FOUND: 922 total
+
+🚨 Model: records.document.type
+   - arch
+   - help
+   - model
+   - res_model
+   - view_mode
+
+🚨 Model: records.location.report.wizard
+   - arch
+   - current_utilization
+   - include_child_locations
+   - location_id
+   - location_name
+   - model
+   - name
+   - report_date
+   - total_capacity
+   - utilization_percentage
+
+🚨 Model: visitor.pos.wizard
+   - arch
+   - context
+   - help
+   - model
+   - res_model
+   - search_view_id
+   - target
+   - view_id
+   - view_mode
+
+🚨 Model: records.vehicle
+   - arch
+   - help
+   - model
+   - res_model
+   - search_view_id
+   - view_mode
+
+🚨 Model: customer.inventory.report
+   - arch
+   - context
+   - help
+   - model
+   - report_date
+   - res_model
+   - search_view_id
+   - status
+   - stored_date
+   - total_boxes
+   - view_mode
+   - volume_category
+
+🚨 Model: portal.feedback
+   - arch
+   - context
+   - help
+   - likelihood_to_return
+   - mimetype
+   - model
+   - negative_aspects
+   - positive_aspects
+   - product_id
+   - res_model
+   - resolution_date
+   - resolved_by
+   - responded_by
+   - response_description
+   - response_method
+   - retention_risk
+   - revenue_impact
+   - root_cause_category
+   - search_view_id
+   - sentiment_analysis
+   - staff_professionalism_rating
+   - trend_analysis
+   - urgency_level
+   - value_for_money_rating
+   - view_mode
+
+🚨 Model: naid.compliance
+   - arch
+   - context
+   - help
+   - model
+   - res_model
+   - search_view_id
+   - view_mode
+
+🚨 Model: records.customer.billing.profile
+   - activity_ids
+   - amount
+   - arch
+   - billing_direction
+   - billing_type
+   - box_id
+   - currency_id
+   - help
+   - invoice_date
+   - invoice_id
+   - message_follower_ids
+   - message_ids
+   - model
+   - period_end_date
+   - period_start_date
+   - prepaid_balance
+   - quantity
+   - res_model
+   - retrieval_work_order_id
+   - search_view_id
+   - service_amount
+   - service_date
+   - service_line_ids
+   - shredding_work_order_id
+   - storage_amount
+   - storage_line_ids
+   - target
+   - total_amount
+   - type
+   - unit_price
+   - view_mode
+
+🚨 Model: bin.key.management
+   - arch
+   - completed
+   - context
+   - expected_return_date
+   - help
+   - invoice_created
+   - issue_date
+   - issue_location
+   - items_retrieved
+   - key_holder_id
+   - key_number
+   - model
+   - partner_company
+   - partner_id
+   - photo_ids
+   - reason_description
+   - replaced_by_id
+   - replacement_of_id
+   - res_model
+   - return_date
+   - service_date
+   - service_number
+   - status
+   - technician_id
+   - unlock_reason
+   - unlock_service_count
+   - unlock_service_ids
+   - view_mode
+
+🚨 Model: paper.load.shipment
+   - arch
+   - driver_signature_date
+   - gps_delivery_location
+   - gps_pickup_location
+   - help
+   - invoice_amount
+   - invoice_date
+   - manifest_date
+   - mobile_entry
+   - model
+   - paper_grade
+   - payment_amount
+   - payment_due_date
+   - payment_notes
+   - payment_received_date
+   - pickup_time
+   - production_date
+   - res_model
+   - search_view_id
+   - signed_by
+   - truck_info
+   - view_mode
+   - weighed_by
+   - weight_lbs
+
+🚨 Model: field.label.customization
+   - active_transitory_items
+   - allow_transitory_items
+   - arch
+   - config_preset
+   - field_label_config_id
+   - help
+   - inherit_id
+   - max_transitory_items
+   - model
+   - require_client_reference
+   - require_confidentiality
+   - require_container_number
+   - require_content_description
+   - require_date_from
+   - require_date_to
+   - require_description
+   - require_destruction_date
+   - require_project_code
+   - require_record_type
+   - require_sequence_from
+   - require_sequence_to
+   - required_field_count
+   - res_model
+   - show_authorized_by
+   - show_client_reference
+   - show_compliance_notes
+   - show_confidentiality
+   - show_container_number
+   - show_content_description
+   - show_created_by_dept
+   - show_date_ranges
+   - show_description
+   - show_destruction_date
+   - show_file_count
+   - show_filing_system
+   - show_project_code
+   - show_record_type
+   - show_sequence_ranges
+   - show_size_estimate
+   - show_special_handling
+   - show_weight_estimate
+   - total_records_containers
+   - total_transitory_items
+   - transitory_field_config_id
+   - view_mode
+   - visible_field_count
+
+🚨 Model: res.partner
+   - action
+   - active_bin_key_count
+   - allow_reason
+   - arch
+   - billable
+   - bin_key_history_ids
+   - bin_location
+   - binding_model_id
+   - binding_view_types
+   - category_id
+   - charge_amount
+   - context
+   - country_id
+   - customer_key_restricted
+   - effective_date
+   - emergency_contact
+   - has_bin_key
+   - inherit_id
+   - invoice_created
+   - is_emergency_key_contact
+   - issue_date
+   - issue_location
+   - key_issuance_allowed
+   - key_issue_date
+   - key_number
+   - key_restriction_approved_by
+   - key_restriction_date
+   - key_restriction_notes
+   - key_restriction_reason
+   - key_restriction_status
+   - model
+   - name
+   - partner_id
+   - res_model
+   - restricted_unlock_count
+   - restriction_notes
+   - restriction_reason
+   - return_date
+   - service_date
+   - service_number
+   - status
+   - target
+   - total_bin_keys_issued
+   - total_unlock_charges
+   - unlock_reason
+   - unlock_reason_code
+   - unlock_service_count
+   - unlock_service_history_ids
+   - view_mode
+
+🚨 Model: records.container.type.converter
+   - arch
+   - context
+   - model
+   - res_model
+   - target
+   - update_location
+   - view_mode
+
+🚨 Model: shredding.inventory.item
+   - arch
+   - location_id
+   - model
+   - picked_by
+   - picked_date
+   - res_model
+   - type
+   - view_mode
+
+🚨 Model: portal.request
+   - approval_level
+   - approver
+   - arch
+   - comments
+   - communication_count
+   - communication_date
+   - communication_type
+   - confidential
+   - context
+   - file_size
+   - file_type
+   - from_person
+   - help
+   - milestone_name
+   - model
+   - related_request_count
+   - res_model
+   - response_required
+   - search_view_id
+   - status
+   - subject
+   - target_date
+   - time_taken
+   - to_person
+   - upload_date
+   - uploaded_by
+   - variance
+   - view_mode
+
+🚨 Model: document.retrieval.work.order
+   - arch
+   - box_id
+   - context
+   - current_location
+   - document_id
+   - help
+   - item_type
+   - model
+   - res_model
+   - search_view_id
+   - status
+   - view_id
+   - view_mode
+
+🚨 Model: pos.config
+   - activity_exception_decoration
+   - activity_ids
+   - activity_state
+   - arch
+   - auto_create_customer
+   - available_in_pos
+   - avg_transaction_time
+   - avg_transaction_value
+   - barcode_nomenclature_id
+   - barcode_scanner_enabled
+   - busiest_day_of_week
+   - context
+   - currency_id
+   - current_session_id
+   - current_session_state
+   - customer_count
+   - customer_satisfaction_score
+   - date
+   - document_scanning_rate
+   - document_storage_rate
+   - enable_document_services
+   - enable_walk_in_service
+   - help
+   - iface_available_categ_ids
+   - iface_cashdrawer
+   - iface_customer_facing_display
+   - iface_display_categ_images
+   - iface_electronic_scale
+   - iface_orderline_notes
+   - iface_payment_terminal
+   - iface_print_auto
+   - iface_print_skip_screen
+   - iface_printbill
+   - iface_scan_via_proxy
+   - iface_splitbill
+   - iface_start_categ_id
+   - iface_tipproduct
+   - invoice_journal_id
+   - journal_id
+   - last_session_closing_date
+   - limit_categories
+   - list_price
+   - loyalty_program_usage
+   - message_follower_ids
+   - message_ids
+   - model
+   - module_pos_discount
+   - module_pos_loyalty
+   - module_pos_mercury
+   - module_pos_reprint
+   - module_pos_restaurant
+   - most_sold_product_id
+   - name
+   - open_session_ids
+   - order_count
+   - payment_method_ids
+   - peak_hour_sales
+   - performance_data_ids
+   - picking_type_id
+   - pos_category_id
+   - pricelist_id
+   - product_id
+   - proxy_ip
+   - receipt_footer
+   - receipt_header
+   - require_customer_info
+   - requires_appointment
+   - res_model
+   - restrict_price_control
+   - rush_service_multiplier
+   - scan_product_check
+   - search_view_id
+   - sequence_id
+   - sequence_line_id
+   - service_product_ids
+   - service_type
+   - session_count
+   - session_user_id
+   - shredding_service_rate
+   - split_transactions
+   - state
+   - stock_location_id
+   - total_sales
+   - total_transactions
+   - transaction_count
+   - type
+   - use_payment_terminal
+   - view_mode
+   - walk_in_customer_id
+   - walk_in_pricelist_id
+
+🚨 Model: shredding.service
+   - arch
+   - context
+   - help
+   - model
+   - res_model
+   - search_view_id
+   - serial_number
+   - view_mode
+
+🚨 Model: records.tag
+   - arch
+   - help
+   - model
+   - res_model
+   - search_view_id
+   - view_id
+   - view_mode
+
+🚨 Model: records.container
+   - activity_ids
+   - arch
+   - capacity
+   - container_type_code
+   - container_type_display
+   - context
+   - creation_date
+   - current_usage
+   - from_location_id
+   - help
+   - message_follower_ids
+   - message_ids
+   - model
+   - monthly_rate
+   - moved_by_id
+   - movement_date
+   - movement_ids
+   - movement_type
+   - priority
+   - request_date
+   - res_model
+   - retention_policy_id
+   - search_view_id
+   - service_request_ids
+   - size_category
+   - to_location_id
+   - view_mode
+   - weight
+
+🚨 Model: fsm.reschedule.wizard
+   - arch
+   - model
+   - res_model
+   - target
+   - view_mode
+
+🚨 Model: stock.lot
+   - action_type
+   - activity_ids
+   - arch
+   - attribute_ids
+   - attribute_name
+   - attribute_type
+   - attribute_value
+   - available_quantity
+   - average_movement_time
+   - check_date
+   - company_id
+   - context
+   - create_date
+   - current_location
+   - customer_reference
+   - date
+   - days_in_inventory
+   - delivery_order_id
+   - destination_location
+   - expiration_date
+   - final_customer
+   - help
+   - in_date
+   - inventory_date
+   - last_purchase_price
+   - location_dest_id
+   - location_from
+   - location_id
+   - location_to
+   - manufacturing_order_id
+   - market_value
+   - measure
+   - measurement_unit
+   - message_follower_ids
+   - message_ids
+   - model
+   - name
+   - notes
+   - product_id
+   - product_qty
+   - product_uom_id
+   - product_uom_qty
+   - purchase_order_id
+   - quality_check_count
+   - quality_check_ids
+   - quality_point_id
+   - quality_state
+   - quality_verified
+   - quant_count
+   - quant_ids
+   - quantity
+   - ref
+   - reference
+   - res_model
+   - reserved_quantity
+   - search_view_id
+   - source_location
+   - state
+   - stock_move_count
+   - stock_move_ids
+   - supplier_lot_id
+   - test_type
+   - timestamp
+   - total_movements
+   - total_value
+   - traceability_log_ids
+   - unit_cost
+   - user_id
+   - verification_date
+   - view_mode
+
+🚨 Model: records.permanent.flag.wizard
+   - arch
+   - box_id
+   - model
+
+🚨 Model: paper.bale.recycling
+   - arch
+   - help
+   - mobile_entry
+   - model
+   - moisture_level
+   - paper_grade
+   - processed_from_service
+   - production_date
+   - res_model
+   - scale_reading
+   - search_view_id
+   - status
+   - storage_location
+   - view_mode
+   - weighed_by
+   - weight_kg
+   - weight_lbs
+
+🚨 Model: records.retention.policy
+   - arch
+   - effective_date
+   - exception_count
+   - help
+   - is_current_version
+   - legal_basis
+   - model
+   - next_mandatory_review
+   - policy_effectiveness_score
+   - policy_risk_score
+   - policy_status
+   - policy_type
+   - policy_version
+   - res_model
+   - retention_years
+   - review_cycle_months
+   - review_date
+   - risk_level
+   - search_view_id
+   - version_date
+   - version_history_ids
+   - version_number
+   - view_mode
+
+🚨 Model: paper.bale
+   - arch
+   - context
+   - help
+   - model
+   - quality_grade
+   - quality_inspector
+   - res_model
+   - search_view_id
+   - view_mode
+
+🚨 Model: records.location
+   - activity_ids
+   - arch
+   - available_spaces
+   - available_utilization
+   - box_count
+   - capacity
+   - context
+   - current_utilization
+   - customer_id
+   - help
+   - message_follower_ids
+   - message_ids
+   - model
+   - parent_location_id
+   - res_model
+   - search_view_id
+   - stored_date
+   - view_mode
+
+🚨 Model: product.template
+   - active
+   - activity_ids
+   - additional_box_cost
+   - additional_document_cost
+   - api_integration
+   - arch
+   - auto_invoice
+   - average_sale_price
+   - avg_deal_size
+   - base_cost
+   - billing_frequency
+   - box_retrieval_time
+   - box_storage_included
+   - can_be_expensed
+   - categ_id
+   - certificate_of_destruction
+   - climate_controlled
+   - compliance_guarantee
+   - context
+   - currency_id
+   - customer_count
+   - customer_retention_rate
+   - customization_allowed
+   - data_recovery_guarantee
+   - default_code
+   - description
+   - detailed_type
+   - digital_conversion_included
+   - discount_percentage
+   - display_name
+   - document_retrieval_time
+   - document_storage_included
+   - effective_date
+   - emergency_response_time
+   - emergency_retrieval
+   - expiry_date
+   - external_service_id
+   - first_sale_date
+   - geographic_coverage
+   - help
+   - is_featured_service
+   - is_template_service
+   - labor_cost
+   - last_sale_date
+   - list_price
+   - lst_price
+   - material_cost
+   - max_boxes_included
+   - max_documents_included
+   - message_follower_ids
+   - message_ids
+   - min_quantity
+   - minimum_billing_period
+   - model
+   - naid_compliance_level
+   - name
+   - overhead_cost
+   - period
+   - pickup_delivery_included
+   - price_history_count
+   - price_margin
+   - pricing_rule_ids
+   - product_variant_count
+   - product_variant_ids
+   - profit
+   - profit_margin
+   - prorate_partial_periods
+   - purchase_ok
+   - qty_available
+   - requires_approval
+   - res_model
+   - revenue
+   - rule_name
+   - rule_type
+   - sale_ok
+   - sales_analytics_ids
+   - sales_count
+   - sales_velocity
+   - same_day_service
+   - search_view_id
+   - security_guarantee
+   - shredding_included
+   - sla_terms
+   - standard_price
+   - standard_response_time
+   - sync_enabled
+   - template_category
+   - total_revenue_ytd
+   - total_sales_ytd
+   - type
+   - uom_id
+   - uom_po_id
+   - uptime_guarantee
+   - view_mode
+   - volume
+   - webhook_notifications
+   - weight
+   - witness_destruction
+
+🚨 Model: hard_drive.scan.wizard
+   - arch
+   - bulk_serial_input
+   - certificate_line_text
+   - context
+   - customer_location_notes
+   - destroyed
+   - destruction_date
+   - destruction_method
+   - facility_verification_notes
+   - hashed_serial
+   - help
+   - included_in_certificate
+   - model
+   - name
+   - res_model
+   - scan_count
+   - scan_location
+   - scan_notes
+   - scanned_at_customer
+   - scanned_at_customer_by
+   - scanned_at_customer_date
+   - scanned_serials
+   - serial_number
+   - service_id
+   - target
+   - verified_at_facility_by
+   - verified_at_facility_date
+   - verified_before_destruction
+   - view_mode
+
+🚨 Model: fsm.task
+   - arch
+   - context
+   - help
+   - inherit_id
+   - model
+   - res_model
+   - search_view_id
+   - view_mode
+
+🚨 Model: base.rates
+   - advance_notice_days
+   - annual_revenue_impact
+   - approval_date
+   - approval_notes
+   - approved_by
+   - arch
+   - category_adjustment_value
+   - communication_template
+   - competitor_rate_factor
+   - container_count
+   - context
+   - current_monthly_revenue
+   - custom_end_date
+   - custom_start_date
+   - customer_impact_count
+   - customer_retention_rate
+   - customer_segment
+   - domain
+   - forecast_line_ids
+   - forecast_period
+   - global_adjustment_type
+   - global_adjustment_value
+   - help
+   - implementation_method
+   - inflation_rate
+   - market_growth_rate
+   - model
+   - notification_required
+   - partner_id
+   - phase_duration_months
+   - projected_monthly_revenue
+   - rate_structure
+   - requires_approval
+   - res_model
+   - revenue_change
+   - revenue_change_percentage
+   - revenue_difference
+   - revenue_impact
+   - revenue_percentage_change
+   - risk_assessment
+   - risk_level
+   - risk_mitigation_plan
+   - rollback_plan
+   - scenario_type
+   - service_category
+   - service_type
+   - specific_customer_ids
+   - target
+   - view_mode
+
+🚨 Model: records.department.billing.contact
+   - approval_count
+   - arch
+   - context
+   - department_charges_count
+   - help
+   - model
+   - res_model
+   - search_view_id
+   - view_mode
+   - ytd_budget
+   - ytd_variance
+   - ytd_variance_percentage
+
+🚨 Model: barcode.product
+   - arch
+   - context
+   - help
+   - model
+   - res_model
+   - search_view_id
+   - view_mode
+
+🚨 Model: records.billing.config
+   - accounting_system_sync
+   - activity_ids
+   - amount
+   - annual_revenue
+   - arch
+   - audit_trail_enabled
+   - auto_apply
+   - auto_billing
+   - average_monthly_billing
+   - base_rate
+   - billable
+   - billing_accuracy_rate
+   - billing_cycle_start
+   - billing_failure_alerts
+   - billing_frequency
+   - billing_history_count
+   - billing_model
+   - billing_rate_ids
+   - cc_accounting
+   - collection_rate
+   - compliance_reporting
+   - consolidate_charges
+   - context
+   - cost_amount
+   - currency_id
+   - customer_count
+   - customer_id
+   - customer_notifications
+   - customer_satisfaction_score
+   - data_retention_period
+   - discount_percentage
+   - discount_rule_ids
+   - discount_type
+   - discount_value
+   - effective_date
+   - encryption_enabled
+   - escalation_notifications
+   - finance_team_notifications
+   - generation_date
+   - grace_period_days
+   - help
+   - include_usage_details
+   - invoice_count
+   - invoice_email_template
+   - invoice_generation_log_ids
+   - invoice_number
+   - invoice_status
+   - invoice_template
+   - last_invoice_date
+   - late_fee_percentage
+   - manager_notifications
+   - message_follower_ids
+   - message_ids
+   - minimum_charge
+   - minimum_threshold
+   - model
+   - monthly_revenue
+   - multi_currency_support
+   - next_billing_date
+   - payment_delay_average
+   - payment_gateway_integration
+   - payment_method
+   - payment_overdue_alerts
+   - payment_terms
+   - period
+   - period_end
+   - period_start
+   - profit_margin
+   - prorate_monthly
+   - quantity
+   - quarterly_revenue
+   - rate_type
+   - rate_unit
+   - reminder_schedule
+   - res_model
+   - revenue_amount
+   - revenue_analytics_ids
+   - revenue_variance_alerts
+   - rule_name
+   - search_view_id
+   - send_invoice_email
+   - service_category
+   - service_type
+   - status
+   - tax_calculation_method
+   - tier_threshold
+   - total_cost
+   - total_revenue
+   - track_access_frequency
+   - track_box_storage
+   - track_destruction_services
+   - track_digital_services
+   - track_document_count
+   - track_pickup_delivery
+   - track_retrieval_requests
+   - track_special_handling
+   - tracking_date
+   - unit_of_measure
+   - unit_rate
+   - usage_threshold_alerts
+   - usage_tracking_ids
+   - valid_from
+   - valid_until
+   - view_mode
+
+🚨 Model: mobile.bin.key.wizard
+   - arch
+   - model
+
+🚨 Model: records.digital.scan
+   - arch
+   - model
+
+🚨 Model: records.document
+   - arch
+   - context
+   - digital_scan_ids
+   - digitized
+   - event_date
+   - event_type
+   - help
+   - location
+   - media_type
+   - model
+   - naid_destruction_verified
+   - permanent_flag
+   - res_model
+   - responsible_person
+   - search_view_id
+   - storage_location
+   - timestamp
+   - view_mode
+
+🚨 Model: key.restriction.checker
+   - arch
+   - context
+   - model
+   - res_model
+   - target
+   - type
+   - view_mode
+
+
+📋 STEP 5: DETAILED MODEL ANALYSIS
+============================================================
+Models analyzed: 110
+  account.move.records.extension: 8 fields
+  advanced.billing: 21 fields
+  barcode.models.enhanced: 8 fields
+  barcode.product: 231 fields
+  base.rates: 37 fields
+  bin.key.history: 9 fields
+  bin.key.management: 44 fields
+  bin.unlock.service: 60 fields
+  container.contents: 11 fields
+  customer.feedback: 18 fields
+  customer.inventory: 50 fields
+  customer.inventory.report: 59 fields
+  customer.negotiated.rates: 35 fields
+  destruction.item: 11 fields
+  document.retrieval.item: 80 fields
+  document.retrieval.work.order: 206 fields
+  field.label.customization: 98 fields
+  file.retrieval.work.order: 11 fields
+  fsm.notification.placeholder: 1 fields
+  fsm.reschedule.wizard: 15 fields
+  fsm.route.management.placeholder: 1 fields
+  fsm.task: 171 fields
+  hr.emp.naid: 8 fields
+  hr.employee: 4 fields
+  installer: 7 fields
+  ir.module.ext: 8 fields
+  key.restriction.checker: 38 fields
+  load: 118 fields
+  location.report.wizard: 18 fields
+  mobile.bin.key.wizard: 47 fields
+  naid.audit.log: 8 fields
+  naid.certificate: 11 fields
+  naid.chain.custody: 8 fields
+  naid.compliance: 256 fields
+  naid.compliance.alert: 91 fields
+  naid.compliance.checklist: 8 fields
+  naid.custody.event: 8 fields
+  naid.destruction.record: 8 fields
+  naid.performance.history: 8 fields
+  paper.bale: 161 fields
+  paper.bale.recycling: 40 fields
+  paper.load.shipment: 105 fields
+  partner.bin.key: 50 fields
+  photo: 14 fields
+  pickup.request: 11 fields
+  pickup.request.item: 8 fields
+  pickup.route: 12 fields
+  portal.feedback: 173 fields
+  portal.feedback.resolution: 50 fields
+  portal.request: 149 fields
+  pos.config: 9 fields
+  prod.ext: 8 fields
+  proj.task.ext: 8 fields
+  records.access.log: 8 fields
+  records.approval.step: 17 fields
+  records.approval.workflow: 8 fields
+  records.audit.log: 8 fields
+  records.billing: 23 fields
+  records.billing.config: 8 fields
+  records.billing.line: 44 fields
+  records.billing.service: 9 fields
+  records.chain.of.custody: 14 fields
+  records.container: 68 fields
+  records.container.movement: 12 fields
+  records.container.transfer: 8 fields
+  records.container.type.converter: 25 fields
+  records.customer.billing.profile: 54 fields
+  records.deletion.request.enhanced: 8 fields
+  records.department: 14 fields
+  records.department.billing.contact: 102 fields
+  records.department.billing.enhanced: 8 fields
+  records.digital.scan: 36 fields
+  records.document: 118 fields
+  records.document.type: 68 fields
+  records.location: 73 fields
+  records.location.inspection: 8 fields
+  records.management.base.menus: 13 fields
+  records.permanent.flag.wizard: 46 fields
+  records.policy.version: 8 fields
+  records.retention.policy: 65 fields
+  records.security.audit: 8 fields
+  records.storage.department.user: 8 fields
+  records.tag: 21 fields
+  records.vehicle: 38 fields
+  records_management.bale: 8 fields
+  res.partner: 4 fields
+  res.partner.key.restriction: 7 fields
+  revenue.forecaster: 69 fields
+  scrm.records.management: 8 fields
+  shredding.bin: 8 fields
+  shredding.hard_drive: 36 fields
+  shredding.inventory.batch: 17 fields
+  shredding.inventory.item: 62 fields
+  shredding.service: 170 fields
+  shredding.service.log: 11 fields
+  stock.lot.attribute: 12 fields
+  stock.move.sms.validation: 4 fields
+  stock.picking.records.extension: 8 fields
+  stock.report_reception_report_label: 8 fields
+  survey.feedback.theme: 8 fields
+  survey.improvement.action: 11 fields
+  survey.user.input.enhanced: 8 fields
+  temp.inventory: 11 fields
+  transitory.field.config: 146 fields
+  transitory.items: 7 fields
+  unlock.service.history: 15 fields
+  visitor: 26 fields
+  visitor.pos.wizard: 112 fields
+  wizard.template: 1 fields
+  work.order.shredding: 9 fields
+
+View references analyzed: 39
+  barcode.product: 103 field references
+  base.rates: 62 field references
+  bin.key.management: 39 field references
+  customer.inventory.report: 26 field references
+  document.retrieval.work.order: 49 field references
+  field.label.customization: 77 field references
+  fsm.reschedule.wizard: 9 field references
+  fsm.task: 106 field references
+  hard_drive.scan.wizard: 29 field references
+  key.restriction.checker: 18 field references
+  mobile.bin.key.wizard: 36 field references
+  naid.compliance: 98 field references
+  paper.bale: 82 field references
+  paper.bale.recycling: 30 field references
+  paper.load.shipment: 56 field references
+  portal.feedback: 84 field references
+  portal.request: 98 field references
+  pos.config: 91 field references
+  product.template: 98 field references
+  records.billing.config: 106 field references
+  records.container: 39 field references
+  records.container.type.converter: 13 field references
+  records.customer.billing.profile: 64 field references
+  records.department.billing.contact: 52 field references
+  records.digital.scan: 21 field references
+  records.document: 59 field references
+  records.document.type: 32 field references
+  records.location: 26 field references
+  records.location.report.wizard: 10 field references
+  records.permanent.flag.wizard: 12 field references
+  records.retention.policy: 34 field references
+  records.tag: 9 field references
+  records.vehicle: 32 field references
+  res.partner: 49 field references
+  shredding.inventory.item: 34 field references
+  shredding.service: 91 field references
+  stock.lot: 70 field references
+  visitor.pos.wizard: 113 field references
+
+⚠️  Unknown context fields: 73
+   - activity_exception_decoration
+   - activity_ids
+   - activity_state
+   - actual_delivery
+   - actual_sale_price
+   - arch
+   - author_id
+   - average_bale_weight
+   - bale_count
+   - bale_ids
+   - bale_number
+   - bill_of_lading
+   - buyer_company
+   - capacity_utilization
+   - contamination_level
+   - contamination_notes
+   - contamination_report
+   - context
+   - date
+   - delivery_contact
+   - delivery_date
+   - delivery_phone
+   - destination_address
+   - domain
+   - driver_id
+   - driver_name
+   - estimated_delivery
+   - estimated_revenue
+   - hazmat_required
+   - help
+   - image
+   - invoice_number
+   - load_date
+   - load_quality_grade
+   - loading_dock_requirements
+   - market_price_per_ton
+   - message_follower_ids
+   - message_ids
+   - message_type
+   - model
+   - moisture_content
+   - moisture_test_report
+   - name
+   - payment_terms
+   - photo_ids
+   - photo_type
+   - price_variance
+   - priority
+   - production_date
+   - quality_certificate
+   - quality_grade
+   - res_model
+   - route_code
+   - sale_contract_number
+   - sales_contract_number
+   - search_view_id
+   - shipping_date
+   - special_delivery_instructions
+   - special_instructions
+   - state
+   - subject
+   - temperature_controlled
+   - total_weight
+   - trailer_id
+   - trailer_number
+   - transport_company
+   - truck_license_plate
+   - value_per_ton
+   - view_id
+   - view_mode
+   - weight
+   - weight_certificate
+   - weight_ticket_count

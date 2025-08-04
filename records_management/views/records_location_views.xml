@@ -149,8 +149,8 @@
                     </group>
 
                     <notebook>
-                        <page string="📦 Stored Boxes" name="boxes">
-                            <field name="box_ids" mode="list">
+                        <page string="📦 Stored Containers" name="containers">
+                            <field name="container_ids" mode="list">
                                 <list>
                                     <field name="name"/>
                                     <field name="customer_id"/>

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from datetime import datetime, timedelta
@@ -98,6 +99,420 @@ class RecordsBillingConfig(models.Model):
         string="Accounting System Sync", default=False
     )
     auto_apply = fields.Boolean(string="Auto Apply Configuration", default=True)
+
+    # === MISSING BUSINESS FIELDS FROM ANALYSIS ===
+
+    # Financial Analytics & Reporting
+    amount = fields.Monetary(
+        string="Amount", currency_field="currency_id", help="Current billing amount"
+    )
+    annual_revenue = fields.Monetary(
+        string="Annual Revenue",
+        currency_field="currency_id",
+        compute="_compute_annual_revenue",
+        store=True,
+        help="Total annual revenue for this configuration",
+    )
+    average_monthly_billing = fields.Monetary(
+        string="Average Monthly Billing",
+        currency_field="currency_id",
+        compute="_compute_average_monthly_billing",
+        store=True,
+        help="Average monthly billing amount",
+    )
+    monthly_revenue = fields.Monetary(
+        string="Monthly Revenue",
+        currency_field="currency_id",
+        compute="_compute_monthly_revenue",
+        store=True,
+        help="Current month revenue",
+    )
+    quarterly_revenue = fields.Monetary(
+        string="Quarterly Revenue",
+        currency_field="currency_id",
+        compute="_compute_quarterly_revenue",
+        store=True,
+        help="Current quarter revenue",
+    )
+    revenue_amount = fields.Monetary(
+        string="Revenue Amount",
+        currency_field="currency_id",
+        help="Total revenue amount",
+    )
+    total_revenue = fields.Monetary(
+        string="Total Revenue",
+        currency_field="currency_id",
+        compute="_compute_total_revenue",
+        store=True,
+        help="Total cumulative revenue",
+    )
+    total_cost = fields.Monetary(
+        string="Total Cost",
+        currency_field="currency_id",
+        compute="_compute_total_cost",
+        store=True,
+        help="Total operational costs",
+    )
+    cost_amount = fields.Monetary(
+        string="Cost Amount", currency_field="currency_id", help="Current cost amount"
+    )
+    profit_margin = fields.Float(
+        string="Profit Margin %",
+        digits=(5, 2),
+        compute="_compute_profit_margin",
+        store=True,
+        help="Calculated profit margin percentage",
+    )
+
+    # Billing Performance & Analytics
+    billing_accuracy_rate = fields.Float(
+        string="Billing Accuracy Rate",
+        digits=(5, 2),
+        default=99.0,
+        help="Percentage of accurate billing transactions",
+    )
+    billing_history_count = fields.Integer(
+        string="Billing History Count",
+        compute="_compute_billing_history_count",
+        store=True,
+        help="Number of historical billing records",
+    )
+    collection_rate = fields.Float(
+        string="Collection Rate %",
+        digits=(5, 2),
+        compute="_compute_collection_rate",
+        store=True,
+        help="Percentage of successful collections",
+    )
+    customer_satisfaction_score = fields.Float(
+        string="Customer Satisfaction Score",
+        digits=(3, 1),
+        help="Customer satisfaction rating for billing",
+    )
+    payment_delay_average = fields.Float(
+        string="Average Payment Delay (Days)",
+        digits=(5, 1),
+        compute="_compute_payment_delay_average",
+        store=True,
+        help="Average days for payment collection",
+    )
+
+    # Operational Configuration
+    audit_trail_enabled = fields.Boolean(
+        string="Audit Trail Enabled",
+        default=True,
+        help="Enable comprehensive audit logging",
+    )
+    billing_cycle_start = fields.Date(
+        string="Billing Cycle Start Date",
+        tracking=True,
+        help="Start date for current billing cycle",
+    )
+    billing_failure_alerts = fields.Boolean(
+        string="Billing Failure Alerts",
+        default=True,
+        help="Send alerts on billing failures",
+    )
+    compliance_reporting = fields.Boolean(
+        string="Compliance Reporting", default=True, help="Generate compliance reports"
+    )
+    consolidate_charges = fields.Boolean(
+        string="Consolidate Charges",
+        default=False,
+        help="Consolidate multiple charges into single invoice",
+    )
+    data_retention_period = fields.Integer(
+        string="Data Retention Period (Years)",
+        default=7,
+        help="How long to retain billing data",
+    )
+    encryption_enabled = fields.Boolean(
+        string="Encryption Enabled",
+        default=True,
+        help="Enable data encryption for billing information",
+    )
+    grace_period_days = fields.Integer(
+        string="Grace Period (Days)", default=30, help="Grace period for late payments"
+    )
+    multi_currency_support = fields.Boolean(
+        string="Multi-Currency Support",
+        default=False,
+        help="Enable multi-currency billing",
+    )
+    prorate_monthly = fields.Boolean(
+        string="Prorate Monthly", default=True, help="Enable prorated monthly billing"
+    )
+
+    # Service Configuration
+    billable = fields.Boolean(
+        string="Billable", default=True, help="Mark this configuration as billable"
+    )
+    service_category = fields.Selection(
+        [
+            ("storage", "Storage Services"),
+            ("retrieval", "Retrieval Services"),
+            ("destruction", "Destruction Services"),
+            ("scanning", "Scanning Services"),
+            ("consultation", "Consultation Services"),
+            ("other", "Other Services"),
+        ],
+        string="Service Category",
+        help="Primary service category",
+    )
+    service_type = fields.Char(
+        string="Service Type", help="Specific service type identifier"
+    )
+    quantity = fields.Float(
+        string="Quantity", digits=(10, 2), help="Service quantity for billing"
+    )
+    unit_of_measure = fields.Char(
+        string="Unit of Measure", help="Unit for quantity measurement"
+    )
+    unit_rate = fields.Monetary(
+        string="Unit Rate", currency_field="currency_id", help="Rate per unit"
+    )
+    rate_type = fields.Selection(
+        [
+            ("fixed", "Fixed Rate"),
+            ("variable", "Variable Rate"),
+            ("tiered", "Tiered Rate"),
+            ("usage", "Usage Based"),
+        ],
+        string="Rate Type",
+        help="Type of billing rate",
+    )
+    rate_unit = fields.Char(string="Rate Unit", help="Unit for rate calculation")
+
+    # Discount & Pricing Rules
+    discount_percentage = fields.Float(
+        string="Discount Percentage", digits=(5, 2), help="Default discount percentage"
+    )
+    discount_type = fields.Selection(
+        [
+            ("percentage", "Percentage"),
+            ("fixed", "Fixed Amount"),
+            ("volume", "Volume Based"),
+            ("loyalty", "Loyalty Discount"),
+        ],
+        string="Discount Type",
+        help="Type of discount applied",
+    )
+    discount_value = fields.Float(
+        string="Discount Value", digits=(10, 2), help="Discount value amount"
+    )
+    minimum_threshold = fields.Monetary(
+        string="Minimum Threshold",
+        currency_field="currency_id",
+        help="Minimum billing threshold",
+    )
+    tier_threshold = fields.Monetary(
+        string="Tier Threshold",
+        currency_field="currency_id",
+        help="Threshold for tier pricing",
+    )
+
+    # Date & Period Management
+    effective_date = fields.Date(
+        string="Effective Date",
+        required=True,
+        default=fields.Date.today,
+        tracking=True,
+        help="Date when configuration becomes effective",
+    )
+    valid_from = fields.Date(
+        string="Valid From", tracking=True, help="Configuration validity start date"
+    )
+    valid_until = fields.Date(
+        string="Valid Until", tracking=True, help="Configuration validity end date"
+    )
+    period = fields.Selection(
+        [
+            ("daily", "Daily"),
+            ("weekly", "Weekly"),
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("yearly", "Yearly"),
+        ],
+        string="Billing Period",
+        default="monthly",
+    )
+    period_start = fields.Date(
+        string="Period Start", help="Current billing period start"
+    )
+    period_end = fields.Date(string="Period End", help="Current billing period end")
+    generation_date = fields.Date(
+        string="Generation Date", help="Date when billing was generated"
+    )
+    next_billing_date = fields.Date(
+        string="Next Billing Date",
+        compute="_compute_next_billing_date",
+        store=True,
+        help="Calculated next billing date",
+    )
+
+    # Customer & Invoice Management
+    customer_count = fields.Integer(
+        string="Customer Count",
+        compute="_compute_customer_count",
+        store=True,
+        help="Number of customers using this configuration",
+    )
+    invoice_count = fields.Integer(
+        string="Invoice Count",
+        compute="_compute_invoice_count",
+        store=True,
+        help="Total number of invoices generated",
+    )
+    invoice_number = fields.Char(string="Invoice Number", help="Related invoice number")
+    invoice_status = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("sent", "Sent"),
+            ("paid", "Paid"),
+            ("overdue", "Overdue"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Invoice Status",
+        help="Current invoice status",
+    )
+    invoice_template = fields.Char(
+        string="Invoice Template", help="Template used for invoice generation"
+    )
+
+    # Notification & Communication
+    customer_notifications = fields.Boolean(
+        string="Customer Notifications",
+        default=True,
+        help="Send notifications to customers",
+    )
+    escalation_notifications = fields.Boolean(
+        string="Escalation Notifications",
+        default=True,
+        help="Send escalation notifications",
+    )
+    finance_team_notifications = fields.Boolean(
+        string="Finance Team Notifications",
+        default=True,
+        help="Send notifications to finance team",
+    )
+    manager_notifications = fields.Boolean(
+        string="Manager Notifications",
+        default=True,
+        help="Send notifications to managers",
+    )
+    payment_overdue_alerts = fields.Boolean(
+        string="Payment Overdue Alerts",
+        default=True,
+        help="Send alerts for overdue payments",
+    )
+    revenue_variance_alerts = fields.Boolean(
+        string="Revenue Variance Alerts",
+        default=True,
+        help="Send alerts for revenue variances",
+    )
+    usage_threshold_alerts = fields.Boolean(
+        string="Usage Threshold Alerts",
+        default=True,
+        help="Send alerts when usage thresholds are reached",
+    )
+    send_invoice_email = fields.Boolean(
+        string="Send Invoice Email",
+        default=True,
+        help="Automatically send invoice emails",
+    )
+    include_usage_details = fields.Boolean(
+        string="Include Usage Details",
+        default=True,
+        help="Include detailed usage in invoices",
+    )
+    reminder_schedule = fields.Char(
+        string="Reminder Schedule", help="Schedule for payment reminders"
+    )
+    invoice_email_template = fields.Char(
+        string="Invoice Email Template", help="Email template for invoice delivery"
+    )
+
+    # Payment Configuration
+    payment_method = fields.Selection(
+        [
+            ("credit_card", "Credit Card"),
+            ("bank_transfer", "Bank Transfer"),
+            ("check", "Check"),
+            ("cash", "Cash"),
+            ("ach", "ACH Transfer"),
+            ("wire", "Wire Transfer"),
+        ],
+        string="Payment Method",
+        help="Preferred payment method",
+    )
+    payment_gateway_integration = fields.Boolean(
+        string="Payment Gateway Integration",
+        default=False,
+        help="Enable payment gateway integration",
+    )
+    tax_calculation_method = fields.Selection(
+        [
+            ("inclusive", "Tax Inclusive"),
+            ("exclusive", "Tax Exclusive"),
+            ("exempt", "Tax Exempt"),
+        ],
+        string="Tax Calculation Method",
+        default="exclusive",
+    )
+
+    # Status & Control
+    status = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("suspended", "Suspended"),
+            ("expired", "Expired"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
+    rule_name = fields.Char(string="Rule Name", help="Name of the billing rule")
+
+    # Tracking & Usage Analytics
+    tracking_date = fields.Date(string="Tracking Date", help="Date for usage tracking")
+    track_access_frequency = fields.Boolean(
+        string="Track Access Frequency",
+        default=True,
+        help="Track how often services are accessed",
+    )
+    track_box_storage = fields.Boolean(
+        string="Track Box Storage", default=True, help="Track box storage usage"
+    )
+    track_destruction_services = fields.Boolean(
+        string="Track Destruction Services",
+        default=True,
+        help="Track destruction service usage",
+    )
+    track_digital_services = fields.Boolean(
+        string="Track Digital Services",
+        default=True,
+        help="Track digital service usage",
+    )
+    track_document_count = fields.Boolean(
+        string="Track Document Count", default=True, help="Track document quantities"
+    )
+    track_pickup_delivery = fields.Boolean(
+        string="Track Pickup/Delivery",
+        default=True,
+        help="Track pickup and delivery services",
+    )
+    track_retrieval_requests = fields.Boolean(
+        string="Track Retrieval Requests",
+        default=True,
+        help="Track document retrieval requests",
+    )
+    track_special_handling = fields.Boolean(
+        string="Track Special Handling",
+        default=True,
+        help="Track special handling services",
+    )
 
     # === CRITICAL MISSING VIEW FIELDS ===
     last_invoice_date = fields.Date(
@@ -322,6 +737,115 @@ class RecordsBillingConfig(models.Model):
                 record.monthly_revenue = 0.0
                 record.quarterly_revenue = 0.0
                 record.average_monthly_billing = 0.0
+
+    # === ADDITIONAL COMPUTE METHODS FOR NEW FIELDS ===
+
+    @api.depends("partner_id")
+    def _compute_customer_count(self):
+        """Compute total number of unique customers"""
+        for record in self:
+            if record.partner_id:
+                # Count all billing configs for same company
+                count = self.search_count(
+                    [
+                        ("company_id", "=", record.company_id.id),
+                        ("partner_id", "!=", False),
+                    ]
+                )
+                record.customer_count = count
+            else:
+                record.customer_count = 0
+
+    @api.depends("base_rate", "billing_frequency", "billing_line_ids.amount")
+    def _compute_total_cost(self):
+        """Calculate total costs for billing configuration"""
+        for record in self:
+            total_cost = 0.0
+            # Base operating costs
+            if record.base_rate and record.billing_frequency:
+                frequency_multiplier = {
+                    "monthly": 12,
+                    "quarterly": 4,
+                    "yearly": 1,
+                    "weekly": 52,
+                }.get(record.billing_frequency, 12)
+                total_cost += (
+                    record.base_rate * frequency_multiplier * 0.7
+                )  # 70% margin
+
+            # Additional line item costs
+            total_cost += sum(line.amount * 0.6 for line in record.billing_line_ids)
+            record.total_cost = total_cost
+
+    @api.depends("annual_revenue", "total_cost")
+    def _compute_profit_margin(self):
+        """Calculate profit margin percentage"""
+        for record in self:
+            if record.annual_revenue and record.total_cost:
+                record.profit_margin = (
+                    (record.annual_revenue - record.total_cost) / record.annual_revenue
+                ) * 100
+            else:
+                record.profit_margin = 0.0
+
+    @api.depends("partner_id")
+    def _compute_collection_rate(self):
+        """Calculate payment collection rate"""
+        for record in self:
+            if record.partner_id:
+                invoices = self.env["account.move"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("move_type", "=", "out_invoice"),
+                        ("state", "=", "posted"),
+                    ]
+                )
+                total_invoices = len(invoices)
+                paid_invoices = len(
+                    invoices.filtered(lambda x: x.payment_state == "paid")
+                )
+
+                if total_invoices > 0:
+                    record.collection_rate = (paid_invoices / total_invoices) * 100
+                else:
+                    record.collection_rate = 0.0
+            else:
+                record.collection_rate = 0.0
+
+    @api.depends("partner_id")
+    def _compute_payment_delay_average(self):
+        """Calculate average payment delay in days"""
+        for record in self:
+            if record.partner_id:
+                invoices = self.env["account.move"].search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("move_type", "=", "out_invoice"),
+                        ("payment_state", "=", "paid"),
+                    ]
+                )
+
+                delays = []
+                for invoice in invoices:
+                    if invoice.invoice_date_due and invoice.invoice_payments_widget:
+                        # Get payment date from payments
+                        payments_data = json.loads(invoice.invoice_payments_widget)
+                        if payments_data and "content" in payments_data:
+                            for payment in payments_data["content"]:
+                                if "date" in payment:
+                                    payment_date = fields.Date.from_string(
+                                        payment["date"]
+                                    )
+                                    delay = (
+                                        payment_date - invoice.invoice_date_due
+                                    ).days
+                                    delays.append(max(0, delay))  # Only positive delays
+
+                record.payment_delay_average = (
+                    sum(delays) / len(delays) if delays else 0.0
+                )
+            else:
+                record.payment_delay_average = 0.0
 
     # === CRITICAL MISSING FIELDS (from billing_views.xml analysis) ===
 
