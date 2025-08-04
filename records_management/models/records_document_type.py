@@ -342,13 +342,6 @@ class RecordsDocumentType(models.Model):
         string="Documents",
     )
 
-    # Templates and Configurations
-    template_ids = fields.One2many(
-        "document.template",
-        "document_type_id",
-        string="Document Templates",
-    )
-
     # Quality Control
     quality_control_id = fields.Many2one(
         "quality.control.plan",
