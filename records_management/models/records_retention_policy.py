@@ -29,6 +29,9 @@ class RecordsRetentionPolicy(models.Model):
         tracking=True,
         help="Additional months beyond the year period",
     )
+    retention_period = fields.Char(
+        string="Retention Period", help="Complete retention period description"
+    )
     minimum_retention_years = fields.Integer(
         string="Minimum Retention (Years)",
         default=1,

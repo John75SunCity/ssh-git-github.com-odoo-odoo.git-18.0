@@ -741,6 +741,219 @@ class PortalFeedback(models.Model):
         "res.company", string="Company", default=lambda self: self.env.company
     )
 
+    # ============================================================================
+    # MISSING BUSINESS FIELDS FOR VIEWS COMPATIBILITY - PHASE 8 CONTINUATION
+    # ============================================================================
+
+    # === CUSTOMER LOYALTY & RETENTION FIELDS ===
+    likelihood_to_return = fields.Selection(
+        [
+            ("1", "Very Unlikely"),
+            ("2", "Unlikely"),
+            ("3", "Neutral"),
+            ("4", "Likely"),
+            ("5", "Very Likely"),
+        ],
+        string="Likelihood to Return",
+        help="Customer likelihood to return for future services",
+    )
+
+    retention_risk = fields.Selection(
+        [
+            ("low", "Low Risk"),
+            ("medium", "Medium Risk"),
+            ("high", "High Risk"),
+            ("critical", "Critical Risk"),
+        ],
+        string="Retention Risk",
+        compute="_compute_retention_risk",
+        store=True,
+        help="Risk assessment for customer retention",
+    )
+
+    revenue_impact = fields.Monetary(
+        string="Revenue Impact",
+        currency_field="company_currency_id",
+        help="Estimated revenue impact of this feedback",
+    )
+
+    # === DETAILED FEEDBACK ANALYSIS FIELDS ===
+    positive_aspects = fields.Text(
+        string="Positive Aspects", help="What the customer liked about the service"
+    )
+    negative_aspects = fields.Text(
+        string="Negative Aspects",
+        help="What the customer didn't like about the service",
+    )
+
+    sentiment_analysis = fields.Selection(
+        [
+            ("very_positive", "Very Positive"),
+            ("positive", "Positive"),
+            ("neutral", "Neutral"),
+            ("negative", "Negative"),
+            ("very_negative", "Very Negative"),
+        ],
+        string="Sentiment Analysis",
+        compute="_compute_sentiment_analysis",
+        store=True,
+        help="AI-powered sentiment analysis of the feedback",
+    )
+
+    trend_analysis = fields.Text(
+        string="Trend Analysis", help="Analysis of feedback trends and patterns"
+    )
+
+    root_cause_category = fields.Selection(
+        [
+            ("service_quality", "Service Quality"),
+            ("communication", "Communication Issues"),
+            ("timeliness", "Timeliness Problems"),
+            ("pricing", "Pricing Concerns"),
+            ("staff_behavior", "Staff Behavior"),
+            ("system_technical", "System/Technical Issues"),
+            ("process_workflow", "Process/Workflow Issues"),
+            ("other", "Other"),
+        ],
+        string="Root Cause Category",
+        help="Primary root cause category for the issue",
+    )
+
+    # === SERVICE QUALITY RATINGS ===
+    staff_professionalism_rating = fields.Selection(
+        [
+            ("1", "Very Poor"),
+            ("2", "Poor"),
+            ("3", "Average"),
+            ("4", "Good"),
+            ("5", "Excellent"),
+        ],
+        string="Staff Professionalism Rating",
+        help="Rating of staff professionalism",
+    )
+
+    value_for_money_rating = fields.Selection(
+        [
+            ("1", "Very Poor"),
+            ("2", "Poor"),
+            ("3", "Average"),
+            ("4", "Good"),
+            ("5", "Excellent"),
+        ],
+        string="Value for Money Rating",
+        help="Customer rating of value for money",
+    )
+
+    # === RESPONSE MANAGEMENT FIELDS ===
+    resolved_by = fields.Many2one(
+        "res.users", string="Resolved By", help="User who resolved this feedback"
+    )
+    responded_by = fields.Many2one(
+        "res.users",
+        string="Responded By",
+        help="User who initially responded to this feedback",
+    )
+    resolution_date = fields.Datetime(
+        string="Resolution Date", help="Date when the feedback was fully resolved"
+    )
+    response_description = fields.Text(
+        string="Response Description",
+        help="Detailed description of the response provided",
+    )
+    response_method = fields.Selection(
+        [
+            ("email", "Email"),
+            ("phone", "Phone Call"),
+            ("portal", "Portal Message"),
+            ("meeting", "In-Person Meeting"),
+            ("chat", "Live Chat"),
+            ("sms", "SMS"),
+        ],
+        string="Response Method",
+        help="Method used to respond to the customer",
+    )
+
+    # === OPERATIONAL FIELDS ===
+    product_id = fields.Many2one(
+        "product.product",
+        string="Related Product/Service",
+        help="Product or service this feedback relates to",
+    )
+    urgency_level = fields.Selection(
+        [
+            ("low", "Low"),
+            ("normal", "Normal"),
+            ("high", "High"),
+            ("urgent", "Urgent"),
+            ("critical", "Critical"),
+        ],
+        string="Urgency Level",
+        default="normal",
+        help="Urgency level for addressing this feedback",
+    )
+
+    # === CURRENCY SUPPORT ===
+    company_currency_id = fields.Many2one(
+        "res.currency",
+        related="company_id.currency_id",
+        string="Company Currency",
+        readonly=True,
+    )
+
+    # ============================================================================
+    # COMPUTE METHODS FOR NEW FIELDS
+    # ============================================================================
+
+    @api.depends("overall_rating", "nps_score", "likelihood_to_return")
+    def _compute_retention_risk(self):
+        """Compute retention risk based on ratings"""
+        for record in self:
+            if record.overall_rating and record.nps_score:
+                avg_rating = (int(record.overall_rating) + int(record.nps_score)) / 2
+                if avg_rating >= 8:
+                    record.retention_risk = "low"
+                elif avg_rating >= 6:
+                    record.retention_risk = "medium"
+                elif avg_rating >= 4:
+                    record.retention_risk = "high"
+                else:
+                    record.retention_risk = "critical"
+            else:
+                record.retention_risk = "medium"
+
+    @api.depends("positive_aspects", "negative_aspects", "overall_rating", "nps_score")
+    def _compute_sentiment_analysis(self):
+        """Compute sentiment analysis based on feedback content and ratings"""
+        for record in self:
+            if record.overall_rating and record.nps_score:
+                avg_rating = (int(record.overall_rating) + int(record.nps_score)) / 2
+                if avg_rating >= 9:
+                    record.sentiment_analysis = "very_positive"
+                elif avg_rating >= 7:
+                    record.sentiment_analysis = "positive"
+                elif avg_rating >= 5:
+                    record.sentiment_analysis = "neutral"
+                elif avg_rating >= 3:
+                    record.sentiment_analysis = "negative"
+                else:
+                    record.sentiment_analysis = "very_negative"
+            else:
+                # Analyze text content if available
+                positive_count = 0
+                negative_count = 0
+
+                if record.positive_aspects:
+                    positive_count += len(record.positive_aspects.split())
+                if record.negative_aspects:
+                    negative_count += len(record.negative_aspects.split())
+
+                if positive_count > negative_count * 2:
+                    record.sentiment_analysis = "positive"
+                elif negative_count > positive_count * 2:
+                    record.sentiment_analysis = "negative"
+                else:
+                    record.sentiment_analysis = "neutral"
+
     @api.depends("overall_rating", "nps_score", "feedback_type")
     def _compute_sentiment(self):
         """Compute sentiment based on ratings and feedback type"""

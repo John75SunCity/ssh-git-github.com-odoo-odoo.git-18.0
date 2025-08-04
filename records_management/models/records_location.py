@@ -115,6 +115,9 @@ class RecordsLocation(models.Model):
         tracking=True,
         help="Maximum weight capacity in pounds",
     )
+    max_capacity = fields.Char(
+        string="Max Capacity", help="Maximum storage capacity description"
+    )
     current_weight = fields.Float(
         string="Current Weight (lbs)",
         compute="_compute_weight_metrics",

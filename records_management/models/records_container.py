@@ -78,6 +78,45 @@ class RecordsContainer(models.Model):
         store=True,
         help="Total volume in cubic feet",
     )
+
+    # ============================================================================
+    # MISSING FIELDS FROM SMART GAP ANALYSIS - CONTAINER ENHANCEMENT
+    # ============================================================================
+
+    # Container Type and Classification
+    container_type_code = fields.Char(
+        string="Container Type Code", help="Short code identifying container type"
+    )
+    container_type_display = fields.Char(
+        string="Container Type Display",
+        compute="_compute_container_type_display",
+        store=True,
+        help="Display name for container type",
+    )
+
+    # Capacity and Usage
+    capacity = fields.Float(
+        string="Total Capacity", help="Total capacity of the container"
+    )
+    current_usage = fields.Float(
+        string="Current Usage",
+        compute="_compute_current_usage",
+        store=True,
+        help="Current usage percentage of container",
+    )
+
+    # Financial Fields
+    monthly_rate = fields.Monetary(
+        string="Monthly Rate",
+        currency_field="currency_id",
+        help="Monthly storage rate for this container",
+    )
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+
     weight_empty = fields.Float(
         string="Empty Weight (lbs)", tracking=True, help="Weight of empty container"
     )
@@ -93,6 +132,14 @@ class RecordsContainer(models.Model):
         tracking=True,
         help="Maximum weight capacity",
     )
+    gross_weight = fields.Float(
+        string="Gross Weight",
+        help="Total weight including container and contents",
+        tracking=True,
+    )
+    bale_date = fields.Date(
+        string="Bale Date", help="Date when container was baled for processing"
+    )
 
     # Capacity and Usage
     document_capacity = fields.Integer(
@@ -100,6 +147,10 @@ class RecordsContainer(models.Model):
         default=100,
         tracking=True,
         help="Maximum number of documents this container can hold",
+    )
+    max_boxes = fields.Char(
+        string="Max Boxes",
+        help="Maximum number of boxes that can fit in this container",
     )
     current_document_count = fields.Integer(
         string="Current Document Count",
@@ -518,6 +569,35 @@ class RecordsContainer(models.Model):
                     record.container_size_type = "custom"
             else:
                 record.container_size_type = "custom"
+
+    # ============================================================================
+    # MISSING COMPUTE METHODS FROM SMART GAP ANALYSIS
+    # ============================================================================
+
+    @api.depends("container_type")
+    def _compute_container_type_display(self):
+        """Compute display name for container type"""
+        for record in self:
+            type_mapping = {
+                "standard_box": "📦 Standard Box",
+                "legal_box": "📋 Legal Box",
+                "media_box": "💿 Media Box",
+                "custom": "🔧 Custom Container",
+            }
+            record.container_type_display = type_mapping.get(
+                record.container_type, record.container_type or "Unknown"
+            )
+
+    @api.depends("document_capacity", "current_document_count")
+    def _compute_current_usage(self):
+        """Compute current usage percentage"""
+        for record in self:
+            if record.document_capacity and record.document_capacity > 0:
+                record.current_usage = (
+                    record.current_document_count / record.document_capacity
+                ) * 100
+            else:
+                record.current_usage = 0.0
 
     # ============ ONCHANGE METHODS ============
 

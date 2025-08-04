@@ -2177,12 +2177,13 @@ class RecordsBillingConfig(models.Model):
             elif record.invoice_ids:
                 # Fallback to invoice data
                 monthly_invoices = record.invoice_ids.filtered(
-                    lambda inv: inv.invoice_date 
+                    lambda inv: inv.invoice_date
                     and inv.invoice_date >= fields.Date.today().replace(day=1)
                 )
                 record.average_monthly_billing = (
-                    sum(monthly_invoices.mapped("amount_total")) 
-                    if monthly_invoices else 0.0
+                    sum(monthly_invoices.mapped("amount_total"))
+                    if monthly_invoices
+                    else 0.0
                 )
             else:
                 record.average_monthly_billing = record.base_rate or 0.0
@@ -2193,7 +2194,7 @@ class RecordsBillingConfig(models.Model):
         for record in self:
             if record.invoice_ids:
                 total_revenue = sum(record.invoice_ids.mapped("amount_total"))
-                
+
                 # Normalize to monthly based on billing frequency
                 if record.billing_frequency == "monthly":
                     record.monthly_revenue = total_revenue
@@ -2215,7 +2216,7 @@ class RecordsBillingConfig(models.Model):
         for record in self:
             if record.invoice_ids:
                 total_revenue = sum(record.invoice_ids.mapped("amount_total"))
-                
+
                 # Normalize to quarterly based on billing frequency
                 if record.billing_frequency == "monthly":
                     record.quarterly_revenue = total_revenue * 3
