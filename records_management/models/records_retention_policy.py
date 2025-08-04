@@ -264,6 +264,91 @@ class RecordsRetentionPolicy(models.Model):
         string="Display Name", compute="_compute_display_name", store=True
     )
 
+    # ============================================================================
+    # MISSING FIELDS FROM SMART GAP ANALYSIS - RETENTION POLICY ENHANCEMENT
+    # ============================================================================
+
+    # Policy Effectiveness and Risk Assessment
+    policy_effectiveness_score = fields.Float(
+        string="Policy Effectiveness Score",
+        compute="_compute_policy_effectiveness",
+        store=True,
+        digits=(5, 2),
+        help="Score indicating how effectively this policy is being implemented"
+    )
+    
+    policy_risk_score = fields.Float(
+        string="Policy Risk Score", 
+        compute="_compute_policy_risk",
+        store=True,
+        digits=(5, 2),
+        help="Risk assessment score for documents under this policy"
+    )
+    
+    # Policy Management Status
+    policy_status = fields.Selection([
+        ('developing', 'Under Development'),
+        ('review', 'Under Review'),
+        ('approved', 'Approved'),
+        ('active', 'Active'),
+        ('suspended', 'Suspended'),
+        ('obsolete', 'Obsolete')
+    ], string="Policy Status", default='developing', tracking=True)
+    
+    policy_type = fields.Selection([
+        ('legal', 'Legal Requirement'),
+        ('business', 'Business Rule'), 
+        ('industry', 'Industry Standard'),
+        ('regulatory', 'Regulatory Compliance'),
+        ('internal', 'Internal Policy')
+    ], string="Policy Type", default='business', tracking=True)
+    
+    # Retention Period Management
+    retention_years = fields.Integer(
+        string="Retention Years",
+        related="retention_period_years",
+        help="Number of years for document retention"
+    )
+    
+    # Framework Integration Fields (required by mail.thread)
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id", 
+        string="Activities"
+    )
+    
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers"
+    )
+    
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages"
+    )
+    
+    # Additional Business Fields  
+    approval_required = fields.Boolean(
+        string="Approval Required",
+        default=True,
+        help="Whether policy changes require approval"
+    )
+    
+    approved_by = fields.Many2one(
+        "res.users",
+        string="Approved By",
+        tracking=True,
+        help="User who approved this policy"
+    )
+    
+    approval_date = fields.Date(
+        string="Approval Date", 
+        tracking=True,
+        help="Date when policy was approved"
+    )
+
     @api.depends("name")
     def _compute_display_name(self):
         """Compute display name."""
@@ -351,6 +436,36 @@ class RecordsRetentionPolicy(models.Model):
                 ]
             )
             record.exception_count = len(documents)
+
+    @api.depends("compliance_score", "policy_violations", "document_count")
+    def _compute_policy_effectiveness(self):
+        """Compute policy effectiveness score based on compliance metrics"""
+        for record in self:
+            if record.document_count > 0:
+                # Base effectiveness on compliance score and violation rate
+                violation_penalty = (record.policy_violations / record.document_count) * 25
+                record.policy_effectiveness_score = max(0, record.compliance_score - violation_penalty)
+            else:
+                record.policy_effectiveness_score = 100.0
+
+    @api.depends("retention_period_years", "document_count", "policy_violations")
+    def _compute_policy_risk(self):
+        """Compute risk score based on retention period and compliance"""
+        for record in self:
+            base_risk = 20.0  # Base risk score
+            
+            # Higher retention period increases risk
+            if record.retention_period_years > 7:
+                base_risk += 30.0
+            elif record.retention_period_years > 3:
+                base_risk += 15.0
+                
+            # Violations increase risk
+            if record.document_count > 0:
+                violation_rate = (record.policy_violations / record.document_count)
+                base_risk += violation_rate * 50.0
+                
+            record.policy_risk_score = min(100.0, base_risk)
 
     def write(self, vals):
         """Override write to update modification date."""

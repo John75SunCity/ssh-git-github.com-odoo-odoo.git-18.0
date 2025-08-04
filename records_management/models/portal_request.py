@@ -348,6 +348,77 @@ class PortalRequest(models.Model):
     # === MISSING FIELDS FOR PORTAL.REQUEST ===
 
     # Document and File Management
+    # ============================================================================
+    # MISSING FIELDS FROM SMART GAP ANALYSIS - PORTAL REQUEST ENHANCEMENT  
+    # ============================================================================
+
+    # Request Processing Status
+    response_required = fields.Boolean(
+        string="Response Required",
+        default=True,
+        help="Indicates if a response is required for this request"
+    )
+    
+    status = fields.Selection([
+        ('new', 'New'),
+        ('pending', 'Pending'),
+        ('in_review', 'In Review'),
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+        ('on_hold', 'On Hold')
+    ], string="Status", default='new', tracking=True)
+    
+    # Request Details
+    subject = fields.Char(
+        string="Subject",
+        required=True,
+        help="Brief description or subject of the request"
+    )
+    
+    target_date = fields.Date(
+        string="Target Date",
+        help="Target completion date for this request"
+    )
+    
+    # Time Tracking
+    time_taken = fields.Float(
+        string="Time Taken (Hours)", 
+        digits=(8, 2),
+        help="Total time taken to process this request"
+    )
+    
+    # Framework Integration Fields (required by mail.thread)
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities"
+    )
+    
+    message_follower_ids = fields.One2many(
+        "mail.followers", 
+        "res_id",
+        string="Followers"
+    )
+    
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id", 
+        string="Messages"
+    )
+    
+    # Additional Business Fields
+    request_category = fields.Selection([
+        ('standard', 'Standard Request'),
+        ('expedited', 'Expedited Request'),
+        ('emergency', 'Emergency Request'),
+        ('batch', 'Batch Request')
+    ], string="Request Category", default='standard')
+    
+    completion_notes = fields.Text(
+        string="Completion Notes",
+        help="Notes about the completion of this request"
+    )
     confidential = fields.Boolean(
         string="Confidential",
         default=False,

@@ -325,94 +325,97 @@ class RecordsDocument(models.Model):
     urgent_retrieval = fields.Boolean(string="Urgent Retrieval", tracking=True)
 
     # === MISSING FIELDS FOR RECORDS.DOCUMENT ===
-    
+
     # Digital and Scanning Integration
     digital_scan_ids = fields.One2many(
-        'records.digital.scan',
-        'document_id',
-        string='Digital Scans',
-        help='Digital scans of this document'
+        "records.digital.scan",
+        "document_id",
+        string="Digital Scans",
+        help="Digital scans of this document",
     )
-    
+
     digitized = fields.Boolean(
-        string='Digitized',
+        string="Digitized",
         default=False,
         tracking=True,
-        help='Indicates if document has been digitized'
+        help="Indicates if document has been digitized",
     )
-    
+
     # Event and Activity Tracking
     event_date = fields.Date(
-        string='Event Date',
+        string="Event Date",
         tracking=True,
-        help='Date of significant event related to document'
+        help="Date of significant event related to document",
     )
-    
-    event_type = fields.Selection([
-        ('creation', 'Creation'),
-        ('modification', 'Modification'),
-        ('access', 'Access'),
-        ('transfer', 'Transfer'),
-        ('destruction', 'Destruction'),
-        ('other', 'Other')
-    ], string='Event Type', help='Type of event recorded')
-    
+
+    event_type = fields.Selection(
+        [
+            ("creation", "Creation"),
+            ("modification", "Modification"),
+            ("access", "Access"),
+            ("transfer", "Transfer"),
+            ("destruction", "Destruction"),
+            ("other", "Other"),
+        ],
+        string="Event Type",
+        help="Type of event recorded",
+    )
+
     # Location and Geography
     location = fields.Char(
-        string='Location Description',
-        help='Additional location information beyond standard location_id'
+        string="Location Description",
+        help="Additional location information beyond standard location_id",
     )
-    
+
     # Access and Security
     access_log_ids = fields.One2many(
-        'records.access.log',
-        'document_id',
-        string='Access Log',
-        help='Log of document access events'
+        "records.access.log",
+        "document_id",
+        string="Access Log",
+        help="Log of document access events",
     )
-    
+
     last_access_date = fields.Datetime(
-        string='Last Access Date',
-        tracking=True,
-        help='Date and time of last access'
+        string="Last Access Date", tracking=True, help="Date and time of last access"
     )
-    
+
     access_count = fields.Integer(
-        string='Access Count',
-        compute='_compute_access_count',
+        string="Access Count",
+        compute="_compute_access_count",
         store=True,
-        help='Total number of times document was accessed'
+        help="Total number of times document was accessed",
     )
-    
+
     # Review and Compliance
     last_review_date = fields.Date(
-        string='Last Review Date',
-        tracking=True,
-        help='Date of last compliance review'
+        string="Last Review Date", tracking=True, help="Date of last compliance review"
     )
-    
+
     next_review_date = fields.Date(
-        string='Next Review Date',
-        compute='_compute_next_review_date',
+        string="Next Review Date",
+        compute="_compute_next_review_date",
         store=True,
-        help='Computed next review date'
+        help="Computed next review date",
     )
-    
+
     # Additional Metadata
-    document_language = fields.Selection([
-        ('en', 'English'),
-        ('es', 'Spanish'), 
-        ('fr', 'French'),
-        ('other', 'Other')
-    ], string='Document Language', default='en')
-    
-    file_format = fields.Selection([
-        ('pdf', 'PDF'),
-        ('doc', 'Word Document'),
-        ('txt', 'Text File'),
-        ('image', 'Image'),
-        ('other', 'Other')
-    ], string='File Format', help='Original file format of document')
+    document_language = fields.Selection(
+        [("en", "English"), ("es", "Spanish"), ("fr", "French"), ("other", "Other")],
+        string="Document Language",
+        default="en",
+    )
+
+    file_format = fields.Selection(
+        [
+            ("pdf", "PDF"),
+            ("doc", "Word Document"),
+            ("txt", "Text File"),
+            ("image", "Image"),
+            ("other", "Other"),
+        ],
+        string="File Format",
+        help="Original file format of document",
+    )
 
     # Enhanced State Management
 
