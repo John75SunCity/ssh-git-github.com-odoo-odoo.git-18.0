@@ -1,24 +1,60 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import UserError, ValidationError
+from dateutil.relativedelta import relativedelta
 
 
 class RecordsContainer(models.Model):
     _name = "records.container"
-    _description = "Records Container"
+    _description = "Records Container Management"
     _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name"
+    _order = "name desc"
     _rec_name = "name"
 
-    # Basic Information
-    name = fields.Char(
-        string="Container Number", required=True, tracking=True, index=True
-    )
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+
+    name = fields.Char(string="Container Number", required=True, tracking=True, index=True)
     code = fields.Char(string="Container Code", index=True, tracking=True)
     description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
 
-    # Container Classification
+    # Framework Required Fields
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Responsible User",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+
+    # State Management
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("in_transit", "In Transit"),
+            ("stored", "Stored"),
+            ("pending_destruction", "Pending Destruction"),
+            ("destroyed", "Destroyed"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
+
+    # ============================================================================
+    # CONTAINER CLASSIFICATION
+    # ============================================================================
+
+    # Container Type Configuration
     container_type = fields.Selection(
         [
             ("standard_box", "Standard Storage Box"),
@@ -33,6 +69,7 @@ class RecordsContainer(models.Model):
         required=True,
         tracking=True,
     )
+
     container_category = fields.Selection(
         [
             ("permanent", "Permanent Storage"),
@@ -44,293 +81,76 @@ class RecordsContainer(models.Model):
         default="permanent",
         tracking=True,
     )
+
     container_material = fields.Selection(
         [
             ("cardboard", "Cardboard"),
             ("plastic", "Plastic"),
             ("metal", "Metal"),
-            ("fireproof", "Fireproof Material"),
+            ("fabric", "Fabric"),
+            ("mixed", "Mixed Materials"),
         ],
-        string="Container Material",
+        string="Material",
         default="cardboard",
-        tracking=True,
     )
 
-    # Physical Specifications
-    length = fields.Float(
-        string="Length (inches)", tracking=True, help="Container length in inches"
-    )
-    width = fields.Float(
-        string="Width (inches)", tracking=True, help="Container width in inches"
-    )
-    height = fields.Float(
-        string="Height (inches)", tracking=True, help="Container height in inches"
-    )
-    volume = fields.Float(
-        string="Volume (cubic inches)",
-        compute="_compute_volume",
-        store=True,
-        help="Total volume in cubic inches",
-    )
-    volume_cubic_feet = fields.Float(
-        string="Volume (cubic feet)",
-        compute="_compute_volume",
-        store=True,
-        help="Total volume in cubic feet",
+    size_category = fields.Selection(
+        [
+            ("small", "Small"),
+            ("medium", "Medium"),
+            ("large", "Large"),
+            ("extra_large", "Extra Large"),
+        ],
+        string="Size Category",
+        default="medium",
     )
 
     # ============================================================================
-    # MISSING FIELDS FROM SMART GAP ANALYSIS - CONTAINER ENHANCEMENT
+    # LOCATION & TRACKING
     # ============================================================================
 
-    # Container Type and Classification
-    container_type_code = fields.Char(
-        string="Container Type Code", help="Short code identifying container type"
-    )
-    container_type_display = fields.Char(
-        string="Container Type Display",
-        compute="_compute_container_type_display",
-        store=True,
-        help="Display name for container type",
-    )
-
-    # Capacity and Usage
-    capacity = fields.Float(
-        string="Total Capacity", help="Total capacity of the container"
-    )
-    current_usage = fields.Float(
-        string="Current Usage",
-        compute="_compute_current_usage",
-        store=True,
-        help="Current usage percentage of container",
-    )
-
-    # Financial Fields
-    monthly_rate = fields.Monetary(
-        string="Monthly Rate",
-        currency_field="currency_id",
-        help="Monthly storage rate for this container",
-    )
-    currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        default=lambda self: self.env.company.currency_id,
-    )
-
-    weight_empty = fields.Float(
-        string="Empty Weight (lbs)", tracking=True, help="Weight of empty container"
-    )
-    weight_current = fields.Float(
-        string="Current Weight (lbs)",
-        compute="_compute_current_weight",
-        store=True,
-        help="Current total weight including contents",
-    )
-    weight_capacity = fields.Float(
-        string="Weight Capacity (lbs)",
-        default=35.0,
-        tracking=True,
-        help="Maximum weight capacity",
-    )
-    gross_weight = fields.Float(
-        string="Gross Weight",
-        help="Total weight including container and contents",
-        tracking=True,
-    )
-    bale_date = fields.Date(
-        string="Bale Date", help="Date when container was baled for processing"
-    )
-
-    # Capacity and Usage
-    document_capacity = fields.Integer(
-        string="Document Capacity",
-        default=100,
-        tracking=True,
-        help="Maximum number of documents this container can hold",
-    )
-    max_boxes = fields.Char(
-        string="Max Boxes",
-        help="Maximum number of boxes that can fit in this container",
-    )
-    current_document_count = fields.Integer(
-        string="Current Document Count",
-        compute="_compute_document_metrics",
-        store=True,
-        help="Current number of documents in container",
-    )
-    available_document_space = fields.Integer(
-        string="Available Document Space",
-        compute="_compute_document_metrics",
-        store=True,
-        help="Remaining document capacity",
-    )
-    utilization_percentage = fields.Float(
-        string="Utilization %",
-        compute="_compute_document_metrics",
-        store=True,
-        digits=(5, 2),
-        help="Percentage of capacity currently used",
-    )
-
-    # Location and Movement
+    # Location Management
     location_id = fields.Many2one(
-        "records.location",
-        string="Storage Location",
-        tracking=True,
-        help="Current storage location",
+        "records.location", string="Current Location", tracking=True
     )
-    previous_location_id = fields.Many2one(
-        "records.location",
-        string="Previous Location",
-        readonly=True,
-        help="Previous storage location",
+    from_location_id = fields.Many2one(
+        "records.location", string="From Location", tracking=True
     )
-    zone = fields.Char(string="Zone", tracking=True)
-    aisle = fields.Char(string="Aisle", tracking=True)
-    shelf = fields.Char(string="Shelf", tracking=True)
-    position = fields.Char(string="Position", tracking=True)
-
-    # Customer and Ownership
-    customer_id = fields.Many2one(
-        "res.partner", string="Customer", required=True, tracking=True
-    )
-    customer_inventory_id = fields.Many2one(
-        "customer.inventory", string="Customer Inventory", tracking=True
-    )
-    department_id = fields.Many2one("hr.department", string="Department", tracking=True)
-
-    # State Management
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("active", "Active"),
-            ("stored", "Stored"),
-            ("in_transit", "In Transit"),
-            ("retrieved", "Retrieved"),
-            ("pending_destruction", "Pending Destruction"),
-            ("destroyed", "Destroyed"),
-        ],
-        string="Status",
-        default="draft",
-        required=True,
-        tracking=True,
-    )
-    active = fields.Boolean(string="Active", default=True)
-
-    # Company and User Management
-    company_id = fields.Many2one(
-        "res.company",
-        string="Company",
-        default=lambda self: self.env.company,
-        required=True,
-    )
-    responsible_user_id = fields.Many2one(
-        "res.users",
-        string="Container Manager",
-        default=lambda self: self.env.user,
-        tracking=True,
+    to_location_id = fields.Many2one(
+        "records.location", string="To Location", tracking=True
     )
 
-    # Identification and Tracking
-    barcode = fields.Char(
-        string="Barcode",
-        copy=False,
-        index=True,
-        tracking=True,
-        help="Unique barcode for container identification",
-    )
-    qr_code = fields.Char(
-        string="QR Code", copy=False, tracking=True, help="QR code for mobile scanning"
-    )
-    rfid_tag = fields.Char(
-        string="RFID Tag", copy=False, tracking=True, help="RFID tag identifier"
+    # Customer and Department
+    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    department_id = fields.Many2one(
+        "records.department", string="Department", tracking=True
     )
 
-    # Security and Access
-    security_level = fields.Selection(
-        [
-            ("standard", "Standard"),
-            ("confidential", "Confidential"),
-            ("restricted", "Restricted"),
-            ("classified", "Classified"),
-        ],
-        string="Security Level",
-        default="standard",
-        tracking=True,
-    )
-    access_restricted = fields.Boolean(
-        string="Access Restricted",
-        default=False,
-        tracking=True,
-    )
-    security_seal_number = fields.Char(
-        string="Security Seal Number",
-        tracking=True,
-    )
-    security_seal_applied = fields.Boolean(
-        string="Security Seal Applied",
-        default=False,
-        tracking=True,
-    )
+    # Barcode and Identification
+    barcode = fields.Char(string="Barcode", index=True, tracking=True)
+    qr_code = fields.Char(string="QR Code", tracking=True)
+    rfid_tag = fields.Char(string="RFID Tag", tracking=True)
 
-    # Environmental Requirements
-    climate_controlled = fields.Boolean(
-        string="Climate Controlled Required",
-        default=False,
-        tracking=True,
-    )
-    temperature_sensitive = fields.Boolean(
-        string="Temperature Sensitive",
-        default=False,
-        tracking=True,
-    )
-    humidity_sensitive = fields.Boolean(
-        string="Humidity Sensitive",
-        default=False,
-        tracking=True,
-    )
-    fireproof_required = fields.Boolean(
-        string="Fireproof Storage Required",
-        default=False,
-        tracking=True,
-    )
+    # ============================================================================
+    # PHYSICAL PROPERTIES
+    # ============================================================================
 
-    # Document Management
-    document_ids = fields.One2many(
-        "records.document", "container_id", string="Documents"
-    )
-    document_type_id = fields.Many2one(
-        "records.document.type",
-        string="Primary Document Type",
-        tracking=True,
-        help="Primary type of documents stored in this container",
-    )
+    # Dimensions
+    length = fields.Float(string="Length (cm)", digits=(8, 2))
+    width = fields.Float(string="Width (cm)", digits=(8, 2))
+    height = fields.Float(string="Height (cm)", digits=(8, 2))
+    
+    # Weight and Capacity
+    weight = fields.Float(string="Weight (kg)", digits=(8, 2), tracking=True)
+    max_weight = fields.Float(string="Max Weight (kg)", digits=(8, 2))
+    volume = fields.Float(string="Volume (m³)", digits=(8, 3))
+    capacity = fields.Float(string="Capacity", digits=(8, 2))
 
-    # Service and Operations
-    service_type = fields.Selection(
-        [
-            ("storage", "Storage Service"),
-            ("retrieval", "Retrieval Service"),
-            ("destruction", "Destruction Service"),
-            ("scanning", "Scanning Service"),
-            ("indexing", "Indexing Service"),
-        ],
-        string="Primary Service Type",
-        tracking=True,
+    # Status Indicators
+    fill_level = fields.Float(
+        string="Fill Level %", digits=(5, 2), default=0.0, tracking=True
     )
-    pickup_required = fields.Boolean(
-        string="Pickup Required",
-        default=False,
-        tracking=True,
-    )
-    delivery_required = fields.Boolean(
-        string="Delivery Required",
-        default=False,
-        tracking=True,
-    )
-
-    # Quality and Condition
-    container_condition = fields.Selection(
+    condition = fields.Selection(
         [
             ("excellent", "Excellent"),
             ("good", "Good"),
@@ -338,750 +158,245 @@ class RecordsContainer(models.Model):
             ("poor", "Poor"),
             ("damaged", "Damaged"),
         ],
-        string="Container Condition",
+        string="Condition",
         default="good",
         tracking=True,
     )
-    last_inspection_date = fields.Date(
-        string="Last Inspection Date",
-        tracking=True,
-    )
-    next_inspection_date = fields.Date(
-        string="Next Inspection Date",
-        tracking=True,
-    )
-    inspection_notes = fields.Text(
-        string="Inspection Notes", help="Notes from last inspection"
+
+    # ============================================================================  
+    # FINANCIAL INFORMATION
+    # ============================================================================
+
+    # Currency Configuration
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
     )
 
-    # Financial Information
-    storage_cost_monthly = fields.Monetary(
-        string="Monthly Storage Cost",
-        currency_field="currency_id",
-        tracking=True,
+    # Valuation
+    container_value = fields.Monetary(
+        string="Container Value", currency_field="currency_id", tracking=True
     )
-    retrieval_fee = fields.Monetary(
-        string="Retrieval Fee",
-        currency_field="currency_id",
-        tracking=True,
+    content_value = fields.Monetary(
+        string="Content Value", currency_field="currency_id", tracking=True
     )
-    destruction_fee = fields.Monetary(
-        string="Destruction Fee",
-        currency_field="currency_id",
-        tracking=True,
+    replacement_cost = fields.Monetary(
+        string="Replacement Cost", currency_field="currency_id"
     )
 
-    # Timestamps
-    created_date = fields.Datetime(
-        string="Created Date",
-        default=fields.Datetime.now,
-        readonly=True,
+    # Insurance
+    insured_value = fields.Monetary(
+        string="Insured Value", currency_field="currency_id"
     )
-    updated_date = fields.Datetime(
-        string="Last Updated",
-        readonly=True,
-    )
-    stored_date = fields.Date(
-        string="Stored Date",
-        tracking=True,
-    )
-    last_access_date = fields.Date(
-        string="Last Access Date",
-        tracking=True,
-    )
-    destruction_date = fields.Date(
-        string="Destruction Date",
+    insurance_policy = fields.Char(string="Insurance Policy Number")
+
+    # ============================================================================
+    # SECURITY & COMPLIANCE
+    # ============================================================================
+
+    # Security Classification
+    security_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+            ("top_secret", "Top Secret"),
+        ],
+        string="Security Level",
+        default="internal",
         tracking=True,
     )
 
-    # Movement and History
-    movement_history_ids = fields.One2many(
+    # Access Control
+    requires_authorization = fields.Boolean(
+        string="Requires Authorization", default=False
+    )
+    authorized_users = fields.Many2many(
+        "res.users", string="Authorized Users"
+    )
+
+    # Compliance
+    naid_compliant = fields.Boolean(string="NAID Compliant", default=False)
+    chain_of_custody_required = fields.Boolean(
+        string="Chain of Custody Required", default=False
+    )
+
+    # ============================================================================
+    # DATES & SCHEDULING
+    # ============================================================================
+
+    # Important Dates
+    creation_date = fields.Date(string="Creation Date", default=fields.Date.today)
+    received_date = fields.Date(string="Received Date", tracking=True)
+    last_access_date = fields.Date(string="Last Access Date", tracking=True)
+    destruction_date = fields.Date(string="Scheduled Destruction Date", tracking=True)
+
+    # Retention Management
+    retention_period = fields.Integer(string="Retention Period (Years)", default=7)
+    retention_start_date = fields.Date(string="Retention Start Date")
+    retention_end_date = fields.Date(
+        string="Retention End Date", 
+        compute="_compute_retention_end_date", 
+        store=True
+    )
+
+    # ============================================================================
+    # OPERATIONAL FIELDS
+    # ============================================================================
+
+    # Status Tracking
+    is_full = fields.Boolean(string="Is Full", compute="_compute_is_full", store=True)
+    is_overdue = fields.Boolean(
+        string="Is Overdue", compute="_compute_is_overdue", store=True
+    )
+    is_accessible = fields.Boolean(string="Is Accessible", default=True)
+
+    # Workflow Management
+    needs_review = fields.Boolean(string="Needs Review", default=False)
+    priority = fields.Selection(
+        [
+            ("low", "Low"),
+            ("normal", "Normal"),
+            ("high", "High"),
+            ("urgent", "Urgent"),
+        ],
+        string="Priority",
+        default="normal",
+    )
+
+    # Counts and Statistics
+    document_count = fields.Integer(
+        string="Document Count", compute="_compute_document_count", store=True
+    )
+    access_count = fields.Integer(string="Access Count", default=0)
+
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+
+    # Core Relationships
+    document_ids = fields.One2many(
+        "records.document", "container_id", string="Documents"
+    )
+    movement_ids = fields.One2many(
         "records.container.movement", "container_id", string="Movement History"
     )
-    last_movement_date = fields.Datetime(
-        string="Last Movement Date",
-        compute="_compute_last_movement",
-        store=True,
-    )
-    movement_count = fields.Integer(
-        string="Movement Count",
-        compute="_compute_movement_count",
-        store=True,
+    
+    # Container Contents
+    content_ids = fields.One2many(
+        "container.contents", "container_id", string="Container Contents"
     )
 
-    # Computed Display Fields
-    display_name = fields.Char(
-        string="Display Name",
-        compute="_compute_display_name",
-        store=True,
+    # Related Records
+    pickup_request_ids = fields.One2many(
+        "pickup.request", "container_id", string="Pickup Requests"
     )
-    dimensions_display = fields.Char(
-        string="Dimensions",
-        compute="_compute_dimensions_display",
-        help="Formatted dimension display (L×W×H)",
-    )
-    location_path = fields.Char(
-        string="Location Path",
-        compute="_compute_location_path",
-        store=True,
-        help="Full location path",
+    audit_log_ids = fields.One2many(
+        "records.audit.log", "container_id", string="Audit Logs"
     )
 
-    # Standard Size Recognition
-    container_size_type = fields.Selection(
-        [
-            ("standard", 'Standard (15"×12"×10")'),
-            ("legal", 'Legal/Double-size (15"×24"×10")'),
-            ("letter", 'Letter Size (12"×15"×10")'),
-            ("custom", "Custom Size"),
-        ],
-        string="Container Size Type",
-        compute="_compute_container_size_type",
-        help="Recognized standard container sizes",
-    )
-
-    # === MISSING FIELDS FOR RECORDS.CONTAINER ===
-
-    # Framework Integration Fields (required by mail.thread)
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-    )
+    # Mail Thread Framework Fields
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        string="Followers",
+        "mail.followers", "res_id", string="Followers"
     )
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-    )
-
-    # Business Process Fields
-    creation_date = fields.Datetime(
-        string="Creation Date",
-        default=fields.Datetime.now,
-        tracking=True,
-        help="Date when the container was created",
-    )
-
-    from_location_id = fields.Many2one(
-        "records.location",
-        string="From Location",
-        tracking=True,
-        help="Previous location before current movement",
-    )
-
-    moved_by_id = fields.Many2one(
-        "res.users",
-        string="Moved By",
-        tracking=True,
-        help="User who last moved this container",
-    )
-
-    movement_date = fields.Datetime(
-        string="Movement Date", tracking=True, help="Date of last movement"
-    )
-
-    movement_ids = fields.One2many(
-        "records.container.movement",
-        "container_id",
-        string="Movement History",
-        help="History of container movements",
-    )
-
-    # Additional Business Fields
-    access_frequency = fields.Selection(
-        [
-            ("never", "Never"),
-            ("rare", "Rare (< 1/year)"),
-            ("occasional", "Occasional (1-5/year)"),
-            ("regular", "Regular (> 5/year)"),
-        ],
-        string="Access Frequency",
-        default="occasional",
-        tracking=True,
-    )
-
-    container_utilization = fields.Float(
-        string="Container Utilization (%)",
-        compute="_compute_container_utilization",
-        store=True,
-        digits=(5, 2),
-        help="Percentage of container capacity being used",
-    )
-
-    last_accessed_date = fields.Datetime(
-        string="Last Accessed",
-        tracking=True,
-        help="Date when container was last accessed",
-    )
-
-    last_accessed_by = fields.Many2one(
-        "res.users",
-        string="Last Accessed By",
-        tracking=True,
-        help="User who last accessed this container",
-    )
-
-    priority_level = fields.Selection(
-        [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")],
-        string="Priority Level",
-        default="normal",
-        tracking=True,
-    )
-
-    container_value = fields.Monetary(
-        string="Container Value",
-        currency_field="currency_id",
-        help="Estimated value of container contents",
-    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
-    # MISSING FIELDS FROM SMART GAP ANALYSIS - RECORDS CONTAINER ENHANCEMENT
+    # COMPUTE METHODS
     # ============================================================================
 
-    # Movement and Service Management
-    movement_type = fields.Selection([
-        ('inbound', 'Inbound'),
-        ('outbound', 'Outbound'), 
-        ('internal', 'Internal Transfer'),
-        ('storage', 'Storage Movement'),
-        ('retrieval', 'Retrieval Movement')
-    ], string="Movement Type", tracking=True)
-    
-    priority = fields.Selection([
-        ('low', 'Low'),
-        ('normal', 'Normal'),
-        ('high', 'High'),
-        ('urgent', 'Urgent')
-    ], string="Priority", default='normal', tracking=True)
-    
-    request_date = fields.Date(
-        string="Request Date",
-        tracking=True,
-        help="Date when service was requested"
-    )
-    
-    # Policy and Service Management
-    retention_policy_id = fields.Many2one(
-        "records.retention.policy",
-        string="Retention Policy",
-        tracking=True,
-        help="Records retention policy applied to this container"
-    )
-    
-    service_request_ids = fields.One2many(
-        "portal.request",
-        "container_id",
-        string="Service Requests",
-        help="Service requests related to this container"
-    )
-    
-    # Additional Business Fields
-    total_weight = fields.Float(
-        string="Total Weight",
-        compute="_compute_total_weight_enhanced",
-        store=True,
-        help="Total weight including container and all contents"
-    )
-    
-    volume_utilization = fields.Float(
-        string="Volume Utilization (%)",
-        compute="_compute_volume_utilization",
-        store=True,
-        digits=(5, 2),
-        help="Percentage of volume being utilized"
-    )
-    
-    cost_per_cubic_foot = fields.Monetary(
-        string="Cost per Cubic Foot",
-        currency_field="currency_id",
-        compute="_compute_cost_metrics",
-        store=True,
-        help="Storage cost per cubic foot"
-    )
-    
-    retention_end_date = fields.Date(
-        string="Retention End Date",
-        compute="_compute_retention_dates",
-        store=True,
-        help="Date when retention period ends"
-    )
-
-    # ============ COMPUTE METHODS ============
-
-    @api.depends("length", "width", "height")
-    def _compute_volume(self):
-        """Calculate container volume in cubic inches and cubic feet"""
+    @api.depends("retention_start_date", "retention_period")
+    def _compute_retention_end_date(self):
+        """Compute retention end date"""
         for record in self:
-            if record.length and record.width and record.height:
-                cubic_inches = record.length * record.width * record.height
-                record.volume = cubic_inches
-                record.volume_cubic_feet = (
-                    cubic_inches / 1728.0
-                )  # 1 cubic foot = 1728 cubic inches
-            else:
-                record.volume = 0.0
-                record.volume_cubic_feet = 0.0
-
-    @api.depends("weight_empty", "document_ids", "document_ids.weight")
-    def _compute_current_weight(self):
-        """Calculate current total weight including contents"""
-        for record in self:
-            document_weight = sum(record.document_ids.mapped("weight") or [0.0])
-            record.weight_current = (record.weight_empty or 0.0) + document_weight
-
-    @api.depends("document_ids", "document_capacity")
-    def _compute_document_metrics(self):
-        """Calculate document utilization metrics"""
-        for record in self:
-            current_count = len(record.document_ids)
-            capacity = record.document_capacity or 1
-
-            record.current_document_count = current_count
-            record.available_document_space = max(0, capacity - current_count)
-            record.utilization_percentage = (
-                (current_count / capacity) * 100.0 if capacity > 0 else 0.0
-            )
-
-    @api.depends("movement_history_ids", "movement_history_ids.movement_date")
-    def _compute_last_movement(self):
-        """Calculate last movement date"""
-        for record in self:
-            if record.movement_history_ids:
-                record.last_movement_date = max(
-                    record.movement_history_ids.mapped("movement_date")
+            if record.retention_start_date and record.retention_period:
+                record.retention_end_date = record.retention_start_date + relativedelta(
+                    years=record.retention_period
                 )
-            else:
-                record.last_movement_date = False
-
-    @api.depends("movement_history_ids")
-    def _compute_movement_count(self):
-        """Calculate total number of movements"""
-        for record in self:
-            record.movement_count = len(record.movement_history_ids)
-
-    @api.depends("name", "container_type", "customer_id")
-    def _compute_display_name(self):
-        """Create display name for container"""
-        for record in self:
-            parts = [record.name or ""]
-            if record.container_type:
-                parts.append(
-                    f"({dict(record._fields['container_type'].selection).get(record.container_type, '')})"
-                )
-            if record.customer_id:
-                parts.append(f"- {record.customer_id.name}")
-            record.display_name = " ".join(filter(None, parts))
-
-    @api.depends("length", "width", "height")
-    def _compute_dimensions_display(self):
-        """Format dimensions for display"""
-        for record in self:
-            if record.length and record.width and record.height:
-                record.dimensions_display = (
-                    f'{record.length}"×{record.width}"×{record.height}"'
-                )
-            else:
-                record.dimensions_display = "Not specified"
-
-    @api.depends("location_id", "zone", "aisle", "shelf", "position")
-    def _compute_location_path(self):
-        """Build full location path"""
-        for record in self:
-            path_parts = []
-            if record.location_id:
-                path_parts.append(record.location_id.name)
-            if record.zone:
-                path_parts.append(f"Zone {record.zone}")
-            if record.aisle:
-                path_parts.append(f"Aisle {record.aisle}")
-            if record.shelf:
-                path_parts.append(f"Shelf {record.shelf}")
-            if record.position:
-                path_parts.append(f"Pos {record.position}")
-            record.location_path = " / ".join(path_parts) if path_parts else ""
-
-    @api.depends("length", "width", "height")
-    def _compute_container_size_type(self):
-        """Recognize standard container sizes"""
-        for record in self:
-            if record.length and record.width and record.height:
-                # Standard box: 15"×12"×10"
-                if (
-                    abs(record.length - 15) <= 0.5
-                    and abs(record.width - 12) <= 0.5
-                    and abs(record.height - 10) <= 0.5
-                ):
-                    record.container_size_type = "standard"
-                # Legal/Double-size: 15"×24"×10"
-                elif (
-                    abs(record.length - 15) <= 0.5
-                    and abs(record.width - 24) <= 0.5
-                    and abs(record.height - 10) <= 0.5
-                ):
-                    record.container_size_type = "legal"
-                # Letter size: 12"×15"×10"
-                elif (
-                    abs(record.length - 12) <= 0.5
-                    and abs(record.width - 15) <= 0.5
-                    and abs(record.height - 10) <= 0.5
-                ):
-                    record.container_size_type = "letter"
-                else:
-                    record.container_size_type = "custom"
-            else:
-                record.container_size_type = "custom"
-
-    # ============================================================================
-    # MISSING COMPUTE METHODS FROM SMART GAP ANALYSIS
-    # ============================================================================
-
-    @api.depends("container_type")
-    def _compute_container_type_display(self):
-        """Compute display name for container type"""
-        for record in self:
-            type_mapping = {
-                "standard_box": "📦 Standard Box",
-                "legal_box": "📋 Legal Box",
-                "media_box": "💿 Media Box",
-                "custom": "🔧 Custom Container",
-            }
-            record.container_type_display = type_mapping.get(
-                record.container_type, record.container_type or "Unknown"
-            )
-
-    @api.depends("document_capacity", "current_document_count")
-    def _compute_current_usage(self):
-        """Compute current usage percentage"""
-        for record in self:
-            if record.document_capacity and record.document_capacity > 0:
-                record.current_usage = (
-                    record.current_document_count / record.document_capacity
-                ) * 100
-            else:
-                record.current_usage = 0.0
-
-    # ============================================================================
-    # NEW COMPUTE METHODS FOR ENHANCED FUNCTIONALITY
-    # ============================================================================
-
-    @api.depends("weight_current", "document_ids", "document_ids.weight")
-    def _compute_total_weight_enhanced(self):
-        """Enhanced total weight calculation"""
-        for record in self:
-            container_weight = record.weight_empty or 0.0
-            document_weight = sum(record.document_ids.mapped("weight") or [0.0])
-            record.total_weight = container_weight + document_weight
-
-    @api.depends("volume", "document_ids")  
-    def _compute_volume_utilization(self):
-        """Compute volume utilization percentage"""
-        for record in self:
-            if record.volume and record.volume > 0:
-                # Estimate volume used based on document count and average volume per document
-                avg_doc_volume = 0.1  # cubic inches per document (estimated)
-                used_volume = len(record.document_ids) * avg_doc_volume
-                record.volume_utilization = min(100.0, (used_volume / record.volume) * 100)
-            else:
-                record.volume_utilization = 0.0
-
-    @api.depends("storage_cost_monthly", "volume_cubic_feet")
-    def _compute_cost_metrics(self):
-        """Compute cost per cubic foot"""
-        for record in self:
-            if record.volume_cubic_feet and record.volume_cubic_feet > 0:
-                record.cost_per_cubic_foot = (record.storage_cost_monthly or 0.0) / record.volume_cubic_feet
-            else:
-                record.cost_per_cubic_foot = 0.0
-
-    @api.depends("retention_policy_id", "stored_date")
-    def _compute_retention_dates(self):
-        """Compute retention end date based on policy"""
-        for record in self:
-            if record.retention_policy_id and record.stored_date:
-                years_to_add = record.retention_policy_id.retention_period_years or 0
-                if years_to_add > 0:
-                    record.retention_end_date = fields.Date.add(record.stored_date, years=years_to_add)
-                else:
-                    record.retention_end_date = False
             else:
                 record.retention_end_date = False
 
-    # ============ ONCHANGE METHODS ============
-
-    @api.onchange("container_type")
-    def _onchange_container_type(self):
-        """Set default dimensions based on container type"""
-        if self.container_type == "standard_box":
-            self.length = 15.0
-            self.width = 12.0
-            self.height = 10.0
-            self.document_capacity = 100
-            self.weight_capacity = 35.0
-        elif self.container_type == "legal_box":
-            self.length = 15.0
-            self.width = 24.0
-            self.height = 10.0
-            self.document_capacity = 200
-            self.weight_capacity = 45.0
-        elif self.container_type == "file_folder":
-            self.length = 12.0
-            self.width = 9.0
-            self.height = 1.5
-            self.document_capacity = 50
-            self.weight_capacity = 5.0
-
-    @api.onchange("location_id")
-    def _onchange_location_id(self):
-        """Update previous location when location changes"""
-        if self.location_id and self._origin.location_id != self.location_id:
-            self.previous_location_id = self._origin.location_id
-
-    # ============ CONSTRAINT METHODS ============
-
-    @api.constrains("length", "width", "height")
-    def _check_dimensions(self):
-        """Validate container dimensions are positive"""
+    @api.depends("fill_level")
+    def _compute_is_full(self):
+        """Compute if container is full"""
         for record in self:
-            if record.length and record.length <= 0:
-                raise ValidationError("Container length must be positive")
-            if record.width and record.width <= 0:
-                raise ValidationError("Container width must be positive")
-            if record.height and record.height <= 0:
-                raise ValidationError("Container height must be positive")
+            record.is_full = record.fill_level >= 95.0
 
-    @api.constrains("weight_capacity", "weight_current")
-    def _check_weight_limits(self):
-        """Validate weight constraints"""
+    @api.depends("retention_end_date")
+    def _compute_is_overdue(self):
+        """Compute if container is overdue for action"""
+        today = fields.Date.today()
         for record in self:
-            if record.weight_capacity and record.weight_capacity <= 0:
-                raise ValidationError("Weight capacity must be positive")
-            if record.weight_current > record.weight_capacity:
-                raise ValidationError(
-                    f"Current weight ({record.weight_current} lbs) exceeds capacity ({record.weight_capacity} lbs)"
-                )
+            record.is_overdue = (
+                record.retention_end_date and record.retention_end_date < today
+            )
 
-    @api.constrains("document_capacity", "current_document_count")
-    def _check_document_capacity(self):
-        """Validate document capacity constraints"""
+    @api.depends("document_ids")
+    def _compute_document_count(self):
+        """Compute number of documents in container"""
         for record in self:
-            if record.document_capacity and record.document_capacity <= 0:
-                raise ValidationError("Document capacity must be positive")
+            record.document_count = len(record.document_ids)
 
-    @api.constrains("barcode")
-    def _check_barcode_unique(self):
-        """Ensure barcode uniqueness"""
+    @api.depends("name", "code")
+    def _compute_display_name(self):
+        """Compute display name with code"""
         for record in self:
-            if record.barcode:
-                existing = self.search(
-                    [("barcode", "=", record.barcode), ("id", "!=", record.id)]
-                )
-                if existing:
-                    raise ValidationError(
-                        f"Barcode {record.barcode} already exists for container {existing.name}"
-                    )
-
-    @api.depends("document_ids", "document_capacity")
-    def _compute_container_utilization(self):
-        """Compute container utilization percentage"""
-        for record in self:
-            if record.document_capacity and record.document_capacity > 0:
-                current_count = len(record.document_ids)
-                record.container_utilization = (
-                    current_count / record.document_capacity
-                ) * 100
+            if record.code:
+                record.display_name = f"[{record.code}] {record.name}"
             else:
-                record.container_utilization = 0.0
+                record.display_name = record.name or _("New")
 
-    # ============ ACTION METHODS ============
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
 
-    def action_activate_container(self):
-        """Activate container for use"""
-        for record in self:
-            if record.state != "draft":
-                raise UserError("Can only activate draft containers")
-            record.write(
-                {
-                    "state": "active",
-                    "stored_date": fields.Date.today(),
-                }
-            )
-            record.message_post(body="Container activated and ready for use")
+    def action_mark_full(self):
+        """Mark container as full"""
+        self.ensure_one()
+        self.write({
+            'fill_level': 100.0,
+            'state': 'stored',
+        })
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Container Marked Full"),
+                "message": _("Container has been marked as full."),
+                "type": "success",
+                "sticky": False,
+            },
+        }
 
-    def action_store_container(self):
-        """Mark container as stored in location"""
-        for record in self:
-            if record.state not in ["active", "in_transit"]:
-                raise UserError("Can only store active or in-transit containers")
-            if not record.location_id:
-                raise UserError("Storage location must be specified")
-            record.write(
-                {
-                    "state": "stored",
-                    "stored_date": fields.Date.today(),
-                    "last_access_date": fields.Date.today(),
-                }
-            )
-            record.message_post(body=f"Container stored at {record.location_id.name}")
-
-    def action_mark_in_transit(self):
-        """Mark container as in transit"""
-        for record in self:
-            if record.state not in ["active", "stored"]:
-                raise UserError("Can only transit active or stored containers")
-            record.write({"state": "in_transit"})
-            record.message_post(body="Container marked as in transit")
-
-    def action_retrieve_container(self):
-        """Mark container as retrieved from storage"""
-        for record in self:
-            if record.state != "stored":
-                raise UserError("Can only retrieve stored containers")
-            record.write(
-                {
-                    "state": "retrieved",
-                    "last_access_date": fields.Date.today(),
-                }
-            )
-            record.message_post(body="Container retrieved from storage")
-
-    def action_prepare_destruction(self):
-        """Prepare container for destruction"""
-        for record in self:
-            if record.state not in ["stored", "retrieved"]:
-                raise UserError(
-                    "Can only prepare stored or retrieved containers for destruction"
-                )
-            record.write({"state": "pending_destruction"})
-            record.message_post(body="Container prepared for destruction")
-
-    def action_destroy_container(self):
-        """Mark container as destroyed"""
-        for record in self:
-            if record.state != "pending_destruction":
-                raise UserError("Can only destroy containers pending destruction")
-            record.write(
-                {
-                    "state": "destroyed",
-                    "destruction_date": fields.Date.today(),
-                    "active": False,
-                }
-            )
-            record.message_post(body="Container destroyed")
-
-    def action_apply_security_seal(self):
-        """Apply security seal to container"""
-        for record in self:
-            if not record.security_seal_number:
-                raise UserError("Security seal number must be specified")
-            record.write(
-                {
-                    "security_seal_applied": True,
-                }
-            )
-            record.message_post(
-                body=f"Security seal {record.security_seal_number} applied"
-            )
-
-    def action_remove_security_seal(self):
-        """Remove security seal from container"""
-        for record in self:
-            record.write(
-                {
-                    "security_seal_applied": False,
-                    "security_seal_number": False,
-                }
-            )
-            record.message_post(body="Security seal removed")
-
-    def action_schedule_inspection(self):
-        """Schedule container inspection"""
-        for record in self:
-            # Calculate next inspection date (quarterly)
-            next_date = fields.Date.add(fields.Date.today(), months=3)
-            record.write({"next_inspection_date": next_date})
-            record.message_post(body=f"Inspection scheduled for {next_date}")
-
-    def action_complete_inspection(self):
-        """Complete container inspection"""
-        for record in self:
-            today = fields.Date.today()
-            # Calculate next inspection date (quarterly)
-            next_date = fields.Date.add(today, months=3)
-            record.write(
-                {
-                    "last_inspection_date": today,
-                    "next_inspection_date": next_date,
-                }
-            )
-            record.message_post(body="Container inspection completed")
-
-    def action_update_location(self):
-        """Update container location with movement tracking"""
-        for record in self:
-            if record.location_id:
-                # Create movement history record
-                self.env["records.container.movement"].create(
-                    {
-                        "container_id": record.id,
-                        "from_location_id": (
-                            record.previous_location_id.id
-                            if record.previous_location_id
-                            else False
-                        ),
-                        "to_location_id": record.location_id.id,
-                        "movement_date": fields.Datetime.now(),
-                        "movement_type": "relocation",
-                        "user_id": self.env.user.id,
-                    }
-                )
-                record.message_post(
-                    body=f"Container moved to {record.location_id.name}"
-                )
-
-    def action_generate_barcode(self):
-        """Generate unique barcode for container"""
-        for record in self:
-            if not record.barcode:
-                # Generate barcode based on container type and sequence
-                sequence = self.env["ir.sequence"].next_by_code(
-                    "records.container.barcode"
-                )
-                prefix = {
-                    "standard_box": "SB",
-                    "legal_box": "LB",
-                    "file_folder": "FF",
-                    "binder": "BN",
-                    "archive_box": "AB",
-                    "media_container": "MC",
-                    "custom": "CU",
-                }.get(record.container_type, "CT")
-                record.barcode = f"{prefix}{sequence}"
-                record.message_post(body=f"Barcode generated: {record.barcode}")
-
-    def action_generate_qr_code(self):
-        """Generate QR code for container"""
-        for record in self:
-            if not record.qr_code:
-                # Generate QR code with container information
-                qr_data = f"CONTAINER:{record.name}:{record.customer_id.name if record.customer_id else 'UNKNOWN'}"
-                record.qr_code = qr_data
-                record.message_post(body="QR code generated for mobile scanning")
-
-    def action_view_documents(self):
-        """View documents in this container"""
+    def action_schedule_pickup(self):
+        """Schedule container pickup"""
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Documents in {self.name}",
+            "name": _("Schedule Pickup"),
+            "res_model": "pickup.request",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_container_id": self.id,
+                "default_customer_id": self.customer_id.id,
+                "default_location_id": self.location_id.id,
+            },
+        }
+
+    def action_view_documents(self):
+        """View container documents"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Container Documents"),
             "res_model": "records.document",
             "view_mode": "tree,form",
+            "target": "current",
             "domain": [("container_id", "=", self.id)],
-            "context": {"default_container_id": self.id},
         }
 
     def action_view_movement_history(self):
@@ -1089,162 +404,100 @@ class RecordsContainer(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Movement History - {self.name}",
+            "name": _("Movement History"),
             "res_model": "records.container.movement",
             "view_mode": "tree,form",
+            "target": "current",
             "domain": [("container_id", "=", self.id)],
-            "context": {"default_container_id": self.id},
         }
 
-    def action_create_pickup_request(self):
-        """Create pickup request for container"""
+    def action_create_chain_of_custody(self):
+        """Create chain of custody record"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Chain of Custody"),
+            "res_model": "records.chain.of.custody",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_container_id": self.id,
+                "default_customer_id": self.customer_id.id,
+            },
+        }
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+
+    @api.constrains("fill_level")
+    def _check_fill_level(self):
+        """Validate fill level percentage"""
         for record in self:
-            pickup_request = self.env["pickup.request"].create(
-                {
-                    "name": f"Pickup Request - {record.name}",
-                    "customer_id": record.customer_id.id,
-                    "pickup_date": fields.Date.today(),
-                    "container_ids": [(4, record.id)],
-                    "state": "draft",
-                }
-            )
-            record.pickup_required = False
-            record.message_post(body=f"Pickup request created: {pickup_request.name}")
+            if record.fill_level and (record.fill_level < 0 or record.fill_level > 100):
+                raise ValidationError(_("Fill level must be between 0 and 100."))
 
-    def action_create_delivery_request(self):
-        """Create delivery request for container"""
+    @api.constrains("weight", "max_weight")
+    def _check_weight(self):
+        """Validate weight constraints"""
         for record in self:
-            delivery_request = self.env["delivery.request"].create(
-                {
-                    "name": f"Delivery Request - {record.name}",
-                    "customer_id": record.customer_id.id,
-                    "delivery_date": fields.Date.today(),
-                    "container_ids": [(4, record.id)],
-                    "state": "draft",
-                }
-            )
-            record.delivery_required = False
-            record.message_post(
-                body=f"Delivery request created: {delivery_request.name}"
-            )
-
-    def action_reset_to_draft(self):
-        """Reset container to draft state"""
-        for record in self:
-            if record.state == "destroyed":
-                raise UserError("Cannot reset destroyed containers")
-            record.write(
-                {
-                    "state": "draft",
-                    "stored_date": False,
-                    "destruction_date": False,
-                    "last_access_date": False,
-                }
-            )
-            record.message_post(body="Container reset to draft state")
-
-    # ============ UTILITY METHODS ============
-
-    def get_capacity_status(self):
-        """Get container capacity status"""
-        self.ensure_one()
-        if self.utilization_percentage >= 95:
-            return "full"
-        elif self.utilization_percentage >= 80:
-            return "near_full"
-        elif self.utilization_percentage >= 50:
-            return "half_full"
-        else:
-            return "available"
-
-    def is_overweight(self):
-        """Check if container is overweight"""
-        self.ensure_one()
-        return self.weight_current > self.weight_capacity
-
-    def is_due_for_inspection(self):
-        """Check if container is due for inspection"""
-        self.ensure_one()
-        if not self.next_inspection_date:
-            return True
-        return fields.Date.today() >= self.next_inspection_date
-
-    def get_storage_requirements(self):
-        """Get special storage requirements"""
-        self.ensure_one()
-        requirements = []
-        if self.climate_controlled:
-            requirements.append("Climate Controlled")
-        if self.temperature_sensitive:
-            requirements.append("Temperature Sensitive")
-        if self.humidity_sensitive:
-            requirements.append("Humidity Sensitive")
-        if self.fireproof_required:
-            requirements.append("Fireproof Storage")
-        if self.access_restricted:
-            requirements.append("Restricted Access")
-        return requirements
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Override create to handle automatic field population"""
-        # Process each record in the batch
-        for vals in vals_list:
-            # Auto-generate barcode if not provided
-            if not vals.get("barcode") and vals.get("container_type"):
-                sequence = (
-                    self.env["ir.sequence"].next_by_code("records.container.barcode")
-                    or "001"
-                )
-                prefix = {
-                    "standard_box": "SB",
-                    "legal_box": "LB",
-                    "file_folder": "FF",
-                    "binder": "BN",
-                    "archive_box": "AB",
-                    "media_container": "MC",
-                    "custom": "CU",
-                }.get(vals["container_type"], "CT")
-                vals["barcode"] = f"{prefix}{sequence}"
-
-            # Set default dimensions based on container type
-            if vals.get("container_type") and not any(
-                k in vals for k in ["length", "width", "height"]
+            if record.weight and record.weight < 0:
+                raise ValidationError(_("Weight cannot be negative."))
+            if record.max_weight and record.max_weight < 0:
+                raise ValidationError(_("Maximum weight cannot be negative."))
+            if (
+                record.weight 
+                and record.max_weight 
+                and record.weight > record.max_weight
             ):
-                defaults = {
-                    "standard_box": {
-                        "length": 15.0,
-                        "width": 12.0,
-                        "height": 10.0,
-                        "document_capacity": 100,
-                    },
-                    "legal_box": {
-                        "length": 15.0,
-                        "width": 24.0,
-                        "height": 10.0,
-                        "document_capacity": 200,
-                    },
-                    "file_folder": {
-                        "length": 12.0,
-                        "width": 9.0,
-                        "height": 1.5,
-                        "document_capacity": 50,
-                    },
-                }
-                if vals["container_type"] in defaults:
-                    vals.update(defaults[vals["container_type"]])
+                raise ValidationError(_("Weight cannot exceed maximum weight."))
 
-        return super().create(vals_list)
+    @api.constrains("retention_period")
+    def _check_retention_period(self):
+        """Validate retention period"""
+        for record in self:
+            if record.retention_period and record.retention_period < 0:
+                raise ValidationError(_("Retention period cannot be negative."))
+
+    @api.constrains("length", "width", "height")
+    def _check_dimensions(self):
+        """Validate container dimensions"""
+        for record in self:
+            if record.length and record.length <= 0:
+                raise ValidationError(_("Length must be positive."))
+            if record.width and record.width <= 0:
+                raise ValidationError(_("Width must be positive."))
+            if record.height and record.height <= 0:
+                raise ValidationError(_("Height must be positive."))
+
+    # ============================================================================
+    # LIFECYCLE METHODS
+    # ============================================================================
+
+    @api.model
+    def create(self, vals):
+        """Override create to set defaults"""
+        if not vals.get("name"):
+            vals["name"] = self.env["ir.sequence"].next_by_code("records.container") or _("New")
+        if not vals.get("creation_date"):
+            vals["creation_date"] = fields.Date.today()
+        return super().create(vals)
 
     def write(self, vals):
-        """Override write to handle location changes and tracking"""
-        # Track location changes
-        if "location_id" in vals:
+        """Override write to track location changes"""
+        if 'location_id' in vals:
             for record in self:
-                if record.location_id and record.location_id.id != vals["location_id"]:
-                    vals["previous_location_id"] = record.location_id.id
-
-        # Update timestamp
-        vals["updated_date"] = fields.Datetime.now()
-
+                if record.location_id.id != vals['location_id']:
+                    record.message_post(
+                        body=_("Container moved from %s to %s") % (
+                            record.location_id.name or _("Unknown"),
+                            self.env['records.location'].browse(vals['location_id']).name or _("Unknown")
+                        )
+                    )
         return super().write(vals)
+
+    def unlink(self):
+        """Override unlink to prevent deletion of containers with documents"""
+        if any(record.document_count > 0 for record in self):
+            raise UserError(_("Cannot delete containers that contain documents."))
+        return super().unlink()
