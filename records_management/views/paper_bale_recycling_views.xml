@@ -12,8 +12,6 @@
                 <field name="bale_number"/>
                 <field name="paper_grade"/>
                 <field name="weight_lbs" sum="Total Weight (lbs)"/>
-                <field name="weight_kg" sum="Total Weight (kg)"/>
-                <field name="production_date"/>
                 <field name="weighed_by"/>
                 <field name="load_number"/>
                 <field name="status" widget="badge" decoration-success="status=='paid'" decoration-info="status=='shipped'" decoration-warning="status=='assigned_load'"/>
@@ -61,7 +59,7 @@
                         </group>
                         <group name="weight_info" string="Weight Information">
                             <field name="weight_lbs"/>
-                            <field name="weight_kg" readonly="1"/>
+                            <field name="weight_net"/>
                             <field name="scale_reading" readonly="mobile_entry"/>
                             <field name="mobile_entry" widget="boolean_toggle"/>
                         </group>

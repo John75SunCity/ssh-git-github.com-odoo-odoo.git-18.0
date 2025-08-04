@@ -143,6 +143,48 @@ class PortalRequest(models.Model):
     estimated_hours = fields.Float(string="Estimated Hours", digits=(8, 2))
     materials_required = fields.Text(string="Materials Required")
 
+    # ============================================================================
+    # MISSING FIELDS FROM SMART GAP ANALYSIS - PORTAL REQUEST ENHANCEMENT
+    # ============================================================================
+
+    # Communication & Approval Fields
+    communication_date = fields.Datetime(
+        string="Communication Date",
+        help="Date of last communication regarding this request",
+    )
+    communication_type = fields.Selection(
+        [
+            ("email", "Email"),
+            ("phone", "Phone Call"),
+            ("portal", "Portal Message"),
+            ("meeting", "Meeting"),
+            ("sms", "SMS"),
+        ],
+        string="Communication Type",
+        help="Type of communication used",
+    )
+
+    # Simplified Approval Fields (to match view references)
+    approver = fields.Many2one(
+        "res.users", string="Approver", help="Primary approver for this request"
+    )
+    approval_level = fields.Selection(
+        [
+            ("none", "No Approval Required"),
+            ("basic", "Basic Approval"),
+            ("advanced", "Advanced Approval"),
+            ("management", "Management Approval"),
+            ("executive", "Executive Approval"),
+        ],
+        string="Approval Level",
+        help="Level of approval required",
+    )
+
+    # Comments and Notes
+    comments = fields.Text(
+        string="Comments", help="Additional comments and notes about the request"
+    )
+
     # Security and Compliance
     confidentiality_level = fields.Selection(
         [

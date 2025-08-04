@@ -350,12 +350,7 @@ class ProductTemplate(models.Model):
     )
 
     # === RELATIONAL FIELDS ===
-    pricing_rule_ids = fields.One2many(
-        "product.pricing.rule", "product_tmpl_id", string="Pricing Rules"
-    )
-    sales_analytics_ids = fields.One2many(
-        "product.sales.analytics", "product_tmpl_id", string="Sales Analytics"
-    )
+    # (Removed non-existent model references to fix KeyError)
 
     # ============================================================================
     # COMPUTE METHODS

@@ -45,6 +45,34 @@ class Load(models.Model):
     active = fields.Boolean(string="Active", default=True)
     notes = fields.Text(string="Internal Notes")
 
+    # ============================================================================
+    # MISSING FIELDS FROM SMART GAP ANALYSIS - LOAD ENHANCEMENT
+    # ============================================================================
+
+    # Documentation and Media
+    image = fields.Binary(
+        string="Load Image", help="Image of the load for documentation purposes"
+    )
+
+    # Financial and Billing
+    invoice_number = fields.Char(
+        string="Invoice Number", help="Invoice number for this load transaction"
+    )
+    payment_terms = fields.Char(
+        string="Payment Terms", help="Payment terms for this load"
+    )
+
+    # Operational Requirements
+    loading_dock_requirements = fields.Text(
+        string="Loading Dock Requirements",
+        help="Special requirements for loading dock operations",
+    )
+
+    # Quality Control Reports
+    moisture_test_report = fields.Text(
+        string="Moisture Test Report", help="Results and details of moisture testing"
+    )
+
     # Computed Fields
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True

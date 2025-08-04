@@ -47,6 +47,35 @@ class BinKeyManagement(models.Model):
     date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now)
     date_modified = fields.Datetime(string="Modified Date")
 
+    # ============================================================================
+    # MISSING FIELDS FROM SMART GAP ANALYSIS - BIN KEY MANAGEMENT ENHANCEMENT
+    # ============================================================================
+
+    # Key Identification & Tracking (Modified for non-unique keys)
+    key_number = fields.Char(
+        string="Key Reference",
+        index=True,
+        help="Optional reference for the bin key (not unique since all keys are the same)",
+    )
+
+    # Partner and Location Management
+    partner_company = fields.Char(
+        string="Partner Company", help="Name of the company that issued/owns the key"
+    )
+    issue_location = fields.Char(
+        string="Issue Location", help="Location where the key was issued"
+    )
+
+    # Date Management
+    issue_date = fields.Date(
+        string="Issue Date",
+        default=fields.Date.today,
+        help="Date when the key was issued",
+    )
+    expected_return_date = fields.Date(
+        string="Expected Return Date", help="Expected date for key return"
+    )
+
     # Control Fields
     active = fields.Boolean(string="Active", default=True)
     notes = fields.Text(string="Internal Notes")
@@ -189,42 +218,68 @@ class BinKeyManagement(models.Model):
                 "default_notes": _("Replacement key for lost key: %s") % self.name,
             },
         }
-    # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)
-    bin_number = fields.Char(string='Bin Number')
-    access_level = fields.Selection([('full', 'Full Access'), ('limited', 'Limited'), ('restricted', 'Restricted')], string='Access Level')
-    expiration_date = fields.Date(string='Expiration Date')
-    last_check_date = fields.Date(string='Last Check Date')
-    authorized_by = fields.Many2one('res.users', string='Authorized By')
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
-    # Bin Key Management Fields
-    billable = fields.Boolean('Billable', default=True)
-    bin_location = fields.Char('Bin Location')
-    bin_locations = fields.Text('Multiple Bin Locations')
-    charge_amount = fields.Monetary('Charge Amount', currency_field='currency_id')
-    emergency_contact = fields.Many2one('res.partner', 'Emergency Contact')
-    access_authorization_level = fields.Selection([('basic', 'Basic'), ('elevated', 'Elevated'), ('admin', 'Admin')], default='basic')
-    access_log_retention_days = fields.Integer('Access Log Retention (Days)', default=365)
-    bin_access_frequency = fields.Selection([('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')], default='weekly')
-    bin_security_level = fields.Selection([('standard', 'Standard'), ('high', 'High'), ('maximum', 'Maximum')], default='standard')
-    currency_id = fields.Many2one('res.currency', 'Currency', default=lambda self: self.env.company.currency_id)
-    customer_key_count = fields.Integer('Customer Key Count', default=1)
-    key_audit_trail_enabled = fields.Boolean('Key Audit Trail Enabled', default=True)
-    key_duplication_allowed = fields.Boolean('Key Duplication Allowed', default=False)
-    key_expiration_date = fields.Date('Key Expiration Date')
-    key_holder_verification_required = fields.Boolean('Key Holder Verification Required', default=True)
-    key_replacement_fee = fields.Monetary('Key Replacement Fee', currency_field='currency_id')
-    key_restriction_notes = fields.Text('Key Restriction Notes')
-    key_security_deposit = fields.Monetary('Key Security Deposit', currency_field='currency_id')
-    lock_change_required = fields.Boolean('Lock Change Required', default=False)
-    master_key_override = fields.Boolean('Master Key Override Available', default=False)
-    multi_user_access_allowed = fields.Boolean('Multi-user Access Allowed', default=False)
-    # Bin Key Management Fields
 
+    # === BUSINESS CRITICAL FIELDS ===
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    bin_number = fields.Char(string="Bin Number")
+    access_level = fields.Selection(
+        [("full", "Full Access"), ("limited", "Limited"), ("restricted", "Restricted")],
+        string="Access Level",
+    )
+    expiration_date = fields.Date(string="Expiration Date")
+    last_check_date = fields.Date(string="Last Check Date")
+    authorized_by = fields.Many2one("res.users", string="Authorized By")
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
+    # Bin Key Management Fields
+    billable = fields.Boolean("Billable", default=True)
+    bin_location = fields.Char("Bin Location")
+    bin_locations = fields.Text("Multiple Bin Locations")
+    charge_amount = fields.Monetary("Charge Amount", currency_field="currency_id")
+    emergency_contact = fields.Many2one("res.partner", "Emergency Contact")
+    access_authorization_level = fields.Selection(
+        [("basic", "Basic"), ("elevated", "Elevated"), ("admin", "Admin")],
+        default="basic",
+    )
+    access_log_retention_days = fields.Integer(
+        "Access Log Retention (Days)", default=365
+    )
+    bin_access_frequency = fields.Selection(
+        [("daily", "Daily"), ("weekly", "Weekly"), ("monthly", "Monthly")],
+        default="weekly",
+    )
+    bin_security_level = fields.Selection(
+        [("standard", "Standard"), ("high", "High"), ("maximum", "Maximum")],
+        default="standard",
+    )
+    currency_id = fields.Many2one(
+        "res.currency", "Currency", default=lambda self: self.env.company.currency_id
+    )
+    customer_key_count = fields.Integer("Customer Key Count", default=1)
+    key_audit_trail_enabled = fields.Boolean("Key Audit Trail Enabled", default=True)
+    key_duplication_allowed = fields.Boolean("Key Duplication Allowed", default=False)
+    key_expiration_date = fields.Date("Key Expiration Date")
+    key_holder_verification_required = fields.Boolean(
+        "Key Holder Verification Required", default=True
+    )
+    key_replacement_fee = fields.Monetary(
+        "Key Replacement Fee", currency_field="currency_id"
+    )
+    key_restriction_notes = fields.Text("Key Restriction Notes")
+    key_security_deposit = fields.Monetary(
+        "Key Security Deposit", currency_field="currency_id"
+    )
+    lock_change_required = fields.Boolean("Lock Change Required", default=False)
+    master_key_override = fields.Boolean("Master Key Override Available", default=False)
+    multi_user_access_allowed = fields.Boolean(
+        "Multi-user Access Allowed", default=False
+    )
+    # Bin Key Management Fields
 
     def action_replace_key(self):
         """Create replacement key and update records."""
@@ -348,4 +403,5 @@ class BinKeyManagement(models.Model):
         """Override create to set default values."""
         if not vals.get("name"):
             vals["name"] = _("New Record")
+        return super().create(vals)
         return super().create(vals)

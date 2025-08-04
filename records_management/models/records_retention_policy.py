@@ -116,6 +116,58 @@ class RecordsRetentionPolicy(models.Model):
         help="Whether legal review is required before destruction",
     )
 
+    # ============================================================================
+    # MISSING FIELDS FROM SMART GAP ANALYSIS - RETENTION POLICY ENHANCEMENT
+    # ============================================================================
+
+    # Policy Management & Compliance
+    effective_date = fields.Date(
+        string="Effective Date",
+        tracking=True,
+        help="Date when this policy becomes effective",
+    )
+    legal_basis = fields.Text(
+        string="Legal Basis",
+        help="Legal requirements, citations, and regulatory basis for this policy",
+    )
+
+    # Version Control
+    is_current_version = fields.Boolean(
+        string="Is Current Version",
+        default=True,
+        help="Indicates if this is the current active version of the policy",
+    )
+    policy_version = fields.Char(
+        string="Policy Version",
+        help="Version number or identifier for this policy revision",
+    )
+
+    # Exception Management
+    exception_count = fields.Integer(
+        string="Exception Count",
+        compute="_compute_exception_count",
+        store=True,
+        help="Number of exceptions to this policy",
+    )
+
+    # Review and Risk Management
+    next_mandatory_review = fields.Date(
+        string="Next Mandatory Review",
+        tracking=True,
+        help="Date when this policy must be reviewed next",
+    )
+    risk_level = fields.Selection(
+        [
+            ("low", "Low Risk"),
+            ("medium", "Medium Risk"),
+            ("high", "High Risk"),
+            ("critical", "Critical Risk"),
+        ],
+        string="Risk Level",
+        default="medium",
+        help="Risk level associated with this retention policy",
+    )
+
     # Document Lifecycle Management
     interim_review_required = fields.Boolean(
         string="Interim Review Required",
@@ -279,6 +331,26 @@ class RecordsRetentionPolicy(models.Model):
             else:
                 record.compliance_score = 100.0
                 record.policy_violations = 0
+
+    # ============================================================================
+    # MISSING COMPUTE METHODS FROM SMART GAP ANALYSIS
+    # ============================================================================
+
+    @api.depends("name")  # Will be enhanced with actual exception model when available
+    def _compute_exception_count(self):
+        """Compute the number of exceptions to this retention policy"""
+        for record in self:
+            # For now, compute based on existing documents with special status
+            # This can be enhanced when policy exception model is implemented
+            documents = self.env["records.document"].search(
+                [
+                    ("retention_policy_id", "=", record.id),
+                    "|",
+                    ("legal_hold", "=", True),
+                    ("destruction_delayed", "=", True),
+                ]
+            )
+            record.exception_count = len(documents)
 
     def write(self, vals):
         """Override write to update modification date."""

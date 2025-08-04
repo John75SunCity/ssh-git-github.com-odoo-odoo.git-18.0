@@ -44,6 +44,37 @@ class PaperLoadShipment(models.Model):
     active = fields.Boolean(string="Active", default=True)
     notes = fields.Text(string="Internal Notes")
 
+    # ============================================================================
+    # MISSING FIELDS FROM SMART GAP ANALYSIS - SHIPMENT ENHANCEMENT
+    # ============================================================================
+
+    # Driver and Signature Management
+    driver_signature_date = fields.Datetime(
+        string="Driver Signature Date",
+        help="Date and time when driver signed the delivery",
+    )
+
+    # GPS Location Tracking
+    gps_pickup_location = fields.Char(
+        string="GPS Pickup Location", help="GPS coordinates of pickup location"
+    )
+    gps_delivery_location = fields.Char(
+        string="GPS Delivery Location", help="GPS coordinates of delivery location"
+    )
+
+    # Invoice and Financial
+    invoice_amount = fields.Monetary(
+        string="Invoice Amount",
+        currency_field="currency_id",
+        help="Total invoice amount for this shipment",
+    )
+    invoice_date = fields.Date(string="Invoice Date", help="Date of invoice generation")
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+
     # Computed Fields
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
