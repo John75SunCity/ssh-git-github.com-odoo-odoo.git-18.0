@@ -178,6 +178,149 @@ class CustomerBillingProfile(models.Model):
         string="Auto Send Statements", default=False, tracking=True
     )
 
+    # === MISSING CRITICAL BUSINESS FIELDS ===
+    billing_currency_id = fields.Many2one(
+        "res.currency",
+        string="Billing Currency",
+        default=lambda self: self.env.company.currency_id,
+        help="Currency used for billing this customer",
+    )
+    credit_limit = fields.Monetary(
+        string="Credit Limit",
+        currency_field="billing_currency_id",
+        help="Credit limit for this customer",
+    )
+    current_balance = fields.Monetary(
+        string="Current Balance",
+        currency_field="billing_currency_id",
+        compute="_compute_current_balance",
+        store=True,
+        help="Current outstanding balance",
+    )
+    last_payment_date = fields.Date(
+        string="Last Payment Date", help="Date of the last payment received"
+    )
+    billing_contact_email = fields.Char(
+        string="Billing Contact Email", help="Primary email for billing communications"
+    )
+
+    # === ENHANCED BILLING CONFIGURATION ===
+    billing_method = fields.Selection(
+        [
+            ("standard", "Standard Monthly"),
+            ("quarterly", "Quarterly"),
+            ("annual", "Annual"),
+            ("on_demand", "On Demand"),
+            ("prepaid", "Prepaid Credits"),
+        ],
+        string="Billing Method",
+        default="standard",
+        help="Billing frequency method",
+    )
+
+    invoice_delivery_method = fields.Selection(
+        [
+            ("email", "Email"),
+            ("postal", "Postal Mail"),
+            ("portal", "Customer Portal"),
+            ("both", "Email and Portal"),
+        ],
+        string="Invoice Delivery Method",
+        default="email",
+        help="How invoices are delivered to customer",
+    )
+
+    late_fee_enabled = fields.Boolean(
+        string="Late Fee Enabled",
+        default=False,
+        help="Enable late fees for overdue invoices",
+    )
+    late_fee_percentage = fields.Float(
+        string="Late Fee Percentage",
+        digits=(5, 2),
+        help="Percentage late fee on overdue amounts",
+    )
+    late_fee_grace_days = fields.Integer(
+        string="Late Fee Grace Days",
+        default=5,
+        help="Grace period before late fees apply",
+    )
+
+    # === BILLING ANALYTICS ===
+    average_monthly_revenue = fields.Monetary(
+        string="Average Monthly Revenue",
+        currency_field="billing_currency_id",
+        compute="_compute_billing_analytics",
+        store=True,
+        help="Average monthly revenue from this customer",
+    )
+    total_billed_ytd = fields.Monetary(
+        string="Total Billed YTD",
+        currency_field="billing_currency_id",
+        compute="_compute_billing_analytics",
+        store=True,
+        help="Total amount billed year to date",
+    )
+    payment_reliability_score = fields.Float(
+        string="Payment Reliability Score",
+        digits=(3, 1),
+        compute="_compute_payment_reliability",
+        store=True,
+        help="Score from 0-10 based on payment history",
+    )
+
+    # === CUSTOMER SERVICE INTEGRATION ===
+    preferred_contact_method = fields.Selection(
+        [
+            ("email", "Email"),
+            ("phone", "Phone"),
+            ("portal", "Customer Portal"),
+            ("fax", "Fax"),
+        ],
+        string="Preferred Contact Method",
+        default="email",
+        help="Customer preference for billing communications",
+    )
+
+    special_billing_instructions = fields.Text(
+        string="Special Billing Instructions",
+        help="Any special instructions for billing this customer",
+    )
+    customer_po_required = fields.Boolean(
+        string="Customer PO Required",
+        default=False,
+        help="Require customer purchase order for billing",
+    )
+    default_customer_po = fields.Char(
+        string="Default Customer PO", help="Default PO number to use if required"
+    )
+
+    # === COMPLIANCE AND AUDIT ===
+    billing_compliance_notes = fields.Text(
+        string="Billing Compliance Notes",
+        help="Notes related to billing compliance requirements",
+    )
+    audit_trail_enabled = fields.Boolean(
+        string="Audit Trail Enabled",
+        default=True,
+        help="Enable detailed audit trail for billing activities",
+    )
+    last_audit_date = fields.Date(
+        string="Last Audit Date", help="Date of last billing audit"
+    )
+    retention_policy_billing = fields.Selection(
+        [
+            ("1year", "1 Year"),
+            ("3years", "3 Years"),
+            ("5years", "5 Years"),
+            ("7years", "7 Years"),
+            ("permanent", "Permanent"),
+        ],
+        string="Billing Records Retention",
+        default="7years",
+        help="Retention policy for billing records",
+    )
+
     # ==========================================
     # PAYMENT TERMS
     # ==========================================
