@@ -13,6 +13,9 @@ class RecordsChainOfCustody(models.Model):
     name = fields.Char(string="Name", required=True, tracking=True)
     description = fields.Text(string="Description")
     customer_id = fields.Many2one("res.partner", string="Customer")
+    document_id = fields.Many2one(
+        "records.document", string="Document", ondelete="cascade"
+    )
     custody_event = fields.Char(string="Custody Event")
     key = fields.Char(string="Key")
     value = fields.Char(string="Value")
