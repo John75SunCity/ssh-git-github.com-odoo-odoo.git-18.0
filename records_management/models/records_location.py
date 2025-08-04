@@ -363,6 +363,83 @@ class RecordsLocation(models.Model):
     latitude = fields.Float(string="Latitude", digits=(10, 7))
     longitude = fields.Float(string="Longitude", digits=(10, 7))
 
+    # === MISSING FIELDS FOR RECORDS.LOCATION ===
+
+    # Framework Integration Fields (required by mail.thread)
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+
+    # Space Management Fields
+    available_spaces = fields.Integer(
+        string="Available Spaces",
+        compute="_compute_space_metrics",
+        store=True,
+        help="Number of available storage spaces",
+    )
+
+    available_utilization = fields.Float(
+        string="Available Utilization (%)",
+        compute="_compute_space_metrics",
+        store=True,
+        digits=(5, 2),
+        help="Percentage of available space utilization",
+    )
+
+    box_count = fields.Integer(
+        string="Box Count",
+        compute="_compute_container_metrics",
+        store=True,
+        help="Total number of boxes stored in this location",
+    )
+
+    capacity = fields.Float(
+        string="Storage Capacity", help="Maximum storage capacity of the location"
+    )
+
+    current_utilization = fields.Float(
+        string="Current Utilization (%)",
+        compute="_compute_utilization_metrics",
+        store=True,
+        digits=(5, 2),
+        help="Current space utilization percentage",
+    )
+
+    # Additional Location Management
+    location_manager = fields.Many2one(
+        "res.users",
+        string="Location Manager",
+        help="Person responsible for managing this location",
+    )
+
+    last_inspection_date = fields.Date(
+        string="Last Inspection Date",
+        tracking=True,
+        help="Date of last location inspection",
+    )
+
+    next_inspection_date = fields.Date(
+        string="Next Inspection Date",
+        compute="_compute_next_inspection_date",
+        store=True,
+        help="Computed next inspection date",
+    )
+
     # Display and Computed Fields
     display_name = fields.Char(
         string="Display Name",

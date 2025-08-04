@@ -48,6 +48,78 @@ class PaperLoadShipment(models.Model):
     # MISSING FIELDS FROM SMART GAP ANALYSIS - SHIPMENT ENHANCEMENT
     # ============================================================================
 
+    # Manifest and Documentation
+    manifest_date = fields.Date(
+        string="Manifest Date",
+        default=fields.Date.today,
+        tracking=True,
+        help="Date of shipping manifest",
+    )
+
+    # Mobile Integration
+    mobile_entry = fields.Boolean(
+        string="Mobile Entry", default=False, help="Entry created via mobile device"
+    )
+
+    # Paper Classification
+    paper_grade = fields.Selection(
+        [
+            ("white", "White Paper"),
+            ("mixed", "Mixed Paper"),
+            ("cardboard", "Cardboard"),
+            ("newsprint", "Newsprint"),
+            ("magazines", "Magazines"),
+        ],
+        string="Paper Grade",
+        tracking=True,
+    )
+
+    # Financial Fields
+    payment_amount = fields.Monetary(
+        string="Payment Amount", currency_field="company_currency_id", tracking=True
+    )
+
+    payment_due_date = fields.Date(string="Payment Due Date", tracking=True)
+
+    # Shipping Details
+    shipping_weight = fields.Float(
+        string="Shipping Weight (lbs)", digits=(10, 2), tracking=True
+    )
+
+    container_count = fields.Integer(
+        string="Container Count", help="Number of containers in shipment"
+    )
+
+    # GPS and Location
+    pickup_gps_coordinates = fields.Char(
+        string="Pickup GPS Coordinates", help="GPS location of pickup point"
+    )
+
+    delivery_gps_coordinates = fields.Char(
+        string="Delivery GPS Coordinates", help="GPS location of delivery point"
+    )
+
+    # Quality and Processing
+    quality_check_date = fields.Date(string="Quality Check Date", tracking=True)
+
+    moisture_content = fields.Float(
+        string="Moisture Content (%)",
+        digits=(5, 2),
+        help="Moisture percentage of shipment",
+    )
+
+    # Transport Information
+    carrier_name = fields.Char(string="Carrier Name", help="Name of shipping carrier")
+
+    tracking_number = fields.Char(
+        string="Tracking Number", help="Carrier tracking number"
+    )
+
+    # Processing Status
+    processing_complete = fields.Boolean(
+        string="Processing Complete", default=False, tracking=True
+    )
+
     # Driver and Signature Management
     driver_signature_date = fields.Datetime(
         string="Driver Signature Date",
