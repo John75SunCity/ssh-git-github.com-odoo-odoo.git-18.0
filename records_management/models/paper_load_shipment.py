@@ -250,7 +250,7 @@ class PaperLoadShipment(models.Model):
     # ============================================================================
     # ODOO FRAMEWORK INTEGRATION
     # ============================================================================
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         """Override create to set shipment number"""
         if 'shipment_number' not in vals or not vals['shipment_number']:

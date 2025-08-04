@@ -250,7 +250,7 @@ class FieldLabelCustomization(models.Model):
     # ============================================================================
     # ODOO FRAMEWORK INTEGRATION
     # ============================================================================
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         """Override create for initialization"""
         if 'date_modified' not in vals:

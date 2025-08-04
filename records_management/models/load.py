@@ -616,7 +616,7 @@ class Load(models.Model):
     # LIFECYCLE METHODS
     # ============================================================================
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
         """Override create to set defaults"""
         if isinstance(vals_list, dict):

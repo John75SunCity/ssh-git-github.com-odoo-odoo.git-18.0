@@ -474,7 +474,7 @@ class RecordsRetentionPolicy(models.Model):
     # LIFECYCLE METHODS
     # ============================================================================
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         """Override create to set defaults"""
         if not vals.get("name"):

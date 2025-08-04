@@ -249,7 +249,7 @@ class FsmTask(models.Model):
     # ============================================================================
     # ODOO FRAMEWORK INTEGRATION
     # ============================================================================
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         """Override create for automatic task numbering"""
         if "name" not in vals or vals["name"] == "/":

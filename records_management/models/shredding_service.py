@@ -513,7 +513,7 @@ class ShreddingService(models.Model):
     # LIFECYCLE METHODS
     # ============================================================================
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         """Override create to set defaults and generate sequence"""
         if not vals.get("name"):
