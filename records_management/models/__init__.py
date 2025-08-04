@@ -140,7 +140,8 @@ from . import records_access_log
 
 # Core billing system
 from . import billing
-from . import billing_models
+
+# from . import billing_models  # REMOVED: Duplicate model causing KeyError
 from . import billing_automation
 from . import department_billing
 
