@@ -130,7 +130,9 @@ class ApprovalHistory(models.Model):
         for vals in vals_list:
             if not vals.get("name"):
                 approval_type = vals.get("approval_type", "other")
-                sequence = self.env["ir.sequence"].next_by_code("approval.history") or "/"
+                sequence = (
+                    self.env["ir.sequence"].next_by_code("approval.history") or "/"
+                )
                 vals["name"] = f"{approval_type.upper()}-{sequence}"
         return super().create(vals_list)
 
@@ -139,13 +141,15 @@ class ApprovalHistory(models.Model):
         self.ensure_one()
         if self.approval_status != "pending":
             raise UserError(_("Only pending approvals can be approved."))
-        
-        self.write({
-            "approval_status": "approved",
-            "approved_by": self.env.user.id,
-            "completed_date": fields.Datetime.now(),
-        })
-        
+
+        self.write(
+            {
+                "approval_status": "approved",
+                "approved_by": self.env.user.id,
+                "completed_date": fields.Datetime.now(),
+            }
+        )
+
         self.message_post(
             body=_("Approval request approved by %s") % self.env.user.name,
             message_type="notification",
@@ -156,13 +160,15 @@ class ApprovalHistory(models.Model):
         self.ensure_one()
         if self.approval_status != "pending":
             raise UserError(_("Only pending approvals can be rejected."))
-        
-        self.write({
-            "approval_status": "rejected",
-            "approved_by": self.env.user.id,
-            "completed_date": fields.Datetime.now(),
-        })
-        
+
+        self.write(
+            {
+                "approval_status": "rejected",
+                "approved_by": self.env.user.id,
+                "completed_date": fields.Datetime.now(),
+            }
+        )
+
         self.message_post(
             body=_("Approval request rejected by %s") % self.env.user.name,
             message_type="notification",
@@ -173,12 +179,14 @@ class ApprovalHistory(models.Model):
         self.ensure_one()
         if self.approval_status in ["approved", "rejected"]:
             raise UserError(_("Cannot cancel completed approvals."))
-        
-        self.write({
-            "approval_status": "cancelled",
-            "completed_date": fields.Datetime.now(),
-        })
-        
+
+        self.write(
+            {
+                "approval_status": "cancelled",
+                "completed_date": fields.Datetime.now(),
+            }
+        )
+
         self.message_post(
             body=_("Approval request cancelled"),
             message_type="notification",

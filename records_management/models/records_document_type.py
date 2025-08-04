@@ -351,12 +351,7 @@ class RecordsDocumentType(models.Model):
     )
 
     # Template and Format Configuration
-    document_template_ids = fields.One2many(
-        "document.template",
-        "document_type_id",
-        string="Document Templates",
-        help="Available templates for this document type",
-    )
+    # (Removed document_template_ids - model doesn't exist)
     required_metadata_fields = fields.Text(
         string="Required Metadata Fields",
         help="JSON list of required metadata fields for documents of this type",
