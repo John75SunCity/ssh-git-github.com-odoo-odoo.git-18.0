@@ -21,6 +21,11 @@ class RecordsBillingLine(models.Model):
         required=True,
         ondelete="cascade",
     )
+    contact_id = fields.Many2one(
+        "records.department.billing.contact",
+        string="Department Contact",
+        help="Department contact associated with this billing line"
+    )
     date = fields.Date(string="Billing Date", required=True, default=fields.Date.today)
     description = fields.Char(string="Description", required=True)
     quantity = fields.Float(string="Quantity", digits=(10, 2), default=1.0)

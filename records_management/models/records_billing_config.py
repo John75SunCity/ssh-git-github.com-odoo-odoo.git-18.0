@@ -2162,6 +2162,75 @@ class RecordsBillingConfig(models.Model):
             else:
                 record.average_billing_amount = 0
 
+    @api.depends("invoice_ids", "billing_line_ids")
+    def _compute_average_monthly_billing(self):
+        """Compute average monthly billing amount"""
+        for record in self:
+            if record.billing_line_ids:
+                # Calculate from billing lines
+                total_amount = sum(record.billing_line_ids.mapped("amount"))
+                record.average_monthly_billing = (
+                    total_amount / len(record.billing_line_ids)
+                    if record.billing_line_ids
+                    else 0.0
+                )
+            elif record.invoice_ids:
+                # Fallback to invoice data
+                monthly_invoices = record.invoice_ids.filtered(
+                    lambda inv: inv.invoice_date 
+                    and inv.invoice_date >= fields.Date.today().replace(day=1)
+                )
+                record.average_monthly_billing = (
+                    sum(monthly_invoices.mapped("amount_total")) 
+                    if monthly_invoices else 0.0
+                )
+            else:
+                record.average_monthly_billing = record.base_rate or 0.0
+
+    @api.depends("invoice_ids", "billing_frequency")
+    def _compute_monthly_revenue(self):
+        """Compute monthly revenue based on invoices and billing frequency"""
+        for record in self:
+            if record.invoice_ids:
+                total_revenue = sum(record.invoice_ids.mapped("amount_total"))
+                
+                # Normalize to monthly based on billing frequency
+                if record.billing_frequency == "monthly":
+                    record.monthly_revenue = total_revenue
+                elif record.billing_frequency == "quarterly":
+                    record.monthly_revenue = total_revenue / 3
+                elif record.billing_frequency == "semi_annually":
+                    record.monthly_revenue = total_revenue / 6
+                elif record.billing_frequency == "annually":
+                    record.monthly_revenue = total_revenue / 12
+                else:
+                    # Default to monthly if frequency not set
+                    record.monthly_revenue = total_revenue
+            else:
+                record.monthly_revenue = 0.0
+
+    @api.depends("invoice_ids", "billing_frequency")
+    def _compute_quarterly_revenue(self):
+        """Compute quarterly revenue based on invoices and billing frequency"""
+        for record in self:
+            if record.invoice_ids:
+                total_revenue = sum(record.invoice_ids.mapped("amount_total"))
+                
+                # Normalize to quarterly based on billing frequency
+                if record.billing_frequency == "monthly":
+                    record.quarterly_revenue = total_revenue * 3
+                elif record.billing_frequency == "quarterly":
+                    record.quarterly_revenue = total_revenue
+                elif record.billing_frequency == "semi_annually":
+                    record.quarterly_revenue = total_revenue / 2
+                elif record.billing_frequency == "annually":
+                    record.quarterly_revenue = total_revenue / 4
+                else:
+                    # Default quarterly calculation from monthly
+                    record.quarterly_revenue = total_revenue * 3
+            else:
+                record.quarterly_revenue = 0.0
+
     def action_generate_invoice(self):
         """Generate invoice."""
         self.ensure_one()

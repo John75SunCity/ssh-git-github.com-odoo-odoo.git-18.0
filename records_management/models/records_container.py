@@ -881,54 +881,56 @@ class RecordsContainer(models.Model):
             requirements.append("Restricted Access")
         return requirements
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to handle automatic field population"""
-        # Auto-generate barcode if not provided
-        if not vals.get("barcode") and vals.get("container_type"):
-            sequence = (
-                self.env["ir.sequence"].next_by_code("records.container.barcode")
-                or "001"
-            )
-            prefix = {
-                "standard_box": "SB",
-                "legal_box": "LB",
-                "file_folder": "FF",
-                "binder": "BN",
-                "archive_box": "AB",
-                "media_container": "MC",
-                "custom": "CU",
-            }.get(vals["container_type"], "CT")
-            vals["barcode"] = f"{prefix}{sequence}"
+        # Process each record in the batch
+        for vals in vals_list:
+            # Auto-generate barcode if not provided
+            if not vals.get("barcode") and vals.get("container_type"):
+                sequence = (
+                    self.env["ir.sequence"].next_by_code("records.container.barcode")
+                    or "001"
+                )
+                prefix = {
+                    "standard_box": "SB",
+                    "legal_box": "LB",
+                    "file_folder": "FF",
+                    "binder": "BN",
+                    "archive_box": "AB",
+                    "media_container": "MC",
+                    "custom": "CU",
+                }.get(vals["container_type"], "CT")
+                vals["barcode"] = f"{prefix}{sequence}"
 
-        # Set default dimensions based on container type
-        if vals.get("container_type") and not any(
-            k in vals for k in ["length", "width", "height"]
-        ):
-            defaults = {
-                "standard_box": {
-                    "length": 15.0,
-                    "width": 12.0,
-                    "height": 10.0,
-                    "document_capacity": 100,
-                },
-                "legal_box": {
-                    "length": 15.0,
-                    "width": 24.0,
-                    "height": 10.0,
-                    "document_capacity": 200,
-                },
-                "file_folder": {
-                    "length": 12.0,
-                    "width": 9.0,
-                    "height": 1.5,
-                    "document_capacity": 50,
-                },
-            }
-            if vals["container_type"] in defaults:
-                vals.update(defaults[vals["container_type"]])
+            # Set default dimensions based on container type
+            if vals.get("container_type") and not any(
+                k in vals for k in ["length", "width", "height"]
+            ):
+                defaults = {
+                    "standard_box": {
+                        "length": 15.0,
+                        "width": 12.0,
+                        "height": 10.0,
+                        "document_capacity": 100,
+                    },
+                    "legal_box": {
+                        "length": 15.0,
+                        "width": 24.0,
+                        "height": 10.0,
+                        "document_capacity": 200,
+                    },
+                    "file_folder": {
+                        "length": 12.0,
+                        "width": 9.0,
+                        "height": 1.5,
+                        "document_capacity": 50,
+                    },
+                }
+                if vals["container_type"] in defaults:
+                    vals.update(defaults[vals["container_type"]])
 
-        return super().create(vals)
+        return super().create(vals_list)
 
     def write(self, vals):
         """Override write to handle location changes and tracking"""

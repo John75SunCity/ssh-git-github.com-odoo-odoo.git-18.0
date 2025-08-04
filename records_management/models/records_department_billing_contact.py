@@ -67,7 +67,7 @@ class RecordsDepartmentBillingContact(models.Model):
 
     # === ADDITIONAL MISSING FIELDS ===
     department_charge_ids = fields.One2many(
-        "records.department.charge", "contact_id", string="Department Charges"
+        "records.billing.line", "contact_id", string="Department Charges"
     )
 
     # === MORE MISSING FIELDS FROM VIEWS ===
