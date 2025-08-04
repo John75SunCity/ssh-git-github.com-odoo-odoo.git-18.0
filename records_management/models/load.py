@@ -6,965 +6,640 @@ from odoo.exceptions import UserError, ValidationError
 
 class Load(models.Model):
     _name = "load"
-    _description = "Load"
+    _description = "Paper Bale Load Management"
     _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name desc"
+    _order = "date_created desc, name"
     _rec_name = "name"
 
-    # Basic Information
-    name = fields.Char(string="Name", required=True, tracking=True, index=True)
-    description = fields.Text(string="Description")
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+
+    name = fields.Char(string="Load Number", required=True, tracking=True, index=True)
+    description = fields.Text(string="Load Description")
     sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True, tracking=True)
+
+    # Framework Required Fields
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Load Manager",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
 
     # State Management
     state = fields.Selection(
         [
             ("draft", "Draft"),
-            ("active", "Active"),
-            ("inactive", "Inactive"),
-            ("archived", "Archived"),
+            ("preparing", "Preparing"),
+            ("loading", "Loading"),
+            ("ready", "Ready to Ship"),
+            ("shipped", "Shipped"),
+            ("delivered", "Delivered"),
+            ("sold", "Sold"),
+            ("cancelled", "Cancelled"),
         ],
         string="Status",
         default="draft",
         tracking=True,
     )
 
-    # Company and User
-    company_id = fields.Many2one(
-        "res.company", string="Company", default=lambda self: self.env.company
-    )
-    user_id = fields.Many2one(
-        "res.users", string="Assigned User", default=lambda self: self.env.user
-    )
-
-    # Timestamps
-    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now)
-    date_modified = fields.Datetime(string="Modified Date")
-
-    # Control Fields
-    active = fields.Boolean(string="Active", default=True)
-    notes = fields.Text(string="Internal Notes")
-
     # ============================================================================
-    # MISSING FIELDS FROM SMART GAP ANALYSIS - LOAD ENHANCEMENT
+    # LOAD DETAILS & SPECIFICATIONS
     # ============================================================================
 
-    # Photo and Media Management
-    photo_ids = fields.One2many(
-        "ir.attachment",
-        "res_id",
-        string="Photo Attachments",
-        domain=lambda self: [
-            ("res_model", "=", self._name),
-            ("mimetype", "like", "image/%"),
-        ],
-    )
-
-    photo_type = fields.Selection(
+    # Load Information
+    load_type = fields.Selection(
         [
-            ("before_loading", "Before Loading"),
-            ("during_loading", "During Loading"),
-            ("after_loading", "After Loading"),
-            ("quality_check", "Quality Check"),
-            ("documentation", "Documentation"),
+            ("standard", "Standard Load"),
+            ("oversized", "Oversized Load"),
+            ("mixed", "Mixed Load"),
+            ("priority", "Priority Load"),
         ],
-        string="Photo Type",
-        help="Type of photos taken for this load",
+        string="Load Type",
+        default="standard",
+        required=True,
     )
 
-    # Production and Quality Management
-    production_date = fields.Date(
-        string="Production Date",
-        tracking=True,
-        help="Date when the load was produced or prepared",
-    )
-
-    quality_certificate = fields.Binary(
-        string="Quality Certificate", help="Quality certificate document for the load"
-    )
-
-    quality_grade = fields.Selection(
-        [
-            ("a_grade", "A Grade"),
-            ("b_grade", "B Grade"),
-            ("c_grade", "C Grade"),
-            ("premium", "Premium"),
-            ("standard", "Standard"),
-            ("reject", "Reject"),
-        ],
-        string="Quality Grade",
-        tracking=True,
-    )
-
-    # Documentation and Media
-    image = fields.Binary(
-        string="Load Image", help="Image of the load for documentation purposes"
-    )
-
-    # Financial and Billing
-    invoice_number = fields.Char(
-        string="Invoice Number", help="Invoice number for this load transaction"
-    )
-    payment_terms = fields.Char(
-        string="Payment Terms", help="Payment terms for this load"
-    )
-
-    # Operational Requirements
-    loading_dock_requirements = fields.Text(
-        string="Loading Dock Requirements",
-        help="Special requirements for loading dock operations",
-    )
-
-    # Quality Control Reports
-    moisture_test_report = fields.Text(
-        string="Moisture Test Report", help="Results and details of moisture testing"
-    )
-
-    # Additional Missing Fields
-    load_capacity = fields.Float(
-        string="Load Capacity (tons)", help="Maximum capacity of the load"
-    )
-
-    transport_method = fields.Selection(
-        [
-            ("truck", "Truck"),
-            ("rail", "Rail"),
-            ("ship", "Ship"),
-            ("air", "Air"),
-            ("combined", "Combined"),
-        ],
-        string="Transport Method",
-        default="truck",
-    )
-
-    environmental_conditions = fields.Text(
-        string="Environmental Conditions",
-        help="Weather and environmental conditions during loading",
-    )
-
-    safety_checklist_complete = fields.Boolean(
-        string="Safety Checklist Complete",
-        default=False,
-        help="Indicates if safety checklist has been completed",
-    )
-
-    load_supervisor = fields.Many2one(
-        "res.users",
-        string="Load Supervisor",
-        help="Person supervising the loading operation",
-    )
-
-    estimated_delivery_date = fields.Datetime(
-        string="Estimated Delivery Date", help="Estimated date and time of delivery"
-    )
-
-    # Computed Fields
-    display_name = fields.Char(
-        string="Display Name", compute="_compute_display_name", store=True
-    )
-
-    # === PAPER BALE LOAD MANAGEMENT FIELDS ===
-
-    # Load Identification & Tracking
-    load_date = fields.Date(
-        string="Load Date", default=fields.Date.today, tracking=True
-    )
-    load_number = fields.Char(string="Load Number", copy=False, tracking=True)
-    buyer_company = fields.Char(string="Buyer Company", tracking=True)
-    sale_contract_number = fields.Char(string="Sale Contract Number", tracking=True)
-
-    # Weight and Quantity Measurements
-    total_weight = fields.Float(
-        string="Total Weight (lbs)", compute="_compute_load_totals", store=True
-    )
-    total_weight_kg = fields.Float(
-        string="Total Weight (kg)", compute="_compute_load_totals", store=True
-    )
-    bale_count = fields.Integer(
-        string="Bale Count", compute="_compute_load_totals", store=True
-    )
+    # Bale Information
+    total_bales = fields.Integer(string="Total Bales", default=0)
+    total_weight = fields.Float(string="Total Weight (lbs)", digits=(10, 2))
     average_bale_weight = fields.Float(
-        string="Average Bale Weight", compute="_compute_load_totals", store=True
-    )
-    weight_ticket_count = fields.Integer(
-        string="Weight Tickets", compute="_compute_weight_tickets", store=True
+        string="Average Bale Weight",
+        compute="_compute_load_metrics",
+        store=True,
+        digits=(8, 2),
     )
 
-    # Quality Control
-    load_quality_grade = fields.Selection(
+    # Quality Information
+    quality_grade = fields.Selection(
         [
             ("premium", "Premium Grade"),
             ("standard", "Standard Grade"),
-            ("economy", "Economy Grade"),
-            ("reject", "Reject"),
+            ("mixed", "Mixed Grade"),
+            ("rejected", "Rejected"),
         ],
-        string="Load Quality Grade",
-        tracking=True,
-    )
-    moisture_content = fields.Float(string="Moisture Content (%)", tracking=True)
-    contamination_level = fields.Selection(
-        [
-            ("none", "No Contamination"),
-            ("minimal", "Minimal (<2%)"),
-            ("acceptable", "Acceptable (2-5%)"),
-            ("excessive", "Excessive (>5%)"),
-        ],
-        string="Contamination Level",
-        tracking=True,
+        string="Quality Grade",
+        default="standard",
     )
 
-    # Market and Pricing
-    market_price_per_ton = fields.Monetary(
-        string="Market Price per Ton", currency_field="currency_id", tracking=True
+    quality_certificate = fields.Binary(string="Quality Certificate")
+    quality_notes = fields.Text(string="Quality Notes")
+
+    # ============================================================================
+    # SCHEDULING & LOGISTICS
+    # ============================================================================
+
+    # Date Management
+    date_created = fields.Datetime(
+        string="Created Date",
+        default=fields.Datetime.now,
+        readonly=True,
     )
-    estimated_revenue = fields.Monetary(
-        string="Estimated Revenue",
-        compute="_compute_revenue",
+    date_scheduled = fields.Datetime(string="Scheduled Date", tracking=True)
+    date_loaded = fields.Datetime(string="Loading Date")
+    date_shipped = fields.Datetime(string="Shipping Date")
+    date_delivered = fields.Datetime(string="Delivery Date")
+    production_date = fields.Date(string="Production Date")
+
+    # Loading Information
+    loading_start_time = fields.Datetime(string="Loading Start Time")
+    loading_end_time = fields.Datetime(string="Loading End Time")
+    loading_duration = fields.Float(
+        string="Loading Duration (Hours)",
+        compute="_compute_loading_metrics",
         store=True,
-        currency_field="currency_id",
+        digits=(5, 2),
     )
-    actual_sale_price = fields.Monetary(
-        string="Actual Sale Price", currency_field="currency_id", tracking=True
-    )
-    price_variance = fields.Monetary(
-        string="Price Variance",
-        compute="_compute_price_variance",
+
+    # Delivery Information
+    estimated_delivery_date = fields.Datetime(string="Estimated Delivery")
+    actual_delivery_date = fields.Datetime(string="Actual Delivery")
+    delivery_variance = fields.Float(
+        string="Delivery Variance (Hours)",
+        compute="_compute_delivery_metrics",
         store=True,
-        currency_field="currency_id",
+        digits=(5, 2),
     )
+
+    # ============================================================================
+    # TRANSPORTATION & LOGISTICS
+    # ============================================================================
+
+    # Vehicle Information
+    truck_number = fields.Char(string="Truck Number")
+    trailer_number = fields.Char(string="Trailer Number")
+    driver_name = fields.Char(string="Driver Name")
+    driver_contact = fields.Char(string="Driver Contact")
+
+    # Loading Dock Requirements
+    loading_dock_requirements = fields.Text(string="Loading Dock Requirements")
+    special_handling_required = fields.Boolean(string="Special Handling Required")
+    equipment_needed = fields.Text(string="Equipment Needed")
+
+    # Route Information
+    destination_address = fields.Text(string="Destination Address")
+    route_notes = fields.Text(string="Route Notes")
+    estimated_distance = fields.Float(string="Distance (Miles)", digits=(8, 2))
+
+    # ============================================================================
+    # FINANCIAL INFORMATION
+    # ============================================================================
+
+    # Currency Configuration
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
     )
 
-    # Shipping and Logistics
-    shipping_date = fields.Date(string="Shipping Date", tracking=True)
-    estimated_delivery = fields.Datetime(string="Estimated Delivery", tracking=True)
-    actual_delivery = fields.Datetime(string="Actual Delivery", tracking=True)
-    delivery_variance_hours = fields.Float(
-        string="Delivery Variance (Hours)",
-        compute="_compute_delivery_variance",
+    # Pricing Information
+    market_price = fields.Monetary(
+        string="Market Price per Ton",
+        currency_field="currency_id",
+    )
+    contracted_price = fields.Monetary(
+        string="Contracted Price per Ton",
+        currency_field="currency_id",
+    )
+    price_variance = fields.Monetary(
+        string="Price Variance",
+        compute="_compute_financial_metrics",
         store=True,
+        currency_field="currency_id",
     )
 
-    # Special Requirements
-    priority = fields.Selection(
-        [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")],
-        string="Priority",
-        default="normal",
-        tracking=True,
-    )
-    temperature_controlled = fields.Boolean(
-        string="Temperature Controlled", tracking=True
-    )
-    hazmat_required = fields.Boolean(string="Hazmat Required", tracking=True)
-    special_instructions = fields.Text(string="Special Instructions")
-
-    # Load State Management (Enhanced)
-
-    # Relationships
-    bale_ids = fields.One2many("paper.bale", "load_id", string="Paper Bales")
-    load_shipment_ids = fields.One2many(
-        "paper.load.shipment", "load_id", string="Load Shipments"
-    )
-
-    # Documentation and Compliance
-    manifest_number = fields.Char(string="Manifest Number", tracking=True)
-    bill_of_lading = fields.Char(string="Bill of Lading", tracking=True)
-    chain_of_custody_verified = fields.Boolean(
-        string="Chain of Custody Verified", tracking=True
-    )
-    environmental_compliance = fields.Boolean(
-        string="Environmental Compliance", default=True, tracking=True
-    )
-
-    # Customer and Market Information
-    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
-    market_location = fields.Char(string="Market Location", tracking=True)
-    transportation_method = fields.Selection(
-        [
-            ("truck", "Truck"),
-            ("rail", "Rail"),
-            ("barge", "Barge"),
-            ("container", "Container"),
-        ],
-        string="Transportation Method",
-        tracking=True,
-    )
-
-    # Load Performance Metrics
-    loading_start_time = fields.Datetime(string="Loading Start Time")
-    loading_end_time = fields.Datetime(string="Loading End Time")
-    loading_duration_hours = fields.Float(
-        string="Loading Duration (Hours)",
-        compute="_compute_loading_duration",
+    # Revenue Calculation
+    gross_revenue = fields.Monetary(
+        string="Gross Revenue",
+        compute="_compute_financial_metrics",
         store=True,
+        currency_field="currency_id",
     )
-    efficiency_rating = fields.Selection(
-        [
-            ("excellent", "Excellent"),
-            ("good", "Good"),
-            ("fair", "Fair"),
-            ("poor", "Poor"),
-        ],
-        string="Efficiency Rating",
-        compute="_compute_efficiency_rating",
-        store=True,
+    transportation_cost = fields.Monetary(
+        string="Transportation Cost",
+        currency_field="currency_id",
     )
-
-    # Revenue and Financial Tracking
-    commission_rate = fields.Float(string="Commission Rate (%)", default=5.0)
-    commission_amount = fields.Monetary(
-        string="Commission Amount",
-        compute="_compute_commission",
+    commission = fields.Monetary(
+        string="Commission",
+        compute="_compute_financial_metrics",
         store=True,
         currency_field="currency_id",
     )
     net_revenue = fields.Monetary(
         string="Net Revenue",
-        compute="_compute_net_revenue",
+        compute="_compute_financial_metrics",
         store=True,
         currency_field="currency_id",
     )
+
+    # Profitability
     profit_margin = fields.Float(
-        string="Profit Margin (%)", compute="_compute_profit_margin", store=True
+        string="Profit Margin (%)",
+        compute="_compute_financial_metrics",
+        store=True,
+        digits=(5, 2),
     )
 
-    # Quality and Environmental Impact
-    recycled_paper_percentage = fields.Float(
-        string="Recycled Content (%)", default=100.0
-    )
-    carbon_footprint_reduction = fields.Float(
-        string="Carbon Footprint Reduction (tons CO2)",
-        compute="_compute_environmental_impact",
+    # ============================================================================
+    # OPERATIONAL METRICS
+    # ============================================================================
+
+    # Efficiency Metrics
+    efficiency_rating = fields.Selection(
+        [
+            ("poor", "Poor"),
+            ("fair", "Fair"),
+            ("good", "Good"),
+            ("excellent", "Excellent"),
+        ],
+        string="Efficiency Rating",
+        compute="_compute_efficiency_metrics",
         store=True,
     )
-    trees_saved = fields.Float(
-        string="Trees Saved", compute="_compute_environmental_impact", store=True
+
+    load_utilization = fields.Float(
+        string="Load Utilization (%)",
+        compute="_compute_efficiency_metrics",
+        store=True,
+        digits=(5, 2),
     )
-    water_saved = fields.Float(
-        string="Water Saved (gallons)",
+
+    delivery_efficiency = fields.Float(
+        string="Delivery Efficiency (%)",
+        compute="_compute_efficiency_metrics",
+        store=True,
+        digits=(5, 2),
+    )
+
+    # Environmental Impact
+    fuel_consumption = fields.Float(string="Fuel Consumption (Gallons)", digits=(8, 2))
+    co2_emissions = fields.Float(
+        string="CO2 Emissions (lbs)",
         compute="_compute_environmental_impact",
         store=True,
+        digits=(10, 2),
     )
 
-    # Operational Fields
-    driver_id = fields.Many2one("hr.employee", string="Driver", tracking=True)
-    truck_id = fields.Many2one("fleet.vehicle", string="Truck", tracking=True)
-    trailer_id = fields.Many2one("fleet.vehicle", string="Trailer", tracking=True)
-    route_id = fields.Many2one("stock.route", string="Delivery Route")
+    # ============================================================================
+    # DOCUMENTATION & ATTACHMENTS
+    # ============================================================================
 
-    # Author and Audit Trail
-    author_id = fields.Many2one(
-        "res.users", string="Author", default=lambda self: self.env.user, tracking=True
+    # Documentation
+    weight_tickets = fields.Integer(
+        string="Weight Tickets Count",
+        compute="_compute_documentation",
+        store=True,
     )
-    last_updated_by = fields.Many2one(
-        "res.users", string="Last Updated By", tracking=True
+    bill_of_lading = fields.Binary(string="Bill of Lading")
+    delivery_receipt = fields.Binary(string="Delivery Receipt")
+    invoice_number = fields.Char(string="Invoice Number")
+
+    # Photos and Images
+    image = fields.Binary(string="Load Image")
+    photo_ids = fields.One2many(
+        "ir.attachment",
+        "res_id",
+        string="Load Photos",
+        domain=[("res_model", "=", "load")],
     )
-    revision_number = fields.Integer(string="Revision Number", default=1)
-    approval_required = fields.Boolean(string="Approval Required", default=False)
-    # === BUSINESS CRITICAL FIELDS ===
+
+    # Notes and Comments
+    notes = fields.Text(string="Internal Notes")
+    customer_notes = fields.Text(string="Customer Notes")
+
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+
+    # Related Records
+    bale_ids = fields.One2many(
+        "paper.bale",
+        "load_id",
+        string="Paper Bales",
+    )
+    customer_id = fields.Many2one("res.partner", string="Customer")
+    vendor_id = fields.Many2one("res.partner", string="Vendor/Supplier")
+
+    # Billing Information
+    invoice_id = fields.Many2one("account.move", string="Customer Invoice")
+    vendor_bill_id = fields.Many2one("account.move", string="Vendor Bill")
+
+    # Mail Thread Framework Fields
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
-    updated_date = fields.Datetime(string="Updated Date")
 
     # ============================================================================
-    # MISSING FIELDS FROM SMART GAP ANALYSIS - LOAD ENHANCEMENT
+    # COMPUTE METHODS
     # ============================================================================
 
-    # Route and Logistics Management
-    route_code = fields.Char(
-        string="Route Code", tracking=True, help="Code identifying the delivery route"
-    )
-
-    # Contract and Sales Management
-    sales_contract_number = fields.Char(
-        string="Sales Contract Number",
-        tracking=True,
-        help="Reference number for the sales contract",
-    )
-
-    # Delivery Instructions
-    special_delivery_instructions = fields.Text(
-        string="Special Delivery Instructions",
-        help="Special instructions for delivery personnel",
-    )
-
-    # Communication and Documentation
-    subject = fields.Char(
-        string="Load Subject", help="Brief description or subject line for this load"
-    )
-
-    # Transportation Management
-    transport_company = fields.Many2one(
-        "res.partner",
-        string="Transport Company",
-        tracking=True,
-        help="Company responsible for transportation",
-    )
-
-    # Additional Business Fields
-    load_category = fields.Selection(
-        [
-            ("standard", "Standard Load"),
-            ("express", "Express Load"),
-            ("bulk", "Bulk Load"),
-            ("special", "Special Handling"),
-        ],
-        string="Load Category",
-        default="standard",
-        tracking=True,
-    )
-
-    delivery_confirmation = fields.Boolean(
-        string="Delivery Confirmation",
-        default=False,
-        help="Whether delivery has been confirmed",
-    )
-
-    load_status = fields.Selection(
-        [
-            ("preparing", "Preparing"),
-            ("loading", "Loading"),
-            ("in_transit", "In Transit"),
-            ("delivered", "Delivered"),
-            ("cancelled", "Cancelled"),
-        ],
-        string="Load Status",
-        default="preparing",
-        tracking=True,
-    )
-
-    estimated_arrival = fields.Datetime(
-        string="Estimated Arrival", help="Estimated arrival time at destination"
-    )
-
-    delivery_notes = fields.Text(
-        string="Delivery Notes", help="Notes about the delivery process"
-    )
-
-    @api.depends("name")
-    def _compute_display_name(self):
-        """Compute display name."""
+    @api.depends("total_bales", "total_weight")
+    def _compute_load_metrics(self):
+        """Compute load-related metrics"""
         for record in self:
-            record.display_name = record.name or _("New")
-
-    @api.depends("bale_ids", "bale_ids.weight_lbs")
-    def _compute_load_totals(self):
-        """Compute load totals from associated bales."""
-        for record in self:
-            if record.bale_ids:
-                record.total_weight = sum(
-                    bale.weight_lbs for bale in record.bale_ids if bale.weight_lbs
-                )
-                record.total_weight_kg = (
-                    record.total_weight * 0.453592
-                )  # lbs to kg conversion
-                record.bale_count = len(record.bale_ids)
-                record.average_bale_weight = (
-                    record.total_weight / record.bale_count if record.bale_count else 0
-                )
+            if record.total_bales and record.total_weight:
+                record.average_bale_weight = record.total_weight / record.total_bales
             else:
-                record.total_weight = 0
-                record.total_weight_kg = 0
-                record.bale_count = 0
-                record.average_bale_weight = 0
-
-    @api.depends("total_weight", "market_price_per_ton")
-    def _compute_revenue(self):
-        """Compute estimated revenue based on weight and market price."""
-        for record in self:
-            if record.total_weight and record.market_price_per_ton:
-                tons = record.total_weight / 2000  # Convert lbs to tons
-                record.estimated_revenue = tons * record.market_price_per_ton
-            else:
-                record.estimated_revenue = 0
-
-    @api.depends("estimated_revenue", "actual_sale_price")
-    def _compute_price_variance(self):
-        """Compute variance between estimated and actual sale price."""
-        for record in self:
-            if record.actual_sale_price and record.estimated_revenue:
-                record.price_variance = (
-                    record.actual_sale_price - record.estimated_revenue
-                )
-            else:
-                record.price_variance = 0
-
-    @api.depends("estimated_delivery", "actual_delivery")
-    def _compute_delivery_variance(self):
-        """Compute delivery time variance in hours."""
-        for record in self:
-            if record.estimated_delivery and record.actual_delivery:
-                delta = record.actual_delivery - record.estimated_delivery
-                record.delivery_variance_hours = delta.total_seconds() / 3600
-            else:
-                record.delivery_variance_hours = 0
+                record.average_bale_weight = 0.0
 
     @api.depends("loading_start_time", "loading_end_time")
-    def _compute_loading_duration(self):
-        """Compute loading duration in hours."""
+    def _compute_loading_metrics(self):
+        """Compute loading duration and efficiency"""
         for record in self:
             if record.loading_start_time and record.loading_end_time:
                 delta = record.loading_end_time - record.loading_start_time
-                record.loading_duration_hours = delta.total_seconds() / 3600
+                record.loading_duration = delta.total_seconds() / 3600.0
             else:
-                record.loading_duration_hours = 0
+                record.loading_duration = 0.0
 
-    @api.depends("loading_duration_hours", "bale_count")
-    def _compute_efficiency_rating(self):
-        """Compute efficiency rating based on loading time per bale."""
+    @api.depends("estimated_delivery_date", "actual_delivery_date")
+    def _compute_delivery_metrics(self):
+        """Compute delivery variance"""
         for record in self:
-            if record.bale_count and record.loading_duration_hours:
-                time_per_bale = record.loading_duration_hours / record.bale_count
-                if time_per_bale <= 0.25:  # 15 minutes per bale
-                    record.efficiency_rating = "excellent"
-                elif time_per_bale <= 0.5:  # 30 minutes per bale
-                    record.efficiency_rating = "good"
-                elif time_per_bale <= 1.0:  # 1 hour per bale
-                    record.efficiency_rating = "fair"
-                else:
-                    record.efficiency_rating = "poor"
+            if record.estimated_delivery_date and record.actual_delivery_date:
+                delta = record.actual_delivery_date - record.estimated_delivery_date
+                record.delivery_variance = delta.total_seconds() / 3600.0
             else:
+                record.delivery_variance = 0.0
+
+    @api.depends("total_weight", "market_price", "contracted_price", "transportation_cost")
+    def _compute_financial_metrics(self):
+        """Compute financial metrics and profitability"""
+        for record in self:
+            weight_tons = record.total_weight / 2000.0 if record.total_weight else 0.0
+            
+            # Price variance
+            if record.market_price and record.contracted_price:
+                record.price_variance = (record.contracted_price - record.market_price) * weight_tons
+            else:
+                record.price_variance = 0.0
+            
+            # Gross revenue
+            if record.contracted_price and weight_tons:
+                record.gross_revenue = record.contracted_price * weight_tons
+            else:
+                record.gross_revenue = 0.0
+            
+            # Commission (5% of gross revenue)
+            record.commission = record.gross_revenue * 0.05
+            
+            # Net revenue
+            record.net_revenue = record.gross_revenue - (record.transportation_cost or 0.0) - record.commission
+            
+            # Profit margin
+            if record.gross_revenue:
+                record.profit_margin = (record.net_revenue / record.gross_revenue) * 100
+            else:
+                record.profit_margin = 0.0
+
+    @api.depends("loading_duration", "delivery_variance", "total_weight")
+    def _compute_efficiency_metrics(self):
+        """Compute efficiency ratings and utilization"""
+        for record in self:
+            # Load utilization (based on standard capacity)
+            standard_capacity = 50000  # 50,000 lbs standard capacity
+            if record.total_weight and standard_capacity:
+                record.load_utilization = min((record.total_weight / standard_capacity) * 100, 100)
+            else:
+                record.load_utilization = 0.0
+            
+            # Delivery efficiency (on-time performance)
+            if record.delivery_variance is not False:
+                if abs(record.delivery_variance) <= 2:  # Within 2 hours
+                    record.delivery_efficiency = 100.0
+                elif abs(record.delivery_variance) <= 8:  # Within 8 hours
+                    record.delivery_efficiency = 75.0
+                elif abs(record.delivery_variance) <= 24:  # Within 24 hours
+                    record.delivery_efficiency = 50.0
+                else:
+                    record.delivery_efficiency = 25.0
+            else:
+                record.delivery_efficiency = 0.0
+            
+            # Overall efficiency rating
+            avg_efficiency = (record.load_utilization + record.delivery_efficiency) / 2
+            if avg_efficiency >= 90:
+                record.efficiency_rating = "excellent"
+            elif avg_efficiency >= 75:
+                record.efficiency_rating = "good"
+            elif avg_efficiency >= 50:
                 record.efficiency_rating = "fair"
-
-    @api.depends("estimated_revenue", "commission_rate")
-    def _compute_commission(self):
-        """Compute commission amount."""
-        for record in self:
-            if record.estimated_revenue and record.commission_rate:
-                record.commission_amount = record.estimated_revenue * (
-                    record.commission_rate / 100
-                )
             else:
-                record.commission_amount = 0
+                record.efficiency_rating = "poor"
 
-    @api.depends("estimated_revenue", "commission_amount")
-    def _compute_net_revenue(self):
-        """Compute net revenue after commission."""
-        for record in self:
-            record.net_revenue = record.estimated_revenue - record.commission_amount
-
-    @api.depends("net_revenue", "estimated_revenue")
-    def _compute_profit_margin(self):
-        """Compute profit margin percentage."""
-        for record in self:
-            if record.estimated_revenue:
-                record.profit_margin = (
-                    record.net_revenue / record.estimated_revenue
-                ) * 100
-            else:
-                record.profit_margin = 0
-
-    @api.depends("total_weight")
+    @api.depends("fuel_consumption")
     def _compute_environmental_impact(self):
-        """Compute environmental impact metrics."""
+        """Compute environmental impact metrics"""
         for record in self:
-            if record.total_weight:
-                tons = record.total_weight / 2000
-                # Standard recycling impact calculations
-                record.carbon_footprint_reduction = (
-                    tons * 3.3
-                )  # tons CO2 saved per ton recycled
-                record.trees_saved = tons * 17  # trees saved per ton
-                record.water_saved = tons * 7000  # gallons saved per ton
+            # CO2 emissions: approximately 22 lbs CO2 per gallon of diesel
+            if record.fuel_consumption:
+                record.co2_emissions = record.fuel_consumption * 22.0
             else:
-                record.carbon_footprint_reduction = 0
-                record.trees_saved = 0
-                record.water_saved = 0
+                record.co2_emissions = 0.0
 
-    def _compute_weight_tickets(self):
-        """Compute count of weight tickets."""
+    @api.depends("bale_ids")
+    def _compute_documentation(self):
+        """Compute documentation counts"""
         for record in self:
-            # Count related stock pickings or weight documents
-            tickets = self.env["stock.picking"].search_count(
-                [("origin", "ilike", record.name)]
-            )
-            record.weight_ticket_count = tickets
+            # Count weight tickets from related bales or attachments
+            record.weight_tickets = len(record.bale_ids.filtered(lambda b: b.weight_ticket))
 
-    def write(self, vals):
-        """Override write to update modification date and track revisions."""
-        vals["date_modified"] = fields.Datetime.now()
-
-    # Load Management Fields
-    activity_exception_decoration = fields.Selection(
-        [("warning", "Warning"), ("danger", "Danger")], "Activity Exception Decoration"
-    )
-    activity_state = fields.Selection(
-        [("overdue", "Overdue"), ("today", "Today"), ("planned", "Planned")],
-        "Activity State",
-    )
-    message_type = fields.Selection(
-        [("email", "Email"), ("comment", "Comment"), ("notification", "Notification")],
-        "Message Type",
-    )
-    bale_number = fields.Char("Bale Number")
-    capacity_utilization = fields.Float("Capacity Utilization %", default=0.0)
-    contamination_notes = fields.Text("Contamination Notes")
-    contamination_report = fields.Text("Contamination Report")
-    date = fields.Date("Load Date")
-    delivery_confirmation_required = fields.Boolean(
-        "Delivery Confirmation Required", default=True
-    )
-    delivery_instructions = fields.Text("Delivery Instructions")
-    driver_certification_verified = fields.Boolean(
-        "Driver Certification Verified", default=False
-    )
-    estimated_arrival_time = fields.Datetime("Estimated Arrival Time")
-    load_configuration = fields.Text("Load Configuration")
-    load_optimization_algorithm = fields.Selection(
-        [("weight", "Weight Based"), ("volume", "Volume Based"), ("mixed", "Mixed")],
-        default="mixed",
-    )
-    load_securing_method = fields.Text("Load Securing Method")
-    material_compatibility_verified = fields.Boolean(
-        "Material Compatibility Verified", default=False
-    )
-    route_optimization_data = fields.Text("Route Optimization Data")
-    safety_inspection_completed = fields.Boolean(
-        "Safety Inspection Completed", default=False
-    )
-    temperature_monitoring_required = fields.Boolean(
-        "Temperature Monitoring Required", default=False
-    )
-    transportation_hazards = fields.Text("Transportation Hazards")
-    vehicle_inspection_completed = fields.Boolean(
-        "Vehicle Inspection Completed", default=False
-    )
-
-    # === MISSING LOAD MANAGEMENT FIELDS ===
-
-    # Delivery and Contact Information
-    delivery_contact = fields.Char(string="Delivery Contact Person", tracking=True)
-    delivery_date = fields.Date(string="Scheduled Delivery Date", tracking=True)
-    delivery_phone = fields.Char(string="Delivery Contact Phone", tracking=True)
-    destination_address = fields.Text(string="Destination Address", tracking=True)
-    driver_name = fields.Char(string="Driver Name", tracking=True)
-
-    # Equipment and Vehicle Details
-    equipment_type = fields.Selection(
-        [
-            ("truck", "Truck"),
-            ("trailer", "Trailer"),
-            ("container", "Container"),
-            ("rail_car", "Rail Car"),
-        ],
-        string="Equipment Type",
-        tracking=True,
-    )
-
-    fuel_cost = fields.Monetary(
-        string="Fuel Cost", currency_field="currency_id", tracking=True
-    )
-
-    # GPS and Location Tracking
-    gps_destination_lat = fields.Float(
-        string="GPS Destination Latitude", digits=(10, 7)
-    )
-    gps_destination_lng = fields.Float(
-        string="GPS Destination Longitude", digits=(10, 7)
-    )
-    gps_pickup_lat = fields.Float(string="GPS Pickup Latitude", digits=(10, 7))
-    gps_pickup_lng = fields.Float(string="GPS Pickup Longitude", digits=(10, 7))
-
-    # Load Planning and Configuration
-    load_configuration_notes = fields.Text(string="Load Configuration Notes")
-    load_plan_id = fields.Many2one("load.planning", string="Load Plan")
-
-    # Operational Details
-    loading_bay = fields.Char(string="Loading Bay/Dock", tracking=True)
-
-    # Performance and Tracking
-    on_time_delivery = fields.Boolean(
-        string="On Time Delivery", default=False, tracking=True
-    )
-
-    # Equipment and Resource Management
-    equipment_id = fields.Many2one(
-        "maintenance.equipment", string="Equipment Used", tracking=True
-    )
-
-    # Quality and Inspection
-    quality_inspection_notes = fields.Text(string="Quality Inspection Notes")
-
-    # Reference and Documentation
-    reference_number = fields.Char(string="Reference Number", tracking=True)
-
-    # Route and Navigation
-    route_id = fields.Many2one("delivery.route", string="Delivery Route")
-
-    # Scheduling and Timing
-    scheduled_pickup_time = fields.Datetime(
-        string="Scheduled Pickup Time", tracking=True
-    )
-
-    # Load Status and State
-    status_notes = fields.Text(string="Status Notes")
-
-    # Transportation Details
-    trailer_number = fields.Char(string="Trailer Number", tracking=True)
-    truck_number = fields.Char(string="Truck Number", tracking=True)
-
-    # Vehicle and Driver Information
-    vehicle_id = fields.Many2one("fleet.vehicle", string="Vehicle", tracking=True)
-
-    # Weight and Measurement Details
-    weight_variance = fields.Float(string="Weight Variance (%)", digits=(5, 2))
-
-    # Additional Computed Fields
-    delivery_efficiency = fields.Float(
-        string="Delivery Efficiency (%)",
-        digits=(5, 2),
-        compute="_compute_delivery_efficiency",
-    )
-    load_utilization = fields.Float(
-        string="Load Utilization (%)",
-        digits=(5, 2),
-        compute="_compute_load_utilization",
-    )
-
-    @api.depends("estimated_delivery", "actual_delivery")
-    def _compute_delivery_efficiency(self):
-        """Compute delivery efficiency based on estimated vs actual delivery times"""
-        for record in self:
-            if record.estimated_delivery and record.actual_delivery:
-                estimated_hours = (
-                    (record.estimated_delivery - record.shipping_date).total_seconds()
-                    / 3600
-                    if record.shipping_date
-                    else 0
-                )
-                actual_hours = (
-                    (record.actual_delivery - record.shipping_date).total_seconds()
-                    / 3600
-                    if record.shipping_date
-                    else 0
-                )
-
-                if actual_hours and estimated_hours:
-                    record.delivery_efficiency = (estimated_hours / actual_hours) * 100
-                else:
-                    record.delivery_efficiency = 0
-            else:
-                record.delivery_efficiency = 0
-
-    @api.depends("total_weight", "vehicle_id")
-    def _compute_load_utilization(self):
-        """Compute load utilization percentage based on vehicle capacity"""
-        for record in self:
-            if (
-                record.total_weight
-                and record.vehicle_id
-                and hasattr(record.vehicle_id, "capacity_weight")
-            ):
-                if record.vehicle_id.capacity_weight > 0:
-                    record.load_utilization = (
-                        record.total_weight / record.vehicle_id.capacity_weight
-                    ) * 100
-                else:
-                    record.load_utilization = 0
-            else:
-                record.load_utilization = 0
-
-    weight_distribution_notes = fields.Text("Weight Distribution Notes")
-
-    def write(self, vals):
-        """Override write method to track changes."""
-        if any(
-            key in vals
-            for key in ["market_price_per_ton", "buyer_company", "total_weight"]
-        ):
-            vals["last_updated_by"] = self.env.user.id
-            vals["revision_number"] = self.revision_number + 1
-        return super().write(vals)
-
-    @api.constrains("market_price_per_ton")
-    def _check_market_price(self):
-        """Validate market price is positive."""
-        for record in self:
-            if record.market_price_per_ton and record.market_price_per_ton < 0:
-                raise ValidationError(_("Market price per ton must be positive."))
-
-    @api.constrains("loading_start_time", "loading_end_time")
-    def _check_loading_times(self):
-        """Validate loading times are logical."""
-        for record in self:
-            if record.loading_start_time and record.loading_end_time:
-                if record.loading_end_time <= record.loading_start_time:
-                    raise ValidationError(
-                        _("Loading end time must be after start time.")
-                    )
-
-    @api.constrains("estimated_delivery", "actual_delivery")
-    def _check_delivery_times(self):
-        """Validate delivery times."""
-        for record in self:
-            if record.estimated_delivery and record.actual_delivery:
-                if record.actual_delivery < record.estimated_delivery - timedelta(
-                    days=30
-                ):
-                    raise ValidationError(
-                        _("Actual delivery time seems too early compared to estimate.")
-                    )
-
-    @api.model
-    def get_load_performance_summary(self):
-        """Get performance summary for dashboard."""
-        loads = self.search([("state", "in", ["delivered", "sold"])])
-        return {
-            "total_loads": len(loads),
-            "total_revenue": sum(loads.mapped("estimated_revenue")),
-            "average_efficiency": loads.mapped("efficiency_rating"),
-            "on_time_delivery_rate": (
-                len(loads.filtered(lambda l: l.delivery_variance_hours <= 0))
-                / len(loads)
-                * 100
-                if loads
-                else 0
-            ),
-        }
-
-    def action_activate(self):
-        """Activate the record."""
-        self.write({"state": "active"})
-
-    def action_deactivate(self):
-        """Deactivate the record."""
-        self.write({"state": "inactive"})
-
-    def action_archive(self):
-        """Archive the record."""
-        self.write({"state": "archived", "active": False})
-
-    # =============================================================================
-    # LOAD ACTION METHODS
-    # =============================================================================
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
 
     def action_prepare_load(self):
-        """Prepare load for shipping."""
+        """Prepare load for loading"""
         self.ensure_one()
-        self.write({"state": "ready", "loading_start_time": fields.Datetime.now()})
-        self.message_post(body=_("Load preparation started."))
-
-        # Create preparation activity
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=f"Prepare Load: {self.name}",
-            note="Prepare load for shipping including bale verification, weight confirmation, and documentation.",
-            user_id=self.user_id.id,
-        )
-        return True
-
-    def action_ship_load(self):
-        """Ship the load."""
-        self.ensure_one()
-        if self.state != "loading":
-            raise UserError(_("Only loads in loading state can be shipped."))
-
-        self.write(
-            {
-                "state": "shipped",
-                "shipping_date": fields.Date.today(),
-                "loading_end_time": fields.Datetime.now(),
-            }
-        )
-        self.message_post(body=_("Load shipped successfully."))
-        return True
+        if self.state != "draft":
+            raise UserError(_("Only draft loads can be prepared."))
+        
+        self.write({"state": "preparing"})
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Load Prepared"),
+                "message": _("Load is now being prepared for loading."),
+                "type": "success",
+            },
+        }
 
     def action_start_loading(self):
-        """Start loading process."""
+        """Start loading process"""
+        self.ensure_one()
+        if self.state != "preparing":
+            raise UserError(_("Load must be in preparing state to start loading."))
+        
+        self.write({
+            "state": "loading",
+            "loading_start_time": fields.Datetime.now(),
+        })
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Loading Started"),
+                "message": _("Load loading process has been initiated."),
+                "type": "success",
+            },
+        }
+
+    def action_complete_loading(self):
+        """Complete loading and mark ready to ship"""
+        self.ensure_one()
+        if self.state != "loading":
+            raise UserError(_("Load must be in loading state to complete."))
+        
+        self.write({
+            "state": "ready",
+            "loading_end_time": fields.Datetime.now(),
+            "date_loaded": fields.Datetime.now(),
+        })
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Loading Completed"),
+                "message": _("Load is ready for shipping."),
+                "type": "success",
+            },
+        }
+
+    def action_ship_load(self):
+        """Ship the load"""
         self.ensure_one()
         if self.state != "ready":
-            raise UserError(_("Load must be in ready state to start loading."))
-
-        self.write({"state": "loading", "loading_start_time": fields.Datetime.now()})
-        self.message_post(body=_("Loading process started."))
-        return True
+            raise UserError(_("Load must be ready to ship."))
+        
+        self.write({
+            "state": "shipped",
+            "date_shipped": fields.Datetime.now(),
+        })
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Load Shipped"),
+                "message": _("Load has been shipped successfully."),
+                "type": "success",
+            },
+        }
 
     def action_mark_delivered(self):
-        """Mark load as delivered."""
+        """Mark load as delivered"""
         self.ensure_one()
         if self.state != "shipped":
-            raise UserError(_("Only shipped loads can be marked as delivered."))
-
-        self.write({"state": "delivered", "actual_delivery": fields.Datetime.now()})
-        self.message_post(body=_("Load delivered successfully."))
-        return True
+            raise UserError(_("Load must be shipped to mark as delivered."))
+        
+        self.write({
+            "state": "delivered",
+            "date_delivered": fields.Datetime.now(),
+            "actual_delivery_date": fields.Datetime.now(),
+        })
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Load Delivered"),
+                "message": _("Load has been delivered successfully."),
+                "type": "success",
+            },
+        }
 
     def action_mark_sold(self):
-        """Mark load as sold."""
+        """Mark load as sold"""
         self.ensure_one()
-        if self.state not in ["shipped", "delivered"]:
-            raise UserError(_("Only shipped or delivered loads can be marked as sold."))
-
+        if self.state != "delivered":
+            raise UserError(_("Load must be delivered to mark as sold."))
+        
         self.write({"state": "sold"})
-        self.message_post(body=_("Load marked as sold."))
-        return True
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Load Sold"),
+                "message": _("Load has been marked as sold."),
+                "type": "success",
+            },
+        }
 
     def action_cancel(self):
-        """Cancel the load."""
+        """Cancel the load"""
         self.ensure_one()
-        if self.state in ["sold", "delivered"]:
-            raise UserError(_("Cannot cancel sold or delivered loads."))
-
+        if self.state in ["delivered", "sold"]:
+            raise UserError(_("Cannot cancel delivered or sold loads."))
+        
         self.write({"state": "cancelled"})
-        self.message_post(body=_("Load cancelled."))
-        return True
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Load Cancelled"),
+                "message": _("Load has been cancelled."),
+                "type": "warning",
+            },
+        }
 
     def action_view_bales(self):
-        """View bales in this load."""
+        """View related paper bales"""
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Load Bales"),
+            "name": _("Paper Bales"),
             "res_model": "paper.bale",
             "view_mode": "tree,form",
             "domain": [("load_id", "=", self.id)],
-            "context": {
-                "default_load_id": self.id,
-                "search_default_load_id": self.id,
-            },
+            "context": {"default_load_id": self.id},
         }
 
-    def action_view_revenue_report(self):
-        """View revenue report for this load."""
+    def action_create_invoice(self):
+        """Create customer invoice for this load"""
         self.ensure_one()
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.load_revenue_report",
-            "report_type": "qweb-pdf",
-            "context": {"active_ids": [self.id]},
-        }
-
-    def action_view_weight_tickets(self):
-        """View weight tickets for this load."""
-        self.ensure_one()
+        if not self.customer_id:
+            raise UserError(_("Customer must be specified to create invoice."))
+        
         return {
             "type": "ir.actions.act_window",
-            "name": _("Weight Tickets"),
-            "res_model": "stock.picking",
-            "view_mode": "tree,form",
-            "domain": [("origin", "ilike", self.name)],
+            "name": _("Create Invoice"),
+            "res_model": "account.move",
+            "view_mode": "form",
+            "target": "new",
             "context": {
-                "search_default_origin": self.name,
-                "group_by": "date",
+                "default_partner_id": self.customer_id.id,
+                "default_move_type": "out_invoice",
+                "default_ref": self.name,
+                "default_invoice_origin": self.name,
             },
         }
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Override create to set default values."""
-        # Handle both single dict and list of dicts
-        if not isinstance(vals_list, list):
-            vals_list = [vals_list]
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
 
+    @api.constrains("loading_start_time", "loading_end_time")
+    def _check_loading_times(self):
+        """Ensure loading end time is after start time"""
+        for record in self:
+            if record.loading_start_time and record.loading_end_time:
+                if record.loading_end_time <= record.loading_start_time:
+                    raise ValidationError(_("Loading end time must be after start time."))
+
+    @api.constrains("estimated_delivery_date", "date_scheduled")
+    def _check_delivery_dates(self):
+        """Ensure delivery dates are logical"""
+        for record in self:
+            if record.date_scheduled and record.estimated_delivery_date:
+                if record.estimated_delivery_date <= record.date_scheduled:
+                    raise ValidationError(_("Estimated delivery must be after scheduled date."))
+
+    @api.constrains("market_price", "contracted_price")
+    def _check_prices(self):
+        """Ensure prices are positive"""
+        for record in self:
+            if record.market_price and record.market_price < 0:
+                raise ValidationError(_("Market price must be positive."))
+            if record.contracted_price and record.contracted_price < 0:
+                raise ValidationError(_("Contracted price must be positive."))
+
+    # ============================================================================
+    # LIFECYCLE METHODS
+    # ============================================================================
+
+    @api.model
+    def create(self, vals_list):
+        """Override create to set defaults"""
+        if isinstance(vals_list, dict):
+            vals_list = [vals_list]
+        
         for vals in vals_list:
             if not vals.get("name"):
-                vals["name"] = _("New Record")
-
+                vals["name"] = self.env["ir.sequence"].next_by_code("load") or _("New Load")
+        
         return super().create(vals_list)
+
+    def write(self, vals):
+        """Override write to track changes and update totals"""
+        # Update modification date
+        vals["date_modified"] = fields.Datetime.now()
+        
+        # Track state changes
+        if "state" in vals:
+            for record in self:
+                old_state = dict(record._fields["state"].selection).get(record.state)
+                new_state = dict(record._fields["state"].selection).get(vals["state"])
+                record.message_post(
+                    body=_("Load status changed from %s to %s") % (old_state, new_state)
+                )
+        
+        return super().write(vals)
