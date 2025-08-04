@@ -345,6 +345,114 @@ class PortalRequest(models.Model):
         string="Chain of Custody Required", default=False
     )
 
+    # === MISSING FIELDS FOR PORTAL.REQUEST ===
+
+    # Document and File Management
+    confidential = fields.Boolean(
+        string="Confidential",
+        default=False,
+        tracking=True,
+        help="Mark request as confidential",
+    )
+
+    file_size = fields.Float(
+        string="File Size (MB)", digits=(10, 2), help="Total size of attached files"
+    )
+
+    file_type = fields.Selection(
+        [
+            ("pdf", "PDF"),
+            ("doc", "Document"),
+            ("image", "Image"),
+            ("archive", "Archive"),
+            ("other", "Other"),
+        ],
+        string="File Type",
+        help="Primary file type in request",
+    )
+
+    # Communication Fields
+    from_person = fields.Char(
+        string="From Person", help="Person who submitted the request"
+    )
+
+    milestone_name = fields.Char(
+        string="Milestone Name", help="Project milestone associated with request"
+    )
+
+    # Process Enhancement Fields
+    request_source = fields.Selection(
+        [
+            ("portal", "Customer Portal"),
+            ("email", "Email"),
+            ("phone", "Phone"),
+            ("mobile", "Mobile App"),
+            ("internal", "Internal System"),
+        ],
+        string="Request Source",
+        default="portal",
+        tracking=True,
+    )
+
+    estimated_completion_date = fields.Datetime(
+        string="Estimated Completion",
+        tracking=True,
+        help="Estimated completion date and time",
+    )
+
+    actual_completion_date = fields.Datetime(
+        string="Actual Completion",
+        tracking=True,
+        help="Actual completion date and time",
+    )
+
+    # Cost and Billing
+    estimated_cost = fields.Monetary(
+        string="Estimated Cost",
+        currency_field="company_currency_id",
+        help="Estimated cost for fulfilling the request",
+    )
+
+    actual_cost = fields.Monetary(
+        string="Actual Cost",
+        currency_field="company_currency_id",
+        help="Actual cost incurred",
+    )
+
+    # Reference and External
+    external_reference = fields.Char(
+        string="External Reference", help="External system reference number"
+    )
+
+    customer_reference = fields.Char(
+        string="Customer Reference", help="Customer provided reference number"
+    )
+
+    # Performance Metrics
+    processing_time = fields.Float(
+        string="Processing Time (Hours)",
+        compute="_compute_processing_time",
+        store=True,
+        digits=(8, 2),
+        help="Time taken to process the request",
+    )
+
+    response_time = fields.Float(
+        string="Response Time (Hours)",
+        compute="_compute_response_time",
+        store=True,
+        digits=(8, 2),
+        help="Time taken to first respond to request",
+    )
+
+    completion_rate = fields.Float(
+        string="Completion Rate (%)",
+        compute="_compute_completion_rate",
+        store=True,
+        digits=(5, 2),
+        help="Percentage of request completed",
+    )
+
     @api.depends("document_ids")
     def _compute_attachment_count(self):
         """Compute number of attachments"""
@@ -413,6 +521,53 @@ class PortalRequest(models.Model):
             if record.material_costs:
                 total += record.material_costs
             record.total_amount = total
+
+    @api.depends("submission_date", "actual_completion_date")
+    def _compute_processing_time(self):
+        """Compute processing time in hours"""
+        for record in self:
+            if record.submission_date and record.actual_completion_date:
+                delta = record.actual_completion_date - record.submission_date
+                record.processing_time = delta.total_seconds() / 3600.0
+            else:
+                record.processing_time = 0.0
+
+    @api.depends("submission_date", "first_response_date")
+    def _compute_response_time(self):
+        """Compute response time in hours"""
+        for record in self:
+            if (
+                record.submission_date
+                and hasattr(record, "first_response_date")
+                and record.first_response_date
+            ):
+                delta = record.first_response_date - record.submission_date
+                record.response_time = delta.total_seconds() / 3600.0
+            else:
+                record.response_time = 0.0
+
+    @api.depends("request_status", "progress_percentage")
+    def _compute_completion_rate(self):
+        """Compute completion rate percentage"""
+        for record in self:
+            if record.request_status == "completed":
+                record.completion_rate = 100.0
+            elif record.request_status == "cancelled":
+                record.completion_rate = 0.0
+            elif hasattr(record, "progress_percentage") and record.progress_percentage:
+                record.completion_rate = record.progress_percentage
+            else:
+                # Estimate based on status
+                status_completion = {
+                    "submitted": 10.0,
+                    "under_review": 25.0,
+                    "approved": 40.0,
+                    "in_progress": 60.0,
+                    "rejected": 0.0,
+                }
+                record.completion_rate = status_completion.get(
+                    record.request_status, 0.0
+                )
 
     @api.depends("submission_date")
     def _compute_time_metrics(self):

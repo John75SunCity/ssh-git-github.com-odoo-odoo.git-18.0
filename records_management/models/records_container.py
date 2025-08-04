@@ -445,6 +445,133 @@ class RecordsContainer(models.Model):
         help="Recognized standard container sizes",
     )
 
+    # === MISSING FIELDS FOR RECORDS.CONTAINER ===
+
+    # Framework Integration Fields (required by mail.thread)
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+
+    # Business Process Fields
+    creation_date = fields.Datetime(
+        string="Creation Date",
+        default=fields.Datetime.now,
+        tracking=True,
+        help="Date when the container was created",
+    )
+
+    from_location_id = fields.Many2one(
+        "records.location",
+        string="From Location",
+        tracking=True,
+        help="Previous location before current movement",
+    )
+
+    moved_by_id = fields.Many2one(
+        "res.users",
+        string="Moved By",
+        tracking=True,
+        help="User who last moved this container",
+    )
+
+    movement_date = fields.Datetime(
+        string="Movement Date", tracking=True, help="Date of last movement"
+    )
+
+    movement_ids = fields.One2many(
+        "records.container.movement",
+        "container_id",
+        string="Movement History",
+        help="History of container movements",
+    )
+
+    # Additional Business Fields
+    container_condition = fields.Selection(
+        [
+            ("excellent", "Excellent"),
+            ("good", "Good"),
+            ("fair", "Fair"),
+            ("poor", "Poor"),
+            ("damaged", "Damaged"),
+        ],
+        string="Container Condition",
+        default="good",
+        tracking=True,
+    )
+
+    security_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+            ("classified", "Classified"),
+        ],
+        string="Security Level",
+        default="public",
+        tracking=True,
+    )
+
+    access_frequency = fields.Selection(
+        [
+            ("never", "Never"),
+            ("rare", "Rare (< 1/year)"),
+            ("occasional", "Occasional (1-5/year)"),
+            ("regular", "Regular (> 5/year)"),
+        ],
+        string="Access Frequency",
+        default="occasional",
+        tracking=True,
+    )
+
+    container_utilization = fields.Float(
+        string="Container Utilization (%)",
+        compute="_compute_container_utilization",
+        store=True,
+        digits=(5, 2),
+        help="Percentage of container capacity being used",
+    )
+
+    last_accessed_date = fields.Datetime(
+        string="Last Accessed",
+        tracking=True,
+        help="Date when container was last accessed",
+    )
+
+    last_accessed_by = fields.Many2one(
+        "res.users",
+        string="Last Accessed By",
+        tracking=True,
+        help="User who last accessed this container",
+    )
+
+    priority_level = fields.Selection(
+        [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")],
+        string="Priority Level",
+        default="normal",
+        tracking=True,
+    )
+
+    container_value = fields.Monetary(
+        string="Container Value",
+        currency_field="company_currency_id",
+        help="Estimated value of container contents",
+    )
+
     # ============ COMPUTE METHODS ============
 
     @api.depends("length", "width", "height")
@@ -672,6 +799,18 @@ class RecordsContainer(models.Model):
                     raise ValidationError(
                         f"Barcode {record.barcode} already exists for container {existing.name}"
                     )
+
+    @api.depends("document_ids", "document_capacity")
+    def _compute_container_utilization(self):
+        """Compute container utilization percentage"""
+        for record in self:
+            if record.document_capacity and record.document_capacity > 0:
+                current_count = len(record.document_ids)
+                record.container_utilization = (
+                    current_count / record.document_capacity
+                ) * 100
+            else:
+                record.container_utilization = 0.0
 
     # ============ ACTION METHODS ============
 

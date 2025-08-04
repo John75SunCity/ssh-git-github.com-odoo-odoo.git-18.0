@@ -49,6 +49,43 @@ class Load(models.Model):
     # MISSING FIELDS FROM SMART GAP ANALYSIS - LOAD ENHANCEMENT
     # ============================================================================
 
+    # Photo and Media Management
+    photo_ids = fields.One2many(
+        'ir.attachment',
+        'res_id',
+        string='Photo Attachments',
+        domain=lambda self: [('res_model', '=', self._name), ('mimetype', 'like', 'image/%')]
+    )
+    
+    photo_type = fields.Selection([
+        ('before_loading', 'Before Loading'),
+        ('during_loading', 'During Loading'),
+        ('after_loading', 'After Loading'),
+        ('quality_check', 'Quality Check'),
+        ('documentation', 'Documentation')
+    ], string='Photo Type', help='Type of photos taken for this load')
+
+    # Production and Quality Management
+    production_date = fields.Date(
+        string='Production Date',
+        tracking=True,
+        help='Date when the load was produced or prepared'
+    )
+    
+    quality_certificate = fields.Binary(
+        string='Quality Certificate',
+        help='Quality certificate document for the load'
+    )
+    
+    quality_grade = fields.Selection([
+        ('a_grade', 'A Grade'),
+        ('b_grade', 'B Grade'),
+        ('c_grade', 'C Grade'),
+        ('premium', 'Premium'),
+        ('standard', 'Standard'),
+        ('reject', 'Reject')
+    ], string='Quality Grade', tracking=True)
+
     # Documentation and Media
     image = fields.Binary(
         string="Load Image", help="Image of the load for documentation purposes"
@@ -71,6 +108,42 @@ class Load(models.Model):
     # Quality Control Reports
     moisture_test_report = fields.Text(
         string="Moisture Test Report", help="Results and details of moisture testing"
+    )
+    
+    # Additional Missing Fields
+    load_capacity = fields.Float(
+        string='Load Capacity (tons)',
+        help='Maximum capacity of the load'
+    )
+    
+    transport_method = fields.Selection([
+        ('truck', 'Truck'),
+        ('rail', 'Rail'),
+        ('ship', 'Ship'),
+        ('air', 'Air'),
+        ('combined', 'Combined')
+    ], string='Transport Method', default='truck')
+    
+    environmental_conditions = fields.Text(
+        string='Environmental Conditions',
+        help='Weather and environmental conditions during loading'
+    )
+    
+    safety_checklist_complete = fields.Boolean(
+        string='Safety Checklist Complete',
+        default=False,
+        help='Indicates if safety checklist has been completed'
+    )
+    
+    load_supervisor = fields.Many2one(
+        'res.users',
+        string='Load Supervisor',
+        help='Person supervising the loading operation'
+    )
+    
+    estimated_delivery_date = fields.Datetime(
+        string='Estimated Delivery Date',
+        help='Estimated date and time of delivery'
     )
 
     # Computed Fields

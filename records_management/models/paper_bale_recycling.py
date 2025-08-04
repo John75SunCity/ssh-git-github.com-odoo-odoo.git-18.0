@@ -48,6 +48,58 @@ class PaperBaleRecycling(models.Model):
     # MISSING FIELDS FROM SMART GAP ANALYSIS - PAPER BALE RECYCLING ENHANCEMENT
     # ============================================================================
 
+    # Framework Integration Fields (required by mail.thread)
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+
+    # Business Process Fields
+    bale_number = fields.Char(
+        string="Bale Number",
+        required=True,
+        index=True,
+        tracking=True,
+        help="Unique identifier for the paper bale",
+    )
+
+    contamination = fields.Float(
+        string="Contamination Level (%)",
+        digits=(5, 2),
+        tracking=True,
+        help="Percentage of contamination in the bale",
+    )
+
+    contamination_notes = fields.Text(
+        string="Contamination Notes",
+        help="Details about contamination found in the bale",
+    )
+
+    gps_coordinates = fields.Char(
+        string="GPS Coordinates",
+        help="GPS location where bale was collected or processed",
+    )
+
+    load_number = fields.Char(
+        string="Load Number",
+        tracking=True,
+        help="Reference number for the load this bale belongs to",
+    )
+
     # Production and Quality Management
     paper_grade = fields.Selection(
         [
@@ -81,6 +133,44 @@ class PaperBaleRecycling(models.Model):
         string="Net Weight (lbs)",
         digits=(10, 2),
         help="Net weight of the paper bale",
+    )
+
+    # Additional Quality Fields
+    quality_grade = fields.Selection(
+        [
+            ("premium", "Premium"),
+            ("standard", "Standard"),
+            ("economy", "Economy"),
+            ("reject", "Reject"),
+        ],
+        string="Quality Grade",
+        default="standard",
+        tracking=True,
+    )
+
+    moisture_content = fields.Float(
+        string="Moisture Content (%)",
+        digits=(5, 2),
+        help="Moisture percentage in the bale",
+    )
+
+    # Process Fields
+    processing_facility = fields.Char(
+        string="Processing Facility", help="Facility where the bale was processed"
+    )
+
+    batch_id = fields.Char(
+        string="Batch ID", help="Batch identifier for quality tracking"
+    )
+
+    # Customer and Location
+    collection_location = fields.Char(
+        string="Collection Location", help="Location where materials were collected"
+    )
+
+    destination_facility = fields.Char(
+        string="Destination Facility",
+        help="Facility where bale will be sent for processing",
     )
 
     # Computed Fields
