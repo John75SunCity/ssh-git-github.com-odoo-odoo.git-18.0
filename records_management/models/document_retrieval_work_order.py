@@ -19,9 +19,13 @@ class DocumentRetrievalWorkOrder(models.Model):
     state = fields.Selection(
         [
             ("draft", "Draft"),
-            ("active", "Active"),
-            ("inactive", "Inactive"),
-            ("archived", "Archived"),
+            ("confirmed", "Confirmed"),
+            ("assigned", "Assigned"),
+            ("in_progress", "In Progress"),
+            ("ready_delivery", "Ready for Delivery"),
+            ("delivered", "Delivered"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
         ],
         string="Status",
         default="draft",
@@ -163,6 +167,88 @@ class DocumentRetrievalWorkOrder(models.Model):
 
     # Barcode Integration
     barcode = fields.Char(string="Barcode", help="System-generated or scanned barcode")
+
+    # === CRITICAL VIEW FIELDS ===
+    priority = fields.Selection(
+        [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")],
+        string="Priority",
+        default="normal",
+        tracking=True,
+    )
+
+    request_date = fields.Date(
+        string="Request Date", default=fields.Date.today, tracking=True
+    )
+
+    item_count = fields.Integer(
+        string="Item Count", compute="_compute_item_count", store=True
+    )
+
+    total_cost = fields.Monetary(
+        string="Total Cost",
+        currency_field="currency_id",
+        compute="_compute_total_cost",
+        store=True,
+    )
+
+    has_custom_rates = fields.Boolean(
+        string="Has Custom Rates", compute="_compute_has_custom_rates", store=True
+    )
+
+    customer_rates_id = fields.Many2one(
+        "records.customer.billing.profile",
+        string="Customer Rates",
+        help="Custom billing rates for this customer",
+    )
+
+    technician_id = fields.Many2one(
+        "hr.employee", string="Assigned Technician", tracking=True
+    )
+
+    department_id = fields.Many2one("hr.department", string="Department", tracking=True)
+
+    requested_by = fields.Many2one(
+        "res.users", string="Requested By", default=lambda self: self.env.user
+    )
+
+    delivery_date = fields.Date(string="Delivery Date")
+    delivery_time = fields.Char(string="Delivery Time")
+
+    driver_id = fields.Many2one("hr.employee", string="Driver")
+
+    # Priority Pricing
+    priority_item_cost = fields.Monetary(
+        string="Priority Item Cost",
+        currency_field="currency_id",
+        compute="_compute_priority_costs",
+        store=True,
+    )
+
+    priority_order_cost = fields.Monetary(
+        string="Priority Order Cost",
+        currency_field="currency_id",
+        compute="_compute_priority_costs",
+        store=True,
+    )
+
+    # Retrieval Items Relationship
+    retrieval_item_ids = fields.One2many(
+        "document.retrieval.item", "work_order_id", string="Retrieval Items"
+    )
+
+    # Delivery Information
+    delivery_address = fields.Text(string="Delivery Address")
+    delivery_contact = fields.Char(string="Delivery Contact")
+    delivery_phone = fields.Char(string="Delivery Phone")
+    actual_delivery_date = fields.Datetime(string="Actual Delivery Date")
+    delivered_by = fields.Many2one("res.users", string="Delivered By")
+    customer_signature_date = fields.Datetime(string="Customer Signature Date")
+    customer_signature = fields.Binary(string="Customer Signature")
+
+    # Notes Fields
+    retrieval_notes = fields.Text(string="Retrieval Notes")
+    delivery_notes = fields.Text(string="Delivery Notes")
+    internal_notes = fields.Text(string="Internal Notes")
 
     # Cost Structure Fields
     base_delivery_cost = fields.Monetary(
@@ -626,6 +712,66 @@ class DocumentRetrievalWorkOrder(models.Model):
         """Compute total counts and amounts."""
         for record in self:
             record.total_document_count = len(record.document_ids)
+
+    # === NEW COMPUTE METHODS FOR VIEW FIELDS ===
+
+    @api.depends("retrieval_item_ids")
+    def _compute_item_count(self):
+        """Compute total number of items to retrieve"""
+        for record in self:
+            record.item_count = len(record.retrieval_item_ids)
+
+    @api.depends(
+        "base_retrieval_cost",
+        "base_delivery_cost",
+        "priority_item_cost",
+        "priority_order_cost",
+    )
+    def _compute_total_cost(self):
+        """Compute total cost including all components"""
+        for record in self:
+            record.total_cost = (
+                (record.base_retrieval_cost or 0)
+                + (record.base_delivery_cost or 0)
+                + (record.priority_item_cost or 0)
+                + (record.priority_order_cost or 0)
+            )
+
+    @api.depends("customer_id", "customer_rates_id")
+    def _compute_has_custom_rates(self):
+        """Check if customer has custom billing rates"""
+        for record in self:
+            if record.customer_id and record.customer_rates_id:
+                record.has_custom_rates = True
+            elif record.customer_id:
+                # Check if customer has any custom rates defined
+                custom_rates = self.env["records.customer.billing.profile"].search(
+                    [("partner_id", "=", record.customer_id.id)], limit=1
+                )
+                record.has_custom_rates = bool(custom_rates)
+                if custom_rates and not record.customer_rates_id:
+                    record.customer_rates_id = custom_rates.id
+            else:
+                record.has_custom_rates = False
+
+    @api.depends("priority", "item_count")
+    def _compute_priority_costs(self):
+        """Compute priority-based additional costs"""
+        for record in self:
+            base_priority_item = 5.0  # Base priority surcharge per item
+            base_priority_order = 25.0  # Base priority surcharge per order
+
+            if record.priority == "urgent":
+                multiplier = 2.0
+            elif record.priority == "high":
+                multiplier = 1.5
+            else:
+                multiplier = 0.0
+
+            record.priority_item_cost = (
+                (record.item_count or 0) * base_priority_item * multiplier
+            )
+            record.priority_order_cost = base_priority_order * multiplier
 
     def write(self, vals):
         """Override write to update modification date."""

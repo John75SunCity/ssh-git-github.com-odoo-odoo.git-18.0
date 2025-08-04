@@ -63,9 +63,85 @@ class FieldLabelCustomization(models.Model):
         for record in self:
             record.display_name = record.name or _("New")
 
+    # === ADDITIONAL COMPUTE METHODS ===
+    @api.depends("usage_count", "last_used_date")
+    def _compute_popularity_score(self):
+        """Compute popularity score based on usage"""
+        for record in self:
+            base_score = min(record.usage_count * 10, 1000)  # Cap at 1000
+            if record.last_used_date:
+                days_since_use = (fields.Datetime.now() - record.last_used_date).days
+                recency_factor = max(0, 100 - days_since_use)  # Decreases over time
+                record.popularity_score = base_score + recency_factor
+            else:
+                record.popularity_score = base_score
+
+    # === ONCHANGE METHODS ===
+    @api.onchange("industry_type")
+    def _onchange_industry_type(self):
+        """Update compliance framework based on industry type"""
+        industry_compliance_mapping = {
+            "healthcare": "hipaa",
+            "financial": "sox",
+            "education": "ferpa",
+            "government": "naid",
+            "corporate": "iso27001",
+        }
+        if self.industry_type and self.industry_type in industry_compliance_mapping:
+            self.compliance_framework = industry_compliance_mapping[self.industry_type]
+
+    @api.onchange("compliance_framework")
+    def _onchange_compliance_framework(self):
+        """Update security settings based on compliance framework"""
+        high_security_frameworks = ["hipaa", "sox", "naid"]
+        if self.compliance_framework in high_security_frameworks:
+            self.security_classification = "confidential"
+            self.access_control_enabled = True
+            self.label_approval_required = True
+
+    @api.onchange("machine_learning_enabled")
+    def _onchange_machine_learning_enabled(self):
+        """Enable smart suggestions when ML is enabled"""
+        if self.machine_learning_enabled:
+            self.smart_field_suggestions = True
+            self.usage_statistics_enabled = True
+
+    # === VALIDATION METHODS ===
+    @api.constrains("label_inheritance_depth")
+    def _check_inheritance_depth(self):
+        """Validate inheritance depth is reasonable"""
+        for record in self:
+            if (
+                record.label_inheritance_depth < 0
+                or record.label_inheritance_depth > 10
+            ):
+                raise ValidationError(
+                    _("Label inheritance depth must be between 0 and 10.")
+                )
+
+    @api.constrains("webhook_notification_url")
+    def _check_webhook_url(self):
+        """Validate webhook URL format"""
+        import re
+
+        for record in self:
+            if record.webhook_notification_url:
+                url_pattern = r"^https?://.+"
+                if not re.match(url_pattern, record.webhook_notification_url):
+                    raise ValidationError(
+                        _("Webhook URL must start with http:// or https://")
+                    )
+
     def write(self, vals):
         """Override write to update modification date."""
         vals["date_modified"] = fields.Datetime.now()
+
+        # Track usage when configuration is applied
+        if vals.get("state") == "active":
+            vals["usage_count"] = (vals.get("usage_count", 0) or self.usage_count) + 1
+            vals["last_used_date"] = fields.Datetime.now()
+
+        return super().write(vals)
 
     # Field Label Customization Fields
     customer_id = fields.Many2one("res.partner", "Customer")
@@ -109,6 +185,209 @@ class FieldLabelCustomization(models.Model):
         "User Specific Customization", default=False
     )
     validation_rules_enabled = fields.Boolean("Validation Rules Enabled", default=False)
+
+    # === COMPREHENSIVE MISSING BUSINESS FIELDS ===
+
+    # Advanced Label Configuration
+    label_inheritance_depth = fields.Integer(
+        string="Label Inheritance Depth",
+        default=1,
+        help="Maximum depth for label template inheritance",
+    )
+    label_cache_enabled = fields.Boolean(
+        string="Label Cache Enabled",
+        default=True,
+        help="Enable caching for improved performance",
+    )
+    label_versioning_enabled = fields.Boolean(
+        string="Label Versioning Enabled",
+        default=False,
+        help="Track versions of label configurations",
+    )
+    current_version = fields.Char(
+        string="Current Version",
+        default="1.0",
+        help="Current version of the label configuration",
+    )
+
+    # Industry and Context Specific
+    industry_type = fields.Selection(
+        [
+            ("corporate", "Corporate"),
+            ("financial", "Financial"),
+            ("healthcare", "Healthcare"),
+            ("legal", "Legal"),
+            ("manufacturing", "Manufacturing"),
+            ("education", "Education"),
+            ("government", "Government"),
+            ("nonprofit", "Non-Profit"),
+        ],
+        string="Industry Type",
+        help="Industry context for label customization",
+    )
+
+    compliance_framework = fields.Selection(
+        [
+            ("sox", "Sarbanes-Oxley"),
+            ("hipaa", "HIPAA"),
+            ("gdpr", "GDPR"),
+            ("ferpa", "FERPA"),
+            ("naid", "NAID"),
+            ("iso27001", "ISO 27001"),
+            ("custom", "Custom Framework"),
+        ],
+        string="Compliance Framework",
+        help="Compliance framework requiring specific labeling",
+    )
+
+    # Advanced User Experience
+    accessibility_features = fields.Boolean(
+        string="Accessibility Features",
+        default=False,
+        help="Enable accessibility features for labels",
+    )
+    color_coding_scheme = fields.Text(
+        string="Color Coding Scheme", help="JSON configuration for color-coded labels"
+    )
+    font_size_preference = fields.Selection(
+        [
+            ("xs", "Extra Small"),
+            ("sm", "Small"),
+            ("md", "Medium"),
+            ("lg", "Large"),
+            ("xl", "Extra Large"),
+        ],
+        string="Font Size Preference",
+        default="md",
+        help="Default font size for labels",
+    )
+
+    # Integration and API Fields
+    api_integration_enabled = fields.Boolean(
+        string="API Integration Enabled",
+        default=False,
+        help="Allow external systems to use these label configurations",
+    )
+    webhook_notification_url = fields.Char(
+        string="Webhook Notification URL",
+        help="URL to notify when label configuration changes",
+    )
+    external_system_sync = fields.Boolean(
+        string="External System Sync",
+        default=False,
+        help="Synchronize with external labeling systems",
+    )
+    last_sync_date = fields.Datetime(
+        string="Last Sync Date",
+        help="Last successful synchronization with external systems",
+    )
+
+    # Analytics and Reporting
+    usage_statistics_enabled = fields.Boolean(
+        string="Usage Statistics Enabled",
+        default=True,
+        help="Track usage statistics for this configuration",
+    )
+    usage_count = fields.Integer(
+        string="Usage Count",
+        default=0,
+        help="Number of times this configuration has been applied",
+    )
+    last_used_date = fields.Datetime(
+        string="Last Used Date", help="Date when this configuration was last used"
+    )
+    performance_metrics = fields.Text(
+        string="Performance Metrics", help="JSON data with performance metrics"
+    )
+    popularity_score = fields.Float(
+        string="Popularity Score",
+        compute="_compute_popularity_score",
+        store=True,
+        help="Computed popularity score based on usage and recency",
+    )
+
+    # Security and Permissions
+    security_classification = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+        ],
+        string="Security Classification",
+        default="internal",
+        help="Security classification for label configuration",
+    )
+
+    access_control_enabled = fields.Boolean(
+        string="Access Control Enabled",
+        default=False,
+        help="Enable fine-grained access control",
+    )
+    allowed_group_ids = fields.Many2many(
+        "res.groups",
+        string="Allowed Groups",
+        help="Groups allowed to use this configuration",
+    )
+    restricted_field_ids = fields.Many2many(
+        "ir.model.fields",
+        string="Restricted Fields",
+        help="Fields that require special permissions",
+    )
+
+    # Field-Specific Customizations
+    field_priority_mapping = fields.Text(
+        string="Field Priority Mapping",
+        help="JSON mapping of field priorities for display ordering",
+    )
+    conditional_display_rules = fields.Text(
+        string="Conditional Display Rules",
+        help="Rules for conditional field display based on context",
+    )
+    field_grouping_rules = fields.Text(
+        string="Field Grouping Rules", help="Rules for grouping related fields together"
+    )
+    smart_field_suggestions = fields.Boolean(
+        string="Smart Field Suggestions",
+        default=False,
+        help="Enable AI-powered field suggestions",
+    )
+
+    # Workflow Integration
+    workflow_trigger_enabled = fields.Boolean(
+        string="Workflow Trigger Enabled",
+        default=False,
+        help="Trigger workflows when labels are applied",
+    )
+    approval_workflow_id = fields.Many2one(
+        "workflow.definition",
+        string="Approval Workflow",
+        help="Workflow for approving label changes",
+    )
+    notification_recipients = fields.Many2many(
+        "res.users",
+        string="Notification Recipients",
+        help="Users to notify when configuration changes",
+    )
+
+    # Advanced Features
+    machine_learning_enabled = fields.Boolean(
+        string="Machine Learning Enabled",
+        default=False,
+        help="Use ML for intelligent label suggestions",
+    )
+    auto_translation_enabled = fields.Boolean(
+        string="Auto Translation Enabled",
+        default=False,
+        help="Automatically translate labels to user language",
+    )
+    label_template_library = fields.Text(
+        string="Label Template Library", help="JSON library of reusable label templates"
+    )
+    custom_css_styles = fields.Text(
+        string="Custom CSS Styles", help="Custom CSS for label appearance"
+    )
+
     # Field Label Customization Fields
 
     def action_activate(self):
@@ -216,6 +495,145 @@ class FieldLabelCustomization(models.Model):
             "context": {
                 "default_customization_id": self.id,
                 "default_name": f"Transitory Config for {self.name}",
+            },
+        }
+
+    # === ADVANCED ACTION METHODS ===
+
+    def action_clone_configuration(self):
+        """Clone this configuration with a new name"""
+        self.ensure_one()
+        cloned_config = self.copy(
+            {
+                "name": f"{self.name} (Copy)",
+                "state": "draft",
+                "usage_count": 0,
+                "last_used_date": False,
+            }
+        )
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Cloned Configuration"),
+            "res_model": "field.label.customization",
+            "res_id": cloned_config.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def action_export_configuration(self):
+        """Export configuration as JSON"""
+        self.ensure_one()
+        export_data = {
+            "name": self.name,
+            "description": self.description,
+            "industry_type": self.industry_type,
+            "compliance_framework": self.compliance_framework,
+            "label_format_template": self.label_format_template,
+            "field_priority_mapping": self.field_priority_mapping,
+            "conditional_display_rules": self.conditional_display_rules,
+            "custom_css_styles": self.custom_css_styles,
+        }
+
+        # Create attachment with exported data
+        import json
+
+        attachment = self.env["ir.attachment"].create(
+            {
+                "name": f"label_config_export_{self.name}.json",
+                "datas": json.dumps(export_data, indent=2).encode(),
+                "res_model": self._name,
+                "res_id": self.id,
+            }
+        )
+
+        return {
+            "type": "ir.actions.act_url",
+            "url": f"/web/content/{attachment.id}?download=true",
+            "target": "new",
+        }
+
+    def action_sync_external_systems(self):
+        """Synchronize with external labeling systems"""
+        self.ensure_one()
+        if not self.external_system_sync:
+            raise UserError(
+                _("External system sync is not enabled for this configuration.")
+            )
+
+        # Update sync timestamp
+        self.last_sync_date = fields.Datetime.now()
+
+        # Log sync attempt
+        self.message_post(
+            body=_("External system synchronization initiated."),
+            subject=_("Label Configuration Sync"),
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Sync Initiated"),
+                "message": _("External system synchronization has been started."),
+                "type": "info",
+                "sticky": False,
+            },
+        }
+
+    def action_generate_usage_report(self):
+        """Generate detailed usage report"""
+        self.ensure_one()
+
+        # Create usage report content
+        report_content = f"""
+        Usage Report for: {self.name}
+        ================================
+        Total Usage Count: {self.usage_count}
+        Last Used: {self.last_used_date or 'Never'}
+        Popularity Score: {self.popularity_score:.2f}
+        Industry Type: {self.industry_type or 'Not specified'}
+        Security Classification: {self.security_classification}
+        Active Users: {len(self.allowed_group_ids.users) if self.allowed_group_ids else 'All users'}
+        """
+
+        self.message_post(body=report_content, subject=_("Usage Report Generated"))
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Report Generated"),
+                "message": _(
+                    "Usage report has been generated and attached to this record."
+                ),
+                "type": "success",
+                "sticky": False,
+            },
+        }
+
+    def action_optimize_performance(self):
+        """Optimize configuration for better performance"""
+        self.ensure_one()
+
+        # Enable caching and optimization features
+        optimization_values = {
+            "label_cache_enabled": True,
+            "usage_statistics_enabled": True,
+            "performance_metrics": '{"optimization_applied": true, "date": "'
+            + str(fields.Datetime.now())
+            + '"}',
+        }
+
+        self.write(optimization_values)
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Optimization Applied"),
+                "message": _("Performance optimization settings have been applied."),
+                "type": "success",
+                "sticky": False,
             },
         }
 

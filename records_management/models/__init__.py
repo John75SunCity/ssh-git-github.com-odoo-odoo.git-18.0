@@ -77,6 +77,7 @@ from . import destruction_item
 # Work orders
 from . import work_order_shredding
 from . import document_retrieval_work_order
+from . import document_retrieval_item
 from . import file_retrieval_work_order
 
 # Service rates and billing (consolidated system)
