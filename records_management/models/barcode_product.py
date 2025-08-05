@@ -289,7 +289,7 @@ class BarcodeProduct(models.Model):
     # ============================================================================
 
     # Product Relationships
-    category_id = fields.Many2one("product.category", string="Product Category")
+    category_id = fields.Many2one("product.category", string="Odoo Product Category")
     template_id = fields.Many2one("product.template", string="Product Template")
 
     # Generation History

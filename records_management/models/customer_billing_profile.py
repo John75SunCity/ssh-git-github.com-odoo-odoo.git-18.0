@@ -92,6 +92,47 @@ class CustomerBillingProfile(models.Model):
         default="automatic",
     )
 
+    # Storage Billing Configuration
+    storage_bill_in_advance = fields.Boolean(
+        string="Bill Storage in Advance",
+        default=True,
+        help="If enabled, storage fees will be billed in advance",
+    )
+
+    storage_advance_months = fields.Integer(
+        string="Storage Advance Months",
+        default=1,
+        help="Number of months to bill storage in advance",
+    )
+
+    # Billing Schedule Configuration
+    billing_day = fields.Selection(
+        selection=[(str(i), str(i)) for i in range(1, 29)],
+        string="Billing Day",
+        default="1",
+        help="Day of month for billing (1-28)",
+    )
+
+    # Auto-generation Configuration
+    auto_generate_storage_invoices = fields.Boolean(
+        string="Auto Generate Storage Invoices",
+        default=True,
+        help="Automatically generate storage invoices",
+    )
+
+    auto_generate_service_invoices = fields.Boolean(
+        string="Auto Generate Service Invoices",
+        default=True,
+        help="Automatically generate service invoices",
+    )
+
+    # Payment Terms
+    invoice_due_days = fields.Integer(
+        string="Invoice Due Days",
+        default=30,
+        help="Number of days until invoice is due",
+    )
+
     invoice_delivery_method = fields.Selection(
         [
             ("email", "Email"),
@@ -340,6 +381,19 @@ class CustomerBillingProfile(models.Model):
             ]
             if any(rate and rate < 0 for rate in rates):
                 raise ValidationError("Billing rates must be positive")
+
+    @api.constrains("billing_day", "storage_advance_months", "invoice_due_days")
+    def _check_billing_configuration(self):
+        """Validate billing configuration fields"""
+        for record in self:
+            if record.billing_day and (
+                record.billing_day < 1 or record.billing_day > 28
+            ):
+                raise ValidationError("Billing day must be between 1 and 28")
+            if record.storage_advance_months and record.storage_advance_months < 1:
+                raise ValidationError("Storage advance months must be at least 1")
+            if record.invoice_due_days and record.invoice_due_days < 1:
+                raise ValidationError("Invoice due days must be at least 1")
 
     # ============================================================================
     # ODOO FRAMEWORK INTEGRATION

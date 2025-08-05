@@ -209,7 +209,7 @@ class TransitoryFieldConfig(models.Model):
         compute="_compute_config_dependency_count", string="Configuration Dependencies"
     )
     config_child_count = fields.Integer(
-        compute="_compute_config_child_count", string="Child Configurations"
+        compute="_compute_config_child_count", string="Child Count"
     )
     is_deployed = fields.Boolean(compute="_compute_is_deployed", string="Is Deployed")
 
