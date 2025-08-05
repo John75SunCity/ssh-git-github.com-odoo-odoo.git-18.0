@@ -87,7 +87,9 @@ class PortalRequest(models.Model):
     # ============================================================================
     # CUSTOMER & CONTACT INFORMATION
     # ============================================================================
-    partner_id = fields.Many2one("res.partner", string="Customer", required=True, tracking=True, index=True)
+    partner_id = fields.Many2one(
+        "res.partner", string="Customer", required=True, tracking=True, index=True
+    )
     contact_person = fields.Char(string="Contact Person", tracking=True)
     contact_email = fields.Char(string="Contact Email", tracking=True)
     contact_phone = fields.Char(string="Contact Phone", tracking=True)
@@ -111,8 +113,12 @@ class PortalRequest(models.Model):
         string="Currency",
         default=lambda self: self.env.company.currency_id,
     )
-    estimated_cost = fields.Monetary(string="Estimated Cost", currency_field="currency_id", tracking=True)
-    actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id", tracking=True)
+    estimated_cost = fields.Monetary(
+        string="Estimated Cost", currency_field="currency_id", tracking=True
+    )
+    actual_cost = fields.Monetary(
+        string="Actual Cost", currency_field="currency_id", tracking=True
+    )
     billing_status = fields.Selection(
         [
             ("not_billable", "Not Billable"),
@@ -156,7 +162,9 @@ class PortalRequest(models.Model):
     # ============================================================================
     # COMPLIANCE & TRACKING
     # ============================================================================
-    requires_naid_compliance = fields.Boolean(string="NAID Compliance Required", default=False)
+    requires_naid_compliance = fields.Boolean(
+        string="NAID Compliance Required", default=False
+    )
     compliance_notes = fields.Text(string="Compliance Notes")
     audit_trail = fields.Text(string="Audit Trail")
     certificate_of_destruction = fields.Binary(string="Certificate of Destruction")
@@ -164,14 +172,20 @@ class PortalRequest(models.Model):
 
     # ============================================================================
     # RELATIONSHIP FIELDS
-        # Missing inverse field for service.item One2many relationship
+    # Missing inverse field for service.item One2many relationship
     service_item_id = fields.Many2one("service.item", string="Service Item")
 
-# ============================================================================
+    # ============================================================================
     # Service connections
-    shredding_service_id = fields.Many2one("shredding.service", string="Related Shredding Service")
-    pickup_request_id = fields.Many2one("pickup.request", string="Related Pickup Request")
-    work_order_id = fields.Many2one("document.retrieval.work.order", string="Related Work Order")
+    shredding_service_id = fields.Many2one(
+        "shredding.service", string="Related Shredding Service"
+    )
+    pickup_request_id = fields.Many2one(
+        "pickup.request", string="Related Pickup Request"
+    )
+    work_order_id = fields.Many2one(
+        "document.retrieval.work.order", string="Related Work Order"
+    )
 
     # Document attachments
     attachment_ids = fields.One2many(
@@ -183,11 +197,15 @@ class PortalRequest(models.Model):
 
     # Child requests
     parent_request_id = fields.Many2one("portal.request", string="Parent Request")
-    child_request_ids = fields.One2many("portal.request", "parent_request_id", string="Child Requests")
+    child_request_ids = fields.One2many(
+        "portal.request", "parent_request_id", string="Child Requests"
+    )
 
     # Mail framework fields
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
@@ -208,21 +226,32 @@ class PortalRequest(models.Model):
         now = fields.Datetime.now()
         for record in self:
             record.is_overdue = (
-                record.deadline and record.deadline < now and record.state not in ["completed", "cancelled"]
+                record.deadline
+                and record.deadline < now
+                and record.state not in ["completed", "cancelled"]
             )
 
     @api.depends("actual_hours", "estimated_hours")
     def _compute_time_variance(self):
         for record in self:
             if record.estimated_hours:
-                record.time_variance = ((record.actual_hours - record.estimated_hours) / record.estimated_hours) * 100
+                record.time_variance = (
+                    (record.actual_hours - record.estimated_hours)
+                    / record.estimated_hours
+                ) * 100
             else:
                 record.time_variance = 0.0
 
-    child_request_count = fields.Integer(compute="_compute_child_request_count", string="Child Requests")
-    attachment_count = fields.Integer(compute="_compute_attachment_count", string="Attachments")
+    child_request_count = fields.Integer(
+        compute="_compute_child_request_count", string="Child Request Count"
+    )
+    attachment_count = fields.Integer(
+        compute="_compute_attachment_count", string="Attachment Count"
+    )
     is_overdue = fields.Boolean(compute="_compute_is_overdue", string="Overdue")
-    time_variance = fields.Float(compute="_compute_time_variance", string="Time Variance (%)")
+    time_variance = fields.Float(
+        compute="_compute_time_variance", string="Time Variance (%)"
+    )
 
     # ============================================================================
     # DEFAULT & SEQUENCE METHODS
@@ -231,7 +260,9 @@ class PortalRequest(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if not vals.get("name"):
-                vals["name"] = self.env["ir.sequence"].next_by_code("portal.request") or "REQ/"
+                vals["name"] = (
+                    self.env["ir.sequence"].next_by_code("portal.request") or "REQ/"
+                )
         return super().create(vals_list)
 
     def _get_default_values(self):
@@ -347,7 +378,10 @@ class PortalRequest(models.Model):
         required_fields = ["partner_id", "request_type"]
         for field in required_fields:
             if not getattr(self, field):
-                raise UserError(_("Field '%s' is required before submission.") % self._fields[field].string)
+                raise UserError(
+                    _("Field '%s' is required before submission.")
+                    % self._fields[field].string
+                )
 
     def _create_work_order(self):
         if self.request_type in ["destruction", "retrieval", "shredding"]:
@@ -372,8 +406,14 @@ class PortalRequest(models.Model):
     @api.constrains("deadline", "requested_date")
     def _check_dates(self):
         for record in self:
-            if record.deadline and record.requested_date and record.deadline < record.requested_date:
-                raise ValidationError(_("Deadline cannot be before the requested date."))
+            if (
+                record.deadline
+                and record.requested_date
+                and record.deadline < record.requested_date
+            ):
+                raise ValidationError(
+                    _("Deadline cannot be before the requested date.")
+                )
 
     @api.constrains("estimated_cost", "actual_cost")
     def _check_costs(self):

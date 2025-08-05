@@ -30,7 +30,7 @@ class RecordsDocument(models.Model):
     )
     user_id = fields.Many2one(
         "res.users",
-        string="Responsible User",
+        string="Document Manager",
         default=lambda self: self.env.user,
         tracking=True,
     )

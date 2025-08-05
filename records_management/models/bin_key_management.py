@@ -44,7 +44,9 @@ class BinKeyManagement(models.Model):
     )
 
     # Timestamps
-    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    date_created = fields.Datetime(
+        string="Key Created Date", default=fields.Datetime.now
+    )
     date_modified = fields.Datetime(string="Modified Date")
 
     # ============================================================================

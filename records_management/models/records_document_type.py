@@ -24,12 +24,7 @@ class RecordsDocumentType(models.Model):
         default=lambda self: self.env.company,
         required=True,
     )
-    user_id = fields.Many2one(
-        "res.users",
-        string="Responsible User",
-        default=lambda self: self.env.user,
-        tracking=True,
-    )
+    user_id = fields.Many2one("res.users", string="Document Type Manager", default=lambda self: self.env.user, tracking=True)
 
     # ============================================================================
     # STATE MANAGEMENT

@@ -37,7 +37,9 @@ class RecordsVehicle(models.Model):
     )
 
     # Timestamps
-    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    date_created = fields.Datetime(
+        string="Vehicle Created Date", default=fields.Datetime.now
+    )
     date_modified = fields.Datetime(string="Modified Date")
 
     # Control Fields

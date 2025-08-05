@@ -279,8 +279,8 @@ class VisitorPosWizard(models.TransientModel):
     # === COMPREHENSIVE MISSING FIELDS ===
     active = fields.Boolean(string="Flag", default=True)
     sequence = fields.Integer(string="Sequence", default=10)
-    created_date = fields.Date(string="Date", default=fields.Date.today)
-    updated_date = fields.Date(string="Date")
+    created_date = fields.Date(string="Visit Created Date", default=fields.Date.today)
+    updated_date = fields.Date(string="Visit Updated Date")
     # === BUSINESS CRITICAL FIELDS ===
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
@@ -297,7 +297,7 @@ class VisitorPosWizard(models.TransientModel):
     document_count = fields.Integer(string="Document Count", default=0)
     document_name = fields.Char(string="Document Name")
     # Note: Removed One2many relationships - TransientModel cannot have relationships with regular Models
-    payment_terms = fields.Char(string="Payment Terms")
+    payment_terms = fields.Char(string="Customer Payment Terms")
     shredding_type = fields.Selection(
         [("onsite", "On-site"), ("offsite", "Off-site"), ("witnessed", "Witnessed")],
         string="Shredding Type",

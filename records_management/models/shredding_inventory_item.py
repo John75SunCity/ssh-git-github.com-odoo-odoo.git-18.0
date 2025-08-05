@@ -84,7 +84,7 @@ class ShreddingInventoryItem(models.Model):
             ("completed", "Completed"),
             ("cancelled", "Cancelled"),
         ],
-        string="Status",
+        string="Processing State",
         default="draft",
         tracking=True,
     )

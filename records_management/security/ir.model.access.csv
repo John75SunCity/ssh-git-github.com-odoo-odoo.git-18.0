@@ -126,12 +126,10 @@ access_location_report_wizard_manager,location.report.wizard.manager,model_locat
 access_customer_inventory_user,customer.inventory.user,model_customer_inventory,records_management.group_records_user,1,1,1,0
 access_customer_inventory_manager,customer.inventory.manager,model_customer_inventory,records_management.group_records_manager,1,1,1,1
 
-# Document Retrieval Work Order System
 access_document_retrieval_work_order_user,document.retrieval.work.order.user,model_document_retrieval_work_order,records_management.group_records_user,1,1,1,0
 access_document_retrieval_work_order_manager,document.retrieval.work.order.manager,model_document_retrieval_work_order,records_management.group_records_manager,1,1,1,1
 access_document_retrieval_work_order_portal,document.retrieval.work.order.portal,model_document_retrieval_work_order,base.group_portal,1,0,0,0
 
-# Document Retrieval Support Models
 access_document_retrieval_item_user,document.retrieval.item.user,model_document_retrieval_item,records_management.group_records_user,1,1,1,0
 access_document_retrieval_item_manager,document.retrieval.item.manager,model_document_retrieval_item,records_management.group_records_manager,1,1,1,1
 access_document_retrieval_team_user,document.retrieval.team.user,model_document_retrieval_team,records_management.group_records_user,1,1,1,0
@@ -143,7 +141,6 @@ access_document_retrieval_equipment_manager,document.retrieval.equipment.manager
 access_document_retrieval_metrics_user,document.retrieval.metrics.user,model_document_retrieval_metrics,records_management.group_records_user,1,0,0,0
 access_document_retrieval_metrics_manager,document.retrieval.metrics.manager,model_document_retrieval_metrics,records_management.group_records_manager,1,1,1,1
 
-# New Missing Models (Fix for KeyError exceptions)
 access_paper_bale_source_document_user,paper.bale.source.document.user,model_paper_bale_source_document,records_management.group_records_user,1,1,1,0
 access_paper_bale_source_document_manager,paper.bale.source.document.manager,model_paper_bale_source_document,records_management.group_records_manager,1,1,1,1
 access_signed_document_user,signed.document.user,model_signed_document,records_management.group_records_user,1,1,1,0
