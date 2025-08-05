@@ -92,7 +92,7 @@ class BarcodeStorageBox(models.Model):
     description = fields.Text(string="Description")
     notes = fields.Text(string="Internal Notes")
 
-        # ============================================================================
+    # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
     # Missing inverse field for barcode.product One2many relationship
