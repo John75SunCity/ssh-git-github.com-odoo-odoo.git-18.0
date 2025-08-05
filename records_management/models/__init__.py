@@ -70,6 +70,7 @@ from . import records_vehicle
 # Shredding services
 from . import shredding_team
 from . import shredding_equipment
+from . import maintenance_extensions
 from . import shredding_certificate
 from . import shredding_service
 from . import shredding_hard_drive
@@ -218,6 +219,13 @@ from . import product
 from . import product_template
 from . import barcode_product
 from . import barcode_models
+
+# Barcode support models (comprehensive system)
+from . import barcode_generation_history
+from . import barcode_pricing_tier
+from . import barcode_storage_box
+from . import processing_log
+from . import service_item
 
 # =============================================================================
 # VISITORS AND ACCESS MANAGEMENT

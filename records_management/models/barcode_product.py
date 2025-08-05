@@ -275,7 +275,10 @@ class BarcodeProduct(models.Model):
 
     # ============================================================================
     # RELATIONSHIP FIELDS
-    # ============================================================================
+        # Missing inverse field for barcode.storage.box One2many relationship
+    storage_box_id = fields.Many2one("barcode.storage.box", string="Storage Box")
+
+# ============================================================================
 
     # Product Relationships
     category_id = fields.Many2one("product.category", string="Product Category")

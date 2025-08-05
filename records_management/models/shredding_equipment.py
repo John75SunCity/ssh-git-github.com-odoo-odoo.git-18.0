@@ -1,59 +1,32 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from datetime import timedelta
 
 
-class ShreddingEquipment(models.Model):
-    _name = "shredding.equipment"
-    _description = "Shredding Equipment"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name"
+class MaintenanceEquipment(models.Model):
+    """
+    Extend Odoo's standard maintenance.equipment for Records Management shredding equipment.
+    This provides enterprise-grade maintenance workflow with Records Management customizations.
+    """
+
+    _inherit = "maintenance.equipment"
 
     # ============================================================================
-    # CORE IDENTIFICATION FIELDS
+    # RECORDS MANAGEMENT SPECIFIC FIELDS
     # ============================================================================
-    name = fields.Char(
-        string="Equipment Name", required=True, tracking=True, index=True
-    )
-    company_id = fields.Many2one(
-        "res.company", default=lambda self: self.env.company, required=True
-    )
-    user_id = fields.Many2one(
-        "res.users", default=lambda self: self.env.user, tracking=True
-    )
-    active = fields.Boolean(string="Active", default=True)
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("available", "Available"),
-            ("in_use", "In Use"),
-            ("maintenance", "Maintenance"),
-            ("retired", "Retired"),
-        ],
-        default="draft",
-        tracking=True,
-    )
-
-    # ============================================================================
-    # EQUIPMENT SPECIFICATIONS
-    # ============================================================================
-    equipment_type = fields.Selection(
+    equipment_category = fields.Selection(
         [
             ("paper_shredder", "Paper Shredder"),
             ("hard_drive_crusher", "Hard Drive Crusher"),
             ("media_destroyer", "Media Destroyer"),
             ("industrial_shredder", "Industrial Shredder"),
+            ("other", "Other"),
         ],
-        string="Equipment Type",
-        required=True,
+        string="Equipment Category",
+        default="paper_shredder",
     )
 
-    manufacturer = fields.Char(string="Manufacturer")
-    model = fields.Char(string="Model")
-    serial_number = fields.Char(string="Serial Number", index=True)
-    capacity_per_hour = fields.Float(
-        string="Capacity per Hour (lbs)", digits="Stock Weight", default=0.0
-    )
     security_level = fields.Selection(
         [
             ("level_1", "Level 1"),
@@ -67,37 +40,98 @@ class ShreddingEquipment(models.Model):
         default="level_3",
     )
 
-    # ============================================================================
-    # MAINTENANCE TRACKING
-    # ============================================================================
-    purchase_date = fields.Date(string="Purchase Date")
-    last_maintenance_date = fields.Date(string="Last Maintenance Date")
-    next_maintenance_date = fields.Date(string="Next Maintenance Date")
-    maintenance_notes = fields.Text(string="Maintenance Notes")
+    capacity_per_hour = fields.Float(
+        string="Capacity per Hour (lbs)",
+        digits="Stock Weight",
+        default=0.0,
+        help="Processing capacity in pounds per hour",
+    )
+
+    # NAID Compliance fields
+    naid_certified = fields.Boolean(string="NAID Certified", default=False)
+    naid_certification_number = fields.Char(string="NAID Certification Number")
+    naid_certification_expiry = fields.Date(string="NAID Certification Expiry")
+
+    destruction_method = fields.Selection(
+        [
+            ("cross_cut", "Cross Cut"),
+            ("strip_cut", "Strip Cut"),
+            ("pulverize", "Pulverize"),
+            ("crush", "Crush"),
+            ("degauss", "Degauss"),
+        ],
+        string="Destruction Method",
+    )
 
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    service_ids = fields.Many2many("shredding.service", string="Shredding Services")
-
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    shredding_service_ids = fields.One2many(
+        "shredding.service", "equipment_id", string="Shredding Services"
     )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("naid_certification_expiry")
+    def _compute_certification_status(self):
+        """Compute NAID certification status"""
+        today = fields.Date.today()
+        for equipment in self:
+            if equipment.naid_certification_expiry:
+                if equipment.naid_certification_expiry < today:
+                    equipment.certification_status = "expired"
+                elif equipment.naid_certification_expiry <= today + timedelta(days=30):
+                    equipment.certification_status = "expiring"
+                else:
+                    equipment.certification_status = "valid"
+            else:
+                equipment.certification_status = "none"
+
+    certification_status = fields.Selection(
+        [
+            ("none", "No Certification"),
+            ("valid", "Valid"),
+            ("expiring", "Expiring Soon"),
+            ("expired", "Expired"),
+        ],
+        string="Certification Status",
+        compute="_compute_certification_status",
+        store=True,
+    )
 
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    def action_make_available(self):
-        """Make equipment available"""
-        self.write({"state": "available"})
+    def action_renew_certification(self):
+        """Action to renew NAID certification"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Renew NAID Certification",
+            "res_model": "maintenance.request",
+            "view_mode": "form",
+            "context": {
+                "default_equipment_id": self.id,
+                "default_name": f"NAID Certification Renewal - {self.name}",
+                "default_request_type": "certification",
+                "default_priority": "2",
+            },
+            "target": "new",
+        }
 
-    def action_start_maintenance(self):
-        """Start maintenance"""
-        self.write({"state": "maintenance"})
-
-    def action_complete_maintenance(self):
-        """Complete maintenance"""
-        self.write({"state": "available", "last_maintenance_date": fields.Date.today()})
+    def action_schedule_maintenance(self):
+        """Schedule maintenance request for this equipment"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Schedule Maintenance",
+            "res_model": "maintenance.request",
+            "view_mode": "form",
+            "context": {
+                "default_equipment_id": self.id,
+                "default_name": f"Maintenance - {self.name}",
+                "default_request_type": "preventive",
+            },
+            "target": "new",
+        }

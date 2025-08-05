@@ -133,12 +133,17 @@ Records Management System - Enterprise Edition
         "website_sale",  # E-commerce functionality
         "sale_subscription",  # Subscriptions management
         "sale_renting",  # Rental management
-        # ====== FIELD SERVICE ======
-        "industry_fsm",  # Field service management
-        # ====== QUALITY & LEARNING ======
-        "quality_control",  # Quality management
+        # ====== MAINTENANCE MANAGEMENT ======
+        "maintenance",  # Equipment and maintenance management
+        # ====== QUALITY MANAGEMENT ======
+        "quality_control",  # Quality control and auditing (prevents loading errors)
+        # ====== LEARNING PLATFORM ======
         "website_slides",  # E-learning platform
     ],
+    # ====== OPTIONAL DEPENDENCIES (Loaded after this module) ======
+    # These modules will extend records_management if present
+    "auto_install": False,
+    "post_init_hook": "_post_init_check_optional_modules",
     "external_dependencies": {
         "python": [
             "qrcode",  # For QR code generation
@@ -243,8 +248,6 @@ Records Management System - Enterprise Edition
     ],
     "application": True,
     "installable": True,
-    "auto_install": False,
-    "post_init_hook": "post_init_hook",
     "assets": {
         "web.assets_backend": [
             "records_management/static/src/scss/records_management.scss",

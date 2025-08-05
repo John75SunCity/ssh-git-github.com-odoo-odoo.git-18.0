@@ -125,7 +125,8 @@ class ShreddingService(models.Model):
     team_id = fields.Many2one("shredding.team", string="Assigned Team")
     technician_ids = fields.Many2many("hr.employee", string="Technicians")
     vehicle_id = fields.Many2one("records.vehicle", string="Service Vehicle")
-    equipment_ids = fields.Many2many("shredding.equipment", string="Equipment")
+    equipment_ids = fields.Many2many("maintenance.equipment", string="Equipment")
+    equipment_id = fields.Many2one("maintenance.equipment", string="Primary Equipment")
     recycling_bale_id = fields.Many2one("paper.bale.recycling", string="Recycling Bale")
 
     # ============================================================================

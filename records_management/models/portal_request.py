@@ -164,7 +164,10 @@ class PortalRequest(models.Model):
 
     # ============================================================================
     # RELATIONSHIP FIELDS
-    # ============================================================================
+        # Missing inverse field for service.item One2many relationship
+    service_item_id = fields.Many2one("service.item", string="Service Item")
+
+# ============================================================================
     # Service connections
     shredding_service_id = fields.Many2one("shredding.service", string="Related Shredding Service")
     pickup_request_id = fields.Many2one("pickup.request", string="Related Pickup Request")
