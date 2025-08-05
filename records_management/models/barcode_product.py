@@ -287,7 +287,7 @@ class BarcodeProduct(models.Model):
 
     # Storage Container Relationship (for barcoded, tracked containers)
     storage_container_id = fields.Many2one(
-        "records.storage.container", string="Storage Container"
+        "records.container", string="Storage Container"
     )
 
     # ============================================================================
@@ -308,7 +308,7 @@ class BarcodeProduct(models.Model):
 
     # Storage Container Configuration (barcoded containers)
     storage_container_ids = fields.One2many(
-        "records.storage.container", "barcode_product_id", string="Storage Containers"
+        "records.container", "barcode_product_id", string="Storage Containers"
     )
 
     # Mail Thread Framework Fields

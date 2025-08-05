@@ -72,6 +72,11 @@ class RecordsContainer(models.Model):
         "records.location", string="Storage Location", tracking=True
     )
 
+    # Barcode Product Relationship (for barcoded containers)
+    barcode_product_id = fields.Many2one(
+        "barcode.product", string="Barcode Product", tracking=True
+    )
+
     # ============================================================================
     # CONTAINER SPECIFICATIONS
     # ============================================================================
