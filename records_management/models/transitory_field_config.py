@@ -13,7 +13,9 @@ class TransitoryFieldConfig(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Configuration Name", required=True, tracking=True, index=True)
+    name = fields.Char(
+        string="Configuration Name", required=True, tracking=True, index=True
+    )
     code = fields.Char(string="Configuration Code", index=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
@@ -26,7 +28,7 @@ class TransitoryFieldConfig(models.Model):
     )
     user_id = fields.Many2one(
         "res.users",
-        string="Responsible User",
+        string="Configuration Manager",
         default=lambda self: self.env.user,
         tracking=True,
     )
@@ -143,7 +145,9 @@ class TransitoryFieldConfig(models.Model):
     )
 
     version = fields.Char(string="Version", default="1.0")
-    previous_version_id = fields.Many2one("transitory.field.config", string="Previous Version")
+    previous_version_id = fields.Many2one(
+        "transitory.field.config", string="Previous Version"
+    )
     deployment_date = fields.Datetime(string="Deployment Date")
     rollback_date = fields.Datetime(string="Rollback Date")
 
@@ -167,34 +171,46 @@ class TransitoryFieldConfig(models.Model):
         string="Dependencies",
     )
 
-    child_config_ids = fields.One2many("transitory.field.config", "parent_config_id", string="Child Configurations")
-    parent_config_id = fields.Many2one("transitory.field.config", string="Parent Configuration")
+    child_config_ids = fields.One2many(
+        "transitory.field.config", "parent_config_id", string="Child Configurations"
+    )
+    parent_config_id = fields.Many2one(
+        "transitory.field.config", string="Parent Configuration"
+    )
 
     # Mail framework fields
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
     @api.depends("dependency_ids")
-    def _compute_dependency_count(self):
+    def _compute_config_dependency_count(self):
         for record in self:
-            record.dependency_count = len(record.dependency_ids)
+            record.config_dependency_count = len(record.dependency_ids)
 
     @api.depends("child_config_ids")
-    def _compute_child_count(self):
+    def _compute_config_child_count(self):
         for record in self:
-            record.child_count = len(record.child_config_ids)
+            record.config_child_count = len(record.child_config_ids)
 
     @api.depends("deployment_status", "deployment_date")
     def _compute_is_deployed(self):
         for record in self:
-            record.is_deployed = record.deployment_status == "deployed" and record.deployment_date
+            record.is_deployed = (
+                record.deployment_status == "deployed" and record.deployment_date
+            )
 
-    dependency_count = fields.Integer(compute="_compute_dependency_count", string="Dependencies")
-    child_count = fields.Integer(compute="_compute_child_count", string="Child Configurations")
+    config_dependency_count = fields.Integer(
+        compute="_compute_config_dependency_count", string="Configuration Dependencies"
+    )
+    config_child_count = fields.Integer(
+        compute="_compute_config_child_count", string="Child Configurations"
+    )
     is_deployed = fields.Boolean(compute="_compute_is_deployed", string="Is Deployed")
 
     # ============================================================================
@@ -204,7 +220,10 @@ class TransitoryFieldConfig(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if not vals.get("code"):
-                vals["code"] = self.env["ir.sequence"].next_by_code("transitory.field.config") or "TFC/"
+                vals["code"] = (
+                    self.env["ir.sequence"].next_by_code("transitory.field.config")
+                    or "TFC/"
+                )
         return super().create(vals_list)
 
     # ============================================================================
@@ -260,8 +279,13 @@ class TransitoryFieldConfig(models.Model):
         if not self.model_name or not self.field_name:
             raise ValidationError(_("Model name and field name are required."))
 
-        if self.field_type in ["many2one", "one2many", "many2many"] and not self.relation_model:
-            raise ValidationError(_("Relation model is required for relational fields."))
+        if (
+            self.field_type in ["many2one", "one2many", "many2many"]
+            and not self.relation_model
+        ):
+            raise ValidationError(
+                _("Relation model is required for relational fields.")
+            )
 
     def _execute_deployment(self):
         """Execute field deployment"""
@@ -285,14 +309,26 @@ class TransitoryFieldConfig(models.Model):
     @api.constrains("min_length", "max_length")
     def _check_length_constraints(self):
         for record in self:
-            if record.min_length and record.max_length and record.min_length > record.max_length:
-                raise ValidationError(_("Minimum length cannot be greater than maximum length."))
+            if (
+                record.min_length
+                and record.max_length
+                and record.min_length > record.max_length
+            ):
+                raise ValidationError(
+                    _("Minimum length cannot be greater than maximum length.")
+                )
 
     @api.constrains("min_value", "max_value")
     def _check_value_constraints(self):
         for record in self:
-            if record.min_value and record.max_value and record.min_value > record.max_value:
-                raise ValidationError(_("Minimum value cannot be greater than maximum value."))
+            if (
+                record.min_value
+                and record.max_value
+                and record.min_value > record.max_value
+            ):
+                raise ValidationError(
+                    _("Minimum value cannot be greater than maximum value.")
+                )
 
     @api.constrains("model_name", "field_name")
     def _check_field_uniqueness(self):
@@ -306,4 +342,8 @@ class TransitoryFieldConfig(models.Model):
                     ]
                 )
                 if existing:
-                    raise ValidationError(_("Field configuration already exists for this model and field."))
+                    raise ValidationError(
+                        _(
+                            "Field configuration already exists for this model and field."
+                        )
+                    )

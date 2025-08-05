@@ -29,7 +29,7 @@ class BarcodeProduct(models.Model):
     )
     user_id = fields.Many2one(
         "res.users",
-        string="Responsible User",
+        string="Product Manager",
         default=lambda self: self.env.user,
         tracking=True,
     )
@@ -162,7 +162,9 @@ class BarcodeProduct(models.Model):
 
     # Customer Relationships
     customer_id = fields.Many2one("res.partner", string="Primary Customer")
-    customer_location_id = fields.Many2one("records.location", string="Customer Location")
+    customer_location_id = fields.Many2one(
+        "records.location", string="Customer Location"
+    )
 
     # Location Settings
     storage_location_id = fields.Many2one("records.location", string="Storage Location")
@@ -256,13 +258,19 @@ class BarcodeProduct(models.Model):
 
     # Capacity Management
     fill_level = fields.Float(
-        string="Fill Level %", digits=(5, 2), default=0.0, help="Current fill percentage"
+        string="Fill Level %",
+        digits=(5, 2),
+        default=0.0,
+        help="Current fill percentage",
     )
     max_capacity = fields.Float(
         string="Maximum Capacity", digits=(8, 2), help="Maximum storage capacity"
     )
     current_usage = fields.Float(
-        string="Current Usage", digits=(8, 2), compute="_compute_current_usage", store=True
+        string="Current Usage",
+        digits=(8, 2),
+        compute="_compute_current_usage",
+        store=True,
     )
 
     # Performance Metrics
@@ -275,10 +283,10 @@ class BarcodeProduct(models.Model):
 
     # ============================================================================
     # RELATIONSHIP FIELDS
-        # Missing inverse field for barcode.storage.box One2many relationship
+    # Missing inverse field for barcode.storage.box One2many relationship
     storage_box_id = fields.Many2one("barcode.storage.box", string="Storage Box")
 
-# ============================================================================
+    # ============================================================================
 
     # Product Relationships
     category_id = fields.Many2one("product.category", string="Product Category")
@@ -324,7 +332,9 @@ class BarcodeProduct(models.Model):
         """Compute utilization rate percentage"""
         for record in self:
             if record.max_capacity:
-                record.utilization_rate = (record.current_usage / record.max_capacity) * 100
+                record.utilization_rate = (
+                    record.current_usage / record.max_capacity
+                ) * 100
             else:
                 record.utilization_rate = 0.0
 
@@ -346,19 +356,23 @@ class BarcodeProduct(models.Model):
         self.ensure_one()
         if not self.generation_batch_size:
             raise UserError(_("Please set generation batch size."))
-        
+
         # Generate barcodes logic here
-        self.write({
-            'total_generated': self.total_generated + self.generation_batch_size,
-            'next_sequence_number': self.next_sequence_number + self.generation_batch_size,
-        })
-        
+        self.write(
+            {
+                "total_generated": self.total_generated + self.generation_batch_size,
+                "next_sequence_number": self.next_sequence_number
+                + self.generation_batch_size,
+            }
+        )
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
                 "title": _("Barcodes Generated"),
-                "message": _("Generated %s barcodes successfully.") % self.generation_batch_size,
+                "message": _("Generated %s barcodes successfully.")
+                % self.generation_batch_size,
                 "type": "success",
                 "sticky": False,
             },
@@ -369,7 +383,7 @@ class BarcodeProduct(models.Model):
         self.ensure_one()
         if not self.barcode:
             raise UserError(_("Please enter a barcode to validate."))
-        
+
         # Validation logic here
         return {
             "type": "ir.actions.client",
@@ -418,7 +432,9 @@ class BarcodeProduct(models.Model):
             if record.barcode and record.validate_format:
                 # Add format validation logic
                 if len(record.barcode) < 3:
-                    raise ValidationError(_("Barcode must be at least 3 characters long."))
+                    raise ValidationError(
+                        _("Barcode must be at least 3 characters long.")
+                    )
 
     @api.constrains("base_price", "cost_price", "sale_price")
     def _check_pricing(self):
@@ -437,7 +453,9 @@ class BarcodeProduct(models.Model):
         for record in self:
             if record.fill_level and (record.fill_level < 0 or record.fill_level > 100):
                 raise ValidationError(_("Fill level must be between 0 and 100."))
-            if record.utilization_rate and (record.utilization_rate < 0 or record.utilization_rate > 100):
+            if record.utilization_rate and (
+                record.utilization_rate < 0 or record.utilization_rate > 100
+            ):
                 raise ValidationError(_("Utilization rate must be between 0 and 100."))
 
     @api.constrains("weight", "volume", "capacity")
@@ -459,23 +477,28 @@ class BarcodeProduct(models.Model):
     def create(self, vals):
         """Override create to set defaults"""
         if not vals.get("name"):
-            vals["name"] = self.env["ir.sequence"].next_by_code("barcode.product") or _("New")
+            vals["name"] = self.env["ir.sequence"].next_by_code("barcode.product") or _(
+                "New"
+            )
         return super().create(vals)
 
     def write(self, vals):
         """Override write to track important changes"""
-        if 'state' in vals:
+        if "state" in vals:
             for record in self:
                 record.message_post(
-                    body=_("Status changed from %s to %s") % (
-                        dict(record._fields['state'].selection).get(record.state),
-                        dict(record._fields['state'].selection).get(vals['state'])
+                    body=_("Status changed from %s to %s")
+                    % (
+                        dict(record._fields["state"].selection).get(record.state),
+                        dict(record._fields["state"].selection).get(vals["state"]),
                     )
                 )
         return super().write(vals)
 
     def unlink(self):
         """Override unlink to prevent deletion of active products"""
-        if any(record.state == 'active' for record in self):
-            raise UserError(_("Cannot delete active barcode products. Please archive them first."))
+        if any(record.state == "active" for record in self):
+            raise UserError(
+                _("Cannot delete active barcode products. Please archive them first.")
+            )
         return super().unlink()
