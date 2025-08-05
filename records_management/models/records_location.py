@@ -69,12 +69,21 @@ class RecordsLocation(models.Model):
     )
 
     storage_capacity = fields.Integer(string="Storage Capacity (boxes)")
-    current_utilization = fields.Integer(string="Current Utilization", compute="_compute_current_utilization")
-    utilization_percentage = fields.Float(string="Utilization %", compute="_compute_utilization_percentage")
+    current_utilization = fields.Integer(
+        string="Current Utilization", compute="_compute_current_utilization"
+    )
+    available_spaces = fields.Integer(
+        string="Available Spaces", compute="_compute_available_spaces"
+    )
+    utilization_percentage = fields.Float(
+        string="Utilization %", compute="_compute_utilization_percentage"
+    )
 
     # Physical constraints
     max_weight_capacity = fields.Float(string="Max Weight Capacity (lbs)")
-    temperature_controlled = fields.Boolean(string="Temperature Controlled", default=False)
+    temperature_controlled = fields.Boolean(
+        string="Temperature Controlled", default=False
+    )
     humidity_controlled = fields.Boolean(string="Humidity Controlled", default=False)
     fire_suppression = fields.Boolean(string="Fire Suppression", default=False)
     security_level = fields.Selection(
@@ -115,29 +124,47 @@ class RecordsLocation(models.Model):
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    # Records and boxes at this location
-    records_box_ids = fields.One2many("records.box", "location_id", string="Records Boxes")
+    # Records and containers at this location
+    container_ids = fields.One2many(
+        "records.container", "location_id", string="Records Containers"
+    )
     parent_location_id = fields.Many2one("records.location", string="Parent Location")
-    child_location_ids = fields.One2many("records.location", "parent_location_id", string="Child Locations")
+    child_location_ids = fields.One2many(
+        "records.location", "parent_location_id", string="Child Locations"
+    )
 
     # Mail framework fields
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
-    @api.depends("records_box_ids")
+    @api.depends("container_ids")
     def _compute_current_utilization(self):
         for record in self:
-            record.current_utilization = len(record.records_box_ids)
+            record.current_utilization = len(record.container_ids)
+
+    @api.depends("storage_capacity", "current_utilization")
+    def _compute_available_spaces(self):
+        for record in self:
+            if record.storage_capacity > 0:
+                record.available_spaces = max(
+                    0, record.storage_capacity - record.current_utilization
+                )
+            else:
+                record.available_spaces = 0
 
     @api.depends("current_utilization", "storage_capacity")
     def _compute_utilization_percentage(self):
         for record in self:
             if record.storage_capacity > 0:
-                record.utilization_percentage = (record.current_utilization / record.storage_capacity) * 100
+                record.utilization_percentage = (
+                    record.current_utilization / record.storage_capacity
+                ) * 100
             else:
                 record.utilization_percentage = 0.0
 
@@ -150,11 +177,16 @@ class RecordsLocation(models.Model):
     def _compute_is_available(self):
         for record in self:
             record.is_available = (
-                record.operational_status == "active" and record.current_utilization < record.storage_capacity
+                record.operational_status == "active"
+                and record.current_utilization < record.storage_capacity
             )
 
-    child_count = fields.Integer(compute="_compute_child_count", string="Child Locations")
-    is_available = fields.Boolean(compute="_compute_is_available", string="Available for Storage")
+    child_count = fields.Integer(
+        compute="_compute_child_count", string="Child Locations"
+    )
+    is_available = fields.Boolean(
+        compute="_compute_is_available", string="Available for Storage"
+    )
 
     # ============================================================================
     # DEFAULT METHODS
@@ -163,17 +195,19 @@ class RecordsLocation(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if not vals.get("code"):
-                vals["code"] = self.env["ir.sequence"].next_by_code("records.location") or "LOC/"
+                vals["code"] = (
+                    self.env["ir.sequence"].next_by_code("records.location") or "LOC/"
+                )
         return super().create(vals_list)
 
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    def action_view_boxes(self):
+    def action_view_containers(self):
         return {
             "type": "ir.actions.act_window",
-            "name": "Records Boxes",
-            "res_model": "records.box",
+            "name": "Records Containers",
+            "res_model": "records.container",
             "view_mode": "tree,form",
             "domain": [("location_id", "=", self.id)],
             "context": {"default_location_id": self.id},
@@ -241,6 +275,8 @@ class RecordsLocation(models.Model):
     def _check_code_uniqueness(self):
         for record in self:
             if record.code:
-                existing = self.search([("code", "=", record.code), ("id", "!=", record.id)])
+                existing = self.search(
+                    [("code", "=", record.code), ("id", "!=", record.id)]
+                )
                 if existing:
                     raise ValidationError(_("Location code must be unique."))

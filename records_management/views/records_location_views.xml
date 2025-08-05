@@ -9,11 +9,11 @@
         <field name="arch" type="xml">
             <kanban default_group_by="location_type" class="o_kanban_location_dashboard">
                 <field name="name"/>
-                <field name="box_count"/>
-                <field name="capacity"/>
+                <field name="location_type"/>
                 <field name="current_utilization"/>
-                <field name="available_utilization"/>
+                <field name="storage_capacity"/>
                 <field name="available_spaces"/>
+                <field name="utilization_percentage"/>
                 <field name="active"/>
                 <templates>
                     <t t-name="card">
@@ -40,16 +40,16 @@
                                 <div class="o_kanban_primary_left">
                                     <div class="row">
                                         <div class="col-6">
-                                            <button class="btn btn-primary btn-sm" type="object" name="action_view_boxes">
+                                            <button class="btn btn-primary btn-sm" type="object" name="action_view_containers">
                                                 <i class="fa fa-cube"/>
- View Boxes
+ View Containers
                                             </button>
                                         </div>
                                         <div class="col-6">
                                             <div class="text-right">
                                                 <span class="badge badge-info">
                                                     <field name="current_utilization"/>
-/                                                    <field name="capacity"/>
+/                                                    <field name="storage_capacity"/>
  Used
                                                 </span>
                                                 <br/>
@@ -61,13 +61,13 @@
                                         </div>
                                     </div>
                                     <div class="progress mt-2" style="height: 8px;">
-                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + (record.current_utilization.raw_value / record.capacity.raw_value * 100) + '%'"/>
+                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + record.utilization_percentage.raw_value + '%'"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Location</a>
-                                <a role="menuitem" type="object" name="action_view_boxes" class="dropdown-item">📦 View Boxes</a>
+                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">📦 View Containers</a>
                                 <a role="menuitem" type="object" name="action_location_report" class="dropdown-item">📊 Location Report</a>
                                 <div class="dropdown-divider"/>
                                 <a role="menuitem" type="delete" class="dropdown-item">🗑️ Archive</a>
@@ -84,16 +84,15 @@
         <field name="name">records.location.list</field>
         <field name="model">records.location</field>
         <field name="arch" type="xml">
-            <list decoration-success="current_utilization &lt; capacity * 0.8" decoration-warning="current_utilization &gt;= capacity * 0.8 and current_utilization &lt; capacity" decoration-danger="current_utilization &gt;= capacity">
+            <list decoration-success="current_utilization &lt; storage_capacity * 0.8" decoration-warning="current_utilization &gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &gt;= storage_capacity">
                 <field name="name" string="🏢 Location Name"/>
                 <field name="location_type" string="📂 Type"/>
-                <field name="capacity" string="🔢 Capacity"/>
+                <field name="storage_capacity" string="🔢 Capacity"/>
                 <field name="current_utilization" string="📦 Current Usage"/>
-                <field name="current_utilization" string="📊 Utilization %" widget="percentage"/>
-                <field name="available_utilization" string="🆓 Available %" widget="percentage"/>
-                <field name="available_spaces" string="📭 Open Spaces"/>
+                <field name="available_spaces" string="🆓 Available Spaces"/>
+                <field name="utilization_percentage" string="📊 Utilization %" widget="percentage"/>
                 <field name="active" string="✅ Active"/>
-                <button name="action_view_boxes" type="object" string="View Boxes" icon="fa-cube" class="btn-link"/>
+                <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
             </list>
         </field>
     </record>
@@ -105,19 +104,19 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_view_boxes" type="object" string="📦 View Boxes" class="btn-primary"/>
+                    <button name="action_view_containers" type="object" string="📦 View Containers" class="btn-primary"/>
                     <button name="action_location_report" type="object" string="📊 Generate Report" class="btn-secondary"/>
                     <field name="active" widget="boolean_toggle"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_boxes" icon="fa-cube">
-                            <field string="Boxes" name="box_count" widget="statinfo"/>
+                        <button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-cube">
+                            <field string="Containers" name="current_utilization" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_location_report" icon="fa-bar-chart">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
-                                    <field name="current_utilization"/>
+                                    <field name="utilization_percentage"/>
 %</span>
                                 <span class="o_stat_text">Utilization</span>
                             </div>
@@ -139,12 +138,10 @@
                             <field name="parent_location_id" string="Parent Location"/>
                         </group>
                         <group string="📊 Capacity &amp; Usage">
-                            <field name="capacity"/>
+                            <field name="storage_capacity"/>
                             <field name="current_utilization"/>
-                            <field name="current_utilization" widget="percentage"/>
-                            <separator string="Available Space"/>
-                            <field name="available_utilization" widget="percentage"/>
                             <field name="available_spaces"/>
+                            <field name="utilization_percentage" widget="percentage"/>
                         </group>
                     </group>
 
@@ -153,7 +150,7 @@
                             <field name="container_ids" mode="list">
                                 <list>
                                     <field name="name"/>
-                                    <field name="customer_id"/>
+                                    <field name="partner_id"/>
                                     <field name="state"/>
                                     <field name="stored_date"/>
                                 </list>
@@ -186,14 +183,13 @@
                 <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
                 <field name="location_type"/>
 
-                <filter string="🟢 Available Space" name="available_space" domain="[('current_utilization', '&lt;', 'capacity')]"/>
-                <filter string="🟡 Near Capacity" name="near_capacity" domain="[('current_utilization', '&gt;=', 'capacity * 0.8')]"/>
-                <filter string="🔴 At Capacity" name="at_capacity" domain="[('current_utilization', '&gt;=', 'capacity')]"/>
+                <filter string="🟢 Available Space" name="available_space" domain="[('available_spaces', '&gt;', 0)]"/>
+                <filter string="🟡 Near Capacity" name="near_capacity" domain="[('utilization_percentage', '&gt;=', 80)]"/>
+                <filter string="🔴 At Capacity" name="at_capacity" domain="[('current_utilization', '&gt;=', 'storage_capacity')]"/>
 
                 <separator/>
-                <filter string="🆓 High Availability (>50%)" name="high_availability" domain="[('available_utilization', '&gt;', 50)]"/>
-                <filter string="📭 10+ Open Spaces" name="many_open_spaces" domain="[('available_spaces', '&gt;=', 10)]"/>
-                <filter string="🎯 Optimal Load (20-80%)" name="optimal_load" domain="[('current_utilization', '&gt;=', 20), ('current_utilization', '&lt;=', 80)]"/>
+                <filter string="🎯 Optimal Load (20-80%)" name="optimal_load" domain="[('utilization_percentage', '&gt;=', 20), ('utilization_percentage', '&lt;=', 80)]"/>
+                <filter string="🆓 Lots of Space (&gt;10)" name="lots_of_space" domain="[('available_spaces', '&gt;', 10)]"/>
 
                 <separator/>
                 <filter string="📦 Active Locations" name="active" domain="[('active', '=', True)]"/>
