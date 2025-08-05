@@ -186,6 +186,9 @@ class RecordsContainer(models.Model):
     current_movement_id = fields.Many2one(
         "records.container.movement", string="Current Movement"
     )
+    converter_id = fields.Many2one(
+        "records.container.type.converter", string="Converter"
+    )
 
     # ============================================================================
     # BUSINESS METHODS

@@ -44,6 +44,9 @@ class RecordsChainOfCustody(models.Model):
     user_id = fields.Many2one(
         "res.users", string="Assigned User", default=lambda self: self.env.user
     )
+    work_order_id = fields.Many2one(
+        "document.retrieval.work.order", string="Work Order"
+    )
     active = fields.Boolean(string="Active", default=True)
 
     # State management

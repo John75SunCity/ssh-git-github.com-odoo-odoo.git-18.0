@@ -120,6 +120,7 @@ class PaperBale(models.Model):
     sale_price = fields.Monetary(string="Sale Price", currency_field='currency_id')
     cost = fields.Monetary(string="Cost", currency_field='currency_id')
     currency_id = fields.Many2one("res.currency", related="company_id.currency_id")
+    load_id = fields.Many2one("load", string="Load")
     
     # ============================================================================
     # ENVIRONMENTAL AND METRICS

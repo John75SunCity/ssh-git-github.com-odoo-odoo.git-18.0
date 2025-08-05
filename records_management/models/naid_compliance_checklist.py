@@ -20,6 +20,7 @@ class NAIDComplianceChecklist(models.Model):
     name = fields.Char(string="Name", required=True, tracking=True)
     company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
     user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    compliance_id = fields.Many2one("naid.compliance", string="Compliance")
     active = fields.Boolean(default=True)
 
     # Basic state management
