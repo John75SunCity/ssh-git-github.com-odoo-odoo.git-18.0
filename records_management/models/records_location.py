@@ -46,7 +46,7 @@ class RecordsLocation(models.Model):
     street = fields.Char(string="Street")
     street2 = fields.Char(string="Street 2")
     city = fields.Char(string="City")
-    state_id = fields.Many2one("res.country.state", string="State")
+    state = fields.Char(string="State/Province")
     zip = fields.Char(string="ZIP Code")
     country_id = fields.Many2one("res.country", string="Country")
 

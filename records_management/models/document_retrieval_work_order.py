@@ -209,7 +209,7 @@ class DocumentRetrievalWorkOrder(models.Model):
     retrieval_items_ids = fields.One2many(
         "document.retrieval.item", "work_order_id", string="Retrieval Items"
     )
-    project_id = fields.Many2one("project.project", string="Project")
+    project_task_id = fields.Many2one("project.task", string="Related Project Task")
     task_id = fields.Many2one("project.task", string="Related Task")
     custody_log_ids = fields.One2many(
         "records.chain.of.custody", "work_order_id", string="Chain of Custody"

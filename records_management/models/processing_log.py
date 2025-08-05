@@ -105,13 +105,15 @@ class ProcessingLog(models.Model):
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    records_box_id = fields.Many2one("records.box", string="Related Box")
+    records_container_id = fields.Many2one(
+        "records.container", string="Related Container"
+    )
     pickup_request_id = fields.Many2one("pickup.request", string="Related Pickup")
     shredding_service_id = fields.Many2one(
         "shredding.service", string="Related Shredding"
     )
 
-        # ============================================================================
+    # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
     # Missing inverse field for visitor.pos.wizard One2many relationship

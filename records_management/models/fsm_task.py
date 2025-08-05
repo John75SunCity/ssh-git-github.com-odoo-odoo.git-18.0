@@ -19,113 +19,149 @@ class FsmTask(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Task Name", required=True, tracking=True, index=True)
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.company, required=True)
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
     active = fields.Boolean(string="Active", default=True)
     description = fields.Text(string="Description")
-    
+
     # ============================================================================
     # TASK CLASSIFICATION AND PRIORITY
     # ============================================================================
-    task_type = fields.Selection([
-        ("pickup", "Item Pickup"),
-        ("delivery", "Item Delivery"),
-        ("shredding", "On-Site Shredding"),
-        ("scanning", "Document Scanning"),
-        ("storage", "Storage Service"),
-        ("retrieval", "Item Retrieval"),
-        ("maintenance", "Equipment Maintenance"),
-        ("consultation", "Customer Consultation"),
-    ], string="Task Type", required=True, tracking=True)
+    task_type = fields.Selection(
+        [
+            ("pickup", "Item Pickup"),
+            ("delivery", "Item Delivery"),
+            ("shredding", "On-Site Shredding"),
+            ("scanning", "Document Scanning"),
+            ("storage", "Storage Service"),
+            ("retrieval", "Item Retrieval"),
+            ("maintenance", "Equipment Maintenance"),
+            ("consultation", "Customer Consultation"),
+        ],
+        string="Task Type",
+        required=True,
+        tracking=True,
+    )
 
-    priority = fields.Selection([
-        ("0", "Low"),
-        ("1", "Normal"), 
-        ("2", "High"),
-        ("3", "Very High")
-    ], string="Priority", default="1", tracking=True)
+    priority = fields.Selection(
+        [("0", "Low"), ("1", "Normal"), ("2", "High"), ("3", "Very High")],
+        string="Priority",
+        default="1",
+        tracking=True,
+    )
 
-    status = fields.Selection([
-        ("draft", "Draft"),
-        ("scheduled", "Scheduled"),
-        ("in_progress", "In Progress"),
-        ("completed", "Completed"),
-        ("cancelled", "Cancelled")
-    ], string="Status", default="draft", tracking=True)
+    status = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("scheduled", "Scheduled"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
 
     # ============================================================================
     # SCHEDULING AND ASSIGNMENT
     # ============================================================================
-    scheduled_date = fields.Datetime(string="Scheduled Date", required=True, tracking=True)
+    scheduled_date = fields.Datetime(
+        string="Scheduled Date", required=True, tracking=True
+    )
     start_date = fields.Datetime(string="Start Date")
     end_date = fields.Datetime(string="End Date")
     deadline = fields.Date(string="Deadline")
-    
-    assigned_technician = fields.Many2one("res.users", string="Assigned Technician", tracking=True)
-    team_id = fields.Many2one("project.team", string="Service Team")
-    
+
+    assigned_technician = fields.Many2one(
+        "res.users", string="Assigned Technician", tracking=True
+    )
+    team_name = fields.Char(string="Service Team")
+
     # ============================================================================
     # CUSTOMER AND LOCATION
     # ============================================================================
-    customer_id = fields.Many2one("res.partner", string="Customer", required=True, tracking=True)
+    customer_id = fields.Many2one(
+        "res.partner", string="Customer", required=True, tracking=True
+    )
     customer_location_id = fields.Many2one("res.partner", string="Service Location")
     customer_contact_id = fields.Many2one("res.partner", string="Customer Contact")
-    
-    # ============================================================================ 
+
+    # ============================================================================
     # SERVICE SPECIFICATIONS
     # ============================================================================
-    service_type = fields.Selection([
-        ("regular", "Regular Service"),
-        ("emergency", "Emergency Service"),
-        ("scheduled", "Scheduled Maintenance"),
-        ("one_time", "One-Time Service")
-    ], string="Service Type", default="regular")
-    
-    confidentiality_level = fields.Selection([
-        ("public", "Public"),
-        ("internal", "Internal"), 
-        ("confidential", "Confidential"),
-        ("restricted", "Restricted")
-    ], string="Confidentiality Level", default="internal")
-    
+    service_type = fields.Selection(
+        [
+            ("regular", "Regular Service"),
+            ("emergency", "Emergency Service"),
+            ("scheduled", "Scheduled Maintenance"),
+            ("one_time", "One-Time Service"),
+        ],
+        string="Service Type",
+        default="regular",
+    )
+
+    confidentiality_level = fields.Selection(
+        [
+            ("public", "Public"),
+            ("internal", "Internal"),
+            ("confidential", "Confidential"),
+            ("restricted", "Restricted"),
+        ],
+        string="Confidentiality Level",
+        default="internal",
+    )
+
     # ============================================================================
     # TRACKING AND PROGRESS
     # ============================================================================
     completion_percentage = fields.Float(string="Completion %", default=0.0)
     estimated_hours = fields.Float(string="Estimated Hours")
     actual_hours = fields.Float(string="Actual Hours")
-    
+
     # ============================================================================
     # QUALITY AND FEEDBACK
     # ============================================================================
-    customer_satisfaction = fields.Selection([
-        ("1", "Very Dissatisfied"),
-        ("2", "Dissatisfied"),
-        ("3", "Neutral"),
-        ("4", "Satisfied"),
-        ("5", "Very Satisfied")
-    ], string="Customer Satisfaction")
-    
-    quality_rating = fields.Selection([
-        ("excellent", "Excellent"),
-        ("good", "Good"),
-        ("average", "Average"),
-        ("poor", "Poor")
-    ], string="Quality Rating")
-    
+    customer_satisfaction = fields.Selection(
+        [
+            ("1", "Very Dissatisfied"),
+            ("2", "Dissatisfied"),
+            ("3", "Neutral"),
+            ("4", "Satisfied"),
+            ("5", "Very Satisfied"),
+        ],
+        string="Customer Satisfaction",
+    )
+
+    quality_rating = fields.Selection(
+        [
+            ("excellent", "Excellent"),
+            ("good", "Good"),
+            ("average", "Average"),
+            ("poor", "Poor"),
+        ],
+        string="Quality Rating",
+    )
+
     # ============================================================================
     # FINANCIAL INFORMATION
     # ============================================================================
-    estimated_cost = fields.Monetary(string="Estimated Cost", currency_field="currency_id")
+    estimated_cost = fields.Monetary(
+        string="Estimated Cost", currency_field="currency_id"
+    )
     actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id")
     currency_id = fields.Many2one("res.currency", related="company_id.currency_id")
-    
-    invoice_status = fields.Selection([
-        ("to_invoice", "To Invoice"),
-        ("invoiced", "Invoiced"),
-        ("paid", "Paid")
-    ], string="Invoice Status", default="to_invoice")
-    
+
+    invoice_status = fields.Selection(
+        [("to_invoice", "To Invoice"), ("invoiced", "Invoiced"), ("paid", "Paid")],
+        string="Invoice Status",
+        default="to_invoice",
+    )
+
     # ============================================================================
     # COMMUNICATION AND NOTES
     # ============================================================================
@@ -133,20 +169,26 @@ class FsmTask(models.Model):
     customer_notes = fields.Text(string="Customer Notes")
     completion_notes = fields.Text(string="Completion Notes")
     special_instructions = fields.Text(string="Special Instructions")
-    
+
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
-    duration_hours = fields.Float(string="Duration (Hours)", compute="_compute_duration", store=True)
+    duration_hours = fields.Float(
+        string="Duration (Hours)", compute="_compute_duration", store=True
+    )
     is_overdue = fields.Boolean(string="Is Overdue", compute="_compute_overdue")
-    progress_status = fields.Char(string="Progress Status", compute="_compute_progress_status")
-    
+    progress_status = fields.Char(
+        string="Progress Status", compute="_compute_progress_status"
+    )
+
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    related_project_id = fields.Many2one("project.project", string="Related Project")
+    related_project_task_id = fields.Many2one(
+        "project.task", string="Related Project Task"
+    )
     equipment_ids = fields.Many2many("maintenance.equipment", string="Equipment Used")
-    
+
     # ============================================================================
     # COMPUTED METHODS
     # ============================================================================
@@ -166,9 +208,9 @@ class FsmTask(models.Model):
         today = fields.Date.today()
         for record in self:
             record.is_overdue = (
-                record.deadline and 
-                record.deadline < today and 
-                record.status not in ["completed", "cancelled"]
+                record.deadline
+                and record.deadline < today
+                and record.status not in ["completed", "cancelled"]
             )
 
     @api.depends("completion_percentage", "status")
@@ -190,10 +232,7 @@ class FsmTask(models.Model):
         self.ensure_one()
         if self.status != "scheduled":
             raise UserError("Only scheduled tasks can be started")
-        self.write({
-            "status": "in_progress",
-            "start_date": fields.Datetime.now()
-        })
+        self.write({"status": "in_progress", "start_date": fields.Datetime.now()})
         self.message_post(body="Task started")
 
     def action_complete_task(self):
@@ -201,11 +240,13 @@ class FsmTask(models.Model):
         self.ensure_one()
         if self.status != "in_progress":
             raise UserError("Only in-progress tasks can be completed")
-        self.write({
-            "status": "completed",
-            "end_date": fields.Datetime.now(),
-            "completion_percentage": 100.0
-        })
+        self.write(
+            {
+                "status": "completed",
+                "end_date": fields.Datetime.now(),
+                "completion_percentage": 100.0,
+            }
+        )
         self.message_post(body="Task completed")
 
     def action_cancel_task(self):
@@ -225,7 +266,7 @@ class FsmTask(models.Model):
             "res_model": "fsm.reschedule.wizard",
             "view_mode": "form",
             "target": "new",
-            "context": {"default_task_id": self.id}
+            "context": {"default_task_id": self.id},
         }
 
     # ============================================================================
@@ -284,17 +325,21 @@ class FsmTask(models.Model):
         return result
 
     @api.model
-    def _name_search(self, name, args=None, operator="ilike", limit=100, name_get_uid=None):
+    def _name_search(
+        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
+    ):
         """Enhanced search by name, customer, or task type"""
         args = args or []
         domain = []
         if name:
             domain = [
-                "|", "|", "|",
+                "|",
+                "|",
+                "|",
                 ("name", operator, name),
                 ("customer_id.name", operator, name),
                 ("task_type", operator, name),
-                ("description", operator, name)
+                ("description", operator, name),
             ]
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
@@ -302,5 +347,7 @@ class FsmTask(models.Model):
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")

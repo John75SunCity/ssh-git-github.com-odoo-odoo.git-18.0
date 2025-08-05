@@ -183,7 +183,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
     # === DEPARTMENT AND LOCATION ===
     department_id = fields.Many2one(
-        "hr.department",
+        "records.department",
         string="Department",
         help="Department initiating the permanent flag operation",
     )

@@ -28,7 +28,18 @@ class AdvancedBilling(models.Model):
     )
     currency_id = fields.Many2one("res.currency", string="Currency")
     invoice_id = fields.Many2one("account.move", string="Invoice")
-    payment_term_id = fields.Many2one("account.payment.term", string="Payment Terms")
+    payment_terms = fields.Selection(
+        [
+            ("immediate", "Immediate Payment"),
+            ("net_15", "Net 15 Days"),
+            ("net_30", "Net 30 Days"),
+            ("net_45", "Net 45 Days"),
+            ("net_60", "Net 60 Days"),
+            ("custom", "Custom Terms"),
+        ],
+        string="Payment Terms",
+        default="net_30",
+    )
 
     # State management
     state = fields.Selection(

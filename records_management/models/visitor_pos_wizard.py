@@ -55,8 +55,17 @@ class VisitorPosWizard(models.TransientModel):
     customer_credit_limit = fields.Monetary(
         string="Credit Limit", currency_field="currency_id"
     )
-    customer_payment_terms = fields.Many2one(
-        "account.payment.term", string="Payment Terms"
+    customer_payment_terms = fields.Selection(
+        [
+            ("immediate", "Immediate Payment"),
+            ("net_15", "Net 15 Days"),
+            ("net_30", "Net 30 Days"),
+            ("net_45", "Net 45 Days"),
+            ("net_60", "Net 60 Days"),
+            ("custom", "Custom Terms"),
+        ],
+        string="Payment Terms",
+        default="net_30",
     )
 
     # Service Configuration
@@ -246,8 +255,17 @@ class VisitorPosWizard(models.TransientModel):
     product_id = fields.Many2one("product.template", string="Service Product")
     transaction_id = fields.Char(string="Transaction ID")
     payment_reference = fields.Char(string="Payment Reference")
-    payment_method_id = fields.Many2one(
-        "account.payment.method", string="Payment Method"
+    payment_method = fields.Selection(
+        [
+            ("cash", "Cash"),
+            ("card", "Credit/Debit Card"),
+            ("check", "Check"),
+            ("bank_transfer", "Bank Transfer"),
+            ("digital", "Digital Payment"),
+            ("other", "Other"),
+        ],
+        string="Payment Method",
+        default="cash",
     )
 
     # Notes and documentation

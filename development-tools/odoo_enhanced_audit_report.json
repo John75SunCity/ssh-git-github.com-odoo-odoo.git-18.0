@@ -4,7 +4,7 @@
   "summary": {
     "total_models": 149,
     "critical_issues": 0,
-    "warnings": 14,
+    "warnings": 2,
     "optimizations": 42,
     "validation_errors": 0
   },
@@ -295,9 +295,8 @@
           "type": "Many2one",
           "comodel": "account.move"
         },
-        "payment_term_id": {
-          "type": "Many2one",
-          "comodel": "account.payment.term"
+        "payment_terms": {
+          "type": "Selection"
         },
         "state": {
           "type": "Selection"
@@ -1326,8 +1325,7 @@
           "type": "Integer"
         },
         "payment_terms": {
-          "type": "Many2one",
-          "comodel": "account.payment.term"
+          "type": "Selection"
         },
         "credit_limit": {
           "type": "Float"
@@ -3247,9 +3245,9 @@
           "comodel": "document.retrieval.item",
           "inverse": "work_order_id"
         },
-        "project_id": {
+        "project_task_id": {
           "type": "Many2one",
-          "comodel": "project.project"
+          "comodel": "project.task"
         },
         "task_id": {
           "type": "Many2one",
@@ -3717,9 +3715,9 @@
         "status": {
           "type": "Selection"
         },
-        "records_box_id": {
+        "records_container_id": {
           "type": "Many2one",
-          "comodel": "records.box"
+          "comodel": "records.container"
         },
         "pickup_request_id": {
           "type": "Many2one",
@@ -4153,7 +4151,7 @@
         },
         "department_id": {
           "type": "Many2one",
-          "comodel": "hr.department"
+          "comodel": "records.department"
         },
         "location_ids": {
           "type": "Many2many",
@@ -4555,9 +4553,8 @@
         "city": {
           "type": "Char"
         },
-        "state_id": {
-          "type": "Many2one",
-          "comodel": "res.country.state"
+        "state": {
+          "type": "Char"
         },
         "zip": {
           "type": "Char"
@@ -4819,7 +4816,7 @@
         },
         "location_id": {
           "type": "Many2one",
-          "comodel": "stock.location"
+          "comodel": "records.location"
         },
         "barcode": {
           "type": "Char"
@@ -6560,9 +6557,8 @@
           "type": "Many2one",
           "comodel": "res.users"
         },
-        "team_id": {
-          "type": "Many2one",
-          "comodel": "project.team"
+        "team_name": {
+          "type": "Char"
         },
         "customer_id": {
           "type": "Many2one",
@@ -6631,9 +6627,9 @@
         "progress_status": {
           "type": "Char"
         },
-        "related_project_id": {
+        "related_project_task_id": {
           "type": "Many2one",
-          "comodel": "project.project"
+          "comodel": "project.task"
         },
         "equipment_ids": {
           "type": "Many2many",
@@ -7666,8 +7662,7 @@
           "type": "Monetary"
         },
         "payment_terms": {
-          "type": "Many2one",
-          "comodel": "account.payment.term"
+          "type": "Selection"
         },
         "storage_rate_per_box": {
           "type": "Monetary"
@@ -9634,8 +9629,7 @@
           "type": "Monetary"
         },
         "customer_payment_terms": {
-          "type": "Many2one",
-          "comodel": "account.payment.term"
+          "type": "Selection"
         },
         "service_type": {
           "type": "Selection"
@@ -9856,9 +9850,8 @@
         "payment_reference": {
           "type": "Char"
         },
-        "payment_method_id": {
-          "type": "Many2one",
-          "comodel": "account.payment.method"
+        "payment_method": {
+          "type": "Selection"
         },
         "notes": {
           "type": "Text"
@@ -11297,102 +11290,6 @@
       "model": "document.retrieval.item",
       "field": "currency_id",
       "message": "Many2one field currency_id missing comodel"
-    },
-    {
-      "type": "missing_comodel",
-      "severity": "warning",
-      "model": "advanced.billing",
-      "field": "payment_term_id",
-      "comodel": "account.payment.term",
-      "message": "Many2one field payment_term_id references unknown model account.payment.term"
-    },
-    {
-      "type": "missing_comodel",
-      "severity": "warning",
-      "model": "records.billing.config",
-      "field": "payment_terms",
-      "comodel": "account.payment.term",
-      "message": "Many2one field payment_terms references unknown model account.payment.term"
-    },
-    {
-      "type": "missing_comodel",
-      "severity": "warning",
-      "model": "document.retrieval.work.order",
-      "field": "project_id",
-      "comodel": "project.project",
-      "message": "Many2one field project_id references unknown model project.project"
-    },
-    {
-      "type": "missing_comodel",
-      "severity": "warning",
-      "model": "processing.log",
-      "field": "records_box_id",
-      "comodel": "records.box",
-      "message": "Many2one field records_box_id references unknown model records.box"
-    },
-    {
-      "type": "missing_comodel",
-      "severity": "warning",
-      "model": "records.permanent.flag.wizard",
-      "field": "department_id",
-      "comodel": "hr.department",
-      "message": "Many2one field department_id references unknown model hr.department"
-    },
-    {
-      "type": "missing_comodel",
-      "severity": "warning",
-      "model": "records.location",
-      "field": "state_id",
-      "comodel": "res.country.state",
-      "message": "Many2one field state_id references unknown model res.country.state"
-    },
-    {
-      "type": "missing_comodel",
-      "severity": "warning",
-      "model": "records.container.type.converter",
-      "field": "location_id",
-      "comodel": "stock.location",
-      "message": "Many2one field location_id references unknown model stock.location"
-    },
-    {
-      "type": "missing_comodel",
-      "severity": "warning",
-      "model": "fsm.task",
-      "field": "team_id",
-      "comodel": "project.team",
-      "message": "Many2one field team_id references unknown model project.team"
-    },
-    {
-      "type": "missing_comodel",
-      "severity": "warning",
-      "model": "fsm.task",
-      "field": "related_project_id",
-      "comodel": "project.project",
-      "message": "Many2one field related_project_id references unknown model project.project"
-    },
-    {
-      "type": "missing_comodel",
-      "severity": "warning",
-      "model": "records.customer.billing.profile",
-      "field": "payment_terms",
-      "comodel": "account.payment.term",
-      "message": "Many2one field payment_terms references unknown model account.payment.term"
-    },
-    {
-      "type": "missing_comodel",
-      "severity": "warning",
-      "model": "visitor.pos.wizard",
-      "field": "customer_payment_terms",
-      "comodel": "account.payment.term",
-      "message": "Many2one field customer_payment_terms references unknown model account.payment.term"
-    },
-    {
-      "type": "missing_comodel",
-      "severity": "warning",
-      "model": "visitor.pos.wizard",
-      "field": "payment_method_id",
-      "comodel": "account.payment.method",
-      "message": "Many2one field payment_method_id references unknown model account.payment.method"
     }
   ],
   "optimizations": [
@@ -11818,37 +11715,37 @@
   ],
   "validation_errors": [],
   "standard_odoo_models": [
-    "res.users",
-    "maintenance.request",
-    "pos.config",
-    "fleet.vehicle",
-    "res.currency",
     "ir.attachment",
-    "product.category",
-    "account.tax",
-    "mail.activity",
-    "res.company",
-    "res.country",
-    "ir.ui.view",
-    "ir.cron",
-    "res.partner.category",
-    "product.template",
-    "stock.move",
-    "res.partner",
-    "ir.sequence",
-    "account.move",
-    "stock.lot",
-    "project.task",
-    "maintenance.equipment",
-    "ir.actions.act_window",
-    "ir.model",
     "mail.message",
-    "hr.employee",
-    "pos.session",
-    "pos.order",
-    "mail.template",
-    "mail.followers",
+    "res.company",
     "product.product",
-    "res.groups"
+    "stock.move",
+    "ir.actions.act_window",
+    "account.tax",
+    "fleet.vehicle",
+    "mail.template",
+    "product.template",
+    "maintenance.request",
+    "ir.model",
+    "res.users",
+    "res.partner",
+    "res.groups",
+    "ir.sequence",
+    "pos.order",
+    "res.currency",
+    "hr.employee",
+    "maintenance.equipment",
+    "project.task",
+    "res.partner.category",
+    "pos.session",
+    "stock.lot",
+    "res.country",
+    "account.move",
+    "ir.cron",
+    "ir.ui.view",
+    "mail.followers",
+    "product.category",
+    "pos.config",
+    "mail.activity"
   ]
 }
