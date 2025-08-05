@@ -2,7 +2,7 @@ from odoo import models, fields
 
 
 class StockMoveSMSValidation(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     """
     Model for validating stock moves via SMS codes.
     """

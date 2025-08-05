@@ -4,7 +4,7 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class KeyRestrictionChecker(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _name = "key.restriction.checker"
     _description = "Key Restriction Checker"
 

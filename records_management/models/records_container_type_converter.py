@@ -4,9 +4,9 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class RecordsContainerTypeConverter(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
     _name = "records.container.type.converter"
     _description = "Records Container Type Converter"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
     # Basic Information
     # ============================================================================

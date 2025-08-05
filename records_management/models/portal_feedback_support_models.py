@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 
 class PortalFeedbackResolution(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     """Resolution tracking for portal feedback"""
 
     _name = "portal.feedback.resolution"
@@ -74,7 +74,7 @@ class PortalFeedbackResolution(models.Model):
 
 
 class PortalFeedbackEscalation(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     """Escalation tracking for portal feedback"""
 
     _name = "portal.feedback.escalation"
@@ -129,7 +129,7 @@ class PortalFeedbackEscalation(models.Model):
 
 
 class PortalFeedbackAction(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     """Action items generated from portal feedback"""
 
     _name = "portal.feedback.action"
@@ -177,7 +177,7 @@ class PortalFeedbackAction(models.Model):
 
 
 class PortalFeedbackCommunication(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     """Communication log for portal feedback"""
 
     _name = "portal.feedback.communication"
@@ -220,7 +220,7 @@ class PortalFeedbackCommunication(models.Model):
 
 
 class PortalFeedbackAnalytics(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     """Analytics data for portal feedback"""
 
     _name = "portal.feedback.analytics"

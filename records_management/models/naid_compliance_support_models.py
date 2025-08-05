@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 
 class NaidComplianceAlert(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     """Compliance alerts for NAID compliance management"""
 
     _name = "naid.compliance.alert"
@@ -99,7 +99,7 @@ class NaidComplianceAlert(models.Model):
 
 
 class NaidComplianceChecklistItem(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     """Individual checklist items for NAID compliance"""
 
     _name = "naid.compliance.checklist.item"
@@ -160,7 +160,7 @@ class NaidComplianceChecklistItem(models.Model):
 
 
 class NaidComplianceAuditHistory(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     """Historical audit records for NAID compliance"""
 
     _name = "naid.compliance.audit.history"
@@ -222,7 +222,7 @@ class NaidComplianceAuditHistory(models.Model):
 
 
 class NaidRiskAssessment(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     """Risk assessment for NAID compliance"""
 
     _name = "naid.risk.assessment"
@@ -355,7 +355,7 @@ class NaidRiskAssessment(models.Model):
 
 
 class NaidComplianceActionPlan(models.Model):
-    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     """Action plans for NAID compliance improvements"""
 
     _name = "naid.compliance.action.plan"
