@@ -224,6 +224,47 @@ class RecordsBillingConfig(models.Model):
     regulatory_requirements = fields.Text(string="Regulatory Requirements")
 
     # ============================================================================
+    # RELATIONSHIP FIELDS - One2many relationships to related models
+    # ============================================================================
+
+    billing_line_ids = fields.One2many(
+        "records.billing.line",
+        "config_id",
+        string="Billing Lines",
+        help="Detailed billing line items for this configuration",
+    )
+    usage_tracking_ids = fields.One2many(
+        "records.usage.tracking",
+        "config_id",
+        string="Usage Tracking Records",
+        help="Usage tracking records for billing analysis",
+    )
+    invoice_log_ids = fields.One2many(
+        "invoice.generation.log",
+        "config_id",
+        string="Invoice Generation Logs",
+        help="Historical invoice generation records",
+    )
+    discount_rule_ids = fields.One2many(
+        "discount.rule",
+        "config_id",
+        string="Discount Rules",
+        help="Discount rules applied to this billing configuration",
+    )
+    revenue_analytics_ids = fields.One2many(
+        "revenue.analytics",
+        "config_id",
+        string="Revenue Analytics",
+        help="Revenue analytics and reporting data",
+    )
+    promotional_discount_ids = fields.One2many(
+        "records.promotional.discount",
+        "config_id",
+        string="Promotional Discounts",
+        help="Active promotional discounts for this configuration",
+    )
+
+    # ============================================================================
     # BUSINESS METHODS
     # ============================================================================
 

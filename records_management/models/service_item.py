@@ -134,9 +134,7 @@ class ServiceItem(models.Model):
     service_request_ids = fields.One2many(
         "portal.request", "service_item_id", string="Service Requests"
     )
-    maintenance_log_ids = fields.One2many(
-        "service.maintenance.log", "service_item_id", string="Maintenance Logs"
-    )
+    # REMOVED: maintenance_log_ids - replaced by standard maintenance.request system
 
     # ============================================================================
     # DOCUMENTATION
@@ -146,7 +144,7 @@ class ServiceItem(models.Model):
     operating_instructions = fields.Text(string="Operating Instructions")
     safety_notes = fields.Text(string="Safety Notes")
 
-        # ============================================================================
+    # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
     # Missing inverse field for visitor.pos.wizard One2many relationship
@@ -210,10 +208,13 @@ class ServiceItem(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "Schedule Maintenance",
-            "res_model": "service.maintenance.log",
+            "res_model": "maintenance.request",
             "view_mode": "form",
             "target": "new",
-            "context": {"default_service_item_id": self.id},
+            "context": {
+                "default_name": f"Maintenance - {self.name}",
+                "default_request_type": "preventive",
+            },
         }
 
     def action_retire_item(self):

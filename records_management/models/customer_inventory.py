@@ -50,7 +50,8 @@ class CustomerInventory(models.Model):
     action_view_locations = fields.Char(string="Action View Locations")
     active_locations = fields.Char(string="Active Locations")
     container_ids = fields.One2many(
-        "records.container",
+        comodel_name="records.container",
+        inverse_name="partner_id",
         string="Containers",
         compute="_compute_container_ids",
         help="Containers belonging to this customer",
@@ -65,7 +66,8 @@ class CustomerInventory(models.Model):
         "res.partner", string="Customer Id", domain=[("is_company", "=", True)]
     )
     document_ids = fields.One2many(
-        "records.document",
+        comodel_name="records.document",
+        inverse_name="partner_id",
         string="Document Ids",
         compute="_compute_document_ids",
         help="Documents belonging to this customer",

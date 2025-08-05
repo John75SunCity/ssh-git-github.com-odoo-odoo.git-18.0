@@ -225,6 +225,8 @@ from . import barcode_generation_history
 from . import barcode_pricing_tier
 from . import barcode_storage_box
 from . import processing_log
+from . import integration_error
+from . import payment_split
 from . import service_item
 
 # =============================================================================
