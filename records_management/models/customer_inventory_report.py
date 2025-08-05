@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from datetime import timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
@@ -363,6 +364,65 @@ class CustomerInventoryReport(models.Model):
                     or "NEW"
                 )
         return super().create(vals_list)
+
+    @api.model
+    def generate_monthly_reports(self):
+        """Generate monthly inventory reports for all customers with active boxes"""
+        # Get current month period
+        today = fields.Date.today()
+        start_date = today.replace(day=1)
+        # Calculate end of month
+        if start_date.month == 12:
+            end_date = start_date.replace(
+                year=start_date.year + 1, month=1, day=1
+            ) - timedelta(days=1)
+        else:
+            end_date = start_date.replace(
+                month=start_date.month + 1, day=1
+            ) - timedelta(days=1)
+
+        # Find all customers with active records boxes
+        customers = self.env["res.partner"].search(
+            [
+                ("records_box_ids", "!=", False),
+                ("records_box_ids.state", "in", ["stored", "active"]),
+            ]
+        )
+
+        for customer in customers:
+            # Check if report already exists for this month
+            existing_report = self.search(
+                [
+                    ("customer_id", "=", customer.id),
+                    ("period_start", "=", start_date),
+                    ("report_type", "=", "monthly"),
+                ]
+            )
+
+            if not existing_report:
+                # Create monthly report
+                report = self.create(
+                    {
+                        "customer_id": customer.id,
+                        "report_type": "monthly",
+                        "period_start": start_date,
+                        "period_end": end_date,
+                        "delivery_method": "email",
+                        "include_images": True,
+                        "notes": f'Automated monthly inventory report for {today.strftime("%B %Y")}',
+                    }
+                )
+
+                # Generate the report
+                try:
+                    report.action_generate_report()
+                    if report.state == "ready":
+                        report.action_send_report()
+                except (UserError, ValidationError) as e:
+                    # Log error but continue with other customers
+                    report.message_post(
+                        body=f"Error generating monthly report: {str(e)}"
+                    )
 
 
 class CustomerInventoryReportLine(models.Model):
