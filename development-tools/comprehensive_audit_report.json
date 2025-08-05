@@ -2,18 +2,17 @@
   "timestamp": "2025-08-05",
   "audit_type": "comprehensive_with_xml",
   "summary": {
-    "total_models": 152,
+    "total_models": 150,
     "total_xml_files": 53,
-    "total_relationship_issues": 577,
+    "total_relationship_issues": 558,
     "missing_xml_fields": 0,
-    "unused_model_fields": 1915,
+    "unused_model_fields": 1899,
     "files_optimized": 14
   },
   "relationship_issues": {
     "issues_by_type": {
-      "missing_comodel": 157,
-      "missing_inverse_field": 5,
-      "possible_renamed_comodel": 415
+      "missing_comodel": 152,
+      "possible_renamed_comodel": 406
     },
     "detailed_issues": [
       {
@@ -162,30 +161,6 @@
       },
       {
         "type": "missing_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "field_name": "activity_ids",
-        "comodel": "mail.activity",
-        "inverse_name": "res_id",
-        "line": 5185
-      },
-      {
-        "type": "missing_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "field_name": "message_follower_ids",
-        "comodel": "mail.followers",
-        "inverse_name": "res_id",
-        "line": 5268
-      },
-      {
-        "type": "missing_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "field_name": "message_ids",
-        "comodel": "mail.message",
-        "inverse_name": "res_id",
-        "line": 5373
-      },
-      {
-        "type": "missing_comodel",
         "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/revenue_forecaster.py",
         "field_name": "activity_ids",
         "comodel": "mail.activity",
@@ -209,22 +184,12 @@
         "line": 5850
       },
       {
-        "type": "missing_inverse_field",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_product.py",
-        "field_name": "storage_box_ids",
-        "comodel": "barcode.storage.box",
-        "inverse_name": "product_id",
-        "comodel_file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_storage_box.py",
-        "line": 10008,
-        "full_match": "storage_box_ids = fields.One2many(\n        \"barcode.storage.box\", \"product_id\", string=\"Storage Boxes\"\n    )"
-      },
-      {
         "type": "missing_comodel",
         "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_product.py",
         "field_name": "activity_ids",
         "comodel": "mail.activity",
         "inverse_name": "res_id",
-        "line": 10157
+        "line": 10314
       },
       {
         "type": "missing_comodel",
@@ -232,7 +197,7 @@
         "field_name": "message_follower_ids",
         "comodel": "mail.followers",
         "inverse_name": "res_id",
-        "line": 10240
+        "line": 10397
       },
       {
         "type": "missing_comodel",
@@ -240,7 +205,7 @@
         "field_name": "message_ids",
         "comodel": "mail.message",
         "inverse_name": "res_id",
-        "line": 10345
+        "line": 10502
       },
       {
         "type": "missing_comodel",
@@ -291,14 +256,12 @@
         "line": 1165
       },
       {
-        "type": "missing_inverse_field",
+        "type": "missing_comodel",
         "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_item.py",
-        "field_name": "service_request_ids",
-        "comodel": "portal.request",
+        "field_name": "maintenance_log_ids",
+        "comodel": "service.maintenance.log",
         "inverse_name": "service_item_id",
-        "comodel_file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_request.py",
-        "line": 4942,
-        "full_match": "service_request_ids = fields.One2many(\n        \"portal.request\", \"service_item_id\", string=\"Service Requests\"\n    )"
+        "line": 5062
       },
       {
         "type": "missing_comodel",
@@ -306,7 +269,7 @@
         "field_name": "activity_ids",
         "comodel": "mail.activity",
         "inverse_name": "res_id",
-        "line": 5701
+        "line": 6052
       },
       {
         "type": "missing_comodel",
@@ -314,7 +277,7 @@
         "field_name": "message_follower_ids",
         "comodel": "mail.followers",
         "inverse_name": "res_id",
-        "line": 5784
+        "line": 6135
       },
       {
         "type": "missing_comodel",
@@ -322,7 +285,7 @@
         "field_name": "message_ids",
         "comodel": "mail.message",
         "inverse_name": "res_id",
-        "line": 5889
+        "line": 6240
       },
       {
         "type": "missing_comodel",
@@ -378,7 +341,7 @@
         "field_name": "activity_ids",
         "comodel": "mail.activity",
         "inverse_name": "res_id",
-        "line": 4571
+        "line": 4922
       },
       {
         "type": "missing_comodel",
@@ -386,7 +349,7 @@
         "field_name": "message_follower_ids",
         "comodel": "mail.followers",
         "inverse_name": "res_id",
-        "line": 4654
+        "line": 5005
       },
       {
         "type": "missing_comodel",
@@ -394,17 +357,7 @@
         "field_name": "message_ids",
         "comodel": "mail.message",
         "inverse_name": "res_id",
-        "line": 4759
-      },
-      {
-        "type": "missing_inverse_field",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_storage_box.py",
-        "field_name": "barcode_product_ids",
-        "comodel": "barcode.product",
-        "inverse_name": "storage_box_id",
-        "comodel_file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_product.py",
-        "line": 1329,
-        "full_match": "barcode_product_ids = fields.One2many(\n        \"barcode.product\", \"storage_box_id\", string=\"Barcode Products\"\n    )"
+        "line": 5110
       },
       {
         "type": "missing_comodel",
@@ -412,7 +365,7 @@
         "field_name": "activity_ids",
         "comodel": "mail.activity",
         "inverse_name": "res_id",
-        "line": 4008
+        "line": 4347
       },
       {
         "type": "missing_comodel",
@@ -420,7 +373,7 @@
         "field_name": "message_follower_ids",
         "comodel": "mail.followers",
         "inverse_name": "res_id",
-        "line": 4091
+        "line": 4430
       },
       {
         "type": "missing_comodel",
@@ -428,7 +381,7 @@
         "field_name": "message_ids",
         "comodel": "mail.message",
         "inverse_name": "res_id",
-        "line": 4196
+        "line": 4535
       },
       {
         "type": "missing_comodel",
@@ -796,7 +749,7 @@
         "field_name": "attachment_ids",
         "comodel": "ir.attachment",
         "inverse_name": "res_id",
-        "line": 7877
+        "line": 8022
       },
       {
         "type": "missing_comodel",
@@ -804,7 +757,7 @@
         "field_name": "activity_ids",
         "comodel": "mail.activity",
         "inverse_name": "res_id",
-        "line": 8287
+        "line": 8432
       },
       {
         "type": "missing_comodel",
@@ -812,7 +765,7 @@
         "field_name": "message_follower_ids",
         "comodel": "mail.followers",
         "inverse_name": "res_id",
-        "line": 8370
+        "line": 8515
       },
       {
         "type": "missing_comodel",
@@ -820,7 +773,7 @@
         "field_name": "message_ids",
         "comodel": "mail.message",
         "inverse_name": "res_id",
-        "line": 8461
+        "line": 8606
       },
       {
         "type": "missing_comodel",
@@ -1111,26 +1064,6 @@
         "line": 11284
       },
       {
-        "type": "missing_inverse_field",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/visitor_pos_wizard.py",
-        "field_name": "processing_log_ids",
-        "comodel": "processing.log",
-        "inverse_name": "pos_wizard_id",
-        "comodel_file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/processing_log.py",
-        "line": 11453,
-        "full_match": "processing_log_ids = fields.One2many(\n        \"processing.log\", \"pos_wizard_id\", string=\"Processing Logs\"\n    )"
-      },
-      {
-        "type": "missing_inverse_field",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/visitor_pos_wizard.py",
-        "field_name": "service_item_ids",
-        "comodel": "service.item",
-        "inverse_name": "pos_wizard_id",
-        "comodel_file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_item.py",
-        "line": 11694,
-        "full_match": "service_item_ids = fields.One2many(\n        \"service.item\", \"pos_wizard_id\", string=\"Service Items\"\n    )"
-      },
-      {
         "type": "missing_comodel",
         "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_tag.py",
         "field_name": "activity_ids",
@@ -1177,30 +1110,6 @@
         "comodel": "mail.message",
         "inverse_name": "res_id",
         "line": 2261
-      },
-      {
-        "type": "missing_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_equipment.py",
-        "field_name": "activity_ids",
-        "comodel": "mail.activity",
-        "inverse_name": "res_id",
-        "line": 1687
-      },
-      {
-        "type": "missing_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_equipment.py",
-        "field_name": "message_follower_ids",
-        "comodel": "mail.followers",
-        "inverse_name": "res_id",
-        "line": 1770
-      },
-      {
-        "type": "missing_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_equipment.py",
-        "field_name": "message_ids",
-        "comodel": "mail.message",
-        "inverse_name": "res_id",
-        "line": 1875
       },
       {
         "type": "missing_comodel",
@@ -1896,104 +1805,6 @@
       },
       {
         "type": "possible_renamed_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "field_name": "company_id",
-        "comodel": "res.company",
-        "suggestions": [
-          "fsm.reschedule.wizard",
-          "portal.feedback.resolution",
-          "res.partner.key.restriction",
-          "key.restriction.checker"
-        ],
-        "line": 590,
-        "full_match": "company_id = fields.Many2one(\n        \"res.company\", default=lambda self: self.env.company, required=True\n    )"
-      },
-      {
-        "type": "possible_renamed_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "field_name": "user_id",
-        "comodel": "res.users",
-        "suggestions": [
-          "fsm.reschedule.wizard",
-          "portal.feedback.resolution",
-          "res.partner.key.restriction",
-          "key.restriction.checker"
-        ],
-        "line": 706,
-        "full_match": "user_id = fields.Many2one(\n        \"res.users\", default=lambda self: self.env.user, tracking=True\n    )"
-      },
-      {
-        "type": "possible_renamed_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "field_name": "technician_id",
-        "comodel": "res.users",
-        "suggestions": [
-          "fsm.reschedule.wizard",
-          "portal.feedback.resolution",
-          "res.partner.key.restriction",
-          "key.restriction.checker"
-        ],
-        "line": 2437,
-        "full_match": "technician_id = fields.Many2one(\"res.users\", string=\"Technician\")"
-      },
-      {
-        "type": "possible_renamed_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "field_name": "supervisor_id",
-        "comodel": "res.users",
-        "suggestions": [
-          "fsm.reschedule.wizard",
-          "portal.feedback.resolution",
-          "res.partner.key.restriction",
-          "key.restriction.checker"
-        ],
-        "line": 2507,
-        "full_match": "supervisor_id = fields.Many2one(\"res.users\", string=\"Supervisor\")"
-      },
-      {
-        "type": "possible_renamed_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "field_name": "currency_id",
-        "comodel": "res.currency",
-        "suggestions": [
-          "fsm.reschedule.wizard",
-          "portal.feedback.resolution",
-          "res.partner.key.restriction",
-          "key.restriction.checker"
-        ],
-        "line": 3375,
-        "full_match": "currency_id = fields.Many2one(\n        \"res.currency\",\n        string=\"Currency\",\n        default=lambda self: self.env.company.currency_id,\n    )"
-      },
-      {
-        "type": "possible_renamed_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "field_name": "verified_by",
-        "comodel": "res.users",
-        "suggestions": [
-          "fsm.reschedule.wizard",
-          "portal.feedback.resolution",
-          "res.partner.key.restriction",
-          "key.restriction.checker"
-        ],
-        "line": 4395,
-        "full_match": "verified_by = fields.Many2one(\"res.users\", string=\"Verified By\")"
-      },
-      {
-        "type": "possible_renamed_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "field_name": "approved_by",
-        "comodel": "res.users",
-        "suggestions": [
-          "fsm.reschedule.wizard",
-          "portal.feedback.resolution",
-          "res.partner.key.restriction",
-          "key.restriction.checker"
-        ],
-        "line": 4528,
-        "full_match": "approved_by = fields.Many2one(\"res.users\", string=\"Approved By\")"
-      },
-      {
-        "type": "possible_renamed_comodel",
         "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/revenue_forecaster.py",
         "field_name": "customer_id",
         "comodel": "res.partner",
@@ -2537,7 +2348,7 @@
           "customer.category",
           "customer.category"
         ],
-        "line": 9523,
+        "line": 9680,
         "full_match": "category_id = fields.Many2one(\"product.category\", string=\"Product Category\")"
       },
       {
@@ -2550,7 +2361,7 @@
           "wizard.template",
           "wizard.template"
         ],
-        "line": 9604,
+        "line": 9761,
         "full_match": "template_id = fields.Many2one(\"product.template\", string=\"Product Template\")"
       },
       {
@@ -4078,8 +3889,7 @@
         "comodel": "ir.ui.view",
         "suggestions": [
           "document.retrieval.equipment",
-          "required.document",
-          "shredding.equipment"
+          "required.document"
         ],
         "line": 3238,
         "full_match": "search_view_id = fields.Many2one(\"ir.ui.view\", string=\"Search View\")"
@@ -5193,6 +5003,17 @@
       {
         "type": "possible_renamed_comodel",
         "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py",
+        "field_name": "equipment_id",
+        "comodel": "maintenance.equipment",
+        "suggestions": [
+          "document.retrieval.equipment"
+        ],
+        "line": 4619,
+        "full_match": "equipment_id = fields.Many2one(\"maintenance.equipment\", string=\"Primary Equipment\")"
+      },
+      {
+        "type": "possible_renamed_comodel",
+        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py",
         "field_name": "currency_id",
         "comodel": "res.currency",
         "suggestions": [
@@ -5201,7 +5022,7 @@
           "res.partner.key.restriction",
           "key.restriction.checker"
         ],
-        "line": 5748,
+        "line": 5838,
         "full_match": "currency_id = fields.Many2one(\n        \"res.currency\",\n        string=\"Currency\",\n        default=lambda self: self.env.company.currency_id,\n    )"
       },
       {
@@ -6078,8 +5899,7 @@
         "comodel": "ir.ui.view",
         "suggestions": [
           "document.retrieval.equipment",
-          "required.document",
-          "shredding.equipment"
+          "required.document"
         ],
         "line": 3766,
         "full_match": "search_view_id = fields.Many2one(\"ir.ui.view\", string=\"Search View\")"
@@ -6565,48 +6385,6 @@
         ],
         "line": 497,
         "full_match": "user_id = fields.Many2one('res.users', default=lambda self: self.env.user)"
-      },
-      {
-        "type": "possible_renamed_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_equipment.py",
-        "field_name": "company_id",
-        "comodel": "res.company",
-        "suggestions": [
-          "fsm.reschedule.wizard",
-          "portal.feedback.resolution",
-          "res.partner.key.restriction",
-          "key.restriction.checker"
-        ],
-        "line": 889,
-        "full_match": "company_id = fields.Many2one(\n        \"res.company\", default=lambda self: self.env.company, required=True\n    )"
-      },
-      {
-        "type": "possible_renamed_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_equipment.py",
-        "field_name": "user_id",
-        "comodel": "res.users",
-        "suggestions": [
-          "fsm.reschedule.wizard",
-          "portal.feedback.resolution",
-          "res.partner.key.restriction",
-          "key.restriction.checker"
-        ],
-        "line": 1005,
-        "full_match": "user_id = fields.Many2one(\n        \"res.users\", default=lambda self: self.env.user, tracking=True\n    )"
-      },
-      {
-        "type": "possible_renamed_comodel",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_equipment.py",
-        "field_name": "maintenance_equipment_id",
-        "comodel": "maintenance.equipment",
-        "suggestions": [
-          "service.maintenance.log",
-          "document.retrieval.equipment",
-          "shredding.equipment",
-          "shredding.equipment"
-        ],
-        "line": 1402,
-        "full_match": "maintenance_equipment_id = fields.Many2one(\n        \"maintenance.equipment\",\n        string=\"Maintenance Equipment Record\",\n        help=\"Reference to the corresponding maintenance.equipment record\",\n    )"
       },
       {
         "type": "possible_renamed_comodel",
@@ -8475,146 +8253,6 @@
         "type": "field_in_model_unused_in_xml"
       },
       {
-        "model": "service.maintenance.log",
-        "field": "service_item_id",
-        "field_type": "Many2one",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "supervisor_id",
-        "field_type": "Many2one",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "verified_by",
-        "field_type": "Many2one",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "maintenance_date",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "default",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "completion_date",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "maintenance_type",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "work_description",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "parts_used",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "tools_used",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "parts_cost",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "maintenance_result",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "issues_found",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "recommendations",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "next_maintenance_date",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "before_photos",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "after_photos",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "warranty_impact",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "efficiency_rating",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "service.maintenance.log",
-        "field": "next_date",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
         "model": "revenue.forecaster",
         "field": "forecast_id",
         "field_type": "Many2one",
@@ -10464,6 +10102,13 @@
       },
       {
         "model": "barcode.product",
+        "field": "storage_box_id",
+        "field_type": "Many2one",
+        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_product.py",
+        "type": "field_in_model_unused_in_xml"
+      },
+      {
+        "model": "barcode.product",
         "field": "template_id",
         "field_type": "Many2one",
         "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_product.py",
@@ -11040,6 +10685,13 @@
         "model": "service.item",
         "field": "maintenance_log_ids",
         "field_type": "One2many",
+        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_item.py",
+        "type": "field_in_model_unused_in_xml"
+      },
+      {
+        "model": "service.item",
+        "field": "pos_wizard_id",
+        "field_type": "Many2one",
         "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_item.py",
         "type": "field_in_model_unused_in_xml"
       },
@@ -14419,6 +14071,13 @@
       },
       {
         "model": "processing.log",
+        "field": "pos_wizard_id",
+        "field_type": "Many2one",
+        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/processing_log.py",
+        "type": "field_in_model_unused_in_xml"
+      },
+      {
+        "model": "processing.log",
         "field": "default",
         "field_type": "regular",
         "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/processing_log.py",
@@ -16414,6 +16073,13 @@
       },
       {
         "model": "portal.request",
+        "field": "service_item_id",
+        "field_type": "Many2one",
+        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_request.py",
+        "type": "field_in_model_unused_in_xml"
+      },
+      {
+        "model": "portal.request",
         "field": "shredding_service_id",
         "field_type": "Many2one",
         "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_request.py",
@@ -16652,6 +16318,13 @@
       },
       {
         "model": "shredding.service",
+        "field": "equipment_id",
+        "field_type": "Many2one",
+        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py",
+        "type": "field_in_model_unused_in_xml"
+      },
+      {
+        "model": "shredding.service",
         "field": "recycling_bale_id",
         "field_type": "Many2one",
         "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py",
@@ -16787,6 +16460,13 @@
         "model": "shredding.service.photo",
         "field": "equipment_ids",
         "field_type": "Many2many",
+        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py",
+        "type": "field_in_model_unused_in_xml"
+      },
+      {
+        "model": "shredding.service.photo",
+        "field": "equipment_id",
+        "field_type": "Many2one",
         "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py",
         "type": "field_in_model_unused_in_xml"
       },
@@ -19493,20 +19173,6 @@
         "type": "field_in_model_unused_in_xml"
       },
       {
-        "model": "shredding.equipment",
-        "field": "maintenance_equipment_id",
-        "field_type": "Many2one",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_equipment.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
-        "model": "shredding.equipment",
-        "field": "migrated_to_maintenance",
-        "field_type": "regular",
-        "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_equipment.py",
-        "type": "field_in_model_unused_in_xml"
-      },
-      {
         "model": "records.department.billing.contact",
         "field": "authorization_level",
         "field_type": "regular",
@@ -20588,12 +20254,6 @@
   },
   "optimization_results": {
     "python_files": {
-      "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_product.py": {
-        "original_lines": 479,
-        "optimized_lines": 459,
-        "reduction_percent": 4.175365344467641,
-        "lines_saved": 20
-      },
       "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_billing_config.py": {
         "original_lines": 426,
         "optimized_lines": 414,
@@ -20605,6 +20265,12 @@
         "optimized_lines": 431,
         "reduction_percent": 4.434589800443459,
         "lines_saved": 20
+      },
+      "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_product.py": {
+        "original_lines": 482,
+        "optimized_lines": 461,
+        "reduction_percent": 4.356846473029045,
+        "lines_saved": 21
       },
       "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance.py": {
         "original_lines": 489,
@@ -20643,9 +20309,9 @@
         "lines_saved": 22
       },
       "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py": {
-        "original_lines": 406,
-        "optimized_lines": 395,
-        "reduction_percent": 2.70935960591133,
+        "original_lines": 407,
+        "optimized_lines": 396,
+        "reduction_percent": 2.7027027027027026,
         "lines_saved": 11
       },
       "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retention_policy.py": {
@@ -20675,35 +20341,35 @@
     },
     "optimization_candidates": {
       "python": [
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/visitor_pos_wizard.py",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/bin_key_management.py",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_work_order.py",
         "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance_support_models.py",
         "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_document.py",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_permanent_flag_wizard.py",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_support_models.py",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container.py",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/bin_key_management.py",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retention_policy.py",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/visitor_pos_wizard.py",
         "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_billing_config.py",
         "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_product.py",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retention_policy.py",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container.py",
         "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance.py",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_work_order.py",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_inventory_item.py"
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_permanent_flag_wizard.py",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_inventory_item.py",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_support_models.py"
       ],
       "xml": [
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/rate_management_views.xml",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/barcode_views.xml",
         "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/load_views.xml",
         "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/paper_bale_views.xml",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/visitor_pos_wizard_views.xml",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/pos_config_views.xml",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/stock_lot_views.xml",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/paper_load_shipment_views.xml",
         "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/field_label_customization_views.xml",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/billing_views.xml",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/product_template_views.xml",
         "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/records_document_views.xml",
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/naid_compliance_views.xml"
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/rate_management_views.xml",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/product_template_views.xml",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/paper_load_shipment_views.xml",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/stock_lot_views.xml",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/naid_compliance_views.xml",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/visitor_pos_wizard_views.xml",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/barcode_views.xml",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/pos_config_views.xml",
+        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/billing_views.xml"
       ]
     }
   },
@@ -21300,53 +20966,6 @@
       },
       "line_count": 44,
       "file_size": 1461
-    },
-    "service.maintenance.log": {
-      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_maintenance_log.py",
-      "fields": {
-        "company_id": "Many2one",
-        "user_id": "Many2one",
-        "service_item_id": "Many2one",
-        "technician_id": "Many2one",
-        "supervisor_id": "Many2one",
-        "currency_id": "Many2one",
-        "verified_by": "Many2one",
-        "approved_by": "Many2one",
-        "activity_ids": "One2many",
-        "message_follower_ids": "One2many",
-        "message_ids": "One2many",
-        "name": "regular",
-        "active": "regular",
-        "state": "regular",
-        "maintenance_date": "regular",
-        "default": "regular",
-        "scheduled_date": "regular",
-        "completion_date": "regular",
-        "maintenance_type": "regular",
-        "priority": "regular",
-        "work_description": "regular",
-        "parts_used": "regular",
-        "tools_used": "regular",
-        "estimated_hours": "regular",
-        "actual_hours": "regular",
-        "labor_cost": "regular",
-        "parts_cost": "regular",
-        "total_cost": "regular",
-        "maintenance_result": "regular",
-        "issues_found": "regular",
-        "recommendations": "regular",
-        "next_maintenance_date": "regular",
-        "verification_date": "regular",
-        "approval_date": "regular",
-        "before_photos": "regular",
-        "after_photos": "regular",
-        "documentation": "regular",
-        "warranty_impact": "regular",
-        "efficiency_rating": "regular",
-        "next_date": "regular"
-      },
-      "line_count": 191,
-      "file_size": 7892
     },
     "revenue.forecaster": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/revenue_forecaster.py",
@@ -22034,6 +21653,7 @@
         "customer_location_id": "Many2one",
         "storage_location_id": "Many2one",
         "default_location_id": "Many2one",
+        "storage_box_id": "Many2one",
         "category_id": "Many2one",
         "template_id": "Many2one",
         "generation_history_ids": "One2many",
@@ -22085,8 +21705,8 @@
         "current_usage": "regular",
         "utilization_rate": "regular"
       },
-      "line_count": 478,
-      "file_size": 17614
+      "line_count": 481,
+      "file_size": 17771
     },
     "naid.compliance": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance.py",
@@ -22294,6 +21914,7 @@
         "department_id": "Many2one",
         "service_request_ids": "One2many",
         "maintenance_log_ids": "One2many",
+        "pos_wizard_id": "Many2one",
         "activity_ids": "One2many",
         "message_follower_ids": "One2many",
         "message_ids": "One2many",
@@ -22325,8 +21946,8 @@
         "warranty_status": "regular",
         "maintenance_due": "regular"
       },
-      "line_count": 215,
-      "file_size": 8301
+      "line_count": 221,
+      "file_size": 8652
     },
     "document.retrieval.team": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_support_models.py",
@@ -23113,6 +22734,7 @@
         "records_box_id": "Many2one",
         "pickup_request_id": "Many2one",
         "shredding_service_id": "Many2one",
+        "pos_wizard_id": "Many2one",
         "activity_ids": "One2many",
         "message_follower_ids": "One2many",
         "message_ids": "One2many",
@@ -23139,8 +22761,8 @@
         "status": "regular",
         "reference": "regular"
       },
-      "line_count": 173,
-      "file_size": 7021
+      "line_count": 179,
+      "file_size": 7372
     },
     "barcode.storage.box": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_storage_box.py",
@@ -23151,6 +22773,7 @@
         "location_id": "Many2one",
         "partner_id": "Many2one",
         "department_id": "Many2one",
+        "product_id": "Many2one",
         "activity_ids": "One2many",
         "message_follower_ids": "One2many",
         "message_ids": "One2many",
@@ -23174,8 +22797,8 @@
         "description": "regular",
         "notes": "regular"
       },
-      "line_count": 146,
-      "file_size": 6061
+      "line_count": 152,
+      "file_size": 6400
     },
     "shredding.certificate": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_certificate.py",
@@ -24332,6 +23955,7 @@
         "partner_id": "Many2one",
         "currency_id": "Many2one",
         "approved_by": "Many2one",
+        "service_item_id": "Many2one",
         "shredding_service_id": "Many2one",
         "pickup_request_id": "Many2one",
         "work_order_id": "Many2one",
@@ -24391,8 +24015,8 @@
         "is_overdue": "regular",
         "time_variance": "regular"
       },
-      "line_count": 385,
-      "file_size": 16452
+      "line_count": 388,
+      "file_size": 16597
     },
     "shredding.service": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py",
@@ -24406,6 +24030,7 @@
         "technician_ids": "Many2many",
         "vehicle_id": "Many2one",
         "equipment_ids": "Many2many",
+        "equipment_id": "Many2one",
         "recycling_bale_id": "Many2one",
         "container_ids": "Many2many",
         "bin_ids": "Many2many",
@@ -24450,8 +24075,8 @@
         "taken_date": "regular",
         "default": "regular"
       },
-      "line_count": 405,
-      "file_size": 15358
+      "line_count": 406,
+      "file_size": 15448
     },
     "shredding.service.photo": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py",
@@ -24465,6 +24090,7 @@
         "technician_ids": "Many2many",
         "vehicle_id": "Many2one",
         "equipment_ids": "Many2many",
+        "equipment_id": "Many2one",
         "recycling_bale_id": "Many2one",
         "container_ids": "Many2many",
         "bin_ids": "Many2many",
@@ -24509,8 +24135,8 @@
         "taken_date": "regular",
         "default": "regular"
       },
-      "line_count": 405,
-      "file_size": 15358
+      "line_count": 406,
+      "file_size": 15448
     },
     "naid.performance.history": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_performance_history.py",
@@ -25894,22 +25520,6 @@
       "line_count": 43,
       "file_size": 1148
     },
-    "shredding.equipment": {
-      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_equipment.py",
-      "fields": {
-        "company_id": "Many2one",
-        "user_id": "Many2one",
-        "maintenance_equipment_id": "Many2one",
-        "activity_ids": "One2many",
-        "message_follower_ids": "One2many",
-        "message_ids": "One2many",
-        "name": "regular",
-        "active": "regular",
-        "migrated_to_maintenance": "regular"
-      },
-      "line_count": 84,
-      "file_size": 3132
-    },
     "records.department.billing.contact": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_department_billing_contact.py",
       "fields": {
@@ -26413,13 +26023,13 @@
       "file_size": 2344
     },
     "records_document_type_views.xml": {
-      "fields": "{'activity_ids', 'group_risk', 'group_compliance', 'compliance_status', 'res_model', 'message_follower_ids', 'auto_classification', 'model', 'classification_accuracy_score', 'auto_classification_potential', 'card', 'seasonal_pattern_score', 'help', 'type_complexity_rating', 'approval_required', 'document_type_utilization', 'approved_by', 'audit_readiness_level', 'compliance_notes', 'regulatory_requirement', 'approval_date', 'view_mode', 'confidential', 'audit_required', 'retention_compliance', 'compliance_risk_assessment', 'growth_trend_indicator', 'arch', 'risk_level', 'active', 'analytics', 'regulatory_compliance_score', 'compliance', 'name', 'security_classification', 'action_view_type_documents', 'description', 'button_box', 'company_id', 'inactive', 'message_ids', 'document_count', 'group_security'}",
+      "fields": "{'seasonal_pattern_score', 'security_classification', 'document_count', 'type_complexity_rating', 'button_box', 'description', 'name', 'regulatory_requirement', 'group_compliance', 'growth_trend_indicator', 'active', 'approved_by', 'compliance_status', 'auto_classification_potential', 'card', 'compliance_notes', 'message_follower_ids', 'audit_readiness_level', 'message_ids', 'help', 'view_mode', 'approval_date', 'res_model', 'group_security', 'classification_accuracy_score', 'audit_required', 'activity_ids', 'group_risk', 'risk_level', 'regulatory_compliance_score', 'approval_required', 'document_type_utilization', 'analytics', 'auto_classification', 'confidential', 'action_view_type_documents', 'company_id', 'arch', 'retention_compliance', 'compliance', 'model', 'inactive', 'compliance_risk_assessment'}",
       "models": "set()",
       "line_count": 193,
       "file_size": 9578
     },
     "pickup_request_views.xml": {
-      "fields": "{'view_mode', 'res_model', 'name', 'help'}",
+      "fields": "{'name', 'help', 'res_model', 'view_mode'}",
       "models": "set()",
       "line_count": 17,
       "file_size": 636
@@ -26431,25 +26041,25 @@
       "file_size": 894
     },
     "location_report_wizard_views.xml": {
-      "fields": "{'action_generate_report', 'action_print_report', 'report_date', 'arch', 'model', 'utilization_percentage', 'action_export_csv', 'location_name', 'current_utilization', 'include_child_locations', 'name', 'location_id', 'total_capacity'}",
+      "fields": "{'include_child_locations', 'current_utilization', 'utilization_percentage', 'action_generate_report', 'name', 'action_print_report', 'location_name', 'report_date', 'action_export_csv', 'arch', 'model', 'location_id', 'total_capacity'}",
       "models": "set()",
       "line_count": 81,
       "file_size": 4183
     },
     "visitor_pos_wizard_views.xml": {
-      "fields": "{'subtotal', 'model', 'resolved', 'naid_audit_created', 'pricing_payment', 'processing_priority', 'target', 'service_selection', 'customer_processing_time', 'quantity', 'unit_price', 'pos_config', 'pos_order_created', 'customer_created', 'step_name', 'total_discount', 'step_time', 'discount_percent', 'express_service', 'chain_of_custody_id', 'duration_seconds', 'error_type', 'records_request_id', 'pos_config_id', 'scanning_required', 'step_status', 'action_create_pos_order', 'visitor_phone', 'confidentiality_level', 'existing_customer_id', 'tax_amount', 'shredding_type', 'shredding', 'customer_category', 'action_process_visitor', 'integration_status', 'pickup_required', 'audit_level', 'estimated_volume', 'activity_ids', 'pos_session_id', 'integration_error_ids', 'error_time', 'message_follower_ids', 'naid_audit_id', 'visitor_id', 'special_requirements', 'witness_required', 'search_view_id', 'context', 'payment_split_ids', 'error_message', 'payment_method_id', 'document_storage', 'receipt_email', 'quality_check_by', 'collection_date', 'group_pos_config', 'authorization_code', 'audit_required', 'required_document_ids', 'retention_period', 'required', 'arch', 'visitor_info', 'notes', 'service_item_ids', 'product_id', 'destruction_method', 'customer_record_created', 'total_amount', 'pos_order_id', 'service_details', 'estimated_service_time', 'document_count', 'group_cashier', 'witness_verification', 'amount', 'customer_payment_terms', 'week', 'supervisor_approval', 'group_date', 'my_processing', 'document_processing', 'chain_of_custody', 'compliance_documentation', 'service_location', 'service_type', 'digitization_format', 'tax_id', 'customer_record_id', 'view_mode', 'consultation', 'config_id', 'customer_credit_limit', 'group_service_type', 'visitor_name', 'audit_notes', 'group_priority', 'payment_terms', 'collected', 'processed_by', 'visitor_email', 'audit_compliance', 'naid_certificate_required', 'customer_data', 'wizard_start_time', 'transaction_id', 'purpose_of_visit', 'error_details', 'message_ids', 'naid_compliance', 'step_description', 'resolution_notes', 'cashier_id', 'invoice_id', 'res_model', 'document_type', 'processing_history', 'certificate_required', 'records_request_created', 'today', 'state', 'help', 'invoice_required', 'express_surcharge', 'processing_log_ids', 'payment_reference', 'pos_created', 'naid_compliance_required', 'total_processing_time', 'check_in_time', 'express', 'create_new_customer', 'action_link_existing_order', 'service_configuration_time', 'invoice_generated', 'final_verification_by', 'view_id', 'name', 'compliance_officer', 'action_cancel', 'document_name', 'base_amount'}",
+      "fields": "{'step_status', 'name', 'service_configuration_time', 'customer_data', 'service_selection', 'chain_of_custody_id', 'total_amount', 'collection_date', 'final_verification_by', 'invoice_generated', 'customer_record_id', 'resolution_notes', 'error_time', 'subtotal', 'action_create_pos_order', 'service_details', 'service_type', 'service_item_ids', 'shredding', 'step_name', 'witness_verification', 'audit_required', 'state', 'express_surcharge', 'activity_ids', 'context', 'audit_notes', 'discount_percent', 'pos_order_id', 'special_requirements', 'action_process_visitor', 'total_discount', 'supervisor_approval', 'my_processing', 'config_id', 'destruction_method', 'records_request_created', 'tax_amount', 'unit_price', 'processed_by', 'step_description', 'visitor_id', 'error_message', 'collected', 'pos_config', 'message_follower_ids', 'existing_customer_id', 'message_ids', 'week', 'total_processing_time', 'view_mode', 'base_amount', 'res_model', 'error_details', 'visitor_phone', 'integration_status', 'check_in_time', 'naid_compliance_required', 'shredding_type', 'payment_terms', 'group_pos_config', 'customer_created', 'records_request_id', 'express', 'today', 'pos_session_id', 'pickup_required', 'pos_created', 'naid_compliance', 'required', 'audit_compliance', 'document_name', 'authorization_code', 'model', 'target', 'processing_priority', 'required_document_ids', 'group_cashier', 'receipt_email', 'customer_processing_time', 'visitor_info', 'audit_level', 'create_new_customer', 'payment_method_id', 'chain_of_custody', 'step_time', 'certificate_required', 'error_type', 'express_service', 'integration_error_ids', 'witness_required', 'naid_audit_id', 'notes', 'purpose_of_visit', 'service_location', 'duration_seconds', 'naid_certificate_required', 'document_processing', 'action_cancel', 'estimated_service_time', 'wizard_start_time', 'document_storage', 'arch', 'group_service_type', 'help', 'view_id', 'retention_period', 'invoice_id', 'customer_payment_terms', 'document_count', 'pos_config_id', 'visitor_name', 'amount', 'cashier_id', 'product_id', 'search_view_id', 'customer_record_created', 'confidentiality_level', 'naid_audit_created', 'action_link_existing_order', 'pos_order_created', 'quantity', 'transaction_id', 'visitor_email', 'group_priority', 'estimated_volume', 'customer_credit_limit', 'quality_check_by', 'digitization_format', 'payment_reference', 'payment_split_ids', 'processing_history', 'resolved', 'tax_id', 'compliance_documentation', 'customer_category', 'pricing_payment', 'compliance_officer', 'scanning_required', 'processing_log_ids', 'invoice_required', 'group_date', 'document_type', 'consultation'}",
       "models": "set()",
       "line_count": 349,
       "file_size": 23207
     },
     "records_vehicle_views.xml": {
-      "fields": "{'activity_ids', 'action_set_maintenance', 'driver_contact', 'res_model', 'message_follower_ids', 'last_service_date', 'model', 'license_plate', 'vin', 'vehicle_type', 'service_notes', 'help', 'route_date', 'length', 'action_set_available', 'height', 'search_view_id', 'width', 'vehicle_capacity_weight', 'next_service_date', 'in_use', 'group_driver', 'view_mode', 'arch', 'max_boxes', 'active', 'available', 'action_set_in_use', 'routes', 'driver_id', 'name', 'group_type', 'status', 'capacity', 'group_status', 'start_time', 'company_id', 'maintenance', 'message_ids', 'vehicle_capacity_volume', 'user_id', 'pickup_route_ids', 'total_capacity'}",
+      "fields": "{'vehicle_type', 'capacity', 'route_date', 'driver_contact', 'vehicle_capacity_volume', 'next_service_date', 'name', 'group_type', 'search_view_id', 'start_time', 'active', 'action_set_in_use', 'in_use', 'maintenance', 'message_follower_ids', 'message_ids', 'help', 'view_mode', 'available', 'action_set_maintenance', 'res_model', 'group_status', 'license_plate', 'height', 'activity_ids', 'group_driver', 'driver_id', 'vin', 'routes', 'status', 'last_service_date', 'action_set_available', 'width', 'service_notes', 'max_boxes', 'length', 'pickup_route_ids', 'company_id', 'arch', 'vehicle_capacity_weight', 'user_id', 'model', 'total_capacity'}",
       "models": "set()",
       "line_count": 140,
       "file_size": 6641
     },
     "customer_inventory_views.xml": {
-      "fields": "{'view_mode', 'partner_id', 'help', 'status', 'res_model', 'total_documents', 'arch', 'model', 'last_updated', 'card', 'name', 'total_containers'}",
+      "fields": "{'last_updated', 'total_containers', 'res_model', 'partner_id', 'card', 'name', 'view_mode', 'arch', 'total_documents', 'help', 'model', 'status'}",
       "models": "set()",
       "line_count": 91,
       "file_size": 3668
@@ -26461,73 +26071,73 @@
       "file_size": 347
     },
     "portal_feedback_views.xml": {
-      "fields": "{'activity_ids', 'service_quality_rating', 'resolution_notes', 'improvement_areas', 'submission_date', 'high_priority', 'message_follower_ids', 'res_model', 'staff_friendliness_rating', 'model', 'group_date', 'action_respond', 'card', 'response_text', 'customer_id', 'comments', 'new', 'help', 'follow_up_date', 'assigned_to', 'action_mark_reviewed', 'action_view_related_records', 'action_close', 'search_view_id', 'context', 'feedback_type', 'internal_notes', 'sentiment_category', 'needs_response', 'view_mode', 'response_time_rating', 'action_escalate', 'arch', 'group_customer', 'sentiment_score', 'group_priority', 'overall_rating', 'name', 'escalation_reason', 'low_satisfaction', 'my_assignments', 'status', 'activity_state', 'follow_up_required', 'group_assigned', 'activity_exception_decoration', 'group_status', 'button_box', 'priority', 'message_ids', 'satisfaction_level'}",
+      "fields": "{'action_close', 'submission_date', 'action_view_related_records', 'priority', 'group_customer', 'activity_state', 'button_box', 'name', 'feedback_type', 'comments', 'search_view_id', 'response_text', 'action_respond', 'staff_friendliness_rating', 'improvement_areas', 'action_escalate', 'high_priority', 'customer_id', 'card', 'low_satisfaction', 'message_follower_ids', 'resolution_notes', 'my_assignments', 'message_ids', 'help', 'group_priority', 'view_mode', 'activity_exception_decoration', 'new', 'escalation_reason', 'needs_response', 'group_assigned', 'res_model', 'follow_up_date', 'group_status', 'activity_ids', 'follow_up_required', 'response_time_rating', 'sentiment_category', 'context', 'overall_rating', 'service_quality_rating', 'status', 'assigned_to', 'satisfaction_level', 'sentiment_score', 'internal_notes', 'arch', 'action_mark_reviewed', 'group_date', 'model'}",
       "models": "set()",
       "line_count": 220,
       "file_size": 12167
     },
     "naid_compliance_views.xml": {
-      "fields": "{'security_clearance', 'destruction_date', 'compliance_checklist_ids', 'model', 'escalation_contacts', 'certificate_issued', 'issue_date', 'facility_name', 'certificate_tracking', 'auto_renewal', 'witness_present', 'destruction_count', 'variance', 'naid_aa', 'security_officer', 'compliance_trend', 'renewal_reminder', 'certified', 'action_schedule_audit', 'group_by_officer', 'metrics', 'certificate_ids', 'destructions', 'regulatory_notifications', 'group_by_naid_level', 'benchmark', 'activity_ids', 'checklist', 'message_follower_ids', 'documentation_score', 'audits', 'third_party_auditor', 'material_type', 'secure_storage', 'audit_scope', 'compliance_alerts', 'certificate_type', 'action_view_audit_details', 'notifications', 'group_by_facility', 'search_view_id', 'context', 'action_conduct_audit', 'pending_audit', 'access_control_verified', 'days_since_last_audit', 'training_completed', 'certificate_count', 'responsible_person', 'background_checks', 'audit_required', 'management_alerts', 'arch', 'facility_manager', 'valid_certs', 'notes', 'destruction_record_ids', 'destruction_method', 'requirement_name', 'audit_result', 'information_handling', 'naid_level', 'measurement_date', 'performance_history_ids', 'personnel_screening', 'action_generate_certificate', 'group_by_expiry', 'audit_frequency', 'chain_of_custody', 'destruction_verification', 'compliance_verified', 'metric_type', 'certificate_status', 'certification_date', 'incident_management', 'view_mode', 'action_view_certificates', 'next_audit_date', 'action_renew_certificate', 'trend', 'overall_compliance_score', 'certificate_valid', 'action_view_audit_history', 'expiry_notification', 'quality_control', 'last_verified', 'expired', 'verification_method', 'naid_a', 'auditor_name', 'certificate_number', 'days_until_expiry', 'physical_security_score', 'message_ids', 'findings_count', 'action_download_certificate', 'expiry_date', 'compliance_status', 'notification_recipients', 'last_audit_date', 'client_name', 'group_by_status', 'res_model', 'audit_type', 'card', 'score', 'process_verification', 'help', 'naid_member_id', 'overdue_audit', 'certificates', 'audit_history_ids', 'compliance_score', 'action_compliance_report', 'operational_score', 'audit_date', 'audit_reminder', 'non_compliant', 'security_score', 'requirement_type', 'risk_level', 'action_view_destruction_records', 'expiring_soon', 'name', 'compliance_officer', 'equipment_certification', 'surveillance_system', 'button_box', 'standards', 'audit_count', 'issuing_authority'}",
+      "fields": "{'physical_security_score', 'quality_control', 'expired', 'name', 'naid_level', 'overall_compliance_score', 'destruction_record_ids', 'compliance_status', 'personnel_screening', 'card', 'facility_manager', 'security_officer', 'checklist', 'audit_required', 'performance_history_ids', 'activity_ids', 'context', 'notifications', 'action_renew_certificate', 'compliance_verified', 'action_download_certificate', 'audit_reminder', 'escalation_contacts', 'destruction_method', 'group_by_naid_level', 'certificate_count', 'audit_scope', 'issuing_authority', 'third_party_auditor', 'action_view_certificates', 'certified', 'message_follower_ids', 'message_ids', 'security_score', 'view_mode', 'documentation_score', 'client_name', 'res_model', 'renewal_reminder', 'audit_count', 'destruction_verification', 'expiring_soon', 'destructions', 'requirement_type', 'risk_level', 'management_alerts', 'metric_type', 'destruction_date', 'compliance_alerts', 'findings_count', 'model', 'naid_aa', 'action_compliance_report', 'audit_date', 'pending_audit', 'button_box', 'information_handling', 'action_generate_certificate', 'action_view_audit_details', 'group_by_officer', 'security_clearance', 'certificate_tracking', 'certificates', 'chain_of_custody', 'days_since_last_audit', 'audit_type', 'action_schedule_audit', 'action_view_audit_history', 'incident_management', 'training_completed', 'responsible_person', 'variance', 'overdue_audit', 'certificate_issued', 'notes', 'facility_name', 'process_verification', 'next_audit_date', 'notification_recipients', 'certificate_status', 'days_until_expiry', 'audit_result', 'last_verified', 'compliance_score', 'audits', 'arch', 'material_type', 'help', 'certificate_number', 'verification_method', 'score', 'non_compliant', 'regulatory_notifications', 'secure_storage', 'compliance_checklist_ids', 'certificate_valid', 'last_audit_date', 'witness_present', 'search_view_id', 'destruction_count', 'auto_renewal', 'audit_frequency', 'certificate_type', 'valid_certs', 'expiry_notification', 'group_by_expiry', 'issue_date', 'expiry_date', 'equipment_certification', 'naid_member_id', 'metrics', 'surveillance_system', 'measurement_date', 'requirement_name', 'certification_date', 'benchmark', 'auditor_name', 'access_control_verified', 'group_by_status', 'trend', 'action_view_destruction_records', 'certificate_ids', 'compliance_trend', 'background_checks', 'standards', 'group_by_facility', 'compliance_officer', 'audit_history_ids', 'action_conduct_audit', 'operational_score', 'naid_a'}",
       "models": "set()",
       "line_count": 395,
       "file_size": 23876
     },
     "advanced_billing_views.xml": {
-      "fields": "{'activity_ids', 'service_date', 'auto_send_invoices', 'period_end_date', 'invoice_id', 'invoice_due_days', 'res_model', 'message_follower_ids', 'model', 'shredding_work_order_id', 'prepaid_enabled', 'state', 'target', 'phone', 'auto_generate_storage_invoices', 'action_generate_storage_lines', 'storage_bill_in_advance', 'billing_type', 'receive_service_invoices', 'billing_contact_ids', 'sequence', 'storage_line_ids', 'billing_direction', 'action_generate_service_lines', 'quantity', 'unit_price', 'currency_id', 'prepaid_months', 'storage_advance_months', 'toggle_active', 'storage_billing_cycle', 'service_amount', 'payment_term_id', 'view_mode', 'partner_id', 'auto_generate_service_invoices', 'service_billing_cycle', 'primary_contact', 'receive_storage_invoices', 'arch', 'active', 'generate_monthly_billing', 'service_line_ids', 'receive_statements', 'invoice_date', 'name', 'prepaid_balance', 'type', 'storage_amount', 'description', 'action_generate_invoice', 'retrieval_work_order_id', 'button_box', 'company_id', 'total_amount', 'box_id', 'email', 'billing_profile_id', 'message_ids', 'prepaid_discount_percent', 'billing_day', 'period_start_date', 'amount'}",
+      "fields": "{'billing_contact_ids', 'billing_profile_id', 'prepaid_discount_percent', 'currency_id', 'storage_amount', 'invoice_id', 'unit_price', 'partner_id', 'sequence', 'period_start_date', 'button_box', 'type', 'name', 'description', 'amount', 'phone', 'storage_bill_in_advance', 'active', 'toggle_active', 'total_amount', 'generate_monthly_billing', 'service_amount', 'email', 'quantity', 'prepaid_months', 'message_follower_ids', 'auto_generate_storage_invoices', 'action_generate_storage_lines', 'message_ids', 'service_billing_cycle', 'invoice_date', 'view_mode', 'receive_storage_invoices', 'storage_line_ids', 'res_model', 'receive_service_invoices', 'primary_contact', 'storage_billing_cycle', 'action_generate_invoice', 'service_date', 'receive_statements', 'billing_direction', 'invoice_due_days', 'state', 'payment_term_id', 'shredding_work_order_id', 'activity_ids', 'prepaid_balance', 'period_end_date', 'action_generate_service_lines', 'prepaid_enabled', 'auto_generate_service_invoices', 'auto_send_invoices', 'service_line_ids', 'storage_advance_months', 'billing_day', 'retrieval_work_order_id', 'target', 'company_id', 'arch', 'billing_type', 'model', 'box_id'}",
       "models": "set()",
       "line_count": 287,
       "file_size": 14992
     },
     "bin_key_management_views.xml": {
-      "fields": "{'action_view_unlock_services', 'activity_ids', 'service_date', 'kanban-box', 'unlock_service_count', 'unlock_reason', 'res_model', 'message_follower_ids', 'issue_location', 'model', 'replacement_of_id', 'charge_amount', 'photo_ids', 'return_date', 'emergency_contact', 'help', 'issue_date', 'action_return_key', 'context', 'bin_locations', 'bin_location', 'billable', 'invoice_created', 'reason_description', 'partner_id', 'view_mode', 'key_holder_id', 'action_mark_lost', 'arch', 'partner_company', 'action_create_invoice', 'notes', 'completed', 'technician_id', 'action_replace_key', 'name', 'action_mark_completed', 'status', 'unlock_service_ids', 'replaced_by_id', 'button_box', 'company_id', 'service_number', 'items_retrieved', 'message_ids', 'expected_return_date', 'key_number'}",
+      "fields": "{'action_view_unlock_services', 'partner_company', 'key_holder_id', 'action_mark_completed', 'partner_id', 'button_box', 'bin_location', 'name', 'photo_ids', 'replaced_by_id', 'items_retrieved', 'issue_date', 'charge_amount', 'message_follower_ids', 'message_ids', 'bin_locations', 'unlock_service_count', 'view_mode', 'completed', 'emergency_contact', 'res_model', 'service_date', 'key_number', 'service_number', 'kanban-box', 'invoice_created', 'replacement_of_id', 'activity_ids', 'notes', 'reason_description', 'context', 'unlock_reason', 'issue_location', 'status', 'technician_id', 'return_date', 'action_return_key', 'action_replace_key', 'unlock_service_ids', 'action_create_invoice', 'expected_return_date', 'company_id', 'arch', 'help', 'model', 'billable', 'action_mark_lost'}",
       "models": "set()",
       "line_count": 258,
       "file_size": 12819
     },
     "paper_load_shipment_views.xml": {
-      "fields": "{'action_schedule_pickup', 'draft', 'model', 'pickup_info', 'payment_notes', 'delivery_notes', 'this_month', 'load_summary', 'mobile_integration', 'delivered', 'driver_license', 'payment_amount', 'in_transit', 'transportation_company', 'ready_pickup', 'bale_number', 'action_create_invoice', 'signatures', 'invoice_date', 'payment_due_date', 'bale_count', 'invoiced', 'display_name', 'company_id', 'activity_ids', 'bales', 'truck_info', 'message_follower_ids', 'mobile_entry', 'driver_phone', 'system_info', 'customer_id', 'action_view_manifest', 'manifest_date', 'action_ready_for_pickup', 'search_view_id', 'destination_address', 'payment_received_date', 'action_add_bales_to_load', 'cardboard_weight', 'mixed_paper_count', 'arch', 'production_date', 'group_customer', 'white_paper_count', 'action_mark_in_transit', 'status', 'weight_lbs', 'mixed_paper_weight', 'invoice_amount', 'weighed_by', 'load_number', 'driver_name', 'pickup_date', 'bale_ids', 'total_weight_kg', 'driver_signature_date', 'cardboard_count', 'view_mode', 'scheduled', 'company_signature_date', 'active', 'gps_pickup_location', 'paid', 'transportation', 'message_ids', 'action_mark_paid', 'res_model', 'card', 'action_view_weight_breakdown', 'today', 'truck_visualization', 'help', 'this_week', 'grade_breakdown', 'payment_tracking', 'manifest_number', 'gps_delivery_location', 'group_pickup_date', 'action_mark_delivered', 'group_driver', 'action_generate_manifest', 'mobile_manifest', 'name', 'paper_grade', 'manifest_generated', 'group_status', 'pickup_time', 'button_box', 'signed_by', 'total_weight_lbs', 'white_paper_weight'}",
+      "fields": "{'action_mark_delivered', 'mixed_paper_weight', 'name', 'driver_name', 'transportation', 'payment_tracking', 'bale_count', 'ready_pickup', 'customer_id', 'driver_signature_date', 'card', 'payment_due_date', 'action_schedule_pickup', 'destination_address', 'invoiced', 'company_signature_date', 'activity_ids', 'manifest_number', 'pickup_time', 'bale_ids', 'cardboard_weight', 'this_month', 'action_ready_for_pickup', 'payment_amount', 'group_customer', 'manifest_date', 'system_info', 'production_date', 'active', 'action_generate_manifest', 'pickup_info', 'driver_phone', 'truck_info', 'message_follower_ids', 'message_ids', 'truck_visualization', 'view_mode', 'res_model', 'weight_lbs', 'group_status', 'today', 'mixed_paper_count', 'gps_pickup_location', 'paper_grade', 'transportation_company', 'white_paper_weight', 'model', 'driver_license', 'bale_number', 'cardboard_count', 'invoice_amount', 'button_box', 'action_mark_in_transit', 'action_mark_paid', 'total_weight_lbs', 'scheduled', 'action_view_manifest', 'action_add_bales_to_load', 'invoice_date', 'white_paper_count', 'signatures', 'display_name', 'group_driver', 'grade_breakdown', 'signed_by', 'delivered', 'action_create_invoice', 'arch', 'draft', 'help', 'this_week', 'payment_notes', 'mobile_integration', 'paid', 'manifest_generated', 'delivery_notes', 'load_number', 'mobile_manifest', 'search_view_id', 'weighed_by', 'bales', 'load_summary', 'payment_received_date', 'in_transit', 'gps_delivery_location', 'mobile_entry', 'group_pickup_date', 'status', 'total_weight_kg', 'pickup_date', 'action_view_weight_breakdown', 'company_id'}",
       "models": "set()",
       "line_count": 320,
       "file_size": 18105
     },
     "field_label_customization_views.xml": {
-      "fields": "{'model', 'core_fields', 'show_compliance_notes', 'show_confidentiality', 'global', 'label_weight_estimate', 'require_project_code', 'require_sequence_from', 'label_item_description', 'label_hierarchy_display', 'label_destruction_date', 'action_reset_to_defaults', 'require_content_description', 'date_fields', 'requirements', 'active_transitory_items', 'customer_specific', 'label_file_count', 'label_compliance_notes', 'action_apply_financial_preset', 'label_content_description', 'label_project_code', 'show_created_by_dept', 'customer_id', 'require_date_from', 'show_container_number', 'action_apply_corporate_preset', 'show_special_handling', 'field_config', 'show_file_count', 'transitory_field_config_id', 'arch', 'label_sequence_from', 'group_customer', 'visible_field_count', 'allow_transitory_items', 'label_client_reference', 'label_size_estimate', 'label_date_to', 'description', 'priority', 'label_authorized_by', 'total_records_containers', 'label_created_by_dept', 'label_date_from', 'label_folder_type', 'require_description', 'require_record_type', 'require_sequence_to', 'show_filing_system', 'department_specific', 'action_apply_legal_preset', 'department_id', 'show_authorized_by', 'require_destruction_date', 'view_mode', 'required_field_count', 'active', 'group_priority', 'action_setup_field_labels', 'total_transitory_items', 'label_container_number', 'require_client_reference', 'admin_fields', 'config_preset', 'inactive', 'physical_fields', 'label_filing_system', 'res_model', 'show_content_description', 'require_container_number', 'require_date_to', 'label_special_handling', 'label_sequence_to', 'help', 'max_transitory_items', 'action_setup_transitory_config', 'scope_display', 'visibility', 'business_fields', 'field_label_config_id', 'customized_label_count', 'label_parent_container', 'show_description', 'require_confidentiality', 'show_date_ranges', 'action_apply_healthcare_preset', 'name', 'show_project_code', 'show_record_type', 'label_confidentiality', 'label_record_type', 'show_destruction_date', 'show_weight_estimate', 'show_size_estimate', 'group_department', 'inherit_id', 'show_sequence_ranges', 'show_client_reference'}",
+      "fields": "{'global', 'require_destruction_date', 'label_parent_container', 'action_apply_financial_preset', 'show_client_reference', 'name', 'show_authorized_by', 'require_sequence_from', 'transitory_field_config_id', 'show_sequence_ranges', 'field_config', 'customer_id', 'require_date_to', 'requirements', 'show_weight_estimate', 'label_project_code', 'customized_label_count', 'label_file_count', 'department_specific', 'scope_display', 'label_client_reference', 'group_customer', 'show_date_ranges', 'label_folder_type', 'inherit_id', 'label_compliance_notes', 'active', 'show_project_code', 'require_client_reference', 'view_mode', 'show_description', 'visible_field_count', 'label_date_from', 'require_date_from', 'res_model', 'label_filing_system', 'show_size_estimate', 'group_department', 'physical_fields', 'show_content_description', 'model', 'inactive', 'total_records_containers', 'department_id', 'max_transitory_items', 'priority', 'label_item_description', 'description', 'label_sequence_to', 'label_authorized_by', 'label_container_number', 'show_created_by_dept', 'require_record_type', 'label_confidentiality', 'require_content_description', 'require_container_number', 'label_record_type', 'require_project_code', 'admin_fields', 'show_compliance_notes', 'label_size_estimate', 'action_apply_healthcare_preset', 'label_weight_estimate', 'show_file_count', 'arch', 'require_confidentiality', 'visibility', 'help', 'action_setup_field_labels', 'field_label_config_id', 'label_date_to', 'label_hierarchy_display', 'config_preset', 'action_reset_to_defaults', 'show_special_handling', 'label_destruction_date', 'show_destruction_date', 'customer_specific', 'group_priority', 'allow_transitory_items', 'show_filing_system', 'core_fields', 'label_sequence_from', 'require_description', 'show_record_type', 'show_confidentiality', 'require_sequence_to', 'action_apply_legal_preset', 'label_special_handling', 'label_created_by_dept', 'active_transitory_items', 'show_container_number', 'label_content_description', 'business_fields', 'action_setup_transitory_config', 'date_fields', 'total_transitory_items', 'action_apply_corporate_preset', 'required_field_count'}",
       "models": "set()",
       "line_count": 306,
       "file_size": 18388
     },
     "partner_bin_key_views.xml": {
-      "fields": "{'action_view_unlock_services', 'service_date', 'unlock_service_count', 'bin_key_history_ids', 'unlock_reason', 'res_model', 'issue_location', 'model', 'charge_amount', 'return_date', 'emergency_contact', 'action_report_lost_key', 'target', 'binding_model_id', 'issue_date', 'action_return_key', 'binding_view_types', 'no_bin_key', 'action_view_bin_keys', 'context', 'active_bin_key_count', 'action_issue_new_key', 'category_id', 'total_unlock_charges', 'bin_location', 'billable', 'invoice_created', 'view_mode', 'is_emergency_key_contact', 'arch', 'customer', 'name', 'status', 'country_id', 'has_bin_key', 'action_view_active_key', 'unlock_service_history_ids', 'button_box', 'service_number', 'inherit_id', 'emergency_contacts', 'total_bin_keys_issued', 'key_issue_date', 'key_number'}",
+      "fields": "{'action_view_unlock_services', 'button_box', 'bin_location', 'name', 'has_bin_key', 'customer', 'inherit_id', 'binding_model_id', 'no_bin_key', 'binding_view_types', 'unlock_service_history_ids', 'action_report_lost_key', 'action_view_bin_keys', 'issue_date', 'charge_amount', 'key_issue_date', 'unlock_service_count', 'view_mode', 'emergency_contact', 'res_model', 'is_emergency_key_contact', 'service_date', 'key_number', 'service_number', 'invoice_created', 'total_bin_keys_issued', 'context', 'bin_key_history_ids', 'emergency_contacts', 'unlock_reason', 'issue_location', 'category_id', 'status', 'active_bin_key_count', 'return_date', 'action_return_key', 'country_id', 'action_view_active_key', 'total_unlock_charges', 'arch', 'action_issue_new_key', 'model', 'billable', 'target'}",
       "models": "set()",
       "line_count": 197,
       "file_size": 10300
     },
     "key_restriction_views.xml": {
-      "fields": "{'action_view_unlock_services', 'action', 'key_restricted', 'restriction_notes', 'key_restriction_reason', 'allow_reason', 'model', 'key_issuance_allowed', 'phone', 'unlock_reason_code', 'action_confirm', 'action_restrict_key_issuance', 'restriction_reason', 'key_restrictions', 'internal_notes', 'key_restriction_buttons', 'key_restriction_notes', 'key_restriction_approved_by', 'key_restriction_status', 'customer_key_restricted', 'key_allowed', 'partner_id', 'restriction_details', 'supplier', 'restricted_unlock_count', 'arch', 'action_allow_key_issuance', 'key_restriction', 'reason', 'urgency', 'name', 'button_box', 'key_restricted_customers', 'allow_details', 'inherit_id', 'key_restriction_details', 'my_services', 'effective_date', 'key_restriction_date'}",
+      "fields": "{'action_view_unlock_services', 'restriction_reason', 'allow_reason', 'partner_id', 'restriction_notes', 'supplier', 'urgency', 'button_box', 'key_allowed', 'name', 'key_issuance_allowed', 'key_restricted_customers', 'inherit_id', 'phone', 'key_restrictions', 'key_restriction_buttons', 'key_restriction_date', 'customer_key_restricted', 'restriction_details', 'action', 'reason', 'unlock_reason_code', 'restricted_unlock_count', 'key_restriction_notes', 'key_restriction_approved_by', 'my_services', 'key_restriction_reason', 'action_allow_key_issuance', 'key_restriction', 'allow_details', 'key_restriction_status', 'key_restriction_details', 'action_restrict_key_issuance', 'key_restricted', 'internal_notes', 'arch', 'model', 'effective_date', 'action_confirm'}",
       "models": "set()",
       "line_count": 181,
       "file_size": 9624
     },
     "paper_recycling_menus.xml": {
-      "fields": "{'view_mode', 'res_model', 'context', 'domain', 'view_id', 'name', 'help'}",
+      "fields": "{'res_model', 'name', 'context', 'help', 'view_mode', 'domain', 'view_id'}",
       "models": "set()",
       "line_count": 36,
       "file_size": 1942
     },
     "records_container_type_converter_views.xml": {
-      "fields": "{'update_location', 'view_mode', 'res_model', 'context', 'summary_line', 'arch', 'model', 'reason', 'container_ids', 'current_type', 'action_preview_changes', 'name', 'new_container_type_code', 'target', 'action_convert_containers'}",
+      "fields": "{'res_model', 'model', 'action_preview_changes', 'update_location', 'reason', 'action_convert_containers', 'name', 'context', 'target', 'view_mode', 'container_ids', 'arch', 'current_type', 'new_container_type_code', 'summary_line'}",
       "models": "set()",
       "line_count": 55,
       "file_size": 2784
     },
     "shredding_inventory_views.xml": {
-      "fields": "{'activity_ids', 'retrieval_cost', 'destruction_date', 'res_model', 'message_follower_ids', 'model', 'action_approve_item', 'work_order_id', 'customer_approved', 'sequence', 'retrieved_date', 'action_mark_not_found', 'document_id', 'approval_date', 'shredding_cost', 'permanent_removal_cost', 'supervisor_approved', 'action_mark_retrieved', 'view_mode', 'destroyed_by', 'retrieval_notes', 'arch', 'notes', 'action_mark_destroyed', 'total_cost', 'action_mark_picked', 'name', 'location_id', 'destruction_notes', 'status', 'type', 'original_location_id', 'picked_date', 'display_name', 'current_location_id', 'message_ids', 'retrieved_by', 'container_id', 'picked_by'}",
+      "fields": "{'action_approve_item', 'work_order_id', 'sequence', 'type', 'picked_by', 'name', 'destruction_notes', 'retrieved_by', 'message_follower_ids', 'action_mark_not_found', 'retrieved_date', 'message_ids', 'view_mode', 'approval_date', 'destroyed_by', 'res_model', 'customer_approved', 'action_mark_picked', 'display_name', 'retrieval_notes', 'activity_ids', 'retrieval_cost', 'notes', 'action_mark_retrieved', 'action_mark_destroyed', 'status', 'location_id', 'destruction_date', 'permanent_removal_cost', 'supervisor_approved', 'total_cost', 'document_id', 'picked_date', 'shredding_cost', 'current_location_id', 'arch', 'original_location_id', 'model', 'container_id'}",
       "models": "set()",
       "line_count": 167,
       "file_size": 8679
     },
     "portal_request_views.xml": {
-      "fields": "{'customer_signature', 'action_assign', 'customer_feedback', 'activity_ids', 'processing_notes', 'assigned', 'high_priority', 'submission_date', 'my_requests', 'message_follower_ids', 'action_start_processing', 'res_model', 'model', 'completion_notes', 'card', 'customer_id', 'help', 'new', 'special_instructions', 'assigned_to', 'context', 'action_view_related_documents', 'approval_status', 'in_progress', 'view_mode', 'action_escalate', 'request_type', 'arch', 'group_customer', 'estimated_hours', 'action_complete', 'requires_approval', 'name', 'group_type', 'status', 'due_date', 'group_assigned', 'description', 'staff_signature', 'actual_hours', 'group_status', 'button_box', 'customer_contact_info', 'priority', 'message_ids', 'overdue'}",
+      "fields": "{'submission_date', 'overdue', 'priority', 'group_customer', 'button_box', 'description', 'name', 'group_type', 'action_view_related_documents', 'my_requests', 'assigned', 'estimated_hours', 'action_escalate', 'action_start_processing', 'high_priority', 'customer_id', 'staff_signature', 'card', 'approval_status', 'message_follower_ids', 'customer_feedback', 'action_assign', 'completion_notes', 'message_ids', 'view_mode', 'request_type', 'special_instructions', 'processing_notes', 'new', 'group_assigned', 'res_model', 'group_status', 'customer_signature', 'activity_ids', 'context', 'customer_contact_info', 'status', 'assigned_to', 'actual_hours', 'due_date', 'action_complete', 'requires_approval', 'in_progress', 'arch', 'help', 'model'}",
       "models": "set()",
       "line_count": 191,
       "file_size": 9629
@@ -26539,37 +26149,37 @@
       "file_size": 613
     },
     "document_retrieval_work_order_views.xml": {
-      "fields": "{'items', 'draft', 'model', 'current_location', 'action_ready_for_delivery', 'delivery_notes', 'delivery_address', 'pricing_breakdown', 'customer_info', 'my_orders', 'technician_id', 'total_cost', 'has_custom_rates', 'delivery', 'driver_id', 'custom_rates', 'request_info', 'customer_signature', 'activity_ids', 'message_follower_ids', 'customer_id', 'requested_by', 'search_view_id', 'context', 'item_count', 'document_id', 'arch', 'group_customer', 'notes', 'actual_delivery_date', 'priority_item_cost', 'action_add_items', 'status', 'barcode', 'description', 'delivery_contact', 'action_deliver', 'priority', 'action_confirm', 'group_state', 'department_id', 'internal_notes', 'delivery_date', 'in_progress', 'view_mode', 'action_view_pricing_breakdown', 'assignment', 'group_technician', 'retrieval_notes', 'group_priority', 'action_start_retrieval', 'color', 'box_id', 'customer_rates_id', 'message_ids', 'delivery_time', 'kanban-box', 'res_model', 'request_date', 'today', 'state', 'help', 'action_assign_technician', 'delivery_phone', 'this_week', 'pricing', 'group_request_date', 'priority_order_cost', 'retrieval_item_ids', 'customer_signature_date', 'emergency', 'confirmed', 'base_delivery_cost', 'delivered_by', 'action_complete', 'view_id', 'name', 'web_ribbon', 'rush', 'item_type', 'button_box', 'base_retrieval_cost'}",
+      "fields": "{'delivered_by', 'has_custom_rates', 'name', 'rush', 'confirmed', 'customer_id', 'request_date', 'action_add_items', 'current_location', 'group_technician', 'delivery_date', 'state', 'retrieval_notes', 'activity_ids', 'barcode', 'context', 'delivery_contact', 'pricing_breakdown', 'internal_notes', 'group_customer', 'delivery_phone', 'action_deliver', 'color', 'action_start_retrieval', 'priority_item_cost', 'group_state', 'message_follower_ids', 'customer_info', 'message_ids', 'view_mode', 'pricing', 'my_orders', 'res_model', 'customer_signature', 'delivery', 'technician_id', 'today', 'group_request_date', 'request_info', 'action_view_pricing_breakdown', 'model', 'item_count', 'department_id', 'priority', 'button_box', 'description', 'action_assign_technician', 'delivery_time', 'priority_order_cost', 'retrieval_item_ids', 'action_ready_for_delivery', 'delivery_address', 'actual_delivery_date', 'notes', 'requested_by', 'base_delivery_cost', 'action_complete', 'arch', 'draft', 'help', 'emergency', 'this_week', 'view_id', 'customer_rates_id', 'base_retrieval_cost', 'items', 'custom_rates', 'delivery_notes', 'search_view_id', 'assignment', 'item_type', 'group_priority', 'customer_signature_date', 'driver_id', 'status', 'total_cost', 'document_id', 'web_ribbon', 'in_progress', 'kanban-box', 'action_confirm', 'box_id'}",
       "models": "set()",
       "line_count": 270,
       "file_size": 15448
     },
     "pos_config_views.xml": {
-      "fields": "{'receipt_header', 'transaction_count', 'model', 'walk_in_pricelist_id', 'enable_document_services', 'iface_customer_facing_display', 'customer_satisfaction_score', 'document_scanning_rate', 'group_pricelist', 'module_pos_loyalty', 'basic_settings', 'shredding_service_rate', 'rush_service_multiplier', 'performance_data_ids', 'interface_settings', 'peak_hour_sales', 'deprecated', 'split_transactions', 'iface_printbill', 'picking_type_id', 'most_sold_product_id', 'module_pos_restaurant', 'avg_transaction_time', 'restrict_price_control', 'barcode_nomenclature_id', 'last_session_closing_date', 'service_product_ids', 'company_id', 'activity_ids', 'message_follower_ids', 'action_activate', 'pos_category_id', 'iface_print_skip_screen', 'pricelist_id', 'hardware', 'iface_print_auto', 'current_session_id.start_at', 'iface_available_categ_ids', 'search_view_id', 'context', 'current_session_id', 'action_force_close_session', 'total_sales', 'stock_location_id', 'inventory', 'arch', 'requires_appointment', 'action_view_orders', 'group_user', 'product_id', 'module_pos_discount', 'activity_state', 'type', 'walk_in_customer_id', 'document_storage_rate', 'activity_exception_decoration', 'open_session', 'current_session_state', 'module_pos_mercury', 'scan_product_check', 'iface_display_categ_images', 'date', 'order_count', 'session_user_id', 'proxy_ip', 'barcode_scanner_enabled', 'avg_transaction_value', 'limit_categories', 'busiest_day_of_week', 'list_price', 'iface_electronic_scale', 'auto_create_customer', 'sequence_id', 'service_type', 'currency_id', 'customer_count', 'view_mode', 'use_payment_terminal', 'active', 'action_deactivate', 'require_customer_info', 'sequence_line_id', 'iface_orderline_notes', 'iface_payment_terminal', 'inactive', 'message_ids', 'invoice_journal_id', 'today_sales', 'restaurant', 'loyalty_program_usage', 'walk_in_enabled', 'available_in_pos', 'iface_start_categ_id', 'res_model', 'payment_method_ids', 'action_close_session', 'card', 'state', 'action_open_session', 'help', 'iface_cashdrawer', 'action_view_sessions', 'records_integration', 'session_info', 'document_services', 'iface_scan_via_proxy', 'analytics', 'total_transactions', 'open_session_ids', 'name', 'iface_tipproduct', 'action_view_sales_report', 'receipt_footer', 'enable_walk_in_service', 'module_pos_reprint', 'iface_splitbill', 'payment_methods', 'group_status', 'button_box', 'journal_id', 'my_sessions', 'group_company', 'session_count'}",
+      "fields": "{'shredding_service_rate', 'action_deactivate', 'name', 'require_customer_info', 'sequence_id', 'iface_start_categ_id', 'card', 'auto_create_customer', 'proxy_ip', 'last_session_closing_date', 'current_session_state', 'scan_product_check', 'service_type', 'stock_location_id', 'invoice_journal_id', 'pos_category_id', 'today_sales', 'state', 'activity_ids', 'context', 'customer_count', 'iface_printbill', 'list_price', 'transaction_count', 'sequence_line_id', 'session_user_id', 'rush_service_multiplier', 'total_transactions', 'session_count', 'document_storage_rate', 'open_session', 'active', 'order_count', 'module_pos_loyalty', 'action_activate', 'iface_splitbill', 'message_follower_ids', 'iface_tipproduct', 'message_ids', 'view_mode', 'action_open_session', 'barcode_nomenclature_id', 'res_model', 'hardware', 'iface_print_skip_screen', 'group_status', 'document_scanning_rate', 'iface_orderline_notes', 'restrict_price_control', 'barcode_scanner_enabled', 'module_pos_discount', 'enable_walk_in_service', 'group_company', 'model', 'avg_transaction_time', 'inactive', 'customer_satisfaction_score', 'session_info', 'current_session_id.start_at', 'walk_in_enabled', 'enable_document_services', 'requires_appointment', 'button_box', 'use_payment_terminal', 'open_session_ids', 'group_pricelist', 'action_view_sessions', 'action_view_sales_report', 'module_pos_restaurant', 'avg_transaction_value', 'performance_data_ids', 'records_integration', 'iface_cashdrawer', 'iface_payment_terminal', 'journal_id', 'activity_exception_decoration', 'module_pos_mercury', 'inventory', 'busiest_day_of_week', 'iface_available_categ_ids', 'restaurant', 'most_sold_product_id', 'group_user', 'receipt_footer', 'iface_print_auto', 'document_services', 'arch', 'help', 'limit_categories', 'walk_in_pricelist_id', 'deprecated', 'currency_id', 'split_transactions', 'activity_state', 'type', 'product_id', 'search_view_id', 'service_product_ids', 'walk_in_customer_id', 'payment_method_ids', 'basic_settings', 'peak_hour_sales', 'available_in_pos', 'iface_electronic_scale', 'interface_settings', 'iface_display_categ_images', 'total_sales', 'date', 'loyalty_program_usage', 'current_session_id', 'action_close_session', 'iface_scan_via_proxy', 'action_force_close_session', 'payment_methods', 'iface_customer_facing_display', 'analytics', 'picking_type_id', 'action_view_orders', 'pricelist_id', 'my_sessions', 'company_id', 'module_pos_reprint', 'receipt_header'}",
       "models": "set()",
       "line_count": 394,
       "file_size": 24420
     },
     "shredding_service_views.xml": {
-      "fields": "{'partner_id', 'service_type_off_site', 'service_type', 'service_type_on_site', 'arch', 'model', 'group_by_service_type', 'group_by_state', 'group_by_shredding_method', 'shredding_method_strip_cut', 'group_by_partner', 'name', 'shredding_method'}",
+      "fields": "{'service_type_off_site', 'service_type', 'partner_id', 'shredding_method_strip_cut', 'shredding_method', 'name', 'group_by_partner', 'group_by_state', 'arch', 'group_by_shredding_method', 'model', 'service_type_on_site', 'group_by_service_type'}",
       "models": "set()",
       "line_count": 29,
       "file_size": 1592
     },
     "records_tag_views.xml": {
-      "fields": "{'view_mode', 'res_model', 'search_view_id', 'arch', 'model', 'color', 'view_id', 'name', 'help'}",
+      "fields": "{'res_model', 'view_id', 'name', 'view_mode', 'search_view_id', 'arch', 'help', 'model', 'color'}",
       "models": "set()",
       "line_count": 58,
       "file_size": 2065
     },
     "records_container_views.xml": {
-      "fields": "{'retrieved', 'activity_ids', 'destruction_date', 'size_category', 'res_model', 'message_follower_ids', 'request_date', 'model', 'movements', 'movement_date', 'container_type_code', 'group_by_state', 'card', 'received', 'action_retrieve_container', 'state', 'current_usage', 'customer_id', 'details', 'help', 'action_store_container', 'movement_ids', 'stored', 'this_month', 'group_by_location', 'search_view_id', 'context', 'department_id', 'near_destruction', 'action_generate_barcode', 'group_by_department', 'service_request_ids', 'document_ids', 'action_view_documents', 'indexed', 'view_mode', 'group_by_customer', 'this_year', 'moved_by_id', 'arch', 'requests', 'group_by_creation_date', 'destroyed', 'from_location_id', 'weight', 'name', 'location_id', 'movement_type', 'action_bulk_convert_container_type', 'document_type_id', 'creation_date', 'capacity', 'barcode', 'action_destroy_container', 'description', 'action_index_container', 'button_box', 'documents', 'to_location_id', 'container_type_display', 'priority', 'message_ids', 'retention_policy_id', 'monthly_rate', 'container_type'}",
+      "fields": "{'stored', 'this_month', 'capacity', 'department_id', 'monthly_rate', 'action_bulk_convert_container_type', 'priority', 'button_box', 'action_destroy_container', 'name', 'description', 'size_category', 'group_by_department', 'search_view_id', 'this_year', 'requests', 'details', 'movement_type', 'customer_id', 'movements', 'request_date', 'indexed', 'card', 'action_view_documents', 'message_follower_ids', 'from_location_id', 'message_ids', 'document_ids', 'near_destruction', 'view_mode', 'moved_by_id', 'help', 'weight', 'group_by_customer', 'movement_ids', 'group_by_creation_date', 'destroyed', 'to_location_id', 'res_model', 'state', 'activity_ids', 'barcode', 'context', 'arch', 'document_type_id', 'action_index_container', 'group_by_location', 'group_by_state', 'action_generate_barcode', 'documents', 'retrieved', 'action_retrieve_container', 'location_id', 'service_request_ids', 'destruction_date', 'container_type', 'movement_date', 'retention_policy_id', 'received', 'container_type_code', 'creation_date', 'container_type_display', 'action_store_container', 'model', 'current_usage'}",
       "models": "set()",
       "line_count": 296,
       "file_size": 17580
     },
     "fsm_reschedule_wizard_views.xml": {
-      "fields": "{'action_confirm_reschedule', 'view_mode', 'res_model', 'arch', 'model', 'task_id', 'schedule_date', 'reschedule_reason', 'target', 'name'}",
+      "fields": "{'res_model', 'reschedule_reason', 'action_confirm_reschedule', 'name', 'task_id', 'schedule_date', 'view_mode', 'arch', 'model', 'target'}",
       "models": "set()",
       "line_count": 29,
       "file_size": 1243
@@ -26581,37 +26191,37 @@
       "file_size": 493
     },
     "stock_lot_views.xml": {
-      "fields": "{'expiration_date', 'valid', 'final_customer', 'reserved_quantity', 'action_view_quality_details', 'model', 'action_type', 'stock_move_count', 'current_location', 'measurement_unit', 'created_today', 'quantity', 'quality_checked', 'stock_move_ids', 'total_movements', 'available_quantity', 'location_dest_id', 'timestamp', 'locations', 'action_track_history', 'last_purchase_price', 'action_view_quality_checks', 'destination_location', 'company_id', 'quant_count', 'activity_ids', 'message_follower_ids', 'ref', 'action_view_location', 'quality_check_ids', 'verification_date', 'created_this_week', 'search_view_id', 'context', 'check_date', 'action_quality_check', 'market_value', 'arch', 'attribute_value', 'product_uom_id', 'notes', 'location_from', 'product_id', 'action_print_label', 'quality_check_count', 'out_of_stock', 'quality', 'date', 'movements', 'with_reference', 'create_date', 'action_view_quants', 'created_this_month', 'group_by_expiration', 'action_view_move_details', 'in_stock', 'quality_state', 'inventory_date', 'unit_cost', 'reference', 'view_mode', 'traceability_log_ids', 'supplier_lot_id', 'customer_reference', 'location_id', 'expired', 'attributes', 'total_value', 'message_ids', 'test_type', 'user_id', 'source_location', 'quality_point_id', 'res_model', 'product_qty', 'card', 'days_in_inventory', 'attribute_name', 'state', 'product_uom_qty', 'quality_verified', 'action_view_movements', 'help', 'attribute_ids', 'delivery_order_id', 'traceability', 'quant_ids', 'group_by_company', 'measure', 'location_to', 'analytics', 'expiring_soon', 'name', 'group_by_create_date', 'manufacturing_order_id', 'average_movement_time', 'attribute_type', 'purchase_order_id', 'button_box', 'group_by_product', 'in_date'}",
+      "fields": "{'expired', 'action_type', 'name', 'reserved_quantity', 'action_print_label', 'quality_check_ids', 'quality', 'card', 'stock_move_count', 'current_location', 'out_of_stock', 'inventory_date', 'available_quantity', 'state', 'quant_count', 'attributes', 'activity_ids', 'context', 'unit_cost', 'created_this_month', 'created_today', 'timestamp', 'quality_check_count', 'user_id', 'delivery_order_id', 'action_view_movements', 'last_purchase_price', 'group_by_create_date', 'group_by_expiration', 'valid', 'action_track_history', 'total_movements', 'expiration_date', 'attribute_value', 'quality_state', 'message_follower_ids', 'measurement_unit', 'location_to', 'message_ids', 'view_mode', 'market_value', 'test_type', 'attribute_ids', 'res_model', 'expiring_soon', 'customer_reference', 'action_view_quality_checks', 'action_view_move_details', 'attribute_name', 'quality_checked', 'model', 'final_customer', 'button_box', 'check_date', 'quant_ids', 'action_view_location', 'source_location', 'quality_verified', 'group_by_product', 'traceability_log_ids', 'location_dest_id', 'notes', 'action_view_quality_details', 'product_uom_id', 'quality_point_id', 'purchase_order_id', 'ref', 'group_by_company', 'stock_move_ids', 'arch', 'help', 'product_uom_qty', 'action_view_quants', 'product_id', 'in_stock', 'search_view_id', 'measure', 'traceability', 'create_date', 'days_in_inventory', 'movements', 'quantity', 'destination_location', 'action_quality_check', 'average_movement_time', 'location_from', 'created_this_week', 'total_value', 'date', 'supplier_lot_id', 'in_date', 'reference', 'product_qty', 'attribute_type', 'locations', 'location_id', 'verification_date', 'analytics', 'with_reference', 'company_id', 'manufacturing_order_id'}",
       "models": "set()",
       "line_count": 315,
       "file_size": 18589
     },
     "customer_billing_profile_views.xml": {
-      "fields": "{'activity_ids', 'auto_send_invoices', 'invoice_due_days', 'res_model', 'message_follower_ids', 'draft', 'action_activate', 'monthly_storage', 'model', 'prepaid_enabled', 'service_billing', 'contact_count', 'state', 'phone', 'auto_generate_storage_invoices', 'help', 'action_suspend', 'storage_bill_in_advance', 'billing_schedule', 'billing_contact_ids', 'sequence', 'receive_service_invoices', 'group_state', 'auto_send_statements', 'search_view_id', 'action_reactivate', 'prepaid_months', 'suspended', 'storage_advance_months', 'billing_contacts', 'storage_billing_cycle', 'storage_billing', 'payment_term_id', 'view_mode', 'partner_id', 'auto_generate_service_invoices', 'service_billing_cycle', 'primary_contact', 'receive_storage_invoices', 'arch', 'group_customer', 'next_storage_billing_date', 'group_storage_cycle', 'active', 'receive_statements', 'name', 'receive_notifications', 'prepaid', 'description', 'billing_day', 'automation', 'company_id', 'email', 'billing_profile_id', 'message_ids', 'prepaid_discount_percent', 'user_id', 'quarterly_storage', 'action_terminate'}",
+      "fields": "{'billing_contact_ids', 'billing_profile_id', 'storage_billing', 'prepaid_discount_percent', 'partner_id', 'sequence', 'group_customer', 'action_terminate', 'name', 'billing_contacts', 'description', 'contact_count', 'search_view_id', 'phone', 'storage_bill_in_advance', 'active', 'group_storage_cycle', 'receive_notifications', 'service_billing', 'suspended', 'monthly_storage', 'action_activate', 'email', 'prepaid_months', 'message_follower_ids', 'auto_generate_storage_invoices', 'automation', 'billing_schedule', 'message_ids', 'service_billing_cycle', 'group_state', 'view_mode', 'help', 'prepaid', 'receive_storage_invoices', 'next_storage_billing_date', 'res_model', 'receive_service_invoices', 'primary_contact', 'storage_billing_cycle', 'receive_statements', 'invoice_due_days', 'state', 'payment_term_id', 'activity_ids', 'arch', 'auto_send_statements', 'prepaid_enabled', 'auto_generate_service_invoices', 'auto_send_invoices', 'quarterly_storage', 'action_reactivate', 'storage_advance_months', 'billing_day', 'company_id', 'action_suspend', 'draft', 'user_id', 'model'}",
       "models": "set()",
       "line_count": 263,
       "file_size": 12571
     },
     "permanent_flag_wizard_views.xml": {
-      "fields": "{'action_confirm', 'user_password', 'permanent_flag_set_date', 'arch', 'model', 'permanent_flag', 'action_type', 'box_id', 'permanent_flag_set_by', 'document_count', 'name', 'customer_id', 'document_ids'}",
+      "fields": "{'permanent_flag_set_by', 'action_type', 'customer_id', 'permanent_flag', 'document_count', 'box_id', 'permanent_flag_set_date', 'name', 'document_ids', 'arch', 'model', 'action_confirm', 'user_password'}",
       "models": "set()",
       "line_count": 81,
       "file_size": 4543
     },
     "paper_bale_recycling_views.xml": {
-      "fields": "{'activity_ids', 'action_ship_bale', 'gps_coordinates', 'message_follower_ids', 'load_shipment_id', 'group_production_date', 'group_load_shipment', 'model', 'mobile_entry', 'res_model', 'card', 'today', 'system_info', 'shipped', 'help', 'scale_reading', 'cardboard', 'stored', 'this_week', 'this_month', 'mixed_paper', 'search_view_id', 'action_store_bale', 'action_assign_to_load', 'location_info', 'assigned_load', 'basic_info', 'quality_info', 'delivered', 'weight_net', 'action_mark_delivered', 'processed_from_service', 'storage_location', 'view_mode', 'weight_info', 'group_paper_grade', 'arch', 'production_date', 'produced', 'bale_number', 'active', 'white_paper', 'action_mark_paid', 'action_ready_to_ship', 'name', 'paid', 'group_weighed_by', 'status', 'paper_grade', 'contamination_notes', 'weight_lbs', 'ready_ship', 'contamination', 'group_status', 'display_name', 'weighed_by', 'moisture_level', 'company_id', 'message_ids', 'load_info', 'load_number'}",
+      "fields": "{'stored', 'storage_location', 'this_month', 'load_info', 'action_mark_delivered', 'mixed_paper', 'group_production_date', 'gps_coordinates', 'cardboard', 'name', 'contamination_notes', 'system_info', 'load_number', 'moisture_level', 'search_view_id', 'processed_from_service', 'production_date', 'weighed_by', 'load_shipment_id', 'contamination', 'location_info', 'action_mark_paid', 'active', 'assigned_load', 'action_ship_bale', 'this_week', 'card', 'weight_net', 'message_follower_ids', 'group_weighed_by', 'message_ids', 'action_store_bale', 'help', 'view_mode', 'res_model', 'weight_lbs', 'group_status', 'display_name', 'basic_info', 'activity_ids', 'mobile_entry', 'arch', 'scale_reading', 'paid', 'group_paper_grade', 'status', 'white_paper', 'today', 'produced', 'ready_ship', 'delivered', 'quality_info', 'paper_grade', 'action_ready_to_ship', 'group_load_shipment', 'shipped', 'company_id', 'action_assign_to_load', 'weight_info', 'model', 'bale_number'}",
       "models": "set()",
       "line_count": 214,
       "file_size": 11960
     },
     "records_retention_policy_views.xml": {
-      "fields": "{'activity_ids', 'group_risk', 'res_model', 'message_follower_ids', 'model', 'changed_by', 'help', 'search_view_id', 'legal_basis', 'high_risk', 'version_date', 'approval_status', 'is_current_version', 'policy_version', 'action_deactivate_policy', 'policy_status', 'action_activate_policy', 'destruction_efficiency_rate', 'view_mode', 'version_number', 'action_review_policy', 'under_review', 'arch', 'retention_years', 'version_history_ids', 'risk_level', 'policy_effectiveness_score', 'review_cycle_months', 'active', 'compliance_rate', 'action_view_exceptions', 'name', 'destruction_method', 'policy_risk_score', 'policy_type', 'group_policy_type', 'action_view_policy_documents', 'next_mandatory_review', 'review_date', 'description', 'group_status', 'button_box', 'message_ids', 'effective_date', 'document_count', 'exception_count'}",
+      "fields": "{'action_activate_policy', 'legal_basis', 'next_mandatory_review', 'policy_risk_score', 'document_count', 'retention_years', 'under_review', 'button_box', 'description', 'name', 'policy_version', 'search_view_id', 'action_deactivate_policy', 'active', 'policy_type', 'is_current_version', 'action_view_exceptions', 'review_date', 'approval_status', 'changed_by', 'version_date', 'message_follower_ids', 'policy_status', 'compliance_rate', 'message_ids', 'view_mode', 'res_model', 'exception_count', 'group_status', 'version_number', 'activity_ids', 'review_cycle_months', 'group_risk', 'risk_level', 'group_policy_type', 'action_view_policy_documents', 'model', 'policy_effectiveness_score', 'version_history_ids', 'arch', 'action_review_policy', 'high_risk', 'help', 'destruction_method', 'effective_date', 'destruction_efficiency_rate'}",
       "models": "set()",
       "line_count": 148,
       "file_size": 8173
     },
     "paper_bale_views.xml": {
-      "fields": "{'weight_unit', 'destruction_date', 'group_by_date', 'model', 'action_load_trailer', 'action_type', 'revenue_potential', 'group_by_trailer', 'contamination_found', 'this_month', 'in_storage', 'action_view_source_documents', 'grade_b', 'moisture_reading', 'estimated_value', 'special_handling', 'source_facility', 'variance_from_previous', 'quality_score', 'weigh_date', 'action_view_weight_history', 'weighed', 'sustainable', 'bale_number', 'grade_a', 'created', 'source_document_ids', 'action_date', 'trailer_load_count', 'confidentiality_level', 'quality_inspection_ids', 'paper_type', 'trees_saved_equivalent', 'activity_ids', 'water_saved', 'trailer_loading', 'contamination_level', 'message_follower_ids', 'carbon_neutral', 'customer_name', 'measurement_type', 'shipped', 'inspection_date', 'source_documents', 'processing_time', 'search_view_id', 'context', 'loading_position', 'arch', 'processing_cost', 'loaded', 'loading_notes', 'notes', 'inspection_type', 'action_print_label', 'action_quality_inspection', 'trailer_id', 'weighed_by', 'quality', 'measurement_date', 'document_count', 'bale_status', 'sustainable_source', 'action_move_to_storage', 'on_trailer', 'ready_loading', 'group_by_paper_type', 'loading_date', 'action_view_inspection_details', 'weight_history_count', 'weight_measurement_ids', 'market_price_per_lb', 'passed_inspection', 'view_mode', 'energy_saved', 'inspector', 'loading_history_ids', 'weight', 'weight_recorded', 'action_weigh_bale', 'group_by_source', 'creation_date', 'performed_by', 'message_ids', 'loading_order', 'grade_assigned', 'quality_notes', 'group_by_status', 'res_model', 'document_type', 'card', 'today', 'help', 'measured_by', 'this_week', 'quality_inspector', 'loaded_by', 'loaded_on_trailer', 'carbon_footprint_saved', 'environmental_certification', 'contamination_percentage', 'grade_c', 'trailer_info', 'quality_grade', 'analytics', 'weight_contributed', 'action_view_trailer_info', 'environmental', 'name', 'scale_used', 'paper_grade', 'button_box', 'document_name', 'weight_history', 'moisture_content', 'chain_of_custody_verified', 'group_by_grade', 'naid_compliance_verified', 'weight_efficiency'}",
+      "fields": "{'loaded_on_trailer', 'group_by_date', 'action_type', 'name', 'action_print_label', 'environmental_certification', 'quality', 'card', 'on_trailer', 'ready_loading', 'revenue_potential', 'weight', 'weight_recorded', 'action_view_weight_history', 'weight_history', 'contamination_level', 'activity_ids', 'quality_score', 'context', 'action_view_source_documents', 'loaded_by', 'loading_history_ids', 'processing_time', 'this_month', 'inspection_date', 'quality_inspection_ids', 'trailer_id', 'environmental', 'action_load_trailer', 'message_follower_ids', 'weigh_date', 'trailer_info', 'paper_type', 'message_ids', 'view_mode', 'grade_assigned', 'market_price_per_lb', 'res_model', 'chain_of_custody_verified', 'customer_name', 'action_view_trailer_info', 'inspection_type', 'inspector', 'grade_a', 'source_facility', 'grade_b', 'today', 'destruction_date', 'paper_grade', 'action_move_to_storage', 'document_name', 'bale_status', 'in_storage', 'created', 'performed_by', 'model', 'quality_grade', 'bale_number', 'sustainable', 'loading_notes', 'group_by_grade', 'button_box', 'carbon_neutral', 'action_quality_inspection', 'source_documents', 'quality_inspector', 'trees_saved_equivalent', 'weight_unit', 'source_document_ids', 'trailer_loading', 'measured_by', 'contamination_percentage', 'weight_efficiency', 'water_saved', 'moisture_reading', 'carbon_footprint_saved', 'notes', 'weight_measurement_ids', 'action_weigh_bale', 'weight_contributed', 'action_view_inspection_details', 'trailer_load_count', 'quality_notes', 'passed_inspection', 'group_by_source', 'creation_date', 'arch', 'help', 'this_week', 'weighed', 'document_count', 'contamination_found', 'action_date', 'search_view_id', 'scale_used', 'weighed_by', 'moisture_content', 'confidentiality_level', 'measurement_type', 'loading_order', 'variance_from_previous', 'grade_c', 'group_by_trailer', 'measurement_date', 'loaded', 'group_by_status', 'weight_history_count', 'naid_compliance_verified', 'estimated_value', 'processing_cost', 'sustainable_source', 'analytics', 'loading_date', 'energy_saved', 'shipped', 'loading_position', 'special_handling', 'group_by_paper_type', 'document_type'}",
       "models": "set()",
       "line_count": 355,
       "file_size": 21507
@@ -26623,19 +26233,19 @@
       "file_size": 748
     },
     "records_location_views.xml": {
-      "fields": "{'activity_ids', 'parent_location_id', 'available_spaces', 'res_model', 'message_follower_ids', 'available_space', 'model', 'container_ids', 'lots_of_space', 'card', 'current_utilization', 'state', 'near_capacity', 'help', 'details', 'search_view_id', 'context', 'utilization_percentage', 'action_view_containers', 'group_by_type', 'storage_capacity', 'access_instructions', 'partner_id', 'view_mode', 'at_capacity', 'location_type', 'arch', 'security_level', 'active', 'stored_date', 'name', 'action_location_report', 'optimal_load', 'containers', 'group_by_parent', 'description', 'button_box', 'inactive', 'message_ids'}",
+      "fields": "{'stored_date', 'partner_id', 'at_capacity', 'utilization_percentage', 'button_box', 'name', 'description', 'search_view_id', 'parent_location_id', 'active', 'details', 'security_level', 'group_by_parent', 'current_utilization', 'near_capacity', 'card', 'optimal_load', 'message_follower_ids', 'message_ids', 'view_mode', 'res_model', 'location_type', 'state', 'activity_ids', 'lots_of_space', 'context', 'action_view_containers', 'available_space', 'access_instructions', 'available_spaces', 'storage_capacity', 'group_by_type', 'containers', 'action_location_report', 'container_ids', 'arch', 'help', 'model', 'inactive'}",
       "models": "set()",
       "line_count": 231,
       "file_size": 13018
     },
     "product_template_views.xml": {
-      "fields": "{'max_boxes_included', 'document_storage_included', 'model', 'customer_retention_rate', 'labor_cost', 'standard_price', 'services', 'shredding_included', 'geographic_coverage', 'sales_count', 'lst_price', 'uom_id', 'group_by_category', 'api_integration', 'sla_terms', 'group_by_naid', 'archived', 'template_category', 'default_code', 'requires_approval', 'prorate_partial_periods', 'profit_margin', 'is_template_service', 'action_pricing_rules', 'pickup_delivery_included', 'last_sale_date', 'records_management', 'display_name', 'overhead_cost', 'standard_response_time', 'categ_id', 'activity_ids', 'auto_invoice', 'same_day_service', 'message_follower_ids', 'compliance_guarantee', 'box_retrieval_time', 'qty_available', 'search_view_id', 'context', 'group_by_type', 'price_margin', 'box_storage_included', 'arch', 'high_value', 'naid_compliant', 'type', 'group_by_price', 'action_configure_pricing', 'description', 'price_history_count', 'action_view_pricing_history', 'detailed_type', 'product_variant_count', 'sales', 'purchase_ok', 'group_by_sale', 'security_guarantee', 'climate_controlled', 'list_price', 'first_sale_date', 'sync_enabled', 'variants', 'additional_document_cost', 'currency_id', 'additional_box_cost', 'action_view_sales', 'emergency_retrieval', 'view_mode', 'base_cost', 'external_service_id', 'active', 'witness_destruction', 'general', 'weight', 'digital_conversion_included', 'is_featured_service', 'sales_velocity', 'total_sales_ytd', 'webhook_notifications', 'emergency_response_time', 'message_ids', 'document_retrieval_time', 'naid_compliance_level', 'action_configure_variants', 'destruction_services', 'res_model', 'top_performers', 'action_update_costs', 'card', 'customization_allowed', 'help', 'total_revenue_ytd', 'certificate_of_destruction', 'material_cost', 'can_be_expensed', 'billing_frequency', 'minimum_billing_period', 'document_services', 'sla', 'uptime_guarantee', 'data_recovery_guarantee', 'uom_po_id', 'configuration', 'analytics', 'volume', 'sale_ok', 'name', 'product_variant_ids', 'average_sale_price', 'products', 'action_duplicate', 'action_view_variants', 'button_box', 'featured', 'max_documents_included'}",
+      "fields": "{'pickup_delivery_included', 'security_guarantee', 'action_configure_variants', 'name', 'api_integration', 'sync_enabled', 'default_code', 'action_view_sales', 'emergency_response_time', 'customer_retention_rate', 'witness_destruction', 'overhead_cost', 'card', 'uom_po_id', 'volume', 'high_value', 'weight', 'group_by_sale', 'price_margin', 'uom_id', 'template_category', 'activity_ids', 'context', 'is_template_service', 'group_by_type', 'list_price', 'is_featured_service', 'product_variant_ids', 'same_day_service', 'group_by_price', 'total_revenue_ytd', 'minimum_billing_period', 'naid_compliant', 'categ_id', 'standard_response_time', 'max_boxes_included', 'active', 'sale_ok', 'standard_price', 'billing_frequency', 'product_variant_count', 'message_follower_ids', 'message_ids', 'view_mode', 'first_sale_date', 'res_model', 'total_sales_ytd', 'group_by_naid', 'archived', 'profit_margin', 'average_sale_price', 'auto_invoice', 'sales', 'document_storage_included', 'detailed_type', 'model', 'shredding_included', 'customization_allowed', 'button_box', 'description', 'action_view_pricing_history', 'sales_count', 'products', 'max_documents_included', 'data_recovery_guarantee', 'services', 'records_management', 'sla', 'additional_document_cost', 'group_by_category', 'display_name', 'action_update_costs', 'certificate_of_destruction', 'naid_compliance_level', 'document_retrieval_time', 'document_services', 'top_performers', 'configuration', 'action_pricing_rules', 'requires_approval', 'arch', 'webhook_notifications', 'help', 'uptime_guarantee', 'general', 'qty_available', 'currency_id', 'destruction_services', 'action_configure_pricing', 'type', 'sales_velocity', 'compliance_guarantee', 'prorate_partial_periods', 'search_view_id', 'featured', 'lst_price', 'action_duplicate', 'price_history_count', 'additional_box_cost', 'last_sale_date', 'external_service_id', 'climate_controlled', 'box_retrieval_time', 'labor_cost', 'sla_terms', 'action_view_variants', 'digital_conversion_included', 'box_storage_included', 'variants', 'analytics', 'purchase_ok', 'emergency_retrieval', 'can_be_expensed', 'material_cost', 'geographic_coverage', 'base_cost'}",
       "models": "set()",
       "line_count": 377,
       "file_size": 23027
     },
     "hard_drive_scan_views.xml": {
-      "fields": "{'destruction_date', 'res_model', 'scanned_at_customer_date', 'model', 'certificate_line_text', 'included_in_certificate', 'action_mark_facility_verified', 'verified_at_facility_date', 'scanned_at_customer_by', 'target', 'hashed_serial', 'help', 'verified_at_facility_by', 'serial_number', 'context', 'scan_location', 'facility_verification_notes', 'scan_count', 'view_mode', 'service_id', 'bulk_serial_input', 'arch', 'scanned_serials', 'destroyed', 'action_mark_destroyed', 'action_mark_customer_scanned', 'name', 'action_view_scanned_drives', 'destruction_method', 'action_finish_scan', 'scan_notes', 'verified_before_destruction', 'scanned_at_customer', 'action_bulk_scan', 'action_scan_serial', 'customer_location_notes'}",
+      "fields": "{'scanned_serials', 'verified_at_facility_by', 'action_mark_customer_scanned', 'scanned_at_customer_date', 'facility_verification_notes', 'certificate_line_text', 'name', 'customer_location_notes', 'destruction_method', 'action_bulk_scan', 'help', 'view_mode', 'action_view_scanned_drives', 'included_in_certificate', 'destroyed', 'action_mark_facility_verified', 'res_model', 'hashed_serial', 'scan_location', 'scanned_at_customer_by', 'action_scan_serial', 'verified_before_destruction', 'verified_at_facility_date', 'context', 'scan_count', 'action_finish_scan', 'action_mark_destroyed', 'scan_notes', 'destruction_date', 'serial_number', 'scanned_at_customer', 'bulk_serial_input', 'arch', 'service_id', 'model', 'target'}",
       "models": "set()",
       "line_count": 176,
       "file_size": 9264
@@ -26647,43 +26257,43 @@
       "file_size": 414
     },
     "shredding_views.xml": {
-      "fields": "{'activity_ids', 'assigned_technician', 'naid_compliance_level', 'action_start_shredding', 'action_generate_certificate', 'res_model', 'message_follower_ids', 'model', 'completion_notes', 'group_date', 'certificate_required', 'card', 'action_view_certificate', 'total_weight', 'customer_id', 'help', 'action_confirm', 'special_instructions', 'witness_required', 'chain_of_custody_ids', 'this_week', 'service_type', 'service_location', 'item_count', 'quantity', 'context', 'scheduled_date', 'responsible_person', 'in_progress', 'witness_company', 'view_mode', 'cert_required', 'arch', 'event_date', 'scheduled', 'group_customer', 'destruction_item_ids', 'action_complete', 'weight', 'name', 'destruction_method', 'action_view_destruction_items', 'item_description', 'group_type', 'destruction_status', 'status', 'witness_name', 'group_status', 'button_box', 'event_type', 'location', 'message_ids', 'certificate_id', 'container_type'}",
+      "fields": "{'item_count', 'group_date', 'scheduled_date', 'group_customer', 'button_box', 'name', 'item_description', 'destruction_item_ids', 'chain_of_custody_ids', 'group_type', 'action_generate_certificate', 'action_view_destruction_items', 'cert_required', 'event_type', 'scheduled', 'customer_id', 'this_week', 'quantity', 'card', 'message_follower_ids', 'completion_notes', 'action_start_shredding', 'certificate_id', 'message_ids', 'view_mode', 'help', 'weight', 'special_instructions', 'witness_company', 'res_model', 'service_type', 'certificate_required', 'responsible_person', 'group_status', 'event_date', 'witness_required', 'activity_ids', 'location', 'context', 'service_location', 'naid_compliance_level', 'total_weight', 'status', 'witness_name', 'model', 'container_type', 'action_view_certificate', 'assigned_technician', 'action_complete', 'in_progress', 'arch', 'destruction_status', 'destruction_method', 'action_confirm'}",
       "models": "set()",
       "line_count": 210,
       "file_size": 11375
     },
     "fsm_task_views.xml": {
-      "fields": "{'customer_signature', 'activity_ids', 'assigned_technician', 'actual_end_time', 'high_priority', 'res_model', 'message_follower_ids', 'required_skills', 'model', 'completion_notes', 'my_tasks', 'card', 'today', 'actual_start_time', 'task_type', 'customer_id', 'help', 'location_address', 'service_location', 'context', 'assigned_date', 'scheduled_date', 'action_reschedule', 'access_instructions', 'in_progress', 'view_mode', 'group_technician', 'action_complete_task', 'arch', 'group_customer', 'scheduled', 'required_tools', 'action_view_work_orders', 'name', 'work_order_ids', 'group_type', 'task_status', 'status', 'description', 'photos', 'group_status', 'button_box', 'estimated_duration', 'priority', 'action_start_task', 'message_ids', 'work_order_type'}",
+      "fields": "{'scheduled_date', 'priority', 'group_customer', 'button_box', 'description', 'name', 'actual_end_time', 'group_type', 'scheduled', 'high_priority', 'customer_id', 'card', 'message_follower_ids', 'completion_notes', 'message_ids', 'work_order_type', 'view_mode', 'my_tasks', 'res_model', 'group_technician', 'group_status', 'customer_signature', 'photos', 'activity_ids', 'action_reschedule', 'context', 'service_location', 'action_complete_task', 'estimated_duration', 'action_view_work_orders', 'access_instructions', 'status', 'task_status', 'work_order_ids', 'today', 'task_type', 'location_address', 'action_start_task', 'actual_start_time', 'assigned_date', 'assigned_technician', 'required_tools', 'in_progress', 'arch', 'required_skills', 'help', 'model'}",
       "models": "set()",
       "line_count": 212,
       "file_size": 10313
     },
     "rate_management_views.xml": {
-      "fields": "{'custom_end_date', 'expiration_date', 'activity_ids', 'res_model', 'message_follower_ids', 'action_activate', 'model', 'action_apply_scenario', 'annual_revenue_impact', 'base_rate', 'specific_customer_ids', 'customer_retention_rate', 'phase_duration_months', 'revenue_change', 'state', 'target', 'implementation_method', 'action_approve_changes', 'help', 'forecast_period', 'category_adjustment_value', 'current_monthly_revenue', 'global_adjustment_value', 'competitor_rate_factor', 'service_type', 'revenue_percentage_change', 'container_count', 'domain', 'approval_notes', 'context', 'approved_by', 'customer_count', 'projected_monthly_revenue', 'rate_structure', 'action_export_forecast', 'revenue_difference', 'customer_impact_count', 'inflation_rate', 'revenue_change_percentage', 'negotiated_rate_count', 'action_implement_changes', 'approval_date', 'action_expire', 'view_mode', 'forecast_line_ids', 'partner_id', 'risk_assessment', 'revenue_impact', 'customer_segment', 'action_run_forecast', 'arch', 'risk_level', 'notes', 'minimum_charge', 'custom_start_date', 'requires_approval', 'communication_template', 'name', 'advance_notice_days', 'risk_mitigation_plan', 'action_view_customers_using_rate', 'description', 'action_view_negotiated_rates', 'service_category', 'notification_required', 'button_box', 'market_growth_rate', 'action_cancel_implementation', 'message_ids', 'rollback_plan', 'effective_date', 'scenario_type', 'global_adjustment_type'}",
+      "fields": "{'rate_structure', 'customer_impact_count', 'partner_id', 'button_box', 'description', 'name', 'current_monthly_revenue', 'advance_notice_days', 'phase_duration_months', 'help', 'service_category', 'custom_end_date', 'specific_customer_ids', 'customer_retention_rate', 'approved_by', 'category_adjustment_value', 'action_activate', 'global_adjustment_value', 'market_growth_rate', 'expiration_date', 'message_follower_ids', 'global_adjustment_type', 'rollback_plan', 'message_ids', 'revenue_change', 'implementation_method', 'customer_segment', 'risk_assessment', 'container_count', 'revenue_change_percentage', 'action_approve_changes', 'projected_monthly_revenue', 'approval_date', 'revenue_impact', 'view_mode', 'domain', 'competitor_rate_factor', 'negotiated_rate_count', 'service_type', 'forecast_period', 'custom_start_date', 'res_model', 'scenario_type', 'state', 'approval_notes', 'risk_mitigation_plan', 'action_view_negotiated_rates', 'activity_ids', 'context', 'notes', 'risk_level', 'customer_count', 'minimum_charge', 'revenue_difference', 'action_expire', 'notification_required', 'revenue_percentage_change', 'inflation_rate', 'forecast_line_ids', 'action_cancel_implementation', 'communication_template', 'action_implement_changes', 'action_run_forecast', 'annual_revenue_impact', 'base_rate', 'requires_approval', 'action_view_customers_using_rate', 'arch', 'action_apply_scenario', 'action_export_forecast', 'model', 'effective_date', 'target'}",
       "models": "set()",
       "line_count": 305,
       "file_size": 18559
     },
     "departmental_billing_views.xml": {
-      "fields": "{'activity_ids', 'approval_history_ids', 'under_budget', 'approval_authority', 'action_view_approvals', 'current_month_forecast', 'message_follower_ids', 'res_model', 'model', 'charge_amount', 'service_description', 'weekly_reports', 'current_month_actual', 'card', 'medium_budget', 'current_month_charges', 'vendor', 'phone', 'help', 'current_month_variance', 'approval_limit', 'group_by_approval', 'cc_department_head', 'action_send_bill_notification', 'notifications', 'budget', 'ytd_variance_percentage', 'search_view_id', 'context', 'department_id', 'approval_notes', 'group_by_department', 'cc_finance_team', 'budget_utilization', 'approvals', 'monthly_budget', 'approval_date', 'ytd_budget', 'ytd_variance', 'billing_role', 'email_notifications', 'group_by_role', 'view_mode', 'group_by_budget', 'approval_count', 'contact_name', 'arch', 'active', 'approvers', 'action_budget_report', 'name', 'monthly_statements', 'current_month_budget', 'cc_additional_emails', 'budget_alert_threshold', 'button_box', 'email', 'near_budget', 'message_ids', 'ytd_actual', 'high_budget', 'over_budget'}",
+      "fields": "{'department_id', 'approvers', 'budget_alert_threshold', 'button_box', 'group_by_department', 'name', 'approval_limit', 'action_send_bill_notification', 'search_view_id', 'billing_role', 'phone', 'weekly_reports', 'active', 'current_month_charges', 'current_month_variance', 'ytd_budget', 'action_view_approvals', 'email', 'card', 'charge_amount', 'approval_count', 'service_description', 'cc_department_head', 'cc_additional_emails', 'message_follower_ids', 'message_ids', 'high_budget', 'approval_history_ids', 'view_mode', 'current_month_forecast', 'current_month_budget', 'group_by_budget', 'approval_date', 'monthly_budget', 'res_model', 'under_budget', 'group_by_approval', 'cc_finance_team', 'approval_notes', 'current_month_actual', 'medium_budget', 'activity_ids', 'context', 'notifications', 'email_notifications', 'action_budget_report', 'vendor', 'ytd_actual', 'approval_authority', 'approvals', 'monthly_statements', 'over_budget', 'ytd_variance_percentage', 'budget_utilization', 'budget', 'ytd_variance', 'contact_name', 'group_by_role', 'arch', 'near_budget', 'help', 'model'}",
       "models": "set()",
       "line_count": 277,
       "file_size": 15914
     },
     "barcode_views.xml": {
-      "fields": "{'customer_location_id', 'barcode_length', 'model', 'generation_batch_size', 'barcode_pattern', 'product_code', 'lockable', 'validate_format', 'check_digit_required', 'indoor_outdoor', 'unit_price', 'storage_config', 'allowed_characters', 'volume_discount_rate', 'storage_rate', 'generation_history_ids', 'action_view_revenue', 'service_rate', 'mobile', 'stackable', 'pricing_rules', 'profit_margin', 'bin_volume', 'fill_level', 'recommended_retention_years', 'group_category', 'storage_box_count', 'shred_bin_ids', 'batch_id', 'price_multiplier', 'barcode_prefix', 'monthly_rate', 'activity_ids', 'message_follower_ids', 'action_activate', 'material_type', 'action_update_pricing', 'suitable_document_types', 'validate_check_digit', 'seasonal_pricing_ids', 'customer_id', 'validate_uniqueness', 'generation_date', 'search_view_id', 'context', 'barcode_config', 'product_details', 'certificate_provided', 'min_quantity', 'max_file_folders', 'max_stack_height', 'arch', 'security_level', 'end_date', 'access_frequency', 'shred_config', 'shred_rate', 'activity_state', 'barcode', 'activity_exception_decoration', 'effective_date', 'start_barcode', 'last_access_date', 'shred_bin_count', 'climate_controlled', 'last_pickup_date', 'fireproof_rating', 'shred_security_level', 'weight_limit', 'pickup_frequency', 'product_category', 'high_volume', 'end_barcode', 'view_mode', 'average_storage_duration', 'barcode_generation', 'start_date', 'action_view_shred_bins', 'tier_name', 'active', 'action_deactivate', 'witness_destruction', 'barcode_suffix', 'location_id', 'last_generated_barcode', 'auto_generate', 'capacity', 'setup_fee', 'color', 'action_generate_barcodes', 'group_size', 'inactive', 'message_ids', 'expiry_date', 'weight_capacity', 'pricing_tier_ids', 'res_model', 'volume_discount_threshold', 'quantity_generated', 'action_view_storage_boxes', 'card', 'next_sequence_number', 'group_active', 'help', 'pricing', 'total_generated', 'discount_percentage', 'max_quantity', 'fill_percentage', 'monthly_volume', 'bin_status', 'shred_bins', 'season_name', 'analytics', 'monthly_revenue', 'storage_box_ids', 'name', 'rush_service_rate', 'storage_boxes', 'premium', 'box_size', 'group_length', 'next_pickup_date', 'utilization_rate', 'dimensions', 'button_box', 'generated_by', 'box_status', 'naid_compliant'}",
+      "fields": "{'action_deactivate', 'name', 'witness_destruction', 'mobile', 'tier_name', 'generation_batch_size', 'generated_by', 'dimensions', 'storage_box_count', 'customer_id', 'card', 'action_view_storage_boxes', 'product_code', 'start_barcode', 'weight_capacity', 'barcode_prefix', 'activity_ids', 'barcode', 'barcode_config', 'context', 'rush_service_rate', 'max_file_folders', 'barcode_pattern', 'premium', 'volume_discount_threshold', 'effective_date', 'naid_compliant', 'action_generate_barcodes', 'validate_format', 'volume_discount_rate', 'unit_price', 'storage_box_ids', 'monthly_volume', 'total_generated', 'weight_limit', 'shred_bins', 'indoor_outdoor', 'pricing_tier_ids', 'active', 'color', 'action_activate', 'action_update_pricing', 'action_view_shred_bins', 'last_pickup_date', 'box_size', 'message_follower_ids', 'lockable', 'action_view_revenue', 'message_ids', 'view_mode', 'shred_bin_count', 'pricing', 'res_model', 'allowed_characters', 'access_frequency', 'group_category', 'average_storage_duration', 'profit_margin', 'barcode_length', 'min_quantity', 'season_name', 'auto_generate', 'bin_volume', 'model', 'fireproof_rating', 'inactive', 'group_length', 'capacity', 'shred_security_level', 'next_pickup_date', 'button_box', 'shred_bin_ids', 'service_rate', 'batch_id', 'quantity_generated', 'price_multiplier', 'certificate_provided', 'end_date', 'next_sequence_number', 'product_category', 'validate_check_digit', 'activity_exception_decoration', 'group_size', 'last_access_date', 'bin_status', 'fill_level', 'max_stack_height', 'generation_history_ids', 'arch', 'material_type', 'help', 'generation_date', 'discount_percentage', 'shred_rate', 'monthly_rate', 'group_active', 'seasonal_pricing_ids', 'storage_rate', 'activity_state', 'barcode_suffix', 'fill_percentage', 'start_date', 'search_view_id', 'customer_location_id', 'storage_config', 'max_quantity', 'last_generated_barcode', 'suitable_document_types', 'box_status', 'end_barcode', 'security_level', 'pricing_rules', 'expiry_date', 'validate_uniqueness', 'check_digit_required', 'climate_controlled', 'utilization_rate', 'stackable', 'storage_boxes', 'product_details', 'location_id', 'high_volume', 'barcode_generation', 'analytics', 'recommended_retention_years', 'setup_fee', 'shred_config', 'pickup_frequency', 'monthly_revenue'}",
       "models": "set()",
       "line_count": 409,
       "file_size": 22691
     },
     "billing_views.xml": {
-      "fields": "{'send_invoice_email', 'quarterly', 'auto_billing', 'track_box_storage', 'model', 'revenue_analytics_ids', 'reminder_schedule', 'advanced', 'customer_satisfaction_score', 'average_monthly_billing', 'period', 'billing_rate_ids', 'group_by_category', 'payment_method', 'track_special_handling', 'quantity', 'annual', 'billing_model', 'usage_tracking_ids', 'group_by_model', 'invoicing', 'annual_revenue', 'group_by_customer', 'action_view_revenue', 'discount_type', 'invoice_status', 'group_by_frequency', 'unit_rate', 'period_start', 'monthly', 'total_cost', 'profit_margin', 'prorate_monthly', 'discount_rule_ids', 'next_billing_date', 'valid_from', 'rates', 'rule_name', 'tracking_date', 'tier_threshold', 'escalation_notifications', 'activity_ids', 'discounts', 'message_follower_ids', 'action_test_billing', 'manager_notifications', 'customer_id', 'manual_billing', 'auto_apply', 'notifications', 'generation_date', 'search_view_id', 'context', 'invoice_count', 'customer_notifications', 'arch', 'rate_unit', 'late_fee_percentage', 'last_invoice_date', 'high_value', 'track_document_count', 'finance_team_notifications', 'quarterly_revenue', 'status', 'cc_accounting', 'service_category', 'revenue_variance_alerts', 'cost_amount', 'rate_type', 'effective_date', 'billing_failure_alerts', 'track_destruction_services', 'amount', 'revenue_amount', 'invoice_generation_log_ids', 'track_digital_services', 'action_configure_rates', 'usage_threshold_alerts', 'due_this_week', 'group_by_terms', 'payment_delay_average', 'invoice_number', 'service_type', 'total_revenue', 'currency_id', 'customer_count', 'period_end', 'view_mode', 'invoice_email_template', 'action_view_invoices', 'active', 'track_retrieval_requests', 'payment_terms', 'grace_period_days', 'valid_until', 'discount_value', 'compliance_reporting', 'inactive', 'message_ids', 'accounting_system_sync', 'billing_accuracy_rate', 'minimum_threshold', 'res_model', 'include_usage_details', 'action_view_analytics', 'base_rate', 'card', 'help', 'payment_overdue_alerts', 'tax_calculation_method', 'discount_percentage', 'audit_trail_enabled', 'collection_rate', 'payment_gateway_integration', 'invoice_template', 'billable', 'consolidate_charges', 'billing_frequency', 'data_retention_period', 'usage', 'multi_currency_support', 'track_access_frequency', 'analytics', 'monthly_revenue', 'billing_history_count', 'track_pickup_delivery', 'encryption_enabled', 'minimum_charge', 'name', 'action_view_billing_history', 'unit_of_measure', 'billing_cycle_start', 'action_duplicate', 'button_box', 'action_view_invoice', 'action_generate_invoice'}",
+      "fields": "{'track_box_storage', 'cc_accounting', 'usage_threshold_alerts', 'invoicing', 'send_invoice_email', 'name', 'track_pickup_delivery', 'quarterly_revenue', 'invoice_count', 'customer_id', 'group_by_terms', 'card', 'discount_type', 'billing_cycle_start', 'high_value', 'rate_type', 'collection_rate', 'action_configure_rates', 'action_view_invoices', 'service_type', 'finance_team_notifications', 'activity_ids', 'context', 'minimum_threshold', 'average_monthly_billing', 'notifications', 'customer_count', 'invoice_number', 'period_start', 'unit_of_measure', 'tax_calculation_method', 'effective_date', 'rule_name', 'payment_delay_average', 'cost_amount', 'period', 'tier_threshold', 'usage', 'active', 'compliance_reporting', 'valid_until', 'billing_accuracy_rate', 'payment_method', 'discount_rule_ids', 'billing_frequency', 'billing_failure_alerts', 'revenue_amount', 'message_follower_ids', 'action_view_revenue', 'message_ids', 'view_mode', 'track_retrieval_requests', 'res_model', 'auto_apply', 'monthly', 'track_access_frequency', 'payment_terms', 'quarterly', 'payment_gateway_integration', 'billing_history_count', 'profit_margin', 'annual', 'model', 'inactive', 'customer_satisfaction_score', 'payment_overdue_alerts', 'invoice_status', 'button_box', 'tracking_date', 'reminder_schedule', 'group_by_frequency', 'invoice_generation_log_ids', 'billing_rate_ids', 'action_view_invoice', 'revenue_variance_alerts', 'group_by_model', 'data_retention_period', 'group_by_category', 'revenue_analytics_ids', 'discounts', 'discount_value', 'billing_model', 'prorate_monthly', 'grace_period_days', 'rate_unit', 'total_revenue', 'valid_from', 'invoice_template', 'arch', 'help', 'period_end', 'billable', 'generation_date', 'action_test_billing', 'consolidate_charges', 'discount_percentage', 'currency_id', 'rates', 'unit_rate', 'amount', 'include_usage_details', 'search_view_id', 'advanced', 'track_digital_services', 'service_category', 'track_destruction_services', 'escalation_notifications', 'annual_revenue', 'track_document_count', 'action_duplicate', 'last_invoice_date', 'quantity', 'customer_notifications', 'usage_tracking_ids', 'next_billing_date', 'due_this_week', 'group_by_customer', 'manual_billing', 'encryption_enabled', 'late_fee_percentage', 'action_generate_invoice', 'manager_notifications', 'action_view_billing_history', 'accounting_system_sync', 'invoice_email_template', 'action_view_analytics', 'audit_trail_enabled', 'auto_billing', 'status', 'minimum_charge', 'track_special_handling', 'analytics', 'total_cost', 'base_rate', 'multi_currency_support', 'monthly_revenue'}",
       "models": "set()",
       "line_count": 402,
       "file_size": 23964
     },
     "mobile_bin_key_wizard_views.xml": {
-      "fields": "{'unlock_reason', 'res_model', 'issue_location', 'model', 'customer_company_id', 'action_type', 'photo_ids', 'emergency_contact', 'target', 'state', 'service_notes', 'key_lookup_results', 'unlock_charge', 'context', 'action_execute', 'code', 'bin_locations', 'show_unlock_service', 'contact_mobile', 'contact_email', 'contact_id', 'billable', 'view_mode', 'contact_name', 'arch', 'key_notes', 'contact_title', 'unlock_reason_description', 'name', 'create_new_contact', 'contact_phone', 'unlock_bin_location', 'show_key_assignment', 'show_lookup_results', 'show_contact_creation', 'model_id', 'items_retrieved'}",
+      "fields": "{'unlock_charge', 'action_type', 'show_unlock_service', 'name', 'photo_ids', 'show_contact_creation', 'items_retrieved', 'contact_email', 'bin_locations', 'show_key_assignment', 'view_mode', 'model_id', 'create_new_contact', 'emergency_contact', 'unlock_reason_description', 'res_model', 'key_lookup_results', 'contact_id', 'contact_mobile', 'state', 'context', 'unlock_bin_location', 'unlock_reason', 'code', 'issue_location', 'customer_company_id', 'show_lookup_results', 'key_notes', 'service_notes', 'contact_phone', 'contact_name', 'contact_title', 'arch', 'model', 'action_execute', 'billable', 'target'}",
       "models": "set()",
       "line_count": 134,
       "file_size": 8062
@@ -26695,13 +26305,13 @@
       "file_size": 196
     },
     "load_views.xml": {
-      "fields": "{'trailer_number', 'draft', 'model', 'special_delivery_instructions', 'buyer_company', 'total_weight', 'sales_contract_number', 'loading_dock_requirements', 'author_id', 'planned', 'delivered', 'bill_of_lading', 'moisture_test_report', 'driver_id.user_id', 'estimated_delivery', 'in_transit', 'loading', 'bale_number', 'message_type', 'late_delivery', 'photo_type', 'driver_id', 'actual_sale_price', 'my_loads', 'bale_count', 'weight_certificate', 'shipping', 'activity_ids', 'contamination_report', 'contamination_level', 'message_follower_ids', 'photo_ids', 'route_code', 'special_instructions', 'capacity_utilization', 'action_view_weight_tickets', 'search_view_id', 'context', 'destination_address', 'action_prepare_load', 'action_mark_sold', 'arch', 'production_date', 'temperature_controlled', 'tracking', 'activity_state', 'activity_exception_decoration', 'delivery_contact', 'trailer_id', 'priority', 'transport_company', 'overdue', 'date', 'scheduled_departure', 'driver_name', 'week', 'market_price_per_ton', 'group_date', 'bale_ids', 'group_state', 'group_route', 'invoice_number', 'delivery_date', 'average_bale_weight', 'action_start_loading', 'view_mode', 'action_ship_load', 'actual_delivery', 'group_priority', 'hazmat_required', 'subject', 'payment_terms', 'weight', 'weight_ticket_count', 'communication', 'message_ids', 'truck_license_plate', 'value_per_ton', 'high_priority', 'res_model', 'group_trailer', 'card', 'today', 'load_date', 'state', 'help', 'delivery_phone', 'temp_controlled', 'estimated_revenue', 'sale_contract_number', 'group_driver', 'action_view_bales', 'quality_grade', 'image', 'quality_certificate', 'action_view_revenue_report', 'documentation', 'name', 'load_details', 'action_cancel', 'market_details', 'price_variance', 'load_quality_grade', 'contamination_notes', 'hazmat', 'button_box', 'load_items', 'shipping_date', 'moisture_content'}",
+      "fields": "{'actual_sale_price', 'name', 'contamination_notes', 'driver_name', 'bale_count', 'value_per_ton', 'trailer_number', 'high_priority', 'action_ship_load', 'card', 'special_delivery_instructions', 'weight', 'destination_address', 'delivery_date', 'late_delivery', 'group_route', 'state', 'contamination_level', 'activity_ids', 'sales_contract_number', 'context', 'total_weight', 'delivery_contact', 'invoice_number', 'hazmat_required', 'bale_ids', 'action_start_loading', 'tracking', 'sale_contract_number', 'market_details', 'delivery_phone', 'photo_ids', 'trailer_id', 'production_date', 'estimated_delivery', 'load_items', 'image', 'weight_ticket_count', 'subject', 'message_follower_ids', 'weight_certificate', 'group_state', 'message_ids', 'week', 'view_mode', 'message_type', 'temp_controlled', 'action_view_bales', 'special_instructions', 'average_bale_weight', 'res_model', 'action_view_weight_tickets', 'route_code', 'price_variance', 'actual_delivery', 'payment_terms', 'quality_certificate', 'truck_license_plate', 'today', 'hazmat', 'shipping', 'model', 'quality_grade', 'planned', 'bale_number', 'loading', 'overdue', 'priority', 'button_box', 'driver_id.user_id', 'scheduled_departure', 'capacity_utilization', 'activity_exception_decoration', 'load_details', 'load_date', 'action_prepare_load', 'group_driver', 'shipping_date', 'delivered', 'communication', 'photo_type', 'action_cancel', 'load_quality_grade', 'documentation', 'action_mark_sold', 'arch', 'draft', 'help', 'activity_state', 'buyer_company', 'search_view_id', 'moisture_content', 'group_priority', 'action_view_revenue_report', 'contamination_report', 'estimated_revenue', 'transport_company', 'market_price_per_ton', 'date', 'my_loads', 'loading_dock_requirements', 'moisture_test_report', 'group_trailer', 'in_transit', 'driver_id', 'temperature_controlled', 'bill_of_lading', 'author_id', 'group_date'}",
       "models": "set()",
       "line_count": 401,
       "file_size": 23943
     },
     "records_digital_scan_views.xml": {
-      "fields": "{'activity_ids', 'scanner_id', 'scanned_by', 'message_follower_ids', 'draft', 'group_format', 'res_model', 'scan_date', 'model', 'scan_quality', 'state', 'help', 'file_format', 'action_confirm', 'resolution', 'group_state', 'search_view_id', 'document_id', 'confirmed', 'action_done', 'view_mode', 'my_scans', 'arch', 'notes', 'done', 'name', 'description', 'group_scanned_by', 'group_document', 'message_ids', 'file_size'}",
+      "fields": "{'scan_quality', 'description', 'name', 'my_scans', 'search_view_id', 'confirmed', 'file_format', 'done', 'group_state', 'message_follower_ids', 'message_ids', 'group_document', 'view_mode', 'action_done', 'file_size', 'res_model', 'state', 'activity_ids', 'scanner_id', 'notes', 'arch', 'group_format', 'scanned_by', 'resolution', 'document_id', 'group_scanned_by', 'scan_date', 'draft', 'help', 'model', 'action_confirm'}",
       "models": "set()",
       "line_count": 115,
       "file_size": 5371
@@ -26713,13 +26323,13 @@
       "file_size": 3472
     },
     "records_document_views.xml": {
-      "fields": "{'destruction_date', 'model', 'action_type', 'destruction_this_month', 'details', 'document_category', 'audit_trail_ids', 'destruction_certificate_id', 'digital_scan_ids', 'chain_of_custody_ids', 'destruction_due', 'action_audit_trail', 'group_by_container', 'action_download', 'action_unmark_permanent', 'storage_date', 'custody_chain', 'pending_destruction', 'group_by_customer', 'timestamp', 'action_schedule_destruction', 'destruction_witness', 'digitized', 'destruction_facility', 'action_scan_document', 'activity_ids', 'message_follower_ids', 'permanent_flag', 'created_date', 'customer_id', 'search_view_id', 'context', 'naid_destruction_verified', 'group_by_type', 'responsible_person', 'audit', 'storage_location', 'arch', 'event_date', 'destruction_authorized_by', 'notes', 'signature_verified', 'group_by_destruction', 'destruction_method', 'destruction_notes', 'description', 'action_view_chain_of_custody', 'retention_policy_id', 'last_access_date', 'group_by_state', 'permanent', 'file_format', 'resolution', 'non_permanent', 'compliance_verified', 'department_id', 'audit_trail_count', 'chain_of_custody_count', 'view_mode', 'permanent_flag_set_date', 'active', 'media_type', 'destroyed', 'digital', 'document_type_id', 'original_format', 'event_type', 'received_date', 'message_ids', 'user_id', 'container_id', 'file_size', 'action_mark_permanent', 'res_model', 'destruction_eligible_date', 'scan_date', 'card', 'state', 'days_until_destruction', 'help', 'recent_access', 'destruction', 'name', 'button_box', 'permanent_flag_set_by', 'location'}",
+      "fields": "{'signature_verified', 'storage_location', 'digital', 'permanent_flag_set_by', 'action_type', 'name', 'group_by_container', 'details', 'permanent', 'customer_id', 'card', 'original_format', 'days_until_destruction', 'received_date', 'pending_destruction', 'state', 'permanent_flag_set_date', 'activity_ids', 'context', 'destruction_eligible_date', 'media_type', 'compliance_verified', 'resolution', 'group_by_type', 'timestamp', 'permanent_flag', 'user_id', 'destruction_method', 'custody_chain', 'active', 'storage_date', 'message_follower_ids', 'message_ids', 'audit', 'view_mode', 'destruction_certificate_id', 'destroyed', 'recent_access', 'res_model', 'destruction_this_month', 'digitized', 'action_view_chain_of_custody', 'destruction_witness', 'destruction_date', 'document_category', 'model', 'department_id', 'destruction_authorized_by', 'button_box', 'description', 'chain_of_custody_ids', 'event_type', 'action_schedule_destruction', 'file_size', 'responsible_person', 'group_by_destruction', 'notes', 'last_access_date', 'group_by_state', 'destruction_facility', 'action_scan_document', 'action_audit_trail', 'chain_of_custody_count', 'arch', 'help', 'non_permanent', 'naid_destruction_verified', 'search_view_id', 'destruction_notes', 'created_date', 'file_format', 'destruction_due', 'action_unmark_permanent', 'group_by_customer', 'action_download', 'action_mark_permanent', 'audit_trail_ids', 'event_date', 'destruction', 'location', 'document_type_id', 'audit_trail_count', 'retention_policy_id', 'digital_scan_ids', 'scan_date', 'container_id'}",
       "models": "set()",
       "line_count": 313,
       "file_size": 19604
     },
     "key_restriction_checker_views.xml": {
-      "fields": "{'action_reset', 'restriction_notes', 'res_model', 'model', 'bin_info', 'results_section', 'customer_name', 'input_section', 'target', 'bin_identifier', 'customer_id', 'action_create_unlock_service', 'restriction_reason', 'action_check_customer', 'context', 'key_allowed', 'view_mode', 'restriction_details', 'arch', 'customer_info', 'action_buttons', 'name', 'type', 'check_performed', 'status_message', 'restriction_date', 'action_required'}",
+      "fields": "{'action_buttons', 'restriction_reason', 'restriction_notes', 'type', 'key_allowed', 'name', 'action_reset', 'restriction_details', 'customer_id', 'status_message', 'restriction_date', 'action_required', 'customer_info', 'view_mode', 'bin_identifier', 'results_section', 'action_create_unlock_service', 'res_model', 'bin_info', 'customer_name', 'context', 'check_performed', 'input_section', 'action_check_customer', 'arch', 'model', 'target'}",
       "models": "set()",
       "line_count": 88,
       "file_size": 4387
