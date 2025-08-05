@@ -360,14 +360,15 @@ class PortalFeedback(models.Model):
     # ============================================================================
     # UTILITY METHODS
     # ============================================================================
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Auto-generate reference number"""
-        if not vals.get("name"):
-            vals["name"] = (
-                self.env["ir.sequence"].next_by_code("portal.feedback") or "FB-NEW"
-            )
-        return super().create(vals)
+        for vals in vals_list:
+            if not vals.get("name"):
+                vals["name"] = (
+                    self.env["ir.sequence"].next_by_code("portal.feedback") or "FB-NEW"
+                )
+        return super().create(vals_list)
 
     def write(self, vals):
         """Track status changes"""

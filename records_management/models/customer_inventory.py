@@ -50,7 +50,10 @@ class CustomerInventory(models.Model):
     action_view_locations = fields.Char(string="Action View Locations")
     active_locations = fields.Char(string="Active Locations")
     container_ids = fields.One2many(
-        "records.container", "customer_inventory_id", string="Containers"
+        "records.container",
+        string="Containers",
+        compute="_compute_container_ids",
+        help="Containers belonging to this customer",
     )
     boxes = fields.Char(string="Boxes")
     button_box = fields.Char(string="Button Box")
@@ -62,7 +65,10 @@ class CustomerInventory(models.Model):
         "res.partner", string="Customer Id", domain=[("is_company", "=", True)]
     )
     document_ids = fields.One2many(
-        "records.document", "customer_inventory_id", string="Document Ids"
+        "records.document",
+        string="Document Ids",
+        compute="_compute_document_ids",
+        help="Documents belonging to this customer",
     )
     document_type_id = fields.Many2one(
         "records.document.type", string="Document Type Id"
@@ -108,6 +114,30 @@ class CustomerInventory(models.Model):
     very_large_volume = fields.Char(string="Very Large Volume")
     view_mode = fields.Char(string="View Mode")
     volume_category = fields.Char(string="Volume Category")
+
+    @api.depends("customer_id")
+    def _compute_container_ids(self):
+        """Compute containers belonging to this customer"""
+        for record in self:
+            if record.customer_id:
+                containers = self.env["records.container"].search(
+                    [("partner_id", "=", record.customer_id.id)]
+                )
+                record.container_ids = containers
+            else:
+                record.container_ids = False
+
+    @api.depends("customer_id")
+    def _compute_document_ids(self):
+        """Compute documents belonging to this customer"""
+        for record in self:
+            if record.customer_id:
+                documents = self.env["records.document"].search(
+                    [("partner_id", "=", record.customer_id.id)]
+                )
+                record.document_ids = documents
+            else:
+                record.document_ids = False
 
     @api.depends("container_ids")
     def _compute_total_boxes(self):
