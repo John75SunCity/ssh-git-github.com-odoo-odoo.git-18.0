@@ -2,6 +2,9 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_records_container_user,records.container.user,model_records_container,records_management.group_records_user,1,1,1,0
 access_records_container_manager,records.container.manager,model_records_container,records_management.group_records_manager,1,1,1,1
 access_records_container_portal,records.container.portal,model_records_container,base.group_portal,1,0,0,0
+access_records_box_user,records.box.user,model_records_box,records_management.group_records_user,1,1,1,0
+access_records_box_manager,records.box.manager,model_records_box,records_management.group_records_manager,1,1,1,1
+access_records_box_portal,records.box.portal,model_records_box,base.group_portal,1,0,0,0
 access_records_tag_user,records.tag.user,model_records_tag,records_management.group_records_user,1,1,1,0
 access_records_tag_manager,records.tag.manager,model_records_tag,records_management.group_records_manager,1,1,1,1
 access_records_location_user,records.location.user,model_records_location,records_management.group_records_user,1,1,1,0
@@ -17,6 +20,8 @@ access_records_vehicle_user,records.vehicle.user,model_records_vehicle,records_m
 access_records_vehicle_manager,records.vehicle.manager,model_records_vehicle,records_management.group_records_manager,1,1,1,1
 access_records_retention_policy_user,records.retention.policy.user,model_records_retention_policy,records_management.group_records_user,1,1,1,0
 access_records_retention_policy_manager,records.retention.policy.manager,model_records_retention_policy,records_management.group_records_manager,1,1,1,1
+access_records_retention_rule_user,records.retention.rule.user,model_records_retention_rule,records_management.group_records_user,1,1,1,0
+access_records_retention_rule_manager,records.retention.rule.manager,model_records_retention_rule,records_management.group_records_manager,1,1,1,1
 access_records_policy_version_user,records.policy.version.user,model_records_policy_version,records_management.group_records_user,1,1,1,0
 access_records_policy_version_manager,records.policy.version.manager,model_records_policy_version,records_management.group_records_manager,1,1,1,1
 access_records_container_movement_user,records.container.movement.user,model_records_container_movement,records_management.group_records_user,1,1,1,0
@@ -27,7 +32,6 @@ access_pickup_request_item_user,pickup.request.item.user,model_pickup_request_it
 access_pickup_request_item_manager,pickup.request.item.manager,model_pickup_request_item,records_management.group_records_manager,1,1,1,1
 access_pickup_route_user,pickup.route.user,model_pickup_route,records_management.group_records_user,1,1,1,0
 access_pickup_route_manager,pickup.route.manager,model_pickup_route,records_management.group_records_manager,1,1,1,1
-
 access_shred_svc_user,shred.svc.user,model_shredding_service,records_management.group_records_user,1,1,1,0
 access_shred_svc_manager,shred.svc.manager,model_shredding_service,records_management.group_records_manager,1,1,1,1
 access_destruction_item_user,destruction.item.user,model_destruction_item,records_management.group_records_user,1,1,1,0
@@ -85,6 +89,8 @@ access_naid_certificate_user,naid.certificate.user,model_naid_certificate,record
 access_naid_certificate_manager,naid.certificate.manager,model_naid_certificate,records_management.group_records_manager,1,1,1,1
 access_naid_compliance_checklist_user,naid.compliance.checklist.user,model_naid_compliance_checklist,records_management.group_records_user,1,1,1,0
 access_naid_compliance_checklist_manager,naid.compliance.checklist.manager,model_naid_compliance_checklist,records_management.group_records_manager,1,1,1,1
+access_naid_compliance_enhanced_user,naid.compliance.enhanced.user,model_naid_compliance_enhanced,records_management.group_records_user,1,1,1,0
+access_naid_compliance_enhanced_manager,naid.compliance.enhanced.manager,model_naid_compliance_enhanced,records_management.group_records_manager,1,1,1,1
 access_survey_feedback_theme_user,survey.feedback.theme.user,model_survey_feedback_theme,records_management.group_records_user,1,0,0,0
 access_survey_feedback_theme_manager,survey.feedback.theme.manager,model_survey_feedback_theme,records_management.group_records_manager,1,1,1,1
 access_records_department_user,records.department.user,model_records_department,records_management.group_records_user,1,0,0,0
@@ -125,11 +131,9 @@ access_location_report_wizard_user,location.report.wizard.user,model_location_re
 access_location_report_wizard_manager,location.report.wizard.manager,model_location_report_wizard,records_management.group_records_manager,1,1,1,1
 access_customer_inventory_user,customer.inventory.user,model_customer_inventory,records_management.group_records_user,1,1,1,0
 access_customer_inventory_manager,customer.inventory.manager,model_customer_inventory,records_management.group_records_manager,1,1,1,1
-
 access_document_retrieval_work_order_user,document.retrieval.work.order.user,model_document_retrieval_work_order,records_management.group_records_user,1,1,1,0
 access_document_retrieval_work_order_manager,document.retrieval.work.order.manager,model_document_retrieval_work_order,records_management.group_records_manager,1,1,1,1
 access_document_retrieval_work_order_portal,document.retrieval.work.order.portal,model_document_retrieval_work_order,base.group_portal,1,0,0,0
-
 access_document_retrieval_item_user,document.retrieval.item.user,model_document_retrieval_item,records_management.group_records_user,1,1,1,0
 access_document_retrieval_item_manager,document.retrieval.item.manager,model_document_retrieval_item,records_management.group_records_manager,1,1,1,1
 access_document_retrieval_team_user,document.retrieval.team.user,model_document_retrieval_team,records_management.group_records_user,1,1,1,0
@@ -140,7 +144,6 @@ access_document_retrieval_equipment_user,document.retrieval.equipment.user,model
 access_document_retrieval_equipment_manager,document.retrieval.equipment.manager,model_document_retrieval_equipment,records_management.group_records_manager,1,1,1,1
 access_document_retrieval_metrics_user,document.retrieval.metrics.user,model_document_retrieval_metrics,records_management.group_records_user,1,0,0,0
 access_document_retrieval_metrics_manager,document.retrieval.metrics.manager,model_document_retrieval_metrics,records_management.group_records_manager,1,1,1,1
-
 access_paper_bale_source_document_user,paper.bale.source.document.user,model_paper_bale_source_document,records_management.group_records_user,1,1,1,0
 access_paper_bale_source_document_manager,paper.bale.source.document.manager,model_paper_bale_source_document,records_management.group_records_manager,1,1,1,1
 access_signed_document_user,signed.document.user,model_signed_document,records_management.group_records_user,1,1,1,0

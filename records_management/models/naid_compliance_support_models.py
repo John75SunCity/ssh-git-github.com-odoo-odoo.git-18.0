@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 
 class NaidComplianceAlert(models.Model):
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Compliance alerts for NAID compliance management"""
 
     _name = "naid.compliance.alert"
@@ -26,7 +26,6 @@ class NaidComplianceAlert(models.Model):
         "res.company", default=lambda self: self.env.company, required=True
     )
     active = fields.Boolean(string="Active", default=True)
-
 
     compliance_id = fields.Many2one(
         "naid.compliance", string="Compliance Record", required=True, ondelete="cascade"
@@ -99,7 +98,7 @@ class NaidComplianceAlert(models.Model):
 
 
 class NaidComplianceChecklistItem(models.Model):
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Individual checklist items for NAID compliance"""
 
     _name = "naid.compliance.checklist.item"
@@ -160,7 +159,7 @@ class NaidComplianceChecklistItem(models.Model):
 
 
 class NaidComplianceAuditHistory(models.Model):
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Historical audit records for NAID compliance"""
 
     _name = "naid.compliance.audit.history"
@@ -222,7 +221,7 @@ class NaidComplianceAuditHistory(models.Model):
 
 
 class NaidRiskAssessment(models.Model):
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Risk assessment for NAID compliance"""
 
     _name = "naid.risk.assessment"
@@ -355,7 +354,7 @@ class NaidRiskAssessment(models.Model):
 
 
 class NaidComplianceActionPlan(models.Model):
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Action plans for NAID compliance improvements"""
 
     _name = "naid.compliance.action.plan"
@@ -461,3 +460,72 @@ class NaidComplianceActionPlan(models.Model):
                 "progress_percentage": 100.0,
             }
         )
+
+
+class NaidComplianceEnhanced(models.Model):
+    """Enhanced NAID Compliance Policy Management"""
+
+    _name = "naid.compliance.enhanced"
+    _description = "NAID Compliance Enhanced Policies"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "sequence, name"
+    _rec_name = "name"
+
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(string="Policy Name", required=True, tracking=True, index=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
+    company_id = fields.Many2one(
+        "res.company", string="Company", default=lambda self: self.env.company
+    )
+
+    # ============================================================================
+    # POLICY DETAILS
+    # ============================================================================
+    policy_type = fields.Selection(
+        [
+            ("access_control", "Access Control"),
+            ("document_handling", "Document Handling"),
+            ("destruction_process", "Destruction Process"),
+            ("employee_screening", "Employee Screening"),
+            ("facility_security", "Facility Security"),
+            ("equipment_maintenance", "Equipment Maintenance"),
+            ("audit_requirements", "Audit Requirements"),
+        ],
+        string="Policy Type",
+        required=True,
+        tracking=True,
+    )
+
+    description = fields.Text(string="Policy Description")
+    mandatory = fields.Boolean(string="Mandatory", default=True, tracking=True)
+    automated_check = fields.Boolean(string="Automated Check", default=False)
+
+    check_frequency = fields.Selection(
+        [
+            ("daily", "Daily"),
+            ("weekly", "Weekly"),
+            ("monthly", "Monthly"),
+            ("quarterly", "Quarterly"),
+            ("yearly", "Yearly"),
+        ],
+        string="Check Frequency",
+        default="monthly",
+    )
+
+    implementation_notes = fields.Text(string="Implementation Notes")
+    violation_consequences = fields.Text(string="Violation Consequences")
+    review_frequency_months = fields.Integer(
+        string="Review Frequency (Months)", default=12
+    )
+
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
