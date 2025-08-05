@@ -2,9 +2,6 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_records_container_user,records.container.user,model_records_container,records_management.group_records_user,1,1,1,0
 access_records_container_manager,records.container.manager,model_records_container,records_management.group_records_manager,1,1,1,1
 access_records_container_portal,records.container.portal,model_records_container,base.group_portal,1,0,0,0
-access_records_box_user,records.box.user,model_records_box,records_management.group_records_user,1,1,1,0
-access_records_box_manager,records.box.manager,model_records_box,records_management.group_records_manager,1,1,1,1
-access_records_box_portal,records.box.portal,model_records_box,base.group_portal,1,0,0,0
 access_records_tag_user,records.tag.user,model_records_tag,records_management.group_records_user,1,1,1,0
 access_records_tag_manager,records.tag.manager,model_records_tag,records_management.group_records_manager,1,1,1,1
 access_records_location_user,records.location.user,model_records_location,records_management.group_records_user,1,1,1,0
