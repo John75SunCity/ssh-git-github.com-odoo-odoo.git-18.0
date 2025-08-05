@@ -15,6 +15,17 @@ class MaintenanceEquipment(models.Model):
     # ============================================================================
     # RECORDS MANAGEMENT SPECIFIC FIELDS
     # ============================================================================
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
+    active = fields.Boolean(string="Active", default=True)
+
     equipment_category = fields.Selection(
         [
             ("paper_shredder", "Paper Shredder"),

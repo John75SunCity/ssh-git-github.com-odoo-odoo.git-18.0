@@ -2,7 +2,7 @@
 # Supporting Models for Records Billing Configuration System
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -11,9 +11,20 @@ _logger = logging.getLogger(__name__)
 class RecordsBillingLine(models.Model):
     """Billing line items for detailed billing tracking"""
 
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+
     _name = "records.billing.line"
     _description = "Records Billing Line"
     _order = "config_id, date desc"
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
 
     config_id = fields.Many2one(
         "records.billing.config",
@@ -54,6 +65,8 @@ class RecordsBillingLine(models.Model):
 class RecordsUsageTracking(models.Model):
     """Usage tracking for billing configuration"""
 
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+
     _name = "records.usage.tracking"
     _description = "Records Usage Tracking"
     _order = "config_id, date desc"
@@ -89,6 +102,7 @@ class RecordsUsageTracking(models.Model):
 
 
 class InvoiceGenerationLog(models.Model):
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Log for invoice generation processes"""
 
     _name = "invoice.generation.log"
@@ -123,6 +137,7 @@ class InvoiceGenerationLog(models.Model):
 
 
 class DiscountRule(models.Model):
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Discount rules for billing configurations"""
 
     _name = "discount.rule"
@@ -163,6 +178,7 @@ class DiscountRule(models.Model):
 
 
 class RevenueAnalytics(models.Model):
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Revenue analytics for billing configurations"""
 
     _name = "revenue.analytics"
@@ -221,6 +237,7 @@ class RevenueAnalytics(models.Model):
 
 
 class RecordsPromotionalDiscount(models.Model):
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Promotional discounts for billing configurations"""
 
     _name = "records.promotional.discount"
@@ -262,6 +279,7 @@ class RecordsPromotionalDiscount(models.Model):
 
 
 class CustomerCategory(models.Model):
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Customer categories for billing segmentation"""
 
     _name = "customer.category"

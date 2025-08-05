@@ -9,6 +9,12 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
     # Basic Information
     name = fields.Char(string="Flag Name", required=True, default="Permanent Flag")
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
     document_ids = fields.Many2many("records.document", string="Documents")
     reason = fields.Text(string="Reason")
     # === BUSINESS CRITICAL FIELDS ===

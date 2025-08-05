@@ -4,10 +4,18 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class KeyRestrictionChecker(models.Model):
+    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
     _name = "key.restriction.checker"
     _description = "Key Restriction Checker"
 
     # Basic Information
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
+
     name = fields.Char(string="Name", required=True)
     partner_id = fields.Many2one("res.partner", string="Partner")
     restriction_type = fields.Selection(

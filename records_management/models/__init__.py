@@ -97,6 +97,10 @@ from . import file_retrieval_work_order
 # Service rates and billing (consolidated system)
 from . import base_rates
 from . import customer_negotiated_rates
+
+# Billing support models (MUST be loaded before records_billing_config)
+from . import billing_support_models
+
 from . import records_billing_config
 
 # Key management services
@@ -156,9 +160,6 @@ from . import department_billing
 from . import advanced_billing
 from . import customer_billing_profile
 from . import revenue_forecaster
-
-# Billing support models (new comprehensive system)
-from . import billing_support_models
 
 # =============================================================================
 # PORTAL AND CUSTOMER INTERACTION

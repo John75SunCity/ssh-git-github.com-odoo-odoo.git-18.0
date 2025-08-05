@@ -9,11 +9,23 @@ _logger = logging.getLogger(__name__)
 
 
 class PortalFeedbackResolution(models.Model):
+    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
     """Resolution tracking for portal feedback"""
 
     _name = "portal.feedback.resolution"
     _description = "Portal Feedback Resolution"
     _order = "feedback_id, resolution_date desc"
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
+    active = fields.Boolean(string="Active", default=True)
+
 
     feedback_id = fields.Many2one(
         "portal.feedback", string="Feedback", required=True, ondelete="cascade"
@@ -62,6 +74,7 @@ class PortalFeedbackResolution(models.Model):
 
 
 class PortalFeedbackEscalation(models.Model):
+    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
     """Escalation tracking for portal feedback"""
 
     _name = "portal.feedback.escalation"
@@ -116,6 +129,7 @@ class PortalFeedbackEscalation(models.Model):
 
 
 class PortalFeedbackAction(models.Model):
+    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
     """Action items generated from portal feedback"""
 
     _name = "portal.feedback.action"
@@ -163,6 +177,7 @@ class PortalFeedbackAction(models.Model):
 
 
 class PortalFeedbackCommunication(models.Model):
+    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
     """Communication log for portal feedback"""
 
     _name = "portal.feedback.communication"
@@ -205,6 +220,7 @@ class PortalFeedbackCommunication(models.Model):
 
 
 class PortalFeedbackAnalytics(models.Model):
+    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
     """Analytics data for portal feedback"""
 
     _name = "portal.feedback.analytics"

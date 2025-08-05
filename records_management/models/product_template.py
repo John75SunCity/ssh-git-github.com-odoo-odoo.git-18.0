@@ -10,6 +10,17 @@ class ProductTemplate(models.Model):
     # RECORDS MANAGEMENT SERVICE FIELDS
     # ============================================================================
     # Service Configuration
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
+    active = fields.Boolean(string="Active", default=True)
+
     is_template_service = fields.Boolean(string="Template Service", default=False)
     is_featured_service = fields.Boolean(string="Featured Service", default=False)
     template_category = fields.Selection(

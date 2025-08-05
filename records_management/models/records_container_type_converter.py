@@ -4,10 +4,21 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class RecordsContainerTypeConverter(models.Model):
+    _inherit = [\'mail.thread\', \'mail.activity.mixin\']
     _name = "records.container.type.converter"
     _description = "Records Container Type Converter"
 
     # Basic Information
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
+
     name = fields.Char(string="Converter Name", required=True)
     source_type = fields.Char(string="Source Type")
     target_type = fields.Char(string="Target Type")

@@ -83,7 +83,25 @@ class AdvancedBilling(models.Model):
 class AdvancedBillingLine(models.Model):
     _name = "advanced.billing.line"
     _description = "Advanced Billing Line"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Line Description", compute="_compute_name", store=True, index=True
+    )
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
+    active = fields.Boolean(string="Active", default=True)
+
+    # ============================================================================
+    # BILLING DETAILS
+    # ============================================================================
     billing_id = fields.Many2one(
         "advanced.billing", string="Billing", required=True, ondelete="cascade"
     )
@@ -93,6 +111,17 @@ class AdvancedBillingLine(models.Model):
     price_total = fields.Float(
         string="Total", compute="_compute_price_total", store=True
     )
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("product_id", "quantity")
+    def _compute_name(self):
+        for line in self:
+            if line.product_id:
+                line.name = f"{line.product_id.name} x {line.quantity}"
+            else:
+                line.name = f"Billing Line {line.id or 'New'}"
 
     @api.depends("quantity", "price_unit")
     def _compute_price_total(self):
@@ -105,9 +134,37 @@ class RecordsAdvancedBillingPeriod(models.Model):
     _description = "Advanced Billing Period"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Period Name", compute="_compute_name", store=True, index=True
+    )
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
+    active = fields.Boolean(string="Active", default=True)
+
+    # ============================================================================
+    # PERIOD DETAILS
+    # ============================================================================
     start_date = fields.Date(string="Start Date", required=True)
     end_date = fields.Date(string="End Date", required=True)
 
     billing_ids = fields.One2many(
         "advanced.billing", "billing_period_id", string="Billings"
     )
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("start_date", "end_date")
+    def _compute_name(self):
+        for period in self:
+            if period.start_date and period.end_date:
+                period.name = f"Billing Period {period.start_date} - {period.end_date}"
+            else:
+                period.name = f"Billing Period {period.id or 'New'}"

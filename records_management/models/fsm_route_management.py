@@ -18,6 +18,13 @@ class FsmRouteManagementPlaceholder(models.TransientModel):
 
     # Simple placeholder field to make this a valid model
     name = fields.Char("Placeholder Name", default="FSM Route Management Placeholder")
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
+    active = fields.Boolean(string="Active", default=True)
 
     @api.model
     def _log_fsm_disabled(self):

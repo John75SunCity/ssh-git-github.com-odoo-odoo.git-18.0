@@ -9,6 +9,12 @@ class VisitorPosWizard(models.TransientModel):
 
     # Basic Information
     name = fields.Char(string="Visitor Name", required=True)
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
     visit_date = fields.Datetime(string="Visit Date", default=fields.Datetime.now)
     purpose = fields.Text(string="Purpose of Visit")
 

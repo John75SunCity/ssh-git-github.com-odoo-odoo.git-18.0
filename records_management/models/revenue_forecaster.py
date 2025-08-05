@@ -273,7 +273,25 @@ class RevenueForecastLine(models.Model):
 
     _name = "revenue.forecast.line"
     _description = "Revenue Forecast Line"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Forecast Line", compute="_compute_name", store=True, index=True
+    )
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    user_id = fields.Many2one(
+        "res.users", default=lambda self: self.env.user, tracking=True
+    )
+    active = fields.Boolean(string="Active", default=True)
+
+    # ============================================================================
+    # FORECAST DETAILS
+    # ============================================================================
     forecast_id = fields.Many2one(
         "revenue.forecaster", string="Forecast", required=True, ondelete="cascade"
     )
@@ -330,3 +348,14 @@ class RevenueForecastLine(models.Model):
                 ) * 100
             else:
                 line.revenue_change_percentage = 0.0
+
+    @api.depends("partner_id", "forecast_id")
+    def _compute_name(self):
+        """Compute descriptive name for forecast line"""
+        for line in self:
+            if line.partner_id and line.forecast_id:
+                line.name = f"{line.partner_id.name} - {line.forecast_id.name}"
+            elif line.partner_id:
+                line.name = f"{line.partner_id.name} - Forecast Line"
+            else:
+                line.name = f"Forecast Line {line.id or 'New'}"
