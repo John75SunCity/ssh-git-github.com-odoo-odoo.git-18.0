@@ -107,6 +107,12 @@ class RecordsDocument(models.Model):
     last_accessed = fields.Datetime(string="Last Accessed")
 
     # Retention & Destruction
+    retention_policy_id = fields.Many2one(
+        "records.retention.policy",
+        string="Retention Policy",
+        tracking=True,
+        help="Applicable retention policy for this document",
+    )
     retention_period = fields.Integer(
         string="Retention Period (Years)", default=7, tracking=True
     )
