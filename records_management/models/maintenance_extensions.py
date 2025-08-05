@@ -14,7 +14,7 @@ class MaintenanceEquipment(models.Model):
 
     # Equipment Classification for Records Management
     equipment_category = fields.Selection(
-        [
+        selection_add=[
             ("shredding", "Shredding Equipment"),
             ("scanning", "Scanning Equipment"),
             ("storage", "Storage Equipment"),

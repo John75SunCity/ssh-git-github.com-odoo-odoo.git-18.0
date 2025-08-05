@@ -14,9 +14,7 @@ class FsmRescheduleWizard(models.TransientModel):
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
     )
-    user_id = fields.Many2one(
-        "res.users", default=lambda self: self.env.user, tracking=True
-    )
+    user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     task_id = fields.Many2one("fsm.task", string="Task", required=True)
     new_date = fields.Datetime(string="New Date", required=True)
     reason = fields.Text(string="Reason")

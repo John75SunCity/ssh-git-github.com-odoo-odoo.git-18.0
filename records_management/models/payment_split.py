@@ -79,9 +79,7 @@ class PaymentSplit(models.Model):
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    pos_wizard_id = fields.Many2one(
-        "visitor.pos.wizard", string="POS Wizard", ondelete="cascade"
-    )
+    # Note: Removed pos_wizard_id field - Model to TransientModel relationships are forbidden
     partner_id = fields.Many2one("res.partner", string="Customer", tracking=True)
 
     # ============================================================================

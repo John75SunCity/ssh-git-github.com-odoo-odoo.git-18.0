@@ -57,9 +57,7 @@ class IntegrationError(models.Model):
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    pos_wizard_id = fields.Many2one(
-        "visitor.pos.wizard", string="POS Wizard", ondelete="cascade"
-    )
+    # Note: Removed pos_wizard_id field - Model to TransientModel relationships are forbidden
 
     # ============================================================================
     # STATUS FIELDS

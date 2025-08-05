@@ -116,8 +116,7 @@ class ProcessingLog(models.Model):
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    # Missing inverse field for visitor.pos.wizard One2many relationship
-    pos_wizard_id = fields.Many2one("visitor.pos.wizard", string="POS Wizard")
+    # Note: Removed pos_wizard_id field - Model to TransientModel relationships are forbidden
 
     # # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")

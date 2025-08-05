@@ -16,10 +16,7 @@ class RequiredDocument(models.Model):
     user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
 
-    # Required Inverse Field
-    pos_wizard_id = fields.Many2one(
-        "visitor.pos.wizard", string="POS Wizard", required=True, ondelete="cascade"
-    )
+    # Note: Removed pos_wizard_id field - Model to TransientModel relationships are forbidden
 
     # Business Fields
     document_type = fields.Selection(

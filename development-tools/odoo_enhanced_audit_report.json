@@ -2,10 +2,10 @@
   "timestamp": "2025-08-05",
   "audit_type": "odoo_enhanced",
   "summary": {
-    "total_models": 137,
-    "critical_issues": 0,
+    "total_models": 149,
+    "critical_issues": 5,
     "warnings": 2,
-    "optimizations": 16,
+    "optimizations": 30,
     "validation_errors": 0
   },
   "models": {
@@ -174,25 +174,31 @@
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_support_models.py",
       "fields": {
         "company_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.company"
         },
         "user_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "work_order_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "document.retrieval.work.order"
         },
         "sequence": {
           "type": "Integer"
         },
         "document_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "records.document"
         },
         "container_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "records.container"
         },
         "location_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "records.location"
         },
         "item_type": {
           "type": "Selection"
@@ -219,7 +225,8 @@
           "type": "Datetime"
         },
         "retrieved_by": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "hr.employee"
         },
         "condition_notes": {
           "type": "Text"
@@ -235,161 +242,9 @@
         },
         "completeness_verified": {
           "type": "Boolean"
-        },
-        "name": {
-          "type": "Char"
-        },
-        "team_lead_id": {
-          "type": "Many2one"
-        },
-        "member_ids": {
-          "type": "Many2many"
-        },
-        "specialization": {
-          "type": "Selection"
-        },
-        "active_orders_count": {
-          "type": "Integer"
-        },
-        "completed_orders_count": {
-          "type": "Integer"
-        },
-        "average_completion_time": {
-          "type": "Float"
-        },
-        "efficiency_rating": {
-          "type": "Float"
-        },
-        "max_concurrent_orders": {
-          "type": "Integer"
-        },
-        "current_workload": {
-          "type": "Float"
-        },
-        "available_from": {
-          "type": "Float"
-        },
-        "available_to": {
-          "type": "Float"
-        },
-        "working_days": {
-          "type": "Selection"
-        },
-        "service_type": {
-          "type": "Selection"
-        },
-        "volume_threshold": {
-          "type": "Integer"
-        },
-        "volume_discount_percent": {
-          "type": "Float"
-        },
-        "priority_level": {
-          "type": "Selection"
-        },
-        "priority_multiplier": {
-          "type": "Float"
-        },
-        "delivery_included": {
-          "type": "Boolean"
-        },
-        "delivery_radius_km": {
-          "type": "Float"
-        },
-        "same_day_multiplier": {
-          "type": "Float"
-        },
-        "next_day_multiplier": {
-          "type": "Float"
-        },
-        "valid_from": {
-          "type": "Date"
-        },
-        "valid_to": {
-          "type": "Date"
-        },
-        "active": {
-          "type": "Boolean"
-        },
-        "customer_id": {
-          "type": "Many2one"
-        },
-        "customer_tier": {
-          "type": "Selection"
-        },
-        "currency_id": {
-          "type": "Many2one"
-        },
-        "equipment_type": {
-          "type": "Selection"
-        },
-        "assigned_to": {
-          "type": "Many2one"
-        },
-        "model": {
-          "type": "Char"
-        },
-        "serial_number": {
-          "type": "Char"
-        },
-        "purchase_date": {
-          "type": "Date"
-        },
-        "warranty_expiry": {
-          "type": "Date"
-        },
-        "last_maintenance": {
-          "type": "Date"
-        },
-        "next_maintenance": {
-          "type": "Date"
-        },
-        "maintenance_notes": {
-          "type": "Text"
-        },
-        "usage_hours": {
-          "type": "Float"
-        },
-        "current_work_order_id": {
-          "type": "Many2one"
-        },
-        "date": {
-          "type": "Date"
-        },
-        "team_id": {
-          "type": "Many2one"
-        },
-        "employee_id": {
-          "type": "Many2one"
-        },
-        "documents_retrieved": {
-          "type": "Integer"
-        },
-        "hours_worked": {
-          "type": "Float"
-        },
-        "accuracy_rate": {
-          "type": "Float"
-        },
-        "customer_satisfaction": {
-          "type": "Float"
-        },
-        "documents_per_hour": {
-          "type": "Float"
-        },
-        "profit_margin": {
-          "type": "Float"
-        },
-        "errors_count": {
-          "type": "Integer"
-        },
-        "rework_required": {
-          "type": "Integer"
-        },
-        "on_time_delivery": {
-          "type": "Boolean"
         }
-      }
+      },
+      "class_name": "DocumentRetrievalItem"
     },
     "naid.destruction.record": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_destruction_record.py",
@@ -1775,13 +1630,15 @@
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance_support_models.py",
       "fields": {
         "company_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.company"
         },
         "active": {
           "type": "Boolean"
         },
         "compliance_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "naid.compliance"
         },
         "alert_date": {
           "type": "Datetime"
@@ -1805,19 +1662,30 @@
           "type": "Datetime"
         },
         "resolved_by": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "resolution_notes": {
           "type": "Text"
-        },
+        }
+      },
+      "class_name": "NaidComplianceAlert"
+    },
+    "naid.compliance.checklist.item": {
+      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance_support_models.py",
+      "fields": {
         "name": {
           "type": "Char"
         },
         "sequence": {
           "type": "Integer"
         },
+        "description": {
+          "type": "Text"
+        },
         "checklist_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "naid.compliance.checklist"
         },
         "category": {
           "type": "Selection"
@@ -1829,7 +1697,11 @@
           "type": "Date"
         },
         "verified_by": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
+        },
+        "evidence_attachment": {
+          "type": "Binary"
         },
         "notes": {
           "type": "Text"
@@ -1842,6 +1714,16 @@
         },
         "deadline": {
           "type": "Date"
+        }
+      },
+      "class_name": "NaidComplianceChecklistItem"
+    },
+    "naid.compliance.audit.history": {
+      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance_support_models.py",
+      "fields": {
+        "compliance_id": {
+          "type": "Many2one",
+          "comodel": "naid.compliance"
         },
         "audit_date": {
           "type": "Date"
@@ -1875,12 +1757,23 @@
         },
         "follow_up_completed": {
           "type": "Boolean"
+        }
+      },
+      "class_name": "NaidComplianceAuditHistory"
+    },
+    "naid.risk.assessment": {
+      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance_support_models.py",
+      "fields": {
+        "compliance_id": {
+          "type": "Many2one",
+          "comodel": "naid.compliance"
         },
         "assessment_date": {
           "type": "Date"
         },
         "assessor_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "risk_category": {
           "type": "Selection"
@@ -1897,14 +1790,37 @@
         "risk_score": {
           "type": "Integer"
         },
+        "risk_level": {
+          "type": "Selection"
+        },
         "mitigation_measures": {
           "type": "Text"
         },
         "responsible_person": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "target_completion_date": {
           "type": "Date"
+        },
+        "status": {
+          "type": "Selection"
+        }
+      },
+      "class_name": "NaidRiskAssessment"
+    },
+    "naid.compliance.action.plan": {
+      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance_support_models.py",
+      "fields": {
+        "compliance_id": {
+          "type": "Many2one",
+          "comodel": "naid.compliance"
+        },
+        "name": {
+          "type": "Char"
+        },
+        "description": {
+          "type": "Text"
         },
         "action_type": {
           "type": "Selection"
@@ -1922,16 +1838,21 @@
           "type": "Date"
         },
         "responsible_user_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "approval_required": {
           "type": "Boolean"
         },
         "approved_by": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "approval_date": {
           "type": "Date"
+        },
+        "status": {
+          "type": "Selection"
         },
         "progress_percentage": {
           "type": "Float"
@@ -1939,7 +1860,8 @@
         "completion_notes": {
           "type": "Text"
         }
-      }
+      },
+      "class_name": "NaidComplianceActionPlan"
     },
     "records.department.billing.enhanced": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/department_billing.py",
@@ -2922,10 +2844,6 @@
         "safety_notes": {
           "type": "Text"
         },
-        "pos_wizard_id": {
-          "type": "Many2one",
-          "comodel": "visitor.pos.wizard"
-        },
         "activity_ids": {
           "type": "One2many",
           "comodel": "mail.activity",
@@ -2949,6 +2867,245 @@
         }
       },
       "class_name": "ServiceItem"
+    },
+    "document.retrieval.team": {
+      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_support_models.py",
+      "fields": {
+        "name": {
+          "type": "Char"
+        },
+        "team_lead_id": {
+          "type": "Many2one",
+          "comodel": "hr.employee"
+        },
+        "member_ids": {
+          "type": "Many2many",
+          "comodel": "hr.employee"
+        },
+        "specialization": {
+          "type": "Selection"
+        },
+        "active_orders_count": {
+          "type": "Integer"
+        },
+        "completed_orders_count": {
+          "type": "Integer"
+        },
+        "average_completion_time": {
+          "type": "Float"
+        },
+        "efficiency_rating": {
+          "type": "Float"
+        },
+        "max_concurrent_orders": {
+          "type": "Integer"
+        },
+        "current_workload": {
+          "type": "Float"
+        },
+        "available_from": {
+          "type": "Float"
+        },
+        "available_to": {
+          "type": "Float"
+        },
+        "working_days": {
+          "type": "Selection"
+        }
+      },
+      "class_name": "DocumentRetrievalTeam"
+    },
+    "document.retrieval.pricing": {
+      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_support_models.py",
+      "fields": {
+        "name": {
+          "type": "Char"
+        },
+        "service_type": {
+          "type": "Selection"
+        },
+        "base_fee": {
+          "type": "Monetary"
+        },
+        "per_document_fee": {
+          "type": "Monetary"
+        },
+        "per_hour_fee": {
+          "type": "Monetary"
+        },
+        "per_box_fee": {
+          "type": "Monetary"
+        },
+        "volume_threshold": {
+          "type": "Integer"
+        },
+        "volume_discount_percent": {
+          "type": "Float"
+        },
+        "priority_level": {
+          "type": "Selection"
+        },
+        "priority_multiplier": {
+          "type": "Float"
+        },
+        "delivery_included": {
+          "type": "Boolean"
+        },
+        "delivery_fee": {
+          "type": "Monetary"
+        },
+        "delivery_radius_km": {
+          "type": "Float"
+        },
+        "scanning_fee": {
+          "type": "Monetary"
+        },
+        "ocr_fee": {
+          "type": "Monetary"
+        },
+        "digital_delivery_fee": {
+          "type": "Monetary"
+        },
+        "same_day_multiplier": {
+          "type": "Float"
+        },
+        "next_day_multiplier": {
+          "type": "Float"
+        },
+        "valid_from": {
+          "type": "Date"
+        },
+        "valid_to": {
+          "type": "Date"
+        },
+        "active": {
+          "type": "Boolean"
+        },
+        "customer_id": {
+          "type": "Many2one",
+          "comodel": "res.partner"
+        },
+        "customer_tier": {
+          "type": "Selection"
+        },
+        "currency_id": {
+          "type": "Many2one",
+          "comodel": "res.currency"
+        }
+      },
+      "class_name": "DocumentRetrievalPricing"
+    },
+    "document.retrieval.equipment": {
+      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_support_models.py",
+      "fields": {
+        "name": {
+          "type": "Char"
+        },
+        "equipment_type": {
+          "type": "Selection"
+        },
+        "status": {
+          "type": "Selection"
+        },
+        "location_id": {
+          "type": "Many2one",
+          "comodel": "records.location"
+        },
+        "assigned_to": {
+          "type": "Many2one",
+          "comodel": "hr.employee"
+        },
+        "model": {
+          "type": "Char"
+        },
+        "serial_number": {
+          "type": "Char"
+        },
+        "purchase_date": {
+          "type": "Date"
+        },
+        "warranty_expiry": {
+          "type": "Date"
+        },
+        "last_maintenance": {
+          "type": "Date"
+        },
+        "next_maintenance": {
+          "type": "Date"
+        },
+        "maintenance_notes": {
+          "type": "Text"
+        },
+        "usage_hours": {
+          "type": "Float"
+        },
+        "current_work_order_id": {
+          "type": "Many2one",
+          "comodel": "document.retrieval.work.order"
+        }
+      },
+      "class_name": "DocumentRetrievalEquipment"
+    },
+    "document.retrieval.metrics": {
+      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_support_models.py",
+      "fields": {
+        "name": {
+          "type": "Char"
+        },
+        "date": {
+          "type": "Date"
+        },
+        "work_order_id": {
+          "type": "Many2one",
+          "comodel": "document.retrieval.work.order"
+        },
+        "team_id": {
+          "type": "Many2one",
+          "comodel": "document.retrieval.team"
+        },
+        "employee_id": {
+          "type": "Many2one",
+          "comodel": "hr.employee"
+        },
+        "documents_retrieved": {
+          "type": "Integer"
+        },
+        "hours_worked": {
+          "type": "Float"
+        },
+        "accuracy_rate": {
+          "type": "Float"
+        },
+        "customer_satisfaction": {
+          "type": "Float"
+        },
+        "documents_per_hour": {
+          "type": "Float"
+        },
+        "cost_per_document": {
+          "type": "Monetary"
+        },
+        "revenue_generated": {
+          "type": "Monetary"
+        },
+        "profit_margin": {
+          "type": "Float"
+        },
+        "errors_count": {
+          "type": "Integer"
+        },
+        "rework_required": {
+          "type": "Integer"
+        },
+        "on_time_delivery": {
+          "type": "Boolean"
+        },
+        "currency_id": {
+          "type": "Many2one",
+          "comodel": "res.currency"
+        }
+      },
+      "class_name": "DocumentRetrievalMetrics"
     },
     "document.retrieval.work.order": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_work_order.py",
@@ -3357,22 +3514,26 @@
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback_support_models.py",
       "fields": {
         "company_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.company"
         },
         "user_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "active": {
           "type": "Boolean"
         },
         "feedback_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "portal.feedback"
         },
         "resolution_date": {
           "type": "Datetime"
         },
         "resolved_by": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "resolution_type": {
           "type": "Selection"
@@ -3386,17 +3547,33 @@
         "satisfaction_after_resolution": {
           "type": "Selection"
         },
+        "cost_of_resolution": {
+          "type": "Monetary"
+        },
         "currency_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.currency"
+        }
+      },
+      "class_name": "PortalFeedbackResolution"
+    },
+    "portal.feedback.escalation": {
+      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback_support_models.py",
+      "fields": {
+        "feedback_id": {
+          "type": "Many2one",
+          "comodel": "portal.feedback"
         },
         "escalation_date": {
           "type": "Datetime"
         },
         "escalated_by": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "escalated_to": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "escalation_reason": {
           "type": "Text"
@@ -3412,6 +3589,16 @@
         },
         "status": {
           "type": "Selection"
+        }
+      },
+      "class_name": "PortalFeedbackEscalation"
+    },
+    "portal.feedback.action": {
+      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback_support_models.py",
+      "fields": {
+        "feedback_id": {
+          "type": "Many2one",
+          "comodel": "portal.feedback"
         },
         "name": {
           "type": "Char"
@@ -3423,12 +3610,16 @@
           "type": "Selection"
         },
         "assigned_to": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "due_date": {
           "type": "Date"
         },
         "priority": {
+          "type": "Selection"
+        },
+        "status": {
           "type": "Selection"
         },
         "completion_date": {
@@ -3442,6 +3633,16 @@
         },
         "actual_hours": {
           "type": "Float"
+        }
+      },
+      "class_name": "PortalFeedbackAction"
+    },
+    "portal.feedback.communication": {
+      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback_support_models.py",
+      "fields": {
+        "feedback_id": {
+          "type": "Many2one",
+          "comodel": "portal.feedback"
         },
         "communication_date": {
           "type": "Datetime"
@@ -3459,10 +3660,12 @@
           "type": "Text"
         },
         "sender": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "recipient": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.partner"
         },
         "channel": {
           "type": "Char"
@@ -3472,6 +3675,15 @@
         },
         "response_deadline": {
           "type": "Datetime"
+        }
+      },
+      "class_name": "PortalFeedbackCommunication"
+    },
+    "portal.feedback.analytics": {
+      "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback_support_models.py",
+      "fields": {
+        "name": {
+          "type": "Char"
         },
         "period_start": {
           "type": "Date"
@@ -3512,7 +3724,8 @@
         "repeat_feedback_rate": {
           "type": "Float"
         }
-      }
+      },
+      "class_name": "PortalFeedbackAnalytics"
     },
     "processing.log": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/processing_log.py",
@@ -3596,10 +3809,6 @@
         "shredding_service_id": {
           "type": "Many2one",
           "comodel": "shredding.service"
-        },
-        "pos_wizard_id": {
-          "type": "Many2one",
-          "comodel": "visitor.pos.wizard"
         },
         "activity_ids": {
           "type": "One2many",
@@ -3839,10 +4048,6 @@
         },
         "active": {
           "type": "Boolean"
-        },
-        "pos_wizard_id": {
-          "type": "Many2one",
-          "comodel": "visitor.pos.wizard"
         },
         "document_type": {
           "type": "Selection"
@@ -4653,10 +4858,12 @@
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container_type_converter.py",
       "fields": {
         "company_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.company"
         },
         "user_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "name": {
           "type": "Char"
@@ -4668,7 +4875,9 @@
           "type": "Char"
         },
         "container_ids": {
-          "type": "One2many"
+          "type": "One2many",
+          "comodel": "records.container",
+          "inverse": "converter_id"
         },
         "current_type": {
           "type": "Char"
@@ -4689,19 +4898,27 @@
           "type": "Text"
         },
         "activity_ids": {
-          "type": "One2many"
+          "type": "One2many",
+          "comodel": "mail.activity",
+          "inverse": "res_id"
         },
         "message_follower_ids": {
-          "type": "One2many"
+          "type": "One2many",
+          "comodel": "mail.followers",
+          "inverse": "res_id"
         },
         "message_ids": {
-          "type": "One2many"
+          "type": "One2many",
+          "comodel": "mail.message",
+          "inverse": "res_id"
         },
         "customer_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.partner"
         },
         "location_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "records.location"
         },
         "barcode": {
           "type": "Char"
@@ -4733,7 +4950,8 @@
         "updated_date": {
           "type": "Datetime"
         }
-      }
+      },
+      "class_name": "RecordsContainerTypeConverter"
     },
     "paper.bale.recycling": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/paper_bale_recycling.py",
@@ -7671,10 +7889,6 @@
         "payment_ref": {
           "type": "Char"
         },
-        "pos_wizard_id": {
-          "type": "Many2one",
-          "comodel": "visitor.pos.wizard"
-        },
         "partner_id": {
           "type": "Many2one",
           "comodel": "res.partner"
@@ -8132,10 +8346,12 @@
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/stock_move_sms_validation.py",
       "fields": {
         "company_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.company"
         },
         "user_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "active": {
           "type": "Boolean"
@@ -8144,7 +8360,8 @@
           "type": "Char"
         },
         "move_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "stock.move"
         },
         "sms_code": {
           "type": "Char"
@@ -8152,7 +8369,8 @@
         "validated": {
           "type": "Boolean"
         }
-      }
+      },
+      "class_name": "StockMoveSMSValidation"
     },
     "records.container.type": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container_type.py",
@@ -8764,10 +8982,6 @@
         },
         "response_data": {
           "type": "Text"
-        },
-        "pos_wizard_id": {
-          "type": "Many2one",
-          "comodel": "visitor.pos.wizard"
         },
         "resolved": {
           "type": "Boolean"
@@ -10376,13 +10590,15 @@
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/key_restriction_checker.py",
       "fields": {
         "user_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "name": {
           "type": "Char"
         },
         "partner_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.partner"
         },
         "restriction_type": {
           "type": "Selection"
@@ -10406,16 +10622,23 @@
           "type": "Date"
         },
         "activity_ids": {
-          "type": "One2many"
+          "type": "One2many",
+          "comodel": "mail.activity",
+          "inverse": "res_id"
         },
         "message_follower_ids": {
-          "type": "One2many"
+          "type": "One2many",
+          "comodel": "mail.followers",
+          "inverse": "res_id"
         },
         "message_ids": {
-          "type": "One2many"
+          "type": "One2many",
+          "comodel": "mail.message",
+          "inverse": "res_id"
         },
         "customer_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.partner"
         },
         "bin_number": {
           "type": "Char"
@@ -10430,7 +10653,8 @@
           "type": "Date"
         },
         "authorized_by": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.users"
         },
         "action_required": {
           "type": "Boolean"
@@ -10490,9 +10714,11 @@
           "type": "Char"
         },
         "company_id": {
-          "type": "Many2one"
+          "type": "Many2one",
+          "comodel": "res.company"
         }
-      }
+      },
+      "class_name": "KeyRestrictionChecker"
     },
     "records.document.type": {
       "file": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_document_type.py",
@@ -11185,7 +11411,53 @@
       "class_name": "RecordsPolicyVersion"
     }
   },
-  "critical_issues": [],
+  "critical_issues": [
+    {
+      "type": "missing_inverse_field",
+      "severity": "critical",
+      "model": "visitor.pos.wizard",
+      "field": "integration_error_ids",
+      "comodel": "integration.error",
+      "inverse_field": "pos_wizard_id",
+      "message": "Inverse field pos_wizard_id not found in integration.error"
+    },
+    {
+      "type": "missing_inverse_field",
+      "severity": "critical",
+      "model": "visitor.pos.wizard",
+      "field": "payment_split_ids",
+      "comodel": "payment.split",
+      "inverse_field": "pos_wizard_id",
+      "message": "Inverse field pos_wizard_id not found in payment.split"
+    },
+    {
+      "type": "missing_inverse_field",
+      "severity": "critical",
+      "model": "visitor.pos.wizard",
+      "field": "processing_log_ids",
+      "comodel": "processing.log",
+      "inverse_field": "pos_wizard_id",
+      "message": "Inverse field pos_wizard_id not found in processing.log"
+    },
+    {
+      "type": "missing_inverse_field",
+      "severity": "critical",
+      "model": "visitor.pos.wizard",
+      "field": "required_document_ids",
+      "comodel": "required.document",
+      "inverse_field": "pos_wizard_id",
+      "message": "Inverse field pos_wizard_id not found in required.document"
+    },
+    {
+      "type": "missing_inverse_field",
+      "severity": "critical",
+      "model": "visitor.pos.wizard",
+      "field": "service_item_ids",
+      "comodel": "service.item",
+      "inverse_field": "pos_wizard_id",
+      "message": "Inverse field pos_wizard_id not found in service.item"
+    }
+  ],
   "warnings": [
     {
       "type": "incomplete_many2one",
@@ -11205,11 +11477,152 @@
   "optimizations": [
     {
       "type": "missing_standard_fields",
+      "model": "document.retrieval.item",
+      "missing_fields": [
+        "active",
+        "name"
+      ],
+      "recommendation": "Consider adding standard fields: active, name"
+    },
+    {
+      "type": "missing_standard_fields",
       "model": "naid.compliance.alert",
       "missing_fields": [
+        "user_id",
+        "name"
+      ],
+      "recommendation": "Consider adding standard fields: user_id, name"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "naid.compliance.checklist.item",
+      "missing_fields": [
+        "company_id",
+        "user_id",
+        "active"
+      ],
+      "recommendation": "Consider adding standard fields: company_id, user_id, active"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "naid.compliance.audit.history",
+      "missing_fields": [
+        "company_id",
+        "user_id",
+        "active",
+        "name"
+      ],
+      "recommendation": "Consider adding standard fields: company_id, user_id, active, name"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "naid.risk.assessment",
+      "missing_fields": [
+        "company_id",
+        "user_id",
+        "active",
+        "name"
+      ],
+      "recommendation": "Consider adding standard fields: company_id, user_id, active, name"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "naid.compliance.action.plan",
+      "missing_fields": [
+        "company_id",
+        "user_id",
+        "active"
+      ],
+      "recommendation": "Consider adding standard fields: company_id, user_id, active"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "document.retrieval.team",
+      "missing_fields": [
+        "company_id",
+        "user_id",
+        "active"
+      ],
+      "recommendation": "Consider adding standard fields: company_id, user_id, active"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "document.retrieval.pricing",
+      "missing_fields": [
+        "company_id",
         "user_id"
       ],
-      "recommendation": "Consider adding standard fields: user_id"
+      "recommendation": "Consider adding standard fields: company_id, user_id"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "document.retrieval.equipment",
+      "missing_fields": [
+        "company_id",
+        "user_id",
+        "active"
+      ],
+      "recommendation": "Consider adding standard fields: company_id, user_id, active"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "document.retrieval.metrics",
+      "missing_fields": [
+        "company_id",
+        "user_id",
+        "active"
+      ],
+      "recommendation": "Consider adding standard fields: company_id, user_id, active"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "portal.feedback.resolution",
+      "missing_fields": [
+        "name"
+      ],
+      "recommendation": "Consider adding standard fields: name"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "portal.feedback.escalation",
+      "missing_fields": [
+        "company_id",
+        "user_id",
+        "active",
+        "name"
+      ],
+      "recommendation": "Consider adding standard fields: company_id, user_id, active, name"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "portal.feedback.action",
+      "missing_fields": [
+        "company_id",
+        "user_id",
+        "active"
+      ],
+      "recommendation": "Consider adding standard fields: company_id, user_id, active"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "portal.feedback.communication",
+      "missing_fields": [
+        "company_id",
+        "user_id",
+        "active",
+        "name"
+      ],
+      "recommendation": "Consider adding standard fields: company_id, user_id, active, name"
+    },
+    {
+      "type": "missing_standard_fields",
+      "model": "portal.feedback.analytics",
+      "missing_fields": [
+        "company_id",
+        "user_id",
+        "active"
+      ],
+      "recommendation": "Consider adding standard fields: company_id, user_id, active"
     },
     {
       "type": "missing_standard_fields",
@@ -11358,37 +11771,37 @@
   ],
   "validation_errors": [],
   "standard_odoo_models": [
-    "res.partner.category",
-    "res.partner",
-    "stock.lot",
-    "product.template",
-    "account.tax",
-    "mail.activity",
-    "fleet.vehicle",
-    "mail.message",
-    "project.task",
-    "pos.order",
     "maintenance.equipment",
-    "ir.actions.act_window",
-    "ir.attachment",
-    "ir.ui.view",
+    "mail.activity",
+    "mail.message",
     "res.groups",
-    "ir.model",
-    "mail.template",
+    "mail.followers",
+    "product.template",
     "hr.employee",
-    "maintenance.request",
-    "ir.cron",
+    "mail.template",
+    "ir.model",
+    "res.company",
+    "stock.move",
     "pos.config",
     "product.product",
-    "res.country",
+    "project.task",
     "pos.session",
-    "stock.move",
-    "ir.sequence",
+    "ir.cron",
+    "res.partner.category",
+    "res.currency",
+    "maintenance.request",
     "account.move",
-    "res.users",
-    "res.company",
+    "stock.lot",
+    "fleet.vehicle",
+    "ir.ui.view",
+    "res.country",
+    "res.partner",
+    "ir.actions.act_window",
+    "account.tax",
     "product.category",
-    "mail.followers",
-    "res.currency"
+    "res.users",
+    "ir.attachment",
+    "ir.sequence",
+    "pos.order"
   ]
 }

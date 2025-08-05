@@ -12,9 +12,7 @@ class VisitorPosWizard(models.TransientModel):
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
     )
-    user_id = fields.Many2one(
-        "res.users", default=lambda self: self.env.user, tracking=True
-    )
+    user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     visit_date = fields.Datetime(string="Visit Date", default=fields.Datetime.now)
     purpose = fields.Text(string="Purpose of Visit")
 
@@ -279,10 +277,10 @@ class VisitorPosWizard(models.TransientModel):
     resolution_notes = fields.Text(string="Resolution Notes")
     retention_period = fields.Integer(string="Retention Period (days)")
     # === COMPREHENSIVE MISSING FIELDS ===
-    active = fields.Boolean(string="Flag", default=True, tracking=True)
-    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
-    created_date = fields.Date(string="Date", default=fields.Date.today, tracking=True)
-    updated_date = fields.Date(string="Date", tracking=True)
+    active = fields.Boolean(string="Flag", default=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    created_date = fields.Date(string="Date", default=fields.Date.today)
+    updated_date = fields.Date(string="Date")
     # === BUSINESS CRITICAL FIELDS ===
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
@@ -298,22 +296,8 @@ class VisitorPosWizard(models.TransientModel):
     )
     document_count = fields.Integer(string="Document Count", default=0)
     document_name = fields.Char(string="Document Name")
-    integration_error_ids = fields.One2many(
-        "integration.error", "pos_wizard_id", string="Integration Errors"
-    )
-    payment_split_ids = fields.One2many(
-        "payment.split", "pos_wizard_id", string="Payment Splits"
-    )
+    # Note: Removed One2many relationships - TransientModel cannot have relationships with regular Models
     payment_terms = fields.Char(string="Payment Terms")
-    processing_log_ids = fields.One2many(
-        "processing.log", "pos_wizard_id", string="Processing Logs"
-    )
-    required_document_ids = fields.One2many(
-        "required.document", "pos_wizard_id", string="Required Documents"
-    )
-    service_item_ids = fields.One2many(
-        "service.item", "pos_wizard_id", string="Service Items"
-    )
     shredding_type = fields.Selection(
         [("onsite", "On-site"), ("offsite", "Off-site"), ("witnessed", "Witnessed")],
         string="Shredding Type",
