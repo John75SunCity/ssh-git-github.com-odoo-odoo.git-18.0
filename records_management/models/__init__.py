@@ -64,10 +64,10 @@ from . import pickup_route
 from . import records_vehicle
 
 # =============================================================================
-# SERVICE MANAGEMENT MODELS
+# SERVICE MANAGEMENT MODELS (Load shredding_service before paper_bale_recycling)
 # =============================================================================
 
-# Shredding services
+# Shredding services (MUST be loaded before paper_bale_recycling due to inverse field)
 from . import shredding_team
 from . import shredding_equipment
 from . import maintenance_extensions
@@ -79,6 +79,14 @@ from . import shredding_inventory_item
 from . import shredding_service_log
 from . import shredding_bin_models
 from . import destruction_item
+
+# =============================================================================
+# PAPER RECYCLING AND BALING MODELS (After shredding services)
+# =============================================================================
+
+# Modern paper recycling system (depends on shredding_service.recycling_bale_id)
+from . import paper_bale_recycling
+from . import paper_load_shipment
 
 # Work orders
 from . import work_order_shredding
@@ -101,14 +109,6 @@ from . import mobile_bin_key_wizard
 from . import bin_unlock_service
 from . import records_bin
 from . import bin_key
-
-# =============================================================================
-# PAPER RECYCLING AND BALING MODELS
-# =============================================================================
-
-# Modern paper recycling system
-from . import paper_bale_recycling
-from . import paper_load_shipment
 
 # Legacy bale models (for data migration compatibility)
 from . import bale
