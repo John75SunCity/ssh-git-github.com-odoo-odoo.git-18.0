@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from datetime import datetime, timedelta
-import re
 
 
 class PortalFeedback(models.Model):
@@ -15,113 +14,46 @@ class PortalFeedback(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-
     name = fields.Char(
         string="Feedback Reference", required=True, tracking=True, index=True
     )
     subject = fields.Char(string="Subject", required=True, tracking=True)
     description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10)
     active = fields.Boolean(string="Active", default=True)
-
-    # Framework Required Fields
     company_id = fields.Many2one(
-        "res.company",
-        string="Company",
-        default=lambda self: self.env.company,
-        required=True,
+        "res.company", default=lambda self: self.env.company, required=True
     )
     user_id = fields.Many2one(
         "res.users",
-        string="Assigned User",
+        string="Created By",
         default=lambda self: self.env.user,
-        tracking=True,
-    )
-
-    # State Management
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("submitted", "Submitted"),
-            ("in_progress", "In Progress"),
-            ("resolved", "Resolved"),
-            ("closed", "Closed"),
-        ],
-        string="Status",
-        default="draft",
         tracking=True,
     )
 
     # ============================================================================
     # CUSTOMER & FEEDBACK DETAILS
     # ============================================================================
-
-    # Customer Information
-    partner_id = fields.Many2one(
-        "res.partner", string="Customer", required=True, tracking=True
+    customer_id = fields.Many2one(
+        "res.partner", string="Customer", required=True, tracking=True, index=True
     )
-    customer_name = fields.Char(
-        string="Customer Name", related="partner_id.name", store=True
-    )
-    customer_email = fields.Char(
-        string="Customer Email", related="partner_id.email", store=True
-    )
-    customer_phone = fields.Char(
-        string="Customer Phone", related="partner_id.phone", store=True
-    )
-
-    # Feedback Classification
     feedback_type = fields.Selection(
         [
+            ("general", "General Feedback"),
             ("complaint", "Complaint"),
-            ("compliment", "Compliment"),
             ("suggestion", "Suggestion"),
-            ("inquiry", "Inquiry"),
-            ("request", "Service Request"),
+            ("compliment", "Compliment"),
+            ("service_request", "Service Request"),
         ],
         string="Feedback Type",
         required=True,
-        tracking=True,
-    )
-
-    category = fields.Selection(
-        [
-            ("service_quality", "Service Quality"),
-            ("billing", "Billing"),
-            ("delivery", "Delivery"),
-            ("communication", "Communication"),
-            ("staff", "Staff"),
-            ("product", "Product"),
-            ("other", "Other"),
-        ],
-        string="Category",
-        tracking=True,
-    )
-
-    priority = fields.Selection(
-        [
-            ("low", "Low"),
-            ("medium", "Medium"),
-            ("high", "High"),
-            ("urgent", "Urgent"),
-        ],
-        string="Priority",
-        default="medium",
+        default="general",
         tracking=True,
     )
 
     # ============================================================================
-    # FEEDBACK CONTENT & ANALYSIS
+    # RATINGS & SATISFACTION
     # ============================================================================
-
-    # Feedback Content
-    comments = fields.Text(string="Comments", required=True)
-    internal_notes = fields.Text(string="Internal Notes")
-    resolution_notes = fields.Text(string="Resolution Notes")
-    follow_up_notes = fields.Text(string="Follow-up Notes")
-
-    # Rating System
-    rating = fields.Selection(
+    overall_rating = fields.Selection(
         [
             ("1", "1 - Very Poor"),
             ("2", "2 - Poor"),
@@ -133,171 +65,123 @@ class PortalFeedback(models.Model):
         tracking=True,
     )
 
-    service_rating = fields.Integer(
-        string="Service Rating (1-10)", help="Service quality rating from 1 to 10"
-    )
-
-    # AI-Ready Sentiment Analysis
-    sentiment_category = fields.Selection(
+    service_quality_rating = fields.Selection(
         [
-            ("positive", "Positive"),
-            ("neutral", "Neutral"),
-            ("negative", "Negative"),
+            ("1", "1 - Very Poor"),
+            ("2", "2 - Poor"),
+            ("3", "3 - Average"),
+            ("4", "4 - Good"),
+            ("5", "5 - Excellent"),
         ],
-        string="Sentiment",
-        compute="_compute_sentiment_analysis",
-        store=True,
+        string="Service Quality",
+        tracking=True,
     )
 
-    sentiment_score = fields.Float(
-        string="Sentiment Score",
-        digits=(3, 2),
-        compute="_compute_sentiment_analysis",
+    response_time_rating = fields.Selection(
+        [
+            ("1", "1 - Very Poor"),
+            ("2", "2 - Poor"),
+            ("3", "3 - Average"),
+            ("4", "4 - Good"),
+            ("5", "5 - Excellent"),
+        ],
+        string="Response Time",
+        tracking=True,
+    )
+
+    staff_friendliness_rating = fields.Selection(
+        [
+            ("1", "1 - Very Poor"),
+            ("2", "2 - Poor"),
+            ("3", "3 - Average"),
+            ("4", "4 - Good"),
+            ("5", "5 - Excellent"),
+        ],
+        string="Staff Friendliness",
+        tracking=True,
+    )
+
+    satisfaction_level = fields.Selection(
+        [
+            ("very_satisfied", "Very Satisfied"),
+            ("satisfied", "Satisfied"),
+            ("neutral", "Neutral"),
+            ("dissatisfied", "Dissatisfied"),
+            ("very_dissatisfied", "Very Dissatisfied"),
+        ],
+        string="Satisfaction Level",
+        compute="_compute_satisfaction_level",
         store=True,
-        help="Sentiment score from -1 (negative) to 1 (positive)",
+        tracking=True,
     )
 
     # ============================================================================
-    # DATES & SCHEDULING
+    # WORKFLOW & STATUS
     # ============================================================================
-
-    feedback_date = fields.Datetime(
-        string="Feedback Date",
-        default=fields.Datetime.now,
+    status = fields.Selection(
+        [
+            ("new", "New"),
+            ("reviewed", "Under Review"),
+            ("responded", "Responded"),
+            ("escalated", "Escalated"),
+            ("closed", "Closed"),
+        ],
+        string="Status",
+        default="new",
         required=True,
         tracking=True,
     )
 
+    priority = fields.Selection(
+        [("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")],
+        string="Priority",
+        default="medium",
+        tracking=True,
+    )
+
+    assigned_to = fields.Many2one("res.users", string="Assigned To", tracking=True)
+    submission_date = fields.Datetime(
+        string="Submission Date", default=fields.Datetime.now, required=True
+    )
     response_date = fields.Datetime(string="Response Date", tracking=True)
-    resolution_date = fields.Datetime(string="Resolution Date", tracking=True)
-    follow_up_date = fields.Date(string="Follow-up Date", tracking=True)
-    escalation_date = fields.Datetime(string="Escalation Date")
-
-    # Computed Time Metrics
-    response_time_hours = fields.Float(
-        string="Response Time (Hours)",
-        compute="_compute_response_metrics",
-        store=True,
-    )
-
-    resolution_time_hours = fields.Float(
-        string="Resolution Time (Hours)",
-        compute="_compute_response_metrics",
-        store=True,
-    )
+    closure_date = fields.Datetime(string="Closure Date", tracking=True)
 
     # ============================================================================
-    # COMMUNICATION & FOLLOW-UP
+    # CONTENT & COMMUNICATION
     # ============================================================================
+    comments = fields.Text(string="Customer Comments", required=True)
+    internal_notes = fields.Text(string="Internal Notes", groups="base.group_user")
+    response_text = fields.Html(string="Response to Customer")
+    resolution_notes = fields.Text(string="Resolution Notes")
 
-    # Communication Tracking
-    contact_method = fields.Selection(
-        [
-            ("portal", "Customer Portal"),
-            ("email", "Email"),
-            ("phone", "Phone"),
-            ("in_person", "In Person"),
-            ("mail", "Mail"),
-        ],
-        string="Contact Method",
-        default="portal",
-    )
-
-    communication_language = fields.Selection(
-        [
-            ("en", "English"),
-            ("es", "Spanish"),
-            ("fr", "French"),
-        ],
-        string="Communication Language",
-        default="en",
-    )
-
-    requires_follow_up = fields.Boolean(string="Requires Follow-up", default=False)
-    follow_up_completed = fields.Boolean(string="Follow-up Completed", default=False)
-    customer_satisfied = fields.Boolean(string="Customer Satisfied")
-
-    # ============================================================================
-    # ESCALATION & MANAGEMENT
-    # ============================================================================
-
-    # Escalation Management
-    is_escalated = fields.Boolean(string="Escalated", default=False, tracking=True)
-    escalated_to = fields.Many2one("res.users", string="Escalated To")
+    follow_up_required = fields.Boolean(string="Follow-up Required", default=False)
+    follow_up_date = fields.Date(string="Follow-up Date")
     escalation_reason = fields.Text(string="Escalation Reason")
 
-    # Management Review
-    requires_management_review = fields.Boolean(string="Requires Management Review")
-    management_reviewed = fields.Boolean(string="Management Reviewed")
-    reviewed_by = fields.Many2one("res.users", string="Reviewed By")
-    review_date = fields.Datetime(string="Review Date")
-
     # ============================================================================
-    # ATTACHMENTS & DOCUMENTATION
+    # AI SENTIMENT ANALYSIS
     # ============================================================================
-
-    # File Attachments
-    attachment_ids = fields.One2many("ir.attachment", "res_id", string="Attachments")
-    attachment_count = fields.Integer(
-        string="Attachment Count",
-        compute="_compute_attachment_count",
+    sentiment_score = fields.Float(
+        string="Sentiment Score",
+        compute="_compute_sentiment_analysis",
+        store=True,
+        help="AI sentiment score from -1 (negative) to 1 (positive)",
     )
-
-    # Documentation
-    reference_documents = fields.Text(string="Reference Documents")
-    related_tickets = fields.Text(string="Related Tickets")
-
-    # Binary Fields
-    mimetype = fields.Char(string="MIME Type")
-
-    # ============================================================================
-    # PERFORMANCE & ANALYTICS
-    # ============================================================================
-
-    # Performance Metrics
-    impact_level = fields.Selection(
-        [
-            ("low", "Low Impact"),
-            ("medium", "Medium Impact"),
-            ("high", "High Impact"),
-            ("critical", "Critical Impact"),
-        ],
-        string="Impact Level",
-        default="low",
-    )
-
-    business_impact = fields.Text(string="Business Impact Description")
-    cost_impact = fields.Monetary(
-        string="Cost Impact",
-        currency_field="currency_id",
-        help="Estimated cost impact of the feedback",
-    )
-
-    # Analytics Tags
-    tag_ids = fields.Many2many("portal.feedback.tag", string="Tags")
-
-    # Currency Configuration
-    currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        default=lambda self: self.env.company.currency_id,
+    sentiment_category = fields.Selection(
+        [("positive", "Positive"), ("neutral", "Neutral"), ("negative", "Negative")],
+        string="Sentiment Category",
+        compute="_compute_sentiment_analysis",
+        store=True,
     )
 
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-
-    # Related Records
-    portal_request_id = fields.Many2one(
-        "portal.request", string="Related Portal Request"
+    improvement_areas = fields.Many2many(
+        "feedback.improvement.area", string="Improvement Areas"
     )
-    project_task_id = fields.Many2one("project.task", string="Related Task")
-    sale_order_id = fields.Many2one("sale.order", string="Related Sale Order")
-
-    # Child/Parent Relationships
-    parent_feedback_id = fields.Many2one("portal.feedback", string="Parent Feedback")
-    child_feedback_ids = fields.One2many(
-        "portal.feedback", "parent_feedback_id", string="Related Feedback"
+    related_service_ids = fields.Many2many(
+        "portal.request", string="Related Service Requests"
     )
 
     # Mail Thread Framework Fields
@@ -308,328 +192,200 @@ class PortalFeedback(models.Model):
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
-    # COMPUTE METHODS
+    # COMPUTED FIELDS
     # ============================================================================
-
-    @api.depends("comments", "rating", "feedback_type")
-    def _compute_sentiment_analysis(self):
-        """AI-ready sentiment analysis with extensible ML integration"""
+    @api.depends(
+        "overall_rating",
+        "service_quality_rating",
+        "response_time_rating",
+        "staff_friendliness_rating",
+    )
+    def _compute_satisfaction_level(self):
         for record in self:
-            if not record.comments:
-                record.sentiment_category = "neutral"
-                record.sentiment_score = 0.0
-                continue
+            ratings = [
+                int(record.overall_rating or 0),
+                int(record.service_quality_rating or 0),
+                int(record.response_time_rating or 0),
+                int(record.staff_friendliness_rating or 0),
+            ]
+            valid_ratings = [r for r in ratings if r > 0]
+            if valid_ratings:
+                avg_rating = sum(valid_ratings) / len(valid_ratings)
+                if avg_rating >= 4.5:
+                    record.satisfaction_level = "very_satisfied"
+                elif avg_rating >= 3.5:
+                    record.satisfaction_level = "satisfied"
+                elif avg_rating >= 2.5:
+                    record.satisfaction_level = "neutral"
+                elif avg_rating >= 1.5:
+                    record.satisfaction_level = "dissatisfied"
+                else:
+                    record.satisfaction_level = "very_dissatisfied"
+            else:
+                record.satisfaction_level = "neutral"
 
-            # Simple keyword-based sentiment analysis (can be replaced with ML)
+    @api.depends("comments", "overall_rating", "satisfaction_level")
+    def _compute_sentiment_analysis(self):
+        """AI-Ready Sentiment Analysis with keyword matching and rating consideration"""
+        for record in self:
+            score = 0
+            text = (record.comments or "").lower()
+
+            # Keyword-based sentiment analysis (extensible for ML integration)
             positive_keywords = [
                 "excellent",
                 "great",
                 "good",
-                "amazing",
                 "satisfied",
                 "happy",
-                "perfect",
-                "outstanding",
-                "wonderful",
-                "fantastic",
                 "pleased",
+                "recommend",
+                "professional",
+                "helpful",
             ]
             negative_keywords = [
-                "terrible",
+                "poor",
                 "bad",
+                "terrible",
                 "awful",
                 "disappointed",
-                "angry",
                 "frustrated",
-                "horrible",
-                "unsatisfied",
-                "poor",
-                "worst",
-                "hate",
+                "angry",
                 "complaint",
+                "problem",
             ]
 
-            text_lower = record.comments.lower()
-            positive_count = sum(1 for word in positive_keywords if word in text_lower)
-            negative_count = sum(1 for word in negative_keywords if word in text_lower)
+            positive_count = sum(1 for word in positive_keywords if word in text)
+            negative_count = sum(1 for word in negative_keywords if word in text)
 
-            # Factor in rating if available
-            rating_score = 0
-            if record.rating:
-                rating_num = int(record.rating)
-                if rating_num >= 4:
-                    rating_score = 0.3
-                elif rating_num <= 2:
-                    rating_score = -0.3
+            # Base sentiment from keywords
+            if positive_count > negative_count:
+                score += 0.3
+            elif negative_count > positive_count:
+                score -= 0.3
 
-            # Calculate sentiment score (-1 to 1)
-            base_score = (positive_count - negative_count) * 0.2
-            final_score = max(-1, min(1, base_score + rating_score))
+            # Rating influence
+            if record.overall_rating:
+                rating_score = (
+                    int(record.overall_rating) - 3
+                ) / 2  # Scale 1-5 to -1 to 1
+                score += rating_score * 0.7
 
-            record.sentiment_score = final_score
+            # Normalize score
+            record.sentiment_score = max(-1, min(1, score))
 
-            # Determine category
-            if final_score > 0.2:
+            # Categorize sentiment
+            if record.sentiment_score > 0.2:
                 record.sentiment_category = "positive"
-            elif final_score < -0.2:
+            elif record.sentiment_score < -0.2:
                 record.sentiment_category = "negative"
             else:
                 record.sentiment_category = "neutral"
 
-    @api.depends("feedback_date", "response_date", "resolution_date")
-    def _compute_response_metrics(self):
-        """Compute response and resolution time metrics"""
-        for record in self:
-            if record.feedback_date and record.response_date:
-                delta = record.response_date - record.feedback_date
-                record.response_time_hours = delta.total_seconds() / 3600
-            else:
-                record.response_time_hours = 0.0
-
-            if record.feedback_date and record.resolution_date:
-                delta = record.resolution_date - record.feedback_date
-                record.resolution_time_hours = delta.total_seconds() / 3600
-            else:
-                record.resolution_time_hours = 0.0
-
-    @api.depends("attachment_ids")
-    def _compute_attachment_count(self):
-        """Compute number of attachments"""
-        for record in self:
-            record.attachment_count = len(record.attachment_ids)
-
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-
-    def action_submit_feedback(self):
-        """Submit feedback for processing"""
+    def action_mark_reviewed(self):
+        """Mark feedback as reviewed"""
         self.ensure_one()
+        if self.status != "new":
+            raise UserError(_("Can only mark new feedback as reviewed"))
+        self.write({"status": "reviewed", "assigned_to": self.env.user.id})
+
+    def action_respond(self):
+        """Mark feedback as responded"""
+        self.ensure_one()
+        if self.status not in ["new", "reviewed"]:
+            raise UserError(_("Can only respond to new or reviewed feedback"))
         self.write(
             {
-                "state": "submitted",
-                "feedback_date": fields.Datetime.now(),
-            }
-        )
-
-        # Auto-assign based on category and priority
-        self._auto_assign_feedback()
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Feedback Submitted"),
-                "message": _("Your feedback has been submitted successfully."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
-
-    def action_start_processing(self):
-        """Start processing the feedback"""
-        self.ensure_one()
-        self.write(
-            {
-                "state": "in_progress",
+                "status": "responded",
                 "response_date": fields.Datetime.now(),
+                "assigned_to": self.env.user.id,
             }
         )
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Processing Started"),
-                "message": _("Feedback processing has been initiated."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
-
-    def action_resolve_feedback(self):
-        """Mark feedback as resolved"""
-        self.ensure_one()
-        if not self.resolution_notes:
-            raise UserError(_("Please enter resolution notes before resolving."))
-
-        self.write(
-            {
-                "state": "resolved",
-                "resolution_date": fields.Datetime.now(),
-            }
-        )
-
-        # Send resolution notification to customer
-        self._send_resolution_notification()
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Feedback Resolved"),
-                "message": _("Feedback has been marked as resolved."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
 
     def action_escalate(self):
-        """Escalate feedback to management"""
+        """Escalate feedback to higher priority"""
+        self.ensure_one()
+        if self.status in ["closed"]:
+            raise UserError(_("Cannot escalate closed feedback"))
+        self.write({"status": "escalated", "priority": "high"})
+
+    def action_close(self):
+        """Close feedback"""
+        self.ensure_one()
+        if self.status not in ["responded", "escalated"]:
+            raise UserError(_("Can only close responded or escalated feedback"))
+        self.write({"status": "closed", "closure_date": fields.Datetime.now()})
+
+    def action_reopen(self):
+        """Reopen closed feedback"""
+        self.ensure_one()
+        if self.status != "closed":
+            raise UserError(_("Can only reopen closed feedback"))
+        self.write({"status": "reviewed", "closure_date": False})
+
+    def action_view_related_records(self):
+        """View related service requests and records"""
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Escalate Feedback"),
-            "res_model": "feedback.escalation.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_feedback_id": self.id,
-                "default_escalation_reason": "Priority escalation required",
-            },
+            "name": _("Related Records"),
+            "res_model": "portal.request",
+            "view_mode": "list,form",
+            "domain": [("customer_id", "=", self.customer_id.id)],
+            "context": {"default_customer_id": self.customer_id.id},
         }
-
-    def action_view_attachments(self):
-        """View feedback attachments"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Attachments"),
-            "res_model": "ir.attachment",
-            "view_mode": "tree,form",
-            "target": "current",
-            "domain": [("res_model", "=", self._name), ("res_id", "=", self.id)],
-        }
-
-    def action_create_task(self):
-        """Create project task from feedback"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Create Task"),
-            "res_model": "project.task",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_name": f"Feedback: {self.subject}",
-                "default_description": self.comments,
-                "default_user_ids": [(6, 0, [self.user_id.id])],
-                "default_partner_id": self.partner_id.id,
-            },
-        }
-
-    # ============================================================================
-    # PRIVATE METHODS
-    # ============================================================================
-
-    def _auto_assign_feedback(self):
-        """Auto-assign feedback based on category and priority"""
-        for record in self:
-            if record.category == "billing":
-                # Assign to billing team
-                billing_user = self.env.ref("records_management.user_billing", False)
-                if billing_user:
-                    record.user_id = billing_user
-            elif record.priority == "urgent":
-                # Assign to management
-                manager = self.env.ref("records_management.user_manager", False)
-                if manager:
-                    record.user_id = manager
-
-    def _send_resolution_notification(self):
-        """Send resolution notification to customer"""
-        for record in self:
-            if record.partner_id.email:
-                template = self.env.ref(
-                    "records_management.mail_template_feedback_resolution", False
-                )
-                if template:
-                    template.send_mail(record.id, force_send=True)
 
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
-
-    @api.constrains("service_rating")
-    def _check_service_rating(self):
-        """Ensure service rating is between 1 and 10"""
+    @api.constrains("follow_up_date")
+    def _check_follow_up_date(self):
         for record in self:
-            if record.service_rating and (
-                record.service_rating < 1 or record.service_rating > 10
+            if (
+                record.follow_up_required
+                and record.follow_up_date
+                and record.follow_up_date <= fields.Date.today()
             ):
-                raise ValidationError(_("Service rating must be between 1 and 10."))
+                raise ValidationError(_("Follow-up date must be in the future"))
 
     @api.constrains("sentiment_score")
     def _check_sentiment_score(self):
-        """Ensure sentiment score is between -1 and 1"""
         for record in self:
-            if record.sentiment_score and (
-                record.sentiment_score < -1 or record.sentiment_score > 1
-            ):
-                raise ValidationError(_("Sentiment score must be between -1 and 1."))
-
-    @api.constrains("feedback_date", "response_date", "resolution_date")
-    def _check_date_sequence(self):
-        """Ensure dates are in logical sequence"""
-        for record in self:
-            if record.feedback_date and record.response_date:
-                if record.response_date < record.feedback_date:
-                    raise ValidationError(
-                        _("Response date cannot be before feedback date.")
-                    )
-
-            if record.response_date and record.resolution_date:
-                if record.resolution_date < record.response_date:
-                    raise ValidationError(
-                        _("Resolution date cannot be before response date.")
-                    )
+            if not (-1 <= record.sentiment_score <= 1):
+                raise ValidationError(_("Sentiment score must be between -1 and 1"))
 
     # ============================================================================
-    # LIFECYCLE METHODS
+    # UTILITY METHODS
     # ============================================================================
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Override create to set defaults and generate sequence"""
-        for vals in vals_list:
-            if not vals.get("name"):
-                vals["name"] = self.env["ir.sequence"].next_by_code(
-                    "portal.feedback"
-                ) or _("New")
-
-            # Auto-set priority based on sentiment
-            if vals.get("comments") and not vals.get("priority"):
-                # Simple keyword-based priority detection
-                urgent_keywords = ["urgent", "immediate", "emergency", "critical"]
-                if any(
-                    keyword in vals["comments"].lower() for keyword in urgent_keywords
-                ):
-                    vals["priority"] = "urgent"
-
-        return super().create(vals_list)
+    @api.model
+    def create(self, vals):
+        """Auto-generate reference number"""
+        if not vals.get("name"):
+            vals["name"] = (
+                self.env["ir.sequence"].next_by_code("portal.feedback") or "FB-NEW"
+            )
+        return super().create(vals)
 
     def write(self, vals):
-        """Override write to track important changes"""
-        if "state" in vals:
+        """Track status changes"""
+        if "status" in vals:
             for record in self:
-                old_state = dict(record._fields["state"].selection).get(record.state)
-                new_state = dict(record._fields["state"].selection).get(vals["state"])
-                record.message_post(
-                    body=_("Feedback status changed from %s to %s")
-                    % (old_state, new_state)
-                )
-
+                if vals["status"] == "closed" and not vals.get("closure_date"):
+                    vals["closure_date"] = fields.Datetime.now()
+                elif vals["status"] == "responded" and not vals.get("response_date"):
+                    vals["response_date"] = fields.Datetime.now()
         return super().write(vals)
 
 
-class PortalFeedbackTag(models.Model):
-    """Tags for categorizing feedback"""
-
-    _name = "portal.feedback.tag"
-    _description = "Portal Feedback Tag"
+class FeedbackImprovementArea(models.Model):
+    _name = "feedback.improvement.area"
+    _description = "Feedback Improvement Areas"
     _order = "name"
 
-    name = fields.Char(string="Tag Name", required=True)
-    color = fields.Integer(string="Color Index", default=0)
-    active = fields.Boolean(string="Active", default=True)
+    name = fields.Char(string="Area", required=True)
     description = fields.Text(string="Description")
+    active = fields.Boolean(string="Active", default=True)
+    color = fields.Integer(string="Color")
