@@ -98,6 +98,8 @@ from . import unlock_service_history
 from . import photo
 from . import mobile_bin_key_wizard
 from . import bin_unlock_service
+from . import records_bin
+from . import bin_key
 
 # =============================================================================
 # PAPER RECYCLING AND BALING MODELS
