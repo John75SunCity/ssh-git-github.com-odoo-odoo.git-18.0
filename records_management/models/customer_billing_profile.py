@@ -54,6 +54,7 @@ class CustomerBillingProfile(models.Model):
             ("quarterly", "Quarterly"),
             ("semi_annual", "Semi-Annual"),
             ("annual", "Annual"),
+            ("prepaid", "Prepaid"),
             ("custom", "Custom"),
         ],
         string="Storage Billing Cycle",
@@ -111,6 +112,33 @@ class CustomerBillingProfile(models.Model):
         string="Billing Day",
         default="1",
         help="Day of month for billing (1-28)",
+    )
+
+    # ============================================================================
+    # PREPAID CONFIGURATION
+    # ============================================================================
+    prepaid_enabled = fields.Boolean(
+        string="Enable Prepaid Billing",
+        default=False,
+        help="Enable prepaid storage billing with credits system",
+    )
+
+    prepaid_months = fields.Integer(
+        string="Prepaid Period (Months)",
+        default=12,
+        help="Number of months for prepaid storage billing",
+    )
+
+    prepaid_discount_percent = fields.Float(
+        string="Prepaid Discount %",
+        digits=(5, 2),
+        help="Discount percentage for prepaid customers",
+    )
+
+    prepaid_balance = fields.Monetary(
+        string="Prepaid Balance",
+        currency_field="currency_id",
+        help="Current prepaid credit balance",
     )
 
     # Auto-generation Configuration
