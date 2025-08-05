@@ -36,6 +36,7 @@ from . import records_approval_step
 
 # Container and storage models (in dependency order)
 from . import customer_inventory
+from . import records_container_type
 from . import records_container
 from . import container_contents
 from . import records_container_type_converter
@@ -67,6 +68,9 @@ from . import records_vehicle
 # =============================================================================
 
 # Shredding services
+from . import shredding_team
+from . import shredding_equipment
+from . import shredding_certificate
 from . import shredding_service
 from . import shredding_hard_drive
 from . import shredding_inventory
