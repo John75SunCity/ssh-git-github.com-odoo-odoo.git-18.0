@@ -228,6 +228,13 @@ class CustomerBillingProfile(models.Model):
     )
 
     # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+    billing_contact_ids = fields.One2many(
+        "records.billing.contact", "billing_profile_id", string="Billing Contacts"
+    )
+
+    # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
     contact_count = fields.Integer(
@@ -294,11 +301,11 @@ class CustomerBillingProfile(models.Model):
     # ============================================================================
     # COMPUTED METHODS
     # ============================================================================
+    @api.depends("billing_contact_ids")
     def _compute_contact_count(self):
         """Count related billing contacts"""
         for record in self:
-            # Simple count - in real implementation would count related contacts
-            record.contact_count = 1
+            record.contact_count = len(record.billing_contact_ids)
 
     @api.depends("storage_billing_cycle", "last_billing_date")
     def _compute_next_storage_billing_date(self):
