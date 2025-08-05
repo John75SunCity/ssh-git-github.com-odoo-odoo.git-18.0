@@ -32,10 +32,7 @@ class NaidCompliance(models.Model):
         required=True,
     )
     user_id = fields.Many2one(
-        "res.users",
-        string="Responsible User",
-        default=lambda self: self.env.user,
-        tracking=True,
+        "res.users", string="Compliance Manager", default=lambda self: self.env.user
     )
 
     # State Management

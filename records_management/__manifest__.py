@@ -158,7 +158,8 @@ Records Management System - Enterprise Edition
         # ],
     },
     "data": [
-        # Security and data files
+        # Security and data files - GROUPS MUST BE LOADED FIRST
+        "security/groups.xml",
         "security/ir.model.access.csv",
         "security/records_management_security.xml",
         "security/additional_models_access.xml",
