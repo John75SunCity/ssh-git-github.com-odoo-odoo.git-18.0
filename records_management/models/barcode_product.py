@@ -283,8 +283,12 @@ class BarcodeProduct(models.Model):
 
     # ============================================================================
     # RELATIONSHIP FIELDS
-    # Missing inverse field for barcode.storage.box One2many relationship
-    storage_box_id = fields.Many2one("barcode.storage.box", string="Storage Box")
+    # ============================================================================
+
+    # Storage Container Relationship (for barcoded, tracked containers)
+    storage_container_id = fields.Many2one(
+        "records.storage.container", string="Storage Container"
+    )
 
     # ============================================================================
 
@@ -302,9 +306,9 @@ class BarcodeProduct(models.Model):
         "barcode.pricing.tier", "product_id", string="Pricing Tiers"
     )
 
-    # Storage Configuration
-    storage_box_ids = fields.One2many(
-        "barcode.storage.box", "product_id", string="Storage Boxes"
+    # Storage Container Configuration (barcoded containers)
+    storage_container_ids = fields.One2many(
+        "records.storage.container", "barcode_product_id", string="Storage Containers"
     )
 
     # Mail Thread Framework Fields
