@@ -246,7 +246,7 @@ class PortalRequest(models.Model):
         compute="_compute_child_request_count", string="Child Request Count"
     )
     attachment_count = fields.Integer(
-        compute="_compute_attachment_count", string="Attachment Count"
+        compute="_compute_attachment_count", string="Request Attachments"
     )
     is_overdue = fields.Boolean(compute="_compute_is_overdue", string="Overdue")
     time_variance = fields.Float(
