@@ -211,18 +211,10 @@
                                 <field name="access_frequency"/>
                             </group>
                         </group>
-                        <separator string="📋 Storage Box Inventory"/>
-                        <field name="storage_box_ids" mode="list">
-                            <list string="Storage Boxes" editable="bottom">
-                                <field name="barcode"/>
-                                <field name="location_id"/>
-                                <field name="customer_id"/>
-                                <field name="box_status"/>
-                                <field name="fill_percentage" widget="percentage"/>
-                                <field name="last_access_date" widget="date"/>
-                                <field name="monthly_rate" widget="monetary"/>
-                            </list>
-                        </field>
+                        <separator string="📋 Storage Box Assignment"/>
+                        <group>
+                            <field name="storage_box_id" string="Assigned Storage Box"/>
+                        </group>
                     </page>
                     <page string="Shred Bin Configuration" name="shred_config" states="product_category=='shred_bin'">
                         <group>
