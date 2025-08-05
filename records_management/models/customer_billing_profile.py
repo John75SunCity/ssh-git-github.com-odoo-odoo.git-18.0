@@ -386,10 +386,15 @@ class CustomerBillingProfile(models.Model):
     def _check_billing_configuration(self):
         """Validate billing configuration fields"""
         for record in self:
-            if record.billing_day and (
-                record.billing_day < 1 or record.billing_day > 28
-            ):
-                raise ValidationError("Billing day must be between 1 and 28")
+            if record.billing_day:
+                try:
+                    billing_day_int = int(record.billing_day)
+                    if billing_day_int < 1 or billing_day_int > 28:
+                        raise ValidationError("Billing day must be between 1 and 28")
+                except (ValueError, TypeError):
+                    raise ValidationError(
+                        "Billing day must be a valid number between 1 and 28"
+                    )
             if record.storage_advance_months and record.storage_advance_months < 1:
                 raise ValidationError("Storage advance months must be at least 1")
             if record.invoice_due_days and record.invoice_due_days < 1:
