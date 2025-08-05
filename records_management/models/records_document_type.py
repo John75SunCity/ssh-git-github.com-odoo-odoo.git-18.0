@@ -13,7 +13,9 @@ class RecordsDocumentType(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Document Type Name", required=True, tracking=True, index=True)
+    name = fields.Char(
+        string="Document Type Name", required=True, tracking=True, index=True
+    )
     code = fields.Char(string="Document Code", index=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
@@ -24,7 +26,12 @@ class RecordsDocumentType(models.Model):
         default=lambda self: self.env.company,
         required=True,
     )
-    user_id = fields.Many2one("res.users", string="Document Type Manager", default=lambda self: self.env.user, tracking=True)
+    user_id = fields.Many2one(
+        "res.users",
+        string="Document Type Manager",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
 
     # ============================================================================
     # STATE MANAGEMENT
@@ -74,8 +81,12 @@ class RecordsDocumentType(models.Model):
     # ============================================================================
     # RETENTION MANAGEMENT
     # ============================================================================
-    retention_policy_id = fields.Many2one("records.retention.policy", string="Retention Policy", tracking=True)
-    default_retention_years = fields.Integer(string="Default Retention (Years)", default=7)
+    retention_policy_id = fields.Many2one(
+        "records.retention.policy", string="Retention Policy", tracking=True
+    )
+    default_retention_years = fields.Integer(
+        string="Default Retention (Years)", default=7
+    )
     requires_legal_hold = fields.Boolean(string="Requires Legal Hold", default=False)
     destruction_method = fields.Selection(
         [
@@ -121,27 +132,41 @@ class RecordsDocumentType(models.Model):
     # ============================================================================
     storage_requirements = fields.Text(string="Storage Requirements")
     handling_instructions = fields.Text(string="Handling Instructions")
-    environmental_controls = fields.Boolean(string="Environmental Controls Required", default=False)
+    environmental_controls = fields.Boolean(
+        string="Environmental Controls Required", default=False
+    )
     max_box_weight = fields.Float(string="Max Box Weight (lbs)", default=40.0)
 
     # ============================================================================
     # WORKFLOW & PROCESSING
     # ============================================================================
-    approval_required = fields.Boolean(string="Approval Required for Creation", default=False)
+    approval_required = fields.Boolean(
+        string="Approval Required for Creation", default=False
+    )
     auto_numbering = fields.Boolean(string="Auto Numbering", default=True)
     barcode_required = fields.Boolean(string="Barcode Required", default=True)
-    digital_copy_required = fields.Boolean(string="Digital Copy Required", default=False)
+    digital_copy_required = fields.Boolean(
+        string="Digital Copy Required", default=False
+    )
 
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    document_ids = fields.One2many("records.document", "document_type_id", string="Documents")
-    parent_type_id = fields.Many2one("records.document.type", string="Parent Document Type")
-    child_type_ids = fields.One2many("records.document.type", "parent_type_id", string="Child Document Types")
+    document_ids = fields.One2many(
+        "records.document", "document_type_id", string="Documents"
+    )
+    parent_type_id = fields.Many2one(
+        "records.document.type", string="Parent Document Type"
+    )
+    child_type_ids = fields.One2many(
+        "records.document.type", "parent_type_id", string="Child Document Types"
+    )
 
     # Mail framework fields
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
@@ -161,12 +186,18 @@ class RecordsDocumentType(models.Model):
     def _compute_effective_retention(self):
         for record in self:
             if record.retention_policy_id:
-                record.effective_retention_years = record.retention_policy_id.retention_years
+                record.effective_retention_years = (
+                    record.retention_policy_id.retention_years
+                )
             else:
                 record.effective_retention_years = record.default_retention_years
 
-    document_count = fields.Integer(compute="_compute_document_count", string="Document Count")
-    child_type_count = fields.Integer(compute="_compute_child_type_count", string="Child Types")
+    document_count = fields.Integer(
+        compute="_compute_document_count", string="Document Count"
+    )
+    child_type_count = fields.Integer(
+        compute="_compute_child_type_count", string="Child Types"
+    )
     effective_retention_years = fields.Integer(
         compute="_compute_effective_retention", string="Effective Retention (Years)"
     )
@@ -178,7 +209,10 @@ class RecordsDocumentType(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if not vals.get("code"):
-                vals["code"] = self.env["ir.sequence"].next_by_code("records.document.type") or "DOC/"
+                vals["code"] = (
+                    self.env["ir.sequence"].next_by_code("records.document.type")
+                    or "DOC/"
+                )
         return super().create(vals_list)
 
     # ============================================================================
@@ -254,6 +288,8 @@ class RecordsDocumentType(models.Model):
     def _check_code_uniqueness(self):
         for record in self:
             if record.code:
-                existing = self.search([("code", "=", record.code), ("id", "!=", record.id)])
+                existing = self.search(
+                    [("code", "=", record.code), ("id", "!=", record.id)]
+                )
                 if existing:
                     raise ValidationError(_("Document type code must be unique."))
