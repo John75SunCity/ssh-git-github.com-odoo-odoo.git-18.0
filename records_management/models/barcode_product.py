@@ -287,14 +287,18 @@ class BarcodeProduct(models.Model):
 
     # Storage Container Relationship (customer boxes/containers tracked with barcodes)
     storage_container_id = fields.Many2one(
-        "records.container", string="Storage Box", tracking=True,
-        help="Customer storage box/container linked to this barcode for tracking and pricing"
+        "records.container",
+        string="Storage Box",
+        tracking=True,
+        help="Customer storage box/container linked to this barcode for tracking and pricing",
     )
-    
+
     # Internal Storage Box Relationship (internal boxes that contain barcode products)
     storage_box_id = fields.Many2one(
-        "barcode.storage.box", string="Internal Storage Box", tracking=True,
-        help="Internal box that contains this barcode product"
+        "barcode.storage.box",
+        string="Internal Storage Box",
+        tracking=True,
+        help="Internal box that contains this barcode product",
     )
 
     # ============================================================================
