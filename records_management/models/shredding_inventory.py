@@ -56,11 +56,11 @@ class ShreddingPicklistItem(models.Model):
     _rec_name = "display_name"
 
     # Core fields
+    name = fields.Char(string="Item Name", required=True, tracking=True)
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
     )
     sequence = fields.Integer(string="Sequence", default=10)
-
 
     # Workflow relationships
     container_id = fields.Many2one("records.container", string="Container")

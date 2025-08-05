@@ -36,8 +36,10 @@ class ShreddingHardDrive(models.Model):
     date = fields.Date(default=fields.Date.today)
     # === COMPREHENSIVE MISSING FIELDS ===
     sequence = fields.Integer(string="Sequence", default=10, tracking=True)
-    created_date = fields.Date(string="Date", default=fields.Date.today, tracking=True)
-    updated_date = fields.Date(string="Date", tracking=True)
+    created_date = fields.Date(
+        string="Created Date", default=fields.Date.today, tracking=True
+    )
+    updated_date = fields.Date(string="Updated Date", tracking=True)
     # === BUSINESS CRITICAL FIELDS ===
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(

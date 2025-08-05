@@ -4,7 +4,7 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class KeyRestrictionChecker(models.Model):
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _name = "key.restriction.checker"
     _description = "Key Restriction Checker"
 
@@ -42,8 +42,10 @@ class KeyRestrictionChecker(models.Model):
         default="draft",
         tracking=True,
     )
-    created_date = fields.Date(string="Date", default=fields.Date.today, tracking=True)
-    updated_date = fields.Date(string="Date", tracking=True)
+    created_date = fields.Date(
+        string="Created Date", default=fields.Date.today, tracking=True
+    )
+    updated_date = fields.Date(string="Updated Date", tracking=True)
     # === BUSINESS CRITICAL FIELDS ===
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(

@@ -181,9 +181,7 @@ class RecordsLocation(models.Model):
                 and record.current_utilization < record.storage_capacity
             )
 
-    child_count = fields.Integer(
-        compute="_compute_child_count", string="Child Locations"
-    )
+    child_count = fields.Integer(compute="_compute_child_count", string="Child Count")
     is_available = fields.Boolean(
         compute="_compute_is_available", string="Available for Storage"
     )

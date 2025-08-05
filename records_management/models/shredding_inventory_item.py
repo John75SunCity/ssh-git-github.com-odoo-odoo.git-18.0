@@ -75,7 +75,7 @@ class ShreddingInventoryItem(models.Model):
     # Additional tracking fields
     description = fields.Text(string="Description")
     notes = fields.Text(string="Notes")
-    date = fields.Date(string="Date", default=fields.Date.today)
+    date = fields.Date(string="Inventory Date", default=fields.Date.today)
     # === COMPREHENSIVE MISSING FIELDS ===
     state = fields.Selection(
         [
@@ -88,8 +88,10 @@ class ShreddingInventoryItem(models.Model):
         default="draft",
         tracking=True,
     )
-    created_date = fields.Date(string="Date", default=fields.Date.today, tracking=True)
-    updated_date = fields.Date(string="Date", tracking=True)
+    created_date = fields.Date(
+        string="Created Date", default=fields.Date.today, tracking=True
+    )
+    updated_date = fields.Date(string="Updated Date", tracking=True)
     # === BUSINESS CRITICAL FIELDS ===
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(

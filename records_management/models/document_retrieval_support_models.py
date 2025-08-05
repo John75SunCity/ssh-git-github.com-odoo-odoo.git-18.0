@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 
 class DocumentRetrievalItem(models.Model):
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Individual items in a document retrieval work order"""
 
     _name = "document.retrieval.item"
@@ -24,7 +24,6 @@ class DocumentRetrievalItem(models.Model):
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
     )
-
 
     work_order_id = fields.Many2one(
         "document.retrieval.work.order",
@@ -96,7 +95,7 @@ class DocumentRetrievalItem(models.Model):
 
 
 class DocumentRetrievalTeam(models.Model):
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Teams responsible for document retrieval operations"""
 
     _name = "document.retrieval.team"
@@ -239,7 +238,7 @@ class DocumentRetrievalTeam(models.Model):
 
 
 class DocumentRetrievalPricing(models.Model):
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Pricing rules for document retrieval services"""
 
     _name = "document.retrieval.pricing"
@@ -331,7 +330,7 @@ class DocumentRetrievalPricing(models.Model):
 
 
 class DocumentRetrievalEquipment(models.Model):
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Equipment used for document retrieval operations"""
 
     _name = "document.retrieval.equipment"
@@ -388,7 +387,7 @@ class DocumentRetrievalEquipment(models.Model):
 
 
 class DocumentRetrievalMetrics(models.Model):
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Performance metrics for document retrieval operations"""
 
     _name = "document.retrieval.metrics"
@@ -396,7 +395,9 @@ class DocumentRetrievalMetrics(models.Model):
     _order = "date desc"
 
     name = fields.Char(string="Metric Name", required=True)
-    date = fields.Date(string="Date", required=True, default=fields.Date.today)
+    date = fields.Date(
+        string="Retrieval Date", required=True, default=fields.Date.today
+    )
     work_order_id = fields.Many2one(
         "document.retrieval.work.order", string="Work Order"
     )

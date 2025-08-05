@@ -21,7 +21,7 @@ class VisitorPosWizard(models.TransientModel):
     # Visitor Information
     visitor_id = fields.Many2one("visitor", string="Visitor")
     visitor_name = fields.Char(
-        string="Visitor Name", related="visitor_id.name", store=True
+        string="Related Visitor Name", related="visitor_id.name", store=True
     )
     visitor_email = fields.Char(
         string="Visitor Email", related="visitor_id.email", store=True
@@ -30,7 +30,7 @@ class VisitorPosWizard(models.TransientModel):
         string="Visitor Phone", related="visitor_id.phone", store=True
     )
     check_in_time = fields.Datetime(string="Check-in Time", default=fields.Datetime.now)
-    purpose_of_visit = fields.Text(string="Purpose of Visit")
+    purpose_of_visit = fields.Text(string="Visit Purpose Details")
 
     # POS Configuration
     pos_config_id = fields.Many2one("pos.config", string="POS Configuration")
