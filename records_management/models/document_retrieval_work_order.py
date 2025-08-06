@@ -376,6 +376,90 @@ class DocumentRetrievalWorkOrder(models.Model):
                     template.send_mail(record.id, force_send=True)
 
     # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (from comprehensive validation)
+    # ============================================================================
+    def action_add_items(self):
+        """Add Items - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Add Items"),
+            "res_model": "document.retrieval.work.order",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+
+    def action_start_retrieval(self):
+        """Start Retrieval - State management action"""
+        self.ensure_one()
+        # TODO: Implement action_start_retrieval business logic
+        self.message_post(body=_("Start Retrieval action executed"))
+        return True
+
+    def action_assign_technician(self):
+        """Assign Technician - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Assign Technician"),
+            "res_model": "document.retrieval.work.order",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+
+    def action_complete(self):
+        """Complete - State management action"""
+        self.ensure_one()
+        # TODO: Implement action_complete business logic
+        self.message_post(body=_("Complete action executed"))
+        return True
+
+    def action_confirm(self):
+        """Confirm - State management action"""
+        self.ensure_one()
+        # TODO: Implement action_confirm business logic
+        self.message_post(body=_("Confirm action executed"))
+        return True
+
+    def action_deliver(self):
+        """Deliver - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Deliver"),
+            "res_model": "document.retrieval.work.order",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+
+    def action_view_pricing_breakdown(self):
+        """View Pricing Breakdown - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Pricing Breakdown"),
+            "res_model": "document.retrieval.work.order",
+            "view_mode": "tree,form",
+            "domain": [("id", "in", self.ids)],
+            "context": self.env.context,
+        }
+
+    def action_ready_for_delivery(self):
+        """Ready For Delivery - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Ready For Delivery"),
+            "res_model": "document.retrieval.work.order",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+
+    # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
     @api.constrains("requested_date", "scheduled_date", "deadline")

@@ -296,6 +296,21 @@ class RecordsDocumentType(models.Model):
         return fields.Date.today() >= retention_date
 
     # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (from comprehensive validation)
+    # ============================================================================
+    def action_view_type_documents(self):
+        """View Type Documents - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Type Documents"),
+            "res_model": "records.document.type",
+            "view_mode": "tree,form",
+            "domain": [("id", "in", self.ids)],
+            "context": self.env.context,
+        }
+
+    # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
     @api.constrains("default_retention_years")

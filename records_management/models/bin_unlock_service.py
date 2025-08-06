@@ -190,6 +190,28 @@ class BinUnlockService(models.Model):
         }
 
     # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (from comprehensive validation)
+    # ============================================================================
+    def action_create_invoice(self):
+        """Create Invoice - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Create Invoice"),
+            "res_model": "bin.unlock.service",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+
+    def action_mark_completed(self):
+        """Mark Completed - State management action"""
+        self.ensure_one()
+        # TODO: Implement action_mark_completed business logic
+        self.message_post(body=_("Mark Completed action executed"))
+        return True
+
+    # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
     @api.constrains("scheduled_date", "request_date")

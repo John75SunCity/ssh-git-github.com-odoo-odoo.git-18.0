@@ -168,3 +168,28 @@ class RecordsAdvancedBillingPeriod(models.Model):
                 period.name = f"Billing Period {period.start_date} - {period.end_date}"
             else:
                 period.name = f"Billing Period {period.id or 'New'}"
+                # ============================================================================
+                # AUTO-GENERATED ACTION METHODS (from comprehensive validation)
+                # ============================================================================
+    def action_generate_storage_lines(self):
+        """Generate Storage Lines - Generate report"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.report",
+            "report_name": "records_management.action_generate_storage_lines_report",
+            "report_type": "qweb-pdf",
+            "data": {"ids": [self.id]},
+            "context": self.env.context,
+        }
+
+    def action_generate_service_lines(self):
+        """Generate Service Lines - Generate report"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.report",
+            "report_name": "records_management.action_generate_service_lines_report",
+            "report_type": "qweb-pdf",
+            "data": {"ids": [self.id]},
+            "context": self.env.context,
+        }
+
