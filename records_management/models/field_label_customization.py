@@ -444,7 +444,57 @@ class FieldLabelCustomization(models.Model):
                             % (
                                 record.field_name,
                                 record.model_name,
-                                "\n".join(
+                                "\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================\n    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)\n    department_id = fields.Many2one('department', string='Department', tracking=True)\n\n    # ============================================================================\n    # AUTO-GENERATED ACTION METHODS (Batch 1)\n    # ============================================================================\n    def action_apply_corporate_preset(self):
+        """Apply Corporate Preset - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Apply Corporate Preset"),
+            "res_model": "field.label.customization",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }\n    def action_apply_financial_preset(self):
+        """Apply Financial Preset - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Apply Financial Preset"),
+            "res_model": "field.label.customization",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }\n    def action_apply_healthcare_preset(self):
+        """Apply Healthcare Preset - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Apply Healthcare Preset"),
+            "res_model": "field.label.customization",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }\n    def action_apply_legal_preset(self):
+        """Apply Legal Preset - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Apply Legal Preset"),
+            "res_model": "field.label.customization",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }\n    def action_reset_to_defaults(self):
+        """Reset To Defaults - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Reset To Defaults"),
+            "res_model": "field.label.customization",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }\n".join(
                                     sorted(available_fields)[:20] + ["..."]
                                     if len(available_fields) > 20
                                     else sorted(available_fields)

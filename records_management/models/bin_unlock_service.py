@@ -231,3 +231,4 @@ class BinUnlockService(models.Model):
         for record in self:
             if record.service_cost < 0 or record.emergency_surcharge < 0:
                 raise ValidationError(_("Costs cannot be negative."))
+\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================\n    customer_key_restricted = fields.Char(string='Customer Key Restricted', tracking=True)\n    unlock_reason_code = fields.Char(string='Unlock Reason Code', tracking=True)
