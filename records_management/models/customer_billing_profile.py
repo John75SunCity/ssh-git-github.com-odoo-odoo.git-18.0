@@ -501,3 +501,51 @@ class CustomerBillingProfile(models.Model):
         "mail.followers", "res_id", string="Followers"
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 2)
+    # ============================================================================
+    def action_activate(self):
+        """Activate - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Activate"),
+            "res_model": "records.customer.billing.profile",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_reactivate(self):
+        """Reactivate - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Reactivate"),
+            "res_model": "records.customer.billing.profile",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_suspend(self):
+        """Suspend - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Suspend"),
+            "res_model": "records.customer.billing.profile",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_terminate(self):
+        """Terminate - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Terminate"),
+            "res_model": "records.customer.billing.profile",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }

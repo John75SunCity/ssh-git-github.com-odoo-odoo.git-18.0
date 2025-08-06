@@ -470,3 +470,71 @@ class RecordsDocument(models.Model):
                     _("NAID compliant documents require verified destruction process")
                 )
         return super().unlink()
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 2)
+    # ============================================================================\n    destruction_eligible_date = fields.Date(string='Destruction Eligible Date', tracking=True)\n    last_access_date = fields.Date(string='Last Access Date', tracking=True)\n    | = fields.Char(string='|', tracking=True)\n
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 2)
+    # ============================================================================
+    def action_audit_trail(self):
+        """Audit Trail - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Audit Trail"),
+            "res_model": "records.document",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_download(self):
+        """Download - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Download"),
+            "res_model": "records.document",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_mark_permanent(self):
+        """Mark Permanent - Update field"""
+        self.ensure_one()
+        self.write({"permanent": True})
+        self.message_post(body=_("Mark Permanent"))
+        return True
+    def action_scan_document(self):
+        """Scan Document - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Scan Document"),
+            "res_model": "records.document",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_type(self):
+        """Type - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Type"),
+            "res_model": "records.document",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_unmark_permanent(self):
+        """Unmark Permanent - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Unmark Permanent"),
+            "res_model": "records.document",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }

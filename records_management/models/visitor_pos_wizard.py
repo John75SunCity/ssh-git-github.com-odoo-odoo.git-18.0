@@ -468,4 +468,8 @@ class VisitorPosWizard(models.TransientModel):
         return {
             "type": "ir.actions.act_window_close",
         }
-\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================\n    config_id = fields.Many2one('config', string='Config', tracking=True)
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
+    config_id = fields.Many2one('config', string='Config', tracking=True)

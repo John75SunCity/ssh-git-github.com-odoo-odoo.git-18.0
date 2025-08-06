@@ -192,3 +192,25 @@ class ShreddingHardDrive(models.Model):
     def action_done(self):
         """Mark as done"""
         self.write({"state": "done"})
+
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 3)
+    # ============================================================================
+    def action_mark_customer_scanned(self):
+        """Mark Customer Scanned - Update field"""
+        self.ensure_one()
+        self.write({"customer_scanned": True})
+        self.message_post(body=_("Mark Customer Scanned"))
+        return True
+    def action_mark_destroyed(self):
+        """Mark Destroyed - Update field"""
+        self.ensure_one()
+        self.write({"destroyed": True})
+        self.message_post(body=_("Mark Destroyed"))
+        return True
+    def action_mark_facility_verified(self):
+        """Mark Facility Verified - Update field"""
+        self.ensure_one()
+        self.write({"facility_verified": True})
+        self.message_post(body=_("Mark Facility Verified"))
+        return True

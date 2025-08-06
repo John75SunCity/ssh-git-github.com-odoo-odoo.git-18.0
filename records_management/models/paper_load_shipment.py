@@ -306,7 +306,18 @@ class PaperLoadShipment(models.Model):
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================\n    manifest_generated = fields.Monetary(string='Manifest Generated', currency_field='currency_id', tracking=True)\n    mobile_manifest = fields.Char(string='Mobile Manifest', tracking=True)\n    pickup_date = fields.Date(string='Pickup Date', tracking=True)\n\n    # ============================================================================\n    # AUTO-GENERATED ACTION METHODS (Batch 1)\n    # ============================================================================\n    def action_add_bales_to_load(self):
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
+    manifest_generated = fields.Monetary(string='Manifest Generated', currency_field='currency_id', tracking=True)
+    mobile_manifest = fields.Char(string='Mobile Manifest', tracking=True)
+    pickup_date = fields.Date(string='Pickup Date', tracking=True)
+
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 1)
+    # ============================================================================
+    def action_add_bales_to_load(self):
         """Add Bales To Load - Action method"""
         self.ensure_one()
         return {
@@ -316,7 +327,8 @@ class PaperLoadShipment(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        }\n    def action_create_invoice(self):
+        }
+    def action_create_invoice(self):
         """Create Invoice - Action method"""
         self.ensure_one()
         return {
@@ -326,7 +338,8 @@ class PaperLoadShipment(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        }\n    def action_generate_manifest(self):
+        }
+    def action_generate_manifest(self):
         """Generate Manifest - Generate report"""
         self.ensure_one()
         return {
@@ -335,22 +348,26 @@ class PaperLoadShipment(models.Model):
             "report_type": "qweb-pdf",
             "data": {"ids": [self.id]},
             "context": self.env.context,
-        }\n    def action_mark_delivered(self):
+        }
+    def action_mark_delivered(self):
         """Mark Delivered - Update field"""
         self.ensure_one()
         self.write({"delivered": True})
         self.message_post(body=_("Mark Delivered"))
-        return True\n    def action_mark_in_transit(self):
+        return True
+    def action_mark_in_transit(self):
         """Mark In Transit - Update field"""
         self.ensure_one()
         self.write({"in_transit": True})
         self.message_post(body=_("Mark In Transit"))
-        return True\n    def action_mark_paid(self):
+        return True
+    def action_mark_paid(self):
         """Mark Paid - Update field"""
         self.ensure_one()
         self.write({"paid": True})
         self.message_post(body=_("Mark Paid"))
-        return True\n    def action_ready_for_pickup(self):
+        return True
+    def action_ready_for_pickup(self):
         """Ready For Pickup - Action method"""
         self.ensure_one()
         return {
@@ -360,7 +377,8 @@ class PaperLoadShipment(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        }\n    def action_schedule_pickup(self):
+        }
+    def action_schedule_pickup(self):
         """Schedule Pickup - Action method"""
         self.ensure_one()
         return {
@@ -370,7 +388,8 @@ class PaperLoadShipment(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        }\n    def action_view_manifest(self):
+        }
+    def action_view_manifest(self):
         """View Manifest - View related records"""
         self.ensure_one()
         return {
@@ -380,7 +399,8 @@ class PaperLoadShipment(models.Model):
             "view_mode": "tree,form",
             "domain": [("shipment_id", "=", self.id)],
             "context": {"default_shipment_id": self.id},
-        }\n    def action_view_weight_breakdown(self):
+        }
+    def action_view_weight_breakdown(self):
         """View Weight Breakdown - View related records"""
         self.ensure_one()
         return {

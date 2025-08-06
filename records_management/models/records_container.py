@@ -30,13 +30,11 @@ class RecordsContainer(models.Model):
     # ============================================================================
 
     company_id = fields.Many2one(
-        "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
     )
     user_id = fields.Many2one(
-        "res.users",
         string="Container Manager",
         default=lambda self: self.env.user,
         tracking=True,
@@ -209,7 +207,6 @@ class RecordsContainer(models.Model):
 
         self.write(
             {
-                "state": "active",
                 "storage_start_date": fields.Date.today(),
             }
         )
@@ -240,9 +237,7 @@ class RecordsContainer(models.Model):
 
         self.write(
             {
-                "state": "destroyed",
                 "destruction_date": fields.Date.today(),
-                "active": False,
             }
         )
         self.message_post(body=_("Container destroyed"))
@@ -251,12 +246,8 @@ class RecordsContainer(models.Model):
         """View all documents in this container"""
         self.ensure_one()
         return {
-            "type": "ir.actions.act_window",
             "name": _("Documents in Container %s") % self.name,
-            "res_model": "records.document",
-            "view_mode": "tree,form",
             "domain": [("container_id", "=", self.id)],
-            "context": {"default_container_id": self.id},
         }
 
     def action_generate_barcode(self):
@@ -270,11 +261,6 @@ class RecordsContainer(models.Model):
             )
 
         return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.container_barcode_report",
-            "report_type": "qweb-pdf",
-            "data": {"ids": [self.id]},
-            "context": self.env.context,
         }
 
     def action_index_container(self):
@@ -315,11 +301,7 @@ class RecordsContainer(models.Model):
     def action_bulk_convert_container_type(self):
         """Bulk convert container types"""
         return {
-            "type": "ir.actions.act_window",
             "name": _("Bulk Convert Container Types"),
-            "res_model": "records.container.type.converter",
-            "view_mode": "form",
-            "target": "new",
             "context": {"default_container_ids": [(6, 0, self.ids)]},
         }
 
@@ -329,12 +311,7 @@ class RecordsContainer(models.Model):
         """Create movement record for container"""
         self.ensure_one()
         movement_vals = {
-            "container_id": self.id,
-            "from_location_id": from_location_id,
-            "to_location_id": to_location_id,
-            "movement_type": movement_type,
             "movement_date": fields.Date.today(),
-            "user_id": self.env.user.id,
         }
 
         movement = self.env["records.container.movement"].create(movement_vals)
@@ -378,7 +355,6 @@ class RecordsContainer(models.Model):
             )
 
     def _search_due_for_destruction(self, operator, value):
-        today = fields.Date.today()
         if (operator == "=" and value) or (operator == "!=" and not value):
             return [
                 ("destruction_due_date", "<=", today),
@@ -387,7 +363,6 @@ class RecordsContainer(models.Model):
             ]
         else:
             return [
-                "|",
                 ("destruction_due_date", ">", today),
                 ("permanent_retention", "=", True),
             ]
@@ -460,10 +435,6 @@ class RecordsContainer(models.Model):
             return fields.Date.today() + relativedelta(months=6)
 
         inspection_intervals = {
-            "standard": 12,  # months
-            "premium": 6,
-            "climate_controlled": 3,
-            "high_security": 1,
         }
 
         interval = inspection_intervals.get(self.service_level, 12)
@@ -476,11 +447,13 @@ class RecordsContainer(models.Model):
 
         # Apply service level multipliers
         multipliers = {
-            "standard": 1.0,
-            "premium": 1.5,
-            "climate_controlled": 2.0,
-            "high_security": 2.5,
         }
 
         multiplier = multipliers.get(self.service_level, 1.0)
         return base_cost * multiplier
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
+    create_date = fields.Date(string='Create Date', tracking=True)
+    | = fields.Char(string='|', tracking=True)

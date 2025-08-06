@@ -106,7 +106,7 @@ class MobileBinKeyWizard(models.Model):
             # Refresh lookup data
             self.message_post(body=_("Lookup data refreshed"))
             return {
-                "type": "ir.actions.act_window",
+            "type": "ir.actions.act_window",
                 "res_model": "mobile.bin.key.wizard",
                 "res_id": self.id,
                 "view_mode": "form",
@@ -116,4 +116,20 @@ class MobileBinKeyWizard(models.Model):
             # Execute other actions
             self.write({"state": "done"})
             self.message_post(body=_("Mobile bin key action executed"))
-            return {"type": "ir.actions.act_window_close"}
+            return {
+            "type": "ir.actions.act_window_close"}
+
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 3)
+    # ============================================================================
+    def action_type(self):
+        """Type - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Type"),
+            "res_model": "mobile.bin.key.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }

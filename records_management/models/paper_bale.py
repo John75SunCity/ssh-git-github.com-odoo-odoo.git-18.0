@@ -296,3 +296,125 @@ class PaperBale(models.Model):
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
+    bale_status = fields.Selection([('draft', 'Draft')], string='Bale Status', default='draft', tracking=True)
+    creation_date = fields.Date(string='Creation Date', tracking=True)
+    loaded_on_trailer = fields.Char(string='Loaded On Trailer', tracking=True)
+    quality_grade = fields.Char(string='Quality Grade', tracking=True)
+    sustainable_source = fields.Char(string='Sustainable Source', tracking=True)
+
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 1)
+    # ============================================================================
+    def action_date(self):
+        """Date - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Date"),
+            "res_model": "paper.bale",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_move_to_storage(self):
+        """Move To Storage - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Move To Storage"),
+            "res_model": "paper.bale",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_print_label(self):
+        """Print Label - Generate report"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.report",
+            "report_name": "records_management.action_print_label_template",
+            "report_type": "qweb-pdf",
+            "data": {"ids": [self.id]},
+            "context": self.env.context,
+        }
+    def action_quality_inspection(self):
+        """Quality Inspection - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Quality Inspection"),
+            "res_model": "paper.bale",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_type(self):
+        """Type - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Type"),
+            "res_model": "paper.bale",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_view_inspection_details(self):
+        """View Inspection Details - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Inspection Details"),
+            "res_model": "paper.bale",
+            "view_mode": "tree,form",
+            "domain": [("bale_id", "=", self.id)],
+            "context": {"default_bale_id": self.id},
+        }
+    def action_view_source_documents(self):
+        """View Source Documents - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Source Documents"),
+            "res_model": "records.document",
+            "view_mode": "tree,form",
+            "domain": [("bale_id", "=", self.id)],
+            "context": {"default_bale_id": self.id},
+        }
+    def action_view_trailer_info(self):
+        """View Trailer Info - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Trailer Info"),
+            "res_model": "paper.bale",
+            "view_mode": "tree,form",
+            "domain": [("bale_id", "=", self.id)],
+            "context": {"default_bale_id": self.id},
+        }
+    def action_view_weight_history(self):
+        """View Weight History - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Weight History"),
+            "res_model": "paper.bale",
+            "view_mode": "tree,form",
+            "domain": [("bale_id", "=", self.id)],
+            "context": {"default_bale_id": self.id},
+        }
+    def action_weigh_bale(self):
+        """Weigh Bale - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Weigh Bale"),
+            "res_model": "paper.bale",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }

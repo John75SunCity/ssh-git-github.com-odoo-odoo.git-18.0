@@ -265,3 +265,72 @@ class PaperBaleRecycling(models.Model):
                 existing = self.search([("bale_id", "=", record.bale_id), ("id", "!=", record.id)])
                 if existing:
                     raise ValidationError(_("Bale ID must be unique."))
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
+    contamination = fields.Char(string='Contamination', tracking=True)
+    mobile_entry = fields.Char(string='Mobile Entry', tracking=True)
+    paper_grade = fields.Char(string='Paper Grade', tracking=True)
+    production_date = fields.Date(string='Production Date', tracking=True)
+    status = fields.Selection([('draft', 'Draft')], string='Status', default='draft', tracking=True)
+
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 1)
+    # ============================================================================
+    def action_assign_to_load(self):
+        """Assign To Load - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Assign To Load"),
+            "res_model": "paper.bale.recycling",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_mark_delivered(self):
+        """Mark Delivered - Update field"""
+        self.ensure_one()
+        self.write({"delivered": True})
+        self.message_post(body=_("Mark Delivered"))
+        return True
+    def action_mark_paid(self):
+        """Mark Paid - Update field"""
+        self.ensure_one()
+        self.write({"paid": True})
+        self.message_post(body=_("Mark Paid"))
+        return True
+    def action_ready_to_ship(self):
+        """Ready To Ship - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Ready To Ship"),
+            "res_model": "paper.bale.recycling",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_ship_bale(self):
+        """Ship Bale - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Ship Bale"),
+            "res_model": "paper.bale.recycling",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_store_bale(self):
+        """Store Bale - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Store Bale"),
+            "res_model": "paper.bale.recycling",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }

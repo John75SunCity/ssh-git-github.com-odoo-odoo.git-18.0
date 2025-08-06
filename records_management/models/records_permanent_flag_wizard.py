@@ -56,7 +56,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
     # === MISSING BUSINESS CRITICAL FIELDS ===
     permanent_flag_set_by = fields.Many2one(
-        "res.users",
         string="Permanent Flag Set By",
         default=lambda self: self.env.user,
         help="User who set the permanent flag",
@@ -107,7 +106,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         help="Current approval status of the flag operation",
     )
     approved_by = fields.Many2one(
-        "res.users",
         string="Approved By",
         help="User who approved the permanent flag operation",
     )
@@ -150,12 +148,10 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         help="Method to notify stakeholders",
     )
     stakeholder_ids = fields.Many2many(
-        "res.partner",
         string="Stakeholders to Notify",
         help="Partners who should be notified of this operation",
     )
     notification_template_id = fields.Many2one(
-        "mail.template",
         string="Notification Template",
         help="Email template for notifications",
     )
@@ -171,7 +167,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         help="Total estimated cost for the permanent flag operation",
     )
     currency_id = fields.Many2one(
-        "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
     )
@@ -189,12 +184,10 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
     # === DEPARTMENT AND LOCATION ===
     department_id = fields.Many2one(
-        "records.department",
         string="Department",
         help="Department initiating the permanent flag operation",
     )
     location_ids = fields.Many2many(
-        "records.location",
         string="Affected Locations",
         help="Physical locations affected by this operation",
     )
@@ -236,10 +229,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         for record in self:
             base_cost = 5.0  # Base cost per document
             complexity_multiplier = {
-                "simple": 1.0,
-                "moderate": 1.5,
-                "complex": 2.0,
-                "very_complex": 3.0,
             }.get(record.operation_complexity, 1.0)
 
             record.total_estimated_cost = (
@@ -317,8 +306,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         # Update wizard status
         self.write(
             {
-                "state": "processing",
-                "permanent_flag_set_by": self.env.user.id,
                 "permanent_flag_set_date": fields.Datetime.now(),
             }
         )
@@ -334,7 +321,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             if self.action_type == "flag":
                 document.write(
                     {
-                        "permanent_flag": True,
                         "notes": (document.notes or "")
                         + _(
                             "\nMarked permanent via wizard on %s by %s\nLegal basis: %s\nReason: %s"
@@ -350,7 +336,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             else:  # unflag
                 document.write(
                     {
-                        "permanent_flag": False,
                         "notes": (document.notes or "")
                         + _(
                             "\nPermanent flag removed via wizard on %s by %s\nReason: %s"
@@ -374,16 +359,11 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         self.write({"state": "completed"})
 
         return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
                 "title": _("Permanent Flag Operation Completed"),
                 "message": _(
                     "Permanent flag operation has been applied to %d documents."
                 )
                 % len(self.document_ids),
-                "type": "success",
-                "sticky": False,
             },
         }
 
@@ -394,7 +374,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
         # Create activity for approval
         self.activity_schedule(
-            "mail.mail_activity_data_todo",
             summary=f"Approve Permanent Flag Operation: {self.name}",
             note=f"Please review and approve the permanent flag operation for {len(self.document_ids)} documents.\n"
             f"Legal Basis: {self.legal_basis}\n"
@@ -407,15 +386,10 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         )
 
         return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
                 "title": _("Approval Requested"),
                 "message": _(
                     "Approval has been requested for this permanent flag operation."
                 ),
-                "type": "info",
-                "sticky": False,
             },
         }
 
@@ -424,22 +398,15 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         self.ensure_one()
         self.write(
             {
-                "approval_status": "approved",
-                "approved_by": self.env.user.id,
                 "approval_date": fields.Datetime.now(),
             }
         )
 
         return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
                 "title": _("Operation Approved"),
                 "message": _(
                     "Permanent flag operation has been approved and can now be executed."
                 ),
-                "type": "success",
-                "sticky": False,
             },
         }
 
@@ -448,20 +415,13 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         self.ensure_one()
         self.write(
             {
-                "approval_status": "rejected",
-                "approved_by": self.env.user.id,
                 "approval_date": fields.Datetime.now(),
             }
         )
 
         return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
                 "title": _("Operation Rejected"),
                 "message": _("Permanent flag operation has been rejected."),
-                "type": "warning",
-                "sticky": False,
             },
         }
 
@@ -473,7 +433,16 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         # Create a message for the operation
         message = f"Permanent flag operation '{self.name}' has been completed.\n"
         message += f"Action: {self.action_type}\n"
-        message += f"Documents affected: {len(self.document_ids)}\n"
+        message += f"", Documents affected: {len(self.document_ids)}
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 2)
+    # ============================================================================
+    def action_type(self):
+        """Type - Action method"""
+        self.ensure_one()
+        return {
+            "name": _("Type"),
+        }\n""
         message += f"Legal basis: {self.legal_basis}"
 
         # Log the notification attempt

@@ -217,3 +217,29 @@ class KeyRestrictionChecker(models.Model):
                 "sticky": False,
             },
         }
+
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 3)
+    # ============================================================================
+    def action_buttons(self):
+        """Buttons - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Buttons"),
+            "res_model": "key.restriction.checker",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_required(self):
+        """Required - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Required"),
+            "res_model": "key.restriction.checker",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }

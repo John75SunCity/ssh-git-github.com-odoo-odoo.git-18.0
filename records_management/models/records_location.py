@@ -302,3 +302,7 @@ class RecordsLocation(models.Model):
                 )
                 if existing:
                     raise ValidationError(_("Location code must be unique."))
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================\n    | = fields.Char(string='|', tracking=True)

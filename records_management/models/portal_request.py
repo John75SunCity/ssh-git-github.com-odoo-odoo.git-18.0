@@ -472,3 +472,10 @@ class PortalRequest(models.Model):
         for record in self:
             if record.estimated_hours < 0 or record.actual_hours < 0:
                 raise ValidationError(_("Hours cannot be negative."))
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
+    assigned_to = fields.Char(string='Assigned To', tracking=True)
+    due_date = fields.Date(string='Due Date', tracking=True)
+    status = fields.Selection([('draft', 'Draft')], string='Status', default='draft', tracking=True)

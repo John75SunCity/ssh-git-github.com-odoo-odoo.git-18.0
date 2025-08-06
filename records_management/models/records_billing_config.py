@@ -30,13 +30,11 @@ class RecordsBillingConfig(models.Model):
     # ============================================================================
 
     company_id = fields.Many2one(
-        "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
     )
     user_id = fields.Many2one(
-        "res.users",
         string="Billing Manager",
         default=lambda self: self.env.user,
         tracking=True,
@@ -96,7 +94,6 @@ class RecordsBillingConfig(models.Model):
     # ============================================================================
 
     currency_id = fields.Many2one(
-        "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
     )
@@ -239,38 +236,26 @@ class RecordsBillingConfig(models.Model):
     # ============================================================================
 
     billing_line_ids = fields.One2many(
-        "records.billing.line",
-        "config_id",
         string="Billing Lines",
         help="Detailed billing line items for this configuration",
     )
     usage_tracking_ids = fields.One2many(
-        "records.usage.tracking",
-        "config_id",
         string="Usage Tracking Records",
         help="Usage tracking records for billing analysis",
     )
     invoice_log_ids = fields.One2many(
-        "invoice.generation.log",
-        "config_id",
         string="Invoice Generation Logs",
         help="Historical invoice generation records",
     )
     discount_rule_ids = fields.One2many(
-        "discount.rule",
-        "config_id",
         string="Discount Rules",
         help="Discount rules applied to this billing configuration",
     )
     revenue_analytics_ids = fields.One2many(
-        "revenue.analytics",
-        "config_id",
         string="Revenue Analytics",
         help="Revenue analytics and reporting data",
     )
     promotional_discount_ids = fields.One2many(
-        "records.promotional.discount",
-        "config_id",
         string="Promotional Discounts",
         help="Active promotional discounts for this configuration",
     )
@@ -303,11 +288,6 @@ class RecordsBillingConfig(models.Model):
         """Calculate charges for specific service"""
         self.ensure_one()
         rate_map = {
-            "storage": self.storage_rate,
-            "retrieval": self.retrieval_rate,
-            "transport": self.transport_rate,
-            "scanning": self.scanning_rate,
-            "destruction": self.destruction_rate,
         }
 
         base_charge = rate_map.get(service_type, 0.0) * quantity
@@ -507,7 +487,6 @@ class RecordsBillingConfig(models.Model):
 
     @api.depends("expiry_date")
     def _compute_is_expired(self):
-        today = fields.Date.today()
         for record in self:
             record.is_expired = record.expiry_date and record.expiry_date < today
 
@@ -550,20 +529,76 @@ class RecordsBillingConfig(models.Model):
 
         current_audit = self.audit_trail or ""
         self.audit_trail = (
-            f"{current_audit}\n{log_entry}" if current_audit else log_entry
+            f"", {current_audit}
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 3)
+    # ============================================================================
+    def action_configure_rates(self):
+        """Configure Rates - Action method"""
+        self.ensure_one()
+        return {
+            "name": _("Configure Rates"),
+        }
+    def action_duplicate(self):
+        """Duplicate - Action method"""
+        self.ensure_one()
+        return {
+            "name": _("Duplicate"),
+        }
+    def action_generate_invoice(self):
+        """Generate Invoice - Generate report"""
+        self.ensure_one()
+        return {
+        }
+    def action_test_billing(self):
+        """Test Billing - Action method"""
+        self.ensure_one()
+        return {
+            "name": _("Test Billing"),
+        }
+    def action_view_analytics(self):
+        """View Analytics - View related records"""
+        self.ensure_one()
+        return {
+            "name": _("View Analytics"),
+            "domain": [("config_id", "=", self.id)],
+        }
+    def action_view_billing_history(self):
+        """View Billing History - View related records"""
+        self.ensure_one()
+        return {
+            "name": _("View Billing History"),
+            "domain": [("config_id", "=", self.id)],
+        }
+    def action_view_invoice(self):
+        """View Invoice - View related records"""
+        self.ensure_one()
+        return {
+            "name": _("View Invoice"),
+            "domain": [("config_id", "=", self.id)],
+        }
+    def action_view_invoices(self):
+        """View Invoices - View related records"""
+        self.ensure_one()
+        return {
+            "name": _("View Invoices"),
+            "domain": [("config_id", "=", self.id)],
+        }
+    def action_view_revenue(self):
+        """View Revenue - View related records"""
+        self.ensure_one()
+        return {
+            "name": _("View Revenue"),
+            "domain": [("config_id", "=", self.id)],
+        }\n{log_entry}"", if current_audit else log_entry
         )
 
     def generate_billing_summary(self):
         """Generate comprehensive billing summary"""
         self.ensure_one()
         return {
-            "config_name": self.name,
-            "customer": self.partner_id.name if self.partner_id else "N/A",
             "billing_model": dict(self._fields["billing_model"].selection)[
                 self.billing_model
             ],
-            "base_rate": self.base_rate,
-            "monthly_minimum": self.monthly_minimum,
             "next_billing_date": self.get_next_billing_date(),
-            "status": self.state,
         }

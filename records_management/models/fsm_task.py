@@ -351,3 +351,32 @@ class FsmTask(models.Model):
         "mail.followers", "res_id", string="Followers"
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================\n    task_status = fields.Selection([('draft', 'Draft')], string='Task Status', default='draft', tracking=True)\n
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 1)
+    # ============================================================================
+    def action_reschedule(self):
+        """Reschedule - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Reschedule"),
+            "res_model": "fsm.task",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_view_work_orders(self):
+        """View Work Orders - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Work Orders"),
+            "res_model": "fsm.task",
+            "view_mode": "tree,form",
+            "domain": [("task_id", "=", self.id)],
+            "context": {"default_task_id": self.id},
+        }

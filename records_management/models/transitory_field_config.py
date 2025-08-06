@@ -347,3 +347,18 @@ class TransitoryFieldConfig(models.Model):
                             "Field configuration already exists for this model and field."
                         )
                     )
+
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 2)
+    # ============================================================================
+    def action_setup_field_labels(self):
+        """Setup Field Labels - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Setup Field Labels"),
+            "res_model": "transitory.field.config",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }

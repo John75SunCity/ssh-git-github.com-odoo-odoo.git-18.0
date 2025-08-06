@@ -317,3 +317,65 @@ class Load(models.Model):
                 )
             if record.moisture_content < 0 or record.moisture_content > 100:
                 raise ValidationError(_("Moisture content must be between 0 and 100%."))
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================\n    estimated_delivery = fields.Char(string='Estimated Delivery', tracking=True)\n    hazmat_required = fields.Boolean(string='Hazmat Required', default=False)\n    load_date = fields.Date(string='Load Date', tracking=True)\n    priority = fields.Selection([('draft', 'Draft')], string='Priority', default='draft', tracking=True)\n    scheduled_departure = fields.Char(string='Scheduled Departure', tracking=True)\n    temperature_controlled = fields.Char(string='Temperature Controlled', tracking=True)\n
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 1)
+    # ============================================================================
+    def action_prepare_load(self):
+        """Prepare Load - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Prepare Load"),
+            "res_model": "load",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_ship_load(self):
+        """Ship Load - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Ship Load"),
+            "res_model": "load",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_view_bales(self):
+        """View Bales - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Bales"),
+            "res_model": "load",
+            "view_mode": "tree,form",
+            "domain": [("load_id", "=", self.id)],
+            "context": {"default_load_id": self.id},
+        }
+    def action_view_revenue_report(self):
+        """View Revenue Report - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Revenue Report"),
+            "res_model": "load",
+            "view_mode": "tree,form",
+            "domain": [("load_id", "=", self.id)],
+            "context": {"default_load_id": self.id},
+        }
+    def action_view_weight_tickets(self):
+        """View Weight Tickets - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Weight Tickets"),
+            "res_model": "load",
+            "view_mode": "tree,form",
+            "domain": [("load_id", "=", self.id)],
+            "context": {"default_load_id": self.id},
+        }

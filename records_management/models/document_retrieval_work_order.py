@@ -515,3 +515,10 @@ class DocumentRetrievalWorkOrder(models.Model):
                     % (old_state, new_state)
                 )
         return super().write(vals)
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
+    has_custom_rates = fields.Boolean(string='Has Custom Rates', default=False)
+    request_date = fields.Date(string='Request Date', tracking=True)
+    technician_id = fields.Many2one('technician', string='Technician', tracking=True)

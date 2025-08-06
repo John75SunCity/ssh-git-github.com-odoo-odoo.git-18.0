@@ -517,3 +517,76 @@ class BarcodeProduct(models.Model):
                 _("Cannot delete active barcode products. Please archive them first.")
             )
         return super().unlink()
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================\n    monthly_volume = fields.Char(string='Monthly Volume', tracking=True)\n    naid_compliant = fields.Char(string='Naid Compliant', tracking=True)\n    storage_rate = fields.Monetary(string='Storage Rate', currency_field='currency_id', tracking=True)\n
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 1)
+    # ============================================================================
+    def action_activate(self):
+        """Activate - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Activate"),
+            "res_model": "barcode.product",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_deactivate(self):
+        """Deactivate - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Deactivate"),
+            "res_model": "barcode.product",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_update_pricing(self):
+        """Update Pricing - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Update Pricing"),
+            "res_model": "barcode.product",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+    def action_view_revenue(self):
+        """View Revenue - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Revenue"),
+            "res_model": "barcode.product",
+            "view_mode": "tree,form",
+            "domain": [("product_id", "=", self.id)],
+            "context": {"default_product_id": self.id},
+        }
+    def action_view_shred_bins(self):
+        """View Shred Bins - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Shred Bins"),
+            "res_model": "barcode.product",
+            "view_mode": "tree,form",
+            "domain": [("product_id", "=", self.id)],
+            "context": {"default_product_id": self.id},
+        }
+    def action_view_storage_boxes(self):
+        """View Storage Boxes - View related records"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Storage Boxes"),
+            "res_model": "barcode.product",
+            "view_mode": "tree,form",
+            "domain": [("product_id", "=", self.id)],
+            "context": {"default_product_id": self.id},
+        }

@@ -313,3 +313,31 @@ class RecordsDepartmentBillingContact(models.Model):
         "mail.followers", "res_id", string="Followers"
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================\n    approval_authority = fields.Char(string='Approval Authority', tracking=True)\n    budget_utilization = fields.Char(string='Budget Utilization', tracking=True)\n    email_notifications = fields.Char(string='Email Notifications', tracking=True)\n    monthly_budget = fields.Char(string='Monthly Budget', tracking=True)\n
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 1)
+    # ============================================================================
+    def action_budget_report(self):
+        """Budget Report - Generate report"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.report",
+            "report_name": "records_management.action_budget_report_template",
+            "report_type": "qweb-pdf",
+            "data": {"ids": [self.id]},
+            "context": self.env.context,
+        }
+    def action_send_bill_notification(self):
+        """Send Bill Notification - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Send Bill Notification"),
+            "res_model": "records.department.billing.contact",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }

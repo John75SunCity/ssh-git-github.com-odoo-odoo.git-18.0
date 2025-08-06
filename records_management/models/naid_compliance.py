@@ -704,4 +704,8 @@ class NaidCompliance(models.Model):
                     )
                 )
         return super().write(vals)
-\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================\n    certificate_valid = fields.Char(string='Certificate Valid', tracking=True)
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
+    certificate_valid = fields.Char(string='Certificate Valid', tracking=True)

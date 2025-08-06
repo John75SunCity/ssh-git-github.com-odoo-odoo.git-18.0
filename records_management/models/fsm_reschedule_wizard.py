@@ -63,11 +63,13 @@ class FsmRescheduleWizard(models.TransientModel):
 
         self.write({"state": "completed"})
 
-        return {"type": "ir.actions.act_window_close"}
+        return {
+            "type": "ir.actions.act_window_close"}
 
     def action_cancel(self):
         """Cancel the reschedule operation"""
-        return {"type": "ir.actions.act_window_close"}
+        return {
+            "type": "ir.actions.act_window_close"}
 
     # ============================================================================
     # VALIDATION METHODS
@@ -77,3 +79,13 @@ class FsmRescheduleWizard(models.TransientModel):
         for record in self:
             if record.new_date and record.new_date < fields.Datetime.now():
                 raise ValidationError(_("New date cannot be in the past."))
+
+    # ============================================================================
+    # AUTO-GENERATED ACTION METHODS (Batch 2)
+    # ============================================================================
+    def action_confirm_reschedule(self):
+        """Confirm Reschedule - Change state"""
+        self.ensure_one()
+        self.write({"state": "confirmed"})
+        self.message_post(body=_("Confirm Reschedule completed"))
+        return True
