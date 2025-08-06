@@ -5,7 +5,7 @@ Records Management Module - Enterprise Edition
 
 🏆 ENTERPRISE-GRADE DOCUMENT MANAGEMENT SYSTEM 🏆
 • 102 Python Models with comprehensive business logic
-• 51 XML Views with modern, responsive interfaces  
+• 51 XML Views with modern, responsive interfaces
 • 1400+ Fields providing detailed data capture
 • 77 Data Files with complete configuration
 • AI-Ready Analytics with sentiment analysis
@@ -22,7 +22,7 @@ from . import models
 from . import controllers
 from . import report
 from . import wizards
-from . import monitoring  # Live monitoring system
+
 
 def post_init_hook(cr, registry):
     """
@@ -49,31 +49,52 @@ def post_init_hook(cr, registry):
 
         # Verify all required dependencies are loaded
         required_modules = [
-            'base', 'mail', 'web', 'portal', 'product', 'stock', 
-            'barcodes', 'account', 'sale', 'website', 'point_of_sale',
-            'sms', 'sign', 'hr', 'project', 'calendar', 'survey'
+            "base",
+            "mail",
+            "web",
+            "portal",
+            "product",
+            "stock",
+            "barcodes",
+            "account",
+            "sale",
+            "website",
+            "point_of_sale",
+            "sms",
+            "sign",
+            "hr",
+            "project",
+            "calendar",
+            "survey",
         ]
 
-        installed_modules = env['ir.module.module'].search([
-            ('name', 'in', required_modules),
-            ('state', '=', 'installed')
-        ])
+        installed_modules = env["ir.module.module"].search(
+            [("name", "in", required_modules), ("state", "=", "installed")]
+        )
 
-        missing_deps = set(required_modules) - set(installed_modules.mapped('name'))
+        missing_deps = set(required_modules) - set(installed_modules.mapped("name"))
         if missing_deps:
-            _logger.warning("Records Management: Missing dependencies: %s", missing_deps)
+            _logger.warning(
+                "Records Management: Missing dependencies: %s", missing_deps
+            )
         else:
-            _logger.info("Records Management: All dependencies verified - module loaded correctly")
+            _logger.info(
+                "Records Management: All dependencies verified - module loaded correctly"
+            )
 
         # Initialize any cross-module integrations here
         # This ensures other modules are fully loaded before we integrate
         try:
             # Example: Ensure POS integration works properly
-            if env['ir.module.module'].search([('name', '=', 'point_of_sale'), ('state', '=', 'installed')]):
+            if env["ir.module.module"].search(
+                [("name", "=", "point_of_sale"), ("state", "=", "installed")]
+            ):
                 _logger.info("Records Management: POS integration ready")
 
             # Example: Ensure website portal integration works
-            if env['ir.module.module'].search([('name', '=', 'website'), ('state', '=', 'installed')]):
+            if env["ir.module.module"].search(
+                [("name", "=", "website"), ("state", "=", "installed")]
+            ):
                 _logger.info("Records Management: Website portal integration ready")
 
         except Exception as e:
