@@ -134,6 +134,7 @@
             <field name="name">Standard Document Shredding</field>
             <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="service_type">onsite</field>
+            <field name="service_date">2025-08-13</field>
             <field name="state">draft</field>
             <field name="description">Standard on-site document destruction service with NAID AAA compliance</field>
         </record>

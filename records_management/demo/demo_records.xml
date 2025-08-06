@@ -104,11 +104,12 @@
         <!-- These will be created by the demo.xml file after customers are available -->
 
         <!-- Demo Shredding Service Templates -->
-        <record id="demo_shredding_service_template" model="shredding.service">
-            <field name="name">Standard Document Shredding</field>
-            <field name="service_type">on_site</field>
+        <record id="demo_shredding_service_template_basic" model="shredding.service">
+            <field name="name">Basic Document Shredding Service</field>
+            <field name="service_type">onsite</field>
+            <field name="service_date">2025-08-20</field>
             <field name="state">template</field>
-            <field name="completion_notes">Standard on-site document destruction service with NAID AAA compliance</field>
+            <field name="completion_notes">Basic on-site document destruction service with NAID AAA compliance</field>
         </record>
 
         <!-- Demo Paper Bale Recycling -->
