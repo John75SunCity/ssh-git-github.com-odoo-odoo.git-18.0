@@ -162,7 +162,7 @@
                                     <field name="name"/>
                                     <field name="document_type_id"/>
                                     <field name="state"/>
-                                    <field name="creation_date"/>
+                                    <field name="create_date"/>
                                 </list>
                             </field>
                         </page>
@@ -173,17 +173,7 @@
                                     <field name="from_location_id"/>
                                     <field name="to_location_id"/>
                                     <field name="movement_type"/>
-                                    <field name="moved_by_id"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="🎯 Service Requests" name="requests">
-                            <field name="service_request_ids" mode="list">
-                                <list>
-                                    <field name="name"/>
-                                    <field name="priority"/>
-                                    <field name="state"/>
-                                    <field name="request_date"/>
+                                    <field name="user_id"/>
                                 </list>
                             </field>
                         </page>
@@ -191,8 +181,8 @@
                             <group>
                                 <field name="description" placeholder="Container contents, special instructions, or notes..."/>
                                 <field name="retention_policy_id"/>
-                                <field name="size_category"/>
                                 <field name="weight"/>
+                                <field name="cubic_feet"/>
                             </group>
                         </page>
                     </notebook>
@@ -211,9 +201,9 @@
         <field name="name">records.container.calendar</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-            <calendar string="📅 Container Storage Calendar" date_start="creation_date" date_stop="destruction_date" color="customer_id">
+            <calendar string="📅 Container Storage Calendar" date_start="create_date" date_stop="destruction_date" color="partner_id">
                 <field name="name"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="state"/>
             </calendar>
         </field>
@@ -225,7 +215,7 @@
         <field name="model">records.container</field>
         <field name="arch" type="xml">
             <graph string="📊 Container Analytics">
-                <field name="customer_id" type="row"/>
+                <field name="partner_id" type="row"/>
                 <field name="state" type="col"/>
             </graph>
         </field>
@@ -238,7 +228,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Container" filter_domain="['|', ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="department_id"/>
                 <field name="location_id"/>
 
@@ -249,16 +239,16 @@
                 <filter string="💥 Destroyed" name="destroyed" domain="[('state', '=', 'destroyed')]"/>
 
                 <separator/>
-                <filter string="📅 Stored This Month" name="this_month" domain="[('creation_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
-                <filter string="🗓️ Stored This Year" name="this_year" domain="[('creation_date', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
+                <filter string="📅 Stored This Month" name="this_month" domain="[('create_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                <filter string="🗓️ Stored This Year" name="this_year" domain="[('create_date', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
                 <filter string="⚠️ Near Destruction" name="near_destruction" domain="[('destruction_date', '&lt;=', (context_today() + relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="📊 Group By">
-                    <filter string="Customer" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
                     <filter string="Location" name="group_by_location" context="{'group_by': 'location_id'}"/>
                     <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
-                    <filter string="Creation Date" name="group_by_creation_date" context="{'group_by': 'creation_date:month'}"/>
+                    <filter string="Creation Date" name="group_by_creation_date" context="{'group_by': 'create_date:month'}"/>
                 </group>
             </search>
         </field>

@@ -247,6 +247,82 @@ class RecordsContainer(models.Model):
         )
         self.message_post(body=_("Container destroyed"))
 
+    def action_view_documents(self):
+        """View all documents in this container"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Documents in Container %s") % self.name,
+            "res_model": "records.document",
+            "view_mode": "tree,form",
+            "domain": [("container_id", "=", self.id)],
+            "context": {"default_container_id": self.id},
+        }
+
+    def action_generate_barcode(self):
+        """Generate and print barcode for container"""
+        self.ensure_one()
+        if not self.barcode:
+            # Generate barcode if not exists
+            self.barcode = (
+                self.env["ir.sequence"].next_by_code("records.container.barcode")
+                or self.name
+            )
+
+        return {
+            "type": "ir.actions.report",
+            "report_name": "records_management.container_barcode_report",
+            "report_type": "qweb-pdf",
+            "data": {"ids": [self.id]},
+            "context": self.env.context,
+        }
+
+    def action_index_container(self):
+        """Index container - change state from received to indexed"""
+        self.ensure_one()
+        if self.state != "draft":
+            raise UserError(_("Only draft containers can be indexed"))
+        self.write({"state": "active"})
+        self.message_post(body=_("Container indexed and activated"))
+
+    def action_store_container(self):
+        """Store container - change state from indexed to stored"""
+        self.ensure_one()
+        if self.state != "active":
+            raise UserError(_("Only active containers can be stored"))
+        if not self.location_id:
+            raise UserError(_("Storage location must be assigned before storing"))
+        self.write({"state": "stored", "storage_start_date": fields.Date.today()})
+        self.message_post(
+            body=_("Container stored at location %s") % self.location_id.name
+        )
+
+    def action_retrieve_container(self):
+        """Retrieve container from storage"""
+        self.ensure_one()
+        if self.state not in ["stored", "active"]:
+            raise UserError(_("Only stored or active containers can be retrieved"))
+        self.write({"state": "in_transit", "last_access_date": fields.Date.today()})
+        self.message_post(body=_("Container retrieved from storage"))
+
+    def action_destroy_container(self):
+        """Prepare container for destruction"""
+        self.ensure_one()
+        if self.permanent_retention:
+            raise UserError(_("Cannot destroy containers with permanent retention"))
+        self.action_schedule_destruction()
+
+    def action_bulk_convert_container_type(self):
+        """Bulk convert container types"""
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Bulk Convert Container Types"),
+            "res_model": "records.container.type.converter",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_container_ids": [(6, 0, self.ids)]},
+        }
+
     def create_movement_record(
         self, from_location_id, to_location_id, movement_type="transfer"
     ):
