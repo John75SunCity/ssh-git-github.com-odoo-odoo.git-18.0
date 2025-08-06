@@ -1,0 +1,52 @@
+[MASTER]
+# Add Odoo addons paths
+init-hook='import sys; sys.path.append("./addons"); sys.path.append("./records_management")'
+
+[MESSAGES CONTROL]
+# Disable import-related errors for Odoo
+disable=
+    import-error,
+    no-name-in-module,
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    too-many-locals,
+    too-many-arguments,
+    too-many-branches,
+    too-many-statements,
+    too-many-instance-attributes,
+    too-few-public-methods,
+    protected-access,
+    unused-argument,
+    broad-except,
+    invalid-name,
+    line-too-long,
+    consider-using-f-string
+
+[FORMAT]
+# Maximum number of characters on a single line
+max-line-length=120
+
+[DESIGN]
+# Maximum number of arguments for function / method
+max-args=10
+# Maximum number of locals for function / method body
+max-locals=20
+# Maximum number of return / yield for function / method body
+max-returns=8
+# Maximum number of branch for function / method body
+max-branches=15
+# Maximum number of statements in function / method body
+max-statements=60
+# Maximum number of parents for a class (see R0901).
+max-parents=10
+# Maximum number of attributes for a class (see R0902).
+max-attributes=15
+# Minimum number of public methods for a class (see R0903).
+min-public-methods=1
+# Maximum number of public methods for a class (see R0904).
+max-public-methods=25
+
+[EXCEPTIONS]
+# Exceptions that will emit a warning when being caught
+overgeneral-exceptions=Exception

@@ -1,0 +1,41 @@
+{
+    "include": [
+        "records_management",
+        "addons"
+    ],
+    "exclude": [
+        "**/migrations/**",
+        "**/tests/**",
+        "**/*_old.py",
+        "**/backup/**",
+        "development-tools/records_management_backup_*/**"
+    ],
+    "ignore": [
+        "records_management/models/*_old.py",
+        "development-tools/**"
+    ],
+    "reportMissingImports": "none",
+    "reportMissingModuleSource": "none",
+    "reportUndefinedVariable": "error",
+    "reportUnusedImport": "warning",
+    "reportUnusedVariable": "warning",
+    "reportDuplicateImport": "warning",
+    "reportOptionalSubscript": "none",
+    "reportOptionalMemberAccess": "none",
+    "reportOptionalCall": "none",
+    "reportOptionalIterable": "none",
+    "reportOptionalContextManager": "none",
+    "reportOptionalOperand": "none",
+    "pythonVersion": "3.11",
+    "pythonPlatform": "Linux",
+    "executionEnvironments": [
+        {
+            "root": "./records_management",
+            "pythonVersion": "3.11"
+        },
+        {
+            "root": "./addons",
+            "pythonVersion": "3.11"
+        }
+    ]
+}

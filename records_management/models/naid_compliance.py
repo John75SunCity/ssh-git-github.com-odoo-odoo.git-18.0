@@ -1,5 +1,42 @@
 # -*- coding: utf-8 -*-
-"""NAID Compliance Management - See RECORDS_MANAGEMENT_SYSTEM_MANUAL.md for complete documentation"""
+"""
+NAID Compliance Management Module
+
+This module provides comprehensive NAID (National Association for Information Destruction) 
+compliance management for the Records Management System. It implements complete audit trails,
+certification tracking, and compliance monitoring with enterprise-grade security features.
+
+Key Features:
+- Complete NAID AAA, AA, and A certification lifecycle management
+- Comprehensive audit trails with automated scheduling and reporting
+- Real-time compliance monitoring with risk assessment and scoring
+- Chain of custody validation and destruction certificate management
+- Integrated security protocols with personnel screening and training
+- Performance metrics tracking with trend analysis and benchmarking
+- Regulatory compliance mapping (SOX, HIPAA, GDPR integration)
+- Automated renewal processes with expiration monitoring and alerts
+
+Business Processes:
+- Initial certification assessment and documentation preparation
+- Scheduled audit execution with findings tracking and corrective actions
+- Continuous compliance monitoring with automated risk assessment
+- Certificate renewal workflow with validation and approval processes
+- Regulatory reporting with standardized templates and submission tracking
+- Stakeholder communication with automated notifications and updates
+- Performance analytics with KPI dashboards and improvement recommendations
+
+Integration Points:
+- Chain of Custody: Links to records.chain.custody for destruction tracking
+- Audit Logging: Integrates with naid.audit.log for comprehensive audit trails
+- Certificate Management: Connects to naid.certificate for credential tracking
+- Personnel Management: Links to hr.employee for training and certification tracking
+- Customer Communication: Integrates with portal systems for transparency
+- Regulatory Systems: APIs for compliance reporting and submission
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
 
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
@@ -8,1084 +45,944 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class NaidCompliance(models.Model):
-    """NAID Compliance Management - Complete documentation in RECORDS_MANAGEMENT_SYSTEM_MANUAL.md"""
-
+    """
+    NAID Compliance Management - Enterprise Records Management System
+    
+    Comprehensive NAID (National Association for Information Destruction) compliance
+    management system providing complete audit trails, certification tracking, and
+    regulatory compliance monitoring for enterprise document destruction services.
+    """
+    
     _name = "naid.compliance"
     _description = "NAID Compliance Management"
     _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name desc"
+    _order = "certification_date desc, name"
     _rec_name = "name"
+    _check_company_auto = True
 
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-
+    
     name = fields.Char(
-        string="Compliance Check", required=True, tracking=True, index=True
+        string="Compliance Reference",
+        required=True,
+        tracking=True,
+        index=True,
+        default=lambda self: _("New"),
+        help="Unique reference identifier for this compliance record"
     )
-    code = fields.Char(string="Compliance Code", index=True, tracking=True)
-    description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10)
-    active = fields.Boolean(string="Active", default=True)
+    
+    code = fields.Char(
+        string="Compliance Code",
+        index=True,
+        tracking=True,
+        help="Internal compliance code for easy reference"
+    )
+    
+    description = fields.Text(
+        string="Description",
+        help="Detailed description of this compliance framework and requirements"
+    )
+    
+    sequence = fields.Integer(
+        string="Sequence",
+        default=10,
+        help="Sequence for ordering compliance records"
+    )
+    
+    active = fields.Boolean(
+        string="Active",
+        default=True,
+        tracking=True,
+        help="Uncheck to archive this compliance record"
+    )
 
-    # Framework Required Fields
+    # ============================================================================
+    # COMPANY & USER MANAGEMENT
+    # ============================================================================
+    
     company_id = fields.Many2one(
         "res.company",
         string="Company",
-        default=lambda self: self.env.company,
         required=True,
-    )
-    user_id = fields.Many2one(
-        "res.users", string="Compliance Manager", default=lambda self: self.env.user
-    )
-
-    # State Management
-    state = fields.Selection(
-        [
-            ("pending", "Pending"),
-            ("compliant", "Compliant"),
-            ("non_compliant", "Non-Compliant"),
-            ("under_review", "Under Review"),
-        ],
-        string="Compliance Status",
-        default="pending",
+        default=lambda self: self.env.company,
         tracking=True,
+        help="Company this compliance framework applies to"
+    )
+    
+    user_id = fields.Many2one(
+        "res.users",
+        string="Compliance Manager",
+        default=lambda self: self.env.user,
+        tracking=True,
+        help="Primary compliance manager responsible for this record"
+    )
+    
+    compliance_officer_id = fields.Many2one(
+        "res.users",
+        string="Compliance Officer",
+        tracking=True,
+        help="Designated compliance officer for oversight and reporting"
     )
 
     # ============================================================================
-    # NAID CERTIFICATION & COMPLIANCE
+    # STATE MANAGEMENT
     # ============================================================================
+    
+    state = fields.Selection([
+        ("draft", "Draft"),
+        ("pending", "Pending Review"),
+        ("under_review", "Under Review"),
+        ("compliant", "Compliant"),
+        ("non_compliant", "Non-Compliant"),
+        ("expired", "Expired"),
+        ("suspended", "Suspended"),
+    ],
+        string="Compliance Status",
+        default="draft",
+        required=True,
+        tracking=True,
+        help="Current compliance status of this record"
+    )
 
-    # NAID Certification Details
-    naid_level = fields.Selection(
-        [
-            ("aaa", "NAID AAA"),
-            ("aa", "NAID AA"),
-            ("a", "NAID A"),
-            ("pending", "Pending Certification"),
-            ("expired", "Expired"),
-        ],
+    # ============================================================================
+    # NAID CERTIFICATION MANAGEMENT
+    # ============================================================================
+    
+    naid_level = fields.Selection([
+        ("aaa", "NAID AAA Certified"),
+        ("aa", "NAID AA Certified"),
+        ("a", "NAID A Certified"),
+        ("pending", "Certification Pending"),
+        ("expired", "Certification Expired"),
+        ("revoked", "Certification Revoked"),
+    ],
         string="NAID Certification Level",
         required=True,
-        tracking=True,
-    )
-
-    compliance_level = fields.Selection(
-        [("aaa", "AAA Certified"), ("aa", "AA Certified"), ("a", "A Certified")],
-        string="Current NAID Level",
-        tracking=True,
-    )
-
-    certification_status = fields.Selection(
-        [
-            ("pending", "Pending"),
-            ("in_progress", "In Progress"),
-            ("certified", "Certified"),
-            ("expired", "Expired"),
-            ("revoked", "Revoked"),
-        ],
-        string="Certification Status",
         default="pending",
         tracking=True,
+        help="Current NAID certification level and status"
+    )
+    
+    certification_number = fields.Char(
+        string="Certification Number",
+        tracking=True,
+        help="Official NAID certification number"
+    )
+    
+    certification_date = fields.Date(
+        string="Certification Date",
+        tracking=True,
+        help="Date when NAID certification was issued"
+    )
+    
+    expiration_date = fields.Date(
+        string="Expiration Date",
+        required=True,
+        tracking=True,
+        help="Date when current certification expires"
+    )
+    
+    renewal_date = fields.Date(
+        string="Renewal Date",
+        help="Date when certification renewal is due"
     )
 
     # ============================================================================
-    # DATES & SCHEDULING
+    # AUDIT SCHEDULING & TRACKING
     # ============================================================================
-
-    check_date = fields.Date(string="Check Date", required=True, tracking=True)
-    last_review_date = fields.Date(string="Last Review Date", tracking=True)
-    next_review_date = fields.Date(string="Next Review Date", tracking=True)
-    compliance_deadline = fields.Date(string="Compliance Deadline", tracking=True)
-    certification_date = fields.Date(string="Certification Date", tracking=True)
-    expiration_date = fields.Date(string="Expiration Date", tracking=True)
-
-    # Computed Dates
-    days_until_expiration = fields.Integer(
-        string="Days Until Expiration",
-        compute="_compute_days_until_expiration",
+    
+    audit_frequency = fields.Selection([
+        ("monthly", "Monthly"),
+        ("quarterly", "Quarterly"),
+        ("semi_annual", "Semi-Annual"),
+        ("annual", "Annual"),
+        ("on_demand", "On Demand"),
+    ],
+        string="Audit Frequency",
+        default="quarterly",
+        required=True,
+        help="Required frequency for compliance audits"
+    )
+    
+    last_audit_date = fields.Date(
+        string="Last Audit Date",
+        tracking=True,
+        help="Date of most recent compliance audit"
+    )
+    
+    next_audit_date = fields.Date(
+        string="Next Audit Date",
+        tracking=True,
+        help="Scheduled date for next compliance audit"
+    )
+    
+    audit_due_days = fields.Integer(
+        string="Days Until Audit",
+        compute="_compute_audit_timing",
         store=True,
-    )
-    is_expired = fields.Boolean(
-        string="Is Expired",
-        compute="_compute_expiration_status",
-        store=True,
+        help="Number of days until next audit is due"
     )
 
     # ============================================================================
-    # AUDIT & ASSESSMENT
+    # COMPLIANCE SCORING & METRICS
     # ============================================================================
-
-    audit_results = fields.Text(string="Audit Results")
-    corrective_actions = fields.Text(string="Corrective Actions")
-    audit_findings = fields.Text(string="Audit Findings")
-    remediation_plan = fields.Text(string="Remediation Plan")
-    risk_assessment = fields.Text(string="Risk Assessment")
-
-    # Audit Metrics
-    audit_score = fields.Float(
-        string="Audit Score (%)",
+    
+    overall_score = fields.Float(
+        string="Overall Compliance Score (%)",
         digits=(5, 2),
-        help="Overall audit score percentage",
-    )
-    compliance_percentage = fields.Float(
-        string="Compliance Percentage",
-        digits=(5, 2),
-        compute="_compute_compliance_metrics",
+        compute="_compute_compliance_scores",
         store=True,
+        help="Overall compliance percentage based on all audit categories"
+    )
+    
+    security_score = fields.Float(
+        string="Security Score (%)",
+        digits=(5, 2),
+        help="Physical and information security compliance score"
+    )
+    
+    process_score = fields.Float(
+        string="Process Score (%)",
+        digits=(5, 2),
+        help="Destruction process compliance score"
+    )
+    
+    documentation_score = fields.Float(
+        string="Documentation Score (%)",
+        digits=(5, 2),
+        help="Documentation and record-keeping compliance score"
+    )
+    
+    personnel_score = fields.Float(
+        string="Personnel Score (%)",
+        digits=(5, 2),
+        help="Personnel training and screening compliance score"
+    )
+    
+    equipment_score = fields.Float(
+        string="Equipment Score (%)",
+        digits=(5, 2),
+        help="Equipment certification and maintenance compliance score"
+    )
+
+    # ============================================================================
+    # AUDIT RESULTS & FINDINGS
+    # ============================================================================
+    
+    audit_findings = fields.Text(
+        string="Audit Findings",
+        help="Detailed findings from compliance audits"
+    )
+    
+    corrective_actions = fields.Text(
+        string="Corrective Actions",
+        help="Required corrective actions to address findings"
+    )
+    
+    remediation_plan = fields.Text(
+        string="Remediation Plan",
+        help="Detailed plan for addressing compliance gaps"
+    )
+    
+    risk_assessment = fields.Text(
+        string="Risk Assessment",
+        help="Assessment of compliance risks and mitigation strategies"
+    )
+    
+    findings_count = fields.Integer(
+        string="Open Findings",
+        compute="_compute_findings_metrics",
+        store=True,
+        help="Number of open audit findings requiring attention"
+    )
+
+    # ============================================================================
+    # SECURITY & FACILITY REQUIREMENTS
+    # ============================================================================
+    
+    security_level = fields.Selection([
+        ("basic", "Basic Security"),
+        ("enhanced", "Enhanced Security"),
+        ("maximum", "Maximum Security"),
+    ],
+        string="Required Security Level",
+        default="enhanced",
+        required=True,
+        help="Minimum security level required for this compliance framework"
+    )
+    
+    facility_requirements = fields.Text(
+        string="Facility Requirements",
+        help="Physical facility requirements for compliance"
+    )
+    
+    access_control_verified = fields.Boolean(
+        string="Access Control Verified",
+        help="Physical access controls have been verified and approved"
+    )
+    
+    surveillance_system_verified = fields.Boolean(
+        string="Surveillance System Verified",
+        help="Video surveillance system meets compliance requirements"
+    )
+
+    # ============================================================================
+    # INSURANCE & BONDING
+    # ============================================================================
+    
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+        required=True
+    )
+    
+    insurance_coverage = fields.Monetary(
+        string="Insurance Coverage",
+        currency_field="currency_id",
+        help="Required insurance coverage amount"
+    )
+    
+    liability_limit = fields.Monetary(
+        string="Liability Limit",
+        currency_field="currency_id",
+        help="Maximum liability limit for compliance"
+    )
+    
+    bonding_amount = fields.Monetary(
+        string="Bonding Amount",
+        currency_field="currency_id",
+        help="Required bonding amount for personnel"
+    )
+    
+    insurance_verified = fields.Boolean(
+        string="Insurance Verified",
+        help="Insurance coverage has been verified and is current"
+    )
+
+    # ============================================================================
+    # PERSONNEL & TRAINING
+    # ============================================================================
+    
+    personnel_screening_required = fields.Boolean(
+        string="Personnel Screening Required",
+        default=True,
+        help="Background screening is required for personnel"
+    )
+    
+    training_completed = fields.Boolean(
+        string="Training Completed",
+        help="All required personnel training has been completed"
+    )
+    
+    certification_training_current = fields.Boolean(
+        string="Certification Training Current",
+        help="Personnel certification training is up to date"
     )
 
     # ============================================================================
     # DOCUMENTATION & REPORTING
     # ============================================================================
-
-    # Documentation Standards
-    documentation_standard = fields.Selection(
-        [
-            ("naid", "NAID Standard"),
-            ("iso", "ISO Standard"),
-            ("custom", "Custom Standard"),
-        ],
+    
+    documentation_standard = fields.Selection([
+        ("naid", "NAID Standard"),
+        ("iso_15489", "ISO 15489"),
+        ("custom", "Custom Standard"),
+    ],
         string="Documentation Standard",
         default="naid",
+        required=True,
+        help="Documentation standard to follow for compliance"
     )
-
-    reporting_frequency = fields.Selection(
-        [
-            ("weekly", "Weekly"),
-            ("monthly", "Monthly"),
-            ("quarterly", "Quarterly"),
-            ("annually", "Annually"),
-        ],
-        string="Reporting Frequency",
-        default="quarterly",
-    )
-
-    # Required Documentation
+    
     chain_of_custody_required = fields.Boolean(
-        string="Chain of Custody Required", default=True
+        string="Chain of Custody Required",
+        default=True,
+        help="Chain of custody documentation is required"
     )
+    
     destruction_certificate_required = fields.Boolean(
-        string="Destruction Certificate Required", default=True
+        string="Destruction Certificate Required",
+        default=True,
+        help="Destruction certificates must be issued"
     )
-    audit_trail_required = fields.Boolean(string="Audit Trail Required", default=True)
-
-    # ============================================================================
-    # SECURITY & SAFETY
-    # ============================================================================
-
-    # Security Measures
-    security_level = fields.Selection(
-        [
-            ("basic", "Basic Security"),
-            ("enhanced", "Enhanced Security"),
-            ("maximum", "Maximum Security"),
-        ],
-        string="Security Level",
-        default="enhanced",
-    )
-
-    security_system_version = fields.Char(string="Security System Version")
-    monitoring_tools = fields.Text(string="Monitoring Tools")
-    backup_systems = fields.Boolean(string="Backup Systems", default=True)
-
-    # Safety Protocols
-    safety_protocols = fields.Text(string="Safety Protocols")
-    emergency_procedures = fields.Text(string="Emergency Procedures")
-    environmental_compliance = fields.Boolean(
-        string="Environmental Compliance", default=True
+    
+    witness_required = fields.Boolean(
+        string="Witness Required",
+        default=True,
+        help="Witnessed destruction is required for compliance"
     )
 
     # ============================================================================
-    # INSURANCE & LIABILITY
+    # REGULATORY & LEGAL
     # ============================================================================
-
-    # Currency Configuration
-    currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        default=lambda self: self.env.company.currency_id,
+    
+    regulatory_requirements = fields.Text(
+        string="Regulatory Requirements",
+        help="Specific regulatory requirements that must be met"
     )
-
-    # Insurance Coverage
-    insurance_coverage = fields.Monetary(
-        string="Insurance Coverage", currency_field="currency_id"
+    
+    legal_compliance_verified = fields.Boolean(
+        string="Legal Compliance Verified",
+        help="Legal and regulatory compliance has been verified"
     )
-    liability_limit = fields.Monetary(
-        string="Liability Limit", currency_field="currency_id"
+    
+    sox_compliance = fields.Boolean(
+        string="SOX Compliance",
+        help="Sarbanes-Oxley compliance requirements apply"
     )
-    bonding_amount = fields.Monetary(
-        string="Bonding Amount", currency_field="currency_id"
+    
+    hipaa_compliance = fields.Boolean(
+        string="HIPAA Compliance", 
+        help="HIPAA privacy and security requirements apply"
     )
-
-    # Legal Requirements
-    legal_requirements = fields.Text(string="Legal Requirements")
-    regulatory_compliance = fields.Boolean(string="Regulatory Compliance", default=True)
-
-    # ============================================================================
-    # PERFORMANCE METRICS
-    # ============================================================================
-
-    # Operational Metrics
-    destruction_volume = fields.Float(
-        string="Destruction Volume (tons)", digits=(10, 2)
+    
+    gdpr_compliance = fields.Boolean(
+        string="GDPR Compliance",
+        help="GDPR data protection requirements apply"
     )
-    processing_time = fields.Float(
-        string="Average Processing Time (hours)", digits=(5, 2)
-    )
-    customer_satisfaction = fields.Float(
-        string="Customer Satisfaction (%)", digits=(5, 2)
-    )
-
-    # Quality Metrics
-    quality_management_system = fields.Boolean(
-        string="Quality Management System", default=True
-    )
-    iso_certification = fields.Char(string="ISO Certification")
-    quality_score = fields.Float(string="Quality Score (%)", digits=(5, 2))
 
     # ============================================================================
-    # STAKEHOLDER MANAGEMENT
+    # PERFORMANCE MONITORING
     # ============================================================================
-
-    # Communication
-    customer_notifications = fields.Boolean(
-        string="Customer Notifications", default=True
+    
+    destruction_volume_ytd = fields.Float(
+        string="Destruction Volume YTD (lbs)",
+        digits=(12, 2),
+        help="Year-to-date destruction volume in pounds"
     )
-    stakeholder_communication = fields.Text(string="Stakeholder Communication")
-    public_disclosure = fields.Boolean(string="Public Disclosure", default=False)
-
-    # Vendor Management
-    vendor_compliance = fields.Boolean(string="Vendor Compliance", default=True)
-    supplier_audits = fields.Boolean(string="Supplier Audits", default=True)
-    third_party_certifications = fields.Text(string="Third Party Certifications")
+    
+    customer_satisfaction_score = fields.Float(
+        string="Customer Satisfaction (%)",
+        digits=(5, 2),
+        help="Customer satisfaction percentage from surveys"
+    )
+    
+    processing_time_avg = fields.Float(
+        string="Average Processing Time (hours)",
+        digits=(8, 2),
+        help="Average time from pickup to destruction completion"
+    )
+    
+    compliance_incidents = fields.Integer(
+        string="Compliance Incidents YTD",
+        help="Number of compliance incidents year-to-date"
+    )
 
     # ============================================================================
-    # CONTINUOUS IMPROVEMENT
+    # COMPUTED FIELDS
     # ============================================================================
-
-    improvement_plan = fields.Text(string="Improvement Plan")
-    lessons_learned = fields.Text(string="Lessons Learned")
-    best_practices = fields.Text(string="Best Practices")
-    training_requirements = fields.Text(string="Training Requirements")
+    
+    is_expired = fields.Boolean(
+        string="Is Expired",
+        compute="_compute_expiration_status",
+        store=True,
+        help="True if certification has expired"
+    )
+    
+    days_until_expiration = fields.Integer(
+        string="Days Until Expiration",
+        compute="_compute_expiration_status",
+        store=True,
+        help="Number of days until certification expires"
+    )
+    
+    compliance_status_color = fields.Integer(
+        string="Status Color",
+        compute="_compute_status_indicators",
+        help="Color indicator for compliance status"
+    )
+    
+    audit_status_display = fields.Char(
+        string="Audit Status",
+        compute="_compute_status_indicators",
+        help="Human readable audit status display"
+    )
 
     # ============================================================================
     # RELATIONSHIP FIELDS
-
     # ============================================================================
-    # AUTO-GENERATED FIELDS (from view analysis)
-    # ============================================================================
-    access_control_verified = fields.Char(string="Access Control Verified")
-    arch = fields.Char(string="Arch")
-    audit_date = fields.Date(string="Audit Date")
-    audit_frequency = fields.Char(string="Audit Frequency")
-    audit_reminder = fields.Char(string="Audit Reminder")
-    audit_required = fields.Char(string="Audit Required")
-    audit_result = fields.Char(string="Audit Result")
-    audit_scope = fields.Char(string="Audit Scope")
-    audit_type = fields.Selection(
-        [("normal", "Normal"), ("high", "High")], string="Audit Type", default="normal"
+    
+    # Core NAID relationships
+    certificate_ids = fields.One2many(
+        "naid.certificate",
+        "compliance_id",
+        string="Certificates",
+        help="NAID certificates issued under this compliance framework"
     )
-    auditor_name = fields.Char(string="Auditor Name")
-    auto_renewal = fields.Char(string="Auto Renewal")
-    automated_check = fields.Char(string="Automated Check")
-    background_checks = fields.Char(string="Background Checks")
-    benchmark = fields.Char(string="Benchmark")
-    certificate_issued = fields.Char(string="Certificate Issued")
-    certificate_number = fields.Integer(string="Certificate Number")
-    certificate_status = fields.Char(string="Certificate Status")
-    certificate_tracking = fields.Char(string="Certificate Tracking")
-    certificate_type = fields.Selection(
-        [("normal", "Normal"), ("high", "High")],
-        string="Certificate Type",
-        default="normal",
-    )
-    chain_of_custody = fields.Char(string="Chain Of Custody")
-    check_frequency = fields.Char(string="Check Frequency")
-    client_name = fields.Char(string="Client Name")
-    compliance_alerts = fields.Char(string="Compliance Alerts")
-    compliance_officer = fields.Char(string="Compliance Officer")
-    compliance_score = fields.Char(string="Compliance Score")
-    compliance_status = fields.Char(string="Compliance Status Details")
-    compliance_trend = fields.Char(string="Compliance Trend")
-    compliance_verified = fields.Char(string="Compliance Verified")
-    context = fields.Char(string="Context")
-    days_since_last_audit = fields.Char(string="Days Since Last Audit")
-    days_until_expiry = fields.Char(string="Days Until Expiry")
-    destruction_date = fields.Date(string="Destruction Date")
-    destruction_method = fields.Char(string="Destruction Method")
-    destruction_verification = fields.Char(string="Destruction Verification")
-    documentation_score = fields.Char(string="Documentation Score")
-    equipment_certification = fields.Char(string="Equipment Certification")
-    escalation_contacts = fields.Char(string="Escalation Contacts")
-    expiry_date = fields.Date(string="Expiry Date")
-    expiry_notification = fields.Char(string="Expiry Notification")
-    facility_manager = fields.Char(string="Facility Manager")
-    facility_name = fields.Char(string="Facility Name")
-    findings_count = fields.Integer(string="Findings Count")
-    help = fields.Char(string="Help")
-    implementation_notes = fields.Text(string="Implementation Notes")
-    information_handling = fields.Char(string="Information Handling")
-    interval_number = fields.Integer(string="Interval Number")
-    interval_type = fields.Selection(
-        [("normal", "Normal"), ("high", "High")],
-        string="Interval Type",
-        default="normal",
-    )
-    issue_date = fields.Date(string="Issue Date")
-    issuing_authority = fields.Char(string="Issuing Authority")
-    last_audit_date = fields.Date(string="Last Audit Date")
-    last_verified = fields.Char(string="Last Verified")
-    management_alerts = fields.Char(string="Management Alerts")
-    mandatory = fields.Char(string="Mandatory")
-    material_type = fields.Selection(
-        [("normal", "Normal"), ("high", "High")],
-        string="Material Type",
-        default="normal",
-    )
-    measurement_date = fields.Date(string="Measurement Date")
-    metric_type = fields.Selection(
-        [("normal", "Normal"), ("high", "High")], string="Metric Type", default="normal"
-    )
-    model = fields.Char(string="Model")
-    next_audit_date = fields.Date(string="Next Audit Date")
-    notes = fields.Text(string="Notes")
-    notification_recipients = fields.Char(string="Notification Recipients")
-    operational_score = fields.Char(string="Operational Score")
-    overall_compliance_score = fields.Char(string="Overall Compliance Score")
-    padding = fields.Char(string="Padding")
-    personnel_screening = fields.Char(string="Personnel Screening")
-    physical_security_score = fields.Char(string="Physical Security Score")
-    policy_type = fields.Selection(
-        [("normal", "Normal"), ("high", "High")], string="Policy Type", default="normal"
-    )
-    prefix = fields.Char(string="Prefix")
-    process_verification = fields.Char(string="Process Verification")
-    quality_control = fields.Char(string="Quality Control")
-    regulatory_notifications = fields.Char(string="Regulatory Notifications")
-    renewal_reminder = fields.Char(string="Renewal Reminder")
-    requirement_name = fields.Char(string="Requirement Name")
-    requirement_type = fields.Selection(
-        [("normal", "Normal"), ("high", "High")],
-        string="Requirement Type",
-        default="normal",
-    )
-    res_model = fields.Char(string="Res Model")
-    responsible_person = fields.Char(string="Responsible Person")
-    review_frequency_months = fields.Char(string="Review Frequency Months")
-    risk_level = fields.Char(string="Risk Level")
-    score = fields.Char(string="Score")
-    secure_storage = fields.Char(string="Secure Storage")
-    security_clearance = fields.Char(string="Security Clearance")
-    security_officer = fields.Char(string="Security Officer")
-    security_score = fields.Char(string="Security Score")
-    surveillance_system = fields.Char(string="Surveillance System")
-    third_party_auditor = fields.Char(string="Third Party Auditor")
-    training_completed = fields.Char(string="Training Completed")
-    trend = fields.Char(string="Trend")
-    variance = fields.Char(string="Variance")
-    verification_method = fields.Char(string="Verification Method")
-    view_mode = fields.Char(string="View Mode")
-    violation_consequences = fields.Integer(string="Violation Consequences")
-    witness_present = fields.Char(string="Witness Present")
-    # ============================================================================
-
-    # Core Relationships
-    certificate_id = fields.Many2one("naid.certificate", string="Certificate")
+    
     audit_log_ids = fields.One2many(
-        "naid.audit.log", "compliance_id", string="Audit Logs"
+        "naid.audit.log",
+        "compliance_id",
+        string="Audit Logs",
+        help="Detailed audit logs for this compliance record"
     )
+    
     checklist_ids = fields.One2many(
-        "naid.compliance.checklist", "compliance_id", string="Compliance Checklists"
+        "naid.compliance.checklist",
+        "compliance_id",
+        string="Compliance Checklists",
+        help="Compliance checklists and assessments"
+    )
+    
+    # Extended relationships
+    destruction_record_ids = fields.One2many(
+        "records.destruction",
+        "compliance_id",
+        string="Destruction Records",
+        help="Destruction records under this compliance framework"
+    )
+    
+    chain_custody_ids = fields.One2many(
+        "records.chain.custody",
+        "compliance_id",
+        string="Chain of Custody Records",
+        help="Chain of custody records for compliance tracking"
     )
 
-    # Mail Thread Framework Fields
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    # Mail Thread Framework Fields (REQUIRED)
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=lambda self: [("res_model", "=", self._name)],
+        auto_join=True,
+        groups="base.group_user"
     )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=lambda self: [("res_model", "=", self._name)],
+        groups="base.group_user"
+    )
+    
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=lambda self: [("model", "=", self._name)],
+        groups="base.group_user"
+    )
 
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-
+    
     @api.depends("expiration_date")
-    def _compute_days_until_expiration(self):
-        """Compute days until certification expires"""
+    def _compute_expiration_status(self):
+        """Compute expiration status and days until expiration"""
         today = fields.Date.today()
         for record in self:
             if record.expiration_date:
                 delta = record.expiration_date - today
                 record.days_until_expiration = delta.days
+                record.is_expired = record.expiration_date < today
             else:
                 record.days_until_expiration = 0
+                record.is_expired = False
 
-    @api.depends("expiration_date")
-    def _compute_expiration_status(self):
-        """Compute if certification is expired"""
+    @api.depends("next_audit_date")
+    def _compute_audit_timing(self):
+        """Compute days until next audit is due"""
         today = fields.Date.today()
         for record in self:
-            record.is_expired = (
-                record.expiration_date and record.expiration_date < today
-            )
+            if record.next_audit_date:
+                delta = record.next_audit_date - today
+                record.audit_due_days = delta.days
+            else:
+                record.audit_due_days = 0
 
-    @api.depends("audit_score", "quality_score")
-    def _compute_compliance_metrics(self):
-        """Compute overall compliance percentage"""
+    @api.depends("security_score", "process_score", "documentation_score", 
+                 "personnel_score", "equipment_score")
+    def _compute_compliance_scores(self):
+        """Compute overall compliance score from individual category scores"""
         for record in self:
             scores = [
-                score for score in [record.audit_score, record.quality_score] if score
+                record.security_score,
+                record.process_score, 
+                record.documentation_score,
+                record.personnel_score,
+                record.equipment_score
             ]
-            if scores:
-                record.compliance_percentage = sum(scores) / len(scores)
+            # Filter out zero scores to get average of completed assessments
+            valid_scores = [score for score in scores if score > 0]
+            if valid_scores:
+                record.overall_score = sum(valid_scores) / len(valid_scores)
             else:
-                record.compliance_percentage = 0.0
+                record.overall_score = 0.0
+
+    @api.depends("audit_log_ids.state")
+    def _compute_findings_metrics(self):
+        """Compute count of open findings from audit logs"""
+        for record in self:
+            open_findings = record.audit_log_ids.filtered(
+                lambda log: log.state in ['open', 'in_progress']
+            )
+            record.findings_count = len(open_findings)
+
+    @api.depends("state", "overall_score", "is_expired")
+    def _compute_status_indicators(self):
+        """Compute status display indicators and colors"""
+        for record in self:
+            # Color coding: 1=red, 2=orange, 3=yellow, 10=green, 4=blue
+            if record.is_expired or record.state == 'expired':
+                record.compliance_status_color = 1  # Red
+                record.audit_status_display = "Expired - Renewal Required"
+            elif record.state == 'non_compliant':
+                record.compliance_status_color = 1  # Red
+                record.audit_status_display = "Non-Compliant - Action Required"
+            elif record.state == 'under_review':
+                record.compliance_status_color = 2  # Orange
+                record.audit_status_display = "Under Review"
+            elif record.state == 'compliant':
+                if record.overall_score >= 95:
+                    record.compliance_status_color = 10  # Green
+                    record.audit_status_display = "Excellent Compliance"
+                elif record.overall_score >= 85:
+                    record.compliance_status_color = 3  # Yellow
+                    record.audit_status_display = "Good Compliance"
+                else:
+                    record.compliance_status_color = 2  # Orange
+                    record.audit_status_display = "Marginal Compliance"
+            else:
+                record.compliance_status_color = 4  # Blue
+                record.audit_status_display = "Pending Review"
 
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
 
     def action_start_audit(self):
-        """Start compliance audit process"""
+        """
+        Initiate comprehensive NAID compliance audit process.
+        
+        This method launches a structured audit workflow with automated
+        checklist generation, activity scheduling, and documentation
+        requirements based on the current NAID certification level.
+        
+        Returns:
+            dict: Action to open audit wizard
+        """
         self.ensure_one()
-        self.write(
-            {
-                "state": "under_review",
-                "check_date": fields.Date.today(),
-            }
+        
+        # Update state and tracking
+        self.write({
+            'state': 'under_review',
+            'last_audit_date': fields.Date.today(),
+        })
+        
+        # Create audit activity
+        self.activity_schedule(
+            'mail.mail_activity_data_todo',
+            summary=_('NAID Compliance Audit - %s') % self.name,
+            note=_('Comprehensive NAID %s compliance audit including security assessment, process verification, and documentation review.') % self.naid_level.upper(),
+            user_id=self.user_id.id or self.env.user.id,
+            date_deadline=fields.Date.today() + timedelta(days=7)
         )
+        
         return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Audit Started"),
-                "message": _("Compliance audit has been initiated."),
-                "type": "success",
-                "sticky": False,
-            },
+            'type': 'ir.actions.act_window',
+            'name': _('Conduct NAID Audit - %s') % self.name,
+            'res_model': 'naid.audit.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_compliance_id': self.id,
+                'default_audit_type': 'full',
+                'default_naid_level': self.naid_level,
+            }
         }
 
     def action_complete_audit(self):
-        """Complete compliance audit"""
+        """
+        Complete audit process and update compliance status.
+        
+        Validates audit results, updates compliance scores, and
+        determines new compliance status based on audit findings.
+        
+        Returns:
+            bool: True if audit completed successfully
+        """
         self.ensure_one()
-        if not self.audit_results:
-            raise UserError(_("Please enter audit results before completing."))
-
-        self.write(
-            {
-                "state": (
-                    "compliant" if self.compliance_percentage >= 80 else "non_compliant"
-                ),
-                "last_review_date": fields.Date.today(),
-                "next_review_date": fields.Date.today() + relativedelta(months=6),
-            }
-        )
-
+        
+        if not self.audit_findings:
+            raise UserError(_('Please enter audit findings before completing the audit.'))
+        
+        # Determine new state based on overall score
+        if self.overall_score >= 80:
+            new_state = 'compliant'
+            message = _('Audit completed successfully. Compliance status: COMPLIANT')
+        else:
+            new_state = 'non_compliant'
+            message = _('Audit completed. Compliance status: NON-COMPLIANT. Corrective action required.')
+        
+        # Calculate next audit date based on frequency
+        frequency_map = {
+            'monthly': 1,
+            'quarterly': 3, 
+            'semi_annual': 6,
+            'annual': 12,
+            'on_demand': 6  # Default to 6 months
+        }
+        months = frequency_map.get(self.audit_frequency, 6)
+        next_audit = fields.Date.today() + relativedelta(months=months)
+        
+        self.write({
+            'state': new_state,
+            'next_audit_date': next_audit,
+        })
+        
+        # Post completion message
+        self.message_post(body=message)
+        
         return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Audit Completed"),
-                "message": _("Compliance audit has been completed successfully."),
-                "type": "success",
-                "sticky": False,
-            },
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Audit Completed'),
+                'message': message,
+                'type': 'success' if new_state == 'compliant' else 'warning',
+            }
         }
 
-    def action_view_audit_logs(self):
-        """View related audit logs"""
+    def action_schedule_next_audit(self):
+        """
+        Schedule the next compliance audit based on requirements.
+        
+        Creates calendar event and activities for upcoming audit with
+        proper lead time for preparation and resource allocation.
+        
+        Returns:
+            dict: Action to view created calendar event
+        """
         self.ensure_one()
+        
+        if not self.next_audit_date:
+            raise UserError(_('Next audit date is not set. Please complete current audit first.'))
+        
+        # Create calendar event
+        event_vals = {
+            'name': _('NAID Compliance Audit - %s (%s)') % (self.name, self.naid_level.upper()),
+            'description': _('Scheduled NAID compliance audit for certification level %s') % self.naid_level.upper(),
+            'start': self.next_audit_date,
+            'stop': self.next_audit_date,
+            'user_id': self.user_id.id,
+            'partner_ids': [(6, 0, [self.user_id.partner_id.id])],
+            'categ_ids': [(6, 0, self.env.ref('records_management.calendar_event_category_audit').ids)],
+        }
+        
+        calendar_event = self.env['calendar.event'].create(event_vals)
+        
+        # Create preparation reminder
+        prep_date = self.next_audit_date - timedelta(days=14)
+        self.activity_schedule(
+            'mail.mail_activity_data_call',
+            summary=_('Prepare for NAID Audit - %s') % self.name,
+            note=_('Begin preparation for upcoming NAID compliance audit including documentation review and resource scheduling.'),
+            user_id=self.user_id.id,
+            date_deadline=prep_date
+        )
+        
+        self.message_post(
+            body=_('Next NAID compliance audit scheduled for %s') % self.next_audit_date.strftime('%Y-%m-%d')
+        )
+        
         return {
-            "type": "ir.actions.act_window",
-            "name": _("Audit Logs"),
-            "res_model": "naid.audit.log",
-            "view_mode": "tree,form",
-            "target": "current",
-            "domain": [("compliance_id", "=", self.id)],
+            'type': 'ir.actions.act_window',
+            'name': _('Scheduled Audit Event'),
+            'res_model': 'calendar.event',
+            'res_id': calendar_event.id,
+            'view_mode': 'form',
+            'target': 'current'
         }
 
     def action_generate_certificate(self):
-        """Generate compliance certificate"""
-        self.ensure_one()
-        if self.state != "compliant":
-            raise UserError(_("Can only generate certificates for compliant records."))
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Generate Certificate"),
-            "res_model": "naid.certificate",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_compliance_id": self.id,
-                "default_partner_id": self.company_id.partner_id.id,
-            },
-        }
-
-    def action_schedule_review(self):
-        """Schedule next compliance review"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Schedule Review"),
-            "res_model": "calendar.event",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_name": f"NAID Compliance Review - {self.name}",
-                "default_description": f"Scheduled compliance review for {self.name}",
-                "default_user_id": self.user_id.id,
-            },
-        }
-
-    def action_compliance_report(self):
         """
-        Generate comprehensive compliance report for regulatory documentation.
-
-        This method generates a detailed PDF report containing all compliance
-        information, audit results, and certification status. The report is
-        formatted according to NAID AAA standards and includes all necessary
-        documentation for regulatory compliance.
-
+        Generate NAID compliance certificate for compliant records.
+        
+        Creates official certification document with security features
+        and proper validation for regulatory compliance.
+        
         Returns:
-            dict: Action dictionary for PDF report generation
-
-        Report Contents:
-        - Current compliance status and certification level
-        - Audit results and findings summary
-        - Risk assessment and remediation plans
-        - Insurance coverage and liability information
-        - Performance metrics and quality scores
-        - Chain of custody documentation references
-
-        Usage Scenarios:
-        - Regulatory audit submissions
-        - Customer compliance verification
-        - Internal compliance monitoring
-        - Third-party certification reviews
+            dict: Action to open certificate generation wizard
         """
         self.ensure_one()
+        
+        if self.state != 'compliant':
+            raise UserError(_('Certificates can only be generated for compliant records.'))
+        
+        if not self.certification_date:
+            raise UserError(_('Certification date must be set before generating certificate.'))
+        
         return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.action_compliance_report_report",
-            "report_type": "qweb-pdf",
-            "data": {"ids": [self.id]},
-            "context": self.env.context,
-        }
-
-    def action_download_certificate(self):
-        """
-        Download official NAID compliance certificate as PDF document.
-
-        This method generates and downloads the official compliance certificate
-        with tamper-proof security features and digital signatures. The certificate
-        includes all required NAID AAA certification elements and can be used
-        for customer documentation and regulatory compliance.
-
-        Returns:
-            dict: Action dictionary for certificate PDF generation
-
-        Certificate Features:
-        - Digital signature for authenticity verification
-        - QR code linking to verification portal
-        - Tamper-evident security watermarks
-        - Complete compliance details and validity period
-        - Issuing authority information and contact details
-
-        Security Measures:
-        - Encrypted PDF with access controls
-        - Audit trail logging of certificate access
-        - Version control for certificate updates
-
-        Prerequisites:
-        - Compliance status must be 'compliant'
-        - Valid certification date and expiration date
-        - All required audit documentation completed
-        """
-        self.ensure_one()
-        if self.state != "compliant":
-            raise UserError(
-                _("Certificates can only be generated for compliant records.")
-            )
-
-        # Log certificate download for audit trail
-        self.message_post(
-            body=_("Compliance certificate downloaded by %s") % self.env.user.name
-        )
-
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.action_download_certificate_report",
-            "report_type": "qweb-pdf",
-            "data": {"ids": [self.id]},
-            "context": self.env.context,
-        }
-
-    def action_conduct_audit(self):
-        """
-        Initiate comprehensive NAID compliance audit process.
-
-        This method launches the audit wizard that guides users through the
-        complete NAID AAA audit process. It creates audit activities, schedules
-        required inspections, and initializes the compliance checklist system.
-
-        Returns:
-            dict: Action dictionary to open audit wizard
-
-        Audit Process:
-        1. Pre-audit preparation and documentation review
-        2. On-site inspection and process verification
-        3. Security and safety protocol assessment
-        4. Chain of custody validation
-        5. Equipment and facility certification
-        6. Personnel screening and training verification
-        7. Final audit report generation and scoring
-
-        Audit Components:
-        - Physical security assessment (access controls, surveillance)
-        - Process verification (destruction methods, witnessing)
-        - Documentation review (policies, procedures, records)
-        - Personnel evaluation (training, background checks)
-        - Equipment inspection (certification, maintenance)
-        - Customer notification and communication protocols
-
-        Post-Audit Actions:
-        - Generates findings report with corrective actions
-        - Updates compliance scores and certification status
-        - Schedules follow-up activities for non-conformances
-        - Creates certificate if audit is successful
-        """
-        self.ensure_one()
-
-        # Update audit tracking
-        self.write(
-            {
-                "state": "under_review",
-                "last_audit_date": fields.Date.today(),
+            'type': 'ir.actions.act_window',
+            'name': _('Generate NAID Certificate'),
+            'res_model': 'naid.certificate.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_compliance_id': self.id,
+                'default_certification_level': self.naid_level,
+                'default_certification_date': self.certification_date,
+                'default_expiration_date': self.expiration_date,
             }
-        )
-
-        # Create audit activity
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("NAID Compliance Audit - %s") % self.name,
-            note=_(
-                "Conduct comprehensive NAID AAA compliance audit including physical security, process verification, and documentation review."
-            ),
-            user_id=self.user_id.id or self.env.user.id,
-            date_deadline=fields.Date.today() + timedelta(days=1),
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Conduct NAID Compliance Audit"),
-            "res_model": "naid.compliance.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_compliance_id": self.id,
-                "default_audit_type": "full_audit",
-            },
         }
 
     def action_view_audit_history(self):
         """
-        Display comprehensive audit history and timeline for this compliance record.
-
-        This method opens a filtered view showing all historical audit activities,
-        findings, corrective actions, and compliance status changes. It provides
-        a complete audit trail for regulatory compliance and internal monitoring.
-
+        View complete audit history and timeline.
+        
+        Opens filtered view of all audit logs and activities
+        related to this compliance record with timeline view.
+        
         Returns:
-            dict: Action dictionary to open audit history view
-
-        History Contents:
-        - Chronological audit timeline with all activities
-        - Compliance status changes and transition reasons
-        - Audit findings and corrective action tracking
-        - Certificate generation and renewal history
-        - User activity logs with timestamps and details
-        - Document version control and update tracking
-
-        View Features:
-        - Filterable by date range, audit type, and user
-        - Exportable for regulatory reporting
-        - Searchable audit findings and actions
-        - Linked document access for detailed review
+            dict: Action to view audit history
         """
         self.ensure_one()
-
-        # Get related audit logs and activities
-        audit_logs = self.audit_log_ids
-        activities = self.activity_ids
-        messages = self.message_ids
-
+        
         return {
-            "type": "ir.actions.act_window",
-            "name": _("Audit History - %s") % self.name,
-            "res_model": "naid.audit.log",
-            "view_mode": "tree,form,timeline",
-            "domain": [("compliance_id", "=", self.id)],
-            "context": {
-                "search_default_group_by_date": 1,
-                "search_default_recent": 1,
-            },
+            'type': 'ir.actions.act_window',
+            'name': _('Audit History - %s') % self.name,
+            'res_model': 'naid.audit.log',
+            'view_mode': 'tree,form,timeline',
+            'domain': [('compliance_id', '=', self.id)],
+            'context': {
+                'search_default_group_by_date': 1,
+                'timeline_date_start': 'audit_date',
+                'timeline_date_stop': 'audit_date',
+            }
         }
 
-    def action_schedule_audit(self):
+    def action_renew_certification(self):
         """
-        Schedule next compliance audit based on certification requirements and risk assessment.
-
-        This method creates calendar events and activities for upcoming audit
-        requirements. It considers certification expiration dates, regulatory
-        requirements, and risk-based scheduling to ensure continuous compliance.
-
+        Initiate certification renewal process.
+        
+        Validates renewal eligibility and launches renewal workflow
+        with proper documentation and approval requirements.
+        
         Returns:
-            bool: True when audit successfully scheduled
-
-        Scheduling Logic:
-        - AAA certification: Quarterly audits required
-        - AA certification: Semi-annual audits required
-        - A certification: Annual audits required
-        - Risk-based adjustments for high-risk operations
-        - Regulatory requirement integration (SOX, HIPAA)
-
-        Created Activities:
-        - Pre-audit preparation reminders
-        - Audit execution scheduling
-        - Post-audit follow-up activities
-        - Certification renewal reminders
-
-        Notifications:
-        - Email alerts to compliance manager and stakeholders
-        - Calendar invitations for audit participants
-        - Automatic reminders based on configured frequency
+            dict: Action to open renewal wizard
         """
         self.ensure_one()
-
-        # Determine audit frequency based on NAID level
-        frequency_mapping = {
-            "aaa": 3,  # Quarterly
-            "aa": 6,  # Semi-annual
-            "a": 12,  # Annual
-            "pending": 1,  # Monthly until certified
+        
+        # Check renewal eligibility
+        if self.state != 'compliant':
+            raise UserError(_('Only compliant certifications can be renewed.'))
+        
+        # Check renewal window (typically 60 days before expiration)
+        renewal_window = self.expiration_date - timedelta(days=60)
+        if fields.Date.today() < renewal_window:
+            raise UserError(_('Renewal window opens 60 days before expiration (%s).') % renewal_window)
+        
+        if self.overall_score < 80:
+            raise UserError(_('Overall compliance score (%.1f%%) must be at least 80%% for renewal.') % self.overall_score)
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Renew NAID Certification'),
+            'res_model': 'naid.certification.renewal.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_compliance_id': self.id,
+                'default_current_level': self.naid_level,
+                'default_current_score': self.overall_score,
+                'default_expiration_date': self.expiration_date,
+            }
         }
-
-        months_offset = frequency_mapping.get(self.naid_level, 6)
-        next_audit_date = fields.Date.today() + relativedelta(months=months_offset)
-
-        # Update next review date
-        self.write(
-            {
-                "next_review_date": next_audit_date,
-                "next_audit_date": next_audit_date,
-            }
-        )
-
-        # Create calendar event for audit
-        calendar_event = self.env["calendar.event"].create(
-            {
-                "name": _("NAID Compliance Audit - %s") % self.name,
-                "description": _("Scheduled NAID %s compliance audit for %s")
-                % (self.naid_level.upper(), self.name),
-                "start": next_audit_date,
-                "stop": next_audit_date,
-                "user_id": self.user_id.id,
-                "partner_ids": [(6, 0, [self.user_id.partner_id.id])],
-            }
-        )
-
-        # Create preparation activity
-        self.activity_schedule(
-            "mail.mail_activity_data_call",
-            summary=_("Prepare for NAID Audit - %s") % self.name,
-            note=_(
-                "Prepare documentation and schedule resources for upcoming NAID compliance audit."
-            ),
-            user_id=self.user_id.id,
-            date_deadline=next_audit_date - timedelta(days=7),
-        )
-
-        self.message_post(
-            body=_("Next NAID compliance audit scheduled for %s (NAID %s level)")
-            % (next_audit_date.strftime("%Y-%m-%d"), self.naid_level.upper())
-        )
-
-        return True
 
     def action_view_destruction_records(self):
         """
-        View all destruction records linked to this compliance framework.
-
-        This method displays destruction records that fall under this compliance
-        framework, showing the complete chain of custody and destruction process
-        documentation required for NAID AAA compliance.
-
+        View destruction records under this compliance framework.
+        
+        Shows all destruction activities that fall under this
+        compliance record with filtering and analysis options.
+        
         Returns:
-            dict: Action dictionary to open destruction records view
-
-        Related Records:
-        - Destruction certificates issued under this compliance framework
-        - Chain of custody records for destroyed materials
-        - Witness verification documents and signatures
-        - Shredding service records and completion certificates
-        - Customer notifications and acknowledgments
-
-        Compliance Integration:
-        - Links destruction records to audit trail requirements
-        - Validates witness requirements and security protocols
-        - Tracks destruction method compliance with NAID standards
-        - Maintains documentation for regulatory inspections
+            dict: Action to view related destruction records
         """
         self.ensure_one()
-
-        # Find related destruction records through various relationships
-        destruction_records = self.env["records.destruction"].search(
-            [
-                "|",
-                "|",
-                ("compliance_id", "=", self.id),
-                ("certificate_id.compliance_id", "=", self.id),
-                ("naid_level", "=", self.naid_level),
-            ]
-        )
-
+        
         return {
-            "type": "ir.actions.act_window",
-            "name": _("Destruction Records - %s Compliance") % self.naid_level.upper(),
-            "res_model": "records.destruction",
-            "view_mode": "tree,form,pivot,graph",
-            "domain": [("id", "in", destruction_records.ids)],
-            "context": {
-                "search_default_group_by_compliance": 1,
-                "search_default_recent": 1,
-            },
+            'type': 'ir.actions.act_window',
+            'name': _('Destruction Records - %s Compliance') % self.naid_level.upper(),
+            'res_model': 'records.destruction',
+            'view_mode': 'tree,form,pivot,graph',
+            'domain': [('compliance_id', '=', self.id)],
+            'context': {
+                'search_default_group_by_month': 1,
+                'search_default_completed': 1,
+            }
         }
 
-    def action_view_certificates(self):
+    def action_compliance_dashboard(self):
         """
-        View all certificates generated under this compliance framework.
-
-        This method displays all compliance and destruction certificates
-        that have been issued under this NAID compliance framework,
-        providing a comprehensive view of certification history and status.
-
+        Open comprehensive compliance dashboard.
+        
+        Displays KPIs, trends, and analytics for this compliance
+        record with drill-down capabilities and export options.
+        
         Returns:
-            dict: Action dictionary to open certificates view
-
-        Certificate Types:
-        - NAID compliance certificates (AAA, AA, A levels)
-        - Destruction completion certificates
-        - Chain of custody certificates
-        - Third-party audit certificates
-        - Insurance and bonding certificates
-
-        Certificate Management:
-        - Track issuance dates and expiration periods
-        - Monitor certificate validity and renewal requirements
-        - Maintain digital signatures and security features
-        - Provide certificate verification and authentication
+            dict: Action to open compliance dashboard
         """
         self.ensure_one()
-
-        # Find all certificates related to this compliance record
-        certificates = self.env["naid.certificate"].search(
-            ["|", ("compliance_id", "=", self.id), ("naid_level", "=", self.naid_level)]
-        )
-
+        
         return {
-            "type": "ir.actions.act_window",
-            "name": _("Certificates - %s") % self.name,
-            "res_model": "naid.certificate",
-            "view_mode": "tree,form,kanban",
-            "domain": [("id", "in", certificates.ids)],
-            "context": {
-                "search_default_group_by_type": 1,
-                "search_default_valid": 1,
-            },
-        }
-
-    def action_renew_certificate(self):
-        """
-        Initiate certificate renewal process for expiring NAID compliance certification.
-
-        This method starts the renewal workflow for NAID compliance certificates
-        that are approaching expiration. It validates current compliance status,
-        schedules required audits, and guides through the renewal documentation.
-
-        Returns:
-            dict: Action dictionary to open certificate renewal wizard
-
-        Renewal Process:
-        1. Validate current compliance status and audit results
-        2. Review and update compliance documentation
-        3. Schedule renewal audit if required
-        4. Submit renewal application to NAID
-        5. Process renewal fee and administrative requirements
-        6. Generate new certificate upon approval
-
-        Renewal Requirements:
-        - Current compliance status must be 'compliant'
-        - All audit findings must be resolved
-        - Insurance and bonding must be current
-        - Personnel training must be up to date
-        - Equipment certifications must be valid
-
-        Prerequisites:
-        - Certificate must be within renewal window (typically 60 days before expiration)
-        - All corrective actions from previous audits must be completed
-        - Current compliance percentage must meet minimum thresholds
-        """
-        self.ensure_one()
-
-        # Validate renewal eligibility
-        if self.state != "compliant":
-            raise UserError(
-                _(
-                    "Certificate renewal is only available for compliant records. "
-                    "Please complete any outstanding corrective actions first."
-                )
-            )
-
-        if not self.expiration_date:
-            raise UserError(_("No expiration date set for this compliance record."))
-
-        # Check if within renewal window (60 days before expiration)
-        renewal_window = self.expiration_date - timedelta(days=60)
-        if fields.Date.today() < renewal_window:
-            raise UserError(
-                _(
-                    "Certificate renewal is not yet available. "
-                    "Renewal window opens on %s (60 days before expiration)."
-                )
-                % renewal_window.strftime("%Y-%m-%d")
-            )
-
-        # Check compliance percentage threshold
-        if self.compliance_percentage < 80:
-            raise UserError(
-                _(
-                    "Compliance percentage (%.1f%%) is below the minimum threshold (80%%) "
-                    "required for certificate renewal."
-                )
-                % self.compliance_percentage
-            )
-
-        # Create renewal activity
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("Certificate Renewal - %s") % self.name,
-            note=_(
-                "Process NAID certificate renewal including documentation review and audit scheduling."
-            ),
-            user_id=self.user_id.id,
-            date_deadline=self.expiration_date - timedelta(days=30),
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Renew NAID Certificate - %s") % self.naid_level.upper(),
-            "res_model": "naid.certificate.renewal.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_compliance_id": self.id,
-                "default_current_level": self.naid_level,
-                "default_expiration_date": self.expiration_date,
-            },
-        }
-
-    def action_view_audit_details(self):
-        """
-        Display detailed audit information including findings, scores, and corrective actions.
-
-        This method opens a comprehensive view of audit details, providing
-        in-depth analysis of compliance assessments, findings, and improvement
-        recommendations. It serves as the central hub for audit management.
-
-        Returns:
-            dict: Action dictionary to open detailed audit view
-
-        Audit Details Include:
-        - Comprehensive audit findings and non-conformances
-        - Scoring breakdown by compliance category
-        - Photographic evidence and documentation
-        - Corrective action plans and implementation timelines
-        - Follow-up audit requirements and scheduling
-        - Auditor notes and recommendations
-
-        Analysis Features:
-        - Trend analysis comparing multiple audits
-        - Risk assessment and impact evaluation
-        - Compliance gap analysis and improvement opportunities
-        - Regulatory mapping to specific requirements
-        - Cost-benefit analysis for corrective actions
-        """
-        self.ensure_one()
-
-        # Get comprehensive audit data
-        audit_data = {
-            "findings": self.audit_findings,
-            "corrective_actions": self.corrective_actions,
-            "remediation_plan": self.remediation_plan,
-            "risk_assessment": self.risk_assessment,
-            "audit_score": self.audit_score,
-            "compliance_percentage": self.compliance_percentage,
-        }
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Audit Details - %s") % self.name,
-            "res_model": "naid.audit.detail",
-            "view_mode": "form",
-            "target": "current",
-            "context": {
-                "default_compliance_id": self.id,
-                "audit_data": audit_data,
-                "show_analysis": True,
-            },
+            'type': 'ir.actions.act_window',
+            'name': _('Compliance Dashboard - %s') % self.name,
+            'res_model': 'naid.compliance.dashboard',
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {
+                'default_compliance_id': self.id,
+                'dashboard_mode': True,
+            }
         }
 
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
 
-    @api.constrains("check_date", "expiration_date")
-    def _check_date_validity(self):
-        """Ensure dates are logical"""
+    @api.constrains('certification_date', 'expiration_date')
+    def _check_certification_dates(self):
+        """Validate certification date logic"""
         for record in self:
-            if (
-                record.check_date
-                and record.expiration_date
-                and record.check_date > record.expiration_date
-            ):
-                raise ValidationError(_("Check date cannot be after expiration date."))
+            if record.certification_date and record.expiration_date:
+                if record.certification_date >= record.expiration_date:
+                    raise ValidationError(_('Certification date must be before expiration date.'))
 
-    @api.constrains("audit_score", "quality_score", "compliance_percentage")
-    def _check_percentage_values(self):
-        """Ensure percentage values are between 0 and 100"""
+    @api.constrains('overall_score', 'security_score', 'process_score', 
+                    'documentation_score', 'personnel_score', 'equipment_score')
+    def _check_score_ranges(self):
+        """Ensure all scores are within valid percentage ranges"""
         for record in self:
-            for field_name, field_value in [
-                ("audit_score", record.audit_score),
-                ("quality_score", record.quality_score),
-                ("compliance_percentage", record.compliance_percentage),
-            ]:
-                if field_value and (field_value < 0 or field_value > 100):
-                    raise ValidationError(
-                        _(
-                            f"{field_name.replace('_', ' ').title()} must be between 0 and 100."
-                        )
-                    )
+            score_fields = {
+                'Overall Score': record.overall_score,
+                'Security Score': record.security_score,
+                'Process Score': record.process_score,
+                'Documentation Score': record.documentation_score,
+                'Personnel Score': record.personnel_score,
+                'Equipment Score': record.equipment_score,
+            }
+            
+            for field_name, score in score_fields.items():
+                if score and (score < 0 or score > 100):
+                    raise ValidationError(_('%s must be between 0 and 100 percent.') % field_name)
 
-    @api.constrains("insurance_coverage", "liability_limit")
-    def _check_monetary_values(self):
-        """Ensure monetary values are positive"""
+    @api.constrains('insurance_coverage', 'liability_limit', 'bonding_amount')
+    def _check_monetary_amounts(self):
+        """Ensure monetary amounts are positive"""
         for record in self:
             if record.insurance_coverage and record.insurance_coverage < 0:
-                raise ValidationError(_("Insurance coverage must be positive."))
+                raise ValidationError(_('Insurance coverage must be a positive amount.'))
             if record.liability_limit and record.liability_limit < 0:
-                raise ValidationError(_("Liability limit must be positive."))
+                raise ValidationError(_('Liability limit must be a positive amount.'))
+            if record.bonding_amount and record.bonding_amount < 0:
+                raise ValidationError(_('Bonding amount must be a positive amount.'))
 
     # ============================================================================
     # LIFECYCLE METHODS
@@ -1093,1110 +990,145 @@ class NaidCompliance(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        """
-        Override create to set default values and initialize compliance records.
-
-        This method handles the creation of new NAID compliance records with proper
-        sequence generation and default value assignment. It ensures that all new
-        compliance records have unique identifiers and proper initial states.
-
-        Args:
-            vals_list (list): List of dictionaries containing field values for new records
-
-        Returns:
-            recordset: Created compliance records
-
-        Business Logic:
-        - Generates unique compliance check names using sequence
-        - Sets default compliance manager to current user
-        - Initializes audit trail with creation event
-        - Validates required NAID certification parameters
-
-        Security Considerations:
-        - Verifies user has permission to create compliance records
-        - Logs creation event in audit trail
-        - Applies company-specific security rules
-        """
+        """Override create to generate sequence and set defaults"""
         for vals in vals_list:
-            if not vals.get("name"):
-                vals["name"] = self.env["ir.sequence"].next_by_code(
-                    "naid.compliance"
-                ) or _("New")
-
-            # Initialize compliance tracking
-            if not vals.get("check_date"):
-                vals["check_date"] = fields.Date.today()
-
-            # Set default NAID level if not specified
-            if not vals.get("naid_level"):
-                vals["naid_level"] = "pending"
-
+            if not vals.get('name') or vals['name'] == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('naid.compliance') or _('New')
+            
+            # Set default next audit date based on frequency
+            if not vals.get('next_audit_date') and vals.get('audit_frequency'):
+                frequency_map = {'monthly': 1, 'quarterly': 3, 'semi_annual': 6, 'annual': 12}
+                months = frequency_map.get(vals['audit_frequency'], 3)
+                vals['next_audit_date'] = fields.Date.today() + relativedelta(months=months)
+        
         records = super().create(vals_list)
-
-        # Post creation messages for audit trail
+        
+        # Create initial audit activity
         for record in records:
-            record.message_post(
-                body=_("NAID Compliance record created with level: %s")
-                % dict(record._fields["naid_level"].selection).get(record.naid_level)
+            record.activity_schedule(
+                'mail.mail_activity_data_todo',
+                summary=_('Initial NAID Compliance Setup - %s') % record.name,
+                note=_('Complete initial compliance setup and documentation for NAID %s certification.') % record.naid_level,
+                user_id=record.user_id.id,
+                date_deadline=fields.Date.today() + timedelta(days=30)
             )
-
+            
+            record.message_post(
+                body=_('NAID Compliance record created for %s certification level.') % record.naid_level.upper()
+            )
+        
         return records
 
     def write(self, vals):
-        """
-        Override write to track compliance status changes and maintain audit trail.
-
-        This method intercepts updates to compliance records and ensures proper
-        audit logging for all significant changes. It tracks state transitions,
-        certification level changes, and audit score updates.
-
-        Args:
-            vals (dict): Dictionary of field values to update
-
-        Returns:
-            bool: True if update successful
-
-        Tracked Changes:
-        - Compliance status transitions (pending -> compliant, etc.)
-        - NAID certification level changes
-        - Audit score updates and compliance percentage changes
-        - Expiration date modifications
-        - Security level adjustments
-
-        Audit Trail:
-        - Logs all state changes with timestamps
-        - Records user responsible for changes
-        - Maintains compliance history for regulatory reporting
-        """
-        # Track significant changes for audit trail
-        tracked_fields = {
-            "state": "Compliance Status",
-            "naid_level": "NAID Certification Level",
-            "compliance_level": "Current NAID Level",
-            "audit_score": "Audit Score",
-            "quality_score": "Quality Score",
-            "security_level": "Security Level",
-            "expiration_date": "Expiration Date",
-        }
-
-        for record in self:
-            for field, label in tracked_fields.items():
-                if field in vals and field in record._fields:
-                    old_value = getattr(record, field)
-                    new_value = vals[field]
-
-                    if old_value != new_value:
-                        # Format values for display
-                        if hasattr(record._fields[field], "selection"):
-                            old_display = dict(record._fields[field].selection).get(
-                                old_value, old_value
-                            )
-                            new_display = dict(record._fields[field].selection).get(
-                                new_value, new_value
-                            )
-                        else:
-                            old_display = old_value
-                            new_display = new_value
-
-                        record.message_post(
-                            body=_("%s changed from '%s' to '%s'")
-                            % (label, old_display, new_display)
-                        )
-
-        # Handle state-specific logic
-        if "state" in vals:
+        """Override write to track important changes"""
+        # Track state changes
+        if 'state' in vals:
             for record in self:
-                if vals["state"] == "compliant":
-                    # Auto-schedule next review when becoming compliant
-                    if not record.next_review_date:
-                        vals["next_review_date"] = fields.Date.today() + relativedelta(
-                            months=6
-                        )
-
-                elif vals["state"] == "non_compliant":
-                    # Create corrective action activity
-                    record.activity_schedule(
-                        "mail.mail_activity_data_todo",
-                        summary=_("Corrective Actions Required"),
-                        note=_(
-                            "This compliance record requires corrective actions to meet NAID standards."
-                        ),
-                        user_id=record.user_id.id or self.env.user.id,
-                        date_deadline=fields.Date.today() + timedelta(days=7),
-                    )
-
-        return super().write(vals)
-
-    # ============================================================================
-    # AUTO-GENERATED ACTION METHODS (with enhanced docstrings)
-    # ============================================================================
-
-    def action_compliance_report(self):
-        """
-        Generate comprehensive compliance report for regulatory documentation.
-
-        This method generates a detailed PDF report containing all compliance
-        information, audit results, and certification status. The report is
-        formatted according to NAID AAA standards and includes all necessary
-        documentation for regulatory compliance.
-
-        Returns:
-            dict: Action dictionary for PDF report generation
-
-        Report Contents:
-        - Current compliance status and certification level
-        - Audit results and findings summary
-        - Risk assessment and remediation plans
-        - Insurance coverage and liability information
-        - Performance metrics and quality scores
-        - Chain of custody documentation references
-
-        Usage Scenarios:
-        - Regulatory audit submissions
-        - Customer compliance verification
-        - Internal compliance monitoring
-        - Third-party certification reviews
-        """
-        self.ensure_one()
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.action_compliance_report_report",
-            "report_type": "qweb-pdf",
-            "data": {"ids": [self.id]},
-            "context": self.env.context,
-        }
-
-    def action_download_certificate(self):
-        """
-        Download official NAID compliance certificate as PDF document.
-
-        This method generates and downloads the official compliance certificate
-        with tamper-proof security features and digital signatures. The certificate
-        includes all required NAID AAA certification elements and can be used
-        for customer documentation and regulatory compliance.
-
-        Returns:
-            dict: Action dictionary for certificate PDF generation
-
-        Certificate Features:
-        - Digital signature for authenticity verification
-        - QR code linking to verification portal
-        - Tamper-evident security watermarks
-        - Complete compliance details and validity period
-        - Issuing authority information and contact details
-
-        Security Measures:
-        - Encrypted PDF with access controls
-        - Audit trail logging of certificate access
-        - Version control for certificate updates
-
-        Prerequisites:
-        - Compliance status must be 'compliant'
-        - Valid certification date and expiration date
-        - All required audit documentation completed
-        """
-        self.ensure_one()
-        if self.state != "compliant":
-            raise UserError(
-                _("Certificates can only be generated for compliant records.")
-            )
-
-        # Log certificate download for audit trail
-        self.message_post(
-            body=_("Compliance certificate downloaded by %s") % self.env.user.name
-        )
-
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.action_download_certificate_report",
-            "report_type": "qweb-pdf",
-            "data": {"ids": [self.id]},
-            "context": self.env.context,
-        }
-
-    def action_conduct_audit(self):
-        """
-        Initiate comprehensive NAID compliance audit process.
-
-        This method launches the audit wizard that guides users through the
-        complete NAID AAA audit process. It creates audit activities, schedules
-        required inspections, and initializes the compliance checklist system.
-
-        Returns:
-            dict: Action dictionary to open audit wizard
-
-        Audit Process:
-        1. Pre-audit preparation and documentation review
-        2. On-site inspection and process verification
-        3. Security and safety protocol assessment
-        4. Chain of custody validation
-        5. Equipment and facility certification
-        6. Personnel screening and training verification
-        7. Final audit report generation and scoring
-
-        Audit Components:
-        - Physical security assessment (access controls, surveillance)
-        - Process verification (destruction methods, witnessing)
-        - Documentation review (policies, procedures, records)
-        - Personnel evaluation (training, background checks)
-        - Equipment inspection (certification, maintenance)
-        - Customer notification and communication protocols
-
-        Post-Audit Actions:
-        - Generates findings report with corrective actions
-        - Updates compliance scores and certification status
-        - Schedules follow-up activities for non-conformances
-        - Creates certificate if audit is successful
-        """
-        self.ensure_one()
-
-        # Update audit tracking
-        self.write(
-            {
-                "state": "under_review",
-                "last_audit_date": fields.Date.today(),
-            }
-        )
-
-        # Create audit activity
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("NAID Compliance Audit - %s") % self.name,
-            note=_(
-                "Conduct comprehensive NAID AAA compliance audit including physical security, process verification, and documentation review."
-            ),
-            user_id=self.user_id.id or self.env.user.id,
-            date_deadline=fields.Date.today() + timedelta(days=1),
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Conduct NAID Compliance Audit"),
-            "res_model": "naid.compliance.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_compliance_id": self.id,
-                "default_audit_type": "full_audit",
-            },
-        }
-
-    def action_view_audit_history(self):
-        """
-        Display comprehensive audit history and timeline for this compliance record.
-
-        This method opens a filtered view showing all historical audit activities,
-        findings, corrective actions, and compliance status changes. It provides
-        a complete audit trail for regulatory compliance and internal monitoring.
-
-        Returns:
-            dict: Action dictionary to open audit history view
-
-        History Contents:
-        - Chronological audit timeline with all activities
-        - Compliance status changes and transition reasons
-        - Audit findings and corrective action tracking
-        - Certificate generation and renewal history
-        - User activity logs with timestamps and details
-        - Document version control and update tracking
-
-        View Features:
-        - Filterable by date range, audit type, and user
-        - Exportable for regulatory reporting
-        - Searchable audit findings and actions
-        - Linked document access for detailed review
-        """
-        self.ensure_one()
-
-        # Get related audit logs and activities
-        audit_logs = self.audit_log_ids
-        activities = self.activity_ids
-        messages = self.message_ids
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Audit History - %s") % self.name,
-            "res_model": "naid.audit.log",
-            "view_mode": "tree,form,timeline",
-            "domain": [("compliance_id", "=", self.id)],
-            "context": {
-                "search_default_group_by_date": 1,
-                "search_default_recent": 1,
-            },
-        }
-
-    def action_schedule_audit(self):
-        """
-        Schedule next compliance audit based on certification requirements and risk assessment.
-
-        This method creates calendar events and activities for upcoming audit
-        requirements. It considers certification expiration dates, regulatory
-        requirements, and risk-based scheduling to ensure continuous compliance.
-
-        Returns:
-            bool: True when audit successfully scheduled
-
-        Scheduling Logic:
-        - AAA certification: Quarterly audits required
-        - AA certification: Semi-annual audits required
-        - A certification: Annual audits required
-        - Risk-based adjustments for high-risk operations
-        - Regulatory requirement integration (SOX, HIPAA)
-
-        Created Activities:
-        - Pre-audit preparation reminders
-        - Audit execution scheduling
-        - Post-audit follow-up activities
-        - Certification renewal reminders
-
-        Notifications:
-        - Email alerts to compliance manager and stakeholders
-        - Calendar invitations for audit participants
-        - Automatic reminders based on configured frequency
-        """
-        self.ensure_one()
-
-        # Determine audit frequency based on NAID level
-        frequency_mapping = {
-            "aaa": 3,  # Quarterly
-            "aa": 6,  # Semi-annual
-            "a": 12,  # Annual
-            "pending": 1,  # Monthly until certified
-        }
-
-        months_offset = frequency_mapping.get(self.naid_level, 6)
-        next_audit_date = fields.Date.today() + relativedelta(months=months_offset)
-
-        # Update next review date
-        self.write(
-            {
-                "next_review_date": next_audit_date,
-                "next_audit_date": next_audit_date,
-            }
-        )
-
-        # Create calendar event for audit
-        calendar_event = self.env["calendar.event"].create(
-            {
-                "name": _("NAID Compliance Audit - %s") % self.name,
-                "description": _("Scheduled NAID %s compliance audit for %s")
-                % (self.naid_level.upper(), self.name),
-                "start": next_audit_date,
-                "stop": next_audit_date,
-                "user_id": self.user_id.id,
-                "partner_ids": [(6, 0, [self.user_id.partner_id.id])],
-            }
-        )
-
-        # Create preparation activity
-        self.activity_schedule(
-            "mail.mail_activity_data_call",
-            summary=_("Prepare for NAID Audit - %s") % self.name,
-            note=_(
-                "Prepare documentation and schedule resources for upcoming NAID compliance audit."
-            ),
-            user_id=self.user_id.id,
-            date_deadline=next_audit_date - timedelta(days=7),
-        )
-
-        self.message_post(
-            body=_("Next NAID compliance audit scheduled for %s (NAID %s level)")
-            % (next_audit_date.strftime("%Y-%m-%d"), self.naid_level.upper())
-        )
-
-        return True
-
-    def action_view_destruction_records(self):
-        """
-        View all destruction records linked to this compliance framework.
-
-        This method displays destruction records that fall under this compliance
-        framework, showing the complete chain of custody and destruction process
-        documentation required for NAID AAA compliance.
-
-        Returns:
-            dict: Action dictionary to open destruction records view
-
-        Related Records:
-        - Destruction certificates issued under this compliance framework
-        - Chain of custody records for destroyed materials
-        - Witness verification documents and signatures
-        - Shredding service records and completion certificates
-        - Customer notifications and acknowledgments
-
-        Compliance Integration:
-        - Links destruction records to audit trail requirements
-        - Validates witness requirements and security protocols
-        - Tracks destruction method compliance with NAID standards
-        - Maintains documentation for regulatory inspections
-        """
-        self.ensure_one()
-
-        # Find related destruction records through various relationships
-        destruction_records = self.env["records.destruction"].search(
-            [
-                "|",
-                "|",
-                ("compliance_id", "=", self.id),
-                ("certificate_id.compliance_id", "=", self.id),
-                ("naid_level", "=", self.naid_level),
-            ]
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Destruction Records - %s Compliance") % self.naid_level.upper(),
-            "res_model": "records.destruction",
-            "view_mode": "tree,form,pivot,graph",
-            "domain": [("id", "in", destruction_records.ids)],
-            "context": {
-                "search_default_group_by_compliance": 1,
-                "search_default_recent": 1,
-            },
-        }
-
-    def action_view_certificates(self):
-        """
-        View all certificates generated under this compliance framework.
-
-        This method displays all compliance and destruction certificates
-        that have been issued under this NAID compliance framework,
-        providing a comprehensive view of certification history and status.
-
-        Returns:
-            dict: Action dictionary to open certificates view
-
-        Certificate Types:
-        - NAID compliance certificates (AAA, AA, A levels)
-        - Destruction completion certificates
-        - Chain of custody certificates
-        - Third-party audit certificates
-        - Insurance and bonding certificates
-
-        Certificate Management:
-        - Track issuance dates and expiration periods
-        - Monitor certificate validity and renewal requirements
-        - Maintain digital signatures and security features
-        - Provide certificate verification and authentication
-        """
-        self.ensure_one()
-
-        # Find all certificates related to this compliance record
-        certificates = self.env["naid.certificate"].search(
-            ["|", ("compliance_id", "=", self.id), ("naid_level", "=", self.naid_level)]
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Certificates - %s") % self.name,
-            "res_model": "naid.certificate",
-            "view_mode": "tree,form,kanban",
-            "domain": [("id", "in", certificates.ids)],
-            "context": {
-                "search_default_group_by_type": 1,
-                "search_default_valid": 1,
-            },
-        }
-
-    def action_renew_certificate(self):
-        """
-        Initiate certificate renewal process for expiring NAID compliance certification.
-
-        This method starts the renewal workflow for NAID compliance certificates
-        that are approaching expiration. It validates current compliance status,
-        schedules required audits, and guides through the renewal documentation.
-
-        Returns:
-            dict: Action dictionary to open certificate renewal wizard
-
-        Renewal Process:
-        1. Validate current compliance status and audit results
-        2. Review and update compliance documentation
-        3. Schedule renewal audit if required
-        4. Submit renewal application to NAID
-        5. Process renewal fee and administrative requirements
-        6. Generate new certificate upon approval
-
-        Renewal Requirements:
-        - Current compliance status must be 'compliant'
-        - All audit findings must be resolved
-        - Insurance and bonding must be current
-        - Personnel training must be up to date
-        - Equipment certifications must be valid
-
-        Prerequisites:
-        - Certificate must be within renewal window (typically 60 days before expiration)
-        - All corrective actions from previous audits must be completed
-        - Current compliance percentage must meet minimum thresholds
-        """
-        self.ensure_one()
-
-        # Validate renewal eligibility
-        if self.state != "compliant":
-            raise UserError(
-                _(
-                    "Certificate renewal is only available for compliant records. "
-                    "Please complete any outstanding corrective actions first."
-                )
-            )
-
-        if not self.expiration_date:
-            raise UserError(_("No expiration date set for this compliance record."))
-
-        # Check if within renewal window (60 days before expiration)
-        renewal_window = self.expiration_date - timedelta(days=60)
-        if fields.Date.today() < renewal_window:
-            raise UserError(
-                _(
-                    "Certificate renewal is not yet available. "
-                    "Renewal window opens on %s (60 days before expiration)."
-                )
-                % renewal_window.strftime("%Y-%m-%d")
-            )
-
-        # Check compliance percentage threshold
-        if self.compliance_percentage < 80:
-            raise UserError(
-                _(
-                    "Compliance percentage (%.1f%%) is below the minimum threshold (80%%) "
-                    "required for certificate renewal."
-                )
-                % self.compliance_percentage
-            )
-
-        # Create renewal activity
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("Certificate Renewal - %s") % self.name,
-            note=_(
-                "Process NAID certificate renewal including documentation review and audit scheduling."
-            ),
-            user_id=self.user_id.id,
-            date_deadline=self.expiration_date - timedelta(days=30),
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Renew NAID Certificate - %s") % self.naid_level.upper(),
-            "res_model": "naid.certificate.renewal.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_compliance_id": self.id,
-                "default_current_level": self.naid_level,
-                "default_expiration_date": self.expiration_date,
-            },
-        }
-
-    def action_view_audit_details(self):
-        """
-        Display detailed audit information including findings, scores, and corrective actions.
-
-        This method opens a comprehensive view of audit details, providing
-        in-depth analysis of compliance assessments, findings, and improvement
-        recommendations. It serves as the central hub for audit management.
-
-        Returns:
-            dict: Action dictionary to open detailed audit view
-
-        Audit Details Include:
-        - Comprehensive audit findings and non-conformances
-        - Scoring breakdown by compliance category
-        - Photographic evidence and documentation
-        - Corrective action plans and implementation timelines
-        - Follow-up audit requirements and scheduling
-        - Auditor notes and recommendations
-
-        Analysis Features:
-        - Trend analysis comparing multiple audits
-        - Risk assessment and impact evaluation
-        - Compliance gap analysis and improvement opportunities
-        - Regulatory mapping to specific requirements
-        - Cost-benefit analysis for corrective actions
-        """
-        self.ensure_one()
-
-        # Get comprehensive audit data
-        audit_data = {
-            "findings": self.audit_findings,
-            "corrective_actions": self.corrective_actions,
-            "remediation_plan": self.remediation_plan,
-            "risk_assessment": self.risk_assessment,
-            "audit_score": self.audit_score,
-            "compliance_percentage": self.compliance_percentage,
-        }
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Audit Details - %s") % self.name,
-            "res_model": "naid.audit.detail",
-            "view_mode": "form",
-            "target": "current",
-            "context": {
-                "default_compliance_id": self.id,
-                "audit_data": audit_data,
-                "show_analysis": True,
-            },
-        }
-
-    # ============================================================================
-    # VALIDATION METHODS
-    # ============================================================================
-
-    @api.constrains("check_date", "expiration_date")
-    def _check_date_validity(self):
-        """Ensure dates are logical"""
-        for record in self:
-            if (
-                record.check_date
-                and record.expiration_date
-                and record.check_date > record.expiration_date
-            ):
-                raise ValidationError(_("Check date cannot be after expiration date."))
-
-    @api.constrains("audit_score", "quality_score", "compliance_percentage")
-    def _check_percentage_values(self):
-        """Ensure percentage values are between 0 and 100"""
-        for record in self:
-            for field_name, field_value in [
-                ("audit_score", record.audit_score),
-                ("quality_score", record.quality_score),
-                ("compliance_percentage", record.compliance_percentage),
-            ]:
-                if field_value and (field_value < 0 or field_value > 100):
-                    raise ValidationError(
-                        _(
-                            f"{field_name.replace('_', ' ').title()} must be between 0 and 100."
+                old_state = record.state
+                new_state = vals['state']
+                if old_state != new_state:
+                    record.message_post(
+                        body=_('Compliance status changed from %s to %s') % (
+                            dict(record._fields['state'].selection)[old_state],
+                            dict(record._fields['state'].selection)[new_state]
                         )
                     )
-
-    @api.constrains("insurance_coverage", "liability_limit")
-    def _check_monetary_values(self):
-        """Ensure monetary values are positive"""
-        for record in self:
-            if record.insurance_coverage and record.insurance_coverage < 0:
-                raise ValidationError(_("Insurance coverage must be positive."))
-            if record.liability_limit and record.liability_limit < 0:
-                raise ValidationError(_("Liability limit must be positive."))
-
-    # ============================================================================
-    # LIFECYCLE METHODS
-    # ============================================================================
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        """
-        Override create to set default values and initialize compliance records.
-
-        This method handles the creation of new NAID compliance records with proper
-        sequence generation and default value assignment. It ensures that all new
-        compliance records have unique identifiers and proper initial states.
-
-        Args:
-            vals_list (list): List of dictionaries containing field values for new records
-
-        Returns:
-            recordset: Created compliance records
-
-        Business Logic:
-        - Generates unique compliance check names using sequence
-        - Sets default compliance manager to current user
-        - Initializes audit trail with creation event
-        - Validates required NAID certification parameters
-
-        Security Considerations:
-        - Verifies user has permission to create compliance records
-        - Logs creation event in audit trail
-        - Applies company-specific security rules
-        """
-        for vals in vals_list:
-            if not vals.get("name"):
-                vals["name"] = self.env["ir.sequence"].next_by_code(
-                    "naid.compliance"
-                ) or _("New")
-
-            # Initialize compliance tracking
-            if not vals.get("check_date"):
-                vals["check_date"] = fields.Date.today()
-
-            # Set default NAID level if not specified
-            if not vals.get("naid_level"):
-                vals["naid_level"] = "pending"
-
-        records = super().create(vals_list)
-
-        # Post creation messages for audit trail
-        for record in records:
-            record.message_post(
-                body=_("NAID Compliance record created with level: %s")
-                % dict(record._fields["naid_level"].selection).get(record.naid_level)
-            )
-
-        return records
-
-    def write(self, vals):
-        """
-        Override write to track compliance status changes and maintain audit trail.
-
-        This method intercepts updates to compliance records and ensures proper
-        audit logging for all significant changes. It tracks state transitions,
-        certification level changes, and audit score updates.
-
-        Args:
-            vals (dict): Dictionary of field values to update
-
-        Returns:
-            bool: True if update successful
-
-        Tracked Changes:
-        - Compliance status transitions (pending -> compliant, etc.)
-        - NAID certification level changes
-        - Audit score updates and compliance percentage changes
-        - Expiration date modifications
-        - Security level adjustments
-
-        Audit Trail:
-        - Logs all state changes with timestamps
-        - Records user responsible for changes
-        - Maintains compliance history for regulatory reporting
-        """
-        # Track significant changes for audit trail
-        tracked_fields = {
-            "state": "Compliance Status",
-            "naid_level": "NAID Certification Level",
-            "compliance_level": "Current NAID Level",
-            "audit_score": "Audit Score",
-            "quality_score": "Quality Score",
-            "security_level": "Security Level",
-            "expiration_date": "Expiration Date",
-        }
-
-        for record in self:
-            for field, label in tracked_fields.items():
-                if field in vals and field in record._fields:
-                    old_value = getattr(record, field)
-                    new_value = vals[field]
-
-                    if old_value != new_value:
-                        # Format values for display
-                        if hasattr(record._fields[field], "selection"):
-                            old_display = dict(record._fields[field].selection).get(
-                                old_value, old_value
-                            )
-                            new_display = dict(record._fields[field].selection).get(
-                                new_value, new_value
-                            )
-                        else:
-                            old_display = old_value
-                            new_display = new_value
-
-                        record.message_post(
-                            body=_("%s changed from '%s' to '%s'")
-                            % (label, old_display, new_display)
-                        )
-
-        # Handle state-specific logic
-        if "state" in vals:
+        
+        # Track NAID level changes
+        if 'naid_level' in vals:
             for record in self:
-                if vals["state"] == "compliant":
-                    # Auto-schedule next review when becoming compliant
-                    if not record.next_review_date:
-                        vals["next_review_date"] = fields.Date.today() + relativedelta(
-                            months=6
+                if record.naid_level != vals['naid_level']:
+                    record.message_post(
+                        body=_('NAID certification level changed from %s to %s') % (
+                            dict(record._fields['naid_level'].selection)[record.naid_level],
+                            dict(record._fields['naid_level'].selection)[vals['naid_level']]
                         )
-
-                elif vals["state"] == "non_compliant":
-                    # Create corrective action activity
-                    record.activity_schedule(
-                        "mail.mail_activity_data_todo",
-                        summary=_("Corrective Actions Required"),
-                        note=_(
-                            "This compliance record requires corrective actions to meet NAID standards."
-                        ),
-                        user_id=record.user_id.id or self.env.user.id,
-                        date_deadline=fields.Date.today() + timedelta(days=7),
                     )
-
-        return super().write(vals)
-                    )
-
+        
+        # Update renewal date when expiration changes
+        if 'expiration_date' in vals and vals['expiration_date']:
+            vals['renewal_date'] = vals['expiration_date'] - timedelta(days=60)
+        
         return super().write(vals)
 
+    def unlink(self):
+        """Override unlink to prevent deletion of active compliance records"""
+        for record in self:
+            if record.state == 'compliant':
+                raise UserError(_('Cannot delete compliant certification records. Archive instead.'))
+        return super().unlink()
+
     # ============================================================================
-    # AUTO-GENERATED ACTION METHODS (with enhanced docstrings)
+    # UTILITY METHODS
     # ============================================================================
 
-    def action_compliance_report(self):
+    def _get_audit_requirements(self):
         """
-        Generate comprehensive compliance report for regulatory documentation.
-
-        This method generates a detailed PDF report containing all compliance
-        information, audit results, and certification status. The report is
-        formatted according to NAID AAA standards and includes all necessary
-        documentation for regulatory compliance.
-
+        Get specific audit requirements based on NAID level.
+        
         Returns:
-            dict: Action dictionary for PDF report generation
-
-        Report Contents:
-        - Current compliance status and certification level
-        - Audit results and findings summary
-        - Risk assessment and remediation plans
-        - Insurance coverage and liability information
-        - Performance metrics and quality scores
-        - Chain of custody documentation references
-
-        Usage Scenarios:
-        - Regulatory audit submissions
-        - Customer compliance verification
-        - Internal compliance monitoring
-        - Third-party certification reviews
+            dict: Audit requirements by category
         """
         self.ensure_one()
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.action_compliance_report_report",
-            "report_type": "qweb-pdf",
-            "data": {"ids": [self.id]},
-            "context": self.env.context,
+        
+        base_requirements = {
+            'security': ['Physical access controls', 'Surveillance systems', 'Personnel screening'],
+            'process': ['Destruction methods', 'Chain of custody', 'Witness procedures'],
+            'documentation': ['Policy compliance', 'Record keeping', 'Reporting procedures'],
+            'personnel': ['Training records', 'Background checks', 'Certification status'],
+            'equipment': ['Equipment certification', 'Maintenance records', 'Calibration status']
         }
+        
+        # Add specific requirements based on NAID level
+        if self.naid_level == 'aaa':
+            base_requirements['security'].extend(['Biometric access', 'Armed security'])
+            base_requirements['process'].extend(['Dual witness', 'Video recording'])
+        elif self.naid_level == 'aa':
+            base_requirements['security'].extend(['Badge access', 'Security guard'])
+            base_requirements['process'].extend(['Single witness required'])
+        
+        return base_requirements
 
-    def action_download_certificate(self):
+    def _calculate_compliance_risk(self):
         """
-        Download official NAID compliance certificate as PDF document.
-
-        This method generates and downloads the official compliance certificate
-        with tamper-proof security features and digital signatures. The certificate
-        includes all required NAID AAA certification elements and can be used
-        for customer documentation and regulatory compliance.
-
+        Calculate compliance risk score based on various factors.
+        
         Returns:
-            dict: Action dictionary for certificate PDF generation
-
-        Certificate Features:
-        - Digital signature for authenticity verification
-        - QR code linking to verification portal
-        - Tamper-evident security watermarks
-        - Complete compliance details and validity period
-        - Issuing authority information and contact details
-
-        Security Measures:
-        - Encrypted PDF with access controls
-        - Audit trail logging of certificate access
-        - Version control for certificate updates
-
-        Prerequisites:
-        - Compliance status must be 'compliant'
-        - Valid certification date and expiration date
-        - All required audit documentation completed
+            tuple: (risk_score, risk_level)
         """
         self.ensure_one()
-        if self.state != "compliant":
-            raise UserError(
-                _("Certificates can only be generated for compliant records.")
-            )
-
-        # Log certificate download for audit trail
-        self.message_post(
-            body=_("Compliance certificate downloaded by %s") % self.env.user.name
-        )
-
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.action_download_certificate_report",
-            "report_type": "qweb-pdf",
-            "data": {"ids": [self.id]},
-            "context": self.env.context,
-        }
-
-    def action_conduct_audit(self):
-        """
-        Initiate comprehensive NAID compliance audit process.
-
-        This method launches the audit wizard that guides users through the
-        complete NAID AAA audit process. It creates audit activities, schedules
-        required inspections, and initializes the compliance checklist system.
-
-        Returns:
-            dict: Action dictionary to open audit wizard
-
-        Audit Process:
-        1. Pre-audit preparation and documentation review
-        2. On-site inspection and process verification
-        3. Security and safety protocol assessment
-        4. Chain of custody validation
-        5. Equipment and facility certification
-        6. Personnel screening and training verification
-        7. Final audit report generation and scoring
-
-        Audit Components:
-        - Physical security assessment (access controls, surveillance)
-        - Process verification (destruction methods, witnessing)
-        - Documentation review (policies, procedures, records)
-        - Personnel evaluation (training, background checks)
-        - Equipment inspection (certification, maintenance)
-        - Customer notification and communication protocols
-
-        Post-Audit Actions:
-        - Generates findings report with corrective actions
-        - Updates compliance scores and certification status
-        - Schedules follow-up activities for non-conformances
-        - Creates certificate if audit is successful
-        """
-        self.ensure_one()
-
-        # Update audit tracking
-        self.write(
-            {
-                "state": "under_review",
-                "last_audit_date": fields.Date.today(),
-            }
-        )
-
-        # Create audit activity
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("NAID Compliance Audit - %s") % self.name,
-            note=_(
-                "Conduct comprehensive NAID AAA compliance audit including physical security, process verification, and documentation review."
-            ),
-            user_id=self.user_id.id or self.env.user.id,
-            date_deadline=fields.Date.today() + timedelta(days=1),
-        )
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Conduct NAID Compliance Audit"),
-            "res_model": "naid.compliance.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_compliance_id": self.id,
-                "default_audit_type": "full_audit",
-            },
-        }
-
-    def action_view_audit_history(self):
-        """
-        Display comprehensive audit history and timeline for this compliance record.
-
-        This method opens a filtered view showing all historical audit activities,
-        findings, corrective actions, and compliance status changes. It provides
-        a complete audit trail for regulatory compliance and internal monitoring.
-
-        Returns:
-            dict: Action dictionary to open audit history view
-
-        History Contents:
-        - Chronological audit timeline with all activities
-        - Compliance status changes and transition reasons
-        - Audit findings and corrective action tracking
-        - Certificate generation and renewal history
-        - User activity logs with timestamps and details
-        - Document version control and update tracking
-
-        View Features:
-        - Filterable by date range, audit type, and user
-        - Exportable for regulatory reporting
-        - Searchable audit findings and actions
-        - Linked document access for detailed review
-        """
-        self.ensure_one()
-
-        # Get related audit logs and activities
-        audit_logs = self.audit_log_ids
-        activities = self.activity_ids
-        messages = self.message_ids
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Audit History - %s") % self.name,
-            "res_model": "naid.audit.log",
-            "view_mode": "tree,form,timeline",
-            "domain": [("compliance_id", "=", self.id)],
-            "context": {
-                "search_default_group_by_date": 1,
-                "search_default_recent": 1,
-            },
-        }
-
-    def action_schedule_audit(self):
-        """
-        Schedule next compliance audit based on certification requirements and risk assessment.
-
-        This method creates calendar events and activities for upcoming audit
-        requirements. It considers certification expiration dates, regulatory
-        requirements, and risk-based scheduling to ensure continuous compliance.
-
-        Returns:
-            bool: True when audit successfully scheduled
-
-        Scheduling Logic:
-        - AAA certification: Quarterly audits required
-        - AA certification: Semi-annual audits required
-        - A certification: Annual audits required
-        - Risk-based adjustments for high-risk operations
-        - Regulatory requirement integration (SOX, HIPAA)
-
-        Created Activities:
-        - Pre-audit preparation reminders
-        - Audit execution scheduling
-        - Post-audit follow-up activities
-        - Certification renewal reminders
-
-        Notifications:
-        - Email alerts to compliance manager and stakeholders
-        - Calendar invitations for audit participants
-        - Automatic reminders based on configured frequency
-        """
-        self.ensure_one()
-
-        # Determine audit frequency based on NAID level
-        frequency_mapping = {
-            "aaa": 3,  # Quarterly
-            "aa": 6,  # Semi-annual
-            "a": 12,  # Annual
-            "pending": 1,  # Monthly until certified
-        }
-
-        months_offset = frequency_mapping.get(self.naid_level, 6)
-        next_audit_date = fields.Date.today() + relativedelta(months=months_offset)
-
-        # Update next review date
-        self.write(
-            {
-                "next_review_date": next_audit_date,
-                "next_audit_date": next_audit_date,
-            }
-        )
-
-        # Create calendar event for audit
-        calendar_event = self.env["calendar.event"].create(
-            {
-                "name": _("NAID Compliance Audit - %s") % self.name,
-                "description": _("Scheduled NAID %s compliance audit for %s")
-                % (self.naid_level.upper(), self.name),
-                "start": next_audit_date,
-                "stop": next_audit_date,
-                "user_id": self.user_id.id,
-                "partner_ids": [(6, 0, [self.user_id.partner_id.id])],
-            }
-        )
-
-        # Create preparation activity
-        self.activity_schedule(
-            "mail.mail_activity_data_call",
-            summary=_("Prepare for NAID Audit - %s") % self.name,
-            note=_(
-                "Prepare documentation and schedule resources for upcoming NAID compliance audit."
-            ),
-            user_id=self.user_id.id,
-            date_deadline=next_audit_date - timedelta(days=7),
-        )
-
-        self.message_post(
-            body=_("Next NAID compliance audit scheduled for %s (NAID %s level)")
-            % (next_audit_date.strftime("%Y-%m-%d"), self.naid_level.upper())
-        )
-
-        return True
+        
+        risk_factors = []
+        
+        # Expiration risk
+        if self.days_until_expiration <= 30:
+            risk_factors.append(25)
+        elif self.days_until_expiration <= 60:
+            risk_factors.append(15)
+        
+        # Score-based risk
+        if self.overall_score < 70:
+            risk_factors.append(30)
+        elif self.overall_score < 85:
+            risk_factors.append(15)
+        
+        # Findings risk
+        if self.findings_count > 5:
+            risk_factors.append(20)
+        elif self.findings_count > 0:
+            risk_factors.append(10)
+        
+        # Audit overdue risk
+        if self.audit_due_days < 0:
+            risk_factors.append(25)
+        
+        risk_score = sum(risk_factors)
+        
+        if risk_score >= 50:
+            risk_level = 'high'
+        elif risk_score >= 25:
+            risk_level = 'medium'
+        else:
+            risk_level = 'low'
+        
+        return risk_score, risk_level

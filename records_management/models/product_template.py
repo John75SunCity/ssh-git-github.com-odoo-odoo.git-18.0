@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 
 
 class ProductTemplate(models.Model):
@@ -39,7 +39,9 @@ class ProductTemplate(models.Model):
     external_service_id = fields.Char(string="External Service ID")
     sync_enabled = fields.Boolean(string="Sync Enabled", default=True)
     api_integration = fields.Boolean(string="API Integration", default=False)
-    webhook_notifications = fields.Boolean(string="Webhook Notifications", default=False)
+    webhook_notifications = fields.Boolean(
+        string="Webhook Notifications", default=False
+    )
 
     # ============================================================================
     # SERVICE SPECIFICATIONS
@@ -62,7 +64,9 @@ class ProductTemplate(models.Model):
     requires_appointment = fields.Boolean(string="Requires Appointment", default=False)
     advance_notice_days = fields.Integer(string="Advance Notice (days)", default=1)
     service_location = fields.Selection(
-        [("onsite", "On-Site"), ("offsite", "Off-Site"), ("both", "Both")], string="Service Location", default="offsite"
+        [("onsite", "On-Site"), ("offsite", "Off-Site"), ("both", "Both")],
+        string="Service Location",
+        default="offsite",
     )
 
     # ============================================================================
@@ -73,9 +77,15 @@ class ProductTemplate(models.Model):
     sox_compliant = fields.Boolean(string="SOX Compliant", default=False)
     iso_certified = fields.Boolean(string="ISO Certified", default=False)
 
-    security_clearance_required = fields.Boolean(string="Security Clearance Required", default=False)
-    background_check_required = fields.Boolean(string="Background Check Required", default=False)
-    certificate_of_destruction = fields.Boolean(string="Certificate of Destruction", default=False)
+    security_clearance_required = fields.Boolean(
+        string="Security Clearance Required", default=False
+    )
+    background_check_required = fields.Boolean(
+        string="Background Check Required", default=False
+    )
+    certificate_of_destruction = fields.Boolean(
+        string="Certificate of Destruction", default=False
+    )
     audit_trail_provided = fields.Boolean(string="Audit Trail Provided", default=True)
 
     # ============================================================================
@@ -94,6 +104,16 @@ class ProductTemplate(models.Model):
     # ============================================================================
     # PRICING & BILLING
     # ============================================================================
+    list_price = fields.Monetary(
+        string="Sales Price", default=0.0, currency_field="currency_id"
+    )
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        required=True,
+        default=lambda self: self.env.company.currency_id,
+    )
+
     pricing_model = fields.Selection(
         [
             ("fixed", "Fixed Price"),
@@ -124,34 +144,57 @@ class ProductTemplate(models.Model):
 
     service_hours_start = fields.Float(string="Service Hours Start", default=8.0)
     service_hours_end = fields.Float(string="Service Hours End", default=17.0)
-    emergency_service_available = fields.Boolean(string="Emergency Service Available", default=False)
+    emergency_service_available = fields.Boolean(
+        string="Emergency Service Available", default=False
+    )
 
     # ============================================================================
     # QUALITY & PERFORMANCE
     # ============================================================================
     sla_response_time = fields.Float(string="SLA Response Time (hours)", default=24.0)
-    sla_completion_time = fields.Float(string="SLA Completion Time (hours)", default=72.0)
+    sla_completion_time = fields.Float(
+        string="SLA Completion Time (hours)", default=72.0
+    )
     quality_metrics = fields.Text(string="Quality Metrics")
     performance_benchmarks = fields.Text(string="Performance Benchmarks")
 
     # Customer satisfaction tracking
-    customer_rating = fields.Float(string="Customer Rating", compute="_compute_customer_rating")
-    total_reviews = fields.Integer(string="Total Reviews", compute="_compute_total_reviews")
+    customer_rating = fields.Float(
+        string="Customer Rating", compute="_compute_customer_rating"
+    )
+    total_reviews = fields.Integer(
+        string="Total Reviews", compute="_compute_total_reviews"
+    )
 
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
     @api.depends("message_ids")
     def _compute_customer_rating(self):
-        # Placeholder for customer rating calculation
+        """Compute average customer rating from feedback records"""
         for record in self:
-            record.customer_rating = 4.5  # Default rating
+            # Get customer feedback records related to this product template
+            feedback_records = self.env["customer.feedback"].search(
+                [("product_template_id", "=", record.id), ("rating", ">", 0)]
+            )
+
+            if feedback_records:
+                total_rating = sum(
+                    int(feedback.rating) for feedback in feedback_records
+                )
+                record.customer_rating = total_rating / len(feedback_records)
+            else:
+                record.customer_rating = 0.0
 
     @api.depends("message_ids")
     def _compute_total_reviews(self):
-        # Placeholder for total reviews calculation
+        """Compute total number of customer reviews for this service"""
         for record in self:
-            record.total_reviews = 0
+            # Count customer feedback records related to this product template
+            feedback_count = self.env["customer.feedback"].search_count(
+                [("product_template_id", "=", record.id)]
+            )
+            record.total_reviews = feedback_count
 
     @api.depends(
         "availability_monday",
@@ -226,7 +269,7 @@ class ProductTemplate(models.Model):
             self.availability_sunday,
         ]
 
-        return availability_fields[weekday]
+        return bool(availability_fields[weekday])
 
     def calculate_service_price(self, quantity=1, rush_order=False):
         """Calculate service price based on quantity and options"""
@@ -234,14 +277,24 @@ class ProductTemplate(models.Model):
 
         # Apply bulk discount
         if quantity >= self.bulk_discount_threshold and self.bulk_discount_rate:
-            base_price *= 1 - self.bulk_discount_rate / 100
+            base_price *= max(0, 1 - self.bulk_discount_rate / 100)
 
-        # Apply rush order surcharge
-        if rush_order and self.rush_order_surcharge:
-            base_price *= 1 + self.rush_order_surcharge / 100
+        # Apply rush order surcharge, ensuring negative surcharges are not allowed
+        rush_surcharge = (
+            self.rush_order_surcharge
+            if self.rush_order_surcharge and self.rush_order_surcharge > 0
+            else 0
+        )
+        if rush_order and rush_surcharge:
+            base_price *= 1 + rush_surcharge / 100
 
         # Apply minimum service charge
-        total_price = max(base_price * quantity, self.minimum_service_charge or 0)
+        min_charge = (
+            self.minimum_service_charge
+            if self.minimum_service_charge is not None
+            else 0
+        )
+        total_price = max(base_price * quantity, min_charge)
 
         return total_price + (self.setup_fee or 0)
 
@@ -257,7 +310,11 @@ class ProductTemplate(models.Model):
     @api.constrains("bulk_discount_rate", "rush_order_surcharge")
     def _check_percentage_values(self):
         for record in self:
-            if record.bulk_discount_rate and (record.bulk_discount_rate < 0 or record.bulk_discount_rate > 100):
-                raise ValidationError(_("Bulk discount rate must be between 0 and 100."))
+            if record.bulk_discount_rate and (
+                record.bulk_discount_rate < 0 or record.bulk_discount_rate > 100
+            ):
+                raise ValidationError(
+                    _("Bulk discount rate must be between 0 and 100.")
+                )
             if record.rush_order_surcharge and record.rush_order_surcharge < 0:
                 raise ValidationError(_("Rush order surcharge cannot be negative."))

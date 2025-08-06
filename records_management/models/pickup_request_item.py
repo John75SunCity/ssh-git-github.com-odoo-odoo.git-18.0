@@ -89,11 +89,16 @@ class PickupRequestItem(models.Model):
     # Common fields
     description = fields.Text()
     notes = fields.Text()
-    date = fields.Date(default=lambda self: fields.Date.today())
+    date = fields.Date(default=fields.Date.today)
 
     def action_confirm(self):
         """
         Confirm the record by setting its state to 'confirmed'.
+
+        This method transitions the pickup request item from 'draft' to 'confirmed' state,
+        indicating that the item has been reviewed and approved for processing.
+        """
+        self.write({"state": "confirmed"})
 
     def action_done(self):
         """
@@ -101,15 +106,8 @@ class PickupRequestItem(models.Model):
 
         This method updates the state of the item to 'done', which may trigger workflow transitions,
         notifications, or integration with inventory and billing systems. Additional business logic
-        such as audit logging, inventory updates, or delivery confirmation may be implemented here
-        in the future as required by business processes.
+        may be added here as needed.
         """
         self.write({"state": "done"})
-        - May notify followers or trigger activity scheduling if configured.
-        - Intended to be called when the item is ready for the next step in the pickup workflow.
-        """
-        self.write({"state": "confirmed"})
-
-    def action_done(self):
-        """Mark as done"""
+        # Mark as done
         self.write({"state": "done"})

@@ -151,5 +151,3 @@ class PickupRoute(models.Model):
                 vals["name"] = _("New Record")
             vals["date_modified"] = fields.Datetime.now()
         return super(PickupRoute, self).create(vals_list)
-            vals["date_modified"] = fields.Datetime.now()
-        return super(PickupRoute, self).create(vals_list)
