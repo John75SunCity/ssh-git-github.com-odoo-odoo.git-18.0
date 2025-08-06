@@ -7,11 +7,6 @@ class FieldLabelCustomization(models.Model):
     _name = "field.label.customization"
     _description = "Field Label Customization"
     _inherit = ["mail.thread", "mail.activity.mixin"]
-                            fields_list.append(
-                                f"{field_name} ({field.string or field_name})"
-                            )
-                    record.available_fields = "\n".join(sorted(fields_list))
-                except:tivity.mixin"]
     _order = "name desc"
     _rec_name = "name"
 
@@ -26,6 +21,7 @@ class FieldLabelCustomization(models.Model):
         "res.company", string="Company", default=lambda self: self.env.company
     )
     user_id = fields.Many2one(
+        "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
@@ -151,61 +147,51 @@ class FieldLabelCustomization(models.Model):
         default="Container Number",
         help="Custom label for container/box number field",
     )
-
     label_item_description = fields.Char(
         string="Item Description Label",
         default="Item Description",
         help="Custom label for item description field",
     )
-
     label_content_description = fields.Char(
         string="Content Description Label",
         default="Content Description",
         help="Custom label for content description field",
     )
-
     label_date_from = fields.Char(
         string="Date From Label",
         default="Date From",
         help="Custom label for start date field",
     )
-
     label_date_to = fields.Char(
         string="Date To Label",
         default="Date To",
         help="Custom label for end date field",
     )
-
     label_record_type = fields.Char(
         string="Record Type Label",
         default="Record Type",
         help="Custom label for record type classification field",
     )
-
     label_confidentiality = fields.Char(
         string="Confidentiality Label",
         default="Confidentiality",
         help="Custom label for confidentiality/security level field",
     )
-
     label_project_code = fields.Char(
         string="Project Code Label",
         default="Project Code",
         help="Custom label for project/cost center code field",
     )
-
     label_client_reference = fields.Char(
         string="Client Reference Label",
         default="Client Reference",
         help="Custom label for client reference/matter number field",
     )
-
     label_authorized_by = fields.Char(
         string="Authorized By Label",
         default="Authorized By",
         help="Custom label for authorization/approval field",
     )
-
     label_created_by_dept = fields.Char(
         string="Created By Department Label",
         default="Created By Department",
@@ -239,6 +225,12 @@ class FieldLabelCustomization(models.Model):
     approval_required = fields.Boolean(string="Approval Required", default=False)
     approved_by = fields.Many2one("res.users", string="Approved By")
     approval_date = fields.Datetime(string="Approval Date")
+
+    # ============================================================================
+    # BATCH-GENERATED FIELDS (From Ultimate Batch Fixer)
+    # ============================================================================
+    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    department_id = fields.Many2one("hr.department", string="Department", tracking=True)
 
     # ============================================================================
     # RELATIONSHIP FIELDS
@@ -282,11 +274,16 @@ class FieldLabelCustomization(models.Model):
                     fields_list = []
                     for field_name, field in model._fields.items():
                         if not field_name.startswith("_") and field_name not in [
+                            "id",
+                            "create_date",
+                            "write_date",
+                            "create_uid",
+                            "write_uid",
                         ]:
                             fields_list.append(
                                 f"{field_name} ({field.string or field_name})"
                             )
-                    record.available_fields = ""\n".join(sorted(fields_list))"
+                    record.available_fields = "\n".join(sorted(fields_list))
                 except:
                     record.available_fields = "Invalid model selected"
             else:
@@ -357,11 +354,20 @@ class FieldLabelCustomization(models.Model):
                 fields_info = {}
                 for field_name, field in model._fields.items():
                     if not field_name.startswith("_") and field_name not in [
+                        "id",
+                        "create_date",
+                        "write_date",
+                        "create_uid",
+                        "write_uid",
                     ]:
                         fields_info[field_name] = {
+                            "string": field.string or field_name,
+                            "type": field.type,
+                            "help": field.help or "",
                         }
                 result[model_name] = {
                     "description": getattr(model, "_description", model_name),
+                    "fields": fields_info,
                 }
             except:
                 continue
@@ -379,15 +385,12 @@ class FieldLabelCustomization(models.Model):
                     available_models = record._get_records_management_models()
                     raise ValidationError(
                         _(
-                            "Model '%s' is not part of the records_management module."
-
-""
-                            "Available models:"
+                            "Model '%s' is not part of the records_management module.\n"
+                            "Available models:\n%s"
                         )
                         % (
                             record.model_name,
-                            ""
-".join("
+                            "\n".join(
                                 available_models[:10] + ["..."]
                                 if len(available_models) > 10
                                 else available_models
@@ -422,59 +425,22 @@ class FieldLabelCustomization(models.Model):
                             if not f.startswith("_")
                             and f
                             not in [
+                                "id",
+                                "create_date",
+                                "write_date",
+                                "create_uid",
+                                "write_uid",
                             ]
                         ]
                         raise ValidationError(
                             _(
-                                "Field '%s' does not exist in model '%s'."
-
-""
-                                "Available fields:"
+                                "Field '%s' does not exist in model '%s'.\n"
+                                "Available fields:\n%s"
                             )
                             % (
                                 record.field_name,
                                 record.model_name,
-                                ""
-    # ============================================================================
-    # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================
-    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)
-    department_id = fields.Many2one('department', string='Department', tracking=True)
-
-    # ============================================================================
-    # AUTO-GENERATED ACTION METHODS (Batch 1)
-    # ============================================================================
-    def action_apply_corporate_preset(self):
-        """Apply Corporate Preset - Action method"""
-        self.ensure_one()
-        return {
-            "name": _("Apply Corporate Preset"),
-        }
-    def action_apply_financial_preset(self):
-        """Apply Financial Preset - Action method"""
-        self.ensure_one()
-        return {
-            "name": _("Apply Financial Preset"),
-        }
-    def action_apply_healthcare_preset(self):
-        """Apply Healthcare Preset - Action method"""
-        self.ensure_one()
-        return {
-            "name": _("Apply Healthcare Preset"),
-        }
-    def action_apply_legal_preset(self):
-        """Apply Legal Preset - Action method"""
-        self.ensure_one()
-        return {
-            "name": _("Apply Legal Preset"),
-        }
-    def action_reset_to_defaults(self):
-        """Reset To Defaults - Action method"""
-        self.ensure_one()
-        return {
-            "name": _("Reset To Defaults"),
-        }
-".join("
+                                "\n".join(
                                     sorted(available_fields)[:20] + ["..."]
                                     if len(available_fields) > 20
                                     else sorted(available_fields)
@@ -499,9 +465,11 @@ class FieldLabelCustomization(models.Model):
             self.field_name = False
             if not self._is_records_management_model(self.model_name):
                 return {
+                    "warning": {
                         "title": _("Invalid Model"),
                         "message": _(
-                            "The selected model is not part of the records_management module. Please select a valid records_management model."
+                            "The selected model is not part of the records_management module. "
+                            "Please select a valid records_management model."
                         ),
                     }
                 }
@@ -519,3 +487,66 @@ class FieldLabelCustomization(models.Model):
                         self.custom_label = self.original_label
             except:
                 pass
+
+    # ============================================================================
+    # BATCH-GENERATED ACTION METHODS (Ultimate Batch Fixer)
+    # ============================================================================
+    def action_apply_corporate_preset(self):
+        """Apply Corporate Preset - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Apply Corporate Preset"),
+            "res_model": "field.label.customization",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+
+    def action_apply_financial_preset(self):
+        """Apply Financial Preset - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Apply Financial Preset"),
+            "res_model": "field.label.customization",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+
+    def action_apply_healthcare_preset(self):
+        """Apply Healthcare Preset - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Apply Healthcare Preset"),
+            "res_model": "field.label.customization",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+
+    def action_apply_legal_preset(self):
+        """Apply Legal Preset - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Apply Legal Preset"),
+            "res_model": "field.label.customization",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
+
+    def action_reset_to_defaults(self):
+        """Reset To Defaults - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Reset To Defaults"),
+            "res_model": "field.label.customization",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
+        }
