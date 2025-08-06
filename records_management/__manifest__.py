@@ -1,28 +1,188 @@
 # -*- coding: utf-8 -*-
-{
-    'name': 'Records Management - Minimal Version',
-    'version': '18.0.1.0.0',
+manifest = {
+    'name': 'Records Management - Enterprise Edition',
+    'version': '18.0.10.0.0',
     'category': 'Document Management',
-    'summary': 'Minimal Records Management System',
-    'description': """
-        Minimal Records Management System - Testing Version
-        This is a stripped-down version to get basic loading working.
-    """,
+    'summary': 'Complete Enterprise Records Management System with NAID AAA Compliance',
+    'description': '''
+        Records Management - Enterprise Grade DMS Module
+        
+        A comprehensive, enterprise-grade Document Management System (DMS) built for Odoo 18.0. 
+        This module provides advanced functionality for managing physical document boxes, records, 
+        shredding services, and compliance tracking with NAID AAA and ISO 15489 standards.
+        
+        Key Features:
+        - Advanced Records Management: Track document boxes, locations, and retention policies
+        - NAID AAA Compliance: Complete audit trails with encrypted signatures
+        - Modern Customer Portal: AI-ready feedback system and centralized document center
+        - AI-Ready Analytics: Sentiment analysis and automated priority assignment
+        - Mobile-Friendly Interface: Responsive design with modern UI/UX
+        - Enterprise Security: Granular access controls and department-level data separation
+    ''',
     'author': 'John75SunCity',
     'website': 'https://github.com/John75SunCity',
-    'license': 'LGPL-3',
+    # For enterprise modules, Odoo recommends 'LGPL-3' or 'OEEL-1'
+    # Core Framework (Required)
+    # Business Operations
+    # Customer Engagement
+    # Human Resources
+    # Advanced Business Features
     'depends': [
         'base',
         'mail',
-        'web'
+        'web',
+        'product',
+        'stock',
+        'account',
+        'sale',
+        'purchase',
+        'portal',
+        'website',
+        'point_of_sale',
+        'sign',
+        'sms',
+        'survey',
+        'hr',
+        'hr_timesheet',
+        'hr_payroll',
+        'sale_management',
+        'website_sale',
+        'industry_fsm',
+        'quality_control',
+        'website_slides',
+        'sale_subscription',
+        'sale_renting',
     ],
     'data': [
+        # Security
+        'security/groups.xml',
         'security/ir.model.access.csv',
+        'security/ir_rule.xml',
+        'security/records_management_security.xml',
+        'security/naid_security.xml',
+        'security/additional_models_access.xml',
+        'security/security.xml',
+        # Data
+        'data/ir_sequence_data.xml',
+        'data/sequence.xml',
+        'data/products.xml',
+        'data/paper_products.xml',
+        'data/tag_data.xml',
+        'data/naid_compliance_data.xml',
+        'data/document_retrieval_rates.xml',
+        'data/feedback_survey_data.xml',
+        'data/portal_mail_templates.xml',
+        'data/fsm_mail_templates.xml',
+        'data/fsm_automated_actions.xml',
+        'data/scheduled_actions.xml',
+        'data/storage_fee.xml',
+        'data/user_setup.xml',
+        'data/model_records.xml',
+        'data/advanced_billing_demo.xml',
+        'data/field_label_demo_data.xml',
+        # Views
+        'views/records_management_base_menus.xml',
+        'views/records_management_menus.xml',
         'views/menu_views.xml',
+        'views/records_container_views.xml',
+        'views/records_document_views.xml',
+        'views/records_document_type_views.xml',
+        'views/records_location_views.xml',
+        'views/records_retention_policy_views.xml',
+        'views/records_tag_views.xml',
+        'views/records_vehicle_views.xml',
+        'views/billing_views.xml',
+        'views/advanced_billing_views.xml',
+        'views/departmental_billing_views.xml',
+        'views/departmental_billing_menus.xml',
+        'views/customer_billing_profile_views.xml',
+        'views/rate_management_views.xml',
+        'views/pickup_request_views.xml',
+        'views/shredding_service_views.xml',
+        'views/shredding_views.xml',
+        'views/shredding_inventory_views.xml',
+        'views/naid_compliance_views.xml',
+        'views/portal_request_views.xml',
+        'views/portal_request_menus.xml',
+        'views/portal_feedback_views.xml',
+        'views/portal_feedback_menus.xml',
+        'views/customer_inventory_views.xml',
+        'views/bin_key_management_views.xml',
+        'views/barcode_views.xml',
+        'views/barcode_menus.xml',
+        'views/fsm_task_views.xml',
+        'views/fsm_reschedule_wizard_views.xml',
+        'views/document_retrieval_work_order_views.xml',
+        'views/document_retrieval_menus.xml',
+        'views/paper_bale_views.xml',
+        'views/paper_bale_recycling_views.xml',
+        'views/paper_load_shipment_views.xml',
+        'views/paper_recycling_menus.xml',
+        'views/field_label_customization_views.xml',
+        'views/file_retrieval_rates_views.xml',
+        'views/hard_drive_scan_views.xml',
+        'views/key_restriction_checker_views.xml',
+        'views/key_restriction_views.xml',
+        'views/load_views.xml',
+        'views/location_report_wizard_views.xml',
+        'views/mobile_bin_key_wizard_views.xml',
+        'views/partner_bin_key_views.xml',
+        'views/permanent_flag_wizard_views.xml',
+        'views/pos_config_views.xml',
+        'views/product_template_views.xml',
+        'views/records_container_type_converter_views.xml',
+        'views/records_digital_scan_views.xml',
+        'views/stock_lot_views.xml',
+        'views/visitor_pos_wizard_views.xml',
+        'views/custom_box_volume_calculator_views.xml',
+        # Reports
+        'report/records_reports.xml',
+        'report/destruction_certificate_report.xml',
+        'report/customer_inventory_report.xml',
+        'report/bale_label_report.xml',
+        'report/portal_audit_report.xml',
+        # Templates
+        'templates/portal_overview.xml',
+        'templates/portal_inventory_template.xml',
+        'templates/portal_feedback_template.xml',
+        'templates/portal_billing_template.xml',
+        'templates/portal_document_retrieval.xml',
+        'templates/portal_quote_template.xml',
+        'templates/portal_centralized_docs.xml',
+        'templates/my_portal_inventory.xml',
     ],
-    'demo': [],
+    'demo': [
+        'demo/demo_records.xml',
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'records_management/static/src/scss/records_management.scss',
+            'records_management/static/src/js/map_widget.js',
+            'records_management/static/src/js/paper_load_progress_field.js',
+            'records_management/static/src/js/paper_load_truck_widget.js',
+            'records_management/static/src/js/trailer_visualization.js',
+            'records_management/static/src/js/truck_widget.js',
+            'records_management/static/src/js/field_label_customizer.js',
+            'records_management/static/src/xml/map_widget.xml',
+            'records_management/static/src/xml/trailer_visualization.xml',
+        ],
+        'web.assets_frontend': [
+            'records_management/static/src/css/portal_tour.css',
+            'records_management/static/src/js/portal_tour.js',
+            'records_management/static/src/js/portal_docs.js',
+            'records_management/static/src/js/portal_inventory_highlights.js',
+            'records_management/static/src/js/portal_inventory_search.js',
+            'records_management/static/src/js/portal_quote_generator.js',
+            'records_management/static/src/js/portal_signature.js',
+            'records_management/static/src/js/portal_user_import.js',
+        ],
+    },
+    'external_dependencies': {
+        'python': ['qrcode', 'Pillow'],
+    },
     'installable': True,
     'auto_install': False,
     'application': True,
-    'sequence': 100,
+    'sequence': 1000,
+    'images': ['static/description/icon.png'],
 }
