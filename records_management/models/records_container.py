@@ -1,4 +1,33 @@
 # -*- coding: utf-8 -*-
+"""
+Records Container Management Module
+
+This module provides comprehensive container management functionality for the Records Management System.
+It handles the complete lifecycle of physical storage containers including creation, tracking, movement,
+and destruction processes with full NAID AAA compliance.
+
+Key Features:
+- Complete container lifecycle management (draft → active → stored → destroyed)
+- Document containment with capacity tracking and full/empty status
+- Location-based storage with movement history and audit trails
+- Retention policy automation with destruction scheduling
+- Security classification and access control management
+- Integration with barcode systems for container identification
+- Billing rate management and service level configuration
+- NAID compliance with audit trails and chain of custody
+
+Business Processes:
+1. Container Registration: Create containers with customer assignment and specifications
+2. Document Loading: Associate documents with containers and track capacity
+3. Storage Management: Move containers through locations with full audit trail
+4. Retention Compliance: Automatic destruction scheduling based on retention policies
+5. Retrieval Services: Track container access and document retrieval requests
+6. Destruction Processing: NAID-compliant destruction with certificate generation
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
 
 from dateutil.relativedelta import relativedelta
 
@@ -7,6 +36,13 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class RecordsContainer(models.Model):
+    """
+    Records Container Management
+
+    Note: Removed duplicate customer_id field to avoid confusion.
+    The partner_id field is now used as the customer reference throughout this model.
+    """
+
     _name = "records.container"
     _description = "Records Container Management"
     _inherit = ["mail.thread", "mail.activity.mixin"]
@@ -312,6 +348,10 @@ class RecordsContainer(models.Model):
         self.ensure_one()
         movement_vals = {
             "movement_date": fields.Date.today(),
+            "from_location_id": from_location_id,
+            "to_location_id": to_location_id,
+            "movement_type": movement_type,
+            "container_id": self.id,
         }
 
         movement = self.env["records.container.movement"].create(movement_vals)
@@ -355,6 +395,7 @@ class RecordsContainer(models.Model):
             )
 
     def _search_due_for_destruction(self, operator, value):
+        today = fields.Date.today()
         if (operator == "=" and value) or (operator == "!=" and not value):
             return [
                 ("destruction_due_date", "<=", today),
@@ -439,36 +480,10 @@ class RecordsContainer(models.Model):
             "climate_controlled": 4,
             "high_security": 3,
         }
-
         interval = inspection_intervals.get(self.service_level, 12)
         return self.last_inspection_date + relativedelta(months=interval)
-        return self.last_inspection_date + relativedelta(months=interval)
 
-        # Apply service level multipliers
-        multipliers = {
-            "standard": 1.0,
-            "premium": 1.5,
-            "climate_controlled": 2.0,
-            "high_security": 2.5,
-        }
-
-        multiplier = multipliers.get(self.service_level, 1.0)
-        return base_cost * multiplier
-        # Apply service level multipliers
-        multipliers = {}
-
-        multiplier = multipliers.get(self.service_level, 1.0)
-        return base_cost * multiplier
-
-    create_date = fields.Date(string="Create Date", tracking=True)
-    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
-
-    # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 1)
     # ============================================================================
-    # BATCH-GENERATED FIELDS (Ultimate Batch Fixer)
-    # ============================================================================
 
     # ============================================================================
-    # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================\n    | = fields.Char(string='|', tracking=True)

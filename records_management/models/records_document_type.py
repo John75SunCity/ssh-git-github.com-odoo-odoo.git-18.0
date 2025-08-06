@@ -1,4 +1,74 @@
 # -*- coding: utf-8 -*-
+"""
+Records Document Type Management Module
+
+This module provides comprehensive document type classification and management for the Records
+Management System. It implements detailed document categorization, retention policy assignment,
+and compliance tracking for different types of documents and records throughout their lifecycle.
+
+Key Features:
+- Comprehensive document type classification with hierarchical categorization
+- Automated retention policy assignment based on document type and regulations
+- Security classification and access control based on document sensitivity
+- Compliance tracking for regulatory requirements and industry standards
+- Document lifecycle management with automated workflow triggers
+- Integration with scanning and document ingestion systems
+- Template management for document formatting and standardization
+
+Business Processes:
+1. Type Classification: Document type assignment during ingestion and processing
+2. Retention Management: Automatic retention policy application based on document type
+3. Security Classification: Security level assignment and access control implementation
+4. Compliance Tracking: Regulatory compliance monitoring and reporting by document type
+5. Lifecycle Management: Automated workflow triggers based on document type characteristics
+6. Template Application: Document formatting and standardization based on type templates
+7. Audit Trail Maintenance: Complete type assignment and change history tracking
+
+Document Categories:
+- Financial Records: Invoices, receipts, financial statements, and accounting documents
+- Legal Documents: Contracts, agreements, legal correspondence, and regulatory filings
+- Personnel Records: Employee files, HR documents, and confidential personnel information
+- Medical Records: Patient files, medical histories, and healthcare documentation
+- Government Records: Public records, permits, licenses, and regulatory correspondence
+- Corporate Records: Board minutes, corporate resolutions, and governance documents
+- Technical Documentation: Manuals, specifications, drawings, and technical records
+
+Retention Policy Integration:
+- Automatic retention period assignment based on document type and regulatory requirements
+- Legal hold management with type-specific preservation rules
+- Destruction scheduling with compliance verification and certificate generation
+- Exception handling for documents with mixed classification or complex retention rules
+- Regulatory compliance tracking with automated alerts and reporting
+- Integration with legal and compliance teams for policy updates and management
+
+Security and Access Control:
+- Document type-based security classification with granular access controls
+- Integration with user roles and security clearance systems
+- Sensitive document identification and special handling procedures
+- Audit trail tracking for access and modification by document type
+- Compliance with privacy regulations and confidentiality requirements
+- Integration with data loss prevention and security monitoring systems
+
+Template and Formatting:
+- Document type-specific templates for consistent formatting and structure
+- Automated metadata extraction and assignment based on document type
+- OCR and content analysis integration for automatic type detection
+- Quality control and validation rules for document type accuracy
+- Integration with document scanning and digital conversion systems
+- Standardization of document naming conventions and file organization
+
+Technical Implementation:
+- Modern Odoo 18.0 architecture with comprehensive validation frameworks
+- Advanced document classification algorithms with machine learning integration
+- Performance optimized for high-volume document processing operations
+- Integration with external document management and scanning systems
+- Mail thread integration for notifications and workflow tracking
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -185,7 +255,11 @@ class RecordsDocumentType(models.Model):
     compliance_notes = fields.Text(string="Compliance Notes")
     compliance_risk_assessment = fields.Char(string="Compliance Risk Assessment")
     compliance_status = fields.Char(string="Compliance Status")
-    document_type_utilization = fields.Selection([("normal", "Normal"), ("high", "High")], string="Document Type Utilization", default="normal")
+    document_type_utilization = fields.Selection(
+        [("normal", "Normal"), ("high", "High")],
+        string="Document Type Utilization",
+        default="normal",
+    )
     growth_trend_indicator = fields.Char(string="Growth Trend Indicator")
     help = fields.Char(string="Help")
     model = fields.Char(string="Model")
@@ -196,8 +270,13 @@ class RecordsDocumentType(models.Model):
     risk_level = fields.Char(string="Risk Level")
     seasonal_pattern_score = fields.Char(string="Seasonal Pattern Score")
     security_classification = fields.Char(string="Security Classification")
-    type_complexity_rating = fields.Selection([("normal", "Normal"), ("high", "High")], string="Type Complexity Rating", default="normal")
+    type_complexity_rating = fields.Selection(
+        [("normal", "Normal"), ("high", "High")],
+        string="Type Complexity Rating",
+        default="normal",
+    )
     view_mode = fields.Char(string="View Mode")
+
     # ============================================================================
     @api.depends("document_ids")
     def _compute_document_count(self):

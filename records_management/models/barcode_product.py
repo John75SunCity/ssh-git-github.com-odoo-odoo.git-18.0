@@ -1,4 +1,48 @@
 # -*- coding: utf-8 -*-
+"""
+Barcode Product Management Module
+
+This module provides comprehensive barcode product management for the Records Management System.
+It implements intelligent barcode generation, validation, and management with support for multiple
+barcode formats and enterprise-grade tracking capabilities.
+
+Key Features:
+- Multi-format barcode support (EAN-13, EAN-8, UPC-A, Code 128, Code 39, Custom)
+- Intelligent barcode generation with batch processing and sequence management
+- Format validation with regex pattern matching and check digit verification
+- Uniqueness validation across the entire system preventing duplicates
+- Product categorization with storage requirements and lifecycle management
+- Comprehensive audit trails with usage tracking and performance analytics
+- Integration with physical storage systems and location management
+- Pricing and billing integration with cost tracking and rate management
+
+Business Processes:
+1. Product Setup: Define barcode products with specifications and validation rules
+2. Barcode Generation: Generate barcodes in batches with automatic sequencing
+3. Format Validation: Validate barcode formats against industry standards
+4. Inventory Tracking: Track barcode usage and assignment across the system
+5. Quality Control: Ensure barcode uniqueness and format compliance
+6. Performance Analytics: Monitor barcode usage patterns and system performance
+
+Technical Implementation:
+- Regex-based format validation for all major barcode standards
+- Batch generation with configurable size limits and error handling
+- Secure relationship management with proper domain filtering
+- Modern Odoo 18.0 patterns with comprehensive validation decorators
+- Enterprise security with granular access controls and audit logging
+
+Barcode Format Support:
+- EAN-13: European Article Number (13 digits)
+- EAN-8: European Article Number (8 digits)
+- UPC-A: Universal Product Code (12 digits)
+- Code 128: High-density linear barcode
+- Code 39: Alphanumeric barcode standard
+- Custom: Flexible format for specialized requirements
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError

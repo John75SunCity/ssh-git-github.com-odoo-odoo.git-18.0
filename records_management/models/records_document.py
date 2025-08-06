@@ -1,4 +1,55 @@
 # -*- coding: utf-8 -*-
+"""
+Records Document Management Module
+
+This module provides comprehensive document lifecycle management for the Records Management System.
+It implements complete document tracking from creation through destruction with full NAID AAA
+compliance and enterprise-grade security features.
+
+Key Features:
+- Complete document lifecycle management (draft → active → archived → destroyed)
+- Advanced retention policy automation with computed destruction dates
+- Permanent flag system for legal holds and litigation support
+- Multi-media support (paper, digital, microfilm, mixed media)
+- Security classification with granular access controls (public to top secret)
+- Location and container tracking with full audit trails
+- Parent-child document relationships for version control
+- Integration with destruction and retrieval workflow systems
+
+Business Processes:
+1. Document Registration: Create documents with metadata and classification
+2. Storage Management: Assign containers and locations with tracking
+3. Retention Compliance: Apply retention policies with automated scheduling
+4. Security Classification: Implement security controls and access restrictions
+5. Legal Hold Management: Apply permanent flags for legal and compliance requirements
+6. Destruction Processing: Schedule and execute NAID-compliant destruction
+7. Retrieval Services: Process document access requests with audit logging
+8. Version Control: Manage document relationships and version tracking
+
+Retention & Compliance:
+- Automated retention period calculation based on document date and policy
+- Permanent flag system preventing inadvertent destruction
+- NAID AAA compliant audit trails with encrypted signatures
+- Chain of custody tracking for legal and regulatory compliance
+- Integration with destruction certificate generation systems
+
+Security Features:
+- Multi-level security classification (Public, Internal, Confidential, Restricted, Top Secret)
+- Customer-specific data isolation with secure domain filtering
+- Audit logging for all document access and modification events
+- Integration with enterprise authentication and authorization systems
+
+Technical Implementation:
+- Modern Odoo 18.0 patterns with comprehensive mail.thread integration
+- Computed fields with proper @api.depends decorators for performance
+- Comprehensive validation with business rule enforcement
+- Secure relationship management preventing data leakage
+- Enterprise-grade error handling and user notifications
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
 
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
@@ -359,7 +410,9 @@ class RecordsDocument(models.Model):
 
         This method must be implemented for production use to ensure file integrity.
         """
-        raise NotImplementedError("Checksum calculation must be implemented for production use.")
+        raise NotImplementedError(
+            "Checksum calculation must be implemented for production use."
+        )
 
     # ============================================================================
     # ACTION METHODS
@@ -510,13 +563,22 @@ class RecordsDocument(models.Model):
                 old_location = record.location_id.name if record.location_id else "None"
                 location_val = vals["location_id"]
                 if isinstance(location_val, int):
-                    new_location = self.env["records.location"].browse(location_val).name
-                elif isinstance(location_val, (list, tuple)) and location_val and isinstance(location_val[0], int):
-                    new_location = self.env["records.location"].browse(location_val[0]).name
+                    new_location = (
+                        self.env["records.location"].browse(location_val).name
+                    )
+                elif (
+                    isinstance(location_val, (list, tuple))
+                    and location_val
+                    and isinstance(location_val[0], int)
+                ):
+                    new_location = (
+                        self.env["records.location"].browse(location_val[0]).name
+                    )
                 else:
                     new_location = "None"
                 record.message_post(
-                    body=_("Location changed from %s to %s") % (old_location, new_location)
+                    body=_("Location changed from %s to %s")
+                    % (old_location, new_location)
                 )
         # Track state changes
         if "state" in vals:

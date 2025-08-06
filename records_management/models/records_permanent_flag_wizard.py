@@ -1,4 +1,56 @@
 # -*- coding: utf-8 -*-
+"""
+Permanent Flag Wizard Module
+
+This module provides a comprehensive permanent flag management system for the Records Management
+System. It implements enterprise-grade legal hold and permanent retention workflows with full
+approval processes, audit trails, and stakeholder notification systems.
+
+Key Features:
+- Legal hold management for litigation and compliance requirements
+- Permanent retention flag system with approval workflows
+- Bulk document selection with criteria-based filtering
+- Multi-stakeholder notification system with email integration
+- Comprehensive audit trails with timestamped activity logging
+- Approval workflow management with rejection handling and escalation
+- Document criteria filtering by type, location, customer, and date ranges
+- Integration with document lifecycle and retention policy systems
+
+Business Processes:
+1. Flag Request Creation: Create permanent flag requests with justification and legal basis
+2. Document Selection: Select documents manually or through automated criteria filtering
+3. Approval Workflow: Route requests through appropriate approval chains
+4. Stakeholder Notification: Notify relevant parties of flag application and removal
+5. Audit Compliance: Maintain complete audit trails for legal and regulatory requirements
+6. Flag Management: Apply, remove, and review permanent flags with proper authorization
+
+Workflow States:
+- Draft: Initial request creation and document selection
+- Pending Approval: Awaiting management or legal approval
+- Approved: Authorized for execution by appropriate stakeholders
+- In Progress: Flag operation currently being executed
+- Completed: Flag operation successfully completed with audit trail
+- Cancelled: Request cancelled before execution
+- Rejected: Request rejected by approval authority
+
+Legal Hold Features:
+- Legal basis documentation with detailed justification requirements
+- Custom reason specification for specialized legal hold scenarios
+- Integration with litigation support and compliance management systems
+- Automatic notification to legal teams and relevant stakeholders
+- Chain of custody preservation during flag application and removal
+
+Technical Implementation:
+- TransientModel pattern for wizard-style user interactions
+- Secure Many2many relationships with proper domain filtering
+- Modern Odoo 18.0 validation patterns with comprehensive error handling
+- Mail framework integration for notification and activity tracking
+- Enterprise security patterns preventing unauthorized flag manipulation
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
 
 import logging
 import traceback
@@ -493,9 +545,11 @@ Legal Basis: {self.legal_basis or 'Not specified'}
 Description:
 {self.description or 'No description provided'}""",
             user_id=(
-                (next(iter(self.env.ref("base.group_system").users), None).id
-                 if self.env.ref("base.group_system").users
-                 else self.env.user.id)
+                (
+                    next(iter(self.env.ref("base.group_system").users), None).id
+                    if self.env.ref("base.group_system").users
+                    else self.env.user.id
+                )
             ),
         )
 

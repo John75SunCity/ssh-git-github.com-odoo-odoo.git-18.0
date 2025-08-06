@@ -25,7 +25,7 @@
                 <form string="Customer Billing Profile">
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <button name="toggle_active" type="object" class="oe_stat_button" string="Archive" fa="fa-archive">
                                 <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
                             </button>
                         </div>
@@ -43,7 +43,7 @@
                                     <group>
                                         <field name="storage_billing_cycle"/>
                                         <field name="storage_bill_in_advance"/>
-                                        <field name="storage_advance_months" invisible="not storage_bill_in_advance"/>
+                                        <field name="storage_advance_months" attrs="{'invisible': [('storage_bill_in_advance','=',False)]}"/>
                                     </group>
                                     <group>
                                         <field name="billing_day"/>
@@ -51,14 +51,14 @@
                                     </group>
                                 </group>
                                 
-                                <group string="Prepaid Storage" invisible="storage_billing_cycle != 'prepaid'">
+                                <group string="Prepaid Storage" attrs="{'invisible': [('storage_billing_cycle','!=','prepaid')]}">
                                     <group>
                                         <field name="prepaid_enabled"/>
-                                        <field name="prepaid_months" invisible="not prepaid_enabled"/>
-                                        <field name="prepaid_discount_percent" invisible="not prepaid_enabled"/>
+                                        <field name="prepaid_months" attrs="{'invisible': [('prepaid_enabled','=',False)]}"/>
+                                        <field name="prepaid_discount_percent" attrs="{'invisible': [('prepaid_enabled','=',False)]}"/>
                                     </group>
                                     <group>
-                                        <field name="prepaid_balance" invisible="not prepaid_enabled"/>
+                                        <field name="prepaid_balance" attrs="{'invisible': [('prepaid_enabled','=',False)]}"/>
                                     </group>
                                 </group>
                             </page>
@@ -144,11 +144,11 @@
                 <form string="Advanced Billing Period">
                     <header>
                         <button name="action_generate_storage_lines" type="object" string="Generate Storage Lines" 
-                                class="oe_highlight" invisible="billing_type not in ['storage', 'combined'] or state != 'draft'"/>
+                                class="oe_highlight" attrs="{'invisible': [('billing_type','not in',['storage','combined']), ('state','!=','draft')]}"/>
                         <button name="action_generate_service_lines" type="object" string="Generate Service Lines" 
-                                class="oe_highlight" invisible="billing_type not in ['service', 'combined'] or state != 'draft'"/>
+                                class="oe_highlight" attrs="{'invisible': [('billing_type', 'not in', ['service', 'combined']), ('state', '!=', 'draft')]}"/>
                         <button name="action_generate_invoice" type="object" string="Generate Invoice" 
-                                class="oe_highlight" invisible="state not in ['confirmed']"/>
+                                class="oe_highlight" attrs="{'invisible': [('state','not in',['confirmed'])]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,invoiced,paid"/>
                     </header>
                     
@@ -181,7 +181,7 @@
                         </group>
                         
                         <notebook>
-                            <page string="Storage Lines" invisible="billing_type not in ['storage', 'combined']">
+                            <page string="Storage Lines" attrs="{'invisible': [('billing_type','not in',['storage','combined'])]}">
                                 <field name="storage_line_ids">
                                     <tree editable="bottom">
                                         <field name="description"/>
@@ -196,7 +196,7 @@
                                 </field>
                             </page>
                             
-                            <page string="Service Lines" invisible="billing_type not in ['service', 'combined']">
+                            <page string="Service Lines" attrs="{'invisible': [('billing_type','not in',['service','combined'])]}">
                                 <field name="service_line_ids">
                                     <tree editable="bottom">
                                         <field name="description"/>
@@ -260,6 +260,7 @@
         </record>
 
         <!-- Menu Items -->
+        <!-- Ensure that 'records_management.menu_records_configuration' is defined and loaded before this file -->
         <menuitem id="menu_advanced_billing_root" 
                   name="Advanced Billing" 
                   parent="records_management.menu_records_configuration"
