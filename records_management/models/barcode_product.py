@@ -10,6 +10,11 @@ class BarcodeProduct(models.Model):
     _order = "name desc"
     _rec_name = "name"
 
+    # Computed display name
+    display_name = fields.Char(
+        string="Display Name", compute="_compute_display_name", store=True
+    )
+
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
@@ -515,12 +520,20 @@ class BarcodeProduct(models.Model):
         if any(record.state == "active" for record in self):
             raise UserError(
                 _("Cannot delete active barcode products. Please archive them first.")
-            )
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
+    monthly_volume = fields.Char(string='Monthly Volume', tracking=True)
+    naid_compliant = fields.Char(string='Naid Compliant', tracking=True)
+    storage_rate = fields.Monetary(string='Storage Rate', currency_field='currency_id', tracking=True)
         return super().unlink()
 
     # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================\n    monthly_volume = fields.Char(string='Monthly Volume', tracking=True)\n    naid_compliant = fields.Char(string='Naid Compliant', tracking=True)\n    storage_rate = fields.Monetary(string='Storage Rate', currency_field='currency_id', tracking=True)\n
+    # ============================================================================\n    monthly_volume = fields.Char(string='Monthly Volume', tracking=True)\n    naid_compliant = fields.Char(string='Naid Compliant', tracking=True)\n    storage_rate = fields.Monetary(string='Storage Rate', currency_field='currency_id', tracking=True)\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================\n    monthly_volume = fields.Char(string='Monthly Volume', tracking=True)\n    naid_compliant = fields.Char(string='Naid Compliant', tracking=True)\n    storage_rate = fields.Monetary(string='Storage Rate', currency_field='currency_id', tracking=True)\n
     # ============================================================================
     # AUTO-GENERATED ACTION METHODS (Batch 1)
     # ============================================================================

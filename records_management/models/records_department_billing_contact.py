@@ -316,7 +316,15 @@ class RecordsDepartmentBillingContact(models.Model):
 
     # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================\n    approval_authority = fields.Char(string='Approval Authority', tracking=True)\n    budget_utilization = fields.Char(string='Budget Utilization', tracking=True)\n    email_notifications = fields.Char(string='Email Notifications', tracking=True)\n    monthly_budget = fields.Char(string='Monthly Budget', tracking=True)\n
+    # ============================================================================
+    approval_authority = fields.Char(string='Approval Authority', tracking=True)
+    budget_utilization = fields.Float(string='Budget Utilization (%)', tracking=True, help="Percentage of budget utilized")
+    email_notifications = fields.Char(string='Email Notifications', tracking=True)
+    monthly_budget = fields.Monetary(string='Monthly Budget', currency_field="currency_id", tracking=True, help="Monthly budget amount")
+    approval_authority = fields.Char(string='Approval Authority', tracking=True)
+    budget_utilization = fields.Char(string='Budget Utilization', tracking=True)
+    email_notifications = fields.Char(string='Email Notifications', tracking=True)
+    monthly_budget = fields.Char(string='Monthly Budget', tracking=True)
     # ============================================================================
     # AUTO-GENERATED ACTION METHODS (Batch 1)
     # ============================================================================

@@ -134,26 +134,23 @@ class RecordsLocation(models.Model):
     )
 
     # Mail framework fields
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    activity_ids = fields.One2many(
+        "mail.activity", "res_id", string="Activities",
+        domain=[("model", "=", "records.location")]
     )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers",
+        domain=lambda self: [("res_model", "=", "records.location")]
+    )
+    message_ids = fields.One2many(
+        "mail.message", "res_id", string="Messages",
+        domain=lambda self: [("model", "=", "records.location")]
+    )
 
     # ============================================================================
     # COMPUTED FIELDS
 
     # ============================================================================
-    # AUTO-GENERATED FIELDS (from view analysis)
-    # ============================================================================
-    access_instructions = fields.Char(string="Access Instructions")
-    arch = fields.Char(string="Arch")
-    context = fields.Char(string="Context")
-    help = fields.Char(string="Help")
-    model = fields.Char(string="Model")
-    res_model = fields.Char(string="Res Model")
-    stored_date = fields.Date(string="Stored Date")
-    view_mode = fields.Char(string="View Mode")
 
     # ============================================================================
     @api.depends("container_ids")
@@ -245,11 +242,11 @@ class RecordsLocation(models.Model):
         self.ensure_one()
         self.write({"operational_status": "maintenance"})
 
-    def action_activate(self):
+    def action_reserve_space(self):
         self.ensure_one()
-        self.write({"operational_status": "active"})
-
-    def action_schedule_inspection(self):
+        if not self.is_available:
+            raise UserError(_("Location is not available for reservations."))
+        # Reservation logic to be implemented as needed
         return {
             "type": "ir.actions.act_window",
             "name": "Schedule Inspection",
@@ -298,11 +295,11 @@ class RecordsLocation(models.Model):
         for record in self:
             if record.code:
                 existing = self.search(
-                    [("code", "=", record.code), ("id", "!=", record.id)]
+
                 )
                 if existing:
                     raise ValidationError(_("Location code must be unique."))
 
     # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================\n    | = fields.Char(string='|', tracking=True)
+    # ============================================================================\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================\n    | = fields.Char(string='|', tracking=True)\n    | = fields.Char(string='|', tracking=True)

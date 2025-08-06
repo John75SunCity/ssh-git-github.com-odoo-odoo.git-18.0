@@ -9,6 +9,10 @@ _logger = logging.getLogger(__name__)
 
 
 class FsmTask(models.Model):
+    """
+    FSM Task model for managing field service operations, including scheduling, assignment,
+    progress tracking, and integration with Odoo's mail and activity systems.
+    """
     _name = "fsm.task"
     _description = "FSM Task - Field Service Management"
     _inherit = ["mail.thread", "mail.activity.mixin"]
@@ -154,7 +158,7 @@ class FsmTask(models.Model):
         string="Estimated Cost", currency_field="currency_id"
     )
     actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id")
-    currency_id = fields.Many2one("res.currency", related="company_id.currency_id")
+    currency_id = fields.Many2one("res.currency", related="company_id.currency_id", store=True)
 
     invoice_status = fields.Selection(
         [("to_invoice", "To Invoice"), ("invoiced", "Invoiced"), ("paid", "Paid")],
@@ -346,15 +350,38 @@ class FsmTask(models.Model):
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=[('res_model', '=', 'fsm.task')]
     )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    """List of mail.activity records related to this FSM task, used for scheduling and tracking activities."""
+
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=[('res_model', '=', 'fsm.task')]
+    )
+    """List of mail.followers records for this FSM task, representing users who follow updates on the task."""
+
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=[('res_model', '=', 'fsm.task')]
+    )
+    """List of mail.message records associated with this FSM task, storing all related messages and communications."""
 
     # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================\n    task_status = fields.Selection([('draft', 'Draft')], string='Task Status', default='draft', tracking=True)\n
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
+    task_status = fields.Selection([('draft', 'Draft')], string='Task Status', default='draft', tracking=True)
     # ============================================================================
     # AUTO-GENERATED ACTION METHODS (Batch 1)
     # ============================================================================

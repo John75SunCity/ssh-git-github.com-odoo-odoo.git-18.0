@@ -355,6 +355,7 @@ class RecordsContainer(models.Model):
             )
 
     def _search_due_for_destruction(self, operator, value):
+        today = fields.Date.today()
         if (operator == "=" and value) or (operator == "!=" and not value):
             return [
                 ("destruction_due_date", "<=", today),
@@ -433,27 +434,38 @@ class RecordsContainer(models.Model):
         self.ensure_one()
         if not self.last_inspection_date:
             return fields.Date.today() + relativedelta(months=6)
-
-        inspection_intervals = {}
+        inspection_intervals = {
+            "standard": 12,
+            "premium": 6,
+            "climate_controlled": 4,
+            "high_security": 3,
+        }
 
         interval = inspection_intervals.get(self.service_level, 12)
         return self.last_inspection_date + relativedelta(months=interval)
+        return self.last_inspection_date + relativedelta(months=interval)
 
-    def calculate_monthly_cost(self):
-        """Calculate monthly storage cost"""
-        self.ensure_one()
-        base_cost = self.billing_rate
+        # Apply service level multipliers
+        multipliers = {
+            "standard": 1.0,
+            "premium": 1.5,
+            "climate_controlled": 2.0,
+            "high_security": 2.5,
+        }
 
+        multiplier = multipliers.get(self.service_level, 1.0)
+        return base_cost * multiplier
         # Apply service level multipliers
         multipliers = {}
 
         multiplier = multipliers.get(self.service_level, 1.0)
         return base_cost * multiplier
 
-    # ============================================================================
-    # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================
+    create_date = fields.Date(string="Create Date", tracking=True)
+    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================
     # BATCH-GENERATED FIELDS (Ultimate Batch Fixer)
     # ============================================================================
     create_date = fields.Date(string="Create Date", tracking=True)
     customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================\n    | = fields.Char(string='|', tracking=True)
