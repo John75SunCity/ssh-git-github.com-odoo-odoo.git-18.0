@@ -152,7 +152,7 @@
                                     <field name="name"/>
                                     <field name="partner_id"/>
                                     <field name="state"/>
-                                    <field name="stored_date"/>
+                                    <field name="storage_start_date"/>
                                 </list>
                             </field>
                         </page>
