@@ -223,6 +223,17 @@ class RecordsLocation(models.Model):
             "context": {"default_location_id": self.id},
         }
 
+    def action_location_report(self):
+        """Generate location utilization and capacity report"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.report",
+            "report_name": "records_management.location_utilization_report",
+            "report_type": "qweb-pdf",
+            "data": {"ids": [self.id]},
+            "context": self.env.context,
+        }
+
     def action_reserve_space(self):
         self.ensure_one()
         if not self.is_available:
