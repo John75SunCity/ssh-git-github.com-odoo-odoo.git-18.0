@@ -161,7 +161,7 @@
             <field name="request_type">destruction</field>
             <field name="state">draft</field>
             <field name="description">Template for customer document destruction requests</field>
-            <field name="priority">normal</field>
+            <field name="priority">1</field>
         </record>
 
         <record id="demo_portal_request_retrieval" model="portal.request">
@@ -170,7 +170,7 @@
             <field name="request_type">retrieval</field>
             <field name="state">draft</field>
             <field name="description">Template for customer document retrieval requests</field>
-            <field name="priority">normal</field>
+            <field name="priority">1</field>
         </record>
 
         <!-- Demo System Configuration -->
