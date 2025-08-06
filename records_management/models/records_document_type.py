@@ -171,6 +171,33 @@ class RecordsDocumentType(models.Model):
 
     # ============================================================================
     # COMPUTED FIELDS
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (from view analysis)
+    # ============================================================================
+    approval_date = fields.Date(string="Approval Date")
+    approved_by = fields.Char(string="Approved By")
+    arch = fields.Char(string="Arch")
+    audit_readiness_level = fields.Char(string="Audit Readiness Level")
+    audit_required = fields.Char(string="Audit Required")
+    auto_classification_potential = fields.Char(string="Auto Classification Potential")
+    classification_accuracy_score = fields.Char(string="Classification Accuracy Score")
+    compliance_notes = fields.Text(string="Compliance Notes")
+    compliance_risk_assessment = fields.Char(string="Compliance Risk Assessment")
+    compliance_status = fields.Char(string="Compliance Status")
+    document_type_utilization = fields.Selection([("normal", "Normal"), ("high", "High")], string="Document Type Utilization", default="normal")
+    growth_trend_indicator = fields.Char(string="Growth Trend Indicator")
+    help = fields.Char(string="Help")
+    model = fields.Char(string="Model")
+    regulatory_compliance_score = fields.Char(string="Regulatory Compliance Score")
+    regulatory_requirement = fields.Char(string="Regulatory Requirement")
+    res_model = fields.Char(string="Res Model")
+    retention_compliance = fields.Char(string="Retention Compliance")
+    risk_level = fields.Char(string="Risk Level")
+    seasonal_pattern_score = fields.Char(string="Seasonal Pattern Score")
+    security_classification = fields.Char(string="Security Classification")
+    type_complexity_rating = fields.Selection([("normal", "Normal"), ("high", "High")], string="Type Complexity Rating", default="normal")
+    view_mode = fields.Char(string="View Mode")
     # ============================================================================
     @api.depends("document_ids")
     def _compute_document_count(self):

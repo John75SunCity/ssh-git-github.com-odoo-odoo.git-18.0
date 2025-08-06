@@ -142,6 +142,18 @@ class RecordsLocation(models.Model):
 
     # ============================================================================
     # COMPUTED FIELDS
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (from view analysis)
+    # ============================================================================
+    access_instructions = fields.Char(string="Access Instructions")
+    arch = fields.Char(string="Arch")
+    context = fields.Char(string="Context")
+    help = fields.Char(string="Help")
+    model = fields.Char(string="Model")
+    res_model = fields.Char(string="Res Model")
+    stored_date = fields.Date(string="Stored Date")
+    view_mode = fields.Char(string="View Mode")
     # ============================================================================
     @api.depends("container_ids")
     def _compute_current_utilization(self):

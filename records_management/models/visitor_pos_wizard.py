@@ -289,7 +289,42 @@ class VisitorPosWizard(models.TransientModel):
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # === SPECIFIC RECOMMENDED FIELDS ===
-    compliance_officer = fields.Char(string="Compliance Officer")
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (from view analysis)
+    # ============================================================================
+    arch = fields.Char(string="Arch")
+    audit_required = fields.Boolean(string="Audit Required", default=False)
+    context = fields.Char(string="Context")
+    create_new_customer_flag = fields.Boolean(
+        string="Create New Customer", default=False
+    )
+    customer_record_created = fields.Boolean(
+        string="Customer Record Created", default=False
+    )
+    help = fields.Text(string="Help")
+    integration_errors = fields.Text(string="Integration Errors")
+    invoice_generated = fields.Boolean(string="Invoice Generated", default=False)
+    invoice_required = fields.Boolean(string="Invoice Required", default=False)
+    model = fields.Char(string="Model")
+    pos_order_created = fields.Boolean(string="POS Order Created", default=False)
+    records_request_created = fields.Boolean(
+        string="Records Request Created", default=False
+    )
+    res_model = fields.Char(string="Res Model")
+    scanning_required = fields.Boolean(string="Scanning Required", default=False)
+    service_type_category = fields.Selection(
+        [
+            ("document_processing", "Document Processing"),
+            ("document_storage", "Document Storage"),
+            ("shredding", "Shredding"),
+        ],
+        string="Service Type Category",
+        default="document_processing",
+    )
+    target = fields.Char(string="Target")
+    view_mode = fields.Char(string="View Mode")
+    compliance_officer = fields.Many2one("res.users", string="Compliance Officer")
     digitization_format = fields.Selection(
         [("pdf", "PDF"), ("image", "Image"), ("text", "Text")],
         string="Digitization Format",
