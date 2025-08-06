@@ -6,6 +6,10 @@
         <record id="field_labels_corporate_global" model="field.label.customization">
             <field name="name">Corporate Standard (Global)</field>
             <field name="description">Standard corporate terminology for all customers</field>
+            <field name="model_name">records.box</field>
+            <field name="field_name">name</field>
+            <field name="original_label">Name</field>
+            <field name="custom_label">Container Name</field>
             <field name="priority">10</field>
             <field name="label_container_number">File Container ID</field>
             <field name="label_item_description">Document Category</field>
@@ -24,6 +28,10 @@
         <record id="field_labels_legal_global" model="field.label.customization">
             <field name="name">Legal Industry Standard (Global)</field>
             <field name="description">Legal industry terminology</field>
+            <field name="model_name">records.document</field>
+            <field name="field_name">name</field>
+            <field name="original_label">Name</field>
+            <field name="custom_label">Case Document Name</field>
             <field name="priority">5</field>
             <field name="label_container_number">Matter Container</field>
             <field name="label_item_description">Case Documents</field>
@@ -35,13 +43,16 @@
             <field name="label_project_code">Matter Code</field>
             <field name="label_client_reference">Client Matter Number</field>
             <field name="label_authorized_by">Supervising Attorney</field>
-            <field name="label_destruction_date">Retention Expiry</field>
         </record>
 
         <!-- Healthcare Industry Field Label Configuration -->
         <record id="field_labels_healthcare_global" model="field.label.customization">
             <field name="name">Healthcare Industry Standard (Global)</field>
             <field name="description">Healthcare industry terminology</field>
+            <field name="model_name">records.box</field>
+            <field name="field_name">description</field>
+            <field name="original_label">Description</field>
+            <field name="custom_label">Medical Records Description</field>
             <field name="priority">5</field>
             <field name="label_container_number">Medical Records Container</field>
             <field name="label_item_description">Patient Records</field>
@@ -53,13 +64,16 @@
             <field name="label_project_code">Department Code</field>
             <field name="label_client_reference">Patient ID</field>
             <field name="label_authorized_by">Chief Medical Officer</field>
-            <field name="label_special_handling">HIPAA Special Instructions</field>
         </record>
 
         <!-- Financial Services Field Label Configuration -->
         <record id="field_labels_financial_global" model="field.label.customization">
             <field name="name">Financial Services Standard (Global)</field>
             <field name="description">Financial services industry terminology</field>
+            <field name="model_name">records.document</field>
+            <field name="field_name">description</field>
+            <field name="original_label">Description</field>
+            <field name="custom_label">Financial Document Description</field>
             <field name="priority">5</field>
             <field name="label_container_number">Account File Container</field>
             <field name="label_item_description">Financial Records</field>
@@ -71,7 +85,6 @@
             <field name="label_project_code">Account Number</field>
             <field name="label_client_reference">Customer Account</field>
             <field name="label_authorized_by">Branch Manager</field>
-            <field name="label_compliance_notes">Regulatory Notes</field>
         </record>
 
     </data>
