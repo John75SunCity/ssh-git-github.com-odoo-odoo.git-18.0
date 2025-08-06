@@ -355,7 +355,6 @@ class RecordsContainer(models.Model):
             )
 
     def _search_due_for_destruction(self, operator, value):
-        today = fields.Date.today()
         if (operator == "=" and value) or (operator == "!=" and not value):
             return [
                 ("destruction_due_date", "<=", today),
@@ -463,9 +462,13 @@ class RecordsContainer(models.Model):
 
     create_date = fields.Date(string="Create Date", tracking=True)
     customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
-\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================
     # BATCH-GENERATED FIELDS (Ultimate Batch Fixer)
     # ============================================================================
-    create_date = fields.Date(string="Create Date", tracking=True)
-    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
-\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================\n    | = fields.Char(string='|', tracking=True)
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================\n    | = fields.Char(string='|', tracking=True)

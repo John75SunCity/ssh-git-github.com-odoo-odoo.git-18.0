@@ -533,7 +533,10 @@ class BarcodeProduct(models.Model):
 
     # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================\n    monthly_volume = fields.Char(string='Monthly Volume', tracking=True)\n    naid_compliant = fields.Char(string='Naid Compliant', tracking=True)\n    storage_rate = fields.Monetary(string='Storage Rate', currency_field='currency_id', tracking=True)\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================\n    monthly_volume = fields.Char(string='Monthly Volume', tracking=True)\n    naid_compliant = fields.Char(string='Naid Compliant', tracking=True)\n    storage_rate = fields.Monetary(string='Storage Rate', currency_field='currency_id', tracking=True)\n
+    # ============================================================================\n    monthly_volume = fields.Char(string='Monthly Volume', tracking=True)\n    naid_compliant = fields.Char(string='Naid Compliant', tracking=True)\n    storage_rate = fields.Monetary(string='Storage Rate', currency_field='currency_id', tracking=True)
+    # ============================================================================
+    # AUTO-GENERATED FIELDS (Batch 1)
+    # ============================================================================\n    monthly_volume = fields.Char(string='Monthly Volume', tracking=True)\n    naid_compliant = fields.Char(string='Naid Compliant', tracking=True)\n    storage_rate = fields.Monetary(string='Storage Rate', currency_field='currency_id', tracking=True)\n
     # ============================================================================
     # AUTO-GENERATED ACTION METHODS (Batch 1)
     # ============================================================================

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
+from dateutil.relativedelta import relativedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -11,7 +12,6 @@ class RecordsDocument(models.Model):
     _order = "name desc"
     _rec_name = "name"
 
-    # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Document Name", required=True, tracking=True, index=True)
@@ -259,11 +259,23 @@ class RecordsDocument(models.Model):
     )
 
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    activity_ids = fields.One2many(
     message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=[('res_model', '=', 'records.document')],
+    )
+        domain=[("res_model", "=", "records.document")],
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=[("model", "=", "records.document")],
+    )
         "mail.followers", "res_id", string="Followers"
     )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
     # COMPUTE METHODS
@@ -276,29 +288,41 @@ class RecordsDocument(models.Model):
             if record.document_date and record.retention_period:
                 record.retention_end_date = fields.Date.from_string(
                     str(record.document_date)
-                ) + timedelta(days=record.retention_period * 365)
-            else:
-                record.retention_end_date = False
-
+                ) + relativedelta(years=record.retention_period)
     @api.depends("retention_end_date")
     def _compute_days_until_destruction(self):
         """Compute days remaining until scheduled destruction"""
+        from datetime import datetime
+
         for record in self:
             if record.retention_end_date:
                 today = fields.Date.today()
-                delta = record.retention_end_date - today
+                # Convert to date objects if necessary
+                end_date = record.retention_end_date
+                if isinstance(end_date, str):
+                    end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+                if isinstance(today, str):
+                    today = datetime.strptime(today, "%Y-%m-%d").date()
+                delta = end_date - today
                 record.days_until_destruction = delta.days
             else:
                 record.days_until_destruction = 0
+                record.days_until_destruction = 0
 
-    @api.depends("location_id", "container_id", "shelf_position")
+    @api.depends(
+        "location_id",
+        "location_id.name",
+        "container_id",
+        "container_id.name",
+        "shelf_position",
+    )
     def _compute_storage_location(self):
         """Compute full storage location details"""
         for record in self:
             location_parts = []
-            if record.location_id:
+            if record.location_id and record.location_id.name:
                 location_parts.append(record.location_id.name)
-            if record.container_id:
+            if record.container_id and record.container_id.name:
                 location_parts.append(f"Container: {record.container_id.name}")
             if record.shelf_position:
                 location_parts.append(f"Shelf: {record.shelf_position}")
@@ -436,15 +460,15 @@ class RecordsDocument(models.Model):
                 raise ValidationError(_("File size cannot be negative"))
             if record.weight_kg and record.weight_kg < 0:
                 raise ValidationError(_("Weight cannot be negative"))
-
-    # ============================================================================
-    # ORM METHODS
-    # ============================================================================
-
     @api.model_create_multi
     def create(self, vals_list):
         """Enhanced create with automatic numbering"""
         for vals in vals_list:
+            if not vals.get("document_number"):
+                vals["document_number"] = (
+                    self.env["ir.sequence"].next_by_code("records.document") or "NEW"
+                )
+        return super(RecordsDocument, self).create(vals_list)
             if not vals.get("document_number"):
                 vals["document_number"] = (
                     self.env["ir.sequence"].next_by_code("records.document") or "NEW"
@@ -460,7 +484,7 @@ class RecordsDocument(models.Model):
                         body=_("Document state changed from %s to %s")
                         % (record.state, vals["state"])
                     )
-        return super().write(vals)
+        return super(RecordsDocument, self).write(vals)
 
     def unlink(self):
         """Enhanced unlink with compliance check"""
@@ -469,11 +493,11 @@ class RecordsDocument(models.Model):
                 raise UserError(
                     _("NAID compliant documents require verified destruction process")
                 )
-        return super().unlink()
+        return super(RecordsDocument, self).unlink()
 
     # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 2)
-    # ============================================================================\n    destruction_eligible_date = fields.Date(string='Destruction Eligible Date', tracking=True)\n    last_access_date = fields.Date(string='Last Access Date', tracking=True)\n    | = fields.Char(string='|', tracking=True)\n
+    # ============================================================================
     # ============================================================================
     # AUTO-GENERATED ACTION METHODS (Batch 2)
     # ============================================================================
@@ -488,6 +512,7 @@ class RecordsDocument(models.Model):
             "target": "new",
             "context": self.env.context,
         }
+
     def action_download(self):
         """Download - Action method"""
         self.ensure_one()
@@ -499,12 +524,14 @@ class RecordsDocument(models.Model):
             "target": "new",
             "context": self.env.context,
         }
+
     def action_mark_permanent(self):
         """Mark Permanent - Update field"""
         self.ensure_one()
-        self.write({"permanent": True})
+        self.write({"permanent_flag": True})
         self.message_post(body=_("Mark Permanent"))
         return True
+
     def action_scan_document(self):
         """Scan Document - Action method"""
         self.ensure_one()
@@ -516,6 +543,7 @@ class RecordsDocument(models.Model):
             "target": "new",
             "context": self.env.context,
         }
+
     def action_type(self):
         """Type - Action method"""
         self.ensure_one()
@@ -527,6 +555,7 @@ class RecordsDocument(models.Model):
             "target": "new",
             "context": self.env.context,
         }
+
     def action_unmark_permanent(self):
         """Unmark Permanent - Action method"""
         self.ensure_one()

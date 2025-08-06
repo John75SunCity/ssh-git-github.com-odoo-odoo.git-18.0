@@ -135,22 +135,26 @@ class RecordsLocation(models.Model):
 
     # Mail framework fields
     activity_ids = fields.One2many(
-        "mail.activity", "res_id", string="Activities",
-        domain=[("model", "=", "records.location")]
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=[("model", "=", "records.location")],
     )
     message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers",
-        domain=lambda self: [("res_model", "=", "records.location")]
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=lambda self: [("res_model", "=", "records.location")],
     )
     message_ids = fields.One2many(
-        "mail.message", "res_id", string="Messages",
-        domain=lambda self: [("model", "=", "records.location")]
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=lambda self: [("model", "=", "records.location")],
     )
 
     # ============================================================================
     # COMPUTED FIELDS
-
-    # ============================================================================
 
     # ============================================================================
     @api.depends("container_ids")
@@ -232,17 +236,12 @@ class RecordsLocation(models.Model):
             "context": self.env.context,
         }
 
-    def action_reserve_space(self):
-        self.ensure_one()
-        if not self.is_available:
-            raise UserError(_("Location is not available for reservations."))
-        # Implementation for space reservation
-
     def action_maintenance_mode(self):
         self.ensure_one()
         self.write({"operational_status": "maintenance"})
 
     def action_reserve_space(self):
+        """Open a form to schedule an inspection if the location is available for reservation."""
         self.ensure_one()
         if not self.is_available:
             raise UserError(_("Location is not available for reservations."))
@@ -295,11 +294,8 @@ class RecordsLocation(models.Model):
         for record in self:
             if record.code:
                 existing = self.search(
-
+                    [("code", "=", record.code), ("id", "!=", record.id)],
+                    limit=1
                 )
                 if existing:
                     raise ValidationError(_("Location code must be unique."))
-
-    # ============================================================================
-    # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================\n    # ============================================================================\n    # AUTO-GENERATED FIELDS (Batch 1)\n    # ============================================================================\n    | = fields.Char(string='|', tracking=True)\n    | = fields.Char(string='|', tracking=True)

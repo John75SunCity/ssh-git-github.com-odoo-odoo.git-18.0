@@ -320,7 +320,13 @@ class Load(models.Model):
 
     # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================\n    estimated_delivery = fields.Char(string='Estimated Delivery', tracking=True)\n    hazmat_required = fields.Boolean(string='Hazmat Required', default=False)\n    load_date = fields.Date(string='Load Date', tracking=True)\n    priority = fields.Selection([('draft', 'Draft')], string='Priority', default='draft', tracking=True)\n    scheduled_departure = fields.Char(string='Scheduled Departure', tracking=True)\n    temperature_controlled = fields.Char(string='Temperature Controlled', tracking=True)\n
+    # ============================================================================
+    estimated_delivery = fields.Char(string='Estimated Delivery', tracking=True)
+    hazmat_required = fields.Boolean(string='Hazmat Required', default=False)
+    load_date = fields.Date(string='Load Date', tracking=True)
+    priority = fields.Selection([('draft', 'Draft')], string='Priority', default='draft', tracking=True)
+    scheduled_departure = fields.Char(string='Scheduled Departure', tracking=True)
+    temperature_controlled = fields.Char(string='Temperature Controlled', tracking=True)
     # ============================================================================
     # AUTO-GENERATED ACTION METHODS (Batch 1)
     # ============================================================================
@@ -338,17 +344,17 @@ class Load(models.Model):
     def action_ship_load(self):
         """Ship Load - Action method"""
         self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Ship Load"),
-            "res_model": "load",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        }
     def action_view_bales(self):
         """View Bales - View related records"""
         self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("View Bales"),
+            "res_model": "paper.bale",
+            "view_mode": "tree,form",
+            "domain": [("load_id", "=", self.id)],
+            "context": {"default_load_id": self.id},
+        }
         return {
             "type": "ir.actions.act_window",
             "name": _("View Bales"),
@@ -363,9 +369,9 @@ class Load(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": _("View Revenue Report"),
-            "res_model": "load",
+            "res_model": "load.revenue",  # Replace with the actual related revenue model name
             "view_mode": "tree,form",
-            "domain": [("load_id", "=", self.id)],
+            "domain": [("load_id", "=", self.id)],  # Ensure 'load_id' is the correct foreign key in the revenue model
             "context": {"default_load_id": self.id},
         }
     def action_view_weight_tickets(self):
@@ -374,8 +380,8 @@ class Load(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": _("View Weight Tickets"),
-            "res_model": "load",
+            "res_model": "weight.ticket",  # Replace with the actual related model name
             "view_mode": "tree,form",
-            "domain": [("load_id", "=", self.id)],
+            "domain": [("load_id", "=", self.id)],  # Ensure 'load_id' exists on the related model
             "context": {"default_load_id": self.id},
         }
