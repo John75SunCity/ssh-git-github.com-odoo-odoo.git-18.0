@@ -447,7 +447,9 @@ class RecordsBillingConfig(models.Model):
     prorate_monthly = fields.Char(string="Prorate Monthly")
     quantity = fields.Integer(string="Quantity")
     quarterly_revenue = fields.Char(string="Quarterly Revenue")
-    rate_type = fields.Selection([("normal", "Normal"), ("high", "High")], string="Rate Type", default="normal")
+    rate_type = fields.Selection(
+        [("normal", "Normal"), ("high", "High")], string="Rate Type", default="normal"
+    )
     rate_unit = fields.Char(string="Rate Unit")
     reminder_schedule = fields.Char(string="Reminder Schedule")
     res_model = fields.Char(string="Res Model")
@@ -455,8 +457,17 @@ class RecordsBillingConfig(models.Model):
     revenue_variance_alerts = fields.Char(string="Revenue Variance Alerts")
     rule_name = fields.Char(string="Rule Name")
     send_invoice_email = fields.Char(string="Send Invoice Email")
-    service_type = fields.Selection([("normal", "Normal"), ("high", "High")], string="Service Type", default="normal")
-    status = fields.Selection([("draft", "Draft"), ("active", "Active"), ("done", "Done")], default="draft", tracking=True)
+    service_type = fields.Selection(
+        [("normal", "Normal"), ("high", "High")],
+        string="Service Type",
+        default="normal",
+    )
+    status = fields.Selection(
+        [("draft", "Draft"), ("active", "Active"), ("done", "Done")],
+        string="Processing Status",
+        default="draft",
+        tracking=True,
+    )
     tax_calculation_method = fields.Char(string="Tax Calculation Method")
     tier_threshold = fields.Char(string="Tier Threshold")
     total_cost = fields.Float(string="Total Cost", digits="Product Price")

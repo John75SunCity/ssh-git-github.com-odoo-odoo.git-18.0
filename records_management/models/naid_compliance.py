@@ -279,7 +279,9 @@ class NaidCompliance(models.Model):
     audit_required = fields.Char(string="Audit Required")
     audit_result = fields.Char(string="Audit Result")
     audit_scope = fields.Char(string="Audit Scope")
-    audit_type = fields.Selection([("normal", "Normal"), ("high", "High")], string="Audit Type", default="normal")
+    audit_type = fields.Selection(
+        [("normal", "Normal"), ("high", "High")], string="Audit Type", default="normal"
+    )
     auditor_name = fields.Char(string="Auditor Name")
     auto_renewal = fields.Char(string="Auto Renewal")
     automated_check = fields.Char(string="Automated Check")
@@ -289,14 +291,18 @@ class NaidCompliance(models.Model):
     certificate_number = fields.Integer(string="Certificate Number")
     certificate_status = fields.Char(string="Certificate Status")
     certificate_tracking = fields.Char(string="Certificate Tracking")
-    certificate_type = fields.Selection([("normal", "Normal"), ("high", "High")], string="Certificate Type", default="normal")
+    certificate_type = fields.Selection(
+        [("normal", "Normal"), ("high", "High")],
+        string="Certificate Type",
+        default="normal",
+    )
     chain_of_custody = fields.Char(string="Chain Of Custody")
     check_frequency = fields.Char(string="Check Frequency")
     client_name = fields.Char(string="Client Name")
     compliance_alerts = fields.Char(string="Compliance Alerts")
     compliance_officer = fields.Char(string="Compliance Officer")
     compliance_score = fields.Char(string="Compliance Score")
-    compliance_status = fields.Char(string="Compliance Status")
+    compliance_status = fields.Char(string="Compliance Status Details")
     compliance_trend = fields.Char(string="Compliance Trend")
     compliance_verified = fields.Char(string="Compliance Verified")
     context = fields.Char(string="Context")
@@ -317,16 +323,26 @@ class NaidCompliance(models.Model):
     implementation_notes = fields.Text(string="Implementation Notes")
     information_handling = fields.Char(string="Information Handling")
     interval_number = fields.Integer(string="Interval Number")
-    interval_type = fields.Selection([("normal", "Normal"), ("high", "High")], string="Interval Type", default="normal")
+    interval_type = fields.Selection(
+        [("normal", "Normal"), ("high", "High")],
+        string="Interval Type",
+        default="normal",
+    )
     issue_date = fields.Date(string="Issue Date")
     issuing_authority = fields.Char(string="Issuing Authority")
     last_audit_date = fields.Date(string="Last Audit Date")
     last_verified = fields.Char(string="Last Verified")
     management_alerts = fields.Char(string="Management Alerts")
     mandatory = fields.Char(string="Mandatory")
-    material_type = fields.Selection([("normal", "Normal"), ("high", "High")], string="Material Type", default="normal")
+    material_type = fields.Selection(
+        [("normal", "Normal"), ("high", "High")],
+        string="Material Type",
+        default="normal",
+    )
     measurement_date = fields.Date(string="Measurement Date")
-    metric_type = fields.Selection([("normal", "Normal"), ("high", "High")], string="Metric Type", default="normal")
+    metric_type = fields.Selection(
+        [("normal", "Normal"), ("high", "High")], string="Metric Type", default="normal"
+    )
     model = fields.Char(string="Model")
     next_audit_date = fields.Date(string="Next Audit Date")
     notes = fields.Text(string="Notes")
@@ -336,14 +352,20 @@ class NaidCompliance(models.Model):
     padding = fields.Char(string="Padding")
     personnel_screening = fields.Char(string="Personnel Screening")
     physical_security_score = fields.Char(string="Physical Security Score")
-    policy_type = fields.Selection([("normal", "Normal"), ("high", "High")], string="Policy Type", default="normal")
+    policy_type = fields.Selection(
+        [("normal", "Normal"), ("high", "High")], string="Policy Type", default="normal"
+    )
     prefix = fields.Char(string="Prefix")
     process_verification = fields.Char(string="Process Verification")
     quality_control = fields.Char(string="Quality Control")
     regulatory_notifications = fields.Char(string="Regulatory Notifications")
     renewal_reminder = fields.Char(string="Renewal Reminder")
     requirement_name = fields.Char(string="Requirement Name")
-    requirement_type = fields.Selection([("normal", "Normal"), ("high", "High")], string="Requirement Type", default="normal")
+    requirement_type = fields.Selection(
+        [("normal", "Normal"), ("high", "High")],
+        string="Requirement Type",
+        default="normal",
+    )
     res_model = fields.Char(string="Res Model")
     responsible_person = fields.Char(string="Responsible Person")
     review_frequency_months = fields.Char(string="Review Frequency Months")

@@ -297,7 +297,7 @@ class VisitorPosWizard(models.TransientModel):
     audit_required = fields.Boolean(string="Audit Required", default=False)
     context = fields.Char(string="Context")
     create_new_customer_flag = fields.Boolean(
-        string="Create New Customer", default=False
+        string="Create New Customer Flag", default=False
     )
     customer_record_created = fields.Boolean(
         string="Customer Record Created", default=False

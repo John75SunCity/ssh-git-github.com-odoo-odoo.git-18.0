@@ -31,44 +31,44 @@
         </record>
 
         <!-- Demo Document Types -->
-        <record id="demo_document_type_contracts" model="records.document.type">
-            <field name="name">Contracts</field>
-            <field name="code">CNTR</field>
-            <field name="description">Legal contracts and agreements</field>
+        <record id="demo_doc_type_contracts" model="records.document.type">
+            <field name="name">Demo Contracts</field>
+            <field name="code">DEMO-CNTR</field>
+            <field name="description">Demo legal contracts and agreements</field>
             <field name="retention_years">7</field>
             <field name="confidential_by_default">True</field>
         </record>
 
-        <record id="demo_document_type_invoices" model="records.document.type">
-            <field name="name">Invoices</field>
-            <field name="code">INV</field>
-            <field name="description">Financial invoices and receipts</field>
+        <record id="demo_doc_type_invoices" model="records.document.type">
+            <field name="name">Demo Invoices</field>
+            <field name="code">DEMO-INV</field>
+            <field name="description">Demo financial invoices and receipts</field>
             <field name="retention_years">7</field>
             <field name="confidential_by_default">False</field>
         </record>
 
-        <record id="demo_document_type_hr_files" model="records.document.type">
-            <field name="name">HR Personnel Files</field>
-            <field name="code">HR</field>
-            <field name="description">Human resources and employee records</field>
+        <record id="demo_doc_type_hr_files" model="records.document.type">
+            <field name="name">Demo HR Personnel Files</field>
+            <field name="code">DEMO-HR</field>
+            <field name="description">Demo human resources and employee records</field>
             <field name="retention_years">10</field>
             <field name="confidential_by_default">True</field>
         </record>
 
         <!-- Demo Retention Policies -->
-        <record id="demo_retention_policy_standard" model="records.retention.policy">
-            <field name="name">Standard Business Records</field>
-            <field name="code">STD-7Y</field>
+        <record id="demo_policy_standard" model="records.retention.policy">
+            <field name="name">Demo Standard Business Records</field>
+            <field name="code">DEMO-STD-7Y</field>
             <field name="retention_period">7</field>
-            <field name="description">Standard 7-year retention for business documents</field>
+            <field name="description">Demo standard 7-year retention for business documents</field>
             <field name="active">True</field>
         </record>
 
-        <record id="demo_retention_policy_hr" model="records.retention.policy">
-            <field name="name">Human Resources Records</field>
-            <field name="code">HR-10Y</field>
+        <record id="demo_policy_hr" model="records.retention.policy">
+            <field name="name">Demo Human Resources Records</field>
+            <field name="code">DEMO-HR-10Y</field>
             <field name="retention_period">10</field>
-            <field name="description">Extended retention for HR and employment records</field>
+            <field name="description">Demo extended retention for HR and employment records</field>
             <field name="active">True</field>
         </record>
 
