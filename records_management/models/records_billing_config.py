@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime, timedelta
-
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
@@ -16,11 +15,17 @@ class RecordsBillingConfig(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-
     name = fields.Char(
-        string="Configuration Name", required=True, tracking=True, index=True
+        string="Configuration Name", 
+        required=True, 
+        tracking=True, 
+        index=True
     )
-    code = fields.Char(string="Configuration Code", index=True, tracking=True)
+    code = fields.Char(
+        string="Configuration Code", 
+        index=True, 
+        tracking=True
+    )
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
     active = fields.Boolean(string="Active", default=True)
@@ -28,499 +33,248 @@ class RecordsBillingConfig(models.Model):
     # ============================================================================
     # FRAMEWORK FIELDS
     # ============================================================================
-
     company_id = fields.Many2one(
+        "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
+        index=True
     )
     user_id = fields.Many2one(
+        "res.users",
         string="Billing Manager",
         default=lambda self: self.env.user,
         tracking=True,
+        index=True
     )
 
     # ============================================================================
     # STATE MANAGEMENT
     # ============================================================================
-
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("active", "Active"),
-            ("suspended", "Suspended"),
-            ("archived", "Archived"),
-        ],
-        string="Status",
-        default="draft",
-        tracking=True,
-    )
-
-    # ============================================================================
-    # CUSTOMER & BILLING RELATIONSHIPS
-    # ============================================================================
-
-    partner_id = fields.Many2one("res.partner", string="Customer", tracking=True)
-    billing_contact_id = fields.Many2one("res.partner", string="Billing Contact")
-    account_manager = fields.Many2one("res.users", string="Account Manager")
+    state = fields.Selection([
+        ("draft", "Draft"),
+        ("active", "Active"),
+        ("suspended", "Suspended"),
+        ("archived", "Archived"),
+    ], string="State", default="draft", tracking=True)
 
     # ============================================================================
     # BILLING CONFIGURATION
     # ============================================================================
+    billing_frequency = fields.Selection([
+        ("monthly", "Monthly"),
+        ("quarterly", "Quarterly"),
+        ("annually", "Annually"),
+        ("on_demand", "On Demand"),
+    ], string="Billing Frequency", default="monthly")
 
-    billing_type = fields.Selection(
-        [("standard", "Standard"), ("premium", "Premium"), ("custom", "Custom")],
-        string="Billing Type",
-        default="standard",
-        tracking=True,
-    )
-    service_category = fields.Selection(
-        [
-            ("storage", "Storage Services"),
-            ("retrieval", "Retrieval Services"),
-            ("destruction", "Destruction Services"),
-            ("scanning", "Scanning Services"),
-            ("transport", "Transport Services"),
-            ("consultation", "Consultation Services"),
-            ("all", "All Services"),
-        ],
-        string="Service Category",
-        default="storage",
-        tracking=True,
-    )
-
-    # ============================================================================
-    # RATE STRUCTURE & PRICING
-    # ============================================================================
+    billing_day = fields.Selection([
+        ("1", "1st of Month"),
+        ("15", "15th of Month"),
+        ("30", "Last Day of Month"),
+    ], string="Billing Day", default="1")
 
     currency_id = fields.Many2one(
+        "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
-    )
-    billing_model = fields.Selection(
-        [
-            ("per_container", "Per Container"),
-            ("per_cubic_foot", "Per Cubic Foot"),
-            ("flat_rate", "Flat Rate"),
-            ("tiered", "Tiered Pricing"),
-            ("volume_based", "Volume Based"),
-            ("custom", "Custom Pricing"),
-        ],
-        string="Billing Model",
-        default="per_container",
-        required=True,
-        tracking=True,
+        required=True
     )
 
     # Rate Configuration
-    base_rate = fields.Float(string="Base Rate", digits="Product Price", default=0.0)
-    setup_fee = fields.Float(string="Setup Fee", digits="Product Price", default=0.0)
-    monthly_minimum = fields.Float(
-        string="Monthly Minimum", digits="Product Price", default=0.0
+    default_storage_rate = fields.Monetary(
+        string="Default Storage Rate", 
+        currency_field="currency_id",
+        help="Default monthly storage rate per box"
+    )
+    default_retrieval_rate = fields.Monetary(
+        string="Default Retrieval Rate",
+        currency_field="currency_id", 
+        help="Default rate per retrieval request"
+    )
+    default_destruction_rate = fields.Monetary(
+        string="Default Destruction Rate",
+        currency_field="currency_id",
+        help="Default rate per destruction certificate"
     )
 
     # ============================================================================
-    # SERVICE PRICING
+    # ADVANCED SETTINGS
     # ============================================================================
-
-    storage_rate = fields.Float(
-        string="Storage Rate", digits="Product Price", default=0.0
+    auto_invoice = fields.Boolean(
+        string="Auto Generate Invoices", 
+        default=True,
+        help="Automatically generate invoices based on billing frequency"
     )
-    retrieval_rate = fields.Float(
-        string="Retrieval Rate", digits="Product Price", default=0.0
-    )
-    transport_rate = fields.Float(
-        string="Transport Rate", digits="Product Price", default=0.0
-    )
-    scanning_rate = fields.Float(
-        string="Scanning Rate", digits="Product Price", default=0.0
-    )
-    destruction_rate = fields.Float(
-        string="Destruction Rate", digits="Product Price", default=0.0
+    
+    prorate_charges = fields.Boolean(
+        string="Prorate Charges",
+        default=True,
+        help="Prorate charges for partial billing periods"
     )
 
-    # ============================================================================
-    # DISCOUNTS & PROMOTIONS
-    # ============================================================================
-
-    discount_percentage = fields.Float(
-        string="Discount %", digits="Discount", default=0.0
-    )
-    volume_discount_threshold = fields.Integer(
-        string="Volume Discount Threshold", default=0
-    )
-    volume_discount_rate = fields.Float(
-        string="Volume Discount Rate", digits="Discount", default=0.0
+    minimum_charge = fields.Monetary(
+        string="Minimum Monthly Charge",
+        currency_field="currency_id",
+        help="Minimum charge per billing cycle (applies only when billing for a single month)"
     )
 
-    # ============================================================================
-    # BILLING SCHEDULE
-    # ============================================================================
-
-    billing_frequency = fields.Selection(
-        [
-            ("monthly", "Monthly"),
-            ("quarterly", "Quarterly"),
-            ("semi_annual", "Semi-Annual"),
-            ("annual", "Annual"),
-        ],
-        string="Billing Frequency",
-        default="monthly",
-        required=True,
+    # Prepaid Billing Support  
+    prepaid_enabled = fields.Boolean(
+        string="Enable Prepaid Billing",
+        default=False,
+        help="Allow customers to prepay for services"
     )
-    billing_day = fields.Integer(
-        string="Billing Day of Month", default=1, help="Day of month for billing"
+    prepaid_discount_rate = fields.Float(
+        string="Prepaid Discount Rate (%)",
+        help="Discount percentage for prepaid services"
     )
-    advance_billing_days = fields.Integer(string="Advance Billing Days", default=30)
-
-    # ============================================================================
-    # TERMS & CONDITIONS
-    # ============================================================================
-
-    payment_terms = fields.Selection(
-        [
-            ("immediate", "Immediate Payment"),
-            ("net_15", "Net 15 Days"),
-            ("net_30", "Net 30 Days"),
-            ("net_45", "Net 45 Days"),
-            ("net_60", "Net 60 Days"),
-            ("custom", "Custom Terms"),
-        ],
-        string="Payment Terms",
-        default="net_30",
+    prepaid_minimum_months = fields.Integer(
+        string="Minimum Prepaid Months",
+        default=3,
+        help="Minimum months required for prepaid billing"
     )
-    credit_limit = fields.Float(
-        string="Credit Limit", digits="Product Price", default=0.0
-    )
-    late_fee_percentage = fields.Float(
-        string="Late Fee %", digits="Discount", default=0.0
-    )
-    grace_period_days = fields.Integer(string="Grace Period (Days)", default=0)
-
-    # ============================================================================
-    # DATE TRACKING
-    # ============================================================================
-
-    effective_date = fields.Date(
-        string="Effective Date", default=fields.Date.today, required=True
-    )
-    expiry_date = fields.Date(string="Expiry Date")
-    last_review_date = fields.Date(string="Last Review Date")
-    next_review_date = fields.Date(string="Next Review Date")
-
-    # ============================================================================
-    # AUTOMATION & NOTIFICATIONS
-    # ============================================================================
-
-    auto_invoice = fields.Boolean(string="Auto Generate Invoices", default=False)
-    auto_payment_reminder = fields.Boolean(
-        string="Auto Payment Reminders", default=False
-    )
-    invoice_email_template = fields.Many2one(
-        "mail.template", string="Invoice Email Template"
-    )
-    reminder_email_template = fields.Many2one(
-        "mail.template", string="Reminder Email Template"
+    prepaid_maximum_months = fields.Integer(
+        string="Maximum Prepaid Months", 
+        default=24,
+        help="Maximum months allowed for prepaid billing"
     )
 
     # ============================================================================
     # AUDIT & COMPLIANCE
     # ============================================================================
+    audit_trail = fields.Text(
+        string="Audit Trail",
+        readonly=True,
+        help="Log of configuration changes"
+    )
+    last_modified_date = fields.Datetime(
+        string="Last Modified",
+        default=lambda self: fields.Datetime.now(),
+        readonly=True
+    )
+    last_modified_by = fields.Many2one(
+        "res.users",
+        string="Last Modified By",
+        readonly=True
+    )
 
-    audit_trail = fields.Text(string="Audit Trail", readonly=True)
-    compliance_notes = fields.Text(string="Compliance Notes")
-    regulatory_requirements = fields.Text(string="Regulatory Requirements")
+    def write(self, vals):
+        vals['last_modified_date'] = fields.Datetime.now()
+        vals['last_modified_by'] = self.env.user.id
+        return super(RecordsBillingConfig, self).write(vals)
+
+    def create(self, vals):
+        vals['last_modified_date'] = fields.Datetime.now()
+        vals['last_modified_by'] = self.env.user.id
+        return super(RecordsBillingConfig, self).create(vals)
 
     # ============================================================================
-    # RELATIONSHIP FIELDS - One2many relationships to related models
+    # RELATIONSHIP FIELDS (PROPER ODOO 18.0 PATTERNS)
     # ============================================================================
+    partner_ids = fields.Many2many(
+        "res.partner",
+        "billing_config_partner_rel",
+        "config_id",
+        "partner_id",
+        string="Assigned Customers",
+        domain="[('is_company', '=', True)]"
+    )
 
-    billing_line_ids = fields.One2many(
-        string="Billing Lines",
-        help="Detailed billing line items for this configuration",
+    rate_line_ids = fields.One2many(
+        "records.billing.config.line",
+        "config_id",
+        string="Rate Configuration Lines"
     )
-    usage_tracking_ids = fields.One2many(
-        string="Usage Tracking Records",
-        help="Usage tracking records for billing analysis",
+
+    # Mail Framework Fields (SECURE - No domains needed)
+    activity_ids = fields.One2many(
+        "mail.activity", 
+        "res_id", 
+        string="Activities",
+        auto_join=True,
+        groups="base.group_user"
     )
-    invoice_log_ids = fields.One2many(
-        string="Invoice Generation Logs",
-        help="Historical invoice generation records",
+    message_follower_ids = fields.One2many(
+        "mail.followers", 
+        "res_id", 
+        string="Followers",
+        groups="base.group_user"
     )
-    discount_rule_ids = fields.One2many(
-        string="Discount Rules",
-        help="Discount rules applied to this billing configuration",
-    )
-    revenue_analytics_ids = fields.One2many(
-        string="Revenue Analytics",
-        help="Revenue analytics and reporting data",
-    )
-    promotional_discount_ids = fields.One2many(
-        string="Promotional Discounts",
-        help="Active promotional discounts for this configuration",
+    message_ids = fields.One2many(
+        "mail.message", 
+        "res_id", 
+        string="Messages",
+        groups="base.group_user"
     )
 
     # ============================================================================
-    # BUSINESS METHODS
+    # COMPUTED FIELDS
     # ============================================================================
+    @api.depends("partner_ids")
+    def _compute_customer_count(self):
+        for record in self:
+            record.customer_count = len(record.partner_ids)
+            record.is_active_config = (record.active and record.state == "active")
+    @api.depends("rate_line_ids")
+    def _compute_rate_count(self):
+        for record in self:
+            record.rate_count = len(record.rate_line_ids)
 
-    def action_activate(self):
-        """Activate billing configuration"""
-        self.ensure_one()
-        if not self.partner_id:
-            raise UserError(_("Customer must be specified before activation."))
-        self.write({"state": "active"})
-        self.message_post(body=_("Billing configuration activated"))
+    @api.depends("state", "active")
+    def _compute_is_active_config(self):
+        for record in self:
+            record.is_active_config = record.active and record.state == "active"
 
-    def action_suspend(self):
-        """Suspend billing configuration"""
-        self.ensure_one()
-        self.write({"state": "suspended"})
-        self.message_post(body=_("Billing configuration suspended"))
-
-    def action_archive(self):
-        """Archive billing configuration"""
-        self.ensure_one()
-        self.write({"state": "archived", "active": False})
-        self.message_post(body=_("Billing configuration archived"))
-
-    def calculate_service_charge(self, service_type, quantity=1.0):
-        """Calculate charges for specific service"""
-        self.ensure_one()
-        rate_map = {
-        }
-
-        base_charge = rate_map.get(service_type, 0.0) * quantity
-
-        # Apply volume discount if applicable
-        if quantity >= self.volume_discount_threshold and self.volume_discount_rate:
-            discount = base_charge * (self.volume_discount_rate / 100.0)
-            base_charge -= discount
-
-        # Apply general discount
-        if self.discount_percentage:
-            general_discount = base_charge * (self.discount_percentage / 100.0)
-            base_charge -= general_discount
-
-        return max(base_charge, 0.0)
-
-    def get_next_billing_date(self):
-        """Calculate next billing date based on frequency"""
-        self.ensure_one()
-        if not self.effective_date:
-            return False
-
-        base_date = self.effective_date
-        today = fields.Date.today()
-
-        if self.billing_frequency == "monthly":
-            # Calculate next monthly billing
-            if base_date.day <= self.billing_day:
-                next_date = base_date.replace(day=self.billing_day)
-            else:
-                # Move to next month
-                if base_date.month == 12:
-                    next_date = base_date.replace(
-                        year=base_date.year + 1, month=1, day=self.billing_day
-                    )
-                else:
-                    next_date = base_date.replace(
-                        month=base_date.month + 1, day=self.billing_day
-                    )
-        elif self.billing_frequency == "quarterly":
-            next_date = base_date + timedelta(days=90)
-        elif self.billing_frequency == "semi_annual":
-            next_date = base_date + timedelta(days=180)
-        elif self.billing_frequency == "annual":
-            next_date = base_date.replace(year=base_date.year + 1)
-        else:
-            next_date = base_date + timedelta(days=30)
-
-        return next_date
+    customer_count = fields.Integer(
+        string="Customer Count",
+        compute="_compute_customer_count",
+        store=True
+    )
+    rate_count = fields.Integer(
+        string="Rate Lines Count", 
+        compute="_compute_rate_count",
+        store=True
+    )
+    is_active_config = fields.Boolean(
+        string="Is Active Configuration",
+        compute="_compute_is_active_config",
+        store=True
+    )
 
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
-
-    @api.constrains("discount_percentage")
-    def _check_discount_percentage(self):
+    @api.constrains("prepaid_minimum_months", "prepaid_maximum_months")
+    def _check_prepaid_months(self):
         for record in self:
-            if record.discount_percentage < 0 or record.discount_percentage > 100:
-                raise ValidationError(
-                    _("Discount percentage must be between 0 and 100")
-                )
+            if record.prepaid_enabled:
+                if record.prepaid_minimum_months <= 0:
+                    raise ValidationError(_("Prepaid minimum months must be greater than 0"))
+                if record.prepaid_maximum_months <= record.prepaid_minimum_months:
+                    raise ValidationError(_("Prepaid maximum months must be greater than minimum months"))
 
-    @api.constrains("volume_discount_rate")
-    def _check_volume_discount_rate(self):
+    @api.constrains("default_storage_rate", "default_retrieval_rate", "default_destruction_rate")
+    def _check_default_rates(self):
         for record in self:
-            if record.volume_discount_rate < 0 or record.volume_discount_rate > 100:
-                raise ValidationError(
-                    _("Volume discount rate must be between 0 and 100")
-                )
+            if record.default_storage_rate < 0:
+                raise ValidationError(_("Storage rate cannot be negative"))
+            if record.default_retrieval_rate < 0:
+                raise ValidationError(_("Retrieval rate cannot be negative"))
+            if record.default_destruction_rate < 0:
+                raise ValidationError(_("Destruction rate cannot be negative"))
 
-    @api.constrains("billing_day")
-    def _check_billing_day(self):
+    @api.constrains("prepaid_discount_rate")
+    def _check_discount_rate(self):
         for record in self:
-            if record.billing_day < 1 or record.billing_day > 31:
-                raise ValidationError(_("Billing day must be between 1 and 31"))
-
-    @api.constrains("effective_date", "expiry_date")
-    def _check_date_consistency(self):
-        for record in self:
-            if record.expiry_date and record.effective_date > record.expiry_date:
-                raise ValidationError(_("Effective date cannot be after expiry date"))
+            if record.prepaid_enabled and (record.prepaid_discount_rate < 0 or record.prepaid_discount_rate > 100):
+                raise ValidationError(_("Discount rate must be between 0 and 100"))
 
     # ============================================================================
-    # COMPUTED FIELDS
-
+    # BUSINESS METHODS
     # ============================================================================
-    # AUTO-GENERATED FIELDS (from view analysis)
-    # ============================================================================
-    accounting_system_sync = fields.Integer(string="Accounting System Sync")
-    amount = fields.Float(string="Amount", digits="Product Price")
-    annual_revenue = fields.Char(string="Annual Revenue")
-    arch = fields.Char(string="Arch")
-    audit_trail_enabled = fields.Boolean(string="Audit Trail Enabled", default=False)
-    auto_apply = fields.Char(string="Auto Apply")
-    auto_billing = fields.Char(string="Auto Billing")
-    average_monthly_billing = fields.Char(string="Average Monthly Billing")
-    billable = fields.Char(string="Billable")
-    billing_accuracy_rate = fields.Char(string="Billing Accuracy Rate")
-    billing_cycle_start = fields.Char(string="Billing Cycle Start")
-    billing_failure_alerts = fields.Char(string="Billing Failure Alerts")
-    cc_accounting = fields.Integer(string="Cc Accounting")
-    collection_rate = fields.Char(string="Collection Rate")
-    compliance_reporting = fields.Char(string="Compliance Reporting")
-    context = fields.Char(string="Context")
-    cost_amount = fields.Float(string="Cost Amount", digits="Product Price")
-    customer_count = fields.Integer(string="Customer Count")
-    customer_notifications = fields.Char(string="Customer Notifications")
-    customer_satisfaction_score = fields.Char(string="Customer Satisfaction Score")
-    data_retention_period = fields.Char(string="Data Retention Period")
-    discount_type = fields.Integer(string="Discount Type")
-    discount_value = fields.Float(string="Discount Value", digits="Product Price")
-    encryption_enabled = fields.Boolean(string="Encryption Enabled", default=False)
-    escalation_notifications = fields.Char(string="Escalation Notifications")
-    finance_team_notifications = fields.Char(string="Finance Team Notifications")
-    generation_date = fields.Date(string="Generation Date")
-    help = fields.Char(string="Help")
-    include_usage_details = fields.Char(string="Include Usage Details")
-    invoice_number = fields.Integer(string="Invoice Number")
-    invoice_status = fields.Char(string="Invoice Status")
-    invoice_template = fields.Char(string="Invoice Template")
-    last_invoice_date = fields.Date(string="Last Invoice Date")
-    manager_notifications = fields.Char(string="Manager Notifications")
-    minimum_charge = fields.Char(string="Minimum Charge")
-    minimum_threshold = fields.Char(string="Minimum Threshold")
-    model = fields.Char(string="Model")
-    monthly_revenue = fields.Char(string="Monthly Revenue")
-    multi_currency_support = fields.Char(string="Multi Currency Support")
-    next_billing_date = fields.Date(string="Next Billing Date")
-    payment_delay_average = fields.Char(string="Payment Delay Average")
-    payment_gateway_integration = fields.Char(string="Payment Gateway Integration")
-    payment_method = fields.Char(string="Payment Method")
-    payment_overdue_alerts = fields.Char(string="Payment Overdue Alerts")
-    period = fields.Char(string="Period")
-    period_end = fields.Char(string="Period End")
-    period_start = fields.Char(string="Period Start")
-    profit_margin = fields.Char(string="Profit Margin")
-    prorate_monthly = fields.Char(string="Prorate Monthly")
-    quantity = fields.Integer(string="Quantity")
-    quarterly_revenue = fields.Char(string="Quarterly Revenue")
-    rate_type = fields.Selection(
-        [("normal", "Normal"), ("high", "High")], string="Rate Type", default="normal"
-    )
-    rate_unit = fields.Char(string="Rate Unit")
-    reminder_schedule = fields.Char(string="Reminder Schedule")
-    res_model = fields.Char(string="Res Model")
-    revenue_amount = fields.Float(string="Revenue Amount", digits="Product Price")
-    revenue_variance_alerts = fields.Char(string="Revenue Variance Alerts")
-    rule_name = fields.Char(string="Rule Name")
-    send_invoice_email = fields.Char(string="Send Invoice Email")
-    service_type = fields.Selection(
-        [("normal", "Normal"), ("high", "High")],
-        string="Service Type",
-        default="normal",
-    )
-    status = fields.Selection(
-        [("draft", "Draft"), ("active", "Active"), ("done", "Done")],
-        string="Processing Status",
-        default="draft",
-        tracking=True,
-    )
-    tax_calculation_method = fields.Char(string="Tax Calculation Method")
-    tier_threshold = fields.Char(string="Tier Threshold")
-    total_cost = fields.Float(string="Total Cost", digits="Product Price")
-    track_access_frequency = fields.Char(string="Track Access Frequency")
-    track_box_storage = fields.Char(string="Track Box Storage")
-    track_destruction_services = fields.Char(string="Track Destruction Services")
-    track_digital_services = fields.Char(string="Track Digital Services")
-    track_document_count = fields.Integer(string="Track Document Count")
-    track_pickup_delivery = fields.Char(string="Track Pickup Delivery")
-    track_retrieval_requests = fields.Char(string="Track Retrieval Requests")
-    track_special_handling = fields.Char(string="Track Special Handling")
-    tracking_date = fields.Date(string="Tracking Date")
-    unit_of_measure = fields.Char(string="Unit Of Measure")
-    unit_rate = fields.Char(string="Unit Rate")
-    usage_threshold_alerts = fields.Char(string="Usage Threshold Alerts")
-    view_mode = fields.Char(string="View Mode")
-    # ============================================================================
-
-    total_monthly_charges = fields.Float(
-        string="Total Monthly Charges",
-        compute="_compute_total_monthly_charges",
-        digits="Product Price",
-        store=True,
-    )
-
-    @api.depends("storage_rate", "monthly_minimum", "setup_fee")
-    def _compute_total_monthly_charges(self):
-        for record in self:
-            total = record.storage_rate + record.setup_fee
-            record.total_monthly_charges = max(total, record.monthly_minimum)
-
-    is_expired = fields.Boolean(
-        string="Is Expired",
-        compute="_compute_is_expired",
-        store=True,
-    )
-
-    @api.depends("expiry_date")
-    def _compute_is_expired(self):
-        for record in self:
-            record.is_expired = record.expiry_date and record.expiry_date < today
-
-    # ============================================================================
-    # ORM OVERRIDES
-    # ============================================================================
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if not vals.get("code"):
-                vals["code"] = (
-                    self.env["ir.sequence"].next_by_code("records.billing.config")
-                    or "NEW"
-                )
-        return super().create(vals_list)
-
-    def write(self, vals):
-        if "state" in vals and vals["state"] == "active":
-            vals["last_review_date"] = fields.Date.today()
-        return super().write(vals)
-
-    def unlink(self):
-        for record in self:
-            if record.state == "active":
-                raise UserError(_("Cannot delete active billing configurations"))
-        return super().unlink()
-
-    # ============================================================================
-    # UTILITY METHODS
-    # ============================================================================
-
     def _log_audit_trail(self, action, details=""):
-        """Log actions to audit trail"""
+        """Log actions to audit trail with proper formatting"""
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         user = self.env.user.name
         log_entry = f"[{timestamp}] {user}: {action}"
@@ -528,77 +282,205 @@ class RecordsBillingConfig(models.Model):
             log_entry += f" - {details}"
 
         current_audit = self.audit_trail or ""
-        self.audit_trail = (
-            f"", {current_audit}
-    # ============================================================================
-    # AUTO-GENERATED ACTION METHODS (Batch 3)
-    # ============================================================================
-    def action_configure_rates(self):
-        """Configure Rates - Action method"""
-        self.ensure_one()
-        return {
-            "name": _("Configure Rates"),
-        }
-    def action_duplicate(self):
-        """Duplicate - Action method"""
-        self.ensure_one()
-        return {
-            "name": _("Duplicate"),
-        }
-    def action_generate_invoice(self):
-        """Generate Invoice - Generate report"""
-        self.ensure_one()
-        return {
-        }
-    def action_test_billing(self):
-        """Test Billing - Action method"""
-        self.ensure_one()
-        return {
-            "name": _("Test Billing"),
-        }
-    def action_view_analytics(self):
-        """View Analytics - View related records"""
-        self.ensure_one()
-        return {
-            "name": _("View Analytics"),
-            "domain": [("config_id", "=", self.id)],
-        }
-    def action_view_billing_history(self):
-        """View Billing History - View related records"""
-        self.ensure_one()
-        return {
-            "name": _("View Billing History"),
-            "domain": [("config_id", "=", self.id)],
-        }
-    def action_view_invoice(self):
-        """View Invoice - View related records"""
-        self.ensure_one()
-        return {
-            "name": _("View Invoice"),
-            "domain": [("config_id", "=", self.id)],
-        }
-    def action_view_invoices(self):
-        """View Invoices - View related records"""
-        self.ensure_one()
-        return {
-            "name": _("View Invoices"),
-            "domain": [("config_id", "=", self.id)],
-        }
-    def action_view_revenue(self):
-        """View Revenue - View related records"""
-        self.ensure_one()
-        return {
-            "name": _("View Revenue"),
-            "domain": [("config_id", "=", self.id)],
-        }\n{log_entry}"", if current_audit else log_entry
-        )
+        if current_audit:
+            self.audit_trail = f"{current_audit}\n{log_entry}"
+        else:
+            self.audit_trail = log_entry
 
-    def generate_billing_summary(self):
-        """Generate comprehensive billing summary"""
+    def calculate_storage_cost(self, box_count, months=1):
+        """Calculate storage cost based on configuration"""
+        self.ensure_one()
+        storage_rate = self.default_storage_rate if self.default_storage_rate is not None else 0.0
+        box_count = box_count if box_count is not None else 0
+        months = months if months is not None else 1
+        minimum_charge = self.minimum_charge if self.minimum_charge is not None else 0.0
+
+        base_cost = storage_rate * box_count * months
+
+        if base_cost < minimum_charge and months == 1:
+            base_cost = minimum_charge
+
+        return base_cost
+
+    def calculate_prepaid_discount(self, amount, months):
+        """Calculate prepaid discount if applicable"""
+        self.ensure_one()
+        prepaid_min_months = self.prepaid_minimum_months if self.prepaid_minimum_months else 0
+        if not self.prepaid_enabled or months < prepaid_min_months:
+            return 0.0
+
+        return amount * (self.prepaid_discount_rate / 100)
+
+    # ============================================================================
+    # ACTION METHODS (SECURE IMPLEMENTATIONS)
+    # ============================================================================
+    def action_activate(self):
+        """Activate billing configuration"""
+        self.ensure_one()
+        if self.state != "draft":
+            raise UserError(_("Only draft configurations can be activated"))
+        
+        self._log_audit_trail("Configuration Activated")
+        self.write({
+            "state": "active",
+            "last_modified_date": fields.Datetime.now(),
+            "last_modified_by": self.env.user.id
+        })
+
+    def action_suspend(self):
+        """Suspend billing configuration"""
+        self.ensure_one()
+        if self.state != "active":
+            raise UserError(_("Only active configurations can be suspended"))
+            
+        self._log_audit_trail("Configuration Suspended")
+        self.write({
+            "state": "suspended",
+            "last_modified_date": fields.Datetime.now(),
+            "last_modified_by": self.env.user.id
+        })
+
+    def action_archive(self):
+        """Archive billing configuration"""
+        self.ensure_one()
+        self._log_audit_trail("Configuration Archived")
+        self.write({
+            "state": "archived", 
+            "active": False,
+            "last_modified_date": fields.Datetime.now(),
+            "last_modified_by": self.env.user.id
+        })
+
+    def action_duplicate(self):
+        """Duplicate configuration"""
+        self.ensure_one()
+        copy = self.copy({
+            "name": f"{self.name} (Copy)",
+            "code": f"{self.code}_copy" if self.code else False,
+            "state": "draft"
+        })
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Billing Configuration"),
+            "res_model": "records.billing.config",
+            "res_id": copy.id,
+            "view_mode": "form",
+            "target": "current"
+        }
+
+    def action_configure_rates(self):
+        """Open rate configuration wizard"""
         self.ensure_one()
         return {
-            "billing_model": dict(self._fields["billing_model"].selection)[
-                self.billing_model
-            ],
-            "next_billing_date": self.get_next_billing_date(),
+            "type": "ir.actions.act_window",
+            "name": _("Configure Rates"),
+            "res_model": "records.billing.config.line",
+            "view_mode": "tree,form",
+            "domain": [("config_id", "=", self.id)],
+            "context": {"default_config_id": self.id},
+            "target": "current"
         }
+
+    def action_view_customers(self):
+        """View assigned customers"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window", 
+            "name": _("Assigned Customers"),
+            "res_model": "res.partner",
+            "view_mode": "tree,form",
+            "domain": [("id", "in", self.partner_ids.ids)],
+            "target": "current"
+        }
+
+    def action_generate_report(self):
+        """Generate billing configuration report"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.report",
+            "report_name": "records_management.billing_config_report",
+            "report_type": "qweb-pdf",
+            "data": {"ids": [self.id]},
+            "context": dict(self.env.context)
+        }
+
+    def action_test_billing(self):
+        """Test billing calculation"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Test Billing Calculation"),
+            "res_model": "records.billing.test.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_config_id": self.id}
+        }
+
+
+class RecordsBillingConfigLine(models.Model):
+    _name = "records.billing.config.line"
+    _description = "Billing Configuration Line"
+    _order = "sequence, service_type"
+
+    # ============================================================================
+    # CORE FIELDS
+    # ============================================================================
+    config_id = fields.Many2one(
+        "records.billing.config",
+        string="Configuration", 
+        required=True,
+        ondelete="cascade",
+        index=True
+    )
+    sequence = fields.Integer(string="Sequence", default=10)
+    
+    service_type = fields.Selection([
+        ("storage", "Storage"),
+        ("retrieval", "Retrieval"), 
+        ("destruction", "Destruction"),
+        ("scanning", "Scanning"),
+        ("delivery", "Delivery"),
+    ], string="Service Type", required=True)
+    
+    name = fields.Char(string="Service Name", required=True)
+    rate = fields.Monetary(
+        string="Rate",
+        currency_field="currency_id",
+        required=True
+    )
+    currency_id = fields.Many2one(
+        "res.currency",
+        related="config_id.currency_id",
+        store=True,
+        readonly=True
+    )
+    
+    unit_type = fields.Selection([
+        ("per_box", "Per Box"),
+        ("per_request", "Per Request"), 
+        ("per_item", "Per Item"),
+        ("per_hour", "Per Hour"),
+        ("flat_rate", "Flat Rate"),
+    ], string="Unit Type", required=True, default="per_box")
+    
+    active = fields.Boolean(string="Active", default=True)
+
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("rate")
+    def _check_rate(self):
+        for record in self:
+            if record.rate < 0:
+                raise ValidationError(_("Rate cannot be negative"))
+                raise ValidationError(_("Rate cannot be negative"))
+
+    # ============================================================================
+    # DISPLAY METHODS
+    def name_get(self):
+        result = []
+        for record in self:
+            currency_symbol = record.currency_id.symbol if record.currency_id and record.currency_id.symbol else ""
+            name = f"{record.name} ({record.service_type.title()}) - {record.rate} {currency_symbol}"
+            result.append((record.id, name))
+        return result
+        return result

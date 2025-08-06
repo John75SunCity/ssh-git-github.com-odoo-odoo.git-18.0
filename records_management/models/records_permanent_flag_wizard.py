@@ -1,454 +1,595 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api, _
+
+import logging
+import traceback
+from datetime import datetime
+
+_logger = logging.getLogger(__name__)
+
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 
 class RecordsPermanentFlagWizard(models.TransientModel):
     _name = "records.permanent.flag.wizard"
-    _description = "Records Permanent Flag Wizard"
+    _description = "Permanent Flag Application Wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _rec_name = "name"
 
-    # Basic Information
-    name = fields.Char(string="Flag Name", required=True, default="Permanent Flag")
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Operation Name",
+        required=True,
+        default=lambda self: _("Permanent Flag Operation %s")
+        % fields.Date.context_today(self),
+    )
+    description = fields.Text(
+        string="Description",
+        help="Detailed description of the permanent flag operation",
+    )
+
+    # ============================================================================
+    # FRAMEWORK FIELDS
+    # ============================================================================
     company_id = fields.Many2one(
-        "res.company", default=lambda self: self.env.company, required=True
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
     )
     user_id = fields.Many2one(
-        "res.users", default=lambda self: self.env.user, tracking=True
-    )
-    document_ids = fields.Many2many("records.document", string="Documents")
-    reason = fields.Text(string="Reason")
-    # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    active = fields.Boolean(string="Active", default=True)
-    state = fields.Selection(
-        [("draft", "Draft"), ("processing", "Processing"), ("completed", "Completed")],
-        string="State",
-        default="draft",
-    )
-    notes = fields.Text(string="Notes")
-    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
-    sequence = fields.Integer(string="Sequence", default=10)
-    updated_date = fields.Datetime(string="Updated Date")
-    # Records Permanent Flag Wizard Fields
-    action_type = fields.Selection(
-        [("flag", "Flag as Permanent"), ("unflag", "Remove Permanent Flag")],
-        default="flag",
-    )
-    container_id = fields.Many2one("records.container", "Container")
-    customer_id = fields.Many2one("res.partner", "Customer")
-    document_count = fields.Integer("Document Count", default=0)
-    permanent_flag = fields.Boolean("Permanent Flag", default=True)
-    approval_required = fields.Boolean("Approval Required", default=True)
-    justification_notes = fields.Text("Justification Notes")
-    legal_basis = fields.Selection(
-        [
-            ("regulatory", "Regulatory"),
-            ("litigation", "Litigation"),
-            ("historical", "Historical"),
-        ],
-        default="regulatory",
-    )
-    notification_sent = fields.Boolean("Notification Sent", default=False)
-
-    # === MISSING BUSINESS CRITICAL FIELDS ===
-    permanent_flag_set_by = fields.Many2one(
-        string="Permanent Flag Set By",
+        "res.users",
+        string="Requesting User",
         default=lambda self: self.env.user,
-        help="User who set the permanent flag",
-    )
-    permanent_flag_set_date = fields.Datetime(
-        string="Permanent Flag Set Date",
-        default=fields.Datetime.now,
-        help="Date and time when permanent flag was set",
-    )
-    user_password = fields.Char(
-        string="User Password",
-        help="Password verification for permanent flag operations",
+        readonly=True,
     )
 
-    # === ADDITIONAL WORKFLOW FIELDS ===
-    batch_operation = fields.Boolean(
-        string="Batch Operation",
-        default=False,
-        help="True if this is a batch operation on multiple items",
-    )
-    affected_documents_count = fields.Integer(
-        string="Affected Documents Count",
-        compute="_compute_affected_documents_count",
-        help="Number of documents affected by this flag operation",
-    )
-    estimated_completion_time = fields.Float(
-        string="Estimated Completion Time (Hours)",
-        digits=(5, 2),
-        help="Estimated time to complete the flagging operation",
-    )
-    priority_level = fields.Selection(
-        [("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")],
-        string="Priority Level",
-        default="medium",
-        help="Priority level for this permanent flag operation",
+    # ============================================================================
+    # OPERATION CONFIGURATION
+    # ============================================================================
+    operation_type = fields.Selection(
+        [
+            ("apply", "Apply Permanent Flag"),
+            ("remove", "Remove Permanent Flag"),
+            ("review", "Review Flagged Documents"),
+        ],
+        string="Operation Type",
+        default="apply",
+        required=True,
     )
 
-    # === APPROVAL WORKFLOW ===
+    flag_reason = fields.Selection(
+        [
+            ("legal_hold", "Legal Hold"),
+            ("litigation", "Litigation Support"),
+            ("audit_requirement", "Audit Requirement"),
+            ("compliance", "Regulatory Compliance"),
+            ("historical", "Historical Significance"),
+            ("business_critical", "Business Critical"),
+            ("custom", "Custom Reason"),
+        ],
+        string="Flag Reason",
+        required=True,
+    )
+
+    custom_reason = fields.Char(
+        string="Custom Reason",
+        help="Specify custom reason when 'Custom Reason' is selected",
+    )
+
+    legal_basis = fields.Text(
+        string="Legal Basis",
+        help="Legal justification for the permanent flag operation",
+    )
+
+    # ============================================================================
+    # APPROVAL WORKFLOW
+    # ============================================================================
     approval_status = fields.Selection(
         [
+            ("draft", "Draft"),
             ("pending", "Pending Approval"),
             ("approved", "Approved"),
             ("rejected", "Rejected"),
-            ("auto_approved", "Auto Approved"),
         ],
         string="Approval Status",
-        default="pending",
-        help="Current approval status of the flag operation",
-    )
-    approved_by = fields.Many2one(
-        string="Approved By",
-        help="User who approved the permanent flag operation",
-    )
-    approval_date = fields.Datetime(
-        string="Approval Date", help="Date and time when the operation was approved"
-    )
-    rejection_reason = fields.Text(
-        string="Rejection Reason",
-        help="Reason for rejecting the permanent flag request",
+        default="draft",
+        readonly=True,
     )
 
-    # === AUDIT AND COMPLIANCE ===
-    audit_trail = fields.Text(
-        string="Audit Trail",
-        help="Detailed audit trail of the permanent flag operation",
-    )
-    compliance_check_passed = fields.Boolean(
-        string="Compliance Check Passed",
-        default=False,
-        help="Whether all compliance checks have passed",
-    )
-    regulatory_requirement = fields.Text(
-        string="Regulatory Requirement",
-        help="Specific regulatory requirement for permanent flagging",
-    )
-    legal_hold_reference = fields.Char(
-        string="Legal Hold Reference", help="Reference to legal hold document or case"
+    approval_required = fields.Boolean(
+        string="Approval Required",
+        default=True,
+        help="Whether this operation requires approval",
     )
 
-    # === NOTIFICATION AND COMMUNICATION ===
-    notification_method = fields.Selection(
+    approved_by = fields.Many2one("res.users", string="Approved By", readonly=True)
+    approval_date = fields.Datetime(string="Approval Date", readonly=True)
+    rejection_reason = fields.Text(string="Rejection Reason", readonly=True)
+
+    # ============================================================================
+    # DOCUMENT SELECTION
+    # ============================================================================
+    document_ids = fields.Many2many(
+        "records.document",
+        "permanent_flag_document_rel",
+        "wizard_id",
+        "document_id",
+        string="Documents",
+        required=True,
+        help="Documents to apply permanent flag to",
+    )
+
+    document_count = fields.Integer(
+        string="Document Count", compute="_compute_document_count"
+    )
+
+    # Selection Criteria
+    selection_method = fields.Selection(
         [
-            ("email", "Email"),
-            ("sms", "SMS"),
-            ("portal", "Portal Notification"),
-            ("all", "All Methods"),
+            ("manual", "Manual Selection"),
+            ("criteria", "By Criteria"),
+            ("import", "Import from File"),
         ],
-        string="Notification Method",
-        default="email",
-        help="Method to notify stakeholders",
+        string="Selection Method",
+        default="manual",
     )
+
+    # Criteria-based selection
+    document_type_ids = fields.Many2many(
+        "records.document.type",
+        string="Document Types",
+        help="Filter by document types",
+    )
+    location_ids = fields.Many2many(
+        "records.location", string="Locations", help="Filter by storage locations"
+    )
+    partner_id = fields.Many2one(
+        "res.partner", string="Customer", help="Filter by customer"
+    )
+    date_from = fields.Date(string="Date From", help="Filter documents from this date")
+    date_to = fields.Date(string="Date To", help="Filter documents up to this date")
+
+    # ============================================================================
+    # NOTIFICATION SETTINGS
+    # ============================================================================
+    send_notification = fields.Boolean(
+        string="Send Notifications",
+        default=True,
+        help="Send notifications to stakeholders",
+    )
+
     stakeholder_ids = fields.Many2many(
-        string="Stakeholders to Notify",
-        help="Partners who should be notified of this operation",
+        "res.users",
+        "permanent_flag_stakeholder_rel",
+        "wizard_id",
+        "user_id",
+        string="Stakeholders",
+        help="Users to notify about this operation",
     )
+
     notification_template_id = fields.Many2one(
+        "mail.template",
         string="Notification Template",
         help="Email template for notifications",
     )
-    custom_message = fields.Text(
-        string="Custom Message", help="Custom message to include in notifications"
+
+    # ============================================================================
+    # AUDIT & TRACKING
+    # ============================================================================
+    audit_trail = fields.Text(
+        string="Audit Trail", readonly=True, help="Complete log of operation activities"
     )
 
-    # === COMPUTED FIELDS ===
-    total_estimated_cost = fields.Monetary(
-        string="Total Estimated Cost",
-        currency_field="currency_id",
-        compute="_compute_total_estimated_cost",
-        help="Total estimated cost for the permanent flag operation",
-    )
-    currency_id = fields.Many2one(
-        string="Currency",
-        default=lambda self: self.env.company.currency_id,
-    )
-    operation_complexity = fields.Selection(
+    execution_date = fields.Datetime(string="Execution Date", readonly=True)
+    completion_date = fields.Datetime(string="Completion Date", readonly=True)
+
+    state = fields.Selection(
         [
-            ("simple", "Simple"),
-            ("moderate", "Moderate"),
-            ("complex", "Complex"),
-            ("very_complex", "Very Complex"),
+            ("draft", "Draft"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("completed_with_errors", "Completed with Errors"),
+            ("cancelled", "Cancelled"),
         ],
-        string="Operation Complexity",
-        compute="_compute_operation_complexity",
-        help="Complexity level based on affected documents and requirements",
+        string="State",
+        default="draft",
     )
 
-    # === DEPARTMENT AND LOCATION ===
-    department_id = fields.Many2one(
-        string="Department",
-        help="Department initiating the permanent flag operation",
+    # ============================================================================
+    # MAIL FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        auto_join=True,
+        groups="base.group_user",
     )
-    location_ids = fields.Many2many(
-        string="Affected Locations",
-        help="Physical locations affected by this operation",
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers", groups="base.group_user"
     )
-    storage_impact = fields.Text(
-        string="Storage Impact Assessment",
-        help="Assessment of impact on storage and retrieval operations",
+    message_ids = fields.One2many(
+        "mail.message", "res_id", string="Messages", groups="base.group_user"
     )
 
-    # Records Permanent Flag Wizard Fields
-
-    # Records Permanent Flag Wizard Fields
-
-    # === COMPUTE METHODS ===
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
     @api.depends("document_ids")
-    def _compute_affected_documents_count(self):
-        """Compute the number of documents affected by this operation"""
+    def _compute_document_count(self):
         for record in self:
-            record.affected_documents_count = len(record.document_ids)
+            record.document_count = len(record.document_ids)
 
-    @api.depends("affected_documents_count", "approval_required", "legal_basis")
-    def _compute_operation_complexity(self):
-        """Compute operation complexity based on various factors"""
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("date_from", "date_to")
+    def _check_date_range(self):
         for record in self:
-            if record.affected_documents_count <= 10 and not record.approval_required:
-                record.operation_complexity = "simple"
-            elif (
-                record.affected_documents_count <= 50
-                and record.legal_basis != "litigation"
+            if (
+                record.date_from
+                and record.date_to
+                and record.date_from > record.date_to
             ):
-                record.operation_complexity = "moderate"
-            elif record.affected_documents_count <= 200:
-                record.operation_complexity = "complex"
-            else:
-                record.operation_complexity = "very_complex"
+                raise ValidationError(_("Date From must be before Date To"))
 
-    @api.depends("affected_documents_count", "operation_complexity")
-    def _compute_total_estimated_cost(self):
-        """Compute total estimated cost based on document count and complexity"""
+    @api.constrains("flag_reason", "custom_reason")
+    def _check_custom_reason(self):
         for record in self:
-            base_cost = 5.0  # Base cost per document
-            complexity_multiplier = {
-            }.get(record.operation_complexity, 1.0)
-
-            record.total_estimated_cost = (
-                record.affected_documents_count * base_cost * complexity_multiplier
-            )
-
-    # === ONCHANGE METHODS ===
-    @api.onchange("action_type")
-    def _onchange_action_type(self):
-        """Update default values when action type changes"""
-        if self.action_type == "unflag":
-            self.permanent_flag = False
-            self.legal_basis = False
-        else:
-            self.permanent_flag = True
-
-    @api.onchange("legal_basis")
-    def _onchange_legal_basis(self):
-        """Update approval requirements based on legal basis"""
-        if self.legal_basis == "litigation":
-            self.approval_required = True
-            self.priority_level = "high"
-        elif self.legal_basis == "regulatory":
-            self.approval_required = True
-            self.priority_level = "medium"
-
-    @api.onchange("document_ids")
-    def _onchange_document_ids(self):
-        """Update document count and estimates when documents change"""
-        self.document_count = len(self.document_ids)
-        if self.document_count > 100:
-            self.batch_operation = True
-            self.estimated_completion_time = (
-                self.document_count * 0.02
-            )  # 2 minutes per 100 documents
-        else:
-            self.batch_operation = False
-            self.estimated_completion_time = max(
-                0.25, self.document_count * 0.01
-            )  # Minimum 15 minutes
-
-    # === VALIDATION METHODS ===
-    @api.constrains("user_password")
-    def _check_user_password(self):
-        """Validate user password for sensitive operations"""
-        for record in self:
-            if record.legal_basis == "litigation" and not record.user_password:
+            if record.flag_reason == "custom" and not record.custom_reason:
                 raise ValidationError(
                     _(
-                        "Password is required for litigation-related permanent flag operations."
+                        "Custom reason must be specified when 'Custom Reason' is selected"
                     )
                 )
 
     @api.constrains("document_ids")
-    def _check_document_access(self):
-        """Ensure user has access to all selected documents"""
+    def _check_documents(self):
         for record in self:
             if not record.document_ids:
-                raise ValidationError(
-                    _(
-                        "At least one document must be selected for permanent flag operation."
-                    )
-                )
+                raise ValidationError(_("At least one document must be selected"))
 
-    def action_confirm(self):
-        """Apply permanent flag to documents with enhanced workflow."""
-        self.ensure_one()
+    # ============================================================================
+    # BUSINESS METHODS
+    # ============================================================================
+    def _build_audit_entry(self, action, details=""):
+        """Build audit trail entry"""
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        user = self.env.user.name
+        entry = f"[{timestamp}] {user}: {action}"
+        if details:
+            entry += f" - {details}"
+        return entry
 
-        # Validate approval if required
-        if self.approval_required and self.approval_status != "approved":
-            raise UserError(
-                _("This operation requires approval before it can be executed.")
-            )
+    def _update_audit_trail(self, action, details=""):
+        """Update audit trail with new entry"""
+        entry = self._build_audit_entry(action, details)
+        current_trail = self.audit_trail or ""
+        if current_trail:
+            self.audit_trail = f"{current_trail}\n{entry}"
+        else:
+            self.audit_trail = entry
 
-        # Update wizard status
-        self.write(
-            {
-                "permanent_flag_set_date": fields.Datetime.now(),
-            }
+    def _send_notifications(self):
+        """Send notifications to stakeholders"""
+        if not self.send_notification or not self.stakeholder_ids:
+            return
+
+        import textwrap
+
+        subject = f"Permanent Flag Operation: {self.name}"
+        body = textwrap.dedent(
+            f"""\
+            <p>A permanent flag operation has been executed:</p>
+            <ul>
+                <li><strong>Operation:</strong> {self.name}</li>
+                <li><strong>Type:</strong> {dict(self._fields['operation_type'].selection).get(self.operation_type)}</li>
+                <li><strong>Reason:</strong> {dict(self._fields['flag_reason'].selection).get(self.flag_reason)}</li>
+                <li><strong>Documents:</strong> {len(self.document_ids)} documents affected</li>
+                <li><strong>Executed By:</strong> {self.user_id.name}</li>
+            </ul>
+            """
         )
 
-        # Build audit trail entry
-        audit_entry = f"Permanent flag operation initiated by {self.env.user.name} on {fields.Datetime.now()}\n"
-        audit_entry += f"Action: {self.action_type}\n"
-        audit_entry += f"Legal Basis: {self.legal_basis}\n"
-        audit_entry += f"Documents affected: {len(self.document_ids)}\n"
+        for user in self.stakeholder_ids:
+            self.message_post(
+                partner_ids=[user.partner_id.id], subject=subject, body=body
+            )
 
-        # Process each document
-        for document in self.document_ids:
-            if self.action_type == "flag":
-                document.write(
-                    {
-                        "notes": (document.notes or "")
-                        + _(
-                            "\nMarked permanent via wizard on %s by %s\nLegal basis: %s\nReason: %s"
-                        )
-                        % (
-                            fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                            self.env.user.name,
-                            self.legal_basis,
-                            self.reason or "Not specified",
-                        ),
-                    }
-                )
-            else:  # unflag
-                document.write(
-                    {
-                        "notes": (document.notes or "")
-                        + _(
-                            "\nPermanent flag removed via wizard on %s by %s\nReason: %s"
-                        )
-                        % (
-                            fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                            self.env.user.name,
-                            self.reason or "Not specified",
-                        ),
-                    }
-                )
+    def _apply_criteria_filter(self):
+        """Apply criteria-based document filtering"""
+        domain = []
 
-        # Update audit trail
-        self.audit_trail = audit_entry + "Operation completed successfully."
+        if self.document_type_ids:
+            domain.append(("document_type_id", "in", self.document_type_ids.ids))
 
-        # Send notifications if configured
-        if self.notification_sent and self.stakeholder_ids:
-            self._send_notifications()
+        if self.location_ids:
+            domain.append(("location_id", "in", self.location_ids.ids))
 
-        # Mark as completed
-        self.write({"state": "completed"})
+        if self.partner_id:
+            domain.append(("partner_id", "=", self.partner_id.id))
+
+        if self.date_from:
+            domain.append(("creation_date", ">=", self.date_from))
+
+        if self.date_to:
+            domain.append(("creation_date", "<=", self.date_to))
+
+        return self.env["records.document"].search(domain)
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_apply_criteria(self):
+        """Apply criteria to select documents"""
+        self.ensure_one()
+        if self.selection_method != "criteria":
+            raise UserError(
+                _("This action is only available for criteria-based selection")
+            )
+
+        documents = self._apply_criteria_filter()
+        self.document_ids = [(6, 0, documents.ids)]
+
+        self._update_audit_trail(
+            "Applied Criteria", f"Selected {len(documents)} documents"
+        )
 
         return {
-                "title": _("Permanent Flag Operation Completed"),
-                "message": _(
-                    "Permanent flag operation has been applied to %d documents."
-                )
-                % len(self.document_ids),
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Criteria Applied"),
+                "message": _("%d documents selected based on criteria")
+                % len(documents),
+                "type": "success",
             },
         }
 
-    def action_request_approval(self):
-        """Request approval for the permanent flag operation"""
+    def action_execute(self):
+        """Execute the permanent flag operation"""
         self.ensure_one()
+
+        if self.approval_required and self.approval_status != "approved":
+            raise UserError(_("Operation must be approved before execution"))
+
+        if not self.document_ids:
+            raise UserError(_("No documents selected for operation"))
+
+        # Mark as in progress
+        self.write(
+            {
+                "state": "in_progress",
+                "execution_date": datetime.now(),
+            }
+        )
+        # Execute the operation
+        affected_count = 0
+        errors = []
+
+        for document in self.document_ids:
+            try:
+                # Ensure the document record still exists
+                if not document or not document.id:
+                    errors.append(
+                        f"Document ID {getattr(document, 'id', 'unknown')}: Record does not exist"
+                    )
+                    continue
+
+                if self.operation_type == "apply":
+                    document.write(
+                        {
+                            "permanent_flag": True,
+                            "permanent_flag_reason": self.flag_reason,
+                            "permanent_flag_date": fields.Datetime.now(),
+                            "permanent_flag_user_id": self.env.user.id,
+                        }
+                    )
+                elif self.operation_type == "remove":
+                    document.write(
+                        {
+                            "permanent_flag": False,
+                            "permanent_flag_reason": False,
+                            "permanent_flag_date": False,
+                            "permanent_flag_user_id": False,
+                        }
+                    )
+                affected_count += 1
+            except (UserError, ValidationError) as e:
+                document_name = getattr(
+                    document, "name", f'ID: {getattr(document, "id", "unknown")}'
+                )
+                errors.append(f"Document {document_name}: {str(e)}")
+            except Exception as e:
+                tb = traceback.format_exc()
+                document_name = getattr(
+                    document, "name", f'ID: {getattr(document, "id", "unknown")}'
+                )
+                errors.append(f"Document {document_name}: Unexpected error: {str(e)}")
+                _logger.error(
+                    f"Unexpected error processing document {document_name}: {str(e)}\n{tb}"
+                )
+                raise
+
+        # Update audit trail
+        operation_name = dict(self._fields["operation_type"].selection).get(
+            self.operation_type
+        )
+        self._update_audit_trail(
+            f"Executed {operation_name}",
+            f"Processed {affected_count} documents, {len(errors)} errors",
+        )
+
+        # Send notifications
+        self._send_notifications()
+
+        # Mark as completed or completed with errors
+        if errors:
+            self.write(
+                {
+                    "state": "completed_with_errors",
+                    "completion_date": fields.Datetime.now(),
+                }
+            )
+        else:
+            self.write({"state": "completed", "completion_date": fields.Datetime.now()})
+
+        # Show result
+        if errors:
+            error_msg = "\n".join(errors[:10])  # Show first 10 errors
+            if len(errors) > 10:
+                error_msg += f"\n... and {len(errors) - 10} more errors"
+
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": _("Operation Completed with Errors"),
+                    "message": _(
+                        "Operation completed. %d documents processed successfully, %d errors occurred.\n\nErrors:\n%s"
+                    )
+                    % (affected_count, len(errors), error_msg),
+                    "type": "warning",
+                    "sticky": True,
+                },
+            }
+        else:
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": _("Operation Completed Successfully"),
+                    "message": _(
+                        "Permanent flag operation completed successfully. %d documents processed."
+                    )
+                    % affected_count,
+                    "type": "success",
+                },
+            }
+
+    def action_request_approval(self):
+        """Request approval for the operation"""
+        self.ensure_one()
+
+        if self.approval_status != "draft":
+            raise UserError(_("Approval can only be requested for draft operations"))
+
         self.approval_status = "pending"
 
-        # Create activity for approval
+        # Create approval activity
         self.activity_schedule(
+            "records_management.mail_activity_type_approval",
             summary=f"Approve Permanent Flag Operation: {self.name}",
-            note=f"Please review and approve the permanent flag operation for {len(self.document_ids)} documents.\n"
-            f"Legal Basis: {self.legal_basis}\n"
-            f'Reason: {self.reason or "Not specified"}',
+            note=f"""Please review and approve this permanent flag operation:
+
+Operation Type: {dict(self._fields['operation_type'].selection).get(self.operation_type)}
+Flag Reason: {dict(self._fields['flag_reason'].selection).get(self.flag_reason)}
+Documents: {len(self.document_ids)} documents
+Legal Basis: {self.legal_basis or 'Not specified'}
+
+Description:
+{self.description or 'No description provided'}""",
             user_id=(
-                self.env.ref("base.group_system").users[0].id
-                if self.env.ref("base.group_system").users
-                else self.env.user.id
+                (next(iter(self.env.ref("base.group_system").users), None).id
+                 if self.env.ref("base.group_system").users
+                 else self.env.user.id)
             ),
         )
 
         return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
                 "title": _("Approval Requested"),
                 "message": _(
                     "Approval has been requested for this permanent flag operation."
                 ),
+                "type": "success",
             },
         }
+        if group and group.users:
+            user = group.users.filtered(lambda u: True, limit=1)
+            if user:
+                return user.id
+        return self.env.user.id
 
     def action_approve(self):
-        """Approve the permanent flag operation"""
-        self.ensure_one()
+        """Approve the operation"""
+        if self.approval_status != "pending":
+            raise UserError(_("Only pending operations can be approved"))
+
         self.write(
             {
+                "approval_status": "approved",
+                "approved_by": self.env.user.id,
                 "approval_date": fields.Datetime.now(),
             }
         )
 
+        self._update_audit_trail(
+            "Operation Approved", f"Approved by {self.env.user.name}"
+        )
+
         return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
                 "title": _("Operation Approved"),
                 "message": _(
-                    "Permanent flag operation has been approved and can now be executed."
+                    "The permanent flag operation has been approved and can now be executed."
                 ),
+                "type": "success",
             },
         }
 
     def action_reject(self):
-        """Reject the permanent flag operation"""
+        """Reject the operation"""
         self.ensure_one()
-        self.write(
-            {
-                "approval_date": fields.Datetime.now(),
-            }
-        )
+
+        if self.approval_status != "pending":
+            raise UserError(_("Only pending operations can be rejected"))
 
         return {
-                "title": _("Operation Rejected"),
-                "message": _("Permanent flag operation has been rejected."),
+            "type": "ir.actions.act_window",
+            "name": _("Reject Operation"),
+            "res_model": "records.permanent.flag.reject.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_wizard_id": self.id},
+        }
+
+    def action_cancel(self):
+        """Cancel the operation"""
+        self.ensure_one()
+
+        if self.state in ["completed", "completed_with_errors"]:
+            raise UserError(_("Cannot cancel completed operations"))
+
+        self.write({"state": "cancelled"})
+        self._update_audit_trail("Operation Cancelled")
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Operation Cancelled"),
+                "message": _("The permanent flag operation has been cancelled."),
+                "type": "info",
             },
         }
 
-    def _send_notifications(self):
-        """Send notifications to stakeholders"""
-        if not self.stakeholder_ids:
-            return
-
-        # Create a message for the operation
-        message = f"Permanent flag operation '{self.name}' has been completed.\n"
-        message += f"Action: {self.action_type}\n"
-        message += f"", Documents affected: {len(self.document_ids)}
-    # ============================================================================
-    # AUTO-GENERATED ACTION METHODS (Batch 2)
-    # ============================================================================
-    def action_type(self):
-        """Type - Action method"""
+    def action_view_documents(self):
+        """View selected documents"""
         self.ensure_one()
-        return {
-            "name": _("Type"),
-        }\n""
-        message += f"Legal basis: {self.legal_basis}"
 
-        # Log the notification attempt
-        self.message_post(
-            body=message,
-            subject=f"Permanent Flag Operation: {self.name}",
-            partner_ids=self.stakeholder_ids.ids,
-            message_type="notification",
-        )
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Selected Documents"),
+            "res_model": "records.document",
+            "view_mode": "tree,form",
+            "domain": [("id", "in", list(self.document_ids.ids))],
+            "target": "current",
+        }
