@@ -108,6 +108,7 @@ class RecordsContainer(models.Model):
         string="Received Date", default=fields.Date.today, tracking=True
     )
     storage_start_date = fields.Date(string="Storage Start Date")
+    stored_date = fields.Date(string="Stored Date", tracking=True)
     last_access_date = fields.Date(string="Last Access Date")
     destruction_date = fields.Date(string="Destruction Date")
 
@@ -260,8 +261,7 @@ class RecordsContainer(models.Model):
                 or self.name
             )
 
-        return {
-        }
+        return {}
 
     def action_index_container(self):
         """Index container - change state from received to indexed"""
@@ -434,8 +434,7 @@ class RecordsContainer(models.Model):
         if not self.last_inspection_date:
             return fields.Date.today() + relativedelta(months=6)
 
-        inspection_intervals = {
-        }
+        inspection_intervals = {}
 
         interval = inspection_intervals.get(self.service_level, 12)
         return self.last_inspection_date + relativedelta(months=interval)
@@ -446,8 +445,7 @@ class RecordsContainer(models.Model):
         base_cost = self.billing_rate
 
         # Apply service level multipliers
-        multipliers = {
-        }
+        multipliers = {}
 
         multiplier = multipliers.get(self.service_level, 1.0)
         return base_cost * multiplier
@@ -455,5 +453,7 @@ class RecordsContainer(models.Model):
     # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 1)
     # ============================================================================
-    create_date = fields.Date(string='Create Date', tracking=True)
-    | = fields.Char(string='|', tracking=True)
+    # BATCH-GENERATED FIELDS (Ultimate Batch Fixer)
+    # ============================================================================
+    create_date = fields.Date(string="Create Date", tracking=True)
+    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
