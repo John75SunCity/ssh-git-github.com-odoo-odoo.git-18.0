@@ -11,7 +11,9 @@ class AdvancedBilling(models.Model):
     _order = "name desc"
     _rec_name = "name"
 
-    # Core fields
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
     name = fields.Char(string="Name", required=True, tracking=True)
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
@@ -21,7 +23,9 @@ class AdvancedBilling(models.Model):
     )
     active = fields.Boolean(string="Active", default=True)
 
-    # Billing fields
+    # ============================================================================
+    # BILLING FIELDS
+    # ============================================================================
     partner_id = fields.Many2one("res.partner", string="Customer", required=True)
     billing_period_id = fields.Many2one(
         "records.advanced.billing.period", string="Billing Period"
@@ -41,7 +45,9 @@ class AdvancedBilling(models.Model):
         default="net_30",
     )
 
-    # State management
+    # ============================================================================
+    # STATE MANAGEMENT
+    # ============================================================================
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -55,18 +61,35 @@ class AdvancedBilling(models.Model):
         tracking=True,
     )
 
-    # Mail thread fields
-    message_ids = fields.One2many(
-    activity_ids = fields.One2many(
-        "mail.activity", "res_id", string="Activities", domain=[('res_model', '=', _name)]
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+    line_ids = fields.One2many(
+        "advanced.billing.line", "billing_id", string="Billing Lines"
     )
+
+    # Mail framework fields
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers", domain=[('res_model', '=', _name)]
-    )
         "mail.followers", "res_id", string="Followers"
     )
 
-    # Action methods
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("line_ids.price_total")
+    def _compute_total_amount(self):
+        for record in self:
+            record.total_amount = sum(record.line_ids.mapped("price_total"))
+
+    total_amount = fields.Float(
+        string="Total Amount", compute="_compute_total_amount", store=True
+    )
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_confirm(self):
         """Confirm billing"""
         self.ensure_one()
@@ -88,6 +111,7 @@ class AdvancedBillingLine(models.Model):
     _name = "advanced.billing.line"
     _description = "Advanced Billing Line"
     _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "sequence, name"
 
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
@@ -95,6 +119,7 @@ class AdvancedBillingLine(models.Model):
     name = fields.Char(
         string="Line Description", compute="_compute_name", store=True, index=True
     )
+    sequence = fields.Integer(string="Sequence", default=10)
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
     )
@@ -114,6 +139,16 @@ class AdvancedBillingLine(models.Model):
     price_unit = fields.Float(string="Unit Price")
     price_total = fields.Float(
         string="Total", compute="_compute_price_total", store=True
+    )
+
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+    # Mail framework fields
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
     )
 
     # ============================================================================
@@ -137,6 +172,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
     _name = "records.advanced.billing.period"
     _description = "Advanced Billing Period"
     _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "start_date desc"
 
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
@@ -157,9 +193,29 @@ class RecordsAdvancedBillingPeriod(models.Model):
     # ============================================================================
     start_date = fields.Date(string="Start Date", required=True)
     end_date = fields.Date(string="End Date", required=True)
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("closed", "Closed"),
+        ],
+        string="State",
+        default="draft",
+        tracking=True,
+    )
 
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
     billing_ids = fields.One2many(
         "advanced.billing", "billing_period_id", string="Billings"
+    )
+
+    # Mail framework fields
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
     )
 
     # ============================================================================
@@ -172,11 +228,20 @@ class RecordsAdvancedBillingPeriod(models.Model):
                 period.name = f"Billing Period {period.start_date} - {period.end_date}"
             else:
                 period.name = f"Billing Period {period.id or 'Unsaved'}"
-                # ============================================================================
-                # AUTO-GENERATED ACTION METHODS (from comprehensive validation)
-                # ============================================================================
-    # ============================================================================
 
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("start_date", "end_date")
+    def _check_date_range(self):
+        for record in self:
+            if record.start_date and record.end_date:
+                if record.start_date >= record.end_date:
+                    raise ValidationError(_("Start date must be before end date."))
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_generate_storage_lines(self):
         """Generate Storage Lines - Generate report"""
         self.ensure_one()
@@ -199,3 +264,12 @@ class RecordsAdvancedBillingPeriod(models.Model):
             "context": self.env.context,
         }
 
+    def action_activate_period(self):
+        """Activate billing period"""
+        self.ensure_one()
+        self.write({"state": "active"})
+
+    def action_close_period(self):
+        """Close billing period"""
+        self.ensure_one()
+        self.write({"state": "closed"})
