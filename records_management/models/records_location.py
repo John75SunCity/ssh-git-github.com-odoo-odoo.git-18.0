@@ -154,6 +154,7 @@ class RecordsLocation(models.Model):
     res_model = fields.Char(string="Res Model")
     stored_date = fields.Date(string="Stored Date")
     view_mode = fields.Char(string="View Mode")
+
     # ============================================================================
     @api.depends("container_ids")
     def _compute_current_utilization(self):
