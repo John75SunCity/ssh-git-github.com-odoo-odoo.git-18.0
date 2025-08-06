@@ -28,9 +28,9 @@ class OdooFieldExtractor:
                 content = f.read()
 
             tree = ast.parse(content)
-            model_info = self._extract_model_info(tree)
+            models_info = self._extract_model_info(tree)
 
-            if model_info:
+            for model_info in models_info:
                 model_name = model_info["name"]
                 fields = model_info["fields"]
                 self.models[model_name] = fields
@@ -41,6 +41,8 @@ class OdooFieldExtractor:
 
     def _extract_model_info(self, tree):
         """Extract model information from AST"""
+        models_found = []
+
         for node in ast.walk(tree):
             if isinstance(node, ast.ClassDef):
                 # Look for Odoo model classes
@@ -49,76 +51,89 @@ class OdooFieldExtractor:
                 field_types = {}
 
                 # Check if it's an Odoo model
+                is_odoo_model = False
                 for base in node.bases:
-                    if isinstance(base, ast.Attribute) and base.attr in [
-                        "Model",
-                        "TransientModel",
-                    ]:
-                        # Found an Odoo model class
+                    # Handle direct inheritance: models.Model, models.TransientModel
+                    if isinstance(base, ast.Attribute):
+                        if base.attr in ["Model", "TransientModel"]:
+                            if (
+                                isinstance(base.value, ast.Name)
+                                and base.value.id == "models"
+                            ):
+                                is_odoo_model = True
+                            elif base.attr in [
+                                "Model",
+                                "TransientModel",
+                            ]:  # Direct Model/TransientModel
+                                is_odoo_model = True
 
-                        # Extract _name attribute
-                        for stmt in node.body:
-                            if isinstance(stmt, ast.Assign):
-                                for target in stmt.targets:
-                                    if isinstance(target, ast.Name):
-                                        if target.id == "_name" and isinstance(
-                                            stmt.value, ast.Constant
-                                        ):
-                                            model_name = stmt.value.value
+                if is_odoo_model:
+                    # Found an Odoo model class
 
-                        # Extract field definitions
-                        for stmt in node.body:
-                            if isinstance(stmt, ast.Assign):
-                                for target in stmt.targets:
-                                    if isinstance(target, ast.Name):
-                                        field_name = target.id
+                    # Extract _name attribute
+                    for stmt in node.body:
+                        if isinstance(stmt, ast.Assign):
+                            for target in stmt.targets:
+                                if isinstance(target, ast.Name):
+                                    if target.id == "_name" and isinstance(
+                                        stmt.value, ast.Constant
+                                    ):
+                                        model_name = stmt.value.value
 
-                                        # Check if it's a field assignment
-                                        if isinstance(stmt.value, ast.Call):
-                                            if isinstance(
-                                                stmt.value.func, ast.Attribute
-                                            ):
-                                                if stmt.value.func.attr in [
-                                                    "Char",
-                                                    "Text",
-                                                    "Integer",
-                                                    "Float",
-                                                    "Boolean",
-                                                    "Date",
-                                                    "Datetime",
-                                                    "Selection",
-                                                    "Many2one",
-                                                    "One2many",
-                                                    "Many2many",
-                                                    "Binary",
-                                                    "Html",
-                                                    "Monetary",
-                                                ]:
-                                                    fields[field_name] = True
-                                                    field_types[field_name] = (
-                                                        stmt.value.func.attr
-                                                    )
+                    # Extract field definitions
+                    for stmt in node.body:
+                        if isinstance(stmt, ast.Assign):
+                            for target in stmt.targets:
+                                if isinstance(target, ast.Name):
+                                    field_name = target.id
 
-                                                    # Extract string parameter for better validation
-                                                    for keyword in stmt.value.keywords:
-                                                        if (
-                                                            keyword.arg == "string"
-                                                            and isinstance(
-                                                                keyword.value,
-                                                                ast.Constant,
-                                                            )
-                                                        ):
-                                                            field_types[
-                                                                field_name + "_string"
-                                                            ] = keyword.value.value
+                                    # Check if it's a field assignment
+                                    if isinstance(stmt.value, ast.Call):
+                                        if isinstance(stmt.value.func, ast.Attribute):
+                                            if stmt.value.func.attr in [
+                                                "Char",
+                                                "Text",
+                                                "Integer",
+                                                "Float",
+                                                "Boolean",
+                                                "Date",
+                                                "Datetime",
+                                                "Selection",
+                                                "Many2one",
+                                                "One2many",
+                                                "Many2many",
+                                                "Binary",
+                                                "Html",
+                                                "Monetary",
+                                            ]:
+                                                fields[field_name] = True
+                                                field_types[field_name] = (
+                                                    stmt.value.func.attr
+                                                )
 
-                if model_name and fields:
-                    return {
-                        "name": model_name,
-                        "fields": fields,
-                        "field_types": field_types,
-                    }
-        return None
+                                                # Extract string parameter for better validation
+                                                for keyword in stmt.value.keywords:
+                                                    if (
+                                                        keyword.arg == "string"
+                                                        and isinstance(
+                                                            keyword.value,
+                                                            ast.Constant,
+                                                        )
+                                                    ):
+                                                        field_types[
+                                                            field_name + "_string"
+                                                        ] = keyword.value.value
+
+                    if model_name and fields:
+                        models_found.append(
+                            {
+                                "name": model_name,
+                                "fields": fields,
+                                "field_types": field_types,
+                            }
+                        )
+
+        return models_found
 
 
 class XMLDataValidator:
