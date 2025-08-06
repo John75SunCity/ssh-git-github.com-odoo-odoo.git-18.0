@@ -44,10 +44,10 @@ class FieldLabelCustomization(models.Model):
         tracking=True,
     )
 
-    priority = fields.Selection(
-        [("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")],
+    priority = fields.Integer(
         string="Priority",
-        default="medium",
+        default=50,
+        help="Priority level (1-100, lower numbers = higher priority)",
     )
 
     # ============================================================================
