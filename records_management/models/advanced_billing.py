@@ -2,45 +2,8 @@
 """
 Advanced Billing Module
 
-This module provides sophisticated billing management capabilities for the Records Management System.
-It implements advanced billing periods, line-item management, and automated invoice generation with
-comprehensive audit trails and customer notification systems.
-
-Key Features:
-- Advanced billing period management with configurable date ranges
-- Line-item billing with detailed service breakdown and pricing
-- Automated invoice generation with approval workflows
-- Multi-currency support with exchange rate handling
-- Customer assignment with department-level billing segregation
-- Comprehensive audit trails with change tracking and timestamps
-- Integration with Odoo accounting and invoice management systems
-- Flexible billing frequency configuration (monthly, quarterly, annually)
-
-Business Processes:
-1. Billing Period Setup: Configure billing periods with start/end dates and customer assignment
-2. Line Item Management: Add detailed billing lines with services, quantities, and rates
-3. Invoice Generation: Create invoices automatically based on billing periods and line items
-4. Approval Workflow: Route invoices through approval processes before finalization
-5. Customer Communication: Send billing notifications and invoice delivery
-6. Payment Processing: Integration with payment systems and accounts receivable
-
-Billing Period Management:
-- Configurable period start and end dates with validation
-- Customer and department assignment for proper billing segregation
-- Status tracking from draft through confirmed to invoiced
-- Integration with retention policies and service level agreements
-
-Line Item Features:
-- Detailed service descriptions with quantity and rate tracking
-- Multi-currency pricing with proper currency field relationships
-- Tax calculation integration with Odoo accounting systems
-- Discount and adjustment handling with audit trail maintenance
-
-Technical Implementation:
-- Modern Odoo 18.0 patterns with comprehensive validation
-- Secure relationship management with proper domain filtering
-- Mail framework integration for notifications and activity tracking
-- Enterprise-grade error handling and user experience optimization
+See RECORDS_MANAGEMENT_SYSTEM_MANUAL.md - Section 6: Advanced Billing Period Management Module
+for comprehensive documentation, business processes, and integration details.
 
 Author: Records Management System
 Version: 18.0.6.0.0
@@ -117,37 +80,26 @@ class AdvancedBilling(models.Model):
 
     # Mail framework fields
     message_ids = fields.One2many(
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers",
-        domain=lambda self: [("model", "=", self._name)]
-    )
+        "mail.message", "res_id", string="Messages"
     )
     activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        domain=lambda self: [("model", "=", self._name)]
+        "mail.activity", "res_id", string="Activities"
     )
     message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers",
-        domain=lambda self: [("model", "=", self._name)]
+        "mail.followers", "res_id", string="Followers"
     )
 
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    total_amount = fields.Float(
+        string="Total Amount", compute="_compute_total_amount", store=True
+    )
+    
     @api.depends("line_ids.price_total")
     def _compute_total_amount(self):
         for record in self:
             record.total_amount = sum(record.line_ids.mapped("price_total"))
-
-    total_amount = fields.Float(
-        string="Total Amount", compute="_compute_total_amount", store=True
-    )
 
     # ============================================================================
     # ACTION METHODS
@@ -207,20 +159,13 @@ class AdvancedBillingLine(models.Model):
     # ============================================================================
     # Mail framework fields
     message_ids = fields.One2many(
-        "mail.message",
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers",
-        domain=lambda self: [("model", "=", self._name)]
+        "mail.message", "res_id", string="Messages"
     )
     activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        domain=lambda self: [("model", "=", self._name)]
+        "mail.activity", "res_id", string="Activities"
     )
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
     )
 
     # ============================================================================

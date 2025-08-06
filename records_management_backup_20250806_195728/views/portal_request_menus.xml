@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portal Request Menus - Loaded after main menu structure -->
+    
+    <menuitem id="portal_request_menu" 
+              name="Portal Requests" 
+              parent="menu_records_management_root" 
+              action="portal_request_action" 
+              sequence="10"
+              groups="records_management.group_records_manager"/>
+              
+</odoo>

@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Field Label Customization Form View -->
+        <record id="view_field_label_customization_form" model="ir.ui.view">
+            <field name="name">field.label.customization.form</field>
+            <field name="model">field.label.customization</field>
+            <field name="arch" type="xml">
+                <form string="Field Label Customization">
+                    <header>
+                        <button name="action_apply_corporate_preset" string="Apply Corporate Preset" type="object" class="btn-primary" help="Apply standard corporate terminology"/>
+                        <button name="action_apply_legal_preset" string="Apply Legal Preset" type="object" class="btn-primary" help="Apply legal industry terminology"/>
+                        <button name="action_apply_healthcare_preset" string="Apply Healthcare Preset" type="object" class="btn-primary" help="Apply healthcare industry terminology"/>
+                        <button name="action_apply_financial_preset" string="Apply Financial Preset" type="object" class="btn-primary" help="Apply financial services terminology"/>
+                        <button name="action_reset_to_defaults" string="Reset to Defaults" type="object" class="btn-secondary" help="Reset all labels to default values"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Configuration Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="customer_id" options="{'no_create': True}"/>
+                                <field name="department_id" options="{'no_create': True}"/>
+                                <field name="priority"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="scope_display"/>
+                                <field name="customized_label_count"/>
+                                <field name="description" placeholder="Description of this customization..."/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Core Fields" name="core_fields">
+                                <group>
+                                    <group string="Identification Fields">
+                                        <field name="label_container_number" placeholder="Container Number"/>
+                                        <field name="label_item_description" placeholder="Item Description"/>
+                                        <field name="label_content_description" placeholder="Content Description"/>
+                                    </group>
+                                    <group string="Hierarchy Fields">
+                                        <field name="label_parent_container" placeholder="Parent Container"/>
+                                        <field name="label_folder_type" placeholder="Item Type"/>
+                                        <field name="label_hierarchy_display" placeholder="Location Path"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Date &amp; Sequence Fields" name="date_fields">
+                                <group>
+                                    <group string="Date Range Fields">
+                                        <field name="label_date_from" placeholder="Date From"/>
+                                        <field name="label_date_to" placeholder="Date To"/>
+                                        <field name="label_destruction_date" placeholder="Destruction Date"/>
+                                    </group>
+                                    <group string="Sequence Fields">
+                                        <field name="label_sequence_from" placeholder="Sequence From"/>
+                                        <field name="label_sequence_to" placeholder="Sequence To"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Business Fields" name="business_fields">
+                                <group>
+                                    <group string="Classification Fields">
+                                        <field name="label_record_type" placeholder="Record Type"/>
+                                        <field name="label_confidentiality" placeholder="Confidentiality Level"/>
+                                        <field name="label_filing_system" placeholder="Filing System"/>
+                                    </group>
+                                    <group string="Reference Fields">
+                                        <field name="label_project_code" placeholder="Project Code"/>
+                                        <field name="label_client_reference" placeholder="Client Reference"/>
+                                        <field name="label_file_count" placeholder="Number of Files"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Administrative Fields" name="admin_fields">
+                                <group>
+                                    <group string="Authorization Fields">
+                                        <field name="label_created_by_dept" placeholder="Created By Department"/>
+                                        <field name="label_authorized_by" placeholder="Authorized By"/>
+                                    </group>
+                                    <group string="Handling &amp; Compliance">
+                                        <field name="label_special_handling" placeholder="Special Handling Instructions"/>
+                                        <field name="label_compliance_notes" placeholder="Compliance Notes"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Physical Properties" name="physical_fields">
+                                <group>
+                                    <group string="Size &amp; Weight Estimates">
+                                        <field name="label_weight_estimate" placeholder="Estimated Weight"/>
+                                        <field name="label_size_estimate" placeholder="Estimated Size"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Available Fields" name="available_fields">
+                                <group>
+                                    <field name="available_fields" widget="text" readonly="1" placeholder="Select a model to see available fields"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Field Label Customization Tree View -->
+        <record id="view_field_label_customization_tree" model="ir.ui.view">
+            <field name="name">field.label.customization.tree</field>
+            <field name="model">field.label.customization</field>
+            <field name="arch" type="xml">
+                <tree string="Field Label Customizations">
+                    <field name="name"/>
+                    <field name="scope_display"/>
+                    <field name="customer_id"/>
+                    <field name="department_id"/>
+                    <field name="priority"/>
+                    <field name="customized_label_count"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Field Label Customization Search View -->
+        <record id="view_field_label_customization_search" model="ir.ui.view">
+            <field name="name">field.label.customization.search</field>
+            <field name="model">field.label.customization</field>
+            <field name="arch" type="xml">
+                <search string="Search Field Label Customizations">
+                    <field name="name"/>
+                    <field name="customer_id"/>
+                    <field name="department_id"/>
+                    <separator/>
+                    <filter string="Global Configurations" name="global" domain="[('customer_id', '=', False)]"/>
+                    <filter string="Customer Specific" name="customer_specific" domain="[('customer_id', '!=', False), ('department_id', '=', False)]"/>
+                    <filter string="Department Specific" name="department_specific" domain="[('department_id', '!=', False)]"/>
+                    <separator/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Customer" name="group_customer" domain="[]" context="{'group_by': 'customer_id'}"/>
+                        <filter string="Department" name="group_department" domain="[]" context="{'group_by': 'department_id'}"/>
+                        <filter string="Priority" name="group_priority" domain="[]" context="{'group_by': 'priority'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Field Label Customization Action -->
+        <record id="action_field_label_customization" model="ir.actions.act_window">
+            <field name="name">Field Label Customizations</field>
+            <field name="res_model">field.label.customization</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create custom field labels for your organization
+                </p>
+                <p>
+                    Customize field names to match your organization's terminology.
+                    You can create configurations at different levels:
+                    <ul>
+                        <li>
+                            <strong>Global:</strong> Applies to all customers</li>
+                        <li>
+                            <strong>Customer:</strong> Applies to specific customer</li>
+                        <li>
+                            <strong>Department:</strong> Applies to specific department</li>
+                    </ul>
+                </p>
+            </field>
+        </record>
+
+        <!-- Enhanced Transitory Field Configuration Form View -->
+        <record id="view_transitory_field_config_form_enhanced" model="ir.ui.view">
+            <field name="name">transitory.field.config.form.enhanced</field>
+            <field name="model">transitory.field.config</field>
+            <field name="arch" type="xml">
+                <form string="Transitory Field Configuration">
+                    <header>
+                        <button name="action_setup_field_labels" string="Customize Field Labels" type="object" class="btn-primary" help="Setup custom field labels for this configuration"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="customer_id" options="{'no_create': True}"/>
+                                <field name="department_id" options="{'no_create': True}"/>
+                                <field name="field_label_config_id" options="{'no_create': True}"/>
+                            </group>
+                            <group>
+                                <field name="visible_field_count"/>
+                                <field name="required_field_count"/>
+                                <field name="config_preset"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Field Visibility" name="visibility">
+                                <group>
+                                    <group string="Core Fields">
+                                        <field name="show_container_number"/>
+                                        <field name="show_description"/>
+                                        <field name="show_content_description"/>
+                                    </group>
+                                    <group string="Date &amp; Sequence">
+                                        <field name="show_date_ranges"/>
+                                        <field name="show_sequence_ranges"/>
+                                        <field name="show_destruction_date"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Business Fields">
+                                        <field name="show_record_type"/>
+                                        <field name="show_confidentiality"/>
+                                        <field name="show_project_code"/>
+                                        <field name="show_client_reference"/>
+                                        <field name="show_file_count"/>
+                                        <field name="show_filing_system"/>
+                                    </group>
+                                    <group string="Administrative">
+                                        <field name="show_created_by_dept"/>
+                                        <field name="show_authorized_by"/>
+                                        <field name="show_special_handling"/>
+                                        <field name="show_compliance_notes"/>
+                                        <field name="show_weight_estimate"/>
+                                        <field name="show_size_estimate"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Required Fields" name="requirements">
+                                <group>
+                                    <group string="Core Requirements">
+                                        <field name="require_container_number"/>
+                                        <field name="require_description"/>
+                                        <field name="require_content_description"/>
+                                    </group>
+                                    <group string="Date Requirements">
+                                        <field name="require_date_from"/>
+                                        <field name="require_date_to"/>
+                                        <field name="require_destruction_date"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Business Requirements">
+                                        <field name="require_record_type"/>
+                                        <field name="require_confidentiality"/>
+                                        <field name="require_project_code"/>
+                                        <field name="require_client_reference"/>
+                                    </group>
+                                    <group string="Sequence Requirements">
+                                        <field name="require_sequence_from"/>
+                                        <field name="require_sequence_to"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Enhanced Partner Form View for Field Customization -->
+        <record id="view_partner_form_field_customization" model="ir.ui.view">
+            <field name="name">res.partner.form.field.customization</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Records Field Configuration" name="field_config" attrs="{'invisible': [('is_company', '=', False)]}">
+                        <group>
+                            <group string="Field Configuration">
+                                <field name="transitory_field_config_id"/>
+                                <field name="field_label_config_id"/>
+                                <button name="action_setup_transitory_config" string="Setup Field Configuration" type="object" class="btn-primary"/>
+                                <button name="action_setup_field_labels" string="Customize Field Labels" type="object" class="btn-primary"/>
+                            </group>
+                            <group string="Portal Settings">
+                                <field name="allow_transitory_items"/>
+                                <field name="max_transitory_items"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Statistics">
+                                <field name="total_transitory_items"/>
+                                <field name="active_transitory_items"/>
+                                <field name="total_records_containers"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_field_label_customization" name="Field Label Customization" parent="records_management.menu_configuration" action="action_field_label_customization" sequence="15"/>
+
+    </data>
+</odoo>

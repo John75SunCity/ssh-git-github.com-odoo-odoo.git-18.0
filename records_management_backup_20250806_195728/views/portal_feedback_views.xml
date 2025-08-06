@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 📊 PORTAL FEEDBACK - Streamlined Views -->
+    
+    <!-- Kanban View -->
+    <record id="view_portal_feedback_kanban" model="ir.ui.view">
+        <field name="name">portal.feedback.kanban</field>
+        <field name="model">portal.feedback</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="satisfaction_level" quick_create="false" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="satisfaction_level"/>
+                <field name="customer_id"/>
+                <field name="feedback_type"/>
+                <field name="overall_rating"/>
+                <field name="service_quality_rating"/>
+                <field name="response_time_rating"/>
+                <field name="submission_date"/>
+                <field name="status"/>
+                <field name="priority"/>
+                <field name="assigned_to"/>
+                <field name="activity_state"/>
+                <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <strong><field name="name"/></strong>
+                                <span class="float-end">
+                                    <field name="status" widget="label_selection" options="{'classes': {'new': 'primary', 'reviewed': 'info', 'responded': 'success', 'escalated': 'warning', 'closed': 'secondary'}}"/>
+                                </span>
+                                <div class="text-muted">
+                                    👤 <field name="customer_id"/> | <field name="feedback_type"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="mb-2">
+                                    <strong>Rating:</strong> <field name="overall_rating" widget="priority" readonly="1"/> (<field name="overall_rating"/>/5)
+                                </div>
+                                <div class="row">
+                                    <div class="col-6"><small>Service: <field name="service_quality_rating"/>/5</small></div>
+                                    <div class="col-6"><small>Response: <field name="response_time_rating"/>/5</small></div>
+                                </div>
+                                <div t-if="record.priority.raw_value == 'high'" class="mt-2">
+                                    <span class="badge badge-danger">🔥 High Priority</span>
+                                </div>
+                                <field name="activity_ids" widget="kanban_activity"/>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <span class="badge badge-pill badge-info">📅 <field name="submission_date" widget="date"/></span>
+                                <div class="oe_kanban_bottom_right">
+                                    <img t-att-src="kanban_image('res.users', 'avatar_128', record.assigned_to.raw_value)" t-att-title="record.assigned_to.value" class="oe_kanban_avatar o_image_24_cover" t-if="record.assigned_to.raw_value"/>
+                                    <field name="activity_state" widget="kanban_activity"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_portal_feedback_tree" model="ir.ui.view">
+        <field name="name">portal.feedback.list</field>
+        <field name="model">portal.feedback</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="status=='responded'" decoration-muted="status=='closed'" multi_edit="1">
+                <header>
+                    <button name="action_mark_reviewed" type="object" string="Mark Reviewed"/>
+                    <button name="action_respond" type="object" string="Respond"/>
+                    <button name="action_escalate" type="object" string="Escalate"/>
+                    <button name="action_close" type="object" string="Close"/>
+                </header>
+                <field name="name"/>
+                <field name="submission_date" widget="date"/>
+                <field name="customer_id"/>
+                <field name="feedback_type"/>
+                <field name="overall_rating" widget="priority"/>
+                <field name="service_quality_rating"/>
+                <field name="response_time_rating"/>
+                <field name="satisfaction_level"/>
+                <field name="priority" widget="priority"/>
+                <field name="status" widget="badge"/>
+                <field name="assigned_to" widget="many2one_avatar_user"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_portal_feedback_form" model="ir.ui.view">
+        <field name="name">portal.feedback.form</field>
+        <field name="model">portal.feedback</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_reviewed" type="object" string="Mark as Reviewed" states="new" class="btn-primary"/>
+                    <button name="action_respond" type="object" string="Respond" states="new,reviewed" class="btn-success"/>
+                    <button name="action_escalate" type="object" string="Escalate" states="new,reviewed" class="btn-warning"/>
+                    <button name="action_close" type="object" string="Close" states="responded,escalated" class="btn-secondary"/>
+                    <field name="status" widget="statusbar" statusbar_visible="new,reviewed,responded,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_related_records" icon="fa-file-text-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Related Records</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="feedback_type"/>
+                            <field name="submission_date"/>
+                            <field name="priority"/>
+                            <field name="assigned_to"/>
+                        </group>
+                        <group>
+                            <field name="overall_rating" widget="priority"/>
+                            <field name="service_quality_rating"/>
+                            <field name="response_time_rating"/>
+                            <field name="staff_friendliness_rating"/>
+                            <field name="satisfaction_level"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Feedback Details">
+                            <group>
+                                <field name="comments" nolabel="1" placeholder="Customer feedback comments..."/>
+                                <field name="internal_notes" groups="base.group_user" placeholder="Internal notes (not visible to customer)..."/>
+                            </group>
+                        </page>
+                        <page string="Response &amp; Resolution">
+                            <group>
+                                <field name="response_text" placeholder="Response to customer..."/>
+                                <field name="resolution_notes" placeholder="Resolution details..."/>
+                                <field name="follow_up_required"/>
+                                <field name="follow_up_date" attrs="{'invisible': [('follow_up_required', '=', False)]}"/>
+                            </group>
+                        </page>
+                        <page string="Analysis">
+                            <group>
+                                <field name="sentiment_score"/>
+                                <field name="sentiment_category"/>
+                                <field name="improvement_areas" widget="many2many_tags"/>
+                                <field name="escalation_reason" attrs="{'invisible': [('status', '!=', 'escalated')]}"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_portal_feedback_search" model="ir.ui.view">
+        <field name="name">portal.feedback.search</field>
+        <field name="model">portal.feedback</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="feedback_type"/>
+                <field name="assigned_to"/>
+                
+                <filter string="New" name="new" domain="[('status', '=', 'new')]"/>
+                <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
+                <filter string="Low Satisfaction" name="low_satisfaction" domain="[('satisfaction_level', 'in', ['very_dissatisfied', 'dissatisfied'])]"/>
+                <filter string="Needs Response" name="needs_response" domain="[('status', 'in', ['new', 'reviewed'])]"/>
+                
+                <separator/>
+                <filter string="My Assignments" name="my_assignments" domain="[('assigned_to', '=', uid)]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Assigned To" name="group_assigned" context="{'group_by': 'assigned_to'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'submission_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_portal_feedback" model="ir.actions.act_window">
+        <field name="name">Customer Feedback</field>
+        <field name="res_model">portal.feedback</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_portal_feedback_search"/>
+        <field name="context">{'search_default_needs_response': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                📝 No customer feedback yet!
+            </p>
+            <p>Customer feedback will appear here when submitted through the portal.</p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_portal_feedback" 
+              name="Customer Feedback" 
+              parent="records_management.menu_portal_root" 
+              action="action_portal_feedback" 
+              sequence="20"/>
+
+</odoo>

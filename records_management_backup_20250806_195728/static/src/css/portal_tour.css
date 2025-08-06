@@ -1,0 +1,332 @@
+/* Enhanced Portal Tour Styles */
+
+/* Tour Step Enhancements */
+.tour-step-enhanced {
+    max-width: 400px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.tour-step-enhanced h4 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.tour-step-enhanced p {
+    color: #34495e;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.tour-step-enhanced ul {
+    padding-left: 20px;
+    margin-bottom: 0;
+}
+
+.tour-step-enhanced ul li {
+    color: #5a6c7d;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+/* Compliance Tour Step Special Styling */
+.tour-step-compliance {
+    max-width: 450px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+}
+
+.tour-step-compliance h4 {
+    color: #dc3545;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.tour-step-compliance .text-emphasis {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.tour-step-compliance .compliance-highlights {
+    background: white;
+    border-radius: 6px;
+    padding: 15px;
+    border: 1px solid #dee2e6;
+}
+
+.tour-step-compliance .compliance-highlights h6 {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.tour-step-compliance .compliance-highlights .small {
+    font-size: 11px;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+/* Tour Completion Step */
+.tour-completion {
+    max-width: 500px;
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+    border: 2px solid #28a745;
+    border-radius: 10px;
+}
+
+.tour-completion h3 {
+    color: #155724;
+    margin-bottom: 15px;
+}
+
+.tour-completion .lead {
+    color: #155724;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.tour-completion h5 {
+    color: #155724;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* Tour Highlight Effects */
+.tour-highlight-card {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,123,255,0.3) !important;
+    border: 2px solid #007bff !important;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1000;
+}
+
+.tour-highlight-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border-radius: inherit;
+    z-index: -1;
+    animation: borderPulse 2s infinite;
+}
+
+.tour-highlight-compliance {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(220,53,69,0.4) !important;
+    border: 3px solid #dc3545 !important;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1000;
+}
+
+.tour-highlight-compliance::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg, #dc3545, #c82333);
+    border-radius: inherit;
+    z-index: -1;
+    animation: compliancePulse 1.5s infinite;
+}
+
+.tour-highlight-future {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(108,117,125,0.4) !important;
+    border: 2px solid #6c757d !important;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1000;
+    opacity: 0.9;
+}
+
+.tour-highlight-future::after {
+    content: '🚀 COMING SOON';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ffc107;
+    color: #212529;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: bold;
+    animation: bounce 1s infinite;
+}
+
+.tour-highlight-section {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%) !important;
+    border: 2px solid #2196f3 !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+}
+
+/* Animations */
+@keyframes borderPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes compliancePulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.02);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Animate.css integration for enhanced animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes bounceIn {
+    0%, 20%, 40%, 60%, 80% {
+        animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    }
+    0% {
+        opacity: 0;
+        transform: scale3d(.3, .3, .3);
+    }
+    20% {
+        transform: scale3d(1.1, 1.1, 1.1);
+    }
+    40% {
+        transform: scale3d(.9, .9, .9);
+    }
+    60% {
+        opacity: 1;
+        transform: scale3d(1.03, 1.03, 1.03);
+    }
+    80% {
+        transform: scale3d(.97, .97, .97);
+    }
+    100% {
+        opacity: 1;
+        transform: scale3d(1, 1, 1);
+    }
+}
+
+.animate__animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+.animate__fadeIn {
+    animation-name: fadeIn;
+}
+
+.animate__pulse {
+    animation-name: pulse;
+}
+
+.animate__bounceIn {
+    animation-name: bounceIn;
+}
+
+.animate__infinite {
+    animation-iteration-count: infinite;
+}
+
+/* Tour Modal Enhancements */
+#tourModal .modal-content {
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+#tourModal .card {
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+#tourModal .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Compliance Badge Animations */
+.compliance-badges .badge {
+    transition: all 0.3s ease;
+}
+
+.compliance-badges .badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .tour-step-enhanced, 
+    .tour-step-compliance, 
+    .tour-completion {
+        max-width: 320px;
+        padding: 15px;
+    }
+    
+    .tour-step-enhanced h4,
+    .tour-step-compliance h4,
+    .tour-completion h3 {
+        font-size: 16px;
+    }
+    
+    .tour-step-enhanced p,
+    .tour-step-compliance p {
+        font-size: 13px;
+    }
+    
+    .tour-highlight-card,
+    .tour-highlight-compliance,
+    .tour-highlight-future {
+        transform: scale(1.02);
+    }
+}

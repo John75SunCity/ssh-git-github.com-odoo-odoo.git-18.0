@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Customer Feedback Survey Template -->
+        <record id="portal_feedback_survey" model="survey.survey">
+            <field name="title">Records Management Portal Feedback</field>
+            <field name="description">Help us improve your portal experience with your valuable feedback</field>
+            <field name="access_mode">public</field>
+            <field name="users_login_required">False</field>
+            <field name="attempts_limit">0</field>
+            <field name="is_time_limited">False</field>
+            <field name="certification">False</field>
+            <field name="scoring_type">no_scoring</field>
+        </record>
+
+        <!-- Survey Page: General Feedback -->
+        <record id="feedback_page_general" model="survey.question">
+            <field name="title">General Portal Experience</field>
+            <field name="sequence">1</field>
+            <field name="survey_id" ref="portal_feedback_survey"/>
+            <field name="is_page">True</field>
+            <field name="description">Tell us about your overall experience with the Records Management Portal</field>
+        </record>
+
+        <!-- Overall Satisfaction Rating -->
+        <record id="feedback_overall_satisfaction" model="survey.question">
+            <field name="title">How satisfied are you with the portal overall?</field>
+            <field name="sequence">2</field>
+            <field name="survey_id" ref="portal_feedback_survey"/>
+            <field name="page_id" ref="feedback_page_general"/>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory">True</field>
+        </record>
+
+        <record id="satisfaction_excellent" model="survey.question.answer">
+            <field name="question_id" ref="feedback_overall_satisfaction"/>
+            <field name="value">Excellent - Exceeds expectations</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="satisfaction_good" model="survey.question.answer">
+            <field name="question_id" ref="feedback_overall_satisfaction"/>
+            <field name="value">Good - Meets expectations</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="satisfaction_fair" model="survey.question.answer">
+            <field name="question_id" ref="feedback_overall_satisfaction"/>
+            <field name="value">Fair - Some improvements needed</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="satisfaction_poor" model="survey.question.answer">
+            <field name="question_id" ref="feedback_overall_satisfaction"/>
+            <field name="value">Poor - Significant improvements needed</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Feature Usage Question -->
+        <record id="feedback_features_used" model="survey.question">
+            <field name="title">Which features have you used? (Select all that apply)</field>
+            <field name="sequence">3</field>
+            <field name="survey_id" ref="portal_feedback_survey"/>
+            <field name="page_id" ref="feedback_page_general"/>
+            <field name="question_type">multiple_choice</field>
+            <field name="constr_mandatory">False</field>
+        </record>
+
+        <record id="feature_inventory" model="survey.question.answer">
+            <field name="question_id" ref="feedback_features_used"/>
+            <field name="value">Inventory Management &amp; Search</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="feature_quotes" model="survey.question.answer">
+            <field name="question_id" ref="feedback_features_used"/>
+            <field name="value">Quote Generation</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="feature_billing" model="survey.question.answer">
+            <field name="question_id" ref="feedback_features_used"/>
+            <field name="value">Billing &amp; PO Management</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="feature_requests" model="survey.question.answer">
+            <field name="question_id" ref="feedback_features_used"/>
+            <field name="value">Service Requests &amp; Destruction</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <record id="feature_signatures" model="survey.question.answer">
+            <field name="question_id" ref="feedback_features_used"/>
+            <field name="value">Electronic Signatures</field>
+            <field name="sequence">5</field>
+        </record>
+
+        <record id="feature_users" model="survey.question.answer">
+            <field name="question_id" ref="feedback_features_used"/>
+            <field name="value">User Management</field>
+            <field name="sequence">6</field>
+        </record>
+
+        <record id="feature_certificates" model="survey.question.answer">
+            <field name="question_id" ref="feedback_features_used"/>
+            <field name="value">Destruction Certificates</field>
+            <field name="sequence">7</field>
+        </record>
+
+        <!-- Ease of Use Rating -->
+        <record id="feedback_ease_of_use" model="survey.question">
+            <field name="title">How easy is the portal to navigate and use?</field>
+            <field name="sequence">4</field>
+            <field name="survey_id" ref="portal_feedback_survey"/>
+            <field name="page_id" ref="feedback_page_general"/>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory">True</field>
+        </record>
+
+        <record id="ease_very_easy" model="survey.question.answer">
+            <field name="question_id" ref="feedback_ease_of_use"/>
+            <field name="value">Very Easy - Intuitive and user-friendly</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="ease_easy" model="survey.question.answer">
+            <field name="question_id" ref="feedback_ease_of_use"/>
+            <field name="value">Easy - Generally straightforward</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="ease_moderate" model="survey.question.answer">
+            <field name="question_id" ref="feedback_ease_of_use"/>
+            <field name="value">Moderate - Some features confusing</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="ease_difficult" model="survey.question.answer">
+            <field name="question_id" ref="feedback_ease_of_use"/>
+            <field name="value">Difficult - Hard to find what I need</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Survey Page: Feature Feedback -->
+        <record id="feedback_page_features" model="survey.question">
+            <field name="title">Feature-Specific Feedback</field>
+            <field name="sequence">5</field>
+            <field name="survey_id" ref="portal_feedback_survey"/>
+            <field name="is_page">True</field>
+            <field name="description">Help us improve specific features and functionality</field>
+        </record>
+
+        <!-- Search Functionality Rating -->
+        <record id="feedback_search_rating" model="survey.question">
+            <field name="title">How would you rate the search functionality?</field>
+            <field name="sequence">6</field>
+            <field name="survey_id" ref="portal_feedback_survey"/>
+            <field name="page_id" ref="feedback_page_features"/>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory">False</field>
+        </record>
+
+        <record id="search_excellent" model="survey.question.answer">
+            <field name="question_id" ref="feedback_search_rating"/>
+            <field name="value">Excellent - Finds everything quickly</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="search_good" model="survey.question.answer">
+            <field name="question_id" ref="feedback_search_rating"/>
+            <field name="value">Good - Usually finds what I need</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="search_fair" model="survey.question.answer">
+            <field name="question_id" ref="feedback_search_rating"/>
+            <field name="value">Fair - Sometimes hard to find items</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="search_poor" model="survey.question.answer">
+            <field name="question_id" ref="feedback_search_rating"/>
+            <field name="value">Poor - Difficult to find what I need</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Security and Compliance Confidence -->
+        <record id="feedback_security_confidence" model="survey.question">
+            <field name="title">How confident are you in our NAID AAA compliance and security measures?</field>
+            <field name="sequence">7</field>
+            <field name="survey_id" ref="portal_feedback_survey"/>
+            <field name="page_id" ref="feedback_page_features"/>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory">True</field>
+        </record>
+
+        <record id="security_very_confident" model="survey.question.answer">
+            <field name="question_id" ref="feedback_security_confidence"/>
+            <field name="value">Very Confident - Completely trust the security</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="security_confident" model="survey.question.answer">
+            <field name="question_id" ref="feedback_security_confidence"/>
+            <field name="value">Confident - Trust the measures in place</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="security_somewhat" model="survey.question.answer">
+            <field name="question_id" ref="feedback_security_confidence"/>
+            <field name="value">Somewhat Confident - Some concerns</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="security_not_confident" model="survey.question.answer">
+            <field name="question_id" ref="feedback_security_confidence"/>
+            <field name="value">Not Confident - Have security concerns</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Survey Page: Improvements -->
+        <record id="feedback_page_improvements" model="survey.question">
+            <field name="title">Suggestions for Improvement</field>
+            <field name="sequence">8</field>
+            <field name="survey_id" ref="portal_feedback_survey"/>
+            <field name="is_page">True</field>
+            <field name="description">Help us make the portal even better</field>
+        </record>
+
+        <!-- Missing Features -->
+        <record id="feedback_missing_features" model="survey.question">
+            <field name="title">What features or functionality would you like to see added?</field>
+            <field name="sequence">9</field>
+            <field name="survey_id" ref="portal_feedback_survey"/>
+            <field name="page_id" ref="feedback_page_improvements"/>
+            <field name="question_type">text_box</field>
+            <field name="constr_mandatory">False</field>
+        </record>
+
+        <!-- General Comments -->
+        <record id="feedback_general_comments" model="survey.question">
+            <field name="title">Any other comments, suggestions, or concerns?</field>
+            <field name="sequence">10</field>
+            <field name="survey_id" ref="portal_feedback_survey"/>
+            <field name="page_id" ref="feedback_page_improvements"/>
+            <field name="question_type">text_box</field>
+            <field name="constr_mandatory">False</field>
+        </record>
+
+        <!-- Contact Permission -->
+        <record id="feedback_contact_permission" model="survey.question">
+            <field name="title">May we contact you to follow up on your feedback?</field>
+            <field name="sequence">11</field>
+            <field name="survey_id" ref="portal_feedback_survey"/>
+            <field name="page_id" ref="feedback_page_improvements"/>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory">False</field>
+        </record>
+
+        <record id="contact_yes" model="survey.question.answer">
+            <field name="question_id" ref="feedback_contact_permission"/>
+            <field name="value">Yes, please contact me</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="contact_no" model="survey.question.answer">
+            <field name="question_id" ref="feedback_contact_permission"/>
+            <field name="value">No, I prefer not to be contacted</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <!-- Service Request Feedback Survey -->
+        <record id="service_request_feedback_survey" model="survey.survey">
+            <field name="title">Service Request Feedback</field>
+            <field name="description">Rate your experience with our destruction and service requests</field>
+            <field name="access_mode">public</field>
+            <field name="users_login_required">False</field>
+            <field name="attempts_limit">1</field>
+            <field name="is_time_limited">False</field>
+            <field name="certification">False</field>
+            <field name="scoring_type">no_scoring</field>
+        </record>
+
+        <!-- Service Request Page -->
+        <record id="service_feedback_page" model="survey.question">
+            <field name="title">Service Request Experience</field>
+            <field name="sequence">1</field>
+            <field name="survey_id" ref="service_request_feedback_survey"/>
+            <field name="is_page">True</field>
+            <field name="description">Tell us about your recent service request experience</field>
+        </record>
+
+        <!-- Service Rating -->
+        <record id="service_rating" model="survey.question">
+            <field name="title">How would you rate the overall service provided?</field>
+            <field name="sequence">2</field>
+            <field name="survey_id" ref="service_request_feedback_survey"/>
+            <field name="page_id" ref="service_feedback_page"/>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory">True</field>
+        </record>
+
+        <record id="service_excellent" model="survey.question.answer">
+            <field name="question_id" ref="service_rating"/>
+            <field name="value">Excellent</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="service_good" model="survey.question.answer">
+            <field name="question_id" ref="service_rating"/>
+            <field name="value">Good</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="service_fair" model="survey.question.answer">
+            <field name="question_id" ref="service_rating"/>
+            <field name="value">Fair</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="service_poor" model="survey.question.answer">
+            <field name="question_id" ref="service_rating"/>
+            <field name="value">Poor</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Timeliness Rating -->
+        <record id="service_timeliness" model="survey.question">
+            <field name="title">How would you rate the timeliness of service completion?</field>
+            <field name="sequence">3</field>
+            <field name="survey_id" ref="service_request_feedback_survey"/>
+            <field name="page_id" ref="service_feedback_page"/>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory">True</field>
+        </record>
+
+        <record id="timeliness_excellent" model="survey.question.answer">
+            <field name="question_id" ref="service_timeliness"/>
+            <field name="value">Excellent - Completed faster than expected</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="timeliness_good" model="survey.question.answer">
+            <field name="question_id" ref="service_timeliness"/>
+            <field name="value">Good - Completed on time</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="timeliness_fair" model="survey.question.answer">
+            <field name="question_id" ref="service_timeliness"/>
+            <field name="value">Fair - Slight delay</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="timeliness_poor" model="survey.question.answer">
+            <field name="question_id" ref="service_timeliness"/>
+            <field name="value">Poor - Significant delay</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <!-- Service Comments -->
+        <record id="service_comments" model="survey.question">
+            <field name="title">Any additional comments about the service provided?</field>
+            <field name="sequence">4</field>
+            <field name="survey_id" ref="service_request_feedback_survey"/>
+            <field name="page_id" ref="service_feedback_page"/>
+            <field name="question_type">text_box</field>
+            <field name="constr_mandatory">False</field>
+        </record>
+
+        <!-- Simple Portal Feedback Survey (Alternative Quick Feedback Option) -->
+        <record id="survey_feedback_portal" model="survey.survey">
+            <field name="title">Portal Feedback &amp; Suggestions</field>
+            <field name="description">Quick feedback form for suggestions and concerns</field>
+            <field name="access_mode">public</field>
+            <field name="users_login_required">True</field>
+            <field name="is_attempts_limited">False</field>
+            <field name="questions_layout">page_per_section</field>
+            <field name="scoring_type">no_scoring</field>
+            <field name="certification">False</field>
+        </record>
+
+        <!-- Simple Feedback Page -->
+        <record id="page_feedback" model="survey.question">
+            <field name="title">Your Feedback</field>
+            <field name="sequence">1</field>
+            <field name="survey_id" ref="survey_feedback_portal"/>
+            <field name="is_page">True</field>
+            <field name="description">Please share your thoughts to help us improve our services</field>
+        </record>
+
+        <!-- Suggestions Question -->
+        <record id="question_suggestions" model="survey.question">
+            <field name="title">Suggestions for Improvements</field>
+            <field name="sequence">2</field>
+            <field name="survey_id" ref="survey_feedback_portal"/>
+            <field name="page_id" ref="page_feedback"/>
+            <field name="question_type">text_box</field>
+            <field name="constr_mandatory">False</field>
+            <field name="description">What improvements would you like to see in our portal or services?</field>
+        </record>
+
+        <!-- Concerns Question -->
+        <record id="question_concerns" model="survey.question">
+            <field name="title">Any Concerns?</field>
+            <field name="sequence">3</field>
+            <field name="survey_id" ref="survey_feedback_portal"/>
+            <field name="page_id" ref="page_feedback"/>
+            <field name="question_type">text_box</field>
+            <field name="constr_mandatory">False</field>
+            <field name="description">Please share any concerns or issues you've experienced</field>
+        </record>
+
+        <!-- Rating Question -->
+        <record id="question_rating" model="survey.question">
+            <field name="title">Rate the Portal (1-5)</field>
+            <field name="sequence">4</field>
+            <field name="survey_id" ref="survey_feedback_portal"/>
+            <field name="page_id" ref="page_feedback"/>
+            <field name="question_type">numerical_box</field>
+            <field name="constr_mandatory">True</field>
+            <field name="description">On a scale of 1-5, how would you rate your overall portal experience?</field>
+            <field name="validation_min_float_value">1.0</field>
+            <field name="validation_max_float_value">5.0</field>
+            <field name="validation_error_msg">Please enter a rating between 1 and 5</field>
+        </record>
+
+    </data>
+</odoo>

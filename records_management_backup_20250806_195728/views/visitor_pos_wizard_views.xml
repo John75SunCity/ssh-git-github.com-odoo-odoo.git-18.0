@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ENTERPRISE VISITOR POS WIZARD - Advanced Walk-In Customer Proces                        <page string="Audit and Compliance" name="audit_compliance">
+                            <group>
+                                <group string="Audit Trail Configuration">g & Audit Integration -->
+    
+    <!-- FORM VIEW: Visitor POS Processing Wizard -->
+    <record id="view_visitor_pos_wizard_form" model="ir.ui.view">
+        <field name="name">visitor.pos.wizard.form</field>
+        <field name="model">visitor.pos.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Visitor POS Processing Wizard">
+                <header>
+                    <button name="action_process_visitor" string="Process Visitor" type="object" class="btn-primary"/>
+                    <button name="action_create_pos_order" string="Create POS Order" type="object" class="btn-success"/>
+                    <button name="action_link_existing_order" string="Link Existing Order" type="object" class="btn-info"/>
+                    <button name="action_cancel" string="Cancel" type="object" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            Visitor POS Processing
+                        </h1>
+                        <div class="o_row">
+                            <span>Link visitor check-ins with POS transactions for comprehensive audit trails</span>
+                        </div>
+                    </div>
+                    
+                    <group>
+                        <group name="visitor_info" string="👤 Visitor Information">
+                            <field name="visitor_id" required="1" options="{'no_create': True}"/>
+                            <field name="visitor_name" readonly="1"/>
+                            <field name="visitor_email" readonly="1"/>
+                            <field name="visitor_phone" readonly="1"/>
+                            <field name="check_in_time" readonly="1"/>
+                            <field name="purpose_of_visit" readonly="1"/>
+                        </group>
+                        <group name="pos_config" string="🏪 POS Configuration">
+                            <field name="pos_config_id" required="1" domain="[('state', '=', 'active')]"/>
+                            <field name="pos_session_id" domain="[('config_id', '=', pos_config_id), ('state', '=', 'opened')]"/>
+                            <field name="cashier_id" required="1"/>
+                            <field name="service_location"/>
+                            <field name="processing_priority"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="customer_data" string="Customer Data Management">
+                            <field name="existing_customer_id" options="{'no_create': True}"/>
+                            <field name="create_new_customer" widget="boolean_toggle"/>
+                            <field name="customer_category" states="create_new_customer=True"/>
+                            <field name="customer_credit_limit" widget="monetary" states="create_new_customer=True"/>
+                            <field name="customer_payment_terms" states="create_new_customer=True"/>
+                        </group>
+                        <group name="service_selection" string="🛍️ Service Selection">
+                            <field name="service_type" required="1"/>
+                            <field name="express_service" widget="boolean_toggle"/>
+                            <field name="estimated_service_time" widget="float"/>
+                            <field name="special_requirements"/>
+                            <field name="naid_compliance_required" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Service Details" name="service_details">
+                            <group>
+                                <group string="📄 Document Services">
+                                    <field name="document_count" states="service_type=='document_processing'"/>
+                                    <field name="document_type" states="service_type=='document_processing'"/>
+                                    <field name="scanning_required" widget="boolean_toggle" states="service_type=='document_processing'"/>
+                                    <field name="digitization_format" states="scanning_required=True"/>
+                                    <field name="retention_period" states="service_type=='document_storage'"/>
+                                    <field name="confidentiality_level" states="service_type in ['document_processing', 'document_storage']"/>
+                                </group>
+                                <group string="🗂️ Shredding Services">
+                                    <field name="shredding_type" states="service_type=='shredding'"/>
+                                    <field name="witness_required" widget="boolean_toggle" states="service_type=='shredding'"/>
+                                    <field name="certificate_required" widget="boolean_toggle" states="service_type=='shredding'"/>
+                                    <field name="pickup_required" widget="boolean_toggle" states="service_type=='shredding'"/>
+                                    <field name="estimated_volume" states="service_type=='shredding'"/>
+                                    <field name="destruction_method" states="service_type=='shredding'"/>
+                                </group>
+                            </group>
+                            <separator string="Service Items"/>
+                            <field name="service_item_ids" mode="list">
+                                <list string="Service Items" editable="bottom">
+                                    <field name="product_id" required="1"/>
+                                    <field name="quantity" required="1"/>
+                                    <field name="unit_price" widget="monetary"/>
+                                    <field name="discount_percent" widget="percentage"/>
+                                    <field name="subtotal" widget="monetary" sum="Total"/>
+                                    <field name="tax_id" widget="many2many_tags"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Pricing and Payment" name="pricing_payment">
+                            <group>
+                                <group string="Pricing Information">
+                                    <field name="base_amount" widget="monetary" readonly="1"/>
+                                    <field name="express_surcharge" widget="monetary" readonly="1"/>
+                                    <field name="total_discount" widget="monetary" readonly="1"/>
+                                    <field name="tax_amount" widget="monetary" readonly="1"/>
+                                    <field name="total_amount" widget="monetary" readonly="1"/>
+                                </group>
+                                <group string="Payment Configuration">
+                                    <field name="payment_method_id" required="1"/>
+                                    <field name="payment_reference"/>
+                                    <field name="payment_terms"/>
+                                    <field name="invoice_required" widget="boolean_toggle"/>
+                                    <field name="receipt_email" states="invoice_required=True"/>
+                                </group>
+                            </group>
+                            <separator string="💵 Payment Split" states="payment_method_id"/>
+                            <field name="payment_split_ids" mode="list" states="payment_method_id">
+                                <list string="Payment Methods" editable="bottom">
+                                    <field name="payment_method_id"/>
+                                    <field name="amount" widget="monetary" sum="Total"/>
+                                    <field name="payment_reference"/>
+                                    <field name="transaction_id"/>
+                                    <field name="authorization_code"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Audit and Compliance" name="audit_compliance">
+                            <group>
+                                <group string="Audit Trail Configuration">
+                                    <field name="audit_required" widget="boolean_toggle"/>
+                                    <field name="audit_level" states="audit_required=True"/>
+                                    <field name="compliance_officer" states="audit_required=True"/>
+                                    <field name="audit_notes" states="audit_required=True"/>
+                                </group>
+                                <group string="NAID Compliance">
+                                    <field name="naid_certificate_required" widget="boolean_toggle"/>
+                                    <field name="witness_verification" widget="boolean_toggle" states="naid_certificate_required=True"/>
+                                    <field name="chain_of_custody" widget="boolean_toggle"/>
+                                    <field name="compliance_documentation"/>
+                                </group>
+                            </group>
+                            <separator string="Required Documentation"/>
+                            <field name="required_document_ids" mode="list">
+                                <list string="Required Documents" editable="bottom">
+                                    <field name="document_type"/>
+                                    <field name="document_name"/>
+                                    <field name="required" widget="boolean_toggle"/>
+                                    <field name="collected" widget="boolean_toggle"/>
+                                    <field name="collection_date" widget="datetime"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Processing History" name="processing_history">
+                            <group>
+                                <group string="⏱️ Processing Timeline">
+                                    <field name="wizard_start_time" readonly="1"/>
+                                    <field name="customer_processing_time" readonly="1"/>
+                                    <field name="service_configuration_time" readonly="1"/>
+                                    <field name="total_processing_time" readonly="1"/>
+                                </group>
+                                <group string="👤 Staff Information">
+                                    <field name="processed_by" readonly="1"/>
+                                    <field name="supervisor_approval"/>
+                                    <field name="quality_check_by"/>
+                                    <field name="final_verification_by"/>
+                                </group>
+                            </group>
+                            <separator string="📝 Processing Log"/>
+                            <field name="processing_log_ids" mode="list" readonly="1">
+                                <list string="Processing Steps">
+                                    <field name="step_time" widget="datetime"/>
+                                    <field name="step_name"/>
+                                    <field name="step_description"/>
+                                    <field name="processed_by"/>
+                                    <field name="step_status"/>
+                                    <field name="duration_seconds"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Integration Status" name="integration_status">
+                            <group>
+                                <group string="🔗 System Integration">
+                                    <field name="pos_order_created" widget="boolean_toggle" readonly="1"/>
+                                    <field name="pos_order_id" readonly="1" states="pos_order_created=True"/>
+                                    <field name="customer_record_created" widget="boolean_toggle" readonly="1"/>
+                                    <field name="customer_record_id" readonly="1" states="customer_record_created=True"/>
+                                    <field name="invoice_generated" widget="boolean_toggle" readonly="1"/>
+                                    <field name="invoice_id" readonly="1" states="invoice_generated=True"/>
+                                </group>
+                                <group string="Records Management Link">
+                                    <field name="records_request_created" widget="boolean_toggle" readonly="1"/>
+                                    <field name="records_request_id" readonly="1" states="records_request_created=True"/>
+                                    <field name="naid_audit_created" widget="boolean_toggle" readonly="1"/>
+                                    <field name="naid_audit_id" readonly="1" states="naid_audit_created=True"/>
+                                    <field name="chain_of_custody_id" readonly="1"/>
+                                </group>
+                            </group>
+                            <separator string="⚠️ Integration Errors" states="integration_errors"/>
+                            <field name="integration_error_ids" mode="list" readonly="1" states="integration_errors">
+                                <list string="Integration Errors">
+                                    <field name="error_time" widget="datetime"/>
+                                    <field name="error_type"/>
+                                    <field name="error_message"/>
+                                    <field name="error_details"/>
+                                    <field name="resolved" widget="boolean_toggle"/>
+                                    <field name="resolution_notes"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- TREE VIEW: Visitor POS Processing History -->
+    <record id="view_visitor_pos_wizard_tree" model="ir.ui.view">
+        <field name="name">visitor.pos.wizard.list</field>
+        <field name="model">visitor.pos.wizard</field>
+        <field name="arch" type="xml">
+            <list string="Visitor POS Processing History" decoration-success="pos_order_created=True" decoration-info="customer_record_created=True" decoration-warning="audit_required=True" sample="1">
+                <field name="wizard_start_time" string="Processing Date" widget="datetime"/>
+                <field name="visitor_name" string="Visitor"/>
+                <field name="service_type" string="Service Type"/>
+                <field name="pos_config_id" string="POS Terminal"/>
+                <field name="cashier_id" string="Cashier"/>
+                <field name="total_amount" string="Amount" widget="monetary"/>
+                <field name="processing_priority" string="Priority"/>
+                <field name="pos_order_created" string="POS Created" widget="boolean_toggle"/>
+                <field name="customer_record_created" string="Customer Created" widget="boolean_toggle"/>
+                <field name="naid_compliance_required" string="NAID Required" widget="boolean_toggle"/>
+                <field name="total_processing_time" string="Processing Time" widget="float"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- SEARCH VIEW: Visitor POS Wizard Search -->
+    <record id="view_visitor_pos_wizard_search" model="ir.ui.view">
+        <field name="name">visitor.pos.wizard.search</field>
+        <field name="model">visitor.pos.wizard</field>
+        <field name="arch" type="xml">
+            <search string="Search Visitor POS Processing">
+                <field name="visitor_name" string="Visitor Name"/>
+                <field name="pos_config_id" string="POS Terminal"/>
+                <field name="cashier_id" string="Cashier"/>
+                <field name="service_type" string="Service Type"/>
+                
+                <filter string="Today" name="today" domain="[('wizard_start_time', '&gt;=', datetime.datetime.combine(context_today(), datetime.time.min)), ('wizard_start_time', '&lt;=', datetime.datetime.combine(context_today(), datetime.time.max))]"/>
+                <filter string="This Week" name="week" domain="[('wizard_start_time', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('wizard_start_time', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <filter string="My Processing" name="my_processing" domain="[('processed_by', '=', uid)]"/>
+                
+                <separator/>
+                <filter string="POS Order Created" name="pos_created" domain="[('pos_order_created', '=', True)]"/>
+                <filter string="Customer Record Created" name="customer_created" domain="[('customer_record_created', '=', True)]"/>
+                <filter string="NAID Compliance" name="naid_compliance" domain="[('naid_compliance_required', '=', True)]"/>
+                <filter string="Express Service" name="express" domain="[('express_service', '=', True)]"/>
+                <filter string="Audit Required" name="audit_required" domain="[('audit_required', '=', True)]"/>
+                
+                <separator/>
+                <filter string="Document Processing" name="document_processing" domain="[('service_type', '=', 'document_processing')]"/>
+                <filter string="Document Storage" name="document_storage" domain="[('service_type', '=', 'document_storage')]"/>
+                <filter string="Shredding Service" name="shredding" domain="[('service_type', '=', 'shredding')]"/>
+                <filter string="Consultation" name="consultation" domain="[('service_type', '=', 'consultation')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Service Type" name="group_service_type" context="{'group_by': 'service_type'}"/>
+                    <filter string="POS Terminal" name="group_pos_config" context="{'group_by': 'pos_config_id'}"/>
+                    <filter string="Cashier" name="group_cashier" context="{'group_by': 'cashier_id'}"/>
+                    <filter string="Processing Date" name="group_date" context="{'group_by': 'wizard_start_time'}"/>
+                    <filter string="Priority" name="group_priority" context="{'group_by': 'processing_priority'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- GRAPH VIEW: Visitor POS Analytics -->
+    <record id="view_visitor_pos_wizard_graph" model="ir.ui.view">
+        <field name="name">visitor.pos.wizard.graph</field>
+        <field name="model">visitor.pos.wizard</field>
+        <field name="arch" type="xml">
+            <graph string="Visitor POS Analytics" type="bar" sample="1">
+                <field name="wizard_start_time" type="row" interval="day"/>
+                <field name="service_type" type="col"/>
+                <field name="total_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- PIVOT VIEW: Visitor POS Performance Analysis -->
+    <record id="view_visitor_pos_wizard_pivot" model="ir.ui.view">
+        <field name="name">visitor.pos.wizard.pivot</field>
+        <field name="model">visitor.pos.wizard</field>
+        <field name="arch" type="xml">
+            <pivot string="Visitor POS Performance" sample="1">
+                <field name="pos_config_id" type="row"/>
+                <field name="service_type" type="col"/>
+                <field name="total_amount" type="measure"/>
+                <field name="total_processing_time" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ACTION: Visitor POS Wizard Management -->
+    <record id="action_visitor_pos_wizard" model="ir.actions.act_window">
+        <field name="name">Visitor POS Processing</field>
+        <field name="res_model">visitor.pos.wizard</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="search_view_id" ref="view_visitor_pos_wizard_search"/>
+        <field name="context">{
+            'search_default_today': 1,
+            'search_default_my_processing': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Process your first walk-in visitor!
+            </p>
+            <p>
+                Streamline walk-in customer processing with integrated POS transactions and comprehensive audit trails. 
+                Link visitor check-ins with service delivery for complete Records Management compliance and NAID certification tracking.
+            </p>
+            <p>
+                <strong>Key Features:</strong><br/>
+                • Seamless visitor-to-customer conversion<br/>
+                • Integrated POS order creation and payment processing<br/>
+                • NAID AAA compliance documentation and tracking<br/>
+                • Comprehensive audit trail and chain of custody<br/>
+                • Service configuration and pricing automation<br/>
+                • Real-time processing analytics and performance monitoring
+            </p>
+        </field>
+    </record>
+
+    <!-- ACTION: Visitor POS Processing Wizard (Wizard Mode) -->
+    <record id="action_visitor_pos_processing_wizard" model="ir.actions.act_window">
+        <field name="name">Process Walk-In Visitor</field>
+        <field name="res_model">visitor.pos.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_visitor_pos_wizard_form"/>
+        <field name="target">new</field>
+        <field name="context">{
+            'default_wizard_start_time': datetime.datetime.now(),
+            'default_processed_by': uid
+        }</field>
+    </record>
+</odoo>

@@ -69,31 +69,47 @@ class PickupRequestItem(models.Model):
 
     _name = "pickup.request.item"
     _description = "Pickup Request Item"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name"
 
     # Core fields
     name = fields.Char(string="Name", required=True, tracking=True)
-    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    company_id = fields.Many2one("res.company", default=lambda self: self.env.company, index=True)
+    user_id = fields.Many2one("res.users", default=lambda self: self.env.user, index=True)
     active = fields.Boolean(default=True)
 
     # Basic state management
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done')
-    ], string='State', default='draft', tracking=True)
+    state = fields.Selection(
+        [("draft", "Draft"), ("confirmed", "Confirmed"), ("done", "Done")],
+        string="State",
+        default="draft",
+        tracking=True,
+    )
 
     # Common fields
     description = fields.Text()
     notes = fields.Text()
-    date = fields.Date(default=fields.Date.today)
+    date = fields.Date(default=lambda self: fields.Date.today())
 
     def action_confirm(self):
-        """Confirm the record"""
-        self.write({'state': 'confirmed'})
+        """
+        Confirm the record by setting its state to 'confirmed'.
+
+    def action_done(self):
+        """
+        Mark the pickup request item as done.
+
+        This method updates the state of the item to 'done', which may trigger workflow transitions,
+        notifications, or integration with inventory and billing systems. Additional business logic
+        such as audit logging, inventory updates, or delivery confirmation may be implemented here
+        in the future as required by business processes.
+        """
+        self.write({"state": "done"})
+        - May notify followers or trigger activity scheduling if configured.
+        - Intended to be called when the item is ready for the next step in the pickup workflow.
+        """
+        self.write({"state": "confirmed"})
 
     def action_done(self):
         """Mark as done"""
-        self.write({'state': 'done'})
+        self.write({"state": "done"})

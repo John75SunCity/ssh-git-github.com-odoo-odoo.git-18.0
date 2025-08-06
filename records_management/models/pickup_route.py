@@ -69,7 +69,6 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
 
 
 class PickupRoute(models.Model):
@@ -109,8 +108,8 @@ class PickupRoute(models.Model):
     vehicle_id = fields.Many2one("records.vehicle", string="Vehicle", tracking=True)
 
     # Timestamps
-    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now)
-    date_modified = fields.Datetime(string="Modified Date")
+    date_created = fields.Datetime(string="Created Date", default=lambda self: fields.Datetime.now())
+    date_modified = fields.Datetime(string="Modified Date", readonly=True)
 
     # Control Fields
     active = fields.Boolean(string="Active", default=True)
@@ -130,7 +129,7 @@ class PickupRoute(models.Model):
     def write(self, vals):
         """Override write to update modification date."""
         vals["date_modified"] = fields.Datetime.now()
-        return super().write(vals)
+        return super(PickupRoute, self).write(vals)
 
     def action_activate(self):
         """Activate the record."""
@@ -146,8 +145,11 @@ class PickupRoute(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create to set default values."""
+        """Override create to set default values and modification date."""
         for vals in vals_list:
             if not vals.get("name"):
                 vals["name"] = _("New Record")
-        return super().create(vals_list)
+            vals["date_modified"] = fields.Datetime.now()
+        return super(PickupRoute, self).create(vals_list)
+            vals["date_modified"] = fields.Datetime.now()
+        return super(PickupRoute, self).create(vals_list)

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_fsm_reschedule_wizard_form" model="ir.ui.view">
+            <field name="name">fsm.reschedule.wizard.form</field>
+            <field name="model">fsm.reschedule.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Reschedule Task">
+                    <group>
+                        <field name="task_id" readonly="1"/>
+                        <field name="schedule_date"/>
+                        <field name="reschedule_reason"/>
+                    </group>
+                    <footer>
+                        <button name="action_confirm_reschedule" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_fsm_reschedule_wizard" model="ir.actions.act_window">
+            <field name="name">Reschedule Task</field>
+            <field name="res_model">fsm.reschedule.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

@@ -2,27 +2,8 @@
 """
 Records Container Management Module
 
-This module provides comprehensive container management functionality for the Records Management System.
-It handles the complete lifecycle of physical storage containers including creation, tracking, movement,
-and destruction processes with full NAID AAA compliance.
-
-Key Features:
-- Complete container lifecycle management (draft → active → stored → destroyed)
-- Document containment with capacity tracking and full/empty status
-- Location-based storage with movement history and audit trails
-- Retention policy automation with destruction scheduling
-- Security classification and access control management
-- Integration with barcode systems for container identification
-- Billing rate management and service level configuration
-- NAID compliance with audit trails and chain of custody
-
-Business Processes:
-1. Container Registration: Create containers with customer assignment and specifications
-2. Document Loading: Associate documents with containers and track capacity
-3. Storage Management: Move containers through locations with full audit trail
-4. Retention Compliance: Automatic destruction scheduling based on retention policies
-5. Retrieval Services: Track container access and document retrieval requests
-6. Destruction Processing: NAID-compliant destruction with certificate generation
+See RECORDS_MANAGEMENT_SYSTEM_MANUAL.md - Section 7: Records Container Management Module
+for comprehensive documentation, business processes, and integration details.
 
 Author: Records Management System
 Version: 18.0.6.0.0

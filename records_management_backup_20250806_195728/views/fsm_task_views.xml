@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 🔧 FSM TASK MANAGEMENT - Streamlined Views -->
+
+    <!-- Kanban View -->
+    <record id="view_fsm_task_kanban" model="ir.ui.view">
+        <field name="name">fsm.task.kanban</field>
+        <field name="model">fsm.task</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="task_status" class="o_kanban_fsm_task_dashboard">
+                <field name="name"/>
+                <field name="task_type"/>
+                <field name="task_status"/>
+                <field name="assigned_technician"/>
+                <field name="scheduled_date"/>
+                <field name="priority"/>
+                <field name="customer_id"/>
+                <field name="location_address"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <strong>🔧                                    <field name="name"/>
+                                </strong>
+                                <span class="float-end">
+                                    <field name="priority" widget="priority"/>
+                                </span>
+                                <div class="text-muted">👤                                    <field name="customer_id"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_content">
+                                <div class="mb-2">
+                                    <strong>Type:</strong>
+                                    <field name="task_type"/>
+                                    <br/>
+                                    <strong>Technician:</strong>
+                                    <field name="assigned_technician"/>
+                                    <br/>
+                                    <strong>Scheduled:</strong>
+                                    <field name="scheduled_date" widget="datetime"/>
+                                </div>
+                                <div class="text-muted small">
+                                    📍                                    <field name="location_address"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_fsm_task_tree" model="ir.ui.view">
+        <field name="name">fsm.task.list</field>
+        <field name="model">fsm.task</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="task_status=='completed'">
+                <field name="name"/>
+                <field name="task_type"/>
+                <field name="customer_id"/>
+                <field name="assigned_technician" widget="many2one_avatar_user"/>
+                <field name="scheduled_date" widget="datetime"/>
+                <field name="priority" widget="priority"/>
+                <field name="task_status" widget="badge"/>
+                <field name="estimated_duration"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_fsm_task_form" model="ir.ui.view">
+        <field name="name">fsm.task.form</field>
+        <field name="model">fsm.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start_task" type="object" string="Start Task" states="scheduled" class="btn-primary"/>
+                    <button name="action_complete_task" type="object" string="Complete" states="in_progress" class="btn-success"/>
+                    <button name="action_reschedule" type="object" string="Reschedule" states="scheduled,in_progress" class="btn-warning"/>
+                    <field name="task_status" widget="statusbar" statusbar_visible="scheduled,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_work_orders" icon="fa-wrench">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Work Orders</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="task_type"/>
+                            <field name="customer_id"/>
+                            <field name="assigned_technician"/>
+                            <field name="priority"/>
+                        </group>
+                        <group>
+                            <field name="scheduled_date"/>
+                            <field name="estimated_duration"/>
+                            <field name="actual_start_time"/>
+                            <field name="actual_end_time"/>
+                        </group>
+                    </group>
+
+                    <group string="Location Details">
+                        <field name="location_address" nolabel="1"/>
+                        <field name="service_location"/>
+                        <field name="access_instructions"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Task Details">
+                            <field name="description" nolabel="1" placeholder="Task description and requirements..."/>
+                            <group>
+                                <field name="required_skills" widget="many2many_tags"/>
+                                <field name="required_tools" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                        <page string="Work Orders">
+                            <field name="work_order_ids" mode="list">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="work_order_type"/>
+                                    <field name="status"/>
+                                    <field name="assigned_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Completion Notes">
+                            <group>
+                                <field name="completion_notes" placeholder="Task completion notes..."/>
+                                <field name="customer_signature" widget="signature"/>
+                                <field name="photos" widget="many2many_binary"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_fsm_task_search" model="ir.ui.view">
+        <field name="name">fsm.task.search</field>
+        <field name="model">fsm.task</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="assigned_technician"/>
+                <field name="task_type"/>
+
+                <filter string="Scheduled" name="scheduled" domain="[('task_status', '=', 'scheduled')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('task_status', '=', 'in_progress')]"/>
+                <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
+                <filter string="Today" name="today" domain="[('scheduled_date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+
+                <separator/>
+                <filter string="My Tasks" name="my_tasks" domain="[('assigned_technician', '=', uid)]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_status" context="{'group_by': 'task_status'}"/>
+                    <filter string="Technician" name="group_technician" context="{'group_by': 'assigned_technician'}"/>
+                    <filter string="Type" name="group_type" context="{'group_by': 'task_type'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="view_fsm_task_calendar" model="ir.ui.view">
+        <field name="name">fsm.task.calendar</field>
+        <field name="model">fsm.task</field>
+        <field name="arch" type="xml">
+            <calendar date_start="scheduled_date" color="assigned_technician" quick_add="false">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="assigned_technician"/>
+                <field name="task_status"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_fsm_task" model="ir.actions.act_window">
+        <field name="name">FSM Tasks</field>
+        <field name="res_model">fsm.task</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="context">{'search_default_scheduled': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                🔧 Create your first field service task!
+            </p>
+            <p>Schedule and manage field service operations with mobile technician support.</p>
+        </field>
+    </record>
+
+</odoo>
