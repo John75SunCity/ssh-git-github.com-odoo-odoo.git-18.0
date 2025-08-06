@@ -6,10 +6,10 @@
         <record id="field_labels_corporate_global" model="field.label.customization">
             <field name="name">Corporate Standard (Global)</field>
             <field name="description">Standard corporate terminology for all customers</field>
-            <field name="model_name">records.box</field>
+            <field name="model_name">records.container</field>
             <field name="field_name">name</field>
-            <field name="original_label">Name</field>
-            <field name="custom_label">Container Name</field>
+            <field name="original_label">Container Number</field>
+            <field name="custom_label">File Container ID</field>
             <field name="priority">10</field>
             <field name="label_container_number">File Container ID</field>
             <field name="label_item_description">Document Category</field>
@@ -30,7 +30,7 @@
             <field name="description">Legal industry terminology</field>
             <field name="model_name">records.document</field>
             <field name="field_name">name</field>
-            <field name="original_label">Name</field>
+            <field name="original_label">Document Name</field>
             <field name="custom_label">Case Document Name</field>
             <field name="priority">5</field>
             <field name="label_container_number">Matter Container</field>
@@ -49,7 +49,7 @@
         <record id="field_labels_healthcare_global" model="field.label.customization">
             <field name="name">Healthcare Industry Standard (Global)</field>
             <field name="description">Healthcare industry terminology</field>
-            <field name="model_name">records.box</field>
+            <field name="model_name">records.container</field>
             <field name="field_name">description</field>
             <field name="original_label">Description</field>
             <field name="custom_label">Medical Records Description</field>
