@@ -1,40 +1,105 @@
-# Optimized .gitignore for Odoo Records Management
-# Python
+# ============================================================================
+# ODOO RECORDS MANAGEMENT - ENTERPRISE MODULE ISOLATION
+# ============================================================================
+# This .gitignore ensures ONLY records_management module is recognized by Odoo
+# All other content is treated as development/backup resources
+
+# ============================================================================
+# PYTHON & SYSTEM FILES
+# ============================================================================
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+*.so
 *.swp
-
-# Odoo
+*.swo
+*~
+.DS_Store
+.vscode/
+.idea/
 *.log
+
+# Python virtual environments (development only)
+.venv/
+venv/
+env/
+ENV/
+
+# ============================================================================
+# ODOO RUNTIME & DATABASE FILES
+# ============================================================================
 *.db
 *.sql
 *.conf
 *.pid
 *.dump
 odoo.sh/
+filestore/
+sessions/
 
-# Development
-node_modules/
-static/lib/
-temp_labels/  # For generated bale PDFs
-.DS_Store
-.vscode/
-.idea/
+# ============================================================================
+# DEVELOPMENT TOOLS & BACKUPS (CRITICAL - PREVENT MODULE LOADING)
+# ============================================================================
+# Backup directories with disabled manifests
+development-tools/records_management_backup*/
+development-tools/monitoring-system/
+development-tools/backups/
+development-tools/*_backup/
 
-# Project-specific (per review recommendations)
-COPILOT .PY FILES/
-COPILOT SUMMARIES/
+# Analysis and debugging files
+current_analysis.txt
+current_field_status.txt
+debug_field_parser.py
+field_analysis_*.txt
+field_analysis_results.json
+full_gap_analysis.txt
+gap_analysis_full.txt
+missing_fields_output.txt
+odoo_debug.conf
+analysis_results.txt
+workspace-config/
+testing-workspace/
+
+# Archive and old development content
+archive/
+COPILOT*FILES/
+COPILOT*SUMMARIES/
 CODESPACE/
-missing_invoices.txt
-expected_invoices.txt
 
-# Development backups and temporary files
+# ============================================================================
+# TEMPORARY & GENERATED FILES
+# ============================================================================
 *_backup.py
 *_backup.xml
 *_minimal.py
 *_enhanced.py
 *_temp.py
 *_old.py
-development-tools/backups/
-development-tools/QUICK_RESUME_SESSION_JULY31_2025.md
+*_new.py
+temp_labels/
+node_modules/
+static/lib/
+
+# ============================================================================
+# DOCUMENTATION & REPORTS (NOT NEEDED FOR MODULE FUNCTION)
+# ============================================================================
+*.md
+!records_management/README.md
+!records_management/**/README.md
+development-tools/*.md
+development-tools/**/*.md
+*_REPORT.md
+*_ANALYSIS.md
+*_SUMMARY.md
+CHANGELOG.md
+FIELD_ENHANCEMENT_SUMMARY.md
+ENTERPRISE_INTEGRATION_SUMMARY.md
+
+# ============================================================================
+# PROJECT ARTIFACTS
+# ============================================================================
+missing_invoices.txt
+expected_invoices.txt
+*.txt
+!requirements.txt
