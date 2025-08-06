@@ -25,16 +25,15 @@
         <field name="name">Demo Warehouse A</field>
         <field name="code">DEMO-A</field>
         <field name="location_type">warehouse</field>
-        <field name="capacity">100</field>
+        <field name="storage_capacity">100</field>
     </record>
 
     <!-- Demo container -->
     <record id="demo_container_1" model="records.container">
         <field name="name">DEMO-CONT-001</field>
-        <field name="customer_id" ref="demo_customer_1"/>
+        <field name="partner_id" ref="demo_customer_1"/>
         <field name="department_id" ref="demo_department_1"/>
         <field name="location_id" ref="demo_location_1"/>
-        <field name="capacity">50</field>
         <field name="state">active</field>
     </record>
 </odoo>

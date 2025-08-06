@@ -141,9 +141,9 @@
         <!-- Demo Paper Bale Recycling -->
         <record id="demo_paper_bale_001" model="paper.bale.recycling">
             <field name="name">Bale-001-Demo</field>
-            <field name="gross_weight">500.0</field>
-            <field name="state">baling</field>
-            <field name="bale_date" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')"/>
+            <field name="bale_weight">500.0</field>
+            <field name="state">draft</field>
+            <field name="collection_date" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')"/>
         </record>
 
         <!-- Demo Chain of Custody Log Template -->

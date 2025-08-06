@@ -1,0 +1,193 @@
+🔍 Advanced XML-to-Model Field Validator (with Odoo Extension Simulation)
+================================================================================
+
+📊 Phase 1: Extracting field definitions from Python models...
+   ✅ Processed 148 Python files
+   ✅ Found 133 Odoo models
+      🔹 installer: 7 fields
+      🔹 account.move.records.extension: 8 fields
+      🔹 bin.key.history: 9 fields
+      🔹 fsm.reschedule.wizard: 16 fields
+      🔹 document.retrieval.item: 21 fields
+      🔹 naid.destruction.record: 11 fields
+      🔹 advanced.billing: 13 fields
+      🔹 base.rates: 37 fields
+      🔹 barcode.pricing.tier: 23 fields
+      🔹 records.approval.step: 17 fields
+      🔹 field.label.customization: 47 fields
+      🔹 records.container.transfer: 8 fields
+      🔹 partner.bin.key: 50 fields
+      🔹 transitory.items: 7 fields
+      🔹 revenue.forecaster: 63 fields
+      🔹 records.billing.config: 129 fields
+      🔹 stock.picking.records.extension: 8 fields
+      🔹 customer.negotiated.rates: 35 fields
+      🔹 naid.compliance.alert: 12 fields
+      🔹 records.department.billing.enhanced: 8 fields
+      🔹 records.chain.of.custody: 16 fields
+      🔹 records.deletion.request.enhanced: 8 fields
+      🔹 barcode.models.enhanced: 8 fields
+      🔹 barcode.product: 59 fields
+      🔹 naid.compliance: 157 fields
+      🔹 survey.user.input.enhanced: 8 fields
+      🔹 records.management.base.menus: 13 fields
+      🔹 survey.improvement.action: 11 fields
+      🔹 records.container: 41 fields
+      🔹 records.billing.service: 9 fields
+      🔹 service.item: 36 fields
+      🔹 document.retrieval.work.order: 72 fields
+      🔹 shredding.hard_drive: 46 fields
+      🔹 portal.feedback.resolution: 12 fields
+      🔹 processing.log: 29 fields
+      🔹 barcode.storage.box: 28 fields
+      🔹 shredding.certificate: 20 fields
+      🔹 fsm.notification.placeholder: 4 fields
+      🔹 required.document: 16 fields
+      🔹 records.permanent.flag.wizard: 4 fields
+      🔹 ir.module.ext: 8 fields
+      🔹 records.storage.department.user: 8 fields
+      🔹 records.bin: 18 fields
+      🔹 shredding.service.log: 11 fields
+      🔹 paper.bale: 44 fields
+      🔹 records.location: 55 fields
+      🔹 stock.report_reception_report_label: 8 fields
+      🔹 shredding.team: 17 fields
+      🔹 records.container.type.converter: 27 fields
+      🔹 paper.bale.recycling: 37 fields
+      🔹 mobile.bin.key.wizard: 47 fields
+      🔹 photo: 14 fields
+      🔹 scrm.records.management: 8 fields
+      🔹 records.location.inspection: 8 fields
+      🔹 records.digital.scan: 36 fields
+      🔹 shredding.inventory.item: 62 fields
+      🔹 bin.unlock.service: 43 fields
+      🔹 destruction.item: 11 fields
+      🔹 naid.chain.custody: 8 fields
+      🔹 naid.audit.log: 9 fields
+      🔹 container.contents: 11 fields
+      🔹 stock.lot.attribute: 8 fields
+      🔹 prod.ext: 8 fields
+      🔹 shredding.inventory.batch: 8 fields
+      🔹 approval.history: 18 fields
+      🔹 paper.load.shipment: 48 fields
+      🔹 shredding.bin: 8 fields
+      🔹 barcode.generation.history: 21 fields
+      🔹 records_management.bale: 8 fields
+      🔹 records.billing: 23 fields
+      🔹 res.partner.key.restriction: 7 fields
+      🔹 fsm.task: 40 fields
+      🔹 records.approval.workflow: 8 fields
+      🔹 visitor: 26 fields
+      🔹 survey.feedback.theme: 8 fields
+      🔹 portal.request: 63 fields
+      🔹 shredding.service: 49 fields
+      🔹 naid.performance.history: 8 fields
+      🔹 bin.key: 18 fields
+      🔹 work.order.shredding: 9 fields
+      🔹 hr.emp.naid: 8 fields
+      🔹 records.security.audit: 8 fields
+      🔹 records.retention.policy: 43 fields
+      🔹 records.customer.billing.profile: 49 fields
+      🔹 payment.split: 17 fields
+      🔹 bin.key.management: 60 fields
+      🔹 records.vehicle: 38 fields
+      🔹 wizard.template: 1 fields
+      🔹 unlock.service.history: 15 fields
+      🔹 paper.bale.source.document: 11 fields
+      🔹 stock.move.sms.validation: 7 fields
+      🔹 records.container.type: 17 fields
+      🔹 records.access.log: 9 fields
+      🔹 portal.feedback: 33 fields
+      🔹 pickup.request.item: 8 fields
+      🔹 records.document: 63 fields
+      🔹 records.billing.contact: 20 fields
+      🔹 temp.inventory: 11 fields
+      🔹 naid.compliance.checklist: 9 fields
+      🔹 integration.error: 17 fields
+      🔹 records.audit.log: 8 fields
+      🔹 customer.inventory: 50 fields
+      🔹 load: 52 fields
+      🔹 file.retrieval.work.order: 11 fields
+      🔹 records.billing.line: 11 fields
+      🔹 visitor.pos.wizard: 14 fields
+      🔹 records.tag: 21 fields
+      🔹 signed.document: 16 fields
+      🔹 naid.custody.event: 8 fields
+      🔹 records.department.billing.contact: 29 fields
+      🔹 proj.task.ext: 8 fields
+      🔹 pickup.request: 12 fields
+      🔹 fsm.route.management.placeholder: 4 fields
+      🔹 pickup.route: 12 fields
+      🔹 location.report.wizard: 1 fields
+      🔹 naid.certificate: 11 fields
+      🔹 key.restriction.checker: 10 fields
+      🔹 records.document.type: 64 fields
+      🔹 records.container.movement: 12 fields
+      🔹 transitory.field.config: 54 fields
+      🔹 customer.feedback: 18 fields
+      🔹 records.department: 14 fields
+      🔹 customer.inventory.report: 36 fields
+      🔹 records.policy.version: 9 fields
+      🔹 records.location.report.wizard: 5 fields
+      🔹 rate.change.confirmation.wizard: 15 fields
+      🔹 fsm.reschedule.wizard.placeholder: 1 fields
+      🔹 work.order.bin.assignment.wizard: 3 fields
+      🔹 hard.drive.scan.wizard: 3 fields
+      🔹 records.container.type.converter.wizard: 3 fields
+      🔹 records.user.invitation.wizard: 9 fields
+      🔹 permanent.flag.wizard: 1 fields
+      🔹 field.label.helper.wizard: 3 fields
+
+🎯 Phase 2: Validating XML data files against model definitions...
+
+   📂 Scanning data/ directory...
+      🔍 Validating tag_data.xml...
+         ✅ No issues found
+      🔍 Validating naid_compliance_data.xml...
+         ⚠️  7 warnings found
+      🔍 Validating model_records.xml...
+         ✅ No issues found
+      🔍 Validating advanced_billing_demo.xml...
+         ✅ No issues found
+      🔍 Validating portal_mail_templates.xml...
+         ⚠️  6 warnings found
+      🔍 Validating scheduled_actions.xml...
+         ✅ No issues found
+      🔍 Validating field_label_demo_data.xml...
+         ✅ No issues found
+      🔍 Validating products.xml...
+         ⚠️  3 warnings found
+      🔍 Validating user_setup.xml...
+         ✅ No issues found
+      🔍 Validating sequence.xml...
+         ✅ No issues found
+      🔍 Validating storage_fee.xml...
+         ⚠️  1 warnings found
+      🔍 Validating fsm_automated_actions.xml...
+         ✅ No issues found
+      🔍 Validating feedback_survey_data.xml...
+         ⚠️  55 warnings found
+      🔍 Validating document_retrieval_rates.xml...
+         ✅ No issues found
+      🔍 Validating ir_sequence_data.xml...
+         ✅ No issues found
+      🔍 Validating paper_products.xml...
+         ⚠️  5 warnings found
+      🔍 Validating fsm_mail_templates.xml...
+         ⚠️  2 warnings found
+
+   📂 Scanning demo/ directory...
+      🔍 Validating odoo.xml...
+         ✅ No issues found
+      🔍 Validating demo_records.xml...
+         ✅ No issues found
+
+📋 Phase 3: Generating detailed validation report...
+
+🎉 VALIDATION COMPLETE
+========================================
+Models analyzed: 133
+Field errors found: 0
+Warnings: 79
+
+✅ All XML data fields are valid!
