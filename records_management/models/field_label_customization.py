@@ -14,6 +14,9 @@ class FieldLabelCustomization(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Name", required=True, tracking=True, index=True)
+    description = fields.Text(
+        string="Description", help="Description of this field label customization set"
+    )
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
     )
@@ -137,6 +140,75 @@ class FieldLabelCustomization(models.Model):
     )
 
     # ============================================================================
+    # CONTAINER/INVENTORY FIELD LABELS (Customer Customizable)
+    # ============================================================================
+    label_container_number = fields.Char(
+        string="Container Number Label",
+        default="Container Number",
+        help="Custom label for container/box number field",
+    )
+
+    label_item_description = fields.Char(
+        string="Item Description Label",
+        default="Item Description",
+        help="Custom label for item description field",
+    )
+
+    label_content_description = fields.Char(
+        string="Content Description Label",
+        default="Content Description",
+        help="Custom label for content description field",
+    )
+
+    label_date_from = fields.Char(
+        string="Date From Label",
+        default="Date From",
+        help="Custom label for start date field",
+    )
+
+    label_date_to = fields.Char(
+        string="Date To Label",
+        default="Date To",
+        help="Custom label for end date field",
+    )
+
+    label_record_type = fields.Char(
+        string="Record Type Label",
+        default="Record Type",
+        help="Custom label for record type classification field",
+    )
+
+    label_confidentiality = fields.Char(
+        string="Confidentiality Label",
+        default="Confidentiality",
+        help="Custom label for confidentiality/security level field",
+    )
+
+    label_project_code = fields.Char(
+        string="Project Code Label",
+        default="Project Code",
+        help="Custom label for project/cost center code field",
+    )
+
+    label_client_reference = fields.Char(
+        string="Client Reference Label",
+        default="Client Reference",
+        help="Custom label for client reference/matter number field",
+    )
+
+    label_authorized_by = fields.Char(
+        string="Authorized By Label",
+        default="Authorized By",
+        help="Custom label for authorization/approval field",
+    )
+
+    label_created_by_dept = fields.Char(
+        string="Created By Department Label",
+        default="Created By Department",
+        help="Custom label for originating department field",
+    )
+
+    # ============================================================================
     # DEPLOYMENT & VERSIONING
     # ============================================================================
     deployment_status = fields.Selection(
@@ -194,119 +266,227 @@ class FieldLabelCustomization(models.Model):
             else:
                 record.full_customization_name = record.name
 
+    @api.depends("model_name")
+    def _compute_available_fields(self):
+        """Compute available fields for the selected model"""
+        for record in self:
+            if record.model_name and record._is_records_management_model(
+                record.model_name
+            ):
+                try:
+                    model = self.env[record.model_name]
+                    fields_list = []
+                    for field_name, field in model._fields.items():
+                        if not field_name.startswith("_") and field_name not in [
+                            "id",
+                            "create_date",
+                            "write_date",
+                            "create_uid",
+                            "write_uid",
+                        ]:
+                            fields_list.append(
+                                f"{field_name} ({field.string or field_name})"
+                            )
+                    record.available_fields = "\n".join(sorted(fields_list))
+                except:
+                    record.available_fields = "Invalid model selected"
+            else:
+                record.available_fields = (
+                    "No model selected or model not in records_management"
+                )
+
     is_deployed = fields.Boolean(compute="_compute_is_deployed", string="Is Deployed")
     full_customization_name = fields.Char(
         compute="_compute_full_customization_name", string="Full Customization Name"
     )
+    available_fields = fields.Text(
+        compute="_compute_available_fields",
+        string="Available Fields",
+        help="List of fields available for customization in the selected model",
+    )
 
     # ============================================================================
-    # DEFAULT METHODS
+    # HELPER METHODS
     # ============================================================================
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if not vals.get("name"):
-                vals["name"] = (
-                    self.env["ir.sequence"].next_by_code("field.label.customization")
-                    or "FLC/"
-                )
-        return super().create(vals_list)
+    @api.model
+    def _get_records_management_models(self):
+        """Get all models that belong to records_management module"""
+        records_models = []
+        for model_name in self.env.registry:
+            try:
+                model = self.env[model_name]
+                # Check if model belongs to records_management module
+                if hasattr(model, "_module") and model._module == "records_management":
+                    records_models.append(model_name)
+                elif model_name.startswith(
+                    ("records.", "naid.", "customer.", "portal.")
+                ):
+                    # Additional check for records management related models
+                    records_models.append(model_name)
+            except:
+                continue
+        return sorted(records_models)
 
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_deploy(self):
-        self.ensure_one()
-        if self.state != "active":
-            raise UserError(_("Only active customizations can be deployed."))
-
-        success = self._execute_deployment()
-        if success:
-            self.write(
-                {
-                    "deployment_status": "deployed",
-                    "deployment_date": fields.Datetime.now(),
-                }
-            )
-        else:
-            self.write({"deployment_status": "failed"})
-
-    def action_rollback(self):
-        self.ensure_one()
-        if not self.is_deployed:
-            raise UserError(_("Only deployed customizations can be rolled back."))
-
-        success = self._execute_rollback()
-        if success:
-            self.write(
-                {
-                    "deployment_status": "rolled_back",
-                    "rollback_date": fields.Datetime.now(),
-                }
-            )
-
-    def action_test(self):
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Test Label Customization",
-            "res_model": "field.label.test.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {"default_customization_id": self.id},
-        }
-
-    def action_preview(self):
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Preview Label Changes",
-            "res_model": "field.label.preview.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {"default_customization_id": self.id},
-        }
-
-    # ============================================================================
-    # DEPLOYMENT METHODS
-    # ============================================================================
-    def _execute_deployment(self):
-        """Execute label customization deployment"""
+    def _is_records_management_model(self, model_name):
+        """Check if a model belongs to records_management module"""
         try:
-            # Implementation for label deployment
-            return True
-        except Exception:
+            if model_name not in self.env.registry:
+                return False
+
+            model = self.env[model_name]
+            # Check if model belongs to records_management module
+            if hasattr(model, "_module") and model._module == "records_management":
+                return True
+
+            # Additional check for records management related models by naming convention
+            if model_name.startswith(
+                ("records.", "naid.", "customer.", "portal.", "field.label")
+            ):
+                return True
+
+            return False
+        except:
             return False
 
-    def _execute_rollback(self):
-        """Execute customization rollback"""
-        try:
-            # Implementation for rollback
-            return True
-        except Exception:
-            return False
+    @api.model
+    def get_model_field_options(self):
+        """Return available models and their fields for selection"""
+        result = {}
+        for model_name in self._get_records_management_models():
+            try:
+                model = self.env[model_name]
+                fields_info = {}
+                for field_name, field in model._fields.items():
+                    if not field_name.startswith("_") and field_name not in [
+                        "id",
+                        "create_date",
+                        "write_date",
+                        "create_uid",
+                        "write_uid",
+                    ]:
+                        fields_info[field_name] = {
+                            "string": field.string or field_name,
+                            "type": field.type,
+                            "help": field.help or "",
+                        }
+                result[model_name] = {
+                    "description": getattr(model, "_description", model_name),
+                    "fields": fields_info,
+                }
+            except:
+                continue
+        return result
 
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
+    @api.constrains("model_name")
+    def _check_model_in_records_management(self):
+        """Ensure the model belongs to records_management module"""
+        for record in self:
+            if record.model_name:
+                if not record._is_records_management_model(record.model_name):
+                    available_models = record._get_records_management_models()
+                    raise ValidationError(
+                        _(
+                            "Model '%s' is not part of the records_management module.\n\n"
+                            "Available models:\n%s"
+                        )
+                        % (
+                            record.model_name,
+                            "\n".join(
+                                available_models[:10] + ["..."]
+                                if len(available_models) > 10
+                                else available_models
+                            ),
+                        )
+                    )
+
     @api.constrains("model_name", "field_name")
     def _check_field_exists(self):
         for record in self:
             if record.model_name and record.field_name:
-                # Validate that the model and field exist
+                # First check if model is in records_management
+                if not record._is_records_management_model(record.model_name):
+                    raise ValidationError(
+                        _("Model '%s' is not part of the records_management module.")
+                        % record.model_name
+                    )
+
+                # Then validate that the field exists
                 try:
+                    if record.model_name not in self.env.registry:
+                        raise ValidationError(
+                            _("Model '%s' does not exist.") % record.model_name
+                        )
+
                     model = self.env[record.model_name]
                     if record.field_name not in model._fields:
+                        # Get available fields for helpful error message
+                        available_fields = [
+                            f
+                            for f in model._fields.keys()
+                            if not f.startswith("_")
+                            and f
+                            not in [
+                                "id",
+                                "create_date",
+                                "write_date",
+                                "create_uid",
+                                "write_uid",
+                            ]
+                        ]
                         raise ValidationError(
                             _(
-                                f"Field '{record.field_name}' does not exist in model '{record.model_name}'."
+                                "Field '%s' does not exist in model '%s'.\n\n"
+                                "Available fields:\n%s"
+                            )
+                            % (
+                                record.field_name,
+                                record.model_name,
+                                "\n".join(
+                                    sorted(available_fields)[:20] + ["..."]
+                                    if len(available_fields) > 20
+                                    else sorted(available_fields)
+                                ),
                             )
                         )
-                except KeyError:
+                except KeyError as exc:
                     raise ValidationError(
-                        _(f"Model '{record.model_name}' does not exist.")
-                    )
+                        _("Model '%s' does not exist.") % record.model_name
+                    ) from exc
 
     @api.constrains("custom_label")
     def _check_custom_label_length(self):
         for record in self:
             if record.custom_label and len(record.custom_label) > 100:
                 raise ValidationError(_("Custom label cannot exceed 100 characters."))
+
+    @api.onchange("model_name")
+    def _onchange_model_name(self):
+        """Clear field_name when model changes and show available fields"""
+        if self.model_name:
+            self.field_name = False
+            if not self._is_records_management_model(self.model_name):
+                return {
+                    "warning": {
+                        "title": _("Invalid Model"),
+                        "message": _(
+                            "The selected model is not part of the records_management module. Please select a valid records_management model."
+                        ),
+                    }
+                }
+
+    @api.onchange("field_name")
+    def _onchange_field_name(self):
+        """Auto-populate original_label when field is selected"""
+        if self.model_name and self.field_name:
+            try:
+                model = self.env[self.model_name]
+                if self.field_name in model._fields:
+                    field = model._fields[self.field_name]
+                    self.original_label = field.string or self.field_name
+                    if not self.custom_label:
+                        self.custom_label = self.original_label
+            except:
+                pass

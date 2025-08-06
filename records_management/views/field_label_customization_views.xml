@@ -100,6 +100,12 @@
                                     </group>
                                 </group>
                             </page>
+
+                            <page string="Available Fields" name="available_fields">
+                                <group>
+                                    <field name="available_fields" widget="text" readonly="1" placeholder="Select a model to see available fields"/>
+                                </group>
+                            </page>
                         </notebook>
                     </sheet>
                 </form>
