@@ -59,7 +59,7 @@
         <record id="demo_policy_standard" model="records.retention.policy">
             <field name="name">Demo Standard Business Records</field>
             <field name="code">DEMO-STD-7Y</field>
-            <field name="retention_period">7</field>
+            <field name="retention_years">7</field>
             <field name="description">Demo standard 7-year retention for business documents</field>
             <field name="active">True</field>
         </record>
@@ -67,7 +67,7 @@
         <record id="demo_policy_hr" model="records.retention.policy">
             <field name="name">Demo Human Resources Records</field>
             <field name="code">DEMO-HR-10Y</field>
-            <field name="retention_period">10</field>
+            <field name="retention_years">10</field>
             <field name="description">Demo extended retention for HR and employment records</field>
             <field name="active">True</field>
         </record>
