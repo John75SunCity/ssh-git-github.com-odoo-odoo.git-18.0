@@ -79,12 +79,8 @@ class AdvancedBilling(models.Model):
     )
 
     # Mail framework fields
-    message_ids = fields.One2many(
-        "mail.message", "res_id", string="Messages"
-    )
-    activity_ids = fields.One2many(
-        "mail.activity", "res_id", string="Activities"
-    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
     )
@@ -95,7 +91,7 @@ class AdvancedBilling(models.Model):
     total_amount = fields.Float(
         string="Total Amount", compute="_compute_total_amount", store=True
     )
-    
+
     @api.depends("line_ids.price_total")
     def _compute_total_amount(self):
         for record in self:
@@ -158,12 +154,8 @@ class AdvancedBillingLine(models.Model):
     # RELATIONSHIP FIELDS
     # ============================================================================
     # Mail framework fields
-    message_ids = fields.One2many(
-        "mail.message", "res_id", string="Messages"
-    )
-    activity_ids = fields.One2many(
-        "mail.activity", "res_id", string="Activities"
-    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
     )
