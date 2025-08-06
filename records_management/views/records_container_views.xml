@@ -9,14 +9,14 @@
         <field name="arch" type="xml">
             <kanban default_group_by="state" class="o_kanban_container_dashboard">
                 <field name="name"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="location_id"/>
                 <field name="state"/>
-                <field name="creation_date"/>
+                <field name="create_date"/>
                 <field name="destruction_date"/>
-                <field name="container_type"/>
-                <field name="capacity"/>
-                <field name="current_usage"/>
+                <field name="container_type_id"/>
+                <field name="document_count"/>
+                <field name="is_full"/>
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
@@ -27,7 +27,7 @@
                                         </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        👤                                        <field name="customer_id"/>
+                                        👤                                        <field name="partner_id"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
@@ -41,11 +41,11 @@
                                     <div class="col-8">
                                         <div>
                                             <i class="fa fa-cube" title="Container Type"/>
-                                            <field name="container_type"/>
+                                            <field name="container_type_id"/>
                                         </div>
                                         <div>
                                             <i class="fa fa-weight" title="Weight"/>
-                                            <field name="current_usage"/>
+                                            <field name="weight"/>
  lbs
                                         </div>
                                         <div>
@@ -54,7 +54,7 @@
                                         </div>
                                         <div>
                                             <i class="fa fa-calendar" title="Creation Date"/>
-                                            <field name="creation_date"/>
+                                            <field name="create_date"/>
                                         </div>
                                     </div>
                                     <div class="col-4">
@@ -101,17 +101,16 @@
                     <button name="action_bulk_convert_container_type" type="object" string="🔄 Bulk Convert Types" class="btn-primary"/>
                 </header>
                 <field name="name" string="📦 Container ID"/>
-                <field name="container_type_code" string="📊 Type"/>
-                <field name="container_type_display" string="📦 Container Type"/>
-                <field name="monthly_rate" string="💰 Rate/Mo" widget="monetary"/>
-                <field name="customer_id" string="👤 Customer"/>
+                <field name="container_type_id" string="📦 Container Type"/>
+                <field name="billing_rate" string="💰 Rate/Mo" widget="monetary"/>
+                <field name="partner_id" string="👤 Customer"/>
                 <field name="department_id" string="🏢 Department"/>
                 <field name="location_id" string="📍 Location"/>
                 <field name="state" string="🎯 Status" widget="badge"/>
-                <field name="creation_date" string="📅 Created"/>
+                <field name="create_date" string="📅 Created"/>
                 <field name="destruction_date" string="💥 Destruction" optional="hide"/>
                 <field name="barcode" string="🏷️ Barcode"/>
-                <field name="capacity" string="💾 Capacity" sum="Total Documents"/>
+                <field name="document_count" string="💾 Documents" sum="Total Documents"/>
                 <button name="action_view_documents" type="object" string="View Docs" icon="fa-file-text-o" class="btn-link"/>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fa-barcode" class="btn-link"/>
             </list>
@@ -135,24 +134,23 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o">
-                            <field string="Capacity" name="capacity" widget="statinfo"/>
+                            <field string="Documents" name="document_count" widget="statinfo"/>
                         </button>
                     </div>
 
                     <group>
                         <group string="📦 Container Information">
                             <field name="name" placeholder="e.g., CONT-2024-001"/>
-                            <field name="container_type_code" required="1"/>
-                            <field name="container_type_display" readonly="1"/>
-                            <field name="monthly_rate" readonly="1" widget="monetary"/>
-                            <field name="customer_id"/>
+                            <field name="container_type_id" required="1"/>
+                            <field name="billing_rate" readonly="1" widget="monetary"/>
+                            <field name="partner_id"/>
                             <field name="department_id"/>
                             <field name="barcode" placeholder="Auto-generated on save"/>
                         </group>
                         <group string="📍 Location &amp; Status">
                             <field name="location_id"/>
                             <field name="state"/>
-                            <field name="creation_date"/>
+                            <field name="create_date"/>
                             <field name="destruction_date" invisible="not destruction_date"/>
                         </group>
                     </group>
