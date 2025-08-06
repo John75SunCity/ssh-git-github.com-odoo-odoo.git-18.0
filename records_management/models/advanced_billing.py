@@ -56,9 +56,13 @@ class AdvancedBilling(models.Model):
     )
 
     # Mail thread fields
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_ids = fields.One2many(
+    activity_ids = fields.One2many(
+        "mail.activity", "res_id", string="Activities", domain=[('res_model', '=', _name)]
+    )
     message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers", domain=[('res_model', '=', _name)]
+    )
         "mail.followers", "res_id", string="Followers"
     )
 
@@ -121,7 +125,7 @@ class AdvancedBillingLine(models.Model):
             if line.product_id:
                 line.name = f"{line.product_id.name} x {line.quantity}"
             else:
-                line.name = f"Billing Line {line.id or 'New'}"
+                line.name = f"Billing Line {line.id or 'Unsaved'}"
 
     @api.depends("quantity", "price_unit")
     def _compute_price_total(self):
@@ -167,10 +171,12 @@ class RecordsAdvancedBillingPeriod(models.Model):
             if period.start_date and period.end_date:
                 period.name = f"Billing Period {period.start_date} - {period.end_date}"
             else:
-                period.name = f"Billing Period {period.id or 'New'}"
+                period.name = f"Billing Period {period.id or 'Unsaved'}"
                 # ============================================================================
                 # AUTO-GENERATED ACTION METHODS (from comprehensive validation)
                 # ============================================================================
+    # ============================================================================
+
     def action_generate_storage_lines(self):
         """Generate Storage Lines - Generate report"""
         self.ensure_one()
