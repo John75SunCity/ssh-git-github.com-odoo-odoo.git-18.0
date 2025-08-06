@@ -132,7 +132,7 @@
         <!-- Demo Shredding Service Templates -->
         <record id="demo_shredding_service_template" model="shredding.service">
             <field name="name">Standard Document Shredding</field>
-            <field name="customer_id" ref="demo_customer_abc_corp"/>
+            <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="service_type">onsite</field>
             <field name="state">draft</field>
             <field name="description">Standard on-site document destruction service with NAID AAA compliance</field>
@@ -156,7 +156,7 @@
         <!-- Demo Portal Request Templates -->
         <record id="demo_portal_request_destruction" model="portal.request">
             <field name="name">Document Destruction Request Template</field>
-            <field name="customer_id" ref="demo_customer_abc_corp"/>
+            <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="request_type">destruction</field>
             <field name="state">draft</field>
             <field name="description">Template for customer document destruction requests</field>
@@ -165,7 +165,7 @@
 
         <record id="demo_portal_request_retrieval" model="portal.request">
             <field name="name">Document Retrieval Request Template</field>
-            <field name="customer_id" ref="demo_customer_abc_corp"/>
+            <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="request_type">retrieval</field>
             <field name="state">draft</field>
             <field name="description">Template for customer document retrieval requests</field>
