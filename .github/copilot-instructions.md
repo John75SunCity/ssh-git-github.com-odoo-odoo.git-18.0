@@ -61,6 +61,175 @@ git push origin main  # Triggers Odoo.sh rebuild
 
 This is a **comprehensive enterprise-grade Odoo 18.0 Records Management module** with NAID AAA compliance features. The codebase implements systematic patterns for field management, strict inheritance hierarchies, and comprehensive workflow tracking across 50+ models and 1,400+ fields.
 
+## 📋 **COMPLETE SYSTEM ARCHITECTURE REFERENCE**
+
+### **Table of Contents:**
+
+1. [System Overview](#system-overview)
+2. [Architecture Diagram](#architecture-diagram)
+3. [Model Relationships](#model-relationships)
+4. [Core Business Modules](#core-business-modules)
+5. [Model Documentation](#model-documentation)
+6. [Business Process Workflows](#business-process-workflows)
+7. [Integration Points](#integration-points)
+8. [Security and Compliance](#security-and-compliance)
+9. [Customer Portal Features](#customer-portal-features)
+10. [Training Guide](#training-guide)
+
+### **🎯 System Overview**
+
+The Records Management System is a comprehensive enterprise-grade solution built on Odoo 18.0, designed to manage the complete lifecycle of document storage, retrieval, and secure destruction with full NAID AAA compliance.
+
+#### **Core Business Areas:**
+
+- **Document Management**: Complete document lifecycle from intake to destruction
+- **NAID Compliance**: Full NAID AAA compliance framework with audit trails
+- **Customer Portal**: Self-service portal for customers with real-time tracking
+- **Billing & Finance**: Advanced billing configurations and automated invoicing
+- **Field Service**: Integration with field service management for pickups and deliveries
+- **Security & Access**: Multi-level security with role-based access controls
+
+#### **📋 Documented Modules Summary (14 of 274+)**
+
+1. **Records Document Type Module** - Document classification and type management
+2. **Records Document Management Module** - Complete document lifecycle management
+3. **Records Container Movement Tracking Module** - Physical container movement audit trails
+4. **Customer Inventory Report Module** - Real-time inventory reporting and analytics
+5. **Permanent Flag Wizard Module** - Legal hold and permanent retention workflows
+6. **Advanced Billing Period Management Module** - Sophisticated billing and invoicing
+7. **Records Container Management Module** - Physical container lifecycle management
+8. **Pickup Request Management Module** - Customer service request workflows
+9. **Shredding Equipment Management Module** - NAID-compliant destruction equipment
+10. **Records Billing Configuration Module** - Advanced billing automation and configuration
+11. **Customer Feedback Management Module** - AI-powered feedback and satisfaction management
+12. **Bin Access Key Management Module** - Secure physical access key lifecycle management
+13. **Barcode Product Management Module** - Intelligent barcode generation and validation system
+14. **NAID AAA Compliance Framework Module** - Complete NAID certification system
+
+📊 **Documentation Progress**: 14 of 274+ model files documented (~5.1% complete)
+
+### **🏗️ Architecture Diagram**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        RECORDS MANAGEMENT SYSTEM                           │
+│                               (Odoo 18.0)                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                       │
+                ┌──────────────────────┼──────────────────────┐
+                │                      │                      │
+    ┌───────────▼──────────┐  ┌───────▼────────┐  ┌─────────▼──────────┐
+    │   CORE RECORDS       │  │ NAID COMPLIANCE │  │  CUSTOMER PORTAL   │
+    │   MANAGEMENT         │  │   & AUDITING    │  │   & WORKFLOWS      │
+    └──────────────────────┘  └────────────────┘  └────────────────────┘
+              │                        │                       │
+              │                        │                       │
+┌─────────────▼─────────────┐ ┌────────▼──────────┐ ┌─────────▼──────────┐
+│     DOCUMENT LAYER        │ │  COMPLIANCE LAYER  │ │   PORTAL LAYER     │
+├───────────────────────────┤ ├───────────────────┤ ├────────────────────┤
+│ • records.container       │ │ • naid.compliance  │ │ • portal.request   │
+│ • records.document        │ │ • naid.certificate │ │ • customer.feedback│
+│ • records.location        │ │ • naid.audit.log   │ │ • portal.feedback  │
+│ • records.tag            │ │ • chain.of.custody │ │                    │
+└───────────────────────────┘ └───────────────────┘ └────────────────────┘
+              │                        │                       │
+┌─────────────▼─────────────┐ ┌────────▼──────────┐ ┌─────────▼──────────┐
+│    OPERATIONS LAYER       │ │  DESTRUCTION LAYER │ │   BILLING LAYER    │
+├───────────────────────────┤ ├───────────────────┤ ├────────────────────┤
+│ • pickup.request          │ │ • shredding.service│ │ • records.billing  │
+│ • pickup.route            │ │ • destruction.item │ │ • advanced.billing │
+│ • records.vehicle         │ │ • records.destruction│ │ • base.rates     │
+│ • fsm.route.management    │ │                   │ │ • customer.rates   │
+└───────────────────────────┘ └───────────────────┘ └────────────────────┘
+              │                        │                       │
+┌─────────────▼─────────────┐ ┌────────▼──────────┐ ┌─────────▼──────────┐
+│    SECURITY LAYER         │ │   REPORTING LAYER  │ │   INTEGRATION      │
+├───────────────────────────┤ ├───────────────────┤ ├────────────────────┤
+│ • bin.key                 │ │ • customer.inventory│ • res.partner      │
+│ • bin.key.management      │ │ • location.report  │ │ • account.move     │
+│ • records.department      │ │ • revenue.forecaster│ │ • stock.picking    │
+│ • user access controls    │ │                   │ │ • hr.employee      │
+└───────────────────────────┘ └───────────────────┘ └────────────────────┘
+```
+
+### **🔗 Model Relationships**
+
+#### **Primary Data Flow:**
+
+```
+Customer (res.partner)
+    ├──→ Portal Requests (portal.request)
+    │     ├──→ Pickup Requests (pickup.request)
+    │     │     ├──→ Pickup Items (pickup.request.item)
+    │     │     └──→ Pickup Routes (pickup.route)
+    │     └──→ Service Requests
+    │           ├──→ Shredding Services (shredding.service)
+    │           └──→ Work Orders (document.retrieval.work.order)
+    │
+    ├──→ Document Storage
+    │     ├──→ Containers (records.container)
+    │     │     ├──→ Documents (records.document)
+    │     │     │     ├──→ Document Types (records.document.type)
+    │     │     │     └──→ Retention Policies (records.retention.policy)
+    │     │     ├──→ Locations (records.location)
+    │     │     └──→ Container Movements (records.container.movement)
+    │     └──→ Tags & Classification (records.tag)
+    │
+    ├──→ NAID Compliance
+    │     ├──→ Compliance Records (naid.compliance)
+    │     │     ├──→ Certificates (naid.certificate)
+    │     │     ├──→ Audit Logs (naid.audit.log)
+    │     │     └──→ Custody Events (naid.custody.event)
+    │     └──→ Destruction Records (records.destruction)
+    │           └──→ Destruction Items (destruction.item)
+    │
+    └──→ Billing & Finance
+          ├──→ Billing Configuration (records.billing.config)
+          ├──→ Advanced Billing (advanced.billing)
+          ├──→ Base Rates (base.rates)
+          └──→ Customer Rates (customer.negotiated.rates)
+```
+
+#### **Security & Access Control Flow:**
+
+```
+User Authentication
+    ├──→ Security Groups
+    │     ├──→ Records Manager
+    │     ├──→ Compliance Officer
+    │     ├──→ Field Technician
+    │     └──→ Customer Portal User
+    │
+    ├──→ Department Access (records.department)
+    │     ├──→ Data Filtering by Department
+    │     └──→ Multi-tenant Support
+    │
+    └──→ Physical Security
+          ├──→ Bin Keys (bin.key)
+          ├──→ Key Management (bin.key.management)
+          └──→ Access History (bin.key.history)
+```
+
+#### **Reporting & Analytics Flow:**
+
+```
+Operational Data
+    ├──→ Customer Reports
+    │     ├──→ Inventory Reports (customer.inventory.report)
+    │     ├──→ Location Reports (location.report.wizard)
+    │     └──→ Feedback Analytics (customer.feedback)
+    │
+    ├──→ Financial Reports
+    │     ├──→ Revenue Forecasting (revenue.forecaster)
+    │     ├──→ Billing Analytics
+    │     └──→ Cost Analysis
+    │
+    └──→ Compliance Reports
+          ├──→ NAID Audit Reports
+          ├──→ Destruction Certificates
+          └──→ Chain of Custody Documentation
+```
+
 ### **✅ LATEST PROGRESS UPDATE (August 5, 2025)**
 
 **🎯 CRITICAL RUNTIME ERRORS IDENTIFIED + FIXES APPLIED + OPTIMIZATION ACTIVE:**
