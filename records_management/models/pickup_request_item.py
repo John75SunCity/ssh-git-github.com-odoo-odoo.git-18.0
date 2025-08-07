@@ -61,7 +61,6 @@ License: LGPL-3
 
 from odoo import models, fields, api, _
 
-
 class PickupRequestItem(models.Model):
     """
     Pickup Request Item - Individual items within pickup requests

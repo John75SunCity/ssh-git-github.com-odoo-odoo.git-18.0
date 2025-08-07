@@ -5,7 +5,6 @@ Department Billing Contact - FIELD ENHANCEMENT COMPLETE ✅
 
 from odoo import models, fields, api, _
 
-
 class RecordsDepartmentBillingContact(models.Model):
     """
     Department Billing Contact - FIELD ENHANCEMENT COMPLETE ✅

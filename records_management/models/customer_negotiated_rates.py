@@ -3,7 +3,6 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class CustomerNegotiatedRates(models.Model):
     _name = "customer.negotiated.rates"
     _description = "Customer Negotiated Rates"

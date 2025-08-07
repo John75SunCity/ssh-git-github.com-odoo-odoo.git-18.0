@@ -5,7 +5,6 @@ Stock Lot Attribute
 
 from odoo import models, fields, api, _
 
-
 class StockLot(models.Model):
     """
     Stock Lot Extensions for Records Management
@@ -174,7 +173,6 @@ class StockLot(models.Model):
                 "group_by": "location_id",
             },
         }
-
 
 class StockLotAttribute(models.Model):
     """

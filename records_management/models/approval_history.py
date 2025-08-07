@@ -6,7 +6,6 @@ Approval History
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class ApprovalHistory(models.Model):
     """
     Approval History Model

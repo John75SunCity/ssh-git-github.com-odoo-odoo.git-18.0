@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class ShreddingTeam(models.Model):
     _name = "shredding.team"
     _description = "Shredding Team"
@@ -62,28 +61,5 @@ class ShreddingTeam(models.Model):
         string="Service Count", compute="_compute_service_count", store=True
     )
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
     )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTE METHODS
-    # ============================================================================
-    @api.depends("service_ids")
-    def _compute_service_count(self):
-        for record in self:
-            record.service_count = len(record.service_ids)
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_activate(self):
-        """Activate team"""
-        self.write({"state": "active"})
-
-    def action_deactivate(self):
-        """Deactivate team"""
-        self.write({"state": "inactive"})

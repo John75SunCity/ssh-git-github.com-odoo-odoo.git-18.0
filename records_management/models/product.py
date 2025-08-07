@@ -5,7 +5,6 @@ Temporary Model
 
 from odoo import models, fields, api, _
 
-
 class ProductTemplate(models.Model):
     """
     Temporary Model

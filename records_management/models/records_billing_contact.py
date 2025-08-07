@@ -3,7 +3,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-
 class RecordsBillingContact(models.Model):
     _name = "records.billing.contact"
     _description = "Records Billing Contact"
@@ -102,24 +101,8 @@ class RecordsBillingContact(models.Model):
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # VALIDATION METHODS
-    # ============================================================================
-    @api.constrains("email")
-    def _check_email_format(self):
-        """Validate email format"""
-        for record in self:
-            if record.email and "@" not in record.email:
-                raise ValidationError(_("Please provide a valid email address."))
-
-    @api.constrains("primary_contact", "billing_profile_id")
+    # ============================================================================        "mail.followers", "res_id", string="Followers"
+    )    @api.constrains("primary_contact", "billing_profile_id")
     def _check_primary_contact_unique(self):
         """Ensure only one primary contact per billing profile"""
         for record in self:

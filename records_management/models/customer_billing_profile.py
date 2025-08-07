@@ -9,7 +9,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-
 class CustomerBillingProfile(models.Model):
     """
     Customer Billing Profile - Manages billing configurations for customers
@@ -495,22 +494,8 @@ class CustomerBillingProfile(models.Model):
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # AUTO-GENERATED ACTION METHODS (Batch 2)
-    # ============================================================================
-    def action_activate(self):
-        """Activate - Action method"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Activate"),
+    # ============================================================================        "mail.followers", "res_id", string="Followers"
+    )            "name": _("Activate"),
             "res_model": "records.customer.billing.profile",
             "view_mode": "form",
             "target": "new",

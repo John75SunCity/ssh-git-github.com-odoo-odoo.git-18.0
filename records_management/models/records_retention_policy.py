@@ -4,7 +4,6 @@ from odoo.exceptions import UserError, ValidationError
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
-
 class RecordsRetentionPolicy(models.Model):
     _name = "records.retention.policy"
     _description = "Records Retention Policy"
@@ -173,17 +172,8 @@ class RecordsRetentionPolicy(models.Model):
         "records.document", "retention_policy_id", string="Affected Documents"
     )
 
-    # Mail framework fields
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("last_review_date", "review_frequency")
+    # Mail framework fields        "mail.followers", "res_id", string="Followers"
+    )    @api.depends("last_review_date", "review_frequency")
     def _compute_next_review_date(self):
         for record in self:
             if record.last_review_date and record.review_frequency:
@@ -329,7 +319,6 @@ class RecordsRetentionPolicy(models.Model):
                 )
                 if existing:
                     raise ValidationError(_("Policy code must be unique."))
-
 
 class RecordsRetentionRule(models.Model):
     """Individual retention rules within a policy"""

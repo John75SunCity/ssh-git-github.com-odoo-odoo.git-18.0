@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
-
 class Photo(models.Model):
     _name = "photo"
     _description = "Photo Attachment"

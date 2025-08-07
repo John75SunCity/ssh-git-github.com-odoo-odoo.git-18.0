@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
-
 class NaidDestructionRecord(models.Model):
     _name = "naid.destruction.record"
     _description = "NAID Destruction Record"

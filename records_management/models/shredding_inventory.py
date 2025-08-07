@@ -5,7 +5,6 @@ Shredding Inventory Item
 
 from odoo import models, fields, api, _
 
-
 class ShreddingInventoryBatch(models.Model):
     """
     Shredding Inventory Batch - For batch processing of multiple items
@@ -42,7 +41,6 @@ class ShreddingInventoryBatch(models.Model):
     def action_done(self):
         """Mark as done"""
         self.write({"state": "done"})
-
 
 class ShreddingPicklistItem(models.Model):
     """

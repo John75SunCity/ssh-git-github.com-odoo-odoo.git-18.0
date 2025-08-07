@@ -5,7 +5,6 @@ Shredding Work Order
 
 from odoo import models, fields, api, _
 
-
 class WorkOrderShredding(models.Model):
     """
     Shredding Work Order

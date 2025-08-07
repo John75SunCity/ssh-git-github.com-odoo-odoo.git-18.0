@@ -71,7 +71,6 @@ License: LGPL-3
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class NaidCertificate(models.Model):
     _name = "naid.certificate"
     _description = "Naid Certificate"

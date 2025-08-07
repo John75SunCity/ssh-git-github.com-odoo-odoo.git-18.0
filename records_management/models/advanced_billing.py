@@ -13,7 +13,6 @@ License: LGPL-3
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class AdvancedBilling(models.Model):
     _name = "advanced.billing"
     _description = "Advanced Billing"
@@ -79,10 +78,7 @@ class AdvancedBilling(models.Model):
     )
 
     # Mail framework fields
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")        "mail.followers", "res_id", string="Followers"
     )
 
     # ============================================================================
@@ -115,7 +111,6 @@ class AdvancedBilling(models.Model):
         """Cancel billing"""
         self.ensure_one()
         self.write({"state": "cancelled"})
-
 
 class AdvancedBillingLine(models.Model):
     _name = "advanced.billing.line"
@@ -154,10 +149,7 @@ class AdvancedBillingLine(models.Model):
     # RELATIONSHIP FIELDS
     # ============================================================================
     # Mail framework fields
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")        "mail.followers", "res_id", string="Followers"
     )
 
     # ============================================================================
@@ -175,7 +167,6 @@ class AdvancedBillingLine(models.Model):
     def _compute_price_total(self):
         for line in self:
             line.price_total = line.quantity * line.price_unit
-
 
 class RecordsAdvancedBillingPeriod(models.Model):
     _name = "records.advanced.billing.period"
@@ -220,16 +211,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
         "advanced.billing", "billing_period_id", string="Billings"
     )
 
-    # Mail framework fields
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-        domain=lambda self: [("model", "=", self._name)],
-    )
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    # Mail framework fields    )        "mail.followers", "res_id", string="Followers"
     )
 
     # ============================================================================

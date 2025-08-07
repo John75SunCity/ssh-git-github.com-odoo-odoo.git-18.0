@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class SignedDocument(models.Model):
     _name = "signed.document"
     _description = "Signed Document"

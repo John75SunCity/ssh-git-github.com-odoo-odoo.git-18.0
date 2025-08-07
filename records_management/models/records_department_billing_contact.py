@@ -6,7 +6,6 @@ Records Department Billing Contact Management
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class RecordsDepartmentBillingContact(models.Model):
     """
     Department Billing Contact - Manages billing contacts and approval workflows
@@ -307,17 +306,8 @@ class RecordsDepartmentBillingContact(models.Model):
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================
-    approval_authority = fields.Char(string='Approval Authority', tracking=True)
+    # ============================================================================        "mail.followers", "res_id", string="Followers"
+    )    approval_authority = fields.Char(string='Approval Authority', tracking=True)
     budget_utilization = fields.Float(string='Budget Utilization (%)', tracking=True, help="Percentage of budget utilized")
     email_notifications = fields.Char(string='Email Notifications', tracking=True)
     monthly_budget = fields.Monetary(string='Monthly Budget', currency_field="currency_id", tracking=True, help="Monthly budget amount")

@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class RecordsLocation(models.Model):
     _name = "records.location"
     _description = "Records Storage Location"
@@ -133,25 +132,7 @@ class RecordsLocation(models.Model):
         "records.location", "parent_location_id", string="Child Locations"
     )
 
-    # Mail framework fields
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        domain=[("model", "=", "records.location")],
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        string="Followers",
-        domain=lambda self: [("res_model", "=", "records.location")],
-    )
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-        domain=lambda self: [("model", "=", "records.location")],
-    )
+    # Mail framework fields    )    )    )
 
     # ============================================================================
     # COMPUTED FIELDS

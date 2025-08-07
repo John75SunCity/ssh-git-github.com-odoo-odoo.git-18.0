@@ -70,7 +70,6 @@ License: LGPL-3
 
 from odoo import models, fields, api, _
 
-
 class RecordsPolicyVersion(models.Model):
     """
     Records Retention Policy Version History - Complete version control for retention policies

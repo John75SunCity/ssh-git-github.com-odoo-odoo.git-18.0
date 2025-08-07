@@ -3,7 +3,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-
 class Billing(models.Model):
     _name = "records.billing"
     _description = "General Billing Model"

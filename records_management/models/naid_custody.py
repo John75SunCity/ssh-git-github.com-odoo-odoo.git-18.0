@@ -5,7 +5,6 @@ NAID Chain of Custody
 
 from odoo import models, fields, api, _
 
-
 class NAIDChainOfCustody(models.Model):
     """
     NAID Chain of Custody

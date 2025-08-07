@@ -8,7 +8,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-
 class RecordsApprovalStep(models.Model):
     """
     Records Approval Step Management

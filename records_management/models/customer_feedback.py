@@ -74,7 +74,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-
 class CustomerFeedback(models.Model):
     """
     Customer Feedback Management with AI-powered sentiment analysis

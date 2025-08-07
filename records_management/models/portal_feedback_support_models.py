@@ -7,7 +7,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-
 class PortalFeedbackResolution(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     """Resolution tracking for portal feedback"""
@@ -25,7 +24,6 @@ class PortalFeedbackResolution(models.Model):
         "res.users", default=lambda self: self.env.user, tracking=True
     )
     active = fields.Boolean(string="Active", default=True)
-
 
     feedback_id = fields.Many2one(
         "portal.feedback", string="Feedback", required=True, ondelete="cascade"
@@ -71,7 +69,6 @@ class PortalFeedbackResolution(models.Model):
         string="Currency",
         default=lambda self: self.env.company.currency_id,
     )
-
 
 class PortalFeedbackEscalation(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -127,7 +124,6 @@ class PortalFeedbackEscalation(models.Model):
         default="pending",
     )
 
-
 class PortalFeedbackAction(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     """Action items generated from portal feedback"""
@@ -175,7 +171,6 @@ class PortalFeedbackAction(models.Model):
     estimated_hours = fields.Float(string="Estimated Hours", digits=(8, 2))
     actual_hours = fields.Float(string="Actual Hours", digits=(8, 2))
 
-
 class PortalFeedbackCommunication(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     """Communication log for portal feedback"""
@@ -217,7 +212,6 @@ class PortalFeedbackCommunication(models.Model):
     channel = fields.Char(string="Communication Channel")
     response_required = fields.Boolean(string="Response Required", default=False)
     response_deadline = fields.Datetime(string="Response Deadline")
-
 
 class PortalFeedbackAnalytics(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']

@@ -15,7 +15,6 @@ from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-
 class RecordsContainer(models.Model):
     """
     Records Container Management

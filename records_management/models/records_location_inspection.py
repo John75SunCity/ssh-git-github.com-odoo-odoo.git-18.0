@@ -5,7 +5,6 @@ Records Location Inspection
 
 from odoo import models, fields, api, _
 
-
 class RecordsLocationInspection(models.Model):
     """
     Records Location Inspection

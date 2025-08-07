@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class PaperBaleRecycling(models.Model):
     _name = "paper.bale.recycling"
     _description = "Paper Bale Recycling"
@@ -145,15 +144,7 @@ class PaperBaleRecycling(models.Model):
         "shredding.service", "recycling_bale_id", string="Related Shredding Services"
     )
 
-    # Mail framework fields
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("bale_weight", "market_price_per_ton")
+    # Mail framework fields    @api.depends("bale_weight", "market_price_per_ton")
     def _compute_total_revenue(self):
         for record in self:
             if record.bale_weight and record.market_price_per_ton:

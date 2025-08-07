@@ -123,7 +123,6 @@ except ImportError:
     class ValidationError(Exception):
         pass
 
-
 class PortalRequest(models.Model):
     _name = "portal.request"
     _description = "Portal Customer Request"

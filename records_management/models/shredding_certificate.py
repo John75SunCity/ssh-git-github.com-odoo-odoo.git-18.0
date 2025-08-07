@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class ShreddingCertificate(models.Model):
     _name = "shredding.certificate"
     _description = "Shredding Certificate"
@@ -87,32 +86,5 @@ class ShreddingCertificate(models.Model):
         string="Service Count", compute="_compute_service_count", store=True
     )
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
     )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTE METHODS
-    # ============================================================================
-    @api.depends("service_ids")
-    def _compute_service_count(self):
-        for record in self:
-            record.service_count = len(record.service_ids)
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_issue_certificate(self):
-        """Issue the certificate"""
-        self.write({"state": "issued"})
-
-    def action_mark_delivered(self):
-        """Mark certificate as delivered"""
-        self.write({"state": "delivered"})
-
-    def action_archive_certificate(self):
-        """Archive the certificate"""
-        self.write({"state": "archived"})

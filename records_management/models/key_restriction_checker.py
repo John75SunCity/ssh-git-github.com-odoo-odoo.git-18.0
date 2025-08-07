@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class KeyRestrictionChecker(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _name = "key.restriction.checker"
@@ -46,13 +45,8 @@ class KeyRestrictionChecker(models.Model):
         string="Created Date", default=fields.Date.today, tracking=True
     )
     updated_date = fields.Date(string="Updated Date", tracking=True)
-    # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
+    )    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
     bin_number = fields.Char(string="Bin Number")
     access_level = fields.Selection(
         [("full", "Full Access"), ("limited", "Limited"), ("restricted", "Restricted")],

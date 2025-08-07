@@ -5,7 +5,6 @@ Shredded Paper Bale
 
 from odoo import models, fields, api, _
 
-
 class Bale(models.Model):
     """
     Shredded Paper Bale

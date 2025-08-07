@@ -5,7 +5,6 @@ Records Audit Log
 
 from odoo import models, fields, api, _
 
-
 class RecordsAuditLog(models.Model):
     """
     Records Audit Log

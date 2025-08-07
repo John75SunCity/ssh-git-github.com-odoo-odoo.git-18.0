@@ -70,7 +70,6 @@ License: LGPL-3
 
 from odoo import models, fields, api, _
 
-
 class PickupRoute(models.Model):
     _name = "pickup.route"
     _description = "Pickup Route"

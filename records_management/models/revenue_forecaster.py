@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
-
 class RevenueForecaster(models.Model):
     _name = "revenue.forecaster"
     _description = "Revenue Forecaster"
@@ -182,13 +181,8 @@ class RevenueForecaster(models.Model):
         "revenue.forecast.line", "forecast_id", string="Forecast Lines"
     )
 
-    # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    sequence = fields.Integer(string="Sequence", default=10)
+    # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
+    )    sequence = fields.Integer(string="Sequence", default=10)
     notes = fields.Text(string="Notes")
     created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
     updated_date = fields.Datetime(string="Updated Date")
@@ -266,7 +260,6 @@ class RevenueForecaster(models.Model):
 
     def action_reset_to_draft(self):
         self.write({"state": "draft"})
-
 
 class RevenueForecastLine(models.Model):
     """Revenue Forecast Line for detailed customer impact analysis"""

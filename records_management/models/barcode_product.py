@@ -48,7 +48,6 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 import re
 
-
 class BarcodeProduct(models.Model):
     _name = "barcode.product"
     _description = "Barcode Product Management"
@@ -239,23 +238,9 @@ class BarcodeProduct(models.Model):
         "barcode.product.line", "product_id", string="Generated Barcodes"
     )
 
-    # Mail Framework Fields (SECURE)
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        domain="[('res_model', '=', _name)]",
-        auto_join=True,
+    # Mail Framework Fields (SECURE)        auto_join=True,
         groups="base.group_user",
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        string="Followers",
-    )
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
+    )        "res_id",
         string="Messages",
         domain="[('model', '=', _name)]",
         groups="base.group_user",
@@ -495,7 +480,6 @@ class BarcodeProduct(models.Model):
                 _("Cannot delete active barcode products. Please archive them first.")
             )
         return super().unlink()
-
 
 class BarcodeProductLine(models.Model):
     _name = "barcode.product.line"

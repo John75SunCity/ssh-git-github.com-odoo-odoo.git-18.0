@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class RecordsTag(models.Model):
     _name = "records.tag"
     _description = "Records Tag"
@@ -63,9 +62,6 @@ class RecordsTag(models.Model):
     priority = fields.Selection([('low', 'Low'), ('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
     auto_assign = fields.Boolean('Auto Assign', default=False)
     icon = fields.Char('Icon')
-
-
-
 
     @api.depends("name")
     def _compute_display_name(self):

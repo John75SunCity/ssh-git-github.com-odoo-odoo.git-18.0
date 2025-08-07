@@ -56,7 +56,6 @@ from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-
 class RecordsDocument(models.Model):
     _name = "records.document"
     _description = "Records Document Management"
@@ -285,25 +284,8 @@ class RecordsDocument(models.Model):
         help="Applied retention policy for this document",
     )
 
-    # Mail Framework Fields (SECURE)
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        auto_join=True,
-        groups="base.group_user",
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers", groups="base.group_user"
-    )
-    message_ids = fields.One2many(
-        "mail.message", "res_id", string="Messages", groups="base.group_user"
-    )
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("document_date", "retention_period")
+    # Mail Framework Fields (SECURE)        "mail.followers", "res_id", string="Followers", groups="base.group_user"
+    )    @api.depends("document_date", "retention_period")
     def _compute_retention_end_date(self):
         """Compute when document retention period ends"""
         for record in self:

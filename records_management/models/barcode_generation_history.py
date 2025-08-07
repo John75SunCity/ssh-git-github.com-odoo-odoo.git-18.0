@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class BarcodeGenerationHistory(models.Model):
     _name = "barcode.generation.history"
     _description = "Barcode Generation History"
@@ -86,19 +85,8 @@ class BarcodeGenerationHistory(models.Model):
     description = fields.Text(string="Description")
     notes = fields.Text(string="Notes")
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_generate(self):
-        """Mark as generated"""
-        self.write({"state": "generated", "generation_date": fields.Datetime.now()})
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
+    )        self.write({"state": "generated", "generation_date": fields.Datetime.now()})
 
     def action_print(self):
         """Mark as printed"""

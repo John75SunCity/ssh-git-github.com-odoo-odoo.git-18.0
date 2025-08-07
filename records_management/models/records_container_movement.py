@@ -62,7 +62,6 @@ License: LGPL-3
 
 from odoo import models, fields, api
 
-
 class RecordsContainerMovement(models.Model):
     _name = "records.container.movement"
     _description = "Records Container Movement"

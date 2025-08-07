@@ -7,7 +7,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-
 class DocumentRetrievalItem(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     """Individual items in a document retrieval work order"""
@@ -92,7 +91,6 @@ class DocumentRetrievalItem(models.Model):
     completeness_verified = fields.Boolean(
         string="Completeness Verified", default=False
     )
-
 
 class DocumentRetrievalTeam(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
@@ -236,7 +234,6 @@ class DocumentRetrievalTeam(models.Model):
             else:
                 team.current_workload = 0
 
-
 class DocumentRetrievalPricing(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     """Pricing rules for document retrieval services"""
@@ -328,7 +325,6 @@ class DocumentRetrievalPricing(models.Model):
         default=lambda self: self.env.company.currency_id,
     )
 
-
 class DocumentRetrievalEquipment(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     """Equipment used for document retrieval operations"""
@@ -384,7 +380,6 @@ class DocumentRetrievalEquipment(models.Model):
     current_work_order_id = fields.Many2one(
         "document.retrieval.work.order", string="Current Work Order"
     )
-
 
 class DocumentRetrievalMetrics(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]

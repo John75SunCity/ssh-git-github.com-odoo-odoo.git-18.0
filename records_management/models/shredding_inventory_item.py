@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class ShreddingInventoryItem(models.Model):
     _name = "shredding.inventory.item"
     _description = "Shredding Inventory Item"
@@ -92,13 +91,8 @@ class ShreddingInventoryItem(models.Model):
         string="Created Date", default=fields.Date.today, tracking=True
     )
     updated_date = fields.Date(string="Updated Date", tracking=True)
-    # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
+    )    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
     document_count = fields.Integer(string="Document Count", default=0)
     total_amount = fields.Monetary(string="Total Amount", currency_field="currency_id")
     # Shredding Inventory Item Fields

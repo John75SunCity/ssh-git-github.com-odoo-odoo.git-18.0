@@ -5,7 +5,6 @@ NAID Performance History
 
 from odoo import models, fields, api, _
 
-
 class NAIDPerformanceHistory(models.Model):
     """
     NAID Performance History

@@ -5,7 +5,6 @@ Billing Generation Service
 
 from odoo import models, fields, api, _
 
-
 class RecordsBillingService(models.Model):
     """
     Billing Generation Service

@@ -5,7 +5,6 @@ Records Deletion Request
 
 from odoo import models, fields, api, _
 
-
 class RecordsDeletionRequest(models.Model):
     """
     Records Deletion Request

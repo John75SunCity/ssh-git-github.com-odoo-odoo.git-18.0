@@ -61,7 +61,6 @@ _logger = logging.getLogger(__name__)
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-
 class RecordsPermanentFlagWizard(models.TransientModel):
     _name = "records.permanent.flag.wizard"
     _description = "Permanent Flag Application Wizard"
@@ -252,33 +251,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
     # ============================================================================
     # MAIL FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        auto_join=True,
-        groups="base.group_user",
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers", groups="base.group_user"
-    )
-    message_ids = fields.One2many(
-        "mail.message", "res_id", string="Messages", groups="base.group_user"
-    )
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("document_ids")
-    def _compute_document_count(self):
-        for record in self:
-            record.document_count = len(record.document_ids)
-
-    # ============================================================================
-    # VALIDATION METHODS
-    # ============================================================================
-    @api.constrains("date_from", "date_to")
+    # ============================================================================        "mail.followers", "res_id", string="Followers", groups="base.group_user"
+    )    @api.constrains("date_from", "date_to")
     def _check_date_range(self):
         for record in self:
             if (

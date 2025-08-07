@@ -43,7 +43,6 @@ from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-
 class NaidCompliance(models.Model):
     """
     NAID Compliance Management - Enterprise Records Management System
@@ -542,30 +541,10 @@ class NaidCompliance(models.Model):
         help="Chain of custody records for compliance tracking"
     )
 
-    # Mail Thread Framework Fields (REQUIRED)
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
-        auto_join=True,
+    # Mail Thread Framework Fields (REQUIRED)        auto_join=True,
         groups="base.group_user"
-    )
-    
-    message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
-        groups="base.group_user"
-    )
-    
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-        domain=lambda self: [("model", "=", self._name)],
-        groups="base.group_user"
+    )        groups="base.group_user"
+    )        groups="base.group_user"
     )
 
     # ============================================================================

@@ -5,7 +5,6 @@ NAID Audit Log
 
 from odoo import models, fields, api, _
 
-
 class NAIDAuditLog(models.Model):
     """
     NAID Audit Log

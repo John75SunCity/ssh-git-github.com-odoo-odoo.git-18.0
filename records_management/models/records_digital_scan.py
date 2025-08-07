@@ -5,7 +5,6 @@ Digital Scan of Document
 
 from odoo import models, fields, api, _
 
-
 class RecordsDigitalScan(models.Model):
     """
     Digital Scan of Document
@@ -68,11 +67,7 @@ class RecordsDigitalScan(models.Model):
         "res.users", string="Scanned By", default=lambda self: self.env.user
     )
     action_confirm = fields.Char(string="Action Confirm")
-    action_done = fields.Char(string="Action Done")
-    activity_ids = fields.One2many(
-        "mail.activity", "res_id", string="Activities", auto_join=True
-    )
-    confirmed = fields.Boolean(string="Confirmed", default=False)
+    action_done = fields.Char(string="Action Done")    confirmed = fields.Boolean(string="Confirmed", default=False)
     done = fields.Char(string="Done")
     draft = fields.Char(string="Draft")
     group_document = fields.Char(string="Group Document")
@@ -89,12 +84,7 @@ class RecordsDigitalScan(models.Model):
         string="Group State",
         default="draft",
     )
-    help = fields.Char(string="Help")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers", auto_join=True
-    )
-    message_ids = fields.One2many(
-        "mail.message", "res_id", string="Messages", auto_join=True
+    help = fields.Char(string="Help")        "mail.message", "res_id", string="Messages", auto_join=True
     )
     my_scans = fields.Char(string="My Scans")
     res_model = fields.Char(string="Res Model")
@@ -104,7 +94,6 @@ class RecordsDigitalScan(models.Model):
     sequence = fields.Integer(string='Sequence', default=10)
     created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
     updated_date = fields.Datetime(string='Updated Date')
-
 
     def action_confirm(self):
         """Confirm the record"""

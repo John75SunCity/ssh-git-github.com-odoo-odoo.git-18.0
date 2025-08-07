@@ -3,7 +3,6 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class BaseRates(models.Model):
     _name = "base.rates"
     _description = "System Base Rates"
@@ -35,12 +34,7 @@ class BaseRates(models.Model):
     # Standard message/activity fields
     message_ids = fields.One2many(
         "mail.message", "res_id", string="Messages", auto_join=True
-    )
-    activity_ids = fields.One2many(
-        "mail.activity", "res_id", string="Activities", auto_join=True
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers", auto_join=True
+    )        "mail.followers", "res_id", string="Followers", auto_join=True
     )
 
     # Date Management
@@ -154,7 +148,6 @@ class BaseRates(models.Model):
     rate_tier_category = fields.Selection([('standard', 'Standard'), ('premium', 'Premium'), ('enterprise', 'Enterprise')], default='standard')
     volume_discount_applicable = fields.Boolean('Volume Discount Applicable', default=False)
     # Base Rates Management Fields
-
 
     @api.constrains("effective_date", "expiry_date")
     def _check_date_logic(self):

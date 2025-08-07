@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class FieldLabelCustomization(models.Model):
     _name = "field.label.customization"
     _description = "Field Label Customization"
@@ -235,17 +234,8 @@ class FieldLabelCustomization(models.Model):
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    # Mail framework fields
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("deployment_status", "deployment_date")
+    # Mail framework fields        "mail.followers", "res_id", string="Followers"
+    )    @api.depends("deployment_status", "deployment_date")
     def _compute_is_deployed(self):
         for record in self:
             record.is_deployed = (

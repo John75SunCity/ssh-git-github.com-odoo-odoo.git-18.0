@@ -80,7 +80,6 @@ from datetime import timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-
 class CustomerInventoryReport(models.Model):
     _name = "customer.inventory.report"
     _description = "Customer Inventory Report"
@@ -499,7 +498,6 @@ class CustomerInventoryReport(models.Model):
                     report.message_post(
                         body=f"Error generating monthly report: {str(e)}"
                     )
-
 
 class CustomerInventoryReportLine(models.Model):
     _name = "customer.inventory.report.line"

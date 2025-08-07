@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-
 class ShreddingService(models.Model):
     _name = "shredding.service"
     _description = "Shredding Service Management"
@@ -389,7 +388,6 @@ class ShreddingService(models.Model):
                     self.env["ir.sequence"].next_by_code("shredding.service") or "NEW"
                 )
         return super().create(vals_list)
-
 
 class ShreddingServicePhoto(models.Model):
     _name = "shredding.service.photo"

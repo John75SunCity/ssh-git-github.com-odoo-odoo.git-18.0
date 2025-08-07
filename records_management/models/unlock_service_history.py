@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
-
 class UnlockServiceHistory(models.Model):
     _name = "unlock.service.history"
     _description = "Unlock Service History"

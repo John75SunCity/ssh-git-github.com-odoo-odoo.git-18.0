@@ -7,7 +7,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-
 class FsmTask(models.Model):
     """
     FSM Task model for managing field service operations, including scheduling, assignment,
@@ -349,30 +348,7 @@ class FsmTask(models.Model):
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        domain=[('res_model', '=', 'fsm.task')]
-    )
-    """List of mail.activity records related to this FSM task, used for scheduling and tracking activities."""
-
-    message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        string="Followers",
-        domain=[('res_model', '=', 'fsm.task')]
-    )
-    """List of mail.followers records for this FSM task, representing users who follow updates on the task."""
-
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-        domain=[('res_model', '=', 'fsm.task')]
-    )
-    """List of mail.message records associated with this FSM task, storing all related messages and communications."""
+    # ============================================================================    """List of mail.activity records related to this FSM task, used for scheduling and tracking activities."""    """List of mail.followers records for this FSM task, representing users who follow updates on the task."""    """List of mail.message records associated with this FSM task, storing all related messages and communications."""
 
     # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 1)

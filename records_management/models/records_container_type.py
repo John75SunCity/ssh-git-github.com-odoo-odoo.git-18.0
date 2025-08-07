@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class RecordsContainerType(models.Model):
     _name = "records.container.type"
     _description = "Records Container Type"
@@ -59,28 +58,5 @@ class RecordsContainerType(models.Model):
         string="Container Count", compute="_compute_container_count", store=True
     )
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTE METHODS
-    # ============================================================================
-    @api.depends("container_ids")
-    def _compute_container_count(self):
-        for record in self:
-            record.container_count = len(record.container_ids)
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_activate(self):
-        """Activate container type"""
-        self.write({"state": "active"})
-
-    def action_archive(self):
-        """Archive container type"""
-        self.write({"state": "archived", "active": False})
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
+    )        self.write({"state": "archived", "active": False})

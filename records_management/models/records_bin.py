@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class RecordsBin(models.Model):
     _name = "records.bin"
     _description = "Records Storage Bin"
@@ -79,24 +78,5 @@ class RecordsBin(models.Model):
     )
     partner_id = fields.Many2one("res.partner", string="Customer")
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
     )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_activate(self):
-        """Activate bin for use"""
-        self.write({"state": "active"})
-
-    def action_lock(self):
-        """Lock bin for security"""
-        self.write({"state": "locked"})
-
-    def action_unlock(self):
-        """Unlock bin"""
-        self.write({"state": "active"})

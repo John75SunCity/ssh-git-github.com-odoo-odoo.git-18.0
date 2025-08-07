@@ -5,7 +5,6 @@ Records Security Audit
 
 from odoo import models, fields, api, _
 
-
 class RecordsSecurityAudit(models.Model):
     """
     Records Security Audit

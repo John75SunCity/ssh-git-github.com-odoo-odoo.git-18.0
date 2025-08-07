@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class DocumentRetrievalItem(models.Model):
     _name = "document.retrieval.item"
     _description = "Document Retrieval Item"
@@ -95,19 +94,8 @@ class DocumentRetrievalItem(models.Model):
     )
     active = fields.Boolean(string="Active", default=True)
 
-    # === FRAMEWORK FIELDS ===
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # === ADDITIONAL BUSINESS FIELDS ===
-
-    # Customer Information
-    customer_id = fields.Many2one(
-        related="work_order_id.customer_id",
-        string="Customer",
+    # === FRAMEWORK FIELDS ===        "mail.followers", "res_id", string="Followers"
+    )        string="Customer",
         store=True,
         readonly=True,
     )

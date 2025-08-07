@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class TransitoryFieldConfig(models.Model):
     _name = "transitory.field.config"
     _description = "Transitory Field Configuration"
@@ -178,27 +177,8 @@ class TransitoryFieldConfig(models.Model):
         "transitory.field.config", string="Parent Configuration"
     )
 
-    # Mail framework fields
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("dependency_ids")
-    def _compute_config_dependency_count(self):
-        for record in self:
-            record.config_dependency_count = len(record.dependency_ids)
-
-    @api.depends("child_config_ids")
-    def _compute_config_child_count(self):
-        for record in self:
-            record.config_child_count = len(record.child_config_ids)
-
-    @api.depends("deployment_status", "deployment_date")
+    # Mail framework fields        "mail.followers", "res_id", string="Followers"
+    )    @api.depends("deployment_status", "deployment_date")
     def _compute_is_deployed(self):
         for record in self:
             record.is_deployed = (

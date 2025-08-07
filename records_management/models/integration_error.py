@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class IntegrationError(models.Model):
     _name = "integration.error"
     _description = "Integration Error Log"

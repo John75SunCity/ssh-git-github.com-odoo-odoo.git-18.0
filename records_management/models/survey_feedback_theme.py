@@ -5,7 +5,6 @@ Survey Feedback Theme
 
 from odoo import models, fields, api, _
 
-
 class SurveyFeedbackTheme(models.Model):
     """
     Survey Feedback Theme

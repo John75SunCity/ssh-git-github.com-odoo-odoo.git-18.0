@@ -5,7 +5,6 @@ Partner Department Billing
 
 from odoo import models, fields, api, _
 
-
 class ResPartnerDepartmentBilling(models.Model):
     """
     Partner Department Billing

@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class RequiredDocument(models.Model):
     _name = "required.document"
     _description = "Required Document"

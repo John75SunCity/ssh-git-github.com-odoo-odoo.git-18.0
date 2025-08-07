@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class ProcessingLog(models.Model):
     _name = "processing.log"
     _description = "Processing Log"
@@ -118,17 +117,8 @@ class ProcessingLog(models.Model):
     # ============================================================================
     # Note: Removed pos_wizard_id field - Model to TransientModel relationships are forbidden
 
-    # # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("res_model", "res_id")
+    # # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
+    )    @api.depends("res_model", "res_id")
     def _compute_reference(self):
         for log in self:
             if log.res_model and log.res_id:

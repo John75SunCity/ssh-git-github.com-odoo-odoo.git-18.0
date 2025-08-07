@@ -40,7 +40,6 @@ from datetime import datetime, timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-
 class RecordsBillingConfig(models.Model):
     _name = "records.billing.config"
     _description = "Records Billing Configuration"
@@ -223,36 +222,8 @@ class RecordsBillingConfig(models.Model):
         "records.billing.config.line", "config_id", string="Rate Configuration Lines"
     )
 
-    # Mail Framework Fields (SECURE - No domains needed)
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        auto_join=True,
-        groups="base.group_user",
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers", groups="base.group_user"
-    )
-    message_ids = fields.One2many(
-        "mail.message", "res_id", string="Messages", groups="base.group_user"
-    )
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("partner_ids")
-    def _compute_customer_count(self):
-        for record in self:
-            record.customer_count = len(record.partner_ids)
-            record.is_active_config = record.active and record.state == "active"
-
-    @api.depends("rate_line_ids")
-    def _compute_rate_count(self):
-        for record in self:
-            record.rate_count = len(record.rate_line_ids)
-
-    @api.depends("state", "active")
+    # Mail Framework Fields (SECURE - No domains needed)        "mail.followers", "res_id", string="Followers", groups="base.group_user"
+    )    @api.depends("state", "active")
     def _compute_is_active_config(self):
         for record in self:
             record.is_active_config = record.active and record.state == "active"
@@ -462,7 +433,6 @@ class RecordsBillingConfig(models.Model):
             "target": "new",
             "context": {"default_config_id": self.id},
         }
-
 
 class RecordsBillingConfigLine(models.Model):
     _name = "records.billing.config.line"

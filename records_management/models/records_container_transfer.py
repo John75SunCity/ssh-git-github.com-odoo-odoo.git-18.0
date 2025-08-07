@@ -5,7 +5,6 @@ Records Container Transfer Log
 
 from odoo import models, fields, api, _
 
-
 class RecordsContainerTransfer(models.Model):
     """
     Records Container Transfer Log

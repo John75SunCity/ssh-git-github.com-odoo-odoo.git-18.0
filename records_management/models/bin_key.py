@@ -60,7 +60,6 @@ License: LGPL-3
 
 from odoo import models, fields, api
 
-
 class BinKey(models.Model):
     _name = "bin.key"
     _description = "Bin Access Key"
@@ -137,24 +136,5 @@ class BinKey(models.Model):
     )
     bin_ids = fields.Many2many("records.bin", string="Accessible Bins")
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_activate(self):
-        """Activate key for use"""
-        self.write({"state": "active"})
-
-    def action_report_lost(self):
-        """Report key as lost"""
-        self.write({"state": "lost"})
-
-    def action_retire(self):
-        """Retire key from service"""
-        self.write({"state": "retired", "active": False})
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
+    )        self.write({"state": "retired", "active": False})

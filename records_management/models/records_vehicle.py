@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class RecordsVehicle(models.Model):
     _name = "records.vehicle"
     _description = "Records Vehicle"
@@ -255,13 +254,8 @@ class RecordsVehicle(models.Model):
             },
         }
 
-    # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    capacity = fields.Float(string="Capacity", digits=(10, 2))
+    # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
+    )    capacity = fields.Float(string="Capacity", digits=(10, 2))
     fuel_type = fields.Selection(
         [("gas", "Gasoline"), ("diesel", "Diesel"), ("electric", "Electric")],
         string="Fuel Type",

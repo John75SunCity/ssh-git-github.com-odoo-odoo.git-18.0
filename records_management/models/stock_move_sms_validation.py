@@ -1,6 +1,5 @@
 from odoo import models, fields
 
-
 class StockMoveSMSValidation(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     """
@@ -19,7 +18,6 @@ class StockMoveSMSValidation(models.Model):
         "res.users", default=lambda self: self.env.user, tracking=True
     )
     active = fields.Boolean(string="Active", default=True)
-
 
     name = fields.Char(required=True)
     move_id = fields.Many2one("stock.move", string="Stock Move")

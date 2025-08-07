@@ -5,7 +5,6 @@ NAID Compliance Checklist
 
 from odoo import models, fields, api, _
 
-
 class NAIDComplianceChecklist(models.Model):
     """
     NAID Compliance Checklist

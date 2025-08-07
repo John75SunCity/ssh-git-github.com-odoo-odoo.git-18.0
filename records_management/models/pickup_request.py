@@ -12,7 +12,6 @@ License: LGPL-3
 
 from odoo import models, fields, api, _
 
-
 class PickupRequest(models.Model):
     """
     Pickup Request Management - Customer document and equipment pickup requests

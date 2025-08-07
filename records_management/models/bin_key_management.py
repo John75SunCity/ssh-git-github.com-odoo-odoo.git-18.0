@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class BinKeyManagement(models.Model):
     _name = "bin.key.management"
     _description = "Bin Key Management"
@@ -221,13 +220,8 @@ class BinKeyManagement(models.Model):
             },
         }
 
-    # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
+    )    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
     bin_number = fields.Char(string="Bin Number")
     access_level = fields.Selection(
         [("full", "Full Access"), ("limited", "Limited"), ("restricted", "Restricted")],

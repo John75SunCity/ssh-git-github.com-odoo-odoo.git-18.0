@@ -5,7 +5,6 @@ Shredding Bin
 
 from odoo import models, fields, api, _
 
-
 class ShreddingBin(models.Model):
     """
     Shredding Bin

@@ -3,7 +3,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from datetime import datetime, timedelta
 
-
 class PortalFeedback(models.Model):
     _name = "portal.feedback"
     _description = "Portal Customer Feedback"
@@ -184,19 +183,8 @@ class PortalFeedback(models.Model):
         "portal.request", string="Related Service Requests"
     )
 
-    # Mail Thread Framework Fields
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends(
-        "overall_rating",
-        "service_quality_rating",
+    # Mail Thread Framework Fields        "mail.followers", "res_id", string="Followers"
+    )        "service_quality_rating",
         "response_time_rating",
         "staff_friendliness_rating",
     )
@@ -379,7 +367,6 @@ class PortalFeedback(models.Model):
                 elif vals["status"] == "responded" and not vals.get("response_date"):
                     vals["response_date"] = fields.Datetime.now()
         return super().write(vals)
-
 
 class FeedbackImprovementArea(models.Model):
     _name = "feedback.improvement.area"

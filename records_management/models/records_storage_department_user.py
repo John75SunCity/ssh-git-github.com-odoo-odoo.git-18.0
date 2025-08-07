@@ -5,7 +5,6 @@ Storage Department User Assignment
 
 from odoo import models, fields, api, _
 
-
 class RecordsStorageDepartmentUser(models.Model):
     """
     Storage Department User Assignment

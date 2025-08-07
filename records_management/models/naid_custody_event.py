@@ -70,7 +70,6 @@ License: LGPL-3
 
 from odoo import models, fields, api, _
 
-
 class NAIDCustodyEvent(models.Model):
     """
     NAID Custody Event - Chain of custody events for NAID AAA compliance

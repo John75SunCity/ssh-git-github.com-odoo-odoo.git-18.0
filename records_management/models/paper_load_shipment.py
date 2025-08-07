@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class PaperLoadShipment(models.Model):
     _name = "paper.load.shipment"
     _description = "Paper Load Shipment"
@@ -302,15 +301,7 @@ class PaperLoadShipment(models.Model):
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================
-    manifest_generated = fields.Monetary(string='Manifest Generated', currency_field='currency_id', tracking=True)
+    # ============================================================================    manifest_generated = fields.Monetary(string='Manifest Generated', currency_field='currency_id', tracking=True)
     mobile_manifest = fields.Char(string='Mobile Manifest', tracking=True)
     pickup_date = fields.Date(string='Pickup Date', tracking=True)
 

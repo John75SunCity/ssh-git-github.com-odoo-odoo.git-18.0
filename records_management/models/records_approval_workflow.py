@@ -5,7 +5,6 @@ Records Approval Workflow
 
 from odoo import models, fields, api, _
 
-
 class RecordsApprovalWorkflow(models.Model):
     """
     Records Approval Workflow

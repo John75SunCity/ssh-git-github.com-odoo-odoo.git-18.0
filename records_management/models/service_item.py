@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class ServiceItem(models.Model):
     _name = "service.item"
     _description = "Service Item"
@@ -149,17 +148,8 @@ class ServiceItem(models.Model):
     # ============================================================================
     # Note: Removed pos_wizard_id field - Model to TransientModel relationships are forbidden
 
-    # # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("purchase_date", "warranty_expiry")
+    # # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
+    )    @api.depends("purchase_date", "warranty_expiry")
     def _compute_warranty_status(self):
         today = fields.Date.today()
         for item in self:

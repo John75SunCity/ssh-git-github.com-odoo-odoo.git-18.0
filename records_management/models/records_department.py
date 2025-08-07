@@ -70,7 +70,6 @@ License: LGPL-3
 
 from odoo import models, fields, api, _
 
-
 class RecordsDepartment(models.Model):
     """
     Records Department Management - Organizational departments for records management

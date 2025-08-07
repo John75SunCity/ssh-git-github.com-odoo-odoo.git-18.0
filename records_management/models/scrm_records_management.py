@@ -5,7 +5,6 @@ SCRM Records Management
 
 from odoo import models, fields, api, _
 
-
 class ScrmRecordsManagement(models.Model):
     """
     SCRM Records Management

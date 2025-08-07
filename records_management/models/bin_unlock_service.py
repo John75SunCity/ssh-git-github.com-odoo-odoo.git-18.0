@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class BinUnlockService(models.Model):
     _name = "bin.unlock.service"
     _description = "Bin Unlock Service"
@@ -103,15 +102,7 @@ class BinUnlockService(models.Model):
     # ============================================================================
     related_requests = fields.Many2many("portal.request", string="Related Portal Requests")
     
-    # Mail framework fields
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("service_cost", "emergency_surcharge")
+    # Mail framework fields    @api.depends("service_cost", "emergency_surcharge")
     def _compute_total_cost(self):
         for record in self:
             record.total_cost = record.service_cost + record.emergency_surcharge

@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class PaymentSplit(models.Model):
     _name = "payment.split"
     _description = "Payment Split"

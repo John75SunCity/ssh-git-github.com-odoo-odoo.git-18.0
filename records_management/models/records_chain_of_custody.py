@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
-
 class RecordsChainOfCustody(models.Model):
     _name = "records.chain.of.custody"
     _description = "Records Chain Of Custody"

@@ -51,7 +51,6 @@ License: LGPL-3
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class RecordsManagementBaseMenus(models.Model):
     _name = "records.management.base.menus"
     _description = "Records Management Base Menus"
@@ -83,12 +82,7 @@ class RecordsManagementBaseMenus(models.Model):
     # Standard message/activity fields
     message_ids = fields.One2many(
         "mail.message", "res_id", string="Messages", auto_join=True
-    )
-    activity_ids = fields.One2many(
-        "mail.activity", "res_id", string="Activities", auto_join=True
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers", auto_join=True
+    )        "mail.followers", "res_id", string="Followers", auto_join=True
     )
     Configuration = fields.Char(string="Configuration")
     Inventory = fields.Char(string="Inventory")

@@ -5,7 +5,6 @@ Mobile Bin Key Management Wizard
 
 from odoo import models, fields, api, _
 
-
 class MobileBinKeyWizard(models.Model):
     """
     Mobile Bin Key Management Wizard
@@ -86,7 +85,6 @@ class MobileBinKeyWizard(models.Model):
     created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
     sequence = fields.Integer(string='Sequence', default=10)
     updated_date = fields.Datetime(string='Updated Date')
-
 
     def action_confirm(self):
         """Confirm the record"""

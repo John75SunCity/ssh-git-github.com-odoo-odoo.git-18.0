@@ -2,7 +2,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import UserError, ValidationError
 
-
 class PaperBale(models.Model):
     _name = "paper.bale"
     _description = "Paper Bale"
@@ -292,15 +291,7 @@ class PaperBale(models.Model):
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================
-    bale_status = fields.Selection([('draft', 'Draft')], string='Bale Status', default='draft', tracking=True)
+    # ============================================================================    bale_status = fields.Selection([('draft', 'Draft')], string='Bale Status', default='draft', tracking=True)
     creation_date = fields.Date(string='Creation Date', tracking=True)
     loaded_on_trailer = fields.Char(string='Loaded On Trailer', tracking=True)
     quality_grade = fields.Char(string='Quality Grade', tracking=True)

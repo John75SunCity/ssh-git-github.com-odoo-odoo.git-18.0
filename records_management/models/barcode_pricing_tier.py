@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class BarcodePricingTier(models.Model):
     _name = "barcode.pricing.tier"
     _description = "Barcode Pricing Tier"
@@ -85,17 +84,8 @@ class BarcodePricingTier(models.Model):
     description = fields.Text(string="Description")
     terms_conditions = fields.Text(string="Terms & Conditions")
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("base_price", "volume_discount")
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
+    )    @api.depends("base_price", "volume_discount")
     def _compute_discounted_price(self):
         for tier in self:
             if tier.volume_discount > 0:

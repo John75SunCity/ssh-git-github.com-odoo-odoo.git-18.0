@@ -9,7 +9,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-
 class PartnerBinKey(models.Model):
     """
     Partner Bin Key Management

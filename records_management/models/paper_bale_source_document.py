@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 
-
 class PaperBaleSourceDocument(models.Model):
     _name = "paper.bale.source.document"
     _description = "Paper Bale Source Document"

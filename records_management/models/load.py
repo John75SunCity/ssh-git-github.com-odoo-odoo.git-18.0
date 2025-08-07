@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class Load(models.Model):
     _name = "load"
     _description = "Paper Bale Load Management"
@@ -186,17 +185,8 @@ class Load(models.Model):
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    # Mail framework fields
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("paper_bale_ids", "paper_bale_ids.weight")
+    # Mail framework fields        "mail.followers", "res_id", string="Followers"
+    )    @api.depends("paper_bale_ids", "paper_bale_ids.weight")
     def _compute_current_weight(self):
         for record in self:
             record.current_weight = sum(record.paper_bale_ids.mapped("weight"))

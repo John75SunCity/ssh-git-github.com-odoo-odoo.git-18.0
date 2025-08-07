@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class RecordsContainerTypeConverter(models.Model):
     _name = "records.container.type.converter"
     _description = "Records Container Type Converter"
@@ -35,13 +34,8 @@ class RecordsContainerTypeConverter(models.Model):
         string="Target Container Type"
     )  # Alternative name for target_type
     conversion_notes = fields.Text(string="Conversion Notes")
-    # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
+    )    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
     location_id = fields.Many2one("records.location", string="Location", tracking=True)
     barcode = fields.Char(string="Barcode", copy=False)
     container_type = fields.Selection(

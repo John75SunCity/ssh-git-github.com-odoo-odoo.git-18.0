@@ -3,7 +3,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from datetime import timedelta
 
-
 class DocumentRetrievalWorkOrder(models.Model):
     _name = "document.retrieval.work.order"
     _description = "Document Retrieval Work Order"
@@ -215,19 +214,8 @@ class DocumentRetrievalWorkOrder(models.Model):
         "records.chain.of.custody", "work_order_id", string="Chain of Custody"
     )
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    processing_time = fields.Float(
-        string="Processing Time (Hours)",
-        compute="_compute_processing_metrics",
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
+    )        compute="_compute_processing_metrics",
         store=True,
     )
     is_overdue = fields.Boolean(

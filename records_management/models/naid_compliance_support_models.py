@@ -7,7 +7,6 @@ from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
-
 class NaidComplianceAlert(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     """Compliance alerts for NAID compliance management"""
@@ -96,7 +95,6 @@ class NaidComplianceAlert(models.Model):
             }
         )
 
-
 class NaidComplianceChecklistItem(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     """Individual checklist items for NAID compliance"""
@@ -156,7 +154,6 @@ class NaidComplianceChecklistItem(models.Model):
         default="medium",
     )
     deadline = fields.Date(string="Deadline")
-
 
 class NaidComplianceAuditHistory(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
@@ -218,7 +215,6 @@ class NaidComplianceAuditHistory(models.Model):
     follow_up_required = fields.Boolean(string="Follow-up Required", default=False)
     follow_up_date = fields.Date(string="Follow-up Date")
     follow_up_completed = fields.Boolean(string="Follow-up Completed", default=False)
-
 
 class NaidRiskAssessment(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
@@ -352,7 +348,6 @@ class NaidRiskAssessment(models.Model):
             else:
                 record.risk_level = "low"
 
-
 class NaidComplianceActionPlan(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     """Action plans for NAID compliance improvements"""
@@ -461,7 +456,6 @@ class NaidComplianceActionPlan(models.Model):
             }
         )
 
-
 class NaidComplianceEnhanced(models.Model):
     """Enhanced NAID Compliance Policy Management"""
 
@@ -523,9 +517,5 @@ class NaidComplianceEnhanced(models.Model):
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    # ============================================================================        "mail.followers", "res_id", string="Followers"
     )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")

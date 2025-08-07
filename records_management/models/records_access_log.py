@@ -5,7 +5,6 @@ Records Access Log
 
 from odoo import models, fields, api, _
 
-
 class RecordsAccessLog(models.Model):
     """
     Records Access Log
