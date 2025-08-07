@@ -322,55 +322,8 @@ class PortalRequest(models.Model):
         "portal.request", "parent_request_id", string="Child Requests"
     )
 
-    # Mail framework fields
-    activity_ids = fields.One2many(
-        "mail.activity",
-        compute="_compute_activity_ids",
-        string="Activities",
-        store=False,
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers",
-        compute="_compute_message_follower_ids",
-        string="Followers",
-        store=False,
-    )
-    message_ids = fields.One2many(
-        "mail.message",
-        compute="_compute_message_ids",
-        string="Messages",
-        store=False,
-    )
-
-    @api.depends("id")
-    def _compute_activity_ids(self):
-        """Compute activity IDs related to this portal request."""
-        for record in self:
-            record.activity_ids = (
-                self.env["mail.activity"]
-                .search([("res_model", "=", self._name), ("res_id", "=", record.id)])
-                .ids
-            )
-
-    @api.depends("id")
-    def _compute_message_follower_ids(self):
-        """Compute follower IDs for this portal request."""
-        for record in self:
-            record.message_follower_ids = (
-                self.env["mail.followers"]
-                .search([("res_model", "=", self._name), ("res_id", "=", record.id)])
-                .ids
-            )
-
-    @api.depends("id")
-    def _compute_message_ids(self):
-        """Compute message IDs for this portal request."""
-        for record in self:
-            record.message_ids = (
-                self.env["mail.message"]
-                .search([("model", "=", self._name), ("res_id", "=", record.id)])
-                .ids
-            )
+    # Mail framework fields are provided by mail.thread inheritance
+    # Removed manual field definitions as they conflict with framework
 
     # ============================================================================
     # COMPUTED FIELDS
