@@ -263,15 +263,23 @@ class RecordsLocation(models.Model):
         for record in self:
             if record.parent_location_id:
                 if record.parent_location_id == record:
-                    raise ValidationError(_("Location cannot be its own parent."))
+                    raise ValidationError(_("A location cannot be its own parent."))
+                # Check for circular reference
+                current = record.parent_location_id
+                while current:
+                    if current == record:
+                        raise ValidationError(
+                            _("Circular reference detected in location hierarchy.")
+                        )
+                    current = current.parent_location_id
 
     @api.constrains("code")
     def _check_code_uniqueness(self):
         for record in self:
             if record.code:
                 existing = self.search(
-                    [("code", "=", record.code), ("id", "!=", record.id)],
-                    limit=1
+                    [("code", "=", record.code), ("id", "!=", record.id)], limit=1
                 )
                 if existing:
-                    raise ValidationError(_("Location code must be unique.")))
+                    raise ValidationError(_("Location code must be unique."))
+                    raise ValidationError(_("Location code must be unique."))
