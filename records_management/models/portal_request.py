@@ -143,6 +143,7 @@ class PortalRequest(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
@@ -163,7 +164,7 @@ class PortalRequest(models.Model):
             ("completed", "Completed"),
             ("rejected", "Rejected"),
             ("cancelled", "Cancelled"),
-        ],
+        ]),
         string="Status",
         default="draft",
         required=True,
@@ -174,6 +175,7 @@ class PortalRequest(models.Model):
     # ============================================================================
     # REQUEST DETAILS
     # ============================================================================
+    )
     request_type = fields.Selection(
         [
             ("destruction", "Document Destruction"),
@@ -184,7 +186,7 @@ class PortalRequest(models.Model):
             ("consultation", "Consultation"),
             ("audit", "Compliance Audit"),
             ("other", "Other"),
-        ],
+        ]),
         string="Request Type",
         required=True,
         tracking=True,
@@ -199,7 +201,9 @@ class PortalRequest(models.Model):
         index=True,
     )
 
-    urgency_reason = fields.Text(string="Urgency Reason")
+    )
+
+    urgency_reason = fields.Text(string="Urgency Reason"),
     internal_notes = fields.Text(string="Internal Notes")
     public_notes = fields.Text(string="Public Notes", tracking=True)
 
@@ -208,19 +212,20 @@ class PortalRequest(models.Model):
     # ============================================================================
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True, index=True
+    ),
     contact_person = fields.Char(string="Contact Person", tracking=True)
-    contact_email = fields.Char(string="Contact Email", tracking=True)
+    contact_email = fields.Char(string="Contact Email", tracking=True),
     contact_phone = fields.Char(string="Contact Phone", tracking=True)
     notification_email = fields.Char(string="Notification Email")
 
     # ============================================================================
     # SCHEDULING & TIMING
     # ============================================================================
-    requested_date = fields.Datetime(string="Requested Date", tracking=True)
+    requested_date = fields.Datetime(string="Requested Date", tracking=True),
     scheduled_date = fields.Datetime(string="Scheduled Date", tracking=True)
-    deadline = fields.Datetime(string="Deadline", tracking=True)
+    deadline = fields.Datetime(string="Deadline", tracking=True),
     completion_date = fields.Datetime(string="Completion Date", tracking=True)
-    estimated_hours = fields.Float(string="Estimated Hours")
+    estimated_hours = fields.Float(string="Estimated Hours"),
     actual_hours = fields.Float(string="Actual Hours")
 
     # ============================================================================
@@ -230,17 +235,19 @@ class PortalRequest(models.Model):
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
+    ),
     estimated_cost = fields.Monetary(
-        string="Estimated Cost", currency_field="currency_id", tracking=True
+        string="Estimated Cost", currency_field="currency_id", tracking=True)
     actual_cost = fields.Monetary(
         string="Actual Cost", currency_field="currency_id", tracking=True
+    ),
     billing_status = fields.Selection(
         [
             ("not_billable", "Not Billable"),
             ("to_bill", "To Bill"),
             ("billed", "Billed"),
             ("paid", "Paid"),
-        ],
+        ]),
         string="Billing Status",
         default="not_billable",
         tracking=True,
@@ -249,29 +256,29 @@ class PortalRequest(models.Model):
     # ============================================================================
     # DOCUMENT & SERVICE SPECIFICATIONS
     # ============================================================================
-    document_count = fields.Integer(string="Document Count")
+    document_count = fields.Integer(string="Document Count"),
     box_count = fields.Integer(string="Box Count")
     weight_estimate = fields.Float(string="Weight Estimate (lbs)")
-    service_location = fields.Char(string="Service Location")
+    service_location = fields.Char(string="Service Location"),
     access_instructions = fields.Text(string="Access Instructions")
     special_requirements = fields.Text(string="Special Requirements")
 
     # ============================================================================
     # APPROVAL & WORKFLOW
     # ============================================================================
-    approval_required = fields.Boolean(string="Approval Required", default=False)
+    approval_required = fields.Boolean(string="Approval Required", default=False),
     approved_by = fields.Many2one("res.users", string="Approved By", tracking=True)
-    approval_date = fields.Datetime(string="Approval Date", tracking=True)
+    approval_date = fields.Datetime(string="Approval Date", tracking=True),
     rejection_reason = fields.Text(string="Rejection Reason", tracking=True)
 
     # ============================================================================
     # E-SIGNATURE FIELDS
     # ============================================================================
-    signature_required = fields.Boolean(string="Signature Required", default=False)
+    signature_required = fields.Boolean(string="Signature Required", default=False),
     customer_signature = fields.Binary(string="Customer Signature")
-    customer_signature_date = fields.Datetime(string="Customer Signature Date")
+    customer_signature_date = fields.Datetime(string="Customer Signature Date"),
     technician_signature = fields.Binary(string="Technician Signature")
-    technician_signature_date = fields.Datetime(string="Technician Signature Date")
+    technician_signature_date = fields.Datetime(string="Technician Signature Date"),
     signed_document = fields.Binary(string="Signed Document")
 
     # ============================================================================
@@ -279,9 +286,11 @@ class PortalRequest(models.Model):
     # ============================================================================
     requires_naid_compliance = fields.Boolean(
         string="NAID Compliance Required", default=False
-    compliance_notes = fields.Text(string="Compliance Notes")
+    )
+    )
+    compliance_notes = fields.Text(string="Compliance Notes"),
     audit_trail = fields.Text(string="Audit Trail")
-    certificate_of_destruction = fields.Binary(string="Certificate of Destruction")
+    certificate_of_destruction = fields.Binary(string="Certificate of Destruction"),
     tracking_number = fields.Char(string="Tracking Number", index=True)
 
     # ============================================================================
@@ -293,13 +302,17 @@ class PortalRequest(models.Model):
     # Service connections
     shredding_service_id = fields.Many2one(
         "shredding.service", string="Related Shredding Service"
+    )
+    )
     pickup_request_id = fields.Many2one(
         "pickup.request", string="Related Pickup Request"
+    ),
     work_order_id = fields.Many2one(
         "document.retrieval.work.order", string="Related Work Order"
     )
 
     # Document attachments - Use computed Many2many for dynamic attachment list
+    )
     attachment_ids = fields.Many2many(
         "ir.attachment",
         compute="_compute_attachment_ids",
@@ -308,7 +321,7 @@ class PortalRequest(models.Model):
     )
 
     # Parent-child request relationships
-    parent_request_id = fields.Many2one("portal.request", string="Parent Request")
+    parent_request_id = fields.Many2one("portal.request", string="Parent Request"),
     child_request_ids = fields.One2many(
         "portal.request", "parent_request_id", string="Child Requests"
     )
@@ -319,14 +332,16 @@ class PortalRequest(models.Model):
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
+    )
     child_request_count = fields.Integer(
         string="Child Requests Count",
         compute="_compute_child_request_count",
-        store=False,
+        store=False,)
     attachment_count = fields.Integer(
         string="Attachment Count", compute="_compute_attachment_count", store=False
+    ),
     is_overdue = fields.Boolean(
-        string="Is Overdue", compute="_compute_is_overdue", store=False
+        string="Is Overdue", compute="_compute_is_overdue", store=False)
     time_variance = fields.Float(
         string="Time Variance (%)", compute="_compute_time_variance", store=False
     )
@@ -344,6 +359,7 @@ class PortalRequest(models.Model):
         """Compute whether the portal request is overdue based on due date and current state."""
         for record in self:
             if record.due_date and record.state not in ("completed", "cancelled"):
+                )
                 today = fields.Date.context_today(record)
                 record.is_overdue = record.due_date < today
             else:
@@ -415,7 +431,7 @@ class PortalRequest(models.Model):
         """Set the portal request to under review state."""
         self.ensure_one()
         if self.state != "submitted":
-            raise UserError(_("Only submitted requests can be reviewed."))
+            raise UserError(_("Only submitted requests can be reviewed.")
         self.write({"state": "under_review"})
 
     def action_approve(self):
@@ -441,9 +457,9 @@ class PortalRequest(models.Model):
         """Start processing the approved portal request."""
         self.ensure_one()
         if self.state != "approved":
-            raise UserError(_("Only approved requests can be started."))
+            raise UserError(_("Only approved requests can be started.")
         self.write({"state": "in_progress"})
-
+)
     def action_complete(self):
         """Complete the portal request and finalize billing."""
         self.ensure_one()
@@ -455,7 +471,7 @@ class PortalRequest(models.Model):
         """Cancel the portal request if not already completed."""
         self.ensure_one()
         if self.state in ["completed"]:
-            raise UserError(_("Completed requests cannot be cancelled."))
+            raise UserError(_("Completed requests cannot be cancelled.")
         self.write({"state": "cancelled"})
 
     def action_duplicate(self):
@@ -564,11 +580,9 @@ class PortalRequest(models.Model):
 
         # Validate required fields for processing
         if not self.partner_id:
-            raise UserError(_("Customer is required to start processing."))
-
+            raise UserError(_("Customer is required to start processing.")
         if not self.request_type:
-            raise UserError(_("Request type is required to start processing."))
-
+            raise UserError(_("Request type is required to start processing.")
         # Update state to in_progress
         self.write(
             {
@@ -638,19 +652,17 @@ class PortalRequest(models.Model):
         """Validate that costs are not negative."""
         for record in self:
             if record.estimated_cost < 0 or record.actual_cost < 0:
-                raise ValidationError(_("Costs cannot be negative."))
-
+                raise ValidationError(_("Costs cannot be negative.")
     @api.constrains("estimated_hours", "actual_hours")
     def _check_hours(self):
         """Validate that hours are not negative."""
         for record in self:
             if record.estimated_hours < 0 or record.actual_hours < 0:
-                raise ValidationError(_("Hours cannot be negative."))
-
+                raise ValidationError(_("Hours cannot be negative.")
     # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 1)
     # ============================================================================
-    assigned_to = fields.Char(string="Assigned To", tracking=True)
+    assigned_to = fields.Char(string="Assigned To", tracking=True),
     due_date = fields.Date(string="Due Date", tracking=True)
 
     # ============================================================================
@@ -781,7 +793,7 @@ class PortalRequest(models.Model):
                 "mail.mail_activity_data_call",
                 summary=_("Overdue Request: %s") % request.name,
                 note=_("This request is overdue. Deadline was: %s") % request.deadline,
-                user_id=request.user_id.id or self.env.user.id,
+                user_id=request.user_id.id or self.env.user.id,)
                 date_deadline=fields.Date.today(),
             )
 
@@ -792,4 +804,4 @@ class PortalRequest(models.Model):
                     raise_if_not_found=False,
                 )
                 if template:
-                    template.send_mail(request.id, force_send=True))
+                    template.send_mail(request.id, force_send=True)

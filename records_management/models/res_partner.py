@@ -7,10 +7,11 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     # Add new fields here, for example:
-    # is_records_customer = fields.Boolean(string="Records Customer", default=False)
+    # is_records_customer = fields.Boolean(string="Records Customer", default=False),
     is_records_customer = fields.Boolean(string="Records Customer", default=False),
     records_department_users = fields.One2many(
         "res.users", "partner_id", string="Department Users (Records)"
+    )
     records_department_id = fields.Many2one(
         "records.department", string="Records Department"
     )
@@ -70,14 +71,14 @@ class ResPartner(models.Model):
                     "key_issuance_allowed": True,
                 }
             )
-        self.message_post(body=_("Key issuance allowed for this partner."))
+        self.message_post(body=_("Key issuance allowed for this partner.")
         return True
-
+)
     def action_confirm(self):
         """Confirm partner details for records management."""
         self.ensure_one()
         self.write({"is_records_customer": True})
-        self.message_post(body=_("Partner confirmed for records management services."))
+        self.message_post(body=_("Partner confirmed for records management services.")
         return True
 
     def action_issue_new_key(self):
@@ -129,7 +130,7 @@ class ResPartner(models.Model):
                     "key_issuance_allowed": False,
                 }
             )
-        self.message_post(body=_("Key issuance restricted for this partner."))
+        self.message_post(body=_("Key issuance restricted for this partner.")
         return True
 
     def action_return_key(self):
@@ -156,8 +157,7 @@ class ResPartner(models.Model):
         )
 
         if not active_key:
-            raise UserError(_("No active key found for this partner."))
-
+            raise UserError(_("No active key found for this partner.")
         return {
             "type": "ir.actions.act_window",
             "name": _("Active Key"),

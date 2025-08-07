@@ -1,501 +1,650 @@
 # -*- coding: utf-8 -*-
+"""
+Supporting Models for Document Retrieval Work Order System
+
+This module provides comprehensive supporting models for the document retrieval system
+including items, teams, pricing, equipment, and performance metrics tracking.
+"""
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-from datetime import timedelta
+import logging
 
-class DocumentRetrievalWorkOrder(models.Model):
-    _name = "document.retrieval.work.order"
-    _description = "Document Retrieval Work Order"
+_logger = logging.getLogger(__name__)
+
+
+class DocumentRetrievalItem(models.Model):
+    """Individual items in a document retrieval work order"""
+
+    _name = "document.retrieval.item"
+    _description = "Document Retrieval Item"
     _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "priority desc, create_date desc"
+    _order = "work_order_id, sequence"
+    _rec_name = "description"
+
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Item Reference", required=True, tracking=True, index=True
+    )
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Assigned User",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+    active = fields.Boolean(string="Active", default=True, tracking=True)
+
+    # ============================================================================
+    # WORK ORDER RELATIONSHIP FIELDS
+    # ============================================================================
+    work_order_id = fields.Many2one(
+        "document.retrieval.work.order",
+        string="Work Order",
+        required=True,
+        ondelete="cascade",
+    )
+    sequence = fields.Integer(string="Sequence", default=10)
+
+    # ============================================================================
+    # DOCUMENT REFERENCE FIELDS
+    # ============================================================================
+    document_id = fields.Many2one("records.document", string="Document")
+    container_id = fields.Many2one("records.container", string="Container")
+    location_id = fields.Many2one("records.location", string="Storage Location")
+
+    item_type = fields.Selection(
+        [
+            ("document", "Single Document"),
+            ("folder", "Document Folder"),
+            ("container", "Full Container"),
+            ("box", "Storage Box"),
+        ],
+        string="Item Type",
+        required=True,
+        default="document",
+    )
+
+    description = fields.Text(string="Item Description")
+    barcode = fields.Char(string="Barcode/ID", tracking=True)
+
+    # ============================================================================
+    # STATUS TRACKING FIELDS
+    # ============================================================================
+    status = fields.Selection(
+        [
+            ("pending", "Pending"),
+            ("located", "Located"),
+            ("retrieved", "Retrieved"),
+            ("scanned", "Scanned"),
+            ("delivered", "Delivered"),
+            ("not_found", "Not Found"),
+        ],
+        string="Status",
+        default="pending",
+        tracking=True,
+    )
+
+    # ============================================================================
+    # EFFORT TRACKING FIELDS
+    # ============================================================================
+    estimated_time = fields.Float(string="Estimated Time (hours)", digits=(5, 2))
+    actual_time = fields.Float(string="Actual Time (hours)", digits=(5, 2))
+    difficulty_level = fields.Selection(
+        [
+            ("easy", "Easy"),
+            ("medium", "Medium"),
+            ("hard", "Hard"),
+            ("very_hard", "Very Hard"),
+        ],
+        string="Difficulty",
+        default="medium",
+    )
+
+    # ============================================================================
+    # PROCESSING DETAILS FIELDS
+    # ============================================================================
+    retrieval_date = fields.Datetime(string="Retrieved Date", tracking=True)
+    retrieved_by = fields.Many2one("hr.employee", string="Retrieved By")
+    condition_notes = fields.Text(string="Condition Notes")
+    special_handling = fields.Boolean(string="Special Handling Required", default=False)
+
+    # ============================================================================
+    # QUALITY CONTROL FIELDS
+    # ============================================================================
+    quality_checked = fields.Boolean(string="Quality Checked", default=False)
+    quality_issues = fields.Text(string="Quality Issues")
+    completeness_verified = fields.Boolean(
+        string="Completeness Verified", default=False
+    )
+
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+
+class DocumentRetrievalTeam(models.Model):
+    """Teams responsible for document retrieval operations"""
+
+    _name = "document.retrieval.team"
+    _description = "Document Retrieval Team"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "name"
     _rec_name = "name"
 
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Work Order #", required=True, tracking=True, index=True),
-    reference = fields.Char(string="Reference", index=True, tracking=True),
-    description = fields.Text(string="Description"),
-    active = fields.Boolean(string="Active", default=True),
+    name = fields.Char(string="Team Name", required=True, tracking=True, index=True)
     company_id = fields.Many2one(
-        "res.company", default=lambda self: self.env.company, required=True
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
     user_id = fields.Many2one(
         "res.users",
-        string="Assigned Technician",
+        string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
     )
+    active = fields.Boolean(string="Active", default=True, tracking=True)
 
-    state = fields.Selection(
+    # ============================================================================
+    # TEAM STRUCTURE FIELDS
+    # ============================================================================
+    team_lead_id = fields.Many2one("hr.employee", string="Team Lead")
+    member_ids = fields.Many2many("hr.employee", string="Team Members")
+
+    # ============================================================================
+    # SPECIALIZATION FIELDS
+    # ============================================================================
+    specialization = fields.Selection(
         [
-            ("draft", "Draft"),
-            ("scheduled", "Scheduled"),
-            ("in_progress", "In Progress"),
-            ("completed", "Completed"),
-            ("cancelled", "Cancelled"),
+            ("general", "General Retrieval"),
+            ("legal", "Legal Documents"),
+            ("medical", "Medical Records"),
+            ("financial", "Financial Documents"),
+            ("digital", "Digital Conversion"),
+            ("urgent", "Urgent Requests"),
         ],
-        string="Status",
-        default="draft",
-        tracking=True,
+        string="Specialization",
+        default="general",
     )
 
     # ============================================================================
-    # CUSTOMER & REQUEST DETAILS
+    # PERFORMANCE METRICS FIELDS
     # ============================================================================
-    partner_id = fields.Many2one(
-        "res.partner", string="Customer", required=True, tracking=True
-    customer_name = fields.Char(
-        string="Customer Name", related="partner_id.name", store=True
-    contact_person = fields.Many2one("res.partner", string="Contact Person")
-    customer_phone = fields.Char(string="Phone", related="partner_id.phone", store=True)
-    customer_email = fields.Char(string="Email", related="partner_id.email", store=True)
-
-    request_type = fields.Selection(
-        [
-            ("retrieval", "Document Retrieval"),
-            ("inspection", "Document Inspection"),
-            ("copy", "Document Copying"),
-            ("scan", "Document Scanning"),
-            ("urgent", "Urgent Retrieval"),
-        ],
-        string="Request Type",
-        required=True,
-        tracking=True,
+    active_orders_count = fields.Integer(
+        string="Active Orders", compute="_compute_order_counts", store=True
     )
-
-    priority = fields.Selection(
-        [
-            ("low", "Low"),
-            ("medium", "Medium"),
-            ("high", "High"),
-            ("urgent", "Urgent"),
-        ],
-        string="Priority",
-        default="medium",
-        tracking=True,
+    completed_orders_count = fields.Integer(
+        string="Completed Orders", compute="_compute_order_counts", store=True
     )
-
-    urgency_reason = fields.Text(string="Urgency Reason")
-
-    # ============================================================================
-    # DOCUMENT & LOCATION DETAILS
-    # ============================================================================
-    document_id = fields.Many2one("records.document", string="Document", tracking=True)
-    document_type = fields.Char(string="Document Type")
-    document_description = fields.Text(string="Document Description")
-    box_id = fields.Many2one("records.container", string="Storage Box", tracking=True)
-    location_id = fields.Many2one(
-        "records.location", string="Storage Location", tracking=True
-    current_location = fields.Char(string="Current Location")
-    retrieval_location = fields.Char(string="Retrieval Location")
-
-    item_type = fields.Selection(
-        [
-            ("document", "Document"),
-            ("file", "File"),
-            ("box", "Box"),
-            ("folder", "Folder"),
-        ],
-        string="Item Type",
-        default="document",
-    )
-
-    item_count = fields.Integer(string="Item Count", default=1)
-    estimated_volume = fields.Float(string="Estimated Volume (cubic ft)", digits=(8, 2))
-
-    # ============================================================================
-    # SCHEDULING & TIMING
-    # ============================================================================
-    requested_date = fields.Datetime(
-        string="Requested Date", required=True, tracking=True
-    scheduled_date = fields.Datetime(string="Scheduled Date", tracking=True)
-    start_date = fields.Datetime(string="Start Date", tracking=True)
-    completion_date = fields.Datetime(string="Completion Date", tracking=True)
-    deadline = fields.Datetime(string="Deadline", tracking=True)
-    estimated_hours = fields.Float(string="Estimated Hours", digits=(5, 2))
-    actual_hours = fields.Float(string="Actual Hours", digits=(5, 2))
-
-    # ============================================================================
-    # WORK ORDER EXECUTION
-    # ============================================================================
-    work_instructions = fields.Text(string="Work Instructions")
-    special_requirements = fields.Text(string="Special Requirements")
-    safety_notes = fields.Text(string="Safety Notes")
-    technician_notes = fields.Text(string="Technician Notes")
-    completion_notes = fields.Text(string="Completion Notes")
-    quality_check_notes = fields.Text(string="Quality Check Notes")
-    quality_approved = fields.Boolean(string="Quality Approved", default=False)
-    quality_approved_by = fields.Many2one("res.users", string="Quality Approved By")
-    quality_approval_date = fields.Datetime(string="Quality Approval Date")
-
-    # ============================================================================
-    # COSTS & BILLING
-    # ============================================================================
-    currency_id = fields.Many2one(
-        "res.currency", default=lambda self: self.env.company.currency_id
-    estimated_cost = fields.Monetary(
-        string="Estimated Cost", currency_field="currency_id"
-    actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id")
-    billable_amount = fields.Monetary(
-        string="Billable Amount", currency_field="currency_id"
-    is_billable = fields.Boolean(string="Billable", default=True)
-    invoiced = fields.Boolean(string="Invoiced", default=False)
-    invoice_id = fields.Many2one("account.move", string="Invoice")
-
-    # ============================================================================
-    # EQUIPMENT & RESOURCES
-    # ============================================================================
-    equipment_required = fields.Text(string="Equipment Required")
-    vehicle_required = fields.Boolean(string="Vehicle Required", default=False)
-    vehicle_id = fields.Many2one("records.vehicle", string="Assigned Vehicle")
-    tools_required = fields.Text(string="Tools Required")
-    supplies_needed = fields.Text(string="Supplies Needed")
-    team_members = fields.Many2many(
-        "res.users",
-        "work_order_team_rel",
-        "work_order_id",
-        "user_id",
-        string="Team Members",
-    )
-
-    # ============================================================================
-    # CUSTOMER INTERACTION
-    # ============================================================================
-    customer_contacted = fields.Boolean(string="Customer Contacted", default=False)
-    contact_method = fields.Selection(
-        [
-            ("phone", "Phone"),
-            ("email", "Email"),
-            ("portal", "Customer Portal"),
-            ("in_person", "In Person"),
-        ],
-        string="Contact Method",
-    )
-
-    customer_approval_required = fields.Boolean(
-        string="Customer Approval Required", default=False
-    customer_approved = fields.Boolean(string="Customer Approved", default=False)
-    approval_notes = fields.Text(string="Approval Notes")
-
-    delivery_method = fields.Selection(
-        [
-            ("pickup", "Customer Pickup"),
-            ("delivery", "Delivery"),
-            ("mail", "Mail"),
-            ("email", "Email"),
-            ("portal", "Portal Access"),
-        ],
-        string="Delivery Method",
-        default="pickup",
-    )
-
-    delivery_address = fields.Text(string="Delivery Address")
-    delivery_instructions = fields.Text(string="Delivery Instructions")
-
-    # ============================================================================
-    # RELATIONSHIP FIELDS
-    # ============================================================================
-    portal_request_id = fields.Many2one("portal.request", string="Portal Request")
-    retrieval_items_ids = fields.One2many(
-        "document.retrieval.item", "work_order_id", string="Retrieval Items"
-    project_task_id = fields.Many2one("project.task", string="Related Project Task")
-    task_id = fields.Many2one("project.task", string="Related Task")
-    custody_log_ids = fields.One2many(
-        "records.chain.of.custody", "work_order_id", string="Chain of Custody"
-    )
-
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
-    compute="_compute_processing_metrics",
+    average_completion_time = fields.Float(
+        string="Avg Completion Time (days)",
+        digits=(5, 2),
+        compute="_compute_performance",
         store=True,
-    is_overdue = fields.Boolean(
-        string="Overdue", compute="_compute_overdue_status", store=True
+    )
+    efficiency_rating = fields.Float(
+        string="Efficiency Rating (%)",
+        digits=(5, 2),
+        compute="_compute_performance",
+        store=True,
     )
 
-    @api.depends("start_date", "completion_date")
-    def _compute_processing_metrics(self):
-        """Compute processing time metrics"""
-        for record in self:
-            if record.start_date and record.completion_date:
-                delta = record.completion_date - record.start_date
-                record.processing_time = delta.total_seconds() / 3600
-            else:
-                record.processing_time = 0.0
+    # ============================================================================
+    # CAPACITY MANAGEMENT FIELDS
+    # ============================================================================
+    max_concurrent_orders = fields.Integer(string="Max Concurrent Orders", default=10)
+    current_workload = fields.Float(
+        string="Current Workload (%)", compute="_compute_workload", store=True
+    )
 
-    @api.depends("deadline", "state")
-    def _compute_overdue_status(self):
-        """Compute if work order is overdue"""
-        now = fields.Datetime.now()
-        for record in self:
-            record.is_overdue = (
-                record.deadline
-                and record.deadline < now
-                and record.state not in ["completed", "cancelled"]
+    # ============================================================================
+    # AVAILABILITY FIELDS
+    # ============================================================================
+    available_from = fields.Float(
+        string="Available From (Hours)",
+        help="Available from time in 24-hour format (e.g., 9.5 for 9:30 AM)",
+    )
+    available_to = fields.Float(
+        string="Available To (Hours)",
+        help="Available to time in 24-hour format (e.g., 17.5 for 5:30 PM)",
+    )
+    working_days = fields.Selection(
+        [
+            ("weekdays", "Monday to Friday"),
+            ("all_days", "All Days"),
+            ("custom", "Custom Schedule"),
+        ],
+        string="Working Days",
+        default="weekdays",
+    )
+
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("member_ids")
+    def _compute_order_counts(self):
+        """Compute order counts for the team"""
+        for team in self:
+            team_member_ids = team.member_ids.mapped("user_id.id")
+            active_count = self.env["document.retrieval.work.order"].search_count(
+                [("user_id", "in", team_member_ids), ("state", "=", "active")]
+            )
+            completed_count = self.env["document.retrieval.work.order"].search_count(
+                [("user_id", "in", team_member_ids), ("state", "=", "inactive")]
             )
 
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_schedule(self):
-        """Schedule the work order"""
-        self.ensure_one()
-        if not self.scheduled_date:
-            raise UserError(_("Please set a scheduled date before scheduling."))
+            team.active_orders_count = active_count
+            team.completed_orders_count = completed_count
 
-        self.write({"state": "scheduled"})
-        self._create_calendar_event()
-        return self._show_notification(
-            _("Work Order Scheduled"), _("Work order has been scheduled successfully.")
-        )
-
-    def action_start_work(self):
-        """Start work on the order"""
-        self.ensure_one()
-        self.write({"state": "in_progress", "start_date": fields.Datetime.now()})
-        return self._show_notification(
-            _("Work Started"), _("Work order execution has begun.")
-        )
-
-    def action_complete_work(self):
-        """Complete the work order"""
-        self.ensure_one()
-        if not self.completion_notes:
-            raise UserError(_("Please enter completion notes before completing."))
-
-        self.write({"state": "completed", "completion_date": fields.Datetime.now()})
-        self._notify_customer_completion()
-        return self._show_notification(
-            _("Work Completed"), _("Work order has been completed successfully.")
-        )
-
-    def action_quality_check(self):
-        """Perform quality check"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Quality Check"),
-            "res_model": "quality.check.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {"default_work_order_id": self.id},
-        }
-
-    def action_view_retrieval_items(self):
-        """View retrieval items"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Retrieval Items"),
-            "res_model": "document.retrieval.item",
-            "view_mode": "tree,form",
-            "target": "current",
-            "domain": [("work_order_id", "=", self.id)],
-        }
-
-    def action_create_invoice(self):
-        """Create invoice for work order"""
-        self.ensure_one()
-        if not self.is_billable:
-            raise UserError(_("This work order is not billable."))
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Create Invoice"),
-            "res_model": "account.move",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_partner_id": self.partner_id.id,
-                "default_move_type": "out_invoice",
-                "default_ref": self.name,
-            },
-        }
-
-    # ============================================================================
-    # PRIVATE METHODS
-    # ============================================================================
-    def _show_notification(self, title, message):
-        """Show success notification"""
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": title,
-                "message": message,
-                "type": "success",
-                "sticky": False,
-            },
-        }
-
-    def _create_calendar_event(self):
-        """Create calendar event for scheduled work"""
-        for record in self:
-            if record.scheduled_date and record.user_id:
-                self.env["calendar.event"].create(
-                    {
-                        "name": f"Work Order: {record.name}",
-                        "description": f"Document retrieval work order for {record.partner_id.name}",
-                        "start": record.scheduled_date,
-                        "stop": record.scheduled_date
-                        + timedelta(hours=record.estimated_hours or 2),
-                        "user_id": record.user_id.id,
-                        "partner_ids": [(6, 0, [record.partner_id.id])],
-                    }
+    @api.depends("member_ids")
+    def _compute_performance(self):
+        """Compute performance metrics"""
+        for team in self:
+            if team.member_ids:
+                team_member_ids = team.member_ids.mapped("user_id.id")
+                completed_orders = self.env["document.retrieval.work.order"].search(
+                    [
+                        ("user_id", "in", team_member_ids),
+                        ("state", "=", "inactive"),
+                        ("completion_date", "!=", False),
+                    ]
                 )
 
-    def _notify_customer_completion(self):
-        """Notify customer of work order completion"""
-        for record in self:
-            if record.partner_id.email:
-                template = self.env.ref(
-                    "records_management.mail_template_work_order_completion", False
-                )
-                if template:
-                    template.send_mail(record.id, force_send=True)
+                if completed_orders:
+                    total_days = 0
+                    efficiency_scores = []
 
-    # ============================================================================
-    # AUTO-GENERATED ACTION METHODS (from comprehensive validation)
-    # ============================================================================
-    def action_add_items(self):
-        """Add Items - Action method"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Add Items"),
-            "res_model": "document.retrieval.work.order",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        }
+                    for order in completed_orders:
+                        if order.requested_date and order.completion_date:
+                            completion_days = (
+                                order.completion_date.date() - order.requested_date
+                            ).days
+                            total_days += completion_days
 
-    def action_start_retrieval(self):
-        """Start Retrieval - State management action"""
-        self.ensure_one()
-        # TODO: Implement action_start_retrieval business logic
-        self.message_post(body=_("Start Retrieval action executed"))
-        return True
+                        if order.estimated_hours and order.actual_hours:
+                            efficiency = (
+                                order.estimated_hours / order.actual_hours
+                            ) * 100
+                            efficiency_scores.append(
+                                min(efficiency, 200)
+                            )  # Cap at 200%
 
-    def action_assign_technician(self):
-        """Assign Technician - Action method"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Assign Technician"),
-            "res_model": "document.retrieval.work.order",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        }
-
-    def action_complete(self):
-        """Complete - State management action"""
-        self.ensure_one()
-        # TODO: Implement action_complete business logic
-        self.message_post(body=_("Complete action executed"))
-        return True
-
-    def action_confirm(self):
-        """Confirm - State management action"""
-        self.ensure_one()
-        # TODO: Implement action_confirm business logic
-        self.message_post(body=_("Confirm action executed"))
-        return True
-
-    def action_deliver(self):
-        """Deliver - Action method"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Deliver"),
-            "res_model": "document.retrieval.work.order",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        }
-
-    def action_view_pricing_breakdown(self):
-        """View Pricing Breakdown - View related records"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("View Pricing Breakdown"),
-            "res_model": "document.retrieval.work.order",
-            "view_mode": "tree,form",
-            "domain": [("id", "in", self.ids)],
-            "context": self.env.context,
-        }
-
-    def action_ready_for_delivery(self):
-        """Ready For Delivery - Action method"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Ready For Delivery"),
-            "res_model": "document.retrieval.work.order",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        }
-
-    # ============================================================================
-    # VALIDATION METHODS
-    # ============================================================================
-    @api.constrains("requested_date", "scheduled_date", "deadline")
-    def _check_date_sequence(self):
-        """Ensure dates are in logical sequence"""
-        for record in self:
-            if record.requested_date and record.scheduled_date:
-                if record.scheduled_date < record.requested_date:
-                    raise ValidationError(
-                        _("Scheduled date cannot be before requested date.")
+                    team.average_completion_time = total_days / len(completed_orders)
+                    team.efficiency_rating = (
+                        sum(efficiency_scores) / len(efficiency_scores)
+                        if efficiency_scores
+                        else 0
                     )
-            if record.scheduled_date and record.deadline:
-                if record.deadline < record.scheduled_date:
-                    raise ValidationError(
-                        _("Deadline cannot be before scheduled date.")
-                    )
+                else:
+                    team.average_completion_time = 0
+                    team.efficiency_rating = 0
+            else:
+                team.average_completion_time = 0
+                team.efficiency_rating = 0
 
-    @api.constrains("estimated_hours", "actual_hours", "item_count")
-    def _check_positive_values(self):
-        """Ensure numeric values are positive"""
-        for record in self:
-            if record.estimated_hours and record.estimated_hours <= 0:
-                raise ValidationError(_("Estimated hours must be positive."))
-            if record.actual_hours and record.actual_hours < 0:
-                raise ValidationError(_("Actual hours cannot be negative."))
-            if record.item_count and record.item_count <= 0:
-                raise ValidationError(_("Item count must be positive."))
+    @api.depends("active_orders_count", "max_concurrent_orders")
+    def _compute_workload(self):
+        """Compute current workload percentage"""
+        for team in self:
+            if team.max_concurrent_orders > 0:
+                team.current_workload = (
+                    team.active_orders_count / team.max_concurrent_orders
+                ) * 100
+            else:
+                team.current_workload = 0
+
+
+class DocumentRetrievalPricing(models.Model):
+    """Pricing rules for document retrieval services"""
+
+    _name = "document.retrieval.pricing"
+    _description = "Document Retrieval Pricing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "service_type, priority_level"
+    _rec_name = "name"
 
     # ============================================================================
-    # LIFECYCLE METHODS
+    # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Override create to set defaults and generate sequence"""
-        for vals in vals_list:
-            if not vals.get("name"):
-                vals["name"] = self.env["ir.sequence"].next_by_code(
-                    "document.retrieval.work.order"
-    or _("New")
-            if not vals.get("deadline") and vals.get("requested_date"):
-                requested = fields.Datetime.from_string(vals["requested_date"])
-                vals["deadline"] = requested + timedelta(days=7)
-        return super().create(vals_list)
+    name = fields.Char(
+        string="Pricing Rule Name", required=True, tracking=True, index=True
+    )
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Assigned User",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+    active = fields.Boolean(string="Active", default=True, tracking=True)
 
-    def write(self, vals):
-        """Override write to track important changes"""
-        if "state" in vals:
-            for record in self:
-                old_state = dict(record._fields["state"].selection).get(record.state)
-                new_state = dict(record._fields["state"].selection).get(vals["state"])
-                record.message_post(
-                    body=_("Work order status changed from %s to %s")
-                    % (old_state, new_state)
+    # ============================================================================
+    # SERVICE TYPE FIELDS
+    # ============================================================================
+    service_type = fields.Selection(
+        [
+            ("permanent", "Permanent Retrieval"),
+            ("temporary", "Temporary Retrieval"),
+            ("copy", "Copy Request"),
+            ("scan", "Scan to Digital"),
+            ("rush", "Rush Service"),
+        ],
+        string="Service Type",
+        required=True,
+    )
+
+    # ============================================================================
+    # PRICING STRUCTURE FIELDS
+    # ============================================================================
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+        required=True,
+    )
+    base_fee = fields.Monetary(string="Base Fee", currency_field="currency_id")
+    per_document_fee = fields.Monetary(
+        string="Per Document Fee", currency_field="currency_id"
+    )
+    per_hour_fee = fields.Monetary(string="Per Hour Fee", currency_field="currency_id")
+    per_box_fee = fields.Monetary(string="Per Box Fee", currency_field="currency_id")
+
+    # ============================================================================
+    # VOLUME DISCOUNT FIELDS
+    # ============================================================================
+    volume_threshold = fields.Integer(string="Volume Threshold")
+    volume_discount_percent = fields.Float(string="Volume Discount (%)", digits=(5, 2))
+
+    # ============================================================================
+    # PRIORITY PRICING FIELDS
+    # ============================================================================
+    priority_level = fields.Selection(
+        [
+            ("standard", "Standard"),
+            ("expedited", "Expedited"),
+            ("urgent", "Urgent"),
+            ("critical", "Critical"),
+        ],
+        string="Priority Level",
+        default="standard",
+    )
+    priority_multiplier = fields.Float(
+        string="Priority Multiplier", default=1.0, digits=(3, 2)
+    )
+
+    # ============================================================================
+    # DELIVERY PRICING FIELDS
+    # ============================================================================
+    delivery_included = fields.Boolean(string="Delivery Included", default=False)
+    delivery_fee = fields.Monetary(string="Delivery Fee", currency_field="currency_id")
+    delivery_radius_km = fields.Float(string="Delivery Radius (km)", digits=(5, 2))
+
+    # ============================================================================
+    # DIGITAL SERVICES PRICING FIELDS
+    # ============================================================================
+    scanning_fee = fields.Monetary(string="Scanning Fee", currency_field="currency_id")
+    ocr_fee = fields.Monetary(string="OCR Fee", currency_field="currency_id")
+    digital_delivery_fee = fields.Monetary(
+        string="Digital Delivery Fee", currency_field="currency_id"
+    )
+
+    # ============================================================================
+    # TIME-BASED PRICING FIELDS
+    # ============================================================================
+    same_day_multiplier = fields.Float(
+        string="Same Day Multiplier", default=2.0, digits=(3, 2)
+    )
+    next_day_multiplier = fields.Float(
+        string="Next Day Multiplier", default=1.5, digits=(3, 2)
+    )
+
+    # ============================================================================
+    # VALIDITY FIELDS
+    # ============================================================================
+    valid_from = fields.Date(string="Valid From", default=fields.Date.today)
+    valid_to = fields.Date(string="Valid To")
+
+    # ============================================================================
+    # CUSTOMER SPECIFIC FIELDS
+    # ============================================================================
+    customer_id = fields.Many2one("res.partner", string="Specific Customer")
+    customer_tier = fields.Selection(
+        [
+            ("bronze", "Bronze"),
+            ("silver", "Silver"),
+            ("gold", "Gold"),
+            ("platinum", "Platinum"),
+        ],
+        string="Customer Tier",
+    )
+
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+
+class DocumentRetrievalEquipment(models.Model):
+    """Equipment used for document retrieval operations"""
+
+    _name = "document.retrieval.equipment"
+    _description = "Document Retrieval Equipment"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "name"
+    _rec_name = "name"
+
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Equipment Name", required=True, tracking=True, index=True
+    )
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Assigned User",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+    active = fields.Boolean(string="Active", default=True, tracking=True)
+
+    # ============================================================================
+    # EQUIPMENT TYPE FIELDS
+    # ============================================================================
+    equipment_type = fields.Selection(
+        [
+            ("scanner", "Document Scanner"),
+            ("cart", "Transport Cart"),
+            ("ladder", "Storage Ladder"),
+            ("tablet", "Mobile Tablet"),
+            ("camera", "Digital Camera"),
+            ("vehicle", "Transport Vehicle"),
+            ("tools", "Hand Tools"),
+            ("safety", "Safety Equipment"),
+        ],
+        string="Equipment Type",
+        required=True,
+    )
+
+    # ============================================================================
+    # STATUS AND AVAILABILITY FIELDS
+    # ============================================================================
+    status = fields.Selection(
+        [
+            ("available", "Available"),
+            ("in_use", "In Use"),
+            ("maintenance", "Under Maintenance"),
+            ("retired", "Retired"),
+        ],
+        string="Status",
+        default="available",
+        tracking=True,
+    )
+
+    location_id = fields.Many2one("records.location", string="Current Location")
+    assigned_to = fields.Many2one("hr.employee", string="Assigned To")
+
+    # ============================================================================
+    # SPECIFICATION FIELDS
+    # ============================================================================
+    model = fields.Char(string="Model")
+    serial_number = fields.Char(string="Serial Number", tracking=True)
+    purchase_date = fields.Date(string="Purchase Date")
+    warranty_expiry = fields.Date(string="Warranty Expiry")
+
+    # ============================================================================
+    # MAINTENANCE FIELDS
+    # ============================================================================
+    last_maintenance = fields.Date(string="Last Maintenance")
+    next_maintenance = fields.Date(string="Next Maintenance")
+    maintenance_notes = fields.Text(string="Maintenance Notes")
+
+    # ============================================================================
+    # USAGE TRACKING FIELDS
+    # ============================================================================
+    usage_hours = fields.Float(string="Total Usage Hours", digits=(10, 2))
+    current_work_order_id = fields.Many2one(
+        "document.retrieval.work.order", string="Current Work Order"
+    )
+
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+
+class DocumentRetrievalMetrics(models.Model):
+    """Performance metrics for document retrieval operations"""
+
+    _name = "document.retrieval.metrics"
+    _description = "Document Retrieval Metrics"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "date desc"
+    _rec_name = "name"
+
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(string="Metric Name", required=True, tracking=True, index=True)
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Assigned User",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+    active = fields.Boolean(string="Active", default=True, tracking=True)
+
+    # ============================================================================
+    # METRIC DATE AND REFERENCE FIELDS
+    # ============================================================================
+    date = fields.Date(
+        string="Retrieval Date", required=True, default=fields.Date.today, tracking=True
+    )
+    work_order_id = fields.Many2one(
+        "document.retrieval.work.order", string="Work Order"
+    )
+    team_id = fields.Many2one("document.retrieval.team", string="Team")
+    employee_id = fields.Many2one("hr.employee", string="Employee")
+
+    # ============================================================================
+    # PERFORMANCE METRICS FIELDS
+    # ============================================================================
+    documents_retrieved = fields.Integer(string="Documents Retrieved")
+    hours_worked = fields.Float(string="Hours Worked", digits=(5, 2))
+    accuracy_rate = fields.Float(string="Accuracy Rate (%)", digits=(5, 2))
+    customer_satisfaction = fields.Float(
+        string="Customer Satisfaction (%)", digits=(5, 2)
+    )
+
+    # ============================================================================
+    # EFFICIENCY METRICS FIELDS
+    # ============================================================================
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+        required=True,
+    )
+    documents_per_hour = fields.Float(
+        string="Documents per Hour",
+        digits=(5, 2),
+        compute="_compute_efficiency",
+        store=True,
+    )
+    cost_per_document = fields.Monetary(
+        string="Cost per Document", currency_field="currency_id"
+    )
+    revenue_generated = fields.Monetary(
+        string="Revenue Generated", currency_field="currency_id"
+    )
+    profit_margin = fields.Float(string="Profit Margin (%)", digits=(5, 2))
+
+    # ============================================================================
+    # QUALITY METRICS FIELDS
+    # ============================================================================
+    errors_count = fields.Integer(string="Errors Count")
+    rework_required = fields.Integer(string="Rework Required")
+    on_time_delivery = fields.Boolean(string="On Time Delivery", default=True)
+
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("documents_retrieved", "hours_worked")
+    def _compute_efficiency(self):
+        """Compute documents per hour efficiency"""
+        for metric in self:
+            if metric.hours_worked > 0:
+                metric.documents_per_hour = (
+                    metric.documents_retrieved / metric.hours_worked
                 )
-        return super().write(vals)
-
-    # ============================================================================
-    # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================
-    has_custom_rates = fields.Boolean(string='Has Custom Rates', default=False)
-    request_date = fields.Date(string='Request Date', tracking=True)
-    technician_id = fields.Many2one('technician', string='Technician', tracking=True))
+            else:
+                metric.documents_per_hour = 0

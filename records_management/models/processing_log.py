@@ -14,8 +14,9 @@ class ProcessingLog(models.Model):
     name = fields.Char(string="Log Entry", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    ),
     user_id = fields.Many2one(
-        "res.users", default=lambda self: self.env.user, tracking=True
+        "res.users", default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -23,6 +24,7 @@ class ProcessingLog(models.Model):
     # ============================================================================
     timestamp = fields.Datetime(
         string="Timestamp", default=fields.Datetime.now, required=True, index=True
+    ),
     process_type = fields.Selection(
         [
             ("pickup", "Pickup Process"),
@@ -33,7 +35,7 @@ class ProcessingLog(models.Model):
             ("transport", "Transport Process"),
             ("scanning", "Barcode Scanning"),
             ("system", "System Process"),
-        ],
+        ]),
         string="Process Type",
         required=True,
         index=True,
@@ -46,7 +48,7 @@ class ProcessingLog(models.Model):
             ("warning", "Warning"),
             ("error", "Error"),
             ("critical", "Critical"),
-        ],
+        ]),
         string="Log Level",
         default="info",
         required=True,
@@ -55,24 +57,25 @@ class ProcessingLog(models.Model):
     # ============================================================================
     # PROCESS REFERENCES
     # ============================================================================
-    res_model = fields.Char(string="Related Model")
+    )
+    res_model = fields.Char(string="Related Model"),
     res_id = fields.Integer(string="Related Record ID")
     res_name = fields.Char(string="Related Record Name")
 
     # ============================================================================
     # LOG CONTENT
     # ============================================================================
-    message = fields.Text(string="Log Message", required=True)
+    message = fields.Text(string="Log Message", required=True),
     details = fields.Text(string="Additional Details")
-    error_code = fields.Char(string="Error Code")
+    error_code = fields.Char(string="Error Code"),
     stack_trace = fields.Text(string="Stack Trace")
 
     # ============================================================================
     # PROCESSING CONTEXT
     # ============================================================================
-    session_id = fields.Char(string="Session ID", index=True)
+    session_id = fields.Char(string="Session ID", index=True),
     request_id = fields.Char(string="Request ID", index=True)
-    ip_address = fields.Char(string="IP Address")
+    ip_address = fields.Char(string="IP Address"),
     user_agent = fields.Char(string="User Agent")
 
     # ============================================================================
@@ -92,7 +95,7 @@ class ProcessingLog(models.Model):
             ("completed", "Completed"),
             ("failed", "Failed"),
             ("cancelled", "Cancelled"),
-        ],
+        ]),
         string="Status",
         default="pending",
         tracking=True,
@@ -101,8 +104,10 @@ class ProcessingLog(models.Model):
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
+    )
     records_container_id = fields.Many2one(
         "records.container", string="Related Container"
+    ),
     pickup_request_id = fields.Many2one("pickup.request", string="Related Pickup")
     shredding_service_id = fields.Many2one(
         "shredding.service", string="Related Shredding"
@@ -128,6 +133,8 @@ class ProcessingLog(models.Model):
                     log.res_name = f"Invalid {log.res_model}({log.res_id})"
             else:
                 log.res_name = ""
+
+    )
 
     reference = fields.Char(
         string="Reference", compute="_compute_reference", store=True
@@ -163,4 +170,4 @@ class ProcessingLog(models.Model):
             "log_level": log_level,
             **kwargs,
         }
-        return self.create(vals))
+        return self.create(vals)

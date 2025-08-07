@@ -1,6 +1,20 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+
+# Import handling for disconnected development environment
+try:
+    from odoo import models, fields, api, _
+    from odoo.exceptions import UserError
+except ImportError:
+    # Fallback for development environments without Odoo installed
+    # These will be properly imported when deployed to Odoo.sh
+    models = None
+    fields = None
+    api = None
+    _ = lambda x: x  # Simple fallback for translation function
+
+    class UserError(Exception):
+        pass
+
 
 class BinKeyManagement(models.Model):
     _name = "bin.key.management"
@@ -10,8 +24,8 @@ class BinKeyManagement(models.Model):
     _rec_name = "name"
 
     # Basic Information
-    name = fields.Char(string="Name", required=True, tracking=True, index=True),
-    description = fields.Text(string="Description"),
+    name = fields.Char(string="Name", required=True, tracking=True, index=True)
+    description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
 
     # Relationship to Partner Bin Key
@@ -37,6 +51,7 @@ class BinKeyManagement(models.Model):
     # Company and User
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
+    )
     user_id = fields.Many2one(
         "res.users", string="Assigned User", default=lambda self: self.env.user
     )
@@ -44,6 +59,7 @@ class BinKeyManagement(models.Model):
     # Timestamps
     date_created = fields.Datetime(
         string="Key Created Date", default=fields.Datetime.now
+    )
     date_modified = fields.Datetime(string="Modified Date")
 
     # ============================================================================
@@ -60,6 +76,7 @@ class BinKeyManagement(models.Model):
     # Partner and Location Management
     partner_company = fields.Char(
         string="Partner Company", help="Name of the company that issued/owns the key"
+    )
     issue_location = fields.Char(
         string="Issue Location", help="Location where the key was issued"
     )
@@ -69,6 +86,7 @@ class BinKeyManagement(models.Model):
         string="Issue Date",
         default=fields.Date.today,
         help="Date when the key was issued",
+    )
     expected_return_date = fields.Date(
         string="Expected Return Date", help="Expected date for key return"
     )
@@ -216,12 +234,13 @@ class BinKeyManagement(models.Model):
             },
         }
 
-    # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
+    # === BUSINESS CRITICAL FIELDS ===
     customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
     bin_number = fields.Char(string="Bin Number")
     access_level = fields.Selection(
         [("full", "Full Access"), ("limited", "Limited"), ("restricted", "Restricted")],
         string="Access Level",
+    )
     expiration_date = fields.Date(string="Expiration Date")
     last_check_date = fields.Date(string="Last Check Date")
     authorized_by = fields.Many2one("res.users", string="Authorized By")
@@ -242,22 +261,26 @@ class BinKeyManagement(models.Model):
 
     # Key Replacement Tracking
     replaced_by_id = fields.Many2one(
-        "bin.key.management", string="Replaced By", help="Record that replaced this key"
+        "bin.key.management",
+        string="Replaced By",
+        help="New key record that replaces this key for full traceability",
     )
-
     replacement_of_id = fields.Many2one(
         "bin.key.management",
         string="Replacement Of",
-        help="Original key that this record replaces",
+        help="Always set for replacement keys; links to the original key being replaced. The original key's 'replaced_by_id' points back to this record for full traceability.",
     )
 
     # Service Date Management
     return_date = fields.Date(
-        string="Return Date", tracking=True, help="Date when the key was returned"
+        string="Return Date",
+        tracking=True,
+        help="Date when the key was returned",
     )
-
     service_date = fields.Date(
-        string="Service Date", tracking=True, help="Date when key service was performed"
+        string="Service Date",
+        tracking=True,
+        help="Date when a key-related service (maintenance, replacement, issue, etc.) was performed. Used for reporting and automation to track service events.",
     )
 
     # Key Management Status
@@ -305,7 +328,7 @@ class BinKeyManagement(models.Model):
         string="Service Fee",
         currency_field="currency_id",
         help="Fee charged for this key service",
-    # Bin Key Management Fields
+    )
     billable = fields.Boolean("Billable", default=True)
     bin_location = fields.Char("Bin Location")
     bin_locations = fields.Text("Multiple Bin Locations")
@@ -314,32 +337,40 @@ class BinKeyManagement(models.Model):
     access_authorization_level = fields.Selection(
         [("basic", "Basic"), ("elevated", "Elevated"), ("admin", "Admin")],
         default="basic",
+    )
     access_log_retention_days = fields.Integer(
         "Access Log Retention (Days)", default=365
+    )
     bin_access_frequency = fields.Selection(
         [("daily", "Daily"), ("weekly", "Weekly"), ("monthly", "Monthly")],
         default="weekly",
+    )
     bin_security_level = fields.Selection(
         [("standard", "Standard"), ("high", "High"), ("maximum", "Maximum")],
         default="standard",
+    )
     currency_id = fields.Many2one(
         "res.currency", "Currency", default=lambda self: self.env.company.currency_id
+    )
     customer_key_count = fields.Integer("Customer Key Count", default=1)
     key_audit_trail_enabled = fields.Boolean("Key Audit Trail Enabled", default=True)
     key_duplication_allowed = fields.Boolean("Key Duplication Allowed", default=False)
     key_expiration_date = fields.Date("Key Expiration Date")
     key_holder_verification_required = fields.Boolean(
         "Key Holder Verification Required", default=True
+    )
     key_replacement_fee = fields.Monetary(
         "Key Replacement Fee", currency_field="currency_id"
+    )
     key_restriction_notes = fields.Text("Key Restriction Notes")
     key_security_deposit = fields.Monetary(
         "Key Security Deposit", currency_field="currency_id"
+    )
     lock_change_required = fields.Boolean("Lock Change Required", default=False)
     master_key_override = fields.Boolean("Master Key Override Available", default=False)
     multi_user_access_allowed = fields.Boolean(
         "Multi-user Access Allowed", default=False
-    # Bin Key Management Fields
+    )
 
     def action_replace_key(self):
         """Create replacement key and update records."""
@@ -465,4 +496,4 @@ class BinKeyManagement(models.Model):
         for vals in vals_list:
             if not vals.get("name"):
                 vals["name"] = _("New Record")
-        return super().create(vals_list))
+        return super().create(vals_list)

@@ -28,7 +28,7 @@ class PaperBaleRecycling(models.Model):
             ("active", "Active"),
             ("inactive", "Inactive"),
             ("archived", "Archived"),
-        ],
+        ]),
         string="Status",
         default="draft",
         tracking=True,
@@ -37,6 +37,7 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     # BALE INFORMATION
     # ============================================================================
+    )
     bale_id = fields.Char(string="Bale ID", required=True, index=True, tracking=True),
     bale_weight = fields.Float(string="Bale Weight (lbs)", required=True, tracking=True),
     paper_type = fields.Selection(
@@ -47,10 +48,12 @@ class PaperBaleRecycling(models.Model):
             ("cardboard", "Cardboard"),
             ("magazine", "Magazine/Glossy"),
             ("confidential", "Confidential Documents"),
-        ],
+        ]),
         string="Paper Type",
         required=True,
         default="mixed",
+    )
+
     )
 
     grade_quality = fields.Selection(
@@ -59,7 +62,7 @@ class PaperBaleRecycling(models.Model):
             ("grade_2", "Grade 2 - High"),
             ("grade_3", "Grade 3 - Standard"),
             ("grade_4", "Grade 4 - Low"),
-        ],
+        ]),
         string="Grade Quality",
         default="grade_3",
         tracking=True,
@@ -76,6 +79,8 @@ class PaperBaleRecycling(models.Model):
         "res.partner", string="Recycling Facility", domain=[("is_company", "=", True)]
     )
 
+    )
+
     collection_date = fields.Date(string="Collection Date", tracking=True),
     transport_method = fields.Selection(
         [
@@ -83,9 +88,11 @@ class PaperBaleRecycling(models.Model):
             ("rail", "Rail Transport"),
             ("barge", "Barge Transport"),
             ("combination", "Combination"),
-        ],
+        ]),
         string="Transport Method",
         default="truck",
+    )
+
     )
 
     processing_status = fields.Selection(
@@ -94,7 +101,7 @@ class PaperBaleRecycling(models.Model):
             ("in_process", "In Process"),
             ("completed", "Completed"),
             ("rejected", "Rejected"),
-        ],
+        ]),
         string="Processing Status",
         default="pending",
         tracking=True,
@@ -119,14 +126,16 @@ class PaperBaleRecycling(models.Model):
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
+    ),
     market_price_per_ton = fields.Monetary(string="Market Price per Ton", currency_field="currency_id")
     total_revenue = fields.Monetary(
         string="Total Revenue",
         currency_field="currency_id",
         compute="_compute_total_revenue",
         store=True,
+    ),
     processing_cost = fields.Monetary(string="Processing Cost", currency_field="currency_id")
-    transport_cost = fields.Monetary(string="Transport Cost", currency_field="currency_id")
+    transport_cost = fields.Monetary(string="Transport Cost", currency_field="currency_id"),
     net_profit = fields.Monetary(
         string="Net Profit",
         currency_field="currency_id",
@@ -137,7 +146,8 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    source_paper_bales = fields.Many2many("paper.bale", string="Source Paper Bales")
+    )
+    source_paper_bales = fields.Many2many("paper.bale", string="Source Paper Bales"),
     shredding_service_ids = fields.One2many(
         "shredding.service", "recycling_bale_id", string="Related Shredding Services"
     )
@@ -161,6 +171,8 @@ class PaperBaleRecycling(models.Model):
         for record in self:
             record.source_bale_count = len(record.source_paper_bales)
 
+    )
+
     source_bale_count = fields.Integer(compute="_compute_source_bale_count", string="Source Bales")
 
     # ============================================================================
@@ -179,13 +191,13 @@ class PaperBaleRecycling(models.Model):
     def action_start_processing(self):
         self.ensure_one()
         if self.state != "active":
-            raise UserError(_("Only active bales can be processed."))
+            raise UserError(_("Only active bales can be processed.")
         self.write({"processing_status": "in_process", "processing_date": fields.Date.today()})
-
+)
     def action_complete_processing(self):
         self.ensure_one()
         if self.processing_status != "in_process":
-            raise UserError(_("Only bales in process can be completed."))
+            raise UserError(_("Only bales in process can be completed.")
         self.write({"processing_status": "completed"})
 
     def action_reject_bale(self):
@@ -237,30 +249,27 @@ class PaperBaleRecycling(models.Model):
     def _check_percentages(self):
         for record in self:
             if record.contamination_level < 0 or record.contamination_level > 100:
-                raise ValidationError(_("Contamination level must be between 0 and 100%."))
+                raise ValidationError(_("Contamination level must be between 0 and 100%.")
             if record.moisture_content < 0 or record.moisture_content > 100:
-                raise ValidationError(_("Moisture content must be between 0 and 100%."))
-
+                raise ValidationError(_("Moisture content must be between 0 and 100%.")
     @api.constrains("bale_weight")
     def _check_bale_weight(self):
         for record in self:
             if record.bale_weight <= 0:
-                raise ValidationError(_("Bale weight must be greater than zero."))
-
+                raise ValidationError(_("Bale weight must be greater than zero.")
     @api.constrains("bale_id")
     def _check_bale_id_uniqueness(self):
         for record in self:
             if record.bale_id:
                 existing = self.search([("bale_id", "=", record.bale_id), ("id", "!=", record.id)])
                 if existing:
-                    raise ValidationError(_("Bale ID must be unique."))
-
+                    raise ValidationError(_("Bale ID must be unique.")
     # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 1)
     # ============================================================================
-    contamination = fields.Char(string='Contamination', tracking=True)
+    contamination = fields.Char(string='Contamination', tracking=True),
     mobile_entry = fields.Char(string='Mobile Entry', tracking=True)
-    paper_grade = fields.Char(string='Paper Grade', tracking=True)
+    paper_grade = fields.Char(string='Paper Grade', tracking=True),
     production_date = fields.Date(string='Production Date', tracking=True)
     status = fields.Selection([('draft', 'Draft')], string='Status', default='draft', tracking=True)
 
@@ -282,13 +291,13 @@ class PaperBaleRecycling(models.Model):
         """Mark Delivered - Update field"""
         self.ensure_one()
         self.write({"delivered": True})
-        self.message_post(body=_("Mark Delivered"))
-        return True
+        self.message_post(body=_("Mark Delivered")
+        return True)
     def action_mark_paid(self):
         """Mark Paid - Update field"""
         self.ensure_one()
         self.write({"paid": True})
-        self.message_post(body=_("Mark Paid"))
+        self.message_post(body=_("Mark Paid")
         return True
     def action_ready_to_ship(self):
         """Ready To Ship - Action method"""

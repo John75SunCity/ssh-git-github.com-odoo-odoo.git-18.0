@@ -27,8 +27,9 @@ class PickupRequest(models.Model):
     name = fields.Char(string="Name", required=True, tracking=True),
     company_id = fields.Many2one(
         "res.company", required=True, default=lambda self: self.env.company
+    ),
     user_id = fields.Many2one(
-        "res.users", required=True, default=lambda self: self.env.user
+        "res.users", required=True, default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
 
     # Basic state management
@@ -40,10 +41,11 @@ class PickupRequest(models.Model):
     )
 
     # Common fields
-    description = fields.Text()
+    )
+    description = fields.Text(),
     notes = fields.Text()
-    date = fields.Date(default=lambda self: fields.Date.today())
-    help_text = fields.Char(string="Help")
+    date = fields.Date(default=lambda self: fields.Date.today()
+    help_text = fields.Char(string="Help"),
     res_model = fields.Char(string="Res Model")
     view_mode = fields.Selection(
         [
@@ -52,13 +54,14 @@ class PickupRequest(models.Model):
             ("kanban", "Kanban"),
             ("calendar", "Calendar"),
             ("gantt", "Gantt"),
-        ],
+        ]),
         string="View Mode",
         default="form",
         help="Specifies the UI view mode for this pickup request.",
     )
 
     # Location tracking
+    )
     location_id = fields.Many2one(
         "records.location", string="Pickup Location", tracking=True
     )
@@ -83,4 +86,4 @@ class PickupRequest(models.Model):
         """
         self.write({"state": "done"})
         """Mark as done"""
-        self.write({"state": "done"}))
+        self.write({"state": "done"})

@@ -69,8 +69,9 @@ class RecordsDocument(models.Model):
     name = fields.Char(string="Document Name", required=True, tracking=True, index=True),
     document_number = fields.Char(
         string="Document Number", index=True, tracking=True, copy=False
+    ),
     description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10)
+    sequence = fields.Integer(string="Sequence", default=10),
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -82,12 +83,13 @@ class RecordsDocument(models.Model):
         default=lambda self: self.env.company,
         required=True,
         index=True,
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="Document Manager",
         default=lambda self: self.env.user,
         tracking=True,
-        index=True,
+        index=True,)
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
@@ -97,6 +99,7 @@ class RecordsDocument(models.Model):
     # ============================================================================
     # STATE MANAGEMENT
     # ============================================================================
+    )
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -104,7 +107,7 @@ class RecordsDocument(models.Model):
             ("archived", "Archived"),
             ("destroyed", "Destroyed"),
             ("pending_destruction", "Pending Destruction"),
-        ],
+        ]),
         string="Document Status",
         default="draft",
         tracking=True,
@@ -121,6 +124,8 @@ class RecordsDocument(models.Model):
         index=True,
     )
 
+    )
+
     category = fields.Selection(
         [
             ("financial", "Financial"),
@@ -131,7 +136,7 @@ class RecordsDocument(models.Model):
             ("government", "Government"),
             ("hr", "Human Resources"),
             ("technical", "Technical"),
-        ],
+        ]),
         string="Document Category",
         tracking=True,
     )
@@ -143,10 +148,12 @@ class RecordsDocument(models.Model):
             ("confidential", "Confidential"),
             ("restricted", "Restricted"),
             ("top_secret", "Top Secret"),
-        ],
+        ]),
         string="Security Classification",
         default="internal",
         tracking=True,
+    )
+
     )
 
     media_type = fields.Selection(
@@ -155,7 +162,7 @@ class RecordsDocument(models.Model):
             ("digital", "Digital"),
             ("microfilm", "Microfilm"),
             ("mixed", "Mixed Media"),
-        ],
+        ]),
         string="Media Type",
         default="paper",
         tracking=True,
@@ -166,10 +173,13 @@ class RecordsDocument(models.Model):
     # ============================================================================
     file_format = fields.Char(
         string="File Format", help="Document file format (PDF, DOC, XLS, etc.)"
+    )
     file_size_mb = fields.Float(string="File Size (MB)", tracking=True, digits=(10, 2))
-    page_count = fields.Integer(string="Page Count", help="Number of pages in document")
+    page_count = fields.Integer(string="Page Count", help="Number of pages in document"),
     weight_kg = fields.Float(
         string="Weight (kg)", digits=(8, 3), help="Physical weight of document"
+    )
+    )
     dimensions = fields.Char(
         string="Dimensions", help="Physical dimensions (L x W x H)"
     )
@@ -182,8 +192,9 @@ class RecordsDocument(models.Model):
         required=True,
         tracking=True,
         help="Date the document was created/issued",
+    ),
     received_date = fields.Date(
-        string="Received Date", default=fields.Date.context_today, tracking=True
+        string="Received Date", default=fields.Date.context_today, tracking=True)
     scan_date = fields.Date(string="Scan Date")
 
     # Retention Management
@@ -191,11 +202,12 @@ class RecordsDocument(models.Model):
         string="Retention Period (Years)",
         default=7,
         help="Number of years to retain this document",
+    )
     retention_end_date = fields.Date(
         string="Retention End Date",
         compute="_compute_retention_end_date",
         store=True,
-        help="Date when document can be destroyed",
+        help="Date when document can be destroyed",)
     days_until_destruction = fields.Integer(
         string="Days Until Destruction",
         compute="_compute_days_until_destruction",
@@ -203,15 +215,19 @@ class RecordsDocument(models.Model):
     )
 
     # Permanent Flag System
+    )
     permanent_flag = fields.Boolean(
         string="Permanent Flag",
         default=False,
         tracking=True,
-        help="Flag to prevent destruction (legal hold, etc.)",
+        help="Flag to prevent destruction (legal hold, etc.)",)
     permanent_flag_reason = fields.Char(
         string="Permanent Flag Reason", help="Reason for permanent retention"
+    )
+    )
     permanent_flag_date = fields.Datetime(
         string="Permanent Flag Date", help="When permanent flag was applied"
+    ),
     permanent_flag_user_id = fields.Many2one(
         "res.users", string="Flagged By", help="User who applied permanent flag"
     )
@@ -219,16 +235,18 @@ class RecordsDocument(models.Model):
     # ============================================================================
     # LOCATION & STORAGE
     # ============================================================================
+    )
     location_id = fields.Many2one(
-        "records.location", string="Storage Location", tracking=True, index=True
+        "records.location", string="Storage Location", tracking=True, index=True)
     container_id = fields.Many2one(
         "records.container", string="Storage Container", tracking=True, index=True
+    ),
     shelf_position = fields.Char(
         string="Shelf Position", help="Specific position within storage location"
     )
 
     # Digital Storage
-    file_path = fields.Char(string="File Path", help="Path to digital file")
+    file_path = fields.Char(string="File Path", help="Path to digital file"),
     checksum = fields.Char(string="File Checksum", help="Digital integrity checksum")
 
     # ============================================================================
@@ -241,6 +259,8 @@ class RecordsDocument(models.Model):
         help="Customer this document relates to",
     )
 
+    )
+
     tag_ids = fields.Many2many(
         "records.tag", "document_tag_rel", "document_id", "tag_id", string="Tags"
     )
@@ -250,6 +270,7 @@ class RecordsDocument(models.Model):
         "records.document",
         string="Parent Document",
         help="Parent document if this is a child/version",
+    ),
     child_document_ids = fields.One2many(
         "records.document", "parent_document_id", string="Child Documents"
     )
@@ -257,6 +278,8 @@ class RecordsDocument(models.Model):
     # Workflow Relationships
     destruction_request_ids = fields.One2many(
         "records.destruction.request", "document_id", string="Destruction Requests"
+    )
+    )
     retrieval_request_ids = fields.One2many(
         "records.retrieval.request", "document_id", string="Retrieval Requests"
     )
@@ -276,11 +299,13 @@ class RecordsDocument(models.Model):
     # The activity_ids and message_ids fields below are for reference only and should not be used for direct relational logic,
     # as Odoo manages these relationships internally via the mail framework.
 
+    )
+
     activity_ids = fields.One2many(
         "mail.activity",
         "res_id",
         string="Activities",
-        domain="[('res_model', '=', 'records.document')]",
+        domain="[('res_model', '=', 'records.document')]",)
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -309,6 +334,7 @@ class RecordsDocument(models.Model):
             if record.permanent_flag:
                 record.days_until_destruction = -1  # Permanent
             elif record.retention_end_date:
+                )
                 today = fields.Date.today()
                 end_date = record.retention_end_date
                 if hasattr(end_date, "date"):
@@ -335,6 +361,7 @@ class RecordsDocument(models.Model):
 
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
+    ),
     child_count = fields.Integer(
         string="Child Documents", compute="_compute_child_count"
     )
@@ -355,22 +382,19 @@ class RecordsDocument(models.Model):
     def _check_retention_period(self):
         for record in self:
             if record.retention_period < 0:
-                raise ValidationError(_("Retention period cannot be negative"))
+                raise ValidationError(_("Retention period cannot be negative")
             if record.retention_period > 100:
-                raise ValidationError(_("Retention period cannot exceed 100 years"))
-
+                raise ValidationError(_("Retention period cannot exceed 100 years")))
     @api.constrains("file_size_mb")
     def _check_file_size(self):
         for record in self:
             if record.file_size_mb and record.file_size_mb < 0:
-                raise ValidationError(_("File size cannot be negative"))
-
+                raise ValidationError(_("File size cannot be negative")
     @api.constrains("page_count")
     def _check_page_count(self):
         for record in self:
             if record.page_count and record.page_count < 0:
-                raise ValidationError(_("Page count cannot be negative"))
-
+                raise ValidationError(_("Page count cannot be negative")
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================
@@ -408,18 +432,16 @@ class RecordsDocument(models.Model):
         """Activate document"""
         for record in self:
             if record.state != "draft":
-                raise UserError(_("Only draft documents can be activated"))
+                raise UserError(_("Only draft documents can be activated")
             record.write({"state": "active"})
-            record.message_post(body=_("Document activated"))
-
+            record.message_post(body=_("Document activated")
     def action_archive(self):
         """Archive document"""
         for record in self:
             if record.state == "destroyed":
-                raise UserError(_("Cannot archive destroyed documents"))
+                raise UserError(_("Cannot archive destroyed documents")
             record.write({"state": "archived"})
-            record.message_post(body=_("Document archived"))
-
+            record.message_post(body=_("Document archived")
     def action_flag_permanent(self):
         """Apply permanent flag to prevent destruction"""
         return {
@@ -438,7 +460,7 @@ class RecordsDocument(models.Model):
         """Remove permanent flag"""
         for record in self:
             if not record.permanent_flag:
-                raise UserError(_("Document does not have permanent flag"))
+                raise UserError(_("Document does not have permanent flag")
             record.write(
                 {
                     "permanent_flag": False,
@@ -447,8 +469,7 @@ class RecordsDocument(models.Model):
                     "permanent_flag_user_id": False,
                 }
             )
-            record.message_post(body=_("Permanent flag removed"))
-
+            record.message_post(body=_("Permanent flag removed")
     def action_request_destruction(self):
         """Request document destruction"""
         for record in self:
@@ -554,7 +575,7 @@ class RecordsDocument(models.Model):
                         self.env["records.location"].browse(location_val).name
                     )
                 elif (
-                    isinstance(location_val, (list, tuple))
+                    isinstance(location_val, (list, tuple)
                     and location_val
                     and isinstance(location_val[0], int)
                 ):
@@ -586,4 +607,4 @@ class RecordsDocument(models.Model):
             raise UserError(
                 _("Cannot delete active documents. Please archive them first.")
             )
-        return super().unlink())
+        return super().unlink()

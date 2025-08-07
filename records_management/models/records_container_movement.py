@@ -73,12 +73,14 @@ class RecordsContainerMovement(models.Model):
     name = fields.Char(string="Name", required=True, tracking=True),
     container_id = fields.Many2one(
         "records.container", string="Container", required=True, tracking=True
+    ),
     from_location_id = fields.Many2one(
-        "records.location", string="From Location", tracking=True
+        "records.location", string="From Location", tracking=True)
     to_location_id = fields.Many2one(
         "records.location", string="To Location", tracking=True
+    ),
     movement_date = fields.Datetime(
-        string="Movement Date",
+        string="Movement Date",)
         default=fields.Datetime.now,
         required=True,
         tracking=True,
@@ -89,14 +91,18 @@ class RecordsContainerMovement(models.Model):
             ("relocation", "Relocation"),
             ("transfer", "Transfer"),
             ("return", "Return"),
-        ],
+        ]),
         string="Movement Type",
         required=True,
         tracking=True,
+    )
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
+    ),
     user_id = fields.Many2one(
         "res.users", string="Assigned User", default=lambda self: self.env.user
+    )
+    )
     active = fields.Boolean(string="Active", default=True)
 
     # State management
@@ -106,13 +112,14 @@ class RecordsContainerMovement(models.Model):
             ("confirmed", "Confirmed"),
             ("done", "Done"),
             ("cancelled", "Cancelled"),
-        ],
+        ]),
         string="Status",
         default="draft",
         tracking=True,
     )
 
     # Documentation
+    )
     notes = fields.Text(string="Notes")
 
     # Computed fields
@@ -133,4 +140,4 @@ class RecordsContainerMovement(models.Model):
         self.write({"state": "cancelled"})
 
     def action_reset_to_draft(self):
-        self.write({"state": "draft"}))
+        self.write({"state": "draft"})

@@ -23,6 +23,7 @@ class NaidComplianceAlert(models.Model):
     # ============================================================================
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    ),
     active = fields.Boolean(string="Active", default=True)
 
     compliance_id = fields.Many2one(
@@ -33,8 +34,11 @@ class NaidComplianceAlert(models.Model):
     # ALERT DETAILS
     # ============================================================================
 
+    )
+
     alert_date = fields.Datetime(
         string="Alert Date", required=True, default=fields.Datetime.now
+    ),
     alert_type = fields.Selection(
         [
             ("certificate_expiry", "Certificate Expiry"),
@@ -45,15 +49,16 @@ class NaidComplianceAlert(models.Model):
             ("documentation_missing", "Documentation Missing"),
             ("training_overdue", "Training Overdue"),
             ("risk_escalation", "Risk Escalation"),
-        ],
+        ]),
         string="Alert Type",
         required=True,
+    )
     severity = fields.Selection(
         [("info", "Information"), ("warning", "Warning"), ("critical", "Critical")],
         string="Severity",
         required=True,
-        default="warning",
-    title = fields.Char(string="Alert Title", required=True)
+        default="warning",)
+    title = fields.Char(string="Alert Title", required=True),
     description = fields.Text(string="Alert Description")
 
     # ============================================================================
@@ -66,11 +71,12 @@ class NaidComplianceAlert(models.Model):
             ("acknowledged", "Acknowledged"),
             ("resolved", "Resolved"),
             ("dismissed", "Dismissed"),
-        ],
+        ]),
         string="Status",
         required=True,
         default="active",
-    resolved_date = fields.Datetime(string="Resolved Date")
+    )
+    resolved_date = fields.Datetime(string="Resolved Date"),
     resolved_by = fields.Many2one("res.users", string="Resolved By")
     resolution_notes = fields.Text(string="Resolution Notes")
 
@@ -102,7 +108,7 @@ class NaidComplianceChecklistItem(models.Model):
     # CORE IDENTIFICATION
     # ============================================================================
 
-    name = fields.Char(string="Item Name", required=True)
+    name = fields.Char(string="Item Name", required=True),
     sequence = fields.Integer(string="Sequence", default=10)
     description = fields.Text(string="Item Description")
 
@@ -115,6 +121,7 @@ class NaidComplianceChecklistItem(models.Model):
         string="Checklist",
         required=True,
         ondelete="cascade",
+    ),
     category = fields.Selection(
         [
             ("security", "Security"),
@@ -122,7 +129,7 @@ class NaidComplianceChecklistItem(models.Model):
             ("training", "Training"),
             ("documentation", "Documentation"),
             ("equipment", "Equipment"),
-        ],
+        ]),
         string="Category",
         required=True,
     )
@@ -131,9 +138,9 @@ class NaidComplianceChecklistItem(models.Model):
     # COMPLIANCE TRACKING
     # ============================================================================
 
-    is_compliant = fields.Boolean(string="Compliant", default=False)
+    is_compliant = fields.Boolean(string="Compliant", default=False),
     compliance_date = fields.Date(string="Compliance Date")
-    verified_by = fields.Many2one("res.users", string="Verified By")
+    verified_by = fields.Many2one("res.users", string="Verified By"),
     evidence_attachment = fields.Binary(string="Evidence")
     notes = fields.Text(string="Notes")
 
@@ -141,11 +148,12 @@ class NaidComplianceChecklistItem(models.Model):
     # REQUIREMENTS
     # ============================================================================
 
-    is_mandatory = fields.Boolean(string="Mandatory", default=True)
+    is_mandatory = fields.Boolean(string="Mandatory", default=True),
     risk_level = fields.Selection(
         [("low", "Low"), ("medium", "Medium"), ("high", "High")],
         string="Risk Level",
         default="medium",
+    )
     deadline = fields.Date(string="Deadline")
 
 class NaidComplianceAuditHistory(models.Model):
@@ -168,17 +176,20 @@ class NaidComplianceAuditHistory(models.Model):
     # AUDIT DETAILS
     # ============================================================================
 
-    audit_date = fields.Date(string="Audit Date", required=True)
+    )
+
+    audit_date = fields.Date(string="Audit Date", required=True),
     audit_type = fields.Selection(
         [
             ("internal", "Internal Audit"),
             ("external", "External Audit"),
             ("naid_official", "NAID Official Audit"),
             ("customer", "Customer Audit"),
-        ],
+        ]),
         string="Audit Type",
         required=True,
-    auditor_name = fields.Char(string="Auditor Name", required=True)
+    )
+    auditor_name = fields.Char(string="Auditor Name", required=True),
     audit_scope = fields.Text(string="Audit Scope")
 
     # ============================================================================
@@ -192,10 +203,11 @@ class NaidComplianceAuditHistory(models.Model):
             ("satisfactory", "Satisfactory"),
             ("needs_improvement", "Needs Improvement"),
             ("unsatisfactory", "Unsatisfactory"),
-        ],
+        ]),
         string="Overall Rating",
         required=True,
-    findings = fields.Text(string="Audit Findings")
+    )
+    findings = fields.Text(string="Audit Findings"),
     recommendations = fields.Text(string="Recommendations")
     corrective_actions = fields.Text(string="Corrective Actions Required")
 
@@ -203,7 +215,7 @@ class NaidComplianceAuditHistory(models.Model):
     # FOLLOW-UP
     # ============================================================================
 
-    follow_up_required = fields.Boolean(string="Follow-up Required", default=False)
+    follow_up_required = fields.Boolean(string="Follow-up Required", default=False),
     follow_up_date = fields.Date(string="Follow-up Date")
     follow_up_completed = fields.Boolean(string="Follow-up Completed", default=False)
 
@@ -227,8 +239,11 @@ class NaidRiskAssessment(models.Model):
     # ASSESSMENT DETAILS
     # ============================================================================
 
+    )
+
     assessment_date = fields.Date(
         string="Assessment Date", required=True, default=fields.Date.today
+    ),
     assessor_id = fields.Many2one("res.users", string="Assessor", required=True)
     risk_category = fields.Selection(
         [
@@ -237,7 +252,7 @@ class NaidRiskAssessment(models.Model):
             ("compliance", "Compliance Risk"),
             ("financial", "Financial Risk"),
             ("reputational", "Reputational Risk"),
-        ],
+        ]),
         string="Risk Category",
         required=True,
     )
@@ -246,16 +261,19 @@ class NaidRiskAssessment(models.Model):
     # RISK EVALUATION
     # ============================================================================
 
-    risk_description = fields.Text(string="Risk Description", required=True)
+    )
+
+    risk_description = fields.Text(string="Risk Description", required=True),
     impact_level = fields.Selection(
         [
             ("low", "Low"),
             ("medium", "Medium"),
             ("high", "High"),
             ("critical", "Critical"),
-        ],
+        ]),
         string="Impact Level",
         required=True,
+    )
     probability = fields.Selection(
         [
             ("rare", "Rare"),
@@ -263,7 +281,7 @@ class NaidRiskAssessment(models.Model):
             ("possible", "Possible"),
             ("likely", "Likely"),
             ("certain", "Certain"),
-        ],
+        ]),
         string="Probability",
         required=True,
     )
@@ -274,13 +292,14 @@ class NaidRiskAssessment(models.Model):
 
     risk_score = fields.Integer(
         string="Risk Score", compute="_compute_risk_score", store=True
+    ),
     risk_level = fields.Selection(
         [
             ("low", "Low"),
             ("medium", "Medium"),
             ("high", "High"),
             ("critical", "Critical"),
-        ],
+        ]),
         string="Risk Level",
         compute="_compute_risk_level",
         store=True,
@@ -290,16 +309,16 @@ class NaidRiskAssessment(models.Model):
     # MITIGATION
     # ============================================================================
 
-    mitigation_measures = fields.Text(string="Mitigation Measures")
+    mitigation_measures = fields.Text(string="Mitigation Measures"),
     responsible_person = fields.Many2one("res.users", string="Responsible Person")
-    target_completion_date = fields.Date(string="Target Completion Date")
+    target_completion_date = fields.Date(string="Target Completion Date"),
     status = fields.Selection(
         [
             ("identified", "Identified"),
             ("in_progress", "In Progress"),
             ("mitigated", "Mitigated"),
             ("accepted", "Accepted"),
-        ],
+        ]),
         string="Status",
         default="identified",
     )
@@ -348,6 +367,8 @@ class NaidComplianceActionPlan(models.Model):
     # CORE RELATIONSHIPS
     # ============================================================================
 
+    )
+
     compliance_id = fields.Many2one(
         "naid.compliance", string="Compliance Record", required=True, ondelete="cascade"
     )
@@ -356,14 +377,14 @@ class NaidComplianceActionPlan(models.Model):
     # ACTION DETAILS
     # ============================================================================
 
-    name = fields.Char(string="Action Title", required=True)
+    name = fields.Char(string="Action Title", required=True),
     description = fields.Text(string="Action Description", required=True)
     action_type = fields.Selection(
         [
             ("corrective", "Corrective Action"),
             ("preventive", "Preventive Action"),
             ("improvement", "Improvement Action"),
-        ],
+        ]),
         string="Action Type",
         required=True,
     )
@@ -372,12 +393,14 @@ class NaidComplianceActionPlan(models.Model):
     # PRIORITY & SCHEDULING
     # ============================================================================
 
+    )
+
     priority = fields.Selection(
         [("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")],
         string="Priority",
         required=True,
-        default="medium",
-    due_date = fields.Date(string="Due Date", required=True)
+        default="medium",)
+    due_date = fields.Date(string="Due Date", required=True),
     start_date = fields.Date(string="Start Date")
     completion_date = fields.Date(string="Completion Date")
 
@@ -387,8 +410,9 @@ class NaidComplianceActionPlan(models.Model):
 
     responsible_user_id = fields.Many2one(
         "res.users", string="Responsible Person", required=True
+    ),
     approval_required = fields.Boolean(string="Approval Required", default=False)
-    approved_by = fields.Many2one("res.users", string="Approved By")
+    approved_by = fields.Many2one("res.users", string="Approved By"),
     approval_date = fields.Date(string="Approval Date")
 
     # ============================================================================
@@ -402,10 +426,11 @@ class NaidComplianceActionPlan(models.Model):
             ("in_progress", "In Progress"),
             ("completed", "Completed"),
             ("cancelled", "Cancelled"),
-        ],
+        ]),
         string="Status",
         default="draft",
-    progress_percentage = fields.Float(string="Progress %", default=0.0)
+    )
+    progress_percentage = fields.Float(string="Progress %", default=0.0),
     completion_notes = fields.Text(string="Completion Notes")
 
     # ============================================================================
@@ -453,9 +478,9 @@ class NaidComplianceEnhanced(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Policy Name", required=True, tracking=True, index=True)
+    name = fields.Char(string="Policy Name", required=True, tracking=True, index=True),
     sequence = fields.Integer(string="Sequence", default=10)
-    active = fields.Boolean(string="Active", default=True)
+    active = fields.Boolean(string="Active", default=True),
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
     )
@@ -463,6 +488,7 @@ class NaidComplianceEnhanced(models.Model):
     # ============================================================================
     # POLICY DETAILS
     # ============================================================================
+    )
     policy_type = fields.Selection(
         [
             ("access_control", "Access Control"),
@@ -472,16 +498,15 @@ class NaidComplianceEnhanced(models.Model):
             ("facility_security", "Facility Security"),
             ("equipment_maintenance", "Equipment Maintenance"),
             ("audit_requirements", "Audit Requirements"),
-        ],
+        ]),
         string="Policy Type",
         required=True,
         tracking=True,
     )
 
-    description = fields.Text(string="Policy Description")
+    description = fields.Text(string="Policy Description"),
     mandatory = fields.Boolean(string="Mandatory", default=True, tracking=True)
-    automated_check = fields.Boolean(string="Automated Check", default=False)
-
+    automated_check = fields.Boolean(string="Automated Check", default=False),
     check_frequency = fields.Selection(
         [
             ("daily", "Daily"),
@@ -489,12 +514,14 @@ class NaidComplianceEnhanced(models.Model):
             ("monthly", "Monthly"),
             ("quarterly", "Quarterly"),
             ("yearly", "Yearly"),
-        ],
+        ]),
         string="Check Frequency",
         default="monthly",
     )
 
-    implementation_notes = fields.Text(string="Implementation Notes")
+    )
+
+    implementation_notes = fields.Text(string="Implementation Notes"),
     violation_consequences = fields.Text(string="Violation Consequences")
     review_frequency_months = fields.Integer(
         string="Review Frequency (Months)", default=12

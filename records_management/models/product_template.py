@@ -15,12 +15,12 @@ class ProductTemplate(models.Model):
     # ============================================================================
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    ),
     user_id = fields.Many2one(
-        "res.users", default=lambda self: self.env.user, tracking=True
-    active = fields.Boolean(string="Active", default=True)
-
+        "res.users", default=lambda self: self.env.user, tracking=True)
+    active = fields.Boolean(string="Active", default=True),
     is_template_service = fields.Boolean(string="Template Service", default=False)
-    is_featured_service = fields.Boolean(string="Featured Service", default=False)
+    is_featured_service = fields.Boolean(string="Featured Service", default=False),
     template_category = fields.Selection(
         [
             ("storage", "Document Storage"),
@@ -29,14 +29,15 @@ class ProductTemplate(models.Model):
             ("digital", "Digital Services"),
             ("compliance", "Compliance Services"),
             ("consultation", "Consultation Services"),
-        ],
+        ]),
         string="Template Category",
     )
 
     # External Integration
-    external_service_id = fields.Char(string="External Service ID")
+    )
+    external_service_id = fields.Char(string="External Service ID"),
     sync_enabled = fields.Boolean(string="Sync Enabled", default=True)
-    api_integration = fields.Boolean(string="API Integration", default=False)
+    api_integration = fields.Boolean(string="API Integration", default=False),
     webhook_notifications = fields.Boolean(
         string="Webhook Notifications", default=False
     )
@@ -45,6 +46,7 @@ class ProductTemplate(models.Model):
     # SERVICE SPECIFICATIONS
     # ============================================================================
     # Service Details
+    )
     service_duration = fields.Float(string="Service Duration (hours)")
     service_frequency = fields.Selection(
         [
@@ -54,12 +56,14 @@ class ProductTemplate(models.Model):
             ("quarterly", "Quarterly"),
             ("annual", "Annual"),
             ("on_demand", "On Demand"),
-        ],
+        ]),
         string="Service Frequency",
         default="one_time",
     )
 
-    requires_appointment = fields.Boolean(string="Requires Appointment", default=False)
+    )
+
+    requires_appointment = fields.Boolean(string="Requires Appointment", default=False),
     advance_notice_days = fields.Integer(string="Advance Notice (days)", default=1)
     service_location = fields.Selection(
         [("onsite", "On-Site"), ("offsite", "Off-Site"), ("both", "Both")],
@@ -70,30 +74,36 @@ class ProductTemplate(models.Model):
     # ============================================================================
     # COMPLIANCE & SECURITY
     # ============================================================================
-    naid_compliant = fields.Boolean(string="NAID Compliant", default=False)
+    )
+    naid_compliant = fields.Boolean(string="NAID Compliant", default=False),
     hipaa_compliant = fields.Boolean(string="HIPAA Compliant", default=False)
-    sox_compliant = fields.Boolean(string="SOX Compliant", default=False)
+    sox_compliant = fields.Boolean(string="SOX Compliant", default=False),
     iso_certified = fields.Boolean(string="ISO Certified", default=False)
 
     security_clearance_required = fields.Boolean(
         string="Security Clearance Required", default=False
+    )
+    )
     background_check_required = fields.Boolean(
         string="Background Check Required", default=False
+    ),
     certificate_of_destruction = fields.Boolean(
         string="Certificate of Destruction", default=False
+    )
+    )
     audit_trail_provided = fields.Boolean(string="Audit Trail Provided", default=True)
 
     # ============================================================================
     # CAPACITY & RESOURCES
     # ============================================================================
-    max_capacity_per_service = fields.Integer(string="Max Capacity per Service")
+    max_capacity_per_service = fields.Integer(string="Max Capacity per Service"),
     resource_requirements = fields.Text(string="Resource Requirements")
-    equipment_needed = fields.Char(string="Equipment Needed")
+    equipment_needed = fields.Char(string="Equipment Needed"),
     staff_required = fields.Integer(string="Staff Required", default=1)
 
     # Geographical service area
     service_radius_miles = fields.Float(string="Service Radius (miles)")
-    available_regions = fields.Char(string="Available Regions")
+    available_regions = fields.Char(string="Available Regions"),
     restricted_areas = fields.Text(string="Restricted Areas")
 
     # ============================================================================
@@ -101,6 +111,7 @@ class ProductTemplate(models.Model):
     # ============================================================================
     list_price = fields.Monetary(
         string="Sales Price", default=0.0, currency_field="currency_id"
+    ),
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
@@ -114,30 +125,31 @@ class ProductTemplate(models.Model):
             ("volume", "Volume Based"),
             ("time", "Time Based"),
             ("subscription", "Subscription"),
-        ],
+        ]),
         string="Pricing Model",
         default="fixed",
     )
 
-    minimum_service_charge = fields.Monetary(string="Minimum Service Charge")
+    )
+
+    minimum_service_charge = fields.Monetary(string="Minimum Service Charge"),
     setup_fee = fields.Monetary(string="Setup Fee")
     rush_order_surcharge = fields.Float(string="Rush Order Surcharge (%)")
-    bulk_discount_threshold = fields.Integer(string="Bulk Discount Threshold")
+    bulk_discount_threshold = fields.Integer(string="Bulk Discount Threshold"),
     bulk_discount_rate = fields.Float(string="Bulk Discount Rate (%)")
 
     # ============================================================================
     # SCHEDULING & AVAILABILITY
     # ============================================================================
-    availability_monday = fields.Boolean(string="Monday", default=True)
+    availability_monday = fields.Boolean(string="Monday", default=True),
     availability_tuesday = fields.Boolean(string="Tuesday", default=True)
-    availability_wednesday = fields.Boolean(string="Wednesday", default=True)
+    availability_wednesday = fields.Boolean(string="Wednesday", default=True),
     availability_thursday = fields.Boolean(string="Thursday", default=True)
-    availability_friday = fields.Boolean(string="Friday", default=True)
+    availability_friday = fields.Boolean(string="Friday", default=True),
     availability_saturday = fields.Boolean(string="Saturday", default=False)
-    availability_sunday = fields.Boolean(string="Sunday", default=False)
-
+    availability_sunday = fields.Boolean(string="Sunday", default=False),
     service_hours_start = fields.Float(string="Service Hours Start", default=8.0)
-    service_hours_end = fields.Float(string="Service Hours End", default=17.0)
+    service_hours_end = fields.Float(string="Service Hours End", default=17.0),
     emergency_service_available = fields.Boolean(
         string="Emergency Service Available", default=False
     )
@@ -145,15 +157,19 @@ class ProductTemplate(models.Model):
     # ============================================================================
     # QUALITY & PERFORMANCE
     # ============================================================================
+    )
     sla_response_time = fields.Float(string="SLA Response Time (hours)", default=24.0)
     sla_completion_time = fields.Float(
         string="SLA Completion Time (hours)", default=72.0
-    quality_metrics = fields.Text(string="Quality Metrics")
+    )
+    )
+    quality_metrics = fields.Text(string="Quality Metrics"),
     performance_benchmarks = fields.Text(string="Performance Benchmarks")
 
     # Customer satisfaction tracking
     customer_rating = fields.Float(
         string="Customer Rating", compute="_compute_customer_rating"
+    ),
     total_reviews = fields.Integer(
         string="Total Reviews", compute="_compute_total_reviews"
     )
@@ -195,7 +211,7 @@ class ProductTemplate(models.Model):
         "availability_thursday",
         "availability_friday",
         "availability_saturday",
-        "availability_sunday",
+        "availability_sunday",)
     def _compute_weekly_availability(self):
         for record in self:
             days = [
@@ -297,7 +313,6 @@ class ProductTemplate(models.Model):
         for record in self:
             if record.service_hours_start >= record.service_hours_end:
                 raise ValidationError(_("Service start time must be before end time."))
-
     @api.constrains("bulk_discount_rate", "rush_order_surcharge")
     def _check_percentage_values(self):
         for record in self:

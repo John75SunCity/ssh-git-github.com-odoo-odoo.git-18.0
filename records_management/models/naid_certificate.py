@@ -90,25 +90,28 @@ class NaidCertificate(models.Model):
             ("active", "Active"),
             ("inactive", "Inactive"),
             ("archived", "Archived"),
-        ],
+        ]),
         string="Status",
         default="draft",
         tracking=True,
     )
 
     # Company and User
+    )
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
+    ),
     user_id = fields.Many2one(
         "res.users", string="Assigned User", default=lambda self: self.env.user
     )
 
     # Timestamps
-    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    )
+    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now),
     date_modified = fields.Datetime(string="Modified Date")
 
     # Control Fields
-    active = fields.Boolean(string="Active", default=True)
+    active = fields.Boolean(string="Active", default=True),
     notes = fields.Text(string="Internal Notes")
 
     # Computed Fields
@@ -150,4 +153,4 @@ class NaidCertificate(models.Model):
             if not vals.get("name"):
                 vals["name"] = _("New Record")
 
-        return super().create(vals_list))
+        return super().create(vals_list)

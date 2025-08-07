@@ -72,24 +72,26 @@ class NaidCompliance(models.Model):
         help="Unique reference identifier for this compliance record"
     )
     
+    )
+    
     code = fields.Char(
         string="Compliance Code",
         index=True,
         tracking=True,
         help="Internal compliance code for easy reference"
-    )
-    
+    ),
     description = fields.Text(
         string="Description",
         help="Detailed description of this compliance framework and requirements"
+    )
+    
     )
     
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Sequence for ordering compliance records"
-    )
-    
+    ),
     active = fields.Boolean(
         string="Active",
         default=True,
@@ -101,6 +103,8 @@ class NaidCompliance(models.Model):
     # COMPANY & USER MANAGEMENT
     # ============================================================================
     
+    )
+    
     company_id = fields.Many2one(
         "res.company",
         string="Company",
@@ -108,14 +112,15 @@ class NaidCompliance(models.Model):
         default=lambda self: self.env.company,
         tracking=True,
         help="Company this compliance framework applies to"
-    )
-    
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="Compliance Manager",
         default=lambda self: self.env.user,
         tracking=True,
         help="Primary compliance manager responsible for this record"
+    )
+    
     )
     
     compliance_officer_id = fields.Many2one(
@@ -137,7 +142,7 @@ class NaidCompliance(models.Model):
         ("non_compliant", "Non-Compliant"),
         ("expired", "Expired"),
         ("suspended", "Suspended"),
-    ],
+    ]),
         string="Compliance Status",
         default="draft",
         required=True,
@@ -156,7 +161,7 @@ class NaidCompliance(models.Model):
         ("pending", "Certification Pending"),
         ("expired", "Certification Expired"),
         ("revoked", "Certification Revoked"),
-    ],
+    ]),
         string="NAID Certification Level",
         required=True,
         default="pending",
@@ -170,17 +175,20 @@ class NaidCompliance(models.Model):
         help="Official NAID certification number"
     )
     
+    )
+    
     certification_date = fields.Date(
         string="Certification Date",
         tracking=True,
         help="Date when NAID certification was issued"
-    )
-    
+    ),
     expiration_date = fields.Date(
         string="Expiration Date",
         required=True,
         tracking=True,
         help="Date when current certification expires"
+    )
+    
     )
     
     renewal_date = fields.Date(
@@ -198,7 +206,7 @@ class NaidCompliance(models.Model):
         ("semi_annual", "Semi-Annual"),
         ("annual", "Annual"),
         ("on_demand", "On Demand"),
-    ],
+    ]),
         string="Audit Frequency",
         default="quarterly",
         required=True,
@@ -211,12 +219,13 @@ class NaidCompliance(models.Model):
         help="Date of most recent compliance audit"
     )
     
+    )
+    
     next_audit_date = fields.Date(
         string="Next Audit Date",
         tracking=True,
         help="Scheduled date for next compliance audit"
-    )
-    
+    ),
     audit_due_days = fields.Integer(
         string="Days Until Audit",
         compute="_compute_audit_timing",
@@ -227,6 +236,8 @@ class NaidCompliance(models.Model):
     # ============================================================================
     # COMPLIANCE SCORING & METRICS
     # ============================================================================
+    
+    )
     
     overall_score = fields.Float(
         string="Overall Compliance Score (%)",
@@ -242,6 +253,8 @@ class NaidCompliance(models.Model):
         help="Physical and information security compliance score"
     )
     
+    )
+    
     process_score = fields.Float(
         string="Process Score (%)",
         digits=(5, 2),
@@ -252,6 +265,8 @@ class NaidCompliance(models.Model):
         string="Documentation Score (%)",
         digits=(5, 2),
         help="Documentation and record-keeping compliance score"
+    )
+    
     )
     
     personnel_score = fields.Float(
@@ -270,24 +285,28 @@ class NaidCompliance(models.Model):
     # AUDIT RESULTS & FINDINGS
     # ============================================================================
     
+    )
+    
     audit_findings = fields.Text(
         string="Audit Findings",
         help="Detailed findings from compliance audits"
-    )
-    
+    ),
     corrective_actions = fields.Text(
         string="Corrective Actions",
         help="Required corrective actions to address findings"
     )
     
+    )
+    
     remediation_plan = fields.Text(
         string="Remediation Plan",
         help="Detailed plan for addressing compliance gaps"
-    )
-    
+    ),
     risk_assessment = fields.Text(
         string="Risk Assessment",
         help="Assessment of compliance risks and mitigation strategies"
+    )
+    
     )
     
     findings_count = fields.Integer(
@@ -305,7 +324,7 @@ class NaidCompliance(models.Model):
         ("basic", "Basic Security"),
         ("enhanced", "Enhanced Security"),
         ("maximum", "Maximum Security"),
-    ],
+    ]),
         string="Required Security Level",
         default="enhanced",
         required=True,
@@ -317,11 +336,12 @@ class NaidCompliance(models.Model):
         help="Physical facility requirements for compliance"
     )
     
+    )
+    
     access_control_verified = fields.Boolean(
         string="Access Control Verified",
         help="Physical access controls have been verified and approved"
-    )
-    
+    ),
     surveillance_system_verified = fields.Boolean(
         string="Surveillance System Verified",
         help="Video surveillance system meets compliance requirements"
@@ -331,29 +351,33 @@ class NaidCompliance(models.Model):
     # INSURANCE & BONDING
     # ============================================================================
     
+    )
+    
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True
-    )
-    
+    ),
     insurance_coverage = fields.Monetary(
         string="Insurance Coverage",
         currency_field="currency_id",
         help="Required insurance coverage amount"
     )
     
+    )
+    
     liability_limit = fields.Monetary(
         string="Liability Limit",
         currency_field="currency_id",
         help="Maximum liability limit for compliance"
-    )
-    
+    ),
     bonding_amount = fields.Monetary(
         string="Bonding Amount",
         currency_field="currency_id",
         help="Required bonding amount for personnel"
+    )
+    
     )
     
     insurance_verified = fields.Boolean(
@@ -371,11 +395,12 @@ class NaidCompliance(models.Model):
         help="Background screening is required for personnel"
     )
     
+    )
+    
     training_completed = fields.Boolean(
         string="Training Completed",
         help="All required personnel training has been completed"
-    )
-    
+    ),
     certification_training_current = fields.Boolean(
         string="Certification Training Current",
         help="Personnel certification training is up to date"
@@ -385,11 +410,13 @@ class NaidCompliance(models.Model):
     # DOCUMENTATION & REPORTING
     # ============================================================================
     
+    )
+    
     documentation_standard = fields.Selection([
         ("naid", "NAID Standard"),
         ("iso_15489", "ISO 15489"),
         ("custom", "Custom Standard"),
-    ],
+    ]),
         string="Documentation Standard",
         default="naid",
         required=True,
@@ -402,12 +429,13 @@ class NaidCompliance(models.Model):
         help="Chain of custody documentation is required"
     )
     
+    )
+    
     destruction_certificate_required = fields.Boolean(
         string="Destruction Certificate Required",
         default=True,
         help="Destruction certificates must be issued"
-    )
-    
+    ),
     witness_required = fields.Boolean(
         string="Witness Required",
         default=True,
@@ -418,24 +446,28 @@ class NaidCompliance(models.Model):
     # REGULATORY & LEGAL
     # ============================================================================
     
+    )
+    
     regulatory_requirements = fields.Text(
         string="Regulatory Requirements",
         help="Specific regulatory requirements that must be met"
-    )
-    
+    ),
     legal_compliance_verified = fields.Boolean(
         string="Legal Compliance Verified",
         help="Legal and regulatory compliance has been verified"
     )
     
+    )
+    
     sox_compliance = fields.Boolean(
         string="SOX Compliance",
         help="Sarbanes-Oxley compliance requirements apply"
-    )
-    
+    ),
     hipaa_compliance = fields.Boolean(
         string="HIPAA Compliance", 
         help="HIPAA privacy and security requirements apply"
+    )
+    
     )
     
     gdpr_compliance = fields.Boolean(
@@ -453,6 +485,8 @@ class NaidCompliance(models.Model):
         help="Year-to-date destruction volume in pounds"
     )
     
+    )
+    
     customer_satisfaction_score = fields.Float(
         string="Customer Satisfaction (%)",
         digits=(5, 2),
@@ -463,6 +497,8 @@ class NaidCompliance(models.Model):
         string="Average Processing Time (hours)",
         digits=(8, 2),
         help="Average time from pickup to destruction completion"
+    )
+    
     )
     
     compliance_incidents = fields.Integer(
@@ -481,17 +517,20 @@ class NaidCompliance(models.Model):
         help="True if certification has expired"
     )
     
+    )
+    
     days_until_expiration = fields.Integer(
         string="Days Until Expiration",
         compute="_compute_expiration_status",
         store=True,
         help="Number of days until certification expires"
-    )
-    
+    ),
     compliance_status_color = fields.Integer(
         string="Status Color",
         compute="_compute_status_indicators",
         help="Color indicator for compliance status"
+    )
+    
     )
     
     audit_status_display = fields.Char(
@@ -512,13 +551,14 @@ class NaidCompliance(models.Model):
         help="NAID certificates issued under this compliance framework"
     )
     
+    )
+    
     audit_log_ids = fields.One2many(
         "naid.audit.log",
         "compliance_id",
         string="Audit Logs",
         help="Detailed audit logs for this compliance record"
-    )
-    
+    ),
     checklist_ids = fields.One2many(
         "naid.compliance.checklist",
         "compliance_id",
@@ -527,13 +567,13 @@ class NaidCompliance(models.Model):
     )
     
     # Extended relationships
+    )
     destruction_record_ids = fields.One2many(
         "records.destruction",
         "compliance_id",
         string="Destruction Records",
         help="Destruction records under this compliance framework"
-    )
-    
+    ),
     chain_custody_ids = fields.One2many(
         "records.chain.custody",
         "compliance_id",
@@ -554,6 +594,7 @@ class NaidCompliance(models.Model):
     @api.depends("expiration_date")
     def _compute_expiration_status(self):
         """Compute expiration status and days until expiration"""
+        )
         today = fields.Date.today()
         for record in self:
             if record.expiration_date:
@@ -689,8 +730,7 @@ class NaidCompliance(models.Model):
         self.ensure_one()
         
         if not self.audit_findings:
-            raise UserError(_('Please enter audit findings before completing the audit.'))
-        
+            raise UserError(_('Please enter audit findings before completing the audit.')
         # Determine new state based on overall score
         if self.overall_score >= 80:
             new_state = 'compliant'
@@ -741,8 +781,7 @@ class NaidCompliance(models.Model):
         self.ensure_one()
         
         if not self.next_audit_date:
-            raise UserError(_('Next audit date is not set. Please complete current audit first.'))
-        
+            raise UserError(_('Next audit date is not set. Please complete current audit first.')
         # Create calendar event
         event_vals = {
             'name': _('NAID Compliance Audit - %s (%s)') % (self.name, self.naid_level.upper()),
@@ -792,11 +831,9 @@ class NaidCompliance(models.Model):
         self.ensure_one()
         
         if self.state != 'compliant':
-            raise UserError(_('Certificates can only be generated for compliant records.'))
-        
+            raise UserError(_('Certificates can only be generated for compliant records.')
         if not self.certification_date:
-            raise UserError(_('Certification date must be set before generating certificate.'))
-        
+            raise UserError(_('Certification date must be set before generating certificate.')
         return {
             'type': 'ir.actions.act_window',
             'name': _('Generate NAID Certificate'),
@@ -810,7 +847,7 @@ class NaidCompliance(models.Model):
                 'default_expiration_date': self.expiration_date,
             }
         }
-
+))
     def action_view_audit_history(self):
         """
         View complete audit history and timeline.
@@ -850,8 +887,7 @@ class NaidCompliance(models.Model):
         
         # Check renewal eligibility
         if self.state != 'compliant':
-            raise UserError(_('Only compliant certifications can be renewed.'))
-        
+            raise UserError(_('Only compliant certifications can be renewed.')
         # Check renewal window (typically 60 days before expiration)
         renewal_window = self.expiration_date - timedelta(days=60)
         if fields.Date.today() < renewal_window:
@@ -932,8 +968,7 @@ class NaidCompliance(models.Model):
         for record in self:
             if record.certification_date and record.expiration_date:
                 if record.certification_date >= record.expiration_date:
-                    raise ValidationError(_('Certification date must be before expiration date.'))
-
+                    raise ValidationError(_('Certification date must be before expiration date.')
     @api.constrains('overall_score', 'security_score', 'process_score', 
                     'documentation_score', 'personnel_score', 'equipment_score')
     def _check_score_ranges(self):
@@ -957,12 +992,11 @@ class NaidCompliance(models.Model):
         """Ensure monetary amounts are positive"""
         for record in self:
             if record.insurance_coverage and record.insurance_coverage < 0:
-                raise ValidationError(_('Insurance coverage must be a positive amount.'))
+                raise ValidationError(_('Insurance coverage must be a positive amount.')
             if record.liability_limit and record.liability_limit < 0:
-                raise ValidationError(_('Liability limit must be a positive amount.'))
+                raise ValidationError(_('Liability limit must be a positive amount.')
             if record.bonding_amount and record.bonding_amount < 0:
-                raise ValidationError(_('Bonding amount must be a positive amount.'))
-
+                raise ValidationError(_('Bonding amount must be a positive amount.')
     # ============================================================================
     # LIFECYCLE METHODS
     # ============================================================================
@@ -1034,7 +1068,7 @@ class NaidCompliance(models.Model):
         """Override unlink to prevent deletion of active compliance records"""
         for record in self:
             if record.state == 'compliant':
-                raise UserError(_('Cannot delete compliant certification records. Archive instead.'))
+                raise UserError(_('Cannot delete compliant certification records. Archive instead.')
         return super().unlink()
 
     # ============================================================================

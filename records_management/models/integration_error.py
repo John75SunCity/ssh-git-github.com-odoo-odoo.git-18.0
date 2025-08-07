@@ -14,8 +14,9 @@ class IntegrationError(models.Model):
     name = fields.Char(string="Error Message", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    ),
     user_id = fields.Many2one(
-        "res.users", default=lambda self: self.env.user, tracking=True
+        "res.users", default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -23,6 +24,7 @@ class IntegrationError(models.Model):
     # ============================================================================
     timestamp = fields.Datetime(
         string="Timestamp", default=fields.Datetime.now, required=True, index=True
+    ),
     error_type = fields.Selection(
         [
             ("api", "API Error"),
@@ -32,21 +34,21 @@ class IntegrationError(models.Model):
             ("timeout", "Timeout Error"),
             ("auth", "Authentication Error"),
             ("other", "Other"),
-        ],
+        ]),
         string="Error Type",
         default="other",
         required=True,
         tracking=True,
-    error_code = fields.Char(string="Error Code", tracking=True)
+    error_code = fields.Char(string="Error Code", tracking=True),
     error_details = fields.Text(string="Error Details", tracking=True)
     stack_trace = fields.Text(string="Stack Trace")
 
     # ============================================================================
     # INTEGRATION CONTEXT
     # ============================================================================
-    integration_system = fields.Char(string="Integration System", tracking=True)
+    integration_system = fields.Char(string="Integration System", tracking=True),
     endpoint = fields.Char(string="API Endpoint")
-    request_data = fields.Text(string="Request Data")
+    request_data = fields.Text(string="Request Data"),
     response_data = fields.Text(string="Response Data")
 
     # ============================================================================
@@ -57,16 +59,16 @@ class IntegrationError(models.Model):
     # ============================================================================
     # STATUS FIELDS
     # ============================================================================
-    resolved = fields.Boolean(string="Resolved", default=False, tracking=True)
+    resolved = fields.Boolean(string="Resolved", default=False, tracking=True),
     resolution_notes = fields.Text(string="Resolution Notes")
-    resolution_date = fields.Datetime(string="Resolution Date")
+    resolution_date = fields.Datetime(string="Resolution Date"),
     priority = fields.Selection(
         [
             ("low", "Low"),
             ("medium", "Medium"),
             ("high", "High"),
             ("critical", "Critical"),
-        ],
+        ]),
         string="Priority",
         default="medium",
         tracking=True,
@@ -115,4 +117,4 @@ class IntegrationError(models.Model):
             "timestamp": fields.Datetime.now(),
         }
         vals.update(kwargs)
-        return self.create(vals))
+        return self.create(vals)

@@ -17,16 +17,18 @@ class PosConfig(models.Model):
     # Company and User
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
+    )
+    )
     user_id = fields.Many2one(
         "res.users", string="Responsible User", default=lambda self: self.env.user
     )
 
     # Timestamps
-    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now),
     date_modified = fields.Datetime(string="Modified Date")
 
     # Control Fields
-    active = fields.Boolean(string="Active", default=True)
+    active = fields.Boolean(string="Active", default=True),
     notes = fields.Text(string="Internal Notes")
 
     # Computed Fields
@@ -61,8 +63,7 @@ class PosConfig(models.Model):
         """Close current POS session."""
         self.ensure_one()
         if self.state != "active":
-            raise UserError(_("Only active POS configurations can close sessions."))
-
+            raise UserError(_("Only active POS configurations can close sessions.")
         # Update notes with session closure
         self.write(
             {
@@ -96,7 +97,7 @@ class PosConfig(models.Model):
                 "search_default_config_id": self.id,
             },
         }
-
+)
     def action_force_close_session(self):
         """Force close POS session with administrative override."""
         self.ensure_one()
@@ -122,6 +123,7 @@ class PosConfig(models.Model):
                 "POS session was force closed - requires review and balance verification."
             ),
             user_id=self.user_id.id,
+            )
             date_deadline=fields.Date.today(),
         )
 
@@ -149,8 +151,7 @@ class PosConfig(models.Model):
         """Open new POS session."""
         self.ensure_one()
         if self.state != "active":
-            raise UserError(_("Only active POS configurations can open sessions."))
-
+            raise UserError(_("Only active POS configurations can open sessions.")
         # Update notes with session opening
         self.write(
             {
@@ -275,4 +276,4 @@ class PosConfig(models.Model):
         for vals in vals_list:
             if not vals.get("name"):
                 vals["name"] = _("New Record")
-        return super().create(vals_list))
+        return super().create(vals_list)

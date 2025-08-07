@@ -62,8 +62,11 @@ class RecordsManagementBaseMenus(models.Model):
     name = fields.Char(string="Name", required=True, tracking=True),
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
+    )
+    )
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user
+    ),
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -71,19 +74,20 @@ class RecordsManagementBaseMenus(models.Model):
             ("confirmed", "Confirmed"),
             ("done", "Done"),
             ("cancelled", "Cancelled"),
-        ],
+        ]),
         string="State",
         default="draft",
         tracking=True,
     )
 
     # Standard message/activity fields
+    )
     message_ids = fields.One2many(
         "mail.message", "res_id", string="Messages", auto_join=True
     )        "mail.followers", "res_id", string="Followers", auto_join=True
-    Configuration = fields.Char(string="Configuration")
+    Configuration = fields.Char(string="Configuration"),
     Inventory = fields.Char(string="Inventory")
-    Operations = fields.Char(string="Operations")
+    Operations = fields.Char(string="Operations"),
     Reporting = fields.Char(string="Reporting")
     Settings = fields.Char(string="Settings")
 

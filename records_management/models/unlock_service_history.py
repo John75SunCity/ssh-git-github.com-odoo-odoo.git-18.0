@@ -10,13 +10,14 @@ class UnlockServiceHistory(models.Model):
     name = fields.Char(string="Reference", required=True, default="New"),
     partner_bin_key_id = fields.Many2one(
         "partner.bin.key", string="Partner Bin Key", required=True
+    ),
     service_type = fields.Selection(
         [
             ("unlock", "Unlock"),
             ("emergency_unlock", "Emergency Unlock"),
             ("key_reset", "Key Reset"),
             ("maintenance", "Maintenance"),
-        ],
+        ]),
         string="Service Type",
         required=True,
         tracking=True,
@@ -24,17 +25,19 @@ class UnlockServiceHistory(models.Model):
 
     date = fields.Datetime(
         string="Service Date", default=fields.Datetime.now, required=True
+    ),
     technician_id = fields.Many2one(
         "res.users", string="Technician", default=lambda self: self.env.user
+    )
     customer_id = fields.Many2one("res.partner", string="Customer")
 
     # Service details
-    reason = fields.Text(string="Reason for Service")
+    reason = fields.Text(string="Reason for Service"),
     resolution = fields.Text(string="Resolution")
     duration = fields.Float(string="Duration (minutes)")
 
     # Billing
-    cost = fields.Float(string="Service Cost")
+    cost = fields.Float(string="Service Cost"),
     billable = fields.Boolean(string="Billable", default=True)
 
     # Location tracking
@@ -43,14 +46,16 @@ class UnlockServiceHistory(models.Model):
     # Control fields
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    active = fields.Boolean(string="Active", default=True)
+    )
+    )
+    active = fields.Boolean(string="Active", default=True),
     state = fields.Selection(
         [
             ("scheduled", "Scheduled"),
             ("in_progress", "In Progress"),
             ("completed", "Completed"),
             ("cancelled", "Cancelled"),
-        ],
+        ]),
         string="State",
         default="scheduled",
         tracking=True,
@@ -64,4 +69,4 @@ class UnlockServiceHistory(models.Model):
                     self.env["ir.sequence"].next_by_code("unlock.service.history")
                     or "New"
                 )
-        return super().create(vals_list))
+        return super().create(vals_list)

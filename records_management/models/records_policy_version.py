@@ -97,6 +97,7 @@ class RecordsPolicyVersion(models.Model):
     )
 
     # Basic state management
+    )
     state = fields.Selection(
         [("draft", "Draft"), ("confirmed", "Confirmed"), ("done", "Done")],
         string="State",
@@ -107,14 +108,14 @@ class RecordsPolicyVersion(models.Model):
     # Common fields
     description = fields.Text(
         help="Detailed description of the policy version, including purpose and key changes."
+    ),
     notes = fields.Text(
-        help="Additional notes or comments related to this policy version."
-    date = fields.Date(default=lambda self: fields.Date.today())
-
+        help="Additional notes or comments related to this policy version.")
+    date = fields.Date(default=lambda self: fields.Date.today()
     def action_confirm(self):
         """Set the policy version state to 'confirmed'."""
         self.write({"state": "confirmed"})
-
+)
     def action_done(self):
         """Set the policy version state to 'done'."""
-        self.write({"state": "done"}))
+        self.write({"state": "done"})

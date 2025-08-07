@@ -20,6 +20,7 @@ class FsmRouteManagementPlaceholder(models.TransientModel):
     name = fields.Char("Placeholder Name", default="FSM Route Management Placeholder"),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    ),
     user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     active = fields.Boolean(string="Active", default=True)
 

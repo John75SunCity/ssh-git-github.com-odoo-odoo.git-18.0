@@ -16,14 +16,15 @@ class StockLot(models.Model):
     records_tracking = fields.Boolean(string="Records Tracking", default=False),
     document_count = fields.Integer(
         string="Document Count", compute="_compute_document_count"
+    ),
     destruction_eligible = fields.Boolean(
-        string="Eligible for Destruction", default=False
+        string="Eligible for Destruction", default=False)
     quality_status = fields.Selection(
         [
             ("pending", "Pending Review"),
             ("approved", "Approved"),
             ("rejected", "Rejected"),
-        ],
+        ]),
         string="Quality Status",
         default="pending",
     )
@@ -183,9 +184,10 @@ class StockLotAttribute(models.Model):
     _order = "name"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
+    )
+    name = fields.Char(string="Name", required=True, tracking=True),
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
+    user_id = fields.Many2one("res.users", default=lambda self: self.env.user),
     active = fields.Boolean(default=True)
 
     # Basic state management
@@ -197,7 +199,8 @@ class StockLotAttribute(models.Model):
     )
 
     # Common fields
-    description = fields.Text()
+    )
+    description = fields.Text(),
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
 
@@ -207,4 +210,4 @@ class StockLotAttribute(models.Model):
 
     def action_done(self):
         """Mark as done"""
-        self.write({"state": "done"}))
+        self.write({"state": "done"})

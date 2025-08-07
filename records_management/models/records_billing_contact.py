@@ -15,15 +15,16 @@ class RecordsBillingContact(models.Model):
     name = fields.Char(string="Contact Name", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    ),
     user_id = fields.Many2one(
-        "res.users", default=lambda self: self.env.user, tracking=True
-    active = fields.Boolean(string="Active", default=True)
+        "res.users", default=lambda self: self.env.user, tracking=True)
+    active = fields.Boolean(string="Active", default=True),
     sequence = fields.Integer(string="Sequence", default=10)
 
     # ============================================================================
     # CONTACT INFORMATION
     # ============================================================================
-    email = fields.Char(string="Email", required=True, tracking=True)
+    email = fields.Char(string="Email", required=True, tracking=True),
     phone = fields.Char(string="Phone", tracking=True)
     mobile = fields.Char(string="Mobile", tracking=True)
 
@@ -41,24 +42,25 @@ class RecordsBillingContact(models.Model):
     # ============================================================================
     # COMMUNICATION PREFERENCES
     # ============================================================================
+    )
     receive_storage_invoices = fields.Boolean(
         string="Receive Storage Invoices",
         default=True,
         help="Contact will receive storage billing invoices",
-    )
-
+    ),
     receive_service_invoices = fields.Boolean(
         string="Receive Service Invoices",
         default=True,
         help="Contact will receive service billing invoices",
     )
 
+    )
+
     receive_statements = fields.Boolean(
         string="Receive Statements",
         default=True,
         help="Contact will receive account statements",
-    )
-
+    ),
     receive_overdue_notices = fields.Boolean(
         string="Receive Overdue Notices",
         default=True,
@@ -68,12 +70,12 @@ class RecordsBillingContact(models.Model):
     # ============================================================================
     # CONTACT HIERARCHY
     # ============================================================================
+    )
     primary_contact = fields.Boolean(
         string="Primary Contact",
         default=False,
         help="This is the primary billing contact",
-    )
-
+    ),
     backup_contact = fields.Boolean(
         string="Backup Contact", default=False, help="This is a backup billing contact"
     )
@@ -81,13 +83,14 @@ class RecordsBillingContact(models.Model):
     # ============================================================================
     # COMMUNICATION METHOD
     # ============================================================================
+    )
     preferred_method = fields.Selection(
         [
             ("email", "Email"),
             ("phone", "Phone"),
             ("mail", "Postal Mail"),
             ("portal", "Customer Portal"),
-        ],
+        ]),
         string="Preferred Communication Method",
         default="email",
     )
@@ -151,8 +154,7 @@ class RecordsBillingContact(models.Model):
     def action_test_email(self):
         """Send test email to verify contact information"""
         if not self.email:
-            raise ValidationError(_("No email address specified for this contact."))
-
+            raise ValidationError(_("No email address specified for this contact.")
         # Here you would implement actual email sending
         return {
             "type": "ir.actions.client",

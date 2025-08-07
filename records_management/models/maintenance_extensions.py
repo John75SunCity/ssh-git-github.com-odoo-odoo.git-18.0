@@ -27,10 +27,11 @@ class MaintenanceEquipment(models.Model):
     )
 
     # Shredding-specific fields
+    )
     shredding_capacity = fields.Float(
         string="Shredding Capacity (lbs/hour)",
         digits="Stock Weight",
-        help="Maximum shredding capacity per hour",
+        help="Maximum shredding capacity per hour",)
     security_level = fields.Selection(
         [
             ("level_1", "Level 1 - Strip Cut"),
@@ -39,13 +40,14 @@ class MaintenanceEquipment(models.Model):
             ("level_4", "Level 4 - High Security"),
             ("level_5", "Level 5 - NSA/CSS EPL"),
             ("level_6", "Level 6 - EAL4+ Certified"),
-        ],
+        ]),
         string="Security Level",
         help="Security level for shredding equipment",
     )
 
     # Integration with Records Management
-    location_id = fields.Many2one("records.location", string="Records Location")
+    )
+    location_id = fields.Many2one("records.location", string="Records Location"),
     shredding_service_ids = fields.Many2many(
         "shredding.service",
         string="Related Shredding Services",
@@ -53,20 +55,21 @@ class MaintenanceEquipment(models.Model):
     )
 
     # NAID Compliance
+    )
     naid_certification = fields.Selection(
         [
             ("none", "Not Certified"),
             ("a", "NAID A"),
             ("aa", "NAID AA"),
             ("aaa", "NAID AAA"),
-        ],
+        ]),
         string="NAID Certification",
         default="none",
     )
 
-    certification_expiry = fields.Date(string="Certification Expiry Date")
+    certification_expiry = fields.Date(string="Certification Expiry Date"),
     calibration_required = fields.Boolean(string="Requires Calibration", default=False)
-    last_calibration_date = fields.Date(string="Last Calibration Date")
+    last_calibration_date = fields.Date(string="Last Calibration Date"),
     next_calibration_date = fields.Date(string="Next Calibration Date")
 
 
@@ -87,6 +90,7 @@ class MaintenanceRequest(models.Model):
     )
 
     # Customer Impact Assessment
+    )
     customer_impact = fields.Selection(
         [
             ("none", "No Customer Impact"),
@@ -94,7 +98,7 @@ class MaintenanceRequest(models.Model):
             ("medium", "Medium Impact"),
             ("high", "High Impact"),
             ("critical", "Critical - Service Disruption"),
-        ],
+        ]),
         string="Customer Impact",
         default="none",
     )
@@ -103,12 +107,13 @@ class MaintenanceRequest(models.Model):
     requires_certification = fields.Boolean(
         string="Requires Re-certification",
         help="Equipment needs re-certification after maintenance",
+    ),
     compliance_notes = fields.Text(string="Compliance Notes")
 
     # Cost Tracking
-    parts_cost = fields.Float(string="Parts Cost", digits="Product Price")
+    parts_cost = fields.Float(string="Parts Cost", digits="Product Price"),
     labor_cost = fields.Float(string="Labor Cost", digits="Product Price")
-    external_cost = fields.Float(string="External Service Cost", digits="Product Price")
+    external_cost = fields.Float(string="External Service Cost", digits="Product Price"),
     total_maintenance_cost = fields.Float(
         string="Total Cost", compute="_compute_total_cost", store=True
     )
@@ -131,6 +136,7 @@ class MaintenanceTeam(models.Model):
     # ============================================================================
 
     # Specialization
+    )
     specialization = fields.Selection(
         [
             ("shredding", "Shredding Equipment"),
@@ -139,7 +145,7 @@ class MaintenanceTeam(models.Model):
             ("transport", "Transport Equipment"),
             ("security", "Security Systems"),
             ("general", "General Maintenance"),
-        ],
+        ]),
         string="Team Specialization",
         default="general",
     )
@@ -152,15 +158,17 @@ class MaintenanceTeam(models.Model):
     )
 
     # Certifications
-    naid_certified = fields.Boolean(string="NAID Certified Team", default=False)
+    )
+    naid_certified = fields.Boolean(string="NAID Certified Team", default=False),
     certification_level = fields.Selection(
         [("a", "NAID A"), ("aa", "NAID AA"), ("aaa", "NAID AAA")],
         string="Team Certification Level",
     )
 
     # Performance Metrics
+    )
     average_response_time = fields.Float(
-        string="Avg Response Time (hours)", compute="_compute_performance_metrics"
+        string="Avg Response Time (hours)", compute="_compute_performance_metrics")
     average_resolution_time = fields.Float(
         string="Avg Resolution Time (hours)", compute="_compute_performance_metrics"
     )

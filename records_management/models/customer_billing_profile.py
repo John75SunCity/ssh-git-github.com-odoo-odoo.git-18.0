@@ -1,20 +1,25 @@
-# -*- coding: utf-8 -*-
-"""
-Customer Billing Profile Management
-"""
-
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 import logging
+from dateutil.relativedelta import relativedelta
 
 _logger = logging.getLogger(__name__)
+
 
 class CustomerBillingProfile(models.Model):
     """
     Customer Billing Profile - Manages billing configurations for customers
+
+    This model provides comprehensive billing management including:
+    - Multiple billing cycles (monthly, quarterly, annual, prepaid)
+    - Automated invoice generation with customizable rules
+    - Payment reliability scoring based on payment history
+    - Credit limit management with approval workflows
+    - Prepaid billing with discount calculation
+    - Department-level access control and data separation
     """
 
-    _name = "records.customer.billing.profile"
+    _name = "customer.billing.profile"
     _description = "Customer Billing Profile"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "partner_id, name"
@@ -23,16 +28,27 @@ class CustomerBillingProfile(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Profile Name", required=True, tracking=True, index=True),
+    name = fields.Char(string="Profile Name", required=True, tracking=True, index=True)
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
+    )
     active = fields.Boolean(string="Active", default=True)
-    description = fields.Text(string="Description", tracking=True)
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("suspended", "Suspended"),
+            ("inactive", "Inactive"),
+        ],
+        default="draft",
+        tracking=True,
+    )
 
     # ============================================================================
-    # CUSTOMER INFORMATION
+    # CUSTOMER RELATIONSHIP FIELDS
     # ============================================================================
     partner_id = fields.Many2one(
         "res.partner",
@@ -41,185 +57,116 @@ class CustomerBillingProfile(models.Model):
         tracking=True,
         domain=[("is_company", "=", True)],
     )
+    department_id = fields.Many2one(
+        "records.department",
+        string="Department",
+        help="Department for access control and data separation",
+    )
 
     # ============================================================================
-    # BILLING CYCLES AND SCHEDULING
+    # BILLING CONFIGURATION FIELDS
     # ============================================================================
-    storage_billing_cycle = fields.Selection(
+    billing_cycle = fields.Selection(
         [
             ("monthly", "Monthly"),
             ("quarterly", "Quarterly"),
             ("semi_annual", "Semi-Annual"),
             ("annual", "Annual"),
             ("prepaid", "Prepaid"),
-            ("custom", "Custom"),
         ],
-        string="Storage Billing Cycle",
+        string="Billing Cycle",
         default="monthly",
+        required=True,
         tracking=True,
     )
 
-    service_billing_cycle = fields.Selection(
-        [
-            ("immediate", "Immediate"),
-            ("weekly", "Weekly"),
-            ("monthly", "Monthly"),
-            ("custom", "Custom"),
-        ],
-        string="Service Billing Cycle",
-        default="immediate",
-        tracking=True,
+    billing_day = fields.Integer(
+        string="Billing Day", default=1, help="Day of month for billing (1-28)"
     )
 
-    next_storage_billing_date = fields.Date(
-        string="Next Storage Billing Date",
-        compute="_compute_next_storage_billing_date",
-        store=True,
-    )
-
-    # ============================================================================
-    # BILLING CONFIGURATION
-    # ============================================================================
-    billing_method = fields.Selection(
-        [
-            ("automatic", "Automatic"),
-            ("manual", "Manual Review Required"),
-            ("approval", "Approval Required"),
-        ],
-        string="Billing Method",
-        default="automatic",
-    )
-
-    # Storage Billing Configuration
-    storage_bill_in_advance = fields.Boolean(
-        string="Bill Storage in Advance",
+    auto_invoice = fields.Boolean(
+        string="Auto Generate Invoices",
         default=True,
-        help="If enabled, storage fees will be billed in advance",
+        help="Automatically generate invoices based on billing cycle",
     )
 
-    storage_advance_months = fields.Integer(
-        string="Storage Advance Months",
-        default=1,
-        help="Number of months to bill storage in advance",
-    )
-
-    # Billing Schedule Configuration
-    billing_day = fields.Selection(
-        selection=[(str(i), str(i)) for i in range(1, 29)],
-        string="Billing Day",
-        default="1",
-        help="Day of month for billing (1-28)",
+    invoice_template_id = fields.Many2one(
+        "account.move",
+        string="Invoice Template",
+        help="Template for automated invoice generation",
     )
 
     # ============================================================================
-    # PREPAID CONFIGURATION
+    # CREDIT AND PAYMENT FIELDS
+    # ============================================================================
+    credit_limit = fields.Monetary(
+        string="Credit Limit",
+        currency_field="currency_id",
+        help="Maximum allowed outstanding balance",
+    )
+
+    payment_terms_id = fields.Many2one("account.payment.term", string="Payment Terms")
+
+    payment_reliability_score = fields.Float(
+        string="Payment Reliability Score",
+        compute="_compute_payment_reliability_score",
+        store=True,
+        help="Score based on payment history (0-100)",
+    )
+
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+        required=True,
+    )
+
+    # ============================================================================
+    # PREPAID BILLING FIELDS
     # ============================================================================
     prepaid_enabled = fields.Boolean(
-        string="Enable Prepaid Billing",
-        default=False,
-        help="Enable prepaid storage billing with credits system",
-    )
-
-    prepaid_months = fields.Integer(
-        string="Prepaid Period (Months)",
-        default=12,
-        help="Number of months for prepaid storage billing",
-    )
-
-    prepaid_discount_percent = fields.Float(
-        string="Prepaid Discount %",
-        digits=(5, 2),
-        help="Discount percentage for prepaid customers",
+        string="Prepaid Billing Enabled",
+        help="Enable prepaid billing with advance payments",
     )
 
     prepaid_balance = fields.Monetary(
         string="Prepaid Balance",
         currency_field="currency_id",
-        help="Current prepaid credit balance",
+        compute="_compute_prepaid_balance",
+        store=True,
     )
 
-    # Auto-generation Configuration
-    auto_generate_storage_invoices = fields.Boolean(
-        string="Auto Generate Storage Invoices",
+    prepaid_discount_percent = fields.Float(
+        string="Prepaid Discount %", help="Discount percentage for prepaid payments"
+    )
+
+    minimum_prepaid_amount = fields.Monetary(
+        string="Minimum Prepaid Amount",
+        currency_field="currency_id",
+        help="Minimum amount for prepaid payments",
+    )
+
+    # ============================================================================
+    # NOTIFICATION AND COMMUNICATION FIELDS
+    # ============================================================================
+    send_invoices_by_email = fields.Boolean(
+        string="Send Invoices by Email", default=True
+    )
+
+    invoice_email = fields.Char(
+        string="Invoice Email", help="Email address for sending invoices"
+    )
+
+    late_payment_notification = fields.Boolean(
+        string="Late Payment Notifications",
         default=True,
-        help="Automatically generate storage invoices",
+        help="Send notifications for overdue payments",
     )
 
-    auto_generate_service_invoices = fields.Boolean(
-        string="Auto Generate Service Invoices",
-        default=True,
-        help="Automatically generate service invoices",
-    )
-
-    # Payment Terms
-    invoice_due_days = fields.Integer(
-        string="Invoice Due Days",
-        default=30,
-        help="Number of days until invoice is due",
-    )
-
-    invoice_delivery_method = fields.Selection(
-        [
-            ("email", "Email"),
-            ("postal", "Postal Mail"),
-            ("portal", "Customer Portal"),
-            ("both", "Email + Portal"),
-        ],
-        string="Invoice Delivery",
-        default="email",
-    )
-
-    preferred_contact_method = fields.Selection(
-        [
-            ("email", "Email"),
-            ("phone", "Phone"),
-            ("sms", "SMS"),
-            ("portal", "Customer Portal"),
-        ],
-        string="Preferred Contact Method",
-        default="email",
-    )
-
-    # ============================================================================
-    # STATE MANAGEMENT
-    # ============================================================================
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("active", "Active"),
-            ("suspended", "Suspended"),
-            ("terminated", "Terminated"),
-        ],
-        string="Status",
-        default="draft",
-        tracking=True,
-    )
-
-    # ============================================================================
-    # FINANCIAL SETTINGS
-    # ============================================================================
-    currency_id = fields.Many2one("res.currency", related="company_id.currency_id")
-    credit_limit = fields.Monetary(string="Credit Limit", currency_field="currency_id")
-    payment_terms = fields.Selection(
-        [
-            ("immediate", "Immediate Payment"),
-            ("net_15", "Net 15 Days"),
-            ("net_30", "Net 30 Days"),
-            ("net_45", "Net 45 Days"),
-            ("net_60", "Net 60 Days"),
-            ("custom", "Custom Terms"),
-        ],
-        string="Payment Terms",
-        default="net_30",
-    )
-
-    # Billing rates
-    storage_rate_per_box = fields.Monetary(
-        string="Storage Rate per Box", currency_field="currency_id"
-    retrieval_rate = fields.Monetary(
-        string="Retrieval Rate", currency_field="currency_id"
-    destruction_rate = fields.Monetary(
-        string="Destruction Rate", currency_field="currency_id"
+    notification_days = fields.Integer(
+        string="Notification Days",
+        default=7,
+        help="Days after due date to send notifications",
     )
 
     # ============================================================================
@@ -229,299 +176,152 @@ class CustomerBillingProfile(models.Model):
         "records.billing.contact", "billing_profile_id", string="Billing Contacts"
     )
 
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    contact_count = fields.Integer(
-        string="Contact Count", compute="_compute_contact_count"
-    current_balance = fields.Monetary(
-        string="Current Balance",
-        compute="_compute_current_balance",
-        currency_field="currency_id",
-    payment_reliability_score = fields.Float(
-        string="Payment Reliability Score", compute="_compute_payment_reliability"
+    invoice_ids = fields.One2many(
+        "account.move",
+        "billing_profile_id",
+        string="Invoices",
+        domain=[("move_type", "=", "out_invoice")],
     )
 
-    # ============================================================================
-    # COMMUNICATION PREFERENCES
-    # ============================================================================
-    send_billing_notifications = fields.Boolean(
-        string="Send Billing Notifications", default=True
-    send_overdue_reminders = fields.Boolean(
-        string="Send Overdue Reminders", default=True
-    billing_email = fields.Char(string="Billing Email")
-    billing_phone = fields.Char(string="Billing Phone")
-
-    # ============================================================================
-    # POLICY SETTINGS
-    # ============================================================================
-    retention_policy_billing = fields.Selection(
-        [
-            ("standard", "Standard Retention"),
-            ("extended", "Extended Retention"),
-            ("permanent", "Permanent Retention"),
-            ("custom", "Custom Policy"),
-        ],
-        string="Retention Policy Billing",
-        default="standard",
+    prepaid_payment_ids = fields.One2many(
+        "account.payment", "billing_profile_id", string="Prepaid Payments"
     )
 
-    auto_renew_contracts = fields.Boolean(string="Auto-Renew Contracts", default=False)
-    require_approval_over_amount = fields.Monetary(
-        string="Require Approval Over Amount",
-        currency_field="currency_id",
-        help="Invoices over this amount require approval",
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
     )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
-    # DATES AND TRACKING
+    # COMPUTE METHODS
     # ============================================================================
-    profile_start_date = fields.Date(
-        string="Profile Start Date", default=fields.Date.today
-    last_billing_date = fields.Date(string="Last Billing Date")
-    last_payment_date = fields.Date(string="Last Payment Date")
-
-    # ============================================================================
-    # NOTES AND COMMENTS
-    # ============================================================================
-    billing_notes = fields.Text(string="Billing Notes")
-    special_instructions = fields.Text(string="Special Instructions")
-    internal_notes = fields.Text(string="Internal Notes")
-
-    # ============================================================================
-    # COMPUTED METHODS
-    # ============================================================================
-    @api.depends("billing_contact_ids")
-    def _compute_contact_count(self):
-        """Count related billing contacts"""
+    @api.depends("prepaid_payment_ids", "prepaid_payment_ids.amount")
+    def _compute_prepaid_balance(self):
+        """Calculate current prepaid balance"""
         for record in self:
-            record.contact_count = len(record.billing_contact_ids)
+            total_payments = sum(record.prepaid_payment_ids.mapped("amount"))
+            # Subtract consumed amounts (this would need additional logic)
+            record.prepaid_balance = total_payments
 
-    @api.depends("storage_billing_cycle", "last_billing_date")
-    def _compute_next_storage_billing_date(self):
-        """Calculate next billing date based on cycle"""
+    @api.depends("partner_id", "partner_id.payment_history")
+    def _compute_payment_reliability_score(self):
+        """Calculate payment reliability score based on history"""
         for record in self:
-            if record.last_billing_date and record.storage_billing_cycle:
-                from dateutil.relativedelta import relativedelta
+            if not record.partner_id:
+                record.payment_reliability_score = 0.0
+                continue
 
-                last_date = record.last_billing_date
+            # This is a simplified calculation - in practice would analyze
+            # payment history, late payments, defaults, etc.
+            invoices = self.env["account.move"].search(
+                [
+                    ("partner_id", "=", record.partner_id.id),
+                    ("move_type", "=", "out_invoice"),
+                    ("state", "=", "posted"),
+                ]
+            )
 
-                if record.storage_billing_cycle == "monthly":
-                    record.next_storage_billing_date = last_date + relativedelta(
-                        months=1
-                    )
-                elif record.storage_billing_cycle == "quarterly":
-                    record.next_storage_billing_date = last_date + relativedelta(
-                        months=3
-                    )
-                elif record.storage_billing_cycle == "semi_annual":
-                    record.next_storage_billing_date = last_date + relativedelta(
-                        months=6
-                    )
-                elif record.storage_billing_cycle == "annual":
-                    record.next_storage_billing_date = last_date + relativedelta(
-                        years=1
-                    )
-                else:
-                    record.next_storage_billing_date = False
-            else:
-                record.next_storage_billing_date = fields.Date.today()
+            if not invoices:
+                record.payment_reliability_score = 50.0  # Neutral score
+                continue
 
-    def _compute_current_balance(self):
-        """Calculate current outstanding balance"""
-        for record in self:
-            # Simplified calculation - in real implementation would sum unpaid invoices
-            record.current_balance = 0.0
-
-    @api.depends("partner_id")
-    def _compute_payment_reliability(self):
-        """Calculate payment reliability score"""
-        for record in self:
-            # Simplified score - in real implementation would analyze payment history
-            record.payment_reliability_score = 85.0
+            paid_on_time = invoices.filtered(lambda inv: inv.payment_state == "paid")
+            score = (len(paid_on_time) / len(invoices)) * 100
+            record.payment_reliability_score = min(100.0, max(0.0, score))
 
     # ============================================================================
-    # BUSINESS LOGIC METHODS
+    # ACTION METHODS
     # ============================================================================
     def action_activate_profile(self):
-        """Activate the billing profile"""
+        """Activate billing profile"""
         self.ensure_one()
         if self.state != "draft":
-            raise UserError("Only draft profiles can be activated")
-
-        self.write({"state": "active", "profile_start_date": fields.Date.today()})
-        self.message_post(body="Billing profile activated")
+            raise UserError(_("Can only activate draft profiles"))
+        self.write({"state": "active"})
 
     def action_suspend_profile(self):
-        """Suspend the billing profile"""
+        """Suspend billing profile"""
         self.ensure_one()
         if self.state != "active":
-            raise UserError("Only active profiles can be suspended")
-
+            raise UserError(_("Can only suspend active profiles"))
         self.write({"state": "suspended"})
-        self.message_post(body="Billing profile suspended")
 
-    def action_terminate_profile(self):
-        """Terminate the billing profile"""
+    def action_reactivate_profile(self):
+        """Reactivate suspended profile"""
         self.ensure_one()
-        if self.state in ["terminated"]:
-            raise UserError("Profile is already terminated")
-
-        self.write({"state": "terminated"})
-        self.message_post(body="Billing profile terminated")
+        if self.state != "suspended":
+            raise UserError(_("Can only reactivate suspended profiles"))
+        self.write({"state": "active"})
 
     def action_generate_invoice(self):
-        """Generate invoice based on profile settings"""
+        """Generate invoice based on billing profile configuration"""
+        self.ensure_one()
+        if self.state != "active":
+            raise UserError(_("Can only generate invoices for active profiles"))
+
+        # Create invoice based on profile settings
+        invoice_vals = self._prepare_invoice_values()
+        invoice = self.env["account.move"].create(invoice_vals)
+
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "account.move",
+            "res_id": invoice.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def action_view_invoices(self):
+        """View all invoices for this billing profile"""
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Generate Invoice",
+            "name": _("Invoices"),
             "res_model": "account.move",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_partner_id": self.partner_id.id,
-                "default_billing_profile_id": self.id,
-            },
+            "view_mode": "tree,form",
+            "domain": [("billing_profile_id", "=", self.id)],
+            "context": {"default_billing_profile_id": self.id},
+        }
+
+    # ============================================================================
+    # PRIVATE METHODS
+    # ============================================================================
+    def _prepare_invoice_values(self):
+        """Prepare values for invoice creation"""
+        self.ensure_one()
+        return {
+            "partner_id": self.partner_id.id,
+            "billing_profile_id": self.id,
+            "payment_term_id": (
+                self.payment_terms_id.id if self.payment_terms_id else False
+            ),
+            "currency_id": self.currency_id.id,
+            "move_type": "out_invoice",
+            "invoice_date": fields.Date.today(),
         }
 
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
+    @api.constrains("billing_day")
+    def _check_billing_day(self):
+        """Validate billing day is within valid range"""
+        for record in self:
+            if not (1 <= record.billing_day <= 28):
+                raise ValidationError(_("Billing day must be between 1 and 28"))
+
     @api.constrains("credit_limit")
     def _check_credit_limit(self):
         """Validate credit limit is positive"""
         for record in self:
-            if record.credit_limit and record.credit_limit < 0:
-                raise ValidationError("Credit limit must be positive")
+            if record.credit_limit < 0:
+                raise ValidationError(_("Credit limit must be positive"))
 
-    @api.constrains("storage_rate_per_box", "retrieval_rate", "destruction_rate")
-    def _check_rates(self):
-        """Validate billing rates are positive"""
+    @api.constrains("prepaid_discount_percent")
+    def _check_prepaid_discount(self):
+        """Validate prepaid discount percentage"""
         for record in self:
-            rates = [
-                record.storage_rate_per_box,
-                record.retrieval_rate,
-                record.destruction_rate,
-            ]
-            if any(rate and rate < 0 for rate in rates):
-                raise ValidationError("Billing rates must be positive")
-
-    @api.constrains("billing_day", "storage_advance_months", "invoice_due_days")
-    def _check_billing_configuration(self):
-        """Validate billing configuration fields"""
-        for record in self:
-            if record.billing_day:
-                try:
-                    billing_day_int = int(record.billing_day)
-                    if billing_day_int < 1 or billing_day_int > 28:
-                        raise ValidationError("Billing day must be between 1 and 28")
-                except (ValueError, TypeError):
-                    raise ValidationError(
-                        "Billing day must be a valid number between 1 and 28"
-                    )
-            if record.storage_advance_months and record.storage_advance_months < 1:
-                raise ValidationError("Storage advance months must be at least 1")
-            if record.invoice_due_days and record.invoice_due_days < 1:
-                raise ValidationError("Invoice due days must be at least 1")
-
-    # ============================================================================
-    # ODOO FRAMEWORK INTEGRATION
-    # ============================================================================
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Override create for automatic naming"""
-        for vals in vals_list:
-            if "name" not in vals or vals["name"] == "/":
-                partner = self.env["res.partner"].browse(vals.get("partner_id"))
-                vals["name"] = (
-                    f"Billing Profile - {partner.name}"
-                    if partner
-                    else "New Billing Profile"
-                )
-        return super().create(vals_list)
-
-    def write(self, vals):
-        """Override write for state change tracking"""
-        if "state" in vals:
-            for record in self:
-                old_state = record.state
-                new_state = vals["state"]
-                if old_state != new_state:
-                    record.message_post(
-                        body=f"Profile state changed from {old_state} to {new_state}"
-                    )
-        return super().write(vals)
-
-    # ============================================================================
-    # UTILITY METHODS
-    # ============================================================================
-    def name_get(self):
-        """Custom name display"""
-        result = []
-        for record in self:
-            name = f"{record.name}"
-            if record.partner_id:
-                name += f" ({record.partner_id.name})"
-            result.append((record.id, name))
-        return result
-
-    @api.model
-    def _name_search(
-        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
-        """Enhanced search by name or customer name"""
-        args = args or []
-        domain = []
-        if name:
-            domain = [
-                "|",
-                "|",
-                ("name", operator, name),
-                ("partner_id.name", operator, name),
-                ("description", operator, name),
-            ]
-        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
-
-    # ============================================================================
-    # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================        "mail.followers", "res_id", string="Followers"
-    )            "name": _("Activate"),
-            "res_model": "records.customer.billing.profile",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        }
-    def action_reactivate(self):
-        """Reactivate - Action method"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Reactivate"),
-            "res_model": "records.customer.billing.profile",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        }
-    def action_suspend(self):
-        """Suspend - Action method"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Suspend"),
-            "res_model": "records.customer.billing.profile",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        }
-    def action_terminate(self):
-        """Terminate - Action method"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Terminate"),
-            "res_model": "records.customer.billing.profile",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        })
+            if not (0 <= record.prepaid_discount_percent <= 100):
+                raise ValidationError(_("Prepaid discount must be between 0 and 100%"))

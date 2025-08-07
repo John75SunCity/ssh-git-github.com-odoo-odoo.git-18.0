@@ -5,79 +5,18 @@ Customer Feedback Management Module
 This module provides comprehensive customer feedback collection, analysis, and response management
 for the Records Management System. It implements AI-ready sentiment analysis, automated priority
 assignment, and complete feedback lifecycle management with customer portal integration.
-
-Key Features:
-- Multi-channel feedback collection (web forms, email, phone, SMS)
-- AI-powered sentiment analysis with automated categorization
-- Priority-based feedback management with escalation workflows
-- Customer portal integration for feedback submission and tracking
-- Response management with template-based communication
-- Analytics dashboard with sentiment trends and performance metrics
-- Integration with customer satisfaction surveys and NPS tracking
-
-Business Processes:
-1. Feedback Collection: Multi-channel feedback capture from customers
-2. Sentiment Analysis: Automated sentiment categorization (positive/neutral/negative)
-3. Priority Assignment: AI-driven priority assignment based on sentiment and content
-4. Response Workflows: Systematic response management with tracking and escalation
-5. Resolution Tracking: Complete resolution documentation and customer confirmation
-6. Analytics Reporting: Trend analysis and performance metrics for continuous improvement
-7. Customer Communication: Proactive communication and follow-up management
-
-Feedback Types:
-- Service Quality: Feedback on pickup, storage, and retrieval services
-- Portal Experience: Customer portal usability and functionality feedback
-- Billing Issues: Feedback related to invoicing and billing processes
-- Compliance Concerns: Feedback on security and compliance procedures
-- General Suggestions: Improvement suggestions and feature requests
-- Complaints: Formal complaints requiring escalated response procedures
-
-AI-Powered Analytics:
-- Sentiment Analysis: Advanced natural language processing for sentiment detection
-- Keyword Extraction: Automatic identification of key topics and themes
-- Priority Scoring: ML-driven priority assignment based on content and customer history
-- Trend Analysis: Historical sentiment trends and performance pattern detection
-- Predictive Analytics: Early warning systems for potential customer satisfaction issues
-- Automated Categorization: Intelligent feedback categorization for efficient routing
-
-Customer Portal Integration:
-- Self-service feedback submission with file attachment support
-- Real-time feedback status tracking and response notifications
-- Historical feedback review and resolution tracking
-- Satisfaction surveys and NPS scoring integration
-- Customer communication preferences management
-- Mobile-responsive design for feedback submission from any device
-
-Response Management:
-- Template-based response system with personalization capabilities
-- Escalation workflows for high-priority or negative feedback
-- Multi-department routing based on feedback category and severity
-- Response time tracking with SLA monitoring and compliance
-- Customer confirmation and satisfaction verification workflows
-- Integration with CRM and customer communication systems
-
-Technical Implementation:
-- Modern Odoo 18.0 architecture with mail thread integration
-- AI-ready sentiment analysis framework with extensibility for ML models
-- Performance optimized for high-volume feedback processing
-- Integration with customer portal and notification systems
-- Comprehensive reporting and analytics with real-time dashboards
-
-Author: Records Management System
-Version: 18.0.6.0.0
-License: LGPL-3
 """
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 import logging
 
 _logger = logging.getLogger(__name__)
 
+
 class CustomerFeedback(models.Model):
     """
     Customer Feedback Management with AI-powered sentiment analysis
-    Handles customer feedback collection, analysis, and response workflows
     """
 
     _name = "customer.feedback"
@@ -86,50 +25,47 @@ class CustomerFeedback(models.Model):
     _order = "feedback_date desc, name"
     _rec_name = "name"
 
-    # ==========================================
-    # CORE FIELDS
-    # ==========================================
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
     name = fields.Char(
         string="Feedback Reference",
         required=True,
         tracking=True,
         default=lambda self: _("New"),
         copy=False,
-    description = fields.Text(string="Feedback Details", tracking=True)
-    active = fields.Boolean(default=True, tracking=True)
+    )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
     )
+    active = fields.Boolean(string="Active", default=True, tracking=True)
 
-    # ==========================================
-    # CUSTOMER INFORMATION
-    # ==========================================
+    # ============================================================================
+    # CUSTOMER INFORMATION FIELDS
+    # ============================================================================
     customer_id = fields.Many2one(
-        "res.partner",
-        string="Customer",
-        required=True,
-        tracking=True,
-        domain=[("is_company", "=", True)],
+        "res.partner", string="Customer", required=True, tracking=True
+    )
     contact_person = fields.Many2one(
-        "res.partner",
-        string="Contact Person",
-        domain=[("is_company", "=", False)],
-        tracking=True,
+        "res.partner", string="Contact Person", tracking=True
     )
 
-    # ==========================================
-    # FEEDBACK DETAILS
-    # ==========================================
+    # ============================================================================
+    # FEEDBACK DETAILS FIELDS
+    # ============================================================================
+    description = fields.Text(string="Feedback Details", tracking=True)
     feedback_date = fields.Date(
         string="Feedback Date", default=fields.Date.today, required=True, tracking=True
+    )
     feedback_type = fields.Selection(
         [
             ("compliment", "Compliment"),
@@ -156,9 +92,9 @@ class CustomerFeedback(models.Model):
         tracking=True,
     )
 
-    # ==========================================
-    # RATING AND SATISFACTION
-    # ==========================================
+    # ============================================================================
+    # RATING AND SATISFACTION FIELDS
+    # ============================================================================
     rating = fields.Selection(
         [
             ("1", "Very Poor"),
@@ -183,9 +119,26 @@ class CustomerFeedback(models.Model):
         tracking=True,
     )
 
-    # ==========================================
-    # STATUS AND WORKFLOW
-    # ==========================================
+    # ============================================================================
+    # AI SENTIMENT ANALYSIS FIELDS
+    # ============================================================================
+    sentiment_category = fields.Selection(
+        [("positive", "Positive"), ("neutral", "Neutral"), ("negative", "Negative")],
+        string="Sentiment Category",
+        compute="_compute_sentiment_analysis",
+        store=True,
+    )
+
+    sentiment_score = fields.Float(
+        string="Sentiment Score",
+        compute="_compute_sentiment_analysis",
+        store=True,
+        help="Sentiment score from -1 (negative) to 1 (positive)",
+    )
+
+    # ============================================================================
+    # WORKFLOW STATE FIELDS
+    # ============================================================================
     state = fields.Selection(
         [
             ("new", "New"),
@@ -205,34 +158,186 @@ class CustomerFeedback(models.Model):
         string="Priority",
         default="normal",
         tracking=True,
+        compute="_compute_priority",
+        store=True,
     )
 
-    # ==========================================
-    # RESPONSE TRACKING
-    # ==========================================
+    # ============================================================================
+    # RESPONSE TRACKING FIELDS
+    # ============================================================================
     response_required = fields.Boolean(string="Response Required", default=True)
-    response_deadline = fields.Date(string="Response Deadline", tracking=True)
     response_date = fields.Date(string="Response Date", tracking=True)
     response_notes = fields.Text(string="Response Notes", tracking=True)
+    resolution_notes = fields.Text(string="Resolution Notes", tracking=True)
 
-    # ==========================================
-    # WORKFLOW METHODS
-    # ==========================================
+    # ============================================================================
+    # COMMUNICATION FIELDS
+    # ============================================================================
+    communication_method = fields.Selection(
+        [
+            ("portal", "Customer Portal"),
+            ("email", "Email"),
+            ("phone", "Phone"),
+            ("sms", "SMS"),
+            ("in_person", "In Person"),
+        ],
+        string="Communication Method",
+        default="portal",
+    )
+
+    follow_up_required = fields.Boolean(string="Follow-up Required", default=False)
+    follow_up_date = fields.Date(string="Follow-up Date")
+
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+    attachment_ids = fields.Many2many(
+        "ir.attachment", string="Attachments", help="Files attached to this feedback"
+    )
+
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("description", "rating", "satisfaction_level")
+    def _compute_sentiment_analysis(self):
+        """AI-ready sentiment analysis with keyword matching and rating consideration"""
+        for record in self:
+            if not record.description:
+                record.sentiment_category = "neutral"
+                record.sentiment_score = 0.0
+                continue
+
+            # Simple keyword-based sentiment analysis (AI-ready for ML enhancement)
+            description_lower = record.description.lower()
+
+            # Positive keywords
+            positive_words = [
+                "excellent",
+                "great",
+                "amazing",
+                "wonderful",
+                "fantastic",
+                "satisfied",
+                "happy",
+                "pleased",
+                "good",
+                "awesome",
+                "perfect",
+                "love",
+                "thank",
+            ]
+
+            # Negative keywords
+            negative_words = [
+                "terrible",
+                "awful",
+                "horrible",
+                "bad",
+                "poor",
+                "disappointed",
+                "frustrated",
+                "angry",
+                "unsatisfied",
+                "complaint",
+                "problem",
+                "issue",
+                "wrong",
+                "hate",
+            ]
+
+            positive_count = sum(
+                1 for word in positive_words if word in description_lower
+            )
+            negative_count = sum(
+                1 for word in negative_words if word in description_lower
+            )
+
+            # Calculate base sentiment score
+            base_score = (positive_count - negative_count) / max(
+                len(description_lower.split()), 1
+            )
+
+            # Adjust based on rating if available
+            rating_adjustment = 0
+            if record.rating:
+                rating_num = int(record.rating)
+                rating_adjustment = (rating_num - 3) / 5  # Normalize to -0.4 to 0.4
+
+            # Adjust based on satisfaction level
+            satisfaction_adjustment = 0
+            if record.satisfaction_level:
+                satisfaction_map = {
+                    "very_dissatisfied": -0.4,
+                    "dissatisfied": -0.2,
+                    "neutral": 0,
+                    "satisfied": 0.2,
+                    "very_satisfied": 0.4,
+                }
+                satisfaction_adjustment = satisfaction_map.get(
+                    record.satisfaction_level, 0
+                )
+
+            # Calculate final sentiment score
+            final_score = base_score + rating_adjustment + satisfaction_adjustment
+            final_score = max(-1.0, min(1.0, final_score))  # Clamp between -1 and 1
+
+            record.sentiment_score = final_score
+
+            # Determine category
+            if final_score > 0.1:
+                record.sentiment_category = "positive"
+            elif final_score < -0.1:
+                record.sentiment_category = "negative"
+            else:
+                record.sentiment_category = "neutral"
+
+    @api.depends("sentiment_category", "feedback_type", "rating")
+    def _compute_priority(self):
+        """Compute priority based on sentiment analysis and feedback type"""
+        for record in self:
+            priority = "normal"  # default
+
+            # Negative sentiment increases priority
+            if record.sentiment_category == "negative":
+                priority = "high"
+
+            # Complaints get higher priority
+            if record.feedback_type == "complaint":
+                priority = "high"
+
+            # Very poor ratings get urgent priority
+            if record.rating == "1":
+                priority = "urgent"
+
+            # Very dissatisfied customers get urgent priority
+            if record.satisfaction_level == "very_dissatisfied":
+                priority = "urgent"
+
+            record.priority = priority
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_acknowledge(self):
-        """Acknowledge feedback"""
+        """Acknowledge feedback and move to acknowledged state"""
         self.ensure_one()
         if self.state != "new":
             raise UserError(_("Only new feedback can be acknowledged"))
-
         self.write({"state": "acknowledged"})
-        self.message_post(body=_("Feedback acknowledged"))
+        self.message_post(body=_("Feedback acknowledged by %s") % self.env.user.name)
 
     def action_start_progress(self):
         """Start working on feedback"""
         self.ensure_one()
-        if self.state != "acknowledged":
-            raise UserError(_("Only acknowledged feedback can be started"))
-
+        if self.state not in ["new", "acknowledged"]:
+            raise UserError(_("Only new or acknowledged feedback can be started"))
         self.write({"state": "in_progress"})
         self.message_post(body=_("Started working on feedback"))
 
@@ -241,25 +346,58 @@ class CustomerFeedback(models.Model):
         self.ensure_one()
         if self.state != "in_progress":
             raise UserError(_("Only in-progress feedback can be resolved"))
-
         self.write({"state": "resolved", "response_date": fields.Date.today()})
         self.message_post(body=_("Feedback resolved"))
 
     def action_close(self):
-        """Close feedback"""
+        """Close feedback after customer confirmation"""
         self.ensure_one()
         if self.state != "resolved":
             raise UserError(_("Only resolved feedback can be closed"))
-
         self.write({"state": "closed"})
         self.message_post(body=_("Feedback closed"))
 
+    def action_reopen(self):
+        """Reopen closed feedback if needed"""
+        self.ensure_one()
+        if self.state != "closed":
+            raise UserError(_("Only closed feedback can be reopened"))
+        self.write({"state": "in_progress"})
+        self.message_post(body=_("Feedback reopened"))
+
+    # ============================================================================
+    # OVERRIDE METHODS
+    # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create to set sequence number"""
+        """Create feedback records with auto-generated sequence numbers"""
         for vals in vals_list:
             if vals.get("name", _("New")) == _("New"):
                 vals["name"] = self.env["ir.sequence"].next_by_code(
                     "customer.feedback"
-    or _("New")
-        return super().create(vals_list))
+                ) or _("New")
+        return super().create(vals_list)
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("rating")
+    def _check_rating(self):
+        """Validate rating value"""
+        for record in self:
+            if record.rating and record.rating not in ["1", "2", "3", "4", "5"]:
+                raise ValidationError(_("Invalid rating value"))
+
+    @api.constrains("sentiment_score")
+    def _check_sentiment_score(self):
+        """Validate sentiment score range"""
+        for record in self:
+            if record.sentiment_score and not (-1.0 <= record.sentiment_score <= 1.0):
+                raise ValidationError(_("Sentiment score must be between -1 and 1"))
+
+    @api.constrains("follow_up_date")
+    def _check_follow_up_date(self):
+        """Validate follow-up date is not in the past"""
+        for record in self:
+            if record.follow_up_date and record.follow_up_date < fields.Date.today():
+                raise ValidationError(_("Follow-up date cannot be in the past"))

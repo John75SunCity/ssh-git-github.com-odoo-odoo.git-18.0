@@ -30,6 +30,7 @@ class RecordsDigitalScan(models.Model):
     )
 
     # Common fields
+    )
     description = fields.Text(),
     notes = fields.Text(),
     date = fields.Date(default=fields.Date.today)
@@ -46,9 +47,10 @@ class RecordsDigitalScan(models.Model):
             ("png", "PNG"),
             ("tiff", "TIFF"),
             ("bmp", "BMP"),
-        ],
+        ]),
         string="File Format",
         default="pdf",
+    )
     resolution = fields.Integer(string="Resolution (DPI)", default=300)
     file_size = fields.Float(string="File Size (MB)")
     scan_quality = fields.Selection(
@@ -57,18 +59,21 @@ class RecordsDigitalScan(models.Model):
             ("normal", "Normal"),
             ("high", "High Quality"),
             ("archive", "Archive Quality"),
-        ],
+        ]),
         string="Scan Quality",
         default="normal",
-    scanner_id = fields.Char(string="Scanner ID")
+    )
+    scanner_id = fields.Char(string="Scanner ID"),
     scanned_by = fields.Many2one(
         "res.users", string="Scanned By", default=lambda self: self.env.user
-    action_confirm = fields.Char(string="Action Confirm")
-    action_done = fields.Char(string="Action Done")    confirmed = fields.Boolean(string="Confirmed", default=False)
+    )
+    )
+    action_confirm = fields.Char(string="Action Confirm"),
+    action_done = fields.Char(string="Action Done")    confirmed = fields.Boolean(string="Confirmed", default=False),
     done = fields.Char(string="Done")
-    draft = fields.Char(string="Draft")
+    draft = fields.Char(string="Draft"),
     group_document = fields.Char(string="Group Document")
-    group_format = fields.Char(string="Group Format")
+    group_format = fields.Char(string="Group Format"),
     group_scanned_by = fields.Char(string="Group Scanned By")
     group_state = fields.Selection(
         [
@@ -77,16 +82,17 @@ class RecordsDigitalScan(models.Model):
             ("processing", "Processing"),
             ("completed", "Completed"),
             ("failed", "Failed"),
-        ],
+        ]),
         string="Group State",
         default="draft",
+    )
     help = fields.Char(string="Help")        "mail.message", "res_id", string="Messages", auto_join=True,
-    my_scans = fields.Char(string="My Scans")
+    my_scans = fields.Char(string="My Scans"),
     res_model = fields.Char(string="Res Model")
-    search_view_id = fields.Many2one("ir.ui.view", string="Search View")
+    search_view_id = fields.Many2one("ir.ui.view", string="Search View"),
     view_mode = fields.Char(string="View Mode")
     # === BUSINESS CRITICAL FIELDS ===
-    sequence = fields.Integer(string='Sequence', default=10)
+    sequence = fields.Integer(string='Sequence', default=10),
     created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
     updated_date = fields.Datetime(string='Updated Date')
 
@@ -96,4 +102,4 @@ class RecordsDigitalScan(models.Model):
 
     def action_done(self):
         """Mark as done"""
-        self.write({"state": "done"}))
+        self.write({"state": "done"})

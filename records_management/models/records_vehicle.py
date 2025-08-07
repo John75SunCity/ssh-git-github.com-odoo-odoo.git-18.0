@@ -21,39 +21,46 @@ class RecordsVehicle(models.Model):
             ("active", "Active"),
             ("inactive", "Inactive"),
             ("archived", "Archived"),
-        ],
+        ]),
         string="Vehicle State",  # Changed to avoid conflict with status field
         default="draft",
         tracking=True,
     )
 
     # Company and User
+    )
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
+    ),
     user_id = fields.Many2one(
         "res.users", string="Vehicle Manager", default=lambda self: self.env.user
     )
 
     # Timestamps
+    )
     date_created = fields.Datetime(
         string="Vehicle Created Date", default=fields.Datetime.now
+    ),
     date_modified = fields.Datetime(string="Modified Date")
 
     # Control Fields
-    active = fields.Boolean(string="Active", default=True)
+    active = fields.Boolean(string="Active", default=True),
     notes = fields.Text(string="Internal Notes")
 
     # Vehicle Details
     vin = fields.Char(
         string="VIN", tracking=True, help="Vehicle Identification Number."
-    license_plate = fields.Char(string="License Plate", required=True, tracking=True)
+    )
+    )
+    license_plate = fields.Char(string="License Plate", required=True, tracking=True),
     driver_id = fields.Many2one(
         "hr.employee",
         string="Driver",
         tracking=True,
         help="Assigned driver for the vehicle.",
+    )
     driver_contact = fields.Char(
-        related="driver_id.mobile_phone", string="Driver Contact", readonly=True
+        related="driver_id.mobile_phone", string="Driver Contact", readonly=True)
     vehicle_type = fields.Selection(
         [("truck", "Truck"), ("van", "Van"), ("car", "Car")],
         string="Vehicle Type",
@@ -62,6 +69,7 @@ class RecordsVehicle(models.Model):
     )
 
     # Capacity
+    )
     total_capacity = fields.Float(string="Total Capacity (cubic meters)", tracking=True)
     max_boxes = fields.Integer(
         string="Max Boxes",
@@ -70,7 +78,8 @@ class RecordsVehicle(models.Model):
     )
 
     # Maintenance
-    last_service_date = fields.Date(string="Last Service Date", tracking=True)
+    )
+    last_service_date = fields.Date(string="Last Service Date", tracking=True),
     next_service_date = fields.Date(string="Next Service Date", tracking=True)
     service_notes = fields.Text(string="Service Notes")
 
@@ -80,19 +89,21 @@ class RecordsVehicle(models.Model):
             ("available", "Available"),
             ("in_service", "In Service"),
             ("maintenance", "Under Maintenance"),
-        ],
+        ]),
         string="Service Status",  # Changed to avoid conflict with state field
         default="available",
         tracking=True,
+    )
     pickup_route_ids = fields.One2many(
         "pickup.route", "vehicle_id", string="Pickup Routes"
     )
 
     # Route and Schedule Information (Missing fields from view analysis)
-    route_date = fields.Date(string="Route Date", tracking=True)
+    route_date = fields.Date(string="Route Date", tracking=True),
     start_time = fields.Datetime(string="Start Time", tracking=True)
     vehicle_capacity_volume = fields.Float(
         string="Vehicle Capacity Volume (cubic meters)", tracking=True
+    )
     vehicle_capacity_weight = fields.Float(
         string="Vehicle Capacity Weight (kg)", tracking=True
     )
@@ -124,8 +135,7 @@ class RecordsVehicle(models.Model):
         """Set vehicle status to available."""
         self.ensure_one()
         if self.state == "archived":
-            raise UserError(_("Cannot set archived vehicle as available."))
-
+            raise UserError(_("Cannot set archived vehicle as available.")
         # Update status and notes
         self.write(
             {
@@ -162,13 +172,12 @@ class RecordsVehicle(models.Model):
                 "sticky": False,
             },
         }
-
+)
     def action_set_in_use(self):
         """Set vehicle status to in use."""
         self.ensure_one()
         if self.status == "maintenance":
-            raise UserError(_("Cannot use vehicle that is under maintenance."))
-
+            raise UserError(_("Cannot use vehicle that is under maintenance.")
         # Update status and notes
         self.write(
             {
@@ -227,6 +236,7 @@ class RecordsVehicle(models.Model):
             summary=_("Vehicle maintenance required: %s") % self.name,
             note=_("Vehicle requires maintenance and is temporarily out of service."),
             user_id=self.user_id.id,
+            )
             date_deadline=fields.Date.today() + fields.timedelta(days=3),
         )
 
@@ -248,11 +258,13 @@ class RecordsVehicle(models.Model):
         }
 
     # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
-    capacity = fields.Float(string="Capacity", digits=(10, 2))
+    )
+    capacity = fields.Float(string="Capacity", digits=(10, 2)
     fuel_type = fields.Selection(
         [("gas", "Gasoline"), ("diesel", "Diesel"), ("electric", "Electric")],
         string="Fuel Type",
-    maintenance_date = fields.Date(string="Last Maintenance")
+    )
+    maintenance_date = fields.Date(string="Last Maintenance"),
     created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
     updated_date = fields.Datetime(string="Updated Date")
 
@@ -274,4 +286,4 @@ class RecordsVehicle(models.Model):
         for vals in vals_list:
             if not vals.get("name"):
                 vals["name"] = _("New Vehicle")
-        return super().create(vals_list))
+        return super().create(vals_list)

@@ -30,6 +30,7 @@ class ShreddingInventoryBatch(models.Model):
     )
 
     # Common fields
+    )
     description = fields.Text(),
     notes = fields.Text(),
     date = fields.Date(default=fields.Date.today)
@@ -57,16 +58,17 @@ class ShreddingPicklistItem(models.Model):
     name = fields.Char(string="Item Name", required=True, tracking=True),
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
+    ),
     sequence = fields.Integer(string="Sequence", default=10)
 
     # Workflow relationships
-    container_id = fields.Many2one("records.container", string="Container")
+    container_id = fields.Many2one("records.container", string="Container"),
     document_id = fields.Many2one("records.document", string="Document")
-    work_order_id = fields.Many2one("work.order.shredding", string="Work Order")
+    work_order_id = fields.Many2one("work.order.shredding", string="Work Order"),
     location_id = fields.Many2one("records.location", string="Location")
 
     # Picking details
-    picked_by = fields.Many2one("res.users", string="Picked By")
+    picked_by = fields.Many2one("res.users", string="Picked By"),
     picked_date = fields.Datetime(string="Picked Date")
 
     # Status tracking
@@ -76,7 +78,7 @@ class ShreddingPicklistItem(models.Model):
             ("pending_pickup", "Pending Pickup"),
             ("picked", "Picked"),
             ("not_found", "Not Found"),
-        ],
+        ]),
         string="Status",
         default="draft",
         tracking=True,
@@ -118,4 +120,4 @@ class ShreddingPicklistItem(models.Model):
 
     def action_done(self):
         """Mark as done"""
-        self.write({"status": "picked"}))
+        self.write({"status": "picked"})

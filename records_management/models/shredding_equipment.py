@@ -88,10 +88,10 @@ class MaintenanceEquipment(models.Model):
     # ============================================================================
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    ),
     user_id = fields.Many2one(
-        "res.users", default=lambda self: self.env.user, tracking=True
-    active = fields.Boolean(string="Active", default=True)
-
+        "res.users", default=lambda self: self.env.user, tracking=True)
+    active = fields.Boolean(string="Active", default=True),
     equipment_category = fields.Selection(
         [
             ("paper_shredder", "Paper Shredder"),
@@ -99,9 +99,11 @@ class MaintenanceEquipment(models.Model):
             ("media_destroyer", "Media Destroyer"),
             ("industrial_shredder", "Industrial Shredder"),
             ("other", "Other"),
-        ],
+        ]),
         string="Equipment Category",
         default="paper_shredder",
+    )
+
     )
 
     security_level = fields.Selection(
@@ -112,7 +114,7 @@ class MaintenanceEquipment(models.Model):
             ("level_4", "Level 4"),
             ("level_5", "Level 5"),
             ("level_6", "Level 6"),
-        ],
+        ]),
         string="Security Level",
         default="level_3",
     )
@@ -125,10 +127,10 @@ class MaintenanceEquipment(models.Model):
     )
 
     # NAID Compliance fields
-    naid_certified = fields.Boolean(string="NAID Certified", default=False)
+    )
+    naid_certified = fields.Boolean(string="NAID Certified", default=False),
     naid_certification_number = fields.Char(string="NAID Certification Number")
-    naid_certification_expiry = fields.Date(string="NAID Certification Expiry")
-
+    naid_certification_expiry = fields.Date(string="NAID Certification Expiry"),
     destruction_method = fields.Selection(
         [
             ("cross_cut", "Cross Cut"),
@@ -136,13 +138,14 @@ class MaintenanceEquipment(models.Model):
             ("pulverize", "Pulverize"),
             ("crush", "Crush"),
             ("degauss", "Degauss"),
-        ],
+        ]),
         string="Destruction Method",
     )
 
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
+    )
     shredding_service_ids = fields.One2many(
         "shredding.service", "equipment_id", string="Shredding Services"
     )
@@ -171,7 +174,7 @@ class MaintenanceEquipment(models.Model):
             ("valid", "Valid"),
             ("expiring", "Expiring Soon"),
             ("expired", "Expired"),
-        ],
+        ]),
         string="Certification Status",
         compute="_compute_certification_status",
         store=True,

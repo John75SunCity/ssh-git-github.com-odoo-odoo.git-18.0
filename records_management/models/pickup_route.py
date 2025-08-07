@@ -89,28 +89,31 @@ class PickupRoute(models.Model):
             ("active", "Active"),
             ("inactive", "Inactive"),
             ("archived", "Archived"),
-        ],
+        ]),
         string="Status",
         default="draft",
         tracking=True,
     )
 
     # Company and User
+    )
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
+    ),
     user_id = fields.Many2one(
         "res.users", string="Route Manager", default=lambda self: self.env.user
     )
 
     # Vehicle relationship
+    )
     vehicle_id = fields.Many2one("records.vehicle", string="Vehicle", tracking=True)
 
     # Timestamps
-    date_created = fields.Datetime(string="Created Date", default=lambda self: fields.Datetime.now())
+    date_created = fields.Datetime(string="Created Date", default=lambda self: fields.Datetime.now()
     date_modified = fields.Datetime(string="Modified Date", readonly=True)
 
     # Control Fields
-    active = fields.Boolean(string="Active", default=True)
+    active = fields.Boolean(string="Active", default=True),
     notes = fields.Text(string="Internal Notes")
 
     # Computed Fields
@@ -148,4 +151,4 @@ class PickupRoute(models.Model):
             if not vals.get("name"):
                 vals["name"] = _("New Record")
             vals["date_modified"] = fields.Datetime.now()
-        return super(PickupRoute, self).create(vals_list))
+        return super(PickupRoute, self).create(vals_list)

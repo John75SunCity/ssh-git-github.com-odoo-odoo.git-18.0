@@ -14,15 +14,17 @@ class TransitoryFieldConfig(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Configuration Name", required=True, tracking=True, index=True
+    ),
     code = fields.Char(string="Configuration Code", index=True)
-    description = fields.Text(string="Description")
+    description = fields.Text(string="Description"),
     sequence = fields.Integer(string="Sequence", default=10)
-    active = fields.Boolean(string="Active", default=True, tracking=True)
+    active = fields.Boolean(string="Active", default=True, tracking=True),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Configuration Manager",
@@ -40,7 +42,7 @@ class TransitoryFieldConfig(models.Model):
             ("active", "Active"),
             ("inactive", "Inactive"),
             ("archived", "Archived"),
-        ],
+        ]),
         string="Status",
         default="draft",
         tracking=True,
@@ -49,7 +51,8 @@ class TransitoryFieldConfig(models.Model):
     # ============================================================================
     # FIELD CONFIGURATION
     # ============================================================================
-    model_name = fields.Char(string="Model Name", required=True, index=True)
+    )
+    model_name = fields.Char(string="Model Name", required=True, index=True),
     field_name = fields.Char(string="Field Name", required=True, index=True)
     field_type = fields.Selection(
         [
@@ -65,31 +68,33 @@ class TransitoryFieldConfig(models.Model):
             ("one2many", "One to Many"),
             ("many2many", "Many to Many"),
             ("binary", "Binary"),
-        ],
+        ]),
         string="Field Type",
         required=True,
     )
 
-    field_label = fields.Char(string="Field Label", required=True)
+    )
+
+    field_label = fields.Char(string="Field Label", required=True),
     field_help = fields.Text(string="Field Help Text")
-    field_domain = fields.Text(string="Field Domain")
+    field_domain = fields.Text(string="Field Domain"),
     field_context = fields.Text(string="Field Context")
 
     # ============================================================================
     # VALIDATION & CONSTRAINTS
     # ============================================================================
-    required = fields.Boolean(string="Required", default=False)
+    required = fields.Boolean(string="Required", default=False),
     readonly = fields.Boolean(string="Read Only", default=False)
-    tracking = fields.Boolean(string="Enable Tracking", default=False)
+    tracking = fields.Boolean(string="Enable Tracking", default=False),
     index = fields.Boolean(string="Database Index", default=False)
     unique = fields.Boolean(string="Unique Constraint", default=False)
 
     # Field validation rules
-    min_length = fields.Integer(string="Minimum Length")
+    min_length = fields.Integer(string="Minimum Length"),
     max_length = fields.Integer(string="Maximum Length")
-    min_value = fields.Float(string="Minimum Value")
+    min_value = fields.Float(string="Minimum Value"),
     max_value = fields.Float(string="Maximum Value")
-    regex_pattern = fields.Char(string="Regex Pattern")
+    regex_pattern = fields.Char(string="Regex Pattern"),
     validation_message = fields.Text(string="Validation Message")
 
     # ============================================================================
@@ -108,22 +113,24 @@ class TransitoryFieldConfig(models.Model):
             ("selection", "Selection"),
             ("radio", "Radio Buttons"),
             ("priority", "Priority Stars"),
-        ],
+        ]),
         string="Widget",
         default="default",
     )
 
-    invisible = fields.Boolean(string="Invisible", default=False)
+    )
+
+    invisible = fields.Boolean(string="Invisible", default=False),
     groups = fields.Char(string="Security Groups")
-    states = fields.Text(string="States Configuration")
+    states = fields.Text(string="States Configuration"),
     attrs = fields.Text(string="Attributes Configuration")
 
     # ============================================================================
     # SELECTION & RELATION OPTIONS
     # ============================================================================
-    selection_options = fields.Text(string="Selection Options")
+    selection_options = fields.Text(string="Selection Options"),
     relation_model = fields.Char(string="Relation Model")
-    relation_field = fields.Char(string="Relation Field")
+    relation_field = fields.Char(string="Relation Field"),
     inverse_field = fields.Char(string="Inverse Field")
 
     # ============================================================================
@@ -135,24 +142,28 @@ class TransitoryFieldConfig(models.Model):
             ("deployed", "Deployed"),
             ("failed", "Failed"),
             ("rolled_back", "Rolled Back"),
-        ],
+        ]),
         string="Deployment Status",
         default="pending",
         tracking=True,
     )
 
-    version = fields.Char(string="Version", default="1.0")
+    )
+
+    version = fields.Char(string="Version", default="1.0"),
     previous_version_id = fields.Many2one(
         "transitory.field.config", string="Previous Version"
-    deployment_date = fields.Datetime(string="Deployment Date")
+    )
+    )
+    deployment_date = fields.Datetime(string="Deployment Date"),
     rollback_date = fields.Datetime(string="Rollback Date")
 
     # ============================================================================
     # IMPACT ANALYSIS
     # ============================================================================
-    affected_views = fields.Text(string="Affected Views")
+    affected_views = fields.Text(string="Affected Views"),
     affected_reports = fields.Text(string="Affected Reports")
-    migration_script = fields.Text(string="Migration Script")
+    migration_script = fields.Text(string="Migration Script"),
     rollback_script = fields.Text(string="Rollback Script")
     impact_assessment = fields.Text(string="Impact Assessment")
 
@@ -167,8 +178,11 @@ class TransitoryFieldConfig(models.Model):
         string="Dependencies",
     )
 
+    )
+
     child_config_ids = fields.One2many(
         "transitory.field.config", "parent_config_id", string="Child Configurations"
+    ),
     parent_config_id = fields.Many2one(
         "transitory.field.config", string="Parent Configuration"
     )
@@ -181,10 +195,15 @@ class TransitoryFieldConfig(models.Model):
                 record.deployment_status == "deployed" and record.deployment_date
             )
 
+    )
+
     config_dependency_count = fields.Integer(
         compute="_compute_config_dependency_count", string="Configuration Dependencies"
+    ),
     config_child_count = fields.Integer(
         compute="_compute_config_child_count", string="Child Count"
+    )
+    )
     is_deployed = fields.Boolean(compute="_compute_is_deployed", string="Is Deployed")
 
     # ============================================================================
@@ -211,8 +230,7 @@ class TransitoryFieldConfig(models.Model):
     def action_deploy(self):
         self.ensure_one()
         if self.state != "confirmed":
-            raise UserError(_("Only confirmed configurations can be deployed."))
-
+            raise UserError(_("Only confirmed configurations can be deployed.")
         success = self._execute_deployment()
         if success:
             self.write(
@@ -224,12 +242,11 @@ class TransitoryFieldConfig(models.Model):
             )
         else:
             self.write({"deployment_status": "failed"})
-
+)
     def action_rollback(self):
         self.ensure_one()
         if not self.is_deployed:
-            raise UserError(_("Only deployed configurations can be rolled back."))
-
+            raise UserError(_("Only deployed configurations can be rolled back.")
         success = self._execute_rollback()
         if success:
             self.write(
@@ -251,8 +268,7 @@ class TransitoryFieldConfig(models.Model):
         self.ensure_one()
 
         if not self.model_name or not self.field_name:
-            raise ValidationError(_("Model name and field name are required."))
-
+            raise ValidationError(_("Model name and field name are required.")
         if (
             self.field_type in ["many2one", "one2many", "many2many"]
             and not self.relation_model

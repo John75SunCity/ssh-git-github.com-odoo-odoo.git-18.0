@@ -24,8 +24,9 @@ class RecordsDepartmentBillingContact(models.Model):
     name = fields.Char(string="Contact Name", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    ),
     user_id = fields.Many2one(
-        "res.users", default=lambda self: self.env.user, tracking=True
+        "res.users", default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -37,9 +38,10 @@ class RecordsDepartmentBillingContact(models.Model):
         required=True,
         tracking=True,
         domain="[('is_company', '=', False)]",
+    )
     department_id = fields.Many2one(
-        "records.department", string="Department", required=True, tracking=True
-    email = fields.Char(string="Email", related="partner_id.email", store=True)
+        "records.department", string="Department", required=True, tracking=True)
+    email = fields.Char(string="Email", related="partner_id.email", store=True),
     phone = fields.Char(string="Phone", related="partner_id.phone", store=True)
     mobile = fields.Char(string="Mobile", related="partner_id.mobile", store=True)
 
@@ -53,10 +55,12 @@ class RecordsDepartmentBillingContact(models.Model):
             ("approver", "Approver"),
             ("reviewer", "Reviewer"),
             ("backup", "Backup Contact"),
-        ],
+        ]),
         string="Billing Role",
         required=True,
         tracking=True,
+    )
+
     )
 
     authorization_level = fields.Selection(
@@ -65,7 +69,7 @@ class RecordsDepartmentBillingContact(models.Model):
             ("intermediate", "Intermediate Authorization"),
             ("advanced", "Advanced Authorization"),
             ("full", "Full Authorization"),
-        ],
+        ]),
         string="Authorization Level",
         default="basic",
         tracking=True,
@@ -80,13 +84,14 @@ class RecordsDepartmentBillingContact(models.Model):
     # ============================================================================
     # BILLING PREFERENCES
     # ============================================================================
+    )
     notification_preferences = fields.Selection(
         [
             ("email", "Email Only"),
             ("sms", "SMS Only"),
             ("both", "Email and SMS"),
             ("none", "No Notifications"),
-        ],
+        ]),
         string="Notification Preferences",
         default="email",
     )
@@ -97,9 +102,11 @@ class RecordsDepartmentBillingContact(models.Model):
             ("monthly", "Monthly"),
             ("quarterly", "Quarterly"),
             ("annually", "Annually"),
-        ],
+        ]),
         string="Billing Frequency",
         default="monthly",
+    )
+
     )
 
     invoice_delivery_preference = fields.Selection(
@@ -108,7 +115,7 @@ class RecordsDepartmentBillingContact(models.Model):
             ("postal", "Postal Mail"),
             ("portal", "Customer Portal"),
             ("both", "Email and Postal"),
-        ],
+        ]),
         string="Invoice Delivery",
         default="email",
     )
@@ -123,9 +130,11 @@ class RecordsDepartmentBillingContact(models.Model):
             ("scanning", "Scanning Services"),
             ("retrieval", "Retrieval Services"),
             ("all", "All Services"),
-        ],
+        ]),
         string="Service Type",
         default="all",
+    )
+
     )
 
     state = fields.Selection(
@@ -134,7 +143,7 @@ class RecordsDepartmentBillingContact(models.Model):
             ("active", "Active"),
             ("suspended", "Suspended"),
             ("inactive", "Inactive"),
-        ],
+        ]),
         string="Status",
         default="draft",
         tracking=True,
@@ -145,6 +154,7 @@ class RecordsDepartmentBillingContact(models.Model):
     # ============================================================================
     start_date = fields.Date(
         string="Start Date", default=fields.Date.today, tracking=True
+    ),
     end_date = fields.Date(string="End Date")
     last_contact_date = fields.Date(string="Last Contact Date")
 
@@ -161,6 +171,7 @@ class RecordsDepartmentBillingContact(models.Model):
     )  # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
+    )
     approval_count = fields.Integer(
         string="Approval Count", compute="_compute_approval_count"
     )
@@ -168,7 +179,7 @@ class RecordsDepartmentBillingContact(models.Model):
     # ============================================================================
     # DESCRIPTIVE FIELDS
     # ============================================================================
-    notes = fields.Text(string="Internal Notes")
+    notes = fields.Text(string="Internal Notes"),
     special_instructions = fields.Text(string="Special Instructions")
     communication_preferences = fields.Text(string="Communication Preferences")
 
@@ -278,9 +289,9 @@ class RecordsDepartmentBillingContact(models.Model):
                 name += f" - {record.department_id.name}"
             if record.billing_role:
                 name += f" ({record.billing_role})"
-            result.append((record.id, name))
+            result.append((record.id, name)
         return result
-
+)
     @api.model
     def _name_search(
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
@@ -303,21 +314,24 @@ class RecordsDepartmentBillingContact(models.Model):
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
+    )
+    )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
     # ADDITIONAL BILLING FIELDS
     # ============================================================================
-    approval_authority = fields.Char(string="Approval Authority", tracking=True)
+    approval_authority = fields.Char(string="Approval Authority", tracking=True),
     budget_utilization = fields.Float(
         string="Budget Utilization (%)",
         tracking=True,
         help="Percentage of budget utilized",
+    )
     email_notifications = fields.Boolean(
-        string="Email Notifications", default=True, tracking=True
+        string="Email Notifications", default=True, tracking=True)
     monthly_budget = fields.Monetary(
         string="Monthly Budget",
         currency_field="currency_id",

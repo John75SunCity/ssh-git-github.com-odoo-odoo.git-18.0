@@ -15,11 +15,13 @@ class PortalFeedback(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Feedback Reference", required=True, tracking=True, index=True
+    ),
     subject = fields.Char(string="Subject", required=True, tracking=True)
-    description = fields.Text(string="Description")
+    description = fields.Text(string="Description"),
     active = fields.Boolean(string="Active", default=True)
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="Created By",
@@ -32,6 +34,7 @@ class PortalFeedback(models.Model):
     # ============================================================================
     customer_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True, index=True
+    ),
     feedback_type = fields.Selection(
         [
             ("general", "General Feedback"),
@@ -39,7 +42,7 @@ class PortalFeedback(models.Model):
             ("suggestion", "Suggestion"),
             ("compliment", "Compliment"),
             ("service_request", "Service Request"),
-        ],
+        ]),
         string="Feedback Type",
         required=True,
         default="general",
@@ -56,9 +59,11 @@ class PortalFeedback(models.Model):
             ("3", "3 - Average"),
             ("4", "4 - Good"),
             ("5", "5 - Excellent"),
-        ],
+        ]),
         string="Overall Rating",
         tracking=True,
+    )
+
     )
 
     service_quality_rating = fields.Selection(
@@ -68,7 +73,7 @@ class PortalFeedback(models.Model):
             ("3", "3 - Average"),
             ("4", "4 - Good"),
             ("5", "5 - Excellent"),
-        ],
+        ]),
         string="Service Quality",
         tracking=True,
     )
@@ -80,9 +85,11 @@ class PortalFeedback(models.Model):
             ("3", "3 - Average"),
             ("4", "4 - Good"),
             ("5", "5 - Excellent"),
-        ],
+        ]),
         string="Response Time",
         tracking=True,
+    )
+
     )
 
     staff_friendliness_rating = fields.Selection(
@@ -92,7 +99,7 @@ class PortalFeedback(models.Model):
             ("3", "3 - Average"),
             ("4", "4 - Good"),
             ("5", "5 - Excellent"),
-        ],
+        ]),
         string="Staff Friendliness",
         tracking=True,
     )
@@ -104,7 +111,7 @@ class PortalFeedback(models.Model):
             ("neutral", "Neutral"),
             ("dissatisfied", "Dissatisfied"),
             ("very_dissatisfied", "Very Dissatisfied"),
-        ],
+        ]),
         string="Satisfaction Level",
         compute="_compute_satisfaction_level",
         store=True,
@@ -114,6 +121,7 @@ class PortalFeedback(models.Model):
     # ============================================================================
     # WORKFLOW & STATUS
     # ============================================================================
+    )
     status = fields.Selection(
         [
             ("new", "New"),
@@ -121,7 +129,7 @@ class PortalFeedback(models.Model):
             ("responded", "Responded"),
             ("escalated", "Escalated"),
             ("closed", "Closed"),
-        ],
+        ]),
         string="Status",
         default="new",
         required=True,
@@ -135,21 +143,24 @@ class PortalFeedback(models.Model):
         tracking=True,
     )
 
-    assigned_to = fields.Many2one("res.users", string="Assigned To", tracking=True)
+    )
+
+    assigned_to = fields.Many2one("res.users", string="Assigned To", tracking=True),
     submission_date = fields.Datetime(
         string="Submission Date", default=fields.Datetime.now, required=True
-    response_date = fields.Datetime(string="Response Date", tracking=True)
+    )
+    response_date = fields.Datetime(string="Response Date", tracking=True),
     closure_date = fields.Datetime(string="Closure Date", tracking=True)
 
     # ============================================================================
     # CONTENT & COMMUNICATION
     # ============================================================================
-    comments = fields.Text(string="Customer Comments", required=True)
+    comments = fields.Text(string="Customer Comments", required=True),
     internal_notes = fields.Text(string="Internal Notes", groups="base.group_user")
-    response_text = fields.Html(string="Response to Customer")
+    response_text = fields.Html(string="Response to Customer"),
     resolution_notes = fields.Text(string="Resolution Notes")
 
-    follow_up_required = fields.Boolean(string="Follow-up Required", default=False)
+    follow_up_required = fields.Boolean(string="Follow-up Required", default=False),
     follow_up_date = fields.Date(string="Follow-up Date")
     escalation_reason = fields.Text(string="Escalation Reason")
 
@@ -161,6 +172,7 @@ class PortalFeedback(models.Model):
         compute="_compute_sentiment_analysis",
         store=True,
         help="AI sentiment score from -1 (negative) to 1 (positive)",
+    )
     sentiment_category = fields.Selection(
         [("positive", "Positive"), ("neutral", "Neutral"), ("negative", "Negative")],
         string="Sentiment Category",
@@ -173,6 +185,8 @@ class PortalFeedback(models.Model):
     # ============================================================================
     improvement_areas = fields.Many2many(
         "feedback.improvement.area", string="Improvement Areas"
+    )
+    )
     related_service_ids = fields.Many2many(
         "portal.request", string="Related Service Requests"
     )
@@ -253,8 +267,7 @@ class PortalFeedback(models.Model):
                 score += rating_score * 0.7
 
             # Normalize score
-            record.sentiment_score = max(-1, min(1, score))
-
+            record.sentiment_score = max(-1, min(1, score)
             # Categorize sentiment
             if record.sentiment_score > 0.2:
                 record.sentiment_category = "positive"
@@ -270,14 +283,14 @@ class PortalFeedback(models.Model):
         """Mark feedback as reviewed"""
         self.ensure_one()
         if self.status != "new":
-            raise UserError(_("Can only mark new feedback as reviewed"))
+            raise UserError(_("Can only mark new feedback as reviewed")
         self.write({"status": "reviewed", "assigned_to": self.env.user.id})
-
+)
     def action_respond(self):
         """Mark feedback as responded"""
         self.ensure_one()
         if self.status not in ["new", "reviewed"]:
-            raise UserError(_("Can only respond to new or reviewed feedback"))
+            raise UserError(_("Can only respond to new or reviewed feedback")
         self.write(
             {
                 "status": "responded",
@@ -290,21 +303,21 @@ class PortalFeedback(models.Model):
         """Escalate feedback to higher priority"""
         self.ensure_one()
         if self.status in ["closed"]:
-            raise UserError(_("Cannot escalate closed feedback"))
+            raise UserError(_("Cannot escalate closed feedback")
         self.write({"status": "escalated", "priority": "high"})
 
     def action_close(self):
         """Close feedback"""
         self.ensure_one()
         if self.status not in ["responded", "escalated"]:
-            raise UserError(_("Can only close responded or escalated feedback"))
+            raise UserError(_("Can only close responded or escalated feedback")
         self.write({"status": "closed", "closure_date": fields.Datetime.now()})
 
     def action_reopen(self):
         """Reopen closed feedback"""
         self.ensure_one()
         if self.status != "closed":
-            raise UserError(_("Can only reopen closed feedback"))
+            raise UserError(_("Can only reopen closed feedback")
         self.write({"status": "reviewed", "closure_date": False})
 
     def action_view_related_records(self):
@@ -330,14 +343,12 @@ class PortalFeedback(models.Model):
                 and record.follow_up_date
                 and record.follow_up_date <= fields.Date.today()
             ):
-                raise ValidationError(_("Follow-up date must be in the future"))
-
+                raise ValidationError(_("Follow-up date must be in the future")
     @api.constrains("sentiment_score")
     def _check_sentiment_score(self):
         for record in self:
             if not (-1 <= record.sentiment_score <= 1):
-                raise ValidationError(_("Sentiment score must be between -1 and 1"))
-
+                raise ValidationError(_("Sentiment score must be between -1 and 1")
     # ============================================================================
     # UTILITY METHODS
     # ============================================================================
@@ -366,7 +377,7 @@ class FeedbackImprovementArea(models.Model):
     _description = "Feedback Improvement Areas"
     _order = "name"
 
-    name = fields.Char(string="Area", required=True)
+    name = fields.Char(string="Area", required=True),
     description = fields.Text(string="Description")
-    active = fields.Boolean(string="Active", default=True)
-    color = fields.Integer(string="Color"))
+    active = fields.Boolean(string="Active", default=True),
+    color = fields.Integer(string="Color")

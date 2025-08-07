@@ -77,8 +77,9 @@ License: LGPL-3
 """
 
 from datetime import timedelta
-from odoo import _, api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
+
 
 class CustomerInventoryReport(models.Model):
     _name = "customer.inventory.report"
@@ -91,10 +92,10 @@ class CustomerInventoryReport(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
 
-    name = fields.Char(string="Report Name", required=True, tracking=True, index=True),
-    report_number = fields.Char(string="Report Number", index=True),
-    description = fields.Text(string="Report Description"),
-    sequence = fields.Integer(string="Sequence", default=10),
+    name = fields.Char(string="Report Name", required=True, tracking=True, index=True)
+    report_number = fields.Char(string="Report Number", index=True)
+    description = fields.Text(string="Report Description")
+    sequence = fields.Integer(string="Sequence", default=10)
     active = fields.Boolean(string="Active", default=True, tracking=True)
 
     # ============================================================================
@@ -106,6 +107,7 @@ class CustomerInventoryReport(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Report Creator",
@@ -137,6 +139,7 @@ class CustomerInventoryReport(models.Model):
 
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
+    )
     contact_id = fields.Many2one("res.partner", string="Primary Contact")
     department_id = fields.Many2one("records.department", string="Department")
 
@@ -155,6 +158,7 @@ class CustomerInventoryReport(models.Model):
         default="full",
         required=True,
         tracking=True,
+    )
     report_format = fields.Selection(
         [
             ("pdf", "PDF Document"),
@@ -173,6 +177,7 @@ class CustomerInventoryReport(models.Model):
 
     report_date = fields.Date(
         string="Report Date", default=fields.Date.today, required=True, tracking=True
+    )
     period_start = fields.Date(string="Period Start", required=True)
     period_end = fields.Date(string="Period End", required=True)
     generated_date = fields.Datetime(string="Generated Date", readonly=True)
@@ -186,8 +191,10 @@ class CustomerInventoryReport(models.Model):
         "records.location",
         string="Locations",
         help="Specific locations to include in report",
+    )
     container_type_ids = fields.Many2many(
         "records.container.type", string="Container Types"
+    )
     include_inactive = fields.Boolean(string="Include Inactive Items", default=False)
     include_destroyed = fields.Boolean(string="Include Destroyed Items", default=False)
 
@@ -197,8 +204,10 @@ class CustomerInventoryReport(models.Model):
 
     total_containers = fields.Integer(
         string="Total Containers", compute="_compute_inventory_totals", store=True
+    )
     total_documents = fields.Integer(
         string="Total Documents", compute="_compute_inventory_totals", store=True
+    )
     total_cubic_feet = fields.Float(
         string="Total Cubic Feet",
         digits="Stock Weight",
@@ -225,14 +234,26 @@ class CustomerInventoryReport(models.Model):
         string="Delivery Method",
         default="email",
         required=True,
-    email_template_id = fields.Many2one("mail.template", string="Email Template")
-    delivery_notes = fields.Text(string="Delivery Notes")
+    )
+    email_template_id = fields.Many2one(
+        "mail.template",
+        string="Email Template",
+        help="Email template used for sending the inventory report to the customer.",
+    )
+    delivery_notes = fields.Text(
+        string="Delivery Notes",
+        help="Additional notes or instructions regarding the delivery of the report.",
+    )
 
     # ============================================================================
-    # AUTOMATION & SCHEDULING
+    # AUTOMATION FIELDS
     # ============================================================================
 
-    is_automated = fields.Boolean(string="Automated Report", default=False)
+    is_automated = fields.Boolean(
+        string="Automated Report",
+        default=False,
+        help="Indicates if the report is generated automatically by the system.",
+    )
     schedule_frequency = fields.Selection(
         [
             ("weekly", "Weekly"),
@@ -241,16 +262,37 @@ class CustomerInventoryReport(models.Model):
             ("annual", "Annual"),
         ],
         string="Schedule Frequency",
-    next_generation_date = fields.Date(string="Next Generation Date")
+        help="Frequency at which the automated report is scheduled to be generated.",
+    )
+    next_generation_date = fields.Date(
+        string="Next Generation Date",
+        help="Date when the next automated report generation is scheduled.",
+    )
 
     # ============================================================================
-    # FILE ATTACHMENTS
+    # REPORT FILES
     # ============================================================================
 
-    report_file = fields.Binary(string="Report File", readonly=True)
-    report_filename = fields.Char(string="Report Filename", readonly=True)
-    excel_file = fields.Binary(string="Excel File", readonly=True)
-    excel_filename = fields.Char(string="Excel Filename", readonly=True)
+    report_file = fields.Binary(
+        string="Report File",
+        readonly=True,
+        help="Binary content of the generated inventory report file (PDF format).",
+    )
+    report_filename = fields.Char(
+        string="Report Filename",
+        readonly=True,
+        help="Filename of the generated PDF inventory report.",
+    )
+    excel_file = fields.Binary(
+        string="Excel File",
+        readonly=True,
+        help="Binary content of the generated Excel report file.",
+    )
+    excel_filename = fields.Char(
+        string="Excel Filename",
+        readonly=True,
+        help="Filename of the generated Excel inventory report.",
+    )
 
     # ============================================================================
     # BUSINESS METHODS
@@ -261,7 +303,6 @@ class CustomerInventoryReport(models.Model):
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft reports can be generated"))
-
         self.write({"state": "generating"})
         self._generate_report_data()
         self._create_report_files()
@@ -279,7 +320,6 @@ class CustomerInventoryReport(models.Model):
         self.ensure_one()
         if self.state != "ready":
             raise UserError(_("Only ready reports can be sent"))
-
         if self.delivery_method == "email":
             self._send_email_report()
         elif self.delivery_method == "portal":
@@ -351,7 +391,7 @@ class CustomerInventoryReport(models.Model):
             self.write(
                 {
                     "report_file": pdf_content,
-                    "report_filename": f"inventory_report_{self.partner_id.name}_{self.report_date}.pdf",
+                    "report_filename": f"inventory_report_{self._sanitize_filename(self.partner_id.name)}_{self.report_date}.pdf",
                 }
             )
 
@@ -361,7 +401,7 @@ class CustomerInventoryReport(models.Model):
             self.write(
                 {
                     "excel_file": excel_content,
-                    "excel_filename": f"inventory_report_{self.partner_id.name}_{self.report_date}.xlsx",
+                    "excel_filename": f"inventory_report_{self._sanitize_filename(self.partner_id.name)}_{self.report_date}.xlsx",
                 }
             )
 
@@ -369,6 +409,12 @@ class CustomerInventoryReport(models.Model):
         """Generate PDF report content"""
         # Implementation for PDF generation would go here
         return b"PDF content placeholder"
+
+    def _sanitize_filename(self, name):
+        """Sanitize a string for safe filenames (alphanumeric and underscores only)"""
+        import re
+
+        return re.sub(r"[^A-Za-z0-9_-]", "_", name)
 
     def _generate_excel_report(self):
         """Generate Excel report content"""
@@ -379,7 +425,6 @@ class CustomerInventoryReport(models.Model):
         """Send report via email"""
         if not self.email_template_id:
             raise UserError(_("Email template not configured"))
-
         template = self.email_template_id
         template.send_mail(self.id, force_send=True)
 
@@ -388,33 +433,32 @@ class CustomerInventoryReport(models.Model):
         # Implementation for portal publishing would go here
         pass
 
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-
     @api.depends("report_line_ids")
     def _compute_inventory_totals(self):
         for report in self:
-            lines = report.report_line_ids
-            report.total_containers = len(lines)
-            report.total_documents = sum(lines.mapped("document_count"))
-            report.total_cubic_feet = sum(lines.mapped("cubic_feet"))
-
-    # ============================================================================
-    # VALIDATION METHODS
-    # ============================================================================
+            domain = [("report_id", "=", report.id)]
+            # Use read_group for database-side aggregation
+            group_data = self.env["customer.inventory.report.line"].read_group(
+                domain, ["cubic_feet", "document_count"], []
+            )
+            total_containers = self.env["customer.inventory.report.line"].search_count(
+                domain
+            )
+            total_documents = (
+                group_data[0].get("document_count", 0) if group_data else 0
+            )
+            total_cubic_feet = (
+                group_data[0].get("cubic_feet", 0.0) if group_data else 0.0
+            )
+            report.total_containers = total_containers
+            report.total_documents = int(total_documents)
+            report.total_cubic_feet = float(total_cubic_feet)
 
     @api.constrains("period_start", "period_end")
-    def _check_period_dates(self):
+    def _check_report_date(self):
         for record in self:
             if record.period_start > record.period_end:
                 raise ValidationError(_("Period start date must be before end date"))
-
-    @api.constrains("report_date", "period_end")
-    def _check_report_date(self):
-        for record in self:
-            if record.report_date < record.period_end:
-                raise ValidationError(_("Report date must be after period end date"))
 
     # ============================================================================
     # ORM OVERRIDES
@@ -424,10 +468,19 @@ class CustomerInventoryReport(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if not vals.get("report_number"):
-                vals["report_number"] = (
-                    self.env["ir.sequence"].next_by_code("customer.inventory.report")
-                    or "NEW"
+                seq_number = self.env["ir.sequence"].next_by_code(
+                    "customer.inventory.report"
                 )
+                if not seq_number:
+                    _logger = getattr(self, "_logger", None)
+                    if not _logger:
+                        import logging
+
+                        _logger = logging.getLogger(__name__)
+                    _logger.warning(
+                        "Sequence 'customer.inventory.report' not found. Using 'NEW' as report number fallback."
+                    )
+                vals["report_number"] = seq_number or "NEW"
         return super().create(vals_list)
 
     @api.model
@@ -458,36 +511,37 @@ class CustomerInventoryReport(models.Model):
             # Check if report already exists for this month
             existing_report = self.search(
                 [
-                    ("customer_id", "=", customer.id),
+                    ("partner_id", "=", customer.id),
                     ("period_start", "=", start_date),
-                    ("report_type", "=", "monthly"),
+                    ("report_type", "=", "full"),
                 ]
             )
 
             if not existing_report:
-                # Create monthly report
-                report = self.create(
-                    {
-                        "customer_id": customer.id,
-                        "report_type": "monthly",
-                        "period_start": start_date,
-                        "period_end": end_date,
-                        "delivery_method": "email",
-                        "include_images": True,
-                        "notes": f'Automated monthly inventory report for {today.strftime("%B %Y")}',
-                    }
-                )
-
-                # Generate the report
                 try:
+                    # Create monthly report
+                    report = self.create(
+                        {
+                            "partner_id": customer.id,
+                            "report_type": "full",
+                            "period_start": start_date,
+                            "period_end": end_date,
+                            "delivery_method": "email",
+                        }
+                    )
+                    # Generate and send the report
                     report.action_generate_report()
-                    if report.state == "ready":
-                        report.action_send_report()
+                    report.action_send_report()
                 except (UserError, ValidationError) as e:
                     # Log error but continue with other customers
-                    report.message_post(
-                        body=f"Error generating monthly report: {str(e)}"
+                    self.env["mail.message"].create(
+                        {
+                            "body": f"Error generating monthly report for {customer.name}: {str(e)}",
+                            "subject": "Monthly Report Generation Error",
+                            "message_type": "comment",
+                        }
                     )
+
 
 class CustomerInventoryReportLine(models.Model):
     _name = "customer.inventory.report.line"
@@ -500,6 +554,7 @@ class CustomerInventoryReportLine(models.Model):
 
     report_id = fields.Many2one(
         "customer.inventory.report", string="Report", required=True, ondelete="cascade"
+    )
     container_id = fields.Many2one("records.container", string="Container")
     location_id = fields.Many2one("records.location", string="Location")
 
@@ -519,4 +574,4 @@ class CustomerInventoryReportLine(models.Model):
     # ============================================================================
 
     received_date = fields.Date(string="Received Date")
-    last_access_date = fields.Date(string="Last Access Date"))
+    last_access_date = fields.Date(string="Last Access Date")
