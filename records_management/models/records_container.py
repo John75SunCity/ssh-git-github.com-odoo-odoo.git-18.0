@@ -36,6 +36,7 @@ class RecordsContainer(models.Model):
 
     name = fields.Char(
         string="Container Number", required=True, tracking=True, index=True
+    )
     code = fields.Char(string="Container Code", index=True, tracking=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
@@ -46,10 +47,13 @@ class RecordsContainer(models.Model):
     # ============================================================================
 
     company_id = fields.Many2one(
+        "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
+    )
     user_id = fields.Many2one(
+        "res.users",
         string="Container Manager",
         default=lambda self: self.env.user,
         tracking=True,
@@ -79,6 +83,7 @@ class RecordsContainer(models.Model):
 
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
+    )
     department_id = fields.Many2one("records.department", string="Department")
     location_id = fields.Many2one(
         "records.location", string="Storage Location", tracking=True
@@ -95,6 +100,7 @@ class RecordsContainer(models.Model):
 
     container_type_id = fields.Many2one(
         "records.container.type", string="Container Type", required=True
+    )
     barcode = fields.Char(string="Barcode", index=True, tracking=True)
     dimensions = fields.Char(string="Dimensions")
     weight = fields.Float(string="Weight (lbs)", digits="Stock Weight", default=0.0)
@@ -106,10 +112,91 @@ class RecordsContainer(models.Model):
 
     document_ids = fields.One2many(
         "records.document", "container_id", string="Documents"
+    )
     document_count = fields.Integer(
         string="Document Count", compute="_compute_document_count", store=True
+    )
     content_description = fields.Text(string="Content Description")
     is_full = fields.Boolean(string="Container Full", default=False)
+
+    # ============================================================================
+    # CONTAINER LABELING & CONTENT ORGANIZATION (For Intelligent Search)
+    # ============================================================================
+
+    # Alphabetical range for file organization
+    alpha_range_start = fields.Char(
+        string="Alphabetical Start",
+        size=5,
+        index=True,  # Indexed for fast alphabetical searching
+        help="Starting letter/sequence for files in this container (e.g., 'A', 'Adams')",
+    )
+    alpha_range_end = fields.Char(
+        string="Alphabetical End",
+        size=5,
+        index=True,  # Indexed for fast alphabetical searching
+        help="Ending letter/sequence for files in this container (e.g., 'G', 'Green')",
+    )
+    alpha_range_display = fields.Char(
+        string="Alpha Range",
+        compute="_compute_alpha_range_display",
+        store=True,
+        help="Display format: A-G or Adams-Green",
+    )
+
+    # Date ranges for content organization
+    content_date_from = fields.Date(
+        string="Content Date From",
+        index=True,  # Indexed for fast date range searches
+        help="Earliest date of documents/services in this container",
+    )
+    content_date_to = fields.Date(
+        string="Content Date To",
+        index=True,  # Indexed for fast date range searches
+        help="Latest date of documents/services in this container",
+    )
+    content_date_range_display = fields.Char(
+        string="Date Range",
+        compute="_compute_date_range_display",
+        store=True,
+        help="Display format: 07/01/2024 - 09/23/2024",
+    )
+
+    # Content type and categorization
+    primary_content_type = fields.Selection(
+        [
+            ("medical", "Medical Records"),
+            ("financial", "Financial Documents"),
+            ("legal", "Legal Files"),
+            ("personnel", "Personnel Files"),
+            ("contracts", "Contracts"),
+            ("invoices", "Invoices"),
+            ("tax_documents", "Tax Documents"),
+            ("insurance", "Insurance Records"),
+            ("mixed", "Mixed Content"),
+            ("other", "Other"),
+        ],
+        string="Primary Content Type",
+        index=True,  # Indexed for content type filtering
+        help="Main type of content in this container",
+    )
+
+    # Search keywords and tags for content
+    search_keywords = fields.Text(
+        string="Search Keywords",
+        help="Keywords that help identify content in this container (names, topics, etc.)",
+    )
+
+    # Customer-specific organization fields
+    customer_sequence_start = fields.Char(
+        string="Customer Sequence Start",
+        index=True,  # Indexed for customer sequence searches
+        help="Starting sequence for customer-specific numbering/organization",
+    )
+    customer_sequence_end = fields.Char(
+        string="Customer Sequence End",
+        index=True,  # Indexed for customer sequence searches
+        help="Ending sequence for customer-specific numbering/organization",
+    )
 
     # ============================================================================
     # DATE TRACKING
@@ -117,6 +204,7 @@ class RecordsContainer(models.Model):
 
     received_date = fields.Date(
         string="Received Date", default=fields.Date.today, tracking=True
+    )
     storage_start_date = fields.Date(string="Storage Start Date")
     stored_date = fields.Date(string="Stored Date", tracking=True)
     last_access_date = fields.Date(string="Last Access Date")
@@ -128,11 +216,13 @@ class RecordsContainer(models.Model):
 
     retention_policy_id = fields.Many2one(
         "records.retention.policy", string="Retention Policy"
+    )
     retention_years = fields.Integer(string="Retention Years", default=7)
     destruction_due_date = fields.Date(
         string="Destruction Due Date",
         compute="_compute_destruction_due_date",
         store=True,
+    )
     permanent_retention = fields.Boolean(string="Permanent Retention", default=False)
 
     # ============================================================================
@@ -141,6 +231,7 @@ class RecordsContainer(models.Model):
 
     billing_rate = fields.Float(
         string="Monthly Billing Rate", digits="Product Price", default=0.0
+    )
     service_level = fields.Selection(
         [
             ("standard", "Standard"),
@@ -165,6 +256,7 @@ class RecordsContainer(models.Model):
         ],
         string="Security Level",
         default="confidential",
+    )
     access_restriction = fields.Text(string="Access Restrictions")
     authorized_users = fields.Many2many("res.users", string="Authorized Users")
 
@@ -182,6 +274,7 @@ class RecordsContainer(models.Model):
         ],
         string="Condition",
         default="good",
+    )
     maintenance_notes = fields.Text(string="Maintenance Notes")
     last_inspection_date = fields.Date(string="Last Inspection Date")
 
@@ -191,10 +284,9 @@ class RecordsContainer(models.Model):
 
     movement_ids = fields.One2many(
         "records.container.movement", "container_id", string="Movement History"
+    )
     current_movement_id = fields.Many2one(
         "records.container.movement", string="Current Movement"
-    converter_id = fields.Many2one(
-        "records.container.type.converter", string="Converter"
     )
 
     # Add conversion tracking fields
@@ -202,8 +294,10 @@ class RecordsContainer(models.Model):
         string="Conversion Date",
         help="Date when container type was last converted",
         tracking=True,
+    )
     conversion_reason = fields.Text(
         string="Conversion Reason", help="Reason for container type conversion"
+    )
     converter_id = fields.Many2one(
         "records.container.type.converter",
         string="Type Converter",
@@ -224,6 +318,7 @@ class RecordsContainer(models.Model):
 
         self.write(
             {
+                "state": "active",
                 "storage_start_date": fields.Date.today(),
             }
         )
@@ -374,6 +469,36 @@ class RecordsContainer(models.Model):
                 and not container.permanent_retention
             )
 
+    @api.depends("alpha_range_start", "alpha_range_end")
+    def _compute_alpha_range_display(self):
+        """Compute alphabetical range display for search purposes"""
+        for container in self:
+            if container.alpha_range_start and container.alpha_range_end:
+                container.alpha_range_display = (
+                    f"{container.alpha_range_start}-{container.alpha_range_end}"
+                )
+            elif container.alpha_range_start:
+                container.alpha_range_display = f"{container.alpha_range_start}+"
+            else:
+                container.alpha_range_display = ""
+
+    @api.depends("content_date_from", "content_date_to")
+    def _compute_date_range_display(self):
+        """Compute date range display for search purposes"""
+        for container in self:
+            if container.content_date_from and container.content_date_to:
+                from_str = container.content_date_from.strftime("%m/%d/%Y")
+                to_str = container.content_date_to.strftime("%m/%d/%Y")
+                container.content_date_range_display = f"{from_str} - {to_str}"
+            elif container.content_date_from:
+                from_str = container.content_date_from.strftime("%m/%d/%Y")
+                container.content_date_range_display = f"From {from_str}"
+            elif container.content_date_to:
+                to_str = container.content_date_to.strftime("%m/%d/%Y")
+                container.content_date_range_display = f"Until {to_str}"
+            else:
+                container.content_date_range_display = ""
+
     def _search_due_for_destruction(self, operator, value):
         today = fields.Date.today()
         if (operator == "=" and value) or (operator == "!=" and not value):
@@ -464,4 +589,4 @@ class RecordsContainer(models.Model):
         return self.last_inspection_date + relativedelta(months=interval)
 
     # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================)
+    # ============================================================================

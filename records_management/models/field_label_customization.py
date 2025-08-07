@@ -280,7 +280,7 @@ class FieldLabelCustomization(models.Model):
                                 f"{field_name} ({field.string or field_name})"
                             )
                     record.available_fields = "\n".join(sorted(fields_list))
-                except:
+                except Exception:
                     record.available_fields = "Invalid model selected"
             else:
                 record.available_fields = (
@@ -315,7 +315,7 @@ class FieldLabelCustomization(models.Model):
                 ):
                     # Additional check for records management related models
                     records_models.append(model_name)
-            except:
+            except Exception:
                 continue
         return sorted(records_models)
 
@@ -337,8 +337,64 @@ class FieldLabelCustomization(models.Model):
                 return True
 
             return False
-        except:
+        except Exception:
             return False
+
+    def _is_protected_search_field(self, model_name, field_name):
+        """Check if a field is protected from customization (critical for search functionality)"""
+        # Define protected fields by model
+        protected_fields = {
+            "records.container": {
+                # Core search functionality fields
+                "alpha_range_start",
+                "alpha_range_end",
+                "alpha_range_display",
+                "content_date_from",
+                "content_date_to",
+                "content_date_range_display",
+                "primary_content_type",
+                "search_keywords",
+                "customer_sequence_start",
+                "customer_sequence_end",
+                # Core identification fields
+                "name",
+                "barcode",
+                "container_number",
+                # Critical search database fields
+                "partner_id",
+                "location_id",
+                "state",
+            },
+            "records.document": {
+                # Document search fields
+                "name",
+                "document_name",
+                "barcode",
+                "partner_id",
+                "container_id",
+                "document_type_id",
+                # Content classification for search
+                "content_description",
+                "keywords",
+            },
+            "records.location": {
+                # Location search fields
+                "name",
+                "barcode",
+                "location_code",
+                "warehouse_id",
+                "parent_location_id",
+            },
+            # Add other models with search-critical fields
+            "portal.request": {
+                "name",
+                "partner_id",
+                "state",
+                "request_type",
+            },
+        }
+
+        return field_name in protected_fields.get(model_name, set())
 
     @api.model
     def get_model_field_options(self):
@@ -365,7 +421,7 @@ class FieldLabelCustomization(models.Model):
                     "description": getattr(model, "_description", model_name),
                     "fields": fields_info,
                 }
-            except:
+            except Exception:
                 continue
         return result
 
@@ -403,6 +459,18 @@ class FieldLabelCustomization(models.Model):
                     raise ValidationError(
                         _("Model '%s' is not part of the records_management module.")
                         % record.model_name
+                    )
+
+                # Check if field is protected from customization
+                if record._is_protected_search_field(
+                    record.model_name, record.field_name
+                ):
+                    raise ValidationError(
+                        _(
+                            "Field '%s' in model '%s' is protected and cannot be customized. "
+                            "This field is critical for the intelligent search functionality."
+                        )
+                        % (record.field_name, record.model_name)
                     )
 
                 # Then validate that the field exists
@@ -443,7 +511,7 @@ class FieldLabelCustomization(models.Model):
                                 ),
                             )
                         )
-                except KeyError:
+                except Exception:
                     raise ValidationError(
                         _("Model '%s' does not exist.") % record.model_name
                     )
@@ -481,7 +549,7 @@ class FieldLabelCustomization(models.Model):
                     self.original_label = field.string or self.field_name
                     if not self.custom_label:
                         self.custom_label = self.original_label
-            except:
+            except Exception:
                 pass
 
     # ============================================================================

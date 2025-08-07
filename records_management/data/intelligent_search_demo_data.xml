@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Demo Container Data with Intelligent Search Fields -->
+
+        <!-- Medical Records Containers -->
+        <record id="demo_container_medical_a_g" model="records.container">
+            <field name="name">4511</field>
+            <field name="description">Medical Records - Patient Files A through G</field>
+            <field name="partner_id" ref="base.res_partner_12"/>
+            <field name="location_id" ref="demo_location_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="state">stored</field>
+            <field name="alpha_range_start">A</field>
+            <field name="alpha_range_end">G</field>
+            <field name="content_date_from">2024-01-01</field>
+            <field name="content_date_to">2024-03-31</field>
+            <field name="primary_content_type">medical</field>
+            <field name="search_keywords">Adams, Brown, Carter, Davis, Edwards, Foster, Green, medical records, patient files, appointments, treatments</field>
+        </record>
+
+        <record id="demo_container_medical_h_n" model="records.container">
+            <field name="name">4512</field>
+            <field name="description">Medical Records - Patient Files H through N</field>
+            <field name="partner_id" ref="base.res_partner_12"/>
+            <field name="location_id" ref="demo_location_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="state">stored</field>
+            <field name="alpha_range_start">H</field>
+            <field name="alpha_range_end">N</field>
+            <field name="content_date_from">2024-01-01</field>
+            <field name="content_date_to">2024-03-31</field>
+            <field name="primary_content_type">medical</field>
+            <field name="search_keywords">Harris, Johnson, Kelly, Lewis, Miller, Nelson, medical records, patient files, lab results, prescriptions</field>
+        </record>
+
+        <record id="demo_container_medical_o_z" model="records.container">
+            <field name="name">4513</field>
+            <field name="description">Medical Records - Patient Files O through Z</field>
+            <field name="partner_id" ref="base.res_partner_12"/>
+            <field name="location_id" ref="demo_location_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="state">stored</field>
+            <field name="alpha_range_start">O</field>
+            <field name="alpha_range_end">Z</field>
+            <field name="content_date_from">2024-01-01</field>
+            <field name="content_date_to">2024-03-31</field>
+            <field name="primary_content_type">medical</field>
+            <field name="search_keywords">Parker, Roberts, Smith, Taylor, Wilson, Young, medical records, patient files, imaging, consultations</field>
+        </record>
+
+        <!-- Financial Records Containers -->
+        <record id="demo_container_financial_q2" model="records.container">
+            <field name="name">4589</field>
+            <field name="description">Financial Records Q2 2024 - Invoices and Receipts</field>
+            <field name="partner_id" ref="base.res_partner_12"/>
+            <field name="location_id" ref="demo_location_warehouse_b"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="state">stored</field>
+            <field name="alpha_range_start">A</field>
+            <field name="alpha_range_end">Z</field>
+            <field name="content_date_from">2024-04-01</field>
+            <field name="content_date_to">2024-06-30</field>
+            <field name="primary_content_type">financial</field>
+            <field name="search_keywords">invoices, receipts, payments, accounts payable, accounts receivable, quarterly reports</field>
+            <field name="customer_sequence_start">1001</field>
+            <field name="customer_sequence_end">1500</field>
+        </record>
+
+        <record id="demo_container_financial_q3" model="records.container">
+            <field name="name">4590</field>
+            <field name="description">Financial Records Q3 2024 - Invoices and Receipts</field>
+            <field name="partner_id" ref="base.res_partner_12"/>
+            <field name="location_id" ref="demo_location_warehouse_b"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="state">stored</field>
+            <field name="alpha_range_start">A</field>
+            <field name="alpha_range_end">Z</field>
+            <field name="content_date_from">2024-07-01</field>
+            <field name="content_date_to">2024-09-30</field>
+            <field name="primary_content_type">financial</field>
+            <field name="search_keywords">invoices, receipts, payments, accounts payable, accounts receivable, quarterly reports, John Doe, service dates</field>
+            <field name="customer_sequence_start">1501</field>
+            <field name="customer_sequence_end">2000</field>
+        </record>
+
+        <!-- Legal Files Container -->
+        <record id="demo_container_legal_contracts" model="records.container">
+            <field name="name">4591</field>
+            <field name="description">Legal Contracts and Agreements 2024</field>
+            <field name="partner_id" ref="base.res_partner_3"/>
+            <field name="location_id" ref="demo_location_warehouse_c"/>
+            <field name="container_type_id" ref="demo_container_type_legal_box"/>
+            <field name="state">stored</field>
+            <field name="alpha_range_start">A</field>
+            <field name="alpha_range_end">Z</field>
+            <field name="content_date_from">2024-01-01</field>
+            <field name="content_date_to">2024-12-31</field>
+            <field name="primary_content_type">legal</field>
+            <field name="search_keywords">contracts, agreements, legal documents, partnerships, employment contracts, NDAs, terms of service</field>
+        </record>
+
+        <!-- Personnel Files Containers -->
+        <record id="demo_container_personnel_active" model="records.container">
+            <field name="name">4520</field>
+            <field name="description">Active Employee Personnel Files A-M</field>
+            <field name="partner_id" ref="base.res_partner_4"/>
+            <field name="location_id" ref="demo_location_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_secure_box"/>
+            <field name="state">stored</field>
+            <field name="alpha_range_start">A</field>
+            <field name="alpha_range_end">M</field>
+            <field name="content_date_from">2020-01-01</field>
+            <field name="content_date_to">2024-12-31</field>
+            <field name="primary_content_type">personnel</field>
+            <field name="search_keywords">employee files, HR records, performance reviews, hiring documents, benefits, payroll</field>
+            <field name="security_level">confidential</field>
+        </record>
+
+        <record id="demo_container_personnel_inactive" model="records.container">
+            <field name="name">4521</field>
+            <field name="description">Inactive Employee Personnel Files N-Z</field>
+            <field name="partner_id" ref="base.res_partner_4"/>
+            <field name="location_id" ref="demo_location_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_secure_box"/>
+            <field name="state">stored</field>
+            <field name="alpha_range_start">N</field>
+            <field name="alpha_range_end">Z</field>
+            <field name="content_date_from">2018-01-01</field>
+            <field name="content_date_to">2023-12-31</field>
+            <field name="primary_content_type">personnel</field>
+            <field name="search_keywords">terminated employees, HR records, exit interviews, final pay stubs, references</field>
+            <field name="security_level">confidential</field>
+        </record>
+
+        <!-- Insurance Records Container -->
+        <record id="demo_container_insurance_2024" model="records.container">
+            <field name="name">4600</field>
+            <field name="description">Insurance Claims and Policies 2024</field>
+            <field name="partner_id" ref="base.res_partner_12"/>
+            <field name="location_id" ref="demo_location_warehouse_c"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="state">stored</field>
+            <field name="alpha_range_start">A</field>
+            <field name="alpha_range_end">Z</field>
+            <field name="content_date_from">2024-01-01</field>
+            <field name="content_date_to">2024-12-31</field>
+            <field name="primary_content_type">insurance</field>
+            <field name="search_keywords">insurance claims, policies, auto insurance, health insurance, property insurance, claim numbers</field>
+        </record>
+
+        <!-- Mixed Content Container (for testing edge cases) -->
+        <record id="demo_container_mixed_archive" model="records.container">
+            <field name="name">4999</field>
+            <field name="description">Archived Mixed Documents 2020-2023</field>
+            <field name="partner_id" ref="base.res_partner_12"/>
+            <field name="location_id" ref="demo_location_warehouse_archive"/>
+            <field name="container_type_id" ref="demo_container_type_archive_box"/>
+            <field name="state">stored</field>
+            <field name="alpha_range_start">A</field>
+            <field name="alpha_range_end">Z</field>
+            <field name="content_date_from">2020-01-01</field>
+            <field name="content_date_to">2023-12-31</field>
+            <field name="primary_content_type">mixed</field>
+            <field name="search_keywords">archived documents, historical records, old contracts, expired policies, reference materials</field>
+        </record>
+
+    </data>
+</odoo>

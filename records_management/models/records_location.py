@@ -2,6 +2,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
+
 class RecordsLocation(models.Model):
     _name = "records.location"
     _description = "Records Storage Location"
@@ -12,16 +13,17 @@ class RecordsLocation(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Location Name", required=True, tracking=True, index=True),
-    code = fields.Char(string="Location Code", required=True, index=True, tracking=True),
-    description = fields.Text(string="Description"),
-    sequence = fields.Integer(string="Sequence", default=10, tracking=True),
-    active = fields.Boolean(string="Active", default=True, tracking=True),
+    name = fields.Char(string="Location Name", required=True, tracking=True, index=True)
+    code = fields.Char(string="Location Code", required=True, index=True, tracking=True)
+    description = fields.Text(string="Description")
+    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
+    active = fields.Boolean(string="Active", default=True, tracking=True)
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Location Manager",
@@ -69,8 +71,10 @@ class RecordsLocation(models.Model):
     storage_capacity = fields.Integer(string="Storage Capacity (boxes)")
     current_utilization = fields.Integer(
         string="Current Utilization", compute="_compute_current_utilization"
+    )
     available_spaces = fields.Integer(
         string="Available Spaces", compute="_compute_available_spaces"
+    )
     utilization_percentage = fields.Float(
         string="Utilization %", compute="_compute_utilization_percentage"
     )
@@ -79,6 +83,7 @@ class RecordsLocation(models.Model):
     max_weight_capacity = fields.Float(string="Max Weight Capacity (lbs)")
     temperature_controlled = fields.Boolean(
         string="Temperature Controlled", default=False
+    )
     humidity_controlled = fields.Boolean(string="Humidity Controlled", default=False)
     fire_suppression = fields.Boolean(string="Fire Suppression", default=False)
     security_level = fields.Selection(
@@ -122,16 +127,39 @@ class RecordsLocation(models.Model):
     # Records and containers at this location
     container_ids = fields.One2many(
         "records.container", "location_id", string="Records Containers"
+    )
     parent_location_id = fields.Many2one("records.location", string="Parent Location")
     child_location_ids = fields.One2many(
         "records.location", "parent_location_id", string="Child Locations"
     )
 
-    # Mail framework fields    )    )    )
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=[("res_model", "=", "records.location")],
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=[("model", "=", "records.location")],
+    )
 
     # ============================================================================
     # COMPUTED FIELDS
+    # ============================================================================
+    child_count = fields.Integer(compute="_compute_child_count", string="Child Count")
+    is_available = fields.Boolean(
+        compute="_compute_is_available", string="Available for Storage"
+    )
 
+    # ============================================================================
+    # COMPUTE METHODS
     # ============================================================================
     @api.depends("container_ids")
     def _compute_current_utilization(self):
@@ -171,21 +199,23 @@ class RecordsLocation(models.Model):
                 and record.current_utilization < record.storage_capacity
             )
 
-    child_count = fields.Integer(compute="_compute_child_count", string="Child Count")
-    is_available = fields.Boolean(
-        compute="_compute_is_available", string="Available for Storage"
-    )
-
     # ============================================================================
-    # DEFAULT METHODS
+    # CRUD METHODS
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
+        if not vals_list:
+            return self.env[self._name]
         for vals in vals_list:
             if not vals.get("code"):
-                vals["code"] = (
-                    self.env["ir.sequence"].next_by_code("records.location") or "LOC/"
-                )
+                seq_code = self.env["ir.sequence"].next_by_code("records.location")
+                if seq_code:
+                    vals["code"] = seq_code
+                else:
+                    # Generate a unique fallback using a temporary UUID
+                    import uuid
+
+                    vals["code"] = "LOC/%s" % uuid.uuid4().hex[:8]
         return super().create(vals_list)
 
     # ============================================================================

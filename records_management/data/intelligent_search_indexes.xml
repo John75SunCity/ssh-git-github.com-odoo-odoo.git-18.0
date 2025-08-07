@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- =============================================================== -->
+        <!-- INTELLIGENT SEARCH DATABASE INDEXES -->
+        <!-- For optimal search performance without system overload -->
+        <!-- =============================================================== -->
+
+        <!-- Container Search Indexes -->
+        <record id="records_container_name_index" model="ir.model.fields">
+            <field name="model_id" ref="model_records_container"/>
+            <field name="name">name</field>
+            <field name="index">True</field>
+        </record>
+
+        <record id="records_container_barcode_index" model="ir.model.fields">
+            <field name="model_id" ref="model_records_container"/>
+            <field name="name">barcode</field>
+            <field name="index">True</field>
+        </record>
+
+        <record id="records_container_partner_index" model="ir.model.fields">
+            <field name="model_id" ref="model_records_container"/>
+            <field name="name">partner_id</field>
+            <field name="index">True</field>
+        </record>
+
+        <!-- Document Search Indexes -->
+        <record id="records_document_name_index" model="ir.model.fields">
+            <field name="model_id" ref="model_records_document"/>
+            <field name="name">name</field>
+            <field name="index">True</field>
+        </record>
+
+        <record id="records_document_barcode_index" model="ir.model.fields">
+            <field name="model_id" ref="model_records_document"/>
+            <field name="name">barcode</field>
+            <field name="index">True</field>
+        </record>
+
+        <record id="records_document_container_index" model="ir.model.fields">
+            <field name="model_id" ref="model_records_document"/>
+            <field name="name">container_id</field>
+            <field name="index">True</field>
+        </record>
+
+        <!-- Location Search Indexes -->
+        <record id="records_location_name_index" model="ir.model.fields">
+            <field name="model_id" ref="model_records_location"/>
+            <field name="name">name</field>
+            <field name="index">True</field>
+        </record>
+
+        <record id="records_location_barcode_index" model="ir.model.fields">
+            <field name="model_id" ref="model_records_location"/>
+            <field name="name">barcode</field>
+            <field name="index">True</field>
+        </record>
+
+        <!-- =============================================================== -->
+        <!-- COMPOSITE INDEXES FOR COMPLEX SEARCH QUERIES -->
+        <!-- Note: These are declared but may need manual creation in PostgreSQL -->
+        <!-- Guidance: Composite indexes cannot be created via XML data files in Odoo.
+             You should create them using a migration script or PostgreSQL directly.
+             See: https://www.odoo.com/documentation/18.0/developer/reference/backend/database.html#adding-indexes
+             Example migration script:
+             from odoo import api, SUPERUSER_ID
+
+             def migrate(cr, version):
+                 cr.execute(\"""
+                     CREATE INDEX IF NOT EXISTS idx_container_search_composite
+                     ON records_container (partner_id, alpha_range_start, primary_content_type, content_date_from);
+                 \""")
+        -->
+        <!-- =============================================================== -->
+
+        <!-- Container Search Composite Index -->
+        <!-- CREATE INDEX IF NOT EXISTS idx_container_search_composite 
+             ON records_container (partner_id, alpha_range_start, primary_content_type, content_date_from); -->
+
+        <!-- Document Search Composite Index -->
+        <!-- CREATE INDEX IF NOT EXISTS idx_document_search_composite 
+             ON records_document (partner_id, container_id, document_type_id); -->
+
+        <!-- Alphabetical Range Search Index -->
+        <!-- CREATE INDEX IF NOT EXISTS idx_container_alpha_range 
+             ON records_container (alpha_range_start, alpha_range_end) WHERE alpha_range_start IS NOT NULL; -->
+
+        <!-- Date Range Search Index -->
+        <!-- CREATE INDEX IF NOT EXISTS idx_container_date_range 
+             ON records_container (content_date_from, content_date_to) WHERE content_date_from IS NOT NULL; -->
+
+        <!-- Full-Text Search Support -->
+        <!-- CREATE INDEX IF NOT EXISTS idx_container_search_fulltext 
+             ON records_container USING gin(to_tsvector('english', COALESCE(search_keywords, ''))) 
+             WHERE search_keywords IS NOT NULL; -->
+
+        <!-- =============================================================== -->
+        <!-- SEARCH PERFORMANCE CONFIGURATION -->
+        <!-- =============================================================== -->
+
+        <!-- Search Performance Settings -->
+        <record id="search_performance_config" model="ir.config_parameter">
+            <field name="key">records_management.search.max_results</field>
+            <field name="value">50</field>
+        </record>
+        <record id="search_fuzzy_enabled" model="ir.config_parameter">
+            <field name="key">records_management.search.fuzzy_enabled</field>
+            <field name="value">true</field>
+        </record>
+    </record>
+
+    <record id="search_cache_timeout" model="ir.config_parameter">
+        <field name="key">records_management.search.cache_timeout</field>
+        <field name="value">300</field>
+    </record>
+
+    <!-- Search Feature Flags -->
+    <record id="search_fuzzy_enabled" model="ir.config_parameter">
+        <field name="key">records_management.search.fuzzy_enabled</field>
+        <field name="value">True</field>
+    </record>
+
+    <record id="search_fulltext_enabled" model="ir.config_parameter">
+        <field name="key">records_management.search.fulltext_enabled</field>
+        <field name="value">true</field>
+    </record>
+
+    <!-- Performance Monitoring -->
+    <!--
+            The slow query threshold (1000 ms) is set to flag queries that take longer than 1 second.
+            This value was chosen as a reasonable default for most production environments.
+            For high-performance servers, you may lower this value to catch more queries;
+            for resource-constrained or development environments, you may increase it to reduce noise.
+            Tune this setting based on your typical search load and hardware capabilities.
+        -->
+    <record id="search_slow_query_threshold" model="ir.config_parameter">
+        <field name="key">records_management.search.slow_query_threshold_ms</field>
+        <field name="value">1000</field>
+    </record>
+
+</data>
+</odoo>
