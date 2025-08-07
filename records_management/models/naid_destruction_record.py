@@ -9,14 +9,16 @@ class NaidDestructionRecord(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Record Number", required=True, tracking=True, index=True),
+    name = fields.Char(string="Record Number", required=True, tracking=True, index=True)
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    )
     user_id = fields.Many2one(
         "res.users",
         default=lambda self: self.env.user,
         string="Created By",
         tracking=True,
+    )
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================

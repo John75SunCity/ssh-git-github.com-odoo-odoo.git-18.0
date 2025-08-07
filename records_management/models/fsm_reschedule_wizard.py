@@ -10,9 +10,10 @@ class FsmRescheduleWizard(models.TransientModel):
     # ============================================================================
     # CORE FIELDS
     # ============================================================================
-    name = fields.Char(string="Name", required=True, default="Reschedule Request"),
+    name = fields.Char(string="Name", required=True, default="Reschedule Request")
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    )
     user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     task_id = fields.Many2one("fsm.task", string="Task", required=True)
     new_date = fields.Datetime(string="New Date", required=True)
@@ -41,6 +42,7 @@ class FsmRescheduleWizard(models.TransientModel):
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
+    )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
@@ -61,13 +63,11 @@ class FsmRescheduleWizard(models.TransientModel):
 
         self.write({"state": "completed"})
 
-        return {
-            "type": "ir.actions.act_window_close"}
+        return {"type": "ir.actions.act_window_close"}
 
     def action_cancel(self):
         """Cancel the reschedule operation"""
-        return {
-            "type": "ir.actions.act_window_close"}
+        return {"type": "ir.actions.act_window_close"}
 
     # ============================================================================
     # VALIDATION METHODS
@@ -86,4 +86,4 @@ class FsmRescheduleWizard(models.TransientModel):
         self.ensure_one()
         self.write({"state": "confirmed"})
         self.message_post(body=_("Confirm Reschedule completed"))
-        return True)
+        return True

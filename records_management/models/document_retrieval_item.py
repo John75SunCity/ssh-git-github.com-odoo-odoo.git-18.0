@@ -53,12 +53,13 @@ class DocumentRetrievalItem(models.Model):
     )
 
     # Barcode and Identification
-    barcode = fields.Char(string="Barcode", help="Item barcode for tracking"),
+    barcode = fields.Char(string="Barcode", help="Item barcode for tracking")
     description = fields.Text(string="Description")
 
     # Location Information
     current_location = fields.Char(
         string="Current Location", help="Current storage location"
+    )
     storage_location_id = fields.Many2one("records.location", string="Storage Location")
 
     # Status and Processing
@@ -84,16 +85,21 @@ class DocumentRetrievalItem(models.Model):
     # Company and Basic Fields
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
+    )
     active = fields.Boolean(string="Active", default=True)
 
-    # === FRAMEWORK FIELDS ===        "mail.followers", "res_id", string="Followers"
-    string="Customer",
+    # === CUSTOMER RELATIONSHIP ===
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Customer",
         store=True,
+    )
         readonly=True,
     )
 
