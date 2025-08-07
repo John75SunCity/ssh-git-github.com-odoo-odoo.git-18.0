@@ -15,6 +15,7 @@ from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
+
 class RecordsContainer(models.Model):
     """
     Records Container Management
@@ -208,6 +209,21 @@ class RecordsContainer(models.Model):
     )
     converter_id = fields.Many2one(
         "records.container.type.converter", string="Converter"
+    )
+
+    # Add conversion tracking fields
+    conversion_date = fields.Datetime(
+        string="Conversion Date",
+        help="Date when container type was last converted",
+        tracking=True,
+    )
+    conversion_reason = fields.Text(
+        string="Conversion Reason", help="Reason for container type conversion"
+    )
+    converter_id = fields.Many2one(
+        "records.container.type.converter",
+        string="Type Converter",
+        help="Reference to the conversion operation that modified this container",
     )
 
     # ============================================================================
@@ -464,6 +480,4 @@ class RecordsContainer(models.Model):
         return self.last_inspection_date + relativedelta(months=interval)
 
     # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================
-
     # ============================================================================
