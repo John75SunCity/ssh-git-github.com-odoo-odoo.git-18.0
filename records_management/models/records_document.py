@@ -235,8 +235,8 @@ class RecordsDocument(models.Model):
     location_id = fields.Many2one(
         "records.location", string="Storage Location", tracking=True, index=True
     )
-    box_id = fields.Many2one(
-        "records.box", string="Storage Box", tracking=True, index=True
+    container_id = fields.Many2one(
+        "records.container", string="Storage Container", tracking=True, index=True
     )
     shelf_position = fields.Char(
         string="Shelf Position", help="Specific position within storage location"
