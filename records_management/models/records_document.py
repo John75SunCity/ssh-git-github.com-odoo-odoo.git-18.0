@@ -51,10 +51,10 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+
 
 class RecordsDocument(models.Model):
     _name = "records.document"
@@ -284,8 +284,31 @@ class RecordsDocument(models.Model):
         help="Applied retention policy for this document",
     )
 
-    # Mail Framework Fields (SECURE)        "mail.followers", "res_id", string="Followers", groups="base.group_user"
-    )    @api.depends("document_date", "retention_period")
+    # ============================================================================
+    # MAIL FRAMEWORK FIELDS (REQUIRED FOR mail.thread INHERITANCE)
+    # ============================================================================
+    # Note: message_follower_ids is automatically provided by mail.thread inheritance
+    # and should not be redefined to avoid conflicts with the mail framework.
+    # The activity_ids and message_ids fields below are for reference only and should not be used for direct relational logic,
+    # as Odoo manages these relationships internally via the mail framework.
+
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain="[('res_model', '=', 'records.document')]",
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain="[('res_model', '=', 'records.document')]",
+    )
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("document_date", "retention_period")
     def _compute_retention_end_date(self):
         """Compute when document retention period ends"""
         for record in self:
@@ -562,17 +585,17 @@ class RecordsDocument(models.Model):
                     body=_("Location changed from %s to %s")
                     % (old_location, new_location)
                 )
+
         # Track state changes
         if "state" in vals:
+            state_selection = dict(self._fields["state"].selection)
             for record in self:
-                state_selection = dict(record._fields["state"].selection)
                 old_state = state_selection.get(record.state, record.state)
                 new_state = state_selection.get(vals["state"], vals["state"])
                 record.message_post(
                     body=_("Status changed from %s to %s") % (old_state, new_state)
                 )
 
-        return super().write(vals)
         return super().write(vals)
 
     def unlink(self):

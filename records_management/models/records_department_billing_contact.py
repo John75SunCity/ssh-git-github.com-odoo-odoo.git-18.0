@@ -6,6 +6,7 @@ Records Department Billing Contact Management
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
+
 class RecordsDepartmentBillingContact(models.Model):
     """
     Department Billing Contact - Manages billing contacts and approval workflows
@@ -306,15 +307,32 @@ class RecordsDepartmentBillingContact(models.Model):
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================        "mail.followers", "res_id", string="Followers"
-    )    approval_authority = fields.Char(string='Approval Authority', tracking=True)
-    budget_utilization = fields.Float(string='Budget Utilization (%)', tracking=True, help="Percentage of budget utilized")
-    email_notifications = fields.Char(string='Email Notifications', tracking=True)
-    monthly_budget = fields.Monetary(string='Monthly Budget', currency_field="currency_id", tracking=True, help="Monthly budget amount")
-    approval_authority = fields.Char(string='Approval Authority', tracking=True)
-    budget_utilization = fields.Char(string='Budget Utilization', tracking=True)
-    email_notifications = fields.Char(string='Email Notifications', tracking=True)
-    monthly_budget = fields.Char(string='Monthly Budget', tracking=True)
+    # ============================================================================
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # ADDITIONAL BILLING FIELDS
+    # ============================================================================
+    approval_authority = fields.Char(string="Approval Authority", tracking=True)
+    budget_utilization = fields.Float(
+        string="Budget Utilization (%)",
+        tracking=True,
+        help="Percentage of budget utilized",
+    )
+    email_notifications = fields.Boolean(
+        string="Email Notifications", default=True, tracking=True
+    )
+    monthly_budget = fields.Monetary(
+        string="Monthly Budget",
+        currency_field="currency_id",
+        tracking=True,
+        help="Monthly budget amount",
+    )
+
     # ============================================================================
     # AUTO-GENERATED ACTION METHODS (Batch 1)
     # ============================================================================
@@ -328,6 +346,7 @@ class RecordsDepartmentBillingContact(models.Model):
             "data": {"ids": [self.id]},
             "context": self.env.context,
         }
+
     def action_send_bill_notification(self):
         """Send Bill Notification - Action method"""
         self.ensure_one()

@@ -36,9 +36,10 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta  # pyright: ignore[reportUnusedImport]
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+
 
 class RecordsBillingConfig(models.Model):
     _name = "records.billing.config"
@@ -222,8 +223,12 @@ class RecordsBillingConfig(models.Model):
         "records.billing.config.line", "config_id", string="Rate Configuration Lines"
     )
 
-    # Mail Framework Fields (SECURE - No domains needed)        "mail.followers", "res_id", string="Followers", groups="base.group_user"
-    )    @api.depends("state", "active")
+    # Mail Framework Fields (SECURE - No domains needed)
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers", groups="base.group_user"
+    )
+
+    @api.depends("state", "active")
     def _compute_is_active_config(self):
         for record in self:
             record.is_active_config = record.active and record.state == "active"
@@ -434,6 +439,7 @@ class RecordsBillingConfig(models.Model):
             "context": {"default_config_id": self.id},
         }
 
+
 class RecordsBillingConfigLine(models.Model):
     _name = "records.billing.config.line"
     _description = "Billing Configuration Line"
@@ -491,7 +497,6 @@ class RecordsBillingConfigLine(models.Model):
         for record in self:
             if record.rate < 0:
                 raise ValidationError(_("Rate cannot be negative"))
-                raise ValidationError(_("Rate cannot be negative"))
 
     # ============================================================================
     # DISPLAY METHODS
@@ -505,5 +510,6 @@ class RecordsBillingConfigLine(models.Model):
             )
             name = f"{record.name} ({record.service_type.title()}) - {record.rate} {currency_symbol}"
             result.append((record.id, name))
+        return result
         return result
         return result

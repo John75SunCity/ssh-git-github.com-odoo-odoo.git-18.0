@@ -35,7 +35,7 @@ class RecordsContainerTypeConverter(models.Model):
     )  # Alternative name for target_type
     conversion_notes = fields.Text(string="Conversion Notes")
     # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
-    )    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
     location_id = fields.Many2one("records.location", string="Location", tracking=True)
     barcode = fields.Char(string="Barcode", copy=False)
     container_type = fields.Selection(
