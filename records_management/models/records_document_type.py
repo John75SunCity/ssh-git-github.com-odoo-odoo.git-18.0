@@ -72,6 +72,7 @@ License: LGPL-3
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
+
 class RecordsDocumentType(models.Model):
     _name = "records.document.type"
     _description = "Records Document Type"
@@ -231,8 +232,27 @@ class RecordsDocumentType(models.Model):
         "records.document.type", "parent_type_id", string="Child Document Types"
     )
 
-    # Mail framework fields        "mail.followers", "res_id", string="Followers"
-    )        [("normal", "Normal"), ("high", "High")],
+    # ============================================================================
+    # MAIL FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain="[('res_model', '=', 'records.document.type')]",
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain="[('res_model', '=', 'records.document.type')]",
+    )
+
+    # ============================================================================
+    # UTILIZATION FIELDS
+    # ============================================================================
+    utilization_level = fields.Selection(
+        [("normal", "Normal"), ("high", "High")],
         string="Document Type Utilization",
         default="normal",
     )
