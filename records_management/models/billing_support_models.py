@@ -20,6 +20,7 @@ class RecordsBillingLine(models.Model):
     # ============================================================================
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
     )
