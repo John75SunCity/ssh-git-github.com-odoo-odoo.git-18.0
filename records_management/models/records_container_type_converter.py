@@ -14,7 +14,6 @@ class RecordsContainerTypeConverter(models.Model):
     # ============================================================================
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
     )
@@ -26,7 +25,6 @@ class RecordsContainerTypeConverter(models.Model):
     # Missing fields from view analysis
     container_ids = fields.One2many(
         "records.container", "converter_id", string="Containers to Convert"
-    )
     current_type = fields.Char(string="Current Container Type")
     new_container_type_code = fields.Char(string="New Container Type Code")
     reason = fields.Text(string="Conversion Reason")
@@ -41,7 +39,6 @@ class RecordsContainerTypeConverter(models.Model):
     barcode = fields.Char(string="Barcode", copy=False)
     container_type = fields.Selection(
         selection="_get_container_type_selection", string="Container Type"
-    )
     capacity = fields.Float(string="Capacity", digits=(10, 2))
     current_weight = fields.Float(string="Current Weight", digits=(10, 2))
     last_access_date = fields.Date(string="Last Access Date")
@@ -190,4 +187,4 @@ class RecordsContainerTypeConverter(models.Model):
             "res_model": "records.container",
             "view_mode": "tree",
             "target": "new",
-        }
+        })

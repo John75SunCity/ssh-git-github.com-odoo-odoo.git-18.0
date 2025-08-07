@@ -10,8 +10,8 @@ class RecordsVehicle(models.Model):
     _rec_name = "name"
 
     # Basic Information
-    name = fields.Char(string="Name", required=True, tracking=True, index=True)
-    description = fields.Text(string="Description")
+    name = fields.Char(string="Name", required=True, tracking=True, index=True),
+    description = fields.Text(string="Description"),
     sequence = fields.Integer(string="Sequence", default=10)
 
     # State Management
@@ -30,7 +30,6 @@ class RecordsVehicle(models.Model):
     # Company and User
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users", string="Vehicle Manager", default=lambda self: self.env.user
     )
@@ -38,7 +37,6 @@ class RecordsVehicle(models.Model):
     # Timestamps
     date_created = fields.Datetime(
         string="Vehicle Created Date", default=fields.Datetime.now
-    )
     date_modified = fields.Datetime(string="Modified Date")
 
     # Control Fields
@@ -48,17 +46,14 @@ class RecordsVehicle(models.Model):
     # Vehicle Details
     vin = fields.Char(
         string="VIN", tracking=True, help="Vehicle Identification Number."
-    )
     license_plate = fields.Char(string="License Plate", required=True, tracking=True)
     driver_id = fields.Many2one(
         "hr.employee",
         string="Driver",
         tracking=True,
         help="Assigned driver for the vehicle.",
-    )
     driver_contact = fields.Char(
         related="driver_id.mobile_phone", string="Driver Contact", readonly=True
-    )
     vehicle_type = fields.Selection(
         [("truck", "Truck"), ("van", "Van"), ("car", "Car")],
         string="Vehicle Type",
@@ -89,7 +84,6 @@ class RecordsVehicle(models.Model):
         string="Service Status",  # Changed to avoid conflict with state field
         default="available",
         tracking=True,
-    )
     pickup_route_ids = fields.One2many(
         "pickup.route", "vehicle_id", string="Pickup Routes"
     )
@@ -99,7 +93,6 @@ class RecordsVehicle(models.Model):
     start_time = fields.Datetime(string="Start Time", tracking=True)
     vehicle_capacity_volume = fields.Float(
         string="Vehicle Capacity Volume (cubic meters)", tracking=True
-    )
     vehicle_capacity_weight = fields.Float(
         string="Vehicle Capacity Weight (kg)", tracking=True
     )
@@ -255,11 +248,10 @@ class RecordsVehicle(models.Model):
         }
 
     # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
-    )    capacity = fields.Float(string="Capacity", digits=(10, 2))
+    capacity = fields.Float(string="Capacity", digits=(10, 2))
     fuel_type = fields.Selection(
         [("gas", "Gasoline"), ("diesel", "Diesel"), ("electric", "Electric")],
         string="Fuel Type",
-    )
     maintenance_date = fields.Date(string="Last Maintenance")
     created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
     updated_date = fields.Datetime(string="Updated Date")
@@ -282,4 +274,4 @@ class RecordsVehicle(models.Model):
         for vals in vals_list:
             if not vals.get("name"):
                 vals["name"] = _("New Vehicle")
-        return super().create(vals_list)
+        return super().create(vals_list))

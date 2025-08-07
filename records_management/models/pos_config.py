@@ -8,7 +8,7 @@ class PosConfig(models.Model):
     _description = "Pos Config"
 
     # Additional fields for records management integration
-    description = fields.Text(string="Description")
+    description = fields.Text(string="Description"),
     sequence = fields.Integer(string="Sequence", default=10)
 
     # State Management (extending existing state field)
@@ -17,7 +17,6 @@ class PosConfig(models.Model):
     # Company and User
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users", string="Responsible User", default=lambda self: self.env.user
     )
@@ -276,4 +275,4 @@ class PosConfig(models.Model):
         for vals in vals_list:
             if not vals.get("name"):
                 vals["name"] = _("New Record")
-        return super().create(vals_list)
+        return super().create(vals_list))

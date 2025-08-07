@@ -11,13 +11,11 @@ class BaseRates(models.Model):
     _rec_name = "name"
 
     # Core fields
-    name = fields.Char(string="Rate Set Name", required=True, tracking=True)
+    name = fields.Char(string="Rate Set Name", required=True, tracking=True),
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user
-    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -51,7 +49,6 @@ class BaseRates(models.Model):
         digits=(12, 2),
         tracking=True,
         help="Rate charged per bin for external shredding services",
-    )
     external_service_call_rate = fields.Float(
         string="External Service Call Rate",
         digits=(12, 2),
@@ -65,19 +62,16 @@ class BaseRates(models.Model):
         digits=(12, 2),
         tracking=True,
         help="Rate for permanent removal of managed records",
-    )
     managed_retrieval_rate = fields.Float(
         string="Managed Retrieval Rate",
         digits=(12, 2),
         tracking=True,
         help="Rate for retrieving managed documents",
-    )
     managed_service_call_rate = fields.Float(
         string="Managed Service Call Rate",
         digits=(12, 2),
         tracking=True,
         help="Service call fee for managed services",
-    )
     managed_shredding_rate = fields.Float(
         string="Managed Shredding Rate",
         digits=(12, 2),
@@ -91,13 +85,11 @@ class BaseRates(models.Model):
         digits=(12, 2),
         tracking=True,
         help="Rate for document pickup services",
-    )
     storage_rate_monthly = fields.Float(
         string="Monthly Storage Rate",
         digits=(12, 2),
         tracking=True,
         help="Monthly rate for document storage",
-    )
     rush_service_multiplier = fields.Float(
         string="Rush Service Multiplier",
         default=1.5,
@@ -112,7 +104,6 @@ class BaseRates(models.Model):
     # Computed fields
     is_expired = fields.Boolean(
         string="Is Expired", compute="_compute_is_expired", store=True
-    )
     days_until_expiry = fields.Integer(
         string="Days Until Expiry", compute="_compute_days_until_expiry"
     )
@@ -349,4 +340,4 @@ class BaseRates(models.Model):
                 "default_base_rate_id": self.id,
                 "search_default_base_rate_id": self.id,
             },
-        }
+        })

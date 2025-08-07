@@ -14,17 +14,16 @@ class RecordsRetentionPolicy(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Policy Name", required=True, tracking=True, index=True)
-    code = fields.Char(string="Policy Code", index=True, tracking=True)
-    description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10)
-    active = fields.Boolean(string="Active", default=True)
+    name = fields.Char(string="Policy Name", required=True, tracking=True, index=True),
+    code = fields.Char(string="Policy Code", index=True, tracking=True),
+    description = fields.Text(string="Description"),
+    sequence = fields.Integer(string="Sequence", default=10),
+    active = fields.Boolean(string="Active", default=True),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Policy Owner",
@@ -52,7 +51,6 @@ class RecordsRetentionPolicy(models.Model):
     # ============================================================================
     retention_years = fields.Integer(
         string="Retention Period (Years)", required=True, default=7
-    )
     retention_months = fields.Integer(string="Additional Months", default=0)
     retention_days = fields.Integer(string="Additional Days", default=0)
 
@@ -90,7 +88,6 @@ class RecordsRetentionPolicy(models.Model):
 
     document_types = fields.Many2many(
         "records.document.type", string="Applicable Document Types"
-    )
     record_categories = fields.Char(string="Record Categories")
     exclusions = fields.Text(string="Exclusions")
 
@@ -126,7 +123,6 @@ class RecordsRetentionPolicy(models.Model):
     auto_destruction = fields.Boolean(string="Auto Destruction", default=False)
     destruction_approval_required = fields.Boolean(
         string="Destruction Approval Required", default=True
-    )
     certificate_required = fields.Boolean(
         string="Certificate of Destruction Required", default=True
     )
@@ -137,7 +133,6 @@ class RecordsRetentionPolicy(models.Model):
     legal_hold_override = fields.Boolean(string="Legal Hold Can Override", default=True)
     litigation_hold_period = fields.Integer(
         string="Litigation Hold Period (Years)", default=0
-    )
     hold_notification_required = fields.Boolean(
         string="Hold Notification Required", default=True
     )
@@ -159,7 +154,6 @@ class RecordsRetentionPolicy(models.Model):
     last_review_date = fields.Date(string="Last Review Date")
     next_review_date = fields.Date(
         string="Next Review Date", compute="_compute_next_review_date", store=True
-    )
     review_notes = fields.Text(string="Review Notes")
 
     # ============================================================================
@@ -167,7 +161,6 @@ class RecordsRetentionPolicy(models.Model):
     # ============================================================================
     policy_rules = fields.One2many(
         "records.retention.rule", "policy_id", string="Retention Rules"
-    )
     affected_documents = fields.One2many(
         "records.document", "retention_policy_id", string="Affected Documents"
     )
@@ -216,7 +209,6 @@ class RecordsRetentionPolicy(models.Model):
 
     total_retention_days = fields.Integer(
         compute="_compute_total_retention_days", string="Total Retention (Days)"
-    )
     rule_count = fields.Integer(compute="_compute_rule_count", string="Rules")
     document_count = fields.Integer(
         compute="_compute_document_count", string="Documents"
@@ -350,7 +342,6 @@ class RecordsRetentionRule(models.Model):
     # ============================================================================
     document_type_ids = fields.Many2many(
         "records.document.type", string="Applicable Document Types"
-    )
     condition_type = fields.Selection(
         [
             ("all_documents", "All Documents"),
@@ -395,4 +386,4 @@ class RecordsRetentionRule(models.Model):
             ):
                 raise ValidationError(
                     _("At least one retention period must be specified.")
-                )
+                ))

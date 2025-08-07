@@ -17,10 +17,9 @@ class FsmRouteManagementPlaceholder(models.TransientModel):
     _description = "Placeholder for FSM Route Management"
 
     # Simple placeholder field to make this a valid model
-    name = fields.Char("Placeholder Name", default="FSM Route Management Placeholder")
+    name = fields.Char("Placeholder Name", default="FSM Route Management Placeholder"),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     active = fields.Boolean(string="Active", default=True)
 
@@ -34,4 +33,4 @@ class FsmRouteManagementPlaceholder(models.TransientModel):
 
 # TODO: When industry_fsm is available, restore the original FSM route management code
 # The code includes reschedule_remaining_for_driver, create_follow_up_task,
-# _get_next_business_day, and other route management methods
+# _get_next_business_day, and other route management methods)

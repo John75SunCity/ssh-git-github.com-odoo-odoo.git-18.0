@@ -11,13 +11,11 @@ class CustomerInventory(models.Model):
     _rec_name = "name"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
+    name = fields.Char(string="Name", required=True, tracking=True),
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user
-    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -35,7 +33,6 @@ class CustomerInventory(models.Model):
     message_ids = fields.One2many(
         "mail.message", "res_id", string="Messages", auto_join=True
     )        "mail.followers", "res_id", string="Followers", auto_join=True
-    )
     action_confirm_report = fields.Char(string="Action Confirm Report")
     action_generate_pdf_report = fields.Char(string="Action Generate Pdf Report")
     action_send_to_customer = fields.Char(string="Action Send To Customer")
@@ -49,7 +46,6 @@ class CustomerInventory(models.Model):
         string="Containers",
         compute="_compute_container_ids",
         help="Containers belonging to this customer",
-    )
     boxes = fields.Char(string="Boxes")
     button_box = fields.Char(string="Button Box")
     card = fields.Char(string="Card")
@@ -58,17 +54,14 @@ class CustomerInventory(models.Model):
     created_date = fields.Date(string="Created Date")
     customer_id = fields.Many2one(
         "res.partner", string="Customer Id", domain=[("is_company", "=", True)]
-    )
     document_ids = fields.One2many(
         comodel_name="records.document",
         inverse_name="partner_id",
         string="Document Ids",
         compute="_compute_document_ids",
         help="Documents belonging to this customer",
-    )
     document_type_id = fields.Many2one(
         "records.document.type", string="Document Type Id"
-    )
     documents = fields.Char(string="Documents")
     draft = fields.Char(string="Draft")
     group_by_customer = fields.Char(string="Group By Customer")
@@ -83,7 +76,6 @@ class CustomerInventory(models.Model):
         ],
         string="Group By Status",
         default="draft",
-    )
     group_by_volume = fields.Char(string="Group By Volume")
     help = fields.Char(string="Help")
     large_volume = fields.Char(string="Large Volume")
@@ -100,13 +92,11 @@ class CustomerInventory(models.Model):
         [("new", "New"), ("in_progress", "In Progress"), ("completed", "Completed")],
         string="Status",
         default="new",
-    )
     stored_date = fields.Date(string="Stored Date")
     this_month = fields.Char(string="This Month")
     total_boxes = fields.Char(string="Total Boxes", compute="_compute_total_boxes")
     total_documents = fields.Char(
         string="Total Documents", compute="_compute_total_documents"
-    )
     very_large_volume = fields.Char(string="Very Large Volume")
     view_mode = fields.Char(string="View Mode")
     volume_category = fields.Char(string="Volume Category")
@@ -143,4 +133,4 @@ class CustomerInventory(models.Model):
     @api.depends("document_ids")
     def _compute_total_documents(self):
         for record in self:
-            record.total_documents = str(len(record.document_ids))
+            record.total_documents = str(len(record.document_ids)))

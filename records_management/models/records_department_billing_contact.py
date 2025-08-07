@@ -21,13 +21,11 @@ class RecordsDepartmentBillingContact(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Contact Name", required=True, tracking=True, index=True)
+    name = fields.Char(string="Contact Name", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -39,10 +37,8 @@ class RecordsDepartmentBillingContact(models.Model):
         required=True,
         tracking=True,
         domain="[('is_company', '=', False)]",
-    )
     department_id = fields.Many2one(
         "records.department", string="Department", required=True, tracking=True
-    )
     email = fields.Char(string="Email", related="partner_id.email", store=True)
     phone = fields.Char(string="Phone", related="partner_id.phone", store=True)
     mobile = fields.Char(string="Mobile", related="partner_id.mobile", store=True)
@@ -149,7 +145,6 @@ class RecordsDepartmentBillingContact(models.Model):
     # ============================================================================
     start_date = fields.Date(
         string="Start Date", default=fields.Date.today, tracking=True
-    )
     end_date = fields.Date(string="End Date")
     last_contact_date = fields.Date(string="Last Contact Date")
 
@@ -311,7 +306,6 @@ class RecordsDepartmentBillingContact(models.Model):
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
@@ -322,10 +316,8 @@ class RecordsDepartmentBillingContact(models.Model):
         string="Budget Utilization (%)",
         tracking=True,
         help="Percentage of budget utilized",
-    )
     email_notifications = fields.Boolean(
         string="Email Notifications", default=True, tracking=True
-    )
     monthly_budget = fields.Monetary(
         string="Monthly Budget",
         currency_field="currency_id",
@@ -357,4 +349,4 @@ class RecordsDepartmentBillingContact(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        }
+        })

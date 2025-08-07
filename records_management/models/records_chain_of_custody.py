@@ -9,12 +9,11 @@ class RecordsChainOfCustody(models.Model):
     _rec_name = "name"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
-    description = fields.Text(string="Description")
-    customer_id = fields.Many2one("res.partner", string="Customer")
+    name = fields.Char(string="Name", required=True, tracking=True),
+    description = fields.Text(string="Description"),
+    customer_id = fields.Many2one("res.partner", string="Customer"),
     document_id = fields.Many2one(
         "records.document", string="Document", ondelete="cascade"
-    )
     custody_event = fields.Char(string="Custody Event")
     key = fields.Char(string="Key")
     value = fields.Char(string="Value")
@@ -27,7 +26,6 @@ class RecordsChainOfCustody(models.Model):
         ],
         string="Priority",
         default="medium",
-    )
     request_type = fields.Selection(
         [
             ("pickup", "Pickup"),
@@ -36,16 +34,12 @@ class RecordsChainOfCustody(models.Model):
             ("destruction", "Destruction"),
         ],
         string="Request Type",
-    )
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users", string="Assigned User", default=lambda self: self.env.user
-    )
     work_order_id = fields.Many2one(
         "document.retrieval.work.order", string="Work Order"
-    )
     active = fields.Boolean(string="Active", default=True)
 
     # State management
@@ -82,4 +76,4 @@ class RecordsChainOfCustody(models.Model):
         self.write({"state": "cancelled"})
 
     def action_reset_to_draft(self):
-        self.write({"state": "draft"})
+        self.write({"state": "draft"}))

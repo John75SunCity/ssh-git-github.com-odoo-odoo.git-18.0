@@ -36,7 +36,6 @@ class RecordsContainer(models.Model):
 
     name = fields.Char(
         string="Container Number", required=True, tracking=True, index=True
-    )
     code = fields.Char(string="Container Code", index=True, tracking=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
@@ -50,7 +49,6 @@ class RecordsContainer(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
     user_id = fields.Many2one(
         string="Container Manager",
         default=lambda self: self.env.user,
@@ -81,7 +79,6 @@ class RecordsContainer(models.Model):
 
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    )
     department_id = fields.Many2one("records.department", string="Department")
     location_id = fields.Many2one(
         "records.location", string="Storage Location", tracking=True
@@ -98,7 +95,6 @@ class RecordsContainer(models.Model):
 
     container_type_id = fields.Many2one(
         "records.container.type", string="Container Type", required=True
-    )
     barcode = fields.Char(string="Barcode", index=True, tracking=True)
     dimensions = fields.Char(string="Dimensions")
     weight = fields.Float(string="Weight (lbs)", digits="Stock Weight", default=0.0)
@@ -110,10 +106,8 @@ class RecordsContainer(models.Model):
 
     document_ids = fields.One2many(
         "records.document", "container_id", string="Documents"
-    )
     document_count = fields.Integer(
         string="Document Count", compute="_compute_document_count", store=True
-    )
     content_description = fields.Text(string="Content Description")
     is_full = fields.Boolean(string="Container Full", default=False)
 
@@ -123,7 +117,6 @@ class RecordsContainer(models.Model):
 
     received_date = fields.Date(
         string="Received Date", default=fields.Date.today, tracking=True
-    )
     storage_start_date = fields.Date(string="Storage Start Date")
     stored_date = fields.Date(string="Stored Date", tracking=True)
     last_access_date = fields.Date(string="Last Access Date")
@@ -135,13 +128,11 @@ class RecordsContainer(models.Model):
 
     retention_policy_id = fields.Many2one(
         "records.retention.policy", string="Retention Policy"
-    )
     retention_years = fields.Integer(string="Retention Years", default=7)
     destruction_due_date = fields.Date(
         string="Destruction Due Date",
         compute="_compute_destruction_due_date",
         store=True,
-    )
     permanent_retention = fields.Boolean(string="Permanent Retention", default=False)
 
     # ============================================================================
@@ -150,7 +141,6 @@ class RecordsContainer(models.Model):
 
     billing_rate = fields.Float(
         string="Monthly Billing Rate", digits="Product Price", default=0.0
-    )
     service_level = fields.Selection(
         [
             ("standard", "Standard"),
@@ -175,7 +165,6 @@ class RecordsContainer(models.Model):
         ],
         string="Security Level",
         default="confidential",
-    )
     access_restriction = fields.Text(string="Access Restrictions")
     authorized_users = fields.Many2many("res.users", string="Authorized Users")
 
@@ -193,7 +182,6 @@ class RecordsContainer(models.Model):
         ],
         string="Condition",
         default="good",
-    )
     maintenance_notes = fields.Text(string="Maintenance Notes")
     last_inspection_date = fields.Date(string="Last Inspection Date")
 
@@ -203,10 +191,8 @@ class RecordsContainer(models.Model):
 
     movement_ids = fields.One2many(
         "records.container.movement", "container_id", string="Movement History"
-    )
     current_movement_id = fields.Many2one(
         "records.container.movement", string="Current Movement"
-    )
     converter_id = fields.Many2one(
         "records.container.type.converter", string="Converter"
     )
@@ -216,10 +202,8 @@ class RecordsContainer(models.Model):
         string="Conversion Date",
         help="Date when container type was last converted",
         tracking=True,
-    )
     conversion_reason = fields.Text(
         string="Conversion Reason", help="Reason for container type conversion"
-    )
     converter_id = fields.Many2one(
         "records.container.type.converter",
         string="Type Converter",
@@ -480,4 +464,4 @@ class RecordsContainer(models.Model):
         return self.last_inspection_date + relativedelta(months=interval)
 
     # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================
+    # ============================================================================)

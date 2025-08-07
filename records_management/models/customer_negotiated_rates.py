@@ -11,13 +11,11 @@ class CustomerNegotiatedRates(models.Model):
     _rec_name = "display_name"
 
     # Core fields
-    name = fields.Char(string="Agreement Name", required=True, tracking=True)
+    name = fields.Char(string="Agreement Name", required=True, tracking=True),
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user
-    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -36,7 +34,6 @@ class CustomerNegotiatedRates(models.Model):
     # Customer Information
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    )
     contract_reference = fields.Char(string="Contract Reference", tracking=True)
 
     # Base Rate Reference
@@ -60,7 +57,6 @@ class CustomerNegotiatedRates(models.Model):
         digits=(12, 2),
         tracking=True,
         help="Customer-specific rate per bin for external shredding services",
-    )
     external_service_call_rate = fields.Float(
         string="Negotiated External Service Call Rate",
         digits=(12, 2),
@@ -73,19 +69,16 @@ class CustomerNegotiatedRates(models.Model):
         digits=(12, 2),
         tracking=True,
         help="Customer-specific rate for permanent removal of managed records",
-    )
     managed_retrieval_rate = fields.Float(
         string="Negotiated Managed Retrieval Rate",
         digits=(12, 2),
         tracking=True,
         help="Customer-specific rate for retrieving managed documents",
-    )
     managed_service_call_rate = fields.Float(
         string="Negotiated Managed Service Call Rate",
         digits=(12, 2),
         tracking=True,
         help="Customer-specific service call fee for managed services",
-    )
     managed_shredding_rate = fields.Float(
         string="Negotiated Managed Shredding Rate",
         digits=(12, 2),
@@ -98,7 +91,6 @@ class CustomerNegotiatedRates(models.Model):
         digits=(12, 2),
         tracking=True,
         help="Customer-specific rate for document pickup services",
-    )
     storage_rate_monthly = fields.Float(
         string="Negotiated Monthly Storage Rate",
         digits=(12, 2),
@@ -112,12 +104,10 @@ class CustomerNegotiatedRates(models.Model):
         digits=(5, 2),
         tracking=True,
         help="Overall discount percentage applied to all services",
-    )
     volume_discount_threshold = fields.Integer(
         string="Volume Discount Threshold",
         tracking=True,
         help="Minimum volume required for volume discounts",
-    )
     volume_discount_percent = fields.Float(
         string="Volume Discount %",
         digits=(5, 2),
@@ -128,13 +118,10 @@ class CustomerNegotiatedRates(models.Model):
     # Override Controls (which rates are customer-specific)
     override_external_rates = fields.Boolean(
         string="Override External Rates", default=False
-    )
     override_managed_rates = fields.Boolean(
         string="Override Managed Rates", default=False
-    )
     override_pickup_rates = fields.Boolean(
         string="Override Pickup Rates", default=False
-    )
     override_storage_rates = fields.Boolean(
         string="Override Storage Rates", default=False
     )
@@ -148,13 +135,10 @@ class CustomerNegotiatedRates(models.Model):
     # Computed fields
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
-    )
     is_expired = fields.Boolean(
         string="Is Expired", compute="_compute_is_expired", store=True
-    )
     days_until_expiry = fields.Integer(
         string="Days Until Expiry", compute="_compute_days_until_expiry"
-    )
     total_discount_percent = fields.Float(
         string="Total Discount %", compute="_compute_total_discount", store=True
     )
@@ -331,4 +315,4 @@ class CustomerNegotiatedRates(models.Model):
             base_rate = fallback_base_rate or self.base_rate_id
             return base_rate.get_rate(rate_type)
 
-        return 0.0
+        return 0.0)

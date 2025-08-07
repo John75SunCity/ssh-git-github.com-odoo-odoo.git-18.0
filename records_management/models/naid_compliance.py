@@ -543,8 +543,8 @@ class NaidCompliance(models.Model):
 
     # Mail Thread Framework Fields (REQUIRED)        auto_join=True,
         groups="base.group_user"
-    )        groups="base.group_user"
-    )        groups="base.group_user"
+    groups="base.group_user"
+    groups="base.group_user"
     )
 
     # ============================================================================

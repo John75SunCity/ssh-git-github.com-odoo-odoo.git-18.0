@@ -18,7 +18,6 @@ class ShreddingService(models.Model):
 
     name = fields.Char(
         string="Service Order #", required=True, tracking=True, index=True
-    )
     reference = fields.Char(string="Reference", index=True, tracking=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
@@ -33,7 +32,6 @@ class ShreddingService(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Service Technician",
@@ -65,7 +63,6 @@ class ShreddingService(models.Model):
 
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    )
     contact_id = fields.Many2one("res.partner", string="Contact Person")
     location_id = fields.Many2one("records.location", string="Service Location")
 
@@ -85,7 +82,6 @@ class ShreddingService(models.Model):
         default="onsite",
         required=True,
         tracking=True,
-    )
     material_type = fields.Selection(
         [
             ("paper", "Paper Documents"),
@@ -134,13 +130,10 @@ class ShreddingService(models.Model):
 
     estimated_volume = fields.Float(
         string="Estimated Volume (Cubic Feet)", digits="Stock Weight", default=0.0
-    )
     estimated_weight = fields.Float(
         string="Estimated Weight (lbs)", digits="Stock Weight", default=0.0
-    )
     actual_volume = fields.Float(
         string="Actual Volume (Cubic Feet)", digits="Stock Weight", default=0.0
-    )
     actual_weight = fields.Float(
         string="Actual Weight (lbs)", digits="Stock Weight", default=0.0
     )
@@ -157,7 +150,6 @@ class ShreddingService(models.Model):
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
-    )
     unit_price = fields.Float(string="Unit Price", digits="Product Price", default=0.0)
     total_amount = fields.Float(
         string="Total Amount",
@@ -169,10 +161,8 @@ class ShreddingService(models.Model):
     # Additional Charges
     travel_charge = fields.Float(
         string="Travel Charge", digits="Product Price", default=0.0
-    )
     emergency_charge = fields.Float(
         string="Emergency Charge", digits="Product Price", default=0.0
-    )
     equipment_charge = fields.Float(
         string="Equipment Charge", digits="Product Price", default=0.0
     )
@@ -190,7 +180,6 @@ class ShreddingService(models.Model):
         ],
         string="Certificate Type",
         default="standard",
-    )
     certificate_id = fields.Many2one("shredding.certificate", string="Certificate")
     compliance_level = fields.Selection(
         [
@@ -324,7 +313,6 @@ class ShreddingService(models.Model):
         "travel_charge",
         "emergency_charge",
         "equipment_charge",
-    )
     def _compute_total_amount(self):
         for service in self:
             base_amount = service.unit_price * max(
@@ -396,9 +384,8 @@ class ShreddingServicePhoto(models.Model):
 
     service_id = fields.Many2one(
         "shredding.service", string="Service", required=True, ondelete="cascade"
-    )
     sequence = fields.Integer(string="Sequence", default=10)
     name = fields.Char(string="Photo Name", required=True)
     description = fields.Text(string="Description")
     photo = fields.Binary(string="Photo", required=True)
-    taken_date = fields.Datetime(string="Taken Date", default=fields.Datetime.now)
+    taken_date = fields.Datetime(string="Taken Date", default=fields.Datetime.now))

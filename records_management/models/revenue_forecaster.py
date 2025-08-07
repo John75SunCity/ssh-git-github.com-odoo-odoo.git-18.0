@@ -7,7 +7,7 @@ class RevenueForecaster(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name desc"
 
-    name = fields.Char(string="Name", required=True, tracking=True)
+    name = fields.Char(string="Name", required=True, tracking=True),
     description = fields.Text(string="Description")
 
     # Forecast Configuration
@@ -22,22 +22,19 @@ class RevenueForecaster(models.Model):
         required=True,
     )
 
-    start_date = fields.Date(string="Start Date", required=True)
+    start_date = fields.Date(string="Start Date", required=True),
     end_date = fields.Date(string="End Date", required=True)
 
     # Revenue Calculations
     projected_revenue = fields.Monetary(
         string="Projected Revenue", currency_field="currency_id", tracking=True
-    )
     actual_revenue = fields.Monetary(
         string="Actual Revenue", currency_field="currency_id"
-    )
     variance = fields.Monetary(
         string="Variance",
         compute="_compute_variance",
         currency_field="currency_id",
         store=True,
-    )
     variance_percent = fields.Float(
         string="Variance %", compute="_compute_variance", store=True
     )
@@ -49,15 +46,12 @@ class RevenueForecaster(models.Model):
     # Control fields
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
-    )
     user_id = fields.Many2one(
         "res.users", string="Responsible", default=lambda self: self.env.user
-    )
     active = fields.Boolean(string="Active", default=True)
 
     # State management
@@ -75,20 +69,16 @@ class RevenueForecaster(models.Model):
     # === MISSING FIELDS FROM VIEWS ===
     custom_end_date = fields.Date(
         string="Custom End Date", help="Custom end date when forecast period is custom"
-    )
     custom_start_date = fields.Date(
         string="Custom Start Date",
         help="Custom start date when forecast period is custom",
-    )
     customer_impact_count = fields.Integer(
         string="Customer Impact Count",
         help="Number of customers affected by this forecast",
-    )
     customer_retention_rate = fields.Float(
         string="Customer Retention Rate %",
         default=95.0,
         help="Expected customer retention rate",
-    )
     customer_segment = fields.Selection(
         [
             ("all", "All Customers"),
@@ -182,32 +172,27 @@ class RevenueForecaster(models.Model):
     )
 
     # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
-    )    sequence = fields.Integer(string="Sequence", default=10)
+    sequence = fields.Integer(string="Sequence", default=10)
     notes = fields.Text(string="Notes")
     created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
     updated_date = fields.Datetime(string="Updated Date")
     # Revenue Forecasting Fields
     annual_revenue_impact = fields.Monetary(
         "Annual Revenue Impact", currency_field="currency_id"
-    )
     category_adjustment_value = fields.Float("Category Adjustment Value %", default=0.0)
     competitor_rate_factor = fields.Float("Competitor Rate Factor", default=1.0)
     container_count = fields.Integer("Container Count", default=0)
     current_monthly_revenue = fields.Monetary(
         "Current Monthly Revenue", currency_field="currency_id"
-    )
     customer_churn_risk = fields.Selection(
         [("low", "Low"), ("medium", "Medium"), ("high", "High")], default="low"
-    )
     customer_growth_potential = fields.Selection(
         [("low", "Low"), ("medium", "Medium"), ("high", "High")], default="medium"
-    )
     demand_seasonality_factor = fields.Float("Demand Seasonality Factor", default=1.0)
     economic_indicator_impact = fields.Float("Economic Indicator Impact %", default=0.0)
     forecast_accuracy_percentage = fields.Float("Forecast Accuracy %", default=0.0)
     forecast_confidence_level = fields.Selection(
         [("low", "Low"), ("medium", "Medium"), ("high", "High")], default="medium"
-    )
     forecast_horizon_months = fields.Integer("Forecast Horizon (Months)", default=12)
     forecast_methodology = fields.Selection(
         [
@@ -216,24 +201,19 @@ class RevenueForecaster(models.Model):
             ("ai_model", "AI Model"),
         ],
         default="linear",
-    )
     market_penetration_rate = fields.Float("Market Penetration Rate %", default=0.0)
     market_size_estimate = fields.Monetary(
         "Market Size Estimate", currency_field="currency_id"
-    )
     new_customer_acquisition_rate = fields.Float(
         "New Customer Acquisition Rate %", default=0.0
-    )
     predicted_quarterly_revenue = fields.Monetary(
         "Predicted Quarterly Revenue", currency_field="currency_id"
-    )
     pricing_elasticity_factor = fields.Float("Pricing Elasticity Factor", default=1.0)
     revenue_growth_target = fields.Float("Revenue Growth Target %", default=0.0)
     revenue_variance_analysis = fields.Text("Revenue Variance Analysis")
     risk_adjustment_factor = fields.Float("Risk Adjustment Factor", default=1.0)
     scenario_analysis_enabled = fields.Boolean(
         "Scenario Analysis Enabled", default=False
-    )
     service_mix_optimization = fields.Text("Service Mix Optimization")
     trend_analysis_period = fields.Integer("Trend Analysis Period (Months)", default=6)
     volume_price_correlation = fields.Float("Volume-Price Correlation", default=0.0)
@@ -273,13 +253,10 @@ class RevenueForecastLine(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Forecast Line", compute="_compute_name", store=True, index=True
-    )
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -287,7 +264,6 @@ class RevenueForecastLine(models.Model):
     # ============================================================================
     forecast_id = fields.Many2one(
         "revenue.forecaster", string="Forecast", required=True, ondelete="cascade"
-    )
     partner_id = fields.Many2one("res.partner", string="Customer", required=True)
     customer_segment = fields.Selection(
         [
@@ -300,22 +276,17 @@ class RevenueForecastLine(models.Model):
 
     container_count = fields.Integer(
         string="Container Count", help="Number of containers for this customer"
-    )
     current_monthly_revenue = fields.Monetary(
         string="Current Monthly Revenue", currency_field="currency_id"
-    )
     projected_monthly_revenue = fields.Monetary(
         string="Projected Monthly Revenue", currency_field="currency_id"
-    )
     revenue_change = fields.Monetary(
         string="Revenue Change",
         compute="_compute_revenue_change",
         currency_field="currency_id",
         store=True,
-    )
     revenue_change_percentage = fields.Float(
         string="Revenue Change %", compute="_compute_revenue_change", store=True
-    )
     risk_level = fields.Selection(
         [("low", "Low"), ("medium", "Medium"), ("high", "High")],
         string="Risk Level",
@@ -351,4 +322,4 @@ class RevenueForecastLine(models.Model):
             elif line.partner_id:
                 line.name = f"{line.partner_id.name} - Forecast Line"
             else:
-                line.name = f"Forecast Line {line.id or 'New'}"
+                line.name = f"Forecast Line {line.id or 'New'}")

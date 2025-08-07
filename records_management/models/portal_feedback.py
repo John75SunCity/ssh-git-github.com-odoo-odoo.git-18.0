@@ -15,13 +15,11 @@ class PortalFeedback(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Feedback Reference", required=True, tracking=True, index=True
-    )
     subject = fields.Char(string="Subject", required=True, tracking=True)
     description = fields.Text(string="Description")
     active = fields.Boolean(string="Active", default=True)
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Created By",
@@ -34,7 +32,6 @@ class PortalFeedback(models.Model):
     # ============================================================================
     customer_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True, index=True
-    )
     feedback_type = fields.Selection(
         [
             ("general", "General Feedback"),
@@ -141,7 +138,6 @@ class PortalFeedback(models.Model):
     assigned_to = fields.Many2one("res.users", string="Assigned To", tracking=True)
     submission_date = fields.Datetime(
         string="Submission Date", default=fields.Datetime.now, required=True
-    )
     response_date = fields.Datetime(string="Response Date", tracking=True)
     closure_date = fields.Datetime(string="Closure Date", tracking=True)
 
@@ -165,7 +161,6 @@ class PortalFeedback(models.Model):
         compute="_compute_sentiment_analysis",
         store=True,
         help="AI sentiment score from -1 (negative) to 1 (positive)",
-    )
     sentiment_category = fields.Selection(
         [("positive", "Positive"), ("neutral", "Neutral"), ("negative", "Negative")],
         string="Sentiment Category",
@@ -178,7 +173,6 @@ class PortalFeedback(models.Model):
     # ============================================================================
     improvement_areas = fields.Many2many(
         "feedback.improvement.area", string="Improvement Areas"
-    )
     related_service_ids = fields.Many2many(
         "portal.request", string="Related Service Requests"
     )
@@ -187,7 +181,6 @@ class PortalFeedback(models.Model):
     )        "service_quality_rating",
         "response_time_rating",
         "staff_friendliness_rating",
-    )
     def _compute_satisfaction_level(self):
         for record in self:
             ratings = [
@@ -376,4 +369,4 @@ class FeedbackImprovementArea(models.Model):
     name = fields.Char(string="Area", required=True)
     description = fields.Text(string="Description")
     active = fields.Boolean(string="Active", default=True)
-    color = fields.Integer(string="Color")
+    color = fields.Integer(string="Color"))

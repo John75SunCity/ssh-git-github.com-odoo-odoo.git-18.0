@@ -10,7 +10,7 @@ class DocumentRetrievalItem(models.Model):
     _rec_name = "name"
 
     # Core identification
-    name = fields.Char(string="Name", required=True, tracking=True)
+    name = fields.Char(string="Name", required=True, tracking=True),
     sequence = fields.Integer(string="Sequence", default=10)
 
     # Work Order Relationship
@@ -53,13 +53,12 @@ class DocumentRetrievalItem(models.Model):
     )
 
     # Barcode and Identification
-    barcode = fields.Char(string="Barcode", help="Item barcode for tracking")
+    barcode = fields.Char(string="Barcode", help="Item barcode for tracking"),
     description = fields.Text(string="Description")
 
     # Location Information
     current_location = fields.Char(
         string="Current Location", help="Current storage location"
-    )
     storage_location_id = fields.Many2one("records.location", string="Storage Location")
 
     # Status and Processing
@@ -85,17 +84,15 @@ class DocumentRetrievalItem(models.Model):
     # Company and Basic Fields
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
-    )
     active = fields.Boolean(string="Active", default=True)
 
     # === FRAMEWORK FIELDS ===        "mail.followers", "res_id", string="Followers"
-    )        string="Customer",
+    string="Customer",
         store=True,
         readonly=True,
     )
@@ -182,7 +179,6 @@ class DocumentRetrievalItem(models.Model):
         string="Retrieval Cost",
         currency_field="currency_id",
         help="Cost to retrieve this specific item",
-    )
     currency_id = fields.Many2one(
         related="work_order_id.currency_id",
         string="Currency",
@@ -341,4 +337,4 @@ class DocumentRetrievalItem(models.Model):
 
         self.message_post(
             body=f"Item returned by {self.env.user.name}", message_type="notification"
-        )
+        ))

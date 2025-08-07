@@ -8,10 +8,9 @@ class VisitorPosWizard(models.TransientModel):
     _description = "Visitor POS Wizard"
 
     # Basic Information
-    name = fields.Char(string="Visitor Name", required=True)
+    name = fields.Char(string="Visitor Name", required=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     visit_date = fields.Datetime(string="Visit Date", default=fields.Datetime.now)
     purpose = fields.Text(string="Purpose of Visit")
@@ -22,13 +21,10 @@ class VisitorPosWizard(models.TransientModel):
     visitor_id = fields.Many2one("visitor", string="Visitor")
     visitor_name = fields.Char(
         string="Related Visitor Name", related="visitor_id.name", store=True
-    )
     visitor_email = fields.Char(
         string="Visitor Email", related="visitor_id.email", store=True
-    )
     visitor_phone = fields.Char(
         string="Visitor Phone", related="visitor_id.phone", store=True
-    )
     check_in_time = fields.Datetime(string="Check-in Time", default=fields.Datetime.now)
     purpose_of_visit = fields.Text(string="Visit Purpose Details")
 
@@ -37,7 +33,6 @@ class VisitorPosWizard(models.TransientModel):
     pos_session_id = fields.Many2one("pos.session", string="POS Session")
     cashier_id = fields.Many2one(
         "res.users", string="Cashier", default=lambda self: self.env.user
-    )
     service_location = fields.Char(string="Service Location")
     processing_priority = fields.Selection(
         [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")],
@@ -55,10 +50,8 @@ class VisitorPosWizard(models.TransientModel):
             ("government", "Government"),
         ],
         string="Customer Category",
-    )
     customer_credit_limit = fields.Monetary(
         string="Credit Limit", currency_field="currency_id"
-    )
     customer_payment_terms = fields.Selection(
         [
             ("immediate", "Immediate Payment"),
@@ -120,7 +113,6 @@ class VisitorPosWizard(models.TransientModel):
         ],
         string="Audit Level",
         default="standard",
-    )
     audit_notes = fields.Text(string="Audit Notes")
     audit_required = fields.Boolean(string="Audit Required", default=False)
     authorization_code = fields.Char(string="Authorization Code")
@@ -145,7 +137,6 @@ class VisitorPosWizard(models.TransientModel):
             ("disintegration", "Disintegration"),
         ],
         string="Destruction Method",
-    )
     document_type = fields.Selection(
         [
             ("general", "General Documents"),
@@ -154,12 +145,10 @@ class VisitorPosWizard(models.TransientModel):
             ("financial", "Financial Records"),
         ],
         string="Document Type",
-    )
     estimated_service_time = fields.Float(string="Estimated Service Time (hours)")
     express_service = fields.Boolean(string="Express Service", default=False)
     express_surcharge = fields.Monetary(
         string="Express Surcharge", currency_field="currency_id"
-    )
     pickup_required = fields.Boolean(string="Pickup Required", default=True)
     scanning_required = fields.Boolean(string="Scanning Required", default=False)
     special_requirements = fields.Text(string="Special Requirements")
@@ -187,7 +176,6 @@ class VisitorPosWizard(models.TransientModel):
     chain_of_custody = fields.Text(string="Chain of Custody Notes")
     chain_of_custody_id = fields.Many2one(
         "records.chain.of.custody", string="Chain of Custody"
-    )
     compliance_documentation = fields.Text(string="Compliance Documentation")
     confidentiality_level = fields.Selection(
         [
@@ -198,21 +186,17 @@ class VisitorPosWizard(models.TransientModel):
         ],
         string="Confidentiality Level",
         default="internal",
-    )
     naid_audit_id = fields.Many2one("naid.audit.log", string="NAID Audit Log")
     naid_certificate_required = fields.Boolean(
         string="NAID Certificate Required", default=False
-    )
     naid_compliance_required = fields.Boolean(
         string="NAID Compliance Required", default=False
-    )
     witness_required = fields.Boolean(string="Witness Required", default=False)
     witness_verification = fields.Text(string="Witness Verification")
 
     # System Integration
     customer_record_created = fields.Boolean(
         string="Customer Record Created", default=False
-    )
     customer_record_id = fields.Many2one("res.partner", string="Customer Record")
     invoice_generated = fields.Boolean(string="Invoice Generated", default=False)
     invoice_required = fields.Boolean(string="Invoice Required", default=True)
@@ -220,7 +204,6 @@ class VisitorPosWizard(models.TransientModel):
     pos_order_created = fields.Boolean(string="POS Order Created", default=False)
     records_request_created = fields.Boolean(
         string="Records Request Created", default=False
-    )
     records_request_id = fields.Many2one("portal.request", string="Records Request")
 
     # Timing and Processing
@@ -229,7 +212,6 @@ class VisitorPosWizard(models.TransientModel):
     estimated_volume = fields.Float(string="Estimated Volume (cubic feet)")
     service_configuration_time = fields.Float(
         string="Service Configuration Time (minutes)"
-    )
     step_time = fields.Datetime(string="Step Time")
     total_processing_time = fields.Float(string="Total Processing Time (minutes)")
     wizard_start_time = fields.Datetime(
@@ -285,7 +267,6 @@ class VisitorPosWizard(models.TransientModel):
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # === SPECIFIC RECOMMENDED FIELDS ===
@@ -298,10 +279,8 @@ class VisitorPosWizard(models.TransientModel):
     context = fields.Char(string="Context")
     create_new_customer_flag = fields.Boolean(
         string="Create New Customer Flag", default=False
-    )
     customer_record_created = fields.Boolean(
         string="Customer Record Created", default=False
-    )
     help = fields.Text(string="Help")
     integration_errors = fields.Text(string="Integration Errors")
     invoice_generated = fields.Boolean(string="Invoice Generated", default=False)
@@ -310,7 +289,6 @@ class VisitorPosWizard(models.TransientModel):
     pos_order_created = fields.Boolean(string="POS Order Created", default=False)
     records_request_created = fields.Boolean(
         string="Records Request Created", default=False
-    )
     res_model = fields.Char(string="Res Model")
     scanning_required = fields.Boolean(string="Scanning Required", default=False)
     service_type_category = fields.Selection(
@@ -321,14 +299,12 @@ class VisitorPosWizard(models.TransientModel):
         ],
         string="Service Type Category",
         default="document_processing",
-    )
     target = fields.Char(string="Target")
     view_mode = fields.Char(string="View Mode")
     compliance_officer = fields.Many2one("res.users", string="Compliance Officer")
     digitization_format = fields.Selection(
         [("pdf", "PDF"), ("image", "Image"), ("text", "Text")],
         string="Digitization Format",
-    )
     document_count = fields.Integer(string="Document Count", default=0)
     document_name = fields.Char(string="Document Name")
     # Note: Removed One2many relationships - TransientModel cannot have relationships with regular Models
@@ -336,7 +312,6 @@ class VisitorPosWizard(models.TransientModel):
     shredding_type = fields.Selection(
         [("onsite", "On-site"), ("offsite", "Off-site"), ("witnessed", "Witnessed")],
         string="Shredding Type",
-    )
     step_name = fields.Char(string="Step Name")
     total_discount = fields.Monetary(
         string="Total Discount", currency_field="currency_id"
@@ -472,4 +447,4 @@ class VisitorPosWizard(models.TransientModel):
     # ============================================================================
     # AUTO-GENERATED FIELDS (Batch 1)
     # ============================================================================
-    config_id = fields.Many2one('config', string='Config', tracking=True)
+    config_id = fields.Many2one('config', string='Config', tracking=True))

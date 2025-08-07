@@ -13,13 +13,11 @@ class StockLot(models.Model):
     _inherit = "stock.lot"
 
     # Records management specific fields
-    records_tracking = fields.Boolean(string="Records Tracking", default=False)
+    records_tracking = fields.Boolean(string="Records Tracking", default=False),
     document_count = fields.Integer(
         string="Document Count", compute="_compute_document_count"
-    )
     destruction_eligible = fields.Boolean(
         string="Eligible for Destruction", default=False
-    )
     quality_status = fields.Selection(
         [
             ("pending", "Pending Review"),
@@ -209,4 +207,4 @@ class StockLotAttribute(models.Model):
 
     def action_done(self):
         """Mark as done"""
-        self.write({"state": "done"})
+        self.write({"state": "done"}))

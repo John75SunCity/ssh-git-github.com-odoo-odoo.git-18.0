@@ -24,13 +24,11 @@ class PickupRequest(models.Model):
     _order = "name"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
+    name = fields.Char(string="Name", required=True, tracking=True),
     company_id = fields.Many2one(
         "res.company", required=True, default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users", required=True, default=lambda self: self.env.user
-    )
     active = fields.Boolean(default=True)
 
     # Basic state management
@@ -85,4 +83,4 @@ class PickupRequest(models.Model):
         """
         self.write({"state": "done"})
         """Mark as done"""
-        self.write({"state": "done"})
+        self.write({"state": "done"}))

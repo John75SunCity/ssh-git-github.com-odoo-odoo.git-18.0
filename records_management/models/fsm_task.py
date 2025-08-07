@@ -21,13 +21,11 @@ class FsmTask(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Task Name", required=True, tracking=True, index=True)
+    name = fields.Char(string="Task Name", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
     description = fields.Text(string="Description")
 
@@ -75,14 +73,12 @@ class FsmTask(models.Model):
     # ============================================================================
     scheduled_date = fields.Datetime(
         string="Scheduled Date", required=True, tracking=True
-    )
     start_date = fields.Datetime(string="Start Date")
     end_date = fields.Datetime(string="End Date")
     deadline = fields.Date(string="Deadline")
 
     assigned_technician = fields.Many2one(
         "res.users", string="Assigned Technician", tracking=True
-    )
     team_name = fields.Char(string="Service Team")
 
     # ============================================================================
@@ -90,7 +86,6 @@ class FsmTask(models.Model):
     # ============================================================================
     customer_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    )
     customer_location_id = fields.Many2one("res.partner", string="Service Location")
     customer_contact_id = fields.Many2one("res.partner", string="Customer Contact")
 
@@ -155,7 +150,6 @@ class FsmTask(models.Model):
     # ============================================================================
     estimated_cost = fields.Monetary(
         string="Estimated Cost", currency_field="currency_id"
-    )
     actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id")
     currency_id = fields.Many2one("res.currency", related="company_id.currency_id", store=True)
 
@@ -178,7 +172,6 @@ class FsmTask(models.Model):
     # ============================================================================
     duration_hours = fields.Float(
         string="Duration (Hours)", compute="_compute_duration", store=True
-    )
     is_overdue = fields.Boolean(string="Is Overdue", compute="_compute_overdue")
     progress_status = fields.Char(
         string="Progress Status", compute="_compute_progress_status"
@@ -189,7 +182,6 @@ class FsmTask(models.Model):
     # ============================================================================
     related_project_task_id = fields.Many2one(
         "project.task", string="Related Project Task"
-    )
     equipment_ids = fields.Many2many("maintenance.equipment", string="Equipment Used")
 
     # ============================================================================
@@ -382,4 +374,4 @@ class FsmTask(models.Model):
             "view_mode": "tree,form",
             "domain": [("task_id", "=", self.id)],
             "context": {"default_task_id": self.id},
-        }
+        })

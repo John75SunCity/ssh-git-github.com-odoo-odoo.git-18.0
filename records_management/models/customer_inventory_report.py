@@ -91,10 +91,10 @@ class CustomerInventoryReport(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
 
-    name = fields.Char(string="Report Name", required=True, tracking=True, index=True)
-    report_number = fields.Char(string="Report Number", index=True)
-    description = fields.Text(string="Report Description")
-    sequence = fields.Integer(string="Sequence", default=10)
+    name = fields.Char(string="Report Name", required=True, tracking=True, index=True),
+    report_number = fields.Char(string="Report Number", index=True),
+    description = fields.Text(string="Report Description"),
+    sequence = fields.Integer(string="Sequence", default=10),
     active = fields.Boolean(string="Active", default=True, tracking=True)
 
     # ============================================================================
@@ -106,7 +106,6 @@ class CustomerInventoryReport(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Report Creator",
@@ -138,7 +137,6 @@ class CustomerInventoryReport(models.Model):
 
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    )
     contact_id = fields.Many2one("res.partner", string="Primary Contact")
     department_id = fields.Many2one("records.department", string="Department")
 
@@ -157,7 +155,6 @@ class CustomerInventoryReport(models.Model):
         default="full",
         required=True,
         tracking=True,
-    )
     report_format = fields.Selection(
         [
             ("pdf", "PDF Document"),
@@ -176,7 +173,6 @@ class CustomerInventoryReport(models.Model):
 
     report_date = fields.Date(
         string="Report Date", default=fields.Date.today, required=True, tracking=True
-    )
     period_start = fields.Date(string="Period Start", required=True)
     period_end = fields.Date(string="Period End", required=True)
     generated_date = fields.Datetime(string="Generated Date", readonly=True)
@@ -190,10 +186,8 @@ class CustomerInventoryReport(models.Model):
         "records.location",
         string="Locations",
         help="Specific locations to include in report",
-    )
     container_type_ids = fields.Many2many(
         "records.container.type", string="Container Types"
-    )
     include_inactive = fields.Boolean(string="Include Inactive Items", default=False)
     include_destroyed = fields.Boolean(string="Include Destroyed Items", default=False)
 
@@ -203,10 +197,8 @@ class CustomerInventoryReport(models.Model):
 
     total_containers = fields.Integer(
         string="Total Containers", compute="_compute_inventory_totals", store=True
-    )
     total_documents = fields.Integer(
         string="Total Documents", compute="_compute_inventory_totals", store=True
-    )
     total_cubic_feet = fields.Float(
         string="Total Cubic Feet",
         digits="Stock Weight",
@@ -233,7 +225,6 @@ class CustomerInventoryReport(models.Model):
         string="Delivery Method",
         default="email",
         required=True,
-    )
     email_template_id = fields.Many2one("mail.template", string="Email Template")
     delivery_notes = fields.Text(string="Delivery Notes")
 
@@ -250,7 +241,6 @@ class CustomerInventoryReport(models.Model):
             ("annual", "Annual"),
         ],
         string="Schedule Frequency",
-    )
     next_generation_date = fields.Date(string="Next Generation Date")
 
     # ============================================================================
@@ -510,7 +500,6 @@ class CustomerInventoryReportLine(models.Model):
 
     report_id = fields.Many2one(
         "customer.inventory.report", string="Report", required=True, ondelete="cascade"
-    )
     container_id = fields.Many2one("records.container", string="Container")
     location_id = fields.Many2one("records.location", string="Location")
 
@@ -530,4 +519,4 @@ class CustomerInventoryReportLine(models.Model):
     # ============================================================================
 
     received_date = fields.Date(string="Received Date")
-    last_access_date = fields.Date(string="Last Access Date")
+    last_access_date = fields.Date(string="Last Access Date"))

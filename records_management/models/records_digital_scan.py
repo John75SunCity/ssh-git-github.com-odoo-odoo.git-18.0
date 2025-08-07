@@ -16,9 +16,9 @@ class RecordsDigitalScan(models.Model):
     _order = "name"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
+    name = fields.Char(string="Name", required=True, tracking=True),
+    company_id = fields.Many2one("res.company", default=lambda self: self.env.company),
+    user_id = fields.Many2one("res.users", default=lambda self: self.env.user),
     active = fields.Boolean(default=True)
 
     # Basic state management
@@ -30,15 +30,15 @@ class RecordsDigitalScan(models.Model):
     )
 
     # Common fields
-    description = fields.Text()
-    notes = fields.Text()
+    description = fields.Text(),
+    notes = fields.Text(),
     date = fields.Date(default=fields.Date.today)
 
     # Relationships
     document_id = fields.Many2one("records.document", string="Document", required=True)
 
     # Digital scan specific fields
-    scan_date = fields.Datetime(string="Scan Date", default=fields.Datetime.now)
+    scan_date = fields.Datetime(string="Scan Date", default=fields.Datetime.now),
     file_format = fields.Selection(
         [
             ("pdf", "PDF"),
@@ -49,7 +49,6 @@ class RecordsDigitalScan(models.Model):
         ],
         string="File Format",
         default="pdf",
-    )
     resolution = fields.Integer(string="Resolution (DPI)", default=300)
     file_size = fields.Float(string="File Size (MB)")
     scan_quality = fields.Selection(
@@ -61,11 +60,9 @@ class RecordsDigitalScan(models.Model):
         ],
         string="Scan Quality",
         default="normal",
-    )
     scanner_id = fields.Char(string="Scanner ID")
     scanned_by = fields.Many2one(
         "res.users", string="Scanned By", default=lambda self: self.env.user
-    )
     action_confirm = fields.Char(string="Action Confirm")
     action_done = fields.Char(string="Action Done")    confirmed = fields.Boolean(string="Confirmed", default=False)
     done = fields.Char(string="Done")
@@ -83,9 +80,7 @@ class RecordsDigitalScan(models.Model):
         ],
         string="Group State",
         default="draft",
-    )
-    help = fields.Char(string="Help")        "mail.message", "res_id", string="Messages", auto_join=True
-    )
+    help = fields.Char(string="Help")        "mail.message", "res_id", string="Messages", auto_join=True,
     my_scans = fields.Char(string="My Scans")
     res_model = fields.Char(string="Res Model")
     search_view_id = fields.Many2one("ir.ui.view", string="Search View")
@@ -101,4 +96,4 @@ class RecordsDigitalScan(models.Model):
 
     def action_done(self):
         """Mark as done"""
-        self.write({"state": "done"})
+        self.write({"state": "done"}))

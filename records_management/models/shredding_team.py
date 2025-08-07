@@ -11,13 +11,11 @@ class ShreddingTeam(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Team Name", required=True, tracking=True, index=True)
+    name = fields.Char(string="Team Name", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [("draft", "Draft"), ("active", "Active"), ("inactive", "Inactive")],
@@ -47,7 +45,6 @@ class ShreddingTeam(models.Model):
     # ============================================================================
     max_capacity_per_day = fields.Float(
         string="Max Capacity per Day (lbs)", digits="Stock Weight", default=0.0
-    )
     working_hours_start = fields.Float(string="Working Hours Start", default=8.0)
     working_hours_end = fields.Float(string="Working Hours End", default=17.0)
 
@@ -56,10 +53,9 @@ class ShreddingTeam(models.Model):
     # ============================================================================
     service_ids = fields.One2many(
         "shredding.service", "team_id", string="Shredding Services"
-    )
     service_count = fields.Integer(
         string="Service Count", compute="_compute_service_count", store=True
     )
 
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
-    )
+    ))

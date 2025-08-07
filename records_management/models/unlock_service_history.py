@@ -7,10 +7,9 @@ class UnlockServiceHistory(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date desc"
 
-    name = fields.Char(string="Reference", required=True, default="New")
+    name = fields.Char(string="Reference", required=True, default="New"),
     partner_bin_key_id = fields.Many2one(
         "partner.bin.key", string="Partner Bin Key", required=True
-    )
     service_type = fields.Selection(
         [
             ("unlock", "Unlock"),
@@ -25,10 +24,8 @@ class UnlockServiceHistory(models.Model):
 
     date = fields.Datetime(
         string="Service Date", default=fields.Datetime.now, required=True
-    )
     technician_id = fields.Many2one(
         "res.users", string="Technician", default=lambda self: self.env.user
-    )
     customer_id = fields.Many2one("res.partner", string="Customer")
 
     # Service details
@@ -46,7 +43,6 @@ class UnlockServiceHistory(models.Model):
     # Control fields
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -68,4 +64,4 @@ class UnlockServiceHistory(models.Model):
                     self.env["ir.sequence"].next_by_code("unlock.service.history")
                     or "New"
                 )
-        return super().create(vals_list)
+        return super().create(vals_list))

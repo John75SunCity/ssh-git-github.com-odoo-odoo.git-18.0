@@ -88,10 +88,8 @@ class MaintenanceEquipment(models.Model):
     # ============================================================================
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
 
     equipment_category = fields.Selection(
@@ -213,4 +211,4 @@ class MaintenanceEquipment(models.Model):
                 "default_request_type": "preventive",
             },
             "target": "new",
-        }
+        })

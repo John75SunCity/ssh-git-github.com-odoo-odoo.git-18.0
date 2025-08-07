@@ -16,9 +16,9 @@ class MobileBinKeyWizard(models.Model):
     _order = "name"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
+    name = fields.Char(string="Name", required=True, tracking=True),
+    company_id = fields.Many2one("res.company", default=lambda self: self.env.company),
+    user_id = fields.Many2one("res.users", default=lambda self: self.env.user),
     active = fields.Boolean(default=True)
 
     # Basic state management
@@ -30,10 +30,10 @@ class MobileBinKeyWizard(models.Model):
     )
 
     # Common fields
-    description = fields.Text()
-    notes = fields.Text()
-    date = fields.Date(default=fields.Date.today)
-    action_execute = fields.Char(string="Action Execute")
+    description = fields.Text(),
+    notes = fields.Text(),
+    date = fields.Date(default=fields.Date.today),
+    action_execute = fields.Char(string="Action Execute"),
     action_type = fields.Selection(
         [
             ("unlock", "Unlock Bin"),
@@ -44,7 +44,6 @@ class MobileBinKeyWizard(models.Model):
         ],
         string="Action Type",
         default="unlock",
-    )
     billable = fields.Boolean(string="Billable", default=False)
     bin_locations = fields.Char(string="Bin Locations")
     code = fields.Char(string="Code")
@@ -58,7 +57,6 @@ class MobileBinKeyWizard(models.Model):
     create_new_contact = fields.Char(string="Create New Contact")
     customer_company_id = fields.Many2one(
         "res.partner", string="Customer Company Id", domain=[("is_company", "=", True)]
-    )
     emergency_contact = fields.Char(string="Emergency Contact")
     issue_location = fields.Char(string="Issue Location")
     items_retrieved = fields.Char(string="Items Retrieved")
@@ -130,4 +128,4 @@ class MobileBinKeyWizard(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        }
+        })

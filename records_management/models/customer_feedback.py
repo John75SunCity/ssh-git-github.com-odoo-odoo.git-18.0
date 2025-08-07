@@ -95,7 +95,6 @@ class CustomerFeedback(models.Model):
         tracking=True,
         default=lambda self: _("New"),
         copy=False,
-    )
     description = fields.Text(string="Feedback Details", tracking=True)
     active = fields.Boolean(default=True, tracking=True)
     company_id = fields.Many2one(
@@ -103,7 +102,6 @@ class CustomerFeedback(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
@@ -120,7 +118,6 @@ class CustomerFeedback(models.Model):
         required=True,
         tracking=True,
         domain=[("is_company", "=", True)],
-    )
     contact_person = fields.Many2one(
         "res.partner",
         string="Contact Person",
@@ -133,7 +130,6 @@ class CustomerFeedback(models.Model):
     # ==========================================
     feedback_date = fields.Date(
         string="Feedback Date", default=fields.Date.today, required=True, tracking=True
-    )
     feedback_type = fields.Selection(
         [
             ("compliment", "Compliment"),
@@ -265,5 +261,5 @@ class CustomerFeedback(models.Model):
             if vals.get("name", _("New")) == _("New"):
                 vals["name"] = self.env["ir.sequence"].next_by_code(
                     "customer.feedback"
-                ) or _("New")
-        return super().create(vals_list)
+    or _("New")
+        return super().create(vals_list))

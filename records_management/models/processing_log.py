@@ -11,13 +11,11 @@ class ProcessingLog(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Log Entry", required=True, tracking=True, index=True)
+    name = fields.Char(string="Log Entry", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -25,7 +23,6 @@ class ProcessingLog(models.Model):
     # ============================================================================
     timestamp = fields.Datetime(
         string="Timestamp", default=fields.Datetime.now, required=True, index=True
-    )
     process_type = fields.Selection(
         [
             ("pickup", "Pickup Process"),
@@ -106,7 +103,6 @@ class ProcessingLog(models.Model):
     # ============================================================================
     records_container_id = fields.Many2one(
         "records.container", string="Related Container"
-    )
     pickup_request_id = fields.Many2one("pickup.request", string="Related Pickup")
     shredding_service_id = fields.Many2one(
         "shredding.service", string="Related Shredding"
@@ -167,4 +163,4 @@ class ProcessingLog(models.Model):
             "log_level": log_level,
             **kwargs,
         }
-        return self.create(vals)
+        return self.create(vals))

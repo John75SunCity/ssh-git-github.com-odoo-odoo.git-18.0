@@ -82,9 +82,9 @@ class RecordsPolicyVersion(models.Model):
     _order = "date desc, name"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True, index=True)
-    company_id = fields.Many2one("res.company", required=True, default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user, required=True)
+    name = fields.Char(string="Name", required=True, tracking=True, index=True),
+    company_id = fields.Many2one("res.company", required=True, default=lambda self: self.env.company),
+    user_id = fields.Many2one("res.users", default=lambda self: self.env.user, required=True),
     active = fields.Boolean(default=True)
 
     # Relationship field (required for One2many inverse)
@@ -107,10 +107,8 @@ class RecordsPolicyVersion(models.Model):
     # Common fields
     description = fields.Text(
         help="Detailed description of the policy version, including purpose and key changes."
-    )
     notes = fields.Text(
         help="Additional notes or comments related to this policy version."
-    )
     date = fields.Date(default=lambda self: fields.Date.today())
 
     def action_confirm(self):
@@ -119,4 +117,4 @@ class RecordsPolicyVersion(models.Model):
 
     def action_done(self):
         """Set the policy version state to 'done'."""
-        self.write({"state": "done"})
+        self.write({"state": "done"}))

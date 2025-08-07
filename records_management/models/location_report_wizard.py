@@ -11,13 +11,11 @@ class LocationReportWizard(models.Model):
     _rec_name = "name"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
+    name = fields.Char(string="Name", required=True, tracking=True),
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user
-    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -35,7 +33,6 @@ class LocationReportWizard(models.Model):
     message_ids = fields.One2many(
         "mail.message", "res_id", string="Messages", auto_join=True
     )        "mail.followers", "res_id", string="Followers", auto_join=True
-    )
     action_export_csv = fields.Char(string="Action Export Csv")
     action_generate_report = fields.Char(string="Action Generate Report")
     action_print_report = fields.Char(string="Action Print Report")
@@ -46,12 +43,10 @@ class LocationReportWizard(models.Model):
         string="Location",
         required=True,
         help="Select the primary location for the report.",
-    )
     include_child_locations = fields.Boolean(
         string="Include Child Locations",
         default=True,
         help="Include all sub-locations in the report.",
-    )
     report_date = fields.Date(
         string="Report Date",
         default=fields.Date.context_today,
@@ -62,19 +57,16 @@ class LocationReportWizard(models.Model):
     # Computed Report Data
     location_name = fields.Char(
         related="location_id.name", string="Location Name", store=True, readonly=True
-    )
     total_capacity = fields.Float(
         string="Total Capacity",
         compute="_compute_report_data",
         store=True,
         help="Total capacity of the selected location(s).",
-    )
     current_utilization = fields.Float(
         string="Current Utilization",
         compute="_compute_report_data",
         store=True,
         help="Current utilization of the location(s).",
-    )
     utilization_percentage = fields.Float(
         string="Utilization Percentage",
         compute="_compute_report_data",
@@ -128,4 +120,4 @@ class LocationReportWizard(models.Model):
         """Exports the report data to CSV."""
         self.ensure_one()
         # Implementation for CSV export
-        raise UserError(_("CSV export is not yet implemented."))
+        raise UserError(_("CSV export is not yet implemented.")))

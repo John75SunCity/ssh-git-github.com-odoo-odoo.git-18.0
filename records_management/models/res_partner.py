@@ -8,10 +8,9 @@ class ResPartner(models.Model):
 
     # Add new fields here, for example:
     # is_records_customer = fields.Boolean(string="Records Customer", default=False)
-    is_records_customer = fields.Boolean(string="Records Customer", default=False)
+    is_records_customer = fields.Boolean(string="Records Customer", default=False),
     records_department_users = fields.One2many(
         "res.users", "partner_id", string="Department Users (Records)"
-    )
     records_department_id = fields.Many2one(
         "records.department", string="Records Department"
     )
@@ -196,4 +195,4 @@ class ResPartner(models.Model):
                 "default_partner_id": self.id,
                 "search_default_partner_id": self.id,
             },
-        }
+        })

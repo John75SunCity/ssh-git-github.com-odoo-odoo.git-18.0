@@ -53,7 +53,6 @@ class RecordsBillingConfig(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Configuration Name", required=True, tracking=True, index=True
-    )
     code = fields.Char(string="Configuration Code", index=True, tracking=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
@@ -68,7 +67,6 @@ class RecordsBillingConfig(models.Model):
         default=lambda self: self.env.company,
         required=True,
         index=True,
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Billing Manager",
@@ -128,12 +126,10 @@ class RecordsBillingConfig(models.Model):
         string="Default Storage Rate",
         currency_field="currency_id",
         help="Default monthly storage rate per box",
-    )
     default_retrieval_rate = fields.Monetary(
         string="Default Retrieval Rate",
         currency_field="currency_id",
         help="Default rate per retrieval request",
-    )
     default_destruction_rate = fields.Monetary(
         string="Default Destruction Rate",
         currency_field="currency_id",
@@ -166,16 +162,13 @@ class RecordsBillingConfig(models.Model):
         string="Enable Prepaid Billing",
         default=False,
         help="Allow customers to prepay for services",
-    )
     prepaid_discount_rate = fields.Float(
         string="Prepaid Discount Rate (%)",
         help="Discount percentage for prepaid services",
-    )
     prepaid_minimum_months = fields.Integer(
         string="Minimum Prepaid Months",
         default=3,
         help="Minimum months required for prepaid billing",
-    )
     prepaid_maximum_months = fields.Integer(
         string="Maximum Prepaid Months",
         default=24,
@@ -187,12 +180,10 @@ class RecordsBillingConfig(models.Model):
     # ============================================================================
     audit_trail = fields.Text(
         string="Audit Trail", readonly=True, help="Log of configuration changes"
-    )
     last_modified_date = fields.Datetime(
         string="Last Modified",
         default=lambda self: fields.Datetime.now(),
         readonly=True,
-    )
     last_modified_by = fields.Many2one(
         "res.users", string="Last Modified By", readonly=True
     )
@@ -235,10 +226,8 @@ class RecordsBillingConfig(models.Model):
 
     customer_count = fields.Integer(
         string="Customer Count", compute="_compute_customer_count", store=True
-    )
     rate_count = fields.Integer(
         string="Rate Lines Count", compute="_compute_rate_count", store=True
-    )
     is_active_config = fields.Boolean(
         string="Is Active Configuration",
         compute="_compute_is_active_config",
@@ -263,7 +252,6 @@ class RecordsBillingConfig(models.Model):
 
     @api.constrains(
         "default_storage_rate", "default_retrieval_rate", "default_destruction_rate"
-    )
     def _check_default_rates(self):
         for record in self:
             if record.default_storage_rate < 0:
@@ -454,7 +442,6 @@ class RecordsBillingConfigLine(models.Model):
         required=True,
         ondelete="cascade",
         index=True,
-    )
     sequence = fields.Integer(string="Sequence", default=10)
 
     service_type = fields.Selection(
@@ -512,4 +499,4 @@ class RecordsBillingConfigLine(models.Model):
             result.append((record.id, name))
         return result
         return result
-        return result
+        return result)

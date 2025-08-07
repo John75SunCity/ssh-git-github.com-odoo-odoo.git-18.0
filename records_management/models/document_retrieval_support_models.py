@@ -19,7 +19,6 @@ class DocumentRetrievalItem(models.Model):
     # ============================================================================
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
     )
@@ -29,7 +28,6 @@ class DocumentRetrievalItem(models.Model):
         string="Work Order",
         required=True,
         ondelete="cascade",
-    )
     sequence = fields.Integer(string="Sequence", default=10)
 
     document_id = fields.Many2one("records.document", string="Document")
@@ -121,15 +119,12 @@ class DocumentRetrievalTeam(models.Model):
     # Performance Metrics
     active_orders_count = fields.Integer(
         string="Active Orders", compute="_compute_order_counts"
-    )
     completed_orders_count = fields.Integer(
         string="Completed Orders", compute="_compute_order_counts"
-    )
     average_completion_time = fields.Float(
         string="Avg Completion Time (days)",
         digits=(5, 2),
         compute="_compute_performance",
-    )
     efficiency_rating = fields.Float(
         string="Efficiency Rating (%)", digits=(5, 2), compute="_compute_performance"
     )
@@ -144,11 +139,9 @@ class DocumentRetrievalTeam(models.Model):
     available_from = fields.Float(
         string="Available From (Hours)",
         help="Available from time in 24-hour format (e.g., 9.5 for 9:30 AM)",
-    )
     available_to = fields.Float(
         string="Available To (Hours)",
         help="Available to time in 24-hour format (e.g., 17.5 for 5:30 PM)",
-    )
     working_days = fields.Selection(
         [
             ("weekdays", "Monday to Friday"),
@@ -259,7 +252,6 @@ class DocumentRetrievalPricing(models.Model):
     base_fee = fields.Monetary(string="Base Fee", currency_field="currency_id")
     per_document_fee = fields.Monetary(
         string="Per Document Fee", currency_field="currency_id"
-    )
     per_hour_fee = fields.Monetary(string="Per Hour Fee", currency_field="currency_id")
     per_box_fee = fields.Monetary(string="Per Box Fee", currency_field="currency_id")
 
@@ -277,7 +269,6 @@ class DocumentRetrievalPricing(models.Model):
         ],
         string="Priority Level",
         default="standard",
-    )
     priority_multiplier = fields.Float(
         string="Priority Multiplier", default=1.0, digits=(3, 2)
     )
@@ -297,7 +288,6 @@ class DocumentRetrievalPricing(models.Model):
     # Time-based Pricing
     same_day_multiplier = fields.Float(
         string="Same Day Multiplier", default=2.0, digits=(3, 2)
-    )
     next_day_multiplier = fields.Float(
         string="Next Day Multiplier", default=1.5, digits=(3, 2)
     )
@@ -392,10 +382,8 @@ class DocumentRetrievalMetrics(models.Model):
     name = fields.Char(string="Metric Name", required=True)
     date = fields.Date(
         string="Retrieval Date", required=True, default=fields.Date.today
-    )
     work_order_id = fields.Many2one(
         "document.retrieval.work.order", string="Work Order"
-    )
     team_id = fields.Many2one("document.retrieval.team", string="Team")
     employee_id = fields.Many2one("hr.employee", string="Employee")
 
@@ -410,13 +398,10 @@ class DocumentRetrievalMetrics(models.Model):
     # Efficiency Metrics
     documents_per_hour = fields.Float(
         string="Documents per Hour", digits=(5, 2), compute="_compute_efficiency"
-    )
     cost_per_document = fields.Monetary(
         string="Cost per Document", currency_field="currency_id"
-    )
     revenue_generated = fields.Monetary(
         string="Revenue Generated", currency_field="currency_id"
-    )
     profit_margin = fields.Float(string="Profit Margin (%)", digits=(5, 2))
 
     # Quality Metrics
@@ -439,4 +424,4 @@ class DocumentRetrievalMetrics(models.Model):
                     metric.documents_retrieved / metric.hours_worked
                 )
             else:
-                metric.documents_per_hour = 0
+                metric.documents_per_hour = 0)

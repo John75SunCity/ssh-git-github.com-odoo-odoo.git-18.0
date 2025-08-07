@@ -12,19 +12,16 @@ class FieldLabelCustomization(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Name", required=True, tracking=True, index=True)
+    name = fields.Char(string="Name", required=True, tracking=True, index=True),
     description = fields.Text(
         string="Description", help="Description of this field label customization set"
-    )
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
-    )
     active = fields.Boolean(string="Active", default=True)
     sequence = fields.Integer(string="Sequence", default=10)
 
@@ -145,52 +142,42 @@ class FieldLabelCustomization(models.Model):
         string="Container Number Label",
         default="Container Number",
         help="Custom label for container/box number field",
-    )
     label_item_description = fields.Char(
         string="Item Description Label",
         default="Item Description",
         help="Custom label for item description field",
-    )
     label_content_description = fields.Char(
         string="Content Description Label",
         default="Content Description",
         help="Custom label for content description field",
-    )
     label_date_from = fields.Char(
         string="Date From Label",
         default="Date From",
         help="Custom label for start date field",
-    )
     label_date_to = fields.Char(
         string="Date To Label",
         default="Date To",
         help="Custom label for end date field",
-    )
     label_record_type = fields.Char(
         string="Record Type Label",
         default="Record Type",
         help="Custom label for record type classification field",
-    )
     label_confidentiality = fields.Char(
         string="Confidentiality Label",
         default="Confidentiality",
         help="Custom label for confidentiality/security level field",
-    )
     label_project_code = fields.Char(
         string="Project Code Label",
         default="Project Code",
         help="Custom label for project/cost center code field",
-    )
     label_client_reference = fields.Char(
         string="Client Reference Label",
         default="Client Reference",
         help="Custom label for client reference/matter number field",
-    )
     label_authorized_by = fields.Char(
         string="Authorized By Label",
         default="Authorized By",
         help="Custom label for authorization/approval field",
-    )
     label_created_by_dept = fields.Char(
         string="Created By Department Label",
         default="Created By Department",
@@ -284,7 +271,6 @@ class FieldLabelCustomization(models.Model):
     is_deployed = fields.Boolean(compute="_compute_is_deployed", string="Is Deployed")
     full_customization_name = fields.Char(
         compute="_compute_full_customization_name", string="Full Customization Name"
-    )
     available_fields = fields.Text(
         compute="_compute_available_fields",
         string="Available Fields",
@@ -440,7 +426,7 @@ class FieldLabelCustomization(models.Model):
                 except KeyError as exc:
                     raise ValidationError(
                         _("Model '%s' does not exist.") % record.model_name
-                    ) from exc
+    from exc
 
     @api.constrains("custom_label")
     def _check_custom_label_length(self):
@@ -539,4 +525,4 @@ class FieldLabelCustomization(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        }
+        })

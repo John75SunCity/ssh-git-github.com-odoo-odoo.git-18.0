@@ -15,8 +15,8 @@ class KeyRestrictionChecker(models.Model):
         "res.users", default=lambda self: self.env.user, tracking=True
     )
 
-    name = fields.Char(string="Name", required=True)
-    partner_id = fields.Many2one("res.partner", string="Partner")
+    name = fields.Char(string="Name", required=True),
+    partner_id = fields.Many2one("res.partner", string="Partner"),
     restriction_type = fields.Selection(
         [
             ("blacklist", "Blacklisted"),
@@ -27,9 +27,9 @@ class KeyRestrictionChecker(models.Model):
     )
 
     # === COMPREHENSIVE MISSING FIELDS ===
-    active = fields.Boolean(string="Flag", default=True, tracking=True)
-    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
-    notes = fields.Text(string="Description", tracking=True)
+    active = fields.Boolean(string="Flag", default=True, tracking=True),
+    sequence = fields.Integer(string="Sequence", default=10, tracking=True),
+    notes = fields.Text(string="Description", tracking=True),
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -40,18 +40,15 @@ class KeyRestrictionChecker(models.Model):
         string="Status",
         default="draft",
         tracking=True,
-    )
     created_date = fields.Date(
         string="Created Date", default=fields.Date.today, tracking=True
-    )
     updated_date = fields.Date(string="Updated Date", tracking=True)
     # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
-    )    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
     bin_number = fields.Char(string="Bin Number")
     access_level = fields.Selection(
         [("full", "Full Access"), ("limited", "Limited"), ("restricted", "Restricted")],
         string="Access Level",
-    )
     expiration_date = fields.Date(string="Expiration Date")
     last_check_date = fields.Date(string="Last Check Date")
     authorized_by = fields.Many2one("res.users", string="Authorized By")
@@ -65,7 +62,6 @@ class KeyRestrictionChecker(models.Model):
     access_level_verified = fields.Boolean("Access Level Verified", default=False)
     authorization_bypass_used = fields.Boolean(
         "Authorization Bypass Used", default=False
-    )
     override_reason = fields.Text("Override Reason")
     security_violation_detected = fields.Boolean(
         "Security Violation Detected", default=False
@@ -90,7 +86,6 @@ class KeyRestrictionChecker(models.Model):
     # === COMPUTED FIELDS ===
     is_expired = fields.Boolean(
         string="Is Expired", compute="_compute_is_expired", store=True
-    )
     days_until_expiration = fields.Integer(
         string="Days Until Expiration",
         compute="_compute_days_until_expiration",
@@ -122,13 +117,10 @@ class KeyRestrictionChecker(models.Model):
     # === MISSING VIEW-RELATED FIELDS ===
     restriction_date = fields.Date(
         string="Restriction Date", help="Date when restriction was applied"
-    )
     restriction_notes = fields.Text(
         string="Restriction Notes", help="Additional notes about the restriction"
-    )
     restriction_reason = fields.Text(
         string="Restriction Reason", help="Reason for applying restriction"
-    )
     status_message = fields.Char(
         string="Status Message", help="Current status message for restriction checker"
     )
@@ -236,4 +228,4 @@ class KeyRestrictionChecker(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        }
+        })

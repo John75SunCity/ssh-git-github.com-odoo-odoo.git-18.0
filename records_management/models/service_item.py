@@ -13,13 +13,10 @@ class ServiceItem(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Service Item Name", required=True, tracking=True, index=True
-    )
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -132,7 +129,6 @@ class ServiceItem(models.Model):
     # ============================================================================
     service_request_ids = fields.One2many(
         "portal.request", "service_item_id", string="Service Requests"
-    )
     # REMOVED: maintenance_log_ids - replaced by standard maintenance.request system
 
     # ============================================================================
@@ -208,4 +204,4 @@ class ServiceItem(models.Model):
 
     def action_retire_item(self):
         """Retire service item"""
-        self.write({"state": "retired", "active": False})
+        self.write({"state": "retired", "active": False}))

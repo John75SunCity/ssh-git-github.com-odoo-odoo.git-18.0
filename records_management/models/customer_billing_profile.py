@@ -23,13 +23,11 @@ class CustomerBillingProfile(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Profile Name", required=True, tracking=True, index=True)
+    name = fields.Char(string="Profile Name", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
     description = fields.Text(string="Description", tracking=True)
 
@@ -218,10 +216,8 @@ class CustomerBillingProfile(models.Model):
     # Billing rates
     storage_rate_per_box = fields.Monetary(
         string="Storage Rate per Box", currency_field="currency_id"
-    )
     retrieval_rate = fields.Monetary(
         string="Retrieval Rate", currency_field="currency_id"
-    )
     destruction_rate = fields.Monetary(
         string="Destruction Rate", currency_field="currency_id"
     )
@@ -238,12 +234,10 @@ class CustomerBillingProfile(models.Model):
     # ============================================================================
     contact_count = fields.Integer(
         string="Contact Count", compute="_compute_contact_count"
-    )
     current_balance = fields.Monetary(
         string="Current Balance",
         compute="_compute_current_balance",
         currency_field="currency_id",
-    )
     payment_reliability_score = fields.Float(
         string="Payment Reliability Score", compute="_compute_payment_reliability"
     )
@@ -253,10 +247,8 @@ class CustomerBillingProfile(models.Model):
     # ============================================================================
     send_billing_notifications = fields.Boolean(
         string="Send Billing Notifications", default=True
-    )
     send_overdue_reminders = fields.Boolean(
         string="Send Overdue Reminders", default=True
-    )
     billing_email = fields.Char(string="Billing Email")
     billing_phone = fields.Char(string="Billing Phone")
 
@@ -286,7 +278,6 @@ class CustomerBillingProfile(models.Model):
     # ============================================================================
     profile_start_date = fields.Date(
         string="Profile Start Date", default=fields.Date.today
-    )
     last_billing_date = fields.Date(string="Last Billing Date")
     last_payment_date = fields.Date(string="Last Payment Date")
 
@@ -533,4 +524,4 @@ class CustomerBillingProfile(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        }
+        })

@@ -10,9 +10,9 @@ class RecordsTag(models.Model):
     _rec_name = "name"
 
     # Basic Information
-    name = fields.Char(string="Name", required=True, tracking=True, index=True)
-    description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10)
+    name = fields.Char(string="Name", required=True, tracking=True, index=True),
+    description = fields.Text(string="Description"),
+    sequence = fields.Integer(string="Sequence", default=10),
     color = fields.Integer(string="Color", help="Color index for tag display")
 
     # State Management
@@ -31,7 +31,6 @@ class RecordsTag(models.Model):
     # Company and User
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users", string="Responsible User", default=lambda self: self.env.user
     )
@@ -47,7 +46,6 @@ class RecordsTag(models.Model):
     # Computed Fields
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
-    )
     # === BUSINESS CRITICAL FIELDS ===
     activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
     message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
@@ -97,4 +95,4 @@ class RecordsTag(models.Model):
             if not vals.get("name"):
                 vals["name"] = _("New Record")
 
-        return super().create(vals_list)
+        return super().create(vals_list))

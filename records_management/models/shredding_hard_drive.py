@@ -16,9 +16,9 @@ class ShreddingHardDrive(models.Model):
     _order = "name"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
+    name = fields.Char(string="Name", required=True, tracking=True),
+    company_id = fields.Many2one("res.company", default=lambda self: self.env.company),
+    user_id = fields.Many2one("res.users", default=lambda self: self.env.user),
     active = fields.Boolean(default=True)
 
     # Basic state management
@@ -30,23 +30,21 @@ class ShreddingHardDrive(models.Model):
     )
 
     # Common fields
-    description = fields.Text()
-    notes = fields.Text()
+    description = fields.Text(),
+    notes = fields.Text(),
     date = fields.Date(default=fields.Date.today)
     # === COMPREHENSIVE MISSING FIELDS ===
-    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
+    sequence = fields.Integer(string="Sequence", default=10, tracking=True),
     created_date = fields.Date(
         string="Created Date", default=fields.Date.today, tracking=True
-    )
     updated_date = fields.Date(string="Updated Date", tracking=True)
     # === BUSINESS CRITICAL FIELDS ===        "mail.followers", "res_id", string="Followers"
-    )    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
     destruction_date = fields.Date(string="Destruction Date")
     certificate_number = fields.Char(string="Certificate Number")
     destruction_method = fields.Selection(
         [("shred", "Shredding"), ("burn", "Burning"), ("pulp", "Pulping")],
         string="Destruction Method",
-    )
     weight = fields.Float(string="Weight (lbs)", digits=(10, 2))
     approved_by = fields.Many2one("res.users", string="Approved By")
     completed = fields.Boolean(string="Completed", default=False)
@@ -58,7 +56,6 @@ class ShreddingHardDrive(models.Model):
     hashed_serial = fields.Char("Hashed Serial Number")
     chain_of_custody_verified = fields.Boolean(
         "Chain of Custody Verified", default=False
-    )
     data_classification = fields.Selection(
         [
             ("public", "Public"),
@@ -67,14 +64,11 @@ class ShreddingHardDrive(models.Model):
             ("top_secret", "Top Secret"),
         ],
         default="internal",
-    )
     degaussing_required = fields.Boolean("Degaussing Required", default=False)
     destruction_method_verified = fields.Boolean(
         "Destruction Method Verified", default=False
-    )
     destruction_witness_required = fields.Boolean(
         "Destruction Witness Required", default=False
-    )
     encryption_level = fields.Selection(
         [
             ("none", "None"),
@@ -83,15 +77,12 @@ class ShreddingHardDrive(models.Model):
             ("military", "Military Grade"),
         ],
         default="none",
-    )
     forensic_analysis_completed = fields.Boolean(
         "Forensic Analysis Completed", default=False
-    )
     nist_compliance_verified = fields.Boolean("NIST Compliance Verified", default=False)
     physical_destruction_level = fields.Selection(
         [("level_1", "Level 1"), ("level_2", "Level 2"), ("level_3", "Level 3")],
         default="level_2",
-    )
     sanitization_standard = fields.Selection(
         [
             ("dod_5220", "DoD 5220.22-M"),
@@ -207,4 +198,4 @@ class ShreddingHardDrive(models.Model):
         self.ensure_one()
         self.write({"facility_verified": True})
         self.message_post(body=_("Mark Facility Verified"))
-        return True
+        return True)

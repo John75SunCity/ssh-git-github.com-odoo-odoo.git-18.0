@@ -75,7 +75,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         required=True,
         default=lambda self: _("Permanent Flag Operation %s")
         % fields.Date.context_today(self),
-    )
     description = fields.Text(
         string="Description",
         help="Detailed description of the permanent flag operation",
@@ -89,7 +88,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Requesting User",
@@ -193,13 +191,10 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         "records.document.type",
         string="Document Types",
         help="Filter by document types",
-    )
     location_ids = fields.Many2many(
         "records.location", string="Locations", help="Filter by storage locations"
-    )
     partner_id = fields.Many2one(
         "res.partner", string="Customer", help="Filter by customer"
-    )
     date_from = fields.Date(string="Date From", help="Filter documents from this date")
     date_to = fields.Date(string="Date To", help="Filter documents up to this date")
 
@@ -391,7 +386,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                 "state": "in_progress",
                 "execution_date": datetime.now(),
             }
-        )
         # Execute the operation
         affected_count = 0
         errors = []
@@ -620,4 +614,4 @@ Description:
             "view_mode": "tree,form",
             "domain": [("id", "in", list(self.document_ids.ids))],
             "target": "current",
-        }
+        })

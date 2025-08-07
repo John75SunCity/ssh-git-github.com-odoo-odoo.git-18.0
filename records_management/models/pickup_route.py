@@ -78,8 +78,8 @@ class PickupRoute(models.Model):
     _rec_name = "name"
 
     # Basic Information
-    name = fields.Char(string="Name", required=True, tracking=True, index=True)
-    description = fields.Text(string="Description")
+    name = fields.Char(string="Name", required=True, tracking=True, index=True),
+    description = fields.Text(string="Description"),
     sequence = fields.Integer(string="Sequence", default=10)
 
     # State Management
@@ -98,7 +98,6 @@ class PickupRoute(models.Model):
     # Company and User
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users", string="Route Manager", default=lambda self: self.env.user
     )
@@ -149,4 +148,4 @@ class PickupRoute(models.Model):
             if not vals.get("name"):
                 vals["name"] = _("New Record")
             vals["date_modified"] = fields.Datetime.now()
-        return super(PickupRoute, self).create(vals_list)
+        return super(PickupRoute, self).create(vals_list))

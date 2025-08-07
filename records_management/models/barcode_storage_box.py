@@ -11,13 +11,11 @@ class BarcodeStorageBox(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Box Name", required=True, tracking=True, index=True)
+    name = fields.Char(string="Box Name", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -56,7 +54,6 @@ class BarcodeStorageBox(models.Model):
     capacity = fields.Integer(string="Storage Capacity", default=100)
     current_count = fields.Integer(
         string="Current Count", compute="_compute_current_count", store=True
-    )
     available_space = fields.Integer(
         string="Available Space", compute="_compute_available_space", store=True
     )
@@ -134,4 +131,4 @@ class BarcodeStorageBox(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_storage_box_id": self.id},
-        }
+        })

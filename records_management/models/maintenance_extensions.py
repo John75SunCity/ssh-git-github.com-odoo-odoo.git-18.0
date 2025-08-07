@@ -31,7 +31,6 @@ class MaintenanceEquipment(models.Model):
         string="Shredding Capacity (lbs/hour)",
         digits="Stock Weight",
         help="Maximum shredding capacity per hour",
-    )
     security_level = fields.Selection(
         [
             ("level_1", "Level 1 - Strip Cut"),
@@ -104,7 +103,6 @@ class MaintenanceRequest(models.Model):
     requires_certification = fields.Boolean(
         string="Requires Re-certification",
         help="Equipment needs re-certification after maintenance",
-    )
     compliance_notes = fields.Text(string="Compliance Notes")
 
     # Cost Tracking
@@ -163,7 +161,6 @@ class MaintenanceTeam(models.Model):
     # Performance Metrics
     average_response_time = fields.Float(
         string="Avg Response Time (hours)", compute="_compute_performance_metrics"
-    )
     average_resolution_time = fields.Float(
         string="Avg Resolution Time (hours)", compute="_compute_performance_metrics"
     )
@@ -181,8 +178,7 @@ class MaintenanceTeam(models.Model):
                 )
                 team.average_resolution_time = total_resolution_time / len(
                     completed_requests
-                )
                 # Add response time calculation if needed
             else:
                 team.average_response_time = 0.0
-                team.average_resolution_time = 0.0
+                team.average_resolution_time = 0.0)

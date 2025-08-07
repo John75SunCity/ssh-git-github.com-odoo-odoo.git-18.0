@@ -7,17 +7,16 @@ class Photo(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date desc"
 
-    name = fields.Char(string="Photo Name", required=True, default="New Photo")
+    name = fields.Char(string="Photo Name", required=True, default="New Photo"),
     description = fields.Text(string="Description")
 
     # File attachment
-    image = fields.Binary(string="Image", attachment=True)
+    image = fields.Binary(string="Image", attachment=True),
     image_filename = fields.Char(string="Image Filename")
 
     # Relationships
     mobile_bin_key_wizard_id = fields.Many2one(
         "mobile.bin.key.wizard", string="Mobile Bin Key Wizard"
-    )
     partner_id = fields.Many2one("res.partner", string="Related Partner")
 
     # Metadata
@@ -32,10 +31,8 @@ class Photo(models.Model):
     # Control fields
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user
-    )
     active = fields.Boolean(string="Active", default=True)
 
     @api.model_create_multi
@@ -45,4 +42,4 @@ class Photo(models.Model):
                 vals["name"] = (
                     self.env["ir.sequence"].next_by_code("photo") or "New Photo"
                 )
-        return super().create(vals_list)
+        return super().create(vals_list))

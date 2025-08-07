@@ -11,13 +11,11 @@ class BarcodePricingTier(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Tier Name", required=True, tracking=True, index=True)
+    name = fields.Char(string="Tier Name", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [("draft", "Draft"), ("active", "Active"), ("inactive", "Inactive")],
@@ -46,7 +44,6 @@ class BarcodePricingTier(models.Model):
     base_price = fields.Float(string="Base Price", digits="Product Price", default=0.0)
     volume_discount = fields.Float(
         string="Volume Discount (%)", digits="Discount", default=0.0
-    )
     minimum_quantity = fields.Integer(string="Minimum Quantity", default=1)
     maximum_quantity = fields.Integer(string="Maximum Quantity", default=9999)
 
@@ -110,4 +107,4 @@ class BarcodePricingTier(models.Model):
 
     def action_deactivate(self):
         """Deactivate pricing tier"""
-        self.write({"state": "inactive"})
+        self.write({"state": "inactive"}))

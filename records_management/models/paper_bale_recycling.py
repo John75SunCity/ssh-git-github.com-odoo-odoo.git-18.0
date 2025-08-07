@@ -12,11 +12,11 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Name", required=True, tracking=True, index=True)
-    description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10)
-    active = fields.Boolean(string="Active", default=True)
-    company_id = fields.Many2one("res.company", string="Company", default=lambda self: self.env.company)
+    name = fields.Char(string="Name", required=True, tracking=True, index=True),
+    description = fields.Text(string="Description"),
+    sequence = fields.Integer(string="Sequence", default=10),
+    active = fields.Boolean(string="Active", default=True),
+    company_id = fields.Many2one("res.company", string="Company", default=lambda self: self.env.company),
     user_id = fields.Many2one("res.users", string="Assigned User", default=lambda self: self.env.user)
 
     # ============================================================================
@@ -37,8 +37,8 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     # BALE INFORMATION
     # ============================================================================
-    bale_id = fields.Char(string="Bale ID", required=True, index=True, tracking=True)
-    bale_weight = fields.Float(string="Bale Weight (lbs)", required=True, tracking=True)
+    bale_id = fields.Char(string="Bale ID", required=True, index=True, tracking=True),
+    bale_weight = fields.Float(string="Bale Weight (lbs)", required=True, tracking=True),
     paper_type = fields.Selection(
         [
             ("mixed", "Mixed Paper"),
@@ -65,18 +65,18 @@ class PaperBaleRecycling(models.Model):
         tracking=True,
     )
 
-    contamination_level = fields.Float(string="Contamination Level (%)", default=0.0)
+    contamination_level = fields.Float(string="Contamination Level (%)", default=0.0),
     moisture_content = fields.Float(string="Moisture Content (%)", default=0.0)
 
     # ============================================================================
     # RECYCLING PROCESS
     # ============================================================================
-    processing_date = fields.Date(string="Processing Date", tracking=True)
+    processing_date = fields.Date(string="Processing Date", tracking=True),
     recycling_facility_id = fields.Many2one(
         "res.partner", string="Recycling Facility", domain=[("is_company", "=", True)]
     )
 
-    collection_date = fields.Date(string="Collection Date", tracking=True)
+    collection_date = fields.Date(string="Collection Date", tracking=True),
     transport_method = fields.Selection(
         [
             ("truck", "Truck Transport"),
@@ -103,13 +103,13 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     # ENVIRONMENTAL & COMPLIANCE
     # ============================================================================
-    carbon_footprint_reduction = fields.Float(string="Carbon Footprint Reduction (tons CO2)")
-    water_savings = fields.Float(string="Water Savings (gallons)")
-    energy_savings = fields.Float(string="Energy Savings (kWh)")
+    carbon_footprint_reduction = fields.Float(string="Carbon Footprint Reduction (tons CO2)"),
+    water_savings = fields.Float(string="Water Savings (gallons)"),
+    energy_savings = fields.Float(string="Energy Savings (kWh)"),
     landfill_diversion = fields.Float(string="Landfill Diversion (lbs)")
 
-    environmental_certificate = fields.Binary(string="Environmental Certificate")
-    recycling_certificate = fields.Binary(string="Recycling Certificate")
+    environmental_certificate = fields.Binary(string="Environmental Certificate"),
+    recycling_certificate = fields.Binary(string="Recycling Certificate"),
     chain_of_custody = fields.Text(string="Chain of Custody Documentation")
 
     # ============================================================================
@@ -119,14 +119,12 @@ class PaperBaleRecycling(models.Model):
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
-    )
     market_price_per_ton = fields.Monetary(string="Market Price per Ton", currency_field="currency_id")
     total_revenue = fields.Monetary(
         string="Total Revenue",
         currency_field="currency_id",
         compute="_compute_total_revenue",
         store=True,
-    )
     processing_cost = fields.Monetary(string="Processing Cost", currency_field="currency_id")
     transport_cost = fields.Monetary(string="Transport Cost", currency_field="currency_id")
     net_profit = fields.Monetary(
@@ -324,4 +322,4 @@ class PaperBaleRecycling(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        }
+        })

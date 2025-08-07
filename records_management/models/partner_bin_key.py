@@ -24,15 +24,14 @@ class PartnerBinKey(models.Model):
     # ==========================================
     # CORE IDENTIFICATION FIELDS
     # ==========================================
-    name = fields.Char(string="Key ID", required=True, tracking=True)
-    description = fields.Text(string="Description")
-    active = fields.Boolean(default=True, tracking=True)
+    name = fields.Char(string="Key ID", required=True, tracking=True),
+    description = fields.Text(string="Description"),
+    active = fields.Boolean(default=True, tracking=True),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Key Manager",
@@ -49,7 +48,6 @@ class PartnerBinKey(models.Model):
         required=True,
         tracking=True,
         domain=[("is_company", "=", True)],
-    )
     assigned_to_contact = fields.Many2one(
         "res.partner",
         string="Assigned To",
@@ -94,16 +92,13 @@ class PartnerBinKey(models.Model):
         "partner_bin_key_id",
         string="Active Bin Keys",
         domain=[("active", "=", True)],
-    )
     active_bin_key_count = fields.Integer(
         string="Active Bin Key Count",
         compute="_compute_active_bin_key_count",
         store=True,
-    )
     billable = fields.Boolean(string="Billable", default=False)
     bin_key_history_ids = fields.One2many(
         "bin.key.history", "partner_bin_key_id", string="Bin Key History Ids"
-    )
     bin_location = fields.Char(string="Bin Location")
     binding_model_id = fields.Many2one("ir.model", string="Binding Model Id")
     binding_view_types = fields.Char(string="Binding View Types")
@@ -129,7 +124,6 @@ class PartnerBinKey(models.Model):
         [("new", "New"), ("in_progress", "In Progress"), ("completed", "Completed")],
         string="Service Status",  # Changed to avoid conflict with state field
         default="new",
-    )
     target = fields.Char(string="Target")
     total_bin_keys_issued = fields.Char(string="Total Bin Keys Issued")
     total_unlock_charges = fields.Char(string="Total Unlock Charges")
@@ -138,12 +132,10 @@ class PartnerBinKey(models.Model):
         string="Unlock Service Count",
         compute="_compute_unlock_service_count",
         store=True,
-    )
     unlock_service_history_ids = fields.One2many(
         "unlock.service.history",
         "partner_bin_key_id",
         string="Unlock Service History Ids",
-    )
     view_mode = fields.Char(string="View Mode")
 
     @api.depends("active_bin_key_ids")
@@ -208,5 +200,5 @@ class PartnerBinKey(models.Model):
             if not vals.get("name"):
                 vals["name"] = self.env["ir.sequence"].next_by_code(
                     "partner.bin.key"
-                ) or _("New Key")
-        return super().create(vals_list)
+    or _("New Key")
+        return super().create(vals_list))

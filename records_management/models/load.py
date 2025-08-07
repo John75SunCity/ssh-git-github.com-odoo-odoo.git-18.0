@@ -12,16 +12,15 @@ class Load(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Load Number", required=True, tracking=True, index=True)
-    description = fields.Text(string="Load Description")
-    sequence = fields.Integer(string="Sequence", default=10)
-    active = fields.Boolean(string="Active", default=True, tracking=True)
+    name = fields.Char(string="Load Number", required=True, tracking=True, index=True),
+    description = fields.Text(string="Load Description"),
+    sequence = fields.Integer(string="Sequence", default=10),
+    active = fields.Boolean(string="Active", default=True, tracking=True),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Load Manager",
@@ -65,7 +64,6 @@ class Load(models.Model):
 
     trailer_id = fields.Many2one(
         "fleet.vehicle", string="Trailer", domain=[("vehicle_type", "=", "trailer")]
-    )
     driver_id = fields.Many2one(
         "res.partner", string="Driver", domain=[("is_company", "=", False)]
     )
@@ -73,10 +71,8 @@ class Load(models.Model):
     # Capacity and weight tracking
     max_weight_capacity = fields.Float(
         string="Max Weight Capacity (lbs)", default=80000.0
-    )
     current_weight = fields.Float(
         string="Current Weight (lbs)", compute="_compute_current_weight", store=True
-    )
     weight_utilization = fields.Float(
         string="Weight Utilization (%)", compute="_compute_weight_utilization"
     )
@@ -86,14 +82,12 @@ class Load(models.Model):
     # ============================================================================
     date_created = fields.Datetime(
         string="Created Date", default=fields.Datetime.now, tracking=True
-    )
     loading_start_date = fields.Datetime(string="Loading Start Date", tracking=True)
     loading_end_date = fields.Datetime(string="Loading End Date", tracking=True)
     scheduled_ship_date = fields.Date(string="Scheduled Ship Date", tracking=True)
     actual_ship_date = fields.Date(string="Actual Ship Date", tracking=True)
     estimated_delivery_date = fields.Date(
         string="Estimated Delivery Date", tracking=True
-    )
     actual_delivery_date = fields.Date(string="Actual Delivery Date", tracking=True)
 
     # ============================================================================
@@ -101,7 +95,6 @@ class Load(models.Model):
     # ============================================================================
     destination_partner_id = fields.Many2one(
         "res.partner", string="Destination", required=True, tracking=True
-    )
     pickup_location = fields.Char(string="Pickup Location")
     delivery_address = fields.Text(string="Delivery Address")
     special_delivery_instructions = fields.Text(string="Special Delivery Instructions")
@@ -129,23 +122,18 @@ class Load(models.Model):
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
-    )
     estimated_revenue = fields.Monetary(
         string="Estimated Revenue", currency_field="currency_id", tracking=True
-    )
     actual_revenue = fields.Monetary(
         string="Actual Revenue", currency_field="currency_id", tracking=True
-    )
     transportation_cost = fields.Monetary(
         string="Transportation Cost", currency_field="currency_id"
-    )
     fuel_cost = fields.Monetary(string="Fuel Cost", currency_field="currency_id")
     total_costs = fields.Monetary(
         string="Total Costs",
         currency_field="currency_id",
         compute="_compute_total_costs",
         store=True,
-    )
     net_profit = fields.Monetary(
         string="Net Profit",
         currency_field="currency_id",
@@ -171,7 +159,6 @@ class Load(models.Model):
     moisture_content = fields.Float(string="Moisture Content (%)", default=0.0)
     quality_inspection_passed = fields.Boolean(
         string="Quality Inspection Passed", default=True
-    )
     inspection_notes = fields.Text(string="Inspection Notes")
 
     # ============================================================================
@@ -374,4 +361,4 @@ class Load(models.Model):
             "view_mode": "tree,form",
             "domain": [("load_id", "=", self.id)],  # Ensure 'load_id' exists on the related model
             "context": {"default_load_id": self.id},
-        }
+        })

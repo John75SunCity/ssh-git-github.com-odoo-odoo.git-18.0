@@ -69,13 +69,11 @@ class BinKey(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Key Number", required=True, tracking=True, index=True)
+    name = fields.Char(string="Key Number", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -133,8 +131,7 @@ class BinKey(models.Model):
     # ============================================================================
     unlock_service_ids = fields.One2many(
         "bin.unlock.service", "key_id", string="Unlock Services"
-    )
     bin_ids = fields.Many2many("records.bin", string="Accessible Bins")
 
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
-    )        self.write({"state": "retired", "active": False})
+    self.write({"state": "retired", "active": False}))

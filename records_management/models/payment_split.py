@@ -13,13 +13,10 @@ class PaymentSplit(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Split Reference", required=True, tracking=True, index=True
-    )
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -27,14 +24,11 @@ class PaymentSplit(models.Model):
     # ============================================================================
     split_date = fields.Datetime(
         string="Split Date", default=fields.Datetime.now, required=True, index=True
-    )
     original_amount = fields.Monetary(
         string="Original Amount", required=True, tracking=True
-    )
     split_amount = fields.Monetary(string="Split Amount", required=True, tracking=True)
     remaining_amount = fields.Monetary(
         string="Remaining Amount", compute="_compute_remaining_amount", store=True
-    )
     currency_id = fields.Many2one(
         "res.currency", default=lambda self: self.env.company.currency_id, required=True
     )
@@ -53,7 +47,6 @@ class PaymentSplit(models.Model):
         default="fixed",
         required=True,
         tracking=True,
-    )
     split_percentage = fields.Float(string="Split Percentage", digits=(5, 2))
     split_reason = fields.Text(string="Split Reason", tracking=True)
 
@@ -72,7 +65,6 @@ class PaymentSplit(models.Model):
         string="Payment Method",
         default="cash",
         tracking=True,
-    )
     payment_ref = fields.Char(string="Payment Reference")
 
     # ============================================================================
@@ -94,7 +86,6 @@ class PaymentSplit(models.Model):
         string="Status",
         default="draft",
         tracking=True,
-    )
     notes = fields.Text(string="Notes")
 
     # ============================================================================
@@ -153,4 +144,4 @@ class PaymentSplit(models.Model):
 
     def action_reset_to_draft(self):
         """Reset to draft state"""
-        self.write({"state": "draft"})
+        self.write({"state": "draft"}))

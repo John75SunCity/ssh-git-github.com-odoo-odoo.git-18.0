@@ -23,7 +23,6 @@ class NaidComplianceAlert(models.Model):
     # ============================================================================
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     active = fields.Boolean(string="Active", default=True)
 
     compliance_id = fields.Many2one(
@@ -36,7 +35,6 @@ class NaidComplianceAlert(models.Model):
 
     alert_date = fields.Datetime(
         string="Alert Date", required=True, default=fields.Datetime.now
-    )
     alert_type = fields.Selection(
         [
             ("certificate_expiry", "Certificate Expiry"),
@@ -50,13 +48,11 @@ class NaidComplianceAlert(models.Model):
         ],
         string="Alert Type",
         required=True,
-    )
     severity = fields.Selection(
         [("info", "Information"), ("warning", "Warning"), ("critical", "Critical")],
         string="Severity",
         required=True,
         default="warning",
-    )
     title = fields.Char(string="Alert Title", required=True)
     description = fields.Text(string="Alert Description")
 
@@ -74,7 +70,6 @@ class NaidComplianceAlert(models.Model):
         string="Status",
         required=True,
         default="active",
-    )
     resolved_date = fields.Datetime(string="Resolved Date")
     resolved_by = fields.Many2one("res.users", string="Resolved By")
     resolution_notes = fields.Text(string="Resolution Notes")
@@ -120,7 +115,6 @@ class NaidComplianceChecklistItem(models.Model):
         string="Checklist",
         required=True,
         ondelete="cascade",
-    )
     category = fields.Selection(
         [
             ("security", "Security"),
@@ -152,7 +146,6 @@ class NaidComplianceChecklistItem(models.Model):
         [("low", "Low"), ("medium", "Medium"), ("high", "High")],
         string="Risk Level",
         default="medium",
-    )
     deadline = fields.Date(string="Deadline")
 
 class NaidComplianceAuditHistory(models.Model):
@@ -185,7 +178,6 @@ class NaidComplianceAuditHistory(models.Model):
         ],
         string="Audit Type",
         required=True,
-    )
     auditor_name = fields.Char(string="Auditor Name", required=True)
     audit_scope = fields.Text(string="Audit Scope")
 
@@ -203,7 +195,6 @@ class NaidComplianceAuditHistory(models.Model):
         ],
         string="Overall Rating",
         required=True,
-    )
     findings = fields.Text(string="Audit Findings")
     recommendations = fields.Text(string="Recommendations")
     corrective_actions = fields.Text(string="Corrective Actions Required")
@@ -238,7 +229,6 @@ class NaidRiskAssessment(models.Model):
 
     assessment_date = fields.Date(
         string="Assessment Date", required=True, default=fields.Date.today
-    )
     assessor_id = fields.Many2one("res.users", string="Assessor", required=True)
     risk_category = fields.Selection(
         [
@@ -266,7 +256,6 @@ class NaidRiskAssessment(models.Model):
         ],
         string="Impact Level",
         required=True,
-    )
     probability = fields.Selection(
         [
             ("rare", "Rare"),
@@ -285,7 +274,6 @@ class NaidRiskAssessment(models.Model):
 
     risk_score = fields.Integer(
         string="Risk Score", compute="_compute_risk_score", store=True
-    )
     risk_level = fields.Selection(
         [
             ("low", "Low"),
@@ -389,7 +377,6 @@ class NaidComplianceActionPlan(models.Model):
         string="Priority",
         required=True,
         default="medium",
-    )
     due_date = fields.Date(string="Due Date", required=True)
     start_date = fields.Date(string="Start Date")
     completion_date = fields.Date(string="Completion Date")
@@ -400,7 +387,6 @@ class NaidComplianceActionPlan(models.Model):
 
     responsible_user_id = fields.Many2one(
         "res.users", string="Responsible Person", required=True
-    )
     approval_required = fields.Boolean(string="Approval Required", default=False)
     approved_by = fields.Many2one("res.users", string="Approved By")
     approval_date = fields.Date(string="Approval Date")
@@ -419,7 +405,6 @@ class NaidComplianceActionPlan(models.Model):
         ],
         string="Status",
         default="draft",
-    )
     progress_percentage = fields.Float(string="Progress %", default=0.0)
     completion_notes = fields.Text(string="Completion Notes")
 
@@ -518,4 +503,4 @@ class NaidComplianceEnhanced(models.Model):
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================        "mail.followers", "res_id", string="Followers"
-    )
+    ))

@@ -16,10 +16,9 @@ class RecordsAccessLog(models.Model):
     _order = "name"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
+    name = fields.Char(string="Name", required=True, tracking=True),
     document_id = fields.Many2one(
         "records.document", string="Document", ondelete="cascade"
-    )
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
     user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
@@ -43,4 +42,4 @@ class RecordsAccessLog(models.Model):
 
     def action_done(self):
         """Mark as done"""
-        self.write({"state": "done"})
+        self.write({"state": "done"}))

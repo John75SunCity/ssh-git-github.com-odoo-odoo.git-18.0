@@ -19,24 +19,19 @@ class PortalFeedbackResolution(models.Model):
     # ============================================================================
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
 
     feedback_id = fields.Many2one(
         "portal.feedback", string="Feedback", required=True, ondelete="cascade"
-    )
     resolution_date = fields.Datetime(
         string="Resolution Date", required=True, default=fields.Datetime.now
-    )
     resolved_by = fields.Many2one(
         "res.users",
         string="Resolved By",
         required=True,
         default=lambda self: self.env.user,
-    )
     resolution_type = fields.Selection(
         [
             ("immediate", "Immediate Resolution"),
@@ -48,7 +43,6 @@ class PortalFeedbackResolution(models.Model):
         ],
         string="Resolution Type",
         required=True,
-    )
     resolution_description = fields.Text(string="Resolution Description", required=True)
     customer_notified = fields.Boolean(string="Customer Notified", default=False)
     satisfaction_after_resolution = fields.Selection(
@@ -60,10 +54,8 @@ class PortalFeedbackResolution(models.Model):
             ("5", "Very Satisfied"),
         ],
         string="Satisfaction After Resolution",
-    )
     cost_of_resolution = fields.Monetary(
         string="Cost of Resolution", currency_field="currency_id"
-    )
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
@@ -80,16 +72,13 @@ class PortalFeedbackEscalation(models.Model):
 
     feedback_id = fields.Many2one(
         "portal.feedback", string="Feedback", required=True, ondelete="cascade"
-    )
     escalation_date = fields.Datetime(
         string="Escalation Date", required=True, default=fields.Datetime.now
-    )
     escalated_by = fields.Many2one(
         "res.users",
         string="Escalated By",
         required=True,
         default=lambda self: self.env.user,
-    )
     escalated_to = fields.Many2one("res.users", string="Escalated To", required=True)
     escalation_reason = fields.Text(string="Escalation Reason", required=True)
     escalation_level = fields.Selection(
@@ -101,7 +90,6 @@ class PortalFeedbackEscalation(models.Model):
         ],
         string="Escalation Level",
         required=True,
-    )
     urgency = fields.Selection(
         [
             ("low", "Low"),
@@ -111,7 +99,6 @@ class PortalFeedbackEscalation(models.Model):
         ],
         string="Urgency",
         default="medium",
-    )
     deadline = fields.Datetime(string="Response Deadline")
     status = fields.Selection(
         [
@@ -134,7 +121,6 @@ class PortalFeedbackAction(models.Model):
 
     feedback_id = fields.Many2one(
         "portal.feedback", string="Feedback", required=True, ondelete="cascade"
-    )
     name = fields.Char(string="Action Name", required=True)
     description = fields.Text(string="Action Description")
     action_type = fields.Selection(
@@ -148,14 +134,12 @@ class PortalFeedbackAction(models.Model):
         ],
         string="Action Type",
         required=True,
-    )
     assigned_to = fields.Many2one("res.users", string="Assigned To", required=True)
     due_date = fields.Date(string="Due Date", required=True)
     priority = fields.Selection(
         [("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")],
         string="Priority",
         default="medium",
-    )
     status = fields.Selection(
         [
             ("not_started", "Not Started"),
@@ -165,7 +149,6 @@ class PortalFeedbackAction(models.Model):
         ],
         string="Status",
         default="not_started",
-    )
     completion_date = fields.Date(string="Completion Date")
     completion_notes = fields.Text(string="Completion Notes")
     estimated_hours = fields.Float(string="Estimated Hours", digits=(8, 2))
@@ -181,10 +164,8 @@ class PortalFeedbackCommunication(models.Model):
 
     feedback_id = fields.Many2one(
         "portal.feedback", string="Feedback", required=True, ondelete="cascade"
-    )
     communication_date = fields.Datetime(
         string="Communication Date", required=True, default=fields.Datetime.now
-    )
     communication_type = fields.Selection(
         [
             ("email", "Email"),
@@ -196,7 +177,6 @@ class PortalFeedbackCommunication(models.Model):
         ],
         string="Communication Type",
         required=True,
-    )
     direction = fields.Selection(
         [
             ("inbound", "Inbound (from Customer)"),
@@ -204,7 +184,6 @@ class PortalFeedbackCommunication(models.Model):
         ],
         string="Direction",
         required=True,
-    )
     subject = fields.Char(string="Subject")
     message = fields.Text(string="Message Content", required=True)
     sender = fields.Many2one("res.users", string="Sender")
@@ -226,38 +205,28 @@ class PortalFeedbackAnalytics(models.Model):
     period_end = fields.Date(string="Period End", required=True)
     total_feedback_count = fields.Integer(
         string="Total Feedback", compute="_compute_analytics"
-    )
     positive_feedback_count = fields.Integer(
         string="Positive Feedback", compute="_compute_analytics"
-    )
     negative_feedback_count = fields.Integer(
         string="Negative Feedback", compute="_compute_analytics"
-    )
     average_rating = fields.Float(
         string="Average Rating", digits=(3, 2), compute="_compute_analytics"
-    )
     average_response_time = fields.Float(
         string="Avg Response Time (Hours)", digits=(8, 2), compute="_compute_analytics"
-    )
     average_resolution_time = fields.Float(
         string="Avg Resolution Time (Hours)",
         digits=(8, 2),
         compute="_compute_analytics",
-    )
     sla_compliance_rate = fields.Float(
         string="SLA Compliance Rate (%)", digits=(5, 2), compute="_compute_analytics"
-    )
     nps_score = fields.Float(
         string="Net Promoter Score", digits=(5, 2), compute="_compute_analytics"
-    )
     customer_satisfaction_index = fields.Float(
         string="Customer Satisfaction Index",
         digits=(5, 2),
         compute="_compute_analytics",
-    )
     escalation_rate = fields.Float(
         string="Escalation Rate (%)", digits=(5, 2), compute="_compute_analytics"
-    )
     repeat_feedback_rate = fields.Float(
         string="Repeat Feedback Rate (%)", digits=(5, 2), compute="_compute_analytics"
     )
@@ -386,4 +355,4 @@ class PortalFeedbackAnalytics(models.Model):
                 record.nps_score = 0.0
                 record.customer_satisfaction_index = 0.0
                 record.escalation_rate = 0.0
-                record.repeat_feedback_rate = 0.0
+                record.repeat_feedback_rate = 0.0)

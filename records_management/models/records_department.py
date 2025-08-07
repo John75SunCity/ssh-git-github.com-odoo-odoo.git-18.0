@@ -85,16 +85,15 @@ class RecordsDepartment(models.Model):
     # ==========================================
     # CORE FIELDS
     # ==========================================
-    name = fields.Char(string="Department Name", required=True, tracking=True)
-    code = fields.Char(string="Department Code", required=True, tracking=True)
-    description = fields.Text(string="Department Description", tracking=True)
-    active = fields.Boolean(default=True, tracking=True)
+    name = fields.Char(string="Department Name", required=True, tracking=True),
+    code = fields.Char(string="Department Code", required=True, tracking=True),
+    description = fields.Text(string="Department Description", tracking=True),
+    active = fields.Boolean(default=True, tracking=True),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Created By",
@@ -118,7 +117,6 @@ class RecordsDepartment(models.Model):
     # ==========================================
     department_manager_id = fields.Many2one(
         "res.users", string="Department Manager", tracking=True
-    )
     records_coordinator_id = fields.Many2one(
         "res.users", string="Records Coordinator", tracking=True
     )
@@ -161,4 +159,4 @@ class RecordsDepartment(models.Model):
 
     def action_deactivate(self):
         """Deactivate the department"""
-        self.write({"state": "inactive"})
+        self.write({"state": "inactive"}))

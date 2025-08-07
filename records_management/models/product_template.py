@@ -15,10 +15,8 @@ class ProductTemplate(models.Model):
     # ============================================================================
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
 
     is_template_service = fields.Boolean(string="Template Service", default=False)
@@ -79,13 +77,10 @@ class ProductTemplate(models.Model):
 
     security_clearance_required = fields.Boolean(
         string="Security Clearance Required", default=False
-    )
     background_check_required = fields.Boolean(
         string="Background Check Required", default=False
-    )
     certificate_of_destruction = fields.Boolean(
         string="Certificate of Destruction", default=False
-    )
     audit_trail_provided = fields.Boolean(string="Audit Trail Provided", default=True)
 
     # ============================================================================
@@ -106,7 +101,6 @@ class ProductTemplate(models.Model):
     # ============================================================================
     list_price = fields.Monetary(
         string="Sales Price", default=0.0, currency_field="currency_id"
-    )
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
@@ -154,14 +148,12 @@ class ProductTemplate(models.Model):
     sla_response_time = fields.Float(string="SLA Response Time (hours)", default=24.0)
     sla_completion_time = fields.Float(
         string="SLA Completion Time (hours)", default=72.0
-    )
     quality_metrics = fields.Text(string="Quality Metrics")
     performance_benchmarks = fields.Text(string="Performance Benchmarks")
 
     # Customer satisfaction tracking
     customer_rating = fields.Float(
         string="Customer Rating", compute="_compute_customer_rating"
-    )
     total_reviews = fields.Integer(
         string="Total Reviews", compute="_compute_total_reviews"
     )
@@ -204,7 +196,6 @@ class ProductTemplate(models.Model):
         "availability_friday",
         "availability_saturday",
         "availability_sunday",
-    )
     def _compute_weekly_availability(self):
         for record in self:
             days = [
@@ -317,4 +308,4 @@ class ProductTemplate(models.Model):
                     _("Bulk discount rate must be between 0 and 100.")
                 )
             if record.rush_order_surcharge and record.rush_order_surcharge < 0:
-                raise ValidationError(_("Rush order surcharge cannot be negative."))
+                raise ValidationError(_("Rush order surcharge cannot be negative.")))

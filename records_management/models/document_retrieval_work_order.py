@@ -13,13 +13,12 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Work Order #", required=True, tracking=True, index=True)
-    reference = fields.Char(string="Reference", index=True, tracking=True)
-    description = fields.Text(string="Description")
-    active = fields.Boolean(string="Active", default=True)
+    name = fields.Char(string="Work Order #", required=True, tracking=True, index=True),
+    reference = fields.Char(string="Reference", index=True, tracking=True),
+    description = fields.Text(string="Description"),
+    active = fields.Boolean(string="Active", default=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Assigned Technician",
@@ -45,10 +44,8 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    )
     customer_name = fields.Char(
         string="Customer Name", related="partner_id.name", store=True
-    )
     contact_person = fields.Many2one("res.partner", string="Contact Person")
     customer_phone = fields.Char(string="Phone", related="partner_id.phone", store=True)
     customer_email = fields.Char(string="Email", related="partner_id.email", store=True)
@@ -89,7 +86,6 @@ class DocumentRetrievalWorkOrder(models.Model):
     box_id = fields.Many2one("records.container", string="Storage Box", tracking=True)
     location_id = fields.Many2one(
         "records.location", string="Storage Location", tracking=True
-    )
     current_location = fields.Char(string="Current Location")
     retrieval_location = fields.Char(string="Retrieval Location")
 
@@ -112,7 +108,6 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     requested_date = fields.Datetime(
         string="Requested Date", required=True, tracking=True
-    )
     scheduled_date = fields.Datetime(string="Scheduled Date", tracking=True)
     start_date = fields.Datetime(string="Start Date", tracking=True)
     completion_date = fields.Datetime(string="Completion Date", tracking=True)
@@ -138,14 +133,11 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     currency_id = fields.Many2one(
         "res.currency", default=lambda self: self.env.company.currency_id
-    )
     estimated_cost = fields.Monetary(
         string="Estimated Cost", currency_field="currency_id"
-    )
     actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id")
     billable_amount = fields.Monetary(
         string="Billable Amount", currency_field="currency_id"
-    )
     is_billable = fields.Boolean(string="Billable", default=True)
     invoiced = fields.Boolean(string="Invoiced", default=False)
     invoice_id = fields.Many2one("account.move", string="Invoice")
@@ -182,7 +174,6 @@ class DocumentRetrievalWorkOrder(models.Model):
 
     customer_approval_required = fields.Boolean(
         string="Customer Approval Required", default=False
-    )
     customer_approved = fields.Boolean(string="Customer Approved", default=False)
     approval_notes = fields.Text(string="Approval Notes")
 
@@ -207,7 +198,6 @@ class DocumentRetrievalWorkOrder(models.Model):
     portal_request_id = fields.Many2one("portal.request", string="Portal Request")
     retrieval_items_ids = fields.One2many(
         "document.retrieval.item", "work_order_id", string="Retrieval Items"
-    )
     project_task_id = fields.Many2one("project.task", string="Related Project Task")
     task_id = fields.Many2one("project.task", string="Related Task")
     custody_log_ids = fields.One2many(
@@ -215,9 +205,8 @@ class DocumentRetrievalWorkOrder(models.Model):
     )
 
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
-    )        compute="_compute_processing_metrics",
+    compute="_compute_processing_metrics",
         store=True,
-    )
     is_overdue = fields.Boolean(
         string="Overdue", compute="_compute_overdue_status", store=True
     )
@@ -486,7 +475,7 @@ class DocumentRetrievalWorkOrder(models.Model):
             if not vals.get("name"):
                 vals["name"] = self.env["ir.sequence"].next_by_code(
                     "document.retrieval.work.order"
-                ) or _("New")
+    or _("New")
             if not vals.get("deadline") and vals.get("requested_date"):
                 requested = fields.Datetime.from_string(vals["requested_date"])
                 vals["deadline"] = requested + timedelta(days=7)
@@ -509,4 +498,4 @@ class DocumentRetrievalWorkOrder(models.Model):
     # ============================================================================
     has_custom_rates = fields.Boolean(string='Has Custom Rates', default=False)
     request_date = fields.Date(string='Request Date', tracking=True)
-    technician_id = fields.Many2one('technician', string='Technician', tracking=True)
+    technician_id = fields.Many2one('technician', string='Technician', tracking=True))

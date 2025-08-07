@@ -133,17 +133,16 @@ class PortalRequest(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Request #", required=True, tracking=True, index=True)
-    reference = fields.Char(string="Reference", index=True, tracking=True)
-    description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10)
-    active = fields.Boolean(string="Active", default=True)
+    name = fields.Char(string="Request #", required=True, tracking=True, index=True),
+    reference = fields.Char(string="Reference", index=True, tracking=True),
+    description = fields.Text(string="Description"),
+    sequence = fields.Integer(string="Sequence", default=10),
+    active = fields.Boolean(string="Active", default=True),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
@@ -209,7 +208,6 @@ class PortalRequest(models.Model):
     # ============================================================================
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True, index=True
-    )
     contact_person = fields.Char(string="Contact Person", tracking=True)
     contact_email = fields.Char(string="Contact Email", tracking=True)
     contact_phone = fields.Char(string="Contact Phone", tracking=True)
@@ -232,13 +230,10 @@ class PortalRequest(models.Model):
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
-    )
     estimated_cost = fields.Monetary(
         string="Estimated Cost", currency_field="currency_id", tracking=True
-    )
     actual_cost = fields.Monetary(
         string="Actual Cost", currency_field="currency_id", tracking=True
-    )
     billing_status = fields.Selection(
         [
             ("not_billable", "Not Billable"),
@@ -284,7 +279,6 @@ class PortalRequest(models.Model):
     # ============================================================================
     requires_naid_compliance = fields.Boolean(
         string="NAID Compliance Required", default=False
-    )
     compliance_notes = fields.Text(string="Compliance Notes")
     audit_trail = fields.Text(string="Audit Trail")
     certificate_of_destruction = fields.Binary(string="Certificate of Destruction")
@@ -299,10 +293,8 @@ class PortalRequest(models.Model):
     # Service connections
     shredding_service_id = fields.Many2one(
         "shredding.service", string="Related Shredding Service"
-    )
     pickup_request_id = fields.Many2one(
         "pickup.request", string="Related Pickup Request"
-    )
     work_order_id = fields.Many2one(
         "document.retrieval.work.order", string="Related Work Order"
     )
@@ -331,13 +323,10 @@ class PortalRequest(models.Model):
         string="Child Requests Count",
         compute="_compute_child_request_count",
         store=False,
-    )
     attachment_count = fields.Integer(
         string="Attachment Count", compute="_compute_attachment_count", store=False
-    )
     is_overdue = fields.Boolean(
         string="Is Overdue", compute="_compute_is_overdue", store=False
-    )
     time_variance = fields.Float(
         string="Time Variance (%)", compute="_compute_time_variance", store=False
     )
@@ -803,4 +792,4 @@ class PortalRequest(models.Model):
                     raise_if_not_found=False,
                 )
                 if template:
-                    template.send_mail(request.id, force_send=True)
+                    template.send_mail(request.id, force_send=True))

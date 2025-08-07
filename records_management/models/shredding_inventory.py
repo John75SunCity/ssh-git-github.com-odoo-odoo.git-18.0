@@ -16,9 +16,9 @@ class ShreddingInventoryBatch(models.Model):
     _order = "name"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
+    name = fields.Char(string="Name", required=True, tracking=True),
+    company_id = fields.Many2one("res.company", default=lambda self: self.env.company),
+    user_id = fields.Many2one("res.users", default=lambda self: self.env.user),
     active = fields.Boolean(default=True)
 
     # Basic state management
@@ -30,8 +30,8 @@ class ShreddingInventoryBatch(models.Model):
     )
 
     # Common fields
-    description = fields.Text()
-    notes = fields.Text()
+    description = fields.Text(),
+    notes = fields.Text(),
     date = fields.Date(default=fields.Date.today)
 
     def action_confirm(self):
@@ -54,10 +54,9 @@ class ShreddingPicklistItem(models.Model):
     _rec_name = "display_name"
 
     # Core fields
-    name = fields.Char(string="Item Name", required=True, tracking=True)
+    name = fields.Char(string="Item Name", required=True, tracking=True),
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
-    )
     sequence = fields.Integer(string="Sequence", default=10)
 
     # Workflow relationships
@@ -119,4 +118,4 @@ class ShreddingPicklistItem(models.Model):
 
     def action_done(self):
         """Mark as done"""
-        self.write({"status": "picked"})
+        self.write({"status": "picked"}))

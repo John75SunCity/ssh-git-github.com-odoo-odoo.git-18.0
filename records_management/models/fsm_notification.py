@@ -15,10 +15,9 @@ class FsmNotificationPlaceholder(models.TransientModel):
     _description = "Placeholder for FSM Notification Manager"
 
     # Simple placeholder field to make this a valid model
-    name = fields.Char("Placeholder Name", default="FSM Notification Placeholder")
+    name = fields.Char("Placeholder Name", default="FSM Notification Placeholder"),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     active = fields.Boolean(string="Active", default=True)
 
@@ -31,4 +30,4 @@ class FsmNotificationPlaceholder(models.TransientModel):
 
 
 # TODO: When industry_fsm is available, restore the original FSM notification code
-# The code includes send_day_of_service_notification and send_driver_nearby_notification methods
+# The code includes send_day_of_service_notification and send_driver_nearby_notification methods)

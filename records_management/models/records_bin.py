@@ -11,13 +11,11 @@ class RecordsBin(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Bin Number", required=True, tracking=True, index=True)
+    name = fields.Char(string="Bin Number", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -50,7 +48,6 @@ class RecordsBin(models.Model):
 
     capacity = fields.Float(
         string="Capacity (Cubic Feet)", digits="Stock Weight", default=0.0
-    )
     current_usage = fields.Float(
         string="Current Usage (%)", digits="Stock Weight", default=0.0
     )
@@ -75,8 +72,7 @@ class RecordsBin(models.Model):
     # ============================================================================
     unlock_service_ids = fields.One2many(
         "bin.unlock.service", "bin_id", string="Unlock Services"
-    )
     partner_id = fields.Many2one("res.partner", string="Customer")
 
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
-    )
+    ))

@@ -14,7 +14,6 @@ class TransitoryFieldConfig(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Configuration Name", required=True, tracking=True, index=True
-    )
     code = fields.Char(string="Configuration Code", index=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
@@ -24,7 +23,6 @@ class TransitoryFieldConfig(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
     user_id = fields.Many2one(
         "res.users",
         string="Configuration Manager",
@@ -146,7 +144,6 @@ class TransitoryFieldConfig(models.Model):
     version = fields.Char(string="Version", default="1.0")
     previous_version_id = fields.Many2one(
         "transitory.field.config", string="Previous Version"
-    )
     deployment_date = fields.Datetime(string="Deployment Date")
     rollback_date = fields.Datetime(string="Rollback Date")
 
@@ -172,7 +169,6 @@ class TransitoryFieldConfig(models.Model):
 
     child_config_ids = fields.One2many(
         "transitory.field.config", "parent_config_id", string="Child Configurations"
-    )
     parent_config_id = fields.Many2one(
         "transitory.field.config", string="Parent Configuration"
     )
@@ -187,10 +183,8 @@ class TransitoryFieldConfig(models.Model):
 
     config_dependency_count = fields.Integer(
         compute="_compute_config_dependency_count", string="Configuration Dependencies"
-    )
     config_child_count = fields.Integer(
         compute="_compute_config_child_count", string="Child Count"
-    )
     is_deployed = fields.Boolean(compute="_compute_is_deployed", string="Is Deployed")
 
     # ============================================================================
@@ -341,4 +335,4 @@ class TransitoryFieldConfig(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        }
+        })

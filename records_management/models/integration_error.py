@@ -11,13 +11,11 @@ class IntegrationError(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Error Message", required=True, tracking=True, index=True)
+    name = fields.Char(string="Error Message", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -25,7 +23,6 @@ class IntegrationError(models.Model):
     # ============================================================================
     timestamp = fields.Datetime(
         string="Timestamp", default=fields.Datetime.now, required=True, index=True
-    )
     error_type = fields.Selection(
         [
             ("api", "API Error"),
@@ -40,7 +37,6 @@ class IntegrationError(models.Model):
         default="other",
         required=True,
         tracking=True,
-    )
     error_code = fields.Char(string="Error Code", tracking=True)
     error_details = fields.Text(string="Error Details", tracking=True)
     stack_trace = fields.Text(string="Stack Trace")
@@ -119,4 +115,4 @@ class IntegrationError(models.Model):
             "timestamp": fields.Datetime.now(),
         }
         vals.update(kwargs)
-        return self.create(vals)
+        return self.create(vals))

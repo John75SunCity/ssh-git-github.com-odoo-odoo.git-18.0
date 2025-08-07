@@ -12,13 +12,11 @@ class RecordsBillingContact(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Contact Name", required=True, tracking=True, index=True)
+    name = fields.Char(string="Contact Name", required=True, tracking=True, index=True),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
     active = fields.Boolean(string="Active", default=True)
     sequence = fields.Integer(string="Sequence", default=10)
 
@@ -164,4 +162,4 @@ class RecordsBillingContact(models.Model):
                 "message": _("Test email would be sent to %s") % self.email,
                 "type": "info",
             },
-        }
+        })
