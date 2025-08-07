@@ -3,6 +3,7 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
+
 class CustomerNegotiatedRates(models.Model):
     _name = "customer.negotiated.rates"
     _description = "Customer Negotiated Rates"
@@ -11,11 +12,13 @@ class CustomerNegotiatedRates(models.Model):
     _rec_name = "display_name"
 
     # Core fields
-    name = fields.Char(string="Agreement Name", required=True, tracking=True),
+    name = fields.Char(string="Agreement Name", required=True, tracking=True)
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
+    )
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user
+    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -34,6 +37,7 @@ class CustomerNegotiatedRates(models.Model):
     # Customer Information
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
+    )
     contract_reference = fields.Char(string="Contract Reference", tracking=True)
 
     # Base Rate Reference
@@ -48,7 +52,9 @@ class CustomerNegotiatedRates(models.Model):
     # Date Management
     effective_date = fields.Date(string="Effective Date", required=True, tracking=True)
     expiry_date = fields.Date(string="Expiry Date", tracking=True)
-    negotiation_date = fields.Date(string="Negotiation Date", default=fields.Date.today)
+    negotiation_date = fields.Date(
+        string="Negotiation Date", default=lambda self: fields.Date.today()
+    )
     approval_date = fields.Date(string="Approval Date", tracking=True)
 
     # Negotiated Service Rates (override base rates)
@@ -57,6 +63,7 @@ class CustomerNegotiatedRates(models.Model):
         digits=(12, 2),
         tracking=True,
         help="Customer-specific rate per bin for external shredding services",
+    )
     external_service_call_rate = fields.Float(
         string="Negotiated External Service Call Rate",
         digits=(12, 2),
@@ -69,16 +76,19 @@ class CustomerNegotiatedRates(models.Model):
         digits=(12, 2),
         tracking=True,
         help="Customer-specific rate for permanent removal of managed records",
+    )
     managed_retrieval_rate = fields.Float(
         string="Negotiated Managed Retrieval Rate",
         digits=(12, 2),
         tracking=True,
         help="Customer-specific rate for retrieving managed documents",
+    )
     managed_service_call_rate = fields.Float(
         string="Negotiated Managed Service Call Rate",
         digits=(12, 2),
         tracking=True,
         help="Customer-specific service call fee for managed services",
+    )
     managed_shredding_rate = fields.Float(
         string="Negotiated Managed Shredding Rate",
         digits=(12, 2),
@@ -91,6 +101,7 @@ class CustomerNegotiatedRates(models.Model):
         digits=(12, 2),
         tracking=True,
         help="Customer-specific rate for document pickup services",
+    )
     storage_rate_monthly = fields.Float(
         string="Negotiated Monthly Storage Rate",
         digits=(12, 2),
@@ -104,10 +115,12 @@ class CustomerNegotiatedRates(models.Model):
         digits=(5, 2),
         tracking=True,
         help="Overall discount percentage applied to all services",
+    )
     volume_discount_threshold = fields.Integer(
         string="Volume Discount Threshold",
         tracking=True,
         help="Minimum volume required for volume discounts",
+    )
     volume_discount_percent = fields.Float(
         string="Volume Discount %",
         digits=(5, 2),
@@ -118,10 +131,13 @@ class CustomerNegotiatedRates(models.Model):
     # Override Controls (which rates are customer-specific)
     override_external_rates = fields.Boolean(
         string="Override External Rates", default=False
+    )
     override_managed_rates = fields.Boolean(
         string="Override Managed Rates", default=False
+    )
     override_pickup_rates = fields.Boolean(
         string="Override Pickup Rates", default=False
+    )
     override_storage_rates = fields.Boolean(
         string="Override Storage Rates", default=False
     )
@@ -133,19 +149,45 @@ class CustomerNegotiatedRates(models.Model):
     terms_conditions = fields.Text(string="Special Terms & Conditions")
 
     # Computed fields
+    # The display_name field depends on partner_id, name, and effective_date.
+    # If any of these fields change, the computation is triggered.
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
+    )
     is_expired = fields.Boolean(
         string="Is Expired", compute="_compute_is_expired", store=True
+    )
     days_until_expiry = fields.Integer(
-        string="Days Until Expiry", compute="_compute_days_until_expiry"
+        string="Days Until Expiry", compute="_compute_days_until_expiry", store=True
+    )
     total_discount_percent = fields.Float(
         string="Total Discount %", compute="_compute_total_discount", store=True
     )
 
+    rate_type = fields.Selection(
+        [
+            ("storage", "Storage Rate"),
+            ("retrieval", "Retrieval Rate"),
+            ("delivery", "Delivery Rate"),
+            ("destruction", "Destruction Rate"),
+            ("container_access", "Container Access Rate"),  # NEW
+            ("not_found_search", "Not Found Search Rate"),  # NEW
+            ("scanning", "Scanning Rate"),
+            ("indexing", "Indexing Rate"),
+            ("setup", "Setup Fee"),
+            ("discount", "Volume Discount"),
+            ("other", "Other Rate"),
+        ],
+        string="Rate Type",
+        required=True,
+    )
+
     @api.depends("partner_id", "name", "effective_date")
     def _compute_display_name(self):
-        """Generate display name"""
+        """
+        Compute display_name based on partner_id, name, and effective_date.
+        This ensures that any change to these fields triggers a recomputation.
+        """
         for record in self:
             if record.partner_id and record.name:
                 record.display_name = f"{record.partner_id.name} - {record.name}"
@@ -164,9 +206,12 @@ class CustomerNegotiatedRates(models.Model):
     @api.depends("expiry_date")
     def _compute_days_until_expiry(self):
         """Calculate days until expiry"""
+        today = fields.Date.today()
         for record in self:
             if record.expiry_date:
-                delta = record.expiry_date - today
+                expiry_date_obj = fields.Date.from_string(record.expiry_date)
+                today_obj = fields.Date.from_string(today)
+                delta = expiry_date_obj - today_obj
                 record.days_until_expiry = delta.days
             else:
                 record.days_until_expiry = 0
@@ -307,12 +352,22 @@ class CustomerNegotiatedRates(models.Model):
             if negotiated_rate > 0:
                 # Apply global discount
                 if self.global_discount_percent > 0:
+                    if self.global_discount_percent >= 100:
+                        raise ValidationError(
+                            _(
+                                "Global discount percent cannot be 100 or more, as it would result in zero or negative rates."
+                            )
+                        )
                     negotiated_rate *= 1 - self.global_discount_percent / 100
                 return negotiated_rate
 
         # Fallback to base rate
-        if fallback_base_rate or self.base_rate_id:
-            base_rate = fallback_base_rate or self.base_rate_id
+        base_rate = fallback_base_rate or self.base_rate_id
+        if (
+            base_rate
+            and hasattr(base_rate, "get_rate")
+            and callable(getattr(base_rate, "get_rate", None))
+        ):
             return base_rate.get_rate(rate_type)
 
-        return 0.0)
+        return 0.0

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+
 
 class RecordsTag(models.Model):
     _name = "records.tag"
@@ -10,9 +10,9 @@ class RecordsTag(models.Model):
     _rec_name = "name"
 
     # Basic Information
-    name = fields.Char(string="Name", required=True, tracking=True, index=True),
-    description = fields.Text(string="Description"),
-    sequence = fields.Integer(string="Sequence", default=10),
+    name = fields.Char(string="Name", required=True, tracking=True, index=True)
+    description = fields.Text(string="Description")
+    sequence = fields.Integer(string="Sequence", default=10)
     color = fields.Integer(string="Color", help="Color index for tag display")
 
     # State Management
@@ -31,6 +31,7 @@ class RecordsTag(models.Model):
     # Company and User
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
+    )
     user_id = fields.Many2one(
         "res.users", string="Responsible User", default=lambda self: self.env.user
     )
@@ -43,23 +44,35 @@ class RecordsTag(models.Model):
     active = fields.Boolean(string="Active", default=True)
     notes = fields.Text(string="Internal Notes")
 
+    # Category and Priority
+    category = fields.Selection(
+        [
+            ("general", "General"),
+            ("legal", "Legal"),
+            ("financial", "Financial"),
+            ("hr", "HR"),
+        ],
+        string="Category",
+    )
+    priority = fields.Selection(
+        [("low", "Low"), ("normal", "Normal"), ("high", "High")],
+        string="Priority",
+        default="normal",
+    )
+    auto_assign = fields.Boolean("Auto Assign", default=False)
+    icon = fields.Char("Icon")
+
     # Computed Fields
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
-    # === BUSINESS CRITICAL FIELDS ===
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
-    description = fields.Text('Description')
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
-    category = fields.Selection([('general', 'General'), ('legal', 'Legal'), ('financial', 'Financial'), ('hr', 'HR')], string='Category')
-    priority = fields.Selection([('low', 'Low'), ('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
-    auto_assign = fields.Boolean('Auto Assign', default=False)
-    icon = fields.Char('Icon')
+    )
+
+    # Mail Thread Framework Fields (inherited from mail.thread)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     @api.depends("name")
     def _compute_display_name(self):
@@ -95,4 +108,4 @@ class RecordsTag(models.Model):
             if not vals.get("name"):
                 vals["name"] = _("New Record")
 
-        return super().create(vals_list))
+        return super().create(vals_list)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields
+
 
 class NaidDestructionRecord(models.Model):
     _name = "naid.destruction.record"
@@ -35,9 +36,10 @@ class NaidDestructionRecord(models.Model):
         ],
         string="Destruction Method",
         required=True,
+    )
     responsible_user_id = fields.Many2one("res.users", string="Destruction Manager")
     notes = fields.Text(string="Notes")
     state = fields.Selection(
         [("draft", "Draft"), ("completed", "Completed"), ("certified", "Certified")],
         default="draft",
-    ))
+    )

@@ -11,7 +11,8 @@ License: LGPL-3
 """
 
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
+
 
 class AdvancedBilling(models.Model):
     _name = "advanced.billing"
@@ -23,11 +24,13 @@ class AdvancedBilling(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Name", required=True, tracking=True),
+    name = fields.Char(string="Name", required=True, tracking=True)
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
+    )
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user
+    )
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -36,6 +39,7 @@ class AdvancedBilling(models.Model):
     partner_id = fields.Many2one("res.partner", string="Customer", required=True)
     billing_period_id = fields.Many2one(
         "records.advanced.billing.period", string="Billing Period"
+    )
     currency_id = fields.Many2one("res.currency", string="Currency")
     invoice_id = fields.Many2one("account.move", string="Invoice")
     payment_terms = fields.Selection(
@@ -75,7 +79,9 @@ class AdvancedBilling(models.Model):
     )
 
     # Mail framework fields
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")        "mail.followers", "res_id", string="Followers"
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
     )
 
     # ============================================================================
@@ -109,6 +115,7 @@ class AdvancedBilling(models.Model):
         self.ensure_one()
         self.write({"state": "cancelled"})
 
+
 class AdvancedBillingLine(models.Model):
     _name = "advanced.billing.line"
     _description = "Advanced Billing Line"
@@ -120,11 +127,14 @@ class AdvancedBillingLine(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Line Description", compute="_compute_name", store=True, index=True
+    )
     sequence = fields.Integer(string="Sequence", default=10)
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
+    )
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -132,16 +142,21 @@ class AdvancedBillingLine(models.Model):
     # ============================================================================
     billing_id = fields.Many2one(
         "advanced.billing", string="Billing", required=True, ondelete="cascade"
+    )
     product_id = fields.Many2one("product.product", string="Product")
     quantity = fields.Float(string="Quantity", default=1.0)
     price_unit = fields.Float(string="Unit Price")
     price_total = fields.Float(
         string="Total", compute="_compute_price_total", store=True
+    )
+
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
     # Mail framework fields
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")        "mail.followers", "res_id", string="Followers"
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
     )
 
     # ============================================================================
@@ -160,6 +175,7 @@ class AdvancedBillingLine(models.Model):
         for line in self:
             line.price_total = line.quantity * line.price_unit
 
+
 class RecordsAdvancedBillingPeriod(models.Model):
     _name = "records.advanced.billing.period"
     _description = "Advanced Billing Period"
@@ -171,10 +187,13 @@ class RecordsAdvancedBillingPeriod(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Period Name", compute="_compute_name", store=True, index=True
+    )
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
+    )
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -200,7 +219,10 @@ class RecordsAdvancedBillingPeriod(models.Model):
         "advanced.billing", "billing_period_id", string="Billings"
     )
 
-    # Mail framework fields    )        "mail.followers", "res_id", string="Followers"
+    # Mail framework fields
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
     )
 
     # ============================================================================
@@ -257,4 +279,4 @@ class RecordsAdvancedBillingPeriod(models.Model):
     def action_close_period(self):
         """Close billing period"""
         self.ensure_one()
-        self.write({"state": "closed"}))
+        self.write({"state": "closed"})

@@ -4,7 +4,8 @@ Approval History
 """
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
+
 
 class ApprovalHistory(models.Model):
     """
@@ -17,9 +18,9 @@ class ApprovalHistory(models.Model):
     _order = "approval_date desc"
 
     # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True),
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.company),
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user),
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
+    user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
 
     # Relationship field
@@ -37,6 +38,7 @@ class ApprovalHistory(models.Model):
         default=fields.Datetime.now,
         required=True,
         tracking=True,
+    )
     approval_type = fields.Selection(
         [
             ("budget", "Budget Approval"),
@@ -49,6 +51,7 @@ class ApprovalHistory(models.Model):
         required=True,
         default="expense",
         tracking=True,
+    )
     approval_status = fields.Selection(
         [
             ("pending", "Pending"),
@@ -60,14 +63,17 @@ class ApprovalHistory(models.Model):
         required=True,
         default="pending",
         tracking=True,
+    )
     approved_by = fields.Many2one(
         "res.users",
         string="Approved By",
         tracking=True,
+    )
     approval_amount = fields.Monetary(
         string="Approval Amount",
         currency_field="currency_id",
         tracking=True,
+    )
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
@@ -80,11 +86,13 @@ class ApprovalHistory(models.Model):
         compute="_compute_response_time",
         store=True,
         help="Time taken to respond to the approval request",
+    )
     request_date = fields.Datetime(
         string="Request Date",
         required=True,
         default=fields.Datetime.now,
         tracking=True,
+    )
     completed_date = fields.Datetime(
         string="Completed Date",
         tracking=True,
@@ -105,6 +113,13 @@ class ApprovalHistory(models.Model):
         default="normal",
         tracking=True,
     )
+
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     @api.depends("request_date", "completed_date")
     def _compute_response_time(self):
@@ -182,4 +197,4 @@ class ApprovalHistory(models.Model):
         self.message_post(
             body=_("Approval request cancelled"),
             message_type="notification",
-        ))
+        )

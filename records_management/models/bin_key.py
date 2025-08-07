@@ -58,7 +58,8 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api
+from odoo import models, fields
+
 
 class BinKey(models.Model):
     _name = "bin.key"
@@ -69,11 +70,13 @@ class BinKey(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Key Number", required=True, tracking=True, index=True),
+    name = fields.Char(string="Key Number", required=True, tracking=True, index=True)
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
+    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -91,7 +94,10 @@ class BinKey(models.Model):
     # KEY SPECIFICATIONS
     # ============================================================================
     key_code = fields.Char(string="Key Code", index=True, tracking=True)
-    description = fields.Text(string="Description")
+    description = fields.Text(
+        string="Description",
+        help="Provide detailed information about the key, such as physical characteristics, security features, or any special handling instructions.",
+    )
     key_type = fields.Selection(
         [
             ("physical", "Physical Key"),
@@ -117,13 +123,17 @@ class BinKey(models.Model):
         default="basic",
     )
 
-    valid_from = fields.Date(string="Valid From", default=fields.Date.today)
+    valid_from = fields.Date(
+        string="Valid From", default=lambda self: fields.Date.today()
+    )
     valid_to = fields.Date(string="Valid To")
 
     # ============================================================================
     # OWNERSHIP & ASSIGNMENT
     # ============================================================================
+    # 'assigned_to' refers to the partner (department, company, or external entity) responsible for the key.
     assigned_to = fields.Many2one("res.partner", string="Assigned To")
+    # 'current_holder' refers to the internal user (employee) who currently possesses the key.
     current_holder = fields.Many2one("res.users", string="Current Holder")
 
     # ============================================================================
@@ -131,7 +141,12 @@ class BinKey(models.Model):
     # ============================================================================
     unlock_service_ids = fields.One2many(
         "bin.unlock.service", "key_id", string="Unlock Services"
+    )
     bin_ids = fields.Many2many("records.bin", string="Accessible Bins")
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
-    self.write({"state": "retired", "active": False}))
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")

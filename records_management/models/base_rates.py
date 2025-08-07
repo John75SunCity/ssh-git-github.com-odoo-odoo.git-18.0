@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
+
 
 class BaseRates(models.Model):
     _name = "base.rates"
@@ -11,11 +12,13 @@ class BaseRates(models.Model):
     _rec_name = "name"
 
     # Core fields
-    name = fields.Char(string="Rate Set Name", required=True, tracking=True),
+    name = fields.Char(string="Rate Set Name", required=True, tracking=True)
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
+    )
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user
+    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -32,7 +35,9 @@ class BaseRates(models.Model):
     # Standard message/activity fields
     message_ids = fields.One2many(
         "mail.message", "res_id", string="Messages", auto_join=True
-    )        "mail.followers", "res_id", string="Followers", auto_join=True
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers", auto_join=True
     )
 
     # Date Management
@@ -49,6 +54,7 @@ class BaseRates(models.Model):
         digits=(12, 2),
         tracking=True,
         help="Rate charged per bin for external shredding services",
+    )
     external_service_call_rate = fields.Float(
         string="External Service Call Rate",
         digits=(12, 2),
@@ -62,16 +68,19 @@ class BaseRates(models.Model):
         digits=(12, 2),
         tracking=True,
         help="Rate for permanent removal of managed records",
+    )
     managed_retrieval_rate = fields.Float(
         string="Managed Retrieval Rate",
         digits=(12, 2),
         tracking=True,
         help="Rate for retrieving managed documents",
+    )
     managed_service_call_rate = fields.Float(
         string="Managed Service Call Rate",
         digits=(12, 2),
         tracking=True,
         help="Service call fee for managed services",
+    )
     managed_shredding_rate = fields.Float(
         string="Managed Shredding Rate",
         digits=(12, 2),
@@ -85,11 +94,13 @@ class BaseRates(models.Model):
         digits=(12, 2),
         tracking=True,
         help="Rate for document pickup services",
+    )
     storage_rate_monthly = fields.Float(
         string="Monthly Storage Rate",
         digits=(12, 2),
         tracking=True,
         help="Monthly rate for document storage",
+    )
     rush_service_multiplier = fields.Float(
         string="Rush Service Multiplier",
         default=1.5,
@@ -104,8 +115,50 @@ class BaseRates(models.Model):
     # Computed fields
     is_expired = fields.Boolean(
         string="Is Expired", compute="_compute_is_expired", store=True
+    )
     days_until_expiry = fields.Integer(
         string="Days Until Expiry", compute="_compute_days_until_expiry"
+    )
+
+    # Base Rates Management Fields
+    sequence = fields.Integer(string="Sequence", default=10)
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    updated_date = fields.Datetime(string="Updated Date")
+    base_rate = fields.Monetary("Base Rate", currency_field="currency_id")
+    customer_count = fields.Integer("Customer Count", default=0)
+    expiration_date = fields.Date("Expiration Date")
+    minimum_charge = fields.Monetary("Minimum Charge", currency_field="currency_id")
+    negotiated_rate_count = fields.Integer("Negotiated Rate Count", default=0)
+    currency_id = fields.Many2one(
+        "res.currency", "Currency", default=lambda self: self.env.company.currency_id
+    )
+    rate_adjustment_percentage = fields.Float("Rate Adjustment %", default=0.0)
+    rate_tier_category = fields.Selection(
+        [
+            ("standard", "Standard"),
+            ("premium", "Premium"),
+            ("enterprise", "Enterprise"),
+        ],
+        default="standard",
+    )
+    volume_discount_applicable = fields.Boolean(
+        "Volume Discount Applicable", default=False
+    )
+    service_type = fields.Selection(
+        [
+            ("storage", "Storage"),
+            ("retrieval", "Retrieval"),
+            ("delivery", "Delivery"),
+            ("destruction", "Destruction"),
+            ("container_access", "Container Access"),  # NEW
+            ("not_found_search", "Not Found Search"),  # NEW
+            ("scanning", "Scanning"),
+            ("indexing", "Indexing"),
+            ("setup", "Setup Fee"),
+            ("other", "Other"),
+        ],
+        string="Service Type",
+        required=True,
     )
 
     @api.depends("expiry_date")
@@ -118,27 +171,13 @@ class BaseRates(models.Model):
     @api.depends("expiry_date")
     def _compute_days_until_expiry(self):
         """Calculate days until expiry"""
+        today = fields.Date.today()
         for record in self:
             if record.expiry_date:
                 delta = record.expiry_date - today
                 record.days_until_expiry = delta.days
             else:
                 record.days_until_expiry = 0
-    # === BUSINESS CRITICAL FIELDS ===
-    sequence = fields.Integer(string='Sequence', default=10)
-    created_date = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    updated_date = fields.Datetime(string='Updated Date')
-    # Base Rates Management Fields
-    base_rate = fields.Monetary('Base Rate', currency_field='currency_id')
-    customer_count = fields.Integer('Customer Count', default=0)
-    expiration_date = fields.Date('Expiration Date')
-    minimum_charge = fields.Monetary('Minimum Charge', currency_field='currency_id')
-    negotiated_rate_count = fields.Integer('Negotiated Rate Count', default=0)
-    currency_id = fields.Many2one('res.currency', 'Currency', default=lambda self: self.env.company.currency_id)
-    rate_adjustment_percentage = fields.Float('Rate Adjustment %', default=0.0)
-    rate_tier_category = fields.Selection([('standard', 'Standard'), ('premium', 'Premium'), ('enterprise', 'Enterprise')], default='standard')
-    volume_discount_applicable = fields.Boolean('Volume Discount Applicable', default=False)
-    # Base Rates Management Fields
 
     @api.constrains("effective_date", "expiry_date")
     def _check_date_logic(self):
@@ -173,7 +212,7 @@ class BaseRates(models.Model):
         """Activate rate set and make it current"""
         self.ensure_one()
         if self.state != "draft":
-            raise UserError(_("Can only activate draft rate sets"))
+            raise ValidationError(_("Can only activate draft rate sets"))
 
         # Deactivate other current rate sets
         current_rates = self.search(
@@ -262,7 +301,7 @@ class BaseRates(models.Model):
         """Approve rate changes."""
         self.ensure_one()
         if self.state != "draft":
-            raise UserError(_("Only draft rates can be approved."))
+            raise ValidationError(_("Only draft rates can be approved."))
 
         self.write({"state": "confirmed"})
         self.message_post(body=_("Rate changes approved and activated."))
@@ -290,12 +329,24 @@ class BaseRates(models.Model):
         """Implement approved rate changes."""
         self.ensure_one()
         if self.state != "confirmed":
-            raise UserError(_("Only confirmed rates can be implemented."))
+            raise ValidationError(_("Only confirmed rates can be implemented."))
 
         # Set this as current rate set
         self._set_as_current()
         self.message_post(body=_("Rate changes implemented successfully."))
         return True
+
+    def _set_as_current(self):
+        """Helper method to set this rate as current"""
+        current_rates = self.search(
+            [
+                ("is_current", "=", True),
+                ("company_id", "=", self.company_id.id),
+                ("id", "!=", self.id),
+            ]
+        )
+        current_rates.write({"is_current": False})
+        self.write({"is_current": True})
 
     def action_run_forecast(self):
         """Run revenue forecast analysis."""
@@ -340,4 +391,4 @@ class BaseRates(models.Model):
                 "default_base_rate_id": self.id,
                 "search_default_base_rate_id": self.id,
             },
-        })
+        }

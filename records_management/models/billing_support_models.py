@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 # Supporting Models for Records Billing Configuration System
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
-import logging
+from odoo import fields, models, api
 
-_logger = logging.getLogger(__name__)
 
 class RecordsBillingLine(models.Model):
     """Billing line items for detailed billing tracking"""
 
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-
+    """
+    Represents a single billing line item for detailed billing tracking.
+    Each line item records the quantity, unit price, total amount, and associated department contact for a specific billing configuration and date.
+    Used to track billable services or products provided to departments, enabling granular invoice generation and financial analysis.
+    """
     _name = "records.billing.line"
     _description = "Records Billing Line"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "config_id, date desc"
+
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
@@ -30,24 +32,28 @@ class RecordsBillingLine(models.Model):
         string="Billing Config",
         required=True,
         ondelete="cascade",
+    )
     contact_id = fields.Many2one(
         "records.department.billing.contact",
         string="Department Contact",
         help="Department contact associated with this billing line",
+    )
     date = fields.Date(string="Billing Date", required=True, default=fields.Date.today)
-    description = fields.Char(string="Description", required=True)
     quantity = fields.Float(string="Quantity", digits=(10, 2), default=1.0)
     unit_price = fields.Monetary(
         string="Unit Price", currency_field="currency_id", required=True
+    )
     amount = fields.Monetary(
         string="Total Amount",
         currency_field="currency_id",
         compute="_compute_amount",
         store=True,
+    )
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
+    )
     billable = fields.Boolean(string="Billable", default=True)
 
     @api.depends("quantity", "unit_price")
@@ -55,13 +61,13 @@ class RecordsBillingLine(models.Model):
         for record in self:
             record.amount = record.quantity * record.unit_price
 
+
 class RecordsUsageTracking(models.Model):
     """Usage tracking for billing configuration"""
 
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-
     _name = "records.usage.tracking"
     _description = "Records Usage Tracking"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "config_id, date desc"
 
     config_id = fields.Many2one(
@@ -69,6 +75,7 @@ class RecordsUsageTracking(models.Model):
         string="Billing Config",
         required=True,
         ondelete="cascade",
+    )
     date = fields.Date(string="Usage Date", required=True, default=fields.Date.today)
     service_type = fields.Selection(
         [
@@ -81,6 +88,7 @@ class RecordsUsageTracking(models.Model):
         ],
         string="Service Type",
         required=True,
+    )
     quantity = fields.Float(string="Quantity", digits=(10, 2), required=True)
     unit = fields.Char(string="Unit of Measure", default="boxes")
     cost = fields.Monetary(string="Cost", currency_field="currency_id")
@@ -88,14 +96,16 @@ class RecordsUsageTracking(models.Model):
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
+    )
     notes = fields.Text(string="Notes")
 
+
 class InvoiceGenerationLog(models.Model):
-    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Log for invoice generation processes"""
 
     _name = "invoice.generation.log"
     _description = "Invoice Generation Log"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "config_id, generation_date desc"
 
     config_id = fields.Many2one(
@@ -103,29 +113,34 @@ class InvoiceGenerationLog(models.Model):
         string="Billing Config",
         required=True,
         ondelete="cascade",
+    )
     generation_date = fields.Datetime(
         string="Generation Date", required=True, default=fields.Datetime.now
+    )
     invoice_id = fields.Many2one("account.move", string="Generated Invoice")
     status = fields.Selection(
         [("success", "Success"), ("failed", "Failed"), ("pending", "Pending")],
         string="Status",
         default="pending",
+    )
     error_message = fields.Text(string="Error Message")
     amount = fields.Monetary(string="Invoice Amount", currency_field="currency_id")
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
+    )
     generated_by = fields.Many2one(
         "res.users", string="Generated By", default=lambda self: self.env.user
     )
 
+
 class DiscountRule(models.Model):
-    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Discount rules for billing configurations"""
 
     _name = "discount.rule"
     _description = "Discount Rule"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "config_id, priority"
 
     config_id = fields.Many2one(
@@ -133,6 +148,7 @@ class DiscountRule(models.Model):
         string="Billing Config",
         required=True,
         ondelete="cascade",
+    )
     name = fields.Char(string="Rule Name", required=True)
     rule_type = fields.Selection(
         [
@@ -143,22 +159,27 @@ class DiscountRule(models.Model):
         ],
         string="Rule Type",
         required=True,
+    )
     threshold = fields.Float(string="Threshold", digits=(10, 2))
     discount_percentage = fields.Float(string="Discount %", digits=(5, 2))
     discount_amount = fields.Monetary(
         string="Discount Amount", currency_field="currency_id"
+    )
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
+    )
     start_date = fields.Date(string="Start Date")
     end_date = fields.Date(string="End Date")
     active = fields.Boolean(string="Active", default=True)
     priority = fields.Integer(string="Priority", default=10)
 
+
 class RevenueAnalytics(models.Model):
-    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Revenue analytics for billing configurations"""
+
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
     _name = "revenue.analytics"
     _description = "Revenue Analytics"
@@ -169,19 +190,24 @@ class RevenueAnalytics(models.Model):
         string="Billing Config",
         required=True,
         ondelete="cascade",
+    )
     period_start = fields.Date(string="Period Start", required=True)
     period_end = fields.Date(string="Period End", required=True)
     total_revenue = fields.Monetary(
         string="Total Revenue", currency_field="currency_id"
+    )
     projected_revenue = fields.Monetary(
         string="Projected Revenue", currency_field="currency_id"
+    )
     actual_costs = fields.Monetary(string="Actual Costs", currency_field="currency_id")
     profit_margin = fields.Float(
         string="Profit Margin %", digits=(5, 2), compute="_compute_profit_margin"
+    )
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
+    )
     customer_count = fields.Integer(string="Customer Count")
     average_revenue_per_customer = fields.Monetary(
         string="Avg Revenue/Customer",
@@ -209,12 +235,17 @@ class RevenueAnalytics(models.Model):
             else:
                 record.average_revenue_per_customer = 0.0
 
+
 class RecordsPromotionalDiscount(models.Model):
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    """Promotional discounts for billing configurations"""
+    """
+    Represents promotional discounts applied to billing configurations.
+    This model tracks discount campaigns, including their type (percentage or fixed), value, validity period, usage limits, and associated billing configuration.
+    Used to manage and apply promotional offers to customer invoices, ensuring accurate discount calculations and compliance with business rules.
+    """
 
     _name = "records.promotional.discount"
     _description = "Records Promotional Discount"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "config_id, start_date desc"
 
     config_id = fields.Many2one(
@@ -222,34 +253,41 @@ class RecordsPromotionalDiscount(models.Model):
         string="Billing Config",
         required=True,
         ondelete="cascade",
+    )
     name = fields.Char(string="Promotion Name", required=True)
     promotion_code = fields.Char(string="Promotion Code")
     discount_type = fields.Selection(
         [("percentage", "Percentage"), ("fixed", "Fixed Amount")],
         string="Discount Type",
         required=True,
+    )
     discount_value = fields.Float(
         string="Discount Value", digits=(10, 2), required=True
+    )
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
+    )
     start_date = fields.Date(string="Start Date", required=True)
     end_date = fields.Date(string="End Date", required=True)
     minimum_order = fields.Monetary(
         string="Minimum Order", currency_field="currency_id"
+    )
     maximum_discount = fields.Monetary(
         string="Maximum Discount", currency_field="currency_id"
+    )
     usage_limit = fields.Integer(string="Usage Limit")
     times_used = fields.Integer(string="Times Used", default=0)
     active = fields.Boolean(string="Active", default=True)
 
+
 class CustomerCategory(models.Model):
-    _inherit = ["mail.thread", "mail.activity.mixin"]
     """Customer categories for billing segmentation"""
 
     _name = "customer.category"
     _description = "Customer Category"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name"
 
     name = fields.Char(string="Category Name", required=True)
@@ -263,6 +301,7 @@ class CustomerCategory(models.Model):
             ("usage_based", "Usage Based"),
         ],
         string="Default Billing Model",
+    )
     priority_level = fields.Selection(
         [
             ("low", "Low"),
@@ -272,5 +311,7 @@ class CustomerCategory(models.Model):
         ],
         string="Priority Level",
         default="normal",
+    )
     sla_hours = fields.Integer(string="SLA Response Hours", default=24)
-    active = fields.Boolean(string="Active", default=True))
+    active = fields.Boolean(string="Active", default=True)
+    active = fields.Boolean(string="Active", default=True)

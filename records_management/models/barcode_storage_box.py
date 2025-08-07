@@ -2,6 +2,7 @@
 
 from odoo import models, fields, api
 
+
 class BarcodeStorageBox(models.Model):
     _name = "barcode.storage.box"
     _description = "Barcode Storage Box"
@@ -11,11 +12,13 @@ class BarcodeStorageBox(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Box Name", required=True, tracking=True, index=True),
+    name = fields.Char(string="Box Name", required=True, tracking=True, index=True)
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
+    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
+    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [
@@ -54,6 +57,7 @@ class BarcodeStorageBox(models.Model):
     capacity = fields.Integer(string="Storage Capacity", default=100)
     current_count = fields.Integer(
         string="Current Count", compute="_compute_current_count", store=True
+    )
     available_space = fields.Integer(
         string="Available Space", compute="_compute_available_space", store=True
     )
@@ -91,11 +95,22 @@ class BarcodeStorageBox(models.Model):
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    # Missing inverse field for barcode.product One2many relationship
-    product_id = fields.Many2one("barcode.product", string="Product")
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
-    # # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
-    )    @api.depends("capacity", "current_count")
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("barcode_product_ids")
+    def _compute_current_count(self):
+        for box in self:
+            box.current_count = len(box.barcode_product_ids)
+
+    @api.depends("capacity", "current_count")
     def _compute_available_space(self):
         for box in self:
             box.available_space = max(0, box.capacity - box.current_count)
@@ -131,4 +146,4 @@ class BarcodeStorageBox(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_storage_box_id": self.id},
-        })
+        }
