@@ -70,87 +70,505 @@ License: LGPL-3
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
+import logging
+
+_logger = logging.getLogger(__name__)
+
 
 class NaidCertificate(models.Model):
+    """
+    NAID Certificate Management
+
+    Manages NAID certificates for document destruction and compliance verification
+    with comprehensive lifecycle tracking and digital signature integration.
+    """
+
     _name = "naid.certificate"
-    _description = "Naid Certificate"
+    _description = "NAID Certificate"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name desc"
     _rec_name = "name"
 
-    # Basic Information
-    name = fields.Char(string="Name", required=True, tracking=True, index=True),
-    description = fields.Text(string="Description"),
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Certificate Number",
+        required=True,
+        tracking=True,
+        index=True,
+        copy=False,
+    )
+    description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
 
-    # State Management
+    # ============================================================================
+    # STATE MANAGEMENT
+    # ============================================================================
     state = fields.Selection(
         [
             ("draft", "Draft"),
-            ("active", "Active"),
-            ("inactive", "Inactive"),
+            ("generated", "Generated"),
+            ("issued", "Issued"),
+            ("delivered", "Delivered"),
             ("archived", "Archived"),
-        ]),
+        ],
         string="Status",
         default="draft",
         tracking=True,
     )
 
-    # Company and User
-    )
+    # ============================================================================
+    # COMPANY AND USER FIELDS
+    # ============================================================================
     company_id = fields.Many2one(
-        "res.company", string="Company", default=lambda self: self.env.company
-    ),
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
     user_id = fields.Many2one(
-        "res.users", string="Assigned User", default=lambda self: self.env.user
+        "res.users",
+        string="Assigned User",
+        default=lambda self: self.env.user,
+        tracking=True,
     )
 
-    # Timestamps
+    # ============================================================================
+    # CERTIFICATE INFORMATION
+    # ============================================================================
+    certificate_type = fields.Selection(
+        [
+            ("destruction", "Destruction Certificate"),
+            ("compliance", "Compliance Certificate"),
+            ("chain_custody", "Chain of Custody Certificate"),
+            ("service_completion", "Service Completion Certificate"),
+            ("annual_compliance", "Annual Compliance Certificate"),
+            ("special_handling", "Special Handling Certificate"),
+        ],
+        string="Certificate Type",
+        required=True,
+        tracking=True,
     )
-    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now),
+
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+    partner_id = fields.Many2one(
+        "res.partner", string="Customer", required=True, tracking=True
+    )
+    destruction_service_id = fields.Many2one(
+        "shredding.service", string="Related Destruction Service"
+    )
+    naid_compliance_id = fields.Many2one(
+        "naid.compliance", string="Related NAID Compliance"
+    )
+
+    # ============================================================================
+    # TIMESTAMP FIELDS
+    # ============================================================================
+    date_created = fields.Datetime(
+        string="Created Date", default=fields.Datetime.now, required=True
+    )
     date_modified = fields.Datetime(string="Modified Date")
+    date_issued = fields.Datetime(string="Issue Date", tracking=True)
+    date_delivered = fields.Datetime(string="Delivery Date", tracking=True)
+    expiration_date = fields.Date(string="Expiration Date", tracking=True)
 
-    # Control Fields
-    active = fields.Boolean(string="Active", default=True),
+    # ============================================================================
+    # CERTIFICATE CONTENT FIELDS
+    # ============================================================================
+    certificate_data = fields.Binary(string="Certificate Document", attachment=True)
+    certificate_filename = fields.Char(string="Certificate Filename")
+    template_id = fields.Many2one(
+        "naid.certificate.template", string="Certificate Template"
+    )
+
+    # ============================================================================
+    # DIGITAL SIGNATURE FIELDS
+    # ============================================================================
+    is_digitally_signed = fields.Boolean(string="Digitally Signed", default=False)
+    signature_data = fields.Binary(string="Digital Signature", attachment=True)
+    signature_hash = fields.Char(string="Signature Hash", readonly=True)
+    signature_date = fields.Datetime(string="Signature Date", readonly=True)
+
+    # ============================================================================
+    # COMPLIANCE FIELDS
+    # ============================================================================
+    naid_member_id = fields.Char(string="NAID Member ID")
+    compliance_level = fields.Selection(
+        [
+            ("aaa", "NAID AAA Certified"),
+            ("standard", "NAID Standard"),
+            ("basic", "Basic Compliance"),
+        ],
+        string="Compliance Level",
+        default="aaa",
+    )
+
+    # ============================================================================
+    # DISTRIBUTION FIELDS
+    # ============================================================================
+    delivery_method = fields.Selection(
+        [
+            ("email", "Email"),
+            ("portal", "Customer Portal"),
+            ("mail", "Physical Mail"),
+            ("pickup", "Customer Pickup"),
+        ],
+        string="Delivery Method",
+        default="portal",
+    )
+
+    delivery_status = fields.Selection(
+        [
+            ("pending", "Pending"),
+            ("sent", "Sent"),
+            ("delivered", "Delivered"),
+            ("failed", "Failed"),
+        ],
+        string="Delivery Status",
+        default="pending",
+    )
+
+    # ============================================================================
+    # CONTROL FIELDS
+    # ============================================================================
+    active = fields.Boolean(string="Active", default=True)
+    priority = fields.Selection(
+        [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")],
+        string="Priority",
+        default="normal",
+    )
     notes = fields.Text(string="Internal Notes")
 
-    # Computed Fields
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
     )
+    is_expired = fields.Boolean(string="Is Expired", compute="_compute_is_expired")
+    days_until_expiration = fields.Integer(
+        string="Days Until Expiration", compute="_compute_days_until_expiration"
+    )
 
-    @api.depends("name")
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("name", "certificate_type", "partner_id.name")
     def _compute_display_name(self):
-        """Compute display name."""
+        """Compute display name with certificate type and customer"""
         for record in self:
-            record.display_name = record.name or _("New")
+            name = record.name or _("New Certificate")
+            if record.certificate_type:
+                type_dict = dict(record._fields["certificate_type"].selection)
+                name += f" - {type_dict.get(record.certificate_type, record.certificate_type)}"
+            if record.partner_id:
+                name += f" ({record.partner_id.name})"
+            record.display_name = name
 
-    def write(self, vals):
-        """Override write to update modification date."""
-        vals["date_modified"] = fields.Datetime.now()
-        return super().write(vals)
+    @api.depends("expiration_date")
+    def _compute_is_expired(self):
+        """Check if certificate is expired"""
+        today = fields.Date.today()
+        for record in self:
+            record.is_expired = (
+                record.expiration_date and record.expiration_date < today
+            )
 
-    def action_activate(self):
-        """Activate the record."""
-        self.write({"state": "active"})
+    @api.depends("expiration_date")
+    def _compute_days_until_expiration(self):
+        """Calculate days until expiration"""
+        today = fields.Date.today()
+        for record in self:
+            if record.expiration_date:
+                delta = record.expiration_date - today
+                record.days_until_expiration = delta.days
+            else:
+                record.days_until_expiration = 0
 
-    def action_deactivate(self):
-        """Deactivate the record."""
-        self.write({"state": "inactive"})
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_generate_certificate(self):
+        """Generate certificate document"""
+        self.ensure_one()
+        if self.state != "draft":
+            raise UserError(_("Only draft certificates can be generated"))
 
-    def action_archive(self):
-        """Archive the record."""
-        self.write({"state": "archived", "active": False})
+        # Certificate generation logic here
+        self.write({"state": "generated", "date_modified": fields.Datetime.now()})
+        self.message_post(body=_("Certificate generated"))
 
+    def action_issue_certificate(self):
+        """Issue the certificate"""
+        self.ensure_one()
+        if self.state != "generated":
+            raise UserError(_("Only generated certificates can be issued"))
+
+        self.write(
+            {
+                "state": "issued",
+                "date_issued": fields.Datetime.now(),
+                "date_modified": fields.Datetime.now(),
+            }
+        )
+        self.message_post(body=_("Certificate issued"))
+
+    def action_deliver_certificate(self):
+        """Mark certificate as delivered"""
+        self.ensure_one()
+        if self.state != "issued":
+            raise UserError(_("Only issued certificates can be delivered"))
+
+        self.write(
+            {
+                "state": "delivered",
+                "date_delivered": fields.Datetime.now(),
+                "delivery_status": "delivered",
+                "date_modified": fields.Datetime.now(),
+            }
+        )
+        self.message_post(body=_("Certificate delivered"))
+
+    def action_archive_certificate(self):
+        """Archive the certificate"""
+        self.ensure_one()
+        self.write(
+            {
+                "state": "archived",
+                "active": False,
+                "date_modified": fields.Datetime.now(),
+            }
+        )
+        self.message_post(body=_("Certificate archived"))
+
+    def action_apply_digital_signature(self):
+        """Apply digital signature to certificate"""
+        self.ensure_one()
+        if not self.certificate_data:
+            raise UserError(_("Certificate document must be generated before signing"))
+
+        # Digital signature logic here
+        import hashlib
+        import base64
+
+        decoded_data = base64.b64decode(self.certificate_data)
+        signature_hash = hashlib.sha256(decoded_data).hexdigest()
+
+        self.write(
+            {
+                "is_digitally_signed": True,
+                "signature_hash": signature_hash,
+                "signature_date": fields.Datetime.now(),
+                "date_modified": fields.Datetime.now(),
+            }
+        )
+        self.message_post(body=_("Digital signature applied"))
+
+    def action_validate_signature(self):
+        """Validate digital signature integrity"""
+        self.ensure_one()
+        if not self.is_digitally_signed:
+            raise UserError(_("Certificate is not digitally signed"))
+
+        # Signature validation logic here
+        import hashlib
+        import base64
+
+        decoded_data = base64.b64decode(self.certificate_data)
+        current_hash = hashlib.sha256(decoded_data).hexdigest()
+
+        if current_hash != self.signature_hash:
+            raise ValidationError(
+                _("Certificate has been tampered with - signature invalid")
+            )
+
+        self.message_post(body=_("Digital signature validated successfully"))
+
+    def action_send_certificate(self):
+        """Send certificate to customer"""
+        self.ensure_one()
+        if self.state not in ["issued", "delivered"]:
+            raise UserError(_("Only issued certificates can be sent"))
+
+        # Certificate sending logic based on delivery method
+        if self.delivery_method == "email":
+            self._send_certificate_email()
+        elif self.delivery_method == "portal":
+            self._make_available_in_portal()
+
+        self.write({"delivery_status": "sent", "date_modified": fields.Datetime.now()})
+        self.message_post(body=_("Certificate sent via %s") % self.delivery_method)
+
+    def _send_certificate_email(self):
+        """Send certificate via email"""
+        template = self.env.ref(
+            "records_management.email_template_naid_certificate", False
+        )
+        if template:
+            template.send_mail(self.id, force_send=True)
+
+    def _make_available_in_portal(self):
+        """Make certificate available in customer portal"""
+        # Portal integration logic would be implemented here
+        # For now, just log the action
+        _logger.info(
+            "Certificate %s made available in customer portal for %s",
+            self.name,
+            self.partner_id.name,
+        )
+
+    # ============================================================================
+    # OVERRIDE METHODS
+    # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create to set default values."""
-        # Handle both single dict and list of dicts
-        if not isinstance(vals_list, list):
-            vals_list = [vals_list]
-
+        """Override create to set default values and generate certificate number"""
         for vals in vals_list:
             if not vals.get("name"):
-                vals["name"] = _("New Record")
+                vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "naid.certificate"
+                ) or _("New Certificate")
+
+            # Set expiration date based on certificate type
+            if not vals.get("expiration_date") and vals.get("certificate_type"):
+                expiration_days = self._get_expiration_days(vals["certificate_type"])
+                if expiration_days:
+                    from datetime import datetime, timedelta
+
+                    expiration_date = datetime.now() + timedelta(days=expiration_days)
+                    vals["expiration_date"] = expiration_date.date()
 
         return super().create(vals_list)
+
+    def write(self, vals):
+        """Override write to update modification date for relevant changes"""
+        relevant_fields = {
+            "state",
+            "certificate_data",
+            "is_digitally_signed",
+            "signature_data",
+            "signature_hash",
+            "signature_date",
+            "delivery_status",
+            "expiration_date",
+        }
+        if any(field in vals for field in relevant_fields):
+            vals["date_modified"] = fields.Datetime.now()
+        return super().write(vals)
+
+    def name_get(self):
+        """Custom name display"""
+        result = []
+        for record in self:
+            name = record.name or _("New Certificate")
+            if record.certificate_type:
+                type_dict = dict(record._fields["certificate_type"].selection)
+                name += f" - {type_dict.get(record.certificate_type, record.certificate_type)}"
+            if record.partner_id:
+                name += f" ({record.partner_id.name})"
+            result.append((record.id, name))
+        return result
+
+    def _get_expiration_days(self, certificate_type):
+        """Get expiration days based on certificate type"""
+        expiration_map = {
+            "destruction": 2555,  # 7 years
+            "compliance": 365,  # 1 year
+            "chain_custody": 2555,  # 7 years
+            "service_completion": 365,  # 1 year
+            "annual_compliance": 365,  # 1 year
+            "special_handling": 2555,  # 7 years
+        }
+        return expiration_map.get(certificate_type, 365)
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("expiration_date")
+    def _check_expiration_date(self):
+        """Validate expiration date is in the future"""
+        for record in self:
+            if record.expiration_date and record.expiration_date <= fields.Date.today():
+                raise ValidationError(_("Expiration date must be in the future"))
+
+    @api.constrains("certificate_type", "partner_id")
+    def _check_certificate_uniqueness(self):
+        """Validate certificate uniqueness for certain types"""
+        for record in self:
+            if record.certificate_type in ["annual_compliance", "compliance"]:
+                existing = self.search(
+                    [
+                        ("certificate_type", "=", record.certificate_type),
+                        ("partner_id", "=", record.partner_id.id),
+                        ("state", "in", ["issued", "delivered"]),
+                        ("expiration_date", ">", fields.Date.today()),
+                        ("id", "!=", record.id),
+                    ]
+                )
+                if existing:
+                    raise ValidationError(
+                        _("An active %s certificate already exists for this customer")
+                        % dict(record._fields["certificate_type"].selection)[
+                            record.certificate_type
+                        ]
+                    )
+
+    @api.constrains("naid_member_id")
+    def _check_naid_member_id(self):
+        """Validate NAID member ID format (alphanumeric and dashes allowed)"""
+        import re
+
+        for record in self:
+            if record.naid_member_id and not re.match(
+                r"^[A-Za-z0-9\-]+$", record.naid_member_id
+            ):
+                raise ValidationError(
+                    _(
+                        "NAID Member ID must contain only alphanumeric characters and dashes"
+                    )
+                )
+
+    # ============================================================================
+    # SCHEDULED ACTIONS
+    # ============================================================================
+    @api.model
+    def check_certificate_expiration(self):
+        """Scheduled action to check for expiring certificates"""
+        from datetime import timedelta
+
+        # Check for certificates expiring in 30 days
+        warning_date = fields.Date.today() + timedelta(days=30)
+        expiring_certificates = self.search(
+            [
+                ("expiration_date", "<=", warning_date),
+                ("expiration_date", ">", fields.Date.today()),
+                ("state", "in", ["issued", "delivered"]),
+            ]
+        )
+
+        for cert in expiring_certificates:
+            cert.message_post(
+                body=_("Certificate expires in %d days") % cert.days_until_expiration,
+                subject=_("Certificate Expiration Warning"),
+            )
+
+        # Archive expired certificates
+        expired_certificates = self.search(
+            [
+                ("expiration_date", "<", fields.Date.today()),
+                ("state", "in", ["issued", "delivered"]),
+            ]
+        )
+
+        for cert in expired_certificates:
+            cert.action_archive_certificate()
