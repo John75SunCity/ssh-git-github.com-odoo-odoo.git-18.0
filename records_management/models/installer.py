@@ -1,44 +1,53 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
-class Installer(models.Model):
-    _name = 'installer'
-    _description = 'Installer'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'name'
-    _rec_name = 'name'
-    
-    # Core fields
-    name = fields.Char(string='Name', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", string="Assigned User", default=lambda self: self.env.user)
-    active = fields.Boolean(string='Active', default=True)
-    
-    # State management
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
-    
-    # Documentation
-    notes = fields.Text(string='Notes')
-    
-    # Computed fields
-    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-    
-    @api.depends('name')
-    def _compute_display_name(self):
+
+class RecordsInstaller(models.Model):
+    _name = "records.installer"
+    _description = "Records Installer"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "name"
+    _rec_name = "name"
+
+    name = fields.Char(string="Name", required=True, tracking=True)
+    company_id = fields.Many2one(
+        "res.company", string="Company", default=lambda self: self.env.company
+    )
+    user_id = fields.Many2one(
+        "res.users", string="Assigned User", default=lambda self: self.env.user
+    )
+    active = fields.Boolean(string="Active", default=True)
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("confirmed", "Confirmed"),
+            ("done", "Done"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
+    notes = fields.Text(string="Notes")
+    installer_display_name = fields.Char(
+        string="Installer Display Name",
+        compute="_compute_installer_display_name",
+        store=True,
+    )
+
+    @api.depends("name")
+    def _compute_installer_display_name(self):
         for record in self:
-            record.display_name = record.name or 'New'
-    
-    # Action methods
+            record.installer_display_name = record.name or _("New")
+
     def action_confirm(self):
-        self.write({'state': 'confirmed'})
-    
+        """Set the record's state to 'confirmed'."""
+        self.write({"state": "confirmed"})
+
     def action_cancel(self):
-        self.write({'state': 'cancelled'})
-    
+        """Set the record's state to 'cancelled'."""
+        self.write({"state": "cancelled"})
+
     def action_reset_to_draft(self):
-        self.write({'state': 'draft'})
+        """Reset the record's state to 'draft'."""
+        self.write({"state": "draft"})
