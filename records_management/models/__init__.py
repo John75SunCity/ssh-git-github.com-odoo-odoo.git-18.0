@@ -150,8 +150,6 @@ from . import records_access_log
 
 # Core billing system
 from . import billing
-
-# from . import billing_models  # REMOVED: Duplicate model causing KeyError
 from . import billing_automation
 from . import department_billing
 
@@ -281,8 +279,10 @@ try:
     from . import fsm_route_management
     from . import fsm_notification
 
-    _logger.info("Additional FSM extensions loaded successfully")
+    _logger.info("Additional FSM modules loaded successfully")
 except ImportError as e:
     _logger.warning(
-        "Additional FSM modules not available, skipping FSM extensions: %s", str(e)
+        "FSM module '%s' not available, skipping FSM extensions: %s",
+        getattr(e, "name", "unknown"),
+        str(e),
     )

@@ -85,10 +85,8 @@
         # Demo and test data
         "data/field_label_customization_demo_data.xml",
         "data/intelligent_search_demo_data.xml",
-        "data/intelligent_search_indexes.xml",
         # Views
         "views/records_management_base_menus.xml",
-        "views/records_management_menus.xml",
         "views/menu_views.xml",
         "views/records_container_views.xml",
         "views/records_document_views.xml",
