@@ -142,7 +142,7 @@ class BinKey(models.Model):
     unlock_service_ids = fields.One2many(
         "bin.unlock.service", "key_id", string="Unlock Services"
     )
-    bin_ids = fields.Many2many("records.bin", string="Accessible Bins")
+    bin_ids = fields.Many2many("shred.bin", string="Accessible Shred Bins")
 
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")

@@ -1,77 +1,97 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
 
 
 class PosConfig(models.Model):
-    _inherit = "pos.config"
-    _description = "Pos Config"
+    """
+    Extension of POS Configuration for records management integration.
 
-    # Additional fields for records management integration
-    description = fields.Text(string="Description"),
+    Includes additional fields for description, sequence, user management, timestamp tracking,
+    control fields, and utility/action methods.
+
+    Computed field:
+        - display_name: Computed display name for the POS configuration.
+    """
+
+    _inherit = "pos.config"
+    _description = "Point of Sale Configuration Extension"
+
+    # ============================================================================
+    # ADDITIONAL FIELDS FOR RECORDS MANAGEMENT INTEGRATION
+    # ============================================================================
+    description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
 
-    # State Management (extending existing state field)
-    # Note: We don't redefine existing 'name' or 'state' fields to avoid tracking warnings
-
-    # Company and User
-    company_id = fields.Many2one(
-        "res.company", string="Company", default=lambda self: self.env.company
-    )
-    )
+    # ============================================================================
+    # COMPANY AND USER MANAGEMENT
+    # ============================================================================
+    # Note: company_id already exists in pos.config, we extend with additional functionality
     user_id = fields.Many2one(
         "res.users", string="Responsible User", default=lambda self: self.env.user
     )
 
-    # Timestamps
-    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now),
+    # ============================================================================
+    # TIMESTAMP TRACKING
+    # ============================================================================
+    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now)
     date_modified = fields.Datetime(string="Modified Date")
 
-    # Control Fields
-    active = fields.Boolean(string="Active", default=True),
+    # ============================================================================
+    # CONTROL FIELDS
+    # ============================================================================
+    # Note: active field already exists in pos.config
     notes = fields.Text(string="Internal Notes")
 
-    # Computed Fields
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
     )
 
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
     @api.depends("name")
     def _compute_display_name(self):
         """Compute display name."""
         for record in self:
             record.display_name = record.name or _("New")
 
+    # ============================================================================
+    # LIFECYCLE METHODS
+    # ============================================================================
     def write(self, vals):
         """Override write to update modification date."""
         vals["date_modified"] = fields.Datetime.now()
-        return super().write(vals)
+        return super(PosConfig, self).write(vals)
 
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_activate(self):
-        """Activate the record."""
-        self.write({"state": "active"})
+        """Activate the POS configuration."""
+        self.ensure_one()
+        self.write({"active": True})
+        return True
 
     def action_deactivate(self):
-        """Deactivate the record."""
-        self.write({"state": "inactive"})
-
-    def action_archive(self):
-        """Archive the record."""
-        self.write({"state": "archived", "active": False})
+        """Deactivate the POS configuration."""
+        self.ensure_one()
+        self.write({"active": False})
+        return True
 
     def action_close_session(self):
         """Close current POS session."""
         self.ensure_one()
-        if self.state != "active":
-            raise UserError(_("Only active POS configurations can close sessions.")
+
         # Update notes with session closure
-        self.write(
-            {
-                "notes": (self.notes or "")
-                + _("\nSession closed on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
+        current_notes = self.notes or ""
+        closure_note = _("\nSession closed on %s") % fields.Datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S"
         )
+
+        self.write({"notes": current_notes + closure_note})
 
         # Create session closure activity
         self.activity_schedule(
@@ -97,23 +117,18 @@ class PosConfig(models.Model):
                 "search_default_config_id": self.id,
             },
         }
-)
+
     def action_force_close_session(self):
         """Force close POS session with administrative override."""
         self.ensure_one()
-        if self.state == "archived":
-            raise UserError(
-                _("Cannot force close session for archived POS configuration.")
-            )
 
         # Update notes with forced closure
-        self.write(
-            {
-                "notes": (self.notes or "")
-                + _("\nSession force closed on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
-        )
+        current_notes = self.notes or ""
+        closure_note = _(
+            "\nSession force closed on %s"
+        ) % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        self.write({"notes": current_notes + closure_note})
 
         # Create urgent activity for force closure
         self.activity_schedule(
@@ -123,7 +138,6 @@ class PosConfig(models.Model):
                 "POS session was force closed - requires review and balance verification."
             ),
             user_id=self.user_id.id,
-            )
             date_deadline=fields.Date.today(),
         )
 
@@ -150,16 +164,14 @@ class PosConfig(models.Model):
     def action_open_session(self):
         """Open new POS session."""
         self.ensure_one()
-        if self.state != "active":
-            raise UserError(_("Only active POS configurations can open sessions.")
+
         # Update notes with session opening
-        self.write(
-            {
-                "notes": (self.notes or "")
-                + _("\nNew session opened on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
+        current_notes = self.notes or ""
+        opening_note = _("\nNew session opened on %s") % fields.Datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S"
         )
+
+        self.write({"notes": current_notes + opening_note})
 
         # Create session opening activity
         self.activity_schedule(
@@ -270,10 +282,78 @@ class PosConfig(models.Model):
             },
         }
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Override create to set default values."""
-        for vals in vals_list:
-            if not vals.get("name"):
-                vals["name"] = _("New Record")
-        return super().create(vals_list)
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    def get_session_status(self):
+        """Get current session status for this configuration."""
+        self.ensure_one()
+        current_session = self.env["pos.session"].search(
+            [("config_id", "=", self.id), ("state", "=", "opened")], limit=1
+        )
+
+        if current_session:
+            return {
+                "status": "opened",
+                "session_id": current_session.id,
+                "session_name": current_session.name,
+                "start_at": current_session.start_at,
+            }
+        else:
+            return {
+                "status": "closed",
+                "session_id": False,
+                "session_name": False,
+                "start_at": False,
+            }
+
+    def get_daily_sales_summary(self):
+        """Get daily sales summary for this configuration."""
+        self.ensure_one()
+        today = fields.Date.today()
+
+        orders = self.env["pos.order"].search(
+            [
+                ("config_id", "=", self.id),
+                ("date_order", ">=", today),
+                ("date_order", "<", today + fields.timedelta(days=1)),
+                ("state", "in", ["paid", "done", "invoiced"]),
+            ]
+        )
+
+        total_amount = sum(orders.mapped("amount_total"))
+        order_count = len(orders)
+
+        return {
+            "total_amount": total_amount,
+            "order_count": order_count,
+            "average_ticket": (
+                round(total_amount / order_count, 2) if order_count > 0 else 0
+            ),
+            "date": today,
+        }
+
+    def validate_session_closure(self):
+        """Validate if session can be closed properly."""
+        self.ensure_one()
+
+        current_session = self.env["pos.session"].search(
+            [("config_id", "=", self.id), ("state", "=", "opened")], limit=1
+        )
+
+        if not current_session:
+            return {"valid": False, "message": _("No open session found")}
+
+        # Check for pending orders
+        pending_orders = self.env["pos.order"].search(
+            [("session_id", "=", current_session.id), ("state", "=", "draft")]
+        )
+
+        if pending_orders:
+            return {
+                "valid": False,
+                "message": _("There are %d pending orders that must be processed first")
+                % len(pending_orders),
+            }
+
+        return {"valid": True, "message": _("Session can be closed safely")}

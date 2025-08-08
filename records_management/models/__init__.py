@@ -79,6 +79,7 @@ from . import shredding_inventory_item
 from . import shredding_service_log
 from . import shredding_bin_models
 from . import destruction_item
+from . import shred_bins
 
 # =============================================================================
 # PAPER RECYCLING AND BALING MODELS (After shredding services)
@@ -107,7 +108,6 @@ from . import unlock_service_history
 from . import photo
 from . import mobile_bin_key_wizard
 from . import bin_unlock_service
-from . import records_bin
 from . import bin_key
 
 # Legacy bale models (for data migration compatibility)

@@ -1390,7 +1390,12 @@ class CustomerPortalExtended(CustomerPortal):
         methods=["GET", "POST"],
     )
     def new_service_request(self, **kw):
-        """Create new service request"""
+        """
+        Create new service request.
+
+        If the service type is 'return' or 'retrieval', the logic will handle container selection
+        by reading 'container_ids' from the submitted form data and including them in the service request.
+        """
         partner = request.env.user.partner_id
         access_info = self._get_user_access_info(partner)
 
@@ -1416,7 +1421,9 @@ class CustomerPortalExtended(CustomerPortal):
             if kw.get("service_type") in ["return", "retrieval"]:
                 container_ids = [int(id) for id in kw.getlist("container_ids") if id]
                 if container_ids:
-                    vals["container_ids"] = [(6, 0, container_ids)]
+                    vals["container_ids"] = (
+                        container_ids  # Assign list of IDs directly if field expects list
+                    )
 
             request.env["records.service.request"].create(vals)
             return request.redirect("/my/records?success=service_requested")

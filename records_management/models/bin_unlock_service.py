@@ -38,7 +38,7 @@ class BinUnlockService(models.Model):
     request_date = fields.Datetime(string="Request Date", default=fields.Datetime.now, tracking=True)
     scheduled_date = fields.Datetime(string="Scheduled Date", tracking=True)
     completion_date = fields.Datetime(string="Completion Date", tracking=True)
-    
+
     priority = fields.Selection([
         ("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")
     ], string="Priority", default="normal", tracking=True)
@@ -47,9 +47,11 @@ class BinUnlockService(models.Model):
     # BIN & KEY INFORMATION
     # ============================================================================
     partner_id = fields.Many2one("res.partner", string="Customer", required=True, tracking=True)
-    bin_id = fields.Many2one("records.bin", string="Bin", required=True, tracking=True)
+    bin_id = fields.Many2one(
+        "shred.bin", string="Shred Bin", required=True, tracking=True
+    )
     key_id = fields.Many2one("bin.key", string="Key", tracking=True)
-    
+
     bin_location = fields.Char(string="Bin Location")
     key_serial_number = fields.Char(string="Key Serial Number")
     unlock_method = fields.Selection([
@@ -71,7 +73,7 @@ class BinUnlockService(models.Model):
     reason_for_unlock = fields.Text(string="Reason for Unlock", required=True)
     special_instructions = fields.Text(string="Special Instructions")
     security_notes = fields.Text(string="Security Notes")
-    
+
     requires_escort = fields.Boolean(string="Requires Escort", default=False)
     witness_required = fields.Boolean(string="Witness Required", default=False)
     witness_name = fields.Char(string="Witness Name")
@@ -82,7 +84,7 @@ class BinUnlockService(models.Model):
     authorization_code = fields.Char(string="Authorization Code")
     service_report = fields.Text(string="Service Report")
     completion_notes = fields.Text(string="Completion Notes")
-    
+
     photo_before = fields.Binary(string="Photo Before")
     photo_after = fields.Binary(string="Photo After")
     service_certificate = fields.Binary(string="Service Certificate")
@@ -101,7 +103,7 @@ class BinUnlockService(models.Model):
     # RELATIONSHIP FIELDS
     # ============================================================================
     related_requests = fields.Many2many("portal.request", string="Related Portal Requests")
-    
+
     # Mail framework fields    @api.depends("service_cost", "emergency_surcharge")
     def _compute_total_cost(self):
         for record in self:

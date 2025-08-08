@@ -114,6 +114,7 @@
         "views/portal_feedback_menus.xml",
         "views/customer_inventory_views.xml",
         "views/bin_key_management_views.xml",
+        "views/shred_bin_views.xml",
         "views/barcode_views.xml",
         "views/barcode_menus.xml",
         "views/fsm_task_views.xml",

@@ -16,112 +16,14 @@ Key Features:
 - Document attachment support with secure file handling
 - Integration with FSM (Field Service Management) for service requests
 
-Business Processes:
-1. Request Submission: Customers submit requests through portal with required documentation
-2. Request Triage: Automatic priority assignment and routing to appropriate teams
-3. Processing Workflow: Internal teams process requests with status updates and communications
-4. E-Signature Collection: Secure signature collection for authorization and confirmation
-5. Service Delivery: Integration with field service teams for physical service delivery
-6. Resolution Tracking: Complete resolution documentation with customer confirmation
-7. SLA Monitoring: Automated tracking of response times and escalation management
-
-Request Types:
-- Retrieval Requests: Document and container retrieval from storage locations
-- Destruction Requests: Secure destruction services with NAID compliance
-- Service Requests: General services including pickup, delivery, and consultation
-- Inventory Requests: Inventory management and reporting services
-- General Requests: Miscellaneous customer service and support requests
-
-E-Signature Integration:
-- Legal-compliant electronic signature collection and validation
-- Multi-party signature support for complex authorization workflows
-- Tamper-proof signature storage with audit trail maintenance
-- Integration with certificate authorities for signature validation
-- Mobile-friendly signature capture with touch and stylus support
-
-Portal Features:
-- Customer self-service portal with request submission and tracking
-- Real-time status updates with automated email and SMS notifications
-- Document attachment and upload capabilities with virus scanning
-- Request history and analytics with reporting dashboards
-- Mobile-responsive design for access from any device
-
-Technical Implementation:
-- Modern Odoo 18.0 patterns with comprehensive validation frameworks
-- Secure file handling with virus scanning and access controls
-- Mail framework integration for notifications and activity tracking
-- Priority-based workflow management with automated escalation
-- Integration with FSM and service management systems
-
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-try:
-    from odoo import models, fields, api, _
-    from odoo.exceptions import UserError, ValidationError
-except ImportError:
-    # Development environment without Odoo installation
-    # This allows the file to be parsed without errors in VS Code
-    class MockOdoo:
-        class models:
-            class Model:
-                pass
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 
-        class fields:
-            Char = str
-            Many2one = str
-            Boolean = bool
-            Text = str
-            Integer = int
-            Float = float
-            Date = str
-            Datetime = str
-            Selection = str
-            Binary = bytes
-            Monetary = float
-            One2many = str
-            Many2many = str
-
-        class api:
-            @staticmethod
-            def depends(*_args):
-                return lambda f: f
-
-            @staticmethod
-            def model_create_multi(f):
-                return f
-
-            @staticmethod
-            def constrains(*_args):
-                return lambda f: f
-
-            @staticmethod
-            def onchange(*_args):
-                return lambda f: f
-
-            @staticmethod
-            def model(f):
-                return f
-
-            @staticmethod
-            def multi(f):
-                return f
-
-    def _(*args):
-        return str(*args) if args else ""
-
-    import sys
-
-    sys.modules["odoo"] = MockOdoo()
-    from odoo import models, fields, api, _
-
-    class UserError(Exception):
-        pass
-
-    class ValidationError(Exception):
-        pass
 
 class PortalRequest(models.Model):
     _name = "portal.request"
@@ -133,17 +35,17 @@ class PortalRequest(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Request #", required=True, tracking=True, index=True),
-    reference = fields.Char(string="Reference", index=True, tracking=True),
-    description = fields.Text(string="Description"),
-    sequence = fields.Integer(string="Sequence", default=10),
-    active = fields.Boolean(string="Active", default=True),
+    name = fields.Char(string="Request #", required=True, tracking=True, index=True)
+    reference = fields.Char(string="Reference", index=True, tracking=True)
+    description = fields.Text(string="Description")
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    ),
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
@@ -164,7 +66,7 @@ class PortalRequest(models.Model):
             ("completed", "Completed"),
             ("rejected", "Rejected"),
             ("cancelled", "Cancelled"),
-        ]),
+        ],
         string="Status",
         default="draft",
         required=True,
@@ -175,7 +77,6 @@ class PortalRequest(models.Model):
     # ============================================================================
     # REQUEST DETAILS
     # ============================================================================
-    )
     request_type = fields.Selection(
         [
             ("destruction", "Document Destruction"),
@@ -186,7 +87,7 @@ class PortalRequest(models.Model):
             ("consultation", "Consultation"),
             ("audit", "Compliance Audit"),
             ("other", "Other"),
-        ]),
+        ],
         string="Request Type",
         required=True,
         tracking=True,
@@ -201,9 +102,7 @@ class PortalRequest(models.Model):
         index=True,
     )
 
-    )
-
-    urgency_reason = fields.Text(string="Urgency Reason"),
+    urgency_reason = fields.Text(string="Urgency Reason")
     internal_notes = fields.Text(string="Internal Notes")
     public_notes = fields.Text(string="Public Notes", tracking=True)
 
@@ -212,20 +111,22 @@ class PortalRequest(models.Model):
     # ============================================================================
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True, index=True
-    ),
+    )
     contact_person = fields.Char(string="Contact Person", tracking=True)
-    contact_email = fields.Char(string="Contact Email", tracking=True),
+    contact_email = fields.Char(string="Contact Email", tracking=True)
     contact_phone = fields.Char(string="Contact Phone", tracking=True)
     notification_email = fields.Char(string="Notification Email")
+    assigned_to = fields.Char(string="Assigned To", tracking=True)
 
     # ============================================================================
     # SCHEDULING & TIMING
     # ============================================================================
-    requested_date = fields.Datetime(string="Requested Date", tracking=True),
+    requested_date = fields.Datetime(string="Requested Date", tracking=True)
     scheduled_date = fields.Datetime(string="Scheduled Date", tracking=True)
-    deadline = fields.Datetime(string="Deadline", tracking=True),
+    deadline = fields.Datetime(string="Deadline", tracking=True)
     completion_date = fields.Datetime(string="Completion Date", tracking=True)
-    estimated_hours = fields.Float(string="Estimated Hours"),
+    due_date = fields.Date(string="Due Date", tracking=True)
+    estimated_hours = fields.Float(string="Estimated Hours")
     actual_hours = fields.Float(string="Actual Hours")
 
     # ============================================================================
@@ -235,19 +136,20 @@ class PortalRequest(models.Model):
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
-    ),
+    )
     estimated_cost = fields.Monetary(
-        string="Estimated Cost", currency_field="currency_id", tracking=True)
+        string="Estimated Cost", currency_field="currency_id", tracking=True
+    )
     actual_cost = fields.Monetary(
         string="Actual Cost", currency_field="currency_id", tracking=True
-    ),
+    )
     billing_status = fields.Selection(
         [
             ("not_billable", "Not Billable"),
             ("to_bill", "To Bill"),
             ("billed", "Billed"),
             ("paid", "Paid"),
-        ]),
+        ],
         string="Billing Status",
         default="not_billable",
         tracking=True,
@@ -256,29 +158,29 @@ class PortalRequest(models.Model):
     # ============================================================================
     # DOCUMENT & SERVICE SPECIFICATIONS
     # ============================================================================
-    document_count = fields.Integer(string="Document Count"),
+    document_count = fields.Integer(string="Document Count")
     box_count = fields.Integer(string="Box Count")
     weight_estimate = fields.Float(string="Weight Estimate (lbs)")
-    service_location = fields.Char(string="Service Location"),
+    service_location = fields.Char(string="Service Location")
     access_instructions = fields.Text(string="Access Instructions")
     special_requirements = fields.Text(string="Special Requirements")
 
     # ============================================================================
     # APPROVAL & WORKFLOW
     # ============================================================================
-    approval_required = fields.Boolean(string="Approval Required", default=False),
+    approval_required = fields.Boolean(string="Approval Required", default=False)
     approved_by = fields.Many2one("res.users", string="Approved By", tracking=True)
-    approval_date = fields.Datetime(string="Approval Date", tracking=True),
+    approval_date = fields.Datetime(string="Approval Date", tracking=True)
     rejection_reason = fields.Text(string="Rejection Reason", tracking=True)
 
     # ============================================================================
     # E-SIGNATURE FIELDS
     # ============================================================================
-    signature_required = fields.Boolean(string="Signature Required", default=False),
+    signature_required = fields.Boolean(string="Signature Required", default=False)
     customer_signature = fields.Binary(string="Customer Signature")
-    customer_signature_date = fields.Datetime(string="Customer Signature Date"),
+    customer_signature_date = fields.Datetime(string="Customer Signature Date")
     technician_signature = fields.Binary(string="Technician Signature")
-    technician_signature_date = fields.Datetime(string="Technician Signature Date"),
+    technician_signature_date = fields.Datetime(string="Technician Signature Date")
     signed_document = fields.Binary(string="Signed Document")
 
     # ============================================================================
@@ -287,31 +189,47 @@ class PortalRequest(models.Model):
     requires_naid_compliance = fields.Boolean(
         string="NAID Compliance Required", default=False
     )
-    )
-    compliance_notes = fields.Text(string="Compliance Notes"),
+    compliance_notes = fields.Text(string="Compliance Notes")
     audit_trail = fields.Text(string="Audit Trail")
-    certificate_of_destruction = fields.Binary(string="Certificate of Destruction"),
-    tracking_number = fields.Char(string="Tracking Number", index=True)
+    certificate_of_destruction = fields.Binary(string="Certificate of Destruction")
 
     # ============================================================================
     # RELATIONSHIP FIELDS
-    # Relationship to service.item; see inverse field 'portal_request_ids' on service.item
-    service_item_id = fields.Many2one("service.item", string="Service Item")
-
     # ============================================================================
-    # Service connections
+    service_item_id = fields.Many2one("service.item", string="Service Item")
     shredding_service_id = fields.Many2one(
         "shredding.service", string="Related Shredding Service"
     )
-    )
     pickup_request_id = fields.Many2one(
         "pickup.request", string="Related Pickup Request"
-    ),
+    )
     work_order_id = fields.Many2one(
         "document.retrieval.work.order", string="Related Work Order"
     )
 
-    # Document attachments - Use computed Many2many for dynamic attachment list
+    # Parent-child request relationships
+    parent_request_id = fields.Many2one("portal.request", string="Parent Request")
+    child_request_ids = fields.One2many(
+        "portal.request", "parent_request_id", string="Child Requests"
+    )
+
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
+    child_request_count = fields.Integer(
+        string="Child Requests Count",
+        compute="_compute_child_request_count",
+        store=False,
+    )
+    attachment_count = fields.Integer(
+        string="Attachment Count", compute="_compute_attachment_count", store=False
     )
     attachment_ids = fields.Many2many(
         "ir.attachment",
@@ -319,33 +237,16 @@ class PortalRequest(models.Model):
         string="Attachments",
         store=False,
     )
-
-    # Parent-child request relationships
-    parent_request_id = fields.Many2one("portal.request", string="Parent Request"),
-    child_request_ids = fields.One2many(
-        "portal.request", "parent_request_id", string="Child Requests"
-    )
-
-    # Mail framework fields are provided by mail.thread inheritance
-    # Removed manual field definitions as they conflict with framework
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    )
-    child_request_count = fields.Integer(
-        string="Child Requests Count",
-        compute="_compute_child_request_count",
-        store=False,)
-    attachment_count = fields.Integer(
-        string="Attachment Count", compute="_compute_attachment_count", store=False
-    ),
     is_overdue = fields.Boolean(
-        string="Is Overdue", compute="_compute_is_overdue", store=False)
+        string="Is Overdue", compute="_compute_is_overdue", store=False
+    )
     time_variance = fields.Float(
         string="Time Variance (%)", compute="_compute_time_variance", store=False
     )
 
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
     @api.depends("id")
     def _compute_attachment_count(self):
         """Compute the number of attachments for this portal request."""
@@ -359,7 +260,6 @@ class PortalRequest(models.Model):
         """Compute whether the portal request is overdue based on due date and current state."""
         for record in self:
             if record.due_date and record.state not in ("completed", "cancelled"):
-                )
                 today = fields.Date.context_today(record)
                 record.is_overdue = record.due_date < today
             else:
@@ -407,7 +307,7 @@ class PortalRequest(models.Model):
                 vals["name"] = (
                     self.env["ir.sequence"].next_by_code("portal.request") or "REQ/"
                 )
-        return super().create(vals_list)
+        return super(PortalRequest, self).create(vals_list)
 
     def _get_default_values(self):
         """Return default values for portal request creation."""
@@ -431,7 +331,7 @@ class PortalRequest(models.Model):
         """Set the portal request to under review state."""
         self.ensure_one()
         if self.state != "submitted":
-            raise UserError(_("Only submitted requests can be reviewed.")
+            raise UserError(_("Only submitted requests can be reviewed."))
         self.write({"state": "under_review"})
 
     def action_approve(self):
@@ -457,9 +357,9 @@ class PortalRequest(models.Model):
         """Start processing the approved portal request."""
         self.ensure_one()
         if self.state != "approved":
-            raise UserError(_("Only approved requests can be started.")
+            raise UserError(_("Only approved requests can be started."))
         self.write({"state": "in_progress"})
-)
+
     def action_complete(self):
         """Complete the portal request and finalize billing."""
         self.ensure_one()
@@ -471,7 +371,7 @@ class PortalRequest(models.Model):
         """Cancel the portal request if not already completed."""
         self.ensure_one()
         if self.state in ["completed"]:
-            raise UserError(_("Completed requests cannot be cancelled.")
+            raise UserError(_("Completed requests cannot be cancelled."))
         self.write({"state": "cancelled"})
 
     def action_duplicate(self):
@@ -488,6 +388,70 @@ class PortalRequest(models.Model):
             "view_mode": "tree,form",
             "domain": [("res_model", "=", self._name), ("res_id", "=", self.id)],
             "context": {"default_res_model": self._name, "default_res_id": self.id},
+        }
+
+    def action_start_processing(self):
+        """Start Processing - State management action"""
+        self.ensure_one()
+
+        # Validate current state allows processing to start
+        if self.state not in ["submitted", "under_review", "approved"]:
+            raise UserError(
+                _(
+                    "Cannot start processing. Request must be in 'Submitted', "
+                    "'Under Review', or 'Approved' state. Current state: %s"
+                )
+                % dict(self._fields["state"].selection).get(self.state)
+            )
+
+        # Validate required fields for processing
+        if not self.partner_id:
+            raise UserError(_("Customer is required to start processing."))
+        if not self.request_type:
+            raise UserError(_("Request type is required to start processing."))
+
+        # Update state to in_progress
+        self.write(
+            {
+                "state": "in_progress",
+                "user_id": self.env.user.id,  # Assign current user as processor
+            }
+        )
+
+        # Create activity for tracking
+        self.activity_schedule(
+            "mail.mail_activity_data_todo",
+            summary=_("Process Request: %s") % self.name,
+            note=_("Request processing has started. Type: %s")
+            % dict(self._fields["request_type"].selection).get(self.request_type),
+            user_id=self.user_id.id,
+        )
+
+        # Post message to chatter
+        self.message_post(
+            body=_("Processing started by %s") % self.env.user.name,
+            message_type="notification",
+        )
+
+        # Auto-create work order if needed
+        if (
+            self.request_type in ["destruction", "retrieval", "shredding"]
+            and not self.work_order_id
+        ):
+            self._create_work_order()
+
+        return True
+
+    def action_escalate(self):
+        """Escalate - Action method"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Escalate"),
+            "res_model": "portal.request",
+            "view_mode": "form",
+            "target": "new",
+            "context": self.env.context,
         }
 
     # ============================================================================
@@ -562,113 +526,8 @@ class PortalRequest(models.Model):
             self.billing_status = "billed"
 
     # ============================================================================
-    # AUTO-GENERATED ACTION METHODS (from comprehensive validation)
+    # UTILITY METHODS
     # ============================================================================
-    def action_start_processing(self):
-        """Start Processing - State management action"""
-        self.ensure_one()
-
-        # Validate current state allows processing to start
-        if self.state not in ["submitted", "under_review", "approved"]:
-            raise UserError(
-                _(
-                    "Cannot start processing. Request must be in 'Submitted', "
-                    "'Under Review', or 'Approved' state. Current state: %s"
-                )
-                % dict(self._fields["state"].selection).get(self.state)
-            )
-
-        # Validate required fields for processing
-        if not self.partner_id:
-            raise UserError(_("Customer is required to start processing.")
-        if not self.request_type:
-            raise UserError(_("Request type is required to start processing.")
-        # Update state to in_progress
-        self.write(
-            {
-                "state": "in_progress",
-                "user_id": self.env.user.id,  # Assign current user as processor
-            }
-        )
-
-        # Create activity for tracking
-        self.activity_schedule(
-            "mail.mail_activity_data_todo",
-            summary=_("Process Request: %s") % self.name,
-            note=_("Request processing has started. Type: %s")
-            % dict(self._fields["request_type"].selection).get(self.request_type),
-            user_id=self.user_id.id,
-        )
-
-        # Post message to chatter
-        self.message_post(
-            body=_("Processing started by %s") % self.env.user.name,
-            message_type="notification",
-        )
-
-        # Auto-create work order if needed
-        if (
-            self.request_type in ["destruction", "retrieval", "shredding"]
-            and not self.work_order_id
-        ):
-            self._create_work_order()
-
-        return True
-
-    # ============================================================================
-    # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================
-
-    def action_escalate(self):
-        """Escalate - Action method"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Escalate"),
-            "res_model": "portal.request",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        }
-
-    # ============================================================================
-    # VALIDATION METHODS
-    # ============================================================================
-    @api.constrains("deadline", "requested_date")
-    def _check_dates(self):
-        """Validate that deadline is not before requested date."""
-        for record in self:
-            if (
-                record.deadline
-                and record.requested_date
-                and record.deadline < record.requested_date
-            ):
-                raise ValidationError(
-                    _("Deadline cannot be before the requested date.")
-                )
-
-    @api.constrains("estimated_cost", "actual_cost")
-    def _check_costs(self):
-        """Validate that costs are not negative."""
-        for record in self:
-            if record.estimated_cost < 0 or record.actual_cost < 0:
-                raise ValidationError(_("Costs cannot be negative.")
-    @api.constrains("estimated_hours", "actual_hours")
-    def _check_hours(self):
-        """Validate that hours are not negative."""
-        for record in self:
-            if record.estimated_hours < 0 or record.actual_hours < 0:
-                raise ValidationError(_("Hours cannot be negative.")
-    # ============================================================================
-    # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================
-    assigned_to = fields.Char(string="Assigned To", tracking=True),
-    due_date = fields.Date(string="Due Date", tracking=True)
-
-    # ============================================================================
-    # MISSING UTILITY METHODS
-    # ============================================================================
-
     @api.onchange("partner_id")
     def _onchange_partner_id(self):
         """Update contact fields when partner changes"""
@@ -793,7 +652,7 @@ class PortalRequest(models.Model):
                 "mail.mail_activity_data_call",
                 summary=_("Overdue Request: %s") % request.name,
                 note=_("This request is overdue. Deadline was: %s") % request.deadline,
-                user_id=request.user_id.id or self.env.user.id,)
+                user_id=request.user_id.id or self.env.user.id,
                 date_deadline=fields.Date.today(),
             )
 
@@ -805,3 +664,33 @@ class PortalRequest(models.Model):
                 )
                 if template:
                     template.send_mail(request.id, force_send=True)
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("deadline", "requested_date")
+    def _check_dates(self):
+        """Validate that deadline is not before requested date."""
+        for record in self:
+            if (
+                record.deadline
+                and record.requested_date
+                and record.deadline < record.requested_date
+            ):
+                raise ValidationError(
+                    _("Deadline cannot be before the requested date.")
+                )
+
+    @api.constrains("estimated_cost", "actual_cost")
+    def _check_costs(self):
+        """Validate that costs are not negative."""
+        for record in self:
+            if record.estimated_cost < 0 or record.actual_cost < 0:
+                raise ValidationError(_("Costs cannot be negative."))
+
+    @api.constrains("estimated_hours", "actual_hours")
+    def _check_hours(self):
+        """Validate that hours are not negative."""
+        for record in self:
+            if record.estimated_hours < 0 or record.actual_hours < 0:
+                raise ValidationError(_("Hours cannot be negative."))

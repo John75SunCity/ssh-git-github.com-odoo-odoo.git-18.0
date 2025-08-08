@@ -36,7 +36,8 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from datetime import datetime, timedelta  # pyright: ignore[reportUnusedImport]
+from datetime import datetime
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
@@ -53,9 +54,9 @@ class RecordsBillingConfig(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Configuration Name", required=True, tracking=True, index=True
-    ),
+    )
     code = fields.Char(string="Configuration Code", index=True, tracking=True)
-    description = fields.Text(string="Description"),
+    description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
     active = fields.Boolean(string="Active", default=True)
 
@@ -68,7 +69,7 @@ class RecordsBillingConfig(models.Model):
         default=lambda self: self.env.company,
         required=True,
         index=True,
-    ),
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Billing Manager",
@@ -86,7 +87,7 @@ class RecordsBillingConfig(models.Model):
             ("active", "Active"),
             ("suspended", "Suspended"),
             ("archived", "Archived"),
-        ]),
+        ],
         string="State",
         default="draft",
         tracking=True,
@@ -95,14 +96,13 @@ class RecordsBillingConfig(models.Model):
     # ============================================================================
     # BILLING CONFIGURATION
     # ============================================================================
-    )
     billing_frequency = fields.Selection(
         [
             ("monthly", "Monthly"),
             ("quarterly", "Quarterly"),
             ("annually", "Annually"),
             ("on_demand", "On Demand"),
-        ]),
+        ],
         string="Billing Frequency",
         default="monthly",
     )
@@ -112,11 +112,9 @@ class RecordsBillingConfig(models.Model):
             ("1", "1st of Month"),
             ("15", "15th of Month"),
             ("30", "Last Day of Month"),
-        ]),
+        ],
         string="Billing Day",
         default="1",
-    )
-
     )
 
     currency_id = fields.Many2one(
@@ -131,11 +129,12 @@ class RecordsBillingConfig(models.Model):
         string="Default Storage Rate",
         currency_field="currency_id",
         help="Default monthly storage rate per box",
-    ),
+    )
     default_retrieval_rate = fields.Monetary(
         string="Default Retrieval Rate",
         currency_field="currency_id",
-        help="Default rate per retrieval request",)
+        help="Default rate per retrieval request",
+    )
     default_destruction_rate = fields.Monetary(
         string="Default Destruction Rate",
         currency_field="currency_id",
@@ -145,18 +144,15 @@ class RecordsBillingConfig(models.Model):
     # ============================================================================
     # ADVANCED SETTINGS
     # ============================================================================
-    )
     auto_invoice = fields.Boolean(
         string="Auto Generate Invoices",
         default=True,
         help="Automatically generate invoices based on billing frequency",
-    ),
+    )
     prorate_charges = fields.Boolean(
         string="Prorate Charges",
         default=True,
         help="Prorate charges for partial billing periods",
-    )
-
     )
 
     minimum_charge = fields.Monetary(
@@ -170,15 +166,16 @@ class RecordsBillingConfig(models.Model):
         string="Enable Prepaid Billing",
         default=False,
         help="Allow customers to prepay for services",
-    ),
+    )
     prepaid_discount_rate = fields.Float(
         string="Prepaid Discount Rate (%)",
-        help="Discount percentage for prepaid services",)
+        help="Discount percentage for prepaid services",
+    )
     prepaid_minimum_months = fields.Integer(
         string="Minimum Prepaid Months",
         default=3,
         help="Minimum months required for prepaid billing",
-    ),
+    )
     prepaid_maximum_months = fields.Integer(
         string="Maximum Prepaid Months",
         default=24,
@@ -188,32 +185,25 @@ class RecordsBillingConfig(models.Model):
     # ============================================================================
     # AUDIT & COMPLIANCE
     # ============================================================================
-    audit_trail = fields.Text(
-        string="Audit Trail", readonly=True, help="Log of configuration changes"
-    )
+    audit_trail_ids = fields.One2many(
+        "records.billing.config.audit",
+        "config_id",
+        string="Audit Trail",
+        readonly=True,
+        help="Log of configuration changes. This field is readonly and is updated programmatically via the _log_audit_trail method.",
     )
     last_modified_date = fields.Datetime(
         string="Last Modified",
         default=lambda self: fields.Datetime.now(),
-        readonly=True,)
+        readonly=True,
+    )
     last_modified_by = fields.Many2one(
         "res.users", string="Last Modified By", readonly=True
     )
 
-    def write(self, vals):
-        vals["last_modified_date"] = fields.Datetime.now()
-        vals["last_modified_by"] = self.env.user.id
-        return super(RecordsBillingConfig, self).write(vals)
-
-    def create(self, vals):
-        vals["last_modified_date"] = fields.Datetime.now()
-        vals["last_modified_by"] = self.env.user.id
-        return super(RecordsBillingConfig, self).create(vals)
-
     # ============================================================================
     # RELATIONSHIP FIELDS (PROPER ODOO 18.0 PATTERNS)
     # ============================================================================
-    )
     partner_ids = fields.Many2many(
         "res.partner",
         "billing_config_partner_rel",
@@ -228,26 +218,42 @@ class RecordsBillingConfig(models.Model):
     )
 
     # Mail Framework Fields (SECURE - No domains needed)
-    )
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers", groups="base.group_user"
     )
 
-    @api.depends("state", "active")
-    def _compute_is_active_config(self):
-        for record in self:
-            record.is_active_config = record.active and record.state == "active"
-
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
     customer_count = fields.Integer(
         string="Customer Count", compute="_compute_customer_count", store=True
-    ),
+    )
     rate_count = fields.Integer(
-        string="Rate Lines Count", compute="_compute_rate_count", store=True)
+        string="Rate Lines Count", compute="_compute_rate_count", store=True
+    )
     is_active_config = fields.Boolean(
         string="Is Active Configuration",
         compute="_compute_is_active_config",
         store=True,
     )
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("partner_ids")
+    def _compute_customer_count(self):
+        for record in self:
+            record.customer_count = len(record.partner_ids)
+
+    @api.depends("rate_line_ids")
+    def _compute_rate_count(self):
+        for record in self:
+            record.rate_count = len(record.rate_line_ids)
+
+    @api.depends("state", "active")
+    def _compute_is_active_config(self):
+        for record in self:
+            record.is_active_config = record.active and record.state == "active"
 
     # ============================================================================
     # VALIDATION METHODS
@@ -266,38 +272,56 @@ class RecordsBillingConfig(models.Model):
                     )
 
     @api.constrains(
-        "default_storage_rate", "default_retrieval_rate", "default_destruction_rate")
+        "default_storage_rate", "default_retrieval_rate", "default_destruction_rate"
+    )
     def _check_default_rates(self):
         for record in self:
             if record.default_storage_rate < 0:
-                raise ValidationError(_("Storage rate cannot be negative")
+                raise ValidationError(_("Storage rate cannot be negative"))
             if record.default_retrieval_rate < 0:
-                raise ValidationError(_("Retrieval rate cannot be negative")
+                raise ValidationError(_("Retrieval rate cannot be negative"))
             if record.default_destruction_rate < 0:
-                raise ValidationError(_("Destruction rate cannot be negative")
+                raise ValidationError(_("Destruction rate cannot be negative"))
+
     @api.constrains("prepaid_discount_rate")
     def _check_discount_rate(self):
         for record in self:
             if record.prepaid_enabled and (
                 record.prepaid_discount_rate < 0 or record.prepaid_discount_rate > 100
             ):
-                raise ValidationError(_("Discount rate must be between 0 and 100")
+                raise ValidationError(_("Discount rate must be between 0 and 100"))
+
+    # ============================================================================
+    # OVERRIDE METHODS
+    # ============================================================================
+    def write(self, vals):
+        # Only update audit fields if not a system or bulk update
+        if not self.env.context.get("skip_audit_update"):
+            vals["last_modified_date"] = fields.Datetime.now()
+            vals["last_modified_by"] = self.env.user.id
+        return super(RecordsBillingConfig, self).write(vals)
+
+    @api.model
+    def create(self, vals):
+        vals["last_modified_date"] = fields.Datetime.now()
+        vals["last_modified_by"] = self.env.user.id
+        return super(RecordsBillingConfig, self).create(vals)
+
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================
     def _log_audit_trail(self, action, details=""):
-        """Log actions to audit trail with proper formatting"""
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        user = self.env.user.name
-        log_entry = f"[{timestamp}] {user}: {action}"
-        if details:
-            log_entry += f" - {details}"
-
-        current_audit = self.audit_trail or ""
-        if current_audit:
-            self.audit_trail = f"{current_audit}\n{log_entry}"
-        else:
-            self.audit_trail = log_entry
+        """Log actions to audit trail using related audit model"""
+        self.ensure_one()
+        self.env["records.billing.config.audit"].create(
+            {
+                "config_id": self.id,
+                "action": action,
+                "details": details,
+                "user_id": self.env.user.id,
+                "timestamp": fields.Datetime.now(),
+            }
+        )
 
     def calculate_storage_cost(self, box_count, months=1):
         """Calculate storage cost based on configuration"""
@@ -334,7 +358,7 @@ class RecordsBillingConfig(models.Model):
         """Activate billing configuration"""
         self.ensure_one()
         if self.state != "draft":
-            raise UserError(_("Only draft configurations can be activated")
+            raise UserError(_("Only draft configurations can be activated"))
         self._log_audit_trail("Configuration Activated")
         self.write(
             {
@@ -348,7 +372,7 @@ class RecordsBillingConfig(models.Model):
         """Suspend billing configuration"""
         self.ensure_one()
         if self.state != "active":
-            raise UserError(_("Only active configurations can be suspended")
+            raise UserError(_("Only active configurations can be suspended"))
         self._log_audit_trail("Configuration Suspended")
         self.write(
             {
@@ -439,6 +463,26 @@ class RecordsBillingConfig(models.Model):
         }
 
 
+class RecordsBillingConfigAudit(models.Model):
+    _name = "records.billing.config.audit"
+    _description = "Billing Configuration Audit Trail"
+    _order = "timestamp desc"
+
+    config_id = fields.Many2one(
+        "records.billing.config",
+        string="Configuration",
+        required=True,
+        ondelete="cascade",
+        index=True,
+    )
+    action = fields.Char(string="Action", required=True)
+    details = fields.Text(string="Details")
+    user_id = fields.Many2one("res.users", string="User", required=True)
+    timestamp = fields.Datetime(
+        string="Timestamp", required=True, default=lambda self: fields.Datetime.now()
+    )
+
+
 class RecordsBillingConfigLine(models.Model):
     _name = "records.billing.config.line"
     _description = "Billing Configuration Line"
@@ -447,14 +491,14 @@ class RecordsBillingConfigLine(models.Model):
     # ============================================================================
     # CORE FIELDS
     # ============================================================================
-    )
     config_id = fields.Many2one(
         "records.billing.config",
         string="Configuration",
         required=True,
         ondelete="cascade",
-        index=True,)
-    sequence = fields.Integer(string="Sequence", default=10),
+        index=True,
+    )
+    sequence = fields.Integer(string="Sequence", default=10)
     service_type = fields.Selection(
         [
             ("storage", "Storage"),
@@ -462,21 +506,15 @@ class RecordsBillingConfigLine(models.Model):
             ("destruction", "Destruction"),
             ("scanning", "Scanning"),
             ("delivery", "Delivery"),
-        ]),
+        ],
         string="Service Type",
         required=True,
     )
-
-    )
-
-    name = fields.Char(string="Service Name", required=True),
+    name = fields.Char(string="Service Name", required=True)
     rate = fields.Monetary(string="Rate", currency_field="currency_id", required=True)
     currency_id = fields.Many2one(
         "res.currency", related="config_id.currency_id", store=True, readonly=True
     )
-
-    )
-
     unit_type = fields.Selection(
         [
             ("per_box", "Per Box"),
@@ -484,23 +522,25 @@ class RecordsBillingConfigLine(models.Model):
             ("per_item", "Per Item"),
             ("per_hour", "Per Hour"),
             ("flat_rate", "Flat Rate"),
-        ]),
+        ],
         string="Unit Type",
         required=True,
         default="per_box",
     )
-
     active = fields.Boolean(string="Active", default=True)
 
+    # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
     @api.constrains("rate")
     def _check_rate(self):
         for record in self:
             if record.rate < 0:
-                raise ValidationError(_("Rate cannot be negative")
+                raise ValidationError(_("Rate cannot be negative"))
+
     # ============================================================================
-    # DISPLAY METHODS)
+    # DISPLAY METHODS
+    # ============================================================================
     def name_get(self):
         result = []
         for record in self:
@@ -510,7 +550,5 @@ class RecordsBillingConfigLine(models.Model):
                 else ""
             )
             name = f"{record.name} ({record.service_type.title()}) - {record.rate} {currency_symbol}"
-            result.append((record.id, name)
+            result.append((record.id, name))
         return result
-        return result
-        return result)

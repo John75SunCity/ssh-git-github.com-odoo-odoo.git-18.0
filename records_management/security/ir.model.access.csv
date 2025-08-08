@@ -27,3 +27,33 @@ access_res_partner_search,access_res_partner_search,base.model_res_partner,base.
 # Portal users are restricted to read-only access on res.partner records.
 access_res_partner_portal_search,access_res_partner_portal_search,base.model_res_partner,base.group_portal,1,0,0,0
 access_res_partner_portal_search,access_res_partner_portal_search,base.model_res_partner,base.group_portal,1,0,0,0
+
+# ============================================================================
+# SHRED BIN MANAGEMENT ACCESS RULES
+# ============================================================================
+# Regular users can read, write, and create shred bins but cannot delete them
+access_shred_bin_user,access_shred_bin_user,model_shred_bin,base.group_user,1,1,1,0
+# Managers and system users have full access including deletion
+access_shred_bin_manager,access_shred_bin_manager,model_shred_bin,base.group_system,1,1,1,1
+# Portal users can read shred bins assigned to their company but cannot modify
+access_shred_bin_portal,access_shred_bin_portal,model_shred_bin,base.group_portal,1,0,0,0
+
+# ============================================================================
+# BIN KEY MANAGEMENT ACCESS RULES
+# ============================================================================
+# Regular users can read and write bin keys but cannot create or delete
+access_bin_key_user,access_bin_key_user,model_bin_key,base.group_user,1,1,0,0
+# Managers have full access to bin key management
+access_bin_key_manager,access_bin_key_manager,model_bin_key,base.group_system,1,1,1,1
+# Portal users have no access to bin keys for security reasons
+access_bin_key_portal,access_bin_key_portal,model_bin_key,base.group_portal,0,0,0,0
+
+# ============================================================================
+# BIN UNLOCK SERVICE ACCESS RULES
+# ============================================================================
+# Regular users can read, write, and create unlock services but cannot delete
+access_bin_unlock_service_user,access_bin_unlock_service_user,model_bin_unlock_service,base.group_user,1,1,1,0
+# Managers have full access to unlock services
+access_bin_unlock_service_manager,access_bin_unlock_service_manager,model_bin_unlock_service,base.group_system,1,1,1,1
+# Portal users can read unlock services for their bins and create requests
+access_bin_unlock_service_portal,access_bin_unlock_service_portal,model_bin_unlock_service,base.group_portal,1,1,1,0
