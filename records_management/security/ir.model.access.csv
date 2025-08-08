@@ -2,6 +2,13 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 # ============================================================================
 # CORE RECORDS MANAGEMENT ACCESS RULES
 # ============================================================================
+# System Diagram Data Access (for interactive flowchart)
+access_system_diagram_data_user,access_system_diagram_data_user,model_system_diagram_data,records_management.group_records_user,1,1,1,0
+access_system_diagram_data_manager,access_system_diagram_data_manager,model_system_diagram_data,records_management.group_records_manager,1,1,1,1
+access_system_diagram_data_system,access_system_diagram_data_system,model_system_diagram_data,base.group_system,1,1,1,1
+# System Flowchart Wizard Access
+access_system_flowchart_wizard_user,access_system_flowchart_wizard_user,model_system_flowchart_wizard,records_management.group_records_user,1,1,1,1
+access_system_flowchart_wizard_manager,access_system_flowchart_wizard_manager,model_system_flowchart_wizard,records_management.group_records_manager,1,1,1,1
 # ============================================================================
 # NOTE: For all access rules, perm_unlink is set to 0 for user/portal groups and 1 for manager/system groups.
 # This ensures only managers/system users can delete records, while regular users and portal users cannot.

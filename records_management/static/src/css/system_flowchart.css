@@ -1,0 +1,445 @@
+/**
+ * System Flowchart View Styles
+ * 
+ * Custom styles for the interactive Records Management System flowchart view
+ * providing a modern, professional appearance with responsive design.
+ */
+
+/* =============================================================================
+   Main Container Styles
+   ============================================================================= */
+
+.o_system_flowchart_view {
+    padding: 15px;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Control Panel */
+.o_flowchart_control_panel {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.o_flowchart_control_panel .input-group {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.o_flowchart_control_panel .o_search_input {
+    border: none;
+    box-shadow: none;
+}
+
+.o_flowchart_control_panel .o_search_input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Legend */
+.o_flowchart_legend {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #007bff;
+}
+
+.o_flowchart_legend .badge {
+    margin-right: 8px;
+    margin-left: 5px;
+}
+
+/* =============================================================================
+   Flowchart Container Styles
+   ============================================================================= */
+
+.o_flowchart_container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Loading States */
+.o_loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.o_progress {
+    width: 300px;
+    margin-bottom: 20px;
+}
+
+.o_progress .progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #e9ecef;
+}
+
+.o_progress .progress-bar {
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    transition: width 0.3s ease;
+}
+
+.o_progress_text {
+    color: #6c757d;
+    font-weight: 500;
+    margin-top: 8px;
+    display: block;
+}
+
+/* =============================================================================
+   Information Panel Styles
+   ============================================================================= */
+
+.o_flowchart_info_panel .card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.o_flowchart_info_panel .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.o_flowchart_info_panel .card-title {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.o_system_status i,
+.o_active_users .h4,
+.o_model_count .h4,
+.o_access_rules .h4 {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* =============================================================================
+   Tooltip Styles
+   ============================================================================= */
+
+.o_tooltip {
+    background: rgba(0, 0, 0, 0.9) !important;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    z-index: 1000;
+    max-width: 250px;
+    word-wrap: break-word;
+}
+
+.o_tooltip::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px 5px 0 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+}
+
+/* =============================================================================
+   Dialog and Node Details Styles
+   ============================================================================= */
+
+.o_node_details {
+    padding: 20px;
+    max-width: 600px;
+}
+
+.o_node_details h5 {
+    color: #343a40;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.o_node_details .row {
+    margin-bottom: 10px;
+}
+
+.o_node_details strong {
+    color: #495057;
+    font-weight: 600;
+}
+
+.o_node_details .badge {
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 12px;
+}
+
+.o_node_details .access-indicator .badge {
+    font-size: 12px;
+    padding: 8px 15px;
+}
+
+.o_node_details .list-unstyled li {
+    padding: 3px 0;
+    color: #6c757d;
+}
+
+.o_node_details .list-unstyled i {
+    width: 16px;
+    margin-right: 8px;
+}
+
+/* =============================================================================
+   Search Results Styles
+   ============================================================================= */
+
+.o_search_results {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.o_search_results .list-group-item {
+    border: none;
+    border-bottom: 1px solid #e9ecef;
+    padding: 15px 20px;
+}
+
+.o_search_results .list-group-item:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+.o_search_results .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.o_search_results h6 {
+    color: #343a40;
+    font-weight: 600;
+}
+
+/* =============================================================================
+   Help Styles
+   ============================================================================= */
+
+.o_flowchart_help {
+    max-width: 700px;
+    padding: 20px;
+}
+
+.o_flowchart_help h5 {
+    color: #343a40;
+    margin-bottom: 20px;
+}
+
+.o_flowchart_help h6 {
+    color: #495057;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.o_flowchart_help ul {
+    margin-bottom: 20px;
+}
+
+.o_flowchart_help li {
+    padding: 3px 0;
+    color: #6c757d;
+}
+
+.o_flowchart_help strong {
+    color: #343a40;
+}
+
+/* =============================================================================
+   Responsive Design
+   ============================================================================= */
+
+@media (max-width: 768px) {
+    .o_system_flowchart_view {
+        padding: 10px;
+    }
+    
+    .o_flowchart_control_panel {
+        padding: 15px;
+    }
+    
+    .o_flowchart_container {
+        height: 400px !important;
+    }
+    
+    .o_flowchart_control_panel .col-md-4 {
+        text-align: left !important;
+        margin-top: 15px;
+    }
+    
+    .o_flowchart_info_panel .card {
+        margin-bottom: 15px;
+    }
+    
+    .o_loading {
+        padding: 20px;
+    }
+    
+    .o_progress {
+        width: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .o_flowchart_container {
+        height: 300px !important;
+    }
+    
+    .o_flowchart_legend {
+        font-size: 12px;
+    }
+    
+    .o_flowchart_legend .badge {
+        font-size: 10px;
+        margin: 2px;
+    }
+}
+
+/* =============================================================================
+   Dark Mode Support (Optional)
+   ============================================================================= */
+
+@media (prefers-color-scheme: dark) {
+    .o_system_flowchart_view {
+        background: #1a1a1a;
+        color: #e9ecef;
+    }
+    
+    .o_flowchart_control_panel,
+    .o_flowchart_container {
+        background: #2d2d2d;
+        border-color: #404040;
+    }
+    
+    .o_flowchart_legend {
+        background: #343a40;
+        border-left-color: #0d6efd;
+    }
+    
+    .o_flowchart_info_panel .card {
+        background: #2d2d2d;
+        border-color: #404040;
+    }
+    
+    .o_loading {
+        background: rgba(45, 45, 45, 0.95);
+        color: #e9ecef;
+    }
+}
+
+/* =============================================================================
+   Animation and Transitions
+   ============================================================================= */
+
+.o_system_flowchart_view * {
+    transition: all 0.2s ease;
+}
+
+.o_flowchart_control_panel .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.o_flowchart_info_panel .card {
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.o_loading {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* =============================================================================
+   Vis.js Network Overrides
+   ============================================================================= */
+
+/* Custom node styles when vis.js loads */
+.vis-network {
+    outline: none;
+}
+
+.vis-network canvas {
+    border-radius: 8px;
+}
+
+/* Custom context menu styling if implemented */
+.vis-context-menu {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.vis-context-menu-item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e9ecef;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.vis-context-menu-item:hover {
+    background: #f8f9fa;
+}
+
+.vis-context-menu-item:last-child {
+    border-bottom: none;
+}
+
+/* =============================================================================
+   Print Styles
+   ============================================================================= */
+
+@media print {
+    .o_flowchart_control_panel,
+    .o_flowchart_info_panel {
+        display: none !important;
+    }
+    
+    .o_system_flowchart_view {
+        padding: 0;
+        background: white;
+    }
+    
+    .o_flowchart_container {
+        height: 800px !important;
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}

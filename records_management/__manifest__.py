@@ -143,6 +143,9 @@
         "views/stock_lot_views.xml",
         "views/visitor_pos_wizard_views.xml",
         "views/custom_box_volume_calculator_views.xml",
+        # System Analysis and Flowchart
+        "views/system_flowchart_views.xml",
+        "views/system_flowchart_wizard_views.xml",
         # Reports
         "report/records_reports.xml",
         "report/destruction_certificate_report.xml",
@@ -164,6 +167,10 @@
     ],
     "assets": {
         "web.assets_backend": [
+            # External Libraries
+            "records_management/static/src/lib/vis/vis-network.min.js",
+            "records_management/static/src/lib/vis/vis-network.min.css",
+            # Core Assets
             "records_management/static/src/scss/records_management.scss",
             "records_management/static/src/js/map_widget.js",
             "records_management/static/src/js/paper_load_progress_field.js",
@@ -173,9 +180,14 @@
             "records_management/static/src/js/field_label_customizer.js",
             "records_management/static/src/js/intelligent_search.js",
             "records_management/static/src/css/intelligent_search.css",
+            # System Flowchart
+            "records_management/static/src/js/system_flowchart_view.js",
+            "records_management/static/src/css/system_flowchart.css",
+            # Templates
             "records_management/static/src/xml/map_widget.xml",
             "records_management/static/src/xml/trailer_visualization.xml",
             "records_management/static/src/xml/intelligent_search_templates.xml",
+            "records_management/static/src/xml/system_flowchart_templates.xml",
         ],
         "web.assets_frontend": [
             "records_management/static/src/css/portal_tour.css",

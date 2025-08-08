@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- System Flowchart View Definition -->
+    <record id="view_system_flowchart" model="ir.ui.view">
+        <field name="name">system.diagram.data.flowchart</field>
+        <field name="model">system.diagram.data</field>
+        <field name="arch" type="xml">
+            <system_flowchart>
+                <field name="name"/>
+                <field name="search_query"/>
+                <field name="search_type"/>
+                <field name="show_access_only"/>
+                <field name="nodes_data"/>
+                <field name="edges_data"/>
+                <field name="diagram_config"/>
+            </system_flowchart>
+        </field>
+    </record>
+
+    <!-- Form View for System Diagram Configuration -->
+    <record id="view_system_diagram_form" model="ir.ui.view">
+        <field name="name">system.diagram.data.form</field>
+        <field name="model">system.diagram.data</field>
+        <field name="arch" type="xml">
+            <form string="System Diagram Configuration">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="search_type"/>
+                        </group>
+                        <group>
+                            <field name="search_query"/>
+                            <field name="show_access_only"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Diagram Data">
+                            <group>
+                                <field name="nodes_data" widget="text"/>
+                                <field name="edges_data" widget="text"/>
+                            </group>
+                        </page>
+                        <page string="Configuration">
+                            <group>
+                                <field name="diagram_config" widget="text"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for System Flowchart -->
+    <record id="action_system_flowchart" model="ir.actions.act_window">
+        <field name="name">System Architecture Flowchart</field>
+        <field name="res_model">system.diagram.data</field>
+        <field name="view_mode">system_flowchart,form</field>
+        <field name="target">current</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Interactive System Architecture Visualization
+            </p>
+            <p>
+                This interactive flowchart shows the complete Records Management System architecture,
+                including models, users, access rights, and relationships. Use the search functionality
+                to explore specific components or user access patterns.
+            </p>
+            <p>
+                <strong>Features:</strong>
+            </p>
+            <ul>
+                <li>Real-time access rights visualization (green/red indicators)</li>
+                <li>Interactive search for users, companies, and models</li>
+                <li>Hierarchical system layout</li>
+                <li>Detailed node information on click</li>
+                <li>Export capabilities for documentation</li>
+            </ul>
+        </field>
+    </record>
+
+    <!-- Simplified Action for Quick Access -->
+    <record id="action_system_flowchart_simple" model="ir.actions.client">
+        <field name="name">System Flowchart</field>
+        <field name="tag">records_management.system_flowchart</field>
+        <field name="target">current</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_system_flowchart" name="System Architecture" parent="records_management.menu_root" action="action_system_flowchart" sequence="5" groups="records_management.group_records_manager"/>
+
+    <!-- Submenu for Advanced Features -->
+    <menuitem id="menu_system_analysis" name="System Analysis" parent="records_management.menu_root" sequence="6" groups="records_management.group_records_manager"/>
+
+    <menuitem id="menu_system_flowchart_detailed" name="Interactive Flowchart" parent="menu_system_analysis" action="action_system_flowchart" sequence="10"/>
+
+    <!-- Quick Access Menu for Users -->
+    <menuitem id="menu_system_overview" name="System Overview" parent="records_management.menu_root" action="action_system_flowchart" sequence="1" groups="records_management.group_records_user"/>
+
+</odoo>

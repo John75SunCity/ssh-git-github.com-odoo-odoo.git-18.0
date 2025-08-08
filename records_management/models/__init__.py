@@ -19,6 +19,9 @@ This ensures proper ORM setup and prevents KeyError exceptions during module loa
 # Configuration settings (foundational)
 from . import res_config_settings
 
+# System diagram data (for interactive visualization)
+from . import system_diagram_data
+
 # Core structure models
 from . import records_tag
 from . import records_location
