@@ -127,8 +127,9 @@ class ShredBin(models.Model):
     capacity_pounds = fields.Float(
         string="Capacity (Pounds)",
         digits="Stock Weight",
-        default=50.0,
-        help="Maximum weight capacity of the bin in pounds",
+        compute="_compute_capacity_pounds",
+        store=True,
+        help="Maximum weight capacity of the bin in pounds (auto-calculated from bin size)",
     )
     current_fill_level = fields.Float(
         string="Fill Level (%)",
@@ -279,8 +280,66 @@ class ShredBin(models.Model):
     )
 
     # ============================================================================
+    # CAPACITY & EFFICIENCY ANALYSIS FIELDS
+    # ============================================================================
+    capacity_utilization_rating = fields.Selection(
+        [
+            ("underutilized", "Under-utilized"),
+            ("optimal", "Optimal"),
+            ("overutilized", "Over-utilized"),
+            ("critical", "Critical - Needs Immediate Attention"),
+        ],
+        string="Capacity Rating",
+        compute="_compute_capacity_utilization_rating",
+        help="Assessment of bin capacity utilization efficiency",
+    )
+    recommended_service_frequency = fields.Char(
+        string="Recommended Service Frequency",
+        compute="_compute_service_recommendations",
+        help="AI-recommended service frequency based on usage patterns",
+    )
+    monthly_capacity_lbs = fields.Float(
+        string="Monthly Capacity (lbs)",
+        compute="_compute_monthly_metrics",
+        help="Theoretical monthly paper processing capacity in pounds",
+    )
+    cost_efficiency_rating = fields.Selection(
+        [
+            ("excellent", "Excellent"),
+            ("good", "Good"),
+            ("fair", "Fair"),
+            ("poor", "Poor - Consider Upsize"),
+        ],
+        string="Cost Efficiency",
+        compute="_compute_cost_efficiency_rating",
+        help="Cost efficiency rating based on cost per pound processed",
+    )
+    bin_specifications = fields.Text(
+        string="Bin Specifications",
+        compute="_compute_bin_specifications",
+        help="Detailed manufacturer specifications and capacity information",
+    )
+
+    # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    @api.depends("bin_size")
+    def _compute_capacity_pounds(self):
+        """Calculate capacity based on industry-standard bin specifications"""
+        # Industry-standard weight capacities based on actual manufacturer data
+        capacity_map = {
+            "23": 60,  # 23 Gallon Shredinator - Exact manufacturer specification
+            "3B": 125,  # 32 Gallon Bin - HSM and similar models, up to 125 lbs
+            "3C": 90,  # 32 Gallon Console - Average of executive console range (80-100 lbs)
+            "64": 240,  # 64 Gallon Bin - Industry average (225-250 lbs range)
+            "96": 340,  # 96 Gallon Bin - Industry average (325-350 lbs range)
+        }
+
+        for record in self:
+            record.capacity_pounds = capacity_map.get(
+                record.bin_size, 90
+            )  # Default to console capacity
+
     @api.depends("bin_size", "state")
     def _compute_current_fill_level(self):
         """Estimate current fill level based on bin size and state"""
@@ -416,6 +475,67 @@ class ShredBin(models.Model):
             record.current_billing_period_services = len(services_this_period)
 
     # ============================================================================
+    # ENHANCED CAPACITY & EFFICIENCY COMPUTE METHODS
+    # ============================================================================
+    @api.depends("current_fill_level", "days_since_last_service", "service_count")
+    def _compute_capacity_utilization_rating(self):
+        """Rate capacity utilization efficiency"""
+        for record in self:
+            # High fill level with infrequent service = overutilized
+            if record.current_fill_level >= 90 and record.days_since_last_service > 21:
+                record.capacity_utilization_rating = "critical"
+            elif (
+                record.current_fill_level >= 75 and record.days_since_last_service > 14
+            ):
+                record.capacity_utilization_rating = "overutilized"
+            elif record.current_fill_level < 30 and record.days_since_last_service > 45:
+                record.capacity_utilization_rating = "underutilized"
+            else:
+                record.capacity_utilization_rating = "optimal"
+
+    @api.depends("bin_size", "service_count", "days_since_last_service")
+    def _compute_service_recommendations(self):
+        """Compute AI-recommended service frequency"""
+        for record in self:
+            record.recommended_service_frequency = (
+                record.get_service_frequency_recommendation()
+            )
+
+    @api.depends("bin_size")
+    def _compute_monthly_metrics(self):
+        """Compute monthly capacity metrics"""
+        for record in self:
+            monthly_data = record.calculate_monthly_capacity()
+            record.monthly_capacity_lbs = monthly_data["monthly_lbs"]
+
+    @api.depends("bin_size", "service_count", "days_since_last_service")
+    def _compute_cost_efficiency_rating(self):
+        """Compute cost efficiency rating"""
+        for record in self:
+            efficiency_data = record.calculate_cost_efficiency()
+            rating_map = {
+                "Excellent": "excellent",
+                "Good": "good",
+                "Fair": "fair",
+                "Poor - Consider Upsize": "poor",
+            }
+            record.cost_efficiency_rating = rating_map.get(
+                efficiency_data["efficiency_rating"], "fair"
+            )
+
+    @api.depends("bin_size")
+    def _compute_bin_specifications(self):
+        """Compute detailed bin specifications text"""
+        for record in self:
+            specs = record.get_bin_specifications()
+            record.bin_specifications = f"""
+{specs['name']}
+Capacity: {specs['capacity']} lbs ({specs['capacity_range']})
+Typical Use: {specs['typical_use']}
+Notes: {specs['notes']}
+            """.strip()
+
+    # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
     @api.constrains("capacity_pounds")
@@ -448,6 +568,47 @@ class ShredBin(models.Model):
                     raise ValidationError(
                         f"Shred bin number '{record.name}' already exists in this company"
                     )
+
+    @api.constrains("bin_size")
+    def _check_valid_bin_size(self):
+        """Validate bin size matches company standards"""
+        valid_sizes = ["23", "3B", "3C", "64", "96"]
+        for record in self:
+            if record.bin_size and record.bin_size not in valid_sizes:
+                raise ValidationError(
+                    f"Invalid bin size '{record.bin_size}'. "
+                    f"Valid sizes are: {', '.join(valid_sizes)}"
+                )
+
+    @api.constrains("bin_size", "partner_id")
+    def _validate_bin_capacity_for_customer(self):
+        """Business rule validation for bin size appropriateness"""
+        for record in self:
+            if record.bin_size and record.partner_id:
+                # Get customer's other bins for comparison
+                customer_bins = self.search(
+                    [
+                        ("partner_id", "=", record.partner_id.id),
+                        ("id", "!=", record.id),
+                        ("state", "in", ["in_service", "full"]),
+                    ]
+                )
+
+                # Warn if customer is getting a bin size that seems inappropriate
+                # based on their existing service patterns
+                if customer_bins and record.bin_size == "96":
+                    # Check if customer has history of underutilizing smaller bins
+                    underutilized_bins = customer_bins.filtered(
+                        lambda b: b.capacity_utilization_rating == "underutilized"
+                    )
+                    if len(underutilized_bins) > len(customer_bins) / 2:
+                        # More than half of customer's bins are underutilized
+                        # This is a warning, not an error - business decision
+                        record.message_post(
+                            body=f"Warning: Customer has {len(underutilized_bins)} underutilized bins. "
+                            f"Consider reviewing bin sizing strategy before deploying 96-gallon bin.",
+                            message_type="notification",
+                        )
 
     # ============================================================================
     # ACTION METHODS
@@ -700,40 +861,128 @@ class ShredBin(models.Model):
             },
         }
 
-    def action_request_additional_bins(self):
-        """Customer portal action to request additional bins (for customers with 96-gallon bins)"""
+    def action_analyze_capacity_efficiency(self):
+        """Open detailed capacity efficiency analysis"""
         self.ensure_one()
-        if not self.env.user.has_group("base.group_portal"):
-            raise ValidationError("This action is only available to portal users")
 
-        # Check if user has access to this bin
-        if self.partner_id.id != self.env.user.partner_id.commercial_partner_id.id:
-            raise ValidationError("You can only request changes for your own bins")
+        specs = self.get_bin_specifications()
+        monthly_metrics = self.calculate_monthly_capacity()
+        cost_metrics = self.calculate_cost_efficiency()
+        upsize_recommendations = self.get_upsize_recommendations()
 
-        # Create service request for additional bins
+        message = f"""
+CAPACITY EFFICIENCY ANALYSIS - Bin {self.name}
+
+CURRENT SPECIFICATIONS:
+• Bin Type: {specs['name']}
+• Capacity: {specs['capacity']} lbs ({specs['capacity_range']})
+• Current Fill Level: {self.current_fill_level}%
+• Estimated Weight: {self.estimated_weight:.1f} lbs
+
+MONTHLY METRICS:
+• Theoretical Capacity: {monthly_metrics['monthly_lbs']} lbs/month
+• Services per Month: {monthly_metrics['services_per_month']}
+• Cost Efficiency: {cost_metrics['efficiency_rating']}
+• Cost per Pound: ${cost_metrics['cost_per_lb']:.3f}
+
+SERVICE ANALYSIS:
+• Days Since Last Service: {self.days_since_last_service}
+• Total Services: {self.service_count}
+• Recommended Frequency: {self.recommended_service_frequency}
+• Capacity Rating: {self.capacity_utilization_rating.replace('_', ' ').title()}
+
+RECOMMENDATIONS:
+"""
+
+        for rec in upsize_recommendations:
+            if rec.get("recommended_size") != "Current size optimal":
+                message += f"• {rec['recommended_size']}: {rec['justification']}\n"
+                message += (
+                    f"  Capacity Increase: {rec.get('capacity_increase', 'N/A')}\n"
+                )
+                message += f"  Estimated Savings: {rec['estimated_savings']}\n\n"
+            else:
+                message += "• Current bin size is optimal for usage patterns\n"
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": f"Capacity Analysis - Bin {self.name}",
+                "message": message,
+                "type": "info",
+                "sticky": True,
+            },
+        }
+
+    def action_smart_upsize_recommendation(self):
+        """Smart upsize with automatic bin size selection"""
+        self.ensure_one()
+
+        recommendations = self.get_upsize_recommendations()
+
+        if (
+            not recommendations
+            or recommendations[0].get("recommended_size") == "Current size optimal"
+        ):
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "No Upsize Needed",
+                    "message": f"Bin {self.name} is optimally sized for current usage patterns.",
+                    "type": "success",
+                },
+            }
+
+        # Get the primary recommendation
+        primary_rec = recommendations[0]
+        recommended_size = primary_rec["recommended_size"]
+
+        if recommended_size == "Additional 96-gallon bins":
+            return self.action_request_additional_bins()
+
+        # Create upsize request with detailed business justification
         service_request = self.env["pickup.request"].create(
             {
                 "partner_id": self.partner_id.id,
-                "request_type": "service_call",
-                "urgency": "normal",
-                "notes": f"Customer-requested additional bins. Current bin {self.name} ({self.bin_size}) at capacity",
-                "requested_by_customer": True,
-                "special_instructions": f"Additional bin request: Customer needs more capacity beyond current {self.bin_size} bin",
-            }
-        )
+                "shred_bin_id": self.id,
+                "request_type": "bin_replacement",
+                "urgency": (
+                    "high"
+                    if self.capacity_utilization_rating == "critical"
+                    else "normal"
+                ),
+                "notes": f"Smart upsize recommendation: {primary_rec['justification']}",
+                "special_instructions": f"""
+INTELLIGENT UPSIZE REQUEST
 
-        # Log activity
-        self.message_post(
-            body=f"Customer requested additional bins - service request {service_request.name} created",
-            message_type="notification",
+Current Bin: {self.name} ({self.bin_size})
+Current Capacity: {primary_rec.get('current_capacity', 'Unknown')} lbs
+Recommended Size: {recommended_size}
+New Capacity: {primary_rec['new_capacity']} lbs
+Capacity Increase: {primary_rec.get('capacity_increase', 'N/A')}
+
+Business Justification: {primary_rec['justification']}
+Expected Benefits: {primary_rec['estimated_savings']}
+
+Efficiency Metrics:
+- Current Fill Level: {self.current_fill_level}%
+- Days Since Last Service: {self.days_since_last_service}
+- Capacity Rating: {self.capacity_utilization_rating.replace('_', ' ').title()}
+- Service Count: {self.service_count}
+            """,
+            }
         )
 
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Additional Bins Request Submitted",
-                "message": "Your request for additional bins has been submitted. Our sales team will contact you to discuss options and pricing.",
+                "title": "Smart Upsize Request Created",
+                "message": f"Upsize request {service_request.name} created for bin {self.name}. "
+                f"Upgrading from {self.bin_size} to {recommended_size} "
+                f"({primary_rec.get('capacity_increase', 'N/A')} capacity increase).",
                 "type": "success",
                 "sticky": True,
             },
@@ -768,6 +1017,65 @@ class ShredBin(models.Model):
             "target": "current",
         }
 
+    def action_request_additional_bins(self):
+        """Customer portal action to request additional bins (enhanced with capacity analysis)"""
+        self.ensure_one()
+        if not self.env.user.has_group("base.group_portal"):
+            raise ValidationError("This action is only available to portal users")
+
+        # Check if user has access to this bin
+        if self.partner_id.id != self.env.user.partner_id.commercial_partner_id.id:
+            raise ValidationError("You can only request changes for your own bins")
+
+        # Enhanced analysis for additional bin requests
+        specs = self.get_bin_specifications()
+        monthly_metrics = self.calculate_monthly_capacity()
+
+        # Create service request for additional bins with detailed analysis
+        service_request = self.env["pickup.request"].create(
+            {
+                "partner_id": self.partner_id.id,
+                "request_type": "service_call",
+                "urgency": "normal",
+                "notes": f"Customer-requested additional bins. Current bin {self.name} ({self.bin_size}) at capacity",
+                "requested_by_customer": True,
+                "special_instructions": f"""
+ADDITIONAL BIN REQUEST - CAPACITY ANALYSIS
+
+Current Bin Analysis:
+- Bin: {self.name} ({specs['name']})
+- Current Capacity: {specs['capacity']} lbs
+- Monthly Capacity: {monthly_metrics['monthly_lbs']} lbs
+- Fill Level: {self.current_fill_level}%
+- Days Since Service: {self.days_since_last_service}
+
+Customer Request: Additional bins needed for increased document volume
+Justification: Current {self.bin_size} bin at maximum capacity, additional bins needed for continued service efficiency
+
+Recommendation: Deploy additional {self.bin_size} bins to maintain optimal service frequency
+            """,
+            }
+        )
+
+        # Log activity
+        self.message_post(
+            body=f"Customer requested additional bins - service request {service_request.name} created with capacity analysis",
+            message_type="notification",
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Additional Bins Request Submitted",
+                "message": f"Your request for additional bins has been submitted with capacity analysis. "
+                f"Current {specs['name']} at {self.current_fill_level}% capacity. "
+                f"Our sales team will contact you to discuss options and pricing.",
+                "type": "success",
+                "sticky": True,
+            },
+        }
+
     # ============================================================================
     # UTILITY METHODS
     # ============================================================================
@@ -782,6 +1090,250 @@ class ShredBin(models.Model):
             return "High"
         else:
             return "Full"
+
+    def get_bin_specifications(self):
+        """Get detailed bin specifications including capacity ranges"""
+        self.ensure_one()
+
+        # Industry data with ranges and notes
+        specifications = {
+            "23": {
+                "name": "23 Gallon Shredinator",
+                "capacity": 60,
+                "capacity_range": "Exactly 60 lbs",
+                "notes": "Slim, desk-side container. HSM Shredinator model standard.",
+                "typical_use": "Personal offices, small businesses",
+            },
+            "3B": {
+                "name": "32 Gallon Bin",
+                "capacity": 125,
+                "capacity_range": "100-125 lbs",
+                "notes": "Medium-sized bins, rated around 100 lbs minimum, up to 125 lbs for HSM models.",
+                "typical_use": "Medium offices, departments",
+            },
+            "3C": {
+                "name": "32 Gallon Console",
+                "capacity": 90,
+                "capacity_range": "60-120 lbs",
+                "notes": "Executive console design. Varies by model: 60-80 lbs basic, up to 120 lbs premium.",
+                "typical_use": "Executive offices, secure reception areas",
+            },
+            "64": {
+                "name": "64 Gallon Bin",
+                "capacity": 240,
+                "capacity_range": "200-250 lbs",
+                "notes": "Large rolling bins. 225 lbs (Access), 250 lbs (HSM/ShredSmart).",
+                "typical_use": "Large offices, departments, warehouses",
+            },
+            "96": {
+                "name": "96 Gallon Bin",
+                "capacity": 340,
+                "capacity_range": "300-350 lbs",
+                "notes": "Largest standard size. 300 lbs (Shred Truck) to 350 lbs (ShredSmart/Legal Shred).",
+                "typical_use": "Large facilities, high-volume document generation",
+            },
+        }
+
+        return specifications.get(
+            self.bin_size,
+            {
+                "name": "Unknown Bin Size",
+                "capacity": 90,
+                "capacity_range": "Unknown",
+                "notes": "Bin size not recognized",
+                "typical_use": "Unknown",
+            },
+        )
+
+    def get_service_frequency_recommendation(self):
+        """Recommend service frequency based on bin size and usage patterns"""
+        self.ensure_one()
+
+        # Base recommendations per bin size
+        frequency_map = {
+            "23": "Weekly or Bi-weekly",  # Small bins fill quickly
+            "3B": "Bi-weekly to Monthly",  # Medium capacity
+            "3C": "Bi-weekly to Monthly",  # Medium capacity, secure location
+            "64": "Monthly to Bi-monthly",  # Large capacity
+            "96": "Monthly to Quarterly",  # Largest capacity
+        }
+
+        base_frequency = frequency_map.get(self.bin_size, "Monthly")
+
+        # Adjust based on historical data if available
+        if self.service_count > 3:
+            avg_days = self.days_since_last_service / max(1, self.service_count)
+            if avg_days < 14:
+                return f"{base_frequency} (High Usage - Consider Upsize)"
+            elif avg_days > 60:
+                return f"{base_frequency} (Low Usage - Consider Downsize)"
+
+        return base_frequency
+
+    def calculate_monthly_capacity(self):
+        """Calculate theoretical monthly paper processing capacity"""
+        self.ensure_one()
+
+        # Estimate based on bin size and typical usage
+        specs = self.get_bin_specifications()
+        capacity_lbs = specs["capacity"]
+
+        # Typical service frequencies (times per month)
+        service_frequency_map = {
+            "23": 3,  # Weekly/bi-weekly = ~3 times/month
+            "3B": 2,  # Bi-weekly = 2 times/month
+            "3C": 2,  # Bi-weekly = 2 times/month
+            "64": 1,  # Monthly = 1 time/month
+            "96": 0.5,  # Bi-monthly = 0.5 times/month
+        }
+
+        services_per_month = service_frequency_map.get(self.bin_size, 1)
+        monthly_capacity = capacity_lbs * services_per_month
+
+        return {
+            "monthly_lbs": monthly_capacity,
+            "services_per_month": services_per_month,
+            "capacity_per_service": capacity_lbs,
+        }
+
+    def get_upsize_recommendations(self):
+        """Get intelligent upsize recommendations with business justification"""
+        self.ensure_one()
+
+        current_specs = self.get_bin_specifications()
+
+        # Service frequency analysis
+        if self.service_count > 2:
+            avg_days_between_service = 30  # Default assumption
+            if self.last_service_date:
+                from datetime import datetime
+
+                days_since = (datetime.now().date() - self.last_service_date).days
+                avg_days_between_service = days_since / max(1, self.service_count)
+        else:
+            avg_days_between_service = 30
+
+        recommendations = []
+
+        # High-frequency service recommendation
+        if avg_days_between_service < 14:
+            if self.bin_size == "23":
+                recommendations.append(
+                    {
+                        "recommended_size": "3C",
+                        "new_capacity": 90,
+                        "capacity_increase": "50%",
+                        "current_capacity": current_specs["capacity"],
+                        "justification": "High service frequency suggests need for larger capacity",
+                        "estimated_savings": "Reduce service calls by 40-50%",
+                    }
+                )
+            elif self.bin_size == "3B":
+                recommendations.append(
+                    {
+                        "recommended_size": "64",
+                        "new_capacity": 240,
+                        "capacity_increase": "92%",
+                        "current_capacity": current_specs["capacity"],
+                        "justification": "Bi-weekly service pattern indicates outgrowing current bin",
+                        "estimated_savings": "Reduce to monthly service calls",
+                    }
+                )
+            elif self.bin_size == "3C":
+                recommendations.append(
+                    {
+                        "recommended_size": "64",
+                        "new_capacity": 240,
+                        "capacity_increase": "167%",
+                        "current_capacity": current_specs["capacity"],
+                        "justification": "Console usage exceeding capacity, rolling bin provides efficiency",
+                        "estimated_savings": "Reduce service frequency by 60%",
+                    }
+                )
+            elif self.bin_size == "64":
+                recommendations.append(
+                    {
+                        "recommended_size": "96",
+                        "new_capacity": 340,
+                        "capacity_increase": "42%",
+                        "current_capacity": current_specs["capacity"],
+                        "justification": "Large bin reaching capacity quickly, upgrade to maximum size",
+                        "estimated_savings": "Reduce to quarterly service calls",
+                    }
+                )
+
+        # Multiple bin recommendation for 96-gallon
+        if self.bin_size == "96" and avg_days_between_service < 21:
+            recommendations.append(
+                {
+                    "recommended_size": "Additional 96-gallon bins",
+                    "new_capacity": 340,
+                    "capacity_increase": "100% per additional bin",
+                    "current_capacity": current_specs["capacity"],
+                    "justification": "Maximum single bin size reached, additional bins needed",
+                    "estimated_savings": "Maintain optimal service frequency with increased total capacity",
+                }
+            )
+
+        return (
+            recommendations
+            if recommendations
+            else [
+                {
+                    "recommended_size": "Current size optimal",
+                    "current_capacity": current_specs["capacity"],
+                    "justification": "Service frequency indicates proper bin sizing",
+                    "estimated_savings": "No change recommended",
+                }
+            ]
+        )
+
+    def calculate_cost_efficiency(self):
+        """Calculate cost efficiency metrics for pricing and sales analysis"""
+        self.ensure_one()
+
+        specs = self.get_bin_specifications()
+        monthly_capacity = self.calculate_monthly_capacity()
+
+        # Estimated cost per pound (this would typically come from pricing models)
+        # These are example values - should be integrated with actual pricing system
+        base_cost_per_service = {
+            "23": 25,  # Smaller bins, lower service cost
+            "3B": 35,  # Medium bins
+            "3C": 40,  # Console bins (premium for security)
+            "64": 50,  # Large bins
+            "96": 65,  # Largest bins, highest service cost
+        }
+
+        service_cost = base_cost_per_service.get(self.bin_size, 40)
+        monthly_services = monthly_capacity["services_per_month"]
+        monthly_cost = service_cost * monthly_services
+        cost_per_lb = (
+            monthly_cost / monthly_capacity["monthly_lbs"]
+            if monthly_capacity["monthly_lbs"] > 0
+            else 0
+        )
+
+        return {
+            "service_cost": service_cost,
+            "monthly_services": monthly_services,
+            "monthly_cost": monthly_cost,
+            "monthly_capacity_lbs": monthly_capacity["monthly_lbs"],
+            "cost_per_lb": round(cost_per_lb, 3),
+            "efficiency_rating": self._calculate_efficiency_rating(cost_per_lb),
+            "bin_specs": specs,
+        }
+
+    def _calculate_efficiency_rating(self, cost_per_lb):
+        """Calculate efficiency rating based on cost per pound"""
+        if cost_per_lb < 0.15:
+            return "Excellent"
+        elif cost_per_lb < 0.25:
+            return "Good"
+        elif cost_per_lb < 0.40:
+            return "Fair"
+        else:
+            return "Poor - Consider Upsize"
 
     # ============================================================================
     # FIELD SERVICE OPERATIONS (Advanced Bin Management)
