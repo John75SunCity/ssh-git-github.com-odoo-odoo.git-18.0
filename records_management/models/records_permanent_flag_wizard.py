@@ -54,12 +54,14 @@ License: LGPL-3
 
 import logging
 import traceback
+import textwrap
 from datetime import datetime
-
-_logger = logging.getLogger(__name__)
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+
+_logger = logging.getLogger(__name__)
+
 
 class RecordsPermanentFlagWizard(models.TransientModel):
     _name = "records.permanent.flag.wizard"
@@ -73,8 +75,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     name = fields.Char(
         string="Operation Name",
         required=True,
-        default=lambda self: _("Permanent Flag Operation %s")
-        % fields.Date.context_today(self),
+        default=lambda self: _("Permanent Flag Operation %s") % fields.Date.today(),
     )
     description = fields.Text(
         string="Description",
@@ -89,7 +90,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    ),
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Requesting User",
@@ -105,12 +106,10 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             ("apply", "Apply Permanent Flag"),
             ("remove", "Remove Permanent Flag"),
             ("review", "Review Flagged Documents"),
-        ]),
+        ],
         string="Operation Type",
         default="apply",
         required=True,
-    )
-
     )
 
     flag_reason = fields.Selection(
@@ -122,7 +121,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             ("historical", "Historical Significance"),
             ("business_critical", "Business Critical"),
             ("custom", "Custom Reason"),
-        ]),
+        ],
         string="Flag Reason",
         required=True,
     )
@@ -130,8 +129,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     custom_reason = fields.Char(
         string="Custom Reason",
         help="Specify custom reason when 'Custom Reason' is selected",
-    )
-
     )
 
     legal_basis = fields.Text(
@@ -148,21 +145,19 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             ("pending", "Pending Approval"),
             ("approved", "Approved"),
             ("rejected", "Rejected"),
-        ]),
+        ],
         string="Approval Status",
         default="draft",
         readonly=True,
-    )
-
     )
 
     approval_required = fields.Boolean(
         string="Approval Required",
         default=True,
         help="Whether this operation requires approval",
-    ),
+    )
     approved_by = fields.Many2one("res.users", string="Approved By", readonly=True)
-    approval_date = fields.Datetime(string="Approval Date", readonly=True),
+    approval_date = fields.Datetime(string="Approval Date", readonly=True)
     rejection_reason = fields.Text(string="Rejection Reason", readonly=True)
 
     # ============================================================================
@@ -178,8 +173,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         help="Documents to apply permanent flag to",
     )
 
-    )
-
     document_count = fields.Integer(
         string="Document Count", compute="_compute_document_count"
     )
@@ -190,24 +183,23 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             ("manual", "Manual Selection"),
             ("criteria", "By Criteria"),
             ("import", "Import from File"),
-        ]),
+        ],
         string="Selection Method",
         default="manual",
     )
 
     # Criteria-based selection
-    )
     document_type_ids = fields.Many2many(
         "records.document.type",
         string="Document Types",
-        help="Filter by document types",)
+        help="Filter by document types",
+    )
     location_ids = fields.Many2many(
         "records.location", string="Locations", help="Filter by storage locations"
     )
-    )
     partner_id = fields.Many2one(
         "res.partner", string="Customer", help="Filter by customer"
-    ),
+    )
     date_from = fields.Date(string="Date From", help="Filter documents from this date")
     date_to = fields.Date(string="Date To", help="Filter documents up to this date")
 
@@ -220,8 +212,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         help="Send notifications to stakeholders",
     )
 
-    )
-
     stakeholder_ids = fields.Many2many(
         "res.users",
         "permanent_flag_stakeholder_rel",
@@ -229,7 +219,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         "user_id",
         string="Stakeholders",
         help="Users to notify about this operation",
-    ),
+    )
     notification_template_id = fields.Many2one(
         "mail.template",
         string="Notification Template",
@@ -239,12 +229,11 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     # ============================================================================
     # AUDIT & TRACKING
     # ============================================================================
-    )
     audit_trail = fields.Text(
         string="Audit Trail", readonly=True, help="Complete log of operation activities"
-    ),
+    )
     execution_date = fields.Datetime(string="Execution Date", readonly=True)
-    completion_date = fields.Datetime(string="Completion Date", readonly=True),
+    completion_date = fields.Datetime(string="Completion Date", readonly=True)
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -252,15 +241,45 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             ("completed", "Completed"),
             ("completed_with_errors", "Completed with Errors"),
             ("cancelled", "Cancelled"),
-        ]),
+        ],
         string="State",
         default="draft",
     )
 
     # ============================================================================
-    # MAIL FRAMEWORK FIELDS
-    # ============================================================================        "mail.followers", "res_id", string="Followers", groups="base.group_user"
-    )    @api.constrains("date_from", "date_to")
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=lambda self: [("model", "=", self._name)],
+    )
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("document_ids")
+    def _compute_document_count(self):
+        for record in self:
+            record.document_count = len(record.document_ids)
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("date_from", "date_to")
     def _check_date_range(self):
         for record in self:
             if (
@@ -268,7 +287,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                 and record.date_to
                 and record.date_from > record.date_to
             ):
-                raise ValidationError(_("Date From must be before Date To")
+                raise ValidationError(_("Date From must be before Date To"))
+
     @api.constrains("flag_reason", "custom_reason")
     def _check_custom_reason(self):
         for record in self:
@@ -283,7 +303,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     def _check_documents(self):
         for record in self:
             if not record.document_ids:
-                raise ValidationError(_("At least one document must be selected")
+                raise ValidationError(_("At least one document must be selected"))
+
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================
@@ -310,8 +331,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         if not self.send_notification or not self.stakeholder_ids:
             return
 
-        import textwrap
-
         subject = f"Permanent Flag Operation: {self.name}"
         body = textwrap.dedent(
             f"""\
@@ -336,20 +355,25 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         domain = []
 
         if self.document_type_ids:
-            domain.append(("document_type_id", "in", self.document_type_ids.ids)
+            domain.append(("document_type_id", "in", self.document_type_ids.ids))
+
         if self.location_ids:
-            domain.append(("location_id", "in", self.location_ids.ids)
+            domain.append(("location_id", "in", self.location_ids.ids))
+
         if self.partner_id:
-            domain.append(("partner_id", "=", self.partner_id.id)
+            domain.append(("partner_id", "=", self.partner_id.id))
+
         if self.date_from:
-            domain.append(("creation_date", ">=", self.date_from)
+            domain.append(("created_date", ">=", self.date_from))
+
         if self.date_to:
-            domain.append(("creation_date", "<=", self.date_to)
+            domain.append(("created_date", "<=", self.date_to))
+
         return self.env["records.document"].search(domain)
 
     # ============================================================================
     # ACTION METHODS
-    # ============================================================================)))))
+    # ============================================================================
     def action_apply_criteria(self):
         """Apply criteria to select documents"""
         self.ensure_one()
@@ -381,62 +405,61 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         self.ensure_one()
 
         if self.approval_required and self.approval_status != "approved":
-            raise UserError(_("Operation must be approved before execution")
+            raise UserError(_("Operation must be approved before execution"))
+
         if not self.document_ids:
-            raise UserError(_("No documents selected for operation")
+            raise UserError(_("No documents selected for operation"))
+
         # Mark as in progress
         self.write(
             {
                 "state": "in_progress",
-                "execution_date": datetime.now(),
+                "execution_date": fields.Datetime.now(),
             }
+        )
+
         # Execute the operation
         affected_count = 0
         errors = []
 
-        for document in self.document_ids:
-            try:
-                # Ensure the document record still exists
-                if not document or not document.id:
-                    errors.append(
-                        f"Document ID {getattr(document, 'id', 'unknown')}: Record does not exist"
-                    )
-                    continue
+        # Use recordset methods - document_ids is a Many2many recordset, not a list
+        valid_documents = self.document_ids.exists()
 
+        for document in valid_documents:
+            try:
                 if self.operation_type == "apply":
                     document.write(
                         {
-                            "permanent_flag": True,
-                            "permanent_flag_reason": self.flag_reason,
-                            "permanent_flag_date": fields.Datetime.now(),
-                            "permanent_flag_user_id": self.env.user.id,
+                            "permanent_retention": True,  # Use standard field name
+                            "legal_hold": True,
+                            "legal_hold_reason": self.flag_reason,
+                            "legal_hold_date": fields.Datetime.now(),
+                            "legal_hold_user_id": self.env.user.id,
                         }
                     )
                 elif self.operation_type == "remove":
                     document.write(
                         {
-                            "permanent_flag": False,
-                            "permanent_flag_reason": False,
-                            "permanent_flag_date": False,
-                            "permanent_flag_user_id": False,
+                            "permanent_retention": False,
+                            "legal_hold": False,
+                            "legal_hold_reason": False,
+                            "legal_hold_date": False,
+                            "legal_hold_user_id": False,
                         }
                     )
                 affected_count += 1
+
             except (UserError, ValidationError) as e:
-                document_name = getattr(
-                    document, "name", f'ID: {getattr(document, "id", "unknown")}'
-                )
-                errors.append(f"Document {document_name}: {str(e)}")
+                errors.append(f"Document {document.name}: {str(e)}")
             except Exception as e:
                 tb = traceback.format_exc()
-                document_name = getattr(
-                    document, "name", f'ID: {getattr(document, "id", "unknown")}'
-                )
-                errors.append(f"Document {document_name}: Unexpected error: {str(e)}")
+                errors.append(f"Document {document.name}: Unexpected error: {str(e)}")
                 _logger.error(
-                    f"Unexpected error processing document {document_name}: {str(e)}\n{tb}"
+                    "Unexpected error processing document %s: %s\n%s",
+                    document.name,
+                    str(e),
+                    tb,
                 )
-                raise
 
         # Update audit trail
         operation_name = dict(self._fields["operation_type"].selection).get(
@@ -463,6 +486,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
         # Show result
         if errors:
+            # Log all errors in the audit trail
+            self._update_audit_trail("Errors Encountered", ";\n".join(errors))
             error_msg = "\n".join(errors[:10])  # Show first 10 errors
             if len(errors) > 10:
                 error_msg += f"\n... and {len(errors) - 10} more errors"
@@ -499,12 +524,19 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         self.ensure_one()
 
         if self.approval_status != "draft":
-            raise UserError(_("Approval can only be requested for draft operations")
+            raise UserError(_("Approval can only be requested for draft operations"))
+
         self.approval_status = "pending"
+
+        # Get system administrator for approval
+        approval_user = self.env.ref("base.group_system").users.filtered(
+            lambda u: u.active
+        )[:1]
+        approval_user_id = approval_user.id if approval_user else self.env.user.id
 
         # Create approval activity
         self.activity_schedule(
-            "records_management.mail_activity_type_approval",
+            "mail.mail_activity_data_todo",
             summary=f"Approve Permanent Flag Operation: {self.name}",
             note=f"""Please review and approve this permanent flag operation:
 
@@ -515,14 +547,10 @@ Legal Basis: {self.legal_basis or 'Not specified'}
 
 Description:
 {self.description or 'No description provided'}""",
-            user_id=(
-                (
-                    next(iter(self.env.ref("base.group_system").users), None).id
-                    if self.env.ref("base.group_system").users
-                    else self.env.user.id
-                )
-            ),
+            user_id=approval_user_id,
         )
+
+        self._update_audit_trail("Approval Requested")
 
         return {
             "type": "ir.actions.client",
@@ -535,16 +563,14 @@ Description:
                 "type": "success",
             },
         }
-        if group and group.users:
-            user = group.users.filtered(lambda u: True, limit=1)
-            if user:
-                return user.id
-        return self.env.user.id
 
     def action_approve(self):
         """Approve the operation"""
+        self.ensure_one()
+
         if self.approval_status != "pending":
-            raise UserError(_("Only pending operations can be approved")
+            raise UserError(_("Only pending operations can be approved"))
+
         self.write(
             {
                 "approval_status": "approved",
@@ -574,14 +600,17 @@ Description:
         self.ensure_one()
 
         if self.approval_status != "pending":
-            raise UserError(_("Only pending operations can be rejected")
+            raise UserError(_("Only pending operations can be rejected"))
+
         return {
             "type": "ir.actions.act_window",
             "name": _("Reject Operation"),
-            "res_model": "records.permanent.flag.reject.wizard",
+            "res_model": "records.permanent.flag.rejection.wizard",
             "view_mode": "form",
             "target": "new",
-            "context": {"default_wizard_id": self.id},
+            "context": {
+                "default_wizard_id": self.id,
+            },
         }
 
     def action_cancel(self):
@@ -589,7 +618,8 @@ Description:
         self.ensure_one()
 
         if self.state in ["completed", "completed_with_errors"]:
-            raise UserError(_("Cannot cancel completed operations")
+            raise UserError(_("Cannot cancel completed operations"))
+
         self.write({"state": "cancelled"})
         self._update_audit_trail("Operation Cancelled")
 
@@ -612,6 +642,6 @@ Description:
             "name": _("Selected Documents"),
             "res_model": "records.document",
             "view_mode": "tree,form",
-            "domain": [("id", "in", list(self.document_ids.ids))],
+            "domain": [("id", "in", self.document_ids.ids)],
             "target": "current",
-        })
+        }
