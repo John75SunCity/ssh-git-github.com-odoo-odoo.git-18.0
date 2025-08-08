@@ -146,6 +146,8 @@
         # System Analysis and Flowchart
         "views/system_flowchart_views.xml",
         "views/system_flowchart_wizard_views.xml",
+        # Customer Portal Diagram
+        "views/customer_portal_diagram_views.xml",
         # Reports
         "report/records_reports.xml",
         "report/destruction_certificate_report.xml",
@@ -161,6 +163,8 @@
         "templates/portal_quote_template.xml",
         "templates/portal_centralized_docs.xml",
         "templates/my_portal_inventory.xml",
+        # Customer Portal Organization Diagram
+        "templates/portal_organization_diagram.xml",
     ],
     "demo": [
         "demo/demo_records.xml",
@@ -183,13 +187,21 @@
             # System Flowchart
             "records_management/static/src/js/system_flowchart_view.js",
             "records_management/static/src/css/system_flowchart.css",
+            # Customer Portal Diagram
+            "records_management/static/src/js/customer_portal_diagram_view.js",
+            "records_management/static/src/css/customer_portal_diagram.css",
             # Templates
             "records_management/static/src/xml/map_widget.xml",
             "records_management/static/src/xml/trailer_visualization.xml",
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/xml/system_flowchart_templates.xml",
+            "records_management/static/src/xml/customer_portal_diagram_templates.xml",
         ],
         "web.assets_frontend": [
+            # External Libraries for Portal
+            "records_management/static/src/lib/vis/vis-network.min.js",
+            "records_management/static/src/lib/vis/vis-network.min.css",
+            # Core Portal Assets
             "records_management/static/src/css/portal_tour.css",
             "records_management/static/src/css/intelligent_search.css",
             "records_management/static/src/js/portal_tour.js",
@@ -200,7 +212,12 @@
             "records_management/static/src/js/portal_signature.js",
             "records_management/static/src/js/portal_user_import.js",
             "records_management/static/src/js/intelligent_search.js",
+            # Customer Portal Diagram
+            "records_management/static/src/js/customer_portal_diagram.js",
+            "records_management/static/src/css/customer_portal_diagram.css",
+            # Templates
             "records_management/static/src/xml/intelligent_search_templates.xml",
+            "records_management/static/src/xml/customer_portal_diagram_templates.xml",
         ],
     },
     "external_dependencies": {

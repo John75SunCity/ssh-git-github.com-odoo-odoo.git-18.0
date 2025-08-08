@@ -1,0 +1,504 @@
+/**
+ * Customer Portal Organization Diagram Styles
+ * 
+ * This CSS provides styling for the customer portal interactive organization diagram.
+ * It focuses on a clean, professional appearance suitable for customer-facing interfaces.
+ */
+
+/* ============================================================================
+ * MAIN CONTAINER STYLES
+ * ============================================================================ */
+
+.o_portal_organization_diagram {
+    min-height: 100vh;
+    padding: 1rem 0;
+}
+
+.o_customer_portal_diagram_view {
+    padding: 1rem;
+}
+
+/* Diagram Container */
+#organization-diagram-container,
+.o_diagram_container {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 2px solid #e9ecef;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    position: relative;
+    overflow: hidden;
+}
+
+#organization-diagram-container:hover,
+.o_diagram_container:hover {
+    border-color: #007bff;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 123, 255, 0.15);
+}
+
+/* ============================================================================
+ * LOADING OVERLAY STYLES
+ * ============================================================================ */
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(248, 249, 250, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+.loading-overlay .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.3em;
+}
+
+.loading-overlay p {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    color: #6c757d;
+    animation: pulse 2s infinite;
+}
+
+/* ============================================================================
+ * CONTROL PANEL AND SEARCH STYLES
+ * ============================================================================ */
+
+.o_diagram_control_panel {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.o_diagram_control_panel .input-group {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border-radius: 0.375rem;
+}
+
+.o_diagram_control_panel .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* ============================================================================
+ * STATISTICS CARDS STYLES
+ * ============================================================================ */
+
+#diagram-stats .card {
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+#diagram-stats .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+}
+
+#diagram-stats .card h4 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+    transition: all 0.3s ease;
+}
+
+#diagram-stats .card h5 i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Counter animation */
+@keyframes countUp {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.count-animation {
+    animation: countUp 0.5s ease-out;
+}
+
+/* ============================================================================
+ * BADGE AND LEGEND STYLES
+ * ============================================================================ */
+
+.badge-pink {
+    background-color: #ff69b4 !important;
+    color: white !important;
+}
+
+.diagram-legend .badge {
+    margin-right: 0.75rem;
+    margin-bottom: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    display: inline-block;
+}
+
+.diagram-legend {
+    text-align: right;
+}
+
+/* ============================================================================
+ * MODAL STYLES
+ * ============================================================================ */
+
+#node-details-modal .modal-content {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+#node-details-modal .modal-header {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    color: white;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+#node-details-modal .modal-header .close span {
+    color: white;
+    font-size: 1.5rem;
+}
+
+#node-details-modal .table th,
+#node-details-modal .table td {
+    border-top: 1px solid #e9ecef;
+    padding: 0.75rem;
+}
+
+#node-details-modal .alert {
+    border-radius: 0.375rem;
+    margin-top: 1rem;
+}
+
+/* Help Modal */
+#diagram-help-modal .modal-content {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+#diagram-help-modal .modal-header {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+#diagram-help-modal .modal-body h6 {
+    color: #007bff;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+#diagram-help-modal .modal-body ul {
+    padding-left: 1.25rem;
+}
+
+#diagram-help-modal .modal-body li {
+    margin-bottom: 0.5rem;
+}
+
+/* ============================================================================
+ * BUTTON AND CONTROL STYLES
+ * ============================================================================ */
+
+.btn-toolbar .btn {
+    margin: 0 0.25rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-toolbar .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+}
+
+.btn-group .btn {
+    border-radius: 0.375rem;
+    margin: 0 0.125rem;
+}
+
+.btn-group .btn:first-child {
+    margin-left: 0;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+/* Form Controls */
+.form-control {
+    border-radius: 0.375rem;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* ============================================================================
+ * RESPONSIVE DESIGN
+ * ============================================================================ */
+
+@media (max-width: 1200px) {
+    #diagram-stats .col-md-3 {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .o_portal_organization_diagram {
+        padding: 0.5rem 0;
+    }
+
+    .o_diagram_control_panel {
+        padding: 0.75rem;
+    }
+
+    /* Mobile diagram container */
+    #organization-diagram-container,
+    .o_diagram_container {
+        height: 400px !important;
+        margin-bottom: 1rem;
+    }
+
+    /* Mobile toolbar adjustments */
+    .btn-toolbar {
+        margin-top: 1rem;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-toolbar .btn-group {
+        margin: 0.25rem;
+    }
+
+    /* Mobile legend */
+    .diagram-legend {
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+
+    .diagram-legend .badge {
+        display: inline-block;
+        margin: 0.25rem;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    /* Mobile modal adjustments */
+    #node-details-modal .modal-dialog,
+    #diagram-help-modal .modal-dialog {
+        margin: 1rem 0.5rem;
+        max-width: calc(100vw - 1rem);
+    }
+
+    /* Mobile statistics cards */
+    #diagram-stats .card {
+        margin-bottom: 0.75rem;
+    }
+
+    #diagram-stats .card h4 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .o_portal_organization_diagram .container-fluid {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    /* Extra small screens */
+    #organization-diagram-container,
+    .o_diagram_container {
+        height: 300px !important;
+    }
+
+    .o_diagram_control_panel .row > div {
+        margin-bottom: 0.75rem;
+    }
+
+    .btn-toolbar .btn {
+        font-size: 0.875rem;
+        padding: 0.375rem 0.75rem;
+    }
+}
+
+/* ============================================================================
+ * ANIMATIONS AND TRANSITIONS
+ * ============================================================================ */
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from { 
+        transform: translateX(-100%); 
+        opacity: 0;
+    }
+    to { 
+        transform: translateX(0); 
+        opacity: 1;
+    }
+}
+
+.slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    min-width: 300px;
+    max-width: 400px;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.3s ease-out;
+}
+
+.notification.success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.notification.error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.notification.info {
+    background-color: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+}
+
+/* ============================================================================
+ * ACCESSIBILITY AND HIGH CONTRAST
+ * ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@media (prefers-contrast: high) {
+    #organization-diagram-container,
+    .o_diagram_container {
+        border: 3px solid #000000;
+        background: #ffffff;
+    }
+
+    .diagram-legend .badge {
+        border: 2px solid #000000;
+    }
+
+    .btn {
+        border: 2px solid;
+    }
+}
+
+/* ============================================================================
+ * PRINT STYLES
+ * ============================================================================ */
+
+@media print {
+    .o_portal_organization_diagram {
+        background: white !important;
+    }
+
+    .btn-toolbar,
+    .modal,
+    .loading-overlay {
+        display: none !important;
+    }
+
+    #organization-diagram-container {
+        border: 1px solid #000000;
+        height: 600px !important;
+        background: white !important;
+    }
+
+    .diagram-legend {
+        page-break-inside: avoid;
+        margin-top: 1rem;
+    }
+}
+
+/* ============================================================================
+ * DARK MODE SUPPORT (Optional)
+ * ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+    .o_portal_organization_diagram {
+        background-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+    #organization-diagram-container,
+    .o_diagram_container {
+        background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
+        border-color: #555555;
+    }
+
+    .o_diagram_control_panel {
+        background: #2d2d2d;
+        border-color: #555555;
+    }
+
+    .form-control {
+        background-color: #404040;
+        border-color: #555555;
+        color: #ffffff;
+    }
+
+    .card {
+        background-color: #2d2d2d;
+        border-color: #555555;
+    }
+}

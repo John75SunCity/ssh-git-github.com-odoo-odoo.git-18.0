@@ -6,7 +6,10 @@ from odoo.exceptions import AccessError
 import csv
 import io
 import json
+import logging
 from datetime import datetime, timedelta
+
+_logger = logging.getLogger(__name__)
 
 
 class CustomerPortalExtended(CustomerPortal):
@@ -2243,3 +2246,183 @@ class PortalCertificateController(http.Controller):
         return request.render(
             "records_management.portal_document_retrieval_detail", values
         )
+
+    # ============================================================================
+    # CUSTOMER PORTAL DIAGRAM ROUTES
+    # ============================================================================
+
+    @http.route(
+        ["/my/organization", "/my/diagram"], type="http", auth="user", website=True
+    )
+    def portal_organization_diagram(self, **kw):
+        """Customer portal route for interactive organization diagram"""
+        user = request.env.user
+        partner = user.partner_id
+
+        # Security check - ensure user has portal access
+        if not user.has_group("portal.group_portal") and not user.has_group(
+            "base.group_user"
+        ):
+            return request.redirect("/my")
+
+        # Get or create diagram record
+        existing_diagram = request.env["customer.portal.diagram"].search(
+            [("user_id", "=", user.id)], limit=1
+        )
+
+        if existing_diagram:
+            diagram = existing_diagram
+        else:
+            # Create new diagram with default settings
+            diagram = request.env["customer.portal.diagram"].create(
+                {
+                    "name": f"{partner.name}'s Organization Diagram",
+                    "user_id": user.id,
+                    "company_id": user.company_id.id,
+                    "show_messaging": True,
+                    "show_access_rights": not user.has_group(
+                        "portal.group_portal"
+                    ),  # Only for internal users
+                    "layout_type": "hierarchical",
+                }
+            )
+
+        # Apply any search filters from URL parameters
+        if kw.get("search_user"):
+            search_user = request.env["res.users"].search(
+                [
+                    ("name", "ilike", kw.get("search_user")),
+                    ("company_id", "=", user.company_id.id),
+                ],
+                limit=1,
+            )
+            if search_user:
+                diagram.search_user_id = search_user.id
+
+        if kw.get("search_department"):
+            search_dept = request.env["records.department"].search(
+                [
+                    ("name", "ilike", kw.get("search_department")),
+                    ("company_id", "=", user.company_id.id),
+                ],
+                limit=1,
+            )
+            if search_dept:
+                diagram.search_department_id = search_dept.id
+
+        if kw.get("search_query"):
+            diagram.search_query = kw.get("search_query")
+
+        # Prepare template values
+        values = {
+            "diagram": diagram,
+            "user": user,
+            "partner": partner,
+            "page_name": "organization_diagram",
+            "page_title": "Organization Diagram",
+            "breadcrumbs": [
+                {"name": "Home", "url": "/my"},
+                {"name": "Organization Diagram", "url": "/my/organization"},
+            ],
+        }
+
+        return request.render("records_management.portal_organization_diagram", values)
+
+    @http.route(["/my/organization/data"], type="json", auth="user", website=True)
+    def portal_organization_diagram_data(self, diagram_id=None, **kw):
+        """JSON endpoint for diagram data - used for AJAX updates"""
+        user = request.env.user
+
+        try:
+            if diagram_id:
+                diagram = request.env["customer.portal.diagram"].browse(diagram_id)
+                if diagram.user_id != user:
+                    return {"error": "Access denied"}
+            else:
+                # Get user's diagram
+                diagram = request.env["customer.portal.diagram"].search(
+                    [("user_id", "=", user.id)], limit=1
+                )
+                if not diagram:
+                    return {"error": "No diagram found"}
+
+            # Apply any filter updates
+            if "search_query" in kw:
+                diagram.search_query = kw.get("search_query")
+            if "search_user_id" in kw:
+                diagram.search_user_id = (
+                    int(kw.get("search_user_id")) if kw.get("search_user_id") else False
+                )
+            if "search_department_id" in kw:
+                diagram.search_department_id = (
+                    int(kw.get("search_department_id"))
+                    if kw.get("search_department_id")
+                    else False
+                )
+            if "layout_type" in kw:
+                diagram.layout_type = kw.get("layout_type")
+
+            # Return fresh data
+            import json
+
+            return {
+                "nodes": json.loads(diagram.node_data or "[]"),
+                "edges": json.loads(diagram.edge_data or "[]"),
+                "stats": json.loads(diagram.diagram_stats or "{}"),
+                "config": {
+                    "show_messaging": diagram.show_messaging,
+                    "show_access_rights": diagram.show_access_rights,
+                    "layout_type": diagram.layout_type,
+                },
+            }
+
+        except Exception as e:
+            _logger.error(f"Error in portal diagram data: {e}")
+            return {"error": str(e)}
+
+    @http.route(["/my/organization/message"], type="json", auth="user", website=True)
+    def portal_organization_message_user(self, target_user_id, **kw):
+        """Send message to another user from organization diagram"""
+        user = request.env.user
+
+        try:
+            # Get user's diagram for security check
+            diagram = request.env["customer.portal.diagram"].search(
+                [("user_id", "=", user.id)], limit=1
+            )
+
+            if not diagram or not diagram.show_messaging:
+                return {"error": "Messaging not enabled"}
+
+            # Use the diagram's messaging method for security
+            action_result = diagram.action_open_messaging(int(target_user_id))
+
+            return {
+                "success": True,
+                "action": action_result,
+                "message": f"Opening message composer for user {target_user_id}",
+            }
+
+        except Exception as e:
+            _logger.error(f"Error in portal messaging: {e}")
+            return {"error": str(e)}
+
+    @http.route(["/my/organization/export"], type="http", auth="user", website=True)
+    def portal_organization_export(self, **kw):
+        """Export organization diagram data"""
+        user = request.env.user
+
+        try:
+            diagram = request.env["customer.portal.diagram"].search(
+                [("user_id", "=", user.id)], limit=1
+            )
+
+            if not diagram:
+                return request.not_found()
+
+            # Use the diagram's export method
+            return diagram.action_export_diagram_data()
+
+        except Exception as e:
+            _logger.error(f"Error exporting diagram: {e}")
+            return request.redirect("/my/organization?error=export_failed")

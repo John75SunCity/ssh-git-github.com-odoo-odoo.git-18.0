@@ -173,6 +173,9 @@ from . import signed_document
 from . import portal_feedback
 from . import customer_feedback
 
+# Customer portal diagram (interactive organizational visualization)
+from . import customer_portal_diagram
+
 # Portal feedback support models (comprehensive system)
 from . import portal_feedback_support_models
 
