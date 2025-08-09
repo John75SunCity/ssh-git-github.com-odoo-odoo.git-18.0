@@ -1,9 +1,33 @@
 # -*- coding: utf-8 -*-
 """
-Shredding Inventory Item
+Shredding Inventory Management Module
+
+This module provides comprehensive shredding inventory management capabilities
+for the Records Management System. It includes batch processing of multiple items,
+picklist management, and integration with work orders for efficient shredding operations.
+
+Key Features:
+- Batch processing of shredding inventory items
+- Picklist management with status tracking
+- Container and document integration
+- Work order coordination and tracking
+- Real-time status updates and audit trails
+
+Business Processes:
+1. Inventory Batch Creation: Organize items into processing batches
+2. Picklist Generation: Create detailed picking lists for field operations
+3. Item Status Tracking: Monitor picking progress and item locations
+4. Work Order Integration: Coordinate with shredding work orders
+5. Quality Assurance: Verify all items are properly processed
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+
 
 class ShreddingInventoryBatch(models.Model):
     """
@@ -14,34 +38,262 @@ class ShreddingInventoryBatch(models.Model):
     _description = "Shredding Inventory Batch"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name"
+    _rec_name = "name"
 
-    # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True),
-    company_id = fields.Many2one("res.company", default=lambda self: self.env.company),
-    user_id = fields.Many2one("res.users", default=lambda self: self.env.user),
-    active = fields.Boolean(default=True)
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Batch Name",
+        required=True,
+        tracking=True,
+        help="Unique identifier for this shredding batch",
+    )
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Responsible User",
+        default=lambda self: self.env.user,
+        tracking=True,
+        help="User responsible for this batch",
+    )
+    active = fields.Boolean(string="Active", default=True)
 
-    # Basic state management
+    # ============================================================================
+    # BATCH MANAGEMENT FIELDS
+    # ============================================================================
     state = fields.Selection(
-        [("draft", "Draft"), ("confirmed", "Confirmed"), ("done", "Done")],
+        [
+            ("draft", "Draft"),
+            ("confirmed", "Confirmed"),
+            ("processing", "Processing"),
+            ("done", "Done"),
+            ("cancelled", "Cancelled"),
+        ],
         string="State",
         default="draft",
         tracking=True,
+        help="Current state of the batch",
+    )
+    batch_number = fields.Char(
+        string="Batch Number", help="Sequential batch number for tracking"
+    )
+    priority = fields.Selection(
+        [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")],
+        string="Priority",
+        default="normal",
+        tracking=True,
     )
 
-    # Common fields
+    # ============================================================================
+    # DESCRIPTIVE FIELDS
+    # ============================================================================
+    description = fields.Text(
+        string="Description", help="Detailed description of this batch"
     )
-    description = fields.Text(),
-    notes = fields.Text(),
-    date = fields.Date(default=fields.Date.today)
+    notes = fields.Text(
+        string="Internal Notes", help="Internal notes for processing team"
+    )
+    processing_instructions = fields.Text(
+        string="Processing Instructions",
+        help="Specific instructions for processing this batch",
+    )
+
+    # ============================================================================
+    # DATE FIELDS
+    # ============================================================================
+    date = fields.Date(
+        string="Batch Date",
+        default=fields.Date.today,
+        required=True,
+        help="Date when batch was created",
+    )
+    scheduled_date = fields.Date(
+        string="Scheduled Processing Date", help="Planned date for processing"
+    )
+    completion_date = fields.Date(
+        string="Completion Date", help="Date when batch processing was completed"
+    )
+
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+    picklist_item_ids = fields.One2many(
+        "shredding.picklist.item",
+        "batch_id",
+        string="Picklist Items",
+        help="Items included in this batch",
+    )
+    work_order_ids = fields.One2many(
+        "work.order.shredding",
+        "batch_id",
+        string="Work Orders",
+        help="Related work orders",
+    )
+
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
+    item_count = fields.Integer(
+        string="Item Count",
+        compute="_compute_item_count",
+        store=True,
+        help="Number of items in this batch",
+    )
+    picked_count = fields.Integer(
+        string="Picked Items",
+        compute="_compute_picked_count",
+        store=True,
+        help="Number of items already picked",
+    )
+    completion_percentage = fields.Float(
+        string="Completion %",
+        compute="_compute_completion_percentage",
+        store=True,
+        help="Percentage of items completed",
+    )
+
+    # ============================================================================
+    # MAIL THREAD FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=[("res_model", "=", "shredding.inventory.batch")],
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=[("res_model", "=", "shredding.inventory.batch")],
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=[("res_model", "=", "shredding.inventory.batch")],
+    )
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("picklist_item_ids")
+    def _compute_item_count(self):
+        """Compute total number of items in batch"""
+        for record in self:
+            record.item_count = len(record.picklist_item_ids)
+
+    @api.depends("picklist_item_ids.status")
+    def _compute_picked_count(self):
+        """Compute number of picked items"""
+        for record in self:
+            record.picked_count = len(
+                record.picklist_item_ids.filtered(lambda x: x.status == "picked")
+            )
+
+    @api.depends("item_count", "picked_count")
+    def _compute_completion_percentage(self):
+        """Compute completion percentage"""
+        for record in self:
+            if record.item_count > 0:
+                record.completion_percentage = (
+                    record.picked_count / record.item_count
+                ) * 100
+            else:
+                record.completion_percentage = 0.0
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
 
     def action_confirm(self):
-        """Confirm the record"""
-        self.write({"state": "confirmed"})
+        """Confirm batch for processing"""
+        self.ensure_one()
+        if self.state != "draft":
+            raise UserError(_("Only draft batches can be confirmed."))
+
+        self.write({"state": "confirmed", "scheduled_date": fields.Date.today()})
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Batch Confirmed"),
+                "message": _("Shredding batch has been confirmed for processing."),
+                "type": "success",
+            },
+        }
+
+    def action_start_processing(self):
+        """Start processing the batch"""
+        self.ensure_one()
+        if self.state != "confirmed":
+            raise UserError(_("Only confirmed batches can be processed."))
+
+        self.write({"state": "processing"})
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Processing Started"),
+                "message": _("Batch processing has been started."),
+                "type": "success",
+            },
+        }
 
     def action_done(self):
-        """Mark as done"""
-        self.write({"state": "done"})
+        """Mark batch as completed"""
+        self.ensure_one()
+        if self.state not in ["confirmed", "processing"]:
+            raise UserError(_("Only confirmed or processing batches can be completed."))
+
+        self.write({"state": "done", "completion_date": fields.Date.today()})
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Batch Completed"),
+                "message": _("Shredding batch has been completed successfully."),
+                "type": "success",
+            },
+        }
+
+    def action_cancel(self):
+        """Cancel the batch"""
+        self.ensure_one()
+        if self.state == "done":
+            raise UserError(_("Completed batches cannot be cancelled."))
+
+        self.write({"state": "cancelled"})
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Batch Cancelled"),
+                "message": _("Shredding batch has been cancelled."),
+                "type": "warning",
+            },
+        }
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("scheduled_date")
+    def _check_scheduled_date(self):
+        """Validate scheduled date is not in the past"""
+        for record in self:
+            if record.scheduled_date and record.scheduled_date < fields.Date.today():
+                raise ValidationError(_("Scheduled date cannot be in the past."))
+
 
 class ShreddingPicklistItem(models.Model):
     """
@@ -54,40 +306,128 @@ class ShreddingPicklistItem(models.Model):
     _order = "sequence, name"
     _rec_name = "display_name"
 
-    # Core fields
-    name = fields.Char(string="Item Name", required=True, tracking=True),
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Item Name",
+        required=True,
+        tracking=True,
+        help="Name of the item to be picked",
+    )
     display_name = fields.Char(
-        string="Display Name", compute="_compute_display_name", store=True
-    ),
-    sequence = fields.Integer(string="Sequence", default=10)
+        string="Display Name",
+        compute="_compute_display_name",
+        store=True,
+        help="Computed display name with context",
+    )
+    sequence = fields.Integer(
+        string="Sequence", default=10, help="Order sequence for picking"
+    )
 
-    # Workflow relationships
-    container_id = fields.Many2one("records.container", string="Container"),
-    document_id = fields.Many2one("records.document", string="Document")
-    work_order_id = fields.Many2one("work.order.shredding", string="Work Order"),
-    location_id = fields.Many2one("records.location", string="Location")
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+    batch_id = fields.Many2one(
+        "shredding.inventory.batch",
+        string="Batch",
+        ondelete="cascade",
+        help="Related shredding batch",
+    )
+    container_id = fields.Many2one(
+        "records.container", string="Container", help="Related container record"
+    )
+    document_id = fields.Many2one(
+        "records.document", string="Document", help="Related document record"
+    )
+    work_order_id = fields.Many2one(
+        "work.order.shredding", string="Work Order", help="Related shredding work order"
+    )
+    location_id = fields.Many2one(
+        "records.location", string="Location", help="Storage location of the item"
+    )
 
-    # Picking details
-    picked_by = fields.Many2one("res.users", string="Picked By"),
-    picked_date = fields.Datetime(string="Picked Date")
+    # ============================================================================
+    # PICKING DETAILS
+    # ============================================================================
+    picked_by = fields.Many2one(
+        "res.users", string="Picked By", help="User who picked this item"
+    )
+    picked_date = fields.Datetime(
+        string="Picked Date", help="Date and time when item was picked"
+    )
+    verified_by = fields.Many2one(
+        "res.users", string="Verified By", help="User who verified the pick"
+    )
+    verified_date = fields.Datetime(
+        string="Verified Date", help="Date and time when pick was verified"
+    )
 
-    # Status tracking
+    # ============================================================================
+    # STATUS TRACKING
+    # ============================================================================
     status = fields.Selection(
         [
             ("draft", "Draft"),
             ("pending_pickup", "Pending Pickup"),
             ("picked", "Picked"),
+            ("verified", "Verified"),
             ("not_found", "Not Found"),
-        ]),
+            ("cancelled", "Cancelled"),
+        ],
         string="Status",
         default="draft",
         tracking=True,
+        help="Current status of the item",
+    )
+    priority = fields.Selection(
+        [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")],
+        string="Priority",
+        default="normal",
+        help="Priority level for picking",
     )
 
-    # Common fields
+    # ============================================================================
+    # ADDITIONAL FIELDS
+    # ============================================================================
+    notes = fields.Text(string="Notes", help="Additional notes about this item")
+    picking_instructions = fields.Text(
+        string="Picking Instructions", help="Special instructions for picking this item"
+    )
+    expected_location = fields.Char(
+        string="Expected Location", help="Expected location code for this item"
+    )
+    barcode = fields.Char(string="Barcode", help="Item barcode for scanning")
+
+    # ============================================================================
+    # MAIL THREAD FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=[("res_model", "=", "shredding.picklist.item")],
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=[("res_model", "=", "shredding.picklist.item")],
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=[("res_model", "=", "shredding.picklist.item")],
+    )
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
 
     @api.depends("name", "container_id", "document_id")
     def _compute_display_name(self):
+        """Compute display name with context information"""
         for record in self:
             if record.container_id:
                 record.display_name = (
@@ -100,8 +440,15 @@ class ShreddingPicklistItem(models.Model):
             else:
                 record.display_name = record.name or _("New Item")
 
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_mark_picked(self):
         """Mark item as picked"""
+        self.ensure_one()
+        if self.status != "pending_pickup":
+            raise UserError(_("Only pending items can be marked as picked."))
+
         self.write(
             {
                 "status": "picked",
@@ -110,14 +457,123 @@ class ShreddingPicklistItem(models.Model):
             }
         )
 
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Item Picked"),
+                "message": _("Item has been marked as picked successfully."),
+                "type": "success",
+            },
+        }
+
+    def action_mark_verified(self):
+        """Mark item as verified"""
+        self.ensure_one()
+        if self.status != "picked":
+            raise UserError(_("Only picked items can be verified."))
+
+        self.write(
+            {
+                "status": "verified",
+                "verified_by": self.env.user.id,
+                "verified_date": fields.Datetime.now(),
+            }
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Item Verified"),
+                "message": _("Item has been verified successfully."),
+                "type": "success",
+            },
+        }
+
     def action_mark_not_found(self):
         """Mark item as not found"""
+        self.ensure_one()
+        if self.status not in ["pending_pickup", "picked"]:
+            raise UserError(
+                _("Only pending or picked items can be marked as not found.")
+            )
+
         self.write({"status": "not_found"})
 
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Item Not Found"),
+                "message": _("Item has been marked as not found."),
+                "type": "warning",
+            },
+        }
+
     def action_confirm(self):
-        """Confirm the record"""
+        """Confirm item for pickup"""
+        self.ensure_one()
+        if self.status != "draft":
+            raise UserError(_("Only draft items can be confirmed."))
+
         self.write({"status": "pending_pickup"})
 
-    def action_done(self):
-        """Mark as done"""
-        self.write({"status": "picked"})
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Item Confirmed"),
+                "message": _("Item has been confirmed for pickup."),
+                "type": "success",
+            },
+        }
+
+    def action_reset_to_draft(self):
+        """Reset item to draft status"""
+        self.ensure_one()
+        if self.status == "verified":
+            raise UserError(_("Verified items cannot be reset to draft."))
+
+        self.write(
+            {
+                "status": "draft",
+                "picked_by": False,
+                "picked_date": False,
+                "verified_by": False,
+                "verified_date": False,
+            }
+        )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Item Reset"),
+                "message": _("Item has been reset to draft status."),
+                "type": "info",
+            },
+        }
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("picked_date", "verified_date")
+    def _check_date_sequence(self):
+        """Validate that verified date is after picked date"""
+        for record in self:
+            if (
+                record.picked_date
+                and record.verified_date
+                and record.verified_date < record.picked_date
+            ):
+                raise ValidationError(_("Verified date cannot be before picked date."))
+
+    @api.constrains("container_id", "document_id")
+    def _check_container_or_document(self):
+        """Validate that either container or document is specified"""
+        for record in self:
+            if not record.container_id and not record.document_id:
+                raise ValidationError(
+                    _("Either container or document must be specified.")
+                )
