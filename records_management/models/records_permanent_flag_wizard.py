@@ -355,10 +355,14 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         domain = []
 
         if self.document_type_ids:
-            domain.append(("document_type_id", "in", self.document_type_ids.ids))
+            domain.append(
+                ("document_type_id", "in", self.document_type_ids.ids)
+            )  # pylint: disable=no-member
 
         if self.location_ids:
-            domain.append(("location_id", "in", self.location_ids.ids))
+            domain.append(
+                ("location_id", "in", self.location_ids.ids)
+            )  # pylint: disable=no-member
 
         if self.partner_id:
             domain.append(("partner_id", "=", self.partner_id.id))
@@ -383,7 +387,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             )
 
         documents = self._apply_criteria_filter()
-        self.document_ids = [(6, 0, documents.ids)]
+        self.document_ids = [(6, 0, documents.ids)]  # pylint: disable=no-member
 
         self._update_audit_trail(
             "Applied Criteria", f"Selected {len(documents)} documents"
@@ -411,6 +415,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             raise UserError(_("No documents selected for operation"))
 
         # Mark as in progress
+        # pylint: disable=no-member
+
         self.write(
             {
                 "state": "in_progress",
@@ -423,11 +429,15 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         errors = []
 
         # Use recordset methods - document_ids is a Many2many recordset, not a list
-        valid_documents = self.document_ids.exists()
+        # pylint: disable=no-member
+        valid_documents = self.document_ids.exists()  # pylint: disable=no-member
 
         for document in valid_documents:
             try:
                 if self.operation_type == "apply":
+                    # pylint: disable=no-member
+                    # pylint: disable=no-member
+
                     document.write(
                         {
                             "permanent_retention": True,  # Use standard field name
@@ -438,6 +448,9 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                         }
                     )
                 elif self.operation_type == "remove":
+                    # pylint: disable=no-member
+                    # pylint: disable=no-member
+
                     document.write(
                         {
                             "permanent_retention": False,
@@ -475,6 +488,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
         # Mark as completed or completed with errors
         if errors:
+            # pylint: disable=no-member
+
             self.write(
                 {
                     "state": "completed_with_errors",
@@ -482,6 +497,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                 }
             )
         else:
+            # pylint: disable=no-member
+
             self.write({"state": "completed", "completion_date": fields.Datetime.now()})
 
         # Show result
@@ -571,6 +588,8 @@ Description:
         if self.approval_status != "pending":
             raise UserError(_("Only pending operations can be approved"))
 
+        # pylint: disable=no-member
+
         self.write(
             {
                 "approval_status": "approved",
@@ -620,6 +639,8 @@ Description:
         if self.state in ["completed", "completed_with_errors"]:
             raise UserError(_("Cannot cancel completed operations"))
 
+        # pylint: disable=no-member
+
         self.write({"state": "cancelled"})
         self._update_audit_trail("Operation Cancelled")
 
@@ -642,6 +663,8 @@ Description:
             "name": _("Selected Documents"),
             "res_model": "records.document",
             "view_mode": "tree,form",
-            "domain": [("id", "in", self.document_ids.ids)],
+            "domain": [
+                ("id", "in", self.document_ids.ids)
+            ],  # pylint: disable=no-member
             "target": "current",
         }

@@ -350,9 +350,9 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         domain = []
 
         if self.document_type_ids:
-            domain.append(("document_type_id", "in", self.document_type_ids.ids))
+            domain.append(("document_type_id", "in", self.document_type_ids.ids))  # pylint: disable=no-member
         if self.location_ids:
-            domain.append(("location_id", "in", self.location_ids.ids))
+            domain.append(("location_id", "in", self.location_ids.ids))  # pylint: disable=no-member
         if self.partner_id:
             domain.append(("partner_id", "=", self.partner_id.id))
         if self.date_from:
@@ -373,7 +373,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             )
 
         documents = self._apply_criteria_filter()
-        self.document_ids = [(6, 0, documents.ids)]
+        self.document_ids = [(6, 0, documents.ids)]  # pylint: disable=no-member
 
         self._update_audit_trail(
             "Applied Criteria", f"Selected {len(documents)} documents"
@@ -394,6 +394,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         """Execute the permanent flag operation"""
         self.ensure_one()
         # Mark as in progress
+        # pylint: disable=no-member
+
         self.write(
             {
                 "state": "in_progress",
@@ -408,11 +410,12 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         for document in self.document_ids:
             try:
                 # Ensure the document record still exists and is valid
-                if not document.exists():
-                    errors.append(f"Document ID {document.id}: Record does not exist")
+                if not document.exists():  # pylint: disable=no-member
+                    errors.append(f"Document ID {document.id}: Record does not exist")  # pylint: disable=no-member
                     continue
 
                 if self.operation_type == "apply":
+                    # pylint: disable=no-member
                     document.write(
                         {
                             "permanent_flag": True,
@@ -422,6 +425,9 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                         }
                     )
                 elif self.operation_type == "remove":
+                    # pylint: disable=no-member
+                    # pylint: disable=no-member
+
                     document.write(
                         {
                             "permanent_flag": False,
@@ -432,11 +438,11 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                     )
                 affected_count += 1
             except (UserError, ValidationError) as e:
-                document_name = getattr(document, "name", f"ID: {document.id}")
+                document_name = getattr(document, "name", f"ID: {document.id}")  # pylint: disable=no-member
                 errors.append(f"Document {document_name}: {str(e)}")
             except Exception as e:
                 tb = traceback.format_exc()
-                document_name = getattr(document, "name", f"ID: {document.id}")
+                document_name = getattr(document, "name", f"ID: {document.id}")  # pylint: disable=no-member
                 errors.append(f"Document {document_name}: Unexpected error: {str(e)}")
                 _logger.error(
                     "Unexpected error processing document %s: %s\n%s",
@@ -460,6 +466,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
         # Mark as completed or completed with errors
         if errors:
+            # pylint: disable=no-member
+
             self.write(
                 {
                     "state": "completed_with_errors",
@@ -467,6 +475,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                 }
             )
         else:
+            # pylint: disable=no-member
+
             self.write({"state": "completed", "completion_date": fields.Datetime.now()})
 
         # Show result
@@ -557,6 +567,9 @@ Description:
         if self.approval_status != "pending":
             raise UserError(_("Only pending operations can be approved"))
 
+        # pylint: disable=no-member
+
+
         self.write(
             {
                 "approval_status": "approved",
@@ -604,6 +617,9 @@ Description:
         if self.state in ["completed", "completed_with_errors"]:
             raise UserError(_("Cannot cancel completed operations"))
 
+        # pylint: disable=no-member
+
+
         self.write({"state": "cancelled"})
         self._update_audit_trail("Operation Cancelled")
 
@@ -638,6 +654,6 @@ Description:
             "res_model": "records.document",
             "view_mode": "tree,form",
             # Limit to first 1000 documents for efficiency; adjust as needed
-            "domain": [("id", "in", self.document_ids.ids[:1000])],
+            "domain": [("id", "in", self.document_ids.ids[:1000])],  # pylint: disable=no-member
             "target": "current",
         }
