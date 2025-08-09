@@ -1,0 +1,19 @@
+[[config]]
+name = "default"
+extends = ""
+odoo_path = ""
+abstract = false
+addons_paths = [
+  "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0",
+  "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management"
+]
+addons_merge = "merge"
+python_path = "python3"
+additional_stubs = []
+additional_stubs_merge = "merge"
+refresh_mode = "adaptive"
+file_cache = true
+diag_missing_imports = "none"
+ac_filter_model_names = true
+auto_refresh_delay = 1000
+add_workspace_addon_path = false

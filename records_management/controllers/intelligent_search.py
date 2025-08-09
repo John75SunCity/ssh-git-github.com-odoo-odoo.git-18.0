@@ -17,7 +17,7 @@ from datetime import datetime, timedelta
 
 from odoo import http, fields, _
 from odoo.http import request
-from odoo.exceptions import AccessDenied
+from odoo.exceptions import AccessDenied, UserError
 from odoo.tools import config, safe_eval
 
 _logger = logging.getLogger(__name__)
@@ -81,44 +81,65 @@ class IntelligentSearchController(http.Controller):
 
         Example: query="45" returns containers 4511, 4512, 4589, etc.
         """
-        if not query or len(query) < 1:
-            return {"suggestions": []}
+        start_time = time.time()
+        
+        try:
+            if not query or len(query) < 1:
+                return {"suggestions": [], "total": 0}
 
-        domain = [
-            ("name", "ilike", f"{query}%"),  # Starts with query
-            ("active", "=", True),
-            ("state", "in", ["active", "stored"]),
-        ]
+            # Sanitize query input
+            query = query.strip()
+            if not query:
+                return {"suggestions": [], "total": 0}
 
-        # Filter by customer if specified
-        if customer_id:
-            domain.append(("partner_id", "=", int(customer_id)))
+            domain = [
+                ("name", "ilike", f"{query}%"),  # Starts with query
+                ("active", "=", True),
+                ("state", "in", ["active", "stored"]),
+            ]
 
-        # Apply department security if applicable
-        domain = self._apply_department_security(domain)
+            # Filter by customer if specified
+            if customer_id:
+                try:
+                    customer_id = int(customer_id)
+                    domain.append(("partner_id", "=", customer_id))
+                except (ValueError, TypeError):
+                    _logger.warning(f"Invalid customer_id provided: {customer_id}")
+                    return {"error": "Invalid customer ID", "suggestions": []}
 
-        containers = request.env["records.container"].search(
-            domain, limit=limit, order="name asc"
-        )
+            # Apply department security if applicable
+            domain = self._apply_department_security(domain)
 
-        suggestions = []
-        for container in containers:
-            suggestions.append(
-                {
-                    "id": container.id,
-                    "name": container.name,
-                    "description": container.content_description or "",
-                    "location": (
-                        container.location_id.name if container.location_id else ""
-                    ),
-                    "alpha_range": container.alpha_range_display or "",
-                    "date_range": container.content_date_range_display or "",
-                    "content_type": container.primary_content_type or "",
-                    "document_count": container.document_count,
-                }
+            containers = request.env["records.container"].search(
+                domain, limit=int(limit), order="name asc"
             )
 
-        return {"suggestions": suggestions, "total": len(suggestions)}
+            suggestions = []
+            for container in containers:
+                suggestions.append(
+                    {
+                        "id": container.id,
+                        "name": container.name,
+                        "description": container.content_description or "",
+                        "location": (
+                            container.location_id.name if container.location_id else ""
+                        ),
+                        "alpha_range": container.alpha_range_display or "",
+                        "date_range": container.content_date_range_display or "",
+                        "content_type": container.primary_content_type or "",
+                        "document_count": container.document_count or 0,
+                    }
+                )
+
+            # Log performance metrics
+            duration_ms = (time.time() - start_time) * 1000
+            search_monitor.log_query("container_autocomplete", duration_ms, {"query": query, "limit": limit})
+
+            return {"suggestions": suggestions, "total": len(suggestions)}
+            
+        except Exception as e:
+            _logger.error(f"Error in container autocomplete search: {str(e)}")
+            return {"error": "Search failed", "suggestions": []}
 
     # ============================================================================
     # INTELLIGENT FILE SEARCH WITH CONTAINER RECOMMENDATIONS
@@ -141,131 +162,170 @@ class IntelligentSearchController(http.Controller):
         - customer_id: Customer ID for filtering
         - content_type: Type of document being searched
         """
+        start_time = time.time()
         recommendations = []
 
-        # Extract search parameters
-        file_name = kwargs.get("file_name", "").strip()
-        date_of_birth = kwargs.get("date_of_birth")
-        service_date = kwargs.get("service_date")
-        customer_id = kwargs.get("customer_id")
-        content_type = kwargs.get("content_type", "")
+        try:
+            # Extract and sanitize search parameters
+            file_name = kwargs.get("file_name", "").strip()
+            date_of_birth = kwargs.get("date_of_birth")
+            service_date = kwargs.get("service_date")
+            customer_id = kwargs.get("customer_id")
+            content_type = kwargs.get("content_type", "").strip()
 
-        if not file_name and not service_date:
-            return {
-                "recommendations": [],
-                "message": "Please provide file name or service date",
-            }
+            if not file_name and not service_date:
+                return {
+                    "recommendations": [],
+                    "message": "Please provide file name or service date",
+                    "total": 0
+                }
 
-        # Build base domain
-        domain = [("active", "=", True), ("state", "in", ["active", "stored"])]
+            # Build base domain with better error handling
+            domain = [("active", "=", True), ("state", "in", ["active", "stored"])]
 
-        if customer_id:
-            domain.append(("partner_id", "=", int(customer_id)))
-
-        # Apply department security
-        domain = self._apply_department_security(domain)
-
-        # Search containers using different criteria
-        containers = request.env["records.container"].search(domain)
-
-        for container in containers:
-            score = 0
-            reasons = []
-
-            # 1. Alphabetical range matching
-            if file_name and container.alpha_range_start and container.alpha_range_end:
-                name_start = file_name[0].upper() if file_name else ""
-                if name_start:
-                    alpha_start = container.alpha_range_start.upper()
-                    alpha_end = container.alpha_range_end.upper()
-
-                    # Check if name falls within alphabetical range
-                    if alpha_start <= name_start <= alpha_end:
-                        score += 50
-                        reasons.append(
-                            f"Name '{file_name}' fits alphabetical range {container.alpha_range_display}"
-                        )
-
-            # 2. Date range matching
-            if (
-                service_date
-                and container.content_date_from
-                and container.content_date_to
-            ):
+            if customer_id:
                 try:
-                    if isinstance(service_date, str):
-                        search_date = datetime.strptime(service_date, "%Y-%m-%d").date()
-                    else:
-                        search_date = service_date
+                    customer_id = int(customer_id)
+                    domain.append(("partner_id", "=", customer_id))
+                except (ValueError, TypeError):
+                    _logger.warning(f"Invalid customer_id in file search: {customer_id}")
+                    return {"error": "Invalid customer ID", "recommendations": []}
 
-                    if (
-                        container.content_date_from
-                        <= search_date
-                        <= container.content_date_to
-                    ):
-                        score += 40
-                        reasons.append(
-                            f"Service date {search_date.strftime('%m/%d/%Y')} falls within container date range"
-                        )
-                except Exception:
-                    pass
+            # Apply department security
+            domain = self._apply_department_security(domain)
 
-            # 3. Content type matching (case-insensitive)
-            if (
-                content_type
-                and container.primary_content_type
-                and container.primary_content_type.lower() == content_type.lower()
-            ):
-                score += 30
-                reasons.append(f"Content type matches: {content_type}")
+            # Search containers using different criteria
+            containers = request.env["records.container"].search(domain, limit=100)  # Reasonable limit for processing
 
-            # 4. Keyword matching in search_keywords
-            if file_name and container.search_keywords:
-                keywords = container.search_keywords.lower()
-                if file_name.lower() in keywords:
-                    score += 25
-                    reasons.append(f"File name found in container keywords")
+            for container in containers:
+                score = 0
+                reasons = []
 
-            # 5. Content description matching
-            if file_name and container.content_description:
-                if file_name.lower() in container.content_description.lower():
-                    score += 20
-                    reasons.append(f"File name found in content description")
+                # 1. Alphabetical range matching
+                if file_name and container.alpha_range_start and container.alpha_range_end:
+                    name_start = file_name[0].upper() if file_name else ""
+                    if name_start:
+                        alpha_start = container.alpha_range_start.upper()
+                        alpha_end = container.alpha_range_end.upper()
 
-            # Only include containers with reasonable match scores
-            if score >= 20:
-                recommendations.append(
-                    {
-                        "id": container.id,
-                        "name": container.name,
-                        "score": score,
-                        "confidence": min(score, 95),  # Use score directly, cap at 95%
-                        "reasons": reasons,
-                        "location": (
-                            container.location_id.name
-                            if container.location_id
-                            else "Unknown"
-                        ),
-                        "alpha_range": container.alpha_range_display,
-                        "date_range": container.content_date_range_display,
-                        "content_type": container.primary_content_type,
-                        "document_count": container.document_count,
-                        "description": container.content_description or "",
-                    }
-                )
+                        # Check if name falls within alphabetical range
+                        if alpha_start <= name_start <= alpha_end:
+                            score += 50
+                            reasons.append(
+                                f"Name '{file_name}' fits alphabetical range {container.alpha_range_display}"
+                            )
 
-        # Sort by score (highest first) and limit results
-        recommendations.sort(key=lambda x: x["score"], reverse=True)
+                # 2. Date range matching with improved error handling
+                if (
+                    service_date
+                    and container.content_date_from
+                    and container.content_date_to
+                ):
+                    try:
+                        if isinstance(service_date, str):
+                            search_date = datetime.strptime(service_date, "%Y-%m-%d").date()
+                        else:
+                            search_date = service_date
 
-        return {
-            "recommendations": recommendations[:15],  # Limit to top 15 suggestions
-            "total": len(recommendations),
-            "search_criteria": {
-                "file_name": file_name,
-                "service_date": service_date,
-                "content_type": content_type,
-            },
-        }
+                        if (
+                            container.content_date_from
+                            <= search_date
+                            <= container.content_date_to
+                        ):
+                            score += 40
+                            reasons.append(
+                                f"Service date {search_date.strftime('%m/%d/%Y')} falls within container date range"
+                            )
+                    except (ValueError, TypeError) as e:
+                        _logger.debug(f"Date parsing error in container search: {e}")
+
+                # 3. Content type matching (case-insensitive)
+                if (
+                    content_type
+                    and container.primary_content_type
+                    and container.primary_content_type.lower() == content_type.lower()
+                ):
+                    score += 30
+                    reasons.append(f"Content type matches: {content_type}")
+
+                # 4. Keyword matching in search_keywords - FIXED LOGIC
+                if file_name and container.search_keywords:
+                    keywords = container.search_keywords.lower()
+                    file_name_lower = file_name.lower()
+                    
+                    # Check for exact word matches (more precise than substring)
+                    file_words = file_name_lower.split()
+                    keyword_words = keywords.split()
+                    
+                    matches = 0
+                    for word in file_words:
+                        if len(word) >= 3 and word in keyword_words:  # Only count words 3+ chars
+                            matches += 1
+                    
+                    if matches > 0:
+                        score += 25 + (matches * 5)  # Bonus for multiple word matches
+                        reasons.append(f"Found {matches} matching keywords in container")
+
+                # 5. Content description matching with word boundary logic
+                if file_name and container.content_description:
+                    description_lower = container.content_description.lower()
+                    file_name_lower = file_name.lower()
+                    
+                    # Check for whole word matches first
+                    file_words = file_name_lower.split()
+                    desc_words = description_lower.split()
+                    
+                    word_matches = sum(1 for word in file_words if len(word) >= 3 and word in desc_words)
+                    
+                    if word_matches > 0:
+                        score += 20 + (word_matches * 5)
+                        reasons.append(f"Found {word_matches} matching words in description")
+                    elif file_name_lower in description_lower:  # Fallback to substring
+                        score += 15
+                        reasons.append("File name found in content description")
+
+                # Only include containers with reasonable match scores
+                if score >= 20:
+                    recommendations.append(
+                        {
+                            "id": container.id,
+                            "name": container.name,
+                            "score": score,
+                            "confidence": min(score, 95),  # Use score directly, cap at 95%
+                            "reasons": reasons,
+                            "location": (
+                                container.location_id.name
+                                if container.location_id
+                                else "Unknown"
+                            ),
+                            "alpha_range": container.alpha_range_display or "",
+                            "date_range": container.content_date_range_display or "",
+                            "content_type": container.primary_content_type or "",
+                            "document_count": container.document_count or 0,
+                            "description": container.content_description or "",
+                        }
+                    )
+
+            # Sort by score (highest first) and limit results
+            recommendations.sort(key=lambda x: x["score"], reverse=True)
+
+            # Log performance metrics
+            duration_ms = (time.time() - start_time) * 1000
+            search_monitor.log_query("container_recommendations", duration_ms, kwargs)
+
+            return {
+                "recommendations": recommendations[:15],  # Limit to top 15 suggestions
+                "total": len(recommendations),
+                "search_criteria": {
+                    "file_name": file_name,
+                    "service_date": service_date,
+                    "content_type": content_type,
+                },
+            }
+            
+        except Exception as e:
+            _logger.error(f"Error in container recommendations: {str(e)}")
+            return {"error": "Recommendation search failed", "recommendations": []}
 
     # ============================================================================
     # PORTAL SEARCH INTEGRATION

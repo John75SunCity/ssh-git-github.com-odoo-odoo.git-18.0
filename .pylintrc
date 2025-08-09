@@ -24,6 +24,9 @@ disable=
     line-too-long,
     consider-using-f-string
 
+# Specific modules to ignore for unused-import warnings (not fields!)
+ignored-modules=odoo.http.request,json,time,datetime.timedelta
+
 [FORMAT]
 # Maximum number of characters on a single line
 max-line-length=120
