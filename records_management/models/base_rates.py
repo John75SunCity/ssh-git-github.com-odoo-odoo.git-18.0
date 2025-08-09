@@ -112,6 +112,39 @@ class BaseRates(models.Model):
     description = fields.Text(string="Description")
     notes = fields.Text(string="Internal Notes")
 
+    # Container Type Integration (CRITICAL BUSINESS SPECIFICATIONS)
+    container_type = fields.Selection(
+        [
+            ("type_01", 'Type 01 - Standard Box (1.2 CF, 35 lbs, 12"x15"x10")'),
+            ("type_02", 'Type 02 - Legal/Banker Box (1.2 CF, 65 lbs, 24"x15"x10")'),
+            ("type_03", 'Type 03 - Map Box (0.875 CF, 35 lbs, 42"x6"x6")'),
+            (
+                "type_04",
+                "Type 04 - Odd Size/Temp Box (5.0 CF, 75 lbs, dimensions unknown)",
+            ),
+            ("type_06", 'Type 06 - Pathology Box (0.042 CF, 40 lbs, 12"x6"x10")'),
+            ("all_types", "All Container Types"),
+        ],
+        string="Container Type",
+        help="Container type this rate applies to (based on actual business specifications)",
+    )
+    container_type_code = fields.Char(
+        string="Container Type Code",
+        help="Code reference for container type (e.g., TYPE01, TYPE02, etc.)",
+    )
+
+    # Container specifications for rate calculations
+    container_volume_cf = fields.Float(
+        string="Container Volume (CF)",
+        digits=(10, 3),
+        help="Volume in cubic feet for capacity calculations",
+    )
+    container_avg_weight = fields.Float(
+        string="Average Weight (lbs)",
+        digits=(10, 2),
+        help="Average weight for transport and handling calculations",
+    )
+
     # Computed fields
     is_expired = fields.Boolean(
         string="Is Expired", compute="_compute_is_expired", store=True

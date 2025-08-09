@@ -64,6 +64,55 @@ git add . && git commit -m "fix: Resolve syntax errors in records_department.py 
 
 ---
 
+## 📦 **CRITICAL BUSINESS CONTAINER SPECIFICATIONS**
+
+**⚠️ IMPORTANT**: These are the actual container types used in the business. All billing, capacity calculations, FSM operations, and system functionality MUST use these exact specifications:
+
+### **Standard Container Types (Current Business Operations)**
+
+**TYPE 01: STANDARD BOX**
+- Volume: 1.2 CF (Cubic Feet)
+- Average Weight: 35 lbs
+- Dimensions: 12" x 15" x 10"
+- Use: General file storage, most common container type
+
+**TYPE 02: LEGAL/BANKER BOX**
+- Volume: 1.2 CF (Cubic Feet) 
+- Average Weight: 65 lbs
+- Dimensions: 24" x 15" x 10"
+- Use: Large capacity file storage, legal documents
+
+**TYPE 03: MAP BOX**
+- Volume: 0.875 CF (Cubic Feet)
+- Average Weight: 35 lbs
+- Dimensions: 42" x 6" x 6"
+- Use: Maps, blueprints, and long format documents
+
+**TYPE 04: ODD SIZE/TEMP BOX**
+- Volume: 5.0 CF (Cubic Feet)
+- Average Weight: 75 lbs
+- Dimensions: Unknown/Variable
+- Use: Temporary storage, non-standard items
+
+**TYPE 06: PATHOLOGY BOX**
+- Volume: 0.042 CF (Cubic Feet)
+- Average Weight: 40 lbs  
+- Dimensions: 12" x 6" x 10"
+- Use: Medical specimens, pathology documents
+
+### **Integration Requirements**
+
+These specifications must be used in:
+- **Billing calculations** (base.rates, customer.negotiated.rates)
+- **FSM operations** (route planning, vehicle capacity)
+- **Capacity management** (warehouse space, pickup logistics)
+- **Pricing models** (storage fees, handling charges)
+- **Reporting systems** (utilization, revenue forecasting)
+
+**🚨 NEVER DEVIATE** from these container specifications without explicit business approval.
+
+---
+
 ## 🎯 Project Overview
 
 This is a **comprehensive enterprise-grade Odoo 18.0 Records Management module** with NAID AAA compliance features. The codebase implements systematic patterns for field management, strict inheritance hierarchies, and comprehensive workflow tracking across 50+ models and 1,400+ fields.

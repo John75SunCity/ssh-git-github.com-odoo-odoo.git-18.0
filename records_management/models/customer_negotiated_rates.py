@@ -148,6 +148,53 @@ class CustomerNegotiatedRates(models.Model):
     approval_notes = fields.Text(string="Approval Notes")
     terms_conditions = fields.Text(string="Special Terms & Conditions")
 
+    # Container Type Integration (CRITICAL BUSINESS SPECIFICATIONS)
+    container_type = fields.Selection(
+        [
+            ("type_01", 'Type 01 - Standard Box (1.2 CF, 35 lbs, 12"x15"x10")'),
+            ("type_02", 'Type 02 - Legal/Banker Box (1.2 CF, 65 lbs, 24"x15"x10")'),
+            ("type_03", 'Type 03 - Map Box (0.875 CF, 35 lbs, 42"x6"x6")'),
+            (
+                "type_04",
+                "Type 04 - Odd Size/Temp Box (5.0 CF, 75 lbs, dimensions unknown)",
+            ),
+            ("type_06", 'Type 06 - Pathology Box (0.042 CF, 40 lbs, 12"x6"x10")'),
+            ("all_types", "All Container Types"),
+        ],
+        string="Container Type",
+        help="Container type this negotiated rate applies to",
+    )
+    container_type_code = fields.Char(
+        string="Container Type Code",
+        help="Code reference for container type (e.g., TYPE01, TYPE02, etc.)",
+    )
+
+    # Container-specific negotiated rates
+    container_monthly_rate = fields.Float(
+        string="Container Monthly Rate",
+        digits=(12, 2),
+        tracking=True,
+        help="Negotiated monthly storage rate per container type",
+    )
+    container_setup_fee = fields.Float(
+        string="Container Setup Fee",
+        digits=(12, 2),
+        tracking=True,
+        help="Negotiated setup fee per container type",
+    )
+    container_handling_fee = fields.Float(
+        string="Container Handling Fee",
+        digits=(12, 2),
+        tracking=True,
+        help="Negotiated handling fee per container type",
+    )
+    container_destruction_fee = fields.Float(
+        string="Container Destruction Fee",
+        digits=(12, 2),
+        tracking=True,
+        help="Negotiated destruction fee per container type",
+    )
+
     # Computed fields
     # The display_name field depends on partner_id, name, and effective_date.
     # If any of these fields change, the computation is triggered.
