@@ -2,7 +2,6 @@
 from odoo import http, fields, _
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.http import request
-from odoo.exceptions import AccessError
 import csv
 import io
 import json
@@ -75,7 +74,11 @@ class CustomerPortalExtended(CustomerPortal):
                     "icon": "archive",
                     "color": "primary",
                     "description": f"Container {container.name} updated",
-                    "date": container.write_date.strftime("%Y-%m-%d %H:%M"),
+                    "date": (
+                        container.write_date.strftime("%Y-%m-%d %H:%M")
+                        if container.write_date
+                        else ""
+                    ),
                 }
             )
 
@@ -99,7 +102,11 @@ class CustomerPortalExtended(CustomerPortal):
                     "icon": "tasks",
                     "color": color,
                     "description": f'{req.request_type.title()} request {req.state.replace("_", " ")}',
-                    "date": req.create_date.strftime("%Y-%m-%d %H:%M"),
+                    "date": (
+                        req.create_date.strftime("%Y-%m-%d %H:%M")
+                        if req.create_date
+                        else ""
+                    ),
                 }
             )
 
@@ -119,7 +126,9 @@ class CustomerPortalExtended(CustomerPortal):
                     (
                         "retention_date",
                         "<=",
-                        fields.Date.add(fields.Date.today(), days=30),
+                        fields.Datetime.to_string(
+                            fields.Datetime.now() + timedelta(days=30)
+                        ),
                     ),
                     ("state", "!=", "destroyed"),
                 ]
@@ -130,7 +139,7 @@ class CustomerPortalExtended(CustomerPortal):
             suggestions.append(
                 {
                     "title": "Retention Review Needed",
-                    "description": f"{expiring_soon} containers are approaching retention expiry",
+                    "description": f"{expiring_soon} containers are approaching the end of their retention period (scheduled for review or destruction soon)",
                     "action": 'window.location.href="/my/inventory?filter=expiring"',
                 }
             )
@@ -188,7 +197,10 @@ class CustomerPortalExtended(CustomerPortal):
     def portal_invoice_update_po(self, invoice_id, **kw):
         """Enhanced PO update with NAID audit logging"""
         invoice = request.env["account.move"].sudo().browse(invoice_id)
-        if invoice.partner_id.id != request.env.user.partner_id.id:
+        if (
+            not invoice.exists()
+            or invoice.partner_id.id != request.env.user.partner_id.id
+        ):
             return request.redirect("/my")
 
         po_number = kw.get("po_number")
@@ -309,7 +321,8 @@ class CustomerPortalExtended(CustomerPortal):
 
             return request.redirect("/my/feedback?success=1")
 
-        except Exception as e:
+        except Exception:
+            _logger.exception("Error submitting feedback")
             return request.redirect("/my/feedback?error=submission_failed")
 
     @http.route("/my/documents/data", type="json", auth="user", website=True)
@@ -473,7 +486,8 @@ class CustomerPortalExtended(CustomerPortal):
                 "user_id": request.env.user.id,
             }
 
-        except Exception as e:
+        except Exception:
+            _logger.exception("Error fetching document data")
             # Log access error for NAID audit
             request.env["naid.audit.log"].sudo().create(
                 {
@@ -481,7 +495,7 @@ class CustomerPortalExtended(CustomerPortal):
                     "action": "document_access_error",
                     "resource_type": "portal_documents",
                     "access_date": fields.Datetime.now(),
-                    "error_message": str(e),
+                    "error_message": "Document access failed",
                 }
             )
 
@@ -716,7 +730,7 @@ class CustomerPortalExtended(CustomerPortal):
                         containers.filtered(
                             lambda b: b.retention_date
                             and b.retention_date
-                            <= fields.Date.add(fields.Date.today(), days=30)
+                            <= fields.Datetime.add(fields.Datetime.now(), days=30)
                         )
                     ),
                 },
@@ -734,7 +748,8 @@ class CustomerPortalExtended(CustomerPortal):
                 },
             }
 
-        except Exception as e:
+        except Exception:
+            _logger.exception("Error fetching inventory document data")
             # Log inventory access error for NAID audit
             request.env["naid.audit.log"].sudo().create(
                 {
@@ -742,7 +757,7 @@ class CustomerPortalExtended(CustomerPortal):
                     "action": "inventory_document_access_error",
                     "resource_type": "inventory_documents",
                     "access_date": fields.Datetime.now(),
-                    "error_message": str(e),
+                    "error_message": "Inventory access failed",
                 }
             )
 
@@ -1208,20 +1223,19 @@ class CustomerPortalExtended(CustomerPortal):
                     )
                     # Assign departments/access via HR or custom fields
                     if len(row) >= 3:  # Department column
-                        employee = (
-                            request.env["hr.employee"]
+                        department = (
+                            request.env["hr.department"]
                             .sudo()
-                            .create(
+                            .search([("name", "=", row[2])], limit=1)
+                        )
+                        if department:
+                            request.env["hr.employee"].sudo().create(
                                 {
                                     "name": row[0],
                                     "user_id": user.id,
-                                    "department_id": request.env["hr.department"]
-                                    .sudo()
-                                    .search([("name", "=", row[2])], limit=1)
-                                    .id,
+                                    "department_id": department.id,
                                 }
                             )
-                        )
         return request.redirect("/my/users")
 
     # Additional routes for multi-select actions (e.g., batch destruction request)
@@ -1422,11 +1436,14 @@ class CustomerPortalExtended(CustomerPortal):
 
             # Handle container selection for certain service types
             if kw.get("service_type") in ["return", "retrieval"]:
-                container_ids = [int(id) for id in kw.getlist("container_ids") if id]
+                # Fix the getlist issue by using request.httprequest.form
+                container_ids = [
+                    int(id)
+                    for id in request.httprequest.form.getlist("container_ids")
+                    if id
+                ]
                 if container_ids:
-                    vals["container_ids"] = (
-                        container_ids  # Assign list of IDs directly if field expects list
-                    )
+                    vals["container_ids"] = container_ids
 
             request.env["records.service.request"].create(vals)
             return request.redirect("/my/records?success=service_requested")
@@ -1476,8 +1493,10 @@ class CustomerPortalExtended(CustomerPortal):
                 csv_reader = csv.DictReader(io.StringIO(csv_data))
 
                 created_count = 0
+                skipped_count = 0
+                updated_count = 0
                 for row in csv_reader:
-                    # Create or find user
+                    # Prepare user values
                     user_vals = {
                         "name": row.get("name", ""),
                         "email": row.get("email", ""),
@@ -1487,6 +1506,7 @@ class CustomerPortalExtended(CustomerPortal):
                         "is_company": False,
                     }
 
+                    # Search for existing user by email and parent
                     user = request.env["res.partner"].search(
                         [
                             ("email", "=", user_vals["email"]),
@@ -1495,10 +1515,15 @@ class CustomerPortalExtended(CustomerPortal):
                         limit=1,
                     )
 
-                    if not user:
+                    if user:
+                        # Optionally update existing user info
+                        user.sudo().write({k: v for k, v in user_vals.items() if v})
+                        updated_count += 1
+                    else:
                         user = request.env["res.partner"].create(user_vals)
+                        created_count += 1
 
-                    # Create department user record
+                    # Create department user record if department_id is provided
                     dept_id = int(
                         row.get(
                             "department_id",
@@ -1510,18 +1535,31 @@ class CustomerPortalExtended(CustomerPortal):
                         )
                     )
                     if dept_id:
-                        request.env["records.storage.department.user"].create(
-                            {
-                                "department_id": dept_id,
-                                "user_id": user.id,
-                                "access_level": row.get("access_level", "viewer"),
-                            }
+                        # Avoid duplicate department user records
+                        dept_user = request.env[
+                            "records.storage.department.user"
+                        ].search(
+                            [
+                                ("department_id", "=", dept_id),
+                                ("user_id", "=", user.id),
+                            ],
+                            limit=1,
                         )
-                        created_count += 1
+                        if not dept_user:
+                            request.env["records.storage.department.user"].create(
+                                {
+                                    "department_id": dept_id,
+                                    "user_id": user.id,
+                                    "access_level": row.get("access_level", "viewer"),
+                                }
+                            )
 
-                return request.redirect(f"/my/records?success=imported_{created_count}")
+                return request.redirect(
+                    f"/my/records?success=imported_{created_count}&updated={updated_count}"
+                )
 
             except Exception:
+                _logger.exception("Error parsing CSV")
                 return request.redirect(
                     "/my/records/users/bulk_import?error=parse_error"
                 )
@@ -1760,7 +1798,8 @@ class CustomerPortalExtended(CustomerPortal):
 
             return {"recent_activities": recent_activities[:10]}
 
-        except Exception as e:
+        except Exception:
+            _logger.exception("Error getting recent activity")
             return {"recent_activities": []}
 
     @http.route(["/my/docs/check_updates"], type="json", auth="user", methods=["POST"])
@@ -1811,7 +1850,8 @@ class CustomerPortalExtended(CustomerPortal):
                 "new_communications": new_communications,
             }
 
-        except Exception as e:
+        except Exception:
+            _logger.exception("Error checking for updates")
             return {"has_updates": False}
 
     @http.route(["/my/invoices/update_po"], type="json", auth="user", methods=["POST"])
@@ -1839,13 +1879,12 @@ class CustomerPortalExtended(CustomerPortal):
 
     @http.route(["/my/docs/export_all"], type="http", auth="user", website=True)
     def export_all_documents(self, **kw):
-        """Export all customer documents as a comprehensive package"""
+        """Export all customer documents as ZIP file"""
         try:
             partner = request.env.user.partner_id
 
             # Create a zip file with all documents
             import zipfile
-            import io
 
             zip_buffer = io.BytesIO()
 
@@ -1854,7 +1893,8 @@ class CustomerPortalExtended(CustomerPortal):
                 invoices = self._get_customer_invoices(partner)
                 for invoice in invoices:
                     if invoice.attachment_ids:
-                        for attachment in invoice.attachment_ids:
+                        # Limit to first 5 attachments per invoice for performance
+                        for attachment in invoice.attachment_ids[:5]:
                             zip_file.writestr(
                                 f"invoices/{invoice.name}_{attachment.name}",
                                 attachment.datas,
@@ -1890,362 +1930,17 @@ class CustomerPortalExtended(CustomerPortal):
                     ("Content-Type", "application/zip"),
                     (
                         "Content-Disposition",
-                        f'attachment; filename="documents_{partner.name}_{fields.Date.today()}.zip"',
+                        f'attachment; filename="documents_{partner.name}_{fields.Datetime.now().strftime("%Y-%m-%d")}.zip"',
                     ),
                 ],
             )
 
-        except Exception as e:
+        except Exception:
+            _logger.exception("Error exporting documents")
             return request.render(
                 "portal.portal_error",
                 {"error_message": "Unable to export documents. Please try again."},
             )
-
-
-class PortalCertificateController(http.Controller):
-
-    @http.route(
-        ["/my/certificates/<int:visit_id>"], type="http", auth="user", website=True
-    )
-    def download_certificate(self, visit_id, **kw):
-        """Download destruction certificate for a visitor's linked transaction.
-
-        - Checks ownership for security (NAID/ISO compliance).
-        - Renders PDF report; innovative extension: could add QR code in report for verification.
-        - Logs download for NAID auditing.
-        """
-        visitor = request.env["frontdesk.visitor"].sudo().browse(visit_id)
-        if not visitor.exists() or visitor.partner_id != request.env.user.partner_id:
-            raise AccessError("You do not have access to this certificate.")
-
-        if not visitor.pos_order_id:
-            return request.not_found()  # Or redirect with message
-
-        # Render the report (adjust action ID if your report is for a different model, e.g., frontdesk.visitor)
-        pdf_content, _ = request.env.ref(
-            "records_management.action_report_destruction_certificate"
-        )._render_qweb_pdf([visitor.pos_order_id.id])
-
-        # NAID audit logging for certificate download
-        request.env["naid.audit.log"].sudo().create(
-            {
-                "user_id": request.env.user.id,
-                "partner_id": request.env.user.partner_id.id,
-                "action": "certificate_download",
-                "resource_type": "destruction_certificate",
-                "access_date": fields.Datetime.now(),
-                "resource_id": visit_id,
-                "ip_address": request.httprequest.environ.get("REMOTE_ADDR"),
-                "user_agent": request.httprequest.environ.get("HTTP_USER_AGENT"),
-            }
-        )
-
-        headers = [
-            ("Content-Type", "application/pdf"),
-            (
-                "Content-Disposition",
-                f'attachment; filename="Destruction_Certificate_{visitor.name}.pdf"',
-            ),
-            ("Content-Length", len(pdf_content)),
-        ]
-        return request.make_response(pdf_content, headers=headers)
-
-    # Document Retrieval Portal Routes
-
-    @http.route("/my/document-retrieval", type="http", auth="user", website=True)
-    def portal_document_retrieval(self, **kw):
-        """Portal page for document retrieval requests with pricing"""
-        partner = request.env.user.partner_id
-
-        # Get customer-specific rates if available
-        customer_rates = (
-            request.env["customer.retrieval.rates"]
-            .sudo()
-            .search(
-                [
-                    ("customer_id", "=", partner.id),
-                    ("active", "=", True),
-                    ("effective_date", "<=", fields.Date.today()),
-                    "|",
-                    ("expiry_date", "=", False),
-                    ("expiry_date", ">=", fields.Date.today()),
-                ],
-                limit=1,
-                order="effective_date desc",
-            )
-        )
-
-        # Get base rates
-        base_rates = (
-            request.env["document.retrieval.rates"]
-            .sudo()
-            .search([("active", "=", True)], limit=1, order="effective_date desc")
-        )
-
-        if not base_rates:
-            # Create default rates if none exist
-            base_rates = (
-                request.env["document.retrieval.rates"]
-                .sudo()
-                .create(
-                    {
-                        "name": "Default Rates",
-                    }
-                )
-            )
-
-        # Get customer's containers and documents for selection
-        containers = (
-            request.env["records.container"]
-            .sudo()
-            .search(
-                [("customer_id", "=", partner.id), ("state", "=", "active")],
-                order="name",
-            )
-        )
-
-        documents = (
-            request.env["records.document"]
-            .sudo()
-            .search(
-                [("customer_id", "=", partner.id), ("state", "=", "active")],
-                order="name",
-            )
-        )
-
-        # Get existing work orders
-        work_orders = (
-            request.env["document.retrieval.work.order"]
-            .sudo()
-            .search(
-                [("customer_id", "=", partner.id)], order="request_date desc", limit=10
-            )
-        )
-
-        values = {
-            "partner": partner,
-            "customer_rates": customer_rates,
-            "base_rates": base_rates,
-            "has_custom_rates": bool(customer_rates),
-            "containers": containers,
-            "documents": documents,
-            "work_orders": work_orders,
-            "page_name": "document_retrieval",
-        }
-
-        return request.render("records_management.portal_document_retrieval", values)
-
-    @http.route("/my/document-retrieval/calculate-price", type="json", auth="user")
-    def calculate_retrieval_price(self, priority="standard", item_count=1, **kw):
-        """Calculate retrieval price based on priority and item count"""
-        partner = request.env.user.partner_id
-
-        # Get customer-specific rates
-        customer_rates = (
-            request.env["customer.retrieval.rates"]
-            .sudo()
-            .search(
-                [
-                    ("customer_id", "=", partner.id),
-                    ("active", "=", True),
-                    ("effective_date", "<=", fields.Date.today()),
-                    "|",
-                    ("expiry_date", "=", False),
-                    ("expiry_date", ">=", fields.Date.today()),
-                ],
-                limit=1,
-                order="effective_date desc",
-            )
-        )
-
-        # Get base rates
-        base_rates = (
-            request.env["document.retrieval.rates"]
-            .sudo()
-            .search([("active", "=", True)], limit=1, order="effective_date desc")
-        )
-
-        if not base_rates:
-            return {"error": "No rates configured"}
-
-        # Calculate pricing
-        if customer_rates and customer_rates.custom_retrieval_rate > 0:
-            retrieval_rate = customer_rates.custom_retrieval_rate
-        else:
-            retrieval_rate = base_rates.base_retrieval_rate
-
-        if customer_rates and customer_rates.custom_delivery_rate > 0:
-            delivery_rate = customer_rates.custom_delivery_rate
-        else:
-            delivery_rate = base_rates.base_delivery_rate
-
-        # Base costs
-        base_retrieval_cost = retrieval_rate * item_count
-        base_delivery_cost = delivery_rate
-
-        # Priority fees
-        priority_item_fee = 0.0
-        priority_order_fee = 0.0
-
-        if priority == "rush_eod":
-            priority_item_fee = base_rates.rush_end_of_day_item
-            priority_order_fee = base_rates.rush_end_of_day_order
-        elif priority == "rush_4h":
-            priority_item_fee = base_rates.rush_4_hours_item
-            priority_order_fee = base_rates.rush_4_hours_order
-        elif priority == "emergency_1h":
-            priority_item_fee = base_rates.emergency_1_hour_item
-            priority_order_fee = base_rates.emergency_1_hour_order
-        elif priority == "weekend":
-            priority_item_fee = base_rates.weekend_item
-            priority_order_fee = base_rates.weekend_order
-        elif priority == "holiday":
-            priority_item_fee = base_rates.holiday_item
-            priority_order_fee = base_rates.holiday_order
-
-        # Apply customer multipliers
-        if customer_rates:
-            if priority in ["rush_eod", "rush_4h"]:
-                multiplier = customer_rates.rush_multiplier
-            elif priority == "emergency_1h":
-                multiplier = customer_rates.emergency_multiplier
-            elif priority == "weekend":
-                multiplier = customer_rates.weekend_multiplier
-            elif priority == "holiday":
-                multiplier = customer_rates.holiday_multiplier
-            else:
-                multiplier = 1.0
-
-            priority_item_fee *= multiplier
-            priority_order_fee *= multiplier
-
-        priority_item_cost = priority_item_fee * item_count
-        priority_order_cost = priority_order_fee
-
-        total_cost = (
-            base_retrieval_cost
-            + base_delivery_cost
-            + priority_item_cost
-            + priority_order_cost
-        )
-
-        return {
-            "base_retrieval_cost": base_retrieval_cost,
-            "base_delivery_cost": base_delivery_cost,
-            "priority_item_cost": priority_item_cost,
-            "priority_order_cost": priority_order_cost,
-            "total_cost": total_cost,
-            "has_custom_rates": bool(customer_rates),
-            "priority_label": dict(
-                [
-                    ("standard", "Standard (48 Hours)"),
-                    ("rush_eod", "Rush (End of Day)"),
-                    ("rush_4h", "Rush (4 Hours)"),
-                    ("emergency_1h", "Emergency (1 Hour)"),
-                    ("weekend", "Weekend Service"),
-                    ("holiday", "Holiday Service"),
-                ]
-            ).get(priority, priority),
-        }
-
-    @http.route(
-        "/my/document-retrieval/create",
-        type="http",
-        auth="user",
-        website=True,
-        methods=["POST"],
-        csrf=False,
-    )
-    def create_retrieval_work_order(self, **post):
-        """Create a new document retrieval work order"""
-        partner = request.env.user.partner_id
-
-        # Get form data
-        priority = post.get("priority", "standard")
-        delivery_date = post.get("delivery_date")
-        delivery_address = post.get("delivery_address", "")
-        delivery_contact = post.get("delivery_contact", "")
-        delivery_phone = post.get("delivery_phone", "")
-        retrieval_notes = post.get("retrieval_notes", "")
-
-        # Create work order
-        work_order_vals = {
-            "customer_id": partner.id,
-            "priority": priority,
-            "delivery_address": delivery_address,
-            "delivery_contact": delivery_contact,
-            "delivery_phone": delivery_phone,
-            "retrieval_notes": retrieval_notes,
-            "requested_by": request.env.user.id,
-        }
-
-        if delivery_date:
-            try:
-                work_order_vals["delivery_date"] = datetime.strptime(
-                    delivery_date, "%Y-%m-%d"
-                ).date()
-            except:
-                pass
-
-        work_order = (
-            request.env["document.retrieval.work.order"].sudo().create(work_order_vals)
-        )
-
-        # Add items to retrieve
-        items_data = json.loads(post.get("items", "[]"))
-        for item_data in items_data:
-            item_vals = {
-                "work_order_id": work_order.id,
-                "item_type": item_data.get("type", "container"),
-                "description": item_data.get("description", ""),
-                "barcode": item_data.get("barcode", ""),
-                "retrieval_notes": item_data.get("notes", ""),
-            }
-
-            if item_data.get("type") == "container" and item_data.get("container_id"):
-                item_vals["container_id"] = int(item_data["container_id"])
-            elif item_data.get("type") == "document" and item_data.get("document_id"):
-                item_vals["document_id"] = int(item_data["document_id"])
-
-            request.env["document.retrieval.item"].sudo().create(item_vals)
-
-        # Send notification
-        work_order.message_post(
-            body=_(
-                "Work order created via customer portal. Estimated cost: $%.2f"
-                % work_order.total_cost
-            )
-        )
-
-        return request.redirect(
-            "/my/document-retrieval?message=Order created successfully!"
-        )
-
-    @http.route(
-        "/my/document-retrieval/<int:order_id>", type="http", auth="user", website=True
-    )
-    def view_retrieval_work_order(self, order_id, **kw):
-        """View a specific work order"""
-        partner = request.env.user.partner_id
-
-        work_order = (
-            request.env["document.retrieval.work.order"]
-            .sudo()
-            .search([("id", "=", order_id), ("customer_id", "=", partner.id)])
-        )
-
-        if not work_order:
-            return request.not_found()
-
-        values = {
-            "work_order": work_order,
-            "partner": partner,
-            "page_name": "document_retrieval_detail",
-        }
-
-        return request.render(
-            "records_management.portal_document_retrieval_detail", values
-        )
 
     # ============================================================================
     # CUSTOMER PORTAL DIAGRAM ROUTES
@@ -2279,10 +1974,9 @@ class PortalCertificateController(http.Controller):
                     "name": f"{partner.name}'s Organization Diagram",
                     "user_id": user.id,
                     "company_id": user.company_id.id,
-                    "show_messaging": True,
                     "show_access_rights": not user.has_group(
                         "portal.group_portal"
-                    ),  # Only for internal users
+                    ),  # Internal users are those in 'base.group_user'
                     "layout_type": "hierarchical",
                 }
             )
@@ -2363,8 +2057,6 @@ class PortalCertificateController(http.Controller):
                 diagram.layout_type = kw.get("layout_type")
 
             # Return fresh data
-            import json
-
             return {
                 "nodes": json.loads(diagram.node_data or "[]"),
                 "edges": json.loads(diagram.edge_data or "[]"),
@@ -2376,9 +2068,9 @@ class PortalCertificateController(http.Controller):
                 },
             }
 
-        except Exception as e:
-            _logger.error(f"Error in portal diagram data: {e}")
-            return {"error": str(e)}
+        except Exception as error:
+            _logger.error("Error in portal diagram data: %s", error)
+            return {"error": str(error)}
 
     @http.route(["/my/organization/message"], type="json", auth="user", website=True)
     def portal_organization_message_user(self, target_user_id, **kw):
@@ -2403,9 +2095,9 @@ class PortalCertificateController(http.Controller):
                 "message": f"Opening message composer for user {target_user_id}",
             }
 
-        except Exception as e:
-            _logger.error(f"Error in portal messaging: {e}")
-            return {"error": str(e)}
+        except Exception as error:
+            _logger.error("Error in portal messaging: %s", error)
+            return {"error": str(error)}
 
     @http.route(["/my/organization/export"], type="http", auth="user", website=True)
     def portal_organization_export(self, **kw):
@@ -2423,6 +2115,207 @@ class PortalCertificateController(http.Controller):
             # Use the diagram's export method
             return diagram.action_export_diagram_data()
 
-        except Exception as e:
-            _logger.error(f"Error exporting diagram: {e}")
+        except Exception as error:
+            _logger.error("Error exporting diagram: %s", error)
             return request.redirect("/my/organization?error=export_failed")
+
+    @http.route(
+        "/my/document-retrieval/calculate_cost", type="json", auth="user", website=True
+    )
+    def calculate_retrieval_cost(
+        self, priority="standard", item_count=1, delivery_method="standard", **kw
+    ):
+        """Calculate cost for document retrieval service"""
+        partner = request.env.user.partner_id
+
+        # Get base rates
+        base_rates = request.env["base.rates"].search(
+            [("company_id", "=", request.env.company.id)], limit=1
+        )
+        if not base_rates:
+            return {"error": "Base rates not configured"}
+
+        # Get customer rates if available
+        customer_rates = request.env["customer.negotiated.rates"].search(
+            [("partner_id", "=", partner.id), ("active", "=", True)], limit=1
+        )
+
+        # Base costs
+        base_retrieval_cost = base_rates.base_retrieval_fee
+        delivery_rate = (
+            base_rates.delivery_fee if delivery_method == "delivery" else 0.0
+        )
+        base_delivery_cost = delivery_rate
+
+        # Priority fees
+        priority_item_fee = 0.0
+        priority_order_fee = 0.0
+
+        if priority == "rush_eod":
+            priority_item_fee = base_rates.rush_end_of_day_item
+            priority_order_fee = base_rates.rush_end_of_day_order
+        elif priority == "rush_4h":
+            priority_item_fee = base_rates.rush_4_hours_item
+            priority_order_fee = base_rates.rush_4_hours_order
+        elif priority == "emergency_1h":
+            priority_item_fee = base_rates.emergency_1_hour_item
+            priority_order_fee = base_rates.emergency_1_hour_order
+        elif priority == "weekend":
+            priority_item_fee = base_rates.weekend_item
+            priority_order_fee = base_rates.weekend_order
+        elif priority == "holiday":
+            priority_item_fee = base_rates.holiday_item
+            priority_order_fee = base_rates.holiday_order
+
+        # Apply customer multipliers
+        multiplier = 1.0
+        if customer_rates:
+            if priority in ["rush_eod", "rush_4h"]:
+                multiplier = customer_rates.rush_multiplier
+            elif priority == "emergency_1h":
+                multiplier = customer_rates.emergency_multiplier
+            elif priority == "weekend":
+                multiplier = customer_rates.weekend_multiplier
+            elif priority == "holiday":
+                multiplier = customer_rates.holiday_multiplier
+
+            priority_item_fee *= multiplier
+            priority_order_fee *= multiplier
+
+        priority_item_cost = priority_item_fee * item_count
+        priority_order_cost = priority_order_fee
+
+        total_cost = (
+            base_retrieval_cost
+            + base_delivery_cost
+            + priority_item_cost
+            + priority_order_cost
+        )
+
+        return {
+            "base_retrieval_cost": base_retrieval_cost,
+            "base_delivery_cost": base_delivery_cost,
+            "priority_item_cost": priority_item_cost,
+            "priority_order_cost": priority_order_cost,
+            "total_cost": total_cost,
+            "has_custom_rates": bool(customer_rates),
+            "priority_label": dict(
+                [
+                    ("standard", "Standard (48 Hours)"),
+                    ("rush_eod", "Rush (End of Day)"),
+                    ("rush_4h", "Rush (4 Hours)"),
+                    ("emergency_1h", "Emergency (1 Hour)"),
+                    ("weekend", "Weekend Service"),
+                    ("holiday", "Holiday Service"),
+                ]
+            ).get(priority, priority),
+        }
+
+    @http.route(
+        "/my/document-retrieval/create",
+        type="http",
+        auth="user",
+        website=True,
+        methods=["POST"],
+        csrf=False,
+    )
+    def create_retrieval_work_order(self, **post):
+        """Create a new document retrieval work order"""
+        partner = request.env.user.partner_id
+
+        # Get form data
+        priority = post.get("priority", "standard")
+        delivery_date = post.get("delivery_date")
+        delivery_address = post.get("delivery_address", "")
+        delivery_contact = post.get("delivery_contact", "")
+        delivery_phone = post.get("delivery_phone", "")
+        retrieval_notes = post.get("retrieval_notes", "")
+
+        # Create work order
+        work_order_vals = {
+            "customer_id": partner.id,
+            "priority": priority,
+            "delivery_address": delivery_address,
+            "delivery_contact": delivery_contact,
+            "delivery_phone": delivery_phone,
+            "retrieval_notes": retrieval_notes,
+            "requested_by": request.env.user.id,
+        }
+
+        if delivery_date:
+            try:
+                work_order_vals["delivery_date"] = datetime.strptime(
+                    delivery_date, "%Y-%m-%d"
+                ).date()
+            except ValueError:
+                _logger.warning("Invalid delivery date format: %s", delivery_date)
+
+        work_order = (
+            request.env["document.retrieval.work.order"].sudo().create(work_order_vals)
+        )
+
+        # Add items to retrieve
+        items_data = json.loads(post.get("items", "[]"))
+        for item_data in items_data:
+            item_vals = {
+                "work_order_id": work_order.id,
+                "item_type": item_data.get("type", "container"),
+                "description": item_data.get("description", ""),
+                "barcode": item_data.get("barcode", ""),
+                "retrieval_notes": item_data.get("notes", ""),
+            }
+
+            if item_data.get("type") == "container" and item_data.get("container_id"):
+                item_vals["container_id"] = int(item_data["container_id"])
+            elif item_data.get("type") == "document" and item_data.get("document_id"):
+                item_vals["document_id"] = int(item_data["document_id"])
+
+            request.env["document.retrieval.item"].sudo().create(item_vals)
+
+        # Send notification
+        work_order.message_post(
+            body=_(
+                "Work order created via customer portal. Estimated cost: $%.2f"
+                % work_order.total_cost
+            )
+        )
+
+        return request.redirect(
+            "/my/document-retrieval?message=Order created successfully!"
+        )
+
+    @http.route(
+        "/my/document-retrieval/<int:order_id>", type="http", auth="user", website=True
+    )
+    def view_retrieval_work_order(self, order_id, **kw):
+        """View a specific work order"""
+        partner = request.env.user.partner_id
+
+        work_order = (
+            request.env["document.retrieval.work.order"]
+            .sudo()
+            .search([("id", "=", order_id), ("customer_id", "=", partner.id)])
+        )
+
+        if not work_order:
+            return request.not_found()
+
+        values = {
+            "work_order": work_order,
+            "partner": partner,
+            "page_name": "document_retrieval_detail",
+        }
+
+        return request.render(
+            "records_management.portal_document_retrieval_detail", values
+        )
+
+    # ============================================================================
+    # CUSTOMER PORTAL DIAGRAM ROUTES
+    # ============================================================================
+
+    # (Duplicate section of "CUSTOMER PORTAL DIAGRAM ROUTES" removed.
+    # This included repeated route definitions for organization diagram endpoints
+    # such as /my/organization, /my/organization/data, /my/organization/message, and /my/organization/export.
+    # Only the first occurrence is retained for clarity and maintainability.)
+    # Only the first occurrence is retained for clarity and maintainability.)

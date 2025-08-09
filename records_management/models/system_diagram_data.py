@@ -25,8 +25,7 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo import models, fields, api
 import json
 import logging
 
@@ -36,6 +35,11 @@ _logger = logging.getLogger(__name__)
 class SystemDiagramData(models.TransientModel):
     _name = "system.diagram.data"
     _description = "System Architecture Diagram Data Aggregator"
+
+    def __init__(self, pool, cr):
+        """Initialize the model with cache attribute"""
+        super(SystemDiagramData, self).__init__(pool, cr)
+        self._model_exists_cache = {}
 
     # ============================================================================
     # CORE FIELDS
@@ -126,7 +130,7 @@ class SystemDiagramData(models.TransientModel):
                 record.edges_data = json.dumps(edges)
 
             except Exception as e:
-                _logger.error(f"Error computing diagram data: {str(e)}")
+                _logger.error("Error computing diagram data: %s", str(e))
                 record.nodes_data = json.dumps([])
                 record.edges_data = json.dumps([])
 
@@ -376,7 +380,7 @@ class SystemDiagramData(models.TransientModel):
                 )
 
         except Exception as e:
-            _logger.warning(f"Error getting user access data: {str(e)}")
+            _logger.warning("Error getting user access data: %s", str(e))
 
         return nodes, edges
 
@@ -441,7 +445,7 @@ class SystemDiagramData(models.TransientModel):
                         )
 
         except Exception as e:
-            _logger.warning(f"Error getting company structure: {str(e)}")
+            _logger.warning("Error getting company structure: %s", str(e))
 
         return nodes, edges
 
@@ -477,7 +481,7 @@ class SystemDiagramData(models.TransientModel):
                     )
 
         except Exception as e:
-            _logger.warning(f"Error getting model relationships: {str(e)}")
+            _logger.warning("Error getting model relationships: %s", str(e))
 
         return edges
 
@@ -485,10 +489,15 @@ class SystemDiagramData(models.TransientModel):
     # UTILITY METHODS
     # ============================================================================
     def _model_exists(self, model_name):
-        """Check if a model exists in the system"""
+        """Check if a model exists in the system, with caching for performance"""
+        if model_name in self._model_exists_cache:
+            return self._model_exists_cache[model_name]
         try:
-            return model_name in self.env
-        except:
+            exists = model_name in self.env
+            self._model_exists_cache[model_name] = exists
+            return exists
+        except (AttributeError, KeyError, TypeError):
+            self._model_exists_cache[model_name] = False
             return False
 
     def _check_user_records_access(self, user):
@@ -507,7 +516,7 @@ class SystemDiagramData(models.TransientModel):
 
             # Check access to key model
             return user.has_group("records_management.group_records_user")
-        except:
+        except (AttributeError, KeyError, TypeError):
             return False
 
     def _apply_search_filter(self, nodes, edges):
@@ -541,7 +550,7 @@ class SystemDiagramData(models.TransientModel):
             rgb = tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
             darkened = tuple(max(0, int(c * 0.7)) for c in rgb)
             return "#%02x%02x%02x" % darkened
-        except:
+        except (ValueError, IndexError, TypeError):
             return "#333333"
 
     # ============================================================================
@@ -566,11 +575,15 @@ class SystemDiagramData(models.TransientModel):
             "nodes": json.loads(self.nodes_data or "[]"),
             "edges": json.loads(self.edges_data or "[]"),
             "config": json.loads(self.diagram_config or "{}"),
-            "timestamp": fields.Datetime.now().isoformat(),
+            "timestamp": fields.Datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         }
 
+        import base64
+
+        json_data = json.dumps(export_data)
+        b64_data = base64.b64encode(json_data.encode("utf-8")).decode("utf-8")
         return {
             "type": "ir.actions.act_url",
-            "url": f"data:application/json;base64,{export_data}",
+            "url": f"data:application/json;base64,{b64_data}",
             "target": "self",
         }
