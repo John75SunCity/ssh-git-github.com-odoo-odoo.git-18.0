@@ -103,6 +103,16 @@ class ResPartner(models.Model):
         help="Customer-specific negotiated rate agreements",
     )
 
+    # ============================================================================
+    # WORK ORDER RELATIONSHIPS
+    # ============================================================================
+    work_order_ids = fields.One2many(
+        "work.order.shredding",
+        "partner_id",
+        string="Work Orders",
+        help="Shredding work orders for this customer",
+    )
+
     @api.depends("records_department_users")
     def _compute_key_counts(self):
         """Compute key counts for analytics"""

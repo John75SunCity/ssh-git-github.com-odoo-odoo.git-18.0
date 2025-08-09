@@ -79,6 +79,13 @@ class WorkOrderShredding(models.Model):
         domain=[("is_company", "=", True)],
         help="Customer for this shredding work order",
     )
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        related="customer_id",
+        store=True,
+        help="Related partner field for compatibility with One2many relationships",
+    )
     shredding_service_id = fields.Many2one(
         "shredding.service",
         string="Shredding Service",
