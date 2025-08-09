@@ -145,6 +145,93 @@ class BaseRates(models.Model):
         help="Average weight for transport and handling calculations",
     )
 
+    # ============================================================================
+    # ACTUAL BUSINESS RATE STRUCTURE - Based on your rate sheet
+    # ============================================================================
+    account_code = fields.Char(
+        string="Account Code", 
+        default="BASE",
+        help="Account classification code (BASE for standard rates)"
+    )
+    action_code = fields.Selection([
+        ('STORE', 'Storage Services'),
+        ('SELL', 'Sales/Retail'),
+        ('ADD', 'Add/Inventory Services'),
+        ('REFILE', 'Refiling Services'),
+        ('DESTROY', 'Destruction Services'),
+        ('PERMOUT', 'Permanent Removal'),
+        ('DELIVERY', 'Delivery Services'),
+        ('SERVICE', 'Bin Services'),
+        ('PICKUP', 'Pickup Services'),
+        ('LABOR', 'Labor Services'),
+        ('SB', 'Standard Shred Box'),
+        ('DB', 'Double Shred Box'),
+        ('03 SAME DAY', 'Same Day Priority'),
+        ('02 RUSH 4HR', 'Rush 4 Hour Priority'),
+        ('01 URGENT', 'Emergency 1 Hour Priority'),
+        ('04 RETRIEVALE', 'Regular Retrieval'),
+        ('02 RETRIEVALE', 'Rush Retrieval'),
+        ('01 RETRIEVALE', 'Emergency Retrieval'),
+        ('TC', 'Trip Charge'),
+        ('NOTFOUND', 'File Not Found'),
+        ('LARGEBOX', 'Large Box Shredding'),
+        ('UNIFORM DES', 'Uniform Destruction'),
+        ('INDEXING', 'File Indexing'),
+        ('SHREDATHON', 'Shredding Events'),
+        ('UNLOCKBIN', 'Bin Unlock Service'),
+        ('KEY', 'Key Delivery'),
+        ('HARDDRIVE', 'Hard Drive Destruction'),
+        ('DAMAGED BIN', 'Damaged Equipment'),
+    ], string="Action Code", required=True, help="Service action type")
+    
+    object_code = fields.Char(
+        string="Object Code",
+        help="Specific object/item code (01, 02, 03, BX, USED, etc.)"
+    )
+    
+    # Rate and billing information
+    default_rate = fields.Monetary(
+        string="Default Base Rate",
+        currency_field="currency_id", 
+        required=True,
+        help="Base rate from your rate sheet"
+    )
+    
+    billing_logic = fields.Text(
+        string="Billing Logic",
+        help="Description of how this rate is calculated and applied"
+    )
+    
+    # Rate calculation type
+    rate_type = fields.Selection([
+        ('per_container', 'Per Container'),
+        ('per_service', 'Per Service (QTY*RATE)'),
+        ('flat_rate', 'Flat Rate Per Order'),
+        ('per_item', 'Per Item/Unit'),
+        ('per_hour', 'Per Hour Block'),
+        ('enhancement', 'Rate Enhancement/Add-on'),
+        ('calculator_based', 'Dimension Calculator Based'),
+    ], string="Rate Type", default='per_container', help="How this rate is calculated")
+    
+    includes_delivery = fields.Boolean(
+        string="Includes Delivery Fee",
+        default=False,
+        help="Whether this service includes delivery fee"
+    )
+    
+    is_priority_service = fields.Boolean(
+        string="Priority Service",
+        default=False, 
+        help="Whether this is a priority/rush service enhancement"
+    )
+    
+    priority_level = fields.Selection([
+        ('standard', 'Standard Service'),
+        ('same_day', 'Same Day (03)'),
+        ('rush_4hr', 'Rush 4 Hour (02)'), 
+        ('emergency_1hr', 'Emergency 1 Hour (01)'),
+    ], string="Priority Level", default='standard')
+
     # Computed fields
     is_expired = fields.Boolean(
         string="Is Expired", compute="_compute_is_expired", store=True
@@ -211,6 +298,166 @@ class BaseRates(models.Model):
                 record.days_until_expiry = delta.days
             else:
                 record.days_until_expiry = 0
+
+    @api.model
+    def create_default_business_rates(self):
+        """Create all actual business rates from rate sheet"""
+        rates = [
+            # STORAGE SERVICES
+            {'name': 'Standard Box Storage', 'action_code': 'STORE', 'object_code': '01', 'default_rate': 3.50, 'rate_type': 'per_container', 'service_type': 'storage'},
+            {'name': 'Legal/Banker Box Storage', 'action_code': 'STORE', 'object_code': '02', 'default_rate': 3.50, 'rate_type': 'per_container', 'service_type': 'storage'},
+            {'name': 'Map Box Storage', 'action_code': 'STORE', 'object_code': '03', 'default_rate': 3.50, 'rate_type': 'per_container', 'service_type': 'storage'},
+            {'name': 'Odd Size Box Storage', 'action_code': 'STORE', 'object_code': '04', 'default_rate': 8.50, 'rate_type': 'per_container', 'service_type': 'storage'},
+            {'name': 'Pathology Box Storage', 'action_code': 'STORE', 'object_code': '06', 'default_rate': 8.50, 'rate_type': 'per_container', 'service_type': 'storage'},
+            
+            # SALES/RETAIL
+            {'name': 'New Box Sale - Standard', 'action_code': 'SELL', 'object_code': '01', 'default_rate': 8.00, 'rate_type': 'per_item', 'service_type': 'other'},
+            {'name': 'New Box Sale - Legal/Banker', 'action_code': 'SELL', 'object_code': '02', 'default_rate': 8.50, 'rate_type': 'per_item', 'service_type': 'other'},
+            {'name': 'Used Box Sale - Standard', 'action_code': 'SELL', 'object_code': '01 USED', 'default_rate': 2.00, 'rate_type': 'per_item', 'service_type': 'other'},
+            {'name': 'Used Box Sale - Legal/Banker', 'action_code': 'SELL', 'object_code': '02 USED', 'default_rate': 2.25, 'rate_type': 'per_item', 'service_type': 'other'},
+            
+            # ADD/INVENTORY SERVICES
+            {'name': 'Add Box to Inventory - Standard', 'action_code': 'ADD', 'object_code': '01', 'default_rate': 5.00, 'rate_type': 'per_container', 'service_type': 'setup'},
+            {'name': 'Add Box to Inventory - Legal/Banker', 'action_code': 'ADD', 'object_code': '02', 'default_rate': 5.00, 'rate_type': 'per_container', 'service_type': 'setup'},
+            {'name': 'Add Box to Inventory - Map', 'action_code': 'ADD', 'object_code': '03', 'default_rate': 5.00, 'rate_type': 'per_container', 'service_type': 'setup'},
+            
+            # REFILING SERVICES
+            {'name': 'Refile Service - Standard', 'action_code': 'REFILE', 'object_code': 'STD', 'default_rate': 8.50, 'rate_type': 'per_service', 'service_type': 'other'},
+            
+            # DESTRUCTION SERVICES
+            {'name': 'Destroy Box - Standard', 'action_code': 'DESTROY', 'object_code': '01', 'default_rate': 8.50, 'rate_type': 'per_container', 'service_type': 'destruction'},
+            {'name': 'Destroy Box - Legal/Banker', 'action_code': 'DESTROY', 'object_code': '02', 'default_rate': 8.50, 'rate_type': 'per_container', 'service_type': 'destruction'},
+            {'name': 'Destroy Box - Odd Size', 'action_code': 'DESTROY', 'object_code': '04', 'default_rate': 8.50, 'rate_type': 'per_container', 'service_type': 'destruction'},
+            
+            # PERMANENT REMOVAL
+            {'name': 'Permanent Out - Standard', 'action_code': 'PERMOUT', 'object_code': '01', 'default_rate': 2.50, 'rate_type': 'per_container', 'service_type': 'other'},
+            {'name': 'Permanent Out - Legal/Banker', 'action_code': 'PERMOUT', 'object_code': '02', 'default_rate': 2.50, 'rate_type': 'per_container', 'service_type': 'other'},
+            
+            # DELIVERY SERVICES (Includes delivery fee)
+            {'name': 'Standard Delivery', 'action_code': 'DELIVERY', 'object_code': 'STD', 'default_rate': 8.50, 'rate_type': 'per_service', 'includes_delivery': True, 'service_type': 'delivery'},
+            
+            # BIN SERVICES
+            {'name': 'Bin Key Service', 'action_code': 'SERVICE', 'object_code': 'BIN', 'default_rate': 50.00, 'rate_type': 'per_service', 'service_type': 'container_access'},
+            
+            # PICKUP SERVICES
+            {'name': 'Pickup Service', 'action_code': 'PICKUP', 'object_code': 'STD', 'default_rate': 50.00, 'rate_type': 'per_service', 'service_type': 'other'},
+            
+            # LABOR SERVICES
+            {'name': 'Labor Service', 'action_code': 'LABOR', 'object_code': 'HOUR', 'default_rate': 50.00, 'rate_type': 'per_hour', 'service_type': 'other'},
+            
+            # SHRED BOX SERVICES
+            {'name': 'Standard Shred Box', 'action_code': 'SB', 'object_code': 'STD', 'default_rate': 20.00, 'rate_type': 'per_container', 'service_type': 'destruction'},
+            {'name': 'Double Shred Box', 'action_code': 'DB', 'object_code': 'DBL', 'default_rate': 40.00, 'rate_type': 'per_container', 'service_type': 'destruction'},
+            {'name': 'Large Box Shredding', 'action_code': 'LARGEBOX', 'object_code': 'LARGE', 'default_rate': 25.00, 'rate_type': 'per_container', 'service_type': 'destruction'},
+            
+            # PRIORITY SERVICE ENHANCEMENTS
+            {'name': 'Same Day Priority', 'action_code': '03 SAME DAY', 'object_code': 'PRI', 'default_rate': 15.00, 'rate_type': 'enhancement', 'is_priority_service': True, 'priority_level': 'same_day', 'service_type': 'other'},
+            {'name': 'Rush 4 Hour Priority', 'action_code': '02 RUSH 4HR', 'object_code': 'PRI', 'default_rate': 25.00, 'rate_type': 'enhancement', 'is_priority_service': True, 'priority_level': 'rush_4hr', 'service_type': 'other'},
+            {'name': 'Emergency 1 Hour Priority', 'action_code': '01 URGENT', 'object_code': 'PRI', 'default_rate': 50.00, 'rate_type': 'enhancement', 'is_priority_service': True, 'priority_level': 'emergency_1hr', 'service_type': 'other'},
+            
+            # RETRIEVAL SERVICES
+            {'name': 'Regular Retrieval', 'action_code': '04 RETRIEVALE', 'object_code': 'REG', 'default_rate': 8.50, 'rate_type': 'per_service', 'service_type': 'retrieval'},
+            {'name': 'Rush Retrieval', 'action_code': '02 RETRIEVALE', 'object_code': 'RUSH', 'default_rate': 25.00, 'rate_type': 'per_service', 'is_priority_service': True, 'service_type': 'retrieval'},
+            {'name': 'Emergency Retrieval', 'action_code': '01 RETRIEVALE', 'object_code': 'EMRG', 'default_rate': 50.00, 'rate_type': 'per_service', 'is_priority_service': True, 'service_type': 'retrieval'},
+            
+            # SPECIAL SERVICES
+            {'name': 'Trip Charge', 'action_code': 'TC', 'object_code': 'TRIP', 'default_rate': 50.00, 'rate_type': 'flat_rate', 'service_type': 'other'},
+            {'name': 'File Not Found Fee', 'action_code': 'NOTFOUND', 'object_code': 'FNF', 'default_rate': 25.00, 'rate_type': 'flat_rate', 'service_type': 'not_found_search'},
+            {'name': 'Uniform Destruction', 'action_code': 'UNIFORM DES', 'object_code': 'UNIF', 'default_rate': 5.00, 'rate_type': 'per_item', 'service_type': 'destruction'},
+            {'name': 'File Indexing Service', 'action_code': 'INDEXING', 'object_code': 'INDEX', 'default_rate': 25.00, 'rate_type': 'per_hour', 'service_type': 'indexing'},
+            {'name': 'Shredding Event Service', 'action_code': 'SHREDATHON', 'object_code': 'EVENT', 'default_rate': 250.00, 'rate_type': 'flat_rate', 'service_type': 'destruction'},
+            {'name': 'Bin Unlock Service', 'action_code': 'UNLOCKBIN', 'object_code': 'UNLOCK', 'default_rate': 25.00, 'rate_type': 'per_service', 'service_type': 'container_access'},
+            {'name': 'Key Delivery Service', 'action_code': 'KEY', 'object_code': 'DELIV', 'default_rate': 25.00, 'rate_type': 'per_service', 'service_type': 'delivery'},
+            {'name': 'Hard Drive Destruction', 'action_code': 'HARDDRIVE', 'object_code': 'HDD', 'default_rate': 15.00, 'rate_type': 'per_item', 'service_type': 'destruction'},
+            {'name': 'Damaged Equipment Fee', 'action_code': 'DAMAGED BIN', 'object_code': 'DAMAGE', 'default_rate': 200.00, 'rate_type': 'flat_rate', 'service_type': 'other'},
+        ]
+        
+        created_rates = []
+        for rate_data in rates:
+            # Check if rate already exists
+            existing_rate = self.search([
+                ('action_code', '=', rate_data['action_code']),
+                ('object_code', '=', rate_data['object_code'])
+            ], limit=1)
+            
+            if not existing_rate:
+                created_rate = self.create(rate_data)
+                created_rates.append(created_rate)
+        
+        return created_rates
+
+    @api.model
+    def get_rate(self, action_code, object_code=None, container_type=None, customer_id=None):
+        """
+        Get the appropriate rate for a service
+        
+        Args:
+            action_code (str): The action/service code (STORE, DESTROY, etc.)
+            object_code (str, optional): The object code (01, 02, STD, etc.)
+            container_type (str, optional): Container type for storage rates
+            customer_id (int, optional): Customer ID for negotiated rates
+        
+        Returns:
+            dict: Rate information including amount, type, and billing logic
+        """
+        # First, check for customer negotiated rates if customer provided
+        if customer_id:
+            negotiated = self.env['customer.negotiated.rates'].search([
+                ('partner_id', '=', customer_id),
+                ('action_code', '=', action_code),
+                ('object_code', '=', object_code or ''),
+                ('active', '=', True),
+            ], limit=1)
+            
+            if negotiated and negotiated.negotiated_rate > 0:
+                return {
+                    'rate': negotiated.negotiated_rate,
+                    'rate_type': negotiated.rate_type,
+                    'is_negotiated': True,
+                    'source': f'Customer Negotiated Rate: {negotiated.name}',
+                    'includes_delivery': negotiated.includes_delivery,
+                    'is_priority': negotiated.is_priority_service,
+                }
+        
+        # Search for base rate
+        domain = [('action_code', '=', action_code)]
+        if object_code:
+            domain.append(('object_code', '=', object_code))
+            
+        base_rate = self.search(domain, limit=1)
+        
+        if base_rate:
+            return {
+                'rate': base_rate.default_rate,
+                'rate_type': base_rate.rate_type,
+                'is_negotiated': False,
+                'source': f'Base Rate: {base_rate.name}',
+                'includes_delivery': base_rate.includes_delivery,
+                'is_priority': base_rate.is_priority_service,
+                'billing_logic': base_rate.billing_logic,
+                'priority_level': base_rate.priority_level,
+            }
+        
+        # Fallback to generic rates if no specific match
+        fallback = self.search([('action_code', '=', action_code)], limit=1)
+        if fallback:
+            return {
+                'rate': fallback.default_rate,
+                'rate_type': fallback.rate_type,
+                'is_negotiated': False,
+                'source': f'Fallback Rate: {fallback.name}',
+                'includes_delivery': fallback.includes_delivery,
+                'is_priority': fallback.is_priority_service,
+                'warning': 'Using fallback rate - exact match not found'
+            }
+            
+        return {
+            'rate': 0.0,
+            'rate_type': 'per_service',
+            'is_negotiated': False,
+            'source': 'No rate found',
+            'error': f'No rate found for action: {action_code}, object: {object_code}'
+        }
 
     @api.constrains("effective_date", "expiry_date")
     def _check_date_logic(self):
@@ -306,7 +553,7 @@ class BaseRates(models.Model):
             limit=1,
         )
 
-    def get_rate(self, rate_type):
+    def get_rate_value(self, rate_type):
         """Get specific rate value"""
         self.ensure_one()
         return getattr(self, rate_type, 0.0)
