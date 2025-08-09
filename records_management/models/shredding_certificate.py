@@ -128,6 +128,11 @@ class ShreddingCertificate(models.Model):
         string="Service Location",
         help="Location where destruction service was performed",
     )
+    equipment_id = fields.Many2one(
+        "maintenance.equipment",
+        string="Shredding Equipment",
+        help="Equipment used for the destruction service",
+    )
 
     # ============================================================================
     # WITNESS INFORMATION
