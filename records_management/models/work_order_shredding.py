@@ -1,46 +1,689 @@
 # -*- coding: utf-8 -*-
 """
-Shredding Work Order
+Shredding Work Order Management Module
+
+This module provides comprehensive work order management for shredding operations within
+the Records Management System. It handles work order lifecycle management, team assignments,
+equipment tracking, and integration with shredding services and NAID compliance workflows.
+
+Key Features:
+- Complete work order lifecycle from creation to completion
+- Team and equipment assignment management
+- Integration with shredding services and destruction workflows
+- NAID AAA compliance tracking and documentation
+- Performance monitoring and reporting
+- Customer communication and status tracking
+
+Business Processes:
+1. Work Order Creation: Generate work orders from service requests
+2. Resource Assignment: Assign teams, equipment, and schedules
+3. Execution Tracking: Monitor progress and completion status
+4. Quality Control: Ensure NAID compliance and customer satisfaction
+5. Documentation: Generate certificates and completion reports
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+
 
 class WorkOrderShredding(models.Model):
-    """
-    Shredding Work Order
-    """
-
     _name = "work.order.shredding"
-    _description = "Shredding Work Order"
+    _description = "Shredding Work Order Management"
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = "name"
+    _order = "priority desc, scheduled_date asc, name"
+    _rec_name = "name"
 
-    # Core fields
-    name = fields.Char(string="Name", required=True, tracking=True)
-    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Work Order Manager', default=lambda self: self.env.user)
-    active = fields.Boolean(default=True)
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Work Order Number",
+        required=True,
+        tracking=True,
+        index=True,
+        copy=False,
+        help="Unique work order identification number",
+    )
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Work Order Manager",
+        default=lambda self: self.env.user,
+        tracking=True,
+        help="Manager responsible for this work order",
+    )
+    active = fields.Boolean(
+        string="Active", default=True, help="Whether this work order is active"
+    )
+    sequence = fields.Integer(
+        string="Sequence", default=10, help="Order sequence for sorting work orders"
+    )
 
-    # Customer relationship
-    customer_id = fields.Many2one('res.partner', string='Customer', tracking=True,
-                                domain=[('is_company', '=', True)])
+    # ============================================================================
+    # CUSTOMER AND SERVICE RELATIONSHIP
+    # ============================================================================
+    customer_id = fields.Many2one(
+        "res.partner",
+        string="Customer",
+        required=True,
+        tracking=True,
+        domain=[("is_company", "=", True)],
+        help="Customer for this shredding work order",
+    )
+    shredding_service_id = fields.Many2one(
+        "shredding.service",
+        string="Shredding Service",
+        help="Associated shredding service",
+    )
+    portal_request_id = fields.Many2one(
+        "portal.request",
+        string="Portal Request",
+        help="Original portal request that generated this work order",
+    )
 
-    # Basic state management
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done')
-    ], string='State', default='draft', tracking=True)
+    # ============================================================================
+    # WORK ORDER SCHEDULING
+    # ============================================================================
+    scheduled_date = fields.Datetime(
+        string="Scheduled Date",
+        required=True,
+        tracking=True,
+        help="Scheduled date and time for work order execution",
+    )
+    start_date = fields.Datetime(string="Start Date", help="Actual start date and time")
+    completion_date = fields.Datetime(
+        string="Completion Date", help="Actual completion date and time"
+    )
+    estimated_duration = fields.Float(
+        string="Estimated Duration (hours)",
+        default=2.0,
+        help="Estimated duration in hours",
+    )
+    actual_duration = fields.Float(
+        string="Actual Duration (hours)",
+        compute="_compute_actual_duration",
+        store=True,
+        help="Actual duration in hours",
+    )
 
-    # Common fields
-    description = fields.Text()
-    notes = fields.Text()
-    date = fields.Date(default=fields.Date.today)
+    # ============================================================================
+    # PRIORITY AND CLASSIFICATION
+    # ============================================================================
+    priority = fields.Selection(
+        [
+            ("0", "Low"),
+            ("1", "Normal"),
+            ("2", "High"),
+            ("3", "Urgent"),
+        ],
+        string="Priority",
+        default="1",
+        tracking=True,
+        help="Work order priority level",
+    )
+    work_order_type = fields.Selection(
+        [
+            ("onsite", "On-Site Shredding"),
+            ("pickup", "Pickup for Destruction"),
+            ("bulk", "Bulk Shredding"),
+            ("confidential", "Confidential Destruction"),
+            ("electronic", "Electronic Media Destruction"),
+        ],
+        string="Work Order Type",
+        required=True,
+        help="Type of shredding work order",
+    )
+    urgency_reason = fields.Text(
+        string="Urgency Reason", help="Reason for urgent priority if applicable"
+    )
 
+    # ============================================================================
+    # TEAM AND RESOURCE ASSIGNMENT
+    # ============================================================================
+    assigned_team_id = fields.Many2one(
+        "shredding.team",
+        string="Assigned Team",
+        tracking=True,
+        help="Team assigned to execute this work order",
+    )
+    team_leader_id = fields.Many2one(
+        "res.users",
+        string="Team Leader",
+        related="assigned_team_id.team_leader_id",
+        store=True,
+        help="Leader of the assigned team",
+    )
+    technician_ids = fields.Many2many(
+        "res.users",
+        string="Assigned Technicians",
+        help="Technicians assigned to this work order",
+    )
+    equipment_ids = fields.Many2many(
+        "maintenance.equipment",
+        string="Required Equipment",
+        help="Equipment required for this work order",
+    )
+    vehicle_id = fields.Many2one(
+        "records.vehicle",
+        string="Assigned Vehicle",
+        help="Vehicle assigned for this work order",
+    )
+
+    # ============================================================================
+    # WORK ORDER CONTENT AND MATERIALS
+    # ============================================================================
+    material_type = fields.Selection(
+        [
+            ("paper", "Paper Documents"),
+            ("electronic", "Electronic Media"),
+            ("hard_drives", "Hard Drives"),
+            ("mixed", "Mixed Materials"),
+            ("confidential", "Confidential Materials"),
+        ],
+        string="Material Type",
+        required=True,
+        help="Type of materials to be shredded",
+    )
+    estimated_weight = fields.Float(
+        string="Estimated Weight (lbs)",
+        digits="Stock Weight",
+        help="Estimated total weight of materials",
+    )
+    actual_weight = fields.Float(
+        string="Actual Weight (lbs)",
+        digits="Stock Weight",
+        help="Actual weight of materials processed",
+    )
+    container_count = fields.Integer(
+        string="Container Count", help="Number of containers to process"
+    )
+    special_instructions = fields.Text(
+        string="Special Instructions", help="Special handling instructions"
+    )
+
+    # ============================================================================
+    # STATE MANAGEMENT
+    # ============================================================================
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("confirmed", "Confirmed"),
+            ("assigned", "Assigned"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("verified", "Verified"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+        help="Current work order status",
+    )
+
+    # ============================================================================
+    # LOCATION AND ADDRESS INFORMATION
+    # ============================================================================
+    service_location_id = fields.Many2one(
+        "records.location",
+        string="Service Location",
+        help="Location where service will be performed",
+    )
+    customer_address = fields.Text(
+        string="Customer Address", help="Specific address for service delivery"
+    )
+    access_instructions = fields.Text(
+        string="Access Instructions",
+        help="Instructions for accessing the service location",
+    )
+    contact_person = fields.Char(
+        string="Contact Person", help="Primary contact person at service location"
+    )
+    contact_phone = fields.Char(
+        string="Contact Phone", help="Phone number for service location contact"
+    )
+
+    # ============================================================================
+    # COMPLETION AND VERIFICATION
+    # ============================================================================
+    completion_notes = fields.Text(
+        string="Completion Notes", help="Notes about work order completion"
+    )
+    customer_signature = fields.Binary(
+        string="Customer Signature", help="Customer signature for service completion"
+    )
+    customer_satisfaction = fields.Selection(
+        [
+            ("1", "Very Unsatisfied"),
+            ("2", "Unsatisfied"),
+            ("3", "Neutral"),
+            ("4", "Satisfied"),
+            ("5", "Very Satisfied"),
+        ],
+        string="Customer Satisfaction",
+        help="Customer satisfaction rating",
+    )
+    quality_check_passed = fields.Boolean(
+        string="Quality Check Passed",
+        default=False,
+        help="Whether quality check passed",
+    )
+    supervisor_approval = fields.Boolean(
+        string="Supervisor Approval",
+        default=False,
+        help="Whether supervisor approved completion",
+    )
+
+    # ============================================================================
+    # NAID COMPLIANCE AND CERTIFICATES
+    # ============================================================================
+    certificate_required = fields.Boolean(
+        string="Certificate Required",
+        default=True,
+        help="Whether destruction certificate is required",
+    )
+    certificate_id = fields.Many2one(
+        "naid.certificate",
+        string="Destruction Certificate",
+        help="Associated NAID destruction certificate",
+    )
+    compliance_level = fields.Selection(
+        [
+            ("standard", "Standard"),
+            ("naid_aaa", "NAID AAA"),
+            ("government", "Government Level"),
+        ],
+        string="Compliance Level",
+        default="naid_aaa",
+        help="Required compliance level",
+    )
+    witness_required = fields.Boolean(
+        string="Witness Required",
+        default=False,
+        help="Whether witnessed destruction is required",
+    )
+    witness_id = fields.Many2one(
+        "res.users", string="Witness", help="Person who witnessed the destruction"
+    )
+
+    # ============================================================================
+    # FINANCIAL AND BILLING
+    # ============================================================================
+    estimated_cost = fields.Monetary(
+        string="Estimated Cost",
+        currency_field="currency_id",
+        help="Estimated cost for this work order",
+    )
+    actual_cost = fields.Monetary(
+        string="Actual Cost",
+        currency_field="currency_id",
+        help="Actual cost for this work order",
+    )
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+    )
+    billable = fields.Boolean(
+        string="Billable",
+        default=True,
+        help="Whether this work order is billable to customer",
+    )
+
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=lambda self: [("res_model", "=", self._name)],
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=lambda self: [("model", "=", self._name)],
+    )
+
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
+    @api.depends("start_date", "completion_date")
+    def _compute_actual_duration(self):
+        """Compute actual duration based on start and completion times"""
+        for order in self:
+            if order.start_date and order.completion_date:
+                delta = order.completion_date - order.start_date
+                order.actual_duration = (
+                    delta.total_seconds() / 3600.0
+                )  # Convert to hours
+            else:
+                order.actual_duration = 0.0
+
+    @api.depends("state", "scheduled_date")
+    def _compute_display_name(self):
+        """Compute display name with status and date information"""
+        for order in self:
+            parts = [order.name]
+            if order.customer_id:
+                parts.append(f"({order.customer_id.name})")
+            if order.state:
+                state_label = dict(order._fields["state"].selection)[order.state]
+                parts.append(f"- {state_label}")
+            order.display_name = " ".join(parts)
+
+    display_name = fields.Char(
+        string="Display Name",
+        compute="_compute_display_name",
+        store=True,
+        help="Formatted display name",
+    )
+
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model
+    def create(self, vals):
+        """Override create to generate sequence number"""
+        if vals.get("name", "New") == "New":
+            vals["name"] = (
+                self.env["ir.sequence"].next_by_code("work.order.shredding") or "New"
+            )
+        return super().create(vals)
+
+    def write(self, vals):
+        """Override write to track important changes"""
+        # Log state changes
+        if "state" in vals:
+            for order in self:
+                if vals["state"] != order.state:
+                    old_state = dict(order._fields["state"].selection)[order.state]
+                    new_state = dict(order._fields["state"].selection)[vals["state"]]
+                    order.message_post(
+                        body=_("Work order status changed from %s to %s")
+                        % (old_state, new_state),
+                        message_type="notification",
+                    )
+
+        # Set start date when work begins
+        if vals.get("state") == "in_progress":
+            for order in self:
+                if not order.start_date:
+                    vals["start_date"] = fields.Datetime.now()
+
+        # Set completion date when work is completed
+        if vals.get("state") == "completed":
+            for order in self:
+                if not order.completion_date:
+                    vals["completion_date"] = fields.Datetime.now()
+
+        return super().write(vals)
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_confirm(self):
-        """Confirm the record"""
-        self.write({'state': 'confirmed'})
+        """Confirm the work order"""
+        for order in self:
+            if order.state != "draft":
+                raise UserError(_("Only draft work orders can be confirmed"))
 
-    def action_done(self):
-        """Mark as done"""
-        self.write({'state': 'done'})
+            order.write({"state": "confirmed"})
+            order.message_post(body=_("Work order confirmed"))
+
+    def action_assign_team(self):
+        """Assign team to work order"""
+        for order in self:
+            if order.state not in ["confirmed"]:
+                raise UserError(
+                    _("Work order must be confirmed before team assignment")
+                )
+
+            if not order.assigned_team_id:
+                raise UserError(_("Please select a team before assignment"))
+
+            order.write({"state": "assigned"})
+            order.message_post(
+                body=_("Team assigned: %s") % order.assigned_team_id.name,
+                message_type="notification",
+            )
+
+    def action_start_work(self):
+        """Start work order execution"""
+        for order in self:
+            if order.state != "assigned":
+                raise UserError(_("Work order must be assigned before starting"))
+
+            order.write({"state": "in_progress", "start_date": fields.Datetime.now()})
+            order.message_post(body=_("Work order started"))
+
+    def action_complete_work(self):
+        """Complete work order"""
+        for order in self:
+            if order.state != "in_progress":
+                raise UserError(_("Only in-progress work orders can be completed"))
+
+            order.write(
+                {"state": "completed", "completion_date": fields.Datetime.now()}
+            )
+
+            # Generate certificate if required
+            if order.certificate_required and not order.certificate_id:
+                order._generate_destruction_certificate()
+
+            order.message_post(body=_("Work order completed"))
+
+    def action_verify_completion(self):
+        """Verify work order completion"""
+        for order in self:
+            if order.state != "completed":
+                raise UserError(_("Only completed work orders can be verified"))
+
+            if not order.quality_check_passed:
+                raise UserError(_("Quality check must pass before verification"))
+
+            order.write({"state": "verified"})
+            order.message_post(
+                body=_("Work order verified by %s") % self.env.user.name,
+                message_type="notification",
+            )
+
+    def action_cancel(self):
+        """Cancel work order"""
+        for order in self:
+            if order.state in ["completed", "verified"]:
+                raise UserError(_("Cannot cancel completed or verified work orders"))
+
+            order.write({"state": "cancelled"})
+            order.message_post(body=_("Work order cancelled"))
+
+    def action_reset_to_draft(self):
+        """Reset work order to draft"""
+        for order in self:
+            if order.state == "verified":
+                raise UserError(_("Cannot reset verified work orders to draft"))
+
+            order.write({"state": "draft"})
+            order.message_post(body=_("Work order reset to draft"))
+
+    def action_view_certificate(self):
+        """View associated destruction certificate"""
+        self.ensure_one()
+        if not self.certificate_id:
+            raise UserError(_("No certificate associated with this work order"))
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Destruction Certificate"),
+            "res_model": "naid.certificate",
+            "res_id": self.certificate_id.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    # ============================================================================
+    # BUSINESS METHODS
+    # ============================================================================
+    def _generate_destruction_certificate(self):
+        """Generate NAID destruction certificate"""
+        self.ensure_one()
+
+        if self.certificate_id:
+            return self.certificate_id
+
+        certificate_vals = {
+            "name": f"Certificate - {self.name}",
+            "certificate_type": "destruction",
+            "customer_id": self.customer_id.id,
+            "work_order_id": self.id,
+            "destruction_date": self.completion_date or fields.Datetime.now(),
+            "total_weight": self.actual_weight,
+            "material_type": self.material_type,
+            "compliance_level": self.compliance_level,
+            "witness_id": self.witness_id.id if self.witness_id else None,
+        }
+
+        certificate = self.env["naid.certificate"].create(certificate_vals)
+        self.certificate_id = certificate
+
+        return certificate
+
+    def check_team_availability(self):
+        """Check if assigned team is available for scheduled date"""
+        self.ensure_one()
+
+        if not self.assigned_team_id or not self.scheduled_date:
+            return True
+
+        # Check for conflicting work orders
+        conflicting_orders = self.search(
+            [
+                ("assigned_team_id", "=", self.assigned_team_id.id),
+                ("scheduled_date", "=", self.scheduled_date),
+                ("state", "in", ["assigned", "in_progress"]),
+                ("id", "!=", self.id),
+            ]
+        )
+
+        return len(conflicting_orders) == 0
+
+    def get_work_order_summary(self):
+        """Get summary information for reporting"""
+        self.ensure_one()
+
+        return {
+            "name": self.name,
+            "customer": self.customer_id.name,
+            "state": self.state,
+            "scheduled_date": self.scheduled_date,
+            "team": self.assigned_team_id.name if self.assigned_team_id else None,
+            "material_type": self.material_type,
+            "estimated_weight": self.estimated_weight,
+            "actual_weight": self.actual_weight,
+            "duration": self.actual_duration,
+            "satisfaction": self.customer_satisfaction,
+        }
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("scheduled_date")
+    def _check_scheduled_date(self):
+        """Validate scheduled date is not in the past"""
+        for order in self:
+            if order.scheduled_date and order.state == "draft":
+                now = fields.Datetime.now()
+                if order.scheduled_date < now:
+                    raise ValidationError(_("Scheduled date cannot be in the past"))
+
+    @api.constrains("start_date", "completion_date")
+    def _check_date_sequence(self):
+        """Validate date sequence"""
+        for order in self:
+            if order.start_date and order.completion_date:
+                if order.start_date > order.completion_date:
+                    raise ValidationError(_("Completion date must be after start date"))
+
+    @api.constrains("estimated_weight", "actual_weight")
+    def _check_weights(self):
+        """Validate weight values"""
+        for order in self:
+            if order.estimated_weight is not None and order.estimated_weight < 0:
+                raise ValidationError(_("Estimated weight cannot be negative"))
+            if order.actual_weight is not None and order.actual_weight < 0:
+                raise ValidationError(_("Actual weight cannot be negative"))
+
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    def name_get(self):
+        """Custom name display"""
+        result = []
+        for order in self:
+            name_parts = [order.name]
+
+            if order.customer_id:
+                name_parts.append(f"({order.customer_id.name})")
+
+            if order.state != "draft":
+                state_label = dict(order._fields["state"].selection)[order.state]
+                name_parts.append(f"- {state_label}")
+
+            result.append((order.id, " ".join(name_parts)))
+
+        return result
+
+    @api.model
+    def _name_search(
+        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
+    ):
+        """Enhanced search by name or customer"""
+        args = args or []
+        domain = []
+        if name:
+            domain = [
+                "|",
+                "|",
+                ("name", operator, name),
+                ("customer_id.name", operator, name),
+                ("portal_request_id.name", operator, name),
+            ]
+        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
+
+    @api.model
+    def get_work_orders_by_team(self, team_id, start_date=None, end_date=None):
+        """Get work orders assigned to specific team within date range"""
+        domain = [("assigned_team_id", "=", team_id)]
+
+        if start_date:
+            domain.append(("scheduled_date", ">=", start_date))
+        if end_date:
+            domain.append(("scheduled_date", "<=", end_date))
+
+        return self.search(domain, order="scheduled_date asc")
+
+    @api.model
+    def get_priority_work_orders(self):
+        """Get high priority work orders requiring attention"""
+        return self.search(
+            [
+                ("priority", "in", ["2", "3"]),
+                ("state", "in", ["confirmed", "assigned", "in_progress"]),
+            ],
+            order="priority desc, scheduled_date asc",
+        )
