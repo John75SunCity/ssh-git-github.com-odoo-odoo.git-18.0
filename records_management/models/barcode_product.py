@@ -456,16 +456,17 @@ class BarcodeProduct(models.Model):
             "data": {"product_id": self.id},
         }
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """
         Override create to set a sequence for the 'name' field only if it is not provided.
         """
-        if not vals.get("name"):
-            vals["name"] = self.env["ir.sequence"].next_by_code("barcode.product") or _(
-                "New"
-            )
-        return super().create(vals)
+        for vals in vals_list:
+            if not vals.get("name"):
+                vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "barcode.product"
+                ) or _("New")
+        return super().create(vals_list)
 
     def write(self, vals):
         """
