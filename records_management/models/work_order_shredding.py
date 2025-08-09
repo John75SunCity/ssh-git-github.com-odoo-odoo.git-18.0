@@ -35,7 +35,7 @@ class WorkOrderShredding(models.Model):
     _description = "Shredding Work Order Management"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "priority desc, scheduled_date asc, name"
-    _rec_name = "name"
+    _rec_name = "display_name"
 
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
@@ -345,19 +345,19 @@ class WorkOrderShredding(models.Model):
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
+        domain=[("res_model", "=", "work.order.shredding")],
     )
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
+        domain="[('res_model', '=', 'work.order.shredding')]",
     )
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
-        domain=lambda self: [("model", "=", self._name)],
+        domain="[('model', '=', 'work.order.shredding')]",
     )
 
     # ============================================================================
@@ -426,13 +426,13 @@ class WorkOrderShredding(models.Model):
         if vals.get("state") == "in_progress":
             for order in self:
                 if not order.start_date:
-                    vals["start_date"] = fields.Datetime.now()
+                    order.write({"start_date": fields.Datetime.now()})
 
         # Set completion date when work is completed
         if vals.get("state") == "completed":
             for order in self:
                 if not order.completion_date:
-                    vals["completion_date"] = fields.Datetime.now()
+                    order.write({"completion_date": fields.Datetime.now()})
 
         return super().write(vals)
 
@@ -606,7 +606,12 @@ class WorkOrderShredding(models.Model):
     # ============================================================================
     @api.constrains("scheduled_date")
     def _check_scheduled_date(self):
-        """Validate scheduled date is not in the past"""
+        """
+        Validate scheduled date is not in the past.
+
+        Only checks for 'draft' state because scheduling is finalized at confirmation;
+        after confirmation, rescheduling is managed via other business logic.
+        """
         for order in self:
             if order.scheduled_date and order.state == "draft":
                 now = fields.Datetime.now()
@@ -630,9 +635,6 @@ class WorkOrderShredding(models.Model):
             if order.actual_weight is not None and order.actual_weight < 0:
                 raise ValidationError(_("Actual weight cannot be negative"))
 
-    # ============================================================================
-    # UTILITY METHODS
-    # ============================================================================
     def name_get(self):
         """Custom name display"""
         result = []
@@ -646,6 +648,7 @@ class WorkOrderShredding(models.Model):
                 state_label = dict(order._fields["state"].selection)[order.state]
                 name_parts.append(f"- {state_label}")
 
+            # Ensure only two elements in tuple: (id, display_name)
             result.append((order.id, " ".join(name_parts)))
 
         return result
@@ -654,7 +657,7 @@ class WorkOrderShredding(models.Model):
     def _name_search(
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
     ):
-        """Enhanced search by name or customer"""
+        """Enhanced search by name or customer, returns name_get results for consistency"""
         args = args or []
         domain = []
         if name:
@@ -665,19 +668,8 @@ class WorkOrderShredding(models.Model):
                 ("customer_id.name", operator, name),
                 ("portal_request_id.name", operator, name),
             ]
-        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
-
-    @api.model
-    def get_work_orders_by_team(self, team_id, start_date=None, end_date=None):
-        """Get work orders assigned to specific team within date range"""
-        domain = [("assigned_team_id", "=", team_id)]
-
-        if start_date:
-            domain.append(("scheduled_date", ">=", start_date))
-        if end_date:
-            domain.append(("scheduled_date", "<=", end_date))
-
-        return self.search(domain, order="scheduled_date asc")
+        ids = self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
+        return self.browse(ids).name_get()
 
     @api.model
     def get_priority_work_orders(self):
