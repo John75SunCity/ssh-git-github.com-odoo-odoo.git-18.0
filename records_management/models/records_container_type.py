@@ -13,12 +13,13 @@ class RecordsContainerType(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Container Type Name", required=True, tracking=True, index=True
-    ),
+    )
     company_id = fields.Many2one(
-        "res.company", default=lambda self: self.env.company, required=True)
+        "res.company", default=lambda self: self.env.company, required=True
+    )
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    ),
+    )
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
         [("draft", "Draft"), ("active", "Active"), ("archived", "Archived")],
@@ -29,13 +30,11 @@ class RecordsContainerType(models.Model):
     # ============================================================================
     # CONTAINER SPECIFICATIONS
     # ============================================================================
-    )
-    code = fields.Char(string="Container Code", required=True, index=True),
+    code = fields.Char(string="Container Code", required=True, index=True)
     description = fields.Text(string="Description")
-    dimensions = fields.Char(string="Standard Dimensions"),
+    dimensions = fields.Char(string="Standard Dimensions")
     weight_capacity = fields.Float(
         string="Weight Capacity (lbs)", digits="Stock Weight", default=0.0
-    )
     )
     volume_capacity = fields.Float(
         string="Volume Capacity (cubic feet)", digits="Stock Weight", default=0.0
@@ -47,7 +46,6 @@ class RecordsContainerType(models.Model):
     standard_rate = fields.Float(
         string="Standard Monthly Rate", digits="Product Price", default=0.0
     )
-    )
     setup_fee = fields.Float(string="Setup Fee", digits="Product Price", default=0.0)
 
     # ============================================================================
@@ -56,10 +54,35 @@ class RecordsContainerType(models.Model):
     container_ids = fields.One2many(
         "records.container", "container_type_id", string="Containers"
     )
-    )
     container_count = fields.Integer(
         string="Container Count", compute="_compute_container_count", store=True
     )
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)        "mail.followers", "res_id", string="Followers"
-    self.write({"state": "archived", "active": False})
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("container_ids")
+    def _compute_container_count(self):
+        """Compute the total number of containers for this type"""
+        for record in self:
+            record.container_count = len(record.container_ids)
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_activate(self):
+        """Activate the container type"""
+        self.write({"state": "active", "active": True})
+
+    def action_archive(self):
+        """Archive the container type"""
+        self.write({"state": "archived", "active": False})

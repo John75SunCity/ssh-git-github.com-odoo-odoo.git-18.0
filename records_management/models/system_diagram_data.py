@@ -36,10 +36,15 @@ class SystemDiagramData(models.TransientModel):
     _name = "system.diagram.data"
     _description = "System Architecture Diagram Data Aggregator"
 
-    def __init__(self, pool, cr):
-        """Initialize the model with cache attribute"""
-        super(SystemDiagramData, self).__init__(pool, cr)
-        self._model_exists_cache = {}
+    # ============================================================================
+    # MODEL CACHE PROPERTY
+    # ============================================================================
+    @property
+    def _model_exists_cache(self):
+        """Access model existence cache through registry"""
+        if not hasattr(self.env.registry, "_model_cache"):
+            self.env.registry._model_cache = {}
+        return self.env.registry._model_cache
 
     # ============================================================================
     # CORE FIELDS
