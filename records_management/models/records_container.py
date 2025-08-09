@@ -101,6 +101,11 @@ class RecordsContainer(models.Model):
     container_type_id = fields.Many2one(
         "records.container.type", string="Container Type", required=True
     )
+    document_type_id = fields.Many2one(
+        "records.document.type", 
+        string="Primary Document Type", 
+        help="Primary document type for containers with uniform content"
+    )
     barcode = fields.Char(string="Barcode", index=True, tracking=True)
     dimensions = fields.Char(string="Dimensions")
     weight = fields.Float(string="Weight (lbs)", digits="Stock Weight", default=0.0)
