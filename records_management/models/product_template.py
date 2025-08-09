@@ -1,4 +1,24 @@
 # -*- coding: utf-8 -*-
+"""
+Product Template Extension for Records Management Services
+
+This module extends the standard product.template model to support comprehensive
+records management service offerings. It provides specialized fields for service
+configuration, compliance tracking, scheduling, and performance management.
+
+Key Features:
+- Service configuration and categorization
+- Compliance and security tracking (NAID, HIPAA, SOX, ISO)
+- Capacity and resource management
+- Advanced pricing models with bulk discounts
+- Scheduling and availability management
+- Quality metrics and customer feedback integration
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -7,20 +27,35 @@ class ProductTemplate(models.Model):
     _inherit = "product.template"
 
     # ============================================================================
-    # RECORDS MANAGEMENT SERVICE FIELDS
-    # ============================================================================
-    # Service Configuration
-    # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     company_id = fields.Many2one(
-        "res.company", default=lambda self: self.env.company, required=True
-    ),
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
     user_id = fields.Many2one(
-        "res.users", default=lambda self: self.env.user, tracking=True)
-    active = fields.Boolean(string="Active", default=True),
-    is_template_service = fields.Boolean(string="Template Service", default=False)
-    is_featured_service = fields.Boolean(string="Featured Service", default=False),
+        "res.users",
+        string="Responsible User",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+    active = fields.Boolean(string="Active", default=True)
+
+    # ============================================================================
+    # SERVICE CONFIGURATION
+    # ============================================================================
+    is_template_service = fields.Boolean(
+        string="Template Service",
+        default=False,
+        help="Whether this is a records management service template",
+    )
+    is_featured_service = fields.Boolean(
+        string="Featured Service",
+        default=False,
+        help="Whether this service is featured in customer portal",
+    )
     template_category = fields.Selection(
         [
             ("storage", "Document Storage"),
@@ -29,25 +64,40 @@ class ProductTemplate(models.Model):
             ("digital", "Digital Services"),
             ("compliance", "Compliance Services"),
             ("consultation", "Consultation Services"),
-        ]),
+        ],
         string="Template Category",
+        help="Category of records management service",
     )
 
-    # External Integration
+    # ============================================================================
+    # EXTERNAL INTEGRATION
+    # ============================================================================
+    external_service_id = fields.Char(
+        string="External Service ID", help="External system service identifier"
     )
-    external_service_id = fields.Char(string="External Service ID"),
-    sync_enabled = fields.Boolean(string="Sync Enabled", default=True)
-    api_integration = fields.Boolean(string="API Integration", default=False),
+    sync_enabled = fields.Boolean(
+        string="Sync Enabled",
+        default=True,
+        help="Enable synchronization with external systems",
+    )
+    api_integration = fields.Boolean(
+        string="API Integration",
+        default=False,
+        help="Enable API integration for this service",
+    )
     webhook_notifications = fields.Boolean(
-        string="Webhook Notifications", default=False
+        string="Webhook Notifications",
+        default=False,
+        help="Enable webhook notifications for service events",
     )
 
     # ============================================================================
     # SERVICE SPECIFICATIONS
     # ============================================================================
-    # Service Details
+    service_duration = fields.Float(
+        string="Service Duration (hours)",
+        help="Expected duration for service completion",
     )
-    service_duration = fields.Float(string="Service Duration (hours)")
     service_frequency = fields.Selection(
         [
             ("one_time", "One Time"),
@@ -56,271 +106,398 @@ class ProductTemplate(models.Model):
             ("quarterly", "Quarterly"),
             ("annual", "Annual"),
             ("on_demand", "On Demand"),
-        ]),
+        ],
         string="Service Frequency",
         default="one_time",
+        help="How frequently this service is typically required",
     )
-
+    requires_appointment = fields.Boolean(
+        string="Requires Appointment",
+        default=False,
+        help="Whether service requires scheduled appointment",
     )
-
-    requires_appointment = fields.Boolean(string="Requires Appointment", default=False),
-    advance_notice_days = fields.Integer(string="Advance Notice (days)", default=1)
+    advance_notice_days = fields.Integer(
+        string="Advance Notice (days)",
+        default=1,
+        help="Days of advance notice required for scheduling",
+    )
     service_location = fields.Selection(
         [("onsite", "On-Site"), ("offsite", "Off-Site"), ("both", "Both")],
         string="Service Location",
         default="offsite",
+        help="Where service can be performed",
     )
 
     # ============================================================================
     # COMPLIANCE & SECURITY
     # ============================================================================
+    naid_compliant = fields.Boolean(
+        string="NAID Compliant",
+        default=False,
+        help="Service meets NAID compliance standards",
     )
-    naid_compliant = fields.Boolean(string="NAID Compliant", default=False),
-    hipaa_compliant = fields.Boolean(string="HIPAA Compliant", default=False)
-    sox_compliant = fields.Boolean(string="SOX Compliant", default=False),
-    iso_certified = fields.Boolean(string="ISO Certified", default=False)
-
+    hipaa_compliant = fields.Boolean(
+        string="HIPAA Compliant",
+        default=False,
+        help="Service meets HIPAA compliance requirements",
+    )
+    sox_compliant = fields.Boolean(
+        string="SOX Compliant",
+        default=False,
+        help="Service meets SOX compliance requirements",
+    )
+    iso_compliant = fields.Boolean(
+        string="ISO Compliant",
+        default=False,
+        help="Service meets ISO compliance standards",
+    )
     security_clearance_required = fields.Boolean(
-        string="Security Clearance Required", default=False
+        string="Security Clearance Required",
+        default=False,
+        help="Service requires security clearance",
     )
+    encryption_level = fields.Selection(
+        [
+            ("none", "No Encryption"),
+            ("basic", "Basic Encryption"),
+            ("advanced", "Advanced Encryption"),
+            ("military", "Military Grade"),
+        ],
+        string="Encryption Level",
+        default="basic",
+        help="Level of encryption provided",
     )
-    background_check_required = fields.Boolean(
-        string="Background Check Required", default=False
-    ),
-    certificate_of_destruction = fields.Boolean(
-        string="Certificate of Destruction", default=False
-    )
-    )
-    audit_trail_provided = fields.Boolean(string="Audit Trail Provided", default=True)
 
     # ============================================================================
-    # CAPACITY & RESOURCES
+    # CAPACITY & RESOURCE MANAGEMENT
     # ============================================================================
-    max_capacity_per_service = fields.Integer(string="Max Capacity per Service"),
-    resource_requirements = fields.Text(string="Resource Requirements")
-    equipment_needed = fields.Char(string="Equipment Needed"),
-    staff_required = fields.Integer(string="Staff Required", default=1)
-
-    # Geographical service area
-    service_radius_miles = fields.Float(string="Service Radius (miles)")
-    available_regions = fields.Char(string="Available Regions"),
-    restricted_areas = fields.Text(string="Restricted Areas")
+    max_concurrent_jobs = fields.Integer(
+        string="Max Concurrent Jobs",
+        default=1,
+        help="Maximum number of concurrent jobs for this service",
+    )
+    staff_required = fields.Integer(
+        string="Staff Required", default=1, help="Number of staff members required"
+    )
+    equipment_required = fields.Text(
+        string="Equipment Required", help="Description of equipment needed for service"
+    )
+    vehicle_required = fields.Boolean(
+        string="Vehicle Required", default=False, help="Service requires vehicle"
+    )
+    service_radius_miles = fields.Integer(
+        string="Service Radius (miles)", help="Maximum service radius in miles"
+    )
 
     # ============================================================================
     # PRICING & BILLING
     # ============================================================================
-    list_price = fields.Monetary(
-        string="Sales Price", default=0.0, currency_field="currency_id"
-    ),
-    currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        required=True,
-        default=lambda self: self.env.company.currency_id,
-    )
-
     pricing_model = fields.Selection(
         [
             ("fixed", "Fixed Price"),
-            ("volume", "Volume Based"),
-            ("time", "Time Based"),
+            ("hourly", "Hourly Rate"),
+            ("per_item", "Per Item"),
+            ("per_box", "Per Box"),
             ("subscription", "Subscription"),
-        ]),
+            ("volume", "Volume Discount"),
+        ],
         string="Pricing Model",
         default="fixed",
+        help="How this service is priced",
     )
-
+    minimum_charge = fields.Float(
+        string="Minimum Charge", help="Minimum charge for service"
     )
-
-    minimum_service_charge = fields.Monetary(string="Minimum Service Charge"),
-    setup_fee = fields.Monetary(string="Setup Fee")
-    rush_order_surcharge = fields.Float(string="Rush Order Surcharge (%)")
-    bulk_discount_threshold = fields.Integer(string="Bulk Discount Threshold"),
-    bulk_discount_rate = fields.Float(string="Bulk Discount Rate (%)")
+    setup_fee = fields.Float(string="Setup Fee", help="One-time setup fee")
+    bulk_discount_threshold = fields.Integer(
+        string="Bulk Discount Threshold", help="Minimum quantity for bulk discount"
+    )
+    bulk_discount_rate = fields.Float(
+        string="Bulk Discount Rate (%)", help="Percentage discount for bulk orders"
+    )
+    subscription_period = fields.Selection(
+        [("monthly", "Monthly"), ("quarterly", "Quarterly"), ("annual", "Annual")],
+        string="Subscription Period",
+        help="Billing period for subscription services",
+    )
 
     # ============================================================================
     # SCHEDULING & AVAILABILITY
     # ============================================================================
-    availability_monday = fields.Boolean(string="Monday", default=True),
-    availability_tuesday = fields.Boolean(string="Tuesday", default=True)
-    availability_wednesday = fields.Boolean(string="Wednesday", default=True),
-    availability_thursday = fields.Boolean(string="Thursday", default=True)
-    availability_friday = fields.Boolean(string="Friday", default=True),
-    availability_saturday = fields.Boolean(string="Saturday", default=False)
-    availability_sunday = fields.Boolean(string="Sunday", default=False),
-    service_hours_start = fields.Float(string="Service Hours Start", default=8.0)
-    service_hours_end = fields.Float(string="Service Hours End", default=17.0),
-    emergency_service_available = fields.Boolean(
-        string="Emergency Service Available", default=False
+    availability_monday = fields.Boolean(string="Available Monday", default=True)
+    availability_tuesday = fields.Boolean(string="Available Tuesday", default=True)
+    availability_wednesday = fields.Boolean(string="Available Wednesday", default=True)
+    availability_thursday = fields.Boolean(string="Available Thursday", default=True)
+    availability_friday = fields.Boolean(string="Available Friday", default=True)
+    availability_saturday = fields.Boolean(string="Available Saturday", default=False)
+    availability_sunday = fields.Boolean(string="Available Sunday", default=False)
+    service_hours_start = fields.Float(
+        string="Service Hours Start",
+        default=8.0,
+        help="Service start time (24-hour format)",
+    )
+    service_hours_end = fields.Float(
+        string="Service Hours End",
+        default=17.0,
+        help="Service end time (24-hour format)",
+    )
+    emergency_service = fields.Boolean(
+        string="Emergency Service Available",
+        default=False,
+        help="Service available for emergencies",
+    )
+    after_hours_available = fields.Boolean(
+        string="After Hours Available",
+        default=False,
+        help="Service available after regular hours",
     )
 
     # ============================================================================
-    # QUALITY & PERFORMANCE
+    # SLA & PERFORMANCE
     # ============================================================================
+    sla_response_time = fields.Float(
+        string="SLA Response Time (hours)", help="Service Level Agreement response time"
     )
-    sla_response_time = fields.Float(string="SLA Response Time (hours)", default=24.0)
     sla_completion_time = fields.Float(
-        string="SLA Completion Time (hours)", default=72.0
+        string="SLA Completion Time (hours)",
+        help="Service Level Agreement completion time",
     )
+    quality_standard = fields.Selection(
+        [
+            ("basic", "Basic Quality"),
+            ("premium", "Premium Quality"),
+            ("enterprise", "Enterprise Quality"),
+        ],
+        string="Quality Standard",
+        default="basic",
+        help="Quality standard for service delivery",
     )
-    quality_metrics = fields.Text(string="Quality Metrics"),
-    performance_benchmarks = fields.Text(string="Performance Benchmarks")
+    performance_guarantee = fields.Boolean(
+        string="Performance Guarantee",
+        default=False,
+        help="Service comes with performance guarantee",
+    )
 
-    # Customer satisfaction tracking
+    # ============================================================================
+    # CUSTOMER EXPERIENCE
+    # ============================================================================
     customer_rating = fields.Float(
-        string="Customer Rating", compute="_compute_customer_rating"
-    ),
-    total_reviews = fields.Integer(
-        string="Total Reviews", compute="_compute_total_reviews"
+        string="Customer Rating",
+        compute="_compute_customer_rating",
+        store=True,
+        help="Average customer rating from feedback",
+    )
+    feedback_count = fields.Integer(
+        string="Feedback Count",
+        compute="_compute_feedback_count",
+        help="Total number of customer feedback records",
+    )
+    popular_service = fields.Boolean(
+        string="Popular Service",
+        compute="_compute_popular_service",
+        store=True,
+        help="Service is marked as popular based on usage",
+    )
+    service_description_portal = fields.Html(
+        string="Portal Description", help="Description shown to customers in portal"
+    )
+    service_benefits = fields.Html(
+        string="Service Benefits", help="Benefits and features of this service"
     )
 
     # ============================================================================
-    # COMPUTED FIELDS
+    # COMPUTE METHODS
     # ============================================================================
-    @api.depends("message_ids")
+    @api.depends("product_template_id")
     def _compute_customer_rating(self):
         """Compute average customer rating from feedback records"""
         for record in self:
-            # Get customer feedback records related to this product template
-            feedback_records = self.env["customer.feedback"].search(
-                [("product_template_id", "=", record.id), ("rating", ">", 0)]
-            )
-
-            if feedback_records:
-                total_rating = sum(
-                    int(feedback.rating) for feedback in feedback_records
+            if hasattr(self.env, "customer.feedback"):
+                feedback_records = self.env["customer.feedback"].search(
+                    [("product_template_id", "=", record.id), ("rating", ">", "0")]
                 )
-                record.customer_rating = total_rating / len(feedback_records)
+                if feedback_records:
+                    total_rating = sum(
+                        int(feedback.rating)
+                        for feedback in feedback_records
+                        if feedback.rating and feedback.rating.isdigit()
+                    )
+                    record.customer_rating = total_rating / len(feedback_records)
+                else:
+                    record.customer_rating = 0.0
             else:
                 record.customer_rating = 0.0
 
-    @api.depends("message_ids")
-    def _compute_total_reviews(self):
-        """Compute total number of customer reviews for this service"""
+    @api.depends("product_template_id")
+    def _compute_feedback_count(self):
+        """Compute total feedback count"""
         for record in self:
-            # Count customer feedback records related to this product template
-            feedback_count = self.env["customer.feedback"].search_count(
-                [("product_template_id", "=", record.id)]
+            if hasattr(self.env, "customer.feedback"):
+                record.feedback_count = self.env["customer.feedback"].search_count(
+                    [("product_template_id", "=", record.id)]
+                )
+            else:
+                record.feedback_count = 0
+
+    @api.depends("customer_rating", "feedback_count")
+    def _compute_popular_service(self):
+        """Determine if service is popular based on rating and feedback"""
+        for record in self:
+            record.popular_service = (
+                record.customer_rating >= 4.0 and record.feedback_count >= 10
             )
-            record.total_reviews = feedback_count
-
-    @api.depends(
-        "availability_monday",
-        "availability_tuesday",
-        "availability_wednesday",
-        "availability_thursday",
-        "availability_friday",
-        "availability_saturday",
-        "availability_sunday",)
-    def _compute_weekly_availability(self):
-        for record in self:
-            days = [
-                record.availability_monday,
-                record.availability_tuesday,
-                record.availability_wednesday,
-                record.availability_thursday,
-                record.availability_friday,
-                record.availability_saturday,
-                record.availability_sunday,
-            ]
-            record.weekly_availability_days = sum(days)
-
-    weekly_availability_days = fields.Integer(
-        compute="_compute_weekly_availability", string="Weekly Availability (days)"
-    )
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_view_service_requests(self):
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Service Requests",
-            "res_model": "portal.request",
-            "view_mode": "tree,form",
-            "domain": [("request_type", "=", self.template_category)],
-            "context": {"default_request_type": self.template_category},
-        }
-
-    def action_create_service_package(self):
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Create Service Package",
-            "res_model": "records.service.package",
-            "view_mode": "form",
-            "target": "new",
-            "context": {"default_primary_service_id": self.id},
-        }
-
-    def action_duplicate_template(self):
-        self.ensure_one()
-        return self.copy({"name": f"{self.name} (Copy)"})
-
-    # ============================================================================
-    # UTILITY METHODS
-    # ============================================================================
-    def is_service_available(self, requested_date=None):
-        """Check if service is available on requested date"""
-        if not requested_date:
-            return True
-
-        # Check day of week availability
-        weekday = requested_date.weekday()  # 0=Monday, 6=Sunday
-        availability_fields = [
-            self.availability_monday,
-            self.availability_tuesday,
-            self.availability_wednesday,
-            self.availability_thursday,
-            self.availability_friday,
-            self.availability_saturday,
-            self.availability_sunday,
-        ]
-
-        return bool(availability_fields[weekday])
-
-    def calculate_service_price(self, quantity=1, rush_order=False):
-        """Calculate service price based on quantity and options"""
-        base_price = self.list_price
-
-        # Apply bulk discount
-        if quantity >= self.bulk_discount_threshold and self.bulk_discount_rate:
-            base_price *= max(0, 1 - self.bulk_discount_rate / 100)
-
-        # Apply rush order surcharge, ensuring negative surcharges are not allowed
-        rush_surcharge = (
-            self.rush_order_surcharge
-            if self.rush_order_surcharge and self.rush_order_surcharge > 0
-            else 0
-        )
-        if rush_order and rush_surcharge:
-            base_price *= 1 + rush_surcharge / 100
-
-        # Apply minimum service charge
-        min_charge = (
-            self.minimum_service_charge
-            if self.minimum_service_charge is not None
-            else 0
-        )
-        total_price = max(base_price * quantity, min_charge)
-
-        return total_price + (self.setup_fee or 0)
 
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
+    @api.constrains("advance_notice_days", "staff_required")
+    def _check_positive_values(self):
+        """Validate positive values for certain fields"""
+        for record in self:
+            if record.advance_notice_days and record.advance_notice_days < 0:
+                raise ValidationError(_("Advance notice days must be non-negative."))
+            if record.staff_required and record.staff_required < 1:
+                raise ValidationError(_("Staff required must be at least 1."))
+
+    @api.constrains("sla_response_time", "sla_completion_time")
+    def _check_sla_times(self):
+        """Validate SLA time relationships"""
+        for record in self:
+            if (
+                record.sla_response_time
+                and record.sla_completion_time
+                and record.sla_response_time > record.sla_completion_time
+            ):
+                raise ValidationError(
+                    _("SLA response time cannot be greater than completion time.")
+                )
+
+    @api.constrains("service_radius_miles")
+    def _check_service_radius(self):
+        """Validate service radius"""
+        for record in self:
+            if record.service_radius_miles and record.service_radius_miles <= 0:
+                raise ValidationError(_("Service radius must be positive."))
+
     @api.constrains("service_hours_start", "service_hours_end")
     def _check_service_hours(self):
+        """Validate service hours"""
         for record in self:
             if record.service_hours_start >= record.service_hours_end:
                 raise ValidationError(_("Service start time must be before end time."))
-    @api.constrains("bulk_discount_rate", "rush_order_surcharge")
-    def _check_percentage_values(self):
-        for record in self:
-            if record.bulk_discount_rate and (
-                record.bulk_discount_rate < 0 or record.bulk_discount_rate > 100
+
+    # ============================================================================
+    # ONCHANGE METHODS
+    # ============================================================================
+    @api.onchange("template_category")
+    def _onchange_template_category(self):
+        """Set default values based on template category"""
+        if self.template_category == "destruction":
+            self.naid_compliant = True
+            self.security_clearance_required = True
+            self.encryption_level = "advanced"
+        elif self.template_category == "compliance":
+            self.hipaa_compliant = True
+            self.sox_compliant = True
+            self.iso_compliant = True
+
+    @api.onchange("pricing_model")
+    def _onchange_pricing_model(self):
+        """Set default values based on pricing model"""
+        if self.pricing_model == "subscription":
+            self.subscription_period = "monthly"
+        elif self.pricing_model == "volume":
+            self.bulk_discount_threshold = self.bulk_discount_threshold or 10
+            self.bulk_discount_rate = self.bulk_discount_rate or 5.0
+
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    @api.model
+    def get_services_by_category(self, category):
+        """Get services by template category"""
+        return self.search(
+            [
+                ("is_template_service", "=", True),
+                ("template_category", "=", category),
+                ("active", "=", True),
+            ]
+        )
+
+    def get_availability_display(self):
+        """Get human-readable availability display"""
+        self.ensure_one()
+        available_days = []
+        days = [
+            ("Monday", self.availability_monday),
+            ("Tuesday", self.availability_tuesday),
+            ("Wednesday", self.availability_wednesday),
+            ("Thursday", self.availability_thursday),
+            ("Friday", self.availability_friday),
+            ("Saturday", self.availability_saturday),
+            ("Sunday", self.availability_sunday),
+        ]
+
+        for day_name, available in days:
+            if available:
+                available_days.append(day_name)
+
+        if len(available_days) == 7:
+            return "Available daily"
+        elif (
+            len(available_days) == 5
+            and not self.availability_saturday
+            and not self.availability_sunday
+        ):
+            return "Available weekdays"
+        elif len(available_days) == 0:
+            return "No availability set"
+        else:
+            return f"Available: {', '.join(available_days)}"
+
+    def get_compliance_badges(self):
+        """Get list of compliance certifications"""
+        self.ensure_one()
+        badges = []
+        if self.naid_compliant:
+            badges.append("NAID")
+        if self.hipaa_compliant:
+            badges.append("HIPAA")
+        if self.sox_compliant:
+            badges.append("SOX")
+        if self.iso_compliant:
+            badges.append("ISO")
+        return badges
+
+    def calculate_service_price(self, quantity=1, duration=None):
+        """Calculate service price based on pricing model"""
+        self.ensure_one()
+        base_price = self.list_price or 0.0
+
+        if self.pricing_model == "fixed":
+            total_price = base_price
+        elif self.pricing_model == "hourly":
+            hours = duration or self.service_duration or 1.0
+            total_price = base_price * hours
+        elif self.pricing_model in ["per_item", "per_box"]:
+            total_price = base_price * quantity
+            # Apply bulk discount if applicable
+            if (
+                self.bulk_discount_threshold
+                and quantity >= self.bulk_discount_threshold
+                and self.bulk_discount_rate
             ):
-                raise ValidationError(
-                    _("Bulk discount rate must be between 0 and 100.")
-                )
-            if record.rush_order_surcharge and record.rush_order_surcharge < 0:
-                raise ValidationError(_("Rush order surcharge cannot be negative.")))
+                discount = total_price * (self.bulk_discount_rate / 100)
+                total_price -= discount
+        else:
+            total_price = base_price
+
+        # Add setup fee if applicable
+        if self.setup_fee:
+            total_price += self.setup_fee
+
+        # Apply minimum charge
+        if self.minimum_charge:
+            total_price = max(total_price, self.minimum_charge)
+
+        return total_price

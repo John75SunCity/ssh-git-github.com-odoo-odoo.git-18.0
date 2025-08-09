@@ -3,8 +3,7 @@
 Pickup Request Management Module
 
 See RECORDS_MANAGEMENT_SYSTEM_MANUAL.md - Section 8: Pickup Request Management Module
-for comprehensive documentation, business processes, and integration details.
-
+for comprehensive documentation, business processes, and integration details.:
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
@@ -38,7 +37,6 @@ class PickupRequest(models.Model):
         string="State",
         default="draft",
         tracking=True,
-    )
 
     # Common fields
     )
@@ -58,7 +56,6 @@ class PickupRequest(models.Model):
         string="View Mode",
         default="form",
         help="Specifies the UI view mode for this pickup request.",
-    )
 
     # Location tracking
     )
