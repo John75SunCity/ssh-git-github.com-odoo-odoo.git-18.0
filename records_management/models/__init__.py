@@ -206,7 +206,6 @@ from . import account_move
 # Project and FSM integration
 from . import project_task
 from . import fsm_task
-from . import document_retrieval_support_models
 
 # POS integration
 from . import pos_config
