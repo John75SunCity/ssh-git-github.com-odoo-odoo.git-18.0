@@ -394,6 +394,7 @@ class RecordsContainerMovement(models.Model):
     )
 
     # ============================================================================
+    actual_start_time = fields.Datetime(string='Actual Start Time')
     # ORM OVERRIDES
     # ============================================================================
     @api.model_create_multi

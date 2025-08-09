@@ -39,6 +39,8 @@ class NaidDestructionRecord(models.Model):
     )
     responsible_user_id = fields.Many2one("res.users", string="Destruction Manager")
     notes = fields.Text(string="Notes")
+    witness_ids = fields.Many2many('res.users', string='Witnesses')
+    destruction_item_ids = fields.One2many('destruction.item', 'destruction_record_id', string='Destroyed Items')
     state = fields.Selection(
         [("draft", "Draft"), ("completed", "Completed"), ("certified", "Certified")],
         default="draft",

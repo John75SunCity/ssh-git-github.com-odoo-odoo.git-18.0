@@ -358,7 +358,9 @@ class RecordsChainOfCustody(models.Model):
     )
 
     # ============================================================================
+    transfer_date = fields.Datetime(string='Transfer Date', default=fields.Datetime.now)
     # ORM OVERRIDES
+    verified = fields.Boolean(string='Verified', default=False)
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):

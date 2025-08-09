@@ -636,6 +636,7 @@ class DocumentRetrievalMetrics(models.Model):
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
+    item_count = fields.Integer(string='Item Count', default=1)
     # COMPUTE METHODS
     # ============================================================================
     @api.depends("documents_retrieved", "hours_worked")

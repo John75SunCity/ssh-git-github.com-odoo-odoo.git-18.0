@@ -551,6 +551,7 @@ class VisitorPosWizard(models.TransientModel):
     )
 
     # ============================================================================
+    processing_start_time = fields.Datetime(string='Processing Start Time')
     # COMPUTE METHODS
     # ============================================================================
     @api.depends("visitor_id")

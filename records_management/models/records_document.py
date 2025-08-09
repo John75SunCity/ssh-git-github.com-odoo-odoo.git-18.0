@@ -783,7 +783,9 @@ class RecordsDocument(models.Model):
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
+    received_date = fields.Date(string='Received Date', default=fields.Date.today)
     # ACTION METHODS
+    destruction_eligible_date = fields.Date(string='Destruction Eligible Date', compute='_compute_destruction_eligible_date')
     # ============================================================================
     def action_archive_document(self):
         """Archive the document"""

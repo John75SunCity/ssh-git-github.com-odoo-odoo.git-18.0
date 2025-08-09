@@ -256,7 +256,9 @@ class PaperBaleRecycling(models.Model):
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
+    gross_weight = fields.Float(string='Gross Weight (lbs)', required=True)
     # COMPUTE METHODS
+    net_weight = fields.Float(string='Net Weight (lbs)', compute='_compute_net_weight', store=True)
     # ============================================================================
     @api.depends("bale_weight", "market_price_per_ton")
     def _compute_total_revenue(self):

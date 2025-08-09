@@ -159,8 +159,12 @@ class RecordsLocation(models.Model):
     )
 
     # ============================================================================
+    box_ids = fields.One2many('records.container', 'location_id', string='Stored Boxes')
     # COMPUTE METHODS
+    box_count = fields.Integer(string='Box Count', compute='_compute_box_count', store=True)
     # ============================================================================
+    available_space = fields.Integer(string='Available Space', compute='_compute_available_space')
+    max_capacity = fields.Integer(string='Maximum Capacity', default=1000)
     @api.depends("container_ids")
     def _compute_current_utilization(self):
         for record in self:

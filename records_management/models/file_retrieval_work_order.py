@@ -38,6 +38,9 @@ class FileRetrievalWorkOrder(models.Model):
     
     # Computed Fields
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    retrieval_item_ids = fields.One2many('retrieval.item', 'work_order_id', string='Items to Retrieve')
+    rate_id = fields.Many2one('base.rates', string='Applicable Rate')
+    invoice_id = fields.Many2one('account.move', string='Invoice')
     
     @api.depends('name')
     def _compute_display_name(self):

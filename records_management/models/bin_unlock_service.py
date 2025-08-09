@@ -230,3 +230,6 @@ class BinUnlockService(models.Model):
     # ============================================================================
     customer_key_restricted = fields.Char(string='Customer Key Restricted', tracking=True)
     unlock_reason_code = fields.Char(string='Unlock Reason Code', tracking=True)
+    service_start_time = fields.Datetime(string='Service Start Time')
+    service_rate = fields.Float(string='Service Rate', default=25.0)
+    invoice_id = fields.Many2one('account.move', string='Invoice')

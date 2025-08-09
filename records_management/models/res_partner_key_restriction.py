@@ -27,6 +27,7 @@ class ResPartnerKeyRestriction(models.Model):
     
     # Computed fields
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    key_issuance_allowed = fields.Boolean(string='Key Issuance Allowed', default=True)
     
     @api.depends('name')
     def _compute_display_name(self):

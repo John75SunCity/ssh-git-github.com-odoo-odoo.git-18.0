@@ -38,6 +38,7 @@ class ShreddingServiceLog(models.Model):
     
     # Computed Fields
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    duration_minutes = fields.Float(string='Duration (Minutes)')
     
     @api.depends('name')
     def _compute_display_name(self):

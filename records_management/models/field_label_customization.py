@@ -298,6 +298,7 @@ class FieldLabelCustomization(models.Model):
     )
 
     # ============================================================================
+    label_box_number = fields.Char(string='Box Number Label', default='Box Number')
     # HELPER METHODS
     # ============================================================================
     @api.model

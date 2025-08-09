@@ -713,6 +713,9 @@ class ShreddingServicePhoto(models.Model):
         default=fields.Datetime.now,
         help="When the photo was taken"
     )
+    destruction_item_ids = fields.One2many('destruction.item', 'shredding_service_id', string='Items for Destruction')
+    witness_ids = fields.Many2many('res.users', string='Witnesses')
+    hourly_rate = fields.Float(string='Hourly Rate', default=75.0)
     photo_type = fields.Selection([
         ("before", "Before Service"),
         ("during", "During Service"),
