@@ -193,13 +193,6 @@ class RecordsAccessLog(models.Model):
         help="Whether this access requires compliance documentation",
     )
     security_level = fields.Selection(
-        [
-            ("public", "Public"),
-            ("internal", "Internal"),
-            ("confidential", "Confidential"),
-            ("restricted", "Restricted"),
-            ("classified", "Classified"),
-        ],
         string="Security Level",
         related="document_id.security_level",
         store=True,

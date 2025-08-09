@@ -85,6 +85,11 @@ class NAIDCustodyEvent(models.Model):
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
     user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
+    lot_id = fields.Many2one(
+        "stock.lot",
+        string="Stock Lot",
+        help="Associated stock lot for custody tracking",
+    )
 
     # Basic state management
     state = fields.Selection(
