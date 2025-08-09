@@ -748,6 +748,16 @@ class RecordsDocument(models.Model):
     )
 
     # ============================================================================
+    # RETENTION AND LIFECYCLE MANAGEMENT
+    # ============================================================================
+    retention_policy_id = fields.Many2one(
+        "records.retention.policy",
+        string="Retention Policy",
+        tracking=True,
+        help="Retention policy governing this document",
+    )
+
+    # ============================================================================
     # STATE MANAGEMENT
     # ============================================================================
     state = fields.Selection(

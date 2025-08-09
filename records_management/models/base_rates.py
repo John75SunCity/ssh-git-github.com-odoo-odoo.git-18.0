@@ -183,12 +183,12 @@ class BaseRates(models.Model):
         ('HARDDRIVE', 'Hard Drive Destruction'),
         ('DAMAGED BIN', 'Damaged Equipment'),
     ], string="Action Code", required=True, help="Service action type")
-    
+
     object_code = fields.Char(
         string="Object Code",
         help="Specific object/item code (01, 02, 03, BX, USED, etc.)"
     )
-    
+
     # Rate and billing information
     default_rate = fields.Monetary(
         string="Default Base Rate",
@@ -196,12 +196,12 @@ class BaseRates(models.Model):
         required=True,
         help="Base rate from your rate sheet"
     )
-    
+
     billing_logic = fields.Text(
         string="Billing Logic",
         help="Description of how this rate is calculated and applied"
     )
-    
+
     # Rate calculation type
     rate_type = fields.Selection([
         ('per_container', 'Per Container'),
@@ -212,19 +212,19 @@ class BaseRates(models.Model):
         ('enhancement', 'Rate Enhancement/Add-on'),
         ('calculator_based', 'Dimension Calculator Based'),
     ], string="Rate Type", default='per_container', help="How this rate is calculated")
-    
+
     includes_delivery = fields.Boolean(
         string="Includes Delivery Fee",
         default=False,
         help="Whether this service includes delivery fee"
     )
-    
+
     is_priority_service = fields.Boolean(
         string="Priority Service",
         default=False, 
         help="Whether this is a priority/rush service enhancement"
     )
-    
+
     priority_level = fields.Selection([
         ('standard', 'Standard Service'),
         ('same_day', 'Same Day (03)'),
@@ -371,7 +371,7 @@ class BaseRates(models.Model):
             {'name': 'Hard Drive Destruction', 'action_code': 'HARDDRIVE', 'object_code': 'HDD', 'default_rate': 15.00, 'rate_type': 'per_item', 'service_type': 'destruction'},
             {'name': 'Damaged Equipment Fee', 'action_code': 'DAMAGED BIN', 'object_code': 'DAMAGE', 'default_rate': 200.00, 'rate_type': 'flat_rate', 'service_type': 'other'},
         ]
-        
+
         created_rates = []
         for rate_data in rates:
             # Check if rate already exists
@@ -379,11 +379,11 @@ class BaseRates(models.Model):
                 ('action_code', '=', rate_data['action_code']),
                 ('object_code', '=', rate_data['object_code'])
             ], limit=1)
-            
+
             if not existing_rate:
                 created_rate = self.create(rate_data)
                 created_rates.append(created_rate)
-        
+
         return created_rates
 
     @api.model
@@ -408,7 +408,7 @@ class BaseRates(models.Model):
                 ('object_code', '=', object_code or ''),
                 ('active', '=', True),
             ], limit=1)
-            
+
             if negotiated and negotiated.negotiated_rate > 0:
                 return {
                     'rate': negotiated.negotiated_rate,
@@ -418,14 +418,14 @@ class BaseRates(models.Model):
                     'includes_delivery': negotiated.includes_delivery,
                     'is_priority': negotiated.is_priority_service,
                 }
-        
+
         # Search for base rate
         domain = [('action_code', '=', action_code)]
         if object_code:
             domain.append(('object_code', '=', object_code))
-            
+
         base_rate = self.search(domain, limit=1)
-        
+
         if base_rate:
             return {
                 'rate': base_rate.default_rate,
@@ -437,7 +437,7 @@ class BaseRates(models.Model):
                 'billing_logic': base_rate.billing_logic,
                 'priority_level': base_rate.priority_level,
             }
-        
+
         # Fallback to generic rates if no specific match
         fallback = self.search([('action_code', '=', action_code)], limit=1)
         if fallback:
@@ -450,7 +450,7 @@ class BaseRates(models.Model):
                 'is_priority': fallback.is_priority_service,
                 'warning': 'Using fallback rate - exact match not found'
             }
-            
+
         return {
             'rate': 0.0,
             'rate_type': 'per_service',

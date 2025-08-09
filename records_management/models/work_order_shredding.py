@@ -397,14 +397,16 @@ class WorkOrderShredding(models.Model):
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to generate sequence number"""
-        if vals.get("name", "New") == "New":
-            vals["name"] = (
-                self.env["ir.sequence"].next_by_code("work.order.shredding") or "New"
-            )
-        return super().create(vals)
+        for vals in vals_list:
+            if vals.get("name", "New") == "New":
+                vals["name"] = (
+                    self.env["ir.sequence"].next_by_code("work.order.shredding")
+                    or "New"
+                )
+        return super().create(vals_list)
 
     def write(self, vals):
         """Override write to track important changes"""

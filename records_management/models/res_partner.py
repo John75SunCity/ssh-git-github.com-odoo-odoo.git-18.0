@@ -87,6 +87,12 @@ class ResPartner(models.Model):
         help="Total number of bin keys issued for this partner",
     )
 
+    negotiated_rates_count = fields.Integer(
+        string="Negotiated Rates",
+        compute="_compute_negotiated_rates_count",
+        help="Number of active negotiated rate agreements for this customer",
+    )
+
     @api.depends("records_department_users")
     def _compute_key_counts(self):
         """Compute key counts for analytics"""
@@ -107,6 +113,23 @@ class ResPartner(models.Model):
             else:
                 partner.active_key_count = 0
                 partner.total_key_count = 0
+
+    def _compute_negotiated_rates_count(self):
+        """Compute count of negotiated rates for this customer"""
+        for partner in self:
+            if partner.is_records_customer:
+                try:
+                    # Count active negotiated rates for this partner
+                    partner.negotiated_rates_count = self.env[
+                        "customer.negotiated.rates"
+                    ].search_count(
+                        [("partner_id", "=", partner.id), ("state", "=", "active")]
+                    )
+                except Exception:
+                    # Handle case where customer.negotiated.rates doesn't exist yet
+                    partner.negotiated_rates_count = 0
+            else:
+                partner.negotiated_rates_count = 0
 
     # ============================================================================
     # DEVELOPMENT ADMINISTRATION METHODS
