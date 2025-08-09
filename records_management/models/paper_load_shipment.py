@@ -29,7 +29,7 @@ class PaperLoadShipment(models.Model):
         ("completed", "Completed"),
         ("cancelled", "Cancelled"),
     ], string="Status", default="draft", tracking=True)
-    
+
     status = fields.Selection([
         ('pending', 'Pending'),
         ('confirmed', 'Confirmed'),
@@ -37,7 +37,7 @@ class PaperLoadShipment(models.Model):
         ('shipped', 'Shipped'),
         ('delivered', 'Delivered')
     ], string="Shipment Status", default='pending')
-    
+
     processing_status = fields.Selection([
         ('queued', 'Queued'),
         ('processing', 'Processing'),
@@ -50,12 +50,12 @@ class PaperLoadShipment(models.Model):
     # ============================================================================
     shipment_number = fields.Char(string="Shipment Number", required=True)
     reference_number = fields.Char(string="Reference Number")
-    
+
     # Weight and Volume
     total_weight = fields.Float(string="Total Weight", digits=(10, 2))
     estimated_volume = fields.Float(string="Estimated Volume", digits=(10, 2))
     actual_weight = fields.Float(string="Actual Weight", digits=(10, 2))
-    
+
     # Paper specifications
     paper_grade = fields.Selection([
         ('high', 'High Grade'),
@@ -63,7 +63,7 @@ class PaperLoadShipment(models.Model):
         ('low', 'Low Grade'),
         ('mixed', 'Mixed Grade')
     ], string="Paper Grade")
-    
+
     contamination_level = fields.Selection([
         ('none', 'No Contamination'),
         ('low', 'Low Contamination'),
@@ -77,14 +77,14 @@ class PaperLoadShipment(models.Model):
     pickup_location_id = fields.Many2one("records.location", string="Pickup Location")
     delivery_location_id = fields.Many2one("records.location", string="Delivery Location")
     current_location_id = fields.Many2one("records.location", string="Current Location")
-    
+
     transportation_mode = fields.Selection([
         ('truck', 'Truck'),
         ('rail', 'Rail'),
         ('ship', 'Ship'),
         ('air', 'Air')
     ], string="Transportation Mode", default='truck')
-    
+
     # ============================================================================
     # DATES AND SCHEDULING
     # ============================================================================
@@ -98,11 +98,13 @@ class PaperLoadShipment(models.Model):
     # ============================================================================
     # BUSINESS RELATIONSHIPS
     # ============================================================================
-    customer_id = fields.Many2one("res.partner", string="Customer", domain="[('is_company', '=', True)]")
+    partner_id = fields.Many2one(
+        "res.partner", string="Customer", domain="[('is_company', '=', True)]"
+    )
     vendor_id = fields.Many2one("res.partner", string="Vendor/Recycler")
     driver_id = fields.Many2one("res.partner", string="Driver")
     carrier_id = fields.Many2one("res.partner", string="Carrier")
-    
+
     # Bales relationship
     bale_ids = fields.One2many("paper.bale", "load_shipment_id", string="Paper Bales")
     bale_count = fields.Integer(string="Bale Count", compute="_compute_bale_count")
@@ -116,14 +118,14 @@ class PaperLoadShipment(models.Model):
         ('phone', 'Phone Confirmation'),
         ('portal', 'Portal Confirmation')
     ], string="Confirmation Method", default='signature')
-    
+
     delivery_priority = fields.Selection([
         ('low', 'Low'),
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent')
     ], string="Delivery Priority", default='normal')
-    
+
     environmental_conditions = fields.Selection([
         ('normal', 'Normal'),
         ('controlled', 'Controlled Environment'),
@@ -141,7 +143,7 @@ class PaperLoadShipment(models.Model):
         ('4', 'Good'),
         ('5', 'Excellent')
     ], string="Customer Rating")
-    
+
     quality_check_passed = fields.Boolean(string="Quality Check Passed", default=False)
     inspection_notes = fields.Text(string="Inspection Notes")
 

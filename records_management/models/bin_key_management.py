@@ -235,7 +235,7 @@ class BinKeyManagement(models.Model):
         }
 
     # === BUSINESS CRITICAL FIELDS ===
-    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    partner_id = fields.Many2one("res.partner", string="Customer", tracking=True)
     bin_number = fields.Char(string="Bin Number")
     access_level = fields.Selection(
         [("full", "Full Access"), ("limited", "Limited"), ("restricted", "Restricted")],

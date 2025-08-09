@@ -89,8 +89,12 @@ class Visitor(models.Model):
     # ==========================================
     # RELATED RECORDS
     # ==========================================
-    customer_id = fields.Many2one('res.partner', string='Related Customer',
-                                domain=[('is_company', '=', True)], tracking=True)
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Related Customer",
+        domain=[("is_company", "=", True)],
+        tracking=True,
+    )
 
     # ==========================================
     # SECURITY AND COMPLIANCE

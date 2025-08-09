@@ -434,7 +434,7 @@ class DocumentRetrievalPricing(models.Model):
     # ============================================================================
     # CUSTOMER SPECIFIC FIELDS
     # ============================================================================
-    customer_id = fields.Many2one("res.partner", string="Specific Customer")
+    partner_id = fields.Many2one("res.partner", string="Specific Customer")
     customer_tier = fields.Selection(
         [
             ("bronze", "Bronze"),

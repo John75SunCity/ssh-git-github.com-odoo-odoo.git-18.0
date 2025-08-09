@@ -229,7 +229,7 @@ class FieldLabelCustomization(models.Model):
     # ============================================================================
     # BATCH-GENERATED FIELDS (From Ultimate Batch Fixer)
     # ============================================================================
-    customer_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+    partner_id = fields.Many2one("res.partner", string="Customer", tracking=True)
     department_id = fields.Many2one("hr.department", string="Department", tracking=True)
 
     # ============================================================================
