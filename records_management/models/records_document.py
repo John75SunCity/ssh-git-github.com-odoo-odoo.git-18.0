@@ -569,7 +569,6 @@ Description:
 
         # pylint: disable=no-member
 
-
         self.write(
             {
                 "approval_status": "approved",
@@ -619,7 +618,6 @@ Description:
 
         # pylint: disable=no-member
 
-
         self.write({"state": "cancelled"})
         self._update_audit_trail("Operation Cancelled")
 
@@ -657,3 +655,148 @@ Description:
             "domain": [("id", "in", self.document_ids.ids[:1000])],  # pylint: disable=no-member
             "target": "current",
         }
+
+
+# ============================================================================
+# RECORDS DOCUMENT MODEL
+# ============================================================================
+
+
+class RecordsDocument(models.Model):
+    """
+    Core Records Document Model
+
+    Represents individual documents within the records management system.
+    Provides document lifecycle tracking, metadata management, and
+    integration with containers, locations, and retention policies.
+    """
+
+    _name = "records.document"
+    _description = "Records Document"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "name, create_date desc"
+    _rec_name = "name"
+
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Document Name",
+        required=True,
+        tracking=True,
+        index=True,
+        help="Name or title of the document",
+    )
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Responsible User",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+    active = fields.Boolean(
+        string="Active", default=True, help="Whether this document is active"
+    )
+
+    # ============================================================================
+    # DOCUMENT DETAILS
+    # ============================================================================
+    document_type_id = fields.Many2one(
+        "records.document.type",
+        string="Document Type",
+        tracking=True,
+        help="Type/category of the document",
+    )
+    description = fields.Text(
+        string="Description",
+        help="Detailed description of the document",
+    )
+    reference = fields.Char(
+        string="Reference Number",
+        help="External reference or ID number",
+    )
+
+    # ============================================================================
+    # CUSTOMER AND RELATIONSHIPS
+    # ============================================================================
+    customer_id = fields.Many2one(
+        "res.partner",
+        string="Customer",
+        required=True,
+        tracking=True,
+        help="Customer who owns this document",
+    )
+    container_id = fields.Many2one(
+        "records.container",
+        string="Container",
+        help="Container where this document is stored",
+    )
+    location_id = fields.Many2one(
+        "records.location",
+        string="Location",
+        help="Physical location of the document",
+    )
+    lot_id = fields.Many2one(
+        "stock.lot",
+        string="Stock Lot",
+        help="Associated stock lot for tracking",
+    )
+
+    # ============================================================================
+    # STATE MANAGEMENT
+    # ============================================================================
+    state = fields.Selection(
+        [
+            ("active", "Active"),
+            ("archived", "Archived"),
+            ("flagged", "Permanent Flag"),
+            ("destroyed", "Destroyed"),
+        ],
+        string="Document Status",
+        default="active",
+        tracking=True,
+        help="Current status of the document",
+    )
+
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS (REQUIRED)
+    # ============================================================================
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_archive_document(self):
+        """Archive the document"""
+        for record in self:
+            record.write({"state": "archived"})
+
+    def action_activate_document(self):
+        """Activate the document"""
+        for record in self:
+            record.write({"state": "active"})
+
+    def action_flag_permanent(self):
+        """Apply permanent flag to document"""
+        for record in self:
+            record.write({"state": "flagged"})
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("state")
+    def _check_state_transitions(self):
+        """Validate state transitions"""
+        for record in self:
+            if record.state == "destroyed":
+                # Once destroyed, cannot be changed
+                pass
