@@ -31,7 +31,7 @@ class MaintenanceEquipment(models.Model):
         help="Maximum shredding capacity per hour",
     )
     security_level = fields.Selection(
-        selection_add=[
+        [
             ("level_1", "Level 1 - Strip Cut"),
             ("level_2", "Level 2 - Cross Cut"),
             ("level_3", "Level 3 - Micro Cut"),
