@@ -93,6 +93,16 @@ class ResPartner(models.Model):
         help="Number of active negotiated rate agreements for this customer",
     )
 
+    # ============================================================================
+    # RATE MANAGEMENT RELATIONSHIPS
+    # ============================================================================
+    negotiated_rates_ids = fields.One2many(
+        "customer.negotiated.rates",
+        "partner_id",
+        string="Negotiated Rate Agreements",
+        help="Customer-specific negotiated rate agreements",
+    )
+
     @api.depends("records_department_users")
     def _compute_key_counts(self):
         """Compute key counts for analytics"""

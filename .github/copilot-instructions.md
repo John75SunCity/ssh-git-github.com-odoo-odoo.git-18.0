@@ -1038,4 +1038,232 @@ The manifest now includes comprehensive core Odoo modules for enterprise-grade f
 
 ---
 
+## 🤖 **GITHUB COPILOT INLINE CHAT GUIDELINES**
+
+### **Code Review, Fixing, and Explanation Standards**
+
+When using GitHub Copilot inline chat features (/fix, /explain, /review), always adhere to these standards:
+
+#### **🔍 CODE REVIEW STANDARDS**
+
+**Always Check:**
+- **Odoo 18.0 Compatibility**: Ensure patterns follow latest Odoo practices
+- **Field Relationships**: Verify One2many/Many2one inverse relationships are complete
+- **Security Implementation**: Check access rights and user permissions
+- **Container Specifications**: Validate against actual business container types (TYPE 01-06)
+- **Error Handling**: Proper exception handling with user-friendly messages
+- **Performance**: Use of computed fields, proper indexing, and efficient queries
+
+**Review Checklist:**
+```python
+# ✅ GOOD - Odoo 18.0 Pattern
+@api.model_create_multi  # Batch creation support
+def create(self, vals_list):
+    for vals in vals_list:
+        if vals.get("name", "New") == "New":
+            vals["name"] = self.env["ir.sequence"].next_by_code("model.name")
+    return super().create(vals_list)
+
+# ❌ BAD - Old Pattern  
+@api.model
+def create(self, vals):
+    # This causes deprecation warnings in Odoo 18.0
+```
+
+#### **🛠️ CODE FIXING STANDARDS**
+
+**Fix Priorities (in order):**
+1. **Critical Errors**: KeyError, ImportError, SyntaxError
+2. **Deprecation Warnings**: Update to Odoo 18.0 patterns
+3. **Security Issues**: Missing access controls or validation
+4. **Performance Issues**: Inefficient queries or missing indexes
+5. **Code Style**: PEP8 compliance and Odoo conventions
+
+**Container Integration Fixes:**
+```python
+# ✅ CORRECT - Use actual business specifications
+CONTAINER_SPECIFICATIONS = {
+    'type_01': {'volume': 1.2, 'weight': 35, 'dims': '12"x15"x10"'},
+    'type_02': {'volume': 1.2, 'weight': 65, 'dims': '24"x15"x10"'},
+    'type_03': {'volume': 0.875, 'weight': 35, 'dims': '42"x6"x6"'},
+    'type_04': {'volume': 5.0, 'weight': 75, 'dims': 'Variable'},
+    'type_06': {'volume': 0.042, 'weight': 40, 'dims': '12"x6"x10"'},
+}
+
+# ❌ WRONG - Don't use generic placeholders
+container_volume = fields.Float("Volume")  # Missing business context
+```
+
+**Field Relationship Fixes:**
+```python
+# ✅ CORRECT - Complete bi-directional relationship
+class RetentionPolicy(models.Model):
+    _name = 'records.retention.policy'
+    
+    affected_documents = fields.One2many(
+        'records.document', 'retention_policy_id',
+        string='Affected Documents'
+    )
+
+class RecordsDocument(models.Model):
+    _name = 'records.document'
+    
+    retention_policy_id = fields.Many2one(
+        'records.retention.policy',
+        string='Retention Policy'
+    )  # This field MUST exist for the One2many to work
+```
+
+#### **💡 CODE EXPLANATION STANDARDS**
+
+**Explanation Structure:**
+1. **Purpose**: What the code does in business context
+2. **Odoo Pattern**: Which Odoo framework pattern it uses
+3. **Business Integration**: How it relates to Records Management operations
+4. **Container Context**: If relevant, explain container type implications
+5. **Security Considerations**: Access controls and data protection
+
+**Example Explanation Format:**
+```python
+def _compute_total_cubic_feet(self):
+    """
+    PURPOSE: Calculate total cubic feet for container capacity planning
+    
+    ODOO PATTERN: Computed field with @api.depends for real-time updates
+    
+    BUSINESS INTEGRATION: Used by FSM for vehicle loading optimization and 
+    warehouse space management. Critical for billing calculations.
+    
+    CONTAINER CONTEXT: Uses actual business container specifications:
+    - TYPE 01: 1.2 CF (most common)
+    - TYPE 02: 1.2 CF (heavier legal documents)  
+    - TYPE 03: 0.875 CF (maps/blueprints)
+    - TYPE 04: 5.0 CF (temporary odd-sized items)
+    - TYPE 06: 0.042 CF (pathology specimens)
+    
+    SECURITY: Read-only computed field, no direct user modification possible
+    """
+```
+
+#### **🎯 BEST PRACTICE ENFORCEMENT**
+
+**Model Template Compliance:**
+```python
+# STANDARD MODEL TEMPLATE - Always suggest this pattern
+class RecordsModel(models.Model):
+    _name = 'records.model.name'
+    _description = 'Model Description'
+    _inherit = ['mail.thread', 'mail.activity.mixin']  # REQUIRED
+    _order = 'name'
+    _rec_name = 'name'
+
+    # REQUIRED CORE FIELDS (ALL models must have these)
+    name = fields.Char(string='Name', required=True, tracking=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    active = fields.Boolean(default=True)
+    
+    # WORKFLOW FIELDS (Add based on model requirements)
+    state = fields.Selection([...], default='draft', tracking=True)
+    
+    # MAIL THREAD FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")  
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+```
+
+**Security Rule Template:**
+```python
+# ALWAYS suggest proper security implementation
+# File: security/ir.model.access.csv
+access_model_name_user,model.name.user,model_model_name,records_management.group_records_user,1,1,1,0
+access_model_name_manager,model.name.manager,model_model_name,records_management.group_records_manager,1,1,1,1
+```
+
+#### **🚨 CRITICAL BUSINESS VALIDATIONS**
+
+**Rate Management Integration:**
+- All rate calculations must reference actual business rates from base_rates.py
+- Customer negotiated rates must have fallback to base rates
+- Container-specific rates must use actual container specifications
+
+**NAID Compliance:**
+- All document lifecycle actions must create audit logs
+- Chain of custody must be maintained with timestamps
+- Destruction certificates must include proper verification
+
+**Container Business Rules:**
+- TYPE 01: Standard Box - Most common, general file storage
+- TYPE 02: Legal/Banker Box - Same volume but heavier (65 lbs vs 35 lbs)
+- TYPE 03: Map Box - Different shape for blueprints/maps
+- TYPE 04: Odd Size/Temp Box - Largest volume for non-standard items  
+- TYPE 06: Pathology Box - Smallest volume for medical specimens
+
+#### **🔄 ERROR RECOVERY PATTERNS**
+
+**KeyError Recovery:**
+```python
+# When fixing KeyError issues, always check relationships
+try:
+    value = record.related_field.some_attribute
+except KeyError:
+    # Add the missing field to complete the relationship
+    missing_field = fields.Many2one('target.model', string='Missing Field')
+```
+
+**Deprecation Warning Resolution:**
+```python
+# Update old patterns to Odoo 18.0
+# OLD: selection override
+security_level = fields.Selection([...])  # Causes warnings
+
+# NEW: selection extension  
+security_level = fields.Selection(selection_add=[...])  # Proper extension
+```
+
+#### **📋 INLINE CHAT COMMAND EXPECTATIONS**
+
+**/fix - Expected Behavior:**
+- Identify root cause of error with business context
+- Apply Odoo 18.0 compatible solution
+- Maintain container specifications and business rules
+- Add proper error handling and validation
+- Include security considerations
+
+**/review - Expected Focus:**
+- Odoo framework pattern compliance
+- Business logic accuracy (especially container specs)
+- Security implementation completeness  
+- Performance optimization opportunities
+- Integration with existing Records Management system
+
+**/explain - Required Details:**
+- Business purpose in Records Management context
+- Odoo framework patterns used
+- Container type implications if relevant
+- Security and access control explanation
+- Integration points with other system components
+
+#### **🎯 SYSTEMATIC DEBUGGING APPROACH**
+
+**For KeyError Issues:**
+1. **Identify Missing Relationship**: Check which One2many field lacks its Many2one inverse
+2. **Add Missing Field**: Add the required field with proper business context
+3. **Validate Relationship**: Ensure both sides of the relationship are properly defined
+4. **Test Integration**: Verify the relationship works in business workflows
+
+**For Deprecation Warnings:**
+1. **Identify Old Pattern**: Look for deprecated decorators or field definitions
+2. **Update to Odoo 18.0**: Use current best practices (e.g., @api.model_create_multi)
+3. **Maintain Functionality**: Ensure the update doesn't break existing logic
+4. **Test Thoroughly**: Validate that the updated code works correctly
+
+**For Business Logic Issues:**
+1. **Check Container Specs**: Ensure actual business container types are used
+2. **Validate Rates**: Verify rate calculations use real business rates
+3. **Test Workflows**: Ensure NAID compliance and audit trails are maintained
+4. **Security Review**: Confirm proper access controls are in place
+
+---
+
 _This document represents the essential knowledge for productive AI agent work on this complex Odoo Records Management system in a disconnected development environment with GitHub-driven deployment to Odoo.sh._
