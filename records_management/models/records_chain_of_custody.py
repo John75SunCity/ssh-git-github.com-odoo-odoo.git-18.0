@@ -360,19 +360,21 @@ class RecordsChainOfCustody(models.Model):
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to auto-generate verification code"""
-        if not vals.get("verification_code"):
-            vals["verification_code"] = (
-                self.env["ir.sequence"].next_by_code("records.chain.custody") or "NEW"
-            )
+        for vals in vals_list:
+            if not vals.get("verification_code"):
+                vals["verification_code"] = (
+                    self.env["ir.sequence"].next_by_code("records.chain.custody")
+                    or "NEW"
+                )
 
-        # Set custody date if not provided
-        if not vals.get("custody_date"):
-            vals["custody_date"] = fields.Datetime.now()
+            # Set custody date if not provided
+            if not vals.get("custody_date"):
+                vals["custody_date"] = fields.Datetime.now()
 
-        return super().create(vals)
+        return super().create(vals_list)
 
     def write(self, vals):
         """Override write to log state changes"""
@@ -690,10 +692,6 @@ class RecordsChainOfCustody(models.Model):
             "state": "confirmed",
         }
 
-        custody_record = self.create(vals)
-        custody_record.verify_custody_integrity()
-
-        return custody_record
         custody_record = self.create(vals)
         custody_record.verify_custody_integrity()
 

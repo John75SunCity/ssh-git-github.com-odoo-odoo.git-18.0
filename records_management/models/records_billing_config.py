@@ -301,11 +301,12 @@ class RecordsBillingConfig(models.Model):
             vals["last_modified_by"] = self.env.user.id
         return super(RecordsBillingConfig, self).write(vals)
 
-    @api.model
-    def create(self, vals):
-        vals["last_modified_date"] = fields.Datetime.now()
-        vals["last_modified_by"] = self.env.user.id
-        return super(RecordsBillingConfig, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals["last_modified_date"] = fields.Datetime.now()
+            vals["last_modified_by"] = self.env.user.id
+        return super(RecordsBillingConfig, self).create(vals_list)
 
     # ============================================================================
     # BUSINESS METHODS

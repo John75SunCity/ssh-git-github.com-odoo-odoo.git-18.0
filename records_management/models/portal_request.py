@@ -247,13 +247,16 @@ class PortalRequest(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends("id")
+    @api.depends()
     def _compute_attachment_count(self):
         """Compute the number of attachments for this portal request."""
         for record in self:
-            record.attachment_count = self.env["ir.attachment"].search_count(
-                [("res_model", "=", self._name), ("res_id", "=", record.id)]
-            )
+            if record.id:
+                record.attachment_count = self.env["ir.attachment"].search_count(
+                    [("res_model", "=", self._name), ("res_id", "=", record.id)]
+                )
+            else:
+                record.attachment_count = 0
 
     @api.depends("due_date", "completion_date", "state")
     def _compute_is_overdue(self):
@@ -287,15 +290,20 @@ class PortalRequest(models.Model):
         for record in self:
             record.child_request_count = len(record.child_request_ids)
 
-    @api.depends("id")
+    @api.depends()
     def _compute_attachment_ids(self):
         """Compute attachment IDs for this portal request."""
         for record in self:
-            record.attachment_ids = (
-                self.env["ir.attachment"]
-                .search([("res_model", "=", self._name), ("res_id", "=", record.id)])
-                .ids
-            )
+            if record.id:
+                record.attachment_ids = (
+                    self.env["ir.attachment"]
+                    .search(
+                        [("res_model", "=", self._name), ("res_id", "=", record.id)]
+                    )
+                    .ids
+                )
+            else:
+                record.attachment_ids = []
 
     # ============================================================================
     # DEFAULT & SEQUENCE METHODS
