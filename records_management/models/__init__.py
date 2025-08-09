@@ -196,7 +196,6 @@ from . import res_partner
 from . import res_partner_key_restriction
 
 # Stock and inventory extensions
-from . import stock_lot
 from . import stock_move_sms_validation
 from . import stock_picking
 
@@ -264,6 +263,9 @@ from . import location_report_wizard
 from . import fsm_reschedule_wizard
 from . import key_restriction_checker
 from . import records_permanent_flag_wizard
+
+# Stock extensions (loaded after core models)
+from . import stock_lot
 
 # =============================================================================
 # OPTIONAL EXTENSIONS AND INTEGRATIONS
