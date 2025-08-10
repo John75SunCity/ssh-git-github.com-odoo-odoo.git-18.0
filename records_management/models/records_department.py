@@ -363,9 +363,6 @@ class RecordsDepartment(models.Model):
                 department.performance_score = 85.0  # Default score
                 department.customer_satisfaction = 4.2  # Default satisfaction
             else:
-                pass
-            pass
-            pass
                 department.performance_score = 0.0
                 department.customer_satisfaction = 0.0
 
