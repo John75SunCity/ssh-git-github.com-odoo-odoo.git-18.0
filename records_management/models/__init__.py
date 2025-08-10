@@ -26,6 +26,7 @@ from . import system_diagram_data
 from . import records_tag
 from . import records_location
 from . import records_department
+from . import records_container
 from . import approval_history
 from . import records_department_billing_contact
 from . import records_storage_department_user

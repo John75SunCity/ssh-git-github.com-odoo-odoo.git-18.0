@@ -263,7 +263,7 @@ class RecordsContainer(models.Model):
         default="confidential",
     )
     access_restriction = fields.Text(string="Access Restrictions")
-    authorized_users = fields.Many2many("res.users", string="Authorized Users")
+    authorized_user_ids = fields.Many2many("res.users", string="Authorized Users")
 
     # ============================================================================
     # CONDITION & MAINTENANCE
@@ -363,12 +363,18 @@ class RecordsContainer(models.Model):
         """View all documents in this container"""
         self.ensure_one()
         return {
-            "name": _("Documents in Container %s") % self.name,
+            "name": _("Documents in Container %s", self.name),
+            "type": "ir.actions.act_window",
+            "res_model": "records.document",
+            "view_mode": "tree,form",
             "domain": [("container_id", "=", self.id)],
         }
 
     def action_generate_barcode(self):
-        """Generate and print barcode for container"""
+        """
+        Generates a barcode if one doesn't exist and returns an action to print it.
+        This assumes a report with the external ID 'records_management.report_container_barcode' exists.
+        """
         self.ensure_one()
         if not self.barcode:
             # Generate barcode if not exists
@@ -376,8 +382,8 @@ class RecordsContainer(models.Model):
                 self.env["ir.sequence"].next_by_code("records.container.barcode")
                 or self.name
             )
-
-        return {}
+        # Return a report action to print the barcode
+        return self.env.ref("records_management.report_container_barcode").report_action(self)
 
     def action_index_container(self):
         """Index container - change state from received to indexed"""
@@ -394,9 +400,12 @@ class RecordsContainer(models.Model):
             raise UserError(_("Only active containers can be stored"))
         if not self.location_id:
             raise UserError(_("Storage location must be assigned before storing"))
-        self.write({"state": "stored", "storage_start_date": fields.Date.today()})
+        vals = {"state": "stored"}
+        if not self.storage_start_date:
+            vals["storage_start_date"] = fields.Date.today()
+        self.write(vals)
         self.message_post(
-            body=_("Container stored at location %s") % self.location_id.name
+            body=_("Container stored at location %s", self.location_id.name)
         )
 
     def action_retrieve_container(self):
@@ -416,8 +425,13 @@ class RecordsContainer(models.Model):
 
     def action_bulk_convert_container_type(self):
         """Bulk convert container types"""
+        self.ensure_one()
         return {
             "name": _("Bulk Convert Container Types"),
+            "type": "ir.actions.act_window",
+            "res_model": "records.container.type.converter.wizard",
+            "view_mode": "form",
+            "target": "new",
             "context": {"default_container_ids": [(6, 0, self.ids)]},
         }
 
@@ -506,17 +520,40 @@ class RecordsContainer(models.Model):
 
     def _search_due_for_destruction(self, operator, value):
         today = fields.Date.today()
-        if (operator == "=" and value) or (operator == "!=" and not value):
+        if operator == "=" and value:
+            # Due for destruction: due date is today or earlier, not permanent, not destroyed
+            return [
+                ("destruction_due_date", "<=", today),
+                ("permanent_retention", "=", False),
+                ("state", "!=", "destroyed"),
+            ]
+        elif operator == "=" and not value:
+            # Not due for destruction: due date is in future or permanent retention or destroyed
+            return [
+                "|",
+                ("destruction_due_date", ">", today),
+                "|",
+                ("permanent_retention", "=", True),
+                ("state", "=", "destroyed"),
+            ]
+        elif operator == "!=" and value:
+            # Not due for destruction
+            return [
+                "|",
+                ("destruction_due_date", ">", today),
+                "|",
+                ("permanent_retention", "=", True),
+                ("state", "=", "destroyed"),
+            ]
+        elif operator == "!=" and not value:
+            # Due for destruction
             return [
                 ("destruction_due_date", "<=", today),
                 ("permanent_retention", "=", False),
                 ("state", "!=", "destroyed"),
             ]
         else:
-            return [
-                ("destruction_due_date", ">", today),
-                ("permanent_retention", "=", True),
-            ]
+            return []
 
     # ============================================================================
     # VALIDATION METHODS
@@ -562,9 +599,10 @@ class RecordsContainer(models.Model):
         return super().create(vals_list)
 
     def write(self, vals):
-        # Update last access date when certain fields change
+        # Update last access date only if location_id or state actually changes
         if any(key in vals for key in ["location_id", "state"]):
-            vals["last_access_date"] = fields.Date.today()
+            if "last_access_date" not in vals:
+                vals["last_access_date"] = fields.Date.today()
         return super().write(vals)
 
     def unlink(self):
@@ -575,15 +613,9 @@ class RecordsContainer(models.Model):
                 raise UserError(_("Cannot delete containers with documents"))
         return super().unlink()
 
-    # ============================================================================
-    # UTILITY METHODS
-    # ============================================================================
-
     def get_next_inspection_date(self):
         """Calculate next inspection date based on service level"""
         self.ensure_one()
-        if not self.last_inspection_date:
-            return fields.Date.today() + relativedelta(months=6)
         inspection_intervals = {
             "standard": 12,
             "premium": 6,
@@ -591,7 +623,8 @@ class RecordsContainer(models.Model):
             "high_security": 3,
         }
         interval = inspection_intervals.get(self.service_level, 12)
-        return self.last_inspection_date + relativedelta(months=interval)
+        base_date = self.last_inspection_date or fields.Date.today()
+        return base_date + relativedelta(months=interval)
 
     # AUTO-GENERATED FIELDS (Batch 1)
     # ============================================================================

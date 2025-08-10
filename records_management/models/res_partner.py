@@ -52,10 +52,50 @@ class ResPartner(models.Model):
         help="Associated records department for data filtering and access control",
     )
 
+    container_ids = fields.One2many(
+        "records.container",
+        "partner_id",
+        string="Containers",
+        help="Containers associated with this partner.",
+    )
+
+    # ============================================================================
+    # CUSTOMER PORTAL INTEGRATION
+    # ============================================================================
+    portal_request_ids = fields.One2many(
+        "portal.request",
+        "partner_id",
+        string="Portal Requests",
+        help="Service requests submitted by this partner through the customer portal.",
+    )
+
+    customer_feedback_ids = fields.One2many(
+        "customer.feedback",
+        "partner_id",
+        string="Customer Feedback",
+        help="Feedback submitted by this partner.",
+    )
+
+    # ============================================================================
+    # BIN KEY MANAGEMENT RELATIONSHIPS
+    # ============================================================================
+    bin_key_ids = fields.One2many(
+        "bin.key.management",
+        "partner_id",
+        string="Bin Keys",
+        help="Bin keys associated with this partner.",
+    )
+    partner_bin_key_ids = fields.One2many(
+        "partner.bin.key",
+        "partner_id",
+        string="Partner Bin Key Restrictions",
+        help="Key issuance restrictions for this partner.",
+    )
+
     # ============================================================================
     # USER RELATIONSHIP INTEGRATION
     # ============================================================================
-    records_department_users = fields.One2many(
+    records_department_user_ids = fields.One2many(
         "res.users",
         "partner_id",
         string="Department Users (Records)",
@@ -78,12 +118,14 @@ class ResPartner(models.Model):
     active_key_count = fields.Integer(
         string="Active Keys",
         compute="_compute_key_counts",
+        store=True,
         help="Number of active bin keys for this partner",
     )
 
     total_key_count = fields.Integer(
         string="Total Keys",
         compute="_compute_key_counts",
+        store=True,
         help="Total number of bin keys issued for this partner",
     )
 
@@ -91,6 +133,24 @@ class ResPartner(models.Model):
         string="Negotiated Rates",
         compute="_compute_negotiated_rates_count",
         help="Number of active negotiated rate agreements for this customer",
+    )
+
+    portal_request_count = fields.Integer(
+        string="Portal Requests",
+        compute="_compute_portal_counts",
+        help="Number of portal requests from this partner.",
+    )
+
+    customer_feedback_count = fields.Integer(
+        string="Customer Feedback",
+        compute="_compute_portal_counts",
+        help="Number of feedback submissions from this partner.",
+    )
+
+    container_count = fields.Integer(
+        string="Container Count",
+        compute="_compute_container_count",
+        help="Number of containers associated with this partner.",
     )
 
     # ============================================================================
@@ -120,43 +180,49 @@ class ResPartner(models.Model):
         help="Shredding teams associated with this partner",
     )
 
-    @api.depends("records_department_users")
+    @api.depends("is_records_customer", "bin_key_ids", "bin_key_ids.status")
     def _compute_key_counts(self):
         """Compute key counts for analytics"""
         for partner in self:
             if partner.is_records_customer:
-                try:
-                    BinKeyMgmt = self.env["bin.key.management"]
-                    partner.active_key_count = BinKeyMgmt.search_count(
-                        [("partner_id", "=", partner.id), ("status", "=", "active")]
-                    )
-                    partner.total_key_count = BinKeyMgmt.search_count(
-                        [("partner_id", "=", partner.id)]
-                    )
-                except Exception:
-                    # Handle case where bin.key.management doesn't exist yet
-                    partner.active_key_count = 0
-                    partner.total_key_count = 0
+                partner.active_key_count = len(
+                    partner.bin_key_ids.filtered(lambda k: k.status == "active")
+                )
+                partner.total_key_count = len(partner.bin_key_ids)
             else:
                 partner.active_key_count = 0
                 partner.total_key_count = 0
 
+    @api.depends("is_records_customer", "negotiated_rates_ids", "negotiated_rates_ids.state")
     def _compute_negotiated_rates_count(self):
         """Compute count of negotiated rates for this customer"""
         for partner in self:
             if partner.is_records_customer:
-                try:
-                    # Count active negotiated rates for this partner
-                    partner.negotiated_rates_count = self.env[
-                        "customer.negotiated.rates"
-                    ].search_count(
-                        [("partner_id", "=", partner.id), ("state", "=", "active")]
-                    )
-                except Exception:
-                    # Handle case where customer.negotiated.rates doesn't exist yet
-                    partner.negotiated_rates_count = 0
+                partner.negotiated_rates_count = len(
+                    partner.negotiated_rates_ids.filtered(lambda r: r.state == "active")
+                )
             else:
                 partner.negotiated_rates_count = 0
+
+    @api.depends("is_records_customer", "portal_request_ids", "customer_feedback_ids")
+    def _compute_portal_counts(self):
+        """Compute counts for portal-related records."""
+        for partner in self:
+            if partner.is_records_customer:
+                partner.portal_request_count = len(partner.portal_request_ids)
+                partner.customer_feedback_count = len(partner.customer_feedback_ids)
+            else:
+                partner.portal_request_count = 0
+                partner.customer_feedback_count = 0
+
+    @api.depends("is_records_customer", "container_ids")
+    def _compute_container_count(self):
+        """Compute count of containers for this customer."""
+        for partner in self:
+            if partner.is_records_customer:
+                partner.container_count = len(partner.container_ids)
+            else:
+                partner.container_count = 0
 
     # ============================================================================
     # DEVELOPMENT ADMINISTRATION METHODS
@@ -194,10 +260,10 @@ class ResPartner(models.Model):
                 try:
                     group = self.env.ref(group_xml_id, raise_if_not_found=False)
                     if group and admin_user not in group.users:
-                        group.users = [(4, admin_user.id)]
+                        group.write({'users': [(4, admin_user.id)]})
                 except Exception as e:
                     _logger.warning(
-                        "Failed to assign group %s: %s", group_xml_id, str(e)
+                        "Failed to assign group %s: %s", group_xml_id, e
                     )
                     continue
 
@@ -207,14 +273,61 @@ class ResPartner(models.Model):
                     {"groups_id": [(4, self.env.ref("base.group_no_one").id)]}
                 )
             except Exception as e:
-                _logger.warning("Failed to grant technical features: %s", str(e))
+                _logger.warning("Failed to grant technical features: %s", e)
 
-            # self.env.cr.commit()
             return True
 
         except Exception as e:
-            _logger.warning("Failed to grant dev permissions: %s", str(e))
+            _logger.warning("Failed to grant dev permissions: %s", e)
             return True
+
+    # ============================================================================
+    # CUSTOMER PORTAL ACTION METHODS
+    # ============================================================================
+    def action_view_portal_requests(self):
+        """View all portal requests for this partner."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Portal Requests - %s", self.name),
+            "res_model": "portal.request",
+            "view_mode": "tree,form",
+            "domain": [("partner_id", "=", self.id)],
+            "context": {
+                "default_partner_id": self.id,
+                "search_default_partner_id": self.id,
+            },
+        }
+
+    def action_view_customer_feedback(self):
+        """View all customer feedback for this partner."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Customer Feedback - %s", self.name),
+            "res_model": "customer.feedback",
+            "view_mode": "tree,form,kanban",
+            "domain": [("partner_id", "=", self.id)],
+            "context": {
+                "default_partner_id": self.id,
+                "search_default_partner_id": self.id,
+            },
+        }
+
+    def action_view_containers(self):
+        """View all containers for this partner."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Containers - %s", self.name),
+            "res_model": "records.container",
+            "view_mode": "tree,form",
+            "domain": [("partner_id", "=", self.id)],
+            "context": {
+                "default_partner_id": self.id,
+                "search_default_partner_id": self.id,
+            },
+        }
 
     # ============================================================================
     # BIN KEY MANAGEMENT ACTION METHODS
@@ -224,18 +337,15 @@ class ResPartner(models.Model):
         self.ensure_one()
         try:
             # Find or create key restriction record
-            PartnerBinKey = self.env["partner.bin.key"]
-            restriction = PartnerBinKey.search([("partner_id", "=", self.id)], limit=1)
-
-            if restriction:
-                restriction.write({"key_issuance_allowed": True})
-            else:
-                PartnerBinKey.create(
+            if not self.partner_bin_key_ids:
+                self.env["partner.bin.key"].create(
                     {
                         "partner_id": self.id,
                         "key_issuance_allowed": True,
                     }
                 )
+            else:
+                self.partner_bin_key_ids.write({"key_issuance_allowed": True})
 
             # Log the action for NAID compliance
             self.message_post(
@@ -254,31 +364,28 @@ class ResPartner(models.Model):
             }
         except Exception as e:
             _logger.error(
-                "Error allowing key issuance for partner %s: %s", self.name, str(e)
+                "Error allowing key issuance for partner %s: %s", self.name, e
             )
             raise UserError(
                 _(
                     "Failed to allow key issuance. Please try again or contact administrator."
                 )
-            )
+            ) from e
 
     def action_restrict_key_issuance(self):
         """Restrict bin key issuance for this partner"""
         self.ensure_one()
         try:
             # Find or create key restriction record
-            PartnerBinKey = self.env["partner.bin.key"]
-            restriction = PartnerBinKey.search([("partner_id", "=", self.id)], limit=1)
-
-            if restriction:
-                restriction.write({"key_issuance_allowed": False})
-            else:
-                PartnerBinKey.create(
+            if not self.partner_bin_key_ids:
+                self.env["partner.bin.key"].create(
                     {
                         "partner_id": self.id,
                         "key_issuance_allowed": False,
                     }
                 )
+            else:
+                self.partner_bin_key_ids.write({"key_issuance_allowed": False})
 
             # Log the action for NAID compliance
             self.message_post(
@@ -297,13 +404,13 @@ class ResPartner(models.Model):
             }
         except Exception as e:
             _logger.error(
-                "Error restricting key issuance for partner %s: %s", self.name, str(e)
+                "Error restricting key issuance for partner %s: %s", self.name, e
             )
             raise UserError(
                 _(
                     "Failed to restrict key issuance. Please try again or contact administrator."
                 )
-            )
+            ) from e
 
     def action_confirm(self):
         """Confirm partner as records management customer"""
@@ -333,10 +440,10 @@ class ResPartner(models.Model):
         self.ensure_one()
         try:
             # Check if key issuance is allowed
-            PartnerBinKey = self.env["partner.bin.key"]
-            restriction = PartnerBinKey.search([("partner_id", "=", self.id)], limit=1)
-
-            if restriction and not restriction.key_issuance_allowed:
+            if (
+                self.partner_bin_key_ids
+                and not self.partner_bin_key_ids[0].key_issuance_allowed
+            ):
                 raise UserError(
                     _(
                         "Key issuance is restricted for this partner. Please contact administrator."
@@ -367,8 +474,8 @@ class ResPartner(models.Model):
         except UserError:
             raise
         except Exception as e:
-            _logger.error("Error issuing new key for partner %s: %s", self.name, str(e))
-            raise UserError(_("Failed to issue new key. Please contact administrator."))
+            _logger.error("Error issuing new key for partner %s: %s", self.name, e)
+            raise UserError(_("Failed to issue new key. Please contact administrator.")) from e
 
     def action_report_lost_key(self):
         """Report lost key for this partner"""
@@ -400,11 +507,11 @@ class ResPartner(models.Model):
             raise
         except Exception as e:
             _logger.error(
-                "Error reporting lost key for partner %s: %s", self.name, str(e)
+                "Error reporting lost key for partner %s: %s", self.name, e
             )
             raise UserError(
                 _("Failed to report lost key. Please contact administrator.")
-            )
+            ) from e
 
     def action_return_key(self):
         """Process key return for this partner"""
@@ -443,11 +550,11 @@ class ResPartner(models.Model):
             raise
         except Exception as e:
             _logger.error(
-                "Error processing key return for partner %s: %s", self.name, str(e)
+                "Error processing key return for partner %s: %s", self.name, e
             )
             raise UserError(
                 _("Failed to process key return. Please contact administrator.")
-            )
+            ) from e
 
     def action_view_active_key(self):
         """View active key for this partner"""
@@ -481,11 +588,11 @@ class ResPartner(models.Model):
             raise
         except Exception as e:
             _logger.error(
-                "Error viewing active key for partner %s: %s", self.name, str(e)
+                "Error viewing active key for partner %s: %s", self.name, e
             )
             raise UserError(
                 _("Failed to view active key. Please contact administrator.")
-            )
+            ) from e
 
     def action_view_bin_keys(self):
         """View all bin keys for this partner"""
@@ -512,9 +619,9 @@ class ResPartner(models.Model):
             }
         except Exception as e:
             _logger.error(
-                "Error viewing bin keys for partner %s: %s", self.name, str(e)
+                "Error viewing bin keys for partner %s: %s", self.name, e
             )
-            raise UserError(_("Failed to view bin keys. Please contact administrator."))
+            raise UserError(_("Failed to view bin keys. Please contact administrator.")) from e
 
     def action_view_unlock_services(self):
         """View unlock services for this partner"""
@@ -543,11 +650,11 @@ class ResPartner(models.Model):
             raise
         except Exception as e:
             _logger.error(
-                "Error viewing unlock services for partner %s: %s", self.name, str(e)
+                "Error viewing unlock services for partner %s: %s", self.name, e
             )
             raise UserError(
                 _("Failed to view unlock services. Please contact administrator.")
-            )
+            ) from e
 
     # ============================================================================
     # UTILITY METHODS
@@ -596,7 +703,7 @@ class ResPartner(models.Model):
             }
         except Exception as e:
             _logger.error(
-                "Error getting records info for partner %s: %s", self.name, str(e)
+                "Error getting records info for partner %s: %s", self.name, e
             )
             return {
                 "is_records_customer": self.is_records_customer,
@@ -616,11 +723,7 @@ class ResPartner(models.Model):
         for partner in self:
             if partner.is_records_customer and not partner.records_department_id:
                 raise ValidationError(
-                    _(
-                        "Records customers must be assigned to a records department. "
-                        "Please assign a department to partner: %s"
-                    ),
-                    partner.name,
+                    _("Records customers must be assigned to a records department. Please assign a department to partner '%s'.", partner.name)
                 )
 
     @api.constrains("records_department_id", "company_id")
@@ -634,12 +737,9 @@ class ResPartner(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "Records department must belong to the same company as the partner. "
-                        "Partner: %s, Department Company: %s, Partner Company: %s"
-                    ),
-                    (
+                        "Records department must belong to the same company as the partner. Partner: %s, Department Company: %s, Partner Company: %s",
                         partner.name,
                         partner.records_department_id.company_id.name,
                         partner.company_id.name,
-                    ),
+                    )
                 )

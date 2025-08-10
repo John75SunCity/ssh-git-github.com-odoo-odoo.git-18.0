@@ -94,7 +94,6 @@ class RecordsContainerType(models.Model):
     )
     barcode_prefix = fields.Char(
         string="Barcode Prefix",
-        size=4,
         help="Prefix used for generating container barcodes of this type",
     )
     auto_generate_barcode = fields.Boolean(
@@ -552,33 +551,33 @@ class RecordsContainerType(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activate the container type"""
-        for record in self:
-            if record.state != "draft":
-                raise UserError(_("Only draft container types can be activated"))
+        self.ensure_one()
+        if self.state != "draft":
+            raise UserError(_("Only draft container types can be activated"))
 
-            record.write({"state": "active", "active": True})
-            record.message_post(body=_("Container type activated"))
+        self.write({"state": "active", "active": True})
+        self.message_post(body=_("Container type activated"))
 
     def action_archive(self):
         """Archive the container type"""
-        for record in self:
-            if record.state != "active":
-                raise UserError(_("Only active container types can be archived"))
+        self.ensure_one()
+        if self.state != "active":
+            raise UserError(_("Only active container types can be archived"))
 
-            # Check for active containers
-            active_containers = record.container_ids.filtered(
-                lambda c: c.state == "active"
-            )
-            if active_containers:
-                raise UserError(
-                    _(
-                        "Cannot archive container type with active containers. "
-                        "Please archive or reassign all containers first."
-                    )
+        # Check for active containers
+        active_containers = self.container_ids.filtered(
+            lambda c: c.state == "active"
+        )
+        if active_containers:
+            raise UserError(
+                _(
+                    "Cannot archive container type with active containers. "
+                    "Please archive or reassign all containers first."
                 )
+            )
 
-            record.write({"state": "archived", "active": False})
-            record.message_post(body=_("Container type archived"))
+        self.write({"state": "archived", "active": False})
+        self.message_post(body=_("Container type archived"))
 
     def action_view_containers(self):
         """View all containers of this type"""
@@ -631,12 +630,13 @@ class RecordsContainerType(models.Model):
             cost += self.setup_fee
         return cost
 
-    def check_capacity_availability(self):
+    @api.constrains("container_ids")
+    def _check_capacity_availability(self):
         """Check if there's capacity available for new containers"""
-        self.ensure_one()
-        # This would depend on location capacity limits
-        # For now, return True - implement based on business rules
-        return True
+        for record in self:
+            # This would depend on location capacity limits
+            # For now, return True - implement based on business rules
+            pass
 
     def get_container_summary(self):
         """Get summary information for reporting"""
@@ -716,7 +716,7 @@ class RecordsContainerType(models.Model):
 
         default.update(
             {
-                "name": _("%s (Copy)") % self.name,
+                "name": _("%(name)s (Copy)", name=self.name),
                 "code": new_code,
             }
         )
