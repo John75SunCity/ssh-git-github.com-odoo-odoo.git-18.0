@@ -293,6 +293,7 @@ class NaidCertificate(models.Model):
                 delta = record.expiration_date - today
                 record.days_until_expiration = delta.days
             else:
+            pass
                 record.days_until_expiration = 0
 
     # ============================================================================
@@ -404,6 +405,7 @@ class NaidCertificate(models.Model):
         if self.delivery_method == "email":
             self._send_certificate_email()
         elif self.delivery_method == "portal":
+            pass
             self._make_available_in_portal()
 
         self.write({"delivery_status": "sent", "date_modified": fields.Datetime.now()})

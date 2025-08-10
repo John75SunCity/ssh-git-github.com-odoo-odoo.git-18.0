@@ -556,6 +556,11 @@ class RecordsBillingConfigLine(models.Model):
                 if record.currency_id and record.currency_id.symbol
                 else ""
             )
-            name = _("%s (%s) - %s %s"
+            name = _("%s (%s) - %s %s", 
+                record.partner_id.name if record.partner_id else "No Customer",
+                record.billing_frequency,
+                record.bill_date_type,
+                currency_symbol
+            )
             result.append((record.id, name))
         return result

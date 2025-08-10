@@ -44,20 +44,20 @@ class ShreddingCertificate(models.Model):
         tracking=True,
         index=True,
         help="Unique certificate identification number",
-    )
+    
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this certificate",
-    )
+    
     active = fields.Boolean(string="Active", default=True, tracking=True)
 
     # ============================================================================
@@ -74,7 +74,7 @@ class ShreddingCertificate(models.Model):
         default="draft",
         tracking=True,
         help="Current certificate status",
-    )
+    
 
     # ============================================================================
     # CERTIFICATE DETAILS
@@ -85,13 +85,13 @@ class ShreddingCertificate(models.Model):
         required=True,
         tracking=True,
         help="Date the certificate was issued",
-    )
+    
     destruction_date = fields.Date(
         string="Destruction Date",
         required=True,
         tracking=True,
         help="Date when destruction occurred",
-    )
+    
     destruction_method = fields.Selection(
         [
             ("cross_cut", "Cross Cut Shredding"),
@@ -106,7 +106,7 @@ class ShreddingCertificate(models.Model):
         required=True,
         tracking=True,
         help="Method used for document destruction",
-    )
+    
 
     # ============================================================================
     # CUSTOMER & SERVICE INFORMATION
@@ -117,22 +117,22 @@ class ShreddingCertificate(models.Model):
         required=True,
         tracking=True,
         help="Customer for whom the destruction was performed",
-    )
+    
     customer_contact_id = fields.Many2one(
         "res.partner",
         string="Customer Contact",
         domain="[('parent_id', '=', partner_id)]",
         help="Primary customer contact for this certificate",
-    )
+    
     service_location = fields.Char(
         string="Service Location",
         help="Location where destruction service was performed",
-    )
+    
     equipment_id = fields.Many2one(
         "maintenance.equipment",
         string="Shredding Equipment",
         help="Equipment used for the destruction service",
-    )
+    
 
     # ============================================================================
     # WITNESS INFORMATION
@@ -141,24 +141,24 @@ class ShreddingCertificate(models.Model):
         string="Witness Required",
         default=True,
         help="Whether witness verification is required",
-    )
+    
     witness_name = fields.Char(
         string="Witness Name", tracking=True, help="Name of the witness to destruction"
-    )
+    
     witness_title = fields.Char(
         string="Witness Title", help="Title/position of the witness"
-    )
+    
     witness_company = fields.Char(
         string="Witness Company", help="Company or organization of the witness"
-    )
+    
     witness_signature_date = fields.Date(
         string="Witness Signature Date",
         tracking=True,
         help="Date witness signed the certificate",
-    )
+    
     witness_contact_info = fields.Char(
         string="Witness Contact", help="Witness contact information"
-    )
+    
 
     # ============================================================================
     # DESTRUCTION METRICS
@@ -169,23 +169,23 @@ class ShreddingCertificate(models.Model):
         default=0.0,
         tracking=True,
         help="Total weight of materials destroyed",
-    )
+    
     total_containers = fields.Integer(
         string="Total Containers",
         default=0,
         help="Total number of containers destroyed",
-    )
+    
     total_boxes = fields.Integer(
         string="Total Boxes", default=0, help="Total number of boxes destroyed"
-    )
+    
     estimated_page_count = fields.Integer(
         string="Estimated Page Count", default=0, help="Estimated total pages destroyed"
-    )
+    
     destruction_duration = fields.Float(
         string="Destruction Duration (hours)",
         digits=(5, 2),
         help="Time taken for destruction process",
-    )
+    
 
     # ============================================================================
     # COMPLIANCE & CERTIFICATION
@@ -201,18 +201,18 @@ class ShreddingCertificate(models.Model):
         required=True,
         tracking=True,
         help="NAID compliance level for this destruction",
-    )
+    
     naid_member_id = fields.Char(
         string="NAID Member ID", help="NAID membership identification number"
-    )
+    
     certification_statement = fields.Text(
         string="Certification Statement",
         default="This is to certify that the documents/materials described above have been destroyed in accordance with NAID standards and all applicable regulations. The destruction was witnessed and verified according to established chain of custody procedures.",
         help="Official certification statement",
-    )
+    
     compliance_notes = fields.Text(
         string="Compliance Notes", help="Additional compliance and regulatory notes"
-    )
+    
 
     # ============================================================================
     # SECURITY & VERIFICATION
@@ -222,22 +222,22 @@ class ShreddingCertificate(models.Model):
         default=False,
         tracking=True,
         help="Whether certificate has been verified",
-    )
+    
     verification_date = fields.Datetime(
         string="Verification Date",
         tracking=True,
         help="Date and time of certificate verification",
-    )
+    
     verified_by_id = fields.Many2one(
         "res.users",
         string="Verified By",
         tracking=True,
         help="User who verified the certificate",
-    )
+    
     chain_of_custody_number = fields.Char(
         string="Chain of Custody Number",
         help="Associated chain of custody reference number",
-    )
+    
 
     # ============================================================================
     # DELIVERY TRACKING
@@ -252,41 +252,41 @@ class ShreddingCertificate(models.Model):
         string="Delivery Method",
         default="portal",
         help="Method used to deliver certificate to customer",
-    )
+    
     delivered_date = fields.Date(
         string="Delivered Date",
         tracking=True,
         help="Date certificate was delivered to customer",
-    )
+    
     delivered_by_id = fields.Many2one(
         "res.users",
         string="Delivered By",
         tracking=True,
         help="User who delivered the certificate",
-    )
+    
     delivery_confirmation = fields.Boolean(
         string="Delivery Confirmed",
         default=False,
         tracking=True,
         help="Whether delivery has been confirmed by customer",
-    )
+    
 
     # ============================================================================
     # TECHNICAL DETAILS
     # ============================================================================
     destruction_equipment = fields.Char(
         string="Destruction Equipment", help="Equipment used for destruction"
-    )
+    
     equipment_serial_number = fields.Char(
         string="Equipment Serial Number", help="Serial number of destruction equipment"
-    )
+    
     operator_name = fields.Char(
         string="Operator Name", help="Name of equipment operator"
-    )
+    
     temperature_log = fields.Text(
         string="Temperature Log",
         help="Temperature readings during destruction (for incineration)",
-    )
+    
 
     # ============================================================================
     # RELATIONSHIP FIELDS
@@ -296,13 +296,13 @@ class ShreddingCertificate(models.Model):
         "certificate_id",
         string="Shredding Services",
         help="Shredding services covered by this certificate",
-    )
+    
     destruction_item_ids = fields.One2many(
         "destruction.item",
         "certificate_id",
         string="Destruction Items",
         help="Individual items destroyed",
-    )
+    
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -312,13 +312,13 @@ class ShreddingCertificate(models.Model):
         compute="_compute_service_count",
         store=True,
         help="Number of shredding services on this certificate",
-    )
+    
     item_count = fields.Integer(
         string="Item Count",
         compute="_compute_item_count",
         store=True,
         help="Number of destruction items",
-    )
+    
 
     # ============================================================================
     # AUDIT FIELDS
@@ -328,13 +328,13 @@ class ShreddingCertificate(models.Model):
         default=fields.Datetime.now,
         readonly=True,
         help="Certificate creation timestamp",
-    )
+    
     issued_date = fields.Datetime(
         string="Issued Date",
         tracking=True,
         readonly=True,
         help="Date and time certificate was issued",
-    )
+    
     notes = fields.Text(string="Internal Notes", help="Internal notes and comments")
 
     # ============================================================================
@@ -345,19 +345,19 @@ class ShreddingCertificate(models.Model):
         "res_id",
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+    
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+    
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)],
-    )
+    
 
     # ============================================================================
     # COMPUTE METHODS
@@ -416,7 +416,7 @@ class ShreddingCertificate(models.Model):
         if not self.witness_name and self.witness_required:
             raise UserError(
                 _("Witness information is required before issuing certificate")
-            )
+            
         self.write(
             {
                 "state": "issued",
@@ -425,8 +425,8 @@ class ShreddingCertificate(models.Model):
                 "verification_date": fields.Datetime.now(),
                 "verified_by_id": self.env.user.id,
             }
-        )
-        self.message_post(body=_("Certificate issued: %s", self.name))
+        
+        self.message_post(body=_("Action completed"))body=_("Certificate issued: %s", self.name))
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -449,7 +449,7 @@ class ShreddingCertificate(models.Model):
                 "delivered_by_id": self.env.user.id,
                 "delivery_confirmation": True,
             }
-        )
+        
         self.message_post(body=_("Certificate delivered to customer"))
         # Send notification to customer
         if self.partner_id.email:
@@ -483,7 +483,7 @@ class ShreddingCertificate(models.Model):
                 "verified_by_id": False,
                 "issued_date": False,
             }
-        )
+        
         self.message_post(body=_("Certificate reset to draft"))
 
     def action_print_certificate(self):
@@ -526,8 +526,10 @@ class ShreddingCertificate(models.Model):
         if self.delivery_method == "email":
             return self._send_certificate_email()
         elif self.delivery_method == "portal":
+            pass
             return self._make_available_in_portal()
         else:
+            pass
             # For mail/pickup, just mark as delivered
             return self.action_deliver_certificate()
 
@@ -559,7 +561,7 @@ class ShreddingCertificate(models.Model):
         template = self.env.ref(
             "records_management.email_template_shredding_certificate",
             raise_if_not_found=False,
-        )
+        
         if template:
             template.send_mail(self.id, force_send=True)
 
@@ -587,10 +589,10 @@ class ShreddingCertificate(models.Model):
         self.write({"delivery_method": "portal"})
 
         # Create portal notification
-        self.message_post(
+        self.message_post(body=_("Action completed"))
             body=_("Certificate is now available in customer portal"),
             partner_ids=self.partner_id.ids,
-        )
+        
 
         self.action_deliver_certificate()
 
@@ -616,7 +618,7 @@ class ShreddingCertificate(models.Model):
                 "total_containers": total_containers,
                 "total_boxes": total_boxes,
             }
-        )
+        
 
     @api.model
     def generate_from_services(self, service_ids):
@@ -631,7 +633,7 @@ class ShreddingCertificate(models.Model):
         if incomplete_services:
             raise UserError(
                 _("All services must be completed before generating certificate")
-            )
+            
 
         # Get common customer
         customers = services.mapped("partner_id")
@@ -665,20 +667,22 @@ class ShreddingCertificate(models.Model):
         """Validate certificate and destruction dates"""
         for record in self:
             if record.destruction_date and record.certificate_date:
+                pass
                 if record.destruction_date > record.certificate_date:
                     raise ValidationError(
                         _("Destruction date cannot be after certificate date")
-                    )
+                    
 
     @api.constrains("witness_signature_date", "destruction_date")
     def _check_witness_date(self):
         """Validate witness signature date"""
         for record in self:
             if record.witness_signature_date and record.destruction_date:
+                pass
                 if record.witness_signature_date < record.destruction_date:
                     raise ValidationError(
                         _("Witness signature date cannot be before destruction date")
-                    )
+                    
 
     @api.constrains("total_weight", "total_containers", "total_boxes")
     def _check_totals(self):
@@ -702,7 +706,7 @@ class ShreddingCertificate(models.Model):
             ):
                 raise ValidationError(
                     _("Witness information is required for issued certificates")
-                )
+                
 
     # ============================================================================
     # ONCHANGE METHODS
@@ -713,10 +717,13 @@ class ShreddingCertificate(models.Model):
         if self.partner_id:
             contacts = self.partner_id.child_ids.filtered(
                 lambda c: c.is_company == False
-            )
+            
             if contacts:
                 self.customer_contact_id = contacts[0]
             else:
+                pass
+            pass
+            pass
                 self.customer_contact_id = False
 
     @api.onchange("destruction_method")

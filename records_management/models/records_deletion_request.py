@@ -43,6 +43,7 @@ class RecordsDeletionRequest(models.Model):
                     _("%s (%s) - %s"
                 )
             else:
+            pass
                 record.display_name = _("%s - %s"
 
     @api.constrains("date")

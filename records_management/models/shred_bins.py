@@ -388,6 +388,16 @@ class ShredBin(models.Model):
                     last_service.service_date if last_service else False
                 )
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.last_service_date = False
 
     @api.depends("bin_size")
@@ -404,15 +414,41 @@ class ShredBin(models.Model):
                 record.can_upsize = False
                 record.next_size_up = False
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.can_upsize = True
                 # Determine next size up
                 if current_size in ["23", "3B"]:
                     record.next_size_up = "3C"  # Upgrade to console
                 elif current_size == "3C":
+            pass
+            pass
                     record.next_size_up = "64"
                 elif current_size == "64":
+            pass
+            pass
                     record.next_size_up = "96"
                 else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                     record.next_size_up = "3C"  # Default
 
             # Can downsize logic
@@ -421,17 +457,44 @@ class ShredBin(models.Model):
                 record.can_downsize = False
                 record.next_size_down = False
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.can_downsize = True
                 # Determine next size down
                 if current_size == "96":
                     record.next_size_down = "64"
                 elif current_size == "64":
+            pass
+            pass
                     record.next_size_down = "3C"  # Default to console
                 elif current_size == "3B":
+            pass
                     record.next_size_down = "23"  # Bin to shredinator
                 elif current_size == "3C":
+            pass
+            pass
                     record.next_size_down = "3B"  # Console to regular bin
                 else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                     record.next_size_down = "3B"  # Default
 
     @api.depends("state", "partner_id")
@@ -441,12 +504,25 @@ class ShredBin(models.Model):
             if record.state == "deployed":
                 record.location_status = "at_facility"  # Blue - ready for deployment
             elif record.state in ("in_service", "full"):
+            pass
                 record.location_status = "at_customer"  # Green/Red based on fill
             elif record.state == "collecting":
+            pass
                 record.location_status = "in_transit"  # Orange - being collected
             elif record.state in ("maintenance", "retired"):
+            pass
                 record.location_status = "at_facility"  # Purple/Grey - at facility
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.location_status = "unknown"  # Grey - unknown status
 
     def _compute_days_since_last_service(self):
@@ -458,6 +534,16 @@ class ShredBin(models.Model):
                 delta = datetime.now() - record.last_service_date
                 record.days_since_last_service = delta.days
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.days_since_last_service = 0
 
     def _compute_billing_period_services(self):
@@ -487,10 +573,22 @@ class ShredBin(models.Model):
             elif (
                 record.current_fill_level >= 75 and record.days_since_last_service > 14
             ):
+            pass
                 record.capacity_utilization_rating = "overutilized"
             elif record.current_fill_level < 30 and record.days_since_last_service > 45:
+            pass
                 record.capacity_utilization_rating = "underutilized"
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.capacity_utilization_rating = "optimal"
 
     @api.depends("bin_size", "service_count", "days_since_last_service")
@@ -622,7 +720,7 @@ Notes: {specs['notes']}
         self.write({"state": "in_service"})
 
         # Log activity
-        self.message_post(
+        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
             body=_("Shred bin %sself.name deployed to %sself.partner_id.name", self.name, self.partner_id.name),
             message_type="notification",
         )
@@ -647,7 +745,7 @@ Notes: {specs['notes']}
         )
 
         # Log activity
-        self.message_post(
+        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
             body=_("Shred bin %sself.name marked as full - pickup request created", self.name),
             message_type="notification",
         )
@@ -661,7 +759,7 @@ Notes: {specs['notes']}
         self.write({"state": "collecting"})
 
         # Log activity
-        self.message_post(
+        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
             body=_("Collection started for shred bin %sself.name", self.name),
             message_type="notification",
         )
@@ -675,7 +773,7 @@ Notes: {specs['notes']}
         self.write({"state": "in_service"})
 
         # Log activity
-        self.message_post(
+        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
             body=_("Service completed for shred bin %sself.name - returned to service", self.name),
             message_type="notification",
         )
@@ -710,7 +808,7 @@ Notes: {specs['notes']}
         )
 
         # Log activity
-        self.message_post(
+        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
             body=_("Bin marked as full by customer - pickup request %spickup_request.name created", pickup_request.name),
             message_type="notification",
         )
@@ -776,7 +874,7 @@ Notes: {specs['notes']}
         )
 
         # Log activity
-        self.message_post(
+        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
             body=_("Customer requested upsize from %sself.bin_size to %snew_size_code - service request %sservice_request.name created", self.bin_size, new_size_code, service_request.name),
             message_type="notification",
         )
@@ -845,7 +943,7 @@ Notes: {specs['notes']}
         )
 
         # Log activity
-        self.message_post(
+        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
             body=_("Customer requested downsize from %sself.bin_size to %snew_size_code - service request %sservice_request.name created", self.bin_size, new_size_code, service_request.name),
             message_type="notification",
         )
@@ -902,6 +1000,16 @@ RECOMMENDATIONS:
                 )
                 message += f"  Estimated Savings: {rec['estimated_savings']}\n\n"
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 message += "• Current bin size is optimal for usage patterns\n"
 
         return {
@@ -1058,7 +1166,7 @@ Recommendation: Deploy additional {self.bin_size} bins to maintain optimal servi
         )
 
         # Log activity
-        self.message_post(
+        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
             body=_("Customer requested additional bins - service request %sservice_request.name created with capacity analysis", service_request.name),
             message_type="notification",
         )
@@ -1085,10 +1193,15 @@ Recommendation: Deploy additional {self.bin_size} bins to maintain optimal servi
         if self.current_fill_level < 25:
             return "Low"
         elif self.current_fill_level < 75:
+            pass
             return "Medium"
         elif self.current_fill_level < 90:
+            pass
             return "High"
         else:
+            pass
+            pass
+            pass
             return "Full"
 
     def get_bin_specifications(self):
@@ -1166,6 +1279,7 @@ Recommendation: Deploy additional {self.bin_size} bins to maintain optimal servi
             if avg_days < 14:
                 return f"{base_frequency} (High Usage - Consider Upsize)"
             elif avg_days > 60:
+            pass
                 return f"{base_frequency} (Low Usage - Consider Downsize)"
 
         return base_frequency
@@ -1211,6 +1325,9 @@ Recommendation: Deploy additional {self.bin_size} bins to maintain optimal servi
                 days_since = (datetime.now().date() - self.last_service_date).days
                 avg_days_between_service = days_since / max(1, self.service_count)
         else:
+            pass
+            pass
+            pass
             avg_days_between_service = 30
 
         recommendations = []
@@ -1229,6 +1346,7 @@ Recommendation: Deploy additional {self.bin_size} bins to maintain optimal servi
                     }
                 )
             elif self.bin_size == "3B":
+            pass
                 recommendations.append(
                     {
                         "recommended_size": "64",
@@ -1240,6 +1358,7 @@ Recommendation: Deploy additional {self.bin_size} bins to maintain optimal servi
                     }
                 )
             elif self.bin_size == "3C":
+            pass
                 recommendations.append(
                     {
                         "recommended_size": "64",
@@ -1251,6 +1370,7 @@ Recommendation: Deploy additional {self.bin_size} bins to maintain optimal servi
                     }
                 )
             elif self.bin_size == "64":
+            pass
                 recommendations.append(
                     {
                         "recommended_size": "96",
@@ -1329,10 +1449,15 @@ Recommendation: Deploy additional {self.bin_size} bins to maintain optimal servi
         if cost_per_lb < 0.15:
             return "Excellent"
         elif cost_per_lb < 0.25:
+            pass
             return "Good"
         elif cost_per_lb < 0.40:
+            pass
             return "Fair"
         else:
+            pass
+            pass
+            pass
             return "Poor - Consider Upsize"
 
     # ============================================================================

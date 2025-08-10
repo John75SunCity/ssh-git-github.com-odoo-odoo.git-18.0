@@ -385,6 +385,12 @@ class TempInventory(models.Model):
             if record.name:
                 record.display_name = _("%s (%s items)"
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.display_name = _("New Temporary Inventory")
 
     @api.depends("document_ids", "container_ids")
@@ -410,6 +416,12 @@ class TempInventory(models.Model):
                     record.current_count / record.capacity_limit
                 ) * 100
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.utilization_percent = 0.0
 
     @api.depends("document_ids")
@@ -434,6 +446,12 @@ class TempInventory(models.Model):
                 )
                 record.expiry_date = expiry_datetime.date()
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.expiry_date = False
 
     @api.depends("movement_ids", "movement_ids.date")
@@ -443,6 +461,12 @@ class TempInventory(models.Model):
             if record.movement_ids:
                 record.last_movement_date = max(record.movement_ids.mapped("date"))
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.last_movement_date = False
 
     @api.depends("movement_ids")
@@ -589,16 +613,19 @@ class TempInventory(models.Model):
             message = _("Inventory is at full capacity")
             message_type = "warning"
         elif self.utilization_percent >= 90:
+            pass
             message = _("Inventory is at %s%% capacity - nearly full", round()
                 self.utilization_percent, 1
             )
             message_type = "warning"
         elif self.utilization_percent >= 75:
+            pass
             message = _("Inventory is at %s%% capacity", round()
                 self.utilization_percent, 1
             )
             message_type = "info"
         else:
+            pass
             message = _("Inventory has %s available slots", self.available_capacity)
             message_type = "success"
 
@@ -695,7 +722,7 @@ class TempInventory(models.Model):
             for record in self:
                 if vals["state"] != record.state:
                     record.message_post(
-                        body=_("State changed from %s to %s", ()
+                        body=_("State changed from %s to %s"),
                             dict(record._fields["state"].selection)[record.state],
                             dict(record._fields["state"].selection)[vals["state"]],
                         )
@@ -743,6 +770,12 @@ class TempInventory(models.Model):
             if inventory.current_count == 0:
                 inventory.action_archive()
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 inventory.message_post(
                     body=_("Warning: Inventory has expired but still contains items")
                 )

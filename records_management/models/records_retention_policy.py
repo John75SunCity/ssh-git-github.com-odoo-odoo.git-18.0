@@ -354,12 +354,19 @@ class RecordsRetentionPolicy(models.Model):
                 if record.review_frequency == "annual":
                     record.next_review_date = record.last_review_date + relativedelta(years=1)
                 elif record.review_frequency == "biannual":
+            pass
                     record.next_review_date = record.last_review_date + relativedelta(months=6)
                 elif record.review_frequency == "quarterly":
+            pass
                     record.next_review_date = record.last_review_date + relativedelta(months=3)
                 else:
+            pass
+            pass
+            pass
                     record.next_review_date = False
             else:
+            pass
+            pass
                 record.next_review_date = False
 
     @api.depends("retention_years", "retention_months", "retention_days")
@@ -695,6 +702,7 @@ class RecordsRetentionRule(models.Model):
                 'days': self.retention_days,
             }
         else:
+            pass
             return {
                 'years': self.policy_id.retention_years,
                 'months': self.policy_id.retention_months,
@@ -708,8 +716,10 @@ class RecordsRetentionRule(models.Model):
         if self.condition_type == "all_documents":
             return True
         elif self.condition_type == "by_type" and self.document_type_ids:
+            pass
             return document.document_type_id in self.document_type_ids
         elif self.condition_type == "by_criteria" and self.criteria_domain:
+            pass
             try:
                 # Parse and evaluate domain criteria
                 import json

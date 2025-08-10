@@ -283,6 +283,9 @@ class RecordsManagementBaseMenus(models.Model):
             if record.parent_menu_id:
                 record.full_name = _("%s / %s"
             else:
+            pass
+            pass
+            pass
                 record.full_name = record.name
 
     full_name = fields.Char(
@@ -305,8 +308,12 @@ class RecordsManagementBaseMenus(models.Model):
             if record.visibility == "public":
                 record.access_level = "public"
             elif record.group_ids or record.department_ids:
+            pass
                 record.access_level = "restricted"
             else:
+            pass
+            pass
+            pass
                 record.access_level = "standard"
 
     access_level = fields.Selection(
@@ -432,7 +439,7 @@ class RecordsManagementBaseMenus(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": _("Menu Activated"),
-                "message": _("Menu '%s' has been activated") % self.name,
+                "message": _("Menu '%s' has been activated", self.name),
                 "type": "success",
             },
         }
@@ -453,7 +460,7 @@ class RecordsManagementBaseMenus(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": _("Menu Deactivated"),
-                "message": _("Menu '%s' has been deactivated") % self.name,
+                "message": _("Menu '%s' has been deactivated", self.name),
                 "type": "warning",
             },
         }
@@ -519,7 +526,7 @@ class RecordsManagementBaseMenus(models.Model):
             }
         )
 
-        self.message_post(body=_("Menu duplicated as '%s'") % duplicate.name)
+        self.message_post(body=_("Menu duplicated as '%s'", duplicate.name))
 
         return {
             "type": "ir.actions.act_window",
@@ -556,7 +563,7 @@ class RecordsManagementBaseMenus(models.Model):
                 )
                 if duplicate:
                     raise ValidationError(
-                        _("Menu key '%s' already exists") % record.menu_key
+                        _("Menu key '%s' already exists", record.menu_key)
                     )
 
     @api.constrains("sequence")
@@ -578,6 +585,9 @@ class RecordsManagementBaseMenus(models.Model):
             if record.parent_menu_id:
                 name_parts.append(f"↳ {record.name}")
             else:
+            pass
+            pass
+            pass
                 name_parts.append(record.name)
 
             if record.menu_type != "main":

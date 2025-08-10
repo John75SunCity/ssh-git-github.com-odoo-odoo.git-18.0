@@ -318,6 +318,8 @@ class RevenueForecastLine(models.Model):
                     line.revenue_change / line.current_monthly_revenue
                 ) * 100
             else:
+            pass
+            pass
                 line.revenue_change_percentage = 0.0
 
     @api.depends("partner_id", "forecast_id")
@@ -327,6 +329,9 @@ class RevenueForecastLine(models.Model):
             if line.partner_id and line.forecast_id:
                 line.name = _("%s - %s"
             elif line.partner_id:
+            pass
                 line.name = _("%s - Forecast Line"
             else:
+            pass
+            pass
                 line.name = _("Forecast Line %s"

@@ -49,27 +49,27 @@ class ShreddingService(models.Model):
         tracking=True,
         index=True,
         help="Unique service order number"
-    )
+    
     reference = fields.Char(
         string="Reference",
         index=True,
         tracking=True,
         help="External reference number"
-    )
+    
     description = fields.Text(
         string="Description",
         help="Service description and details"
-    )
+    
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Order sequence for sorting"
-    )
+    
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Active status of the service"
-    )
+    
 
     # ============================================================================
     # FRAMEWORK FIELDS
@@ -79,14 +79,14 @@ class ShreddingService(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    )
+    
     user_id = fields.Many2one(
         "res.users",
         string="Service Technician",
         default=lambda self: self.env.user,
         tracking=True,
         help="Primary service technician"
-    )
+    
 
     # ============================================================================
     # STATE MANAGEMENT
@@ -103,7 +103,7 @@ class ShreddingService(models.Model):
         default="draft",
         tracking=True,
         help="Current service status"
-    )
+    
 
     # ============================================================================
     # CUSTOMER & SERVICE RELATIONSHIPS
@@ -114,17 +114,17 @@ class ShreddingService(models.Model):
         required=True,
         tracking=True,
         help="Service customer"
-    )
+    
     contact_id = fields.Many2one(
         "res.partner",
         string="Contact Person",
         help="Primary contact for this service"
-    )
+    
     location_id = fields.Many2one(
         "records.location",
         string="Service Location",
         help="Location where service will be performed"
-    )
+    
 
     # ============================================================================
     # SERVICE CONFIGURATION
@@ -141,7 +141,7 @@ class ShreddingService(models.Model):
         required=True,
         tracking=True,
         help="Type of shredding service"
-    )
+    
     material_type = fields.Selection([
         ("paper", "Paper Documents"),
         ("hard_drives", "Hard Drives"),
@@ -152,7 +152,7 @@ class ShreddingService(models.Model):
         default="paper",
         required=True,
         help="Type of material to be shredded"
-    )
+    
 
     # ============================================================================
     # SCHEDULING FIELDS
@@ -162,16 +162,16 @@ class ShreddingService(models.Model):
         required=True,
         tracking=True,
         help="Scheduled service date"
-    )
+    
     service_time = fields.Float(
         string="Scheduled Time",
         help="Time in 24h format (e.g., 14.5 for 2:30 PM)"
-    )
+    
     estimated_duration = fields.Float(
         string="Estimated Duration (Hours)",
         default=2.0,
         help="Estimated service duration in hours"
-    )
+    
     priority = fields.Selection([
         ("low", "Low"),
         ("normal", "Normal"),
@@ -182,7 +182,7 @@ class ShreddingService(models.Model):
         default="normal",
         tracking=True,
         help="Service priority level"
-    )
+    
 
     # ============================================================================
     # TEAM & RESOURCES
@@ -191,32 +191,32 @@ class ShreddingService(models.Model):
         "shredding.team",
         string="Assigned Team",
         help="Shredding team assigned to this service"
-    )
+    
     technician_ids = fields.Many2many(
         "hr.employee",
         string="Technicians",
         help="Individual technicians assigned"
-    )
+    
     vehicle_id = fields.Many2one(
         "records.vehicle",
         string="Service Vehicle",
         help="Vehicle used for this service"
-    )
+    
     equipment_ids = fields.Many2many(
         "maintenance.equipment",
         string="Equipment",
         help="Equipment used for shredding"
-    )
+    
     equipment_id = fields.Many2one(
         "maintenance.equipment",
         string="Primary Equipment",
         help="Primary shredding equipment"
-    )
+    
     recycling_bale_id = fields.Many2one(
         "paper.bale.recycling",
         string="Recycling Bale",
         help="Associated recycling bale"
-    )
+    
 
     # ============================================================================
     # MATERIAL DETAILS
@@ -226,37 +226,37 @@ class ShreddingService(models.Model):
         digits="Stock Weight",
         default=0.0,
         help="Estimated volume of materials"
-    )
+    
     estimated_weight = fields.Float(
         string="Estimated Weight (lbs)",
         digits="Stock Weight",
         default=0.0,
         help="Estimated weight of materials"
-    )
+    
     actual_volume = fields.Float(
         string="Actual Volume (Cubic Feet)",
         digits="Stock Weight",
         default=0.0,
         help="Actual volume processed"
-    )
+    
     actual_weight = fields.Float(
         string="Actual Weight (lbs)",
         digits="Stock Weight",
         default=0.0,
         help="Actual weight processed"
-    )
+    
 
     # Container Information
     container_ids = fields.Many2many(
         "records.container",
         string="Containers",
         help="Containers being shredded"
-    )
+    
     bin_ids = fields.Many2many(
         "shredding.bin",
         string="Shredding Bins",
         help="Bins used for shredding"
-    )
+    
 
     # ============================================================================
     # PRICING & BILLING
@@ -266,20 +266,20 @@ class ShreddingService(models.Model):
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True
-    )
+    
     unit_price = fields.Float(
         string="Unit Price",
         digits="Product Price",
         default=0.0,
         help="Price per unit (volume or weight)"
-    )
+    
     total_amount = fields.Float(
         string="Total Amount",
         digits="Product Price",
         compute="_compute_total_amount",
         store=True,
         help="Total service amount including charges"
-    )
+    
 
     # Additional Charges
     travel_charge = fields.Float(
@@ -287,19 +287,19 @@ class ShreddingService(models.Model):
         digits="Product Price",
         default=0.0,
         help="Additional travel charge"
-    )
+    
     emergency_charge = fields.Float(
         string="Emergency Charge",
         digits="Product Price",
         default=0.0,
         help="Emergency service surcharge"
-    )
+    
     equipment_charge = fields.Float(
         string="Equipment Charge",
         digits="Product Price",
         default=0.0,
         help="Special equipment charge"
-    )
+    
 
     # ============================================================================
     # COMPLIANCE & CERTIFICATES
@@ -308,7 +308,7 @@ class ShreddingService(models.Model):
         string="Certificate Required",
         default=True,
         help="Whether destruction certificate is required"
-    )
+    
     certificate_type = fields.Selection([
         ("standard", "Standard Certificate"),
         ("detailed", "Detailed Certificate"),
@@ -317,12 +317,12 @@ class ShreddingService(models.Model):
         string="Certificate Type",
         default="standard",
         help="Type of certificate to generate"
-    )
+    
     certificate_id = fields.Many2one(
         "shredding.certificate",
         string="Certificate",
         help="Generated destruction certificate"
-    )
+    
     compliance_level = fields.Selection([
         ("standard", "Standard"),
         ("naid_aaa", "NAID AAA"),
@@ -332,7 +332,7 @@ class ShreddingService(models.Model):
         string="Compliance Level",
         default="standard",
         help="Required compliance level"
-    )
+    
 
     # ============================================================================
     # SPECIAL INSTRUCTIONS
@@ -340,21 +340,21 @@ class ShreddingService(models.Model):
     special_instructions = fields.Text(
         string="Special Instructions",
         help="Special instructions for the service"
-    )
+    
     access_requirements = fields.Text(
         string="Access Requirements",
         help="Special access requirements or procedures"
-    )
+    
     security_clearance = fields.Boolean(
         string="Security Clearance Required",
         default=False,
         help="Whether security clearance is required"
-    )
+    
     witness_required = fields.Boolean(
         string="Witness Required",
         default=False,
         help="Whether witnessing is required"
-    )
+    
 
     # ============================================================================
     # COMPLETION TRACKING
@@ -363,26 +363,26 @@ class ShreddingService(models.Model):
         string="Actual Start Time",
         readonly=True,
         help="When service actually started"
-    )
+    
     actual_end_time = fields.Datetime(
         string="Actual End Time",
         readonly=True,
         help="When service was completed"
-    )
+    
     completion_notes = fields.Text(
         string="Completion Notes",
         help="Notes from service completion"
-    )
+    
     customer_signature = fields.Binary(
         string="Customer Signature",
         help="Customer signature for service completion"
-    )
+    
     photos = fields.One2many(
         "shredding.service.photo",
         "service_id",
         string="Photos",
         help="Photos taken during service"
-    )
+    
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -392,7 +392,7 @@ class ShreddingService(models.Model):
         compute="_compute_duration_hours",
         store=True,
         help="Actual service duration in hours"
-    )
+    
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -402,19 +402,19 @@ class ShreddingService(models.Model):
         "res_id",
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)]
-    )
+    
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)]
-    )
+    
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)]
-    )
+    
 
     # ============================================================================
     # COMPUTE METHODS
@@ -426,19 +426,19 @@ class ShreddingService(models.Model):
         "travel_charge",
         "emergency_charge",
         "equipment_charge"
-    )
+    
     def _compute_total_amount(self):
         """Compute total service amount"""
         for service in self:
             base_amount = service.unit_price * max(
                 service.actual_volume, service.actual_weight
-            )
+            
             total = (
                 base_amount
                 + service.travel_charge
                 + service.emergency_charge
                 + service.equipment_charge
-            )
+            
             service.total_amount = total
 
     @api.depends("actual_start_time", "actual_end_time")
@@ -449,6 +449,8 @@ class ShreddingService(models.Model):
                 delta = service.actual_end_time - service.actual_start_time
                 service.duration_hours = delta.total_seconds() / 3600.0
             else:
+                pass
+            pass
                 service.duration_hours = 0.0
 
     # ============================================================================
@@ -471,7 +473,7 @@ class ShreddingService(models.Model):
         self.write({
             "state": "in_progress",
             "actual_start_time": fields.Datetime.now(),
-        })
+        }
         self.message_post(body=_("Service started"))
 
     def action_complete_service(self):
@@ -483,7 +485,7 @@ class ShreddingService(models.Model):
         self.write({
             "state": "completed",
             "actual_end_time": fields.Datetime.now(),
-        })
+        }
 
         # Generate certificate if required
         if self.requires_certificate:
@@ -570,6 +572,7 @@ class ShreddingService(models.Model):
         """Validate service date is not in the past"""
         for record in self:
             if record.service_date and record.service_date < fields.Date.today():
+                pass
                 if record.state == "draft":  # Allow past dates for completed services
                     raise ValidationError(_("Service date cannot be in the past"))
 
@@ -585,6 +588,7 @@ class ShreddingService(models.Model):
         """Validate actual start and end times"""
         for record in self:
             if record.actual_start_time and record.actual_end_time:
+                pass
                 if record.actual_end_time <= record.actual_start_time:
                     raise ValidationError(_("End time must be after start time"))
 
@@ -611,7 +615,7 @@ class ShreddingService(models.Model):
             if not vals.get("name") or vals["name"] == "/":
                 vals["name"] = (
                     self.env["ir.sequence"].next_by_code("shredding.service") or "NEW"
-                )
+                
         return super().create(vals_list)
 
     def write(self, vals):
@@ -621,11 +625,11 @@ class ShreddingService(models.Model):
             for record in self:
                 if record.state != vals["state"]:
                     record.message_post(
-                        body=_("State changed from %s to %s", ()
+                        body=_("State changed from %s to %s"),
                             dict(record._fields["state"].selection)[record.state],
                             dict(record._fields["state"].selection)[vals["state"]]
-                        )
-                    )
+                        
+                    
         return super().write(vals)
 
     # ============================================================================
@@ -666,7 +670,7 @@ class ShreddingService(models.Model):
         return self.search([
             ("state", "in", ["scheduled", "in_progress"]),
             ("service_date", "<=", fields.Date.today()),
-        ])
+        ]
 
     @api.model
     def get_overdue_services(self):
@@ -674,7 +678,7 @@ class ShreddingService(models.Model):
         return self.search([
             ("state", "in", ["scheduled"]),
             ("service_date", "<", fields.Date.today()),
-        ])
+        ]
 
 
 class ShreddingServicePhoto(models.Model):
@@ -688,31 +692,31 @@ class ShreddingServicePhoto(models.Model):
         required=True,
         ondelete="cascade",
         help="Associated shredding service"
-    )
+    
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Photo sequence order"
-    )
+    
     name = fields.Char(
         string="Photo Name",
         required=True,
         help="Descriptive name for the photo"
-    )
+    
     description = fields.Text(
         string="Description",
         help="Photo description and context"
-    )
+    
     photo = fields.Binary(
         string="Photo",
         required=True,
         help="Photo file"
-    )
+    
     taken_date = fields.Datetime(
         string="Taken Date",
         default=fields.Datetime.now,
         help="When the photo was taken"
-    )
+    
     destruction_item_ids = fields.One2many('destruction.item', 'shredding_service_id', string='Items for Destruction')
     witness_ids = fields.Many2many('res.users', string='Witnesses')
     hourly_rate = fields.Float(string='Hourly Rate', default=75.0)
@@ -725,10 +729,10 @@ class ShreddingServicePhoto(models.Model):
         string="Photo Type",
         default="during",
         help="Type of photo for categorization"
-    )
+    
     taken_by = fields.Many2one(
         "res.users",
         string="Taken By",
         default=lambda self: self.env.user,
         help="User who took the photo"
-    )
+    

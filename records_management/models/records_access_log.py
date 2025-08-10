@@ -325,6 +325,7 @@ class RecordsAccessLog(models.Model):
             if record.access_result == "denied":
                 risk_score += 20
             elif record.access_result == "error":
+            pass
                 risk_score += 15
 
             # Risk by time (after hours = higher risk)
@@ -333,6 +334,7 @@ class RecordsAccessLog(models.Model):
                 if hasattr(record.access_date, "hour"):
                     hour = record.access_date.hour
                 elif isinstance(record.access_date, str):
+            pass
                     try:
                         dt = fields.Datetime.from_string(record.access_date)
                         hour = dt.hour
@@ -380,7 +382,7 @@ class RecordsAccessLog(models.Model):
 
         # Log significant changes
         if any(key in vals for key in ["access_result", "error_message", "risk_score"]):
-            self.message_post(
+            self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
                 body=_("Access log updated: %s", "), ".join(f"{k}: {v}" for k, v in vals.items())
             )
 
@@ -456,7 +458,7 @@ class RecordsAccessLog(models.Model):
     def action_mark_reviewed(self):
         """Mark access log as reviewed"""
         self.ensure_one()
-        self.message_post(
+        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
             body=_("Access log reviewed by %s", self.env.user.name),
             message_type="comment",
         )
@@ -495,7 +497,7 @@ class RecordsAccessLog(models.Model):
             # Continue without activity if references not available
             pass
 
-        self.message_post(
+        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
             body=_("Access flagged as suspicious for investigation"),
             message_type="comment",
             subtype_xmlid="mail.mt_note",
@@ -525,7 +527,7 @@ class RecordsAccessLog(models.Model):
                 audit_log = self.env["naid.audit.log"].create(audit_vals)
                 self.write({"audit_trail_id": audit_log.id})
 
-                self.message_post(body=_("Audit trail created: %s", audit_log.name))
+                self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Audit trail created: %s", audit_log.name))
 
                 return {
                     "type": "ir.actions.act_window",
@@ -645,6 +647,7 @@ class RecordsAccessLog(models.Model):
             return stats
 
         elif group_by == "user":
+            pass
             stats = {}
             for log in logs:
                 user_name = log.user_id.name or "Unknown"
@@ -652,13 +655,16 @@ class RecordsAccessLog(models.Model):
             return stats
 
         elif group_by == "risk_level":
+            pass
             stats = {"low": 0, "medium": 0, "high": 0}
             for log in logs:
                 if log.risk_score <= 30:
                     stats["low"] += 1
                 elif log.risk_score <= 70:
+            pass
                     stats["medium"] += 1
                 else:
+            pass
                     stats["high"] += 1
             return stats
 

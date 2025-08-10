@@ -70,36 +70,36 @@ class RecordsDepartment(models.Model):
         tracking=True,
         index=True,
         help="Name of the department",
-    )
+    
     code = fields.Char(
         string="Department Code",
         required=True,
         tracking=True,
         index=True,
         help="Unique code for the department",
-    )
+    
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    
     user_id = fields.Many2one(
         "res.users",
         string="Created By",
         default=lambda self: self.env.user,
         tracking=True,
         help="User who created this department",
-    )
+    
     active = fields.Boolean(
         string="Active",
         default=True,
         tracking=True,
         help="Whether this department is active",
-    )
+    
     sequence = fields.Integer(
         string="Sequence", default=10, help="Order sequence for sorting departments"
-    )
+    
 
     # ============================================================================
     # DEPARTMENT CLASSIFICATION
@@ -118,12 +118,12 @@ class RecordsDepartment(models.Model):
         default="operations",
         tracking=True,
         help="Type of department for workflow classification",
-    )
+    
     description = fields.Text(
         string="Department Description",
         tracking=True,
         help="Detailed description of department responsibilities",
-    )
+    
 
     # ============================================================================
     # ORGANIZATIONAL HIERARCHY
@@ -134,25 +134,25 @@ class RecordsDepartment(models.Model):
         tracking=True,
         domain=[("is_company", "=", True)],
         help="Parent organization that owns this department",
-    )
+    
     parent_department_id = fields.Many2one(
         "records.department",
         string="Parent Department",
         tracking=True,
         help="Parent department in organizational hierarchy",
-    )
+    
     child_department_ids = fields.One2many(
         "records.department",
         "parent_department_id",
         string="Child Departments",
         help="Sub-departments under this department",
-    )
+    
     department_level = fields.Integer(
         string="Department Level",
         compute="_compute_department_level",
         store=True,
         help="Hierarchical level of the department",
-    )
+    
 
     # ============================================================================
     # DEPARTMENT MANAGEMENT
@@ -162,19 +162,19 @@ class RecordsDepartment(models.Model):
         string="Department Manager",
         tracking=True,
         help="Manager responsible for this department",
-    )
+    
     records_coordinator_id = fields.Many2one(
         "res.users",
         string="Records Coordinator",
         tracking=True,
         help="Records management coordinator for the department",
-    )
+    
     assistant_manager_id = fields.Many2one(
         "res.users",
         string="Assistant Manager",
         tracking=True,
         help="Assistant manager for the department",
-    )
+    
 
     # ============================================================================
     # USER ASSIGNMENT AND ROLES
@@ -186,13 +186,13 @@ class RecordsDepartment(models.Model):
         "user_id",
         string="Department Users",
         help="Users assigned to this department",
-    )
+    
     user_count = fields.Integer(
         string="User Count",
         compute="_compute_user_count",
         store=True,
         help="Number of users assigned to department",
-    )
+    
 
     # ============================================================================
     # CONTACT INFORMATION
@@ -201,15 +201,15 @@ class RecordsDepartment(models.Model):
         string="Department Email",
         tracking=True,
         help="Primary email address for the department",
-    )
+    
     phone = fields.Char(
         string="Department Phone",
         tracking=True,
         help="Primary phone number for the department",
-    )
+    
     website = fields.Char(
         string="Department Website", help="Department website or portal URL"
-    )
+    
 
     # ============================================================================
     # LOCATION AND FACILITIES
@@ -235,7 +235,7 @@ class RecordsDepartment(models.Model):
         default="draft",
         tracking=True,
         help="Current status of the department",
-    )
+    
 
     # ============================================================================
     # OPERATIONAL SETTINGS
@@ -244,17 +244,17 @@ class RecordsDepartment(models.Model):
         string="Cost Center",
         tracking=True,
         help="Cost center code for financial reporting",
-    )
+    
     budget_limit = fields.Monetary(
         string="Budget Limit",
         currency_field="currency_id",
         help="Annual budget limit for the department",
-    )
+    
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
-    )
+    
 
     # ============================================================================
     # CUSTOMER AND SERVICE MANAGEMENT
@@ -267,18 +267,18 @@ class RecordsDepartment(models.Model):
         string="Assigned Customers",
         domain=[("is_company", "=", True)],
         help="Customers assigned to this department",
-    )
+    
     customer_count = fields.Integer(
         string="Customer Count",
         compute="_compute_customer_count",
         store=True,
         help="Number of customers assigned to department",
-    )
+    
     service_area_ids = fields.Many2many(
         "records.location",
         string="Service Areas",
         help="Geographic service areas covered by this department",
-    )
+    
 
     # ============================================================================
     # PERFORMANCE METRICS
@@ -288,13 +288,13 @@ class RecordsDepartment(models.Model):
         compute="_compute_performance_metrics",
         store=True,
         help="Overall department performance score",
-    )
+    
     customer_satisfaction = fields.Float(
         string="Customer Satisfaction",
         compute="_compute_performance_metrics",
         store=True,
         help="Average customer satisfaction rating",
-    )
+    
 
     # ============================================================================
     # ADDITIONAL FIELDS
@@ -304,7 +304,7 @@ class RecordsDepartment(models.Model):
         string="Date Created",
         default=fields.Date.today,
         help="Date when department was created",
-    )
+    
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -314,19 +314,19 @@ class RecordsDepartment(models.Model):
         "res_id",
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+    
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+    
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)],
-    )
+    
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -363,6 +363,9 @@ class RecordsDepartment(models.Model):
                 department.performance_score = 85.0  # Default score
                 department.customer_satisfaction = 4.2  # Default satisfaction
             else:
+                pass
+            pass
+            pass
                 department.performance_score = 0.0
                 department.customer_satisfaction = 0.0
 
@@ -416,11 +419,11 @@ class RecordsDepartment(models.Model):
             # Check for active child departments
             active_children = department.child_department_ids.filtered(
                 lambda d: d.state == "active"
-            )
+            
             if active_children:
                 raise UserError(
                     _("Cannot deactivate department with active child departments: %s", "), ".join(active_children.mapped("name"))
-                )
+                
 
             department.write({"state": "inactive"})
             department.message_post(body=_("Department deactivated"))
@@ -515,9 +518,9 @@ class RecordsDepartment(models.Model):
 
         if partner not in self.customer_ids:
             self.customer_ids = [(4, partner_id)]
-            self.message_post(
+            self.message_post(body=_("Action completed"))
                 body=_("Customer %s assigned to department", partner.name)
-            )
+            
 
     def unassign_customer(self, partner_id):
         """Remove customer from department"""
@@ -526,9 +529,9 @@ class RecordsDepartment(models.Model):
 
         if partner in self.customer_ids:
             self.customer_ids = [(3, partner_id)]
-            self.message_post(
+            self.message_post(body=_("Action completed"))
                 body=_("Customer %s removed from department", partner.name)
-            )
+            
 
     # ============================================================================
     # UTILITY METHODS
@@ -540,6 +543,9 @@ class RecordsDepartment(models.Model):
             if department.parent_department_id:
                 name = _("%s / %s"
             else:
+                pass
+            pass
+            pass
                 name = department.name
             result.append((department.id, name))
         return result
@@ -566,7 +572,7 @@ class RecordsDepartment(models.Model):
         """Get all departments of specific type"""
         return self.search(
             [("department_type", "=", department_type), ("state", "=", "active")]
-        )
+        
 
     def get_department_summary(self):
         """Get summary information for reporting"""

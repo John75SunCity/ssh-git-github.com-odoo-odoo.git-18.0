@@ -165,8 +165,11 @@ class Photo(models.Model):
                     }
                     record.file_type = mime_types.get(file_extension, "unknown")
                 else:
+            pass
+            pass
                     record.file_type = "unknown"
             else:
+            pass
                 record.file_size = 0
                 record.file_type = False
 

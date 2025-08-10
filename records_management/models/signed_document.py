@@ -17,7 +17,7 @@ class SignedDocument(models.Model):
         "res.partner",
         string="Partner",
         help="Associated partner for this record"
-    )
+    
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
     user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
@@ -25,7 +25,7 @@ class SignedDocument(models.Model):
     # Required Inverse Field
     request_id = fields.Many2one(
         "portal.request", string="Portal Request", required=True, ondelete="cascade"
-    )
+    
 
     # Business Fields
     document_type = fields.Selection(
@@ -38,7 +38,7 @@ class SignedDocument(models.Model):
         string="Document Type",
         required=True,
         tracking=True,
-    )
+    
 
     signature_date = fields.Datetime(string="Signature Date", tracking=True)
     signatory_name = fields.Char(string="Signatory Name", tracking=True)
@@ -59,7 +59,7 @@ class SignedDocument(models.Model):
         ],
         default="draft",
         tracking=True,
-    )
+    
 
     # Legal Fields
     signature_hash = fields.Char(string="Signature Hash")
@@ -67,7 +67,7 @@ class SignedDocument(models.Model):
         [("pending", "Pending"), ("valid", "Valid"), ("invalid", "Invalid")],
         default="pending",
         tracking=True,
-    )
+    
 
     # Computed Field
     display_name = fields.Char(string="Display Name", compute="_compute_display_name", store=True)
@@ -85,8 +85,10 @@ class SignedDocument(models.Model):
         """Compute display name with signature info"""
         for record in self:
             if record.signatory_name and record.signature_date:
-                record.display_name = _("%s - %s"
+                record.display_name = _("%s - %s", "Unknown")
             else:
+                pass
+            pass
                 record.display_name = record.name
 
     def action_mark_signed(self):

@@ -168,6 +168,8 @@ class AdvancedBillingLine(models.Model):
             if line.product_id:
                 line.name = _("%s x %s"
             else:
+            pass
+            pass
                 line.name = _("Billing Line %s"
 
     @api.depends("quantity", "price_unit")
@@ -234,6 +236,8 @@ class RecordsAdvancedBillingPeriod(models.Model):
             if period.start_date and period.end_date:
                 period.name = _("Billing Period %s - %s"
             else:
+            pass
+            pass
                 period.name = _("Billing Period %s"
 
     # ============================================================================

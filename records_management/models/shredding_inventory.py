@@ -206,6 +206,8 @@ class ShreddingInventoryBatch(models.Model):
                     record.picked_count / record.item_count
                 ) * 100
             else:
+            pass
+            pass
                 record.completion_percentage = 0.0
 
     # ============================================================================
@@ -434,10 +436,13 @@ class ShreddingPicklistItem(models.Model):
                     _("%s (Container: %s)"
                 )
             elif record.document_id:
+            pass
                 record.display_name = (
                     _("%s (Document: %s)"
                 )
             else:
+            pass
+            pass
                 record.display_name = record.name or _("New Item")
 
     # ============================================================================

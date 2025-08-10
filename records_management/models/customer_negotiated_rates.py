@@ -239,8 +239,11 @@ class CustomerNegotiatedRates(models.Model):
             if record.partner_id and record.name:
                 record.display_name = _("%s - %s"
             elif record.partner_id:
+            pass
                 record.display_name = _("%s - Negotiated Rates"
             else:
+            pass
+            pass
                 record.display_name = record.name or "New Negotiated Rates"
 
     @api.depends("expiry_date")
@@ -261,6 +264,8 @@ class CustomerNegotiatedRates(models.Model):
                 delta = expiry_date_obj - today_obj
                 record.days_until_expiry = delta.days
             else:
+            pass
+            pass
                 record.days_until_expiry = 0
 
     @api.depends("global_discount_percent", "volume_discount_percent")

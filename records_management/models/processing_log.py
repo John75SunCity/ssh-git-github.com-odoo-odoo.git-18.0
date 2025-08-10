@@ -315,15 +315,27 @@ class ProcessingLog(models.Model):
                                 f"{log.res_model}({log.res_id}): {log.res_name}"
                             )
                         else:
+            pass
+            pass
+            pass
+            pass
+            pass
                             log.res_name = _("Deleted %s(%s)"
                             log.reference = log.res_name
                     else:
+            pass
+            pass
+            pass
+            pass
                         log.res_name = _("Unknown Model %s(%s)"
                         log.reference = log.res_name
                 except Exception:
                     log.res_name = _("Error accessing %s(%s)"
                     log.reference = log.res_name
             else:
+            pass
+            pass
+            pass
                 log.res_name = ""
                 log.reference = ""
 
@@ -349,6 +361,9 @@ class ProcessingLog(models.Model):
                 level_str = log.log_level.upper() if log.log_level else "INFO"
                 log.display_name = _("[%s] %s (%s)"
             else:
+            pass
+            pass
+            pass
                 log.display_name = log.name or "Processing Log"
 
     # ============================================================================
@@ -496,6 +511,7 @@ class ProcessingLog(models.Model):
         if isinstance(log_id, int):
             log = self.browse(log_id)
         else:
+            pass
             log = log_id
         if log.exists():
             vals = {"status": "completed" if success else "failed", **kwargs}

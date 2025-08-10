@@ -74,7 +74,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     name = fields.Char(
         string="Operation Name",
         required=True,
-    )
+    
 
     @api.model
     def default_get(self, fields_list):
@@ -87,7 +87,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     description = fields.Text(
         string="Description",
         help="Detailed description of the permanent flag operation",
-    )
+    
 
     # ============================================================================
     # FRAMEWORK FIELDS
@@ -97,13 +97,13 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    
     user_id = fields.Many2one(
         "res.users",
         string="Requesting User",
         default=lambda self: self.env.user,
         readonly=True,
-    )
+    
 
     # ============================================================================
     # OPERATION CONFIGURATION
@@ -117,7 +117,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         string="Operation Type",
         default="apply",
         required=True,
-    )
+    
 
     flag_reason = fields.Selection(
         [
@@ -131,17 +131,17 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         ],
         string="Flag Reason",
         required=True,
-    )
+    
 
     custom_reason = fields.Char(
         string="Custom Reason",
         help="Specify custom reason when 'Custom Reason' is selected",
-    )
+    
 
     legal_basis = fields.Text(
         string="Legal Basis",
         help="Legal justification for the permanent flag operation",
-    )
+    
 
     # ============================================================================
     # APPROVAL WORKFLOW
@@ -156,13 +156,13 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         string="Approval Status",
         default="draft",
         readonly=True,
-    )
+    
 
     approval_required = fields.Boolean(
         string="Approval Required",
         default=True,
         help="Whether this operation requires approval",
-    )
+    
     approved_by = fields.Many2one("res.users", string="Approved By", readonly=True)
     approval_date = fields.Datetime(string="Approval Date", readonly=True)
     rejection_reason = fields.Text(string="Rejection Reason", readonly=True)
@@ -178,11 +178,11 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         string="Documents",
         required=True,
         help="Documents to apply permanent flag to",
-    )
+    
 
     document_count = fields.Integer(
         string="Document Count", compute="_compute_document_count"
-    )
+    
 
     # Selection Criteria
     selection_method = fields.Selection(
@@ -193,20 +193,20 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         ],
         string="Selection Method",
         default="manual",
-    )
+    
 
     # Criteria-based selection
     document_type_ids = fields.Many2many(
         "records.document.type",
         string="Document Types",
         help="Filter by document types",
-    )
+    
     location_ids = fields.Many2many(
         "records.location", string="Locations", help="Filter by storage locations"
-    )
+    
     partner_id = fields.Many2one(
         "res.partner", string="Customer", help="Filter by customer"
-    )
+    
     date_from = fields.Date(string="Date From", help="Filter documents from this date")
     date_to = fields.Date(string="Date To", help="Filter documents up to this date")
 
@@ -217,7 +217,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         string="Send Notifications",
         default=True,
         help="Send notifications to stakeholders",
-    )
+    
 
     stakeholder_ids = fields.Many2many(
         "res.users",
@@ -226,19 +226,19 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         "user_id",
         string="Stakeholders",
         help="Users to notify about this operation",
-    )
+    
     notification_template_id = fields.Many2one(
         "mail.template",
         string="Notification Template",
         help="Email template for notifications",
-    )
+    
 
     # ============================================================================
     # AUDIT & TRACKING
     # ============================================================================
     audit_trail = fields.Text(
         string="Audit Trail", readonly=True, help="Complete log of operation activities"
-    )
+    
     execution_date = fields.Datetime(string="Execution Date", readonly=True)
     completion_date = fields.Datetime(string="Completion Date", readonly=True)
     state = fields.Selection(
@@ -251,7 +251,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         ],
         string="State",
         default="draft",
-    )
+    
 
     # ============================================================================
     # MAIL FRAMEWORK FIELDS
@@ -262,7 +262,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         string="Followers",
         groups="base.group_user",
         help="Users who are following this wizard record for activity and message updates",
-    )
+    
 
     # ============================================================================
     # VALIDATION METHODS
@@ -284,8 +284,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                 raise ValidationError(
                     _(
                         "Custom reason must be specified when 'Custom Reason' is selected"
-                    )
-                )
+                    
+                
 
     @api.constrains("document_ids")
     def _check_documents(self):
@@ -317,6 +317,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         if current_trail:
             self.audit_trail = f"{current_trail}\n{entry}"
         else:
+            pass
+            pass
             self.audit_trail = entry
 
     def _send_notifications(self):
@@ -338,12 +340,12 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                 <li><strong>Executed By:</strong> {self.user_id.name}</li>
             </ul>
             """
-        )
+        
 
         for user in self.stakeholder_ids:
-            self.message_post(
+            self.message_post(body=_("Action completed"))
                 partner_ids=[user.partner_id.id], subject=subject, body=body
-            )
+            
 
     def _apply_criteria_filter(self):
         """Apply criteria-based document filtering"""
@@ -370,14 +372,14 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         if self.selection_method != "criteria":
             raise UserError(
                 _("This action is only available for criteria-based selection")
-            )
+            
 
         documents = self._apply_criteria_filter()
         self.document_ids = [(6, 0, documents.ids)]  # pylint: disable=no-member
 
         self._update_audit_trail(
             "Applied Criteria", f"Selected {len(documents)} documents"
-        )
+        
 
         return {
             "type": "ir.actions.client",
@@ -400,7 +402,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                 "state": "in_progress",
                 "execution_date": fields.Datetime.now(),
             }
-        )
+        
 
         # Execute the operation
         affected_count = 0
@@ -422,8 +424,10 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                             "permanent_flag_date": fields.Datetime.now(),
                             "permanent_flag_user_id": self.env.user.id,
                         }
-                    )
+                    
                 elif self.operation_type == "remove":
+                    pass
+            pass
                     # pylint: disable=no-member
                     # pylint: disable=no-member
 
@@ -434,7 +438,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                             "permanent_flag_date": False,
                             "permanent_flag_user_id": False,
                         }
-                    )
+                    
                 affected_count += 1
             except (UserError, ValidationError) as e:
                 document_name = getattr(document, "name", f"ID: {document.id}")  # pylint: disable=no-member
@@ -448,17 +452,17 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                     document_name,
                     str(e),
                     tb,
-                )
+                
                 continue
 
         # Update audit trail
         operation_name = dict(self._fields["operation_type"].selection).get(
             self.operation_type
-        )
+        
         self._update_audit_trail(
             f"Executed {operation_name}",
             f"Processed {affected_count} documents, {len(errors)} errors",
-        )
+        
 
         # Send notifications
         self._send_notifications()
@@ -472,8 +476,10 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                     "state": "completed_with_errors",
                     "completion_date": fields.Datetime.now(),
                 }
-            )
+            
         else:
+            pass
+            pass
             # pylint: disable=no-member
 
             self.write({"state": "completed", "completion_date": fields.Datetime.now()})
@@ -487,7 +493,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             # Log all errors in the audit trail for traceability
             self._update_audit_trail(
                 "Errors encountered during operation", "\n".join(errors)
-            )
+            
 
             return {
                 "type": "ir.actions.client",
@@ -496,7 +502,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                     "title": _("Operation Completed with Errors"),
                     "message": _(
                         "Operation completed. %d documents processed successfully, %d errors occurred.\n\nErrors:\n%s"
-                    )
+                    
                     % (affected_count, len(errors), error_msg),
                     "type": "warning",
                     "sticky": True,
@@ -509,7 +515,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                 "title": _("Operation Completed Successfully"),
                 "message": _(
                     "Permanent flag operation completed successfully. %d documents processed."
-                )
+                
                 % affected_count,
                 "type": "success",
             },
@@ -547,7 +553,7 @@ Legal Basis: {self.legal_basis or 'Not specified'}
 Description:
 {self.description or 'No description provided'}""",
             user_id=approval_user_id,
-        )
+        
 
         return {
             "type": "ir.actions.client",
@@ -574,11 +580,11 @@ Description:
                 "approved_by": self.env.user.id,
                 "approval_date": fields.Datetime.now(),
             }
-        )
+        
 
         self._update_audit_trail(
             "Operation Approved", f"Approved by {self.env.user.name}"
-        )
+        
 
         return {
             "type": "ir.actions.client",
@@ -685,22 +691,22 @@ class RecordsDocument(models.Model):
         tracking=True,
         index=True,
         help="Name or title of the document",
-    )
+    
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
-    )
+    
     active = fields.Boolean(
         string="Active", default=True, help="Whether this document is active"
-    )
+    
 
     # ============================================================================
     # DOCUMENT DETAILS
@@ -710,15 +716,15 @@ class RecordsDocument(models.Model):
         string="Document Type",
         tracking=True,
         help="Type/category of the document",
-    )
+    
     description = fields.Text(
         string="Description",
         help="Detailed description of the document",
-    )
+    
     reference = fields.Char(
         string="Reference Number",
         help="External reference or ID number",
-    )
+    
 
     # ============================================================================
     # CUSTOMER AND RELATIONSHIPS
@@ -729,22 +735,22 @@ class RecordsDocument(models.Model):
         required=True,
         tracking=True,
         help="Customer who owns this document",
-    )
+    
     container_id = fields.Many2one(
         "records.container",
         string="Container",
         help="Container where this document is stored",
-    )
+    
     location_id = fields.Many2one(
         "records.location",
         string="Location",
         help="Physical location of the document",
-    )
+    
     lot_id = fields.Many2one(
         "stock.lot",
         string="Stock Lot",
         help="Associated stock lot for tracking",
-    )
+    
 
     # ============================================================================
     # RETENTION AND LIFECYCLE MANAGEMENT
@@ -754,7 +760,7 @@ class RecordsDocument(models.Model):
         string="Retention Policy",
         tracking=True,
         help="Retention policy governing this document",
-    )
+    
 
     # ============================================================================
     # STATE MANAGEMENT
@@ -770,7 +776,7 @@ class RecordsDocument(models.Model):
         default="active",
         tracking=True,
         help="Current status of the document",
-    )
+    
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS (REQUIRED)
@@ -778,7 +784,7 @@ class RecordsDocument(models.Model):
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
+    
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================

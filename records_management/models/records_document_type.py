@@ -369,6 +369,7 @@ class RecordsDocumentType(models.Model):
                     record.retention_policy_id.retention_years
                 )
             else:
+            pass
                 record.effective_retention_years = record.default_retention_years or 7
 
     @api.depends("state", "active", "document_count")
@@ -553,6 +554,7 @@ class RecordsDocumentType(models.Model):
         if isinstance(creation_date, str):
             creation_date = fields.Date.from_string(creation_date)
         elif hasattr(creation_date, "date"):
+            pass
             creation_date = creation_date.date()
 
         retention_years = self.effective_retention_years
@@ -858,8 +860,7 @@ class RecordsDocumentType(models.Model):
             if record.state in valid_transitions:
                 if new_state not in valid_transitions[record.state]:
                     raise ValidationError(
-                        _("Invalid state transition from '%s' to '%s'")
-                        % (record.state, new_state)
+                        _("Invalid state transition from '%s' to '%s'", (record.state), new_state)
                     )
 
     def _handle_retention_changes(self, vals):

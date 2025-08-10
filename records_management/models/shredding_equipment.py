@@ -319,6 +319,9 @@ class MaintenanceEquipment(models.Model):
                     equipment.total_weight_processed / equipment.total_hours_operated
                 )
             else:
+            pass
+            pass
+            pass
                 equipment.average_throughput = 0.0
 
     @api.depends("naid_certification_expiry")
@@ -330,10 +333,19 @@ class MaintenanceEquipment(models.Model):
                 if equipment.naid_certification_expiry < today:
                     equipment.certification_status = "expired"
                 elif equipment.naid_certification_expiry <= today + timedelta(days=30):
+            pass
                     equipment.certification_status = "expiring"
                 else:
+            pass
+            pass
+            pass
+            pass
+            pass
                     equipment.certification_status = "valid"
             else:
+            pass
+            pass
+            pass
                 equipment.certification_status = "none"
 
     @api.depends("last_blade_change", "blade_change_interval", "total_hours_operated")
@@ -363,14 +375,28 @@ class MaintenanceEquipment(models.Model):
                             + timedelta(days=int(days_to_next_change))
                         )
                     else:
+            pass
+            pass
+            pass
+            pass
+            pass
+            pass
                         equipment.next_blade_change = (
                             equipment.last_blade_change + timedelta(days=30)
                         )
                 else:
+            pass
+            pass
+            pass
+            pass
+            pass
                     equipment.next_blade_change = (
                         equipment.last_blade_change + timedelta(days=30)
                     )
             else:
+            pass
+            pass
+            pass
                 equipment.next_blade_change = False
 
     @api.depends("next_blade_change", "naid_certification_expiry", "last_lubrication")
@@ -486,7 +512,7 @@ class MaintenanceEquipment(models.Model):
             }
         )
 
-        self.message_post(body=_("Blade change completed on %s", fields.Date.today()))
+        self.message_post(body=_("Action completed"))body=_("Blade change completed on %s", fields.Date.today()))
 
         return {
             "type": "ir.actions.client",
@@ -508,7 +534,7 @@ class MaintenanceEquipment(models.Model):
             }
         )
 
-        self.message_post(body=_("Lubrication completed on %s", fields.Date.today()))
+        self.message_post(body=_("Action completed"))body=_("Lubrication completed on %s", fields.Date.today()))
 
         return {
             "type": "ir.actions.client",
@@ -605,7 +631,7 @@ class MaintenanceEquipment(models.Model):
             }
         )
 
-        self.message_post(
+        self.message_post(body=_("Action completed"))
             body=_("Usage updated: +%.2f hours, +%.2f lbs processed", (hours_operated), weight_processed)
         )
 

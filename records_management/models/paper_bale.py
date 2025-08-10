@@ -459,10 +459,13 @@ class PaperBale(models.Model):
                 if record.weight_unit == "lb":
                     weight_kg = record.weight * 0.453592
                 elif record.weight_unit == "ton":
+            pass
                     weight_kg = record.weight * 1000
                 
                 record.density = weight_kg / record.total_volume
             else:
+            pass
+            pass
                 record.density = 0.0
 
     @api.depends("weight", "paper_type")
@@ -475,10 +478,13 @@ class PaperBale(models.Model):
                 if record.weight_unit == "lb":
                     weight_tons = record.weight / 2204.62  # pounds to metric tons
                 elif record.weight_unit == "kg":
+            pass
                     weight_tons = record.weight / 1000
                 
                 record.trees_saved = weight_tons * 17
             else:
+            pass
+            pass
                 record.trees_saved = 0.0
 
     def _compute_document_count(self):
@@ -663,8 +669,10 @@ class PaperBale(models.Model):
         if self.weight_unit == "kg":
             return self.weight
         elif self.weight_unit == "lb":
+            pass
             return self.weight * 0.453592
         elif self.weight_unit == "ton":
+            pass
             return self.weight * 1000
         
         return self.weight
@@ -1041,6 +1049,7 @@ class PaperBaleInspectionWizard(models.TransientModel):
         if self.result == "pass":
             vals["state"] = "approved"
         elif self.result == "fail":
+            pass
             vals["state"] = "rejected"
         else:  # conditional
             vals["state"] = "quality_checked"

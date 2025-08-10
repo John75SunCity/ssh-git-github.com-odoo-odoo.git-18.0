@@ -306,6 +306,8 @@ class FsmTask(models.Model):
                 delta = record.end_date - record.start_date
                 record.duration_hours = delta.total_seconds() / 3600.0
             else:
+            pass
+            pass
                 record.duration_hours = 0.0
 
     @api.depends("deadline", "status")
@@ -326,8 +328,11 @@ class FsmTask(models.Model):
             if record.status == "completed":
                 record.progress_status = "Completed"
             elif record.status == "cancelled":
+            pass
                 record.progress_status = "Cancelled"
             else:
+            pass
+            pass
                 record.progress_status = f"{record.completion_percentage:.0f}% Complete"
 
     # ============================================================================

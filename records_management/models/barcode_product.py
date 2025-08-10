@@ -74,27 +74,27 @@ class BarcodeProduct(models.Model):
         default=lambda self: self.env.company,
         required=True,
         index=True,
-    )
+    
     user_id = fields.Many2one(
         "res.users",
         string="Product Manager",
         default=lambda self: self.env.user,
         tracking=True,
         index=True,
-    )
+    
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True,
-    )
+    
 
     # Partner Relationship
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         help="Associated partner for this record"
-    )
+    
 
     # ============================================================================
     # STATE MANAGEMENT
@@ -109,7 +109,7 @@ class BarcodeProduct(models.Model):
         string="Status",
         default="draft",
         tracking=True,
-    )
+    
 
     # ============================================================================
     # BARCODE CONFIGURATION
@@ -119,7 +119,7 @@ class BarcodeProduct(models.Model):
         tracking=True,
         index=True,
         help="Primary barcode for this product",
-    )
+    
     barcode_format = fields.Selection(
         [
             ("ean13", "EAN-13"),
@@ -132,38 +132,38 @@ class BarcodeProduct(models.Model):
         string="Barcode Format",
         default="code128",
         required=True,
-    )
+    
 
     # Barcode Generation Settings
     start_barcode = fields.Char(
         string="Start Barcode", help="Starting barcode for range generation"
-    )
+    
     end_barcode = fields.Char(
         string="End Barcode", help="End barcode for range generation"
-    )
+    
     next_sequence_number = fields.Integer(
         string="Next Sequence", default=1, help="Next sequence number for generation"
-    )
+    
     generation_batch_size = fields.Integer(
         string="Batch Size",
         default=100,
         help="Number of barcodes to generate per batch",
-    )
+    
 
     # Validation Configuration
     validate_format = fields.Boolean(
         string="Validate Format",
         default=True,
         help="Validate barcode format on creation",
-    )
+    
     validate_uniqueness = fields.Boolean(
         string="Validate Uniqueness",
         default=True,
         help="Ensure barcode uniqueness across system",
-    )
+    
     validate_check_digit = fields.Boolean(
         string="Validate Check Digit", default=True, help="Validate barcode check digit"
-    )
+    
 
     # ============================================================================
     # PRODUCT CATEGORIZATION
@@ -178,7 +178,7 @@ class BarcodeProduct(models.Model):
         ],
         string="Product Category",
         default="container",
-    )
+    
 
     product_type = fields.Selection(
         [
@@ -188,7 +188,7 @@ class BarcodeProduct(models.Model):
         ],
         string="Product Type",
         default="physical",
-    )
+    
 
     # ============================================================================
     # STORAGE & LOCATION
@@ -197,11 +197,11 @@ class BarcodeProduct(models.Model):
         "records.location",
         string="Default Storage Location",
         help="Default location for this product type",
-    )
+    
 
     storage_requirements = fields.Text(
         string="Storage Requirements", help="Special storage requirements or conditions"
-    )
+    
 
     # ============================================================================
     # PRICING & BILLING
@@ -210,32 +210,32 @@ class BarcodeProduct(models.Model):
         string="Standard Cost",
         currency_field="currency_id",
         help="Standard cost for this product",
-    )
+    
     list_price = fields.Monetary(
         string="List Price", currency_field="currency_id", help="Standard selling price"
-    )
+    
     storage_rate = fields.Monetary(
         string="Storage Rate",
         currency_field="currency_id",
         help="Monthly storage rate for this product type",
-    )
+    
 
     # ============================================================================
     # OPERATIONAL FIELDS
     # ============================================================================
     monthly_volume = fields.Integer(
         string="Monthly Volume", help="Expected monthly volume for this product"
-    )
+    
     naid_compliant = fields.Boolean(
         string="NAID Compliant",
         default=False,
         help="Whether this product meets NAID compliance standards",
-    )
+    
 
     # Lifecycle Management
     creation_date = fields.Datetime(
         string="Creation Date", default=fields.Datetime.now, readonly=True
-    )
+    
     last_used_date = fields.Datetime(string="Last Used", readonly=True)
     usage_count = fields.Integer(string="Usage Count", default=0, readonly=True)
 
@@ -244,7 +244,7 @@ class BarcodeProduct(models.Model):
     # ============================================================================
     barcode_line_ids = fields.One2many(
         "barcode.product.line", "product_id", string="Generated Barcodes"
-    )
+    
 
     # Mail Framework Fields
     activity_ids = fields.One2many(
@@ -253,17 +253,17 @@ class BarcodeProduct(models.Model):
         string="Activities",
         auto_join=True,
         groups="base.group_user",
-    )
+    
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain="[('model', '=', _name)]",
         groups="base.group_user",
-    )
+    
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
+    
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -272,8 +272,12 @@ class BarcodeProduct(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.code:
-                record.display_name = _("[%s] %s"
+                record.display_name = _("[%s] %s", "Unknown")
             else:
+                pass
+            pass
+            pass
+            pass
                 record.display_name = record.name
 
     @api.depends("barcode_line_ids")
@@ -292,17 +296,21 @@ class BarcodeProduct(models.Model):
                 except (ValueError, TypeError):
                     record.barcode_range_size = 0
             else:
+                pass
+            pass
+            pass
+            pass
                 record.barcode_range_size = 0
 
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
-    )
+    
     barcode_count = fields.Integer(
         string="Generated Barcodes Count", compute="_compute_barcode_count", store=True
-    )
+    
     barcode_range_size = fields.Integer(
         string="Barcode Range Size", compute="_compute_barcode_range_size", store=True
-    )
+    
 
     # ============================================================================
     # VALIDATION METHODS
@@ -311,10 +319,11 @@ class BarcodeProduct(models.Model):
     def _check_barcode_format(self):
         for record in self:
             if record.barcode and record.validate_format:
+                pass
                 if not record._validate_barcode_format(record.barcode):
                     raise ValidationError(
                         _("Invalid barcode format for %s", record.barcode_format)
-                    )
+                    
 
     @api.constrains("start_barcode", "end_barcode")
     def _check_barcode_range(self):
@@ -326,11 +335,11 @@ class BarcodeProduct(models.Model):
                     if start_num >= end_num:
                         raise ValidationError(
                             _("Start barcode must be less than end barcode")
-                        )
+                        
                 except (ValueError, TypeError):
                     raise ValidationError(
                         _("Barcode range must contain numeric values")
-                    )
+                    
 
     @api.constrains("generation_batch_size")
     def _check_batch_size(self):
@@ -380,7 +389,7 @@ class BarcodeProduct(models.Model):
 
         existing = self.search(
             [("barcode_line_ids.barcode", "=", barcode), ("id", "!=", self.id)], limit=1
-        )
+        
 
         return not bool(existing)
 
@@ -448,9 +457,10 @@ class BarcodeProduct(models.Model):
         if invalid_count > 0:
             raise UserError(_("Found %d invalid barcodes", invalid_count))
         else:
-            self.message_post(
+            pass
+            self.message_post(body=_("Action completed"))
                 body=_("All %d barcodes validated successfully", len(self.barcode_line_ids))
-            )
+            
 
     def action_export_barcodes(self):
         """Export barcodes to CSV"""
@@ -485,7 +495,7 @@ class BarcodeProduct(models.Model):
                 if old_state != new_state:
                     record.message_post(
                         body=_("State changed from %s to %s", (old_state), new_state)
-                    )
+                    
         return super().write(vals)
 
     def unlink(self):
@@ -497,7 +507,7 @@ class BarcodeProduct(models.Model):
         if any(record.state == "active" for record in self):
             raise UserError(
                 _("Cannot delete active barcode products. Please archive them first.")
-            )
+            
         return super().unlink()
 
 
@@ -512,18 +522,18 @@ class BarcodeProductLine(models.Model):
         required=True,
         ondelete="cascade",
         index=True,
-    )
+    
     barcode = fields.Char(
         string="Barcode", required=True, index=True, help="Generated barcode value"
-    )
+    
     sequence = fields.Integer(string="Sequence", default=10)
     is_used = fields.Boolean(
         string="Used", default=False, help="Whether this barcode has been assigned"
-    )
+    
     usage_date = fields.Datetime(string="Usage Date", readonly=True)
     assigned_to = fields.Char(
         string="Assigned To", help="Record this barcode was assigned to"
-    )
+    
     notes = fields.Text(string="Notes")
 
     @api.constrains("barcode")
@@ -531,7 +541,7 @@ class BarcodeProductLine(models.Model):
         for record in self:
             existing = self.search(
                 [("barcode", "=", record.barcode), ("id", "!=", record.id)], limit=1
-            )
+            
             if existing:
                 raise ValidationError(_("Barcode %s already exists", record.barcode))
 

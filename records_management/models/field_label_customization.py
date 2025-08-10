@@ -252,10 +252,11 @@ class FieldLabelCustomization(models.Model):
     def _compute_full_customization_name(self):
         for record in self:
             if record.model_name and record.field_name:
-                record.full_customization_name = (
-                    _("%s.%s: %s"
+                record.full_customization_name = _("%s.%s: %s", 
+                    record.model_name, record.field_name, record.custom_label or "Custom Label"
                 )
             else:
+                record.full_customization_name = _("Incomplete Configuration")
                 record.full_customization_name = record.name
 
     @api.depends("model_name")
@@ -283,6 +284,8 @@ class FieldLabelCustomization(models.Model):
                 except Exception:
                     record.available_fields = "Invalid model selected"
             else:
+            pass
+            pass
                 record.available_fields = (
                     "No model selected or model not in records_management"
                 )
@@ -314,6 +317,7 @@ class FieldLabelCustomization(models.Model):
                 elif model_name.startswith(
                     ("records.", "naid.", "customer.", "portal.")
                 ):
+            pass
                     # Additional check for records management related models
                     records_models.append(model_name)
             except Exception:
@@ -458,8 +462,7 @@ class FieldLabelCustomization(models.Model):
                 # First check if model is in records_management
                 if not record._is_records_management_model(record.model_name):
                     raise ValidationError(
-                        _("Model '%s' is not part of the records_management module.")
-                        % record.model_name
+                        _("Model '%s' is not part of the records_management module.", record.model_name)
                     )
 
                 # Check if field is protected from customization
@@ -478,7 +481,7 @@ class FieldLabelCustomization(models.Model):
                 try:
                     if record.model_name not in self.env.registry:
                         raise ValidationError(
-                            _("Model '%s' does not exist.") % record.model_name
+                            _("Model '%s' does not exist.", record.model_name)
                         )
 
                     model = self.env[record.model_name]
@@ -514,7 +517,7 @@ class FieldLabelCustomization(models.Model):
                         )
                 except Exception:
                     raise ValidationError(
-                        _("Model '%s' does not exist.") % record.model_name
+                        _("Model '%s' does not exist.", record.model_name)
                     )
 
     @api.constrains("custom_label")

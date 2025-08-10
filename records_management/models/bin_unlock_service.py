@@ -25,7 +25,7 @@ class BinUnlockService(models.Model):
     state = fields.Selection([
         ("draft", "Draft"), ("active", "Active"),
         ("inactive", "Inactive"), ("archived", "Archived")
-    ], string="Status", default="draft", tracking=True)
+    ], string="Status", default="draft", tracking=True
 
     # ============================================================================
     # SERVICE REQUEST DETAILS
@@ -33,7 +33,7 @@ class BinUnlockService(models.Model):
     service_type = fields.Selection([
         ("emergency", "Emergency Unlock"), ("scheduled", "Scheduled Unlock"),
         ("bulk", "Bulk Unlock"), ("maintenance", "Maintenance Unlock")
-    ], string="Service Type", required=True, default="scheduled")
+    ], string="Service Type", required=True, default="scheduled"
 
     request_date = fields.Datetime(string="Request Date", default=fields.Datetime.now, tracking=True)
     scheduled_date = fields.Datetime(string="Scheduled Date", tracking=True)
@@ -41,7 +41,7 @@ class BinUnlockService(models.Model):
 
     priority = fields.Selection([
         ("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")
-    ], string="Priority", default="normal", tracking=True)
+    ], string="Priority", default="normal", tracking=True
 
     # ============================================================================
     # BIN & KEY INFORMATION
@@ -49,7 +49,7 @@ class BinUnlockService(models.Model):
     partner_id = fields.Many2one("res.partner", string="Customer", required=True, tracking=True)
     bin_id = fields.Many2one(
         "shred.bin", string="Shred Bin", required=True, tracking=True
-    )
+    
     key_id = fields.Many2one("bin.key", string="Key", tracking=True)
 
     bin_location = fields.Char(string="Bin Location")
@@ -57,7 +57,7 @@ class BinUnlockService(models.Model):
     unlock_method = fields.Selection([
         ("physical_key", "Physical Key"), ("electronic", "Electronic"),
         ("master_key", "Master Key"), ("emergency_override", "Emergency Override")
-    ], string="Unlock Method", default="physical_key")
+    ], string="Unlock Method", default="physical_key"
 
     # ============================================================================
     # TECHNICIAN & SCHEDULING
@@ -93,11 +93,11 @@ class BinUnlockService(models.Model):
     # FINANCIAL TRACKING
     # ============================================================================
     currency_id = fields.Many2one("res.currency", string="Currency", 
-                                 default=lambda self: self.env.company.currency_id)
+                                 default=lambda self: self.env.company.currency_id
     service_cost = fields.Monetary(string="Service Cost", currency_field="currency_id")
     emergency_surcharge = fields.Monetary(string="Emergency Surcharge", currency_field="currency_id")
     total_cost = fields.Monetary(string="Total Cost", currency_field="currency_id", 
-                                compute="_compute_total_cost", store=True)
+                                compute="_compute_total_cost", store=True
 
     # ============================================================================
     # RELATIONSHIP FIELDS
@@ -113,8 +113,10 @@ class BinUnlockService(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.bin_id and record.partner_id:
-                record.display_name = _("%s - %s - %s"
+                record.display_name = _("%s - %s - %s", "Unknown")
             else:
+                pass
+            pass
                 record.display_name = record.name or "New"
 
     display_name = fields.Char(compute="_compute_display_name", string="Display Name", store=True)
@@ -151,7 +153,7 @@ class BinUnlockService(models.Model):
         self.write({
             "state": "active",
             "completion_date": fields.Datetime.now()
-        })
+        }
 
     def action_cancel(self):
         self.ensure_one()

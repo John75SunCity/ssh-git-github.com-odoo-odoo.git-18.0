@@ -28,7 +28,7 @@ class PaperLoadShipment(models.Model):
         ("delivered", "Delivered"),
         ("completed", "Completed"),
         ("cancelled", "Cancelled"),
-    ], string="Status", default="draft", tracking=True)
+    ], string="Status", default="draft", tracking=True
 
     status = fields.Selection([
         ('pending', 'Pending'),
@@ -36,14 +36,14 @@ class PaperLoadShipment(models.Model):
         ('loaded', 'Loaded'),
         ('shipped', 'Shipped'),
         ('delivered', 'Delivered')
-    ], string="Shipment Status", default='pending')
+    ], string="Shipment Status", default='pending'
 
     processing_status = fields.Selection([
         ('queued', 'Queued'),
         ('processing', 'Processing'),
         ('processed', 'Processed'),
         ('error', 'Error')
-    ], string="Processing Status", default='queued')
+    ], string="Processing Status", default='queued'
 
     # ============================================================================
     # SHIPMENT DETAILS
@@ -62,14 +62,14 @@ class PaperLoadShipment(models.Model):
         ('medium', 'Medium Grade'),
         ('low', 'Low Grade'),
         ('mixed', 'Mixed Grade')
-    ], string="Paper Grade")
+    ], string="Paper Grade"
 
     contamination_level = fields.Selection([
         ('none', 'No Contamination'),
         ('low', 'Low Contamination'),
         ('medium', 'Medium Contamination'),
         ('high', 'High Contamination')
-    ], string="Contamination Level", default='none')
+    ], string="Contamination Level", default='none'
 
     # ============================================================================
     # LOCATIONS AND LOGISTICS
@@ -83,7 +83,7 @@ class PaperLoadShipment(models.Model):
         ('rail', 'Rail'),
         ('ship', 'Ship'),
         ('air', 'Air')
-    ], string="Transportation Mode", default='truck')
+    ], string="Transportation Mode", default='truck'
 
     # ============================================================================
     # DATES AND SCHEDULING
@@ -100,7 +100,7 @@ class PaperLoadShipment(models.Model):
     # ============================================================================
     partner_id = fields.Many2one(
         "res.partner", string="Customer", domain="[('is_company', '=', True)]"
-    )
+    
     vendor_id = fields.Many2one("res.partner", string="Vendor/Recycler")
     driver_id = fields.Many2one("res.partner", string="Driver")
     carrier_id = fields.Many2one("res.partner", string="Carrier")
@@ -117,21 +117,21 @@ class PaperLoadShipment(models.Model):
         ('email', 'Email Confirmation'),
         ('phone', 'Phone Confirmation'),
         ('portal', 'Portal Confirmation')
-    ], string="Confirmation Method", default='signature')
+    ], string="Confirmation Method", default='signature'
 
     delivery_priority = fields.Selection([
         ('low', 'Low'),
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-    ], string="Delivery Priority", default='normal')
+    ], string="Delivery Priority", default='normal'
 
     environmental_conditions = fields.Selection([
         ('normal', 'Normal'),
         ('controlled', 'Controlled Environment'),
         ('hazmat', 'Hazardous Materials'),
         ('refrigerated', 'Refrigerated')
-    ], string="Environmental Conditions", default='normal')
+    ], string="Environmental Conditions", default='normal'
 
     # ============================================================================
     # QUALITY AND SATISFACTION
@@ -142,7 +142,7 @@ class PaperLoadShipment(models.Model):
         ('3', 'Average'),
         ('4', 'Good'),
         ('5', 'Excellent')
-    ], string="Customer Rating")
+    ], string="Customer Rating"
 
     quality_check_passed = fields.Boolean(string="Quality Check Passed", default=False)
     inspection_notes = fields.Text(string="Inspection Notes")
@@ -233,6 +233,7 @@ class PaperLoadShipment(models.Model):
         """Validate scheduled date sequence"""
         for record in self:
             if record.scheduled_pickup_date and record.scheduled_delivery_date:
+                pass
                 if record.scheduled_pickup_date > record.scheduled_delivery_date:
                     raise ValidationError("Pickup date cannot be after delivery date")
 
@@ -244,7 +245,7 @@ class PaperLoadShipment(models.Model):
                 existing = self.search([
                     ('shipment_number', '=', record.shipment_number),
                     ('id', '!=', record.id)
-                ])
+                ]
                 if existing:
                     raise ValidationError(_("Shipment number %s already exists")
 

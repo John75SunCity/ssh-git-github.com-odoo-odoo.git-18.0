@@ -49,32 +49,32 @@ class PickupRoute(models.Model):
         tracking=True,
         index=True,
         help="Unique identifier for the pickup route",
-    )
+    
     # Partner Relationship
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         help="Associated partner for this record"
-    )
+    
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    
     user_id = fields.Many2one(
         "res.users",
         string="Route Manager",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for route management",
-    )
+    
     active = fields.Boolean(
         string="Active", default=True, help="Active status of the route"
-    )
+    
     sequence = fields.Integer(
         string="Sequence", default=10, help="Sequence for ordering routes"
-    )
+    
 
     # ============================================================================
     # ROUTE SCHEDULING AND TIMING
@@ -85,28 +85,28 @@ class PickupRoute(models.Model):
         default=fields.Date.today,
         tracking=True,
         help="Scheduled date for the route",
-    )
+    
     start_time = fields.Datetime(
         string="Start Time", tracking=True, help="Scheduled start time for the route"
-    )
+    
     end_time = fields.Datetime(
         string="End Time", help="Scheduled end time for the route"
-    )
+    
     actual_start_time = fields.Datetime(
         string="Actual Start Time", help="Actual time when route execution started"
-    )
+    
     actual_end_time = fields.Datetime(
         string="Actual End Time", help="Actual time when route execution completed"
-    )
+    
     estimated_duration = fields.Float(
         string="Estimated Duration (hours)", help="Estimated time to complete the route"
-    )
+    
     actual_duration = fields.Float(
         string="Actual Duration (hours)",
         compute="_compute_actual_duration",
         store=True,
         help="Actual time taken to complete the route",
-    )
+    
 
     # ============================================================================
     # ROUTE TYPE AND CLASSIFICATION
@@ -125,7 +125,7 @@ class PickupRoute(models.Model):
         required=True,
         tracking=True,
         help="Classification of the pickup route",
-    )
+    
     priority = fields.Selection(
         [
             ("0", "Very Low"),
@@ -137,7 +137,7 @@ class PickupRoute(models.Model):
         string="Priority",
         default="2",
         help="Route execution priority",
-    )
+    
     service_level = fields.Selection(
         [
             ("standard", "Standard Service"),
@@ -148,7 +148,7 @@ class PickupRoute(models.Model):
         string="Service Level",
         default="standard",
         help="Level of service for this route",
-    )
+    
 
     # ============================================================================
     # STATUS AND WORKFLOW MANAGEMENT
@@ -166,7 +166,7 @@ class PickupRoute(models.Model):
         default="draft",
         tracking=True,
         help="Current status of the pickup route",
-    )
+    
     completion_status = fields.Selection(
         [
             ("pending", "Pending"),
@@ -177,7 +177,7 @@ class PickupRoute(models.Model):
         string="Completion Status",
         default="pending",
         help="Route completion status",
-    )
+    
 
     # ============================================================================
     # PERSONNEL AND VEHICLE ASSIGNMENT
@@ -187,19 +187,19 @@ class PickupRoute(models.Model):
         string="Driver",
         tracking=True,
         help="Driver assigned to this route",
-    )
+    
     assistant_driver_id = fields.Many2one(
         "res.partner", string="Assistant Driver", help="Assistant driver for the route"
-    )
+    
     vehicle_id = fields.Many2one(
         "records.vehicle",
         string="Vehicle",
         tracking=True,
         help="Vehicle assigned to this route",
-    )
+    
     backup_vehicle_id = fields.Many2one(
         "records.vehicle", string="Backup Vehicle", help="Backup vehicle for this route"
-    )
+    
 
     # ============================================================================
     # ROUTE OPTIMIZATION AND TRACKING
@@ -208,26 +208,26 @@ class PickupRoute(models.Model):
         "records.location",
         string="Start Location",
         help="Starting location for the route",
-    )
+    
     end_location_id = fields.Many2one(
         "records.location", string="End Location", help="Ending location for the route"
-    )
+    
     total_distance = fields.Float(
         string="Total Distance (miles)", help="Total distance of the route"
-    )
+    
     estimated_fuel_cost = fields.Monetary(
         string="Estimated Fuel Cost",
         currency_field="currency_id",
         help="Estimated fuel cost for the route",
-    )
+    
     actual_fuel_cost = fields.Monetary(
         string="Actual Fuel Cost",
         currency_field="currency_id",
         help="Actual fuel cost for the route",
-    )
+    
     currency_id = fields.Many2one(
         "res.currency", string="Currency", related="company_id.currency_id", store=True
-    )
+    
 
     # ============================================================================
     # ROUTE PERFORMANCE METRICS
@@ -237,41 +237,41 @@ class PickupRoute(models.Model):
         compute="_compute_route_metrics",
         store=True,
         help="Total number of stops on the route",
-    )
+    
     completed_stops = fields.Integer(
         string="Completed Stops",
         compute="_compute_route_metrics",
         store=True,
         help="Number of completed stops",
-    )
+    
     efficiency_score = fields.Float(
         string="Efficiency Score",
         compute="_compute_efficiency_score",
         store=True,
         help="Route efficiency score (0-100)",
-    )
+    
     on_time_performance = fields.Float(
         string="On-Time Performance (%)",
         compute="_compute_performance_metrics",
         store=True,
         help="Percentage of on-time deliveries",
-    )
+    
 
     # ============================================================================
     # DOCUMENTATION AND COMMUNICATION
     # ============================================================================
     description = fields.Text(
         string="Description", help="Detailed description of the route"
-    )
+    
     route_instructions = fields.Text(
         string="Route Instructions", help="Special instructions for route execution"
-    )
+    
     driver_notes = fields.Text(
         string="Driver Notes", help="Notes from the driver during route execution"
-    )
+    
     completion_notes = fields.Text(
         string="Completion Notes", help="Notes upon route completion"
-    )
+    
 
     # ============================================================================
     # RELATIONSHIP FIELDS
@@ -281,13 +281,13 @@ class PickupRoute(models.Model):
         "route_id",
         string="Pickup Requests",
         help="Pickup requests assigned to this route",
-    )
+    
     route_stop_ids = fields.One2many(
         "pickup.route.stop",
         "route_id",
         string="Route Stops",
         help="Individual stops on this route",
-    )
+    
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -297,26 +297,26 @@ class PickupRoute(models.Model):
         "res_id",
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+    
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+    
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)],
-    )
+    
 
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
-    )
+    
 
     # ============================================================================
     # COMPUTE METHODS
@@ -348,6 +348,12 @@ class PickupRoute(models.Model):
                 delta = record.actual_end_time - record.actual_start_time
                 record.actual_duration = delta.total_seconds() / 3600
             else:
+                pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.actual_duration = 0.0
 
     @api.depends("route_stop_ids")
@@ -358,7 +364,7 @@ class PickupRoute(models.Model):
             record.total_stops = len(stops)
             record.completed_stops = len(
                 stops.filtered(lambda s: s.status == "completed")
-            )
+            
 
     @api.depends("estimated_duration", "actual_duration", "total_distance")
     def _compute_efficiency_score(self):
@@ -367,31 +373,43 @@ class PickupRoute(models.Model):
             if record.estimated_duration and record.actual_duration:
                 time_efficiency = min(
                     100, (record.estimated_duration / record.actual_duration) * 100
-                )
+                
                 record.efficiency_score = time_efficiency
             else:
+                pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.efficiency_score = 0.0
 
     @api.depends(
         "route_stop_ids",
         "route_stop_ids.scheduled_time",
         "route_stop_ids.actual_arrival_time",
-    )
+    
     def _compute_performance_metrics(self):
         """Calculate on-time performance metrics"""
         for record in self:
             stops_with_times = record.route_stop_ids.filtered(
                 lambda s: s.scheduled_time and s.actual_arrival_time
-            )
+            
 
             if stops_with_times:
                 on_time_stops = stops_with_times.filtered(
                     lambda s: s.actual_arrival_time <= s.scheduled_time
-                )
+                
                 record.on_time_performance = (
                     len(on_time_stops) / len(stops_with_times)
                 ) * 100
             else:
+                pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.on_time_performance = 0.0
 
     # ============================================================================
@@ -404,7 +422,7 @@ class PickupRoute(models.Model):
             if not vals.get("name") or vals.get("name") == "/":
                 vals["name"] = (
                     self.env["ir.sequence"].next_by_code("pickup.route") or "ROUTE-NEW"
-                )
+                
         return super().create(vals_list)
 
     def write(self, vals):
@@ -416,7 +434,7 @@ class PickupRoute(models.Model):
                 if old_state != new_state:
                     record.message_post(
                         body=_("Route status changed from %s to %s", (old_state), new_state)
-                    )
+                    
         return super().write(vals)
 
     # ============================================================================
@@ -448,7 +466,7 @@ class PickupRoute(models.Model):
                 "state": "in_progress",
                 "actual_start_time": fields.Datetime.now(),
             }
-        )
+        
         self.message_post(body=_("Route execution started"))
 
     def action_complete_route(self):
@@ -460,11 +478,11 @@ class PickupRoute(models.Model):
         # Check if all stops are completed
         incomplete_stops = self.route_stop_ids.filtered(
             lambda s: s.status != "completed"
-        )
+        
         if incomplete_stops:
             raise UserError(
                 _("Cannot complete route with incomplete stops: %s", "), ".join(incomplete_stops.mapped("name"))
-            )
+            
 
         self.write(
             {
@@ -472,7 +490,7 @@ class PickupRoute(models.Model):
                 "actual_end_time": fields.Datetime.now(),
                 "completion_status": "complete",
             }
-        )
+        
         self.message_post(body=_("Route execution completed successfully"))
 
     def action_cancel_route(self):
@@ -496,7 +514,7 @@ class PickupRoute(models.Model):
                 "actual_start_time": False,
                 "actual_end_time": False,
             }
-        )
+        
         self.message_post(body=_("Route reset to draft"))
 
     def action_optimize_route(self):
@@ -562,7 +580,7 @@ class PickupRoute(models.Model):
         if self.estimated_duration and self.actual_duration:
             time_score = min(
                 100, (self.estimated_duration / self.actual_duration) * 100
-            )
+            
             total_score += time_score * efficiency_factors["time_efficiency"]
 
         # Distance efficiency (based on optimal vs actual)
@@ -576,7 +594,7 @@ class PickupRoute(models.Model):
         if self.estimated_fuel_cost and self.actual_fuel_cost:
             fuel_score = min(
                 100, (self.estimated_fuel_cost / self.actual_fuel_cost) * 100
-            )
+            
             total_score += fuel_score * efficiency_factors["fuel_efficiency"]
 
         # Completion rate
@@ -597,7 +615,7 @@ class PickupRoute(models.Model):
             if request.state not in ["confirmed", "scheduled"]:
                 raise UserError(
                     _("Pickup request %s is not in a valid state for route assignment", request.name)
-                )
+                
 
         # Assign to route
         pickup_requests.write({"route_id": self.id})
@@ -613,12 +631,12 @@ class PickupRoute(models.Model):
                     "scheduled_time": request.scheduled_pickup_date,
                     "sequence": next_sequence,
                 }
-            )
+            
             next_sequence += 1
 
-        self.message_post(
+        self.message_post(body=_("Action completed"))
             body=_("Assigned %d pickup requests to route", len(pickup_requests))
-        )
+        
 
     def get_route_summary(self):
         """Get route summary for reporting"""
@@ -643,6 +661,7 @@ class PickupRoute(models.Model):
         """Validate route start and end times"""
         for record in self:
             if record.start_time and record.end_time:
+                pass
                 if record.start_time >= record.end_time:
                     raise ValidationError(_("Start time must be before end time"))
 
@@ -651,10 +670,11 @@ class PickupRoute(models.Model):
         """Validate actual start and end times"""
         for record in self:
             if record.actual_start_time and record.actual_end_time:
+                pass
                 if record.actual_start_time >= record.actual_end_time:
                     raise ValidationError(
                         _("Actual start time must be before actual end time")
-                    )
+                    
 
     @api.constrains("total_distance")
     def _check_distance(self):
@@ -708,23 +728,23 @@ class PickupRouteStop(models.Model):
 
     route_id = fields.Many2one(
         "pickup.route", string="Route", required=True, ondelete="cascade"
-    )
+    
     pickup_request_id = fields.Many2one(
         "pickup.request", string="Pickup Request", help="Associated pickup request"
-    )
+    
     sequence = fields.Integer(string="Sequence", default=10)
     name = fields.Char(string="Stop Name", compute="_compute_name", store=True)
     location_id = fields.Many2one("records.location", string="Location", required=True)
     address = fields.Text(string="Address", related="location_id.full_address")
     scheduled_time = fields.Datetime(
         string="Scheduled Time", help="Scheduled arrival time"
-    )
+    
     actual_arrival_time = fields.Datetime(
         string="Actual Arrival Time", help="Actual arrival time at stop"
-    )
+    
     departure_time = fields.Datetime(
         string="Departure Time", help="Time of departure from stop"
-    )
+    
     status = fields.Selection(
         [
             ("pending", "Pending"),
@@ -735,16 +755,16 @@ class PickupRouteStop(models.Model):
         ],
         string="Status",
         default="pending",
-    )
+    
     estimated_service_time = fields.Float(
         string="Estimated Service Time (minutes)",
         help="Estimated time to complete service at stop",
-    )
+    
     actual_service_time = fields.Float(
         string="Actual Service Time (minutes)",
         compute="_compute_actual_service_time",
         store=True,
-    )
+    
     notes = fields.Text(string="Notes")
 
     @api.depends("pickup_request_id", "location_id")
@@ -754,8 +774,16 @@ class PickupRouteStop(models.Model):
             if record.pickup_request_id:
                 record.name = _("Stop: %s"
             elif record.location_id:
+                pass
+            pass
                 record.name = _("Stop: %s"
             else:
+                pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.name = _("Stop %s"
 
     @api.depends("actual_arrival_time", "departure_time")
@@ -766,6 +794,12 @@ class PickupRouteStop(models.Model):
                 delta = record.departure_time - record.actual_arrival_time
                 record.actual_service_time = delta.total_seconds() / 60
             else:
+                pass
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.actual_service_time = 0.0
 
     def action_start_service(self):
@@ -776,7 +810,7 @@ class PickupRouteStop(models.Model):
                 "status": "in_progress",
                 "actual_arrival_time": fields.Datetime.now(),
             }
-        )
+        
 
     def action_complete_service(self):
         """Complete service at this stop"""
@@ -786,7 +820,7 @@ class PickupRouteStop(models.Model):
                 "status": "completed",
                 "departure_time": fields.Datetime.now(),
             }
-        )
+        
 
     def action_skip_stop(self):
         """Skip this stop"""
@@ -811,17 +845,17 @@ class PickupRouteOptimizeWizard(models.TransientModel):
         string="Optimization Method",
         default="balanced",
         required=True,
-    )
+    
     consider_traffic = fields.Boolean(
         string="Consider Traffic",
         default=True,
         help="Include traffic conditions in optimization",
-    )
+    
     consider_time_windows = fields.Boolean(
         string="Consider Time Windows",
         default=True,
         help="Respect customer time windows",
-    )
+    
     notes = fields.Text(string="Optimization Notes")
 
     def action_optimize_route(self):
@@ -844,7 +878,7 @@ class PickupRouteOptimizeWizard(models.TransientModel):
             body=_("Route optimized using %s method", dict(self._fields["optimization_method"].selection))[
                 self.optimization_method
             ]
-        )
+        
 
         return {"type": "ir.actions.act_window_close"}
         return {"type": "ir.actions.act_window_close"}

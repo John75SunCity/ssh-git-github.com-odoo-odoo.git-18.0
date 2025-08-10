@@ -370,12 +370,14 @@ class RecordsContainerType(models.Model):
                 record.handling_fee = record.billing_config_id.handling_fee or 0.0
                 record.destruction_fee = record.billing_config_id.destruction_fee or 0.0
             elif record.base_rate_id:
+            pass
                 # Fallback to base rates
                 record.standard_rate = record.base_rate_id.monthly_rate or 0.0
                 record.setup_fee = record.base_rate_id.setup_fee or 0.0
                 record.handling_fee = record.base_rate_id.handling_fee or 0.0
                 record.destruction_fee = record.base_rate_id.destruction_fee or 0.0
             elif record.standard_type and record.standard_type != "custom":
+            pass
                 # Use standard rates based on container type
                 standard_rates = record._get_standard_type_rates()
                 record.standard_rate = standard_rates.get("monthly_rate", 0.0)
@@ -383,6 +385,11 @@ class RecordsContainerType(models.Model):
                 record.handling_fee = standard_rates.get("handling_fee", 0.0)
                 record.destruction_fee = standard_rates.get("destruction_fee", 0.0)
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.standard_rate = 0.0
                 record.setup_fee = 0.0
                 record.handling_fee = 0.0
@@ -408,6 +415,11 @@ class RecordsContainerType(models.Model):
                     (total_weight / total_capacity) * 100 if total_capacity > 0 else 0.0
                 )
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.utilization_percentage = 0.0
 
     @api.depends("container_ids", "container_ids.state", "standard_rate")
@@ -429,6 +441,11 @@ class RecordsContainerType(models.Model):
                     record.length * record.width * record.height
                 ) / 1728
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
                 record.volume_calculated = 0.0
 
     @api.onchange("standard_type")
@@ -663,6 +680,11 @@ class RecordsContainerType(models.Model):
             if record.code:
                 display_name = _("%s [%s]"
             else:
+            pass
+            pass
+            pass
+            pass
+            pass
                 display_name = record.name
             result.append((record.id, display_name))
         return result
@@ -700,8 +722,10 @@ class RecordsContainerType(models.Model):
             # Code already has _COPY suffix, keep it as is
             pass
         elif "_COPY" in base_code:
+            pass
             base_code = base_code.split("_COPY")[0] + "_COPY"
         else:
+            pass
             base_code = f"{base_code}_COPY"
 
         # Find existing copies and increment a counter if needed
@@ -855,6 +879,7 @@ class RecordsContainerType(models.Model):
         if self.billing_config_id:
             return self.billing_config_id
         elif self.standard_type != "custom":
+            pass
             # Find or create billing config for standard type
             billing_config = self.env["records.billing.config"].search(
                 [("container_type", "=", self.standard_type)], limit=1

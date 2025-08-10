@@ -57,18 +57,23 @@ class StockLotAttributeValue(models.Model):
                     _("%s: %s"
                 )
             elif attr_type == "number":
+            pass
                 record.display_name = (
                     _("%s: %s"
                 )
             elif attr_type == "date":
+            pass
                 record.display_name = (
                     _("%s: %s"
                 )
             elif attr_type == "boolean":
+            pass
                 record.display_name = _("%s: %s"
             elif attr_type == "selection":
+            pass
                 record.display_name = (
                     _("%s: %s"
                 )
             else:
+            pass
                 record.display_name = _("%s: Unknown Type"
