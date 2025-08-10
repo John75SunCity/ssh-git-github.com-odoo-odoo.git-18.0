@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 
 
 class FieldLabelCustomization(models.Model):
@@ -197,6 +197,11 @@ class FieldLabelCustomization(models.Model):
         default="Created By Department",
         help="Custom label for originating department field",
     )
+    label_box_number = fields.Char(
+        string='Box Number Label', 
+        default='Box Number',
+        help="Custom label for box number field"
+    )
 
     # ============================================================================
     # DEPLOYMENT & VERSIONING
@@ -223,7 +228,7 @@ class FieldLabelCustomization(models.Model):
     validation_rules = fields.Text(string="Validation Rules")
     test_results = fields.Text(string="Test Results")
     approval_required = fields.Boolean(string="Approval Required", default=False)
-    approved_by = fields.Many2one("res.users", string="Approved By")
+    approved_by_id = fields.Many2one("res.users", string="Approved By")
     approval_date = fields.Datetime(string="Approval Date")
 
     # ============================================================================
@@ -236,11 +241,17 @@ class FieldLabelCustomization(models.Model):
     # RELATIONSHIP FIELDS
     # ============================================================================
     # Mail framework fields
+    activity_ids = fields.One2many(
+        "mail.activity", "res_id", string="Activities"
+    )
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
     @api.depends("deployment_status", "deployment_date")
     def _compute_is_deployed(self):
         for record in self:
@@ -256,8 +267,7 @@ class FieldLabelCustomization(models.Model):
                     record.model_name, record.field_name, record.custom_label or "Custom Label"
                 )
             else:
-                record.full_customization_name = _("Incomplete Configuration")
-                record.full_customization_name = record.name
+                record.full_customization_name = record.name or _("Incomplete Configuration")
 
     @api.depends("model_name")
     def _compute_available_fields(self):
@@ -284,8 +294,6 @@ class FieldLabelCustomization(models.Model):
                 except Exception:
                     record.available_fields = "Invalid model selected"
             else:
-            pass
-            pass
                 record.available_fields = (
                     "No model selected or model not in records_management"
                 )
@@ -301,7 +309,6 @@ class FieldLabelCustomization(models.Model):
     )
 
     # ============================================================================
-    label_box_number = fields.Char(string='Box Number Label', default='Box Number')
     # HELPER METHODS
     # ============================================================================
     @api.model
@@ -317,7 +324,6 @@ class FieldLabelCustomization(models.Model):
                 elif model_name.startswith(
                     ("records.", "naid.", "customer.", "portal.")
                 ):
-            pass
                     # Additional check for records management related models
                     records_models.append(model_name)
             except Exception:
@@ -345,7 +351,7 @@ class FieldLabelCustomization(models.Model):
         except Exception:
             return False
 
-    def _is_protected_search_field(self, model_name, field_name):
+    def _check_protected_search_field(self, model_name, field_name):
         """Check if a field is protected from customization (critical for search functionality)"""
         # Define protected fields by model
         protected_fields = {
@@ -440,18 +446,11 @@ class FieldLabelCustomization(models.Model):
             if record.model_name:
                 if not record._is_records_management_model(record.model_name):
                     available_models = record._get_records_management_models()
+                    model_list = available_models[:10] + ["..."] if available_models else []
                     raise ValidationError(
-                        _(
-                            "Model '%s' is not part of the records_management module.\n"
-                            "Available models:\n%s"
-                        )
-                        % (
+                        _("Model '%s' is not part of the records_management module.\nAvailable models:\n%s",
                             record.model_name,
-                            "\n".join(
-                                available_models[:10] + ["..."]
-                                if len(available_models) > 10
-                                else available_models
-                            ),
+                            "\n".join(model_list)
                         )
                     )
 
@@ -466,15 +465,13 @@ class FieldLabelCustomization(models.Model):
                     )
 
                 # Check if field is protected from customization
-                if record._is_protected_search_field(
+                if record._check_protected_search_field(
                     record.model_name, record.field_name
                 ):
                     raise ValidationError(
-                        _(
-                            "Field '%s' in model '%s' is protected and cannot be customized. "
-                            "This field is critical for the intelligent search functionality."
+                        _("Field '%s' in model '%s' is protected and cannot be customized. This field is critical for the intelligent search functionality.",
+                            record.field_name, record.model_name
                         )
-                        % (record.field_name, record.model_name)
                     )
 
                 # Then validate that the field exists
@@ -500,19 +497,14 @@ class FieldLabelCustomization(models.Model):
                                 "write_uid",
                             ]
                         ]
+                        field_list = sorted(available_fields)[:20]
+                        if available_fields:
+                            field_list.append("...")
                         raise ValidationError(
-                            _(
-                                "Field '%s' does not exist in model '%s'.\n"
-                                "Available fields:\n%s"
-                            )
-                            % (
+                            _("Field '%s' does not exist in model '%s'.\nAvailable fields:\n%s",
                                 record.field_name,
                                 record.model_name,
-                                "\n".join(
-                                    sorted(available_fields)[:20] + ["..."]
-                                    if len(available_fields) > 20
-                                    else sorted(available_fields)
-                                ),
+                                "\n".join(field_list)
                             )
                         )
                 except Exception:
@@ -557,7 +549,7 @@ class FieldLabelCustomization(models.Model):
                 pass
 
     # ============================================================================
-    # BATCH-GENERATED ACTION METHODS (Ultimate Batch Fixer)
+    # ACTION METHODS
     # ============================================================================
     def action_apply_corporate_preset(self):
         """Apply Corporate Preset - Action method"""
@@ -607,14 +599,16 @@ class FieldLabelCustomization(models.Model):
             "context": self.env.context,
         }
 
-    def action_reset_to_defaults(self):
-        """Reset To Defaults - Action method"""
+    def action_restore_defaults(self):
+        """Restore default settings - Action method"""
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Reset To Defaults"),
+            "name": _("Restore Default Settings"),
             "res_model": "field.label.customization",
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
         }
+        """_summary_
+        """
