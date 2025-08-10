@@ -141,15 +141,15 @@ class StockLot(models.Model):
             "context": {"active_ids": [self.id]},
         }
 
-    def action_quality_check(self):
+    def action_schedule_quality_check(self):
         """Schedule quality check for this lot"""
         self.ensure_one()
 
         # Create quality check activity
         self.activity_schedule(
             "mail.mail_activity_data_todo",
-            summary=f"Quality Check: {self.name}",
-            note="Perform quality assessment including condition review and compliance verification.",
+            summary=_("Quality Check: %s") % self.name,
+            note=_("Perform quality assessment including condition review and compliance verification."),
             user_id=self.env.user.id,
         )
 
@@ -268,7 +268,7 @@ class StockLot(models.Model):
             "context": {"default_lot_id": self.id},
         }
 
-    def action_view_quality_checks(self):
+    def action_open_quality_checks(self):
         """View quality checks for this lot"""
         self.ensure_one()
         return {
@@ -326,7 +326,7 @@ class StockLot(models.Model):
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================
-    def check_retention_compliance(self):
+    def _check_retention_compliance(self):
         """Check if lot is compliant with retention policies"""
         self.ensure_one()
 
@@ -369,249 +369,3 @@ class StockLot(models.Model):
                     raise UserError(
                         _("Destruction date cannot be before retention date.")
                     )
-
-class StockLotAttribute(models.Model):
-    """Stock Lot Attribute Management"""
-
-    _name = "stock.lot.attribute"
-    _description = "Stock Lot Attribute"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name"
-    _rec_name = "name"
-
-    # ============================================================================
-    # CORE IDENTIFICATION FIELDS
-    # ============================================================================
-    name = fields.Char(
-        string="Attribute Name",
-        required=True,
-        tracking=True,
-        index=True,
-        help="Name of the lot attribute",
-    )
-    company_id = fields.Many2one(
-        "res.company",
-        string="Company",
-        default=lambda self: self.env.company,
-        required=True,
-    )
-    user_id = fields.Many2one(
-        "res.users",
-        string="Created By",
-        default=lambda self: self.env.user,
-        tracking=True,
-        help="User who created this attribute",
-    )
-    active = fields.Boolean(
-        string="Active", default=True, help="Active status of the attribute"
-    )
-
-    # ============================================================================
-    # ATTRIBUTE CONFIGURATION
-    # ============================================================================
-    attribute_type = fields.Selection(
-        [
-            ("text", "Text"),
-            ("number", "Number"),
-            ("date", "Date"),
-            ("boolean", "Boolean"),
-            ("selection", "Selection"),
-        ],
-        string="Attribute Type",
-        required=True,
-        default="text",
-        help="Type of attribute value",
-    )
-    description = fields.Text(
-        string="Description", help="Detailed description of this attribute"
-    )
-    required = fields.Boolean(
-        string="Required", default=False, help="Whether this attribute is mandatory"
-    )
-    sequence = fields.Integer(
-        string="Sequence", default=10, help="Display order sequence"
-    )
-
-    # ============================================================================
-    # SELECTION OPTIONS (for selection type attributes)
-    # ============================================================================
-    selection_option_ids = fields.One2many(
-        "stock.lot.attribute.option",
-        "attribute_id",
-        string="Selection Options",
-        help="Available options for selection type attributes",
-    )
-
-    # ============================================================================
-    # STATE MANAGEMENT
-    # ============================================================================
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("confirmed", "Confirmed"),
-            ("archived", "Archived"),
-        ],
-        string="State",
-        default="draft",
-        tracking=True,
-        help="Current state of the attribute",
-    )
-
-    # ============================================================================
-    # RELATIONSHIP FIELDS
-    # ============================================================================
-    lot_attribute_value_ids = fields.One2many(
-        "stock.lot.attribute.value",
-        "attribute_id",
-        string="Attribute Values",
-        help="Values assigned to lots for this attribute",
-    )
-
-    # ============================================================================
-    # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
-    )
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-        domain=lambda self: [("model", "=", self._name)],
-    )
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_confirm(self):
-        """Confirm the attribute"""
-        for record in self:
-            if record.state != "draft":
-                raise UserError(_("Only draft attributes can be confirmed."))
-            record.write({"state": "confirmed"})
-            record.message_post(body=_("Attribute confirmed"))
-
-    def action_archive(self):
-        """Archive the attribute"""
-        for record in self:
-            record.write({"state": "archived", "active": False})
-            record.message_post(body=_("Attribute archived"))
-
-    def action_activate(self):
-        """Activate archived attribute"""
-        for record in self:
-            record.write({"state": "confirmed", "active": True})
-            record.message_post(body=_("Attribute activated"))
-
-    # ============================================================================
-    # UTILITY METHODS
-    # ============================================================================
-    def get_attribute_summary(self):
-        """Get summary information for this attribute"""
-        self.ensure_one()
-        return {
-            "name": self.name,
-            "type": self.attribute_type,
-            "required": self.required,
-            "state": self.state,
-            "value_count": len(self.lot_attribute_value_ids),
-        }
-
-class StockLotAttributeOption(models.Model):
-    """Stock Lot Attribute Selection Options"""
-
-    _name = "stock.lot.attribute.option"
-    _description = "Stock Lot Attribute Option"
-    _order = "sequence, name"
-    _rec_name = "name"
-
-    name = fields.Char(
-        string="Option Name", required=True, help="Name of the selection option"
-    )
-    attribute_id = fields.Many2one(
-        "stock.lot.attribute",
-        string="Attribute",
-        required=True,
-        ondelete="cascade",
-        help="Parent attribute",
-    )
-    sequence = fields.Integer(string="Sequence", default=10, help="Display order")
-    description = fields.Text(string="Description", help="Option description")
-    active = fields.Boolean(string="Active", default=True, help="Active status")
-
-class StockLotAttributeValue(models.Model):
-    """Stock Lot Attribute Values"""
-
-    _name = "stock.lot.attribute.value"
-    _description = "Stock Lot Attribute Value"
-    _rec_name = "display_name"
-
-    lot_id = fields.Many2one(
-        "stock.lot",
-        string="Stock Lot",
-        required=True,
-        ondelete="cascade",
-        help="Associated stock lot",
-    )
-    attribute_id = fields.Many2one(
-        "stock.lot.attribute",
-        string="Attribute",
-        required=True,
-        ondelete="cascade",
-        help="Attribute definition",
-    )
-
-    # Value fields for different types
-    value_text = fields.Char(string="Text Value", help="Text attribute value")
-    value_number = fields.Float(string="Number Value", help="Numeric attribute value")
-    value_date = fields.Date(string="Date Value", help="Date attribute value")
-    value_boolean = fields.Boolean(
-        string="Boolean Value", help="Boolean attribute value"
-    )
-    value_selection = fields.Char(
-        string="Selection Value", help="Selected option value"
-    )    @api.depends(
-        "attribute_id",
-        "value_text",
-        "value_number",
-        "value_date",
-        "value_boolean",
-        "value_selection",
-    )
-    def _compute_display_name(self):
-        """Compute display name based on attribute type and value"""
-        for record in self:
-            if not record.attribute_id:
-                record.display_name = "No Attribute"
-                continue
-
-            attr_type = record.attribute_id.attribute_type
-            if attr_type == "text":
-                record.display_name = (
-                    f"{record.attribute_id.name}: {record.value_text or 'N/A'}"
-                )
-            elif attr_type == "number":
-                record.display_name = (
-                    f"{record.attribute_id.name}: {record.value_number or 0}"
-                )
-            elif attr_type == "date":
-                record.display_name = (
-                    f"{record.attribute_id.name}: {record.value_date or 'N/A'}"
-                )
-            elif attr_type == "boolean":
-                record.display_name = f"{record.attribute_id.name}: {'Yes' if record.value_boolean else 'No'}"
-            elif attr_type == "selection":
-                record.display_name = (
-                    f"{record.attribute_id.name}: {record.value_selection or 'N/A'}"
-                )
-            else:
-                record.display_name = f"{record.attribute_id.name}: Unknown Type"

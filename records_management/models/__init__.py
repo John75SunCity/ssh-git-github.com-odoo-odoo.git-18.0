@@ -266,6 +266,9 @@ from . import records_permanent_flag_wizard
 
 # Stock extensions (loaded after core models)
 from . import stock_lot
+from . import stock_lot_attribute
+from . import stock_lot_attribute_option
+from . import stock_lot_attribute_value
 
 # =============================================================================
 # OPTIONAL EXTENSIONS AND INTEGRATIONS
