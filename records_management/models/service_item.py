@@ -28,9 +28,10 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
+from datetime import timedelta
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-from datetime import timedelta
 
 
 class ServiceItem(models.Model):
@@ -49,23 +50,23 @@ class ServiceItem(models.Model):
         tracking=True,
         index=True,
         help="Name or identifier for this service item",
-    
+    )
     description = fields.Text(
         string="Description", help="Detailed description of the service item"
-    
+    )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this service item",
-    
+    )
     active = fields.Boolean(string="Active", default=True, tracking=True)
 
     # Partner Relationship
@@ -73,7 +74,7 @@ class ServiceItem(models.Model):
         "res.partner",
         string="Partner",
         help="Associated partner for this record"
-    
+    )
 
     # ============================================================================
     # STATE MANAGEMENT
@@ -90,7 +91,7 @@ class ServiceItem(models.Model):
         default="draft",
         tracking=True,
         help="Current status of the service item",
-    
+    )
 
     # ============================================================================
     # SERVICE CONFIGURATION
@@ -110,7 +111,7 @@ class ServiceItem(models.Model):
         required=True,
         tracking=True,
         help="Type of service this item supports",
-    
+    )
 
     category = fields.Selection(
         [
@@ -125,7 +126,7 @@ class ServiceItem(models.Model):
         required=True,
         tracking=True,
         help="Category classification of the service item",
-    
+    )
 
     # ============================================================================
     # ITEM SPECIFICATIONS
@@ -135,16 +136,16 @@ class ServiceItem(models.Model):
         string="Serial Number",
         index=True,
         help="Unique serial number for identification",
-    
+    )
     manufacturer = fields.Char(
         string="Manufacturer", help="Equipment or item manufacturer"
-    
+    )
     purchase_date = fields.Date(
         string="Purchase Date", tracking=True, help="Date of purchase or acquisition"
-    
+    )
     warranty_expiry = fields.Date(
         string="Warranty Expiry", tracking=True, help="Warranty expiration date"
-    
+    )
 
     # ============================================================================
     # FINANCIAL INFORMATION
@@ -154,27 +155,27 @@ class ServiceItem(models.Model):
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True,
-    
+    )
     purchase_cost = fields.Monetary(
         string="Purchase Cost",
         currency_field="currency_id",
         help="Original purchase cost",
-    
+    )
     current_value = fields.Monetary(
         string="Current Value",
         currency_field="currency_id",
         help="Current estimated value",
-    
+    )
     maintenance_cost = fields.Monetary(
         string="Total Maintenance Cost",
         currency_field="currency_id",
         help="Cumulative maintenance costs",
-    
+    )
     depreciation_rate = fields.Float(
         string="Annual Depreciation Rate %",
         default=10.0,
         help="Annual depreciation percentage",
-    
+    )
 
     # ============================================================================
     # OPERATIONAL STATUS
@@ -184,19 +185,19 @@ class ServiceItem(models.Model):
         string="Current Location",
         tracking=True,
         help="Current physical location",
-    
+    )
     assigned_user_id = fields.Many2one(
         "res.users",
         string="Assigned To",
         tracking=True,
         help="User currently assigned to this item",
-    
+    )
     department_id = fields.Many2one(
         "records.department",
         string="Department",
         tracking=True,
         help="Department responsible for this item",
-    
+    )
 
     # ============================================================================
     # MAINTENANCE TRACKING
@@ -205,31 +206,31 @@ class ServiceItem(models.Model):
         string="Last Maintenance",
         tracking=True,
         help="Date of last maintenance service",
-    
+    )
     next_maintenance = fields.Date(
         string="Next Maintenance",
         compute="_compute_next_maintenance",
         store=True,
         help="Calculated next maintenance date",
-    
+    )
     maintenance_interval = fields.Integer(
         string="Maintenance Interval (days)",
         default=90,
         help="Number of days between maintenance services",
-    
+    )
     maintenance_due = fields.Boolean(
         string="Maintenance Due",
         compute="_compute_maintenance_due",
         store=True,
         help="Whether maintenance is currently due",
-    
+    )
 
     # ============================================================================
     # CAPACITY & PERFORMANCE
     # ============================================================================
     capacity = fields.Float(
         string="Capacity", help="Maximum capacity of the service item"
-    
+    )
     capacity_unit = fields.Selection(
         [
             ("kg", "Kilograms"),
@@ -243,13 +244,13 @@ class ServiceItem(models.Model):
         string="Capacity Unit",
         default="pieces",
         help="Unit of measurement for capacity",
-    
+    )
     utilization_rate = fields.Float(
         string="Utilization Rate %",
         default=0.0,
         digits=(5, 2),
         help="Current utilization percentage",
-    
+    )
     efficiency_rating = fields.Selection(
         [
             ("poor", "Poor"),
@@ -260,7 +261,7 @@ class ServiceItem(models.Model):
         string="Efficiency Rating",
         default="good",
         help="Performance efficiency rating",
-    
+    )
 
     # ============================================================================
     # COMPUTED STATUS FIELDS
@@ -275,13 +276,13 @@ class ServiceItem(models.Model):
         compute="_compute_warranty_status",
         store=True,
         help="Current warranty status",
-    
+    )
     age_months = fields.Integer(
         string="Age (Months)",
         compute="_compute_age",
         store=True,
         help="Age of the item in months",
-    
+    )
 
     # ============================================================================
     # RELATIONSHIP FIELDS
@@ -291,26 +292,26 @@ class ServiceItem(models.Model):
         "service_item_id",
         string="Service Requests",
         help="Service requests using this item",
-    
+    )
     maintenance_request_ids = fields.One2many(
         "maintenance.request",
         "equipment_id",
         string="Maintenance Requests",
         help="Maintenance requests for this item",
-    
+    )
 
     # ============================================================================
     # DOCUMENTATION FIELDS
     # ============================================================================
     specifications = fields.Text(
         string="Technical Specifications", help="Detailed technical specifications"
-    
+    )
     operating_instructions = fields.Text(
         string="Operating Instructions", help="Instructions for operating the item"
-    
+    )
     safety_notes = fields.Text(
         string="Safety Notes", help="Important safety considerations"
-    
+    )
     notes = fields.Text(string="Internal Notes", help="Internal notes and comments")
 
     # ============================================================================
@@ -321,19 +322,19 @@ class ServiceItem(models.Model):
         "res_id",
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)],
-    
+    )
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
-    
+    )
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)],
-    
+    )
 
     # ============================================================================
     # COMPUTE METHODS
@@ -344,29 +345,11 @@ class ServiceItem(models.Model):
         today = fields.Date.today()
         for item in self:
             if item.warranty_expiry:
-                pass
                 if item.warranty_expiry >= today:
                     item.warranty_status = "active"
                 else:
-                    pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                     item.warranty_status = "expired"
             else:
-                pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                 item.warranty_status = "unknown"
 
     @api.depends("last_maintenance", "maintenance_interval")
@@ -376,16 +359,8 @@ class ServiceItem(models.Model):
             if item.last_maintenance and item.maintenance_interval:
                 item.next_maintenance = item.last_maintenance + timedelta(
                     days=item.maintenance_interval
-                
+                )
             else:
-                pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                 item.next_maintenance = False
 
     @api.depends("next_maintenance")
@@ -396,14 +371,6 @@ class ServiceItem(models.Model):
             if item.next_maintenance:
                 item.maintenance_due = item.next_maintenance <= today
             else:
-                pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                 item.maintenance_due = False
 
     @api.depends("purchase_date")
@@ -415,17 +382,9 @@ class ServiceItem(models.Model):
                 # Calculate difference in months
                 months = (today.year - item.purchase_date.year) * 12 + (
                     today.month - item.purchase_date.month
-                
+                )
                 item.age_months = max(0, months)  # Ensure non-negative
             else:
-                pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                 item.age_months = 0
 
     # ============================================================================
@@ -439,10 +398,10 @@ class ServiceItem(models.Model):
             if record.category:
                 category_name = dict(self._fields["category"].selection).get(
                     record.category
-                
-                name = _("%s (%s)"
+                )
+                name = _("%s (%s)", name, category_name)
             if record.model_number:
-                name = _("%s - %s"
+                name = _("%s - %s", name, record.model_number)
             result.append((record.id, name))
         return result
 
@@ -477,18 +436,18 @@ class ServiceItem(models.Model):
         if "maintenance.request" in self.env:
             maintenance_request = self.env["maintenance.request"].create(
                 {
-                    "name": f"Maintenance - {self.name}",
+                    "name": _("Maintenance - %s", self.name),
                     "equipment_id": self.id,
                     "request_type": (
                         "corrective" if self.maintenance_due else "preventive"
                     ),
-                    "description": f"Maintenance required for {self.name}",
+                    "description": _("Maintenance required for %s", self.name),
                 }
-            
+            )
 
-            self.message_post(body=_("Action completed"))
+            self.message_post(
                 body=_("Service item sent to maintenance. Request created: %s", maintenance_request.name)
-            
+            )
 
             return {
                 "type": "ir.actions.act_window",
@@ -499,9 +458,6 @@ class ServiceItem(models.Model):
                 "target": "current",
             }
         else:
-            pass
-            pass
-            pass
             self.message_post(body=_("Service item sent to maintenance"))
 
     def action_schedule_maintenance(self):
@@ -516,16 +472,13 @@ class ServiceItem(models.Model):
                 "view_mode": "form",
                 "target": "new",
                 "context": {
-                    "default_name": f"Scheduled Maintenance - {self.name}",
+                    "default_name": _("Scheduled Maintenance - %s", self.name),
                     "default_equipment_id": self.id,
                     "default_request_type": "preventive",
-                    "default_description": f"Scheduled maintenance for {self.name}",
+                    "default_description": _("Scheduled maintenance for %s", self.name),
                 },
             }
         else:
-            pass
-            pass
-            pass
             raise UserError(_("Maintenance module not available"))
 
     def action_retire_item(self):
@@ -536,7 +489,6 @@ class ServiceItem(models.Model):
             raise UserError(_("Cannot retire item that is currently in use"))
 
         self.write({"state": "retired", "active": False})
-
         self.message_post(body=_("Service item retired"))
 
     def action_view_service_requests(self):
@@ -566,9 +518,6 @@ class ServiceItem(models.Model):
                 "context": {"default_equipment_id": self.id},
             }
         else:
-            pass
-            pass
-            pass
             raise UserError(_("Maintenance module not available"))
 
     # ============================================================================
@@ -581,7 +530,7 @@ class ServiceItem(models.Model):
             if record.maintenance_interval < 1 or record.maintenance_interval > 3650:
                 raise ValidationError(
                     _("Maintenance interval must be between 1 and 3650 days")
-                
+                )
 
     @api.constrains("utilization_rate")
     def _check_utilization_rate(self):
@@ -639,7 +588,7 @@ class ServiceItem(models.Model):
         age_years = self.age_months / 12.0
         depreciation_amount = (
             self.purchase_cost * (self.depreciation_rate / 100.0) * age_years
-        
+        )
         depreciated_value = max(0.0, self.purchase_cost - depreciation_amount)
 
         return depreciated_value
@@ -650,14 +599,14 @@ class ServiceItem(models.Model):
         return self.search([("maintenance_due", "=", True), ("state", "!=", "retired")])
 
     @api.model
-    def check_maintenance_schedules(self):
+    def _check_maintenance_schedules(self):
         """Cron job to check maintenance schedules and create activities"""
         overdue_items = self.search(
             [
                 ("maintenance_due", "=", True),
                 ("state", "not in", ["maintenance", "retired"]),
             ]
-        
+        )
 
         for item in overdue_items:
             # Determine assigned user
@@ -677,7 +626,7 @@ class ServiceItem(models.Model):
                     ),
                     user_id=assigned_user_id,
                     date_deadline=fields.Date.today(),
-                
+                )
             except Exception:
                 # Continue processing other items if activity creation fails
                 continue

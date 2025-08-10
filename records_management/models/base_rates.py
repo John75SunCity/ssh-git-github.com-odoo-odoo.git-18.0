@@ -123,7 +123,7 @@ class BaseRates(models.Model):
     container_type = fields.Selection(
         [
             ("type_01", 'Type 01 - Standard Box (1.2 CF, 35 lbs, 12"x15"x10")'),
-            ("type_02", 'Type 02 - Legal/Banker Box (1.2 CF, 65 lbs, 24"x15"x10")'),
+            ("type_02", 'Type 02 - Legal/Banker Box (2.4 CF, 65 lbs, 24"x15"x10")'),
             ("type_03", 'Type 03 - Map Box (0.875 CF, 35 lbs, 42"x6"x6")'),
             (
                 "type_04",

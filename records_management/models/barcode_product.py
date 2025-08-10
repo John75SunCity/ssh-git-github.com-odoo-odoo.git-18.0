@@ -16,37 +16,15 @@ Key Features:
 - Integration with physical storage systems and location management
 - Pricing and billing integration with cost tracking and rate management
 
-Business Processes:
-1. Product Setup: Define barcode products with specifications and validation rules
-2. Barcode Generation: Generate barcodes in batches with automatic sequencing
-3. Format Validation: Validate barcode formats against industry standards
-4. Inventory Tracking: Track barcode usage and assignment across the system
-5. Quality Control: Ensure barcode uniqueness and format compliance
-6. Performance Analytics: Monitor barcode usage patterns and system performance
-
-Technical Implementation:
-- Regex-based format validation for all major barcode standards
-- Batch generation with configurable size limits and error handling
-- Secure relationship management with proper domain filtering
-- Modern Odoo 18.0 patterns with comprehensive validation decorators
-- Enterprise security with granular access controls and audit logging
-
-Barcode Format Support:
-- EAN-13: European Article Number (13 digits)
-- EAN-8: European Article Number (8 digits)
-- UPC-A: Universal Product Code (12 digits)
-- Code 128: High-density linear barcode
-- Code 39: Alphanumeric barcode standard
-- Custom: Flexible format for specialized requirements
-
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
 """
 
+import re
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
-import re
 
 
 class BarcodeProduct(models.Model):
@@ -74,27 +52,27 @@ class BarcodeProduct(models.Model):
         default=lambda self: self.env.company,
         required=True,
         index=True,
-    
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Product Manager",
         default=lambda self: self.env.user,
         tracking=True,
         index=True,
-    
+    )
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True,
-    
+    )
 
     # Partner Relationship
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         help="Associated partner for this record"
-    
+    )
 
     # ============================================================================
     # STATE MANAGEMENT
@@ -109,7 +87,7 @@ class BarcodeProduct(models.Model):
         string="Status",
         default="draft",
         tracking=True,
-    
+    )
 
     # ============================================================================
     # BARCODE CONFIGURATION
@@ -119,7 +97,7 @@ class BarcodeProduct(models.Model):
         tracking=True,
         index=True,
         help="Primary barcode for this product",
-    
+    )
     barcode_format = fields.Selection(
         [
             ("ean13", "EAN-13"),
@@ -132,38 +110,38 @@ class BarcodeProduct(models.Model):
         string="Barcode Format",
         default="code128",
         required=True,
-    
+    )
 
     # Barcode Generation Settings
     start_barcode = fields.Char(
         string="Start Barcode", help="Starting barcode for range generation"
-    
+    )
     end_barcode = fields.Char(
         string="End Barcode", help="End barcode for range generation"
-    
+    )
     next_sequence_number = fields.Integer(
         string="Next Sequence", default=1, help="Next sequence number for generation"
-    
+    )
     generation_batch_size = fields.Integer(
         string="Batch Size",
         default=100,
         help="Number of barcodes to generate per batch",
-    
+    )
 
     # Validation Configuration
     validate_format = fields.Boolean(
         string="Validate Format",
         default=True,
         help="Validate barcode format on creation",
-    
+    )
     validate_uniqueness = fields.Boolean(
         string="Validate Uniqueness",
         default=True,
         help="Ensure barcode uniqueness across system",
-    
+    )
     validate_check_digit = fields.Boolean(
         string="Validate Check Digit", default=True, help="Validate barcode check digit"
-    
+    )
 
     # ============================================================================
     # PRODUCT CATEGORIZATION
@@ -178,7 +156,7 @@ class BarcodeProduct(models.Model):
         ],
         string="Product Category",
         default="container",
-    
+    )
 
     product_type = fields.Selection(
         [
@@ -188,7 +166,7 @@ class BarcodeProduct(models.Model):
         ],
         string="Product Type",
         default="physical",
-    
+    )
 
     # ============================================================================
     # STORAGE & LOCATION
@@ -197,11 +175,11 @@ class BarcodeProduct(models.Model):
         "records.location",
         string="Default Storage Location",
         help="Default location for this product type",
-    
+    )
 
     storage_requirements = fields.Text(
         string="Storage Requirements", help="Special storage requirements or conditions"
-    
+    )
 
     # ============================================================================
     # PRICING & BILLING
@@ -210,32 +188,32 @@ class BarcodeProduct(models.Model):
         string="Standard Cost",
         currency_field="currency_id",
         help="Standard cost for this product",
-    
+    )
     list_price = fields.Monetary(
         string="List Price", currency_field="currency_id", help="Standard selling price"
-    
+    )
     storage_rate = fields.Monetary(
         string="Storage Rate",
         currency_field="currency_id",
         help="Monthly storage rate for this product type",
-    
+    )
 
     # ============================================================================
     # OPERATIONAL FIELDS
     # ============================================================================
     monthly_volume = fields.Integer(
         string="Monthly Volume", help="Expected monthly volume for this product"
-    
+    )
     naid_compliant = fields.Boolean(
         string="NAID Compliant",
         default=False,
         help="Whether this product meets NAID compliance standards",
-    
+    )
 
     # Lifecycle Management
     creation_date = fields.Datetime(
         string="Creation Date", default=fields.Datetime.now, readonly=True
-    
+    )
     last_used_date = fields.Datetime(string="Last Used", readonly=True)
     usage_count = fields.Integer(string="Usage Count", default=0, readonly=True)
 
@@ -244,7 +222,7 @@ class BarcodeProduct(models.Model):
     # ============================================================================
     barcode_line_ids = fields.One2many(
         "barcode.product.line", "product_id", string="Generated Barcodes"
-    
+    )
 
     # Mail Framework Fields
     activity_ids = fields.One2many(
@@ -253,17 +231,17 @@ class BarcodeProduct(models.Model):
         string="Activities",
         auto_join=True,
         groups="base.group_user",
-    
+    )
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain="[('model', '=', _name)]",
         groups="base.group_user",
-    
+    )
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+    )
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -272,12 +250,8 @@ class BarcodeProduct(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.code:
-                record.display_name = _("[%s] %s", "Unknown")
+                record.display_name = _("[%s] %s", record.code, record.name)
             else:
-                pass
-            pass
-            pass
-            pass
                 record.display_name = record.name
 
     @api.depends("barcode_line_ids")
@@ -296,21 +270,17 @@ class BarcodeProduct(models.Model):
                 except (ValueError, TypeError):
                     record.barcode_range_size = 0
             else:
-                pass
-            pass
-            pass
-            pass
                 record.barcode_range_size = 0
 
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
-    
+    )
     barcode_count = fields.Integer(
         string="Generated Barcodes Count", compute="_compute_barcode_count", store=True
-    
+    )
     barcode_range_size = fields.Integer(
         string="Barcode Range Size", compute="_compute_barcode_range_size", store=True
-    
+    )
 
     # ============================================================================
     # VALIDATION METHODS
@@ -319,11 +289,10 @@ class BarcodeProduct(models.Model):
     def _check_barcode_format(self):
         for record in self:
             if record.barcode and record.validate_format:
-                pass
                 if not record._validate_barcode_format(record.barcode):
                     raise ValidationError(
                         _("Invalid barcode format for %s", record.barcode_format)
-                    
+                    )
 
     @api.constrains("start_barcode", "end_barcode")
     def _check_barcode_range(self):
@@ -335,11 +304,11 @@ class BarcodeProduct(models.Model):
                     if start_num >= end_num:
                         raise ValidationError(
                             _("Start barcode must be less than end barcode")
-                        
+                        )
                 except (ValueError, TypeError):
                     raise ValidationError(
                         _("Barcode range must contain numeric values")
-                    
+                    )
 
     @api.constrains("generation_batch_size")
     def _check_batch_size(self):
@@ -389,7 +358,7 @@ class BarcodeProduct(models.Model):
 
         existing = self.search(
             [("barcode_line_ids.barcode", "=", barcode), ("id", "!=", self.id)], limit=1
-        
+        )
 
         return not bool(existing)
 
@@ -403,7 +372,6 @@ class BarcodeProduct(models.Model):
             raise UserError(_("Only draft products can be activated"))
 
         self.write({"state": "active", "last_used_date": fields.Datetime.now()})
-
         self.message_post(body=_("Product activated"))
 
     def action_deactivate(self):
@@ -457,10 +425,9 @@ class BarcodeProduct(models.Model):
         if invalid_count > 0:
             raise UserError(_("Found %d invalid barcodes", invalid_count))
         else:
-            pass
-            self.message_post(body=_("Action completed"))
+            self.message_post(
                 body=_("All %d barcodes validated successfully", len(self.barcode_line_ids))
-            
+            )
 
     def action_export_barcodes(self):
         """Export barcodes to CSV"""
@@ -474,9 +441,7 @@ class BarcodeProduct(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        """
-        Override create to set a sequence for the 'name' field only if it is not provided.
-        """
+        """Override create to set a sequence for the 'name' field only if it is not provided."""
         for vals in vals_list:
             if not vals.get("name"):
                 vals["name"] = self.env["ir.sequence"].next_by_code(
@@ -485,29 +450,23 @@ class BarcodeProduct(models.Model):
         return super().create(vals_list)
 
     def write(self, vals):
-        """
-        Override write to post a message when the state changes.
-        """
+        """Override write to post a message when the state changes."""
         if "state" in vals:
             for record in self:
                 old_state = dict(record._fields["state"].selection).get(record.state)
                 new_state = dict(record._fields["state"].selection).get(vals["state"])
                 if old_state != new_state:
                     record.message_post(
-                        body=_("State changed from %s to %s", (old_state), new_state)
-                    
+                        body=_("State changed from %s to %s", old_state, new_state)
+                    )
         return super().write(vals)
 
     def unlink(self):
-        """
-        Override unlink to prevent deletion of active products.
-
-        This method prevents deletion of products in the 'active' state and suggests archiving them instead.
-        """
+        """Override unlink to prevent deletion of active products."""
         if any(record.state == "active" for record in self):
             raise UserError(
                 _("Cannot delete active barcode products. Please archive them first.")
-            
+            )
         return super().unlink()
 
 
@@ -522,18 +481,18 @@ class BarcodeProductLine(models.Model):
         required=True,
         ondelete="cascade",
         index=True,
-    
+    )
     barcode = fields.Char(
         string="Barcode", required=True, index=True, help="Generated barcode value"
-    
+    )
     sequence = fields.Integer(string="Sequence", default=10)
     is_used = fields.Boolean(
         string="Used", default=False, help="Whether this barcode has been assigned"
-    
+    )
     usage_date = fields.Datetime(string="Usage Date", readonly=True)
     assigned_to = fields.Char(
         string="Assigned To", help="Record this barcode was assigned to"
-    
+    )
     notes = fields.Text(string="Notes")
 
     @api.constrains("barcode")
@@ -541,13 +500,13 @@ class BarcodeProductLine(models.Model):
         for record in self:
             existing = self.search(
                 [("barcode", "=", record.barcode), ("id", "!=", record.id)], limit=1
-            
+            )
             if existing:
                 raise ValidationError(_("Barcode %s already exists", record.barcode))
 
     def name_get(self):
         result = []
         for record in self:
-            name = _("%s (%s)"
+            name = _("%s (%s)", record.barcode, record.product_id.name)
             result.append((record.id, name))
         return result

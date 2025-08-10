@@ -72,16 +72,14 @@ class RecordsContainerType(models.Model):
     standard_type = fields.Selection(
         [
             ("type_01", 'Type 01 - Standard Box (1.2 CF, 35 lbs, 12"x15"x10")'),
-            ("type_02", 'Type 02 - Legal/Banker Box (1.2 CF, 65 lbs, 24"x15"x10")'),
+            ("type_02", 'Type 02 - Legal/Banker Box (2.4 CF, 65 lbs, 24"x15"x10")'),
             ("type_03", 'Type 03 - Map Box (0.875 CF, 35 lbs, 42"x6"x6")'),
-            (
-                "type_04",
-                "Type 04 - Odd Size/Temp Box (5.0 CF, 75 lbs, dimensions unknown)",
-            ),
+            ("type_04", "Type 04 - Odd Size/Temp Box (5.0 CF, 75 lbs, dimensions unknown)"),
             ("type_06", 'Type 06 - Pathology Box (0.042 CF, 40 lbs, 12"x6"x10")'),
             ("custom", "Custom Size"),
         ],
         string="Standard Container Type",
+        default="type_01",
         tracking=True,
         help="Business standard container type classification with actual specifications",
     )
@@ -336,22 +334,13 @@ class RecordsContainerType(models.Model):
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
     activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
+        "mail.activity", "res_id", string="Activities"
     )
     message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
+        "mail.followers", "res_id", string="Followers"
     )
     message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-        domain=lambda self: [("model", "=", self._name)],
+        "mail.message", "res_id", string="Messages"
     )
 
     # ============================================================================
@@ -370,14 +359,12 @@ class RecordsContainerType(models.Model):
                 record.handling_fee = record.billing_config_id.handling_fee or 0.0
                 record.destruction_fee = record.billing_config_id.destruction_fee or 0.0
             elif record.base_rate_id:
-            pass
                 # Fallback to base rates
                 record.standard_rate = record.base_rate_id.monthly_rate or 0.0
                 record.setup_fee = record.base_rate_id.setup_fee or 0.0
                 record.handling_fee = record.base_rate_id.handling_fee or 0.0
                 record.destruction_fee = record.base_rate_id.destruction_fee or 0.0
             elif record.standard_type and record.standard_type != "custom":
-            pass
                 # Use standard rates based on container type
                 standard_rates = record._get_standard_type_rates()
                 record.standard_rate = standard_rates.get("monthly_rate", 0.0)
@@ -385,11 +372,6 @@ class RecordsContainerType(models.Model):
                 record.handling_fee = standard_rates.get("handling_fee", 0.0)
                 record.destruction_fee = standard_rates.get("destruction_fee", 0.0)
             else:
-            pass
-            pass
-            pass
-            pass
-            pass
                 record.standard_rate = 0.0
                 record.setup_fee = 0.0
                 record.handling_fee = 0.0
@@ -415,11 +397,6 @@ class RecordsContainerType(models.Model):
                     (total_weight / total_capacity) * 100 if total_capacity > 0 else 0.0
                 )
             else:
-            pass
-            pass
-            pass
-            pass
-            pass
                 record.utilization_percentage = 0.0
 
     @api.depends("container_ids", "container_ids.state", "standard_rate")
@@ -441,11 +418,6 @@ class RecordsContainerType(models.Model):
                     record.length * record.width * record.height
                 ) / 1728
             else:
-            pass
-            pass
-            pass
-            pass
-            pass
                 record.volume_calculated = 0.0
 
     @api.onchange("standard_type")
@@ -480,7 +452,7 @@ class RecordsContainerType(models.Model):
                 "description": "Standard Box - General file storage",
             },
             "type_02": {  # Legal/Banker Box
-                "volume_cf": 1.2,
+                "volume_cf": 2.4,  # Corrected volume
                 "avg_weight": 65,
                 "dimensions": "24x15x10",
                 "description": "Legal/Banker Box - Large capacity file storage",
@@ -678,21 +650,14 @@ class RecordsContainerType(models.Model):
         result = []
         for record in self:
             if record.code:
-                display_name = _("%s [%s]"
+                display_name = _("%s [%s]", record.name, record.code)
             else:
-            pass
-            pass
-            pass
-            pass
-            pass
                 display_name = record.name
             result.append((record.id, display_name))
         return result
 
     @api.model
-    def _name_search(
-        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
+    def _search_name_code(self, name, args=None, operator="ilike", limit=100, name_get_uid=None):
         """Enhanced search by name or code"""
         args = args or []
         domain = []
@@ -720,28 +685,27 @@ class RecordsContainerType(models.Model):
         base_code = self.code
         if base_code.endswith("_COPY"):
             # Code already has _COPY suffix, keep it as is
-            pass
+            new_code = base_code
         elif "_COPY" in base_code:
-            pass
             base_code = base_code.split("_COPY")[0] + "_COPY"
+            new_code = base_code
         else:
-            pass
-            base_code = f"{base_code}_COPY"
+            new_code = f"{base_code}_COPY"
 
         # Find existing copies and increment a counter if needed
         existing_codes = self.search(
-            [("code", "like", f"{base_code}%"), ("company_id", "=", self.company_id.id)]
+            [("code", "like", f"{new_code}%"), ("company_id", "=", self.company_id.id)]
         ).mapped("code")
         counter = 1
-        new_code = base_code
-        while new_code in existing_codes:
+        final_code = new_code
+        while final_code in existing_codes:
             counter += 1
-            new_code = f"{base_code}{counter}"
+            final_code = f"{new_code}{counter}"
 
         default.update(
             {
                 "name": _("%(name)s (Copy)", name=self.name),
-                "code": new_code,
+                "code": final_code,
             }
         )
         return super().copy(default)
@@ -809,12 +773,12 @@ class RecordsContainerType(models.Model):
                 "avg_weight": 35,
                 "dimensions": "12x15x10",
             },
-            "type_02": {  # Legal/Banker Box - 1.2 CF, 65 lbs avg, 24x15x10
+            "type_02": {  # Legal/Banker Box - 2.4 CF, 65 lbs avg, 24x15x10
                 "monthly_rate": 7.50,
                 "setup_fee": 20.00,
                 "handling_fee": 12.00,
                 "destruction_fee": 18.00,
-                "volume_cf": 1.2,
+                "volume_cf": 2.4,  # Corrected volume
                 "avg_weight": 65,
                 "dimensions": "24x15x10",
             },
@@ -879,7 +843,6 @@ class RecordsContainerType(models.Model):
         if self.billing_config_id:
             return self.billing_config_id
         elif self.standard_type != "custom":
-            pass
             # Find or create billing config for standard type
             billing_config = self.env["records.billing.config"].search(
                 [("container_type", "=", self.standard_type)], limit=1

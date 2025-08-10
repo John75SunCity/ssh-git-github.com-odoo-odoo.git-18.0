@@ -77,7 +77,7 @@ git add . && git commit -m "fix: Resolve syntax errors in records_department.py 
 - Use: General file storage, most common container type
 
 **TYPE 02: LEGAL/BANKER BOX**
-- Volume: 1.2 CF (Cubic Feet) 
+- Volume: 2.4 CF (Cubic Feet) 
 - Average Weight: 65 lbs
 - Dimensions: 24" x 15" x 10"
 - Use: Large capacity file storage, legal documents
@@ -1074,17 +1074,92 @@ def create(self, vals):
 
 **Fix Priorities (in order):**
 1. **Critical Errors**: KeyError, ImportError, SyntaxError
-2. **Deprecation Warnings**: Update to Odoo 18.0 patterns
-3. **Security Issues**: Missing access controls or validation
-4. **Performance Issues**: Inefficient queries or missing indexes
-5. **Code Style**: PEP8 compliance and Odoo conventions
+2. **Translation Issues**: String formatting before translation (CRITICAL for i18n)
+3. **Deprecation Warnings**: Update to Odoo 18.0 patterns
+4. **Security Issues**: Missing access controls or validation
+5. **Performance Issues**: Inefficient queries or missing indexes
+6. **Code Style**: PEP8 compliance and Odoo conventions
+
+#### **🌐 TRANSLATION & INTERNATIONALIZATION STANDARDS**
+
+**CRITICAL: Always fix translation formatting - this is a MANDATORY Odoo requirement for i18n support.**
+
+**❌ WRONG Patterns (Must be fixed immediately):**
+```python
+# DON'T format strings before translation
+message = _("Status: %s") % status  # ❌ WRONG - breaks translation extraction
+name = _("User %s") % user.name     # ❌ WRONG - translators lose context
+error = _(f"Error {code}: {msg}")   # ❌ WRONG - f-strings break extraction
+
+# DON'T use string formatting operators with _()
+title = _("Report for %s" % company)  # ❌ WRONG - extraction fails
+label = _("Total: " + str(amount))    # ❌ WRONG - concatenation breaks i18n
+```
+
+**✅ CORRECT Patterns (Always use these):**
+```python
+# ALWAYS pass parameters to _() function
+message = _("Status: %s", status)           # ✅ CORRECT - proper extraction
+name = _("User %s", user.name)             # ✅ CORRECT - full context preserved
+error = _("Error %s: %s", code, msg)       # ✅ CORRECT - multiple parameters
+
+# Use named parameters for complex strings
+message = _("Invoice %(number)s for %(partner)s", {
+    'number': invoice.number,
+    'partner': partner.name
+})  # ✅ CORRECT - clear parameter mapping
+
+# Handle plural forms correctly
+count_msg = ngettext(
+    "Found %d item", 
+    "Found %d items", 
+    count
+) % count  # ✅ CORRECT - pluralization support
+```
+
+**Translation Extraction Process:**
+```python
+# ✅ Tools extract these strings for translators:
+_("Welcome to Records Management")           # → "Welcome to Records Management"
+_("Processing %s containers", count)         # → "Processing %s containers" 
+_("Status changed from %s to %s", old, new) # → "Status changed from %s to %s"
+
+# ❌ Tools CANNOT extract these properly:
+_("Status: " + status)          # → Only sees variable reference
+_("Count: %s" % count)          # → Only sees formatted result
+_(f"User {name} logged in")     # → Cannot parse f-string content
+```
+
+**Real-world Examples from Records Management:**
+```python
+# ❌ WRONG - Common mistakes in our codebase
+self.message_post(body=_("Approved by %s") % user.name)  # Breaks extraction
+raise ValidationError(_("Invalid %s") % field_name)      # Loses context
+
+# ✅ CORRECT - How to fix them
+self.message_post(body=_("Approved by %s", user.name))     # Proper extraction
+raise ValidationError(_("Invalid %s", field_name))         # Full context
+
+# ✅ CORRECT - Complex business messages
+message = _("Container %(type)s with %(count)d documents moved to %(location)s", {
+    'type': container.container_type,
+    'count': len(container.document_ids),
+    'location': container.location_id.name
+})
+```
+
+**Why This Matters for Records Management:**
+- **Global deployment**: System used internationally with multiple languages
+- **Compliance reporting**: NAID certificates must be translatable for international audits
+- **User experience**: Portal users may use different languages than internal staff
+- **Legal requirements**: Document retention notices must be properly localized
 
 **Container Integration Fixes:**
 ```python
 # ✅ CORRECT - Use actual business specifications
 CONTAINER_SPECIFICATIONS = {
     'type_01': {'volume': 1.2, 'weight': 35, 'dims': '12"x15"x10"'},
-    'type_02': {'volume': 1.2, 'weight': 65, 'dims': '24"x15"x10"'},
+    'type_02': {'volume': 2.4, 'weight': 65, 'dims': '24"x15"x10"'},
     'type_03': {'volume': 0.875, 'weight': 35, 'dims': '42"x6"x6"'},
     'type_04': {'volume': 5.0, 'weight': 75, 'dims': 'Variable'},
     'type_06': {'volume': 0.042, 'weight': 40, 'dims': '12"x6"x10"'},
@@ -1136,7 +1211,7 @@ def _compute_total_cubic_feet(self):
     
     CONTAINER CONTEXT: Uses actual business container specifications:
     - TYPE 01: 1.2 CF (most common)
-    - TYPE 02: 1.2 CF (heavier legal documents)  
+    - TYPE 02: 2.4 CF (heavier legal documents)  
     - TYPE 03: 0.875 CF (maps/blueprints)
     - TYPE 04: 5.0 CF (temporary odd-sized items)
     - TYPE 06: 0.042 CF (pathology specimens)
@@ -1194,7 +1269,7 @@ access_model_name_manager,model.name.manager,model_model_name,records_management
 
 **Container Business Rules:**
 - TYPE 01: Standard Box - Most common, general file storage
-- TYPE 02: Legal/Banker Box - Same volume but heavier (65 lbs vs 35 lbs)
+- TYPE 02: Legal/Banker Box - Double volume capacity, heavier (65 lbs vs 35 lbs)
 - TYPE 03: Map Box - Different shape for blueprints/maps
 - TYPE 04: Odd Size/Temp Box - Largest volume for non-standard items  
 - TYPE 06: Pathology Box - Smallest volume for medical specimens
@@ -1224,18 +1299,44 @@ security_level = fields.Selection(selection_add=[...])  # Proper extension
 #### **📋 INLINE CHAT COMMAND EXPECTATIONS**
 
 **/fix - Expected Behavior:**
+- **FIRST PRIORITY**: Fix translation formatting patterns (string formatting before translation)
 - Identify root cause of error with business context
 - Apply Odoo 18.0 compatible solution
 - Maintain container specifications and business rules
 - Add proper error handling and validation
 - Include security considerations
 
+**Translation Fix Examples:**
+```python
+# /fix should automatically change:
+message = _("Status: %s") % status  # ❌ WRONG
+# to:
+message = _("Status: %s", status)   # ✅ CORRECT
+
+# /fix should automatically change:
+raise ValidationError(_("Invalid %s") % field_name)  # ❌ WRONG  
+# to:
+raise ValidationError(_("Invalid %s", field_name))   # ✅ CORRECT
+```
+
 **/review - Expected Focus:**
+- **MANDATORY**: Check for translation formatting violations as first priority
 - Odoo framework pattern compliance
 - Business logic accuracy (especially container specs)
 - Security implementation completeness  
 - Performance optimization opportunities
 - Integration with existing Records Management system
+
+**Translation Review Checklist:**
+```python
+# ❌ Must flag these patterns:
+_("Text %s") % variable      # String formatting before translation
+_(f"Text {variable}")        # F-strings with translation
+_("Text " + variable)        # String concatenation with translation
+
+# ✅ Must suggest these patterns:
+_("Text %s", variable)       # Proper translation parameter passing
+```
 
 **/explain - Required Details:**
 - Business purpose in Records Management context
@@ -1266,4 +1367,518 @@ security_level = fields.Selection(selection_add=[...])  # Proper extension
 
 ---
 
+## 🤖 **AUTOMATED TRANSLATION FIXING PATTERNS**
+
+**GitHub Copilot should automatically detect and fix these patterns when generating or modifying code:**
+
+### **Pattern Detection Rules**
+
+1. **String Formatting Before Translation**:
+   ```python
+   # DETECT AND FIX:
+   _("Text %s") % variable → _("Text %s", variable)
+   _("Text %s" % variable) → _("Text %s", variable)
+   _(f"Text {variable}")   → _("Text %s", variable)
+   _("Text " + variable)   → _("Text %s", variable)
+   ```
+
+2. **Message Post Patterns**:
+   ```python
+   # DETECT AND FIX:
+   self.message_post(body=_("Message %s") % value)
+   # TO:
+   self.message_post(body=_("Message %s", value))
+   ```
+
+3. **Exception Messages**:
+   ```python
+   # DETECT AND FIX:
+   raise ValidationError(_("Error %s") % field)
+   # TO:
+   raise ValidationError(_("Error %s", field))
+   ```
+
+4. **Complex Message Patterns**:
+   ```python
+   # DETECT AND FIX:
+   name = _("Invoice %s for %s") % (number, partner)
+   # TO:
+   name = _("Invoice %s for %s", number, partner)
+   
+   # OR for complex cases:
+   name = _("Invoice %(number)s for %(partner)s", {
+       'number': number,
+       'partner': partner
+   })
+   ```
+
+### **Automatic Replacement Rules**
+
+**When GitHub Copilot encounters these patterns, automatically apply fixes:**
+
+```python
+# Rule 1: Simple % formatting
+PATTERN: _("...%s...") % var
+REPLACE: _("...%s...", var)
+
+# Rule 2: Multiple % formatting  
+PATTERN: _("...%s...%s...") % (var1, var2)
+REPLACE: _("...%s...%s...", var1, var2)
+
+# Rule 3: F-string conversion
+PATTERN: _(f"...{var}...")
+REPLACE: _("...%s...", var)
+
+# Rule 4: String concatenation
+PATTERN: _("..." + var)
+REPLACE: _("...%s", var)
+```
+
+### **Context-Aware Fixing**
+
+**Business Context Integration:**
+```python
+# Records Management specific patterns to fix:
+_("Container %s moved to %s") % (container.name, location.name)
+# TO:
+_("Container %s moved to %s", container.name, location.name)
+
+# NAID compliance messages:
+_("Audit trail created for %s") % document.name  
+# TO:
+_("Audit trail created for %s", document.name)
+```
+
+### **Priority Enforcement**
+
+**Translation fixes should be applied BEFORE any other code improvements:**
+
+1. **🌐 Translation Fixes** (CRITICAL - i18n requirement)
+2. **🔧 Syntax Errors** (Deployment blocking)
+3. **⚠️ Deprecation Warnings** (Odoo 18.0 compatibility)
+4. **🔒 Security Issues** (Access controls)
+5. **⚡ Performance** (Optimization)
+
+---
+
 _This document represents the essential knowledge for productive AI agent work on this complex Odoo Records Management system in a disconnected development environment with GitHub-driven deployment to Odoo.sh._
+
+---
+
+## 🔧 **COMPREHENSIVE ODOO 18.0 CODING STANDARDS**
+
+### **🎯 Essential Odoo Development Principles**
+
+#### **1. Field Naming and Definition Standards**
+
+```python
+# ✅ CORRECT - Descriptive field names with proper types
+container_volume_cf = fields.Float(
+    string='Container Volume (Cubic Feet)',
+    digits=(12, 3),  # Precision for business calculations
+    help='Volume in cubic feet for capacity planning'
+)
+
+pickup_scheduled_date = fields.Datetime(
+    string='Scheduled Pickup Date',
+    required=True,
+    tracking=True,
+    index=True  # Index frequently searched fields
+)
+
+# ❌ WRONG - Abbreviated or unclear names
+vol = fields.Float()  # Too abbreviated
+date1 = fields.Datetime()  # Numeric suffixes
+```
+
+#### **2. Model Inheritance Patterns**
+
+```python
+# ✅ CORRECT - Proper inheritance hierarchy
+class RecordsContainer(models.Model):
+    _name = 'records.container'
+    _inherit = ['mail.thread', 'mail.activity.mixin']  # ALWAYS include for audit trails
+    _description = 'Records Container Management'
+    _order = 'name, create_date desc'
+    _rec_name = 'name'  # Specify display name field
+
+# ✅ CORRECT - Extending existing models
+class ResPartner(models.Model):
+    _inherit = 'res.partner'  # Extend, don't redefine
+    
+    records_department_id = fields.Many2one(
+        'records.department',
+        string='Records Department'
+    )
+```
+
+#### **3. Security and Access Control Standards**
+
+```python
+# Model-level security decorators
+class RecordsContainer(models.Model):
+    _name = 'records.container'
+    
+    # ✅ CORRECT - Use security decorators for sensitive operations
+    @api.model
+    def create(self, vals_list):
+        # Access control logic before creation
+        if not self.env.user.has_group('records_management.group_records_user'):
+            raise AccessError(_('Insufficient permissions to create containers'))
+        return super().create(vals_list)
+
+    def unlink(self):
+        # ✅ CORRECT - Validate deletion permissions
+        for record in self:
+            if record.state not in ['draft', 'cancelled']:
+                raise UserError(_('Cannot delete containers in %s state', record.state))
+        return super().unlink()
+```
+
+#### **4. Performance Optimization Patterns**
+
+```python
+# ✅ CORRECT - Batch operations and efficient queries
+@api.model_create_multi  # Odoo 18.0 pattern for batch creation
+def create(self, vals_list):
+    for vals in vals_list:
+        if vals.get('name', 'New') == 'New':
+            vals['name'] = self.env['ir.sequence'].next_by_code('records.container')
+    return super().create(vals_list)
+
+# ✅ CORRECT - Efficient search patterns
+def get_active_containers(self):
+    """Get containers efficiently with proper domain"""
+    return self.search([
+        ('active', '=', True),
+        ('state', 'in', ['confirmed', 'in_transit'])
+    ], order='priority desc, create_date')
+
+# ❌ WRONG - Inefficient patterns
+def get_containers_slow(self):
+    all_containers = self.search([])  # Loads ALL records
+    return all_containers.filtered(lambda r: r.active and r.state == 'confirmed')
+```
+
+#### **5. Error Handling and Validation**
+
+```python
+# ✅ CORRECT - Comprehensive error handling with business context
+@api.constrains('container_type', 'volume')
+def _check_container_specifications(self):
+    """Validate container specifications against business rules"""
+    VALID_SPECS = {
+        'type_01': {'volume': 1.2, 'max_weight': 35},
+        'type_02': {'volume': 2.4, 'max_weight': 65},
+        # ... other types
+    }
+    
+    for record in self:
+        if record.container_type in VALID_SPECS:
+            spec = VALID_SPECS[record.container_type]
+            if abs(record.volume - spec['volume']) > 0.01:
+                raise ValidationError(_(
+                    'Container %(type)s must have volume %(expected)s CF, got %(actual)s CF',
+                    type=record.container_type,
+                    expected=spec['volume'],
+                    actual=record.volume
+                ))
+
+# ✅ CORRECT - User-friendly error messages
+def action_confirm_pickup(self):
+    self.ensure_one()
+    
+    if not self.partner_id:
+        raise UserError(_('Please select a customer before confirming pickup'))
+    
+    if not self.container_ids:
+        raise UserError(_('Cannot confirm pickup without containers'))
+    
+    # Business logic with proper audit trail
+    self.write({'state': 'confirmed'})
+    self._create_naid_audit_log('pickup_confirmed')
+```
+
+#### **6. Compute Method Standards**
+
+```python
+# ✅ CORRECT - Efficient compute methods with proper dependencies
+@api.depends('container_ids', 'container_ids.volume', 'container_ids.weight')
+def _compute_total_metrics(self):
+    """Compute total volume and weight efficiently"""
+    for record in self:
+        containers = record.container_ids
+        record.total_volume = sum(containers.mapped('volume'))
+        record.total_weight = sum(containers.mapped('weight'))
+        
+        # Calculate capacity utilization
+        if record.vehicle_id and record.vehicle_id.max_capacity:
+            record.capacity_utilization = (
+                record.total_volume / record.vehicle_id.max_capacity * 100
+            )
+        else:
+            record.capacity_utilization = 0.0
+
+# ✅ CORRECT - Store computed fields when appropriate
+total_revenue = fields.Monetary(
+    string='Total Revenue',
+    compute='_compute_total_revenue',
+    store=True,  # Store for reporting performance
+    currency_field='currency_id'
+)
+```
+
+#### **7. API and Onchange Method Patterns**
+
+```python
+# ✅ CORRECT - Proper onchange methods
+@api.onchange('partner_id')
+def _onchange_partner_id(self):
+    """Update related fields when partner changes"""
+    if self.partner_id:
+        # Update domain for related fields
+        domain = {'location_id': [('partner_id', '=', self.partner_id.id)]}
+        
+        # Set default values
+        if self.partner_id.records_department_id:
+            self.department_id = self.partner_id.records_department_id
+            
+        return {'domain': domain}
+
+# ✅ CORRECT - API method patterns
+@api.model
+def get_dashboard_data(self):
+    """Get dashboard data efficiently"""
+    domain_base = [('company_id', '=', self.env.company.id)]
+    
+    return {
+        'total_containers': self.search_count(domain_base + [('active', '=', True)]),
+        'pending_pickups': self.env['pickup.request'].search_count([
+            ('state', '=', 'confirmed'),
+        ]),
+        'revenue_this_month': self._calculate_monthly_revenue(),
+    }
+```
+
+#### **8. Workflow and State Management**
+
+```python
+# ✅ CORRECT - Complete workflow implementation
+class PickupRequest(models.Model):
+    _name = 'pickup.request'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('submitted', 'Submitted'),
+        ('confirmed', 'Confirmed'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ], string='Status', default='draft', tracking=True, required=True)
+    
+    # ✅ CORRECT - State transition methods
+    def action_submit(self):
+        """Submit request for approval"""
+        self._validate_submission()
+        self.write({'state': 'submitted'})
+        self._notify_managers()
+        self._create_naid_audit_log('request_submitted')
+    
+    def action_confirm(self):
+        """Confirm request and create work orders"""
+        self.ensure_one()
+        if self.state != 'submitted':
+            raise UserError(_('Can only confirm submitted requests'))
+        
+        # Create work orders
+        self._create_work_orders()
+        
+        self.write({'state': 'confirmed'})
+        self._create_naid_audit_log('request_confirmed')
+    
+    def _validate_submission(self):
+        """Validate request before submission"""
+        if not self.container_ids:
+            raise ValidationError(_('Please add containers to the request'))
+        
+        if not self.pickup_date:
+            raise ValidationError(_('Please specify a pickup date'))
+```
+
+#### **9. Integration Patterns**
+
+```python
+# ✅ CORRECT - Portal integration
+class PortalRequest(models.Model):
+    _name = 'portal.request'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
+    
+    def _compute_access_url(self):
+        """Generate portal access URLs"""
+        super()._compute_access_url()
+        for request in self:
+            request.access_url = '/my/requests/%s' % request.id
+    
+    def get_portal_access_token(self):
+        """Generate secure access token for portal"""
+        return self._portal_ensure_token()
+
+# ✅ CORRECT - FSM integration
+@api.model
+def create_fsm_task(self, pickup_request):
+    """Create Field Service Management task"""
+    task_vals = {
+        'name': _('Pickup Request: %s', pickup_request.name),
+        'partner_id': pickup_request.partner_id.id,
+        'project_id': self.env.ref('records_management.fsm_project_pickups').id,
+        'planned_date_begin': pickup_request.pickup_date,
+        'description': pickup_request.description,
+    }
+    return self.env['project.task'].create(task_vals)
+```
+
+#### **10. Testing and Quality Assurance**
+
+```python
+# ✅ CORRECT - Comprehensive test patterns
+from odoo.tests import TransactionCase, tagged
+from odoo.exceptions import ValidationError, UserError
+
+@tagged('post_install', '-at_install')
+class TestRecordsContainer(TransactionCase):
+    
+    def setUp(self):
+        super().setUp()
+        self.Container = self.env['records.container']
+        self.partner = self.env.ref('base.res_partner_1')
+    
+    def test_container_creation(self):
+        """Test container creation with proper specifications"""
+        container = self.Container.create({
+            'name': 'TEST-001',
+            'container_type': 'type_01',
+            'partner_id': self.partner.id,
+        })
+        
+        # Validate automatic field population
+        self.assertEqual(container.volume, 1.2)
+        self.assertEqual(container.max_weight, 35)
+        self.assertTrue(container.barcode)
+    
+    def test_validation_constraints(self):
+        """Test validation constraints"""
+        with self.assertRaises(ValidationError):
+            self.Container.create({
+                'name': 'TEST-INVALID',
+                'container_type': 'type_01',
+                'volume': 5.0,  # Invalid volume for type_01
+                'partner_id': self.partner.id,
+            })
+```
+
+### **🛡️ Import Error Handling for Development**
+
+#### **VS Code Configuration for Development**
+
+The VS Code settings now include comprehensive import error handling:
+
+```json
+{
+    // Disable import error warnings during development
+    "python.analysis.disabled": [
+        "reportMissingImports",
+        "reportMissingModuleSource", 
+        "reportAttributeAccessIssue"
+    ],
+    
+    // Enhanced pylint configuration
+    "python.linting.pylintArgs": [
+        "--disable=import-error",
+        "--disable=no-name-in-module",
+        "--disable=no-member",
+        "--init-hook=import sys; sys.path.append('./addons'); sys.path.append('./records_management')"
+    ]
+}
+```
+
+#### **Development Workflow with Import Handling**
+
+```python
+# ✅ DEVELOPMENT PATTERN - Conditional imports for testing
+try:
+    from odoo import models, fields, api, _
+    from odoo.exceptions import ValidationError, UserError
+except ImportError:
+    # Development/testing environment fallback
+    models = fields = api = None
+    ValidationError = UserError = Exception
+    _ = lambda x, *args, **kwargs: x % args if args else x
+
+# ✅ PRODUCTION PATTERN - Standard Odoo imports
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
+```
+
+### **🎯 Translation Pattern Enforcement**
+
+#### **Automated Pattern Detection (GitHub Copilot)**
+
+The system now automatically detects and fixes these patterns:
+
+```python
+# AUTOMATIC DETECTION AND CORRECTION:
+
+# Pattern 1: String formatting before translation
+# DETECTS: _("Text %s") % variable
+# FIXES TO: _("Text %s", variable)
+
+# Pattern 2: F-strings with translation
+# DETECTS: _(f"Text {variable}")
+# FIXES TO: _("Text %s", variable)
+
+# Pattern 3: String concatenation
+# DETECTS: _("Text " + variable)
+# FIXES TO: _("Text %s", variable)
+
+# Pattern 4: Complex formatting
+# DETECTS: _("Text %s %s") % (var1, var2)
+# FIXES TO: _("Text %s %s", var1, var2)
+```
+
+### **🔍 VS Code Task Integration**
+
+New VS Code tasks available via `Ctrl+Shift+P` → "Tasks: Run Task":
+
+1. **Validate Records Management Module** - Run comprehensive syntax validation
+2. **Fix Translation Patterns** - Automatically fix translation formatting violations
+3. **Deploy to GitHub** - Automated git push with validation
+4. **Quick Commit with Validation** - Validate and commit in one step
+5. **Test Container Specifications** - Validate business container specifications
+
+### **🚀 Debug Configuration**
+
+VS Code debugging now includes:
+
+- **Records Management Debug**: Debug the main module
+- **Current File Debug**: Debug any Python file with proper PYTHONPATH
+- **Syntax Error Fixer**: Debug the syntax validation tool
+- **Translation Pattern Fixer**: Debug translation fixing tool
+- **Container Test Suite**: Debug container specification tests
+
+### **📋 Code Snippets Available**
+
+Type these prefixes in VS Code for instant code generation:
+
+- `odoo-model` - Complete model template with Records Management standards
+- `odoo-trans` - Correct translation pattern
+- `odoo-trans-multi` - Multiple parameter translation
+- `container-type` - Container specification constants
+- `naid-audit` - NAID compliance audit log creation
+- `action-method` - Standard action method with audit trail
+- `compute-method` - Compute method with proper dependencies
+- `validation` - Validation constraint with proper translation
+
+---
+
+_Enhanced VS Code environment provides immediate feedback during development with comprehensive Odoo coding standard enforcement._
