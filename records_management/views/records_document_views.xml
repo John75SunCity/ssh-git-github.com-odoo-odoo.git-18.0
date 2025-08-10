@@ -10,7 +10,7 @@
             <kanban default_group_by="state" class="o_kanban_document_dashboard">
                 <field name="name"/>
                 <field name="document_type_id"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="container_id"/>
                 <field name="state"/>
                 <field name="retention_policy_id"/>
@@ -25,7 +25,7 @@
                                         </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        👤                                        <field name="customer_id"/>
+                                        👤                                        <field name="partner_id"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
@@ -90,7 +90,7 @@
             <list decoration-danger="destruction_eligible_date &lt;= context_today()" decoration-warning="destruction_eligible_date &lt;= (context_today() + relativedelta(days=30))" decoration-success="permanent_flag == True">
                 <field name="name" string="📄 Document"/>
                 <field name="document_type_id" string="📂 Type"/>
-                <field name="customer_id" string="👤 Customer"/>
+                <field name="partner_id" string="👤 Customer"/>
                 <field name="container_id" string="📦 Container"/>
                 <field name="permanent_flag" string="🛡️ Permanent" widget="boolean"/>
                 <field name="retention_policy_id" string="📅 Retention Policy"/>
@@ -140,7 +140,7 @@
                         <group string="📄 Document Information">
                             <field name="name" placeholder="e.g., Invoice-2024-001"/>
                             <field name="document_type_id"/>
-                            <field name="customer_id"/>
+                            <field name="partner_id"/>
                             <field name="department_id"/>
                             <field name="container_id"/>
                         </group>
@@ -242,7 +242,7 @@
         <field name="arch" type="xml">
             <calendar string="📅 Document Destruction Schedule" date_start="destruction_eligible_date" color="state">
                 <field name="name"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="state"/>
             </calendar>
         </field>
@@ -255,7 +255,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Document" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="document_type_id"/>
                 <field name="container_id"/>
 
@@ -273,7 +273,7 @@
                 <filter string="📆 Recent Activity" name="recent_access" domain="[('last_access_date', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="📊 Group By">
-                    <filter string="Customer" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Document Type" name="group_by_type" context="{'group_by': 'document_type_id'}"/>
                     <filter string="Container" name="group_by_container" context="{'group_by': 'container_id'}"/>
                     <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>

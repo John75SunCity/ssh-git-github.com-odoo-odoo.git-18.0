@@ -54,7 +54,7 @@
                             <list decoration-success="permanent_flag == True" 
                                   decoration-muted="permanent_flag == False">
                                 <field name="name"/>
-                                <field name="customer_id"/>
+                                <field name="partner_id"/>
                                 <field name="box_id"/>
                                 <field name="permanent_flag" string="🛡️ Currently Permanent" widget="boolean"/>
                                 <field name="permanent_flag_set_by" string="Set By" 

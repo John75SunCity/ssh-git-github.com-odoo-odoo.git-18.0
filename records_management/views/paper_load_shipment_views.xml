@@ -11,7 +11,7 @@
                 <field name="load_number"/>
                 <field name="pickup_date"/>
                 <field name="driver_name"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="bale_count" sum="Total Bales"/>
                 <field name="total_weight_lbs" sum="Total Weight (lbs)"/>
                 <field name="total_weight_kg" sum="Total Weight (kg)"/>
@@ -75,7 +75,7 @@
                             <span class="mx-2">•</span>
                             <field name="driver_name"/>
                             <span class="mx-2">•</span>
-                            <field name="customer_id" options="{'no_create': True}"/>
+                            <field name="partner_id" options="{'no_create': True}"/>
                         </div>
                     </div>
 
@@ -203,7 +203,7 @@
                 <field name="load_number"/>
                 <field name="pickup_date"/>
                 <field name="driver_name"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="bale_count"/>
                 <field name="total_weight_lbs"/>
                 <field name="status"/>
@@ -248,7 +248,7 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <strong>Customer:</strong>
-                                        <field name="customer_id"/>
+                                        <field name="partner_id"/>
                                         <br/>
                                         <span t-if="record.manifest_generated.raw_value" class="float-end">
                                             <i class="fa fa-file-text-o text-success" title="Manifest Generated"/>
@@ -271,7 +271,7 @@
             <search string="Load Shipments">
                 <field name="load_number"/>
                 <field name="driver_name"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
 
                 <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
                 <filter string="Scheduled" name="scheduled" domain="[('status', '=', 'scheduled')]"/>
@@ -294,7 +294,7 @@
                     <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
                     <filter string="Pickup Date" name="group_pickup_date" context="{'group_by': 'pickup_date'}"/>
                     <filter string="Driver" name="group_driver" context="{'group_by': 'driver_name'}"/>
-                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
                 </group>
             </search>
         </field>

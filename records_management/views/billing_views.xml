@@ -11,7 +11,7 @@
                 <field name="name"/>
                 <field name="billing_model"/>
                 <field name="active"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="base_rate"/>
                 <field name="auto_billing"/>
                 <field name="payment_terms"/>
@@ -24,7 +24,7 @@
                                         <strong>💳 <field name="name"/></strong>
                                     </div>
                                     <div class="o_secondary">
-                                        👤 <field name="customer_id"/>
+                                        👤 <field name="partner_id"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
@@ -85,7 +85,7 @@
                   decoration-warning="billing_model == 'custom'"
                   decoration-info="payment_terms == 'net_30'">
                 <field name="name" string="💳 Configuration Name"/>
-                <field name="customer_id" string="👤 Customer"/>
+                <field name="partner_id" string="👤 Customer"/>
                 <field name="billing_model" string="💼 Billing Model" widget="badge"/>
                 <field name="base_rate" string="💰 Base Rate"/>
                 <field name="billing_frequency" string="📅 Frequency"/>
@@ -137,7 +137,7 @@
                     <group>
                         <group string="💳 Billing Configuration">
                             <field name="name" placeholder="e.g., Standard Storage Billing"/>
-                            <field name="customer_id"/>
+                            <field name="partner_id"/>
                             <field name="billing_model"/>
                             <field name="service_category"/>
                         </group>
@@ -325,7 +325,7 @@
                       date_start="next_billing_date" 
                       color="billing_model">
                 <field name="name"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="billing_frequency"/>
                 <field name="base_rate"/>
                 <field name="auto_billing"/>
@@ -340,7 +340,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Configuration"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="billing_model"/>
                 <field name="service_category"/>
                 
@@ -362,7 +362,7 @@
                         domain="[('next_billing_date', '&gt;=', context_today()), ('next_billing_date', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
                 
                 <group expand="0" string="📊 Group By">
-                    <filter string="Customer" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Billing Model" name="group_by_model" context="{'group_by': 'billing_model'}"/>
                     <filter string="Service Category" name="group_by_category" context="{'group_by': 'service_category'}"/>
                     <filter string="Billing Frequency" name="group_by_frequency" context="{'group_by': 'billing_frequency'}"/>

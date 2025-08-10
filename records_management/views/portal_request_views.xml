@@ -10,7 +10,7 @@
             <kanban default_group_by="status" class="o_kanban_portal_request">
                 <field name="name"/>
                 <field name="request_type"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="status"/>
                 <field name="priority"/>
                 <field name="submission_date"/>
@@ -24,7 +24,7 @@
                                 <span class="float-end">
                                     <field name="priority" widget="priority"/>
                                 </span>
-                                <div class="text-muted">👤                                    <field name="customer_id"/>
+                                <div class="text-muted">👤                                    <field name="partner_id"/>
                                 </div>
                             </div>
                             <div class="o_kanban_card_content">
@@ -57,7 +57,7 @@
             <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="status=='completed'">
                 <field name="name"/>
                 <field name="request_type"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="submission_date" widget="date"/>
                 <field name="priority" widget="priority"/>
                 <field name="status" widget="badge"/>
@@ -98,7 +98,7 @@
                     <group>
                         <group>
                             <field name="request_type"/>
-                            <field name="customer_id"/>
+                            <field name="partner_id"/>
                             <field name="submission_date"/>
                             <field name="priority"/>
                         </group>
@@ -151,7 +151,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="request_type"/>
                 <field name="assigned_to"/>
 
@@ -167,7 +167,7 @@
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
                     <filter string="Type" name="group_type" context="{'group_by': 'request_type'}"/>
-                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Assigned To" name="group_assigned" context="{'group_by': 'assigned_to'}"/>
                 </group>
             </search>

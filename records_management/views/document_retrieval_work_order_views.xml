@@ -9,7 +9,7 @@
         <field name="arch" type="xml">
             <tree string="Document Retrieval Work Orders" decoration-info="state=='draft'" decoration-warning="state=='confirmed'" decoration-success="state=='completed'">
                 <field name="name"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="priority"/>
                 <field name="request_date"/>
                 <field name="item_count"/>
@@ -55,7 +55,7 @@
 
                     <group>
                         <group name="customer_info" string="Customer Information">
-                            <field name="customer_id" options="{'no_create': True}"/>
+                            <field name="partner_id" options="{'no_create': True}"/>
                             <field name="department_id" options="{'no_create': True}"/>
                             <field name="requested_by" readonly="1"/>
                         </group>
@@ -159,7 +159,7 @@
         <field name="arch" type="xml">
             <kanban default_group_by="state" quick_create="false">
                 <field name="name"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="priority"/>
                 <field name="total_cost"/>
                 <field name="item_count"/>
@@ -187,7 +187,7 @@
                                 </div>
 
                                 <div class="o_kanban_record_body">
-                                    <field name="customer_id"/>
+                                    <field name="partner_id"/>
                                     <br/>
                                     <strong>Priority: </strong>
                                     <field name="priority"/>
@@ -221,7 +221,7 @@
         <field name="arch" type="xml">
             <search string="Document Retrieval Work Orders">
                 <field name="name" string="Work Order"/>
-                <field name="customer_id" string="Customer"/>
+                <field name="partner_id" string="Customer"/>
                 <field name="technician_id" string="Technician"/>
 
                 <filter string="My Work Orders" name="my_orders" domain="[('technician_id', '=', uid)]"/>
@@ -237,7 +237,7 @@
                 <filter string="This Week" name="this_week" domain="[('request_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="Group By">
-                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
                     <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
                     <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}"/>

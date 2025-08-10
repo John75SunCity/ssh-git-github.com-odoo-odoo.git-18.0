@@ -22,7 +22,7 @@
                         </div>
                         <group>
                             <group>
-                                <field name="customer_id" options="{'no_create': True}"/>
+                                <field name="partner_id" options="{'no_create': True}"/>
                                 <field name="department_id" options="{'no_create': True}"/>
                                 <field name="priority"/>
                                 <field name="active"/>
@@ -120,7 +120,7 @@
                 <tree string="Field Label Customizations">
                     <field name="name"/>
                     <field name="scope_display"/>
-                    <field name="customer_id"/>
+                    <field name="partner_id"/>
                     <field name="department_id"/>
                     <field name="priority"/>
                     <field name="customized_label_count"/>
@@ -136,7 +136,7 @@
             <field name="arch" type="xml">
                 <search string="Search Field Label Customizations">
                     <field name="name"/>
-                    <field name="customer_id"/>
+                    <field name="partner_id"/>
                     <field name="department_id"/>
                     <separator/>
                     <filter string="Global Configurations" name="global" domain="[('customer_id', '=', False)]"/>
@@ -146,7 +146,7 @@
                     <filter string="Active" name="active" domain="[('active', '=', True)]"/>
                     <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
                     <group expand="0" string="Group By">
-                        <filter string="Customer" name="group_customer" domain="[]" context="{'group_by': 'customer_id'}"/>
+                        <filter string="Customer" name="group_customer" domain="[]" context="{'group_by': 'partner_id'}"/>
                         <filter string="Department" name="group_department" domain="[]" context="{'group_by': 'department_id'}"/>
                         <filter string="Priority" name="group_priority" domain="[]" context="{'group_by': 'priority'}"/>
                     </group>
@@ -195,7 +195,7 @@
                         </div>
                         <group>
                             <group>
-                                <field name="customer_id" options="{'no_create': True}"/>
+                                <field name="partner_id" options="{'no_create': True}"/>
                                 <field name="department_id" options="{'no_create': True}"/>
                                 <field name="field_label_config_id" options="{'no_create': True}"/>
                             </group>

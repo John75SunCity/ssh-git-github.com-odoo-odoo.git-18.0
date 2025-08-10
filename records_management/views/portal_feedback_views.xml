@@ -10,7 +10,7 @@
             <kanban default_group_by="satisfaction_level" quick_create="false" class="o_kanban_small_column">
                 <field name="name"/>
                 <field name="satisfaction_level"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="feedback_type"/>
                 <field name="overall_rating"/>
                 <field name="service_quality_rating"/>
@@ -30,7 +30,7 @@
                                     <field name="status" widget="label_selection" options="{'classes': {'new': 'primary', 'reviewed': 'info', 'responded': 'success', 'escalated': 'warning', 'closed': 'secondary'}}"/>
                                 </span>
                                 <div class="text-muted">
-                                    👤 <field name="customer_id"/> | <field name="feedback_type"/>
+                                    👤 <field name="partner_id"/> | <field name="feedback_type"/>
                                 </div>
                             </div>
                             <div class="o_kanban_record_body">
@@ -74,7 +74,7 @@
                 </header>
                 <field name="name"/>
                 <field name="submission_date" widget="date"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="feedback_type"/>
                 <field name="overall_rating" widget="priority"/>
                 <field name="service_quality_rating"/>
@@ -116,7 +116,7 @@
 
                     <group>
                         <group>
-                            <field name="customer_id"/>
+                            <field name="partner_id"/>
                             <field name="feedback_type"/>
                             <field name="submission_date"/>
                             <field name="priority"/>
@@ -172,7 +172,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <field name="customer_id"/>
+                <field name="partner_id"/>
                 <field name="feedback_type"/>
                 <field name="assigned_to"/>
                 
@@ -187,7 +187,7 @@
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
                     <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
-                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Assigned To" name="group_assigned" context="{'group_by': 'assigned_to'}"/>
                     <filter string="Date" name="group_date" context="{'group_by': 'submission_date'}"/>
                 </group>

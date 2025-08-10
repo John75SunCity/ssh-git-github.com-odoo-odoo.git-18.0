@@ -18,7 +18,7 @@
                     <group name="input_section">
                         <group name="customer_info">
                             <field name="customer_name" placeholder="Start typing customer name..."/>
-                            <field name="customer_id" options="{'no_create': True, 'no_edit': True}"/>
+                            <field name="partner_id" options="{'no_create': True, 'no_edit': True}"/>
                         </group>
                         <group name="bin_info">
                             <field name="bin_identifier" placeholder="Enter bin number or identifier"/>
