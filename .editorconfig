@@ -1,0 +1,51 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# All files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Python files - Odoo standards
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+# Preserve Odoo-specific patterns:
+# - Allow long lines for field definitions
+# - Allow single-line if statements
+# - Preserve existing indentation for One2many/Many2one chains
+
+# XML files - Odoo standards  
+[*.xml]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+# YAML files
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# JSON files
+[*.json]
+indent_style = space
+indent_size = 4
+
+# JavaScript files
+[*.js]
+indent_style = space
+indent_size = 4
+
+# CSS files
+[*.{css,scss}]
+indent_style = space
+indent_size = 4
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false
