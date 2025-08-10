@@ -365,7 +365,7 @@ class RecordsDepartmentBillingContact(models.Model):
                     if partner and partner.exists() and partner.name
                     else _("Unknown Partner")
                 )
-                vals["name"] = _("Billing Contact - %s") % partner_name
+                vals["name"] = _("Billing Contact - %s", partner_name)
         return super(RecordsDepartmentBillingContact, self).create(vals_list)
 
     def write(self, vals):
@@ -376,7 +376,7 @@ class RecordsDepartmentBillingContact(models.Model):
                 new_state = vals["state"]
                 if old_state != new_state:
                     record.message_post(
-                        body=_("Status changed from %s to %s") % (old_state, new_state)
+                        body=_("Status changed from %s to %s", (old_state), new_state)
                     )
         return super(RecordsDepartmentBillingContact, self).write(vals)
 
@@ -466,7 +466,7 @@ class RecordsDepartmentBillingContact(models.Model):
 
         # Log notification in chatter
         self.message_post(
-            body=_("Notification sent: %s") % message, message_type="notification"
+            body=_("Notification sent: %s", message), message_type="notification"
         )
 
         return True

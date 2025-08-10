@@ -701,7 +701,7 @@ class DocumentRetrievalItem(models.Model):
 
         # Post a notification message to the chatter
         self.message_post(
-            body=f"Item located by {self.env.user.name}", message_type="notification"
+            body=_("Item located by %sself.env.user.name", self.env.user.name), message_type="notification"
         )
 
     def action_retrieve_item(self):
@@ -725,7 +725,7 @@ class DocumentRetrievalItem(models.Model):
 
         # Post a notification message to the chatter
         self.message_post(
-            body=f"Item retrieved by {self.env.user.name}", message_type="notification"
+            body=_("Item retrieved by %sself.env.user.name", self.env.user.name), message_type="notification"
         )
 
     def action_package_item(self):
@@ -746,7 +746,7 @@ class DocumentRetrievalItem(models.Model):
             }
         )
         self.message_post(
-            body=f"Item packaged by {self.env.user.name}", message_type="notification"
+            body=_("Item packaged by %sself.env.user.name", self.env.user.name), message_type="notification"
         )
 
     def action_deliver_item(self):
@@ -764,7 +764,7 @@ class DocumentRetrievalItem(models.Model):
 
         # Post a notification message to the chatter
         self.message_post(
-            body=f"Item delivered by {self.env.user.name}", message_type="notification"
+            body=_("Item delivered by %sself.env.user.name", self.env.user.name), message_type="notification"
         )
 
     def action_return_item(self):
@@ -786,7 +786,7 @@ class DocumentRetrievalItem(models.Model):
         )
         # Post a notification message to the chatter
         self.message_post(
-            body=f"Item returned by {self.env.user.name}", message_type="notification"
+            body=_("Item returned by %sself.env.user.name", self.env.user.name), message_type="notification"
         )
 
     # === NEW ACTION METHODS FOR SEARCH WORKFLOW ===
@@ -798,7 +798,7 @@ class DocumentRetrievalItem(models.Model):
 
         self.write({"status": "searching"})
         self.message_post(
-            body=f"Search started by {self.env.user.name} for file: {self.requested_file_name or self.name}",
+            body=_("Search started by %sself.env.user.name for file: %sself.requested_file_name or self.name", self.env.user.name, self.requested_file_name or self.name),
             message_type="notification",
         )
 
@@ -857,7 +857,7 @@ class DocumentRetrievalItem(models.Model):
 
         # Create final search attempt record
         self.message_post(
-            body=f"File marked as NOT FOUND by {self.env.user.name}. "
+            body=_("File marked as NOT FOUND by %sself.env.user.name. ", self.env.user.name)
             f"Searched {self.containers_accessed_count} containers "
             f"({self.containers_not_found_count} unsuccessful - will be charged as container access fees). "
             f"Reason: {dict(self._fields['not_found_reason'].selection).get(reason, reason)}",
@@ -893,7 +893,7 @@ class DocumentRetrievalItem(models.Model):
             self.document_id = document.id
 
         self.message_post(
-            body=f"File barcoded by {self.env.user.name} with barcode: {barcode}",
+            body=_("File barcoded by %sself.env.user.name with barcode: %sbarcode", self.env.user.name, barcode),
             message_type="notification",
         )
 

@@ -409,7 +409,7 @@ class RecordsRetentionPolicy(models.Model):
         for record in self:
             name = record.name
             if record.code:
-                name = f"[{record.code}] {name}"
+                name = _("[%s] %s"
             result.append((record.id, name))
         return result
 
@@ -441,7 +441,7 @@ class RecordsRetentionPolicy(models.Model):
             "last_review_date": fields.Date.today(),
             "review_notes": ""
         })
-        self.message_post(body=_("Policy reviewed on %s") % fields.Date.today())
+        self.message_post(body=_("Policy reviewed on %s", fields.Date.today()))
 
     def action_view_affected_documents(self):
         """View documents affected by this policy"""
@@ -542,7 +542,7 @@ class RecordsRetentionPolicy(models.Model):
         for policy in overdue_policies:
             policy.activity_schedule(
                 "mail.mail_activity_data_todo",
-                summary=_("Policy Review Due: %s") % policy.name,
+                summary=_("Policy Review Due: %s", policy.name),
                 note=_("This retention policy is due for review according to the scheduled frequency."),
                 user_id=policy.user_id.id,
                 date_deadline=fields.Date.today(),

@@ -418,8 +418,7 @@ class PaymentSplit(models.Model):
             if record.split_type == "percentage" and record.split_percentage:
                 if not (0 < record.split_percentage <= 100):
                     raise ValidationError(
-                        _("Split percentage must be between 0 and 100, got %s")
-                        % record.split_percentage
+                        _("Split percentage must be between 0 and 100, got %s", record.split_percentage)
                     )
 
     @api.constrains("split_count")
@@ -465,7 +464,7 @@ class PaymentSplit(models.Model):
                 "approval_date": fields.Datetime.now(),
             }
         )
-        self.message_post(body=_("Payment split approved by %s") % self.env.user.name)
+        self.message_post(body=_("Payment split approved by %s", self.env.user.name))
 
     def action_reject(self):
         """Reject payment split"""
@@ -474,7 +473,7 @@ class PaymentSplit(models.Model):
             raise ValidationError(_("Only pending splits can be rejected"))
 
         self.write({"state": "draft"})
-        self.message_post(body=_("Payment split rejected by %s") % self.env.user.name)
+        self.message_post(body=_("Payment split rejected by %s", self.env.user.name))
 
     def action_start_processing(self):
         """Start processing payment split"""
@@ -581,7 +580,7 @@ class PaymentSplit(models.Model):
             )
 
         self.message_post(
-            body=_("Split lines created based on %s configuration") % self.split_type
+            body=_("Split lines created based on %s configuration", self.split_type)
         )
 
     def action_view_split_lines(self):

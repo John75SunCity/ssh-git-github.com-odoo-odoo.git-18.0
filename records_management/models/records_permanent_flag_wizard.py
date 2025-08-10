@@ -75,7 +75,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     name = fields.Char(
         string="Operation Name",
         required=True,
-        default=lambda self: _("Permanent Flag Operation %s") % fields.Date.today(),
+        default=lambda self: _("Permanent Flag Operation %s", fields.Date.today()),
     )
     description = fields.Text(
         string="Description",
@@ -398,8 +398,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             "tag": "display_notification",
             "params": {
                 "title": _("Criteria Applied"),
-                "message": _("%d documents selected based on criteria")
-                % len(documents),
+                "message": _("%d documents selected based on criteria", len(documents)),
                 "type": "success",
             },
         }

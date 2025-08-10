@@ -140,7 +140,7 @@ class ApprovalHistory(models.Model):
                 sequence = (
                     self.env["ir.sequence"].next_by_code("approval.history") or "/"
                 )
-                vals["name"] = f"{approval_type.upper()}-{sequence}"
+                vals["name"] = _("%s-%s"
         return super().create(vals_list)
 
     def action_approve(self):
@@ -158,7 +158,7 @@ class ApprovalHistory(models.Model):
         )
 
         self.message_post(
-            body=_("Approval request approved by %s") % self.env.user.name,
+            body=_("Approval request approved by %s", self.env.user.name),
             message_type="notification",
         )
 
@@ -177,7 +177,7 @@ class ApprovalHistory(models.Model):
         )
 
         self.message_post(
-            body=_("Approval request rejected by %s") % self.env.user.name,
+            body=_("Approval request rejected by %s", self.env.user.name),
             message_type="notification",
         )
 

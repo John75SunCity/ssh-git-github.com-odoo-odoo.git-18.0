@@ -661,7 +661,7 @@ class RecordsContainerType(models.Model):
         result = []
         for record in self:
             if record.code:
-                display_name = f"{record.name} [{record.code}]"
+                display_name = _("%s [%s]"
             else:
                 display_name = record.name
             result.append((record.id, display_name))

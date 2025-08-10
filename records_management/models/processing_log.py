@@ -315,13 +315,13 @@ class ProcessingLog(models.Model):
                                 f"{log.res_model}({log.res_id}): {log.res_name}"
                             )
                         else:
-                            log.res_name = f"Deleted {log.res_model}({log.res_id})"
+                            log.res_name = _("Deleted %s(%s)"
                             log.reference = log.res_name
                     else:
-                        log.res_name = f"Unknown Model {log.res_model}({log.res_id})"
+                        log.res_name = _("Unknown Model %s(%s)"
                         log.reference = log.res_name
                 except Exception:
-                    log.res_name = f"Error accessing {log.res_model}({log.res_id})"
+                    log.res_name = _("Error accessing %s(%s)"
                     log.reference = log.res_name
             else:
                 log.res_name = ""
@@ -347,7 +347,7 @@ class ProcessingLog(models.Model):
             if log.name and log.process_type and log.timestamp:
                 timestamp_str = log.timestamp.strftime("%Y-%m-%d %H:%M:%S")
                 level_str = log.log_level.upper() if log.log_level else "INFO"
-                log.display_name = f"[{level_str}] {log.name} ({timestamp_str})"
+                log.display_name = _("[%s] %s (%s)"
             else:
                 log.display_name = log.name or "Processing Log"
 
@@ -362,7 +362,7 @@ class ProcessingLog(models.Model):
                 process_type = vals.get("process_type", "system")
                 timestamp = datetime.now()
                 vals["name"] = (
-                    f"{process_type.upper()}-{timestamp.strftime('%Y%m%d-%H%M%S')}"
+                    _("%s-%s"
                 )
             # Capture performance metrics if not provided
             if "memory_usage" not in vals and PSUTIL_AVAILABLE:
@@ -692,6 +692,6 @@ class ProcessingLogResolutionWizard(models.TransientModel):
             )
         self.log_id.write(vals)
         self.log_id.message_post(
-            body=_("Resolution notes added: %s") % self.resolution_notes
+            body=_("Resolution notes added: %s", self.resolution_notes)
         )
         return {"type": "ir.actions.act_window_close"}

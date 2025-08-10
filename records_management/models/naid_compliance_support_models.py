@@ -142,7 +142,7 @@ class NaidComplianceAlert(models.Model):
         """Acknowledge alert"""
         self.ensure_one()
         self.write({"status": "acknowledged"})
-        self.message_post(body=_("Alert acknowledged by %s") % self.env.user.name)
+        self.message_post(body=_("Alert acknowledged by %s", self.env.user.name))
 
     def action_resolve(self):
         """Resolve alert"""
@@ -154,13 +154,13 @@ class NaidComplianceAlert(models.Model):
                 "resolved_by": self.env.user.id,
             }
         )
-        self.message_post(body=_("Alert resolved by %s") % self.env.user.name)
+        self.message_post(body=_("Alert resolved by %s", self.env.user.name))
 
     def action_dismiss(self):
         """Dismiss alert"""
         self.ensure_one()
         self.write({"status": "dismissed"})
-        self.message_post(body=_("Alert dismissed by %s") % self.env.user.name)
+        self.message_post(body=_("Alert dismissed by %s", self.env.user.name))
 
 
 class NaidComplianceChecklistItem(models.Model):
@@ -578,7 +578,7 @@ class NaidComplianceActionPlan(models.Model):
                 "approval_date": fields.Date.today(),
             }
         )
-        self.message_post(body=_("Action plan approved by %s") % self.env.user.name)
+        self.message_post(body=_("Action plan approved by %s", self.env.user.name))
 
     def action_start(self):
         """Start action plan execution"""
@@ -589,7 +589,7 @@ class NaidComplianceActionPlan(models.Model):
                 "start_date": fields.Date.today(),
             }
         )
-        self.message_post(body=_("Action plan started by %s") % self.env.user.name)
+        self.message_post(body=_("Action plan started by %s", self.env.user.name))
 
     def action_complete(self):
         """Mark action plan as completed"""
@@ -601,7 +601,7 @@ class NaidComplianceActionPlan(models.Model):
                 "progress_percentage": 100.0,
             }
         )
-        self.message_post(body=_("Action plan completed by %s") % self.env.user.name)
+        self.message_post(body=_("Action plan completed by %s", self.env.user.name))
 
     # ============================================================================
     # VALIDATION METHODS

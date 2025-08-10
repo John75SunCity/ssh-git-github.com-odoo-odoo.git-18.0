@@ -325,8 +325,8 @@ class RevenueForecastLine(models.Model):
         """Compute descriptive name for forecast line"""
         for line in self:
             if line.partner_id and line.forecast_id:
-                line.name = f"{line.partner_id.name} - {line.forecast_id.name}"
+                line.name = _("%s - %s"
             elif line.partner_id:
-                line.name = f"{line.partner_id.name} - Forecast Line"
+                line.name = _("%s - Forecast Line"
             else:
-                line.name = f"Forecast Line {line.id or 'New'}"
+                line.name = _("Forecast Line %s"

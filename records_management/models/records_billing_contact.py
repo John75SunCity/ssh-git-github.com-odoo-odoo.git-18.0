@@ -407,8 +407,7 @@ class RecordsBillingContact(models.Model):
 
         # Log the test communication
         self.message_post(
-            body=_("Test communication sent to %s via %s")
-            % (
+            body=_("Test communication sent to %s via %s", ()
                 self.name,
                 dict(self._fields["preferred_method"].selection)[self.preferred_method],
             )
@@ -458,7 +457,7 @@ class RecordsBillingContact(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": _("Primary Contact Updated"),
-                "message": _("%s is now the primary billing contact.") % self.name,
+                "message": _("%s is now the primary billing contact.", self.name),
                 "type": "success",
             },
         }
@@ -478,7 +477,7 @@ class RecordsBillingContact(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": _("Test Email Sent"),
-                "message": _("Test email sent to %s") % self.email,
+                "message": _("Test email sent to %s", self.email),
                 "type": "success",
             },
         }
@@ -489,7 +488,7 @@ class RecordsBillingContact(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Communications: %s") % self.name,
+            "name": _("Communications: %s", self.name),
             "res_model": "mail.message",
             "view_mode": "tree,form",
             "domain": [
@@ -542,8 +541,7 @@ class RecordsBillingContact(models.Model):
                 )
 
                 self.message_post(
-                    body=_("Primary contact role transferred to %s")
-                    % backup_contacts[0].name
+                    body=_("Primary contact role transferred to %s", backup_contacts[0].name)
                 )
 
         self.write({"active": False})
@@ -588,7 +586,7 @@ class RecordsBillingContact(models.Model):
         for record in self:
             if record.email:
                 if not email_validate(record.email):
-                    raise ValidationError(_("Invalid email format: %s") % record.email)
+                    raise ValidationError(_("Invalid email format: %s", record.email))
 
     @api.constrains("preferred_method", "email", "phone")
     def _check_communication_method(self):

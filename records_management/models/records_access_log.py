@@ -381,8 +381,7 @@ class RecordsAccessLog(models.Model):
         # Log significant changes
         if any(key in vals for key in ["access_result", "error_message", "risk_score"]):
             self.message_post(
-                body=_("Access log updated: %s")
-                % ", ".join(f"{k}: {v}" for k, v in vals.items())
+                body=_("Access log updated: %s", "), ".join(f"{k}: {v}" for k, v in vals.items())
             )
 
         return result
@@ -458,7 +457,7 @@ class RecordsAccessLog(models.Model):
         """Mark access log as reviewed"""
         self.ensure_one()
         self.message_post(
-            body=_("Access log reviewed by %s") % self.env.user.name,
+            body=_("Access log reviewed by %s", self.env.user.name),
             message_type="comment",
         )
 
@@ -489,7 +488,7 @@ class RecordsAccessLog(models.Model):
             self.activity_schedule(
                 activity_type_id=activity_type.id,
                 summary=_("Investigate Suspicious Access"),
-                note=_("Access log flagged as suspicious: %s") % self.name,
+                note=_("Access log flagged as suspicious: %s", self.name),
                 user_id=user_id,
             )
         except Exception:
@@ -526,7 +525,7 @@ class RecordsAccessLog(models.Model):
                 audit_log = self.env["naid.audit.log"].create(audit_vals)
                 self.write({"audit_trail_id": audit_log.id})
 
-                self.message_post(body=_("Audit trail created: %s") % audit_log.name)
+                self.message_post(body=_("Audit trail created: %s", audit_log.name))
 
                 return {
                     "type": "ir.actions.act_window",

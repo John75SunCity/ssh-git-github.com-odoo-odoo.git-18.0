@@ -140,7 +140,7 @@ class RecordsDigitalScan(models.Model):
 
         # Log activity
         self.message_post(
-            body=_("Digital scan confirmed by %s") % self.env.user.name,
+            body=_("Digital scan confirmed by %s", self.env.user.name),
             message_type="notification",
         )
 
@@ -154,7 +154,7 @@ class RecordsDigitalScan(models.Model):
 
         # Log activity
         self.message_post(
-            body=_("Digital scan completed by %s") % self.env.user.name,
+            body=_("Digital scan completed by %s", self.env.user.name),
             message_type="notification",
         )
 
@@ -171,7 +171,7 @@ class RecordsDigitalScan(models.Model):
 
         # Log activity
         self.message_post(
-            body=_("Digital scan reset to draft by %s") % self.env.user.name,
+            body=_("Digital scan reset to draft by %s", self.env.user.name),
             message_type="notification",
         )
 
@@ -184,9 +184,9 @@ class RecordsDigitalScan(models.Model):
         for record in self:
             info_parts = []
             if record.resolution:
-                info_parts.append(_("%s DPI") % record.resolution)
+                info_parts.append(_("%s DPI", record.resolution))
             if record.file_size:
-                info_parts.append(_("%.2f MB") % record.file_size)
+                info_parts.append(_("%.2f MB", record.file_size))
             record.scan_info = (
                 " - ".join(info_parts) if info_parts else _("No scan info")
             )

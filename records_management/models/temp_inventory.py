@@ -383,7 +383,7 @@ class TempInventory(models.Model):
         """Compute display name"""
         for record in self:
             if record.name:
-                record.display_name = f"{record.name} ({record.current_count} items)"
+                record.display_name = _("%s (%s items)"
             else:
                 record.display_name = _("New Temporary Inventory")
 
@@ -589,17 +589,17 @@ class TempInventory(models.Model):
             message = _("Inventory is at full capacity")
             message_type = "warning"
         elif self.utilization_percent >= 90:
-            message = _("Inventory is at %s%% capacity - nearly full") % round(
+            message = _("Inventory is at %s%% capacity - nearly full", round()
                 self.utilization_percent, 1
             )
             message_type = "warning"
         elif self.utilization_percent >= 75:
-            message = _("Inventory is at %s%% capacity") % round(
+            message = _("Inventory is at %s%% capacity", round()
                 self.utilization_percent, 1
             )
             message_type = "info"
         else:
-            message = _("Inventory has %s available slots") % self.available_capacity
+            message = _("Inventory has %s available slots", self.available_capacity)
             message_type = "success"
 
         return {
@@ -695,8 +695,7 @@ class TempInventory(models.Model):
             for record in self:
                 if vals["state"] != record.state:
                     record.message_post(
-                        body=_("State changed from %s to %s")
-                        % (
+                        body=_("State changed from %s to %s", ()
                             dict(record._fields["state"].selection)[record.state],
                             dict(record._fields["state"].selection)[vals["state"]],
                         )
@@ -818,7 +817,7 @@ class TempInventoryMovement(models.Model):
             movement_label = dict(record._fields["movement_type"].selection)[
                 record.movement_type
             ]
-            record.display_name = f"{movement_label}: {record.quantity} items"
+            record.display_name = _("%s: %s items"
 
 
 class TempInventoryAudit(models.Model):
@@ -881,4 +880,4 @@ class TempInventoryAudit(models.Model):
                 record.event_type
             ]
             user_name = record.user_id.name if record.user_id else "Unknown"
-            record.display_name = f"{event_label} by {user_name}"
+            record.display_name = _("%s by %s"

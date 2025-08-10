@@ -453,8 +453,7 @@ class PickupRequest(models.Model):
                 new_state = vals["state"]
                 if old_state != new_state:
                     record.message_post(
-                        body=_("Pickup request status changed from %s to %s")
-                        % (old_state, new_state)
+                        body=_("Pickup request status changed from %s to %s", (old_state), new_state)
                     )
         return super().write(vals)
 
@@ -506,7 +505,7 @@ class PickupRequest(models.Model):
             raise UserError(_("Only scheduled pickups can be started"))
 
         self.write({"state": "in_progress"})
-        self.message_post(body=_("Pickup started by %s") % self.env.user.name)
+        self.message_post(body=_("Pickup started by %s", self.env.user.name))
 
     def action_complete(self):
         """Complete pickup request"""
@@ -560,7 +559,7 @@ class PickupRequest(models.Model):
         task = self.env["project.task"].create(task_vals)
         self.fsm_task_id = task.id
 
-        self.message_post(body=_("Field service task created: %s") % task.name)
+        self.message_post(body=_("Field service task created: %s", task.name))
 
         return {
             "type": "ir.actions.act_window",
@@ -712,12 +711,12 @@ class PickupRequest(models.Model):
         for record in self:
             name = record.name
             if record.partner_id:
-                name = f"{record.name} - {record.partner_id.name}"
+                name = _("%s - %s"
             if record.pickup_type:
                 pickup_type_label = dict(record._fields["pickup_type"].selection)[
                     record.pickup_type
                 ]
-                name = f"{name} ({pickup_type_label})"
+                name = _("%s (%s)"
             result.append((record.id, name))
         return result
 
@@ -870,11 +869,11 @@ class PickupScheduleWizard(models.TransientModel):
 
         if self.notes:
             self.pickup_request_id.message_post(
-                body=_("Pickup scheduled: %s") % self.notes
+                body=_("Pickup scheduled: %s", self.notes)
             )
         else:
             self.pickup_request_id.message_post(
-                body=_("Pickup scheduled for %s") % self.scheduled_date
+                body=_("Pickup scheduled for %s", self.scheduled_date)
             )
 
         return {"type": "ir.actions.act_window_close"}

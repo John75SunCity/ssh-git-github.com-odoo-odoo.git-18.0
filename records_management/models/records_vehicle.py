@@ -305,7 +305,7 @@ class RecordsVehicle(models.Model):
         """Compute formatted display name with license plate"""
         for record in self:
             if record.license_plate:
-                record.display_name = f"{record.name} [{record.license_plate}]"
+                record.display_name = _("%s [%s]"
             else:
                 record.display_name = record.name or "New Vehicle"
 
@@ -327,7 +327,7 @@ class RecordsVehicle(models.Model):
             if not vals.get("name"):
                 sequence = self.env["ir.sequence"].next_by_code("records.vehicle")
                 vals["name"] = (
-                    sequence or f"Vehicle-{fields.Date.today().strftime('%Y%m%d')}"
+                    sequence or _("Vehicle-%s"
                 )
             vals["created_date"] = fields.Datetime.now()
         return super().create(vals_list)
@@ -343,9 +343,9 @@ class RecordsVehicle(models.Model):
         for record in self:
             name = record.name
             if record.license_plate:
-                name = f"{name} [{record.license_plate}]"
+                name = _("%s [%s]"
             if record.vehicle_type:
-                name = f"{name} ({record.vehicle_type.title()})"
+                name = _("%s (%s)"
             result.append((record.id, name))
         return result
 
@@ -380,21 +380,20 @@ class RecordsVehicle(models.Model):
                 "status": "available",
                 "state": "active",
                 "notes": (self.notes or "")
-                + _("\nSet to available on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                + _("\nSet to available on %s", fields.Datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
             }
         )
         # Create activity
         self.activity_schedule(
             "mail.mail_activity_data_todo",
-            summary=_("Vehicle Available: %s") % self.name,
+            summary=_("Vehicle Available: %s", self.name),
             note=_(
                 "Vehicle has been set to available status and is ready for service."
             ),
             user_id=self.user_id.id,
         )
         self.message_post(
-            body=_("Vehicle set to available status: %s") % self.name,
+            body=_("Vehicle set to available status: %s", self.name),
             message_type="notification",
         )
         return {
@@ -402,7 +401,7 @@ class RecordsVehicle(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": _("Vehicle Available"),
-                "message": _("Vehicle %s is now available for service.") % self.name,
+                "message": _("Vehicle %s is now available for service.", self.name),
                 "type": "success",
                 "sticky": False,
             },
@@ -418,19 +417,18 @@ class RecordsVehicle(models.Model):
                 "status": "in_service",
                 "state": "active",
                 "notes": (self.notes or "")
-                + _("\nSet to in service on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                + _("\nSet to in service on %s", fields.Datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
             }
         )
         # Create activity
         self.activity_schedule(
             "mail.mail_activity_data_todo",
-            summary=_("Vehicle In Service: %s") % self.name,
+            summary=_("Vehicle In Service: %s", self.name),
             note=_("Vehicle is currently in service and unavailable for other routes."),
             user_id=self.user_id.id,
         )
         self.message_post(
-            body=_("Vehicle set to in service: %s") % self.name,
+            body=_("Vehicle set to in service: %s", self.name),
             message_type="notification",
         )
         return {
@@ -454,20 +452,19 @@ class RecordsVehicle(models.Model):
                 "status": "maintenance",
                 "state": "inactive",
                 "notes": (self.notes or "")
-                + _("\nSent for maintenance on %s")
-                % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                + _("\nSent for maintenance on %s", fields.Datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
             }
         )
         # Create maintenance activity
         self.activity_schedule(
             "mail.mail_activity_data_todo",
-            summary=_("Vehicle Maintenance Required: %s") % self.name,
+            summary=_("Vehicle Maintenance Required: %s", self.name),
             note=_("Vehicle requires maintenance and is temporarily out of service."),
             user_id=self.user_id.id,
             date_deadline=fields.Date.today() + timedelta(days=3),
         )
         self.message_post(
-            body=_("Vehicle sent for maintenance: %s") % self.name,
+            body=_("Vehicle sent for maintenance: %s", self.name),
             message_type="notification",
         )
         return {
@@ -594,7 +591,7 @@ class RecordsVehicle(models.Model):
         for vehicle in due_vehicles:
             vehicle.activity_schedule(
                 "mail.mail_activity_data_todo",
-                summary=_("Maintenance Due: %s") % vehicle.name,
+                summary=_("Maintenance Due: %s", vehicle.name),
                 note=_(
                     "Vehicle maintenance is due based on the scheduled service date."
                 ),

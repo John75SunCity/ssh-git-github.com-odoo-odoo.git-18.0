@@ -87,7 +87,7 @@ class PosConfig(models.Model):
 
         # Update notes with session closure
         current_notes = self.notes or ""
-        closure_note = _("\nSession closed on %s") % fields.Datetime.now().strftime(
+        closure_note = _("\nSession closed on %s", fields.Datetime.now()).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
 
@@ -96,13 +96,13 @@ class PosConfig(models.Model):
         # Create session closure activity
         self.activity_schedule(
             "mail.mail_activity_data_done",
-            summary=_("POS session closed: %s") % self.name,
+            summary=_("POS session closed: %s", self.name),
             note=_("POS session has been properly closed with balance reconciliation."),
             user_id=self.user_id.id,
         )
 
         self.message_post(
-            body=_("POS session closed: %s") % self.name, message_type="notification"
+            body=_("POS session closed: %s", self.name), message_type="notification"
         )
 
         return {
@@ -133,7 +133,7 @@ class PosConfig(models.Model):
         # Create urgent activity for force closure
         self.activity_schedule(
             "mail.mail_activity_data_todo",
-            summary=_("POS session force closed: %s") % self.name,
+            summary=_("POS session force closed: %s", self.name),
             note=_(
                 "POS session was force closed - requires review and balance verification."
             ),
@@ -142,8 +142,7 @@ class PosConfig(models.Model):
         )
 
         self.message_post(
-            body=_("POS session force closed - requires balance review: %s")
-            % self.name,
+            body=_("POS session force closed - requires balance review: %s", self.name),
             message_type="notification",
         )
 
@@ -167,7 +166,7 @@ class PosConfig(models.Model):
 
         # Update notes with session opening
         current_notes = self.notes or ""
-        opening_note = _("\nNew session opened on %s") % fields.Datetime.now().strftime(
+        opening_note = _("\nNew session opened on %s", fields.Datetime.now()).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
 
@@ -176,13 +175,13 @@ class PosConfig(models.Model):
         # Create session opening activity
         self.activity_schedule(
             "mail.mail_activity_data_todo",
-            summary=_("POS session opened: %s") % self.name,
+            summary=_("POS session opened: %s", self.name),
             note=_("New POS session has been opened and is ready for transactions."),
             user_id=self.user_id.id,
         )
 
         self.message_post(
-            body=_("New POS session opened: %s") % self.name,
+            body=_("New POS session opened: %s", self.name),
             message_type="notification",
         )
 
@@ -205,14 +204,14 @@ class PosConfig(models.Model):
         # Create activity to track order viewing
         self.activity_schedule(
             "mail.mail_activity_data_todo",
-            summary=_("POS orders reviewed: %s") % self.name,
+            summary=_("POS orders reviewed: %s", self.name),
             note=_("POS orders and transaction history has been reviewed."),
             user_id=self.user_id.id,
         )
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("POS Orders for: %s") % self.name,
+            "name": _("POS Orders for: %s", self.name),
             "res_model": "pos.order",
             "view_mode": "tree,form",
             "target": "current",
@@ -231,19 +230,19 @@ class PosConfig(models.Model):
         # Create activity for sales report review
         self.activity_schedule(
             "mail.mail_activity_data_done",
-            summary=_("Sales report generated: %s") % self.name,
+            summary=_("Sales report generated: %s", self.name),
             note=_("Sales report has been generated and reviewed for analysis."),
             user_id=self.user_id.id,
         )
 
         self.message_post(
-            body=_("Sales report accessed for: %s") % self.name,
+            body=_("Sales report accessed for: %s", self.name),
             message_type="notification",
         )
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Sales Report for: %s") % self.name,
+            "name": _("Sales Report for: %s", self.name),
             "res_model": "report.pos.order",
             "view_mode": "graph,pivot,tree",
             "target": "current",
@@ -263,14 +262,14 @@ class PosConfig(models.Model):
         # Create activity to track session viewing
         self.activity_schedule(
             "mail.mail_activity_data_todo",
-            summary=_("POS sessions reviewed: %s") % self.name,
+            summary=_("POS sessions reviewed: %s", self.name),
             note=_("POS sessions and daily operations have been reviewed."),
             user_id=self.user_id.id,
         )
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("POS Sessions for: %s") % self.name,
+            "name": _("POS Sessions for: %s", self.name),
             "res_model": "pos.session",
             "view_mode": "tree,form",
             "target": "current",
@@ -352,8 +351,7 @@ class PosConfig(models.Model):
         if pending_orders:
             return {
                 "valid": False,
-                "message": _("There are %d pending orders that must be processed first")
-                % len(pending_orders),
+                "message": _("There are %d pending orders that must be processed first", len(pending_orders)),
             }
 
         return {"valid": True, "message": _("Session can be closed safely")}

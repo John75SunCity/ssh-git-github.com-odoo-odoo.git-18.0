@@ -85,7 +85,7 @@ class SignedDocument(models.Model):
         """Compute display name with signature info"""
         for record in self:
             if record.signatory_name and record.signature_date:
-                record.display_name = f"{record.name} - {record.signatory_name}"
+                record.display_name = _("%s - %s"
             else:
                 record.display_name = record.name
 

@@ -507,7 +507,7 @@ class PaperBale(models.Model):
                 new_state = vals["state"]
                 if old_state != new_state:
                     record.message_post(
-                        body=_("State changed from %s to %s") % (old_state, new_state)
+                        body=_("State changed from %s to %s", (old_state), new_state)
                     )
         return super().write(vals)
 
@@ -516,7 +516,7 @@ class PaperBale(models.Model):
         for record in self:
             if record.state in ["shipped", "delivered", "recycled"]:
                 raise UserError(
-                    _("Cannot delete bale %s in state %s") % (record.name, record.state)
+                    _("Cannot delete bale %s in state %s", (record.name), record.state)
                 )
         return super().unlink()
 
@@ -736,7 +736,7 @@ class PaperBale(models.Model):
             name = record.name
             if record.paper_type:
                 paper_type_label = dict(record._fields["paper_type"].selection)[record.paper_type]
-                name = f"{record.name} ({paper_type_label})"
+                name = _("%s (%s)"
             result.append((record.id, name))
         return result
 
@@ -953,7 +953,7 @@ class PaperBaleWeighWizard(models.TransientModel):
         })
         
         self.bale_id.message_post(
-            body=_("Bale weighed: %s %s") % (self.weight, self.weight_unit)
+            body=_("Bale weighed: %s %s", (self.weight), self.weight_unit)
         )
         
         return {"type": "ir.actions.act_window_close"}
@@ -1048,7 +1048,7 @@ class PaperBaleInspectionWizard(models.TransientModel):
         self.bale_id.write(vals)
         
         self.bale_id.message_post(
-            body=_("Quality inspection completed: %s") % self.result
+            body=_("Quality inspection completed: %s", self.result)
         )
         
         return {"type": "ir.actions.act_window_close"}

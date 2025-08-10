@@ -605,7 +605,7 @@ Notes: {specs['notes']}
                         # More than half of customer's bins are underutilized
                         # This is a warning, not an error - business decision
                         record.message_post(
-                            body=f"Warning: Customer has {len(underutilized_bins)} underutilized bins. "
+                            body=_("Warning: Customer has %slen(underutilized_bins) underutilized bins. ", len(underutilized_bins))
                             f"Consider reviewing bin sizing strategy before deploying 96-gallon bin.",
                             message_type="notification",
                         )
@@ -623,7 +623,7 @@ Notes: {specs['notes']}
 
         # Log activity
         self.message_post(
-            body=f"Shred bin {self.name} deployed to {self.partner_id.name}",
+            body=_("Shred bin %sself.name deployed to %sself.partner_id.name", self.name, self.partner_id.name),
             message_type="notification",
         )
 
@@ -648,7 +648,7 @@ Notes: {specs['notes']}
 
         # Log activity
         self.message_post(
-            body=f"Shred bin {self.name} marked as full - pickup request created",
+            body=_("Shred bin %sself.name marked as full - pickup request created", self.name),
             message_type="notification",
         )
 
@@ -662,7 +662,7 @@ Notes: {specs['notes']}
 
         # Log activity
         self.message_post(
-            body=f"Collection started for shred bin {self.name}",
+            body=_("Collection started for shred bin %sself.name", self.name),
             message_type="notification",
         )
 
@@ -676,7 +676,7 @@ Notes: {specs['notes']}
 
         # Log activity
         self.message_post(
-            body=f"Service completed for shred bin {self.name} - returned to service",
+            body=_("Service completed for shred bin %sself.name - returned to service", self.name),
             message_type="notification",
         )
 
@@ -711,7 +711,7 @@ Notes: {specs['notes']}
 
         # Log activity
         self.message_post(
-            body=f"Bin marked as full by customer - pickup request {pickup_request.name} created",
+            body=_("Bin marked as full by customer - pickup request %spickup_request.name created", pickup_request.name),
             message_type="notification",
         )
 
@@ -777,7 +777,7 @@ Notes: {specs['notes']}
 
         # Log activity
         self.message_post(
-            body=f"Customer requested upsize from {self.bin_size} to {new_size_code} - service request {service_request.name} created",
+            body=_("Customer requested upsize from %sself.bin_size to %snew_size_code - service request %sservice_request.name created", self.bin_size, new_size_code, service_request.name),
             message_type="notification",
         )
 
@@ -846,7 +846,7 @@ Notes: {specs['notes']}
 
         # Log activity
         self.message_post(
-            body=f"Customer requested downsize from {self.bin_size} to {new_size_code} - service request {service_request.name} created",
+            body=_("Customer requested downsize from %sself.bin_size to %snew_size_code - service request %sservice_request.name created", self.bin_size, new_size_code, service_request.name),
             message_type="notification",
         )
 
@@ -1059,7 +1059,7 @@ Recommendation: Deploy additional {self.bin_size} bins to maintain optimal servi
 
         # Log activity
         self.message_post(
-            body=f"Customer requested additional bins - service request {service_request.name} created with capacity analysis",
+            body=_("Customer requested additional bins - service request %sservice_request.name created with capacity analysis", service_request.name),
             message_type="notification",
         )
 

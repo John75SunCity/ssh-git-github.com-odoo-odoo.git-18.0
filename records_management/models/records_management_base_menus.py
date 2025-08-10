@@ -281,7 +281,7 @@ class RecordsManagementBaseMenus(models.Model):
         """Compute full hierarchical menu name"""
         for record in self:
             if record.parent_menu_id:
-                record.full_name = f"{record.parent_menu_id.name} / {record.name}"
+                record.full_name = _("%s / %s"
             else:
                 record.full_name = record.name
 
@@ -495,7 +495,7 @@ class RecordsManagementBaseMenus(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Child Menus: %s") % self.name,
+            "name": _("Child Menus: %s", self.name),
             "res_model": "records.management.base.menus",
             "view_mode": "tree,form",
             "domain": [("parent_menu_id", "=", self.id)],
@@ -506,7 +506,7 @@ class RecordsManagementBaseMenus(models.Model):
         """Duplicate the menu with new name"""
         self.ensure_one()
 
-        new_name = f"{self.name} (Copy)"
+        new_name = _("%s (Copy)"
         duplicate = self.copy(
             {
                 "name": new_name,

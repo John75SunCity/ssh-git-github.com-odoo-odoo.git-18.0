@@ -246,7 +246,7 @@ class PaperLoadShipment(models.Model):
                     ('id', '!=', record.id)
                 ])
                 if existing:
-                    raise ValidationError(f"Shipment number {record.shipment_number} already exists")
+                    raise ValidationError(_("Shipment number %s already exists")
 
     # ============================================================================
     # ODOO FRAMEWORK INTEGRATION
@@ -266,14 +266,14 @@ class PaperLoadShipment(models.Model):
         result = super().write(vals)
         for record in self:
             if 'state' in vals:
-                record.message_post(body=f"State changed to {record.state}")
+                record.message_post(body=_("State changed to %srecord.state", record.state))
         return result
 
     def unlink(self):
         """Override unlink with validation"""
         for record in self:
             if record.state in ['in_transit', 'delivered', 'completed']:
-                raise UserError(f"Cannot delete shipment {record.name} in state {record.state}")
+                raise UserError(_("Cannot delete shipment %s in state %s")
         return super().unlink()
 
     # ============================================================================
@@ -285,7 +285,7 @@ class PaperLoadShipment(models.Model):
         for record in self:
             name = record.name
             if record.shipment_number:
-                name += f" ({record.shipment_number})"
+                name += _(" (%s)"
             result.append((record.id, name))
         return result
 

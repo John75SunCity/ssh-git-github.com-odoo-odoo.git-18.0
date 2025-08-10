@@ -932,4 +932,4 @@ class TransitoryFieldAuditLog(models.Model):
         for record in self:
             config_name = record.config_id.name if record.config_id else "Unknown"
             action_label = dict(record._fields["action"].selection)[record.action]
-            record.display_name = f"{action_label}: {config_name}"
+            record.display_name = _("%s: %s"

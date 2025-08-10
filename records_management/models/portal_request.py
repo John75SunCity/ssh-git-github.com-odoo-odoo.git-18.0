@@ -429,15 +429,14 @@ class PortalRequest(models.Model):
         # Create activity for tracking
         self.activity_schedule(
             "mail.mail_activity_data_todo",
-            summary=_("Process Request: %s") % self.name,
-            note=_("Request processing has started. Type: %s")
-            % dict(self._fields["request_type"].selection).get(self.request_type),
+            summary=_("Process Request: %s", self.name),
+            note=_("Request processing has started. Type: %s", dict(self._fields["request_type"].selection)).get(self.request_type),
             user_id=self.user_id.id,
         )
 
         # Post message to chatter
         self.message_post(
-            body=_("Processing started by %s") % self.env.user.name,
+            body=_("Processing started by %s", self.env.user.name),
             message_type="notification",
         )
 
@@ -658,8 +657,8 @@ class PortalRequest(models.Model):
             # Create escalation activity
             request.activity_schedule(
                 "mail.mail_activity_data_call",
-                summary=_("Overdue Request: %s") % request.name,
-                note=_("This request is overdue. Deadline was: %s") % request.deadline,
+                summary=_("Overdue Request: %s", request.name),
+                note=_("This request is overdue. Deadline was: %s", request.deadline),
                 user_id=request.user_id.id or self.env.user.id,
                 date_deadline=fields.Date.today(),
             )

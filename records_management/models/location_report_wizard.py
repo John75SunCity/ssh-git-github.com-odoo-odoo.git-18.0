@@ -489,7 +489,7 @@ class LocationReportWizard(models.Model):
             "res_id": self.id,
             "view_mode": "form",
             "target": "new",
-            "name": _("Location Report: %s") % self.location_name,
+            "name": _("Location Report: %s", self.location_name),
         }
 
     def action_print_report(self):

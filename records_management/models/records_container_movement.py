@@ -492,8 +492,7 @@ class RecordsContainerMovement(models.Model):
 
             # Log location change
             self.container_id.message_post(
-                body=_("Location updated to %s via movement %s")
-                % (self.to_location_id.name, self.name)
+                body=_("Location updated to %s via movement %s", (self.to_location_id.name), self.name)
             )
 
     def scan_barcode(self, barcode):
@@ -524,7 +523,7 @@ class RecordsContainerMovement(models.Model):
             }
         )
 
-        self.message_post(body=_("Movement authorized by %s") % self.env.user.name)
+        self.message_post(body=_("Movement authorized by %s", self.env.user.name))
 
         return {
             "type": "ir.actions.client",
@@ -554,7 +553,7 @@ class RecordsContainerMovement(models.Model):
             }
         )
 
-        self.message_post(body=_("Movement started by %s") % self.env.user.name)
+        self.message_post(body=_("Movement started by %s", self.env.user.name))
 
         return True
 
@@ -575,7 +574,7 @@ class RecordsContainerMovement(models.Model):
         # Update container location
         self.update_container_location()
 
-        self.message_post(body=_("Movement completed by %s") % self.env.user.name)
+        self.message_post(body=_("Movement completed by %s", self.env.user.name))
 
         return {
             "type": "ir.actions.client",
@@ -602,7 +601,7 @@ class RecordsContainerMovement(models.Model):
             }
         )
 
-        self.message_post(body=_("Movement verified by %s") % self.env.user.name)
+        self.message_post(body=_("Movement verified by %s", self.env.user.name))
 
         return True
 
@@ -615,7 +614,7 @@ class RecordsContainerMovement(models.Model):
 
         self.write({"state": "cancelled"})
 
-        self.message_post(body=_("Movement cancelled by %s") % self.env.user.name)
+        self.message_post(body=_("Movement cancelled by %s", self.env.user.name))
 
         return True
 
@@ -650,14 +649,14 @@ class RecordsContainerMovement(models.Model):
             self.activity_schedule(
                 activity_type_id=activity_type.id,
                 summary=_("Investigate Movement Exception"),
-                note=_("Movement exception reported: %s") % self.name,
+                note=_("Movement exception reported: %s", self.name),
                 user_id=self.user_id.id,
             )
         except Exception:
             pass
 
         self.message_post(
-            body=_("Movement exception reported by %s") % self.env.user.name,
+            body=_("Movement exception reported by %s", self.env.user.name),
             message_type="comment",
         )
 

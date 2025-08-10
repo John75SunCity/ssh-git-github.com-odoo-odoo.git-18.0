@@ -428,7 +428,7 @@ class RecordsDocumentType(models.Model):
 
         for record in records:
             record.message_post(
-                body=_("Document type created with code: %s") % record.code
+                body=_("Document type created with code: %s", record.code)
             )
 
         return records
@@ -509,8 +509,7 @@ class RecordsDocumentType(models.Model):
         active_docs = self.document_ids.filtered(lambda d: d.active)
         if active_docs:
             raise UserError(
-                _("Cannot archive document type with %d active documents")
-                % len(active_docs)
+                _("Cannot archive document type with %d active documents", len(active_docs))
             )
 
         self.write({"state": "archived", "active": False})
@@ -521,7 +520,7 @@ class RecordsDocumentType(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Documents - %s") % self.name,
+            "name": _("Documents - %s", self.name),
             "res_model": "records.document",
             "view_mode": "tree,form,kanban",
             "domain": [("document_type_id", "=", self.id)],
@@ -536,7 +535,7 @@ class RecordsDocumentType(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Containers - %s") % self.name,
+            "name": _("Containers - %s", self.name),
             "res_model": "records.container",
             "view_mode": "tree,form",
             "domain": [("document_type_id", "=", self.id)],
@@ -733,7 +732,7 @@ class RecordsDocumentType(models.Model):
                 "compliance": 5,  # Compliance record retention
             }.get(self.category, 7)
 
-            policy_name = f"Default {self.category.title()} Policy - {self.name}"
+            policy_name = _("Default %s Policy - %s"
             # In a real implementation, you would create the policy record here
             _logger.info(
                 "Would create retention policy: %s with %s years retention",

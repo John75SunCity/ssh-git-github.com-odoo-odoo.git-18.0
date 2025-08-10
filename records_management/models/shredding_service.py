@@ -461,7 +461,7 @@ class ShreddingService(models.Model):
             raise UserError(_("Only draft services can be scheduled"))
         self._validate_scheduling_requirements()
         self.write({"state": "scheduled"})
-        self.message_post(body=_("Service scheduled for %s") % self.service_date)
+        self.message_post(body=_("Service scheduled for %s", self.service_date))
 
     def action_start_service(self):
         """Start the shredding service"""
@@ -621,7 +621,7 @@ class ShreddingService(models.Model):
             for record in self:
                 if record.state != vals["state"]:
                     record.message_post(
-                        body=_("State changed from %s to %s") % (
+                        body=_("State changed from %s to %s", ()
                             dict(record._fields["state"].selection)[record.state],
                             dict(record._fields["state"].selection)[vals["state"]]
                         )

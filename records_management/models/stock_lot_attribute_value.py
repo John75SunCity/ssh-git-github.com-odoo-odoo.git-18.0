@@ -54,21 +54,21 @@ class StockLotAttributeValue(models.Model):
             attr_type = record.attribute_id.attribute_type
             if attr_type == "text":
                 record.display_name = (
-                    f"{record.attribute_id.name}: {record.value_text or 'N/A'}"
+                    _("%s: %s"
                 )
             elif attr_type == "number":
                 record.display_name = (
-                    f"{record.attribute_id.name}: {record.value_number or 0}"
+                    _("%s: %s"
                 )
             elif attr_type == "date":
                 record.display_name = (
-                    f"{record.attribute_id.name}: {record.value_date or 'N/A'}"
+                    _("%s: %s"
                 )
             elif attr_type == "boolean":
-                record.display_name = f"{record.attribute_id.name}: {'Yes' if record.value_boolean else 'No'}"
+                record.display_name = _("%s: %s"
             elif attr_type == "selection":
                 record.display_name = (
-                    f"{record.attribute_id.name}: {record.value_selection or 'N/A'}"
+                    _("%s: %s"
                 )
             else:
-                record.display_name = f"{record.attribute_id.name}: Unknown Type"
+                record.display_name = _("%s: Unknown Type"

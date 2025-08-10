@@ -414,8 +414,7 @@ class WorkOrderShredding(models.Model):
                     old_state = dict(order._fields["state"].selection)[order.state]
                     new_state = dict(order._fields["state"].selection)[vals["state"]]
                     order.message_post(
-                        body=_("Work order status changed from %s to %s")
-                        % (old_state, new_state),
+                        body=_("Work order status changed from %s to %s", (old_state), new_state),
                         message_type="notification",
                     )
 
@@ -458,7 +457,7 @@ class WorkOrderShredding(models.Model):
 
             order.write({"state": "assigned"})
             order.message_post(
-                body=_("Team assigned: %s") % order.assigned_team_id.name,
+                body=_("Team assigned: %s", order.assigned_team_id.name),
                 message_type="notification",
             )
 
@@ -498,7 +497,7 @@ class WorkOrderShredding(models.Model):
 
             order.write({"state": "verified"})
             order.message_post(
-                body=_("Work order verified by %s") % self.env.user.name,
+                body=_("Work order verified by %s", self.env.user.name),
                 message_type="notification",
             )
 

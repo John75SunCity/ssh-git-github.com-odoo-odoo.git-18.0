@@ -415,8 +415,7 @@ class PickupRoute(models.Model):
                 new_state = vals["state"]
                 if old_state != new_state:
                     record.message_post(
-                        body=_("Route status changed from %s to %s")
-                        % (old_state, new_state)
+                        body=_("Route status changed from %s to %s", (old_state), new_state)
                     )
         return super().write(vals)
 
@@ -464,8 +463,7 @@ class PickupRoute(models.Model):
         )
         if incomplete_stops:
             raise UserError(
-                _("Cannot complete route with incomplete stops: %s")
-                % ", ".join(incomplete_stops.mapped("name"))
+                _("Cannot complete route with incomplete stops: %s", "), ".join(incomplete_stops.mapped("name"))
             )
 
         self.write(
@@ -598,8 +596,7 @@ class PickupRoute(models.Model):
         for request in pickup_requests:
             if request.state not in ["confirmed", "scheduled"]:
                 raise UserError(
-                    _("Pickup request %s is not in a valid state for route assignment")
-                    % request.name
+                    _("Pickup request %s is not in a valid state for route assignment", request.name)
                 )
 
         # Assign to route
@@ -620,7 +617,7 @@ class PickupRoute(models.Model):
             next_sequence += 1
 
         self.message_post(
-            body=_("Assigned %d pickup requests to route") % len(pickup_requests)
+            body=_("Assigned %d pickup requests to route", len(pickup_requests))
         )
 
     def get_route_summary(self):
@@ -755,11 +752,11 @@ class PickupRouteStop(models.Model):
         """Compute stop name"""
         for record in self:
             if record.pickup_request_id:
-                record.name = f"Stop: {record.pickup_request_id.name}"
+                record.name = _("Stop: %s"
             elif record.location_id:
-                record.name = f"Stop: {record.location_id.name}"
+                record.name = _("Stop: %s"
             else:
-                record.name = f"Stop {record.sequence}"
+                record.name = _("Stop %s"
 
     @api.depends("actual_arrival_time", "departure_time")
     def _compute_actual_service_time(self):
@@ -844,8 +841,7 @@ class PickupRouteOptimizeWizard(models.TransientModel):
             optimized_sequence += 1
 
         self.route_id.message_post(
-            body=_("Route optimized using %s method")
-            % dict(self._fields["optimization_method"].selection)[
+            body=_("Route optimized using %s method", dict(self._fields["optimization_method"].selection))[
                 self.optimization_method
             ]
         )

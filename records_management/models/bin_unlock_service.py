@@ -113,7 +113,7 @@ class BinUnlockService(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.bin_id and record.partner_id:
-                record.display_name = f"{record.name} - {record.partner_id.name} - {record.bin_id.name}"
+                record.display_name = _("%s - %s - %s"
             else:
                 record.display_name = record.name or "New"
 

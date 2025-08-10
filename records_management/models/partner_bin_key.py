@@ -178,7 +178,7 @@ class PartnerBinKey(models.Model):
             raise UserError(_("Contact must be specified for assignment"))
 
         self.write({"state": "assigned", "assignment_date": fields.Date.today()})
-        self.message_post(body=_("Key assigned to %s") % self.assigned_to_contact.name)
+        self.message_post(body=_("Key assigned to %s", self.assigned_to_contact.name))
 
     def action_return_key(self):
         """Return key"""
@@ -187,7 +187,7 @@ class PartnerBinKey(models.Model):
             raise UserError(_("Only assigned keys can be returned"))
 
         self.write({"state": "returned", "return_date": fields.Date.today()})
-        self.message_post(body=_("Key returned by %s") % self.assigned_to_contact.name)
+        self.message_post(body=_("Key returned by %s", self.assigned_to_contact.name))
 
     def action_report_lost(self):
         """Report key as lost"""
@@ -272,10 +272,10 @@ class PartnerBinKey(models.Model):
         for record in self:
             name = record.name or _("New Key")
             if record.partner_id:
-                name += f" - {record.partner_id.name}"
+                name += _(" - %s"
             if record.state:
                 state_dict = dict(record._fields["state"].selection)
-                name += f" ({state_dict.get(record.state, record.state)})"
+                name += _(" (%s)"
             result.append((record.id, name))
         return result
 
@@ -300,8 +300,7 @@ class PartnerBinKey(models.Model):
         for record in self:
             if record.state == "assigned" and not record.assigned_to_contact:
                 raise ValidationError(
-                    _("Assigned keys must have a contact specified (Key: %s, ID: %s)")
-                    % (record.name, record.id)
+                    _("Assigned keys must have a contact specified (Key: %s, ID: %s)", (record.name), record.id)
                 )
 
     @api.constrains("charge_amount")
@@ -309,7 +308,7 @@ class PartnerBinKey(models.Model):
         """Validate charge amount"""
         for record in self:
             if record.charge_amount and record.charge_amount < 0:
-                msg = _("Charge amount cannot be negative for record %s (ID: %s)") % (
+                msg = _("Charge amount cannot be negative for record %s (ID: %s)", ()
                     record.name or "Unknown",
                     record.id,
                 )
@@ -330,6 +329,5 @@ class PartnerBinKey(models.Model):
                 )
                 if duplicate:
                     raise ValidationError(
-                        _("Key number %s already exists for customer %s")
-                        % (record.key_number, record.partner_id.name)
+                        _("Key number %s already exists for customer %s", (record.key_number), record.partner_id.name)
                     )

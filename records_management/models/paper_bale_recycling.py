@@ -313,7 +313,7 @@ class PaperBaleRecycling(models.Model):
             {"processing_status": "in_process", "processing_date": fields.Date.today()}
         )
         self.message_post(
-            body=_("Recycling processing started for bale %s") % self.bale_id
+            body=_("Recycling processing started for bale %s", self.bale_id)
         )
 
     def action_complete_processing(self):
@@ -324,7 +324,7 @@ class PaperBaleRecycling(models.Model):
         self.write({"processing_status": "completed"})
         self.calculate_environmental_impact()
         self.message_post(
-            body=_("Recycling processing completed for bale %s") % self.bale_id
+            body=_("Recycling processing completed for bale %s", self.bale_id)
         )
 
     def action_reject_bale(self):
@@ -332,7 +332,7 @@ class PaperBaleRecycling(models.Model):
         self.ensure_one()
         self.write({"processing_status": "rejected"})
         self.message_post(
-            body=_("Bale %s has been rejected for processing") % self.bale_id
+            body=_("Bale %s has been rejected for processing", self.bale_id)
         )
 
     def action_view_source_bales(self):
@@ -374,14 +374,14 @@ class PaperBaleRecycling(models.Model):
         """Mark bale as delivered to recycling facility"""
         self.ensure_one()
         self.write({"state": "active"})
-        self.message_post(body=_("Bale %s marked as delivered") % self.bale_id)
+        self.message_post(body=_("Bale %s marked as delivered", self.bale_id))
         return True
 
     def action_mark_paid(self):
         """Mark recycling payment as received"""
         self.ensure_one()
         # This would typically create an account.move entry
-        self.message_post(body=_("Payment received for bale %s") % self.bale_id)
+        self.message_post(body=_("Payment received for bale %s", self.bale_id))
         return True
 
     def action_ready_to_ship(self):

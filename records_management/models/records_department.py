@@ -419,8 +419,7 @@ class RecordsDepartment(models.Model):
             )
             if active_children:
                 raise UserError(
-                    _("Cannot deactivate department with active child departments: %s")
-                    % ", ".join(active_children.mapped("name"))
+                    _("Cannot deactivate department with active child departments: %s", "), ".join(active_children.mapped("name"))
                 )
 
             department.write({"state": "inactive"})
@@ -517,7 +516,7 @@ class RecordsDepartment(models.Model):
         if partner not in self.customer_ids:
             self.customer_ids = [(4, partner_id)]
             self.message_post(
-                body=_("Customer %s assigned to department") % partner.name
+                body=_("Customer %s assigned to department", partner.name)
             )
 
     def unassign_customer(self, partner_id):
@@ -528,7 +527,7 @@ class RecordsDepartment(models.Model):
         if partner in self.customer_ids:
             self.customer_ids = [(3, partner_id)]
             self.message_post(
-                body=_("Customer %s removed from department") % partner.name
+                body=_("Customer %s removed from department", partner.name)
             )
 
     # ============================================================================
@@ -539,7 +538,7 @@ class RecordsDepartment(models.Model):
         result = []
         for department in self:
             if department.parent_department_id:
-                name = f"{department.parent_department_id.name} / {department.name}"
+                name = _("%s / %s"
             else:
                 name = department.name
             result.append((department.id, name))

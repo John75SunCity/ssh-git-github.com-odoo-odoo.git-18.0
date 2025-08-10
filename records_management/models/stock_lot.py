@@ -148,12 +148,12 @@ class StockLot(models.Model):
         # Create quality check activity
         self.activity_schedule(
             "mail.mail_activity_data_todo",
-            summary=_("Quality Check: %s") % self.name,
+            summary=_("Quality Check: %s", self.name),
             note=_("Perform quality assessment including condition review and compliance verification."),
             user_id=self.env.user.id,
         )
 
-        self.message_post(body=_("Quality check scheduled for %s") % self.name)
+        self.message_post(body=_("Quality check scheduled for %s", self.name))
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",

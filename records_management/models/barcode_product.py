@@ -272,7 +272,7 @@ class BarcodeProduct(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.code:
-                record.display_name = f"[{record.code}] {record.name}"
+                record.display_name = _("[%s] %s"
             else:
                 record.display_name = record.name
 
@@ -313,7 +313,7 @@ class BarcodeProduct(models.Model):
             if record.barcode and record.validate_format:
                 if not record._validate_barcode_format(record.barcode):
                     raise ValidationError(
-                        _("Invalid barcode format for %s") % record.barcode_format
+                        _("Invalid barcode format for %s", record.barcode_format)
                     )
 
     @api.constrains("start_barcode", "end_barcode")
@@ -446,11 +446,10 @@ class BarcodeProduct(models.Model):
                 invalid_count += 1
 
         if invalid_count > 0:
-            raise UserError(_("Found %d invalid barcodes") % invalid_count)
+            raise UserError(_("Found %d invalid barcodes", invalid_count))
         else:
             self.message_post(
-                body=_("All %d barcodes validated successfully")
-                % len(self.barcode_line_ids)
+                body=_("All %d barcodes validated successfully", len(self.barcode_line_ids))
             )
 
     def action_export_barcodes(self):
@@ -485,7 +484,7 @@ class BarcodeProduct(models.Model):
                 new_state = dict(record._fields["state"].selection).get(vals["state"])
                 if old_state != new_state:
                     record.message_post(
-                        body=_("State changed from %s to %s") % (old_state, new_state)
+                        body=_("State changed from %s to %s", (old_state), new_state)
                     )
         return super().write(vals)
 
@@ -534,11 +533,11 @@ class BarcodeProductLine(models.Model):
                 [("barcode", "=", record.barcode), ("id", "!=", record.id)], limit=1
             )
             if existing:
-                raise ValidationError(_("Barcode %s already exists") % record.barcode)
+                raise ValidationError(_("Barcode %s already exists", record.barcode))
 
     def name_get(self):
         result = []
         for record in self:
-            name = f"{record.barcode} ({'Used' if record.is_used else 'Available'})"
+            name = _("%s (%s)"
             result.append((record.id, name))
         return result

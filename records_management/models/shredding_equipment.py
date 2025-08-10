@@ -412,12 +412,12 @@ class MaintenanceEquipment(models.Model):
                 category_name = dict(self._fields["equipment_category"].selection).get(
                     record.equipment_category
                 )
-                name = f"{name} ({category_name})"
+                name = _("%s (%s)"
             if record.security_level:
                 level_name = dict(self._fields["security_level"].selection).get(
                     record.security_level
                 )
-                name = f"{name} - {level_name}"
+                name = _("%s - %s"
             result.append((record.id, name))
         return result
 
@@ -486,14 +486,14 @@ class MaintenanceEquipment(models.Model):
             }
         )
 
-        self.message_post(body=_("Blade change completed on %s") % fields.Date.today())
+        self.message_post(body=_("Blade change completed on %s", fields.Date.today()))
 
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
                 "title": _("Blade Change Recorded"),
-                "message": _("Blade change has been recorded for %s") % self.name,
+                "message": _("Blade change has been recorded for %s", self.name),
                 "type": "success",
             },
         }
@@ -508,14 +508,14 @@ class MaintenanceEquipment(models.Model):
             }
         )
 
-        self.message_post(body=_("Lubrication completed on %s") % fields.Date.today())
+        self.message_post(body=_("Lubrication completed on %s", fields.Date.today()))
 
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
                 "title": _("Lubrication Recorded"),
-                "message": _("Lubrication has been recorded for %s") % self.name,
+                "message": _("Lubrication has been recorded for %s", self.name),
                 "type": "success",
             },
         }
@@ -526,7 +526,7 @@ class MaintenanceEquipment(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Services - %s") % self.name,
+            "name": _("Services - %s", self.name),
             "res_model": "shredding.service",
             "view_mode": "tree,form",
             "domain": [("equipment_id", "=", self.id)],
@@ -539,7 +539,7 @@ class MaintenanceEquipment(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Certificates - %s") % self.name,
+            "name": _("Certificates - %s", self.name),
             "res_model": "shredding.certificate",
             "view_mode": "tree,form",
             "domain": [("equipment_id", "=", self.id)],
@@ -606,8 +606,7 @@ class MaintenanceEquipment(models.Model):
         )
 
         self.message_post(
-            body=_("Usage updated: +%.2f hours, +%.2f lbs processed")
-            % (hours_operated, weight_processed)
+            body=_("Usage updated: +%.2f hours, +%.2f lbs processed", (hours_operated), weight_processed)
         )
 
     def get_performance_summary(self):
@@ -648,7 +647,7 @@ class MaintenanceEquipment(models.Model):
             try:
                 equipment.activity_schedule(
                     "mail.mail_activity_data_todo",
-                    summary=_("Equipment Maintenance Due: %s") % equipment.name,
+                    summary=_("Equipment Maintenance Due: %s", equipment.name),
                     note=_(
                         "Equipment maintenance is due based on the scheduled intervals."
                     ),

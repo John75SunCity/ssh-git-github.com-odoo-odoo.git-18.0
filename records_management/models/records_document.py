@@ -81,7 +81,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         res = super().default_get(fields_list)
         if "name" in fields_list:
             today = fields.Date.context_today(self)
-            res["name"] = _("Permanent Flag Operation %s") % today
+            res["name"] = _("Permanent Flag Operation %s", today)
         return res
 
     description = fields.Text(
@@ -384,8 +384,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
             "tag": "display_notification",
             "params": {
                 "title": _("Criteria Applied"),
-                "message": _("%d documents selected based on criteria")
-                % len(documents),
+                "message": _("%d documents selected based on criteria", len(documents)),
                 "type": "success",
             },
         }
@@ -439,11 +438,11 @@ class RecordsPermanentFlagWizard(models.TransientModel):
                 affected_count += 1
             except (UserError, ValidationError) as e:
                 document_name = getattr(document, "name", f"ID: {document.id}")  # pylint: disable=no-member
-                errors.append(f"Document {document_name}: {str(e)}")
+                errors.append(_("Document %s: %s")
             except Exception as e:
                 tb = traceback.format_exc()
                 document_name = getattr(document, "name", f"ID: {document.id}")  # pylint: disable=no-member
-                errors.append(f"Document {document_name}: Unexpected error: {str(e)}")
+                errors.append(_("Document %s: Unexpected error: %s")
                 _logger.error(
                     "Unexpected error processing document %s: %s\n%s",
                     document_name,

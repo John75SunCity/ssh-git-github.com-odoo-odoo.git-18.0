@@ -471,11 +471,11 @@ class ShreddingInventoryItem(models.Model):
         for record in self:
             if record.container_id:
                 record.display_name = (
-                    f"{record.name} (Container: {record.container_id.name})"
+                    _("%s (Container: %s)"
                 )
             elif record.document_id:
                 record.display_name = (
-                    f"{record.name} (Document: {record.document_id.name})"
+                    _("%s (Document: %s)"
                 )
             else:
                 record.display_name = record.name or _("New Item")
@@ -634,8 +634,7 @@ class ShreddingInventoryItem(models.Model):
         )
 
         self.message_post(
-            body=_("Destruction certificate issued: %s")
-            % self.destruction_certificate_number
+            body=_("Destruction certificate issued: %s", self.destruction_certificate_number)
         )
 
         return {

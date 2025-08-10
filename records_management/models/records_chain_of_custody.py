@@ -318,7 +318,7 @@ class RecordsChainOfCustody(models.Model):
                 event_label = dict(record._fields["custody_event"].selection).get(
                     record.custody_event, record.custody_event
                 )
-                parts.append(f"({event_label})")
+                parts.append(_("(%s)", event_label))
             if record.custody_date:
                 parts.append(record.custody_date.strftime("%Y-%m-%d %H:%M"))
             record.display_name = " - ".join(parts) if parts else "New Custody Record"
@@ -416,14 +416,14 @@ class RecordsChainOfCustody(models.Model):
         self.ensure_one()
 
         # Create hash based on record data and timestamp
-        data_string = (
-            f"{self.id}_{self.custody_date}_{time.time()}_{self.customer_id.id}"
+        data_string = "%s_%s_%s_%s" % (
+            self.id, self.custody_date, time.time(), self.customer_id.id
         )
         verification_hash = (
             hashlib.sha256(data_string.encode()).hexdigest()[:12].upper()
         )
 
-        self.verification_code = f"COC-{verification_hash}"
+        self.verification_code = "COC-%s" % verification_hash
 
         return self.verification_code
 

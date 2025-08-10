@@ -270,9 +270,9 @@ class NaidCertificate(models.Model):
             name = record.name or _("New Certificate")
             if record.certificate_type:
                 type_dict = dict(record._fields["certificate_type"].selection)
-                name += f" - {type_dict.get(record.certificate_type, record.certificate_type)}"
+                name += _(" - %s"
             if record.partner_id:
-                name += f" ({record.partner_id.name})"
+                name += _(" (%s)"
             record.display_name = name
 
     @api.depends("expiration_date")
@@ -407,7 +407,7 @@ class NaidCertificate(models.Model):
             self._make_available_in_portal()
 
         self.write({"delivery_status": "sent", "date_modified": fields.Datetime.now()})
-        self.message_post(body=_("Certificate sent via %s") % self.delivery_method)
+        self.message_post(body=_("Certificate sent via %s", self.delivery_method))
 
     def _send_certificate_email(self):
         """Send certificate via email"""
@@ -473,9 +473,9 @@ class NaidCertificate(models.Model):
             name = record.name or _("New Certificate")
             if record.certificate_type:
                 type_dict = dict(record._fields["certificate_type"].selection)
-                name += f" - {type_dict.get(record.certificate_type, record.certificate_type)}"
+                name += _(" - %s"
             if record.partner_id:
-                name += f" ({record.partner_id.name})"
+                name += _(" (%s)"
             result.append((record.id, name))
         return result
 
@@ -517,8 +517,7 @@ class NaidCertificate(models.Model):
                 )
                 if existing:
                     raise ValidationError(
-                        _("An active %s certificate already exists for this customer")
-                        % dict(record._fields["certificate_type"].selection)[
+                        _("An active %s certificate already exists for this customer", dict(record._fields["certificate_type"].selection))[
                             record.certificate_type
                         ]
                     )
@@ -558,7 +557,7 @@ class NaidCertificate(models.Model):
 
         for cert in expiring_certificates:
             cert.message_post(
-                body=_("Certificate expires in %d days") % cert.days_until_expiration,
+                body=_("Certificate expires in %d days", cert.days_until_expiration),
                 subject=_("Certificate Expiration Warning"),
             )
 

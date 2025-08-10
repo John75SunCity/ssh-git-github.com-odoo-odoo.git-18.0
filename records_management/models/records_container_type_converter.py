@@ -326,8 +326,7 @@ class RecordsContainerTypeConverter(models.Model):
                 )
                 if blocked:
                     raise ValidationError(
-                        _("Some selected containers cannot be converted: %s")
-                        % ", ".join(blocked.mapped("name"))
+                        _("Some selected containers cannot be converted: %s", "), ".join(blocked.mapped("name"))
                     )
 
     # ============================================================================
@@ -472,7 +471,7 @@ class RecordsContainerTypeConverter(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Conversion Preview: %s") % self.name,
+            "name": _("Conversion Preview: %s", self.name),
             "res_model": "records.container",
             "view_mode": "tree,form",
             "domain": [("id", "in", self.container_ids.ids)],
@@ -532,8 +531,7 @@ class RecordsContainerTypeConverter(models.Model):
             except Exception as e:
                 # Log conversion failure
                 self.message_post(
-                    body=_("Failed to convert container %s: %s")
-                    % (container.name, str(e))
+                    body=_("Failed to convert container %s: %s", (container.name), str(e))
                 )
                 failed_count += 1
 
@@ -560,8 +558,7 @@ class RecordsContainerTypeConverter(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": _("Conversion Completed"),
-                "message": _("Successfully converted %d containers (%d failed).")
-                % (converted_count, failed_count),
+                "message": _("Successfully converted %d containers (%d failed).", (converted_count), failed_count),
                 "type": "success" if failed_count == 0 else "warning",
                 "sticky": False,
             },
@@ -613,7 +610,7 @@ class RecordsContainerTypeConverter(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Containers: %s") % self.name,
+            "name": _("Containers: %s", self.name),
             "res_model": "records.container",
             "view_mode": "tree,form",
             "domain": [("id", "in", self.container_ids.ids)],

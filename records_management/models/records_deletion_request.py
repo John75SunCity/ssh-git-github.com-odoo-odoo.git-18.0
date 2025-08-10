@@ -40,10 +40,10 @@ class RecordsDeletionRequest(models.Model):
         for record in self:
             if record.date:
                 record.display_name = (
-                    f"{record.name} ({record.date}) - {record.state.title()}"
+                    _("%s (%s) - %s"
                 )
             else:
-                record.display_name = f"{record.name} - {record.state.title()}"
+                record.display_name = _("%s - %s"
 
     @api.constrains("date")
     def _check_date(self):

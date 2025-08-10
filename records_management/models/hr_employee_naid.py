@@ -300,7 +300,7 @@ class HREmployeeNAID(models.Model):
         """Compute display name with employee context"""
         for record in self:
             if record.employee_id:
-                record.display_name = f"NAID Profile - {record.employee_id.name}"
+                record.display_name = _("NAID Profile - %s"
             else:
                 record.display_name = record.name or "New NAID Profile"
 
@@ -344,7 +344,7 @@ class HREmployeeNAID(models.Model):
             )
             
             record.message_post(
-                body=f"NAID compliance profile created for {record.employee_id.name if record.employee_id else 'employee'}"
+                body=_("NAID compliance profile created for %srecord.employee_id.name if record.employee_id else 'employee'", record.employee_id.name if record.employee_id else 'employee')
             )
         
         return records
@@ -358,7 +358,7 @@ class HREmployeeNAID(models.Model):
                 new_level = vals['naid_security_clearance']
                 if old_level != new_level:
                     record.message_post(
-                        body=f"NAID security clearance changed from {old_level} to {new_level}"
+                        body=_("NAID security clearance changed from %sold_level to %snew_level", old_level, new_level)
                     )
         
         # Track access level changes  
@@ -368,7 +368,7 @@ class HREmployeeNAID(models.Model):
                 new_access = vals['records_access_level']
                 if old_access != new_access:
                     record.message_post(
-                        body=f"Records access level changed from {old_access} to {new_access}"
+                        body=_("Records access level changed from %sold_access to %snew_access", old_access, new_access)
                     )
         
         return super().write(vals)

@@ -399,9 +399,9 @@ class ShreddingCertificate(models.Model):
         for record in self:
             name = record.name
             if record.partner_id:
-                name = f"{name} - {record.partner_id.name}"
+                name = _("%s - %s"
             if record.certificate_date:
-                name = f"{name} ({record.certificate_date})"
+                name = _("%s (%s)"
             result.append((record.id, name))
         return result
 
@@ -426,13 +426,13 @@ class ShreddingCertificate(models.Model):
                 "verified_by_id": self.env.user.id,
             }
         )
-        self.message_post(body=_("Certificate issued: %s") % self.name)
+        self.message_post(body=_("Certificate issued: %s", self.name))
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
                 "title": _("Certificate Issued"),
-                "message": _("Certificate %s has been issued successfully") % self.name,
+                "message": _("Certificate %s has been issued successfully", self.name),
                 "type": "success",
             },
         }
@@ -498,7 +498,7 @@ class ShreddingCertificate(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Certificate Services - %s") % self.name,
+            "name": _("Certificate Services - %s", self.name),
             "res_model": "shredding.service",
             "view_mode": "tree,form",
             "domain": [("certificate_id", "=", self.id)],
@@ -510,7 +510,7 @@ class ShreddingCertificate(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Destruction Items - %s") % self.name,
+            "name": _("Destruction Items - %s", self.name),
             "res_model": "destruction.item",
             "view_mode": "tree,form",
             "domain": [("certificate_id", "=", self.id)],
@@ -576,8 +576,7 @@ class ShreddingCertificate(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": _("Certificate Sent"),
-                "message": _("Certificate has been sent via email to %s")
-                % self.partner_id.email,
+                "message": _("Certificate has been sent via email to %s", self.partner_id.email),
                 "type": "success",
             },
         }

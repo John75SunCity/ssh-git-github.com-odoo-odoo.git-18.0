@@ -253,7 +253,7 @@ class FieldLabelCustomization(models.Model):
         for record in self:
             if record.model_name and record.field_name:
                 record.full_customization_name = (
-                    f"{record.model_name}.{record.field_name}: {record.custom_label}"
+                    _("%s.%s: %s"
                 )
             else:
                 record.full_customization_name = record.name

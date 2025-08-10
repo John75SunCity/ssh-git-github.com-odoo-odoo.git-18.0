@@ -398,9 +398,9 @@ class ShreddingHardDrive(models.Model):
         for record in self:
             name = record.name
             if record.serial_number:
-                name = f"{name} - {record.serial_number}"
+                name = _("%s - %s"
             if record.customer_id:
-                name = f"{name} ({record.customer_id.name})"
+                name = _("%s (%s)"
             result.append((record.id, name))
         return result
 
@@ -491,8 +491,7 @@ class ShreddingHardDrive(models.Model):
         )
 
         self.message_post(
-            body=_("Hard drive destruction completed using %s")
-            % dict(self._fields["destruction_method"].selection).get(
+            body=_("Hard drive destruction completed using %s", dict(self._fields["destruction_method"].selection)).get(
                 self.destruction_method
             )
         )
@@ -521,7 +520,7 @@ class ShreddingHardDrive(models.Model):
         )
 
         self.message_post(
-            body=_("Destruction certificate generated: %s") % self.certificate_number
+            body=_("Destruction certificate generated: %s", self.certificate_number)
         )
 
     # ============================================================================
@@ -557,8 +556,7 @@ class ShreddingHardDrive(models.Model):
 
         self.write({"destruction_method_verified": True})
         self.message_post(
-            body=_("Destruction method verified: %s")
-            % dict(self._fields["destruction_method"].selection).get(
+            body=_("Destruction method verified: %s", dict(self._fields["destruction_method"].selection)).get(
                 self.destruction_method
             )
         )
@@ -580,8 +578,7 @@ class ShreddingHardDrive(models.Model):
                 )
                 if duplicate:
                     raise ValidationError(
-                        _("Serial number %s already exists for customer %s")
-                        % (record.serial_number, record.customer_id.name)
+                        _("Serial number %s already exists for customer %s", (record.serial_number), record.customer_id.name)
                     )
 
     @api.constrains("capacity_gb", "weight")

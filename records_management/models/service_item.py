@@ -398,9 +398,9 @@ class ServiceItem(models.Model):
                 category_name = dict(self._fields["category"].selection).get(
                     record.category
                 )
-                name = f"{name} ({category_name})"
+                name = _("%s (%s)"
             if record.model_number:
-                name = f"{name} - {record.model_number}"
+                name = _("%s - %s"
             result.append((record.id, name))
         return result
 
@@ -445,8 +445,7 @@ class ServiceItem(models.Model):
             )
 
             self.message_post(
-                body=_("Service item sent to maintenance. Request created: %s")
-                % maintenance_request.name
+                body=_("Service item sent to maintenance. Request created: %s", maintenance_request.name)
             )
 
             return {
@@ -467,7 +466,7 @@ class ServiceItem(models.Model):
         if "maintenance.request" in self.env:
             return {
                 "type": "ir.actions.act_window",
-                "name": _("Schedule Maintenance - %s") % self.name,
+                "name": _("Schedule Maintenance - %s", self.name),
                 "res_model": "maintenance.request",
                 "view_mode": "form",
                 "target": "new",
@@ -498,7 +497,7 @@ class ServiceItem(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Service Requests - %s") % self.name,
+            "name": _("Service Requests - %s", self.name),
             "res_model": "portal.request",
             "view_mode": "tree,form",
             "domain": [("service_item_id", "=", self.id)],
@@ -512,7 +511,7 @@ class ServiceItem(models.Model):
         if "maintenance.request" in self.env:
             return {
                 "type": "ir.actions.act_window",
-                "name": _("Maintenance History - %s") % self.name,
+                "name": _("Maintenance History - %s", self.name),
                 "res_model": "maintenance.request",
                 "view_mode": "tree,form",
                 "domain": [("equipment_id", "=", self.id)],
@@ -621,7 +620,7 @@ class ServiceItem(models.Model):
             try:
                 item.activity_schedule(
                     "mail.mail_activity_data_todo",
-                    summary=_("Maintenance Due: %s") % item.name,
+                    summary=_("Maintenance Due: %s", item.name),
                     note=_(
                         "Service item maintenance is due based on the scheduled interval."
                     ),

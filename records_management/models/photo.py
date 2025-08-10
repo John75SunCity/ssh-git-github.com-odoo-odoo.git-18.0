@@ -285,9 +285,9 @@ class Photo(models.Model):
             name = record.name or _("Unnamed Photo")
             if record.category:
                 category_dict = dict(record._fields["category"].selection)
-                name += f" ({category_dict.get(record.category, record.category)})"
+                name += _(" (%s)"
             if record.date:
-                name += f" - {record.date.strftime('%Y-%m-%d')}"
+                name += _(" - %s"
             result.append((record.id, name))
         return result
 

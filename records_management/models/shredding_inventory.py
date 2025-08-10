@@ -431,11 +431,11 @@ class ShreddingPicklistItem(models.Model):
         for record in self:
             if record.container_id:
                 record.display_name = (
-                    f"{record.name} (Container: {record.container_id.name})"
+                    _("%s (Container: %s)"
                 )
             elif record.document_id:
                 record.display_name = (
-                    f"{record.name} (Document: {record.document_id.name})"
+                    _("%s (Document: %s)"
                 )
             else:
                 record.display_name = record.name or _("New Item")

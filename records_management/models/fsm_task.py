@@ -459,8 +459,7 @@ class FsmTask(models.Model):
                 new_status = vals["status"]
                 if old_status != new_status:
                     record.message_post(
-                        body=_("Status changed from %s to %s")
-                        % (old_status, new_status)
+                        body=_("Status changed from %s to %s", (old_status), new_status)
                     )
         return super().write(vals)
 
@@ -470,10 +469,10 @@ class FsmTask(models.Model):
         for record in self:
             name = record.name or _("New")
             if record.customer_id:
-                name += f" - {record.customer_id.name}"
+                name += _(" - %s"
             if record.task_type:
                 task_type_dict = dict(record._fields["task_type"].selection)
-                name += f" ({task_type_dict.get(record.task_type, record.task_type)})"
+                name += _(" (%s)"
             result.append((record.id, name))
         return result
 
@@ -642,7 +641,7 @@ class FsmTaskServiceLine(models.Model):
         # Logic to send approval request
         self.write({"status": "pending"})
         self.task_id.message_post(
-            body=_("Approval requested for additional service: %s") % self.service_name
+            body=_("Approval requested for additional service: %s", self.service_name)
         )
 
     def action_approve_service(self):
@@ -650,5 +649,5 @@ class FsmTaskServiceLine(models.Model):
         self.ensure_one()
         self.write({"status": "approved", "customer_approved": True})
         self.task_id.message_post(
-            body=_("Additional service approved: %s") % self.service_name
+            body=_("Additional service approved: %s", self.service_name)
         )

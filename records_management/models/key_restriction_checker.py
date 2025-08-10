@@ -231,7 +231,7 @@ class KeyRestrictionChecker(models.Model):
         self.write({"last_audit_date": fields.Date.today(), "check_performed": True})
 
         self.message_post(
-            body=_("Audit completed for key restriction checker: %s") % self.name
+            body=_("Audit completed for key restriction checker: %s", self.name)
         )
 
         return {
@@ -253,8 +253,7 @@ class KeyRestrictionChecker(models.Model):
 
         # Log the check activity
         self.message_post(
-            body=_("Customer restrictions checked for: %s")
-            % (self.customer_name or self.name)
+            body=_("Customer restrictions checked for: %s", (self.customer_name or self.name))
         )
 
         return {
@@ -305,8 +304,7 @@ class KeyRestrictionChecker(models.Model):
         self.write({"action_required": True, "state": "in_progress"})
 
         self.message_post(
-            body=_("Unlock service request created for: %s")
-            % (self.bin_identifier or self.name)
+            body=_("Unlock service request created for: %s", (self.bin_identifier or self.name))
         )
 
         return {
@@ -336,7 +334,7 @@ class KeyRestrictionChecker(models.Model):
             }
         )
 
-        self.message_post(body=_("Access approved for: %s") % self.name)
+        self.message_post(body=_("Access approved for: %s", self.name))
 
         return True
 
@@ -353,7 +351,7 @@ class KeyRestrictionChecker(models.Model):
             }
         )
 
-        self.message_post(body=_("Access denied for: %s") % self.name)
+        self.message_post(body=_("Access denied for: %s", self.name))
 
         return True
 
@@ -372,7 +370,7 @@ class KeyRestrictionChecker(models.Model):
         # Create high priority activity
         self.activity_schedule(
             "mail.mail_activity_data_call",
-            summary=_("Security Violation - %s") % self.name,
+            summary=_("Security Violation - %s", self.name),
             note=_(
                 "Security violation detected for bin: %s. Immediate attention required."
             )
@@ -382,7 +380,7 @@ class KeyRestrictionChecker(models.Model):
         )
 
         self.message_post(
-            body=_("Security violation escalated for: %s") % self.name,
+            body=_("Security violation escalated for: %s", self.name),
             message_type="notification",
         )
 
@@ -490,9 +488,8 @@ class KeyRestrictionChecker(models.Model):
         for checker in expiring_soon:
             checker.activity_schedule(
                 "mail.mail_activity_data_todo",
-                summary=_("Restriction Expiring Soon - %s") % checker.name,
-                note=_("This key restriction will expire on %s.")
-                % checker.expiration_date,
+                summary=_("Restriction Expiring Soon - %s", checker.name),
+                note=_("This key restriction will expire on %s.", checker.expiration_date),
                 user_id=checker.user_id.id or self.env.user.id,
                 date_deadline=checker.expiration_date,
             )

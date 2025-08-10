@@ -556,6 +556,6 @@ class RecordsBillingConfigLine(models.Model):
                 if record.currency_id and record.currency_id.symbol
                 else ""
             )
-            name = f"{record.name} ({record.service_type.title()}) - {record.rate} {currency_symbol}"
+            name = _("%s (%s) - %s %s"
             result.append((record.id, name))
         return result

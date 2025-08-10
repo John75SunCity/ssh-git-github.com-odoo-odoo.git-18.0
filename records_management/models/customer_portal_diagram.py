@@ -470,7 +470,7 @@ class CustomerPortalDiagram(models.TransientModel):
         # Open mail compose wizard
         return {
             "type": "ir.actions.act_window",
-            "name": _("Message %s") % target_user.name,
+            "name": _("Message %s", target_user.name),
             "res_model": "mail.compose.message",
             "view_mode": "form",
             "target": "new",

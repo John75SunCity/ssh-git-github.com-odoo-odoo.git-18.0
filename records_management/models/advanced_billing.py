@@ -166,9 +166,9 @@ class AdvancedBillingLine(models.Model):
     def _compute_name(self):
         for line in self:
             if line.product_id:
-                line.name = f"{line.product_id.name} x {line.quantity}"
+                line.name = _("%s x %s"
             else:
-                line.name = f"Billing Line {line.id or 'Unsaved'}"
+                line.name = _("Billing Line %s"
 
     @api.depends("quantity", "price_unit")
     def _compute_price_total(self):
@@ -232,9 +232,9 @@ class RecordsAdvancedBillingPeriod(models.Model):
     def _compute_name(self):
         for period in self:
             if period.start_date and period.end_date:
-                period.name = f"Billing Period {period.start_date} - {period.end_date}"
+                period.name = _("Billing Period %s - %s"
             else:
-                period.name = f"Billing Period {period.id or 'Unsaved'}"
+                period.name = _("Billing Period %s"
 
     # ============================================================================
     # VALIDATION METHODS

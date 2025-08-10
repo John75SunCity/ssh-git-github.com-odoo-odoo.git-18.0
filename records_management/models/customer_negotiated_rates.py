@@ -237,9 +237,9 @@ class CustomerNegotiatedRates(models.Model):
         """
         for record in self:
             if record.partner_id and record.name:
-                record.display_name = f"{record.partner_id.name} - {record.name}"
+                record.display_name = _("%s - %s"
             elif record.partner_id:
-                record.display_name = f"{record.partner_id.name} - Negotiated Rates"
+                record.display_name = _("%s - Negotiated Rates"
             else:
                 record.display_name = record.name or "New Negotiated Rates"
 
