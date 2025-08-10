@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 
-
 class RecordsTag(models.Model):
     _name = "records.tag"
     _description = "Records Tag"
@@ -62,12 +61,7 @@ class RecordsTag(models.Model):
     auto_assign = fields.Boolean("Auto Assign", default=False)
     icon = fields.Char("Icon")
 
-    # Computed Fields
-    display_name = fields.Char(
-        string="Display Name", compute="_compute_display_name", store=True
-    )
-
-    # Mail Thread Framework Fields (inherited from mail.thread)
+    # Computed Fields    # Mail Thread Framework Fields (inherited from mail.thread)
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"

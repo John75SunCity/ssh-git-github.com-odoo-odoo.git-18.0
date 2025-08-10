@@ -52,7 +52,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from odoo.tools import email_validate
 
-
 class RecordsBillingContact(models.Model):
     _name = "records.billing.contact"
     _description = "Records Billing Contact"
@@ -300,16 +299,7 @@ class RecordsBillingContact(models.Model):
                 name_parts.append(f"({record.job_title})")
             if record.department:
                 name_parts.append(f"- {record.department}")
-            record.display_name = " ".join(name_parts)
-
-    display_name = fields.Char(
-        string="Display Name",
-        compute="_compute_display_name",
-        store=True,
-        help="Formatted display name with job title and department",
-    )
-
-    @api.depends(
+            record.display_name = " ".join(name_parts)    @api.depends(
         "receive_storage_invoices", "receive_service_invoices", "receive_statements"
     )
     def _compute_invoice_types(self):

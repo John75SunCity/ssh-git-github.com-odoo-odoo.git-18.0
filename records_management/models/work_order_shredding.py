@@ -29,7 +29,6 @@ License: LGPL-3
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-
 class WorkOrderShredding(models.Model):
     _name = "work.order.shredding"
     _description = "Shredding Work Order Management"
@@ -392,16 +391,7 @@ class WorkOrderShredding(models.Model):
             if order.state:
                 state_label = dict(order._fields["state"].selection)[order.state]
                 parts.append(f"- {state_label}")
-            order.display_name = " ".join(parts)
-
-    display_name = fields.Char(
-        string="Display Name",
-        compute="_compute_display_name",
-        store=True,
-        help="Formatted display name",
-    )
-
-    # ============================================================================
+            order.display_name = " ".join(parts)    # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
     @api.model_create_multi

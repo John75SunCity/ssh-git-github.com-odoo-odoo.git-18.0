@@ -25,10 +25,7 @@ class TransitoryItems(models.Model):
     # Documentation
     notes = fields.Text(string='Notes')
     
-    # Computed fields
-    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-    
-    @api.depends('name')
+    # Computed fields    @api.depends('name')
     def _compute_display_name(self):
         for record in self:
             record.display_name = record.name or 'New'

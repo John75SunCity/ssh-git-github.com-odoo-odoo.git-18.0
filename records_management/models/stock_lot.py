@@ -30,7 +30,6 @@ License: LGPL-3
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
-
 class StockLot(models.Model):
     """Stock Lot Extensions for Records Management"""
 
@@ -371,7 +370,6 @@ class StockLot(models.Model):
                         _("Destruction date cannot be before retention date.")
                     )
 
-
 class StockLotAttribute(models.Model):
     """Stock Lot Attribute Management"""
 
@@ -528,7 +526,6 @@ class StockLotAttribute(models.Model):
             "value_count": len(self.lot_attribute_value_ids),
         }
 
-
 class StockLotAttributeOption(models.Model):
     """Stock Lot Attribute Selection Options"""
 
@@ -550,7 +547,6 @@ class StockLotAttributeOption(models.Model):
     sequence = fields.Integer(string="Sequence", default=10, help="Display order")
     description = fields.Text(string="Description", help="Option description")
     active = fields.Boolean(string="Active", default=True, help="Active status")
-
 
 class StockLotAttributeValue(models.Model):
     """Stock Lot Attribute Values"""
@@ -583,16 +579,7 @@ class StockLotAttributeValue(models.Model):
     )
     value_selection = fields.Char(
         string="Selection Value", help="Selected option value"
-    )
-
-    display_name = fields.Char(
-        string="Display Name",
-        compute="_compute_display_name",
-        store=True,
-        help="Display name for this value",
-    )
-
-    @api.depends(
+    )    @api.depends(
         "attribute_id",
         "value_text",
         "value_number",

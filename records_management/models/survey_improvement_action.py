@@ -36,10 +36,7 @@ class SurveyImprovementAction(models.Model):
     active = fields.Boolean(string='Active', default=True)
     notes = fields.Text(string='Internal Notes')
     
-    # Computed Fields
-    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-    
-    @api.depends('name')
+    # Computed Fields    @api.depends('name')
     def _compute_display_name(self):
         """Compute display name."""
         for record in self:

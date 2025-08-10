@@ -6,7 +6,6 @@ Records Deletion Request
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
-
 class RecordsDeletionRequest(models.Model):
     """
     Records Deletion Request
@@ -35,12 +34,7 @@ class RecordsDeletionRequest(models.Model):
     description = fields.Text()
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
-    # Add computed field that uses @api.depends
-    display_name = fields.Char(
-        string="Display Name", compute="_compute_display_name", store=True
-    )
-
-    @api.depends("name", "date", "state")
+    # Add computed field that uses @api.depends    @api.depends("name", "date", "state")
     def _compute_display_name(self):
         """Compute display name with date and state info"""
         for record in self:
