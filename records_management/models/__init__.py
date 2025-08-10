@@ -199,9 +199,6 @@ from . import res_partner_key_restriction
 from . import stock_move_sms_validation
 from . import stock_picking
 
-# Accounting integration
-from . import account_move
-
 # Project and FSM integration
 from . import project_task
 from . import fsm_task
@@ -250,8 +247,6 @@ from . import records_deletion_request
 
 # Module management
 from . import installer
-from . import ir_actions_report
-from . import ir_module
 
 from . import records_management_base_menus
 from . import location_report_wizard

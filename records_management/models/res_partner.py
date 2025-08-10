@@ -76,6 +76,13 @@ class ResPartner(models.Model):
         help="Feedback submitted by this partner.",
     )
 
+    chain_of_custody_ids = fields.One2many(
+        "records.chain.of.custody",
+        "partner_id",
+        string="Chain of Custody Records",
+        help="Chain of custody records for this partner.",
+    )
+
     # ============================================================================
     # BIN KEY MANAGEMENT RELATIONSHIPS
     # ============================================================================

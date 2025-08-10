@@ -7,10 +7,18 @@ compliance management for the Records Management System. It implements complete 
 certification tracking, and compliance monitoring with enterprise-grade security features.
 """
 
+import datetime
 from datetime import timedelta
-from dateutil.relativedelta import relativedelta
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+
+try:
+    from dateutil.relativedelta import relativedelta
+except ImportError:
+    # Fallback for systems without dateutil
+    def relativedelta(months=0):
+        return timedelta(days=months * 30)
 
 
 class NaidCompliance(models.Model):
@@ -502,7 +510,7 @@ class NaidCompliance(models.Model):
     )
 
     chain_custody_ids = fields.One2many(
-        "records.chain.custody",
+        "records.chain.of.custody",
         "compliance_id",
         string="Chain of Custody Records",
         help="Chain of custody records for compliance tracking",
@@ -684,7 +692,7 @@ class NaidCompliance(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": _("Audit Scheduled"),
-                "message": _("Next audit scheduled for %s") % self.next_audit_date,
+                "message": _("Next audit scheduled for %s", self.next_audit_date),
                 "type": "success",
             },
         }
@@ -752,10 +760,7 @@ class NaidCompliance(models.Model):
             for field_name, score in score_fields.items():
                 if score is not None and (score < 0 or score > 100):
                     raise ValidationError(
-                        _("%s must be between 0 and 100 percent.") % field_name
-                    )
-                    raise ValidationError(
-                        _("%s must be between 0 and 100 percent.") % field_name
+                        _("%s must be between 0 and 100 percent.", field_name)
                     )
 
     @api.constrains("insurance_coverage", "liability_limit", "bonding_amount")
@@ -803,18 +808,23 @@ class NaidCompliance(models.Model):
         for record in records:
             record.activity_schedule(
                 "mail.mail_activity_data_todo",
-                summary=_("Initial NAID Compliance Setup - %s") % record.name,
+                summary=_("Initial NAID Compliance Setup - %s", record.name),
                 note=_(
-                    "Complete initial compliance setup and documentation for NAID %s certification."
-                )
-                % record.naid_level,
+                    "Complete initial compliance setup and documentation for NAID %s certification.",
+                    record.naid_level,
+                ),
                 user_id=record.user_id.id,
                 date_deadline=fields.Date.today() + timedelta(days=30),
             )
 
+            naid_level_display = (
+                record.naid_level.upper() if record.naid_level else _("Unknown")
+            )
             record.message_post(
-                body=_("NAID Compliance record created for %s certification level.")
-                % (record.naid_level.upper() if record.naid_level else _("Unknown"))
+                body=_(
+                    "NAID Compliance record created for %s certification level.",
+                    naid_level_display,
+                )
             )
 
         return records
@@ -827,15 +837,17 @@ class NaidCompliance(models.Model):
                 old_state = record.state
                 new_state = vals["state"]
                 if old_state != new_state:
+                    old_state_display = dict(record._fields["state"].selection).get(
+                        old_state, old_state
+                    )
+                    new_state_display = dict(record._fields["state"].selection).get(
+                        new_state, new_state
+                    )
                     record.message_post(
-                        body=_("Compliance status changed from %s to %s")
-                        % (
-                            dict(record._fields["state"].selection).get(
-                                old_state, old_state
-                            ),
-                            dict(record._fields["state"].selection).get(
-                                new_state, new_state
-                            ),
+                        body=_(
+                            "Compliance status changed from %s to %s",
+                            old_state_display,
+                            new_state_display,
                         )
                     )
 
@@ -843,15 +855,17 @@ class NaidCompliance(models.Model):
         if "naid_level" in vals:
             for record in self:
                 if record.naid_level != vals["naid_level"]:
+                    old_level_display = dict(
+                        record._fields["naid_level"].selection
+                    ).get(record.naid_level, record.naid_level)
+                    new_level_display = dict(
+                        record._fields["naid_level"].selection
+                    ).get(vals["naid_level"], vals["naid_level"])
                     record.message_post(
-                        body=_("NAID certification level changed from %s to %s")
-                        % (
-                            dict(record._fields["naid_level"].selection).get(
-                                record.naid_level, record.naid_level
-                            ),
-                            dict(record._fields["naid_level"].selection).get(
-                                vals["naid_level"], vals["naid_level"]
-                            ),
+                        body=_(
+                            "NAID certification level changed from %s to %s",
+                            old_level_display,
+                            new_level_display,
                         )
                     )
 
@@ -859,9 +873,9 @@ class NaidCompliance(models.Model):
         if "expiration_date" in vals and vals["expiration_date"]:
             expiration_date = vals["expiration_date"]
             if isinstance(expiration_date, str):
-                from datetime import datetime
-
-                expiration_date = datetime.strptime(expiration_date, "%Y-%m-%d").date()
+                expiration_date = datetime.datetime.strptime(
+                    expiration_date, "%Y-%m-%d"
+                ).date()
             vals["renewal_date"] = expiration_date - timedelta(days=60)
 
         return super().write(vals)

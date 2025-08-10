@@ -31,10 +31,11 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
 import hashlib
 import time
+
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
 class RecordsChainOfCustody(models.Model):
@@ -108,6 +109,11 @@ class RecordsChainOfCustody(models.Model):
         string="Work Order",
         help="Associated work order if applicable",
     )
+    compliance_id = fields.Many2one(
+        "naid.compliance",
+        string="NAID Compliance Framework",
+        help="Associated NAID compliance framework",
+    )
 
     # ============================================================================
     # CUSTODY EVENT DETAILS
@@ -142,13 +148,15 @@ class RecordsChainOfCustody(models.Model):
     # ============================================================================
     # CUSTODY TRANSFER INFORMATION
     # ============================================================================
-    custody_from = fields.Many2one(
+    custody_from_id = fields.Many2one(
         "res.users",
         string="Custody From",
         help="User transferring custody (previous custodian)",
     )
-    custody_to = fields.Many2one(
-        "res.users", string="Custody To", help="User receiving custody (new custodian)"
+    custody_to_id = fields.Many2one(
+        "res.users",
+        string="Custody To",
+        help="User receiving custody (new custodian)"
     )
     transfer_reason = fields.Selection(
         [
@@ -234,12 +242,12 @@ class RecordsChainOfCustody(models.Model):
     # ============================================================================
     # LOCATION AND PHYSICAL TRACKING
     # ============================================================================
-    location_from = fields.Many2one(
+    location_from_id = fields.Many2one(
         "records.location",
         string="Origin Location",
         help="Location where documents originated",
     )
-    location_to = fields.Many2one(
+    location_to_id = fields.Many2one(
         "records.location",
         string="Destination Location",
         help="Location where documents are being transferred",
@@ -322,21 +330,19 @@ class RecordsChainOfCustody(models.Model):
         help="Formatted display name with event details",
     )
 
-    @api.depends("custody_from", "custody_to", "custody_event")
+    @api.depends("custody_from_id", "custody_to_id", "custody_event")
     def _compute_transfer_summary(self):
         """Compute custody transfer summary"""
         for record in self:
-            if record.custody_from and record.custody_to:
-                record.transfer_summary = (
-                    f"{record.custody_from.name} → {record.custody_to.name}"
-                )
+            if record.custody_from_id and record.custody_to_id:
+                record.transfer_summary = _("%s → %s", record.custody_from_id.name, record.custody_to_id.name)
             elif record.custody_event:
                 event_label = dict(record._fields["custody_event"].selection).get(
                     record.custody_event, record.custody_event
                 )
                 record.transfer_summary = event_label
             else:
-                record.transfer_summary = "No Transfer"
+                record.transfer_summary = _("No Transfer")
 
     transfer_summary = fields.Char(
         string="Transfer Summary",
@@ -379,7 +385,7 @@ class RecordsChainOfCustody(models.Model):
         for vals in vals_list:
             if not vals.get("verification_code"):
                 vals["verification_code"] = (
-                    self.env["ir.sequence"].next_by_code("records.chain.custody")
+                    self.env["ir.sequence"].next_by_code("records.chain.of.custody")
                     or "NEW"
                 )
 
@@ -387,7 +393,7 @@ class RecordsChainOfCustody(models.Model):
             if not vals.get("custody_date"):
                 vals["custody_date"] = fields.Datetime.now()
 
-        return super(RecordsChainOfCustody, self).create(vals_list)
+        return super().create(vals_list)
 
     def write(self, vals):
         """Override write to log state changes"""
@@ -395,19 +401,12 @@ class RecordsChainOfCustody(models.Model):
         if "state" in vals:
             for record in self:
                 if vals["state"] != record.state:
+                    old = dict(record._fields["state"].selection).get(record.state, record.state)
+                    new = dict(record._fields["state"].selection).get(vals["state"], vals["state"])
                     record.message_post(
-                        body=_("Custody status changed from %s to %s")
-                        % (
-                            dict(record._fields["state"].selection).get(
-                                record.state, record.state
-                            ),
-                            dict(record._fields["state"].selection).get(
-                                vals["state"], vals["state"]
-                            ),
-                        )
+                        body=_("Custody status changed from %s to %s", old, new)
                     )
-
-        return super(RecordsChainOfCustody, self).write(vals)
+        return super().write(vals)
 
     # ============================================================================
     # BUSINESS METHODS
@@ -442,12 +441,10 @@ class RecordsChainOfCustody(models.Model):
             limit=1,
         )
 
-        if previous_records and previous_records.custody_to != self.custody_from:
+        if previous_records and previous_records.custody_to_id != self.custody_from_id:
             self.chain_integrity = "broken"
             self.message_post(
-                body=_(
-                    "Chain of custody integrity broken: Previous custodian mismatch"
-                ),
+                body=_("Chain of custody integrity broken: Previous custodian mismatch"),
                 message_type="comment",
             )
             return False
@@ -464,7 +461,7 @@ class RecordsChainOfCustody(models.Model):
 
         # Create certificate record
         certificate_vals = {
-            "name": f"Custody Certificate - {self.name}",
+            "name": _("Custody Certificate - %s", self.name),
             "certificate_type": "custody",
             "customer_id": self.customer_id.id,
             "document_ids": [(6, 0, [self.document_id.id])] if self.document_id else [],
@@ -476,7 +473,7 @@ class RecordsChainOfCustody(models.Model):
         certificate = self.env["naid.certificate"].create(certificate_vals)
 
         self.message_post(
-            body=_("Custody certificate generated: %s") % certificate.name,
+            body=_("Custody certificate generated: %s", certificate.name),
             message_type="notification",
         )
 
@@ -487,93 +484,46 @@ class RecordsChainOfCustody(models.Model):
     # ============================================================================
     def action_confirm_custody(self):
         """Confirm custody event"""
-        for record in self:
-            if record.state != "draft":
-                raise ValidationError(_("Only draft custody records can be confirmed"))
-
-            record.write(
-                {
-                    "state": "confirmed",
-                    "signature_date": fields.Datetime.now(),
-                }
-            )
-
-            # Verify custody integrity
-            record.verify_custody_integrity()
-
-            record.message_post(
-                body=_("Custody event confirmed by %s") % self.env.user.name,
-                message_type="notification",
-            )
+        self.ensure_one()
+        if self.state != "draft":
+            raise ValidationError(_("Only draft custody records can be confirmed"))
+        self.write({"state": "confirmed", "signature_date": fields.Datetime.now()})
+        self.verify_custody_integrity()
+        self.message_post(body=_("Custody event confirmed by %s", self.env.user.name))
 
     def action_complete_custody(self):
         """Complete custody transfer"""
-        for record in self:
-            if record.state not in ["confirmed", "in_progress"]:
-                raise ValidationError(
-                    _("Only confirmed or in-progress custody records can be completed")
-                )
-
-            record.write({"state": "completed"})
-
-            # Auto-generate certificate for certain event types
-            if record.custody_event in ["transferred", "destroyed", "returned"]:
-                record.create_custody_certificate()
-
-            record.message_post(
-                body=_("Custody transfer completed"), message_type="notification"
-            )
+        self.ensure_one()
+        if self.state not in ["confirmed", "in_progress"]:
+            raise ValidationError(_("Only confirmed or in-progress custody records can be completed"))
+        self.write({"state": "completed"})
+        if self.custody_event in ["transferred", "destroyed", "returned"]:
+            self.create_custody_certificate()
+        self.message_post(body=_("Custody transfer completed"))
 
     def action_verify_custody(self):
         """Verify custody record by supervisor"""
-        for record in self:
-            if record.state != "completed":
-                raise ValidationError(
-                    _("Only completed custody records can be verified")
-                )
-
-            record.write(
-                {
-                    "state": "verified",
-                    "supervisor_id": self.env.user.id,
-                    "supervisor_approval": True,
-                }
-            )
-
-            record.message_post(
-                body=_("Custody record verified by supervisor: %s")
-                % self.env.user.name,
-                message_type="notification",
-            )
+        self.ensure_one()
+        if self.state != "completed":
+            raise ValidationError(_("Only completed custody records can be verified"))
+        self.write({"state": "verified", "supervisor_id": self.env.user.id, "supervisor_approval": True})
+        self.message_post(body=_("Custody record verified by supervisor: %s", self.env.user.name))
 
     def action_cancel_custody(self):
         """Cancel custody record"""
-        for record in self:
-            if record.state in ["completed", "verified"]:
-                raise ValidationError(
-                    _("Cannot cancel completed or verified custody records")
-                )
-
-            record.write({"state": "cancelled"})
-
-            record.message_post(
-                body=_("Custody record cancelled by %s") % self.env.user.name,
-                message_type="comment",
-            )
+        self.ensure_one()
+        if self.state in ["completed", "verified"]:
+            raise ValidationError(_("Cannot cancel completed or verified custody records"))
+        self.write({"state": "cancelled"})
+        self.message_post(body=_("Custody record cancelled by %s", self.env.user.name), message_type="comment")
 
     def action_reset_to_draft(self):
         """Reset custody record to draft"""
-        for record in self:
-            if record.state == "verified":
-                raise ValidationError(
-                    _("Cannot reset verified custody records to draft")
-                )
-
-            record.write({"state": "draft"})
-
-            record.message_post(
-                body=_("Custody record reset to draft"), message_type="comment"
-            )
+        self.ensure_one()
+        if self.state == "verified":
+            raise ValidationError(_("Cannot reset verified custody records to draft"))
+        self.write({"state": "draft"})
+        self.message_post(body=_("Custody record reset to draft"), message_type="comment")
 
     def action_view_custody_history(self):
         """View complete custody history for document"""
@@ -599,12 +549,12 @@ class RecordsChainOfCustody(models.Model):
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
-    @api.constrains("custody_from", "custody_to")
+    @api.constrains("custody_from_id", "custody_to_id")
     def _check_custody_transfer(self):
         """Validate custody transfer users"""
         for record in self:
-            if record.custody_from and record.custody_to:
-                if record.custody_from == record.custody_to:
+            if record.custody_from_id and record.custody_to_id:
+                if record.custody_from_id == record.custody_to_id:
                     raise ValidationError(
                         _("Cannot transfer custody from and to the same user")
                     )
@@ -642,17 +592,17 @@ class RecordsChainOfCustody(models.Model):
                 event_label = dict(record._fields["custody_event"].selection).get(
                     record.custody_event, record.custody_event or "Unknown Event"
                 )
-                name_parts.append(f"({event_label})")
+                name_parts.append(_("(%s)", event_label))
 
             if record.customer_id:
-                name_parts.append(f"- {record.customer_id.name}")
+                name_parts.append(_("- %s", record.customer_id.name))
 
             result.append((record.id, " ".join(name_parts)))
 
         return result
 
     @api.model
-    def _name_search(
+    def _search_name(
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
     ):
         """Enhanced search by name, customer, or verification code"""
@@ -694,14 +644,14 @@ class RecordsChainOfCustody(models.Model):
             return False
 
         vals = {
-            "name": f"Auto-{event_type.title()}: {document.name}",
+            "name": _("Auto-%s: %s", event_type.title(), document.name),
             "document_id": document_id,
             "customer_id": document.customer_id.id,
             "custody_event": event_type,
             "custody_date": fields.Datetime.now(),
-            "description": description or f"Automatic {event_type} event",
-            "custody_from": user_from.id if user_from else False,
-            "custody_to": user_to.id if user_to else False,
+            "description": description or _("Automatic %s event", event_type),
+            "custody_from_id": user_from.id if user_from else False,
+            "custody_to_id": user_to.id if user_to else False,
             "state": "confirmed",
         }
 
