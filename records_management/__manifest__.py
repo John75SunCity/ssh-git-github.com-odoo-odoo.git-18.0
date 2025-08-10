@@ -226,6 +226,6 @@
     "installable": True,
     "auto_install": False,
     "application": True,
-    "sequence": 1000,
+    "sequence": 1001,
     "images": ["static/description/icon.png"],
 }
