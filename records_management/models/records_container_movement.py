@@ -381,6 +381,12 @@ class RecordsContainerMovement(models.Model):
             if record.container_id:
                 parts.append(f"({record.container_id.name})")
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
             if record.movement_type:
                 parts.append(f"- {record.movement_type.title()}")
 

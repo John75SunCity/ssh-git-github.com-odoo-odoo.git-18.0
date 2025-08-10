@@ -117,6 +117,12 @@ class BarcodePricingTier(models.Model):
         """Activate pricing tier"""
         self.write({"state": "active"})
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     def action_deactivate(self):
         """Deactivate pricing tier"""
         self.write({"state": "inactive"})

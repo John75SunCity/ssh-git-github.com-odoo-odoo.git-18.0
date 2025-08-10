@@ -22,6 +22,12 @@ class NaidDestructionRecord(models.Model):
     )
     active = fields.Boolean(string="Active", default=True)
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     # ============================================================================
     # DESTRUCTION DETAILS
     # ============================================================================

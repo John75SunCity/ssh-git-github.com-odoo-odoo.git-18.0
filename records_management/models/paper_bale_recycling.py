@@ -305,6 +305,12 @@ class PaperBaleRecycling(models.Model):
         self.write(
             {"processing_status": "in_process", "processing_date": fields.Date.today()}
         )
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
         self.message_post(
             body=_("Recycling processing started for bale %s") % self.bale_id
         )

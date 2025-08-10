@@ -56,6 +56,12 @@ class FileRetrievalWorkOrder(models.Model):
     def action_activate(self):
         """Activate the record."""
         self.write({'state': 'active'})
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
     
     def action_deactivate(self):
         """Deactivate the record."""

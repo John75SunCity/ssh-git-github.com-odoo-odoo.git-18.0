@@ -394,6 +394,14 @@ class ShreddingHardDrive(models.Model):
                 name = f"{name} - {record.serial_number}"
             if record.customer_id:
                 name = f"{name} ({record.customer_id.name})"
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner", 
+        related="customer_id",
+        store=True,
+        help="Related partner field for One2many relationships compatibility"
+    )
             result.append((record.id, name))
         return result
 

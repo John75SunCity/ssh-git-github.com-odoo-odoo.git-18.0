@@ -132,6 +132,12 @@ class PortalFeedbackResolution(models.Model):
             raise UserError(_("No customer found for this feedback."))
 
         self.write({"customer_notified": True})
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
         self.message_post(
             body=_("Customer has been notified about the resolution."),
             message_type="notification",

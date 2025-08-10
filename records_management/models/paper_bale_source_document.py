@@ -48,6 +48,12 @@ class PaperBaleSourceDocument(models.Model):
         self.ensure_one()
         self.write({"state": "processed"})
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     def action_mark_baled(self):
         """Mark document as baled"""
         self.ensure_one()

@@ -292,6 +292,12 @@ class RecordsManagementBaseMenus(models.Model):
         help="Full hierarchical menu name",
     )
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     @api.depends("group_ids", "department_ids", "visibility")
     def _compute_access_level(self):
         """Compute access level based on restrictions"""

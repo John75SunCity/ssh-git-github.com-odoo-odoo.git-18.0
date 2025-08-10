@@ -44,6 +44,12 @@ class RecordsInstaller(models.Model):
         """Set the record's state to 'confirmed'."""
         self.write({"state": "confirmed"})
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     def action_cancel(self):
         """Set the record's state to 'cancelled'."""
         self.write({"state": "cancelled"})

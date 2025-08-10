@@ -75,6 +75,12 @@ class SignedDocument(models.Model):
                 record.display_name = record.name
 
     def action_mark_signed(self):
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
         """Mark document as signed"""
         self.ensure_one()
         self.write({"state": "signed", "signature_date": fields.Datetime.now()})

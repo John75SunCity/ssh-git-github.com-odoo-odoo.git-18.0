@@ -448,6 +448,14 @@ class PortalFeedback(models.Model):
             raise UserError(_("Can only mark new feedback as reviewed"))
         self.write({"status": "reviewed", "assigned_to": self.env.user.id})
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner", 
+        related="customer_id",
+        store=True,
+        help="Related partner field for One2many relationships compatibility"
+    )
+
     def action_respond(self):
         """Mark feedback as responded"""
         self.ensure_one()

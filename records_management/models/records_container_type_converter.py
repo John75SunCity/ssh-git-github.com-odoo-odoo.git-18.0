@@ -266,6 +266,14 @@ class RecordsContainerTypeConverter(models.Model):
                 f"Convert {container_count} containers from {source} to {target}"
             )
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner", 
+        related="customer_id",
+        store=True,
+        help="Related partner field for One2many relationships compatibility"
+    )
+
     @api.depends("container_ids")
     def _compute_container_metrics(self):
         """Compute container metrics for conversion planning"""

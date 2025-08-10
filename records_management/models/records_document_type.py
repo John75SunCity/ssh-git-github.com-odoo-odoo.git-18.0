@@ -372,6 +372,12 @@ class RecordsDocumentType(models.Model):
                 status_parts.append("Inactive")
             if record.document_count:
                 status_parts.append(f"{record.document_count} docs")
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
             record.status_display = " | ".join(status_parts)
 
     document_count = fields.Integer(

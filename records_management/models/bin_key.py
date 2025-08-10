@@ -78,6 +78,12 @@ class BinKey(models.Model):
         "res.users", default=lambda self: self.env.user, tracking=True
     )
     active = fields.Boolean(string="Active", default=True)
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
     state = fields.Selection(
         [
             ("draft", "Draft"),

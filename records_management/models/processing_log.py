@@ -298,6 +298,12 @@ class ProcessingLog(models.Model):
                             ) or getattr(record, "name", "Unknown")
                             log.reference = (
                                 f"{log.res_model}({log.res_id}): {log.res_name}"
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
                             )
                         else:
                             log.res_name = f"Deleted {log.res_model}({log.res_id})"

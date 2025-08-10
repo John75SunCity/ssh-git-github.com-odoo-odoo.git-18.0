@@ -527,6 +527,14 @@ class PaperBale(models.Model):
         }
 
     def action_quality_inspection(self):
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner", 
+        related="customer_id",
+        store=True,
+        help="Related partner field for One2many relationships compatibility"
+    )
         """Perform quality inspection"""
         self.ensure_one()
         return {

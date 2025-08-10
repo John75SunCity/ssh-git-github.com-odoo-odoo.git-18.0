@@ -236,6 +236,12 @@ class RecordsLocation(models.Model):
         }
 
     def action_location_report(self):
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
         """Generate location utilization and capacity report"""
         self.ensure_one()
         return {

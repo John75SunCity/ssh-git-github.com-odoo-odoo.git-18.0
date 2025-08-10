@@ -270,6 +270,12 @@ class BarcodeProduct(models.Model):
                 record.display_name = record.name
 
     @api.depends("barcode_line_ids")
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
     def _compute_barcode_count(self):
         for record in self:
             record.barcode_count = len(record.barcode_line_ids)

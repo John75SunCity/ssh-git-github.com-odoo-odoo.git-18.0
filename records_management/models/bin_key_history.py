@@ -41,6 +41,12 @@ class BinKeyHistory(models.Model):
     )
     active = fields.Boolean(string="Active", default=True)
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:

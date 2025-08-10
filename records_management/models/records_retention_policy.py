@@ -397,6 +397,12 @@ class RecordsRetentionPolicy(models.Model):
                 vals["code"] = sequence or f"RRP-{fields.Date.today().strftime('%Y%m%d')}"
         return super().create(vals_list)
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     def name_get(self):
         """Custom name display"""
         result = []

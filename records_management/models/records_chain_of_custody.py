@@ -298,6 +298,14 @@ class RecordsChainOfCustody(models.Model):
                     record.custody_event, record.custody_event
                 )
                 parts.append(f"({event_label})")
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner", 
+        related="customer_id",
+        store=True,
+        help="Related partner field for One2many relationships compatibility"
+    )
             if record.custody_date:
                 parts.append(record.custody_date.strftime("%Y-%m-%d %H:%M"))
             record.display_name = " - ".join(parts) if parts else "New Custody Record"

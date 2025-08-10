@@ -304,6 +304,14 @@ class UnlockServiceHistory(models.Model):
                 ]
                 customer = record.customer_id.name if record.customer_id else "Unknown"
                 record.display_name = f"{record.name} - {service_type} ({customer})"
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner", 
+        related="customer_id",
+        store=True,
+        help="Related partner field for One2many relationships compatibility"
+    )
             else:
                 record.display_name = record.name or _("New Service")
 

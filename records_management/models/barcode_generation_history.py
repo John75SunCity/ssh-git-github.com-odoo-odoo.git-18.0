@@ -104,6 +104,12 @@ class BarcodeGenerationHistory(models.Model):
         self.ensure_one()
         self.write({"state": "generated", "generation_date": fields.Datetime.now()})
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     def action_print(self):
         """Mark as printed"""
         self.write(

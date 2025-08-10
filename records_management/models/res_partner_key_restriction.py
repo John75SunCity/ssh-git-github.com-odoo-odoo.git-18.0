@@ -37,6 +37,12 @@ class ResPartnerKeyRestriction(models.Model):
     # Action methods
     def action_confirm(self):
         self.write({'state': 'confirmed'})
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
     
     def action_cancel(self):
         self.write({'state': 'cancelled'})

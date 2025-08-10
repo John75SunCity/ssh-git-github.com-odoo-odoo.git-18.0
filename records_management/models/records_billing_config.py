@@ -324,6 +324,12 @@ class RecordsBillingConfig(models.Model):
             }
         )
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     def calculate_storage_cost(self, box_count, months=1):
         """Calculate storage cost based on configuration"""
         self.ensure_one()

@@ -302,6 +302,12 @@ class RecordsVehicle(models.Model):
                 record.display_name = record.name or "New Vehicle"
 
     @api.depends("total_capacity", "vehicle_capacity_volume")
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
     def _compute_capacity(self):
         """Compute primary capacity measure"""
         for record in self:
