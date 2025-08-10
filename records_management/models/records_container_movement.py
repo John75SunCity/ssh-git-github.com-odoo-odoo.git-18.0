@@ -779,7 +779,3 @@ class RecordsContainerMovement(models.Model):
             )
 
         return stats
-                completed
-            )
-
-        return stats

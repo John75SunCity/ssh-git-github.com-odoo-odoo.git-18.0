@@ -42,13 +42,6 @@ class ShreddingTeam(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(
-
-    # Partner Relationship
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
         string="Team Name",
         required=True,
         tracking=True,
@@ -71,6 +64,14 @@ class ShreddingTeam(models.Model):
     active = fields.Boolean(
         string="Active", default=True, help="Active status of the team"
     )
+
+    # Partner Relationship
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     sequence = fields.Integer(
         string="Sequence", default=10, help="Order sequence for sorting teams"
     )

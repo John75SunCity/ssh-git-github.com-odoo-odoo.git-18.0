@@ -840,4 +840,3 @@ class ShreddingInventoryItem(models.Model):
                     "notes": notes,
                 }
             )
-            )
