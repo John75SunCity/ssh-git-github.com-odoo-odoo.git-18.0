@@ -73,7 +73,6 @@ from . import records_vehicle
 # Shredding services (MUST be loaded before paper_bale_recycling due to inverse field)
 from . import shredding_team
 from . import shredding_equipment
-from . import maintenance_extensions
 from . import shredding_certificate
 from . import shredding_service
 from . import shredding_hard_drive

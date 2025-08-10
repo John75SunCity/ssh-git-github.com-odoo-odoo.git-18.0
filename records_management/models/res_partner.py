@@ -113,6 +113,13 @@ class ResPartner(models.Model):
         help="Shredding work orders for this customer",
     )
 
+    shredding_team_ids = fields.One2many(
+        "shredding.team",
+        "partner_id",
+        string="Shredding Teams",
+        help="Shredding teams associated with this partner",
+    )
+
     @api.depends("records_department_users")
     def _compute_key_counts(self):
         """Compute key counts for analytics"""
@@ -202,8 +209,7 @@ class ResPartner(models.Model):
             except Exception as e:
                 _logger.warning("Failed to grant technical features: %s", str(e))
 
-            # Commit changes if needed
-            self.env.cr.commit()
+            # self.env.cr.commit()
             return True
 
         except Exception as e:
@@ -233,7 +239,7 @@ class ResPartner(models.Model):
 
             # Log the action for NAID compliance
             self.message_post(
-                body=_("Key issuance allowed for partner: %s") % self.name,
+                body=_("Key issuance allowed for partner: %s", self.name),
                 message_type="notification",
             )
 
@@ -276,7 +282,7 @@ class ResPartner(models.Model):
 
             # Log the action for NAID compliance
             self.message_post(
-                body=_("Key issuance restricted for partner: %s") % self.name,
+                body=_("Key issuance restricted for partner: %s", self.name),
                 message_type="notification",
             )
 
@@ -306,7 +312,7 @@ class ResPartner(models.Model):
 
         # Log confirmation for NAID audit trail
         self.message_post(
-            body=_("Partner confirmed for records management services: %s") % self.name,
+            body=_("Partner confirmed for records management services: %s", self.name),
             message_type="notification",
         )
 
@@ -347,7 +353,7 @@ class ResPartner(models.Model):
 
             return {
                 "type": "ir.actions.act_window",
-                "name": _("Issue New Key - %s") % self.name,
+                "name": _("Issue New Key - %s", self.name),
                 "res_model": "bin.key.management",
                 "view_mode": "form",
                 "target": "new",
@@ -355,7 +361,7 @@ class ResPartner(models.Model):
                     "default_partner_id": self.id,
                     "default_key_type": "new_issue",
                     "default_status": "active",
-                    "default_notes": _("New key issued for partner: %s") % self.name,
+                    "default_notes": _("New key issued for partner: %s", self.name),
                 },
             }
         except UserError:
@@ -378,7 +384,7 @@ class ResPartner(models.Model):
 
             return {
                 "type": "ir.actions.act_window",
-                "name": _("Report Lost Key - %s") % self.name,
+                "name": _("Report Lost Key - %s", self.name),
                 "res_model": "bin.key.management",
                 "view_mode": "form",
                 "target": "new",
@@ -386,8 +392,7 @@ class ResPartner(models.Model):
                     "default_partner_id": self.id,
                     "default_key_type": "lost_report",
                     "default_status": "lost",
-                    "default_notes": _("Key reported as lost by customer: %s")
-                    % self.name,
+                    "default_notes": _("Key reported as lost by customer: %s", self.name),
                     "default_loss_date": fields.Date.today(),
                 },
             }
@@ -424,7 +429,7 @@ class ResPartner(models.Model):
 
             return {
                 "type": "ir.actions.act_window",
-                "name": _("Return Key - %s") % self.name,
+                "name": _("Return Key - %s", self.name),
                 "res_model": "bin.key.management",
                 "view_mode": "tree,form",
                 "domain": [("partner_id", "=", self.id), ("status", "=", "active")],
@@ -466,7 +471,7 @@ class ResPartner(models.Model):
 
             return {
                 "type": "ir.actions.act_window",
-                "name": _("Active Key - %s") % self.name,
+                "name": _("Active Key - %s", self.name),
                 "res_model": "bin.key.management",
                 "res_id": active_key.id,
                 "view_mode": "form",
@@ -496,7 +501,7 @@ class ResPartner(models.Model):
 
             return {
                 "type": "ir.actions.act_window",
-                "name": _("Partner Bin Keys - %s") % self.name,
+                "name": _("Partner Bin Keys - %s", self.name),
                 "res_model": "bin.key.management",
                 "view_mode": "tree,form",
                 "domain": [("partner_id", "=", self.id)],
@@ -525,7 +530,7 @@ class ResPartner(models.Model):
 
             return {
                 "type": "ir.actions.act_window",
-                "name": _("Unlock Services - %s") % self.name,
+                "name": _("Unlock Services - %s", self.name),
                 "res_model": "bin.unlock.service",
                 "view_mode": "tree,form",
                 "domain": [("partner_id", "=", self.id)],
@@ -614,8 +619,8 @@ class ResPartner(models.Model):
                     _(
                         "Records customers must be assigned to a records department. "
                         "Please assign a department to partner: %s"
-                    )
-                    % partner.name
+                    ),
+                    partner.name,
                 )
 
     @api.constrains("records_department_id", "company_id")
@@ -631,10 +636,10 @@ class ResPartner(models.Model):
                     _(
                         "Records department must belong to the same company as the partner. "
                         "Partner: %s, Department Company: %s, Partner Company: %s"
-                    )
-                    % (
+                    ),
+                    (
                         partner.name,
                         partner.records_department_id.company_id.name,
                         partner.company_id.name,
-                    )
+                    ),
                 )
