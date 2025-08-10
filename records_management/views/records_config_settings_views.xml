@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Records Management Configuration Settings Form View -->
+        <record id="records_config_settings_view_form" model="ir.ui.view">
+            <field name="name">records.config.setting.view.form</field>
+            <field name="model">records.config.setting</field>
+            <field name="arch" type="xml">
+                <form string="Records Management Settings" class="oe_form_configuration">
+                    <header>
+                        <button name="action_test_notification_settings" 
+                                string="Test Notifications" 
+                                type="object" 
+                                class="btn-secondary"
+                                groups="records_management.group_records_manager"/>
+                        <button name="action_run_compliance_audit" 
+                                string="Run Compliance Audit" 
+                                type="object" 
+                                class="btn-secondary"
+                                groups="records_management.group_records_manager"/>
+                        <button name="action_reset_all_settings" 
+                                string="Reset to Defaults" 
+                                type="object" 
+                                class="btn-secondary"
+                                confirm="This will reset all settings to recommended defaults. Are you sure?"
+                                groups="records_management.group_records_manager"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="row mt16 o_settings_container">
+                            <!-- Dashboard Statistics -->
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <h3>System Overview</h3>
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="o_field_widget o_field_integer">
+                                                        <label for="total_active_containers" class="o_form_label">Active Containers</label>
+                                                        <field name="total_active_containers" readonly="1"/>
+                                                    </div>
+                                                    <div class="o_field_widget o_field_integer">
+                                                        <label for="total_stored_documents" class="o_form_label">Stored Documents</label>
+                                                        <field name="total_stored_documents" readonly="1"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="o_field_widget o_field_integer">
+                                                        <label for="pending_destruction_requests" class="o_form_label">Pending Destructions</label>
+                                                        <field name="pending_destruction_requests" readonly="1"/>
+                                                    </div>
+                                                    <div class="o_field_widget o_field_float">
+                                                        <label for="compliance_score" class="o_form_label">Compliance Score</label>
+                                                        <field name="compliance_score" readonly="1" widget="percentage"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Records Management Settings -->
+                        <h2>Records Management</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="records_auto_barcode_generation"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="records_auto_barcode_generation"/>
+                                    <div class="text-muted">
+                                        Automatically generate barcodes for new containers and documents
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="records_enable_advanced_search"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="records_enable_advanced_search"/>
+                                    <div class="text-muted">
+                                        Enable advanced search and filtering capabilities
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="records_auto_location_assignment"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="records_auto_location_assignment"/>
+                                    <div class="text-muted">
+                                        Automatically assign optimal storage locations for new containers
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="records_enable_container_weight_tracking"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="records_enable_container_weight_tracking"/>
+                                    <div class="text-muted">
+                                        Track container weights for billing and capacity planning
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="records_barcode_nomenclature_id" class="o_form_label">Barcode Nomenclature</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="records_barcode_nomenclature_id" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Barcode nomenclature for records management system
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="records_default_retention_days" class="o_form_label">Default Retention (Days)</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="records_default_retention_days" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Default retention period for documents without specific policy
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="records_default_container_type_id" class="o_form_label">Default Container Type</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="records_default_container_type_id" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Default container type for new storage boxes
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="records_container_capacity_warning_threshold" class="o_form_label">Capacity Warning (%)</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="records_container_capacity_warning_threshold" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Warning threshold for container capacity utilization
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NAID Compliance Settings -->
+                        <h2>NAID Compliance &amp; Security</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="naid_compliance_level" class="o_form_label">Compliance Level</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="naid_compliance_level" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Level of NAID compliance enforcement
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="naid_auto_audit_logging"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="naid_auto_audit_logging"/>
+                                    <div class="text-muted">
+                                        Automatically create audit logs for all critical operations
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="naid_require_dual_authorization"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="naid_require_dual_authorization"/>
+                                    <div class="text-muted">
+                                        Require dual authorization for destruction and sensitive operations
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="security_department_isolation"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="security_department_isolation"/>
+                                    <div class="text-muted">
+                                        Isolate data access by department assignments
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="security_require_bin_key_management"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="security_require_bin_key_management"/>
+                                    <div class="text-muted">
+                                        Require physical key management for secure storage bins
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="naid_audit_retention_years" class="o_form_label">Audit Retention (Years)</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="naid_audit_retention_years" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Number of years to retain audit logs for compliance
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="security_failed_access_lockout_enabled"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="security_failed_access_lockout_enabled"/>
+                                    <div class="text-muted">
+                                        Lock accounts after failed access attempts
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box" attrs="{'invisible': [('security_failed_access_lockout_enabled', '=', False)]}">
+                                <div class="o_setting_left_pane">
+                                    <label for="security_failed_access_attempt_limit" class="o_form_label">Failed Access Limit</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="security_failed_access_attempt_limit" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Maximum failed access attempts before lockout
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pickup and Field Service Settings -->
+                        <h2>Pickup &amp; Field Service</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="pickup_auto_route_optimization"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="pickup_auto_route_optimization"/>
+                                    <div class="text-muted">
+                                        Automatically optimize pickup routes for efficiency
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="fsm_integration_enabled"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="fsm_integration_enabled"/>
+                                    <div class="text-muted">
+                                        Enable integration with Odoo Field Service Management
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="pickup_automatic_confirmation"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="pickup_automatic_confirmation"/>
+                                    <div class="text-muted">
+                                        Automatically confirm pickup requests when capacity allows
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="pickup_default_time_window_hours" class="o_form_label">Time Window (Hours)</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="pickup_default_time_window_hours" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Default time window for pickup appointments
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="pickup_advance_notice_days" class="o_form_label">Advance Notice (Days)</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="pickup_advance_notice_days" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Minimum advance notice required for pickup requests
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Billing Settings -->
+                        <h2>Billing &amp; Pricing</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="billing_period_type" class="o_form_label">Billing Period</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="billing_period_type" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Default billing cycle for storage fees
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="billing_auto_invoice_generation"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="billing_auto_invoice_generation"/>
+                                    <div class="text-muted">
+                                        Automatically generate invoices based on billing cycles
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="billing_prorate_first_month"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="billing_prorate_first_month"/>
+                                    <div class="text-muted">
+                                        Prorate billing for partial first month of storage
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="billing_volume_discount_enabled"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="billing_volume_discount_enabled"/>
+                                    <div class="text-muted">
+                                        Enable volume-based discount pricing tiers
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="billing_default_currency_id" class="o_form_label">Default Currency</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="billing_default_currency_id" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Default currency for billing calculations
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Portal Settings -->
+                        <h2>Customer Portal</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="portal_allow_customer_requests"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="portal_allow_customer_requests"/>
+                                    <div class="text-muted">
+                                        Allow customers to submit service requests through portal
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="portal_enable_document_preview"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="portal_enable_document_preview"/>
+                                    <div class="text-muted">
+                                        Allow customers to preview documents in portal (security consideration)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="portal_require_request_approval"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="portal_require_request_approval"/>
+                                    <div class="text-muted">
+                                        All portal requests require internal approval before processing
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="portal_auto_notification_enabled"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="portal_auto_notification_enabled"/>
+                                    <div class="text-muted">
+                                        Automatically notify customers of status changes via portal
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="portal_feedback_collection_enabled"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="portal_feedback_collection_enabled"/>
+                                    <div class="text-muted">
+                                        Enable customer feedback and satisfaction surveys
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box" attrs="{'invisible': [('portal_feedback_collection_enabled', '=', False)]}">
+                                <div class="o_setting_left_pane">
+                                    <field name="portal_ai_sentiment_analysis"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="portal_ai_sentiment_analysis"/>
+                                    <div class="text-muted">
+                                        Use AI to analyze customer feedback sentiment
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notifications -->
+                        <h2>Notifications</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="notification_email_enabled"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="notification_email_enabled"/>
+                                    <div class="text-muted">
+                                        Send email notifications for important events
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="notification_sms_enabled"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="notification_sms_enabled"/>
+                                    <div class="text-muted">
+                                        Send SMS notifications for critical alerts
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="notification_retention_expiry_days" class="o_form_label">Retention Expiry Notice (Days)</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="notification_retention_expiry_days" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Days before retention expiry to send notifications
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="notification_pickup_reminder_hours" class="o_form_label">Pickup Reminder (Hours)</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="notification_pickup_reminder_hours" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        Hours before pickup to send reminder notifications
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analytics and Reporting -->
+                        <h2>Analytics &amp; Reporting</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="analytics_enable_advanced_reporting"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="analytics_enable_advanced_reporting"/>
+                                    <div class="text-muted">
+                                        Enable advanced analytics and reporting features
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="analytics_auto_report_generation"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="analytics_auto_report_generation"/>
+                                    <div class="text-muted">
+                                        Automatically generate scheduled reports
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="analytics_customer_kpi_tracking"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="analytics_customer_kpi_tracking"/>
+                                    <div class="text-muted">
+                                        Track and analyze customer-specific KPIs
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="analytics_predictive_analytics_enabled"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="analytics_predictive_analytics_enabled"/>
+                                    <div class="text-muted">
+                                        Enable predictive analytics for capacity and demand forecasting
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Integration Settings -->
+                        <h2>System Integration</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="integration_accounting_auto_sync"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="integration_accounting_auto_sync"/>
+                                    <div class="text-muted">
+                                        Automatically sync billing data with accounting module
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <label for="integration_document_management_system" class="o_form_label">Document Management System</label>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="integration_document_management_system" class="oe_inline"/>
+                                    <div class="text-muted">
+                                        External document management system integration
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="integration_api_access_enabled"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="integration_api_access_enabled"/>
+                                    <div class="text-muted">
+                                        Enable REST API access for external integrations
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="integration_webhook_notifications"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="integration_webhook_notifications"/>
+                                    <div class="text-muted">
+                                        Send webhook notifications for external system integration
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Records Management Configuration -->
+        <record id="action_records_config_settings" model="ir.actions.act_window">
+            <field name="name">Records Management Configuration</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">records.config.setting</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{'module': 'records_management'}</field>
+        </record>
+
+        <!-- Menu Item for Configuration -->
+        <menuitem id="menu_records_config_settings"
+                  name="Configuration"
+                  parent="records_management.menu_records_config"
+                  action="action_records_config_settings"
+                  sequence="1"
+                  groups="records_management.group_records_manager"/>
+
+    </data>
+</odoo>

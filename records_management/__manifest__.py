@@ -74,6 +74,7 @@
         "data/feedback_survey_data.xml",
         "data/portal_mail_templates.xml",
         "data/fsm_mail_templates.xml",
+        "data/records_config_mail_templates_data.xml",
         "data/intelligent_search_demo_data.xml",
         "data/intelligent_search_indexes.xml",
         "data/fsm_automated_actions.xml",
@@ -88,6 +89,7 @@
         # Views
         "views/records_management_base_menus.xml",
         "views/menu_views.xml",
+        "views/records_config_settings_views.xml",
         "views/records_container_views.xml",
         "views/records_document_views.xml",
         "views/records_document_type_views.xml",

@@ -1,5 +1,12 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 # ============================================================================
+# CONFIGURATION SETTINGS ACCESS RULES
+# ============================================================================
+# Only managers and system users can access configuration settings
+access_records_config_settings_manager,access_records_config_settings_manager,model_records_config_setting,records_management.group_records_manager,1,1,1,1
+access_records_config_settings_system,access_records_config_settings_system,model_records_config_setting,base.group_system,1,1,1,1
+
+# ============================================================================
 # CORE RECORDS MANAGEMENT ACCESS RULES
 # ============================================================================
 # System Diagram Data Access (for interactive flowchart)

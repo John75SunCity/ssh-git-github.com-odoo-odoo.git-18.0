@@ -18,6 +18,7 @@ This ensures proper ORM setup and prevents KeyError exceptions during module loa
 
 # Configuration settings (foundational)
 from . import res_config_settings
+from . import records_config_settings
 
 # System diagram data (for interactive visualization)
 from . import system_diagram_data
@@ -41,7 +42,6 @@ from . import records_approval_step
 # Container and storage models (in dependency order)
 from . import customer_inventory
 from . import records_container_type
-from . import records_container
 from . import container_contents
 from . import records_container_type_converter
 
