@@ -26,14 +26,22 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+# Standard library imports first
 import logging
 import traceback
-import time
-import psutil
 import os
-from datetime import timedelta
+from datetime import datetime, timedelta
+
+# Third-party imports
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    PSUTIL_AVAILABLE = False
+
+# Odoo imports
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -70,6 +78,13 @@ class ProcessingLog(models.Model):
     )
     active = fields.Boolean(
         string="Active", default=True, help="Active status of log entry"
+    )
+
+    # Partner Relationship
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
     )
 
     # ============================================================================
@@ -298,12 +313,6 @@ class ProcessingLog(models.Model):
                             ) or getattr(record, "name", "Unknown")
                             log.reference = (
                                 f"{log.res_model}({log.res_id}): {log.res_name}"
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
                             )
                         else:
                             log.res_name = f"Deleted {log.res_model}({log.res_id})"
@@ -311,7 +320,7 @@ class ProcessingLog(models.Model):
                     else:
                         log.res_name = f"Unknown Model {log.res_model}({log.res_id})"
                         log.reference = log.res_name
-                except Exception as e:
+                except Exception:
                     log.res_name = f"Error accessing {log.res_model}({log.res_id})"
                     log.reference = log.res_name
             else:
@@ -351,18 +360,16 @@ class ProcessingLog(models.Model):
         for vals in vals_list:
             if not vals.get("name"):
                 process_type = vals.get("process_type", "system")
-                from datetime import datetime
-
                 timestamp = datetime.now()
                 vals["name"] = (
                     f"{process_type.upper()}-{timestamp.strftime('%Y%m%d-%H%M%S')}"
                 )
             # Capture performance metrics if not provided
-            if "memory_usage" not in vals:
+            if "memory_usage" not in vals and PSUTIL_AVAILABLE:
                 try:
-                    vals["memory_usage"] = process.memory_info().rss / 1024 / 1024  # MB
-                    vals["cpu_usage"] = process.cpu_percent(interval=0.1)
-                    vals["cpu_usage"] = process.cpu_percent()
+                    current_process = psutil.Process(os.getpid())
+                    vals["memory_usage"] = current_process.memory_info().rss / 1024 / 1024  # MB
+                    vals["cpu_usage"] = current_process.cpu_percent()
                 except Exception:
                     pass
         return super().create(vals_list)
@@ -514,16 +521,30 @@ class ProcessingLog(models.Model):
     @api.model
     def get_system_health(self):
         """Get system health metrics"""
-        try:
-            process = psutil.Process(os.getpid())
+        if not PSUTIL_AVAILABLE:
             return {
-                "memory_usage": process.memory_info().rss / 1024 / 1024,  # MB
-                "cpu_usage": process.cpu_percent(),
+                "memory_usage": 0,
+                "cpu_usage": 0,
+                "disk_usage": 0,
+                "active_processes": 0,
+                "error": "psutil not available"
+            }
+        try:
+            current_process = psutil.Process(os.getpid())
+            return {
+                "memory_usage": current_process.memory_info().rss / 1024 / 1024,  # MB
+                "cpu_usage": current_process.cpu_percent(),
                 "disk_usage": psutil.disk_usage("/").percent,
                 "active_processes": len(psutil.pids()),
             }
         except Exception:
-            return {}
+            return {
+                "memory_usage": 0,
+                "cpu_usage": 0,
+                "disk_usage": 0,
+                "active_processes": 0,
+                "error": "Failed to get system metrics"
+            }
 
     # ============================================================================
     # REPORTING METHODS

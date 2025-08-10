@@ -61,6 +61,14 @@ class RecordsDocumentType(models.Model):
         index=True,
         help="Unique name for this document type",
     )
+    
+    # Partner Relationship
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+    
     code = fields.Char(
         string="Document Code", index=True, help="Unique code for system identification"
     )
@@ -372,12 +380,6 @@ class RecordsDocumentType(models.Model):
                 status_parts.append("Inactive")
             if record.document_count:
                 status_parts.append(f"{record.document_count} docs")
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
             record.status_display = " | ".join(status_parts)
 
     document_count = fields.Integer(

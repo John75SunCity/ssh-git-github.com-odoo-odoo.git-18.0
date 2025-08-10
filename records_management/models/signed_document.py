@@ -11,6 +11,13 @@ class SignedDocument(models.Model):
 
     # Core Fields
     name = fields.Char(string="Document Name", required=True, tracking=True)
+
+    # Partner Relationship
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
     user_id = fields.Many2one("res.users", default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
@@ -62,6 +69,14 @@ class SignedDocument(models.Model):
         tracking=True,
     )
 
+    # Computed Field
+    display_name = fields.Char(string="Display Name", compute="_compute_display_name", store=True)
+
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
     # Notes
     notes = fields.Text(string="Notes")
 
@@ -75,12 +90,6 @@ class SignedDocument(models.Model):
                 record.display_name = record.name
 
     def action_mark_signed(self):
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
         """Mark document as signed"""
         self.ensure_one()
         self.write({"state": "signed", "signature_date": fields.Datetime.now()})

@@ -68,6 +68,13 @@ class ServiceItem(models.Model):
     )
     active = fields.Boolean(string="Active", default=True, tracking=True)
 
+    # Partner Relationship
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     # ============================================================================
     # STATE MANAGEMENT
     # ============================================================================
@@ -392,12 +399,6 @@ class ServiceItem(models.Model):
                     record.category
                 )
                 name = f"{name} ({category_name})"
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
             if record.model_number:
                 name = f"{name} - {record.model_number}"
             result.append((record.id, name))

@@ -48,6 +48,14 @@ class TempInventory(models.Model):
         index=True,
         help="Unique temporary inventory reference",
     )
+    
+    # Partner Relationship
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+    
     description = fields.Text(
         string="Description", help="Detailed description of temporary inventory"
     )
@@ -376,12 +384,6 @@ class TempInventory(models.Model):
         for record in self:
             if record.name:
                 record.display_name = f"{record.name} ({record.current_count} items)"
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
             else:
                 record.display_name = _("New Temporary Inventory")
 

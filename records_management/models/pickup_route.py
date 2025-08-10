@@ -50,6 +50,12 @@ class PickupRoute(models.Model):
         index=True,
         help="Unique identifier for the pickup route",
     )
+    # Partner Relationship
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
@@ -325,12 +331,6 @@ class PickupRoute(models.Model):
 
             if record.route_date:
                 parts.append(f"({record.route_date})")
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
 
             if record.route_type:
                 route_type_label = dict(record._fields["route_type"].selection)[
@@ -850,4 +850,5 @@ class PickupRouteOptimizeWizard(models.TransientModel):
             ]
         )
 
+        return {"type": "ir.actions.act_window_close"}
         return {"type": "ir.actions.act_window_close"}

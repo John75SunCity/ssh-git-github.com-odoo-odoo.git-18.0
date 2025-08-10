@@ -17,7 +17,7 @@ Business Processes:
 2. Driver Assignment: Assign HR employees as drivers with contact integration
 3. Route Planning: Assign vehicles to pickup routes based on capacity and availability
 4. Status Management: Track real-time vehicle status and availability
-5. Maintenance Scheduling: Schedule and track vehicle maintenance activities
+5. Maintenance scheduling: Schedule and track vehicle maintenance activities
 6. Performance Monitoring: Monitor vehicle utilization and service metrics
 Author: Records Management System
 Version: 18.0.6.0.0
@@ -45,6 +45,14 @@ class RecordsVehicle(models.Model):
         index=True,
         help="Name or identifier for this vehicle",
     )
+
+    # Partner Relationship
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     description = fields.Text(
         string="Description", help="Detailed description of the vehicle"
     )
@@ -302,12 +310,6 @@ class RecordsVehicle(models.Model):
                 record.display_name = record.name or "New Vehicle"
 
     @api.depends("total_capacity", "vehicle_capacity_volume")
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
     def _compute_capacity(self):
         """Compute primary capacity measure"""
         for record in self:

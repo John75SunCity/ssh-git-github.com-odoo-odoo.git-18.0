@@ -135,6 +135,13 @@ class ShreddingInventoryItem(models.Model):
         tracking=True,
         help="Customer who owns this item",
     )
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner", 
+        related="customer_id",
+        store=True,
+        help="Related partner field for One2many relationships compatibility"
+    )
 
     # ============================================================================
     # LOCATION TRACKING
@@ -465,14 +472,6 @@ class ShreddingInventoryItem(models.Model):
             if record.container_id:
                 record.display_name = (
                     f"{record.name} (Container: {record.container_id.name})"
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner", 
-        related="customer_id",
-        store=True,
-        help="Related partner field for One2many relationships compatibility"
-    )
                 )
             elif record.document_id:
                 record.display_name = (
@@ -840,4 +839,5 @@ class ShreddingInventoryItem(models.Model):
                     "user_id": self.env.user.id,
                     "notes": notes,
                 }
+            )
             )

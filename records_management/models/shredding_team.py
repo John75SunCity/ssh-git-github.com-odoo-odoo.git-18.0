@@ -42,6 +42,13 @@ class ShreddingTeam(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(
+
+    # Partner Relationship
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
         string="Team Name",
         required=True,
         tracking=True,
@@ -567,12 +574,6 @@ class ShreddingTeam(models.Model):
             raise UserError(_("Team must have members to be activated"))
 
         self.write({"state": "active"})
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
         self.message_post(body=_("Team activated"))
 
     def action_deactivate_team(self):

@@ -100,6 +100,15 @@ class RecordsContainerMovement(models.Model):
     )
 
     # ============================================================================
+    # PARTNER AND RELATIONSHIP FIELDS
+    # ============================================================================
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
+    # ============================================================================
     # CONTAINER AND LOCATION FIELDS
     # ============================================================================
     container_id = fields.Many2one(
@@ -199,6 +208,7 @@ class RecordsContainerMovement(models.Model):
     )
     start_time = fields.Datetime(string="Start Time", help="Time when movement started")
     end_time = fields.Datetime(string="End Time", help="Time when movement completed")
+    actual_start_time = fields.Datetime(string='Actual Start Time')
     duration_hours = fields.Float(
         string="Duration (Hours)",
         compute="_compute_duration",
@@ -381,12 +391,6 @@ class RecordsContainerMovement(models.Model):
             if record.container_id:
                 parts.append(f"({record.container_id.name})")
 
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
-
             if record.movement_type:
                 parts.append(f"- {record.movement_type.title()}")
 
@@ -400,7 +404,6 @@ class RecordsContainerMovement(models.Model):
     )
 
     # ============================================================================
-    actual_start_time = fields.Datetime(string='Actual Start Time')
     # ORM OVERRIDES
     # ============================================================================
     @api.model_create_multi
@@ -776,8 +779,6 @@ class RecordsContainerMovement(models.Model):
             )
 
         return stats
-        if completed:
-            stats["avg_duration"] = sum(completed.mapped("duration_hours")) / len(
                 completed
             )
 

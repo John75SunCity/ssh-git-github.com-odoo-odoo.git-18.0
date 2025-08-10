@@ -44,6 +44,13 @@ class PortalFeedbackResolution(models.Model):
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user, tracking=True
     )
+
+    # Partner Relationship
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -132,12 +139,6 @@ class PortalFeedbackResolution(models.Model):
             raise UserError(_("No customer found for this feedback."))
 
         self.write({"customer_notified": True})
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
         self.message_post(
             body=_("Customer has been notified about the resolution."),
             message_type="notification",

@@ -40,6 +40,13 @@ class BaseRates(models.Model):
         "mail.followers", "res_id", string="Followers", auto_join=True
     )
 
+    # Partner Relationship
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
+
     # Date Management
     effective_date = fields.Date(string="Effective Date", required=True, tracking=True)
     expiry_date = fields.Date(string="Expiry Date", tracking=True)
@@ -334,12 +341,6 @@ class BaseRates(models.Model):
             {'name': 'Permanent Out - Legal/Banker', 'action_code': 'PERMOUT', 'object_code': '02', 'default_rate': 2.50, 'rate_type': 'per_container', 'service_type': 'other'},
             
             # DELIVERY SERVICES (Includes delivery fee)
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
             {'name': 'Standard Delivery', 'action_code': 'DELIVERY', 'object_code': 'STD', 'default_rate': 8.50, 'rate_type': 'per_service', 'includes_delivery': True, 'service_type': 'delivery'},
             
             # BIN SERVICES

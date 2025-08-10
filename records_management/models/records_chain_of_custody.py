@@ -84,6 +84,13 @@ class RecordsChainOfCustody(models.Model):
         tracking=True,
         help="Customer who owns the documents",
     )
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner", 
+        related="customer_id",
+        store=True,
+        help="Related partner field for One2many relationships compatibility"
+    )
     document_id = fields.Many2one(
         "records.document",
         string="Document",
@@ -282,6 +289,12 @@ class RecordsChainOfCustody(models.Model):
     external_reference = fields.Char(
         string="External Reference", help="External system reference number"
     )
+    
+    # ============================================================================
+    # ADDITIONAL FIELDS
+    # ============================================================================
+    transfer_date = fields.Datetime(string='Transfer Date', default=fields.Datetime.now)
+    verified = fields.Boolean(string='Verified', default=False)
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -298,14 +311,6 @@ class RecordsChainOfCustody(models.Model):
                     record.custody_event, record.custody_event
                 )
                 parts.append(f"({event_label})")
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner", 
-        related="customer_id",
-        store=True,
-        help="Related partner field for One2many relationships compatibility"
-    )
             if record.custody_date:
                 parts.append(record.custody_date.strftime("%Y-%m-%d %H:%M"))
             record.display_name = " - ".join(parts) if parts else "New Custody Record"
@@ -366,9 +371,7 @@ class RecordsChainOfCustody(models.Model):
     )
 
     # ============================================================================
-    transfer_date = fields.Datetime(string='Transfer Date', default=fields.Datetime.now)
     # ORM OVERRIDES
-    verified = fields.Boolean(string='Verified', default=False)
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
@@ -384,7 +387,7 @@ class RecordsChainOfCustody(models.Model):
             if not vals.get("custody_date"):
                 vals["custody_date"] = fields.Datetime.now()
 
-        return super().create(vals_list)
+        return super(RecordsChainOfCustody, self).create(vals_list)
 
     def write(self, vals):
         """Override write to log state changes"""
@@ -404,7 +407,7 @@ class RecordsChainOfCustody(models.Model):
                         )
                     )
 
-        return super().write(vals)
+        return super(RecordsChainOfCustody, self).write(vals)
 
     # ============================================================================
     # BUSINESS METHODS

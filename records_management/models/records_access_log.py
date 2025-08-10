@@ -238,6 +238,17 @@ class RecordsAccessLog(models.Model):
     )
 
     # ============================================================================
+    # RELATIONSHIP COMPATIBILITY FIELDS
+    # ============================================================================
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner", 
+        related="customer_id",
+        store=True,
+        help="Related partner field for One2many relationships compatibility"
+    )
+
+    # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
     activity_ids = fields.One2many(
@@ -299,14 +310,6 @@ class RecordsAccessLog(models.Model):
                 "retrieve": 50,
             }
             risk_score += risk_by_type.get(record.access_type, 10)
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner", 
-        related="customer_id",
-        store=True,
-        help="Related partner field for One2many relationships compatibility"
-    )
 
             # Risk by security level
             risk_by_security = {

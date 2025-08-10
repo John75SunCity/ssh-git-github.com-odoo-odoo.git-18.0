@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import uuid  # Move import to top level
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -14,6 +15,13 @@ class RecordsLocation(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Location Name", required=True, tracking=True, index=True)
+
+    # Partner Relationship
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
     code = fields.Char(string="Location Code", required=True, index=True, tracking=True)
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10, tracking=True)
@@ -69,12 +77,14 @@ class RecordsLocation(models.Model):
     )
 
     storage_capacity = fields.Integer(string="Storage Capacity (boxes)")
+    max_capacity = fields.Integer(string='Maximum Capacity', default=1000)
     current_utilization = fields.Integer(
         string="Current Utilization", compute="_compute_current_utilization"
     )
     available_spaces = fields.Integer(
         string="Available Spaces", compute="_compute_available_spaces"
     )
+    available_space = fields.Integer(string='Available Space', compute='_compute_available_space')
     utilization_percentage = fields.Float(
         string="Utilization %", compute="_compute_utilization_percentage"
     )
@@ -128,6 +138,7 @@ class RecordsLocation(models.Model):
     container_ids = fields.One2many(
         "records.container", "location_id", string="Records Containers"
     )
+    box_ids = fields.One2many('records.container', 'location_id', string='Stored Boxes')
     parent_location_id = fields.Many2one("records.location", string="Parent Location")
     child_location_ids = fields.One2many(
         "records.location", "parent_location_id", string="Child Locations"
@@ -159,16 +170,24 @@ class RecordsLocation(models.Model):
     )
 
     # ============================================================================
-    box_ids = fields.One2many('records.container', 'location_id', string='Stored Boxes')
     # COMPUTE METHODS
-    box_count = fields.Integer(string='Box Count', compute='_compute_box_count', store=True)
     # ============================================================================
-    available_space = fields.Integer(string='Available Space', compute='_compute_available_space')
-    max_capacity = fields.Integer(string='Maximum Capacity', default=1000)
     @api.depends("container_ids")
     def _compute_current_utilization(self):
         for record in self:
             record.current_utilization = len(record.container_ids)
+
+    @api.depends("box_ids")
+    def _compute_box_count(self):
+        """Compute the number of boxes at this location"""
+        for record in self:
+            record.box_count = len(record.box_ids)
+
+    @api.depends("max_capacity", "box_count")
+    def _compute_available_space(self):
+        """Compute available space based on maximum capacity and current box count"""
+        for record in self:
+            record.available_space = max(0, record.max_capacity - record.box_count)
 
     @api.depends("storage_capacity", "current_utilization")
     def _compute_available_spaces(self):
@@ -179,16 +198,6 @@ class RecordsLocation(models.Model):
                 )
             else:
                 record.available_spaces = 0
-
-    @api.depends("current_utilization", "storage_capacity")
-    def _compute_utilization_percentage(self):
-        for record in self:
-            if record.storage_capacity > 0:
-                record.utilization_percentage = (
-                    record.current_utilization / record.storage_capacity
-                ) * 100
-            else:
-                record.utilization_percentage = 0.0
 
     @api.depends("child_location_ids")
     def _compute_child_count(self):
@@ -216,9 +225,7 @@ class RecordsLocation(models.Model):
                 if seq_code:
                     vals["code"] = seq_code
                 else:
-                    # Generate a unique fallback using a temporary UUID
-                    import uuid
-
+                    # Generate a unique fallback using UUID (now imported at top)
                     vals["code"] = "LOC/%s" % uuid.uuid4().hex[:8]
         return super().create(vals_list)
 
@@ -236,12 +243,6 @@ class RecordsLocation(models.Model):
         }
 
     def action_location_report(self):
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
         """Generate location utilization and capacity report"""
         self.ensure_one()
         return {
