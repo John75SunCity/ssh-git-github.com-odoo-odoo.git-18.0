@@ -45,10 +45,11 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
-from datetime import timedelta
 import logging
+from datetime import timedelta
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -290,6 +291,12 @@ class MaintenanceEquipment(models.Model):
         tracking=True,
         help="Current operational status",
     )
+    is_operational = fields.Boolean(
+        string="Is Operational",
+        compute="_compute_is_operational",
+        store=True,
+        help="Whether the equipment is currently operational",
+    )
 
     # ============================================================================
     # RELATIONSHIP FIELDS
@@ -319,9 +326,6 @@ class MaintenanceEquipment(models.Model):
                     equipment.total_weight_processed / equipment.total_hours_operated
                 )
             else:
-            pass
-            pass
-            pass
                 equipment.average_throughput = 0.0
 
     @api.depends("naid_certification_expiry")
@@ -333,19 +337,10 @@ class MaintenanceEquipment(models.Model):
                 if equipment.naid_certification_expiry < today:
                     equipment.certification_status = "expired"
                 elif equipment.naid_certification_expiry <= today + timedelta(days=30):
-            pass
                     equipment.certification_status = "expiring"
                 else:
-            pass
-            pass
-            pass
-            pass
-            pass
                     equipment.certification_status = "valid"
             else:
-            pass
-            pass
-            pass
                 equipment.certification_status = "none"
 
     @api.depends("last_blade_change", "blade_change_interval", "total_hours_operated")
@@ -375,28 +370,14 @@ class MaintenanceEquipment(models.Model):
                             + timedelta(days=int(days_to_next_change))
                         )
                     else:
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                         equipment.next_blade_change = (
                             equipment.last_blade_change + timedelta(days=30)
                         )
                 else:
-            pass
-            pass
-            pass
-            pass
-            pass
                     equipment.next_blade_change = (
                         equipment.last_blade_change + timedelta(days=30)
                     )
             else:
-            pass
-            pass
-            pass
                 equipment.next_blade_change = False
 
     @api.depends("next_blade_change", "naid_certification_expiry", "last_lubrication")
@@ -426,6 +407,15 @@ class MaintenanceEquipment(models.Model):
 
             equipment.maintenance_due = maintenance_due
 
+    @api.depends("status")
+    def _compute_is_operational(self):
+        """Determine if equipment is operational"""
+        for record in self:
+            if record.status == "operational":
+                record.is_operational = True
+            else:
+                record.is_operational = False
+
     # ============================================================================
     # ODOO FRAMEWORK METHODS
     # ============================================================================
@@ -438,12 +428,12 @@ class MaintenanceEquipment(models.Model):
                 category_name = dict(self._fields["equipment_category"].selection).get(
                     record.equipment_category
                 )
-                name = _("%s (%s)"
+                name = _("%s (%s)", name, category_name)
             if record.security_level:
                 level_name = dict(self._fields["security_level"].selection).get(
                     record.security_level
                 )
-                name = _("%s - %s"
+                name = _("%s - %s", name, level_name)
             result.append((record.id, name))
         return result
 
@@ -461,10 +451,14 @@ class MaintenanceEquipment(models.Model):
             "view_mode": "form",
             "context": {
                 "default_equipment_id": self.id,
-                "default_name": f"NAID Certification Renewal - {self.name}",
+                "default_name": _("NAID Certification Renewal - %s", self.name),
                 "default_request_type": "corrective",
                 "default_priority": "2",
-                "default_description": f"NAID certification renewal required for {self.name}. Current certification expires: {self.naid_certification_expiry}",
+                "default_description": _(
+                    "NAID certification renewal required for %s. Current certification expires: %s",
+                    self.name,
+                    self.naid_certification_expiry,
+                ),
             },
             "target": "new",
         }
@@ -480,9 +474,9 @@ class MaintenanceEquipment(models.Model):
             "view_mode": "form",
             "context": {
                 "default_equipment_id": self.id,
-                "default_name": f"Maintenance - {self.name}",
+                "default_name": _("Maintenance - %s", self.name),
                 "default_request_type": "preventive",
-                "default_description": f"Scheduled maintenance for {self.name}",
+                "default_description": _("Scheduled maintenance for %s", self.name),
             },
             "target": "new",
         }
@@ -512,7 +506,9 @@ class MaintenanceEquipment(models.Model):
             }
         )
 
-        self.message_post(body=_("Action completed"))body=_("Blade change completed on %s", fields.Date.today()))
+        self.message_post(
+            body=_("Blade change completed on %s", fields.Date.today())
+        )
 
         return {
             "type": "ir.actions.client",
@@ -534,7 +530,9 @@ class MaintenanceEquipment(models.Model):
             }
         )
 
-        self.message_post(body=_("Action completed"))body=_("Lubrication completed on %s", fields.Date.today()))
+        self.message_post(
+            body=_("Lubrication completed on %s", fields.Date.today())
+        )
 
         return {
             "type": "ir.actions.client",
@@ -631,8 +629,12 @@ class MaintenanceEquipment(models.Model):
             }
         )
 
-        self.message_post(body=_("Action completed"))
-            body=_("Usage updated: +%.2f hours, +%.2f lbs processed", (hours_operated), weight_processed)
+        self.message_post(
+            body=_(
+                "Usage updated: +%.2f hours, +%.2f lbs processed",
+                hours_operated,
+                weight_processed,
+            )
         )
 
     def get_performance_summary(self):
@@ -660,7 +662,7 @@ class MaintenanceEquipment(models.Model):
         )
 
     @api.model
-    def check_maintenance_schedules(self):
+    def _check_maintenance_schedules(self):
         """Cron job to check maintenance schedules and create activities"""
         overdue_equipment = self.search(
             [
@@ -717,6 +719,19 @@ class MaintenanceEquipment(models.Model):
                 / len(equipment_data)
                 if equipment_data
                 else 0
+            ),
+            "equipment_by_category": {
+                category[0]: len(
+                    equipment_data.filtered(
+                        lambda e: e.equipment_category == category[0]
+                    )
+                )
+                for category in self._fields["equipment_category"].selection
+            },
+            "naid_certified_count": len(equipment_data.filtered("naid_certified")),
+        }
+
+        return analytics
             ),
             "equipment_by_category": {
                 category[0]: len(

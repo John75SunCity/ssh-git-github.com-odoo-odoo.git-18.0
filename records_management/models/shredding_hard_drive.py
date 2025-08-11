@@ -296,8 +296,9 @@ class ShreddingHardDrive(models.Model):
         help="Whether forensic analysis has been completed",
     
     forensic_analysis_notes = fields.Text(
-        string="Forensic Analysis Notes", help="Detailed notes from forensic analysis"
-    
+        string="Forensic Analysis Notes", 
+        help="Detailed notes from forensic analysis"
+    )
 
     # ============================================================================
     # CERTIFICATE AND DOCUMENTATION
@@ -660,3 +661,12 @@ class ShreddingHardDrive(models.Model):
 
         return self.create(drive_data)
         return self.create(drive_data)
+
+    @api.depends("project_id")
+    def _compute_is_pickup_task(self):
+        """Determine if task is a pickup task"""
+        for record in self:
+            if record.project_id and record.project_id.is_pickup_project:
+                record.is_pickup_task = True
+            else:
+                record.is_pickup_task = False

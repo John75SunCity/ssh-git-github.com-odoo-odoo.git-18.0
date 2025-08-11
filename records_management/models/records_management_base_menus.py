@@ -186,14 +186,13 @@ class RecordsManagementBaseMenus(models.Model):
         [
             ("draft", "Draft"),
             ("confirmed", "Confirmed"),
-            ("active", "Active"),
-            ("inactive", "Inactive"),
-            ("archived", "Archived"),
+            ("in_transit", "In Transit"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
         ],
         string="Status",
         default="draft",
         tracking=True,
-        help="Current status of the menu configuration",
     )
     published = fields.Boolean(
         string="Published",
@@ -281,11 +280,8 @@ class RecordsManagementBaseMenus(models.Model):
         """Compute full hierarchical menu name"""
         for record in self:
             if record.parent_menu_id:
-                record.full_name = _("%s / %s"
+                record.full_name = _("%s / %s", record.parent_menu_id.full_name, record.name)
             else:
-            pass
-            pass
-            pass
                 record.full_name = record.name
 
     full_name = fields.Char(

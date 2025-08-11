@@ -338,7 +338,7 @@ class UnlockServiceHistory(models.Model):
                     record.service_type
                 ]
                 customer = record.customer_id.name if record.customer_id else "Unknown"
-                record.display_name = _("%s - %s (%s)", record.name, service_type, customer)
+                record.display_name = f"{record.name} - {service_type} ({customer})"
             else:
                 record.display_name = record.name or _("New Service")
 
@@ -463,7 +463,7 @@ class UnlockServiceHistory(models.Model):
             }
         )
 
-        self.message_post(body=_("Invoice created: %s", invoice.name))
+        self.message_post(body=_("Invoice created: %s") % invoice.name)
 
         return {
             "type": "ir.actions.act_window",
@@ -536,7 +536,7 @@ class UnlockServiceHistory(models.Model):
             try:
                 self.action_create_invoice()
             except Exception as e:
-                self.message_post(body=_("Auto-billing failed: %s", str(e)))
+                self.message_post(body=_("Auto-billing failed: %s") % str(e))
 
     def _handle_service_cancellation(self):
         """Handle tasks when service is cancelled"""
@@ -597,6 +597,17 @@ class UnlockServiceHistory(models.Model):
             "cost": self.cost,
             "state": self.state,
             "billing_status": self.billing_status,
+        }
+
+    def get_history_summary(self):
+        """Get summary of unlock service history"""
+        self.ensure_one()
+        return {
+            "service_name": self.name,
+            "customer": self.partner_id.name,
+            "date": self.service_date,
+            "technician": self.technician_id.name,
+            "status": self.state,
         }
 
     # ============================================================================
@@ -668,7 +679,7 @@ class UnlockServiceRescheduleWizard(models.TransientModel):
 
         # Post message with reason
         self.service_id.message_post(
-            body=_("Service rescheduled to %s. Reason: %s", self.new_date.strftime("%Y-%m-%d %H:%M"), self.reason)
+            body=_("Service rescheduled to %(date)s. Reason: %(reason)s", date=self.new_date.strftime("%Y-%m-%d %H:%M"), reason=self.reason)
         )
 
         # Send customer notification if requested

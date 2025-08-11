@@ -49,22 +49,28 @@ class TransitoryFieldConfig(models.Model):
         tracking=True,
         index=True,
         help="Unique configuration name",
-    
+    )
+
     code = fields.Char(
-        string="Configuration Code", index=True, help="Configuration code for reference"
-    
+        string="Configuration Code",
+        index=True,
+        help="Configuration code for reference",
+    )
+
     description = fields.Text(
         string="Description", help="Detailed description of field configuration"
-    
+    )
+
     sequence = fields.Integer(
         string="Sequence", default=10, help="Display order sequence"
-    
+    )
+
     active = fields.Boolean(
         string="Active",
         default=True,
         tracking=True,
         help="Active status of configuration",
-    
+    )
 
     # ============================================================================
     # FRAMEWORK FIELDS
@@ -74,14 +80,15 @@ class TransitoryFieldConfig(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+    )
+
     user_id = fields.Many2one(
         "res.users",
         string="Configuration Manager",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this configuration",
-    
+    )
 
     # ============================================================================
     # STATE MANAGEMENT
@@ -98,7 +105,7 @@ class TransitoryFieldConfig(models.Model):
         default="draft",
         tracking=True,
         help="Current configuration status",
-    
+    )
 
     # ============================================================================
     # FIELD CONFIGURATION
@@ -108,13 +115,15 @@ class TransitoryFieldConfig(models.Model):
         required=True,
         index=True,
         help="Target model for field configuration",
-    
+    )
+
     field_name = fields.Char(
         string="Field Name",
         required=True,
         index=True,
         help="Name of the field to be configured",
-    
+    )
+
     field_type = fields.Selection(
         [
             ("char", "Text"),
@@ -133,16 +142,20 @@ class TransitoryFieldConfig(models.Model):
         string="Field Type",
         required=True,
         help="Type of field to be created",
-    
+    )
+
     field_label = fields.Char(
         string="Field Label", required=True, help="Display label for the field"
-    
+    )
+
     field_help = fields.Text(
         string="Field Help Text", help="Help text to be displayed for the field"
-    
+    )
+
     field_domain = fields.Text(
         string="Field Domain", help="Domain filter for the field"
-    
+    )
+
     field_context = fields.Text(string="Field Context", help="Context for the field")
 
     # ============================================================================
@@ -150,41 +163,50 @@ class TransitoryFieldConfig(models.Model):
     # ============================================================================
     required = fields.Boolean(
         string="Required", default=False, help="Whether field is required"
-    
+    )
+
     readonly = fields.Boolean(
         string="Read Only", default=False, help="Whether field is read-only"
-    
+    )
+
     tracking = fields.Boolean(
         string="Enable Tracking", default=False, help="Enable change tracking for field"
-    
+    )
+
     index = fields.Boolean(
         string="Database Index", default=False, help="Create database index for field"
-    
+    )
+
     unique = fields.Boolean(
         string="Unique Constraint",
         default=False,
         help="Enforce unique values for field",
-    
+    )
 
     # Field validation rules
     min_length = fields.Integer(
         string="Minimum Length", help="Minimum length for text fields"
-    
+    )
+
     max_length = fields.Integer(
         string="Maximum Length", help="Maximum length for text fields"
-    
+    )
+
     min_value = fields.Float(
         string="Minimum Value", help="Minimum value for numeric fields"
-    
+    )
+
     max_value = fields.Float(
         string="Maximum Value", help="Maximum value for numeric fields"
-    
+    )
+
     regex_pattern = fields.Char(
         string="Regex Pattern", help="Regular expression pattern for validation"
-    
+    )
+
     validation_message = fields.Text(
         string="Validation Message", help="Custom validation message"
-    
+    )
 
     # ============================================================================
     # DISPLAY & UI CONFIGURATION
@@ -206,33 +228,39 @@ class TransitoryFieldConfig(models.Model):
         string="Widget",
         default="default",
         help="UI widget for field display",
-    
+    )
+
     invisible = fields.Boolean(
         string="Invisible", default=False, help="Whether field is invisible by default"
-    
+    )
+
     groups = fields.Char(
         string="Security Groups", help="Security groups that can access this field"
-    
+    )
+
     states = fields.Text(
         string="States Configuration", help="States-based field configuration"
-    
+    )
+
     attrs = fields.Text(
         string="Attributes Configuration", help="Dynamic attributes configuration"
-    
+    )
 
     # ============================================================================
     # SELECTION & RELATION OPTIONS
     # ============================================================================
     selection_options = fields.Text(
         string="Selection Options", help="Options for selection fields (JSON format)"
-    
+    )
+
     relation_model = fields.Char(
         string="Relation Model", help="Related model for relational fields"
-    
+    )
+
     relation_field = fields.Char(string="Relation Field", help="Field in related model")
     inverse_field = fields.Char(
         string="Inverse Field", help="Inverse field for relationships"
-    
+    )
 
     # ============================================================================
     # DEPLOYMENT & VERSIONING
@@ -248,38 +276,45 @@ class TransitoryFieldConfig(models.Model):
         default="pending",
         tracking=True,
         help="Current deployment status",
-    
+    )
+
     version = fields.Char(string="Version", default="1.0", help="Configuration version")
     previous_version_id = fields.Many2one(
         "transitory.field.config",
         string="Previous Version",
         help="Previous version of this configuration",
-    
+    )
+
     deployment_date = fields.Datetime(
         string="Deployment Date", help="When configuration was deployed"
-    
+    )
+
     rollback_date = fields.Datetime(
         string="Rollback Date", help="When configuration was rolled back"
-    
+    )
 
     # ============================================================================
     # IMPACT ANALYSIS
     # ============================================================================
     affected_views = fields.Text(
         string="Affected Views", help="Views affected by this field configuration"
-    
+    )
+
     affected_reports = fields.Text(
         string="Affected Reports", help="Reports affected by this field configuration"
-    
+    )
+
     migration_script = fields.Text(
         string="Migration Script", help="SQL script for field deployment"
-    
+    )
+
     rollback_script = fields.Text(
         string="Rollback Script", help="SQL script for rollback"
-    
+    )
+
     impact_assessment = fields.Text(
         string="Impact Assessment", help="Assessment of system impact"
-    
+    )
 
     # ============================================================================
     # RELATIONSHIP FIELDS
@@ -291,18 +326,20 @@ class TransitoryFieldConfig(models.Model):
         "dependency_id",
         string="Dependencies",
         help="Configurations this depends on",
-    
+    )
+
     child_config_ids = fields.One2many(
         "transitory.field.config",
         "parent_config_id",
         string="Child Configurations",
         help="Child configurations",
-    
+    )
+
     parent_config_id = fields.Many2one(
         "transitory.field.config",
         string="Parent Configuration",
         help="Parent configuration",
-    
+    )
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -312,19 +349,21 @@ class TransitoryFieldConfig(models.Model):
         compute="_compute_is_deployed",
         store=True,
         help="Whether configuration is currently deployed",
-    
+    )
+
     config_dependency_count = fields.Integer(
         string="Configuration Dependencies",
         compute="_compute_config_dependency_count",
         store=True,
         help="Number of dependencies",
-    
+    )
+
     config_child_count = fields.Integer(
         string="Child Count",
         compute="_compute_config_child_count",
         store=True,
         help="Number of child configurations",
-    
+    )
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -334,19 +373,21 @@ class TransitoryFieldConfig(models.Model):
         "res_id",
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)],
-    
+    )
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
-    
+    )
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)],
-    
+    )
 
     # ============================================================================
     # COMPUTE METHODS
@@ -357,7 +398,7 @@ class TransitoryFieldConfig(models.Model):
         for record in self:
             record.is_deployed = (
                 record.deployment_status == "deployed" and record.deployment_date
-            
+            )
 
     @api.depends("dependency_ids")
     def _compute_config_dependency_count(self):
@@ -382,7 +423,7 @@ class TransitoryFieldConfig(models.Model):
                 vals["code"] = (
                     self.env["ir.sequence"].next_by_code("transitory.field.config")
                     or "TFC/"
-                
+                )
         return super().create(vals_list)
 
     # ============================================================================
@@ -409,7 +450,7 @@ class TransitoryFieldConfig(models.Model):
                     "deployment_status": "deployed",
                     "deployment_date": fields.Datetime.now(),
                 }
-            
+            )
             self.message_post(body=_("Field configuration deployed successfully"))
         else:
             pass
@@ -429,7 +470,7 @@ class TransitoryFieldConfig(models.Model):
                     "deployment_status": "rolled_back",
                     "rollback_date": fields.Datetime.now(),
                 }
-            
+            )
             self.message_post(body=_("Field configuration rolled back successfully"))
 
     def action_duplicate(self):
@@ -526,18 +567,18 @@ class TransitoryFieldConfig(models.Model):
         ):
             raise ValidationError(
                 _("Relation model is required for relational fields.")
-            
+            )
 
         if self.field_type == "selection" and not self.selection_options:
             raise ValidationError(
                 _("Selection options are required for selection fields.")
-            
+            )
 
         # Validate field name format
         if not self.field_name.replace("_", "").isalnum():
             raise ValidationError(
                 _("Field name must contain only letters, numbers, and underscores.")
-            
+            )
 
         # Check for reserved field names
         reserved_names = [
@@ -551,7 +592,7 @@ class TransitoryFieldConfig(models.Model):
         if self.field_name in reserved_names:
             raise ValidationError(
                 _("Field name '%s' is reserved and cannot be used.", self.field_name)
-            
+            )
 
     def _execute_deployment(self):
         """Execute field deployment"""
@@ -663,7 +704,7 @@ ALTER TABLE {table_name} DROP COLUMN IF EXISTS {self.field_name};
         if self.unique:
             constraints.append(
                 f"ALTER TABLE {table_name} ADD CONSTRAINT {table_name}_{self.field_name}_unique UNIQUE ({self.field_name});"
-            
+            )
 
         if self.min_value is not None or self.max_value is not None:
             check_conditions = []
@@ -676,7 +717,7 @@ ALTER TABLE {table_name} DROP COLUMN IF EXISTS {self.field_name};
                 check_constraint = " AND ".join(check_conditions)
                 constraints.append(
                     f"ALTER TABLE {table_name} ADD CONSTRAINT {table_name}_{self.field_name}_check CHECK ({check_constraint});"
-                
+                )
 
         return "\n".join(constraints)
 
@@ -749,7 +790,7 @@ ALTER TABLE {table_name} DROP COLUMN IF EXISTS {self.field_name};
             ):
                 raise ValidationError(
                     _("Minimum length cannot be greater than maximum length.")
-                
+                )
 
     @api.constrains("min_value", "max_value")
     def _check_value_constraints(self):
@@ -762,7 +803,7 @@ ALTER TABLE {table_name} DROP COLUMN IF EXISTS {self.field_name};
             ):
                 raise ValidationError(
                     _("Minimum value cannot be greater than maximum value.")
-                
+                )
 
     @api.constrains("model_name", "field_name")
     def _check_field_uniqueness(self):
@@ -776,13 +817,13 @@ ALTER TABLE {table_name} DROP COLUMN IF EXISTS {self.field_name};
                         ("id", "!=", record.id),
                         ("state", "!=", "archived"),
                     ]
-                
+                )
                 if existing:
                     raise ValidationError(
                         _(
                             "Active field configuration already exists for this model and field."
-                        
-                    
+                        )
+                    )
 
     @api.constrains("field_name")
     def _check_field_name_format(self):
@@ -808,8 +849,8 @@ ALTER TABLE {table_name} DROP COLUMN IF EXISTS {self.field_name};
                         raise ValidationError(
                             _(
                                 "Field name must contain only letters, numbers, and underscores."
-                            
-                        
+                            )
+                        )
 
     @api.constrains("relation_model", "field_type")
     def _check_relation_model(self):
@@ -820,7 +861,7 @@ ALTER TABLE {table_name} DROP COLUMN IF EXISTS {self.field_name};
                 if not record.relation_model:
                     raise ValidationError(
                         _("Relation model is required for relational fields.")
-                    
+                    )
 
     # ============================================================================
     # UTILITY METHODS
@@ -849,7 +890,7 @@ ALTER TABLE {table_name} DROP COLUMN IF EXISTS {self.field_name};
                 ("state", "=", "confirmed"),
                 ("deployment_status", "=", "pending"),
             ]
-        
+        )
 
     @api.model
     def get_failed_deployments(self):
@@ -858,7 +899,7 @@ ALTER TABLE {table_name} DROP COLUMN IF EXISTS {self.field_name};
             [
                 ("deployment_status", "=", "failed"),
             ]
-        
+        )
 
     @api.model
     def cleanup_old_versions(self, days=90):
@@ -869,7 +910,7 @@ ALTER TABLE {table_name} DROP COLUMN IF EXISTS {self.field_name};
                 ("state", "=", "archived"),
                 ("write_date", "<", cutoff_date),
             ]
-        
+        )
         return old_configs.unlink()
 
 
@@ -887,7 +928,8 @@ class TransitoryFieldAuditLog(models.Model):
         required=True,
         ondelete="cascade",
         help="Related field configuration",
-    
+    )
+
     action = fields.Selection(
         [
             ("created", "Created"),
@@ -900,32 +942,37 @@ class TransitoryFieldAuditLog(models.Model):
         string="Action",
         required=True,
         help="Action performed",
-    
+    )
+
     user_id = fields.Many2one(
         "res.users",
         string="User",
         required=True,
         default=lambda self: self.env.user,
         help="User who performed the action",
-    
+    )
+
     date = fields.Datetime(
         string="Date",
         required=True,
         default=fields.Datetime.now,
         help="When action was performed",
-    
+    )
+
     model_name = fields.Char(string="Model Name", help="Target model name")
     field_name = fields.Char(string="Field Name", help="Target field name")
     error_message = fields.Text(
         string="Error Message", help="Error message if action failed"
-    
+    )
+
     details = fields.Text(string="Details", help="Additional details about the action")
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
         store=True,
         help="Display name for audit log entry",
-    
+    )
+
     partner_id = fields.Many2one("res.partner", string="Customer", required=True)
     show_box_number = fields.Boolean(string='Show Box Number', default=True)
 

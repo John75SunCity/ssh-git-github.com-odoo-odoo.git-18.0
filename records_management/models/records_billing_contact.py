@@ -83,8 +83,11 @@ class RecordsBillingContact(models.Model):
         help="User responsible for this contact",
     
     active = fields.Boolean(
-        string="Active", default=True, help="Whether this contact is active"
-    
+        string="Active", 
+        default=True, 
+        help="Whether this contact is active"
+    )
+
     sequence = fields.Integer(
         string="Sequence", default=10, help="Order of contact in listings"
     

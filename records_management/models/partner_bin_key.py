@@ -129,6 +129,10 @@ class PartnerBinKey(models.Model):
         compute="_compute_unlock_service_count",
         store=True,
     )
+    density = fields.Float(string="Density", compute="_compute_density")
+    total_items = fields.Integer(
+        string="Total Items", compute="_compute_total_items", store=True
+    )
 
     # ============================================================================
     # REFERENCE FIELDS
@@ -152,6 +156,15 @@ class PartnerBinKey(models.Model):
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
+    # SEQUENCE FIELDS
+    # ============================================================================
+    sequence = fields.Integer(
+        string="Sequence", 
+        default=10, 
+        help="Order sequence for sorting"
+    )
+
+    # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
     @api.depends("active_bin_key_ids")
@@ -165,6 +178,31 @@ class PartnerBinKey(models.Model):
         """Compute count of unlock services"""
         for record in self:
             record.unlock_service_count = len(record.unlock_service_history_ids)
+
+    @api.depends("weight", "weight_unit", "total_volume")
+    def _compute_density(self):
+        """Compute density of the bale"""
+        for record in self:
+            if record.weight and record.total_volume:
+                # Convert weight to kg if needed
+                weight_kg = record.weight
+                if record.weight_unit == "lb":
+                    weight_kg = record.weight * 0.453592
+                elif record.weight_unit == "ton":
+                    weight_kg = record.weight * 1000
+
+                record.density = weight_kg / record.total_volume
+            else:
+                record.density = 0.0
+
+    @api.depends("inventory_item_ids")
+    def _compute_total_items(self):
+        """Compute total number of items in inventory"""
+        for record in self:
+            if record.inventory_item_ids:
+                record.total_items = len(record.inventory_item_ids)
+            else:
+                record.total_items = 0
 
     # ============================================================================
     # ACTION METHODS
@@ -272,10 +310,10 @@ class PartnerBinKey(models.Model):
         for record in self:
             name = record.name or _("New Key")
             if record.partner_id:
-                name += _(" - %s"
+                name += _(" - %s", record.partner_id.name)
             if record.state:
                 state_dict = dict(record._fields["state"].selection)
-                name += _(" (%s)"
+                name += _(" (%s)", state_dict.get(record.state, ""))
             result.append((record.id, name))
         return result
 

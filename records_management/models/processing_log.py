@@ -295,6 +295,12 @@ class ProcessingLog(models.Model):
         store=True,
         help="Display name for log entry",
     )
+    is_pickup_task = fields.Boolean(
+        string="Is Pickup Task",
+        compute="_compute_is_pickup_task",
+        store=True,
+        help="Whether the related task is a pickup task",
+    )
 
     # ============================================================================
     # COMPUTE METHODS
@@ -315,9 +321,8 @@ class ProcessingLog(models.Model):
                                 f"{log.res_model}({log.res_id}): {log.res_name}"
                             )
                         else:
-            pass
-            pass
-            pass
+                            log.res_name = _("Record Deleted")
+                            log.reference = f"{log.res_model}({log.res_id}): {log.res_name}"
             pass
             pass
                             log.res_name = _("Deleted %s(%s)"
@@ -365,6 +370,15 @@ class ProcessingLog(models.Model):
             pass
             pass
                 log.display_name = log.name or "Processing Log"
+
+    @api.depends("project_id")
+    def _compute_is_pickup_task(self):
+        """Determine if task is a pickup task"""
+        for record in self:
+            if record.project_id and record.project_id.is_pickup_project:
+                record.is_pickup_task = True
+            else:
+                record.is_pickup_task = False
 
     # ============================================================================
     # ORM OVERRIDES

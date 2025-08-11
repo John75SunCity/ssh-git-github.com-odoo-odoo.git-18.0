@@ -335,9 +335,7 @@ class DocumentRetrievalItem(models.Model):
             if item.work_order_id and item.work_order_id.currency_id:
                 item.currency_id = item.work_order_id.currency_id
             else:
-            pass
-            pass
-            pass
+                item.currency_id = False
                 item.currency_id = (
                     item.company_id.currency_id
                     if item.company_id and item.company_id.currency_id
@@ -369,21 +367,11 @@ class DocumentRetrievalItem(models.Model):
         """Calculate retrieval cost using customer rates (dynamic pricing)"""
         for item in self:
             retrieval_rate = 0.0
-            partner = item.partner_id or (
-                item.work_order_id.partner_id if item.work_order_id else False
-            )
-
-            if partner:
-                # Check for negotiated rates first
+            if item.work_order_id and item.work_order_id.customer_id:
                 negotiated_rate = self.env["customer.negotiated.rates"].search(
                     [
-                        ("partner_id", "=", partner.id),
-                        ("rate_type", "=", "retrieval"),
-                        ("state", "=", "active"),
+                        ("partner_id", "=", item.work_order_id.customer_id.id),
                         ("active", "=", True),
-                        "|",
-                        ("expiry_date", "=", False),
-                        ("expiry_date", ">=", fields.Date.today()),
                     ],
                     limit=1,
                 )
@@ -394,27 +382,24 @@ class DocumentRetrievalItem(models.Model):
                         "managed_retrieval_rate"
                     )
                 else:
-            pass
-            pass
-            pass
-            pass
-            pass
-                    # Fall back to base rates
-                    base_rate = self.env["base.rates"].search(
-                        [
-                            ("service_type", "=", "retrieval"),
-                            ("state", "=", "confirmed"),
-                            ("active", "=", True),
-                            "|",
-                            ("expiry_date", "=", False),
-                            ("expiry_date", ">=", fields.Date.today()),
-                        ],
-                        order="effective_date desc",
-                        limit=1,
-                    )
+                    retrieval_rate = 0.0
 
-                    if base_rate:
-                        retrieval_rate = base_rate.managed_retrieval_rate or 3.50
+            # Fall back to base rates
+            base_rate = self.env["base.rates"].search(
+                [
+                    ("service_type", "=", "retrieval"),
+                    ("state", "=", "confirmed"),
+                    ("active", "=", True),
+                    "|",
+                    ("expiry_date", "=", False),
+                    ("expiry_date", ">=", fields.Date.today()),
+                ],
+                order="effective_date desc",
+                limit=1,
+            )
+
+            if base_rate:
+                retrieval_rate = base_rate.managed_retrieval_rate or 3.50
 
             # Use company default rate if no rates configured
             if not retrieval_rate:
@@ -457,11 +442,11 @@ class DocumentRetrievalItem(models.Model):
                         "container_access_rate"
                     )
                 else:
-            pass
-            pass
-            pass
-            pass
-            pass
+                    pass
+                    pass
+                    pass
+                    pass
+                    pass
                     # Fall back to base rates
                     base_rate = self.env["base.rates"].search(
                         [
@@ -988,3 +973,14 @@ class DocumentSearchAttempt(models.Model):
         string="Customer",
         readonly=True,
     )
+
+    def get_history_summary(self):
+        """Get summary of unlock service history"""
+        self.ensure_one()
+        return {
+            "service_name": self.name,
+            "customer": self.partner_id.name,
+            "date": self.service_date,
+            "technician": self.technician_id.name,
+            "status": self.state,
+        }

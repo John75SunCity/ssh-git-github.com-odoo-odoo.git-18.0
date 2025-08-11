@@ -40,11 +40,10 @@ class RecordsDeletionRequest(models.Model):
         for record in self:
             if record.date:
                 record.display_name = (
-                    _("%s (%s) - %s"
+                    _("%s (%s) - %s", record.name, record.state, record.date.strftime("%Y-%m-%d"))
                 )
             else:
-            pass
-                record.display_name = _("%s - %s"
+                record.display_name = _("%s - %s", record.name, record.state)
 
     @api.constrains("date")
     def _check_date(self):
