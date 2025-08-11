@@ -206,8 +206,6 @@ class ShreddingInventoryBatch(models.Model):
                     record.picked_count / record.item_count
                 ) * 100
             else:
-            pass
-            pass
                 record.completion_percentage = 0.0
 
     # ============================================================================
@@ -432,17 +430,10 @@ class ShreddingPicklistItem(models.Model):
         """Compute display name with context information"""
         for record in self:
             if record.container_id:
-                record.display_name = (
-                    _("%s (Container: %s)"
-                )
+                record.display_name = _("%s (Container: %s)", record.name, record.container_id.name)
             elif record.document_id:
-            pass
-                record.display_name = (
-                    _("%s (Document: %s)"
-                )
+                record.display_name = _("%s (Document: %s)", record.name, record.document_id.name)
             else:
-            pass
-            pass
                 record.display_name = record.name or _("New Item")
 
     # ============================================================================

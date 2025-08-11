@@ -346,7 +346,8 @@ class PartnerBinKey(models.Model):
         """Validate charge amount"""
         for record in self:
             if record.charge_amount and record.charge_amount < 0:
-                msg = _("Charge amount cannot be negative for record %s (ID: %s)", ()
+                msg = _(
+                    "Charge amount cannot be negative for record %s (ID: %s)",
                     record.name or "Unknown",
                     record.id,
                 )

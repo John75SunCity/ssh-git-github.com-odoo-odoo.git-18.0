@@ -304,12 +304,8 @@ class RecordsManagementBaseMenus(models.Model):
             if record.visibility == "public":
                 record.access_level = "public"
             elif record.group_ids or record.department_ids:
-            pass
                 record.access_level = "restricted"
             else:
-            pass
-            pass
-            pass
                 record.access_level = "standard"
 
     access_level = fields.Selection(
@@ -509,7 +505,7 @@ class RecordsManagementBaseMenus(models.Model):
         """Duplicate the menu with new name"""
         self.ensure_one()
 
-        new_name = _("%s (Copy)"
+        new_name = _("%s (Copy)", self.name)
         duplicate = self.copy(
             {
                 "name": new_name,
@@ -581,9 +577,6 @@ class RecordsManagementBaseMenus(models.Model):
             if record.parent_menu_id:
                 name_parts.append(f"↳ {record.name}")
             else:
-            pass
-            pass
-            pass
                 name_parts.append(record.name)
 
             if record.menu_type != "main":

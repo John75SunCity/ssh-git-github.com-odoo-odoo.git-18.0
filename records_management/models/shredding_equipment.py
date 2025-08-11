@@ -732,16 +732,3 @@ class MaintenanceEquipment(models.Model):
         }
 
         return analytics
-            ),
-            "equipment_by_category": {
-                category[0]: len(
-                    equipment_data.filtered(
-                        lambda e: e.equipment_category == category[0]
-                    )
-                )
-                for category in self._fields["equipment_category"].selection
-            },
-            "naid_certified_count": len(equipment_data.filtered("naid_certified")),
-        }
-
-        return analytics

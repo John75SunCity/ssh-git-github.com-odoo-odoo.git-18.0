@@ -459,13 +459,10 @@ class PaperBale(models.Model):
                 if record.weight_unit == "lb":
                     weight_kg = record.weight * 0.453592
                 elif record.weight_unit == "ton":
-            pass
                     weight_kg = record.weight * 1000
                 
                 record.density = weight_kg / record.total_volume
             else:
-            pass
-            pass
                 record.density = 0.0
 
     @api.depends("weight", "paper_type")
@@ -478,13 +475,10 @@ class PaperBale(models.Model):
                 if record.weight_unit == "lb":
                     weight_tons = record.weight / 2204.62  # pounds to metric tons
                 elif record.weight_unit == "kg":
-            pass
                     weight_tons = record.weight / 1000
                 
                 record.trees_saved = weight_tons * 17
             else:
-            pass
-            pass
                 record.trees_saved = 0.0
 
     def _compute_document_count(self):
@@ -744,7 +738,7 @@ class PaperBale(models.Model):
             name = record.name
             if record.paper_type:
                 paper_type_label = dict(record._fields["paper_type"].selection)[record.paper_type]
-                name = _("%s (%s)"
+                name = _("%s (%s)", record.name, paper_type_label)
             result.append((record.id, name))
         return result
 

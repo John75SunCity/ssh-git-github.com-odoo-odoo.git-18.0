@@ -679,7 +679,7 @@ class UnlockServiceRescheduleWizard(models.TransientModel):
 
         # Post message with reason
         self.service_id.message_post(
-            body=_("Service rescheduled to %(date)s. Reason: %(reason)s", date=self.new_date.strftime("%Y-%m-%d %H:%M"), reason=self.reason)
+            body=_("Service rescheduled to {date}. Reason: {reason}").format(date=self.new_date.strftime("%Y-%m-%d %H:%M"), reason=self.reason)
         )
 
         # Send customer notification if requested
@@ -699,19 +699,17 @@ class UnlockServiceRescheduleWizard(models.TransientModel):
         for record in self:
             if record.new_date <= fields.Datetime.now():
                 raise ValidationError(_("New service date must be in the future"))
-            }
-        
 
         # Post message with reason
         self.service_id.message_post(
-            body=_("Service rescheduled to %s. Reason: %s", (self.new_date.strftime("%Y-%m-%d %H:%M")), self.reason)
-        
+            body=_("Service rescheduled to %s. Reason: %s", self.new_date.strftime("%Y-%m-%d %H:%M"), self.reason)
+        )
 
         # Send customer notification if requested
         if self.notify_customer and self.service_id.customer_id:
             template = self.env.ref(
                 "records_management.unlock_service_reschedule_email_template"
-            
+            )
             if template:
                 template.send_mail(self.service_id.id, force_send=True)
 
