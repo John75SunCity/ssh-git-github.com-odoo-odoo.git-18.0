@@ -83,6 +83,8 @@
         "data/user_setup.xml",
         "data/model_records.xml",
         "data/advanced_billing_demo.xml",
+        "data/temp_inventory_sequence_data.xml",
+        "data/temp_inventory_configurator_data.xml",
         # Demo and test data
         "data/field_label_customization_demo_data.xml",
         "data/intelligent_search_demo_data.xml",
@@ -114,6 +116,7 @@
         "views/portal_feedback_views.xml",
         "views/portal_feedback_menus.xml",
         "views/customer_inventory_views.xml",
+        "views/temp_inventory_views.xml",
         "views/bin_key_management_views.xml",
         "views/shred_bin_views.xml",
         "views/barcode_views.xml",

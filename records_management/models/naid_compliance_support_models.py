@@ -4,10 +4,10 @@ NAID Compliance Support Models
 
 Supporting models for the NAID Compliance Management System including alerts,
 checklists, audit history, risk assessment, and action plans.
-"""
 
-import logging
-from odoo import _, api, fields, models
+This file is deprecated and its models have been moved to their respective files.
+It can be safely removed.
+"""
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)

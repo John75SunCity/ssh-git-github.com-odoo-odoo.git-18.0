@@ -85,3 +85,25 @@ access_document_search_attempt_user,access_document_search_attempt_user,model_do
 access_document_search_attempt_manager,access_document_search_attempt_manager,model_document_search_attempt,records_management.group_records_manager,1,1,1,1
 # Portal users can read search attempts related to their documents
 access_document_search_attempt_portal,access_document_search_attempt_portal,model_document_search_attempt,base.group_portal,1,0,0,0
+
+# ============================================================================
+# NAID COMPLIANCE AND AUDIT MODELS
+# ============================================================================
+access_naid_compliance_checklist_user,access_naid_compliance_checklist_user,model_naid_compliance_checklist,records_management.group_records_user,1,1,1,0
+access_naid_compliance_checklist_manager,access_naid_compliance_checklist_manager,model_naid_compliance_checklist,records_management.group_records_manager,1,1,1,1
+access_naid_compliance_checklist_item_user,access_naid_compliance_checklist_item_user,model_naid_compliance_checklist_item,records_management.group_records_user,1,1,1,0
+access_naid_compliance_checklist_item_manager,access_naid_compliance_checklist_item_manager,model_naid_compliance_checklist_item,records_management.group_records_manager,1,1,1,1
+access_naid_compliance_action_plan_user,access_naid_compliance_action_plan_user,model_naid_compliance_action_plan,records_management.group_records_user,1,1,1,0
+access_naid_compliance_action_plan_manager,access_naid_compliance_action_plan_manager,model_naid_compliance_action_plan,records_management.group_records_manager,1,1,1,1
+access_naid_compliance_alert_user,access_naid_compliance_alert_user,model_naid_compliance_alert,records_management.group_records_user,1,1,1,0
+access_naid_compliance_alert_manager,access_naid_compliance_alert_manager,model_naid_compliance_alert,records_management.group_records_manager,1,1,1,1
+
+# ============================================================================
+# TEMPORARY INVENTORY MODELS
+# ============================================================================
+access_temp_inventory_user,access_temp_inventory_user,model_temp_inventory,records_management.group_records_user,1,1,1,0
+access_temp_inventory_manager,access_temp_inventory_manager,model_temp_inventory,records_management.group_records_manager,1,1,1,1
+access_temp_inventory_movement_user,access_temp_inventory_movement_user,model_temp_inventory_movement,records_management.group_records_user,1,1,1,0
+access_temp_inventory_movement_manager,access_temp_inventory_movement_manager,model_temp_inventory_movement,records_management.group_records_manager,1,1,1,1
+access_temp_inventory_audit_user,access_temp_inventory_audit_user,model_temp_inventory_audit,records_management.group_records_user,1,0,0,0
+access_temp_inventory_audit_manager,access_temp_inventory_audit_manager,model_temp_inventory_audit,records_management.group_records_manager,1,1,1,1

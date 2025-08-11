@@ -88,6 +88,11 @@ class RecordsContainer(models.Model):
     location_id = fields.Many2one(
         "records.location", string="Storage Location", tracking=True
     )
+    temp_inventory_id = fields.Many2one(
+        "temp.inventory",
+        string="Temporary Inventory",
+        help="Temporary inventory location for this container",
+    )
 
     # Barcode Product Relationship (for barcoded containers)
     barcode_product_id = fields.Many2one(

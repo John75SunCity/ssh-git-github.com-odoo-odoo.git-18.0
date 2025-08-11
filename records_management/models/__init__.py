@@ -136,6 +136,9 @@ from . import naid_custody_event
 from . import naid_audit_log
 from . import naid_certificate
 from . import naid_compliance_checklist
+from . import naid_compliance_checklist_item
+from . import naid_compliance_action_plan
+from . import naid_compliance_alert
 from . import naid_destruction_record
 from . import naid_performance_history
 

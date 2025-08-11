@@ -124,6 +124,11 @@ class RecordsDocument(models.Model):
         string="Location",
         help="Physical location of the document",
     )
+    temp_inventory_id = fields.Many2one(
+        "temp.inventory",
+        string="Temporary Inventory",
+        help="Temporary inventory location for this document",
+    )
     lot_id = fields.Many2one(
         "stock.lot",
         string="Stock Lot",
