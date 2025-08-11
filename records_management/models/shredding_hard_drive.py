@@ -48,20 +48,20 @@ class ShreddingHardDrive(models.Model):
         tracking=True,
         index=True,
         help="Unique hard drive destruction reference",
-    
+    )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this destruction",
-    
+    )
     active = fields.Boolean(string="Active", default=True, tracking=True)
 
     # ============================================================================
@@ -80,7 +80,7 @@ class ShreddingHardDrive(models.Model):
         default="draft",
         tracking=True,
         help="Current processing status",
-    
+    )
 
     # ============================================================================
     # HARDWARE IDENTIFICATION
@@ -91,22 +91,22 @@ class ShreddingHardDrive(models.Model):
         tracking=True,
         index=True,
         help="Hardware serial number of the hard drive",
-    
+    )
     asset_tag = fields.Char(
         string="Asset Tag", tracking=True, help="Customer asset tag or identifier"
-    
+    )
     make_model = fields.Char(
         string="Make/Model",
         tracking=True,
         help="Manufacturer and model of the hard drive",
-    
+    )
     capacity_gb = fields.Float(
         string="Capacity (GB)", digits=(10, 2), help="Storage capacity in gigabytes"
-    
+    )
     hashed_serial = fields.Char(
         string="Hashed Serial Number",
         help="Cryptographically hashed serial for security",
-    
+    )
 
     # ============================================================================
     # CUSTOMER INFORMATION
@@ -117,18 +117,18 @@ class ShreddingHardDrive(models.Model):
         required=True,
         tracking=True,
         help="Customer who owns the hard drive",
-    
+    )
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner", 
         related="customer_id",
         store=True,
         help="Related partner field for One2many relationships compatibility"
-    
+    )
     customer_location_notes = fields.Text(
         string="Customer Location Notes",
         help="Notes about customer location and pickup conditions",
-    
+    )
 
     # ============================================================================
     # SCANNING AND VERIFICATION
@@ -138,18 +138,18 @@ class ShreddingHardDrive(models.Model):
         default=False,
         tracking=True,
         help="Whether the hard drive was scanned at customer location",
-    
-    scanned_at_customer_by = fields.Many2one(
+    )
+    scanned_at_customer_by_id = fields.Many2one(
         "res.users",
         string="Scanned by (Customer)",
         tracking=True,
         help="User who performed scanning at customer location",
-    
+    )
     scanned_at_customer_date = fields.Datetime(
         string="Customer Scan Date",
         tracking=True,
         help="Date and time when scanned at customer location",
-    
+    )
 
     # ============================================================================
     # PHYSICAL CONDITION
@@ -166,11 +166,11 @@ class ShreddingHardDrive(models.Model):
         default="good",
         tracking=True,
         help="Physical condition assessment",
-    
+    )
     facility_verification_notes = fields.Text(
         string="Facility Verification Notes",
         help="Notes from facility verification and inspection",
-    
+    )
 
     # ============================================================================
     # SECURITY AND CLASSIFICATION
@@ -188,7 +188,7 @@ class ShreddingHardDrive(models.Model):
         required=True,
         tracking=True,
         help="Security classification of data on drive",
-    
+    )
     encryption_level = fields.Selection(
         [
             ("none", "None"),
@@ -200,7 +200,7 @@ class ShreddingHardDrive(models.Model):
         default="none",
         tracking=True,
         help="Level of encryption on the drive",
-    
+    )
 
     # ============================================================================
     # DESTRUCTION DETAILS

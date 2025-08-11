@@ -88,6 +88,11 @@ class RecordsLocation(models.Model):
     utilization_percentage = fields.Float(
         string="Utilization %", compute="_compute_utilization_percentage"
     )
+    box_count = fields.Integer(
+        string="Box Count", 
+        compute="_compute_box_count",
+        help="Number of boxes at this location"
+    )
 
     # Physical constraints
     max_weight_capacity = fields.Float(string="Max Weight Capacity (lbs)")
@@ -107,7 +112,7 @@ class RecordsLocation(models.Model):
     # ACCESS & SECURITY
     # ============================================================================
     access_restrictions = fields.Text(string="Access Restrictions")
-    authorized_users = fields.Many2many("res.users", string="Authorized Users")
+    authorized_user_ids = fields.Many2many("res.users", string="Authorized Users")  # Fixed naming convention
     requires_escort = fields.Boolean(string="Requires Escort", default=False)
     security_camera = fields.Boolean(string="Security Camera", default=False)
     access_card_required = fields.Boolean(string="Access Card Required", default=False)
@@ -199,6 +204,17 @@ class RecordsLocation(models.Model):
             else:
                 record.available_spaces = 0
 
+    @api.depends("current_utilization", "storage_capacity")
+    def _compute_utilization_percentage(self):
+        """Compute utilization percentage"""
+        for record in self:
+            if record.storage_capacity > 0:
+                record.utilization_percentage = (
+                    record.current_utilization / record.storage_capacity * 100.0
+                )
+            else:
+                record.utilization_percentage = 0.0
+
     @api.depends("child_location_ids")
     def _compute_child_count(self):
         for record in self:
@@ -233,9 +249,10 @@ class RecordsLocation(models.Model):
     # ACTION METHODS
     # ============================================================================
     def action_view_containers(self):
+        self.ensure_one()  # Added ensure_one() call
         return {
             "type": "ir.actions.act_window",
-            "name": "Records Containers",
+            "name": _("Records Containers"),
             "res_model": "records.container",
             "view_mode": "tree,form",
             "domain": [("location_id", "=", self.id)],
@@ -256,16 +273,20 @@ class RecordsLocation(models.Model):
     def action_maintenance_mode(self):
         self.ensure_one()
         self.write({"operational_status": "maintenance"})
+        self.message_post(
+            body=_("Location %s set to maintenance mode", self.name),
+            message_type="notification"
+        )
 
     def action_reserve_space(self):
         """Open a form to schedule an inspection if the location is available for reservation."""
         self.ensure_one()
         if not self.is_available:
-            raise UserError(_("Location is not available for reservations."))
+            raise UserError(_("Location is not available for reservations"))
         # Reservation logic to be implemented as needed
         return {
             "type": "ir.actions.act_window",
-            "name": "Schedule Inspection",
+            "name": _("Schedule Inspection"),
             "res_model": "records.location.inspection",
             "view_mode": "form",
             "target": "new",
@@ -297,20 +318,20 @@ class RecordsLocation(models.Model):
     def _check_storage_capacity(self):
         for record in self:
             if record.storage_capacity < 0:
-                raise ValidationError(_("Storage capacity cannot be negative."))
+                raise ValidationError(_("Storage capacity cannot be negative"))
 
     @api.constrains("parent_location_id")
     def _check_parent_location(self):
         for record in self:
             if record.parent_location_id:
                 if record.parent_location_id == record:
-                    raise ValidationError(_("A location cannot be its own parent."))
+                    raise ValidationError(_("A location cannot be its own parent"))
                 # Check for circular reference
                 current = record.parent_location_id
                 while current:
                     if current == record:
                         raise ValidationError(
-                            _("Circular reference detected in location hierarchy.")
+                            _("Circular reference detected in location hierarchy")
                         )
                     current = current.parent_location_id
 
@@ -322,5 +343,4 @@ class RecordsLocation(models.Model):
                     [("code", "=", record.code), ("id", "!=", record.id)], limit=1
                 )
                 if existing:
-                    raise ValidationError(_("Location code must be unique."))
-                    raise ValidationError(_("Location code must be unique."))
+                    raise ValidationError(_("Location code must be unique"))

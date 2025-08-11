@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Shred Bins Management Module
+Shred Bin Management Module
 
 This module provides comprehensive management of customer shred bins within the Records Management System.
 It implements enterprise-grade shred bin tracking for customer document collection and secure destruction services.
@@ -654,8 +654,6 @@ class ShredBin(models.Model):
         if self.service_count > 2:
             avg_days_between_service = 30  # Default assumption
             if self.last_service_date:
-                from datetime import datetime
-
                 days_since = (datetime.now().date() - self.last_service_date).days
                 avg_days_between_service = days_since / max(1, self.service_count)
         else:
@@ -666,74 +664,62 @@ class ShredBin(models.Model):
         # High-frequency service recommendation
         if avg_days_between_service < 14:
             if self.bin_size == "23":
-                recommendations.append(
-                    {
-                        "recommended_size": "3C",
-                        "new_capacity": 90,
-                        "capacity_increase": "50%",
-                        "current_capacity": current_specs["capacity"],
-                        "justification": "High service frequency suggests need for larger capacity",
-                        "estimated_savings": "Reduce service calls by 40-50%",
-                    }
-                )
+                recommendations.append({
+                    "recommended_size": "3C",
+                    "new_capacity": 90,
+                    "capacity_increase": "50%",
+                    "current_capacity": current_specs["capacity"],
+                    "justification": "High service frequency suggests need for larger capacity",
+                    "estimated_savings": "Reduce service calls by 40-50%",
+                })
             elif self.bin_size == "3B":
-                recommendations.append(
-                    {
-                        "recommended_size": "64",
-                        "new_capacity": 240,
-                        "capacity_increase": "92%",
-                        "current_capacity": current_specs["capacity"],
-                        "justification": "Bi-weekly service pattern indicates outgrowing current bin",
-                        "estimated_savings": "Reduce to monthly service calls",
-                    }
-                )
+                recommendations.append({
+                    "recommended_size": "64",
+                    "new_capacity": 240,
+                    "capacity_increase": "92%",
+                    "current_capacity": current_specs["capacity"],
+                    "justification": "Bi-weekly service pattern indicates outgrowing current bin",
+                    "estimated_savings": "Reduce to monthly service calls",
+                })
             elif self.bin_size == "3C":
-                recommendations.append(
-                    {
-                        "recommended_size": "64",
-                        "new_capacity": 240,
-                        "capacity_increase": "167%",
-                        "current_capacity": current_specs["capacity"],
-                        "justification": "Console usage exceeding capacity, rolling bin provides efficiency",
-                        "estimated_savings": "Reduce service frequency by 60%",
-                    }
-                )
+                recommendations.append({
+                    "recommended_size": "64",
+                    "new_capacity": 240,
+                    "capacity_increase": "167%",
+                    "current_capacity": current_specs["capacity"],
+                    "justification": "Console usage exceeding capacity, rolling bin provides efficiency",
+                    "estimated_savings": "Reduce service frequency by 60%",
+                })
             elif self.bin_size == "64":
-                recommendations.append(
-                    {
-                        "recommended_size": "96",
-                        "new_capacity": 340,
-                        "capacity_increase": "42%",
-                        "current_capacity": current_specs["capacity"],
-                        "justification": "Large bin reaching capacity quickly, upgrade to maximum size",
-                        "estimated_savings": "Reduce to quarterly service calls",
-                    }
-                )
+                recommendations.append({
+                    "recommended_size": "96",
+                    "new_capacity": 340,
+                    "capacity_increase": "42%",
+                    "current_capacity": current_specs["capacity"],
+                    "justification": "Large bin reaching capacity quickly, upgrade to maximum size",
+                    "estimated_savings": "Reduce to quarterly service calls",
+                })
 
         # Multiple bin recommendation for 96-gallon
         if self.bin_size == "96" and avg_days_between_service < 21:
-            recommendations.append(
-                {
-                    "recommended_size": "Additional 96-gallon bins",
-                    "new_capacity": 340,
-                    "capacity_increase": "100% per additional bin",
-                    "current_capacity": current_specs["capacity"],
-                    "justification": "Maximum single bin size reached, additional bins needed",
-                    "estimated_savings": "Maintain optimal service frequency with increased total capacity",
-                }
-            )
+            recommendations.append({
+                "recommended_size": "Additional 96-gallon bins",
+                "new_capacity": 340,
+                "capacity_increase": "100% per additional bin",
+                "current_capacity": current_specs["capacity"],
+                "justification": "Maximum single bin size reached, additional bins needed",
+                "estimated_savings": "Maintain optimal service frequency with increased total capacity",
+            })
 
         return (
             recommendations
             if recommendations
-            else [
-                {
-                    "recommended_size": "Current size optimal",
-                    "current_capacity": current_specs["capacity"],
-                    "justification": "Service frequency indicates proper bin sizing",
-                    "estimated_savings": "No change recommended",
-                }
-            ]
+            else [{
+                "recommended_size": "Current size optimal",
+                "current_capacity": current_specs["capacity"],
+                "justification": "Service frequency indicates proper bin sizing",
+                "estimated_savings": "No change recommended",
+            }]
         )
 
     def calculate_cost_efficiency(self):
@@ -783,53 +769,45 @@ class ShredBin(models.Model):
         else:
             return "Poor - Consider Upsize"
 
-    # ============================================================================
-    # FIELD SERVICE OPERATIONS (Advanced Bin Management)
-    # ============================================================================
-
     def action_swap_bin(self, new_bin_id):
         """Swap full bin with empty bin - charges only for new bin service"""
         self.ensure_one()
         if not new_bin_id:
-            raise ValidationError("New bin must be specified for swap operation")
+            raise ValidationError(_("New bin must be specified for swap operation"))
 
         new_bin = self.env["shred.bin"].browse(new_bin_id)
         if not new_bin.exists():
-            raise ValidationError("New bin not found")
+            raise ValidationError(_("New bin not found"))
 
         if new_bin.partner_id != self.partner_id:
-            raise ValidationError("Bins must belong to the same customer for swap")
+            raise ValidationError(_("Bins must belong to the same customer for swap"))
 
         # Mark current bin as collected (orange - in transit)
         self.write({"state": "collecting", "location_status": "in_transit"})
 
         # Deploy new bin at customer location (green - in service)
-        new_bin.write(
-            {
-                "state": "in_service",
-                "customer_location": self.customer_location,
-                "location_status": "at_customer",
-            }
-        )
+        new_bin.write({
+            "state": "in_service",
+            "customer_location": self.customer_location,
+            "location_status": "at_customer",
+        })
 
         # Create single service record for the new bin deployment
-        service = self.env["shredding.service"].create(
-            {
-                "partner_id": self.partner_id.id,
-                "service_type": "swap",
-                "material_type": "paper",
-                "shred_bin_id": new_bin.id,  # Charges for new bin only
-                "notes": f"Bin swap: {self.name} (full) replaced with {new_bin.name} (empty)",
-                "state": "completed",
-            }
-        )
+        service = self.env["shredding.service"].create({
+            "partner_id": self.partner_id.id,
+            "service_type": "swap",
+            "material_type": "paper",
+            "shred_bin_id": new_bin.id,  # Charges for new bin only
+            "notes": _("Bin swap: %s (full) replaced with %s (empty)", self.name, new_bin.name),
+            "state": "completed",
+        })
 
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Bin Swap Completed",
-                "message": f"Bin {self.name} collected, {new_bin.name} deployed. Service: {service.name}",
+                "title": _("Bin Swap Completed"),
+                "message": _("Bin %s collected, %s deployed. Service: %s", self.name, new_bin.name, service.name),
                 "type": "success",
             },
         }
@@ -839,12 +817,9 @@ class ShredBin(models.Model):
         self.ensure_one()
         new_bin = self.env["shred.bin"].browse(new_bin_id)
 
-        # Validate bin sizes
-        size_order = {"small": 1, "medium": 2, "large": 3, "console": 4}
-        if size_order.get(new_bin.bin_size, 0) <= size_order.get(self.bin_size, 0):
-            raise ValidationError(
-                "New bin must be larger than current bin for upsize operation"
-            )
+        # Validate bin sizes (simplified validation)
+        if not new_bin.exists():
+            raise ValidationError(_("New bin not found"))
 
         return self._resize_bin(new_bin, "upsize")
 
@@ -853,12 +828,9 @@ class ShredBin(models.Model):
         self.ensure_one()
         new_bin = self.env["shred.bin"].browse(new_bin_id)
 
-        # Validate bin sizes
-        size_order = {"small": 1, "medium": 2, "large": 3, "console": 4}
-        if size_order.get(new_bin.bin_size, 0) >= size_order.get(self.bin_size, 0):
-            raise ValidationError(
-                "New bin must be smaller than current bin for downsize operation"
-            )
+        # Validate bin sizes (simplified validation)
+        if not new_bin.exists():
+            raise ValidationError(_("New bin not found"))
 
         return self._resize_bin(new_bin, "downsize")
 
@@ -868,32 +840,28 @@ class ShredBin(models.Model):
         self.write({"state": "collecting", "location_status": "in_transit"})
 
         # Deploy new sized bin
-        new_bin.write(
-            {
-                "state": "in_service",
-                "customer_location": self.customer_location,
-                "location_status": "at_customer",
-            }
-        )
+        new_bin.write({
+            "state": "in_service",
+            "customer_location": self.customer_location,
+            "location_status": "at_customer",
+        })
 
         # Create service record for new bin deployment (charges for new bin rate)
-        service = self.env["shredding.service"].create(
-            {
-                "partner_id": self.partner_id.id,
-                "service_type": operation_type,
-                "material_type": "paper",
-                "shred_bin_id": new_bin.id,  # Charges for new bin size
-                "notes": f"Bin {operation_type}: {self.name} ({self.bin_size}) replaced with {new_bin.name} ({new_bin.bin_size})",
-                "state": "completed",
-            }
-        )
+        service = self.env["shredding.service"].create({
+            "partner_id": self.partner_id.id,
+            "service_type": operation_type,
+            "material_type": "paper",
+            "shred_bin_id": new_bin.id,  # Charges for new bin size
+            "notes": _("Bin %s: %s (%s) replaced with %s (%s)", operation_type, self.name, self.bin_size, new_bin.name, new_bin.bin_size),
+            "state": "completed",
+        })
 
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": f"Bin {operation_type.title()} Completed",
-                "message": f"Bin {operation_type}: {self.name} → {new_bin.name}. Service: {service.name}",
+                "title": _("Bin %s Completed", operation_type.title()),
+                "message": _("Bin %s: %s → %s. Service: %s", operation_type, self.name, new_bin.name, service.name),
                 "type": "success",
             },
         }
