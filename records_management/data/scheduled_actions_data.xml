@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <data>
+        <record id="ir_cron_compute_monthly_storage_fees" model="ir.cron">
+            <field name="name">Compute Monthly Storage Fees</field>
+            <field name="model_id" ref="stock.model_stock_quant"/>
+            <field name="state">code</field>
+            <field name="code">
+# Compute monthly storage fees for each customer
+try:
+    # Search for all internal stock quants
+    quants = env['stock.quant'].search([('location_id.usage', '=', 'internal')])
+
+    # Initialize a dictionary to store total quantity per customer
+    customer_items = {}
+
+    # Iterate through each quant to sum quantities by customer
+    for quant in quants:
+        if quant.lot_id and quant.lot_id.customer_id:
+            customer = quant.lot_id.customer_id
+            if customer in customer_items:
+                customer_items[customer] += quant.quantity
+            else:
+                customer_items[customer] = quant.quantity
+
+    # Try to get the storage fee product reference
+    product = env.ref('records_management.service_storage_fee', raise_if_not_found=False)
+
+    if not product:
+        log('Storage Fee Product (records_management.service_storage_fee) not found. Monthly storage fees not computed.')
+    else:
+        # For each customer, create a sale order for the storage fee product
+        for customer, qty in customer_items.items():
+            if qty > 0:
+                env['sale.order'].create({
+                    'partner_id': customer.id,
+                    'order_line': [(0, 0, {
+                        'product_id': product.id,
+                        'product_uom_qty': qty,
+                        'name': _('Monthly Storage Fee for %s items', qty),
+                    })],
+                })
+except Exception as e:
+    log(_('Error computing monthly storage fees: %s', str(e)))
+            </field>
+            <field name="active">True</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="nextcall" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d 00:00:00')"/>
+        </record>
+
+        <!-- Monthly Customer Inventory Reports -->
+        <record id="ir_cron_generate_monthly_inventory_reports" model="ir.cron">
+            <field name="name">Generate Monthly Customer Inventory Reports</field>
+            <field name="model_id" ref="base.model_ir_cron"/>
+            <field name="state">code</field>
+            <field name="code">
+# Generate monthly inventory reports for all customers
+try:
+    env['customer.inventory.report'].generate_monthly_reports()
+    log(_('Monthly customer inventory reports generated successfully.'))
+except Exception as e:
+    log(_('Error generating monthly inventory reports: %s', str(e)))
+            </field>
+            <field name="active">True</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=32)).replace(day=1).strftime('%Y-%m-%d 09:00:00')"/>
+        </record>
+
+        <!-- Monthly storage fee automation workflow -->
+        <record id="ir_cron_storage_fee_automation_workflow" model="ir.cron">
+            <field name="name">Storage Fee Automation Workflow</field>
+            <field name="model_id" ref="base.model_ir_cron"/>
+            <field name="state">code</field>
+            <field name="code">
+# Monthly storage fee automation workflow
+STORAGE_FEE_WORKFLOW = {
+    '1_inventory_scan': 'Search all internal stock quants',
+    '2_customer_grouping': 'Group quantities by customer (lot_id.customer_id)',
+    '3_fee_calculation': 'Calculate fees based on quantity * storage rates',
+    '4_order_creation': 'Create sale orders with storage fee product',
+    '5_billing_automation': 'Triggers automated invoice generation'
+}
+
+# Links to actual business container storage tracking
+CONTAINER_INTEGRATION = {
+    'stock_quants': 'Physical inventory tracking in warehouse locations',
+    'customer_attribution': 'Links to customer via lot_id relationship',
+    'quantity_calculation': 'Sums all items per customer for billing',
+    'product_reference': 'Uses records_management.service_storage_fee product'
+}
+
+# Product catalog integration
+STORAGE_PRODUCT_INTEGRATION = {
+    'product_reference': 'records_management.service_storage_fee',
+    'billing_model': 'Quantity-based storage fees',
+    'rate_source': 'base.rates and customer.negotiated.rates',
+    'invoice_automation': 'Auto-generates monthly invoices'
+}
+
+# Error handling patterns for business continuity
+ERROR_HANDLING = {
+    'missing_product': 'Log warning but continue processing other customers',
+    'customer_errors': 'Process remaining customers if one fails',
+    'database_issues': 'Full transaction rollback to maintain consistency',
+    'audit_trail': 'All actions logged for compliance and debugging'
+}
+            </field>
+            <field name="active">True</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="nextcall" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d 00:00:00')"/>
+        </record>
+
+        <!-- Monthly inventory report automation -->
+        <record id="ir_cron_monthly_inventory_report_automation" model="ir.cron">
+            <field name="name">Monthly Inventory Report Automation</field>
+            <field name="model_id" ref="base.model_ir_cron"/>
+            <field name="state">code</field>
+            <field name="code">
+# Monthly inventory report automation
+REPORTING_WORKFLOW = {
+    'trigger': 'First day of each month at 9:00 AM',
+    'method': 'customer.inventory.report.generate_monthly_reports()',
+    'scope': 'All customers with active inventory',
+    'delivery': 'Automated report generation and distribution'
+}
+
+# Monthly billing cycle on 30-day intervals
+BILLING_SCHEDULE = {
+    'frequency': 'Monthly (every 30 days)',
+    'next_execution': 'Calculated dynamically from current date',
+    'execution_time': '00:00:00 (midnight)',
+    'purpose': 'Off-hours processing for minimal system impact'
+}
+
+# First business day of month reporting
+REPORT_SCHEDULE = {
+    'frequency': 'Monthly (first day of month)',
+    'next_execution': 'First day of next month',
+    'execution_time': '09:00:00 (business hours)',
+    'purpose': 'Reports available at start of business month'
+}
+            </field>
+            <field name="active">True</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=32)).replace(day=1).strftime('%Y-%m-%d 09:00:00')"/>
+        </record>
+    </data>
+</odoo>

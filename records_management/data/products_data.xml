@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Essential Records Management Products -->
+
+        <!-- Document Storage Container - Basic -->
+        <!-- Document Storage Container - Basic -->
+        <record id="product_storage_container" model="product.product">
+            <field name="name">Document Storage Container</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-CONTAINER</field>
+            <field name="list_price">5.0</field>
+            <field name="standard_price">1.5</field>
+            <field name="description">Standard archive container setup</field>
+        </record>
+
+        <!-- Document Storage Service - Basic -->
+        <record id="product_storage_service" model="product.product">
+            <field name="name">Monthly Storage Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-STORAGE</field>
+            <field name="list_price">25.00</field>
+            <field name="standard_price">15.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">Ongoing monthly storage service</field>
+        </record>
+
+        <!-- Document Shredding Service - Basic -->
+        <record id="product_shredding_service" model="product.product">
+            <field name="name">Document Shredding Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-SHRED</field>
+            <field name="list_price">50.00</field>
+            <field name="standard_price">30.00</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">NAID-compliant secure destruction</field>
+        </record>
+
+        <!-- Links to actual business container specifications -->
+        <record id="container_service_integration" model="ir.config_parameter">
+            <field name="key">CONTAINER_SERVICE_INTEGRATION</field>
+            <field name="value">{'product_storage_container': {'integrates_with': ['records.container (TYPE 01-06)', 'base.rates (container setup fees)', 'customer.negotiated.rates (custom pricing)'], 'billing_trigger': 'Container creation and initial setup', 'recurring': False}}</field>
+        </record>
+
+        <!-- Monthly recurring service integration -->
+        <record id="storage_service_integration" model="ir.config_parameter">
+            <field name="key">STORAGE_SERVICE_INTEGRATION</field>
+            <field name="value">{'product_storage_service': {'integrates_with': ['records.billing.config (automated monthly billing)', 'advanced.billing (billing period management)', 'customer.inventory.report (volume-based pricing)'], 'billing_trigger': 'Monthly recurring based on container count', 'recurring': True, 'billing_cycle': 'monthly'}}</field>
+        </record>
+
+        <!-- Destruction service integration -->
+        <record id="shredding_service_integration" model="ir.config_parameter">
+            <field name="key">SHREDDING_SERVICE_INTEGRATION</field>
+            <field name="value">{'product_shredding_service': {'integrates_with': ['shredding.service (work order creation)', 'naid.certificate (compliance documentation)', 'destruction.item (detailed item tracking)', 'paper.bale.recycling (post-destruction revenue)'], 'billing_trigger': 'Service completion and certificate generation', 'recurring': False, 'compliance': 'NAID AAA certified'}}</field>
+        </record>
+
+        <!-- Complete revenue cycle integration -->
+        <record id="revenue_integration" model="ir.config_parameter">
+            <field name="key">REVENUE_INTEGRATION</field>
+            <field name="value">{'setup_revenue': {'product': 'REC-CONTAINER', 'trigger': 'Initial container setup', 'billing_model': 'one_time', 'integrates_with': 'base.rates, customer.negotiated.rates'}, 'recurring_revenue': {'product': 'REC-STORAGE', 'trigger': 'Monthly billing cycle', 'billing_model': 'subscription', 'integrates_with': 'advanced.billing, records.billing.config'}, 'service_revenue': {'product': 'REC-SHRED', 'trigger': 'Service completion', 'billing_model': 'per_service', 'integrates_with': 'shredding.service, naid.certificate'}}</field>
+        </record>
+
+        <!-- Cost tracking integration -->
+        <record id="cost_management_integration" model="ir.config_parameter">
+            <field name="key">COST_MANAGEMENT</field>
+            <field name="value">{'container_costs': {'standard_price': '$1.50', 'includes': ['physical container', 'barcode generation', 'initial cataloging'], 'profit_margin': '70%'}, 'storage_costs': {'standard_price': '$15.00/month', 'includes': ['warehouse space', 'climate control', 'security'], 'profit_margin': '40%'}, 'shredding_costs': {'standard_price': '$30.00', 'includes': ['labor', 'equipment', 'disposal', 'certificate generation'], 'profit_margin': '40%'}}</field>
+        </record>
+
+        <!-- Complete container service lifecycle -->
+        <record id="container_service_lifecycle" model="ir.config_parameter">
+            <field name="key">CONTAINER_LIFECYCLE</field>
+            <field name="value">{'1_customer_signup': 'Customer requests document storage', '2_container_setup': 'REC-CONTAINER service billed (one-time $5.00)', '3_monthly_storage': 'REC-STORAGE service billed (recurring $25.00/month)', '4_destruction_request': 'REC-SHRED service billed (per-service $50.00)', '5_revenue_recognition': 'Complete P&L tracking through product integration'}</field>
+        </record>
+
+        <!-- Enhanced Product Configurations -->
+
+        <!-- Container Type Specific Services -->
+        <record id="product_storage_type01" model="product.product">
+            <field name="name">TYPE 01 Standard Box Storage</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-TYPE01</field>
+            <field name="list_price">25.00</field>
+            <field name="standard_price">15.00</field>
+            <field name="description">Standard box storage (1.2 CF, 35 lbs max) - Most common container type</field>
+        </record>
+
+        <record id="product_storage_type02" model="product.product">
+            <field name="name">TYPE 02 Legal/Banker Box Storage</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-TYPE02</field>
+            <field name="list_price">40.00</field>
+            <field name="standard_price">25.00</field>
+            <field name="description">Legal/Banker box storage (2.4 CF, 65 lbs max) - Double capacity</field>
+        </record>
+
+        <record id="product_storage_type03" model="product.product">
+            <field name="name">TYPE 03 Map Box Storage</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-TYPE03</field>
+            <field name="list_price">30.00</field>
+            <field name="standard_price">18.00</field>
+            <field name="description">Map box storage (0.875 CF, 35 lbs max) - For blueprints and maps</field>
+        </record>
+
+        <record id="product_storage_type04" model="product.product">
+            <field name="name">TYPE 04 Odd Size/Temp Storage</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-TYPE04</field>
+            <field name="list_price">75.00</field>
+            <field name="standard_price">45.00</field>
+            <field name="description">Odd size/temporary storage (5.0 CF, 75 lbs max) - Non-standard items</field>
+        </record>
+
+        <record id="product_storage_type06" model="product.product">
+            <field name="name">TYPE 06 Pathology Box Storage</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-TYPE06</field>
+            <field name="list_price">15.00</field>
+            <field name="standard_price">8.00</field>
+            <field name="description">Pathology box storage (0.042 CF, 40 lbs max) - Medical specimens</field>
+        </record>
+
+        <!-- Value-Added Services -->
+        <record id="product_pickup_service" model="product.product">
+            <field name="name">Pickup and Delivery Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-PICKUP</field>
+            <field name="list_price">85.00</field>
+            <field name="standard_price">50.00</field>
+            <field name="description">Professional pickup and delivery service with tracking</field>
+        </record>
+
+        <record id="product_indexing_service" model="product.product">
+            <field name="name">Document Indexing Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-INDEX</field>
+            <field name="list_price">2.50</field>
+            <field name="standard_price">1.25</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">Professional document cataloging and indexing per document</field>
+        </record>
+
+        <record id="product_retrieval_service" model="product.product">
+            <field name="name">Document Retrieval Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-RETRIEVAL</field>
+            <field name="list_price">25.00</field>
+            <field name="standard_price">12.00</field>
+            <field name="description">Individual document or file retrieval service</field>
+        </record>
+
+        <record id="product_scanning_service" model="product.product">
+            <field name="name">Document Scanning Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-SCAN</field>
+            <field name="list_price">1.75</field>
+            <field name="standard_price">0.85</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="description">High-quality document scanning per page</field>
+        </record>
+
+        <!-- Compliance and Certification Services -->
+        <record id="product_naid_certificate" model="product.product">
+            <field name="name">NAID Destruction Certificate</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-CERT</field>
+            <field name="list_price">15.00</field>
+            <field name="standard_price">5.00</field>
+            <field name="description">Official NAID AAA destruction certificate with legal verification</field>
+        </record>
+
+        <record id="product_compliance_audit" model="product.product">
+            <field name="name">Compliance Audit Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-AUDIT</field>
+            <field name="list_price">250.00</field>
+            <field name="standard_price">150.00</field>
+            <field name="description">Comprehensive compliance audit and reporting service</field>
+        </record>
+
+        <!-- Emergency and Rush Services -->
+        <record id="product_rush_service" model="product.product">
+            <field name="name">Rush Service Surcharge</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-RUSH</field>
+            <field name="list_price">100.00</field>
+            <field name="standard_price">25.00</field>
+            <field name="description">Same-day or next-day rush service surcharge</field>
+        </record>
+
+        <record id="product_emergency_service" model="product.product">
+            <field name="name">Emergency Response Service</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="default_code">REC-EMERGENCY</field>
+            <field name="list_price">500.00</field>
+            <field name="standard_price">200.00</field>
+            <field name="description">24/7 emergency document recovery and protection service</field>
+        </record>
+
+        <!-- Product Categories for Better Organization -->
+        <record id="category_storage_services" model="product.category">
+            <field name="name">Storage Services</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+
+        <record id="category_destruction_services" model="product.category">
+            <field name="name">Destruction Services</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+
+        <record id="category_value_added_services" model="product.category">
+            <field name="name">Value-Added Services</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+
+        <record id="category_compliance_services" model="product.category">
+            <field name="name">Compliance Services</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+
+        <!-- Update Category Assignments -->
+        <record id="product_storage_container" model="product.product">
+            <field name="categ_id" ref="category_storage_services"/>
+        </record>
+
+        <record id="product_storage_service" model="product.product">
+            <field name="categ_id" ref="category_storage_services"/>
+        </record>
+
+        <record id="product_shredding_service" model="product.product">
+            <field name="categ_id" ref="category_destruction_services"/>
+        </record>
+
+    </data>
+</odoo>

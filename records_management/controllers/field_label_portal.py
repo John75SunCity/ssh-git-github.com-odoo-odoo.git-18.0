@@ -4,7 +4,6 @@ Field Label Customization Portal Controller
 Provides API endpoints for getting custom field labels in portal
 """
 
-import json
 from odoo import http
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal
@@ -136,8 +135,8 @@ class FieldLabelAdminController(http.Controller):
                     'success': True,
                     'message': f'{preset_name.title()} preset applied successfully'
                 }
-            else:
-                return {'error': f'Unknown preset: {preset_name}'}
+            
+            return {'error': f'Unknown preset: {preset_name}'}
 
         except Exception as e:
             return {'error': str(e)}

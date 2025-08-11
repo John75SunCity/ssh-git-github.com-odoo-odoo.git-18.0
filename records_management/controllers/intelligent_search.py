@@ -9,16 +9,13 @@ Provides advanced search capabilities including:
 - Performance monitoring and optimization
 """
 
-import json
 import logging
 import time
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from odoo import http, fields, _
+from odoo import http
 from odoo.http import request
-from odoo.exceptions import AccessDenied, UserError
-from odoo.tools import config, safe_eval
 
 _logger = logging.getLogger(__name__)
 
@@ -51,8 +48,8 @@ class SearchPerformanceMonitor:
                 }
             )
             _logger.warning(
-                f"Slow search query detected: {query_type} took {duration_ms}ms "
-                f"(threshold: {threshold}ms)"
+                "Slow search query detected: %s took %sms (threshold: %sms)",
+                query_type, duration_ms, threshold
             )
 
 
@@ -75,16 +72,16 @@ class IntelligentSearchController(http.Controller):
     @http.route(
         ["/records/search/containers"], type="json", auth="user", methods=["POST"]
     )
-    def search_containers_autocomplete(self, query="", limit=10, customer_id=None):
+    def _search_containers_autocomplete(self, query="", limit=10, customer_id=None):
         """
         Auto-suggest containers based on partial box number input
 
         Example: query="45" returns containers 4511, 4512, 4589, etc.
         """
         start_time = time.time()
-        
+
         try:
-            if not query or len(query) < 1:
+            if not query or not query.strip():
                 return {"suggestions": [], "total": 0}
 
             # Sanitize query input
@@ -93,7 +90,7 @@ class IntelligentSearchController(http.Controller):
                 return {"suggestions": [], "total": 0}
 
             domain = [
-                ("name", "ilike", f"{query}%"),  # Starts with query
+                ("name", "ilike", "%s%%" % query),  # Starts with query
                 ("active", "=", True),
                 ("state", "in", ["active", "stored"]),
             ]
@@ -104,7 +101,7 @@ class IntelligentSearchController(http.Controller):
                     customer_id = int(customer_id)
                     domain.append(("partner_id", "=", customer_id))
                 except (ValueError, TypeError):
-                    _logger.warning(f"Invalid customer_id provided: {customer_id}")
+                    _logger.warning("Invalid customer_id provided: %s", customer_id)
                     return {"error": "Invalid customer ID", "suggestions": []}
 
             # Apply department security if applicable
@@ -136,9 +133,9 @@ class IntelligentSearchController(http.Controller):
             search_monitor.log_query("container_autocomplete", duration_ms, {"query": query, "limit": limit})
 
             return {"suggestions": suggestions, "total": len(suggestions)}
-            
+
         except Exception as e:
-            _logger.error(f"Error in container autocomplete search: {str(e)}")
+            _logger.error("Error in container autocomplete search: %s", str(e))
             return {"error": "Search failed", "suggestions": []}
 
     # ============================================================================
@@ -151,13 +148,12 @@ class IntelligentSearchController(http.Controller):
         auth="user",
         methods=["POST"],
     )
-    def recommend_containers_for_file(self, **kwargs):
+    def _search_recommend_containers_for_file(self, **kwargs):
         """
         Smart container recommendations based on file search criteria
 
         Parameters:
         - file_name: Name to search for (e.g., "John Doe")
-        - date_of_birth: DOB for alphabetical matching
         - service_date: Date to match against container date ranges
         - customer_id: Customer ID for filtering
         - content_type: Type of document being searched
@@ -168,7 +164,6 @@ class IntelligentSearchController(http.Controller):
         try:
             # Extract and sanitize search parameters
             file_name = kwargs.get("file_name", "").strip()
-            date_of_birth = kwargs.get("date_of_birth")
             service_date = kwargs.get("service_date")
             customer_id = kwargs.get("customer_id")
             content_type = kwargs.get("content_type", "").strip()
@@ -188,7 +183,7 @@ class IntelligentSearchController(http.Controller):
                     customer_id = int(customer_id)
                     domain.append(("partner_id", "=", customer_id))
                 except (ValueError, TypeError):
-                    _logger.warning(f"Invalid customer_id in file search: {customer_id}")
+                    _logger.warning("Invalid customer_id in file search: %s", customer_id)
                     return {"error": "Invalid customer ID", "recommendations": []}
 
             # Apply department security
@@ -212,7 +207,9 @@ class IntelligentSearchController(http.Controller):
                         if alpha_start <= name_start <= alpha_end:
                             score += 50
                             reasons.append(
-                                f"Name '{file_name}' fits alphabetical range {container.alpha_range_display}"
+                                "Name '%s' fits alphabetical range %s" % (
+                                    file_name, container.alpha_range_display
+                                )
                             )
 
                 # 2. Date range matching with improved error handling
@@ -234,10 +231,11 @@ class IntelligentSearchController(http.Controller):
                         ):
                             score += 40
                             reasons.append(
-                                f"Service date {search_date.strftime('%m/%d/%Y')} falls within container date range"
+                                "Service date %s falls within container date range" %
+                                search_date.strftime('%m/%d/%Y')
                             )
                     except (ValueError, TypeError) as e:
-                        _logger.debug(f"Date parsing error in container search: {e}")
+                        _logger.debug("Date parsing error in container search: %s", e)
 
                 # 3. Content type matching (case-insensitive)
                 if (
@@ -246,40 +244,40 @@ class IntelligentSearchController(http.Controller):
                     and container.primary_content_type.lower() == content_type.lower()
                 ):
                     score += 30
-                    reasons.append(f"Content type matches: {content_type}")
+                    reasons.append("Content type matches: %s" % content_type)
 
                 # 4. Keyword matching in search_keywords - FIXED LOGIC
                 if file_name and container.search_keywords:
                     keywords = container.search_keywords.lower()
                     file_name_lower = file_name.lower()
-                    
+
                     # Check for exact word matches (more precise than substring)
                     file_words = file_name_lower.split()
                     keyword_words = keywords.split()
-                    
+
                     matches = 0
                     for word in file_words:
                         if len(word) >= 3 and word in keyword_words:  # Only count words 3+ chars
                             matches += 1
-                    
+
                     if matches > 0:
                         score += 25 + (matches * 5)  # Bonus for multiple word matches
-                        reasons.append(f"Found {matches} matching keywords in container")
+                        reasons.append("Found %d matching keywords in container" % matches)
 
                 # 5. Content description matching with word boundary logic
                 if file_name and container.content_description:
                     description_lower = container.content_description.lower()
                     file_name_lower = file_name.lower()
-                    
+
                     # Check for whole word matches first
                     file_words = file_name_lower.split()
                     desc_words = description_lower.split()
-                    
+
                     word_matches = sum(1 for word in file_words if len(word) >= 3 and word in desc_words)
-                    
+
                     if word_matches > 0:
                         score += 20 + (word_matches * 5)
-                        reasons.append(f"Found {word_matches} matching words in description")
+                        reasons.append("Found %d matching words in description" % word_matches)
                     elif file_name_lower in description_lower:  # Fallback to substring
                         score += 15
                         reasons.append("File name found in content description")
@@ -322,9 +320,9 @@ class IntelligentSearchController(http.Controller):
                     "content_type": content_type,
                 },
             }
-            
+
         except Exception as e:
-            _logger.error(f"Error in container recommendations: {str(e)}")
+            _logger.error("Error in container recommendations: %s", str(e))
             return {"error": "Recommendation search failed", "recommendations": []}
 
     # ============================================================================
@@ -334,7 +332,7 @@ class IntelligentSearchController(http.Controller):
     @http.route(
         ["/my/records/search"], type="json", auth="user", website=True, methods=["POST"]
     )
-    def portal_search_containers(self, **kwargs):
+    def _search_portal_containers(self, **kwargs):
         """
         Portal search for customers to find their containers and files
         Includes the same intelligent matching as backend search
@@ -351,13 +349,13 @@ class IntelligentSearchController(http.Controller):
 
         if query and query.replace("-", "").replace(" ", "").isdigit():
             # Looks like a container number search
-            return self.search_containers_autocomplete(
+            return self._search_containers_autocomplete(
                 query=query, customer_id=customer_id, limit=20
             )
-        else:
-            # File/content search - use intelligent recommendations
-            kwargs["file_name"] = query
-            return self.recommend_containers_for_file(**kwargs)
+
+        # File/content search - use intelligent recommendations
+        kwargs["file_name"] = query
+        return self._search_recommend_containers_for_file(**kwargs)
 
     # ============================================================================
     # FULL-TEXT SEARCH ACROSS CONTAINERS
@@ -366,7 +364,7 @@ class IntelligentSearchController(http.Controller):
     @http.route(
         ["/records/search/fulltext"], type="json", auth="user", methods=["POST"]
     )
-    def fulltext_search_containers(self, query="", customer_id=None, limit=20):
+    def _search_fulltext_containers(self, query="", customer_id=None, limit=20):
         """
         Full-text search across container contents, descriptions, and keywords
         """
@@ -454,6 +452,8 @@ class IntelligentSearchController(http.Controller):
 
     # ============================================================================
     # SECURITY & UTILITY METHODS
+    # ============================================================================
+
     def _apply_department_security(self, domain):
         """
         Apply department-level security filtering if applicable.
@@ -487,7 +487,7 @@ class IntelligentSearchController(http.Controller):
         auth="user",
         methods=["GET"],
     )
-    def get_search_config(self):
+    def _search_config(self):
         """
         Return configuration for search suggestions (content types, etc.).
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
+    <data>
         <!-- Sequence for Records Container -->
         <record id="seq_records_container" model="ir.sequence">
             <field name="name">Records Container Sequence</field>

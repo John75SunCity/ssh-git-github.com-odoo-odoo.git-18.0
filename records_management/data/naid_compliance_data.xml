@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
+    <data>
 
         <!-- NAID Chain of Custody Sequence -->
         <record id="seq_naid_chain_custody" model="ir.sequence">
@@ -141,6 +141,191 @@
             <field name="interval_number">4</field>
             <field name="interval_type">hours</field>
             <field name="active">True</field>
+        </record>
+
+        <!-- Enhanced NAID Compliance Configurations -->
+
+        <!-- Additional NAID Policies -->
+        <record id="policy_data_privacy" model="naid.compliance.enhanced">
+            <field name="name">Data Privacy Protection</field>
+            <field name="sequence">80</field>
+            <field name="policy_type">data_privacy</field>
+            <field name="description">All customer data and confidential information must be protected according to applicable privacy laws and regulations including GDPR, HIPAA, and state privacy laws.</field>
+            <field name="mandatory">True</field>
+            <field name="automated_check">True</field>
+            <field name="check_frequency">daily</field>
+            <field name="implementation_notes">Implement encryption, access logging, data retention policies, customer consent management.</field>
+            <field name="violation_consequences">Immediate containment, customer notification, regulatory reporting, potential fines.</field>
+            <field name="review_frequency_months">6</field>
+        </record>
+
+        <record id="policy_transportation_security" model="naid.compliance.enhanced">
+            <field name="name">Transportation Security</field>
+            <field name="sequence">90</field>
+            <field name="policy_type">transportation</field>
+            <field name="description">All materials in transit must be secured using approved methods including locked vehicles, GPS tracking, and chain of custody documentation.</field>
+            <field name="mandatory">True</field>
+            <field name="automated_check">False</field>
+            <field name="check_frequency">daily</field>
+            <field name="implementation_notes">Use locked trucks, implement GPS monitoring, require driver certification, maintain transport logs.</field>
+            <field name="violation_consequences">Transportation audit, driver retraining, potential service suspension.</field>
+            <field name="review_frequency_months">6</field>
+        </record>
+
+        <record id="policy_incident_response" model="naid.compliance.enhanced">
+            <field name="name">Incident Response</field>
+            <field name="sequence">100</field>
+            <field name="policy_type">incident_response</field>
+            <field name="description">Comprehensive incident response procedures must be in place for security breaches, equipment failures, or compliance violations.</field>
+            <field name="mandatory">True</field>
+            <field name="automated_check">False</field>
+            <field name="check_frequency">as_needed</field>
+            <field name="implementation_notes">Establish response teams, create communication protocols, maintain incident logs, conduct post-incident reviews.</field>
+            <field name="violation_consequences">Incident review board, corrective action plan, potential process changes.</field>
+            <field name="review_frequency_months">12</field>
+        </record>
+
+        <!-- NAID Certification Levels -->
+        <record id="certification_level_1" model="naid.certification.level">
+            <field name="name">NAID Level 1 - Basic</field>
+            <field name="level_code">NAID-1</field>
+            <field name="security_level">basic</field>
+            <field name="description">Basic security requirements for general business documents</field>
+            <field name="particle_size_requirement">10mm strips</field>
+            <field name="witness_requirement">1 witness minimum</field>
+            <field name="documentation_required">Basic certificate</field>
+        </record>
+
+        <record id="certification_level_2" model="naid.certification.level">
+            <field name="name">NAID Level 2 - Intermediate</field>
+            <field name="level_code">NAID-2</field>
+            <field name="security_level">intermediate</field>
+            <field name="description">Enhanced security for sensitive business documents</field>
+            <field name="particle_size_requirement">6mm strips</field>
+            <field name="witness_requirement">1 witness minimum</field>
+            <field name="documentation_required">Detailed certificate with chain of custody</field>
+        </record>
+
+        <record id="certification_level_3" model="naid.certification.level">
+            <field name="name">NAID Level 3 - High Security</field>
+            <field name="level_code">NAID-3</field>
+            <field name="security_level">high</field>
+            <field name="description">High security requirements for confidential documents</field>
+            <field name="particle_size_requirement">2mm cross-cut</field>
+            <field name="witness_requirement">2 witnesses required</field>
+            <field name="documentation_required">Comprehensive certificate with full audit trail</field>
+        </record>
+
+        <!-- NAID Equipment Standards -->
+        <record id="equipment_standard_shredder" model="naid.equipment.standard">
+            <field name="name">Document Shredder Standards</field>
+            <field name="equipment_type">shredder</field>
+            <field name="minimum_security_level">NAID-1</field>
+            <field name="calibration_frequency_days">30</field>
+            <field name="maintenance_requirements">Daily cleaning, weekly oil check, monthly blade inspection</field>
+            <field name="performance_specifications">Min 50 sheets/pass, particle size compliance, jam protection</field>
+        </record>
+
+        <record id="equipment_standard_baler" model="naid.equipment.standard">
+            <field name="name">Paper Baler Standards</field>
+            <field name="equipment_type">baler</field>
+            <field name="minimum_security_level">NAID-1</field>
+            <field name="calibration_frequency_days">60</field>
+            <field name="maintenance_requirements">Daily hydraulic check, weekly cleaning, monthly safety inspection</field>
+            <field name="performance_specifications">Min compression ratio 10:1, safety shutoffs, weight accuracy +/-2%</field>
+        </record>
+
+        <!-- NAID Audit Requirements -->
+        <record id="audit_requirement_annual" model="naid.audit.requirement">
+            <field name="name">Annual NAID Certification Audit</field>
+            <field name="audit_type">certification</field>
+            <field name="frequency_months">12</field>
+            <field name="scope">Complete facility and process audit</field>
+            <field name="auditor_requirements">NAID certified auditor required</field>
+            <field name="documentation_requirements">All policies, procedures, training records, incident reports</field>
+        </record>
+
+        <record id="audit_requirement_internal" model="naid.audit.requirement">
+            <field name="name">Internal Compliance Audit</field>
+            <field name="audit_type">internal</field>
+            <field name="frequency_months">3</field>
+            <field name="scope">Policy compliance, equipment status, training compliance</field>
+            <field name="auditor_requirements">Internal compliance officer</field>
+            <field name="documentation_requirements">Compliance checklist, equipment logs, training status</field>
+        </record>
+
+        <!-- NAID Training Requirements -->
+        <record id="training_requirement_basic" model="naid.training.requirement">
+            <field name="name">Basic NAID Training</field>
+            <field name="training_type">basic</field>
+            <field name="required_for_roles">All employees handling documents</field>
+            <field name="duration_hours">4</field>
+            <field name="renewal_frequency_months">24</field>
+            <field name="topics">Security awareness, document handling, basic procedures</field>
+        </record>
+
+        <record id="training_requirement_advanced" model="naid.training.requirement">
+            <field name="name">Advanced NAID Training</field>
+            <field name="training_type">advanced</field>
+            <field name="required_for_roles">Supervisors, equipment operators, compliance officers</field>
+            <field name="duration_hours">16</field>
+            <field name="renewal_frequency_months">12</field>
+            <field name="topics">Equipment operation, audit procedures, incident response, policy implementation</field>
+        </record>
+
+        <!-- Additional Scheduled Actions -->
+        <record id="cron_equipment_calibration_check" model="ir.cron">
+            <field name="name">Equipment Calibration Check</field>
+            <field name="model_id" ref="model_shredding_equipment"/>
+            <field name="state">code</field>
+            <field name="code">model.check_calibration_due()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="cron_training_expiry_check" model="ir.cron">
+            <field name="name">Training Expiry Check</field>
+            <field name="model_id" ref="hr.model_hr_employee"/>
+            <field name="state">code</field>
+            <field name="code">model.check_training_expiry()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="cron_certificate_generation" model="ir.cron">
+            <field name="name">Automatic Certificate Generation</field>
+            <field name="model_id" ref="model_naid_certificate"/>
+            <field name="state">code</field>
+            <field name="code">model.generate_pending_certificates()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- NAID Integration Parameters -->
+        <record id="config_naid_integration" model="ir.config_parameter">
+            <field name="key">naid.integration.settings</field>
+            <field name="value">{
+                "enable_automatic_auditing": true,
+                "require_dual_witness": true,
+                "enable_gps_tracking": true,
+                "enable_biometric_access": false,
+                "compliance_alert_email": "compliance@suncityshred.com",
+                "audit_retention_years": 7,
+                "certificate_auto_generation": true
+            }</field>
+        </record>
+
+        <record id="config_security_levels" model="ir.config_parameter">
+            <field name="key">naid.security.levels</field>
+            <field name="value">{
+                "low": {"particle_size": "10mm", "witnesses": 1, "tracking": "basic"},
+                "medium": {"particle_size": "6mm", "witnesses": 1, "tracking": "enhanced"},
+                "high": {"particle_size": "2mm", "witnesses": 2, "tracking": "full_audit"},
+                "top_secret": {"particle_size": "0.8mm", "witnesses": 3, "tracking": "military_grade"}
+            }</field>
         </record>
 
     </data>

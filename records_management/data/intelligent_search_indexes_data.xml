@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
+    <data>
 
         <!-- =============================================================== -->
         <!-- INTELLIGENT SEARCH DATABASE INDEXES -->
@@ -68,10 +68,10 @@
              from odoo import api, SUPERUSER_ID
 
              def migrate(cr, version):
-                 cr.execute(\"""
+                 cr.execute('''
                      CREATE INDEX IF NOT EXISTS idx_container_search_composite
                      ON records_container (partner_id, alpha_range_start, primary_content_type, content_date_from);
-                 \""")
+                 ''')
         -->
         <!-- =============================================================== -->
 
@@ -105,40 +105,35 @@
             <field name="key">records_management.search.max_results</field>
             <field name="value">50</field>
         </record>
+
+        <record id="search_cache_timeout" model="ir.config_parameter">
+            <field name="key">records_management.search.cache_timeout</field>
+            <field name="value">300</field>
+        </record>
+
+        <!-- Search Feature Flags -->
         <record id="search_fuzzy_enabled" model="ir.config_parameter">
             <field name="key">records_management.search.fuzzy_enabled</field>
-            <field name="value">true</field>
+            <field name="value">True</field>
         </record>
-    </record>
 
-    <record id="search_cache_timeout" model="ir.config_parameter">
-        <field name="key">records_management.search.cache_timeout</field>
-        <field name="value">300</field>
-    </record>
+        <record id="search_fulltext_enabled" model="ir.config_parameter">
+            <field name="key">records_management.search.fulltext_enabled</field>
+            <field name="value">True</field>
+        </record>
 
-    <!-- Search Feature Flags -->
-    <record id="search_fuzzy_enabled" model="ir.config_parameter">
-        <field name="key">records_management.search.fuzzy_enabled</field>
-        <field name="value">True</field>
-    </record>
-
-    <record id="search_fulltext_enabled" model="ir.config_parameter">
-        <field name="key">records_management.search.fulltext_enabled</field>
-        <field name="value">true</field>
-    </record>
-
-    <!-- Performance Monitoring -->
-    <!--
+        <!-- Performance Monitoring -->
+        <!--
             The slow query threshold (1000 ms) is set to flag queries that take longer than 1 second.
             This value was chosen as a reasonable default for most production environments.
             For high-performance servers, you may lower this value to catch more queries;
             for resource-constrained or development environments, you may increase it to reduce noise.
             Tune this setting based on your typical search load and hardware capabilities.
         -->
-    <record id="search_slow_query_threshold" model="ir.config_parameter">
-        <field name="key">records_management.search.slow_query_threshold_ms</field>
-        <field name="value">1000</field>
-    </record>
+        <record id="search_slow_query_threshold" model="ir.config_parameter">
+            <field name="key">records_management.search.slow_query_threshold_ms</field>
+            <field name="value">1000</field>
+        </record>
 
-</data>
+    </data>
 </odoo>

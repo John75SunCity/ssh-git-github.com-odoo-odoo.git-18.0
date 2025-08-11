@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
+    <data>
         <!-- Customer Feedback Survey Template -->
         <record id="portal_feedback_survey" model="survey.survey">
             <field name="title">Records Management Portal Feedback</field>

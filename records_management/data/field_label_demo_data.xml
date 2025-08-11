@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
+    <data>
 
         <!-- Global Corporate Field Label Configuration -->
         <record id="field_labels_corporate_global" model="field.label.customization">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
+    <data>
         <!-- Create some sample tags for easier testing -->
         <record id="records_tag_confidential" model="records.tag">
             <field name="name">Confidential</field>
@@ -21,3 +21,164 @@
         </record>
     </data>
 </odoo>
+
+<!-- Essential tags for Records Management operations -->
+<record id="business_tags" model="ir.config_parameter">
+    <field name="key">BUSINESS_TAGS</field>
+    <field name="value">
+        {
+            'confidential': {
+                'color': 1,  # Red - High security attention
+                'security_level': 'high',
+                'naid_compliance': 'required',
+                'access_restriction': 'managers_only'
+            },
+            'archived': {
+                'color': 8,  # Gray - Inactive status
+                'state': 'permanent_storage',
+                'retrieval_priority': 'low',
+                'billing_status': 'long_term_storage'
+            },
+            'urgent': {
+                'color': 3,  # Orange - Action required
+                'priority': 'high',
+                'response_time': '24_hours',
+                'fsm_escalation': 'immediate'
+            }
+        }
+    </field>
+</record>
+
+<!-- Workflow integration parameters -->
+<record id="workflow_integration" model="ir.config_parameter">
+    <field name="key">WORKFLOW_INTEGRATION</field>
+    <field name="value">
+        {
+            'document_intake': 'Auto-tag based on document type and customer requirements',
+            'storage_assignment': 'Confidential tags route to secure storage locations',
+            'retrieval_priority': 'Urgent tags get priority pickup scheduling',
+            'destruction_workflow': 'Archived tags follow extended retention policies',
+            'billing_categorization': 'Tags determine service levels and pricing'
+        }
+    </field>
+</record>
+
+<!-- Portal visibility and functionality based on tags -->
+<record id="portal_integration" model="ir.config_parameter">
+    <field name="key">PORTAL_INTEGRATION</field>
+    <field name="value">
+        {
+            'confidential_documents': {
+                'visibility': 'restricted',
+                'download_logging': 'required',
+                'access_notification': 'admin_alert'
+            },
+            'archived_documents': {
+                'retrieval_request': 'special_handling_fee',
+                'timeline': 'extended_processing_time',
+                'availability': 'subject_to_verification'
+            },
+            'urgent_requests': {
+                'priority_queue': 'immediate_processing',
+                'notifications': 'real_time_updates',
+                'escalation': 'automatic_manager_alert'
+            }
+        }
+    </field>
+</record>
+
+<!-- FSM integration parameters -->
+<record id="fsm_integration" model="ir.config_parameter">
+    <field name="key">FSM_INTEGRATION</field>
+    <field name="value">
+        {
+            'pickup_prioritization': {
+                'urgent': 'Same-day pickup if possible',
+                'confidential': 'Secure transport vehicle required',
+                'archived': 'Bulk pickup acceptable'
+            },
+            'handling_instructions': {
+                'confidential': 'Background-checked personnel only',
+                'urgent': 'Priority loading and direct transport',
+                'archived': 'Standard handling procedures'
+            },
+            'route_optimization': {
+                'confidential': 'Secure facilities first',
+                'urgent': 'Time-sensitive stops prioritized',
+                'archived': 'Efficient bulk collection routes'
+            }
+        }
+    </field>
+</record>
+
+<!-- Billing tag integration parameters -->
+<record id="billing_tag_integration" model="ir.config_parameter">
+    <field name="key">BILLING_TAG_INTEGRATION</field>
+    <field name="value">
+        {
+            'confidential_premium': {
+                'storage_rate': 'Premium rate +25%',
+                'handling_fee': 'Secure handling surcharge',
+                'insurance': 'Enhanced coverage included'
+            },
+            'urgent_expedited': {
+                'pickup_fee': 'Expedited service charge',
+                'processing': 'Priority processing included',
+                'notification': 'Real-time status updates'
+            },
+            'archived_economy': {
+                'storage_rate': 'Long-term storage discount',
+                'retrieval_fee': 'Standard retrieval charges',
+                'bulk_discount': 'Volume pricing applicable'
+            }
+        }
+    </field>
+</record>
+
+<!-- Security groups determine tag access and functionality -->
+<record id="security_integration" model="ir.config_parameter">
+    <field name="key">SECURITY_INTEGRATION</field>
+    <field name="value">
+        {
+            'records_user': {
+                'view_tags': ['archived', 'urgent'],
+                'apply_tags': ['urgent'],
+                'restricted_tags': ['confidential']
+            },
+            'records_manager': {
+                'view_tags': ['confidential', 'archived', 'urgent'],
+                'apply_tags': ['confidential', 'archived', 'urgent'],
+                'remove_tags': 'all_tags'
+            },
+            'compliance_officer': {
+                'audit_tags': 'all_tag_changes',
+                'security_tags': 'confidential_oversight',
+                'reporting': 'tag_based_compliance_reports'
+            }
+        }
+    </field>
+</record>
+
+<!-- Tag-based analytics for business intelligence -->
+<record id="analytics_integration" model="ir.config_parameter">
+    <field name="key">ANALYTICS_INTEGRATION</field>
+    <field name="value">
+        {
+            'volume_analysis': {
+                'confidential_percentage': 'Percentage of high-security documents',
+                'urgent_trends': 'Rush request pattern analysis',
+                'archive_ratios': 'Long-term storage utilization'
+            },
+            'revenue_analysis': {
+                'premium_services': 'Revenue from confidential handling',
+                'expedited_fees': 'Urgent service profitability',
+                'storage_optimization': 'Archived document cost efficiency'
+            },
+            'operational_metrics': {
+                'response_times': 'Urgent tag resolution speed',
+                'security_compliance': 'Confidential handling accuracy',
+                'capacity_planning': 'Archive storage projections'
+            }
+        }
+    </field>
+</record>
