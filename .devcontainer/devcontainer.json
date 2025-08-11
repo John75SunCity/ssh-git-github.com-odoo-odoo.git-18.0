@@ -46,6 +46,16 @@
         "python.linting.enabled": true,
         "python.linting.flake8Enabled": true,
         "python.formatting.provider": "black",
+        // Extended session and timeout settings
+        "terminal.integrated.enablePersistentSessions": true,
+        "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
+        "workbench.settings.enableNaturalLanguageSearch": false,
+        "extensions.autoCheckUpdates": false,
+        "extensions.autoUpdate": false,
+        "telemetry.telemetryLevel": "off",
+        "update.mode": "none",
+        "git.autofetch": false,
+        "git.autofetchPeriod": 86400000,
         "files.exclude": {
           "**/__pycache__": true,
           "**/*.pyc": true,
@@ -89,14 +99,17 @@
       "onAutoForward": "silent"
     }
   },
-  "postCreateCommand": "git submodule update --init --recursive && apt-get update && apt-get install -y postgresql postgresql-client python3-dev libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev && su - postgres -c 'pg_ctlcluster 14 main start && createuser -s odoo' || echo 'DB setup skipped' && pip install -r requirements.txt && echo 'Setup complete! Run Odoo with: odoo -c /workspace/odoo.conf --addons-path=/workspace/records_management,/workspace/addons/queue_job,/workspace/addons/server_tools,/workspace/addons/reporting_engine,/workspace/addons/stock_logistics,/workspace/addons/web'",
+  "postCreateCommand": "git submodule update --init --recursive && apt-get update && apt-get install -y postgresql postgresql-client python3-dev libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev && su - postgres -c 'pg_ctlcluster 14 main start && createuser -s odoo' || echo 'DB setup skipped' && pip install -r requirements.txt && echo 'Setup complete! Run Odoo with: odoo -c /workspace/odoo.conf --addons-path=/workspace/records_management,/workspace/addons/queue_job,/workspace/addons/server_tools,/workspace/addons/reporting_engine,/workspace/addons/stock_logistics,/workspace/addons/web' && echo 'Starting keep-alive service...' && nohup bash -c 'while true; do echo \"$(date): Keep-alive ping\" >> /tmp/keepalive.log; sleep 3600; done' > /dev/null 2>&1 &",
   "remoteEnv": {
     "PYTHONPATH": "/workspace:/workspace/records_management:/workspace/addons",
     "ODOO_RC": "/workspace/odoo.conf",
     "PGHOST": "localhost",
     "PGPORT": "5432",
     "PGUSER": "odoo",
-    "PGPASSWORD": "odoo"
+    "PGPASSWORD": "odoo",
+    "CODESPACES_IDLE_TIMEOUT": "86400",
+    "VSCODE_WORKSPACE_KEEP_ALIVE": "true",
+    "TMOUT": "86400"
   },
   "mounts": [
     "source=odoo-addons,target=/workspace/addons,type=volume"
