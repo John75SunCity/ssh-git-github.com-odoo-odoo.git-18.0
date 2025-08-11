@@ -17,11 +17,14 @@ Key Differences from System Flowchart:
 - Department and company hierarchy emphasis
 """
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, AccessError
-import json
+# Python stdlib imports
 import base64
+import json
 import logging
+
+# Odoo core imports
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -113,6 +116,13 @@ class CustomerPortalDiagram(models.TransientModel):
     )
 
     # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
     # COMPUTED METHODS
     # ============================================================================
     @api.depends(
@@ -125,9 +135,10 @@ class CustomerPortalDiagram(models.TransientModel):
     def _compute_diagram_data(self):
         """Compute the diagram nodes and edges data for the interactive visualization"""
         for record in self:
+            nodes = []
+            edges = []
+            
             try:
-                nodes = []
-                edges = []
                 current_user = self.env.user
                 portal_user = current_user.has_group("portal.group_portal")
 
@@ -144,270 +155,37 @@ class CustomerPortalDiagram(models.TransientModel):
                     allowed_companies = self.env["res.company"].search([]).ids
                     allowed_departments = self.env["records.department"].search([]).ids
 
-                # ========================================
-                # 1. COMPANY NODES (Organizational Top Level)
-                # ========================================
-                company_domain = [("id", "in", allowed_companies)]
-                if record.search_company_id:
-                    company_domain.append(("id", "=", record.search_company_id.id))
+                # Generate company nodes
+                nodes, edges = record._generate_company_nodes(
+                    nodes, edges, allowed_companies
+                )
 
-                companies = self.env["res.company"].sudo().search(company_domain)
-                for company in companies:
-                    node_id = f"company_{company.id}"
-                    nodes.append(
-                        {
-                            "id": node_id,
-                            "label": company.name,
-                            "title": f"Company: {company.name}",
-                            "group": "company",
-                            "level": 0,
-                            "color": {"background": "#FFD700", "border": "#FFA500"},
-                            "shape": "box",
-                            "font": {"color": "#000000", "size": 14},
-                        }
+                # Generate department nodes
+                nodes, edges = record._generate_department_nodes(
+                    nodes, edges, allowed_companies, allowed_departments
+                )
+
+                # Generate user nodes
+                nodes, edges = record._generate_user_nodes(
+                    nodes, edges, allowed_companies, allowed_departments, current_user
+                )
+
+                # Generate access rights visualization if enabled
+                if record.show_access_rights and not portal_user:
+                    nodes, edges = record._generate_access_rights_nodes(
+                        nodes, edges, allowed_companies
                     )
 
-                # ========================================
-                # 2. DEPARTMENT NODES (Organizational Second Level)
-                # ========================================
-                dept_domain = [("company_id", "in", allowed_companies)]
-                if allowed_departments:
-                    dept_domain.append(("id", "in", allowed_departments))
-                if record.search_department_id:
-                    dept_domain = [("id", "=", record.search_department_id.id)]
-
-                departments = self.env["records.department"].sudo().search(dept_domain)
-                for dept in departments:
-                    node_id = f"dept_{dept.id}"
-                    nodes.append(
-                        {
-                            "id": node_id,
-                            "label": dept.name,
-                            "title": f"Department: {dept.name}\nCompany: {dept.company_id.name if dept.company_id else 'N/A'}",
-                            "group": "department",
-                            "level": 1,
-                            "color": {"background": "#90EE90", "border": "#32CD32"},
-                            "shape": "ellipse",
-                            "font": {"color": "#000000", "size": 12},
-                        }
-                    )
-
-                    # Link departments to companies
-                    if dept.company_id:
-                        edges.append(
-                            {
-                                "from": node_id,
-                                "to": f"company_{dept.company_id.id}",
-                                "label": "Belongs to",
-                                "color": {"color": "#808080"},
-                                "arrows": {"to": {"enabled": True}},
-                                "dashes": False,
-                            }
-                        )
-
-                # ========================================
-                # 3. USER NODES (People in Organization)
-                # ========================================
-                user_domain = [
-                    ("company_id", "in", allowed_companies),
-                    ("active", "=", True),
-                ]
-                if portal_user:
-                    # Portal users can only see users in their company and departments
-                    if allowed_departments:
-                        user_domain.append(
-                            (
-                                "partner_id.records_department_ids",
-                                "in",
-                                allowed_departments,
-                            )
-                        )
-                    else:
-                        user_domain.append(
-                            ("company_id", "=", current_user.company_id.id)
-                        )
-
-                if record.search_user_id:
-                    user_domain = [("id", "=", record.search_user_id.id)]
-
-                users = self.env["res.users"].sudo().search(user_domain)
-                for user in users:
-                    node_id = f"user_{user.id}"
-                    is_portal = user.has_group("portal.group_portal")
-                    is_current = user.id == current_user.id
-
-                    # Color coding for different user types
-                    if is_current:
-                        color = {
-                            "background": "#FF6B6B",
-                            "border": "#FF5252",
-                        }  # Highlight current user
-                    elif is_portal:
-                        color = {
-                            "background": "#FF69B4",
-                            "border": "#C2185B",
-                        }  # Portal users (external)
-                    else:
-                        color = {
-                            "background": "#87CEEB",
-                            "border": "#5DADE2",
-                        }  # Internal users
-
-                    nodes.append(
-                        {
-                            "id": node_id,
-                            "label": user.name,
-                            "title": f"User: {user.name}\nRole: {'Portal User' if is_portal else 'Internal User'}\nEmail: {user.email or 'No email'}\nCompany: {user.company_id.name}",
-                            "group": "user",
-                            "level": 2,
-                            "color": color,
-                            "shape": "circularImage" if user.image_1920 else "dot",
-                            "image": (
-                                f"/web/image/res.users/{user.id}/image_1920"
-                                if user.image_1920
-                                else None
-                            ),
-                            "font": {"color": "#FFFFFF", "size": 10},
-                            "size": 25 if is_current else 20,
-                        }
-                    )
-
-                    # Link users to their departments
-                    if user.partner_id.records_department_ids:
-                        for dept in user.partner_id.records_department_ids:
-                            edges.append(
-                                {
-                                    "from": node_id,
-                                    "to": f"dept_{dept.id}",
-                                    "label": "Assigned to",
-                                    "color": {"color": "#9E9E9E"},
-                                    "arrows": {"to": {"enabled": True}},
-                                    "dashes": [5, 5],
-                                }
-                            )
-                    else:
-                        # Link to company if no department
-                        edges.append(
-                            {
-                                "from": node_id,
-                                "to": f"company_{user.company_id.id}",
-                                "label": "Employee",
-                                "color": {"color": "#9E9E9E"},
-                                "arrows": {"to": {"enabled": True}},
-                                "dashes": [5, 5],
-                            }
-                        )
-
-                # ========================================
-                # 4. ACCESS RIGHTS VISUALIZATION (if enabled)
-                # ========================================
-                if (
-                    record.show_access_rights and not portal_user
-                ):  # Only show for internal users
-                    restricted_models = (record.restricted_models or "").split(",")
-                    models = (
-                        self.env["ir.model"]
-                        .sudo()
-                        .search(
-                            [
-                                (
-                                    "model",
-                                    "in",
-                                    [m.strip() for m in restricted_models if m.strip()],
-                                )
-                            ]
-                        )
-                    )
-
-                    for model in models:
-                        model_node_id = f"model_{model.id}"
-                        nodes.append(
-                            {
-                                "id": model_node_id,
-                                "label": model.name.split(".")[-1],  # Short name
-                                "title": f"Model: {model.name}\nDescription: {model.model}",
-                                "group": "model",
-                                "level": 3,
-                                "color": {"background": "#ADD8E6", "border": "#4682B4"},
-                                "shape": "box",
-                                "font": {"color": "#000000", "size": 8},
-                            }
-                        )
-
-                        # Check access for each user
-                        for user in users:
-                            user_node_id = f"user_{user.id}"
-                            try:
-                                # Check if user has read access to this model
-                                has_access = (
-                                    self.env[model.model]
-                                    .with_user(user.id)
-                                    .check_access_rights("read", raise_exception=False)
-                                )
-                                edge_color = (
-                                    "#4CAF50" if has_access else "#F44336"
-                                )  # Green/Red
-
-                                edges.append(
-                                    {
-                                        "from": user_node_id,
-                                        "to": model_node_id,
-                                        "label": "Access",
-                                        "color": {"color": edge_color},
-                                        "arrows": {"to": {"enabled": True}},
-                                        "dashes": True,
-                                        "width": 2,
-                                    }
-                                )
-                            except Exception as e:
-                                _logger.warning(
-                                    f"Access check failed for user {user.name} on model {model.model}: {e}"
-                                )
-
-                # ========================================
-                # 5. APPLY SEARCH FILTERING
-                # ========================================
+                # Apply search filtering
                 if record.search_query:
-                    search_lower = record.search_query.lower()
-                    filtered_nodes = []
-                    filtered_edges = []
-                    matched_node_ids = set()
+                    nodes, edges = record._apply_search_filtering(nodes, edges)
 
-                    # Find matching nodes
-                    for node in nodes:
-                        if (
-                            search_lower in node["label"].lower()
-                            or search_lower in node.get("title", "").lower()
-                        ):
-                            filtered_nodes.append(node)
-                            matched_node_ids.add(node["id"])
-
-                    # Include edges that connect to matched nodes
-                    for edge in edges:
-                        if (
-                            edge["from"] in matched_node_ids
-                            or edge["to"] in matched_node_ids
-                        ):
-                            filtered_edges.append(edge)
-                            # Also include connected nodes
-                            for node in nodes:
-                                if (
-                                    node["id"] == edge["from"]
-                                    or node["id"] == edge["to"]
-                                ) and node not in filtered_nodes:
-                                    filtered_nodes.append(node)
-
-                    nodes = filtered_nodes
-                    edges = filtered_edges
-
-                # ========================================
-                # 6. STORE COMPUTED DATA
-                # ========================================
+                # Store computed data
                 record.node_data = json.dumps(nodes)
                 record.edge_data = json.dumps(edges)
 
             except Exception as e:
-                _logger.error(f"Error computing diagram data: {e}")
+                _logger.error("Error computing diagram data: %s", e)
                 record.node_data = json.dumps([])
                 record.edge_data = json.dumps([])
 
@@ -432,8 +210,249 @@ class CustomerPortalDiagram(models.TransientModel):
 
                 record.diagram_stats = json.dumps(stats)
             except Exception as e:
-                _logger.error(f"Error computing diagram stats: {e}")
+                _logger.error("Error computing diagram stats: %s", e)
                 record.diagram_stats = json.dumps({})
+
+    # ============================================================================
+    # HELPER METHODS FOR DIAGRAM GENERATION
+    # ============================================================================
+    def _generate_company_nodes(self, nodes, edges, allowed_companies):
+        """Generate company nodes for the diagram"""
+        company_domain = [("id", "in", allowed_companies)]
+        if self.search_company_id:
+            company_domain.append(("id", "=", self.search_company_id.id))
+
+        companies = self.env["res.company"].sudo().search(company_domain)
+        for company in companies:
+            node_id = _("company_%s", company.id)
+            nodes.append(
+                {
+                    "id": node_id,
+                    "label": company.name,
+                    "title": _("Company: %s", company.name),
+                    "group": "company",
+                    "level": 0,
+                    "color": {"background": "#FFD700", "border": "#FFA500"},
+                    "shape": "box",
+                    "font": {"color": "#000000", "size": 14},
+                }
+            )
+        return nodes, edges
+
+    def _generate_department_nodes(self, nodes, edges, allowed_companies, allowed_departments):
+        """Generate department nodes for the diagram"""
+        dept_domain = [("company_id", "in", allowed_companies)]
+        if allowed_departments:
+            dept_domain.append(("id", "in", allowed_departments))
+        if self.search_department_id:
+            dept_domain = [("id", "=", self.search_department_id.id)]
+
+        departments = self.env["records.department"].sudo().search(dept_domain)
+        for dept in departments:
+            node_id = _("dept_%s", dept.id)
+            company_name = dept.company_id.name if dept.company_id else _("N/A")
+            
+            nodes.append(
+                {
+                    "id": node_id,
+                    "label": dept.name,
+                    "title": _("Department: %s\nCompany: %s", dept.name, company_name),
+                    "group": "department",
+                    "level": 1,
+                    "color": {"background": "#90EE90", "border": "#32CD32"},
+                    "shape": "ellipse",
+                    "font": {"color": "#000000", "size": 12},
+                }
+            )
+
+            # Link departments to companies
+            if dept.company_id:
+                edges.append(
+                    {
+                        "from": node_id,
+                        "to": _("company_%s", dept.company_id.id),
+                        "label": _("Belongs to"),
+                        "color": {"color": "#808080"},
+                        "arrows": {"to": {"enabled": True}},
+                        "dashes": False,
+                    }
+                )
+        return nodes, edges
+
+    def _generate_user_nodes(self, nodes, edges, allowed_companies, allowed_departments, current_user):
+        """Generate user nodes for the diagram"""
+        portal_user = current_user.has_group("portal.group_portal")
+        
+        user_domain = [
+            ("company_id", "in", allowed_companies),
+            ("active", "=", True),
+        ]
+        
+        if portal_user:
+            # Portal users can only see users in their company and departments
+            if allowed_departments:
+                user_domain.append(
+                    ("partner_id.records_department_ids", "in", allowed_departments)
+                )
+            else:
+                user_domain.append(("company_id", "=", current_user.company_id.id))
+
+        if self.search_user_id:
+            user_domain = [("id", "=", self.search_user_id.id)]
+
+        users = self.env["res.users"].sudo().search(user_domain)
+        for user in users:
+            node_id = _("user_%s", user.id)
+            is_portal = user.has_group("portal.group_portal")
+            is_current = user.id == current_user.id
+
+            # Color coding for different user types
+            if is_current:
+                color = {"background": "#FF6B6B", "border": "#FF5252"}
+            elif is_portal:
+                color = {"background": "#FF69B4", "border": "#C2185B"}
+            else:
+                color = {"background": "#87CEEB", "border": "#5DADE2"}
+
+            user_role = _("Portal User") if is_portal else _("Internal User")
+            email_display = user.email or _("No email")
+            
+            nodes.append(
+                {
+                    "id": node_id,
+                    "label": user.name,
+                    "title": _("User: %s\nRole: %s\nEmail: %s\nCompany: %s", 
+                             user.name, user_role, email_display, user.company_id.name),
+                    "group": "user",
+                    "level": 2,
+                    "color": color,
+                    "shape": "circularImage" if user.image_1920 else "dot",
+                    "image": (
+                        "/web/image/res.users/%s/image_1920" % user.id
+                        if user.image_1920
+                        else None
+                    ),
+                    "font": {"color": "#FFFFFF", "size": 10},
+                    "size": 25 if is_current else 20,
+                }
+            )
+
+            # Link users to their departments
+            if user.partner_id.records_department_ids:
+                for dept in user.partner_id.records_department_ids:
+                    edges.append(
+                        {
+                            "from": node_id,
+                            "to": _("dept_%s", dept.id),
+                            "label": _("Assigned to"),
+                            "color": {"color": "#9E9E9E"},
+                            "arrows": {"to": {"enabled": True}},
+                            "dashes": [5, 5],
+                        }
+                    )
+            else:
+                # Link to company if no department
+                edges.append(
+                    {
+                        "from": node_id,
+                        "to": _("company_%s", user.company_id.id),
+                        "label": _("Employee"),
+                        "color": {"color": "#9E9E9E"},
+                        "arrows": {"to": {"enabled": True}},
+                        "dashes": [5, 5],
+                    }
+                )
+
+        return nodes, edges
+
+    def _generate_access_rights_nodes(self, nodes, edges, allowed_companies):
+        """Generate access rights visualization nodes"""
+        restricted_models = (self.restricted_models or "").split(",")
+        model_list = [m.strip() for m in restricted_models if m.strip()]
+        
+        if not model_list:
+            return nodes, edges
+
+        ir_models = self.env["ir.model"].sudo().search([("model", "in", model_list)])
+
+        user_domain = [("company_id", "in", allowed_companies), ("active", "=", True)]
+        users = self.env["res.users"].sudo().search(user_domain)
+
+        for model in ir_models:
+            model_node_id = _("model_%s", model.id)
+            short_name = model.name.split(".")[-1]  # Short name
+            
+            nodes.append(
+                {
+                    "id": model_node_id,
+                    "label": short_name,
+                    "title": _("Model: %s\nDescription: %s", model.name, model.model),
+                    "group": "model",
+                    "level": 3,
+                    "color": {"background": "#ADD8E6", "border": "#4682B4"},
+                    "shape": "box",
+                    "font": {"color": "#000000", "size": 8},
+                }
+            )
+
+            # Check access for each user
+            for user in users:
+                user_node_id = _("user_%s", user.id)
+                try:
+                    # Check if user has read access to this model
+                    has_access = (
+                        self.env[model.model]
+                        .with_user(user.id)
+                        .check_access_rights("read", raise_exception=False)
+                    )
+                    edge_color = "#4CAF50" if has_access else "#F44336"
+
+                    edges.append(
+                        {
+                            "from": user_node_id,
+                            "to": model_node_id,
+                            "label": _("Access"),
+                            "color": {"color": edge_color},
+                            "arrows": {"to": {"enabled": True}},
+                            "dashes": True,
+                            "width": 2,
+                        }
+                    )
+                except Exception as e:
+                    _logger.warning(
+                        "Access check failed for user %s on model %s: %s",
+                        user.name, model.model, e
+                    )
+
+        return nodes, edges
+
+    def _apply_search_filtering(self, nodes, edges):
+        """Apply search filtering to nodes and edges"""
+        search_lower = self.search_query.lower()
+        filtered_nodes = []
+        filtered_edges = []
+        matched_node_ids = set()
+
+        # Find matching nodes
+        for node in nodes:
+            node_label = node.get("label", "").lower()
+            node_title = node.get("title", "").lower()
+            
+            if search_lower in node_label or search_lower in node_title:
+                filtered_nodes.append(node)
+                matched_node_ids.add(node["id"])
+
+        # Include edges that connect to matched nodes
+        for edge in edges:
+            if edge["from"] in matched_node_ids or edge["to"] in matched_node_ids:
+                filtered_edges.append(edge)
+                # Also include connected nodes
+                for node in nodes:
+                    node_id = node["id"]
+                    if (node_id == edge["from"] or node_id == edge["to"]) and node not in filtered_nodes:
+                        filtered_nodes.append(node)
+
+        return filtered_nodes, filtered_edges
 
     # ============================================================================
     # ACTION METHODS
@@ -479,7 +498,7 @@ class CustomerPortalDiagram(models.TransientModel):
                 "default_res_id": target_user.id,
                 "default_partner_ids": [(6, 0, [target_user.partner_id.id])],
                 "default_subject": _("Message from Organization Diagram"),
-                "default_body": f"<p>Hi {target_user.name},</p><p>I'm reaching out to you via the organization diagram.</p>",
+                "default_body": _("<p>Hi %s,</p><p>I'm reaching out to you via the organization diagram.</p>", target_user.name),
             },
         }
 
@@ -516,9 +535,12 @@ class CustomerPortalDiagram(models.TransientModel):
             },
         }
 
+        json_data = json.dumps(export_data, indent=2)
+        encoded_data = base64.b64encode(json_data.encode()).decode()
+        
         return {
             "type": "ir.actions.act_url",
-            "url": f"data:application/json;base64,{base64.b64encode(json.dumps(export_data, indent=2).encode()).decode()}",
+            "url": _("data:application/json;base64,%s", encoded_data),
             "target": "self",
         }
 
@@ -526,7 +548,7 @@ class CustomerPortalDiagram(models.TransientModel):
     # VALIDATION METHODS
     # ============================================================================
     @api.constrains("search_user_id", "search_company_id")
-    def _check_search_security(self):
+    def _check_search_security_constraints(self):
         """Ensure portal users can only search within their allowed scope"""
         for record in self:
             current_user = self.env.user
@@ -552,9 +574,9 @@ class CustomerPortalDiagram(models.TransientModel):
         if current_user.has_group("portal.group_portal"):
             # Portal users see only their company data
             return [("company_id", "=", current_user.company_id.id)]
-        else:
-            # Internal users can see all data (subject to regular security rules)
-            return []
+        
+        # Internal users can see all data (subject to regular security rules)
+        return []
 
     def _check_messaging_permission(self, target_user):
         """Check if current user can message the target user"""

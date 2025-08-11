@@ -2,8 +2,8 @@
 <odoo>
     <data>
         <!-- Base Rates Views -->
-        <record id="view_base_rates_tree" model="ir.ui.view">
-            <field name="name">base.rates.tree</field>
+        <record id="base_rates_view_tree" model="ir.ui.view">
+            <field name="name">base.rates.view.tree</field>
             <field name="model">base.rates</field>
             <field name="arch" type="xml">
                 <tree decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-warning="state == 'confirmed'" decoration-muted="state in ['superseded', 'expired', 'cancelled']">
@@ -22,8 +22,8 @@
             </field>
         </record>
 
-        <record id="view_base_rates_form" model="ir.ui.view">
-            <field name="name">base.rates.form</field>
+        <record id="base_rates_view_form" model="ir.ui.view">
+            <field name="name">base.rates.view.form</field>
             <field name="model">base.rates</field>
             <field name="arch" type="xml">
                 <form string="Base Rates">
@@ -184,8 +184,8 @@
         </record>
 
         <!-- Revenue Forecaster Views -->
-        <record id="view_revenue_forecaster_form" model="ir.ui.view">
-            <field name="name">revenue.forecaster.form</field>
+        <record id="revenue_forecaster_view_form" model="ir.ui.view">
+            <field name="name">revenue.forecaster.view.form</field>
             <field name="model">revenue.forecaster</field>
             <field name="arch" type="xml">
                 <form string="Revenue Forecaster">
@@ -208,8 +208,7 @@
                                     <div class="card text-center">
                                         <div class="card-body">
                                             <h5 class="card-title">Current Revenue</h5>
-                                            <h3 class="text-primary">$                                                <field name="current_monthly_revenue" nolabel="1"/>
-/mo</h3>
+                                            <h3 class="text-primary">$<field name="current_monthly_revenue" nolabel="1"/>/mo</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -217,8 +216,7 @@
                                     <div class="card text-center">
                                         <div class="card-body">
                                             <h5 class="card-title">Projected Revenue</h5>
-                                            <h3 class="text-success">$                                                <field name="projected_monthly_revenue" nolabel="1"/>
-/mo</h3>
+                                            <h3 class="text-success">$<field name="projected_monthly_revenue" nolabel="1"/>/mo</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -226,11 +224,8 @@
                                     <div class="card text-center">
                                         <div class="card-body">
                                             <h5 class="card-title">Monthly Change</h5>
-                                            <h3 class="text-info">$                                                <field name="revenue_difference" nolabel="1"/>
-                                            </h3>
-                                            <small class="text-muted">
-                                                <field name="revenue_percentage_change" nolabel="1"/>
-%</small>
+                                            <h3 class="text-info">$<field name="revenue_difference" nolabel="1"/></h3>
+                                            <small class="text-muted"><field name="revenue_percentage_change" nolabel="1"/>%</small>
                                         </div>
                                     </div>
                                 </div>
@@ -238,8 +233,7 @@
                                     <div class="card text-center">
                                         <div class="card-body">
                                             <h5 class="card-title">Annual Impact</h5>
-                                            <h3 class="text-warning">$                                                <field name="annual_revenue_impact" nolabel="1"/>
-                                            </h3>
+                                            <h3 class="text-warning">$<field name="annual_revenue_impact" nolabel="1"/></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -313,8 +307,8 @@
         </record>
 
         <!-- Rate Change Confirmation Wizard -->
-        <record id="view_rate_change_confirmation_wizard_form" model="ir.ui.view">
-            <field name="name">rate.change.confirmation.wizard.form</field>
+        <record id="rate_change_confirmation_wizard_view_form" model="ir.ui.view">
+            <field name="name">rate.change.confirmation.wizard.view.form</field>
             <field name="model">rate.change.confirmation.wizard</field>
             <field name="arch" type="xml">
                 <form string="Rate Change Implementation">
