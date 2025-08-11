@@ -6,9 +6,16 @@ This module provides comprehensive photo attachment management for the Records
 Management System with integration to mobile workflows and partner relationships.
 """
 
+import io
+import logging
+
+try:
+    from PIL import Image
+except ImportError:
+    Image = None
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-import logging
 
 _logger = logging.getLogger(__name__)
 
@@ -44,29 +51,53 @@ class Photo(models.Model):
         required=True,
     )
     user_id = fields.Many2one(
-        "res.users", string="User", default=lambda self: self.env.user, tracking=True
+        "res.users",
+        string="User",
+        default=lambda self: self.env.user,
+        tracking=True
     )
-    active = fields.Boolean(string="Active", default=True, tracking=True)
+    active = fields.Boolean(
+        string="Active",
+        default=True,
+        tracking=True
+    )
 
     # ============================================================================
     # PHOTO CONTENT FIELDS
     # ============================================================================
-    description = fields.Text(string="Description", tracking=True)
+    description = fields.Text(
+        string="Description",
+        tracking=True
+    )
 
     # File attachment fields
-    image = fields.Binary(string="Image", attachment=True, help="The photo image file")
+    image = fields.Binary(
+        string="Image",
+        attachment=True,
+        help="The photo image file"
+    )
     image_filename = fields.Char(
-        string="Image Filename", help="Original filename of the uploaded image"
+        string="Image Filename",
+        help="Original filename of the uploaded image"
     )
 
     # ============================================================================
     # METADATA FIELDS
     # ============================================================================
     date = fields.Datetime(
-        string="Date Taken", default=fields.Datetime.now, required=True, tracking=True
+        string="Date Taken",
+        default=fields.Datetime.now,
+        required=True,
+        tracking=True
     )
-    location = fields.Char(string="Location", help="Where the photo was taken")
-    tags = fields.Char(string="Tags", help="Comma-separated tags for categorization")
+    location = fields.Char(
+        string="Location",
+        help="Where the photo was taken"
+    )
+    tags = fields.Char(
+        string="Tags",
+        help="Comma-separated tags for categorization"
+    )
 
     # ============================================================================
     # TECHNICAL METADATA FIELDS
@@ -111,7 +142,11 @@ class Photo(models.Model):
     # WORKFLOW FIELDS
     # ============================================================================
     state = fields.Selection(
-        [("draft", "Draft"), ("validated", "Validated"), ("archived", "Archived")],
+        [
+            ("draft", "Draft"),
+            ("validated", "Validated"),
+            ("archived", "Archived")
+        ],
         string="Status",
         default="draft",
         tracking=True,
@@ -134,12 +169,24 @@ class Photo(models.Model):
         tracking=True,
     )
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
     )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+    )
 
     # ============================================================================
     # COMPUTE METHODS
@@ -149,10 +196,7 @@ class Photo(models.Model):
         """Compute file size and type from binary data"""
         for record in self:
             if record.image:
-                # Calculate file size
-                record.file_size = len(record.image) if record.image else 0
-
-                # Determine file type from filename
+                record.file_size = len(record.image)
                 if record.image_filename:
                     file_extension = record.image_filename.split(".")[-1].lower()
                     mime_types = {
@@ -165,11 +209,8 @@ class Photo(models.Model):
                     }
                     record.file_type = mime_types.get(file_extension, "unknown")
                 else:
-            pass
-            pass
                     record.file_type = "unknown"
             else:
-            pass
                 record.file_size = 0
                 record.file_type = False
 
@@ -181,26 +222,18 @@ class Photo(models.Model):
                 record.resolution = False
                 continue
 
-            try:
-                # Try to use Pillow if available
-                try:
-                    from PIL import Image
-                    import io
+            if not Image:
+                _logger.warning("Pillow library not installed, cannot compute image resolution.")
+                record.resolution = "Unknown"
+                continue
 
-                    image_data = io.BytesIO(record.image)
-                    img = Image.open(image_data)
-                    record.resolution = f"{img.width}x{img.height}"
-                except ImportError:
-                    # Fallback if Pillow not available
-                    _logger.warning(
-                        "Pillow not installed, cannot compute image resolution"
-                    )
-                    record.resolution = "Unknown"
-                except Exception as e:
-                    _logger.warning(f"Failed to compute resolution: {e}")
-                    record.resolution = "Error"
-            except Exception:
-                record.resolution = False
+            try:
+                image_data = io.BytesIO(record.image)
+                img = Image.open(image_data)
+                record.resolution = f"{img.width}x{img.height}"
+            except Exception as e:
+                _logger.warning("Failed to compute resolution for photo %s: %s", record.name, e)
+                record.resolution = "Error"
 
     # ============================================================================
     # ACTION METHODS
@@ -209,32 +242,41 @@ class Photo(models.Model):
         """Validate the photo and move to validated state"""
         self.ensure_one()
         if not self.image:
-            raise UserError(_("Cannot validate photo without an image"))
+            raise UserError(_("Cannot validate a photo without an image."))
         if self.state != "draft":
-            raise UserError(_("Only draft photos can be validated"))
+            raise UserError(_("Only draft photos can be validated."))
 
         self.write({"state": "validated"})
-        self.message_post(body=_("Photo validated"))
+        self.message_post(body=_("Photo validated."))
 
     def action_archive_photo(self):
         """Archive the photo"""
         self.ensure_one()
         if self.state == "archived":
-            raise UserError(_("Photo is already archived"))
+            raise UserError(_("This photo is already archived."))
 
         self.write({"state": "archived"})
-        self.message_post(body=_("Photo archived"))
+        self.message_post(body=_("Photo archived."))
+
+    def action_unarchive_photo(self):
+        """Unarchive the photo"""
+        self.ensure_one()
+        if self.state != "archived":
+            raise UserError(_("Only archived photos can be unarchived."))
+
+        self.write({"state": "validated"})
+        self.message_post(body=_("Photo unarchived and set to validated."))
 
     def action_download_photo(self):
         """Download the photo"""
         self.ensure_one()
         if not self.image:
-            raise UserError(_("No image to download"))
+            raise UserError(_("There is no image to download."))
 
-        filename = self.image_filename or f"photo_{self.id}.jpg"
+        filename = self.image_filename or _("photo_%s.jpg") % self.id
         return {
             "type": "ir.actions.act_url",
-            "url": f"/web/content/photo/{self.id}/image/{filename}",
+            "url": f"/web/content/photo/{self.id}/image?download=true&filename={filename}",
             "target": "new",
         }
 
@@ -250,47 +292,135 @@ class Photo(models.Model):
             "target": "new",
         }
 
+    def action_set_category(self):
+        """Open wizard to set photo category"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Set Photo Category"),
+            "res_model": "photo.category.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_photo_id": self.id, "default_category": self.category},
+        }
+
+    def action_bulk_tag_photos(self):
+        """Bulk tag multiple photos"""
+        self.ensure_one()
+        # This action operates on a recordset, but the wizard is launched for one context
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Bulk Tag Photos"),
+            "res_model": "photo.bulk.tag.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_photo_ids": [(6, 0, self.ids)]},
+        }
+
     # ============================================================================
-    # OVERRIDE METHODS
+    # BUSINESS METHODS
+    # ============================================================================
+    def get_photo_metadata(self):
+        """Get comprehensive photo metadata for reporting or API use."""
+        self.ensure_one()
+        return {
+            "name": self.name,
+            "category": self.category,
+            "date": self.date,
+            "location": self.location,
+            "tags": self.tags.split(",") if self.tags else [],
+            "file_size": self.file_size,
+            "file_type": self.file_type,
+            "resolution": self.resolution,
+            "partner": self.partner_id.name if self.partner_id else None,
+        }
+
+    def duplicate_photo(self):
+        """Create a duplicate of this photo, including its image."""
+        self.ensure_one()
+        new_photo = self.copy({
+            "name": _("%s (Copy)") % self.name,
+        })
+        new_photo.message_post(body=_("Duplicated from photo %s") % self.name)
+        return new_photo
+
+    def get_image_thumbnail(self, size=(150, 150)):
+        """Get a thumbnail version of the image."""
+        self.ensure_one()
+        if not self.image:
+            return False
+
+        if not Image:
+            _logger.warning("Pillow library not installed, cannot generate thumbnail.")
+            return False
+
+        try:
+            image_data = io.BytesIO(self.image)
+            img = Image.open(image_data)
+            # Use thumbnail for resizing while keeping aspect ratio
+            img.thumbnail(size, Image.Resampling.LANCZOS)
+            output = io.BytesIO()
+            img.save(output, format='JPEG')
+            return output.getvalue()
+        except Exception as e:
+            _logger.warning("Failed to generate thumbnail for photo %s: %s", self.name, e)
+            return False
+
+    # ============================================================================
+    # ORM OVERRIDES
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create for automatic photo numbering"""
+        """Override create for automatic photo numbering and audit trail."""
         for vals in vals_list:
             if vals.get("name", "New Photo") == "New Photo":
-                vals["name"] = (
-                    self.env["ir.sequence"].next_by_code("photo") or "New Photo"
-                )
-
+                vals["name"] = self.env["ir.sequence"].next_by_code("photo") or _("New Photo")
         photos = super().create(vals_list)
-
-        # Compute file info after creation
-        photos._compute_file_info()
-        photos._compute_resolution()
-
+        for photo in photos:
+            photo.message_post(body=_("Photo created: %s") % photo.name)
         return photos
 
     def write(self, vals):
-        """Override write for file info updates"""
-        result = super().write(vals)
+        """Override write for file info updates and detailed audit trail."""
+        # Get labels before the write operation changes the state
+        state_label_map = dict(self._fields['state'].selection)
+        category_label_map = dict(self._fields['category'].selection)
 
-        # Recompute file info if image changed
-        if "image" in vals or "image_filename" in vals:
-            self._compute_file_info()
-            self._compute_resolution()
+        old_values = {rec.id: {'state': rec.state, 'category': rec.category} for rec in self}
 
-        return result
+        super().write(vals)
+
+        for record in self:
+            if 'state' in vals and old_values[record.id]['state'] != record.state:
+                old_state_label = state_label_map.get(old_values[record.id]['state'], _('N/A'))
+                new_state_label = state_label_map.get(record.state, _('N/A'))
+                record.message_post(body=_("State changed from %s to %s.") % (old_state_label, new_state_label))
+
+            if 'category' in vals and old_values[record.id]['category'] != record.category:
+                old_cat_label = category_label_map.get(old_values[record.id]['category'], _('N/A'))
+                new_cat_label = category_label_map.get(record.category, _('N/A'))
+                record.message_post(body=_("Category changed from %s to %s.") % (old_cat_label, new_cat_label))
+        return True
+
+    def unlink(self):
+        """Override unlink to prevent deletion of validated or archived photos."""
+        for photo in self:
+            if photo.state in ["validated", "archived"]:
+                raise UserError(_("Cannot delete photo '%s' because it is in the '%s' state. Please reset it to draft first.") % (photo.name, photo.state))
+        return super().unlink()
 
     def name_get(self):
-        """Custom name display"""
+        """Custom name display with category and date for better context."""
         result = []
+        category_map = dict(self.fields_get(['category'])['category']['selection'])
         for record in self:
             name = record.name or _("Unnamed Photo")
             if record.category:
-                category_dict = dict(record._fields["category"].selection)
-                name += _(" (%s)"
+                category_label = category_map.get(record.category)
+                if category_label:
+                    name = f"{name} ({category_label})"
             if record.date:
-                name += _(" - %s"
+                name = f"{name} - {record.date.strftime('%Y-%m-%d')}"
             result.append((record.id, name))
         return result
 
@@ -299,38 +429,89 @@ class Photo(models.Model):
     # ============================================================================
     @api.constrains("image", "image_filename")
     def _check_image_requirements(self):
-        """Validate image and filename consistency"""
+        """Validate image and filename consistency."""
         for record in self:
             if record.image and not record.image_filename:
-                raise ValidationError(
-                    _("Image filename is required when image is provided")
-                )
-
+                raise ValidationError(_("An image filename is required when an image is provided."))
             if record.image_filename and not record.image:
-                raise ValidationError(_("Image is required when filename is provided"))
+                raise ValidationError(_("An image is required when a filename is provided."))
 
     @api.constrains("file_size")
     def _check_file_size(self):
-        """Validate reasonable file size limits"""
-        max_size = 10 * 1024 * 1024  # 10MB limit
+        """Validate reasonable file size limits (e.g., 10MB)."""
+        max_size = 10 * 1024 * 1024  # 10MB
         for record in self:
             if record.file_size and record.file_size > max_size:
-                raise ValidationError(_("Image file size cannot exceed 10MB"))
+                raise ValidationError(_("Image file size cannot exceed 10MB."))
 
     @api.constrains("date")
     def _check_date(self):
-        """Validate photo date is not in the future"""
+        """Validate photo date is not in the future."""
         for record in self:
             if record.date and record.date > fields.Datetime.now():
-                raise ValidationError(_("Photo date cannot be in the future"))
+                raise ValidationError(_("The photo date cannot be in the future."))
 
     @api.constrains("tags")
     def _check_tags(self):
-        """Validate tags format"""
+        """Validate tags format and length."""
         for record in self:
-            if record.tags:
-                # Basic validation - could be enhanced
-                if len(record.tags) > 255:
-                    raise ValidationError(
-                        _("Tags field is too long (max 255 characters)")
-                    )
+            if record.tags and len(record.tags) > 255:
+                raise ValidationError(_("The tags field is too long (maximum 255 characters)."))
+
+    @api.constrains("image_filename")
+    def _check_image_filename(self):
+        """Validate image filename extension."""
+        allowed_extensions = ["jpg", "jpeg", "png", "gif", "bmp", "webp"]
+        for record in self:
+            if record.image_filename:
+                file_extension = record.image_filename.split(".")[-1].lower()
+                if file_extension not in allowed_extensions:
+                    raise ValidationError(_("The image file must be one of the following types: %s.") % ", ".join(allowed_extensions))
+
+    # ============================================================================
+    # UTILITY & SEARCH METHODS
+    # ============================================================================
+    @api.model
+    def get_photos_by_category(self, category):
+        """Get active photos filtered by a specific category."""
+        return self.search([("category", "=", category), ("active", "=", True)])
+
+    @api.model
+    def get_photos_by_partner(self, partner_id):
+        """Get active photos associated with a specific partner."""
+        return self.search([("partner_id", "=", partner_id), ("active", "=", True)])
+
+    @api.model
+    def get_recent_photos(self, limit=10):
+        """Get the most recently uploaded active photos."""
+        return self.search([("active", "=", True)], limit=limit, order="date desc")
+
+    @api.model
+    def _search_tags(self, operator, value):
+        """Allow searching for photos by tags."""
+        if operator not in ('ilike', 'like', '=', '!=') or not isinstance(value, str):
+            return [('id', '=', 0)]
+        return [('tags', operator, value)]
+
+    @api.model
+    def get_photo_statistics(self):
+        """Get statistics about photos for reporting dashboards."""
+        read_group_category = self.read_group(
+            [('active', '=', True)],
+            ['category'], ['category']
+        )
+        read_group_state = self.read_group(
+            [('active', '=', True)],
+            ['state'], ['state']
+        )
+        stats = {
+            "total_photos": self.search_count([('active', '=', True)]),
+            "by_category": {res['category'][1]: res['category_count'] for res in read_group_category if res['category']},
+            "by_state": {res['state'][1]: res['state_count'] for res in read_group_state if res['state']},
+            "total_file_size": sum(self.search([('active', '=', True)]).mapped('file_size')),
+        }
+        if stats["total_photos"] > 0:
+            stats["average_file_size"] = stats["total_file_size"] / stats["total_photos"]
+        else:
+            stats["average_file_size"] = 0
+        return stats

@@ -26,10 +26,13 @@ Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
 """
+import logging
+from datetime import timedelta
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-from datetime import timedelta
+
+_logger = logging.getLogger(__name__)
 
 
 class RecordsAccessLog(models.Model):
@@ -174,7 +177,7 @@ class RecordsAccessLog(models.Model):
         string="Permission Level",
         help="Permission level used for access",
     )
-    authorized_by = fields.Many2one(
+    authorized_by_id = fields.Many2one(
         "res.users",
         string="Authorized By",
         help="User who authorized the access if different from accessing user",
@@ -242,7 +245,7 @@ class RecordsAccessLog(models.Model):
     # ============================================================================
     partner_id = fields.Many2one(
         "res.partner",
-        string="Partner", 
+        string="Partner",
         related="customer_id",
         store=True,
         help="Related partner field for One2many relationships compatibility"
@@ -273,78 +276,39 @@ class RecordsAccessLog(models.Model):
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
-    @api.depends("document_id", "access_type", "security_level")
+    @api.depends("document_id.security_level", "access_type")
     def _compute_compliance_flags(self):
         """Determine if compliance documentation is required"""
         for record in self:
-            # Compliance required for sensitive documents or certain access types
-            compliance_access_types = [
-                "download",
-                "print",
-                "edit",
-                "delete",
-                "retrieve",
-            ]
-            sensitive_levels = ["confidential", "restricted", "classified"]
-
+            compliance_access_types = {"download", "print", "edit", "delete", "retrieve"}
+            sensitive_levels = {"confidential", "restricted", "classified"}
             record.compliance_required = (
                 record.access_type in compliance_access_types
-                or (record.security_level and record.security_level in sensitive_levels)
+                or record.security_level in sensitive_levels
             )
 
-    @api.depends("access_type", "security_level", "access_result", "user_id")
+    @api.depends("access_type", "security_level", "access_result", "access_date")
     def _compute_risk_score(self):
         """Calculate risk score for access event"""
         for record in self:
             risk_score = 0
-
-            # Base risk by access type
-            risk_by_type = {
-                "view": 10,
-                "download": 30,
-                "print": 40,
-                "edit": 60,
-                "delete": 80,
-                "move": 70,
-                "scan": 20,
-                "retrieve": 50,
-            }
+            risk_by_type = {"view": 10, "download": 30, "print": 40, "edit": 60, "delete": 80, "move": 70, "scan": 20, "retrieve": 50}
             risk_score += risk_by_type.get(record.access_type, 10)
 
-            # Risk by security level
-            risk_by_security = {
-                "public": 0,
-                "internal": 10,
-                "confidential": 30,
-                "restricted": 50,
-                "classified": 70,
-            }
+            risk_by_security = {"public": 0, "internal": 10, "confidential": 30, "restricted": 50, "classified": 70}
             risk_score += risk_by_security.get(record.security_level, 0)
 
-            # Risk by result
             if record.access_result == "denied":
                 risk_score += 20
             elif record.access_result == "error":
-            pass
                 risk_score += 15
 
-            # Risk by time (after hours = higher risk)
             if record.access_date:
-                hour = None
-                if hasattr(record.access_date, "hour"):
-                    hour = record.access_date.hour
-                elif isinstance(record.access_date, str):
-            pass
-                    try:
-                        dt = fields.Datetime.from_string(record.access_date)
-                        hour = dt.hour
-                    except Exception:
-                        hour = None
-
-                if hour is not None and (hour < 6 or hour > 22):  # After hours access
+                hour = record.access_date.hour
+                if hour < 6 or hour > 22:
                     risk_score += 20
 
-            record.risk_score = min(risk_score, 100)  # Cap at 100
+            record.risk_score = min(risk_score, 100)
 
     # ============================================================================
     # ORM OVERRIDES
@@ -354,46 +318,37 @@ class RecordsAccessLog(models.Model):
         """Override create to set sequence and audit trail"""
         for vals in vals_list:
             if not vals.get("name"):
-                vals["name"] = (
-                    self.env["ir.sequence"].next_by_code("records.access.log")
-                    or "LOG-NEW"
-                )
+                vals["name"] = self.env["ir.sequence"].next_by_code("records.access.log") or _("New Log")
 
-            # Create audit trail for compliance-required access
             if vals.get("compliance_required"):
                 audit_vals = {
                     "event_type": "document_access",
-                    "description": f"Document access: {vals.get('access_type', 'unknown')}",
+                    "description": _("Document access: %s", vals.get('access_type', 'unknown')),
                     "user_id": vals.get("user_id"),
                     "document_id": vals.get("document_id"),
                 }
                 try:
                     audit_log = self.env["naid.audit.log"].sudo().create(audit_vals)
                     vals["audit_trail_id"] = audit_log.id
-                except Exception:
-                    # Continue without audit trail if NAID module not available
-                    pass
+                except Exception as e:
+                    _logger.warning(_("Could not create NAID audit log: %s", e))
 
         return super().create(vals_list)
 
     def write(self, vals):
         """Override write for audit trail updates"""
-        result = super().write(vals)
-
-        # Log significant changes
+        res = super().write(vals)
         if any(key in vals for key in ["access_result", "error_message", "risk_score"]):
-            self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
-                body=_("Access log updated: %s", "), ".join(f"{k}: {v}" for k, v in vals.items())
-            )
-
-        return result
+            for record in self:
+                updates = ", ".join([f"{key}: {vals[key]}" for key in vals if key in record._fields])
+                record.message_post(body=_("Access log updated: %s", updates))
+        return res
 
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================
-    def log_document_access(
-        self, document, access_type, access_method="backend", **kwargs
-    ):
+    @api.model
+    def log_document_access(self, document, access_type, access_method="backend", **kwargs):
         """Log a document access event"""
         vals = {
             "document_id": document.id,
@@ -404,27 +359,18 @@ class RecordsAccessLog(models.Model):
             "session_id": kwargs.get("session_id"),
             "business_justification": kwargs.get("justification"),
         }
-
         return self.create(vals)
 
     @api.model
     def log_portal_access(self, document_id, access_type, request=None):
         """Log document access from customer portal"""
-        vals = {
-            "document_id": document_id,
-            "access_type": access_type,
-            "access_method": "portal",
-        }
-
+        vals = {"document_id": document_id, "access_type": access_type, "access_method": "portal"}
         if request:
-            vals.update(
-                {
-                    "ip_address": request.httprequest.remote_addr,
-                    "user_agent": request.httprequest.headers.get("User-Agent"),
-                    "session_id": request.session.sid,
-                }
-            )
-
+            vals.update({
+                "ip_address": request.httprequest.remote_addr,
+                "user_agent": request.httprequest.headers.get("User-Agent"),
+                "session_id": request.session.sid,
+            })
         return self.create(vals)
 
     def get_access_summary(self):
@@ -432,8 +378,8 @@ class RecordsAccessLog(models.Model):
         self.ensure_one()
         return {
             "log_name": self.name,
-            "document": self.document_id.name if self.document_id else None,
-            "user": self.user_id.name if self.user_id else None,
+            "document": self.document_id.display_name,
+            "user": self.user_id.name,
             "access_date": self.access_date,
             "access_type": self.access_type,
             "access_result": self.access_result,
@@ -444,112 +390,58 @@ class RecordsAccessLog(models.Model):
     def generate_audit_report(self):
         """Generate audit report for this access log"""
         self.ensure_one()
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.report_access_log_audit",
-            "report_type": "qweb-pdf",
-            "data": {"log_id": self.id},
-            "context": self.env.context,
-        }
+        return self.env.ref('records_management.action_report_access_log_audit').report_action(self)
 
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
     def action_mark_reviewed(self):
         """Mark access log as reviewed"""
-        self.ensure_one()
-        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
-            body=_("Access log reviewed by %s", self.env.user.name),
-            message_type="comment",
-        )
-
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Access Log Reviewed"),
-                "message": _("Access log has been marked as reviewed."),
-                "type": "success",
-                "sticky": False,
-            },
-        }
+        self.message_post(body=_("Access log reviewed by %s", self.env.user.name))
+        return True
 
     def action_flag_suspicious(self):
         """Flag access as suspicious for investigation"""
-        self.ensure_one()
-
-        # Create investigation activity
-        try:
-            activity_type = self.env.ref("mail.mail_activity_data_todo")
-            manager_group = self.env.ref("records_management.group_records_manager")
-
-            user_id = self.env.user.id
-            if manager_group and manager_group.users:
-                user_id = manager_group.users[0].id
-
-            self.activity_schedule(
-                activity_type_id=activity_type.id,
-                summary=_("Investigate Suspicious Access"),
-                note=_("Access log flagged as suspicious: %s", self.name),
-                user_id=user_id,
-            )
-        except Exception:
-            # Continue without activity if references not available
-            pass
-
-        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
-            body=_("Access flagged as suspicious for investigation"),
-            message_type="comment",
-            subtype_xmlid="mail.mt_note",
-        )
-
+        for record in self:
+            try:
+                activity_type = self.env.ref("mail.mail_activity_data_todo")
+                manager_group = self.env.ref("records_management.group_records_manager")
+                user_id = manager_group.users[0].id if manager_group.users else self.env.user.id
+                record.activity_schedule(
+                    activity_type_id=activity_type.id,
+                    summary=_("Investigate Suspicious Access"),
+                    note=_("Access log flagged as suspicious: %s", record.name),
+                    user_id=user_id,
+                )
+                record.message_post(body=_("Access flagged as suspicious for investigation"))
+            except Exception as e:
+                _logger.warning(_("Could not schedule suspicious access activity: %s", e))
         return True
 
     def action_create_audit_trail(self):
         """Create formal audit trail entry"""
         self.ensure_one()
-
-        if not self.audit_trail_id:
+        if self.audit_trail_id:
+            raise UserError(_("An audit trail already exists for this log."))
+        try:
+            risk_level = "low"
+            if self.risk_score > 70:
+                risk_level = "high"
+            elif self.risk_score > 40:
+                risk_level = "medium"
             audit_vals = {
                 "event_type": "document_access",
-                "description": f"Document access audit trail for {self.name}",
+                "description": _("Manual audit trail for access log %s", self.name),
                 "user_id": self.user_id.id,
                 "document_id": self.document_id.id,
                 "access_log_id": self.id,
-                "risk_level": (
-                    "high"
-                    if self.risk_score > 70
-                    else "medium" if self.risk_score > 40 else "low"
-                ),
+                "risk_level": risk_level,
             }
-
-            try:
-                audit_log = self.env["naid.audit.log"].create(audit_vals)
-                self.write({"audit_trail_id": audit_log.id})
-
-                self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Audit trail created: %s", audit_log.name))
-
-                return {
-                    "type": "ir.actions.act_window",
-                    "name": _("Audit Trail"),
-                    "res_model": "naid.audit.log",
-                    "res_id": self.audit_trail_id.id,
-                    "view_mode": "form",
-                    "target": "current",
-                }
-            except Exception:
-                # Return notification if audit trail creation fails
-                return {
-                    "type": "ir.actions.client",
-                    "tag": "display_notification",
-                    "params": {
-                        "title": _("Audit Trail Error"),
-                        "message": _("Could not create audit trail entry."),
-                        "type": "warning",
-                        "sticky": False,
-                    },
-                }
-
+            audit_log = self.env["naid.audit.log"].create(audit_vals)
+            self.write({"audit_trail_id": audit_log.id})
+            self.message_post(body=_("Audit trail created: %s", audit_log.name))
+        except Exception as e:
+            raise UserError(_("Could not create audit trail entry: %s", e))
         return True
 
     # ============================================================================
@@ -566,7 +458,7 @@ class RecordsAccessLog(models.Model):
     def _check_risk_score(self):
         """Validate risk score is within valid range"""
         for record in self:
-            if record.risk_score < 0 or record.risk_score > 100:
+            if not 0 <= record.risk_score <= 100:
                 raise ValidationError(_("Risk score must be between 0 and 100."))
 
     @api.constrains("duration_seconds")
@@ -575,16 +467,8 @@ class RecordsAccessLog(models.Model):
         for record in self:
             if record.duration_seconds and record.duration_seconds < 0:
                 raise ValidationError(_("Access duration cannot be negative."))
-
-            # Flag unusually long access times (>24 hours)
             if record.duration_seconds and record.duration_seconds > 86400:
-                record.message_post(
-                    body=_(
-                        "Warning: Unusually long access duration detected: %d seconds"
-                    )
-                    % record.duration_seconds,
-                    message_type="comment",
-                )
+                record.message_post(body=_("Warning: Unusually long access duration detected: %s seconds", record.duration_seconds))
 
     # ============================================================================
     # UTILITY METHODS
@@ -593,32 +477,18 @@ class RecordsAccessLog(models.Model):
         """Custom name display"""
         result = []
         for record in self:
-            name_parts = [record.name]
-
-            if record.document_id:
-                name_parts.append(f"({record.document_id.name})")
-
-            if record.access_type:
-                name_parts.append(f"- {record.access_type.title()}")
-
-            if record.user_id:
-                name_parts.append(f"by {record.user_id.name}")
-
-            result.append((record.id, " ".join(name_parts)))
+            name = _("%s (%s) - %s by %s", record.name, record.document_id.name, record.access_type.title(), record.user_id.name)
+            result.append((record.id, name))
         return result
 
     @api.model
-    def _name_search(
-        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
+    def _name_search(self, name="", args=None, operator="ilike", limit=100, name_get_uid=None):
         """Enhanced search by name, document, or user"""
         args = args or []
         domain = []
         if name:
             domain = [
-                "|",
-                "|",
-                "|",
+                "|", "|", "|",
                 ("name", operator, name),
                 ("document_id.name", operator, name),
                 ("user_id.name", operator, name),
@@ -628,61 +498,37 @@ class RecordsAccessLog(models.Model):
 
     @api.model
     def get_access_statistics(self, domain=None, group_by="access_type"):
-        """Get access statistics for reporting"""
+        """Get access statistics for reporting using read_group for performance."""
         domain = domain or []
-        logs = self.search(domain)
+        if group_by not in ['access_type', 'user_id', 'risk_level', 'security_level']:
+            raise UserError(_("Invalid group_by parameter."))
 
-        if group_by == "access_type":
-            stats = {}
-            for access_type in [
-                "view",
-                "download",
-                "print",
-                "edit",
-                "delete",
-                "retrieve",
-            ]:
-                count = logs.filtered(lambda l: l.access_type == access_type)
-                stats[access_type] = len(count)
-            return stats
+        if group_by == 'risk_level':
+            low = self.search_count(domain + [('risk_score', '<=', 30)])
+            medium = self.search_count(domain + [('risk_score', '>', 30), ('risk_score', '<=', 70)])
+            high = self.search_count(domain + [('risk_score', '>', 70)])
+            return {'low': low, 'medium': medium, 'high': high}
 
-        elif group_by == "user":
-            pass
-            stats = {}
-            for log in logs:
-                user_name = log.user_id.name or "Unknown"
-                stats[user_name] = stats.get(user_name, 0) + 1
-            return stats
-
-        elif group_by == "risk_level":
-            pass
-            stats = {"low": 0, "medium": 0, "high": 0}
-            for log in logs:
-                if log.risk_score <= 30:
-                    stats["low"] += 1
-                elif log.risk_score <= 70:
-            pass
-                    stats["medium"] += 1
-                else:
-            pass
-                    stats["high"] += 1
-            return stats
-
-        return {}
+        grouped_data = self.read_group(domain, [group_by], [group_by])
+        return {
+            (item[group_by][1] if isinstance(item[group_by], tuple) else item[group_by] or 'N/A'): item[f'{group_by}_count']
+            for item in grouped_data
+        }
 
     @api.model
     def cleanup_old_logs(self, days=365):
         """Clean up old access logs based on retention policy"""
+        _logger.info("Starting cleanup of old access logs older than %d days.", days)
         cutoff_date = fields.Datetime.now() - timedelta(days=days)
-        old_logs = self.search(
-            [
-                ("access_date", "<", cutoff_date),
-                ("compliance_required", "=", False),  # Keep compliance logs longer
-            ]
-        )
+        domain = [("access_date", "<", cutoff_date), ("compliance_required", "=", False)]
 
-        if old_logs:
-            count = len(old_logs)
+        # Use search_count for performance, then search and unlink if necessary
+        count = self.search_count(domain)
+        if count > 0:
+            old_logs = self.search(domain)
             old_logs.unlink()
-            return count
-        return 0
+            _logger.info("Successfully cleaned up %d old access logs.", count)
+        else:
+            _logger.info("No old access logs to clean up.")
+
+        return count
