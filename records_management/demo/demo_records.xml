@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
         <!-- Demo Data for Records Management System -->
-
         <!-- Demo Shredding Service Template -->
         <record id="demo_shredding_service_template" model="shredding.service">
             <field name="name">Standard Document Shredding</field>
@@ -12,7 +10,6 @@
             <field name="completion_notes">Standard on-site document destruction service with NAID AAA compliance</field>
         </record>
         <!-- This file creates sample records for testing and development -->
-
         <!-- Demo Storage Locations -->
         <record id="demo_location_warehouse_a" model="records.location">
             <field name="name">Warehouse A - Secure Storage</field>
@@ -25,7 +22,6 @@
             <field name="temperature_controlled">True</field>
             <field name="security_level">high</field>
         </record>
-
         <record id="demo_location_warehouse_b" model="records.location">
             <field name="name">Warehouse B - Bulk Storage</field>
             <field name="code">WH-B</field>
@@ -37,7 +33,6 @@
             <field name="temperature_controlled">False</field>
             <field name="security_level">medium</field>
         </record>
-
         <!-- Demo Document Types -->
         <record id="demo_doc_type_contracts" model="records.document.type">
             <field name="name">Demo Contracts</field>
@@ -45,21 +40,18 @@
             <field name="description">Demo legal contracts and agreements</field>
             <field name="state">active</field>
         </record>
-
         <record id="demo_doc_type_invoices" model="records.document.type">
             <field name="name">Demo Invoices</field>
             <field name="code">DEMO-INV</field>
             <field name="description">Demo financial invoices and receipts</field>
             <field name="state">active</field>
         </record>
-
         <record id="demo_doc_type_hr_files" model="records.document.type">
             <field name="name">Demo HR Personnel Files</field>
             <field name="code">DEMO-HR</field>
             <field name="description">Demo human resources and employee records</field>
             <field name="state">active</field>
         </record>
-
         <!-- Demo Retention Policies -->
         <record id="demo_policy_standard" model="records.retention.policy">
             <field name="name">Demo Standard Business Records</field>
@@ -68,7 +60,6 @@
             <field name="description">Demo standard 7-year retention for business documents</field>
             <field name="active">True</field>
         </record>
-
         <record id="demo_policy_hr" model="records.retention.policy">
             <field name="name">Demo Human Resources Records</field>
             <field name="code">DEMO-HR-10Y</field>
@@ -76,7 +67,6 @@
             <field name="description">Demo extended retention for HR and employment records</field>
             <field name="active">True</field>
         </record>
-
         <!-- Demo Containers -->
         <record id="demo_container_001" model="records.container">
             <field name="name">Container-001</field>
@@ -88,7 +78,6 @@
             <field name="content_description">Legal contracts and agreements</field>
             <field name="active">True</field>
         </record>
-
         <record id="demo_container_002" model="records.container">
             <field name="name">Container-002</field>
             <field name="container_type_id" ref="demo_container_type_large"/>
@@ -99,10 +88,8 @@
             <field name="content_description">Financial records and invoices</field>
             <field name="active">True</field>
         </record>
-
         <!-- Demo Records Boxes (requires customer - will be created by demo customer data) -->
         <!-- These will be created by the demo.xml file after customers are available -->
-
         <!-- Demo Shredding Service Templates -->
         <record id="demo_shredding_service_template_basic" model="shredding.service">
             <field name="name">Basic Document Shredding Service</field>
@@ -111,7 +98,6 @@
             <field name="state">template</field>
             <field name="completion_notes">Basic on-site document destruction service with NAID AAA compliance</field>
         </record>
-
         <!-- Demo Paper Bale Recycling -->
         <record id="demo_paper_bale_001" model="paper.bale.recycling">
             <field name="name">Bale-001-Demo</field>
@@ -120,7 +106,6 @@
             <field name="state">draft</field>
             <field name="collection_date" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')"/>
         </record>
-
         <!-- Demo Chain of Custody Log Template -->
         <record id="demo_custody_log_template" model="records.chain.of.custody">
             <field name="name">Template Custody Transfer</field>
@@ -128,7 +113,6 @@
             <field name="request_type">transfer</field>
             <field name="notes">Template for custody transfer procedures</field>
         </record>
-
         <!-- Demo Portal Request Templates -->
         <record id="demo_portal_request_destruction" model="portal.request">
             <field name="name">Document Destruction Request Template</field>
@@ -137,7 +121,6 @@
             <field name="description">Template for customer document destruction requests</field>
             <field name="priority">normal</field>
         </record>
-
         <record id="demo_portal_request_retrieval" model="portal.request">
             <field name="name">Document Retrieval Request Template</field>
             <field name="request_type">retrieval</field>
@@ -145,22 +128,18 @@
             <field name="description">Template for customer document retrieval requests</field>
             <field name="priority">normal</field>
         </record>
-
         <!-- Demo System Configuration -->
         <record id="demo_system_config" model="ir.config_parameter">
             <field name="key">records_management.demo_mode</field>
             <field name="value">True</field>
         </record>
-
         <record id="demo_default_retention" model="ir.config_parameter">
             <field name="key">records_management.default_retention_years</field>
             <field name="value">7</field>
         </record>
-
         <record id="demo_naid_compliance" model="ir.config_parameter">
             <field name="key">records_management.naid_compliance_required</field>
             <field name="value">True</field>
         </record>
-
     </data>
 </odoo>

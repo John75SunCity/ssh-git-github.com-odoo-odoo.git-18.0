@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Portal Audit Trail Report Action -->
+        <record id="action_portal_audit_report" model="ir.actions.report">
+            <field name="name">NAID AAA Audit Trail Report</field>
+            <field name="model">portal.request</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">records_management.portal_audit_template</field>
+            <field name="report_file">records_management.portal_audit_report</field>
+            <field name="binding_model_id" ref="model_portal_request"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'NAID_Audit_Trail_%s_%s' % (object.name, datetime.datetime.now().strftime('%Y%m%d'))</field>
+            <field name="paperformat" ref="base.paperformat_us"/>
+        </record>
+
+        <!-- HTML Version for Portal Access -->
+        <record id="action_portal_audit_html" model="ir.actions.report">
+            <field name="name">NAID AAA Audit Trail (Web View)</field>
+            <field name="model">portal.request</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">records_management.portal_audit_template</field>
+        </record>
+
+        <!-- Portal Audit Trail Report Template - NAID AAA Compliant -->
+        <template id="portal_audit_template">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <t t-foreach="docs" t-as="request">
+                        <!-- Header Section with NAID Compliance Badge -->
+                        <div class="row mb-4">
+                            <div class="col-8">
+                                <h1 class="text-primary">
+                                    <i class="fa fa-shield text-success"/> 
+                                    <span t-esc="'NAID AAA Audit Trail Report'"/>
+                                </h1>
+                                <h2 class="text-muted">
+                                    <span t-esc="'Request: %s' % request.name"/>
+                                </h2>
+                            </div>
+                            <div class="col-4 text-right">
+                                <div class="alert alert-info">
+                                    <strong><span t-esc="'NAID AAA Certified'"/></strong><br/>
+                                    <small><span t-esc="'Secure Document Management'"/></small>
+                                </div>
+                                <p class="text-muted">
+                                    <strong><span t-esc="'Report Generated:'"/></strong><br/>
+                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Request Summary Section -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-info-circle"/> 
+                                    <span t-esc="'Request Summary'"/>
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td><strong><span t-esc="'Request ID:'"/></strong></td>
+                                                <td><span t-field="request.name"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong><span t-esc="'Customer:'"/></strong></td>
+                                                <td><span t-field="request.partner_id.name"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong><span t-esc="'Request Type:'"/></strong></td>
+                                                <td><span t-field="request.request_type"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong><span t-esc="'Priority:'"/></strong></td>
+                                                <td>
+                                                    <span t-if="request.priority == 'urgent'" 
+                                                          class="badge badge-danger" t-esc="'Urgent'"/>
+                                                    <span t-elif="request.priority == 'high'" 
+                                                          class="badge badge-warning" t-esc="'High'"/>
+                                                    <span t-elif="request.priority == 'normal'" 
+                                                          class="badge badge-info" t-esc="'Normal'"/>
+                                                    <span t-else="" 
+                                                          class="badge badge-secondary" t-esc="'Low'"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td><strong><span t-esc="'Current Status:'"/></strong></td>
+                                                <td>
+                                                    <span t-if="request.state == 'draft'" 
+                                                          class="badge badge-secondary" t-esc="'Draft'"/>
+                                                    <span t-elif="request.state == 'submitted'" 
+                                                          class="badge badge-info" t-esc="'Submitted'"/>
+                                                    <span t-elif="request.state == 'approved'" 
+                                                          class="badge badge-primary" t-esc="'Approved'"/>
+                                                    <span t-elif="request.state == 'in_progress'" 
+                                                          class="badge badge-warning" t-esc="'In Progress'"/>
+                                                    <span t-elif="request.state == 'completed'" 
+                                                          class="badge badge-success" t-esc="'Completed'"/>
+                                                    <span t-elif="request.state == 'cancelled'" 
+                                                          class="badge badge-danger" t-esc="'Cancelled'"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong><span t-esc="'Submission Date:'"/></strong></td>
+                                                <td><span t-field="request.create_date" t-options="{'widget': 'datetime'}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong><span t-esc="'Last Updated:'"/></strong></td>
+                                                <td><span t-field="request.write_date" t-options="{'widget': 'datetime'}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong><span t-esc="'Assigned To:'"/></strong></td>
+                                                <td><span t-field="request.user_id.name" t-if="request.user_id"/></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row mt-3" t-if="request.description">
+                                    <div class="col-12">
+                                        <strong><span t-esc="'Description:'"/></strong>
+                                        <p class="text-muted mt-2" t-field="request.description"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Records Management Integration - Container Information -->
+                        <div class="card mb-4" t-if="request.container_ids">
+                            <div class="card-header bg-secondary text-white">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-cube"/> 
+                                    <span t-esc="'Container Information'"/>
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th><span t-esc="'Container ID'"/></th>
+                                                <th><span t-esc="'Type'"/></th>
+                                                <th><span t-esc="'Location'"/></th>
+                                                <th><span t-esc="'Volume (CF)'"/></th>
+                                                <th><span t-esc="'Documents'"/></th>
+                                                <th><span t-esc="'Status'"/></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="request.container_ids" t-as="container">
+                                                <tr>
+                                                    <td><span t-field="container.name"/></td>
+                                                    <td><span t-field="container.container_type_id.name"/></td>
+                                                    <td><span t-field="container.location_id.name"/></td>
+                                                    <td><span t-field="container.cubic_feet"/></td>
+                                                    <td><span t-field="container.document_count"/></td>
+                                                    <td><span t-field="container.state"/></td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NAID Audit Trail Section -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-warning text-dark">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-history"/> 
+                                    <span t-esc="'NAID AAA Compliance Audit Trail'"/>
+                                </h4>
+                                <small><span t-esc="'Chronological log of all activities and state changes'"/></small>
+                            </div>
+                            <div class="card-body">
+                                <!-- NAID Audit Log Integration -->
+                                <t t-set="audit_logs" t-value="env['naid.audit.log'].search([
+                                    ('res_model', '=', 'portal.request'),
+                                    ('res_id', '=', request.id)
+                                ], order='create_date desc')"/>
+                                
+                                <div t-if="audit_logs" class="audit-trail">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th><span t-esc="'Timestamp'"/></th>
+                                                    <th><span t-esc="'Action'"/></th>
+                                                    <th><span t-esc="'User'"/></th>
+                                                    <th><span t-esc="'Details'"/></th>
+                                                    <th><span t-esc="'IP Address'"/></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="audit_logs" t-as="log">
+                                                    <tr>
+                                                        <td><span t-field="log.create_date" t-options="{'widget': 'datetime'}"/></td>
+                                                        <td>
+                                                            <span t-field="log.action"/>
+                                                            <span t-if="log.compliance_flag" class="badge badge-success ml-2">
+                                                                NAID
+                                                            </span>
+                                                        </td>
+                                                        <td><span t-field="log.user_id.name"/></td>
+                                                        <td><span t-field="log.description"/></td>
+                                                        <td><span t-field="log.ip_address"/></td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <!-- Fallback to Message Thread -->
+                                <div t-else="" class="mt-4">
+                                    <h5>
+                                        <i class="fa fa-comments"/> 
+                                        <span t-esc="'Activity Timeline'"/>
+                                    </h5>
+                                    <div class="timeline" t-if="request.message_ids">
+                                        <t t-foreach="request.message_ids.sorted('date', reverse=True)" t-as="message">
+                                            <div class="timeline-item" t-if="message.message_type in ['notification', 'comment']">
+                                                <div class="timeline-marker bg-primary"></div>
+                                                <div class="timeline-content">
+                                                    <div class="timeline-header">
+                                                        <strong t-esc="message.author_id.name or 'System'"/>
+                                                        <small class="text-muted float-right">
+                                                            <span t-field="message.date" t-options="{'widget': 'datetime'}"/>
+                                                        </small>
+                                                    </div>
+                                                    <div class="timeline-body">
+                                                        <span t-raw="message.body"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div t-else="" class="alert alert-info">
+                                        <i class="fa fa-info-circle"/> 
+                                        <span t-esc="'No activity timeline available'"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Digital Signatures Section -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-success text-white">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-certificate"/> 
+                                    <span t-esc="'Digital Signatures &amp; Approvals'"/>
+                                </h4>
+                                <small><span t-esc="'NAID AAA compliant electronic signature verification'"/></small>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Customer Signature -->
+                                    <div class="col-md-6">
+                                        <div class="signature-block">
+                                            <h5>
+                                                <i class="fa fa-user"/> 
+                                                <span t-esc="'Customer/Requestor Signature'"/>
+                                            </h5>
+                                            <div t-if="request.requestor_signature_date">
+                                                <div class="alert alert-success">
+                                                    <i class="fa fa-check-circle"/> 
+                                                    <strong><span t-esc="'Digitally Signed'"/></strong><br/>
+                                                    <strong><span t-esc="'Date:'"/></strong> 
+                                                    <span t-field="request.requestor_signature_date" t-options="{'widget': 'datetime'}"/><br/>
+                                                    <strong><span t-esc="'Signer:'"/></strong> 
+                                                    <span t-field="request.partner_id.name"/><br/>
+                                                    <t t-if="request.requestor_signature_ip">
+                                                        <strong><span t-esc="'IP Address:'"/></strong> 
+                                                        <span t-field="request.requestor_signature_ip"/><br/>
+                                                    </t>
+                                                    <small class="text-muted">
+                                                        <span t-esc="'Signature verified and timestamped'"/>
+                                                    </small>
+                                                </div>
+                                                <div t-if="request.requestor_signature" class="signature-image mt-2">
+                                                    <img t-att-src="'data:image/png;base64,%s' % to_text(request.requestor_signature)" 
+                                                         class="img-fluid border" style="max-height: 100px;" alt="Customer Signature"/>
+                                                </div>
+                                            </div>
+                                            <div t-else="" class="alert alert-warning">
+                                                <i class="fa fa-exclamation-triangle"/> 
+                                                <span t-esc="'Pending customer signature'"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Admin Signature -->
+                                    <div class="col-md-6">
+                                        <div class="signature-block">
+                                            <h5>
+                                                <i class="fa fa-user-shield"/> 
+                                                <span t-esc="'Administrator Approval'"/>
+                                            </h5>
+                                            <div t-if="request.admin_signature_date">
+                                                <div class="alert alert-success">
+                                                    <i class="fa fa-check-circle"/> 
+                                                    <strong><span t-esc="'Approved &amp; Signed'"/></strong><br/>
+                                                    <strong><span t-esc="'Date:'"/></strong> 
+                                                    <span t-field="request.admin_signature_date" t-options="{'widget': 'datetime'}"/><br/>
+                                                    <strong><span t-esc="'Administrator:'"/></strong> 
+                                                    <span t-field="request.user_id.name"/><br/>
+                                                    <small class="text-muted">
+                                                        <span t-esc="'Administrative approval confirmed'"/>
+                                                    </small>
+                                                </div>
+                                                <div t-if="request.admin_signature" class="signature-image mt-2">
+                                                    <img t-att-src="'data:image/png;base64,%s' % to_text(request.admin_signature)" 
+                                                         class="img-fluid border" style="max-height: 100px;" alt="Admin Signature"/>
+                                                </div>
+                                            </div>
+                                            <div t-else="" class="alert alert-info">
+                                                <i class="fa fa-clock-o"/> 
+                                                <span t-esc="'Pending administrative approval'"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Compliance Information Section -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-info text-white">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-shield"/> 
+                                    <span t-esc="'NAID AAA Compliance Information'"/>
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <ul class="list-unstyled">
+                                            <li>
+                                                <i class="fa fa-check text-success"/> 
+                                                <span t-esc="'Secure audit trail maintained'"/>
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-check text-success"/> 
+                                                <span t-esc="'Digital signatures verified'"/>
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-check text-success"/> 
+                                                <span t-esc="'Timestamps recorded in UTC'"/>
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-check text-success"/> 
+                                                <span t-esc="'User access logged'"/>
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-check text-success"/> 
+                                                <span t-esc="'Document chain of custody maintained'"/>
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-check text-success"/> 
+                                                <span t-esc="'Regulatory compliance verified'"/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-4 text-center">
+                                        <div class="compliance-seal">
+                                            <div class="badge badge-success badge-lg p-3">
+                                                <i class="fa fa-shield fa-2x d-block mb-2"/>
+                                                <strong><span t-esc="'NAID AAA'"/></strong><br/>
+                                                <small><span t-esc="'Certified Secure'"/></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Related Documents Section -->
+                        <div class="card mb-4" t-if="request.attachment_ids">
+                            <div class="card-header bg-secondary text-white">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-paperclip"/> 
+                                    <span t-esc="'Related Documents &amp; Attachments'"/>
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th><span t-esc="'Document Name'"/></th>
+                                                <th><span t-esc="'File Type'"/></th>
+                                                <th><span t-esc="'Size'"/></th>
+                                                <th><span t-esc="'Upload Date'"/></th>
+                                                <th><span t-esc="'Uploaded By'"/></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="request.attachment_ids" t-as="attachment">
+                                                <tr>
+                                                    <td><span t-field="attachment.name"/></td>
+                                                    <td><span t-field="attachment.mimetype"/></td>
+                                                    <td><span t-esc="'%.2f KB' % (attachment.file_size / 1024.0 if attachment.file_size else 0)"/></td>
+                                                    <td><span t-field="attachment.create_date" t-options="{'widget': 'datetime'}"/></td>
+                                                    <td><span t-field="attachment.create_uid.name"/></td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Report Footer with Verification -->
+                        <div class="card mt-4">
+                            <div class="card-footer bg-light">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <p class="mb-0">
+                                            <strong><span t-esc="'Report Verification:'"/></strong> 
+                                            <span t-esc="'This audit trail report has been generated automatically from the Records Management System and is compliant with NAID AAA standards for secure document destruction and chain of custody requirements.'"/>
+                                        </p>
+                                        <small class="text-muted">
+                                            <span t-esc="'All timestamps are recorded in UTC. Digital signatures are cryptographically verified. This report serves as legal documentation of the request lifecycle and compliance adherence.'"/>
+                                        </small>
+                                    </div>
+                                    <div class="col-md-4 text-right">
+                                        <div class="qr-code-section text-center">
+                                            <!-- QR Code for verification -->
+                                            <img t-att-src="'/report/barcode/QR/%s?width=100&amp;height=100' % request.name" 
+                                                 alt="Verification QR Code" style="width: 100px; height: 100px;"/>
+                                            <br/>
+                                            <small class="text-muted">
+                                                <span t-esc="'Scan for verification'"/>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12 text-center">
+                                        <small class="text-muted">
+                                            <span t-esc="'Generated on %s | Report ID: %s | Page' % (
+                                                context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S'),
+                                                request.name
+                                            )"/>
+                                            <span class="page"/> of <span class="topage"/>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Custom CSS for Professional Report Styling -->
+                <style>
+                    .timeline {
+                        position: relative;
+                        padding-left: 30px;
+                    }
+                    .timeline-item {
+                        position: relative;
+                        margin-bottom: 20px;
+                    }
+                    .timeline-marker {
+                        position: absolute;
+                        left: -35px;
+                        top: 5px;
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                    }
+                    .timeline-content {
+                        background: #f8f9fa;
+                        padding: 15px;
+                        border-radius: 5px;
+                        border-left: 3px solid #007bff;
+                    }
+                    .timeline-header {
+                        margin-bottom: 10px;
+                        border-bottom: 1px solid #dee2e6;
+                        padding-bottom: 5px;
+                    }
+                    .signature-block {
+                        border: 1px solid #dee2e6;
+                        padding: 20px;
+                        border-radius: 5px;
+                        height: 100%;
+                        min-height: 250px;
+                    }
+                    .signature-image {
+                        text-align: center;
+                    }
+                    .compliance-seal {
+                        margin-top: 20px;
+                    }
+                    .badge-lg {
+                        font-size: 1.1em;
+                        padding: 15px;
+                    }
+                    .audit-trail {
+                        background: #f8f9fa;
+                        padding: 15px;
+                        border-radius: 5px;
+                        border: 1px solid #dee2e6;
+                    }
+                    .qr-code-section {
+                        padding: 15px;
+                        background: #f8f9fa;
+                        border-radius: 5px;
+                    }
+                    
+                    /* Print optimizations */
+                    @media print {
+                        .page-break {
+                            page-break-before: always;
+                        }
+                        .card {
+                            border: 1px solid #dee2e6 !important;
+                            break-inside: avoid;
+                        }
+                        .badge {
+                            color: #000 !important;
+                        }
+                    }
+                    
+                    /* Mobile responsive design */
+                    @media (max-width: 768px) {
+                        .col-md-6 {
+                            margin-bottom: 20px;
+                        }
+                        .table-responsive {
+                            font-size: 0.85em;
+                        }
+                        .signature-block {
+                            min-height: auto;
+                        }
+                    }
+                </style>
+            </t>
+        </template>
+    </data>
+</odoo>

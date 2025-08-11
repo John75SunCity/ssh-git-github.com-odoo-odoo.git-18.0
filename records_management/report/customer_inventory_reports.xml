@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Customer Inventory Report Action -->
+        <record id="action_customer_inventory_report" model="ir.actions.report">
+            <field name="name">Customer Inventory Report</field>
+            <field name="model">res.partner</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">records_management.customer_inventory_template</field>
+            <field name="report_file">records_management.customer_inventory_report</field>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Inventory_Report_%s' % (object.name)</field>
+        </record>
+
+        <!-- Portal Access Report (HTML version for customers) -->
+        <record id="action_customer_inventory_portal" model="ir.actions.report">
+            <field name="name">My Inventory</field>
+            <field name="model">res.partner</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">records_management.customer_inventory_portal_template</field>
+        </record>
+
+        <!-- Main Customer Inventory Report Template -->
+        <template id="customer_inventory_template">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <t t-foreach="docs" t-as="partner">
+                        <div class="header" style="text-align: center; margin-bottom: 30px;">
+                            <h1>CUSTOMER INVENTORY REPORT</h1>
+                            <h2><span t-field="partner.name"/></h2>
+                            <p style="color: #666;">
+                                Generated: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%B %d, %Y at %I:%M %p')"/>
+                            </p>
+                        </div>
+
+                        <!-- Customer Information Section -->
+                        <div class="customer-details" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px;">
+                            <h3>Customer Information</h3>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Customer ID:</strong> <span t-field="partner.id"/><br/>
+                                    <strong>Account Manager:</strong> <span t-field="partner.user_id.name"/><br/>
+                                    <strong>Phone:</strong> <span t-field="partner.phone"/>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Address:</strong><br/>
+                                    <span t-field="partner.street"/><br/>
+                                    <span t-field="partner.city"/>, <span t-field="partner.state_id.name"/> <span t-field="partner.zip"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Records Management Integration - Containers -->
+                        <t t-set="containers" t-value="env['records.container'].search([('customer_id', '=', partner.id), ('active', '=', True)])"/>
+                        
+                        <div class="inventory-summary" style="margin-bottom: 30px;">
+                            <h3>Inventory Summary</h3>
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="stat-box" style="background: #f8f9fa; padding: 15px; text-align: center;">
+                                        <h4><span t-esc="len(containers)"/></h4>
+                                        <p>Total Containers</p>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="stat-box" style="background: #e3f2fd; padding: 15px; text-align: center;">
+                                        <h4><span t-esc="sum(containers.mapped('document_count'))"/></h4>
+                                        <p>Total Documents</p>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="stat-box" style="background: #e8f5e8; padding: 15px; text-align: center;">
+                                        <h4><span t-esc="round(sum(containers.mapped('cubic_feet')), 2)"/></h4>
+                                        <p>Total Cubic Feet</p>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="stat-box" style="background: #fff3e0; padding: 15px; text-align: center;">
+                                        <h4><span t-esc="len(containers.filtered(lambda c: c.location_id))"/></h4>
+                                        <p>Tracked Locations</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Container Inventory Table -->
+                        <h3>Container Details</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead style="background-color: #f8f9fa;">
+                                <tr>
+                                    <th>Container ID</th>
+                                    <th>Type</th>
+                                    <th>Location</th>
+                                    <th>Documents</th>
+                                    <th>Volume (CF)</th>
+                                    <th>Weight (lbs)</th>
+                                    <th>Status</th>
+                                    <th>Last Activity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="containers" t-as="container">
+                                    <tr>
+                                        <td><span t-field="container.name"/></td>
+                                        <td><span t-field="container.container_type_id.name"/></td>
+                                        <td><span t-field="container.location_id.name"/></td>
+                                        <td><span t-field="container.document_count"/></td>
+                                        <td><span t-field="container.cubic_feet"/></td>
+                                        <td><span t-field="container.weight"/></td>
+                                        <td>
+                                            <span t-field="container.state" 
+                                                  t-options='{"widget": "badge", "success": "active", "warning": "transit", "danger": "inactive"}'/>
+                                        </td>
+                                        <td><span t-field="container.write_date" t-options='{"format": "MMM dd, yyyy"}'/></td>
+                                    </tr>
+                                </t>
+                                <tr t-if="not containers">
+                                    <td colspan="8" class="text-center text-muted">No containers found for this customer</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Documents by Location -->
+                        <t t-set="locations" t-value="containers.mapped('location_id')"/>
+                        <t t-if="locations">
+                            <h3>Documents by Location</h3>
+                            <t t-foreach="locations" t-as="location">
+                                <div class="location-section" style="margin-bottom: 20px;">
+                                    <h4><span t-field="location.name"/> (<span t-field="location.code"/>)</h4>
+                                    <t t-set="location_containers" t-value="containers.filtered(lambda c: c.location_id == location)"/>
+                                    
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p><strong>Address:</strong><br/>
+                                            <span t-field="location.street"/><br/>
+                                            <span t-field="location.city"/>, <span t-field="location.state_id.name"/>
+                                            </p>
+                                        </div>
+                                        <div class="col-6">
+                                            <p><strong>Containers at this location:</strong> <span t-esc="len(location_containers)"/></p>
+                                            <p><strong>Total documents:</strong> <span t-esc="sum(location_containers.mapped('document_count'))"/></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+
+                        <!-- Footer with compliance information -->
+                        <div class="footer" style="border-top: 1px solid #ddd; padding-top: 15px; margin-top: 30px; font-size: 12px; color: #666;">
+                            <div class="row">
+                                <div class="col-6">
+                                    <p><strong>Report Details:</strong><br/>
+                                    Report ID: <span t-esc="docs.ids[0] if docs else 'N/A'"/><br/>
+                                    Generated by: <span t-esc="env.user.name"/><br/>
+                                    Company: <span t-esc="env.company.name"/>
+                                    </p>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <p><strong>Compliance:</strong><br/>
+                                    NAID AAA Certified Facility<br/>
+                                    ISO 15489 Compliant<br/>
+                                    Page <span class="page"/> of <span class="topage"/>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </template>
+
+        <!-- Portal Version Template (HTML for customer access) -->
+        <template id="customer_inventory_portal_template">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+                <t t-call="portal.portal_record_layout">
+                    <t t-set="card_header">
+                        <h4>My Inventory Report</h4>
+                    </t>
+                    <t t-set="card_body">
+                        <div class="container">
+                            <!-- Customer portal version with responsive design -->
+                            <t t-foreach="docs" t-as="partner">
+                                <!-- Summary cards for mobile-friendly display -->
+                                <div class="row mb-4">
+                                    <div class="col-md-3 col-sm-6 mb-3">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <h5 class="card-title" t-esc="len(env['records.container'].search([('customer_id', '=', partner.id)]))"/>
+                                                <p class="card-text">Total Containers</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Additional summary cards... -->
+                                </div>
+
+                                <!-- Mobile-friendly container list -->
+                                <div class="d-block d-lg-none">
+                                    <!-- Mobile view -->
+                                    <t t-set="containers" t-value="env['records.container'].search([('customer_id', '=', partner.id)])"/>
+                                    <t t-foreach="containers" t-as="container">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <h6 class="card-title" t-esc="container.name"/>
+                                                <p class="card-text">
+                                                    <small class="text-muted">
+                                                        Location: <span t-field="container.location_id.name"/><br/>
+                                                        Documents: <span t-field="container.document_count"/><br/>
+                                                        Status: <span t-field="container.state"/>
+                                                    </small>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+
+                                <!-- Desktop table view -->
+                                <div class="d-none d-lg-block">
+                                    <t t-call="records_management.container_table_partial"/>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <!-- Reusable container table partial -->
+        <template id="container_table_partial">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Container</th>
+                        <th>Location</th>
+                        <th>Documents</th>
+                        <th>Volume</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-set="containers" t-value="env['records.container'].search([('customer_id', '=', partner.id)])"/>
+                    <t t-foreach="containers" t-as="container">
+                        <tr>
+                            <td><span t-field="container.name"/></td>
+                            <td><span t-field="container.location_id.name"/></td>
+                            <td><span t-field="container.document_count"/></td>
+                            <td><span t-field="container.cubic_feet"/> CF</td>
+                            <td><span t-field="container.state"/></td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </template>
+    </data>
+</odoo>
