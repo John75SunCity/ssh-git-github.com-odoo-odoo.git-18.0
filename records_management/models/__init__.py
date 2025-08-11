@@ -99,6 +99,7 @@ from . import paper_load_shipment
 from . import work_order_shredding
 from . import document_retrieval_work_order
 from . import document_retrieval_item
+from . import document_search_attempt
 from . import file_retrieval_work_order
 
 # Service rates and billing (consolidated system)

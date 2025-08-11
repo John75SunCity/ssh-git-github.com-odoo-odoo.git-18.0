@@ -43,8 +43,6 @@ except ImportError:
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-_logger = logging.getLogger(__name__)
-
 
 class ProcessingLog(models.Model):
     _name = "processing.log"
@@ -309,40 +307,24 @@ class ProcessingLog(models.Model):
     def _compute_reference(self):
         """Compute reference to related record"""
         for log in self:
+            log.res_name = ""
+            log.reference = ""
             if log.res_model and log.res_id:
                 try:
                     if log.res_model in self.env:
                         record = self.env[log.res_model].browse(log.res_id)
                         if record.exists():
-                            log.res_name = getattr(
-                                record, "display_name", None
-                            ) or getattr(record, "name", "Unknown")
-                            log.reference = (
-                                f"{log.res_model}({log.res_id}): {log.res_name}"
-                            )
-                        else:
-                            log.res_name = _("Record Deleted")
+                            log.res_name = getattr(record, "display_name", None) or getattr(record, "name", "Unknown")
                             log.reference = f"{log.res_model}({log.res_id}): {log.res_name}"
-            pass
-            pass
-                            log.res_name = _("Deleted %s(%s)"
+                        else:
+                            log.res_name = _("Deleted %s(%s)", log.res_model, log.res_id)
                             log.reference = log.res_name
                     else:
-            pass
-            pass
-            pass
-            pass
-                        log.res_name = _("Unknown Model %s(%s)"
+                        log.res_name = _("Unknown Model %s(%s)", log.res_model, log.res_id)
                         log.reference = log.res_name
                 except Exception:
-                    log.res_name = _("Error accessing %s(%s)"
+                    log.res_name = _("Error accessing %s(%s)", log.res_model, log.res_id)
                     log.reference = log.res_name
-            else:
-            pass
-            pass
-            pass
-                log.res_name = ""
-                log.reference = ""
 
     @api.depends("log_level")
     def _compute_severity_score(self):
@@ -364,21 +346,15 @@ class ProcessingLog(models.Model):
             if log.name and log.process_type and log.timestamp:
                 timestamp_str = log.timestamp.strftime("%Y-%m-%d %H:%M:%S")
                 level_str = log.log_level.upper() if log.log_level else "INFO"
-                log.display_name = _("[%s] %s (%s)"
+                log.display_name = _("[%s] %s (%s)", level_str, log.name, timestamp_str)
             else:
-            pass
-            pass
-            pass
                 log.display_name = log.name or "Processing Log"
 
-    @api.depends("project_id")
+    @api.depends("process_type")
     def _compute_is_pickup_task(self):
         """Determine if task is a pickup task"""
         for record in self:
-            if record.project_id and record.project_id.is_pickup_project:
-                record.is_pickup_task = True
-            else:
-                record.is_pickup_task = False
+            record.is_pickup_task = record.process_type == 'pickup'
 
     # ============================================================================
     # ORM OVERRIDES
@@ -389,10 +365,8 @@ class ProcessingLog(models.Model):
         for vals in vals_list:
             if not vals.get("name"):
                 process_type = vals.get("process_type", "system")
-                timestamp = datetime.now()
-                vals["name"] = (
-                    _("%s-%s"
-                )
+                timestamp = fields.Datetime.to_string(datetime.now())
+                vals["name"] = _("%s-%s", process_type, timestamp)
             # Capture performance metrics if not provided
             if "memory_usage" not in vals and PSUTIL_AVAILABLE:
                 try:
@@ -525,7 +499,6 @@ class ProcessingLog(models.Model):
         if isinstance(log_id, int):
             log = self.browse(log_id)
         else:
-            pass
             log = log_id
         if log.exists():
             vals = {"status": "completed" if success else "failed", **kwargs}

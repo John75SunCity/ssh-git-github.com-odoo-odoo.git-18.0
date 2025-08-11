@@ -122,6 +122,7 @@
         "views/fsm_reschedule_wizard_views.xml",
         "views/document_retrieval_work_order_views.xml",
         "views/document_retrieval_menus.xml",
+        "views/document_search_attempt_views.xml",
         "views/paper_bale_views.xml",
         "views/paper_bale_recycling_views.xml",
         "views/paper_load_shipment_views.xml",

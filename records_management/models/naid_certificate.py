@@ -68,7 +68,11 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
+import base64
+import hashlib
+import re
+from datetime import datetime, timedelta
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 import logging
 
@@ -270,9 +274,9 @@ class NaidCertificate(models.Model):
             name = record.name or _("New Certificate")
             if record.certificate_type:
                 type_dict = dict(record._fields["certificate_type"].selection)
-                name += _(" - %s"
+                name += _(" - %s", type_dict.get(record.certificate_type))
             if record.partner_id:
-                name += _(" (%s)"
+                name += _(" (%s)", record.partner_id.name)
             record.display_name = name
 
     @api.depends("expiration_date")
@@ -293,7 +297,6 @@ class NaidCertificate(models.Model):
                 delta = record.expiration_date - today
                 record.days_until_expiration = delta.days
             else:
-            pass
                 record.days_until_expiration = 0
 
     # ============================================================================
@@ -359,9 +362,6 @@ class NaidCertificate(models.Model):
             raise UserError(_("Certificate document must be generated before signing"))
 
         # Digital signature logic here
-        import hashlib
-        import base64
-
         decoded_data = base64.b64decode(self.certificate_data)
         signature_hash = hashlib.sha256(decoded_data).hexdigest()
 
@@ -382,9 +382,6 @@ class NaidCertificate(models.Model):
             raise UserError(_("Certificate is not digitally signed"))
 
         # Signature validation logic here
-        import hashlib
-        import base64
-
         decoded_data = base64.b64decode(self.certificate_data)
         current_hash = hashlib.sha256(decoded_data).hexdigest()
 
@@ -405,7 +402,6 @@ class NaidCertificate(models.Model):
         if self.delivery_method == "email":
             self._send_certificate_email()
         elif self.delivery_method == "portal":
-            pass
             self._make_available_in_portal()
 
         self.write({"delivery_status": "sent", "date_modified": fields.Datetime.now()})
@@ -445,8 +441,6 @@ class NaidCertificate(models.Model):
             if not vals.get("expiration_date") and vals.get("certificate_type"):
                 expiration_days = self._get_expiration_days(vals["certificate_type"])
                 if expiration_days:
-                    from datetime import datetime, timedelta
-
                     expiration_date = datetime.now() + timedelta(days=expiration_days)
                     vals["expiration_date"] = expiration_date.date()
 
@@ -475,9 +469,9 @@ class NaidCertificate(models.Model):
             name = record.name or _("New Certificate")
             if record.certificate_type:
                 type_dict = dict(record._fields["certificate_type"].selection)
-                name += _(" - %s"
+                name += _(" - %s", type_dict.get(record.certificate_type))
             if record.partner_id:
-                name += _(" (%s)"
+                name += _(" (%s)", record.partner_id.name)
             result.append((record.id, name))
         return result
 
@@ -518,17 +512,16 @@ class NaidCertificate(models.Model):
                     ]
                 )
                 if existing:
+                    type_name = dict(record._fields["certificate_type"].selection).get(
+                        record.certificate_type
+                    )
                     raise ValidationError(
-                        _("An active %s certificate already exists for this customer", dict(record._fields["certificate_type"].selection))[
-                            record.certificate_type
-                        ]
+                        _("An active %s certificate already exists for this customer", type_name)
                     )
 
     @api.constrains("naid_member_id")
     def _check_naid_member_id(self):
         """Validate NAID member ID format (alphanumeric and dashes allowed)"""
-        import re
-
         for record in self:
             if record.naid_member_id and not re.match(
                 r"^[A-Za-z0-9\-]+$", record.naid_member_id
@@ -543,10 +536,8 @@ class NaidCertificate(models.Model):
     # SCHEDULED ACTIONS
     # ============================================================================
     @api.model
-    def check_certificate_expiration(self):
+    def _check_certificate_expiration(self):
         """Scheduled action to check for expiring certificates"""
-        from datetime import timedelta
-
         # Check for certificates expiring in 30 days
         warning_date = fields.Date.today() + timedelta(days=30)
         expiring_certificates = self.search(
@@ -564,6 +555,15 @@ class NaidCertificate(models.Model):
             )
 
         # Archive expired certificates
+        expired_certificates = self.search(
+            [
+                ("expiration_date", "<", fields.Date.today()),
+                ("state", "in", ["issued", "delivered"]),
+            ]
+        )
+
+        for cert in expired_certificates:
+            cert.action_archive_certificate()
         expired_certificates = self.search(
             [
                 ("expiration_date", "<", fields.Date.today()),

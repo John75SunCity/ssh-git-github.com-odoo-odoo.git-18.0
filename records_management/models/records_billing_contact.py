@@ -68,12 +68,14 @@ class RecordsBillingContact(models.Model):
         tracking=True,
         index=True,
         help="Name of the billing contact",
+    )
     
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
+    )
     
     user_id = fields.Many2one(
         "res.users",
@@ -81,6 +83,7 @@ class RecordsBillingContact(models.Model):
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this contact",
+    )
     
     active = fields.Boolean(
         string="Active", 
@@ -90,6 +93,7 @@ class RecordsBillingContact(models.Model):
 
     sequence = fields.Integer(
         string="Sequence", default=10, help="Order of contact in listings"
+    )
     
 
     # ============================================================================
@@ -100,6 +104,7 @@ class RecordsBillingContact(models.Model):
         required=True,
         tracking=True,
         help="Primary email address for billing communications",
+    )
     
     phone = fields.Char(string="Phone", tracking=True, help="Primary phone number")
     mobile = fields.Char(string="Mobile", tracking=True, help="Mobile phone number")
@@ -116,6 +121,7 @@ class RecordsBillingContact(models.Model):
         tracking=True,
         ondelete="cascade",
         help="Associated billing profile",
+    )
     
     partner_id = fields.Many2one(
         "res.partner",
@@ -123,6 +129,7 @@ class RecordsBillingContact(models.Model):
         related="billing_profile_id.partner_id",
         store=True,
         help="Customer associated with this contact",
+    )
     
 
     # ============================================================================
@@ -132,31 +139,37 @@ class RecordsBillingContact(models.Model):
         string="Receive Storage Invoices",
         default=True,
         help="Contact will receive storage billing invoices",
+    )
     
     receive_service_invoices = fields.Boolean(
         string="Receive Service Invoices",
         default=True,
         help="Contact will receive service billing invoices",
+    )
     
     receive_statements = fields.Boolean(
         string="Receive Statements",
         default=True,
         help="Contact will receive account statements",
+    )
     
     receive_overdue_notices = fields.Boolean(
         string="Receive Overdue Notices",
         default=True,
         help="Contact will receive overdue payment notices",
+    )
     
     receive_promotional = fields.Boolean(
         string="Receive Promotional Materials",
         default=False,
         help="Contact will receive promotional communications",
+    )
     
     receive_service_updates = fields.Boolean(
         string="Receive Service Updates",
         default=True,
         help="Contact will receive service notifications and updates",
+    )
     
 
     # ============================================================================
@@ -166,9 +179,11 @@ class RecordsBillingContact(models.Model):
         string="Primary Contact",
         default=False,
         help="This is the primary billing contact",
+    )
     
     backup_contact = fields.Boolean(
         string="Backup Contact", default=False, help="This is a backup billing contact"
+    )
     
     contact_type = fields.Selection(
         [
@@ -182,6 +197,7 @@ class RecordsBillingContact(models.Model):
         string="Contact Type",
         default="primary",
         help="Type of billing contact",
+    )
     
 
     # ============================================================================
@@ -198,6 +214,7 @@ class RecordsBillingContact(models.Model):
         string="Preferred Communication Method",
         default="email",
         help="Preferred method for billing communications",
+    )
     
     secondary_method = fields.Selection(
         [
@@ -209,6 +226,7 @@ class RecordsBillingContact(models.Model):
         ],
         string="Secondary Communication Method",
         help="Secondary method for billing communications",
+    )
     
 
     # ============================================================================
@@ -223,6 +241,7 @@ class RecordsBillingContact(models.Model):
         string="Email Format",
         default="pdf",
         help="Preferred email format for invoices",
+    )
     
     delivery_schedule = fields.Selection(
         [
@@ -234,6 +253,7 @@ class RecordsBillingContact(models.Model):
         string="Delivery Schedule",
         default="immediate",
         help="Schedule for invoice delivery",
+    )
     
 
     # ============================================================================
@@ -244,11 +264,13 @@ class RecordsBillingContact(models.Model):
         string="Language",
         default="en_US",
         help="Preferred language for communications",
+    )
     
     timezone = fields.Selection(
         selection="_get_timezones",
         string="Timezone",
         help="Contact's timezone for scheduling",
+    )
     
     notes = fields.Text(string="Notes", help="Internal notes about this contact")
 
@@ -257,15 +279,18 @@ class RecordsBillingContact(models.Model):
     # ============================================================================
     last_contact_date = fields.Datetime(
         string="Last Contact Date", help="Date of last communication with this contact"
+    )
     
     last_invoice_sent = fields.Datetime(
         string="Last Invoice Sent",
         help="Date when last invoice was sent to this contact",
+    )
     
     communication_count = fields.Integer(
         string="Communication Count",
         default=0,
         help="Number of communications sent to this contact",
+    )
     
 
     # ============================================================================
@@ -276,23 +301,28 @@ class RecordsBillingContact(models.Model):
         "res_id",
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)],
+    )
     
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
+    )
     
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)],
+    )
     
 
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
+    display_name = fields.Char(compute="_compute_display_name", store=True)
+
     @api.depends("name", "job_title", "department")
     def _compute_display_name(self):
         """Compute display name with additional details"""
@@ -302,9 +332,11 @@ class RecordsBillingContact(models.Model):
                 name_parts.append(f"({record.job_title})")
             if record.department:
                 name_parts.append(f"- {record.department}")
-            record.display_name = " ".join(name_parts)    @api.depends(
+            record.display_name = " ".join(name_parts)
+
+    @api.depends(
         "receive_storage_invoices", "receive_service_invoices", "receive_statements"
-    
+    )
     def _compute_invoice_types(self):
         """Compute which invoice types this contact receives"""
         for record in self:
@@ -322,6 +354,7 @@ class RecordsBillingContact(models.Model):
         compute="_compute_invoice_types",
         store=True,
         help="Types of invoices this contact receives",
+    )
     
 
     @api.depends("primary_contact", "backup_contact", "contact_type")
@@ -331,20 +364,12 @@ class RecordsBillingContact(models.Model):
             if record.primary_contact or record.contact_type == "primary":
                 record.contact_priority = 1
             elif record.backup_contact or record.contact_type == "backup":
-                pass
-            pass
                 record.contact_priority = 2
             elif record.contact_type == "executive":
-                pass
-            pass
                 record.contact_priority = 3
             elif record.contact_type == "financial":
-                pass
-            pass
                 record.contact_priority = 4
             else:
-                pass
-            pass
                 record.contact_priority = 5
 
     contact_priority = fields.Integer(
@@ -352,6 +377,7 @@ class RecordsBillingContact(models.Model):
         compute="_compute_contact_priority",
         store=True,
         help="Priority level for contact sorting",
+    )
     
 
     # ============================================================================
@@ -406,6 +432,7 @@ class RecordsBillingContact(models.Model):
         if not self.email and self.preferred_method == "email":
             raise ValidationError(
                 _("No email address specified for email communication.")
+            )
             
 
         # Update activity tracking
@@ -414,14 +441,18 @@ class RecordsBillingContact(models.Model):
                 "last_contact_date": fields.Datetime.now(),
                 "communication_count": self.communication_count + 1,
             }
+        )
         
 
         # Log the test communication
-        self.message_post(body=_("Action completed"))
-            body=_("Test communication sent to %s via %s"),
+        self.message_post(
+            body=_(
+                "Test communication sent to %s via %s",
                 self.name,
                 dict(self._fields["preferred_method"].selection)[self.preferred_method],
-            
+            )
+        )
+        
         
 
         return True
@@ -435,6 +466,7 @@ class RecordsBillingContact(models.Model):
                 "last_invoice_sent": fields.Datetime.now(),
                 "communication_count": self.communication_count + 1,
             }
+        )
         
 
     # ============================================================================
@@ -450,6 +482,7 @@ class RecordsBillingContact(models.Model):
                 ("billing_profile_id", "=", self.billing_profile_id.id),
                 ("id", "!=", self.id),
             ]
+        )
         
         other_contacts.write({"primary_contact": False})
 
@@ -459,9 +492,10 @@ class RecordsBillingContact(models.Model):
                 "primary_contact": True,
                 "contact_type": "primary",
             }
+        )
         
 
-        self.message_post(body=_("Action completed"))body=_("Contact set as primary billing contact"))
+        self.message_post(body=_("Contact set as primary billing contact"))
 
         return {
             "type": "ir.actions.client",
@@ -540,6 +574,7 @@ class RecordsBillingContact(models.Model):
                     ("id", "!=", self.id),
                 ],
                 limit=1,
+            )
             
 
             if backup_contacts:
@@ -549,10 +584,12 @@ class RecordsBillingContact(models.Model):
                         "backup_contact": False,
                         "contact_type": "primary",
                     }
+                )
                 
 
-                self.message_post(body=_("Action completed"))
+                self.message_post(
                     body=_("Primary contact role transferred to %s", backup_contacts[0].name)
+                )
                 
 
         self.write({"active": False})
@@ -581,14 +618,16 @@ class RecordsBillingContact(models.Model):
                         ("primary_contact", "=", True),
                         ("id", "!=", record.id),
                     ]
+                )
                 
                 if existing:
                     raise ValidationError(
                         _(
                             "Only one primary contact is allowed per billing profile. "
-                            "Please uncheck the primary contact flag for %s first."
-                        
-                        % existing[0].name
+                            "Please uncheck the primary contact flag for %s first.",
+                            existing[0].name,
+                        )
+                    )
                     
 
     @api.constrains("email")
@@ -596,7 +635,6 @@ class RecordsBillingContact(models.Model):
         """Validate email format using Odoo's utility"""
         for record in self:
             if record.email:
-                pass
                 if not email_validate(record.email):
                     raise ValidationError(_("Invalid email format: %s", record.email))
 
@@ -608,7 +646,8 @@ class RecordsBillingContact(models.Model):
                 raise ValidationError(
                     _(
                         "Email address is required when email is the preferred communication method"
-                    
+                    )
+                )
                 
 
             if record.preferred_method == "phone" and not (
@@ -617,7 +656,8 @@ class RecordsBillingContact(models.Model):
                 raise ValidationError(
                     _(
                         "Phone number is required when phone is the preferred communication method"
-                    
+                    )
+                )
                 
 
     # ============================================================================
@@ -632,8 +672,6 @@ class RecordsBillingContact(models.Model):
             if record.primary_contact:
                 name_parts.append("(Primary)")
             elif record.backup_contact:
-                pass
-            pass
                 name_parts.append("(Backup)")
 
             if record.job_title:
@@ -672,6 +710,7 @@ class RecordsBillingContact(models.Model):
                 ("active", "=", True),
             ],
             limit=1,
+        )
         
 
     @api.model
@@ -685,13 +724,10 @@ class RecordsBillingContact(models.Model):
         if invoice_type == "storage":
             domain.append(("receive_storage_invoices", "=", True))
         elif invoice_type == "service":
-            pass
             domain.append(("receive_service_invoices", "=", True))
         elif invoice_type == "statement":
-            pass
             domain.append(("receive_statements", "=", True))
         elif invoice_type == "overdue":
-            pass
             domain.append(("receive_overdue_notices", "=", True))
 
         return self.search(domain, order="contact_priority, sequence, name")

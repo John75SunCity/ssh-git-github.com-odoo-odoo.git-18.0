@@ -1,8 +1,0 @@
-# ... existing code ...
-    name = fields.Char(
-        string="NAID Profile Name",
-        required=True,
-        tracking=True,
-        help="NAID compliance profile name for this employee",
-    )
-# ... existing code ...

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+import logging
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class DocumentRetrievalItem(models.Model):
@@ -127,7 +130,7 @@ class DocumentRetrievalItem(models.Model):
     )
 
     # Search Results and History
-    search_attempts = fields.One2many(
+    search_attempt_ids = fields.One2many(
         "document.search.attempt",
         "retrieval_item_id",
         string="Search Attempts",
@@ -179,7 +182,7 @@ class DocumentRetrievalItem(models.Model):
 
     # Retrieval Details
     retrieval_notes = fields.Text(string="Retrieval Notes")
-    retrieved_by = fields.Many2one("res.users", string="Retrieved By")
+    retrieved_by_id = fields.Many2one("res.users", string="Retrieved By")
     retrieval_date = fields.Datetime(string="Retrieval Date")
 
     # Company and Basic Fields
@@ -227,7 +230,7 @@ class DocumentRetrievalItem(models.Model):
         default="standard",
     )
 
-    access_authorized_by = fields.Many2one("res.users", string="Access Authorized By")
+    access_authorized_by_id = fields.Many2one("res.users", string="Access Authorized By")
     authorization_date = fields.Datetime(string="Authorization Date")
 
     # Condition and Quality
@@ -348,19 +351,19 @@ class DocumentRetrievalItem(models.Model):
         for item in self:
             item.containers_accessed_count = len(item.searched_container_ids)
 
-    @api.depends("search_attempts", "search_attempts.found")
+    @api.depends("search_attempt_ids", "search_attempt_ids.found")
     def _compute_containers_not_found_count(self):
         """Count containers where file was NOT found (for billing purposes)"""
         for item in self:
             # Count search attempts where found = False
-            unsuccessful_searches = item.search_attempts.filtered(lambda x: not x.found)
+            unsuccessful_searches = item.search_attempt_ids.filtered(lambda x: not x.found)
             item.containers_not_found_count = len(unsuccessful_searches)
 
-    @api.depends("search_attempts")
+    @api.depends("search_attempt_ids")
     def _compute_total_search_attempts(self):
         """Count total number of search attempts"""
         for item in self:
-            item.total_search_attempts = len(item.search_attempts)
+            item.total_search_attempts = len(item.search_attempt_ids)
 
     @api.depends("partner_id", "work_order_id.partner_id", "item_type")
     def _compute_retrieval_cost(self):
@@ -442,11 +445,6 @@ class DocumentRetrievalItem(models.Model):
                         "container_access_rate"
                     )
                 else:
-                    pass
-                    pass
-                    pass
-                    pass
-                    pass
                     # Fall back to base rates
                     base_rate = self.env["base.rates"].search(
                         [
@@ -513,13 +511,6 @@ class DocumentRetrievalItem(models.Model):
                             "pickup_rate"
                         )
                     else:
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                         # Fall back to base delivery rate
                         base_delivery = self.env["base.rates"].search(
                             [
@@ -567,13 +558,6 @@ class DocumentRetrievalItem(models.Model):
                             "managed_retrieval_rate"
                         )
                     else:
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                         # Fall back to base not found rate
                         base_not_found = self.env["base.rates"].search(
                             [
@@ -611,9 +595,6 @@ class DocumentRetrievalItem(models.Model):
             if item.name:
                 parts.append(item.name)
             else:
-            pass
-            pass
-            pass
                 parts.append("New Item")
 
             if item.item_type:
@@ -641,12 +622,8 @@ class DocumentRetrievalItem(models.Model):
             if item.storage_location_id:
                 item.location_display = item.storage_location_id.name
             elif item.current_location:
-            pass
                 item.location_display = item.current_location
             else:
-            pass
-            pass
-            pass
                 item.location_display = "Location Unknown"
 
     # === ONCHANGE METHODS ===
@@ -662,9 +639,6 @@ class DocumentRetrievalItem(models.Model):
                     self.storage_location_id = self.container_id.storage_location_id
             except AttributeError:
                 # Handle missing attributes gracefully
-                import logging
-
-                _logger = logging.getLogger(__name__)
                 _logger.warning(
                     "container_id is missing expected attributes on DocumentRetrievalItem ID %s",
                     self.id,
@@ -714,13 +688,14 @@ class DocumentRetrievalItem(models.Model):
             {
                 "status": "located",
                 "retrieval_date": fields.Datetime.now(),
-                "retrieved_by": self.env.user.id,
+                "retrieved_by_id": self.env.user.id,
             }
         )
 
         # Post a notification message to the chatter
-        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
-            body=_("Item located by %sself.env.user.name", self.env.user.name), message_type="notification"
+        self.message_post(
+            body=_("Item located by %s", self.env.user.name),
+            message_type="notification",
         )
 
     def action_retrieve_item(self):
@@ -738,13 +713,14 @@ class DocumentRetrievalItem(models.Model):
             {
                 "status": "retrieved",
                 "retrieval_date": fields.Datetime.now(),
-                "retrieved_by": self.env.user.id,
+                "retrieved_by_id": self.env.user.id,
             }
         )
 
         # Post a notification message to the chatter
-        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
-            body=_("Item retrieved by %sself.env.user.name", self.env.user.name), message_type="notification"
+        self.message_post(
+            body=_("Item retrieved by %s", self.env.user.name),
+            message_type="notification",
         )
 
     def action_package_item(self):
@@ -764,8 +740,9 @@ class DocumentRetrievalItem(models.Model):
                 "retrieval_date": fields.Datetime.now(),
             }
         )
-        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
-            body=_("Item packaged by %sself.env.user.name", self.env.user.name), message_type="notification"
+        self.message_post(
+            body=_("Item packaged by %s", self.env.user.name),
+            message_type="notification",
         )
 
     def action_deliver_item(self):
@@ -782,8 +759,9 @@ class DocumentRetrievalItem(models.Model):
         self.write({"status": "delivered"})
 
         # Post a notification message to the chatter
-        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
-            body=_("Item delivered by %sself.env.user.name", self.env.user.name), message_type="notification"
+        self.message_post(
+            body=_("Item delivered by %s", self.env.user.name),
+            message_type="notification",
         )
 
     def action_return_item(self):
@@ -804,8 +782,9 @@ class DocumentRetrievalItem(models.Model):
             }
         )
         # Post a notification message to the chatter
-        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
-            body=_("Item returned by %sself.env.user.name", self.env.user.name), message_type="notification"
+        self.message_post(
+            body=_("Item returned by %s", self.env.user.name),
+            message_type="notification",
         )
 
     # === NEW ACTION METHODS FOR SEARCH WORKFLOW ===
@@ -816,8 +795,12 @@ class DocumentRetrievalItem(models.Model):
             raise UserError(_("Only pending items can start search process"))
 
         self.write({"status": "searching"})
-        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
-            body=_("Search started by %sself.env.user.name for file: %sself.requested_file_name or self.name", self.env.user.name, self.requested_file_name or self.name),
+        self.message_post(
+            body=_(
+                "Search started by %s for file: %s",
+                self.env.user.name,
+                self.requested_file_name or self.name,
+            ),
             message_type="notification",
         )
 
@@ -838,7 +821,7 @@ class DocumentRetrievalItem(models.Model):
         search_attempt_vals = {
             "retrieval_item_id": self.id,
             "container_id": container_id,
-            "searched_by": self.env.user.id,
+            "searched_by_id": self.env.user.id,
             "search_date": fields.Datetime.now(),
             "found": found,
             "notes": notes,
@@ -875,11 +858,15 @@ class DocumentRetrievalItem(models.Model):
         )
 
         # Create final search attempt record
-        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
-            body=_("File marked as NOT FOUND by %sself.env.user.name. ", self.env.user.name)
-            f"Searched {self.containers_accessed_count} containers "
-            f"({self.containers_not_found_count} unsuccessful - will be charged as container access fees). "
-            f"Reason: {dict(self._fields['not_found_reason'].selection).get(reason, reason)}",
+        body_msg = _(
+            "File marked as NOT FOUND by %s. Searched %s containers (%s unsuccessful - will be charged as container access fees). Reason: %s",
+            self.env.user.name,
+            self.containers_accessed_count,
+            self.containers_not_found_count,
+            dict(self._fields["not_found_reason"].selection).get(reason, reason),
+        )
+        self.message_post(
+            body=body_msg,
             message_type="notification",
         )
 
@@ -911,8 +898,10 @@ class DocumentRetrievalItem(models.Model):
             document = self.env["records.document"].create(document_vals)
             self.document_id = document.id
 
-        self.message_post(body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))body=_("Action completed"))
-            body=_("File barcoded by %sself.env.user.name with barcode: %sbarcode", self.env.user.name, barcode),
+        self.message_post(
+            body=_(
+                "File barcoded by %s with barcode: %s", self.env.user.name, barcode
+            ),
             message_type="notification",
         )
 

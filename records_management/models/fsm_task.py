@@ -25,9 +25,10 @@ FUTURE ENHANCEMENT OPTIONS:
 - Customer grouping by geographic area
 """
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
 import logging
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -119,7 +120,7 @@ class FsmTask(models.Model):
     start_date = fields.Datetime(string="Start Date", tracking=True)
     end_date = fields.Datetime(string="End Date", tracking=True)
     deadline = fields.Date(string="Deadline", tracking=True)
-    assigned_technician = fields.Many2one(
+    assigned_technician_id = fields.Many2one(
         "res.users", string="Assigned Technician", tracking=True
     )
     team_name = fields.Char(string="Service Team")
@@ -306,8 +307,6 @@ class FsmTask(models.Model):
                 delta = record.end_date - record.start_date
                 record.duration_hours = delta.total_seconds() / 3600.0
             else:
-            pass
-            pass
                 record.duration_hours = 0.0
 
     @api.depends("deadline", "status")
@@ -326,14 +325,11 @@ class FsmTask(models.Model):
         """Generate readable progress status"""
         for record in self:
             if record.status == "completed":
-                record.progress_status = "Completed"
+                record.progress_status = _("Completed")
             elif record.status == "cancelled":
-            pass
-                record.progress_status = "Cancelled"
+                record.progress_status = _("Cancelled")
             else:
-            pass
-            pass
-                record.progress_status = f"{record.completion_percentage:.0f}% Complete"
+                record.progress_status = _("%s%% Complete", f"{record.completion_percentage:.0f}")
 
     # ============================================================================
     # ACTION METHODS
@@ -464,7 +460,7 @@ class FsmTask(models.Model):
                 new_status = vals["status"]
                 if old_status != new_status:
                     record.message_post(
-                        body=_("Status changed from %s to %s", (old_status), new_status)
+                        body=_("Status changed from %s to %s", old_status, new_status)
                     )
         return super().write(vals)
 
@@ -474,16 +470,16 @@ class FsmTask(models.Model):
         for record in self:
             name = record.name or _("New")
             if record.customer_id:
-                name += _(" - %s"
+                name += _(" - %s", record.customer_id.name)
             if record.task_type:
                 task_type_dict = dict(record._fields["task_type"].selection)
-                name += _(" (%s)"
+                name += _(" (%s)", task_type_dict.get(record.task_type))
             result.append((record.id, name))
         return result
 
     @api.model
-    def _name_search(
-        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
+    def _search_name(
+        self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
     ):
         """Enhanced search by name, customer, or task type"""
         args = args or []
@@ -581,7 +577,7 @@ class FsmTaskServiceLine(models.Model):
     # DYNAMIC ADDITION TRACKING
     # ============================================================================
     added_on_site = fields.Boolean(string="Added On-Site", default=False)
-    added_by = fields.Many2one("res.users", string="Added By")
+    added_by_id = fields.Many2one("res.users", string="Added By")
     added_date = fields.Datetime(string="Added Date", default=fields.Datetime.now)
 
     customer_approved = fields.Boolean(string="Customer Approved", default=False)
@@ -652,6 +648,10 @@ class FsmTaskServiceLine(models.Model):
     def action_approve_service(self):
         """Approve the additional service"""
         self.ensure_one()
+        self.write({"status": "approved", "customer_approved": True})
+        self.task_id.message_post(
+            body=_("Additional service approved: %s", self.service_name)
+        )
         self.write({"status": "approved", "customer_approved": True})
         self.task_id.message_post(
             body=_("Additional service approved: %s", self.service_name)
