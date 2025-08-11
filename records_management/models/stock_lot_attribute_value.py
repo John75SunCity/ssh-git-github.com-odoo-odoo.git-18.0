@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
+
 
 class StockLotAttributeValue(models.Model):
     """Stock Lot Attribute Values"""
@@ -53,7 +55,7 @@ class StockLotAttributeValue(models.Model):
 
             attr_type = record.attribute_id.attribute_type
             attr_name = record.attribute_id.name or "Unknown"
-            
+
             if attr_type == "text":
                 value = record.value_text or "Empty"
                 record.display_name = _("%s: %s", attr_name, value)
@@ -89,17 +91,17 @@ class StockLotAttributeValue(models.Model):
         self.ensure_one()
         if not self.attribute_id:
             return None
-            
+
         attr_type = self.attribute_id.attribute_type
         if attr_type == "text":
             return self.value_text
-        elif attr_type == "number":
+        if attr_type == "number":
             return self.value_number
-        elif attr_type == "date":
+        if attr_type == "date":
             return self.value_date
-        elif attr_type == "boolean":
+        if attr_type == "boolean":
             return self.value_boolean
-        elif attr_type == "selection":
+        if attr_type == "selection":
             return self.value_selection
         return None
 
@@ -114,7 +116,7 @@ class StockLotAttributeValue(models.Model):
     def write(self, vals):
         """Override write to validate attribute types"""
         result = super().write(vals)
-        if any(key.startswith('value_') for key in vals.keys()) or 'attribute_id' in vals:
+        if any(key.startswith('value_') for key in vals) or 'attribute_id' in vals:
             for record in self:
                 record._validate_value_type()
         return result
@@ -123,14 +125,14 @@ class StockLotAttributeValue(models.Model):
         """Validate that the correct value field is used for the attribute type"""
         if not self.attribute_id:
             return
-            
+
         attr_type = self.attribute_id.attribute_type
         value_fields = ['value_text', 'value_number', 'value_date', 'value_boolean', 'value_selection']
         expected_field = f'value_{attr_type}'
-        
+
         if expected_field not in value_fields:
             return  # Unknown type, skip validation
-            
+
         # Check that only the correct value field is set
         for field in value_fields:
             if field != expected_field and getattr(self, field):
@@ -140,7 +142,7 @@ class StockLotAttributeValue(models.Model):
                     attr_type,
                     field.replace('value_', '')
                 ))
-        
+
         # Check that the correct field has a value
         if not getattr(self, expected_field) and attr_type != 'boolean':
             raise ValidationError(_(

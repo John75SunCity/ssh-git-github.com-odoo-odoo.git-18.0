@@ -48,7 +48,7 @@ class RMModuleConfigurator(models.Model):
         tracking=True,
         help="Name of the configuration item"
     )
-    
+
     category = fields.Selection([
         ('shredding', 'Shredding & Destruction'),
         ('document', 'Document Management'),
@@ -61,25 +61,25 @@ class RMModuleConfigurator(models.Model):
         ('reporting', 'Reports & Analytics'),
         ('security', 'Security & Access'),
     ], string="Category", required=True, tracking=True)
-    
+
     description = fields.Text(
         string="Description",
         help="Description of what this configuration controls"
     )
-    
+
     company_id = fields.Many2one(
         'res.company',
         string='Company',
         default=lambda self: self.env.company
     )
-    
+
     user_id = fields.Many2one(
         'res.users',
         string='Responsible User',
         default=lambda self: self.env.user,
         tracking=True
     )
-    
+
     active = fields.Boolean(
         string='Active',
         default=True,
@@ -96,7 +96,7 @@ class RMModuleConfigurator(models.Model):
         ('validation_rule', 'Validation Rules'),
         ('default_value', 'Default Values'),
     ], string="Configuration Type", required=True)
-    
+
     # ============================================================================
     # TARGET CONFIGURATION
     # ============================================================================
@@ -104,19 +104,19 @@ class RMModuleConfigurator(models.Model):
         string="Target Model",
         help="Technical name of the model (e.g., 'shredding.certificate')"
     )
-    
+
     target_field = fields.Char(
         string="Target Field",
         help="Technical name of the field (e.g., 'destruction_method')"
     )
-    
+
     target_view_type = fields.Selection([
         ('form', 'Form View'),
         ('tree', 'List View'),
         ('search', 'Search View'),
         ('all', 'All Views'),
     ], string="Target View Type", default='all')
-    
+
     # ============================================================================
     # VISIBILITY CONTROL
     # ============================================================================
@@ -126,19 +126,19 @@ class RMModuleConfigurator(models.Model):
         tracking=True,
         help="Whether the field/feature should be visible to users"
     )
-    
+
     required = fields.Boolean(
         string="Required",
         default=False,
         help="Whether the field should be required (if visible)"
     )
-    
+
     readonly = fields.Boolean(
         string="Read Only",
         default=False,
         help="Whether the field should be read-only"
     )
-    
+
     # ============================================================================
     # SELECTION VALUES CONFIGURATION
     # ============================================================================
@@ -146,7 +146,7 @@ class RMModuleConfigurator(models.Model):
         string="Available Selection Values",
         help="JSON format of available selection values"
     )
-    
+
     # ============================================================================
     # CONDITIONS
     # ============================================================================
@@ -154,19 +154,19 @@ class RMModuleConfigurator(models.Model):
         string="Condition Field",
         help="Field to check for conditional visibility"
     )
-    
+
     condition_operator = fields.Selection([
         ('=', 'Equals'),
         ('!=', 'Not Equals'),
         ('in', 'In List'),
         ('not in', 'Not In List'),
     ], string="Condition Operator")
-    
+
     condition_value = fields.Char(
         string="Condition Value",
         help="Value to compare against"
     )
-    
+
     # ============================================================================
     # AUDIT FIELDS
     # ============================================================================
@@ -175,13 +175,13 @@ class RMModuleConfigurator(models.Model):
         default=fields.Datetime.now,
         readonly=True
     )
-    
+
     modified_by_id = fields.Many2one(
         'res.users',
         string="Modified By",
         readonly=True
     )
-    
+
     notes = fields.Text(
         string="Configuration Notes",
         help="Additional notes about this configuration"
@@ -212,12 +212,12 @@ class RMModuleConfigurator(models.Model):
                     raise ValidationError(
                         _("Model '%s' does not exist", record.target_model)
                     )
-                
+
                 if record.target_field:
                     model = self.env[record.target_model]
                     if record.target_field not in model._fields:
                         raise ValidationError(
-                            _("Field '%s' does not exist in model '%s", 
+                            _("Field '%s' does not exist in model '%s'",
                               record.target_field, record.target_model)
                         )
 
@@ -232,13 +232,13 @@ class RMModuleConfigurator(models.Model):
                 'modified_by_id': self.env.user.id,
             })
         result = super().write(vals)
-        
+
         # Log configuration change
         for record in self:
             record.message_post(
                 body=_("Configuration updated by %s", self.env.user.name)
             )
-        
+
         return result
 
     # ============================================================================
@@ -254,23 +254,23 @@ class RMModuleConfigurator(models.Model):
             ('target_view_type', 'in', [view_type, 'all']),
             ('active', '=', True),
         ], limit=1)
-        
+
         if config:
             return {
                 'visible': config.visible,
                 'required': config.required,
                 'readonly': config.readonly,
             }
-        
+
         # Default: all fields visible
         return {
             'visible': True,
             'required': False,
             'readonly': False,
         }
-    
+
     @api.model
-    def get_selection_values(self, model_name, field_name):
+    def get_available_selection_values(self, model_name, field_name):
         """Get available selection values for a field"""
         config = self.search([
             ('target_model', '=', model_name),
@@ -278,16 +278,15 @@ class RMModuleConfigurator(models.Model):
             ('config_type', '=', 'selection_values'),
             ('active', '=', True),
         ], limit=1)
-        
+
         if config and config.available_selection_values:
-            import json
             try:
                 return json.loads(config.available_selection_values)
             except (json.JSONDecodeError, TypeError):
                 pass
-        
+
         return None
-    
+
     @api.model
     def is_feature_enabled(self, feature_name):
         """Check if a feature is enabled"""
@@ -296,38 +295,38 @@ class RMModuleConfigurator(models.Model):
             ('config_type', '=', 'feature_toggle'),
             ('active', '=', True),
         ], limit=1)
-        
+
         return config.visible if config else True
 
     # ============================================================================
     # CONFIGURATION MANAGEMENT METHODS
     # ============================================================================
     @api.model
-    def create_default_configurations(self):
+    def setup_default_configurations(self):
         """Create default configurations for the system"""
-        default_configs = self._get_default_configurations()
-        
+        default_configs = self._get_system_default_configurations()
+
         for config_data in default_configs:
             existing = self.search([
                 ('name', '=', config_data['name']),
                 ('target_model', '=', config_data.get('target_model')),
                 ('target_field', '=', config_data.get('target_field')),
             ])
-            
+
             if not existing:
                 self.create(config_data)
 
-    def _get_default_configurations(self):
+    def _get_system_default_configurations(self):
         """Get default configuration data"""
         return [
             # Shredding Certificate Configurations
             {
-                'name': 'Destruction Method - Degaussing',
+                'name': 'Destruction Method - Standard Options',
                 'category': 'shredding',
                 'config_type': 'selection_values',
                 'target_model': 'shredding.certificate',
                 'target_field': 'destruction_method',
-                'description': 'Control whether degaussing is available as a destruction method',
+                'description': 'Available destruction methods for NAID compliance',
                 'available_selection_values': '["cross_cut", "strip_cut", "pulverization", "incineration", "disintegration", "acid_bath"]',
                 'visible': True,
             },
@@ -353,7 +352,7 @@ class RMModuleConfigurator(models.Model):
                 'condition_operator': '=',
                 'condition_value': 'incineration',
             },
-            
+
             # Container Management
             {
                 'name': 'Container Type Restrictions',
@@ -361,31 +360,29 @@ class RMModuleConfigurator(models.Model):
                 'config_type': 'selection_values',
                 'target_model': 'records.container',
                 'target_field': 'container_type',
-                'description': 'Available container types',
+                'description': 'Available container types for business operations',
                 'available_selection_values': '["type_01", "type_02", "type_03", "type_04", "type_06"]',
                 'visible': True,
             },
-            
+
             # Billing Configurations
             {
-                'name': 'Prepaid Billing Feature',
+                'name': 'prepaid_billing_enabled',
                 'category': 'billing',
                 'config_type': 'feature_toggle',
-                'name': 'prepaid_billing_enabled',
                 'description': 'Enable prepaid billing functionality',
                 'visible': True,
             },
-            
+
             # Portal Configurations
             {
-                'name': 'Customer Feedback System',
+                'name': 'customer_feedback_enabled',
                 'category': 'portal',
                 'config_type': 'feature_toggle',
-                'name': 'customer_feedback_enabled',
                 'description': 'Enable customer feedback and satisfaction tracking',
                 'visible': True,
             },
-            
+
             # Compliance Configurations
             {
                 'name': 'NAID Compliance Level Options',
@@ -405,15 +402,15 @@ class RMModuleConfigurator(models.Model):
     def action_apply_configuration(self):
         """Apply configuration changes"""
         self.ensure_one()
-        
+
         # Trigger cache clear for field visibility
         self.env.registry.clear_cache()
-        
+
         # Log the application
         self.message_post(
             body=_("Configuration applied by %s", self.env.user.name)
         )
-        
+
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
@@ -423,19 +420,19 @@ class RMModuleConfigurator(models.Model):
                 'type': 'success',
             }
         }
-    
-    def action_reset_to_default(self):
+
+    def action_restore_defaults(self):
         """Reset configuration to default values"""
         self.ensure_one()
-        
+
         default_values = {
             'visible': True,
             'required': False,
             'readonly': False,
         }
-        
+
         self.write(default_values)
-        
+
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
@@ -449,10 +446,10 @@ class RMModuleConfigurator(models.Model):
 
 class RecordsConfigurationWizard(models.TransientModel):
     """Wizard for bulk configuration management"""
-    
+
     _name = 'records.configuration.wizard'
     _description = 'Configuration Management Wizard'
-    
+
     category = fields.Selection([
         ('shredding', 'Shredding & Destruction'),
         ('document', 'Document Management'),
@@ -465,28 +462,30 @@ class RecordsConfigurationWizard(models.TransientModel):
         ('reporting', 'Reports & Analytics'),
         ('security', 'Security & Access'),
     ], string="Category", required=True)
-    
+
     action_type = fields.Selection([
         ('show_all', 'Show All Fields'),
         ('hide_all', 'Hide All Fields'),
         ('reset_defaults', 'Reset to Defaults'),
         ('create_missing', 'Create Missing Configurations'),
     ], string="Action", required=True)
-    
+
     def action_execute(self):
         """Execute the bulk configuration action"""
         configs = self.env['rm.module.configurator'].search([
             ('category', '=', self.category)
         ])
-        
+
+        message = _('No action performed')
+
         if self.action_type == 'show_all':
             configs.write({'visible': True})
             message = _('All fields in %s category are now visible', self.category)
-            
+
         elif self.action_type == 'hide_all':
             configs.write({'visible': False})
             message = _('All fields in %s category are now hidden', self.category)
-            
+
         elif self.action_type == 'reset_defaults':
             configs.write({
                 'visible': True,
@@ -494,11 +493,11 @@ class RecordsConfigurationWizard(models.TransientModel):
                 'readonly': False,
             })
             message = _('All configurations in %s category reset to defaults', self.category)
-            
+
         elif self.action_type == 'create_missing':
-            self.env['rm.module.configurator'].create_default_configurations()
+            self.env['rm.module.configurator'].setup_default_configurations()
             message = _('Missing configurations created for %s category', self.category)
-        
+
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
