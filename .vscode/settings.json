@@ -12,6 +12,12 @@
     },
     "github.copilot.editor.enableAutoCompletions": true,
     "github.copilot.chat.localeOverride": "auto",
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+    
+    // RM SYSTEM INTEGRITY - Reference instruction files for AI assistants
+    "github.copilot.chat.instructionFiles": [
+        ".github/copilot-instructions.md"
+    ],
     
     // Enhanced Copilot workspace context settings with Odoo extension integration
     "github.copilot.chat.welcomeMessage": "always",
@@ -37,7 +43,9 @@
         "top_p": "1",
         "listCount": 10,
         "odooContextEnabled": true,
-        "extensionPackIntegration": true
+        "extensionPackIntegration": true,
+        "systemIntegrityChecklist": true,
+        "rmModuleConfiguratorIntegration": true
     },
     
     // Odoo-specific VS Code settings to reduce noise from false positive warnings

@@ -247,5 +247,96 @@
             },
             "problemMatcher": []
         },
+        {
+            "label": "RM System Integrity Checklist",
+            "type": "shell",
+            "command": "echo",
+            "args": [
+                "\n🔄 RM SYSTEM INTEGRITY CHECKLIST - BEFORE COMMITTING:\n\n✅ Models/Fields Added:\n  □ Security access rules (ir.model.access.csv)\n  □ View definitions (XML files)\n  □ RM Module Configurator integration\n  □ models/__init__.py import (correct order)\n\n✅ Functions/Methods Added:\n  □ Visibility toggle in rm.module.configurator\n  □ Appropriate configuration category\n  □ Security permissions updated\n\n✅ Views/Wizards Added:\n  □ Access rules in security CSV\n  □ Configurator visibility controls\n  □ Menu integration if needed\n\n✅ Final Validation:\n  □ Test configurator toggles work\n  □ No broken imports or dependencies\n  □ All interconnected files updated\n\n📋 Quick Commands:\n  - Open configurator: code models/rm_module_configurator.py\n  - Check security: code security/ir.model.access.csv\n  - View imports: code models/__init__.py\n"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "new",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Open RM Module Configurator",
+            "type": "shell", 
+            "command": "code",
+            "args": ["models/rm_module_configurator.py"],
+            "group": "build",
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": true
+            },
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/records_management"
+            }
+        },
+        {
+            "label": "Open Security Access Rules",
+            "type": "shell",
+            "command": "code", 
+            "args": ["security/ir.model.access.csv"],
+            "group": "build",
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": true
+            },
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/records_management"
+            }
+        },
+        {
+            "label": "Check Model Import Order",
+            "type": "shell",
+            "command": "code",
+            "args": ["models/__init__.py"],
+            "group": "build", 
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": true
+            },
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/records_management"
+            }
+        },
+        {
+            "label": "Validate RM System Integrity",
+            "type": "shell",
+            "command": "python3",
+            "args": ["-m", "py_compile", "models/rm_module_configurator.py"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": {
+                "owner": "python",
+                "fileLocation": "relative",
+                "pattern": {
+                    "regexp": "^\\s*File \"(.*)\", line (\\d+).*$",
+                    "file": 1,
+                    "line": 2
+                }
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/records_management"
+            }
+        }
     ]
 }

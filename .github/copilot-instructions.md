@@ -1,6 +1,16 @@
 # GitHub Copilot Instructions for Odoo Records Management System
 
-## 🚀 **QUICK RESUME SECTION (August 7, 2025)**
+## 🚀 **QUICK RESUME SECTION (August 11, 2025)**
+
+### **🔄 NEW: AI SYSTEM INTEGRITY PROTOCOL ACTIVE**
+
+**MANDATORY FOR ALL AI CODING ASSISTANTS**: This workspace now enforces a comprehensive **System Integrity Checklist** to prevent broken functionality. See detailed section below under "System Integrity Checklist".
+
+**Key Points:**
+- **RM Module Configurator** (`rm.module.configurator`) - Central control system for ALL new functionality
+- **VS Code Tasks & Shortcuts** - Quick access to integrity validation tools
+- **Automated Validation** - Built-in checks for security, imports, and configurator integration
+- **Enhanced AI Settings** - GitHub Copilot, Cybrosys Assista optimized for Records Management
 
 ### **Current Status:**
 
@@ -64,7 +74,110 @@ git add . && git commit -m "fix: Resolve syntax errors in records_department.py 
 
 ---
 
-## 📦 **CRITICAL BUSINESS CONTAINER SPECIFICATIONS**
+## � **SYSTEM INTEGRITY CHECKLIST - ALWAYS FOLLOW WHEN MAKING CHANGES**
+
+**⚠️ CRITICAL**: When adding new functionality, models, fields, or views, AI coding assistants MUST update ALL interconnected files to maintain system integrity. Missing components will break the Records Management system.
+
+### **📋 MANDATORY CHECKLIST FOR ANY NEW ADDITION/CHANGE:**
+
+#### **🆕 When Adding New Models/Fields:**
+
+1. **📝 Main Model File**: Create/update the Python model in `models/` directory
+2. **🔐 Security Access**: Add access rules in `security/ir.model.access.csv`
+3. **👀 Views Configuration**: Update views in appropriate `views/` XML files
+4. **⚙️ RM Module Configurator**: Add field visibility controls in `rm.module.configurator`
+   - Create configuration entries for new fields
+   - Add toggle switches for new features
+   - Set default visibility states
+5. **📊 Import Statement**: Add model import to `models/__init__.py` (proper dependency order)
+6. **🎯 Menu Structure**: Add menu items in appropriate XML files if needed
+7. **🧪 Demo Data**: Consider adding demo/test data in `demo/` directory
+8. **📋 Manifest Update**: Update `__manifest__.py` if adding new dependencies
+
+#### **🔧 When Adding New Functions/Methods:**
+
+1. **⚙️ RM Module Configurator**: Add function visibility toggle
+   - Create "Enable [Function Name]" boolean field
+   - Add to appropriate configuration category
+   - Set default enabled/disabled state
+2. **🔐 Security Rules**: Update access permissions for new functionality
+3. **👀 UI Controls**: Add conditional visibility in views using `rm.module.configurator` settings
+4. **📋 Action Methods**: Add server actions or wizard access if needed
+5. **🎯 Menu Visibility**: Control menu item visibility through configurator
+
+#### **🌐 When Adding New Views/Wizards:**
+
+1. **📝 XML View File**: Create the view definition
+2. **🔐 Access Rules**: Add model access in security CSV
+3. **⚙️ RM Module Configurator**: Add view visibility control
+   - "Show [View Name]" boolean field  
+   - Category-appropriate placement
+   - Default visibility setting
+4. **🎯 Menu Integration**: Link to appropriate menus with configurator conditions
+5. **📊 Window Actions**: Define actions with security groups
+
+#### **🔌 When Adding New Widgets/Features:**
+
+1. **💻 Static Files**: Add CSS/JS files to `static/src/` directories
+2. **🌐 Templates**: Add QWeb templates if needed
+3. **⚙️ RM Module Configurator**: Add feature toggle
+   - "Enable [Widget Name]" boolean field
+   - Set in 'ui_customization' category
+   - Default enabled state
+4. **📋 Manifest Assets**: Update manifest with new static file bundles
+5. **👀 Conditional Loading**: Use configurator settings to conditionally load widgets
+
+### **🎯 RM MODULE CONFIGURATOR INTEGRATION PATTERNS:**
+
+**Always use this pattern when adding configurability:**
+
+```python
+# In your model - check configurator setting
+@api.model
+def _is_feature_enabled(self):
+    """Check if this feature is enabled in RM Module Configurator"""
+    configurator = self.env['rm.module.configurator'].search([
+        ('category', '=', 'feature_toggles'),
+        ('config_key', '=', 'enable_your_feature'),
+        ('company_id', 'in', [self.env.company.id, False])
+    ], limit=1)
+    return configurator.boolean_value if configurator else False
+
+# In views - use configurator for visibility
+<field name="your_field" 
+       attrs="{'invisible': [('configurator_feature_enabled', '=', False)]}"/>
+```
+
+### **📋 CONFIGURATION CATEGORIES IN RM MODULE CONFIGURATOR:**
+
+Use these standard categories when adding configuration options:
+
+- **`field_visibility`**: Control which fields appear in forms/lists
+- **`feature_toggles`**: Enable/disable optional functionality  
+- **`ui_customization`**: UI appearance and widget controls
+- **`workflow_control`**: Business process flow modifications
+- **`integration_settings`**: External system integration toggles
+- **`compliance_features`**: NAID and regulatory compliance controls
+- **`billing_options`**: Financial and billing feature controls
+- **`mobile_features`**: Mobile app and FSM functionality
+- **`reporting_options`**: Report generation and analytics features
+
+### **⚠️ COMMON MISTAKES TO AVOID:**
+
+❌ **DON'T**: Add new models without security access rules  
+❌ **DON'T**: Create views without configurator visibility controls  
+❌ **DON'T**: Add fields without rm.module.configurator entries  
+❌ **DON'T**: Forget to update `models/__init__.py` import order  
+❌ **DON'T**: Hard-code feature availability - always use configurator  
+
+✅ **DO**: Follow the complete checklist for every change  
+✅ **DO**: Test configurator toggles after implementation  
+✅ **DO**: Use proper dependency order in imports  
+✅ **DO**: Add descriptive help text in configurator entries  
+
+---
+
+## �📦 **CRITICAL BUSINESS CONTAINER SPECIFICATIONS**
 
 **⚠️ IMPORTANT**: These are the actual container types used in the business. All billing, capacity calculations, FSM operations, and system functionality MUST use these exact specifications:
 

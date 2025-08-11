@@ -6,6 +6,10 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_records_config_settings_manager,access_records_config_settings_manager,model_records_config_setting,records_management.group_records_manager,1,1,1,1
 access_records_config_settings_system,access_records_config_settings_system,model_records_config_setting,base.group_system,1,1,1,1
 
+# Module Configurator Access (advanced configuration for system administrators)
+access_rm_module_configurator_manager,access_rm_module_configurator_manager,model_rm_module_configurator,records_management.group_records_manager,1,1,1,1
+access_rm_module_configurator_system,access_rm_module_configurator_system,model_rm_module_configurator,base.group_system,1,1,1,1
+
 # ============================================================================
 # CORE RECORDS MANAGEMENT ACCESS RULES
 # ============================================================================

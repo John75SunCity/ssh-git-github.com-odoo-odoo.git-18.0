@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 Revenue Forecasting Management Module
+
 This module provides comprehensive revenue forecasting and analysis capabilities
 for the Records Management System. It implements advanced financial modeling,
 scenario analysis, and predictive analytics for business planning and decision-making.
+
 Key Features:
 - Multi-scenario revenue forecasting (baseline, optimistic, pessimistic)
 - Customer segment analysis with retention rate modeling
@@ -11,6 +13,7 @@ Key Features:
 - Global rate adjustment modeling with inflation and market factors
 - Risk assessment integration with confidence level tracking
 - Detailed variance analysis with actual vs projected comparisons
+
 Business Processes:
 1. Forecast Creation: Set up forecasting parameters and scenarios
 2. Customer Segmentation: Analyze revenue by customer segments and specific customers
@@ -18,10 +21,12 @@ Business Processes:
 4. Risk Assessment: Evaluate forecast confidence and market risk factors
 5. Variance Tracking: Monitor actual performance against projections
 6. Strategic Planning: Use forecasts for pricing and capacity planning decisions
+
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
 """
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -97,26 +102,36 @@ class RevenueForecaster(models.Model):
         string="Projected Revenue",
         currency_field="currency_id",
         tracking=True,
+        compute="_compute_projected_revenue",
+        store=True,
         help="Total projected revenue for the forecast period",
     )
     actual_revenue = fields.Monetary(
         string="Actual Revenue",
         currency_field="currency_id",
+        compute="_compute_actual_revenue",
+        store=True,
         help="Actual revenue achieved",
     )
     current_monthly_revenue = fields.Monetary(
         string="Current Monthly Revenue",
         currency_field="currency_id",
+        compute="_compute_current_monthly_revenue",
+        store=True,
         help="Current baseline monthly revenue",
     )
     predicted_quarterly_revenue = fields.Monetary(
         string="Predicted Quarterly Revenue",
         currency_field="currency_id",
+        compute="_compute_predicted_quarterly_revenue",
+        store=True,
         help="Projected quarterly revenue",
     )
     annual_revenue_impact = fields.Monetary(
         string="Annual Revenue Impact",
         currency_field="currency_id",
+        compute="_compute_annual_revenue_impact",
+        store=True,
         help="Projected annual revenue impact",
     )
 
@@ -195,6 +210,66 @@ class RevenueForecaster(models.Model):
                 forecast.forecast_line_ids.mapped("annual_revenue_impact")
             )
 
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_confirm_forecast(self):
+        """Confirm the revenue forecast"""
+        self.ensure_one()
+        if self.state != 'draft':
+            raise UserError(_("Only draft forecasts can be confirmed"))
+
+        if not self.forecast_line_ids:
+            raise UserError(_("Cannot confirm forecast without forecast lines"))
+
+        self.write({'state': 'confirmed'})
+        self.message_post(body=_("Revenue forecast confirmed by %s", self.env.user.name))
+
+    def action_complete_forecast(self):
+        """Complete the revenue forecast"""
+        self.ensure_one()
+        if self.state != 'confirmed':
+            raise UserError(_("Only confirmed forecasts can be completed"))
+
+        self.write({'state': 'done'})
+        self.message_post(body=_("Revenue forecast completed by %s", self.env.user.name))
+
+    def action_cancel_forecast(self):
+        """Cancel the revenue forecast"""
+        self.ensure_one()
+        if self.state == 'done':
+            raise UserError(_("Cannot cancel completed forecasts"))
+
+        self.write({'state': 'cancelled'})
+        self.message_post(body=_("Revenue forecast cancelled by %s", self.env.user.name))
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains('projected_revenue', 'current_monthly_revenue')
+    def _check_revenue_amounts(self):
+        """Validate revenue amounts are reasonable"""
+        for record in self:
+            if record.projected_revenue < 0:
+                raise ValidationError(_("Projected revenue cannot be negative"))
+            if record.current_monthly_revenue < 0:
+                raise ValidationError(_("Current monthly revenue cannot be negative"))
+
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    def get_forecast_summary(self):
+        """Get forecast summary for reporting"""
+        self.ensure_one()
+        return {
+            'name': self.name,
+            'projected_revenue': self.projected_revenue,
+            'actual_revenue': self.actual_revenue,
+            'variance': self.actual_revenue - self.projected_revenue,
+            'line_count': len(self.forecast_line_ids),
+            'state': self.state,
+        }
+
 
 class RevenueForecastLine(models.Model):
     """Revenue Forecast Line for detailed customer impact analysis"""
@@ -266,6 +341,25 @@ class RevenueForecastLine(models.Model):
         currency_field="currency_id",
         help="Projected monthly revenue after adjustments",
     )
+    actual_revenue = fields.Monetary(
+        string="Actual Revenue",
+        currency_field="currency_id",
+        help="Actual revenue achieved for this customer",
+    )
+    predicted_quarterly_revenue = fields.Monetary(
+        string="Predicted Quarterly Revenue",
+        currency_field="currency_id",
+        compute="_compute_quarterly_revenue",
+        store=True,
+        help="Projected quarterly revenue (monthly x 3)",
+    )
+    annual_revenue_impact = fields.Monetary(
+        string="Annual Revenue Impact",
+        currency_field="currency_id",
+        compute="_compute_annual_impact",
+        store=True,
+        help="Projected annual revenue impact",
+    )
     revenue_change = fields.Monetary(
         string="Revenue Change",
         compute="_compute_revenue_change",
@@ -318,20 +412,62 @@ class RevenueForecastLine(models.Model):
                     line.revenue_change / line.current_monthly_revenue
                 ) * 100
             else:
-            pass
-            pass
                 line.revenue_change_percentage = 0.0
+
+    @api.depends("projected_monthly_revenue")
+    def _compute_quarterly_revenue(self):
+        """Compute quarterly revenue projection"""
+        for line in self:
+            line.predicted_quarterly_revenue = (line.projected_monthly_revenue or 0.0) * 3
+
+    @api.depends("revenue_change")
+    def _compute_annual_impact(self):
+        """Compute annual revenue impact"""
+        for line in self:
+            line.annual_revenue_impact = (line.revenue_change or 0.0) * 12
 
     @api.depends("partner_id", "forecast_id")
     def _compute_name(self):
         """Compute descriptive name for forecast line"""
         for line in self:
             if line.partner_id and line.forecast_id:
-                line.name = _("%s - %s"
+                line.name = _("%s - %s", line.partner_id.name, line.forecast_id.name)
             elif line.partner_id:
-            pass
-                line.name = _("%s - Forecast Line"
+                line.name = _("Forecast Line for %s", line.partner_id.name)
             else:
-            pass
-            pass
-                line.name = _("Forecast Line %s"
+                line.name = _("Forecast Line %s", line.id or "New")
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains('current_monthly_revenue', 'projected_monthly_revenue')
+    def _check_revenue_values(self):
+        """Ensure revenue values are non-negative"""
+        for line in self:
+            if line.current_monthly_revenue < 0:
+                raise ValidationError(_("Current monthly revenue cannot be negative"))
+            if line.projected_monthly_revenue < 0:
+                raise ValidationError(_("Projected monthly revenue cannot be negative"))
+
+    @api.constrains('container_count')
+    def _check_container_count(self):
+        """Ensure container count is reasonable"""
+        for line in self:
+            if line.container_count < 0:
+                raise ValidationError(_("Container count cannot be negative"))
+
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    def get_performance_metrics(self):
+        """Get performance metrics for this forecast line"""
+        self.ensure_one()
+        return {
+            'customer': self.partner_id.name,
+            'current_revenue': self.current_monthly_revenue,
+            'projected_revenue': self.projected_monthly_revenue,
+            'change_amount': self.revenue_change,
+            'change_percentage': self.revenue_change_percentage,
+            'risk_level': self.risk_level,
+            'segment': self.customer_segment,
+        }
