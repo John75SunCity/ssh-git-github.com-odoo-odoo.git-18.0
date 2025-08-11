@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 
 
 class ShreddingServiceLog(models.Model):
@@ -89,6 +90,8 @@ class ShreddingServiceLog(models.Model):
     )
     duration_minutes = fields.Float(
         string='Duration (Minutes)',
+        compute='_compute_duration_minutes',
+        store=True,
         help="Duration of the logged activity in minutes"
     )
 
@@ -210,7 +213,7 @@ class ShreddingServiceLog(models.Model):
         """Compute display name."""
         for record in self:
             if record.shredding_service_id:
-                record.display_name = _("%s - %s", record.name, record.shredding_service_id.name)
+                record.display_name = (record.name or '') + ' - ' + (record.shredding_service_id.name or '')
             else:
                 record.display_name = record.name or _('New Shredding Log')
 
@@ -304,7 +307,7 @@ class ShreddingServiceLog(models.Model):
                 'event_type': 'shredding_operation',
                 'model_name': self._name,
                 'record_id': self.id,
-                'description': _("Shredding operation logged: %s", self.name),
+                'description': "Shredding operation logged: %s" % self.name,
                 'operator_id': self.operator_id.id if self.operator_id else None,
                 'timestamp': fields.Datetime.now(),
                 'weight_processed': self.weight_processed,
