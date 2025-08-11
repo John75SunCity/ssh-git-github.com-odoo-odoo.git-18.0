@@ -2,6 +2,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
+
 class BinUnlockService(models.Model):
     _name = "bin.unlock.service"
     _description = "Bin Unlock Service"
@@ -23,25 +24,32 @@ class BinUnlockService(models.Model):
     # STATE MANAGEMENT
     # ============================================================================
     state = fields.Selection([
-        ("draft", "Draft"), ("active", "Active"),
-        ("inactive", "Inactive"), ("archived", "Archived")
-    ], string="Status", default="draft", tracking=True
+        ("draft", "Draft"), 
+        ("active", "Active"),
+        ("inactive", "Inactive"), 
+        ("archived", "Archived")
+    ], string="Status", default="draft", tracking=True)
 
     # ============================================================================
     # SERVICE REQUEST DETAILS
     # ============================================================================
     service_type = fields.Selection([
-        ("emergency", "Emergency Unlock"), ("scheduled", "Scheduled Unlock"),
-        ("bulk", "Bulk Unlock"), ("maintenance", "Maintenance Unlock")
-    ], string="Service Type", required=True, default="scheduled"
+        ("emergency", "Emergency Unlock"), 
+        ("scheduled", "Scheduled Unlock"),
+        ("bulk", "Bulk Unlock"), 
+        ("maintenance", "Maintenance Unlock")
+    ], string="Service Type", required=True, default="scheduled")
 
     request_date = fields.Datetime(string="Request Date", default=fields.Datetime.now, tracking=True)
     scheduled_date = fields.Datetime(string="Scheduled Date", tracking=True)
     completion_date = fields.Datetime(string="Completion Date", tracking=True)
 
     priority = fields.Selection([
-        ("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")
-    ], string="Priority", default="normal", tracking=True
+        ("low", "Low"), 
+        ("normal", "Normal"), 
+        ("high", "High"), 
+        ("urgent", "Urgent")
+    ], string="Priority", default="normal", tracking=True)
 
     # ============================================================================
     # BIN & KEY INFORMATION
@@ -49,15 +57,18 @@ class BinUnlockService(models.Model):
     partner_id = fields.Many2one("res.partner", string="Customer", required=True, tracking=True)
     bin_id = fields.Many2one(
         "shred.bin", string="Shred Bin", required=True, tracking=True
+    )
     
     key_id = fields.Many2one("bin.key", string="Key", tracking=True)
 
     bin_location = fields.Char(string="Bin Location")
     key_serial_number = fields.Char(string="Key Serial Number")
     unlock_method = fields.Selection([
-        ("physical_key", "Physical Key"), ("electronic", "Electronic"),
-        ("master_key", "Master Key"), ("emergency_override", "Emergency Override")
-    ], string="Unlock Method", default="physical_key"
+        ("physical_key", "Physical Key"), 
+        ("electronic", "Electronic"),
+        ("master_key", "Master Key"), 
+        ("emergency_override", "Emergency Override")
+    ], string="Unlock Method", default="physical_key")
 
     # ============================================================================
     # TECHNICIAN & SCHEDULING
@@ -92,19 +103,48 @@ class BinUnlockService(models.Model):
     # ============================================================================
     # FINANCIAL TRACKING
     # ============================================================================
-    currency_id = fields.Many2one("res.currency", string="Currency", 
-                                 default=lambda self: self.env.company.currency_id
+    currency_id = fields.Many2one(
+        "res.currency", 
+        string="Currency", 
+        default=lambda self: self.env.company.currency_id
+    )
     service_cost = fields.Monetary(string="Service Cost", currency_field="currency_id")
     emergency_surcharge = fields.Monetary(string="Emergency Surcharge", currency_field="currency_id")
-    total_cost = fields.Monetary(string="Total Cost", currency_field="currency_id", 
-                                compute="_compute_total_cost", store=True
+    total_cost = fields.Monetary(
+        string="Total Cost", 
+        currency_field="currency_id", 
+        compute="_compute_total_cost", 
+        store=True
+    )
 
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    related_requests = fields.Many2many("portal.request", string="Related Portal Requests")
+    related_request_ids = fields.Many2many("portal.request", string="Related Portal Requests")
 
-    # Mail framework fields    @api.depends("service_cost", "emergency_surcharge")
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
+    display_name = fields.Char(compute="_compute_display_name", string="Display Name", store=True)
+
+    # ============================================================================
+    # AUTO-GENERATED FIELDS
+    # ============================================================================
+    customer_key_restricted = fields.Char(string='Customer Key Restricted', tracking=True)
+    unlock_reason_code = fields.Char(string='Unlock Reason Code', tracking=True)
+    service_start_time = fields.Datetime(string='Service Start Time')
+    service_rate = fields.Float(string='Service Rate', default=25.0)
+    invoice_id = fields.Many2one('account.move', string='Invoice')
+
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("service_cost", "emergency_surcharge")
     def _compute_total_cost(self):
         for record in self:
             record.total_cost = record.service_cost + record.emergency_surcharge
@@ -113,13 +153,11 @@ class BinUnlockService(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.bin_id and record.partner_id:
-                record.display_name = _("%s - %s - %s", "Unknown")
+                record.display_name = _("%s - %s - %s", record.name, record.bin_id.name, record.partner_id.name)
+            elif record.partner_id:
+                record.display_name = _("%s - %s", record.name, record.partner_id.name)
             else:
-                pass
-            pass
                 record.display_name = record.name or "New"
-
-    display_name = fields.Char(compute="_compute_display_name", string="Display Name", store=True)
 
     # ============================================================================
     # DEFAULT METHODS
@@ -139,35 +177,88 @@ class BinUnlockService(models.Model):
         if not self.scheduled_date:
             raise UserError(_("Please set a scheduled date first."))
         self.write({"state": "active"})
+        self.message_post(body=_("Service scheduled"))
 
     def action_start_service(self):
         self.ensure_one()
         if self.state != "active":
             raise UserError(_("Only active services can be started."))
-        self.write({"state": "active"})
+        self.write({
+            "state": "active",
+            "service_start_time": fields.Datetime.now()
+        })
+        self.message_post(body=_("Service started"))
 
     def action_complete(self):
         self.ensure_one()
         if not self.completion_notes:
             raise UserError(_("Please add completion notes before completing the service."))
         self.write({
-            "state": "active",
+            "state": "inactive",
             "completion_date": fields.Datetime.now()
-        }
+        })
+        self.message_post(body=_("Service completed"))
 
     def action_cancel(self):
         self.ensure_one()
         self.write({"state": "inactive"})
+        self.message_post(body=_("Service cancelled"))
 
     def action_generate_certificate(self):
+        self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Generate Service Certificate",
+            "name": _("Generate Service Certificate"),
             "res_model": "service.certificate.wizard",
             "view_mode": "form",
             "target": "new",
             "context": {"default_service_id": self.id},
         }
+
+    def action_create_invoice(self):
+        """Create Invoice for the unlock service"""
+        self.ensure_one()
+        
+        if self.invoice_id:
+            raise UserError(_("Invoice already exists for this service"))
+        
+        invoice_vals = {
+            'move_type': 'out_invoice',
+            'partner_id': self.partner_id.id,
+            'invoice_date': fields.Date.today(),
+            'invoice_line_ids': [(0, 0, {
+                'name': _("Bin Unlock Service: %s", self.name),
+                'quantity': 1,
+                'price_unit': self.total_cost,
+            })],
+        }
+        
+        invoice = self.env['account.move'].create(invoice_vals)
+        self.invoice_id = invoice.id
+        self.message_post(body=_("Invoice created: %s", invoice.name))
+        
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Invoice"),
+            "res_model": "account.move",
+            "res_id": invoice.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def action_mark_completed(self):
+        """Mark service as completed"""
+        self.ensure_one()
+        
+        if self.state != "active":
+            raise UserError(_("Only active services can be marked as completed"))
+        
+        self.write({
+            "state": "inactive",
+            "completion_date": fields.Datetime.now()
+        })
+        self.message_post(body=_("Service marked as completed"))
+        return True
 
     # ============================================================================
     # UTILITY METHODS
@@ -184,27 +275,18 @@ class BinUnlockService(models.Model):
             "cost": self.total_cost,
         }
 
-    # ============================================================================
-    # AUTO-GENERATED ACTION METHODS (from comprehensive validation)
-    # ============================================================================
-    def action_create_invoice(self):
-        """Create Invoice - Action method"""
+    def create_audit_log(self, action):
+        """Create NAID compliance audit log"""
         self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Create Invoice"),
-            "res_model": "bin.unlock.service",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        }
-
-    def action_mark_completed(self):
-        """Mark Completed - State management action"""
-        self.ensure_one()
-        # TODO: Implement action_mark_completed business logic
-        self.message_post(body=_("Mark Completed action executed"))
-        return True
+        self.env['naid.audit.log'].create({
+            'name': _("Bin Unlock: %s", action),
+            'model_name': self._name,
+            'record_id': self.id,
+            'action_type': action,
+            'partner_id': self.partner_id.id,
+            'user_id': self.env.user.id,
+            'notes': _("Bin unlock service %s for bin %s", action, self.bin_id.name if self.bin_id else 'Unknown'),
+        })
 
     # ============================================================================
     # VALIDATION METHODS
@@ -227,11 +309,8 @@ class BinUnlockService(models.Model):
             if record.service_cost < 0 or record.emergency_surcharge < 0:
                 raise ValidationError(_("Costs cannot be negative."))
 
-    # ============================================================================
-    # AUTO-GENERATED FIELDS (Batch 1)
-    # ============================================================================
-    customer_key_restricted = fields.Char(string='Customer Key Restricted', tracking=True)
-    unlock_reason_code = fields.Char(string='Unlock Reason Code', tracking=True)
-    service_start_time = fields.Datetime(string='Service Start Time')
-    service_rate = fields.Float(string='Service Rate', default=25.0)
-    invoice_id = fields.Many2one('account.move', string='Invoice')
+    @api.constrains("witness_required", "witness_name")
+    def _check_witness_requirements(self):
+        for record in self:
+            if record.witness_required and not record.witness_name:
+                raise ValidationError(_("Witness name is required when witness is required."))

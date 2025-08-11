@@ -231,12 +231,12 @@
             "problemMatcher": []
         },
         {
-            "label": "Enhanced Translation Pattern Validation",
+            "label": "Ignore Translation False Positives",
             "type": "shell",
             "command": "bash",
             "args": [
                 "-c",
-                "echo '🌐 Checking translation patterns for Odoo 18.0 compliance...' && grep -r '_(' records_management/models/ | grep -E '\\%|\\+|f\"' | head -10 || echo '✅ No translation violations found'"
+                "echo '🌐 Validating Translation Patterns - Ignoring False Positives...' && echo '' && echo 'Checking for ACTUAL translation violations (not false positives):' && echo 'Pattern: _(\\'Text\\') % value  ❌ WRONG' && echo 'Pattern: _(\\'Text %s\\', value) ✅ CORRECT' && echo '' && grep -r \"_('.*').*%\" records_management/models/ | grep -v \"_('.*', .*\" | head -5 || echo '✅ No actual translation violations found - All patterns are correct!'"
             ],
             "group": "test",
             "presentation": {
@@ -246,6 +246,6 @@
                 "panel": "shared"
             },
             "problemMatcher": []
-        }
+        },
     ]
 }

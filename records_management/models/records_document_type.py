@@ -369,7 +369,6 @@ class RecordsDocumentType(models.Model):
                     record.retention_policy_id.retention_years
                 )
             else:
-            pass
                 record.effective_retention_years = record.default_retention_years or 7
 
     @api.depends("state", "active", "document_count")
@@ -380,7 +379,7 @@ class RecordsDocumentType(models.Model):
             if not record.active:
                 status_parts.append("Inactive")
             if record.document_count:
-                status_parts.append(f"{record.document_count} docs")
+                status_parts.append(_("%d docs", record.document_count))
             record.status_display = " | ".join(status_parts)
 
     document_count = fields.Integer(
@@ -469,16 +468,17 @@ class RecordsDocumentType(models.Model):
             if record.document_ids:
                 raise UserError(
                     _(
-                        "Cannot delete document type '%s' with %d associated documents. Archive instead."
+                        "Cannot delete document type '%s' with %d associated documents. Archive instead.",
+                        record.name,
+                        len(record.document_ids)
                     )
-                    % (record.name, len(record.document_ids))
                 )
             if record.child_type_ids:
                 raise UserError(
                     _(
-                        "Cannot delete document type '%s' with child types. Reassign children first."
+                        "Cannot delete document type '%s' with child types. Reassign children first.",
+                        record.name
                     )
-                    % record.name
                 )
         return super().unlink()
 
@@ -543,6 +543,19 @@ class RecordsDocumentType(models.Model):
             "context": {"default_document_type_id": self.id},
         }
 
+    def action_setup_security(self):
+        """Setup security rules based on confidentiality level"""
+        for record in self:
+            record._setup_security_rules()
+        return self._show_success_message(_("Security rules updated"))
+
+    def action_create_retention_policy(self):
+        """Create default retention policy for this document type"""
+        for record in self:
+            if not record.retention_policy_id:
+                record._create_default_retention_policy()
+        return self._show_success_message(_("Default retention policy created"))
+
     # ============================================================================
     # BUSINESS LOGIC METHODS
     # ============================================================================
@@ -554,7 +567,6 @@ class RecordsDocumentType(models.Model):
         if isinstance(creation_date, str):
             creation_date = fields.Date.from_string(creation_date)
         elif hasattr(creation_date, "date"):
-            pass
             creation_date = creation_date.date()
 
         retention_years = self.effective_retention_years
@@ -634,48 +646,37 @@ class RecordsDocumentType(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "Documents with '%s' confidentiality level must require encryption."
+                        "Documents with '%s' confidentiality level must require encryption.",
+                        record.confidentiality_level
                     )
-                    % record.confidentiality_level
                 )
 
     # ============================================================================
     # HELPER METHODS
     # ============================================================================
-    def _post_create_actions(self):
-        """Actions to perform after creation"""
-        try:
-            # Create default retention policy if needed
-            if not self.retention_policy_id and self.category in [
-                "financial",
-                "legal",
-                "compliance",
-            ]:
-                self._create_default_retention_policy()
+    def _generate_document_type_code(self, category):
+        """Generate unique document type code"""
+        category_prefixes = {
+            "financial": "FIN",
+            "legal": "LEG",
+            "hr": "HR",
+            "medical": "MED",
+            "compliance": "COMP",
+            "government": "GOV",
+            "corporate": "CORP",
+            "technical": "TECH",
+            "operational": "OPS",
+            "other": "DOC",
+        }
 
-            # Set up security rules
-            self._setup_security_rules()
+        prefix = category_prefixes.get(category, "DOC")
+        sequence = (
+            self.env["ir.sequence"].next_by_code("records.document.type") or "001"
+        )
+        return f"{prefix}{sequence}"
 
-        except Exception as e:
-            _logger.warning("Post-create actions failed for %s: %s", self.name, e)
-
-    def _post_write_actions(self, vals):
-        """Actions to perform after write"""
-        try:
-            if "state" in vals and vals["state"] == "deprecated":
-                self._handle_deprecation()
-
-            if any(
-                field in vals
-                for field in ["confidentiality_level", "encryption_required"]
-            ):
-                self._update_security_rules()
-
-        except Exception as e:
-            _logger.warning("Post-write actions failed for %s: %s", self.name, e)
-
-    def _validate_state_change(self, new_state):
-        """Validate state transitions"""
+    def _validate_state_transition(self, new_state):
+        """Validate allowed state transitions"""
         valid_transitions = {
             "draft": ["active", "archived"],
             "active": ["deprecated", "archived"],
@@ -684,30 +685,24 @@ class RecordsDocumentType(models.Model):
         }
 
         for record in self:
-            if record.state not in valid_transitions:
-                continue
-
-            if new_state not in valid_transitions[record.state]:
-                raise ValidationError(
-                    _(
-                        "Invalid state transition from '%s' to '%s' for document type '%s'."
+            if record.state in valid_transitions:
+                if new_state not in valid_transitions[record.state]:
+                    raise ValidationError(
+                        _("Invalid state transition from '%s' to '%s'", record.state, new_state)
                     )
-                    % (record.state, new_state, record.name)
-                )
 
-    def _validate_retention_changes(self, vals):
-        """Validate retention policy changes"""
+    def _handle_retention_changes(self, vals):
+        """Handle retention policy changes impact"""
         for record in self:
             if record.document_count > 0:
-                # Warn about impact on existing documents
                 _logger.warning(
-                    "Retention policy change affects %s existing documents for document type %s",
+                    "Retention change affects %s documents for type %s",
                     record.document_count,
                     record.name,
                 )
 
-    def _success_notification(self, message):
-        """Helper to create success notifications"""
+    def _show_success_message(self, message):
+        """Display success notification"""
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -717,6 +712,17 @@ class RecordsDocumentType(models.Model):
                 "type": "success",
                 "sticky": False,
             },
+        }
+
+    def _show_deprecation_wizard(self):
+        """Show deprecation confirmation wizard"""
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Confirm Deprecation"),
+            "res_model": "records.document.type.deprecate.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_document_type_id": self.id},
         }
 
     def _create_default_retention_policy(self):
@@ -734,7 +740,8 @@ class RecordsDocumentType(models.Model):
                 "compliance": 5,  # Compliance record retention
             }.get(self.category, 7)
 
-            policy_name = _("Default %s Policy - %s"
+            policy_name = _("Default %s Policy - %s", self.category.title(), self.name)
+            
             # In a real implementation, you would create the policy record here
             _logger.info(
                 "Would create retention policy: %s with %s years retention",
@@ -792,8 +799,10 @@ class RecordsDocumentType(models.Model):
 
             # Create migration plan notification
             message = _(
-                "Document type '%s' has been deprecated. Please review %s existing documents and plan migration."
-            ) % (self.name, self.document_count)
+                "Document type '%s' has been deprecated. Please review %s existing documents and plan migration.",
+                self.name,
+                self.document_count
+            )
             self.message_post(body=message, subject=_("Document Type Deprecated"))
 
             # In a real implementation, you would:
@@ -824,75 +833,11 @@ class RecordsDocumentType(models.Model):
         return True
 
     # ============================================================================
-    # HELPER METHODS
+    # DEFAULT METHODS (Odoo naming pattern)
     # ============================================================================
-    def _generate_document_type_code(self, category):
-        """Generate unique document type code"""
-        category_prefixes = {
-            "financial": "FIN",
-            "legal": "LEG",
-            "hr": "HR",
-            "medical": "MED",
-            "compliance": "COMP",
-            "government": "GOV",
-            "corporate": "CORP",
-            "technical": "TECH",
-            "operational": "OPS",
-            "other": "DOC",
-        }
-
-        prefix = category_prefixes.get(category, "DOC")
-        sequence = (
-            self.env["ir.sequence"].next_by_code("records.document.type") or "001"
-        )
-        return f"{prefix}{sequence}"
-
-    def _validate_state_transition(self, new_state):
-        """Validate allowed state transitions"""
-        valid_transitions = {
-            "draft": ["active", "archived"],
-            "active": ["deprecated", "archived"],
-            "deprecated": ["archived"],
-            "archived": ["active"],  # Allow restoration
-        }
-
-        for record in self:
-            if record.state in valid_transitions:
-                if new_state not in valid_transitions[record.state]:
-                    raise ValidationError(
-                        _("Invalid state transition from '%s' to '%s'", (record.state), new_state)
-                    )
-
-    def _handle_retention_changes(self, vals):
-        """Handle retention policy changes impact"""
-        for record in self:
-            if record.document_count > 0:
-                _logger.warning(
-                    "Retention change affects %s documents for type %s",
-                    record.document_count,
-                    record.name,
-                )
-
-    def _show_success_message(self, message):
-        """Display success notification"""
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": _("Success"),
-                "message": message,
-                "type": "success",
-                "sticky": False,
-            },
-        }
-
-    def _show_deprecation_wizard(self):
-        """Show deprecation confirmation wizard"""
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Confirm Deprecation"),
-            "res_model": "records.document.type.deprecate.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {"default_document_type_id": self.id},
-        }
+    def _default_retention_policy(self):
+        """Default method for retention policy field"""
+        return self.env['records.retention.policy'].search([
+            ('category', '=', self.category),
+            ('active', '=', True)
+        ], limit=1)
