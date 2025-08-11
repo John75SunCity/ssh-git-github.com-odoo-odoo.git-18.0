@@ -27,9 +27,11 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
+from datetime import timedelta
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-from datetime import timedelta
+
 
 class TempInventory(models.Model):
     _name = "temp.inventory"
@@ -48,14 +50,14 @@ class TempInventory(models.Model):
         index=True,
         help="Unique temporary inventory reference",
     )
-    
+
     # Partner Relationship
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         help="Associated partner for this record"
     )
-    
+
     description = fields.Text(
         string="Description", help="Detailed description of temporary inventory"
     )
@@ -222,7 +224,7 @@ class TempInventory(models.Model):
         default=False,
         help="Whether approval is required for this inventory",
     )
-    approved_by = fields.Many2one(
+    approved_by_id = fields.Many2one(
         "res.users", string="Approved By", help="User who approved this inventory"
     )
     approval_date = fields.Datetime(
@@ -383,14 +385,8 @@ class TempInventory(models.Model):
         """Compute display name"""
         for record in self:
             if record.name:
-                record.display_name = _("%s (%s items)"
+                record.display_name = _("%s (%s items)", record.name, record.current_count)
             else:
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                 record.display_name = _("New Temporary Inventory")
 
     @api.depends("document_ids", "container_ids")
@@ -416,12 +412,6 @@ class TempInventory(models.Model):
                     record.current_count / record.capacity_limit
                 ) * 100
             else:
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                 record.utilization_percent = 0.0
 
     @api.depends("document_ids")
@@ -446,12 +436,6 @@ class TempInventory(models.Model):
                 )
                 record.expiry_date = expiry_datetime.date()
             else:
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                 record.expiry_date = False
 
     @api.depends("movement_ids", "movement_ids.date")
@@ -461,12 +445,6 @@ class TempInventory(models.Model):
             if record.movement_ids:
                 record.last_movement_date = max(record.movement_ids.mapped("date"))
             else:
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                 record.last_movement_date = False
 
     @api.depends("movement_ids")
@@ -535,7 +513,7 @@ class TempInventory(models.Model):
 
         self.write(
             {
-                "approved_by": self.env.user.id,
+                "approved_by_id": self.env.user.id,
                 "approval_date": fields.Datetime.now(),
             }
         )
@@ -604,8 +582,8 @@ class TempInventory(models.Model):
             },
         }
 
-    def action_check_capacity(self):
-        """Check capacity status"""
+    def action_check_capacity_status(self):
+        """Check capacity status and update state if needed - Business method"""
         self.ensure_one()
 
         if self.utilization_percent >= 100:
@@ -613,19 +591,14 @@ class TempInventory(models.Model):
             message = _("Inventory is at full capacity")
             message_type = "warning"
         elif self.utilization_percent >= 90:
-            pass
-            message = _("Inventory is at %s%% capacity - nearly full", round()
-                self.utilization_percent, 1
-            )
+            utilization_rounded = round(self.utilization_percent, 1)
+            message = _("Inventory is at %s%% capacity - nearly full", utilization_rounded)
             message_type = "warning"
         elif self.utilization_percent >= 75:
-            pass
-            message = _("Inventory is at %s%% capacity", round()
-                self.utilization_percent, 1
-            )
+            utilization_rounded = round(self.utilization_percent, 1)
+            message = _("Inventory is at %s%% capacity", utilization_rounded)
             message_type = "info"
         else:
-            pass
             message = _("Inventory has %s available slots", self.available_capacity)
             message_type = "success"
 
@@ -643,8 +616,8 @@ class TempInventory(models.Model):
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================
-    def check_expiry_status(self):
-        """Check if inventory has expired"""
+    def get_expiry_status(self):
+        """Get expiry status for business logic - Business method"""
         self.ensure_one()
         if self.expiry_date and self.expiry_date <= fields.Date.today():
             return {
@@ -672,7 +645,7 @@ class TempInventory(models.Model):
             "utilization_percent": self.utilization_percent,
             "location": self.location_id.name if self.location_id else None,
             "total_cost": self.total_cost,
-            "expiry_status": self.check_expiry_status(),
+            "expiry_status": self.get_expiry_status(),
         }
 
     # ============================================================================
@@ -721,11 +694,10 @@ class TempInventory(models.Model):
         if "state" in vals:
             for record in self:
                 if vals["state"] != record.state:
+                    old_state = dict(record._fields["state"].selection)[record.state]
+                    new_state = dict(record._fields["state"].selection)[vals["state"]]
                     record.message_post(
-                        body=_("State changed from %s to %s"),
-                            dict(record._fields["state"].selection)[record.state],
-                            dict(record._fields["state"].selection)[vals["state"]],
-                        )
+                        body=_("State changed from %s to %s", old_state, new_state)
                     )
 
         return super().write(vals)
@@ -737,9 +709,10 @@ class TempInventory(models.Model):
                 raise UserError(
                     _(
                         "Cannot delete inventory '%s' because it contains %d items. "
-                        "Please remove all items before deleting."
+                        "Please remove all items before deleting.",
+                        record.name,
+                        record.current_count,
                     )
-                    % (record.name, record.current_count)
                 )
         return super().unlink()
 
@@ -770,147 +743,6 @@ class TempInventory(models.Model):
             if inventory.current_count == 0:
                 inventory.action_archive()
             else:
-            pass
-            pass
-            pass
-            pass
-            pass
-            pass
                 inventory.message_post(
                     body=_("Warning: Inventory has expired but still contains items")
                 )
-
-
-class TempInventoryMovement(models.Model):
-    """Temporary Inventory Movement Tracking"""
-
-    _name = "temp.inventory.movement"
-    _description = "Temporary Inventory Movement"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "date desc"
-    _rec_name = "display_name"
-
-    inventory_id = fields.Many2one(
-        "temp.inventory",
-        string="Inventory",
-        required=True,
-        ondelete="cascade",
-        help="Associated temporary inventory",
-    )
-    movement_type = fields.Selection(
-        [
-            ("in", "Items In"),
-            ("out", "Items Out"),
-            ("transfer", "Transfer"),
-            ("adjustment", "Adjustment"),
-        ],
-        string="Movement Type",
-        required=True,
-        default="in",
-        help="Type of inventory movement",
-    )
-    date = fields.Datetime(
-        string="Movement Date",
-        required=True,
-        default=fields.Datetime.now,
-        help="When movement occurred",
-    )
-    quantity = fields.Integer(
-        string="Quantity", required=True, default=1, help="Number of items moved"
-    )
-    user_id = fields.Many2one(
-        "res.users",
-        string="Performed By",
-        required=True,
-        default=lambda self: self.env.user,
-        help="User who performed the movement",
-    )
-    notes = fields.Text(string="Notes", help="Additional notes about the movement")
-    document_id = fields.Many2one(
-        "records.document",
-        string="Related Document",
-        help="Document involved in this movement",
-    )
-    container_id = fields.Many2one(
-        "records.container",
-        string="Related Container",
-        help="Container involved in this movement",
-    )
-    display_name = fields.Char(
-        string="Display Name",
-        compute="_compute_display_name",
-        store=True,
-        help="Display name for movement",
-    )
-
-    @api.depends("movement_type", "quantity", "date")
-    def _compute_display_name(self):
-        """Compute display name"""
-        for record in self:
-            movement_label = dict(record._fields["movement_type"].selection)[
-                record.movement_type
-            ]
-            record.display_name = _("%s: %s items"
-
-
-class TempInventoryAudit(models.Model):
-    """Temporary Inventory Audit Trail"""
-
-    _name = "temp.inventory.audit"
-    _description = "Temporary Inventory Audit"
-    _order = "date desc"
-    _rec_name = "display_name"
-
-    inventory_id = fields.Many2one(
-        "temp.inventory",
-        string="Inventory",
-        required=True,
-        ondelete="cascade",
-        help="Associated temporary inventory",
-    )
-    date = fields.Datetime(
-        string="Audit Date",
-        required=True,
-        default=fields.Datetime.now,
-        help="When audit event occurred",
-    )
-    event_type = fields.Selection(
-        [
-            ("created", "Created"),
-            ("modified", "Modified"),
-            ("accessed", "Accessed"),
-            ("approved", "Approved"),
-            ("rejected", "Rejected"),
-            ("archived", "Archived"),
-        ],
-        string="Event Type",
-        required=True,
-        help="Type of audit event",
-    )
-    user_id = fields.Many2one(
-        "res.users",
-        string="User",
-        required=True,
-        default=lambda self: self.env.user,
-        help="User who triggered the event",
-    )
-    details = fields.Text(
-        string="Details", help="Detailed information about the audit event"
-    )
-    ip_address = fields.Char(string="IP Address", help="IP address of the user")
-    display_name = fields.Char(
-        string="Display Name",
-        compute="_compute_display_name",
-        store=True,
-        help="Display name for audit record",
-    )
-
-    @api.depends("event_type", "user_id", "date")
-    def _compute_display_name(self):
-        """Compute display name"""
-        for record in self:
-            event_label = dict(record._fields["event_type"].selection)[
-                record.event_type
-            ]
-            user_name = record.user_id.name if record.user_id else "Unknown"
-            record.display_name = _("%s by %s"

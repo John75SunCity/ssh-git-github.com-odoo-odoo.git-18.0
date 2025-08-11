@@ -61,6 +61,8 @@ from . import records_container_transfer
 # Customer and inventory management
 from . import customer_inventory_report
 from . import temp_inventory
+from . import temp_inventory_movement
+from . import temp_inventory_audit
 
 # Pickup and transportation
 from . import pickup_request_item

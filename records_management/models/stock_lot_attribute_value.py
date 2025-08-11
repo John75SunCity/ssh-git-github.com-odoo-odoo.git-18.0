@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 class StockLotAttributeValue(models.Model):
     """Stock Lot Attribute Values"""
@@ -52,28 +52,99 @@ class StockLotAttributeValue(models.Model):
                 continue
 
             attr_type = record.attribute_id.attribute_type
+            attr_name = record.attribute_id.name or "Unknown"
+            
             if attr_type == "text":
-                record.display_name = (
-                    _("%s: %s"
-                )
+                value = record.value_text or "Empty"
+                record.display_name = _("%s: %s", attr_name, value)
             elif attr_type == "number":
-            pass
-                record.display_name = (
-                    _("%s: %s"
-                )
+                value = record.value_number if record.value_number is not None else 0
+                record.display_name = _("%s: %s", attr_name, value)
             elif attr_type == "date":
-            pass
-                record.display_name = (
-                    _("%s: %s"
-                )
+                value = record.value_date or "No Date"
+                record.display_name = _("%s: %s", attr_name, value)
             elif attr_type == "boolean":
-            pass
-                record.display_name = _("%s: %s"
+                value = "Yes" if record.value_boolean else "No"
+                record.display_name = _("%s: %s", attr_name, value)
             elif attr_type == "selection":
-            pass
-                record.display_name = (
-                    _("%s: %s"
-                )
+                value = record.value_selection or "Not Selected"
+                record.display_name = _("%s: %s", attr_name, value)
             else:
-            pass
-                record.display_name = _("%s: Unknown Type"
+                record.display_name = _("%s: Unknown Type", attr_name)
+
+    @api.constrains('attribute_id', 'lot_id')
+    def _check_unique_attribute_per_lot(self):
+        """Ensure each attribute is only assigned once per lot"""
+        for record in self:
+            existing = self.search([
+                ('lot_id', '=', record.lot_id.id),
+                ('attribute_id', '=', record.attribute_id.id),
+                ('id', '!=', record.id)
+            ])
+            if existing:
+                raise ValidationError(_("Attribute %s is already defined for this stock lot", record.attribute_id.name))
+
+    def get_effective_value(self):
+        """Get the effective value based on attribute type"""
+        self.ensure_one()
+        if not self.attribute_id:
+            return None
+            
+        attr_type = self.attribute_id.attribute_type
+        if attr_type == "text":
+            return self.value_text
+        elif attr_type == "number":
+            return self.value_number
+        elif attr_type == "date":
+            return self.value_date
+        elif attr_type == "boolean":
+            return self.value_boolean
+        elif attr_type == "selection":
+            return self.value_selection
+        return None
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to validate attribute types"""
+        records = super().create(vals_list)
+        for record in records:
+            record._validate_value_type()
+        return records
+
+    def write(self, vals):
+        """Override write to validate attribute types"""
+        result = super().write(vals)
+        if any(key.startswith('value_') for key in vals.keys()) or 'attribute_id' in vals:
+            for record in self:
+                record._validate_value_type()
+        return result
+
+    def _validate_value_type(self):
+        """Validate that the correct value field is used for the attribute type"""
+        if not self.attribute_id:
+            return
+            
+        attr_type = self.attribute_id.attribute_type
+        value_fields = ['value_text', 'value_number', 'value_date', 'value_boolean', 'value_selection']
+        expected_field = f'value_{attr_type}'
+        
+        if expected_field not in value_fields:
+            return  # Unknown type, skip validation
+            
+        # Check that only the correct value field is set
+        for field in value_fields:
+            if field != expected_field and getattr(self, field):
+                raise ValidationError(_(
+                    "Attribute %s expects %s type, but %s value is provided",
+                    self.attribute_id.name,
+                    attr_type,
+                    field.replace('value_', '')
+                ))
+        
+        # Check that the correct field has a value
+        if not getattr(self, expected_field) and attr_type != 'boolean':
+            raise ValidationError(_(
+                "Please provide a value for %s attribute %s",
+                attr_type,
+                self.attribute_id.name
+            ))

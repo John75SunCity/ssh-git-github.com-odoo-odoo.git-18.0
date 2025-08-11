@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
+
 
 class StockLotAttribute(models.Model):
     """Stock Lot Attribute Management"""
@@ -101,6 +102,21 @@ class StockLotAttribute(models.Model):
     )
 
     # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
+    value_count = fields.Integer(
+        string="Value Count",
+        compute="_compute_value_count",
+        help="Number of values assigned for this attribute",
+    )
+
+    option_count = fields.Integer(
+        string="Option Count",
+        compute="_compute_option_count",
+        help="Number of selection options available",
+    )
+
+    # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
     activity_ids = fields.One2many(
@@ -121,6 +137,21 @@ class StockLotAttribute(models.Model):
         string="Messages",
         domain=lambda self: [("model", "=", self._name)],
     )
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("lot_attribute_value_ids")
+    def _compute_value_count(self):
+        """Compute the number of values for this attribute"""
+        for record in self:
+            record.value_count = len(record.lot_attribute_value_ids)
+
+    @api.depends("selection_option_ids")
+    def _compute_option_count(self):
+        """Compute the number of selection options"""
+        for record in self:
+            record.option_count = len(record.selection_option_ids)
 
     # ============================================================================
     # ACTION METHODS
@@ -145,6 +176,51 @@ class StockLotAttribute(models.Model):
         self.write({"state": "confirmed", "active": True})
         self.message_post(body=_("Attribute activated"))
 
+    def action_view_values(self):
+        """View attribute values"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Attribute Values"),
+            "res_model": "stock.lot.attribute.value",
+            "view_mode": "tree,form",
+            "domain": [("attribute_id", "=", self.id)],
+            "context": {"default_attribute_id": self.id},
+        }
+
+    # ============================================================================
+    # CONSTRAINT METHODS
+    # ============================================================================
+    @api.constrains("attribute_type", "selection_option_ids")
+    def _check_selection_options(self):
+        """Validate that selection type attributes have options"""
+        for record in self:
+            if record.attribute_type == "selection" and not record.selection_option_ids:
+                raise ValidationError(
+                    _(
+                        "Selection type attributes must have at least one option defined."
+                    )
+                )
+
+    @api.constrains("name")
+    def _check_name_unique(self):
+        """Ensure attribute names are unique within company"""
+        for record in self:
+            existing = self.search(
+                [
+                    ("name", "=", record.name),
+                    ("company_id", "=", record.company_id.id),
+                    ("id", "!=", record.id),
+                ]
+            )
+            if existing:
+                raise ValidationError(
+                    _(
+                        "An attribute with the name '%s' already exists in this company.",
+                        record.name,
+                    )
+                )
+
     # ============================================================================
     # UTILITY METHODS
     # ============================================================================
@@ -156,5 +232,86 @@ class StockLotAttribute(models.Model):
             "type": self.attribute_type,
             "required": self.required,
             "state": self.state,
-            "value_count": len(self.lot_attribute_value_ids),
+            "value_count": self.value_count,
+            "option_count": self.option_count
+            if self.attribute_type == "selection"
+            else 0,
         }
+
+    @api.model
+    def get_available_types(self):
+        """Get available attribute types"""
+        return dict(self._fields["attribute_type"].selection)
+
+    def copy(self, default=None):
+        """Override copy to handle name uniqueness"""
+        default = dict(default or {})
+        if "name" not in default:
+            default["name"] = _("%s (Copy)", self.name)
+        return super().copy(default)
+
+
+class StockLotAttributeOption(models.Model):
+    """Selection options for stock lot attributes"""
+
+    _name = "stock.lot.attribute.option"
+    _description = "Stock Lot Attribute Option"
+    _order = "sequence, name"
+
+    attribute_id = fields.Many2one(
+        "stock.lot.attribute",
+        string="Attribute",
+        required=True,
+        ondelete="cascade",
+        help="Parent attribute",
+    )
+
+    name = fields.Char(
+        string="Option Name",
+        required=True,
+        help="Name of the selection option",
+    )
+
+    value = fields.Char(
+        string="Option Value",
+        required=True,
+        help="Internal value for this option",
+    )
+
+    sequence = fields.Integer(
+        string="Sequence", default=10, help="Display order"
+    )
+
+    active = fields.Boolean(
+        string="Active",
+        default=True,
+        help="Whether this option is available for selection",
+    )
+
+    @api.constrains("value", "attribute_id")
+    def _check_value_unique(self):
+        """Ensure option values are unique within attribute"""
+        for record in self:
+            existing = self.search(
+                [
+                    ("value", "=", record.value),
+                    ("attribute_id", "=", record.attribute_id.id),
+                    ("id", "!=", record.id),
+                ]
+            )
+            if existing:
+                raise ValidationError(
+                    _(
+                        "Option value '%s' already exists for attribute '%s'.",
+                        record.value,
+                        record.attribute_id.name,
+                    )
+                )
+
+    def name_get(self):
+        """Custom name_get to show attribute context"""
+        result = []
+        for record in self:
+            name = f"[{record.attribute_id.name}] {record.name}"
+            result.append((record.id, name))
+        return result
