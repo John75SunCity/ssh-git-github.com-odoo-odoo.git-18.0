@@ -8,6 +8,8 @@ Model for risk assessment for NAID compliance.
 from odoo import api, fields, models
 
 
+
+
 class NaidRiskAssessment(models.Model):
     """Risk assessment for NAID compliance"""
 

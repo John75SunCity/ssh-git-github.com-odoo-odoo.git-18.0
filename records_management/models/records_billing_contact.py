@@ -47,10 +47,13 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-import pytz
 from odoo import models, fields, api, _
+
+import pytz
 from odoo.exceptions import ValidationError
 from odoo.tools import email_validate
+
+
 
 class RecordsBillingContact(models.Model):
     _name = "records.billing.contact"
@@ -474,6 +477,7 @@ class RecordsBillingContact(models.Model):
     # ============================================================================
     def action_set_primary(self):
         """Set this contact as primary"""
+
         self.ensure_one()
 
         # Remove primary flag from other contacts in same profile
@@ -509,6 +513,7 @@ class RecordsBillingContact(models.Model):
 
     def action_test_email(self):
         """Send test email to verify contact information"""
+
         self.ensure_one()
 
         if not self.email:
@@ -529,6 +534,7 @@ class RecordsBillingContact(models.Model):
 
     def action_view_communications(self):
         """View all communications sent to this contact"""
+
         self.ensure_one()
 
         return {
@@ -545,6 +551,7 @@ class RecordsBillingContact(models.Model):
 
     def action_update_preferences(self):
         """Open wizard to update communication preferences"""
+
         self.ensure_one()
 
         return {
@@ -562,6 +569,7 @@ class RecordsBillingContact(models.Model):
 
     def action_deactivate_contact(self):
         """Deactivate billing contact"""
+
         self.ensure_one()
 
         # If this is a primary contact, promote backup contact
@@ -682,7 +690,7 @@ class RecordsBillingContact(models.Model):
         return result
 
     @api.model
-    def _name_search(
+    def _search_name(
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
     ):
         """Enhanced search by name, email, or job title"""

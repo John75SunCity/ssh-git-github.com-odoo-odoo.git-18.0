@@ -20,8 +20,12 @@ License: LGPL-3
 """
 
 import re
+
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class PickupRequest(models.Model):
@@ -503,6 +507,7 @@ class PickupRequest(models.Model):
     # ============================================================================
     def action_submit(self):
         """Submit pickup request for processing"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft requests can be submitted"))
@@ -518,6 +523,7 @@ class PickupRequest(models.Model):
 
     def action_confirm(self):
         """Confirm pickup request"""
+
         self.ensure_one()
         if self.state not in ["draft", "submitted"]:
             raise UserError(_("Only draft or submitted requests can be confirmed"))
@@ -527,6 +533,7 @@ class PickupRequest(models.Model):
 
     def action_schedule(self):
         """Schedule pickup request"""
+
         self.ensure_one()
         if self.state != "confirmed":
             raise UserError(_("Only confirmed requests can be scheduled"))
@@ -542,6 +549,7 @@ class PickupRequest(models.Model):
 
     def action_start_pickup(self):
         """Start pickup process"""
+
         self.ensure_one()
         if self.state != "scheduled":
             raise UserError(_("Only scheduled pickups can be started"))
@@ -551,6 +559,7 @@ class PickupRequest(models.Model):
 
     def action_complete(self):
         """Complete pickup request"""
+
         self.ensure_one()
         if self.state != "in_progress":
             raise UserError(_("Only in-progress pickups can be completed"))
@@ -566,6 +575,7 @@ class PickupRequest(models.Model):
 
     def action_cancel(self):
         """Cancel pickup request"""
+
         self.ensure_one()
         if self.state in ["completed"]:
             raise UserError(_("Completed pickups cannot be cancelled"))
@@ -575,6 +585,7 @@ class PickupRequest(models.Model):
 
     def action_reset_to_draft(self):
         """Reset pickup to draft state"""
+
         self.ensure_one()
         if self.state in ["completed"]:
             raise UserError(_("Completed pickups cannot be reset"))
@@ -584,6 +595,7 @@ class PickupRequest(models.Model):
 
     def action_create_fsm_task(self):
         """Create field service task for pickup"""
+
         self.ensure_one()
 
         if self.fsm_task_id:
@@ -614,6 +626,7 @@ class PickupRequest(models.Model):
 
     def action_view_pickup_items(self):
         """View pickup items"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -626,6 +639,7 @@ class PickupRequest(models.Model):
 
     def action_generate_pickup_label(self):
         """Generate pickup label"""
+
         self.ensure_one()
         return self.env.ref(
             "records_management.action_report_pickup_label"
@@ -859,6 +873,7 @@ class PickupRoute(models.Model):
 
     def action_start_route(self):
         """Start route execution"""
+
         self.ensure_one()
         if self.state != "planned":
             raise UserError(_("Only planned routes can be started"))
@@ -868,6 +883,7 @@ class PickupRoute(models.Model):
 
     def action_complete_route(self):
         """Complete route execution"""
+
         self.ensure_one()
         if self.state != "in_progress":
             raise UserError(_("Only in-progress routes can be completed"))
@@ -914,6 +930,7 @@ class PickupScheduleWizard(models.TransientModel):
 
     def action_schedule_pickup(self):
         """Schedule the pickup request"""
+
         self.ensure_one()
 
         self.pickup_request_id.write(

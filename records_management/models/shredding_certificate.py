@@ -29,7 +29,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class ShreddingCertificate(models.Model):
@@ -414,6 +417,7 @@ class ShreddingCertificate(models.Model):
     # ============================================================================
     def action_issue_certificate(self):
         """Issue the certificate"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft certificates can be issued"))
@@ -443,6 +447,7 @@ class ShreddingCertificate(models.Model):
 
     def action_deliver_certificate(self):
         """Mark certificate as delivered"""
+
         self.ensure_one()
         if self.state != "issued":
             raise UserError(_("Only issued certificates can be delivered"))
@@ -470,6 +475,7 @@ class ShreddingCertificate(models.Model):
 
     def action_archive_certificate(self):
         """Archive the certificate"""
+
         self.ensure_one()
         if self.state not in ["delivered"]:
             raise UserError(_("Only delivered certificates can be archived"))
@@ -478,6 +484,7 @@ class ShreddingCertificate(models.Model):
 
     def action_reset_to_draft(self):
         """Reset certificate to draft state"""
+
         self.ensure_one()
         self.write({
             "state": "draft",
@@ -491,6 +498,7 @@ class ShreddingCertificate(models.Model):
 
     def action_print_certificate(self):
         """Print the certificate"""
+
         self.ensure_one()
         return self.env.ref(
             "records_management.action_report_shredding_certificate"
@@ -498,6 +506,7 @@ class ShreddingCertificate(models.Model):
 
     def action_view_services(self):
         """View related shredding services"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -510,6 +519,7 @@ class ShreddingCertificate(models.Model):
 
     def action_view_destruction_items(self):
         """View destruction items"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -522,6 +532,7 @@ class ShreddingCertificate(models.Model):
 
     def action_send_to_customer(self):
         """Send certificate to customer via selected delivery method"""
+
         self.ensure_one()
         if self.state != "issued":
             raise UserError(_("Only issued certificates can be sent to customers"))
@@ -536,6 +547,7 @@ class ShreddingCertificate(models.Model):
 
     def action_regenerate_certificate(self):
         """Regenerate certificate with updated data"""
+
         self.ensure_one()
         if self.state in ["delivered", "archived"]:
             raise UserError(_("Cannot regenerate delivered or archived certificates"))

@@ -5,6 +5,8 @@ Temporary Model
 
 from odoo import models, fields, api, _
 
+
+
 class StockPicking(models.Model):
     """
     Temporary Model
@@ -35,8 +37,12 @@ class StockPicking(models.Model):
 
     def action_confirm(self):
         """Confirm the record"""
+
+        self.ensure_one()
         self.write({'state': 'confirmed'})
 
     def action_done(self):
         """Mark as done"""
+
+        self.ensure_one()
         self.write({'state': 'done'})

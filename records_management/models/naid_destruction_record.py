@@ -2,6 +2,8 @@
 from odoo import models, fields
 
 
+
+
 class NaidDestructionRecord(models.Model):
     _name = "naid.destruction.record"
     _description = "NAID Destruction Record"

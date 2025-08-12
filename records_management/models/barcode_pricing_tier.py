@@ -27,7 +27,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError, UserError
+
+
 
 
 class BarcodePricingTier(models.Model):
@@ -341,6 +344,7 @@ class BarcodePricingTier(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activate pricing tier"""
+
         self.ensure_one()
         
         if self.state != "draft":
@@ -352,6 +356,7 @@ class BarcodePricingTier(models.Model):
 
     def action_deactivate(self):
         """Deactivate pricing tier"""
+
         self.ensure_one()
         
         if self.state != "active":
@@ -362,6 +367,7 @@ class BarcodePricingTier(models.Model):
 
     def action_expire(self):
         """Mark pricing tier as expired"""
+
         self.ensure_one()
         
         self.write({
@@ -372,6 +378,7 @@ class BarcodePricingTier(models.Model):
 
     def action_extend_validity(self):
         """Open wizard to extend validity period"""
+
         self.ensure_one()
         
         return {
@@ -388,6 +395,7 @@ class BarcodePricingTier(models.Model):
 
     def action_duplicate_tier(self):
         """Create a copy of this pricing tier"""
+
         self.ensure_one()
 
         copy_vals = {
@@ -410,6 +418,7 @@ class BarcodePricingTier(models.Model):
 
     def action_assign_customers(self):
         """Open wizard to assign customers to this tier"""
+
         self.ensure_one()
         
         return {

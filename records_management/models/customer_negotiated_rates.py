@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class CustomerNegotiatedRate(models.Model):
@@ -331,6 +334,7 @@ class CustomerNegotiatedRate(models.Model):
     # ============================================================================
     def action_submit_for_negotiation(self):
         """Submit rates for negotiation"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Can only submit draft rates for negotiation"))
@@ -339,6 +343,7 @@ class CustomerNegotiatedRate(models.Model):
 
     def action_approve_rates(self):
         """Approve negotiated rates"""
+
         self.ensure_one()
         if self.state != "negotiating":
             raise UserError(_("Can only approve rates under negotiation"))
@@ -347,6 +352,7 @@ class CustomerNegotiatedRate(models.Model):
 
     def action_activate_rates(self):
         """Activate approved rates"""
+
         self.ensure_one()
         if self.state != "approved":
             raise UserError(_("Can only activate approved rates"))
@@ -362,24 +368,28 @@ class CustomerNegotiatedRate(models.Model):
 
     def action_expire_rates(self):
         """Mark rates as expired"""
+
         self.ensure_one()
         self.write({"state": "expired", "expiry_date": fields.Date.today()})
         self.message_post(body=_("Negotiated rates expired"))
 
     def action_cancel_rates(self):
         """Cancel negotiated rates"""
+
         self.ensure_one()
         self.write({"state": "cancelled"})
         self.message_post(body=_("Negotiated rates cancelled"))
 
     def action_reset_to_draft(self):
         """Reset to draft state"""
+
         self.ensure_one()
         self.write({"state": "draft", "approval_date": False})
         self.message_post(body=_("Rates reset to draft"))
 
     def action_duplicate_rates(self):
         """Create new version of negotiated rates"""
+
         self.ensure_one()
         new_rate = self.copy(
             {

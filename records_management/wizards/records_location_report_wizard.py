@@ -6,6 +6,8 @@ Records Location Report Wizard
 from odoo import models, fields, api, _
 
 
+
+
 class RecordsLocationReportWizard(models.TransientModel):
     """
     Records Location Report Wizard
@@ -26,6 +28,7 @@ class RecordsLocationReportWizard(models.TransientModel):
 
     def action_generate_report(self):
         """Generate the location report"""
+
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',

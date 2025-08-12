@@ -5,6 +5,8 @@ NAID Performance History
 
 from odoo import models, fields, api, _
 
+
+
 class NAIDPerformanceHistory(models.Model):
     """
     NAID Performance History
@@ -35,8 +37,12 @@ class NAIDPerformanceHistory(models.Model):
 
     def action_confirm(self):
         """Confirm the record"""
+
+        self.ensure_one()
         self.write({'state': 'confirmed'})
 
     def action_done(self):
         """Mark as done"""
+
+        self.ensure_one()
         self.write({'state': 'done'})

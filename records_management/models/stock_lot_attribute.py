@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class StockLotAttribute(models.Model):
@@ -158,6 +161,7 @@ class StockLotAttribute(models.Model):
     # ============================================================================
     def action_confirm(self):
         """Confirm the attribute"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft attributes can be confirmed."))
@@ -166,18 +170,21 @@ class StockLotAttribute(models.Model):
 
     def action_archive(self):
         """Archive the attribute"""
+
         self.ensure_one()
         self.write({"state": "archived", "active": False})
         self.message_post(body=_("Attribute archived"))
 
     def action_activate(self):
         """Activate archived attribute"""
+
         self.ensure_one()
         self.write({"state": "confirmed", "active": True})
         self.message_post(body=_("Attribute activated"))
 
     def action_view_values(self):
         """View attribute values"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

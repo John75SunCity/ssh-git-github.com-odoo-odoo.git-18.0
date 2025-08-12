@@ -18,13 +18,15 @@ Key Differences from System Flowchart:
 """
 
 # Python stdlib imports
-import base64
 import json
 import logging
 
-# Odoo core imports
 from odoo import models, fields, api, _
+
+import base64
 from odoo.exceptions import UserError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -459,6 +461,7 @@ class CustomerPortalDiagram(models.TransientModel):
     # ============================================================================
     def action_open_messaging(self, target_user_id):
         """Open messaging interface for communicating with another user"""
+
         self.ensure_one()
 
         if not self.show_messaging:
@@ -504,6 +507,7 @@ class CustomerPortalDiagram(models.TransientModel):
 
     def action_refresh_diagram(self):
         """Refresh the diagram data"""
+
         self.ensure_one()
         # Trigger recomputation
         self._compute_diagram_data()
@@ -519,6 +523,7 @@ class CustomerPortalDiagram(models.TransientModel):
 
     def action_export_diagram_data(self):
         """Export diagram data as JSON for external use"""
+
         self.ensure_one()
 
         export_data = {

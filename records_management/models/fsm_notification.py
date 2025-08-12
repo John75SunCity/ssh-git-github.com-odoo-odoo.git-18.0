@@ -23,7 +23,10 @@ import logging
 from datetime import datetime, timedelta
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -270,6 +273,7 @@ class FsmNotificationManager(models.Model):
     # ============================================================================
     def action_send_notification(self):
         """Send the notification using configured delivery method"""
+
         self.ensure_one()
 
         if self.state == 'sent':
@@ -305,6 +309,7 @@ class FsmNotificationManager(models.Model):
 
     def action_schedule_notification(self):
         """Schedule notification for automatic sending"""
+
         self.ensure_one()
 
         if not self.scheduled_datetime:
@@ -323,6 +328,7 @@ class FsmNotificationManager(models.Model):
 
     def action_cancel_notification(self):
         """Cancel the notification"""
+
         self.ensure_one()
 
         self.write({'state': 'cancelled'})
@@ -332,6 +338,7 @@ class FsmNotificationManager(models.Model):
 
     def action_retry_send(self):
         """Retry sending failed notification"""
+
         self.ensure_one()
 
         if self.retry_count >= self.max_retries:

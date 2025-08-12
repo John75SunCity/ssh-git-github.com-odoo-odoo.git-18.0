@@ -11,7 +11,10 @@ import datetime
 from datetime import timedelta
 
 from odoo import _, api, fields, models
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 try:
     from dateutil.relativedelta import relativedelta
@@ -630,6 +633,7 @@ class NaidCompliance(models.Model):
 
     def action_complete_audit(self):
         """Complete audit process and update compliance status"""
+
         self.ensure_one()
 
         if not self.audit_findings:
@@ -680,6 +684,7 @@ class NaidCompliance(models.Model):
 
     def action_schedule_next_audit(self):
         """Schedule the next compliance audit based on requirements"""
+
         self.ensure_one()
 
         if not self.next_audit_date:
@@ -699,6 +704,7 @@ class NaidCompliance(models.Model):
 
     def action_generate_certificate(self):
         """Generate NAID compliance certificate for compliant records"""
+
         self.ensure_one()
 
         if self.state != "compliant":

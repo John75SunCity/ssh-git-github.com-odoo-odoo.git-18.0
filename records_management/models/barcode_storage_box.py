@@ -17,7 +17,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError, UserError
+
+
 
 
 class BarcodeStorageBox(models.Model):
@@ -202,6 +205,7 @@ class BarcodeStorageBox(models.Model):
     # ============================================================================
     def action_mark_full(self):
         """Mark storage container as full"""
+
         self.ensure_one()
 
         if self.state != "active":
@@ -212,6 +216,7 @@ class BarcodeStorageBox(models.Model):
 
     def action_archive_box(self):
         """Archive storage container"""
+
         self.ensure_one()
 
         if self.state == "archived":
@@ -225,6 +230,7 @@ class BarcodeStorageBox(models.Model):
 
     def action_activate(self):
         """Activate storage container"""
+
         self.ensure_one()
 
         if self.state != "draft":
@@ -236,6 +242,7 @@ class BarcodeStorageBox(models.Model):
 
     def action_add_barcode_product(self):
         """Open wizard to add barcode product to this container"""
+
         self.ensure_one()
 
         if self.state not in ["active", "draft"]:
@@ -258,6 +265,7 @@ class BarcodeStorageBox(models.Model):
 
     def action_view_products(self):
         """View all barcode products in this container"""
+
         self.ensure_one()
 
         return {
@@ -271,6 +279,7 @@ class BarcodeStorageBox(models.Model):
 
     def action_update_capacity_status(self):
         """Check and update container capacity status"""
+
         self.ensure_one()
 
         # Refresh computed fields
@@ -297,6 +306,7 @@ class BarcodeStorageBox(models.Model):
 
     def action_generate_barcode_label(self):
         """Generate printable barcode label for container"""
+
         self.ensure_one()
 
         return {

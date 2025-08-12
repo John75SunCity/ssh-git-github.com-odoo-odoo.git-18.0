@@ -2,6 +2,8 @@
 
 from odoo import models, fields, api
 
+
+
 class PaperBaleSourceDocument(models.Model):
     _name = "paper.bale.source.document"
     _description = "Paper Bale Source Document"
@@ -45,6 +47,7 @@ class PaperBaleSourceDocument(models.Model):
 
     def action_mark_processed(self):
         """Mark document as processed"""
+
         self.ensure_one()
         self.write({"state": "processed"})
 
@@ -56,5 +59,6 @@ class PaperBaleSourceDocument(models.Model):
 
     def action_mark_baled(self):
         """Mark document as baled"""
+
         self.ensure_one()
         self.write({"state": "baled"})

@@ -20,12 +20,15 @@ License: LGPL-3
 
 import logging
 from datetime import timedelta
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_compare
 
-_logger = logging.getLogger(__name__)
+from odoo import models, fields, api, _
 
+from odoo.exceptions import UserError, ValidationError
+
+
+
+_logger = logging.getLogger(__name__)
 
 class RecordsDocumentType(models.Model):
     _name = "records.document.type"
@@ -56,41 +59,41 @@ class RecordsDocumentType(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Document Type Name",
+    )
         required=True,
         tracking=True,
         index=True,
-        help="Unique name for this document type",
-    )
+
+    help="Unique name for this document type",
+
+        )
     
     # Partner Relationship
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
-    
     code = fields.Char(
         string="Document Code", index=True, help="Unique code for system identification"
-    )
+    ),
     description = fields.Text(
         string="Description", help="Detailed description and usage guidelines"
-    )
+    ),
     sequence = fields.Integer(
         string="Sequence", default=10, help="Display order in lists and forms"
-    )
+    ),
     active = fields.Boolean(
         string="Active",
+    )
         default=True,
         tracking=True,
-        help="Uncheck to archive this document type",
-    )
+
+    help="Uncheck to archive this document type",
+
+        )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
         index=True,
-    )
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="Document Type Manager",
@@ -98,7 +101,14 @@ class RecordsDocumentType(models.Model):
         tracking=True,
         help="User responsible for managing this document type",
     )
+    )
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+    )
+        help="Associated partner for this record",
+    ),
     # ============================================================================
     # STATE MANAGEMENT
     # ============================================================================
@@ -111,6 +121,7 @@ class RecordsDocumentType(models.Model):
         ],
         string="Status",
         default="draft",
+    )
         required=True,
         tracking=True,
         help="Current lifecycle status of this document type",
@@ -135,10 +146,12 @@ class RecordsDocumentType(models.Model):
         string="Category",
         required=True,
         default="other",
-        tracking=True,
-        help="Primary category for document classification",
     )
+        tracking=True,
 
+    help="Primary category for document classification",
+
+        )
     confidentiality_level = fields.Selection(
         [
             ("public", "Public"),
@@ -148,6 +161,7 @@ class RecordsDocumentType(models.Model):
             ("top_secret", "Top Secret"),
         ],
         string="Confidentiality Level",
+    )
         default="internal",
         required=True,
         tracking=True,
@@ -160,20 +174,29 @@ class RecordsDocumentType(models.Model):
     retention_policy_id = fields.Many2one(
         "records.retention.policy",
         string="Retention Policy",
-        tracking=True,
-        help="Linked retention policy with specific rules",
     )
+        tracking=True,
+
+    help="Linked retention policy with specific rules",
+
+        )
     default_retention_years = fields.Integer(
         string="Default Retention (Years)",
+    )
         default=7,
         required=True,
-        help="Default retention period when no specific policy applies",
-    )
+
+    help="Default retention period when no specific policy applies",
+
+        )
     requires_legal_hold = fields.Boolean(
         string="Requires Legal Hold",
-        default=False,
-        help="Documents may require legal hold preventing destruction",
     )
+        default=False,
+
+        help="Documents may require legal hold preventing destruction",
+
+        )
     destruction_method = fields.Selection(
         [
             ("shred", "Shredding"),
@@ -183,6 +206,7 @@ class RecordsDocumentType(models.Model):
             ("degaussing", "Degaussing"),
         ],
         string="Destruction Method",
+    )
         default="shred",
         required=True,
         help="Required method for secure document destruction",
@@ -194,53 +218,80 @@ class RecordsDocumentType(models.Model):
     naid_compliance = fields.Boolean(
         string="NAID Compliance Required",
         default=False,
-        help="Requires NAID AAA compliance for destruction",
     )
+
+        help="Requires NAID AAA compliance for destruction",
+
+        )
     hipaa_protected = fields.Boolean(
         string="HIPAA Protected",
-        default=False,
-        help="Contains protected health information",
     )
+        default=False,
+
+        help="Contains protected health information",
+
+        )
     sox_compliance = fields.Boolean(
         string="SOX Compliance",
-        default=False,
-        help="Subject to Sarbanes-Oxley requirements",
     )
+        default=False,
+
+        help="Subject to Sarbanes-Oxley requirements",
+
+        )
     gdpr_applicable = fields.Boolean(
         string="GDPR Applicable",
-        default=False,
-        help="Subject to GDPR data protection regulations",
     )
+        default=False,
+
+        help="Subject to GDPR data protection regulations",
+
+        )
     regulatory_requirements = fields.Text(
         string="Regulatory Requirements",
-        help="Specific compliance requirements and standards",
     )
+
+        help="Specific compliance requirements and standards"
+
+        )
 
     # ============================================================================
     # PHYSICAL HANDLING
     # ============================================================================
     max_box_weight = fields.Float(
         string="Max Box Weight (lbs)",
-        default=40.0,
-        help="Maximum weight allowed per storage box",
     )
+        default=40.0,
+
+        help="Maximum weight allowed per storage box",
+
+        )
     storage_requirements = fields.Text(
         string="Storage Requirements",
-        help="Special storage conditions and environmental controls",
     )
+
+        help="Special storage conditions and environmental controls"
+
+        )
     handling_instructions = fields.Text(
         string="Handling Instructions", help="Special handling procedures for staff"
-    )
+    ),
     environmental_controls = fields.Boolean(
         string="Environmental Controls Required",
-        default=False,
-        help="Requires controlled temperature and humidity",
     )
+        default=False,
+
+        help="Requires controlled temperature and humidity",
+
+        )
     fire_protection_required = fields.Boolean(
         string="Fire Protection Required",
-        default=False,
-        help="Requires fire-resistant storage facilities",
     )
+        default=False,
+
+        help="Requires fire-resistant storage facilities",
+
+        )
 
     # ============================================================================
     # WORKFLOW & PROCESSING
@@ -248,26 +299,38 @@ class RecordsDocumentType(models.Model):
     approval_required = fields.Boolean(
         string="Approval Required",
         default=False,
+
         help="Documents require management approval",
     )
+
+        )
     indexing_required = fields.Boolean(
         string="Indexing Required",
         default=True,
-        help="Documents must be indexed for searchability",
     )
+
+        help="Documents must be indexed for searchability",
+
+        )
     barcode_required = fields.Boolean(
         string="Barcode Required", default=True, help="Barcode tracking is mandatory"
-    )
+    ),
     digital_copy_required = fields.Boolean(
         string="Digital Copy Required",
-        default=False,
-        help="Digital backup copy is mandatory",
     )
+        default=False,
+
+        help="Digital backup copy is mandatory",
+
+        )
     encryption_required = fields.Boolean(
         string="Encryption Required",
-        default=False,
-        help="Digital copies must be encrypted",
     )
+        default=False,
+
+        help="Digital copies must be encrypted",
+
+        )
 
     # ============================================================================
     # UTILIZATION FIELDS
@@ -277,17 +340,20 @@ class RecordsDocumentType(models.Model):
         string="Document Type Utilization",
         default="normal",
     )
+    )
 
     # ============================================================================
     # METADATA & TEMPLATES
     # ============================================================================
     metadata_template = fields.Text(
         string="Metadata Template", help="JSON template for required metadata fields"
-    )
+    ),
     searchable_fields = fields.Char(
         string="Searchable Fields",
-        help="Comma-separated list of searchable metadata fields",
-    )
+
+        help="Comma-separated list of searchable metadata fields"
+
+        )
     default_tags = fields.Char(
         string="Default Tags", help="Default tags automatically applied to documents"
     )
@@ -297,15 +363,18 @@ class RecordsDocumentType(models.Model):
     # ============================================================================
     document_ids = fields.One2many(
         "records.document", "document_type_id", string="Documents"
-    )
+    ),
     parent_type_id = fields.Many2one(
         "records.document.type",
         string="Parent Type",
+
         help="Parent type in classification hierarchy",
     )
+
+        )
     child_type_ids = fields.One2many(
         "records.document.type", "parent_type_id", string="Child Types"
-    )
+    ),
     container_ids = fields.One2many(
         "records.container", "document_type_id", string="Containers"
     )
@@ -317,14 +386,16 @@ class RecordsDocumentType(models.Model):
         "mail.activity",
         "res_id",
         string="Activities",
-        domain="[('res_model', '=', 'records.document.type')]",
     )
+        domain="[('res_model', '=', 'records.document.type')]",
+    ),
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain="[('res_model', '=', 'records.document.type')]",
     )
+        domain="[('res_model', '=', 'records.document.type')]",
+    ),
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -380,25 +451,27 @@ class RecordsDocumentType(models.Model):
                 status_parts.append("Inactive")
             if record.document_count:
                 status_parts.append(_("%d docs", record.document_count))
-            record.status_display = " | ".join(status_parts)
-
+            record.status_display = " | ".join(status_parts),
     document_count = fields.Integer(
         compute="_compute_document_count",
         string="Documents",
-        store=True,
-        help="Number of documents using this type",
     )
+        store=True,
+
+    help="Number of documents using this type",
+
+        )
     child_count = fields.Integer(
         compute="_compute_child_count", string="Child Types", store=True
-    )
+    ),
     container_count = fields.Integer(
         compute="_compute_container_count", string="Containers", store=True
-    )
+    ),
     effective_retention_years = fields.Integer(
-        compute="_compute_effective_retention",
+        compute="_compute_effective_retention",)
         string="Effective Retention (Years)",
         store=True,
-    )
+    ),
     status_display = fields.Char(
         compute="_compute_status_display", string="Status Display"
     )
@@ -426,7 +499,7 @@ class RecordsDocumentType(models.Model):
 
         records = super().create(vals_list)
 
-        for record in records:
+    for record in records:
             record.message_post(
                 body=_("Document type created with code: %s", record.code)
             )
@@ -436,21 +509,21 @@ class RecordsDocumentType(models.Model):
     def write(self, vals):
         """Enhanced write with change validation and tracking"""
         # Validate state transitions
-        if "state" in vals:
+    if "state" in vals:
             self._validate_state_transition(vals["state"])
 
         # Track retention policy changes
-        if "retention_policy_id" in vals or "default_retention_years" in vals:
+    if "retention_policy_id" in vals or "default_retention_years" in vals:
             self._handle_retention_changes(vals)
 
         # Update security settings
-        if vals.get("confidentiality_level") in ["restricted", "top_secret"]:
+    if vals.get("confidentiality_level") in ["restricted", "top_secret"]:
             vals["encryption_required"] = True
 
         result = super().write(vals)
 
         # Log significant changes
-        if any(
+    if any(
             field in vals
             for field in ["state", "retention_policy_id", "confidentiality_level"]
         ):
@@ -472,14 +545,12 @@ class RecordsDocumentType(models.Model):
                         record.name,
                         len(record.document_ids)
                     )
-                )
             if record.child_type_ids:
                 raise UserError(
                     _(
                         "Cannot delete document type '%s' with child types. Reassign children first.",
                         record.name
                     )
-                )
         return super().unlink()
 
     # ============================================================================
@@ -487,6 +558,7 @@ class RecordsDocumentType(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activate document type"""
+
         self.ensure_one()
         if self.state == "archived":
             raise UserError(_("Cannot activate archived document type. Restore first."))
@@ -496,6 +568,7 @@ class RecordsDocumentType(models.Model):
 
     def action_deprecate(self):
         """Deprecate document type with impact assessment"""
+
         self.ensure_one()
         if self.document_count > 0:
             return self._show_deprecation_wizard()
@@ -505,6 +578,7 @@ class RecordsDocumentType(models.Model):
 
     def action_archive(self):
         """Archive document type with safety checks"""
+
         self.ensure_one()
 
         active_docs = self.document_ids.filtered(lambda d: d.active)
@@ -518,6 +592,7 @@ class RecordsDocumentType(models.Model):
 
     def action_view_documents(self):
         """View all documents of this type"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -533,6 +608,7 @@ class RecordsDocumentType(models.Model):
 
     def action_view_containers(self):
         """View all containers using this document type"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -545,12 +621,16 @@ class RecordsDocumentType(models.Model):
 
     def action_setup_security(self):
         """Setup security rules based on confidentiality level"""
+
+        self.ensure_one()
         for record in self:
             record._setup_security_rules()
         return self._show_success_message(_("Security rules updated"))
 
     def action_create_retention_policy(self):
         """Create default retention policy for this document type"""
+
+        self.ensure_one()
         for record in self:
             if not record.retention_policy_id:
                 record._create_default_retention_policy()
@@ -562,10 +642,10 @@ class RecordsDocumentType(models.Model):
     def get_retention_date(self, creation_date):
         """Calculate retention expiration date"""
         if not creation_date:
-            creation_date = fields.Date.today()
+    creation_date = fields.Date.today()
 
-        if isinstance(creation_date, str):
-            creation_date = fields.Date.from_string(creation_date)
+    if isinstance(creation_date, str):
+    creation_date = fields.Date.from_string(creation_date)
         elif hasattr(creation_date, "date"):
             creation_date = creation_date.date()
 
@@ -578,7 +658,7 @@ class RecordsDocumentType(models.Model):
             return False
 
         # Check legal hold
-        if self.requires_legal_hold and getattr(document, "legal_hold", False):
+    if self.requires_legal_hold and getattr(document, "legal_hold", False):
             return False
 
         # Check retention period
@@ -587,7 +667,7 @@ class RecordsDocumentType(models.Model):
             return False
 
         # Check document state
-        if hasattr(document, "state") and document.state in ["draft", "processing"]:
+    if hasattr(document, "state") and document.state in ["draft", "processing"]:
             return False
 
         return True
@@ -649,8 +729,6 @@ class RecordsDocumentType(models.Model):
                         "Documents with '%s' confidentiality level must require encryption.",
                         record.confidentiality_level
                     )
-                )
-
     # ============================================================================
     # HELPER METHODS
     # ============================================================================
@@ -684,7 +762,7 @@ class RecordsDocumentType(models.Model):
             "archived": ["active"],  # Allow restoration
         }
 
-        for record in self:
+    for record in self:
             if record.state in valid_transitions:
                 if new_state not in valid_transitions[record.state]:
                     raise ValidationError(
@@ -728,7 +806,7 @@ class RecordsDocumentType(models.Model):
     def _create_default_retention_policy(self):
         """Create default retention policy for certain categories"""
         # Create and assign a default retention policy for financial, legal, and compliance categories
-        if not self.retention_policy_id and self.category in [
+    if not self.retention_policy_id and self.category in [
             "financial",
             "legal",
             "compliance",
@@ -789,7 +867,7 @@ class RecordsDocumentType(models.Model):
     def _handle_deprecation(self):
         """Handle document type deprecation"""
         # Notify affected users, log deprecation event, and initiate migration plan for documents of this type
-        if self.document_count > 0:
+    if self.document_count > 0:
             # Log deprecation event
             _logger.info(
                 "Document type %s deprecated with %s existing documents",
@@ -824,7 +902,7 @@ class RecordsDocumentType(models.Model):
         self._setup_security_rules()
 
         # Update any existing documents with new security requirements
-        if self.document_ids:
+    if self.document_ids:
             _logger.info(
                 "Would update security for %s existing documents",
                 len(self.document_ids),

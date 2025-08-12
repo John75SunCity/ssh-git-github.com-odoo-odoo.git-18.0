@@ -5,6 +5,8 @@ NAID Audit Log
 
 from odoo import models, fields, api, _
 
+
+
 class NAIDAuditLog(models.Model):
     """
     NAID Audit Log
@@ -39,8 +41,12 @@ class NAIDAuditLog(models.Model):
 
     def action_confirm(self):
         """Confirm the record"""
+
+        self.ensure_one()
         self.write({"state": "confirmed"})
 
     def action_done(self):
         """Mark as done"""
+
+        self.ensure_one()
         self.write({"state": "done"})

@@ -15,10 +15,13 @@ Key Features:
 """
 
 import logging
+from odoo.http import request
 
 from odoo import http, fields, _
+
 from odoo.exceptions import ValidationError, UserError
-from odoo.http import request
+
+
 
 _logger = logging.getLogger(__name__)
 

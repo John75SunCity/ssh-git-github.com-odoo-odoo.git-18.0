@@ -26,7 +26,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError, UserError
+
+
 
 
 class BarcodeModelsEnhanced(models.Model):
@@ -261,6 +264,7 @@ class BarcodeModelsEnhanced(models.Model):
     # ============================================================================
     def action_validate(self):
         """Validate the barcode product"""
+
         self.ensure_one()
         
         if self.state != 'draft':
@@ -272,6 +276,7 @@ class BarcodeModelsEnhanced(models.Model):
 
     def action_activate(self):
         """Activate the barcode product"""
+
         self.ensure_one()
         
         if self.state not in ['draft', 'validated']:
@@ -286,6 +291,7 @@ class BarcodeModelsEnhanced(models.Model):
 
     def action_archive(self):
         """Archive the barcode product"""
+
         self.ensure_one()
         
         if self.state == 'archived':
@@ -296,6 +302,7 @@ class BarcodeModelsEnhanced(models.Model):
 
     def action_create_container(self):
         """Create a records container from this barcode"""
+
         self.ensure_one()
         
         if self.barcode_type != 'container':

@@ -29,7 +29,10 @@ License: LGPL-3
 import logging
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -327,6 +330,7 @@ class Visitor(models.Model):
     # ============================================================================
     def action_check_in(self):
         """Check in visitor"""
+
         self.ensure_one()
         if self.status != 'scheduled':
             raise ValidationError(_('Only scheduled visitors can check in'))
@@ -344,6 +348,7 @@ class Visitor(models.Model):
 
     def action_enter_facility(self):
         """Mark visitor as entered facility"""
+
         self.ensure_one()
         if self.status != 'checked_in':
             raise ValidationError(_('Only checked-in visitors can enter facility'))
@@ -360,6 +365,7 @@ class Visitor(models.Model):
 
     def action_check_out(self):
         """Check out visitor"""
+
         self.ensure_one()
         if self.status not in ['checked_in', 'in_facility']:
             raise ValidationError(_('Only checked-in or in-facility visitors can check out'))
@@ -377,6 +383,7 @@ class Visitor(models.Model):
 
     def action_mark_no_show(self):
         """Mark visitor as no show"""
+
         self.ensure_one()
         if self.status != 'scheduled':
             raise ValidationError(_('Only scheduled visitors can be marked as no show'))
@@ -387,6 +394,7 @@ class Visitor(models.Model):
 
     def action_assign_badge(self):
         """Assign visitor badge"""
+
         self.ensure_one()
         if self.badge_number:
             raise ValidationError(_('Badge already assigned to this visitor'))
@@ -398,6 +406,7 @@ class Visitor(models.Model):
 
     def action_return_badge(self):
         """Mark badge as returned"""
+
         self.ensure_one()
         if not self.badge_number:
             raise ValidationError(_('No badge assigned to this visitor'))

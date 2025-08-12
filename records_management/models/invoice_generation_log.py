@@ -4,6 +4,8 @@
 from odoo import api, fields, models
 
 
+
+
 class InvoiceGenerationLog(models.Model):
     """Log for invoice generation processes"""
 

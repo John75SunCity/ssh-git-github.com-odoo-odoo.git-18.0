@@ -4,6 +4,8 @@
 from odoo import api, fields, models
 
 
+
+
 class DiscountRule(models.Model):
     """Discount rules for billing configurations"""
 

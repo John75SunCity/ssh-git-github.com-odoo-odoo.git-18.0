@@ -33,10 +33,12 @@ import logging
 from datetime import timedelta
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
 
-_logger = logging.getLogger(__name__)
 
+
+_logger = logging.getLogger(__name__)
 
 class ShreddingInventoryItem(models.Model):
     _name = "shredding.inventory.item"
@@ -50,33 +52,43 @@ class ShreddingInventoryItem(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Item Name",
+    )
         required=True,
         tracking=True,
         index=True,
-        help="Name or identifier for this inventory item",
-    )
+
+    help="Name or identifier for this inventory item",
+
+        )
     display_name = fields.Char(
         string="Display Name",
+    )
         compute="_compute_display_name",
         store=True,
-        help="Computed display name with context",
-    )
+
+    help="Computed display name with context",
+
+        )
     sequence = fields.Integer(
         string="Sequence", default=10, help="Order sequence for sorting"
-    )
+    ),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
-        required=True,
     )
+        required=True,
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="User",
         default=lambda self: self.env.user,
         tracking=True,
-        help="User responsible for this item",
-    )
+
+    help="User responsible for this item",
+)
+
+        )
     active = fields.Boolean(string="Active", default=True, tracking=True)
 
     # ============================================================================
@@ -95,8 +107,11 @@ class ShreddingInventoryItem(models.Model):
         default="document",
         required=True,
         tracking=True,
-        help="Classification of the item being processed",
-    )
+
+    help="Classification of the item being processed",
+)
+
+        )
     item_classification = fields.Selection(
         [
             ("paper", "Paper"),
@@ -106,6 +121,7 @@ class ShreddingInventoryItem(models.Model):
             ("public", "Public"),
         ],
         string="Classification",
+    )
         default="paper",
         tracking=True,
         help="Security classification of the item",
@@ -117,31 +133,44 @@ class ShreddingInventoryItem(models.Model):
     container_id = fields.Many2one(
         "records.container",
         string="Container",
-        tracking=True,
-        help="Barcoded container being shredded",
     )
+        tracking=True,
+
+    help="Barcoded container being shredded",
+
+        )
     document_id = fields.Many2one(
         "records.document",
         string="Document",
-        tracking=True,
-        help="Specific document being shredded",
     )
+        tracking=True,
+
+    help="Specific document being shredded",
+
+        )
     work_order_id = fields.Many2one(
         "work.order.shredding",
         string="Work Order",
-        tracking=True,
-        help="Associated work order",
     )
+        tracking=True,
+
+    help="Associated work order",
+
+        )
     customer_id = fields.Many2one(
         "res.partner",
         string="Customer",
+    )
         required=True,
         tracking=True,
-        help="Customer who owns this item",
-    )
+
+    help="Customer who owns this item",
+
+        )
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
+    )
         related="customer_id",
         store=True,
         help="Related partner field for One2many relationships compatibility"
@@ -153,12 +182,16 @@ class ShreddingInventoryItem(models.Model):
     current_location_id = fields.Many2one(
         "records.location",
         string="Current Location",
-        tracking=True,
-        help="Current physical location of the item",
     )
+        tracking=True,
+
+    help="Current physical location of the item",
+
+        )
     original_location_id = fields.Many2one(
         "records.location",
         string="Original Location",
+    )
         tracking=True,
         help="Original location before retrieval",
     )
@@ -174,10 +207,13 @@ class ShreddingInventoryItem(models.Model):
             ("cancelled", "Cancelled"),
         ],
         string="Processing State",
+    )
         default="draft",
         tracking=True,
-        help="Current processing state",
-    )
+
+    help="Current processing state",
+
+        )
     status = fields.Selection(
         [
             ("draft", "Draft"),
@@ -187,6 +223,7 @@ class ShreddingInventoryItem(models.Model):
             ("not_found", "Not Found"),
         ],
         string="Status",
+    )
         default="draft",
         tracking=True,
         help="Current workflow status",
@@ -197,7 +234,7 @@ class ShreddingInventoryItem(models.Model):
     # ============================================================================
     quantity = fields.Float(
         string="Quantity", default=1.0, digits=(10, 2), help="Quantity of items"
-    )
+    ),
     weight = fields.Float(
         string="Weight (kg)", digits=(10, 2), help="Weight of the item in kilograms"
     )
@@ -210,64 +247,87 @@ class ShreddingInventoryItem(models.Model):
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True,
-    )
+    ),
     total_cost = fields.Monetary(
         string="Total Cost",
-        currency_field="currency_id",
-        help="Total cost for processing this item",
     )
+        currency_field="currency_id",
+
+        help="Total cost for processing this item",
+
+        )
     total_amount = fields.Monetary(
         string="Total Amount",
         currency_field="currency_id",
+
         help="Total billable amount",
     )
+
+        )
     retrieval_cost = fields.Monetary(
         string="Retrieval Cost",
         currency_field="currency_id",
+
         help="Cost for retrieval service",
     )
+
+        )
     storage_cost = fields.Monetary(
         string="Storage Cost",
         currency_field="currency_id",
+
         help="Cost for storage before destruction",
     )
+
+        )
     transport_cost = fields.Monetary(
         string="Transport Cost",
-        currency_field="currency_id",
-        help="Cost for transporting item",
     )
+        currency_field="currency_id",
+
+        help="Cost for transporting item",
+
+        )
     shredding_cost = fields.Monetary(
         string="Shredding Cost",
-        currency_field="currency_id",
-        help="Cost for shredding service",
     )
+        currency_field="currency_id",
+
+        help="Cost for shredding service",
+
+        )
     permanent_removal_cost = fields.Monetary(
         string="Permanent Removal Cost",
         currency_field="currency_id",
+
         help="Cost for permanent removal",
-    )
+
+        )
 
     # ============================================================================
     # DATE FIELDS
     # ============================================================================
     date = fields.Date(
         string="Inventory Date", default=fields.Date.today, required=True, tracking=True
-    )
+    ),
     created_date = fields.Date(
         string="Created Date",
-        default=fields.Date.today,
-        tracking=True,
-        help="Date when record was created",
     )
+    default=fields.Date.today,
+        tracking=True,
+
+        help="Date when record was created"
+
+        )
     updated_date = fields.Date(
         string="Updated Date", tracking=True, help="Date when record was last updated"
-    )
+    ),
     retrieved_date = fields.Date(
         string="Retrieved Date", tracking=True, help="Date when item was retrieved"
-    )
+    ),
     destruction_date = fields.Date(
         string="Destruction Date", tracking=True, help="Date when item was destroyed"
-    )
+    ),
     approval_date = fields.Date(
         string="Approval Date", tracking=True, help="Date when item was approved"
     )
@@ -277,16 +337,22 @@ class ShreddingInventoryItem(models.Model):
     # ============================================================================
     customer_approved = fields.Boolean(
         string="Customer Approved",
+    )
         default=False,
         tracking=True,
-        help="Whether customer has approved this item",
-    )
+
+    help="Whether customer has approved this item",
+
+        )
     supervisor_approved = fields.Boolean(
         string="Supervisor Approved",
         default=False,
-        tracking=True,
-        help="Whether supervisor has approved this item",
     )
+        tracking=True,
+
+    help="Whether supervisor has approved this item",
+
+        )
 
     # ============================================================================
     # PERSONNEL FIELDS
@@ -295,11 +361,15 @@ class ShreddingInventoryItem(models.Model):
         "hr.employee",
         string="Retrieved By",
         tracking=True,
-        help="Employee who retrieved the item",
-    )
+
+    help="Employee who retrieved the item",
+)
+
+        )
     destroyed_by_id = fields.Many2one(
         "hr.employee",
         string="Destroyed By",
+    )
         tracking=True,
         help="Employee who performed the destruction",
     )
@@ -309,37 +379,52 @@ class ShreddingInventoryItem(models.Model):
     # ============================================================================
     audit_trail_enabled = fields.Boolean(
         string="Audit Trail Enabled",
-        default=True,
-        help="Enable audit trail for this item",
     )
+        default=True,
+
+        help="Enable audit trail for this item",
+
+        )
     last_audit_date = fields.Date(
         string="Last Audit Date", tracking=True, help="Date of last audit"
-    )
+    ),
     chain_of_custody_number = fields.Char(
         string="Chain of Custody Number",
-        tracking=True,
-        help="Unique chain of custody identifier",
     )
+        tracking=True,
+
+        help="Unique chain of custody identifier",
+
+        )
 
     # ============================================================================
     # DESTRUCTION CERTIFICATE FIELDS
     # ============================================================================
     destruction_certificate_number = fields.Char(
         string="Destruction Certificate Number",
-        tracking=True,
-        help="Certificate number for destruction event",
     )
+        tracking=True,
+
+        help="Certificate number for destruction event",
+
+        )
     destruction_certificate_issued = fields.Boolean(
         string="Certificate Issued",
+    )
         default=False,
         tracking=True,
-        help="Whether destruction certificate has been issued",
-    )
+
+    help="Whether destruction certificate has been issued",
+
+        )
     destruction_certificate_date = fields.Date(
         string="Certificate Date",
-        tracking=True,
-        help="Date when certificate was issued",
     )
+        tracking=True,
+
+        help="Date when certificate was issued",
+
+        )
     destruction_certificate_file = fields.Binary(
         string="Certificate File", help="PDF file of the destruction certificate"
     )
@@ -349,47 +434,68 @@ class ShreddingInventoryItem(models.Model):
     # ============================================================================
     contamination_check_completed = fields.Boolean(
         string="Contamination Check Completed",
+    )
         default=False,
         tracking=True,
-        help="Whether contamination check has been completed",
-    )
+
+    help="Whether contamination check has been completed",
+
+        )
     destruction_method_verified = fields.Boolean(
         string="Destruction Method Verified",
+    )
         default=False,
         tracking=True,
-        help="Whether destruction method has been verified",
-    )
+
+    help="Whether destruction method has been verified",
+
+        )
     quality_verification_completed = fields.Boolean(
         string="Quality Verification Completed",
+    )
         default=False,
         tracking=True,
-        help="Whether quality verification has been completed",
-    )
+
+    help="Whether quality verification has been completed",
+
+        )
     security_level_verified = fields.Boolean(
         string="Security Level Verified",
+    )
         default=False,
         tracking=True,
-        help="Whether security level has been verified",
-    )
+
+    help="Whether security level has been verified",
+
+        )
     witness_verification_required = fields.Boolean(
         string="Witness Verification Required",
-        default=False,
-        help="Whether witness verification is required",
     )
+        default=False,
+
+        help="Whether witness verification is required",
+
+        )
 
     # ============================================================================
     # PROCESSING FIELDS
     # ============================================================================
     batch_processing_required = fields.Boolean(
         string="Batch Processing Required",
-        default=False,
-        help="Whether this item requires batch processing",
     )
+        default=False,
+
+        help="Whether this item requires batch processing",
+
+        )
     certificate_generation_required = fields.Boolean(
         string="Certificate Generation Required",
-        default=True,
-        help="Whether certificate generation is required",
     )
+        default=True,
+
+        help="Whether certificate generation is required",
+
+        )
 
     # ============================================================================
     # RETENTION POLICY
@@ -407,6 +513,7 @@ class ShreddingInventoryItem(models.Model):
         tracking=True,
         help="Retention policy for this item",
     )
+    )
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -415,27 +522,32 @@ class ShreddingInventoryItem(models.Model):
         string="Days Since Destruction",
         compute="_compute_days_since_destruction",
         store=True,
-        help="Number of days since destruction",
-    )
+
+    help="Number of days since destruction",
+
+        )
     is_overdue_for_destruction = fields.Boolean(
         string="Overdue for Destruction",
+    )
         compute="_compute_is_overdue_for_destruction",
         store=True,
-        help="Whether item is overdue for destruction",
-    )
+
+    help="Whether item is overdue for destruction",
+
+        )
 
     # ============================================================================
     # DOCUMENTATION FIELDS
     # ============================================================================
     description = fields.Text(
         string="Description", help="Detailed description of the item"
-    )
+    ),
     retrieval_notes = fields.Text(
         string="Retrieval Notes", help="Notes about retrieval process"
-    )
+    ),
     destruction_notes = fields.Text(
         string="Destruction Notes", help="Notes about destruction process"
-    )
+    ),
     compliance_notes = fields.Text(
         string="Compliance Notes", help="Compliance-related notes"
     )
@@ -447,18 +559,21 @@ class ShreddingInventoryItem(models.Model):
         "mail.activity",
         "res_id",
         string="Activities",
-        domain="[('res_model', '=', 'shredding.inventory.item')]",
     )
+        domain="[('res_model', '=', 'shredding.inventory.item')]",
+    ),
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=[("res_model", "=", "shredding.inventory.item")],
     )
+        domain=[("res_model", "=", "shredding.inventory.item")],
+    ),
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
+    )
         domain="[('res_model', '=', 'shredding.inventory.item')]",
     )
 
@@ -479,26 +594,26 @@ class ShreddingInventoryItem(models.Model):
     @api.depends("destruction_date")
     def _compute_days_since_destruction(self):
         """Calculate days since destruction"""
-        today = fields.Date.today()
+    today = fields.Date.today()
         for record in self:
             if record.destruction_date:
-                delta = fields.Date.from_string(today) - fields.Date.from_string(record.destruction_date)
-                record.days_since_destruction = delta.days
+    delta = fields.Date.from_string(today) - fields.Date.from_string(record.destruction_date)
+        record.days_since_destruction = delta.days
             else:
                 record.days_since_destruction = 0
 
     @api.depends("destruction_date", "created_date")
     def _compute_is_overdue_for_destruction(self):
         """Check if item is overdue for destruction"""
-        today = fields.Date.today()
+    today = fields.Date.today()
         for record in self:
             if record.destruction_date:
                 record.is_overdue_for_destruction = False
             elif record.created_date:
-                overdue_threshold = timedelta(days=30)
-                created_date_dt = fields.Date.from_string(record.created_date)
-                today_dt = fields.Date.from_string(today)
-                overdue = (today_dt - created_date_dt) > overdue_threshold
+                overdue_threshold = timedelta(days=30),
+    created_date_dt = fields.Date.from_string(record.created_date),
+    today_dt = fields.Date.from_string(today)
+        overdue = (today_dt - created_date_dt) > overdue_threshold
                 record.is_overdue_for_destruction = overdue
             else:
                 record.is_overdue_for_destruction = False
@@ -517,6 +632,7 @@ class ShreddingInventoryItem(models.Model):
     # ============================================================================
     def action_approve_item(self):
         """Approve item for destruction"""
+
         self.ensure_one()
         self.write(
             {
@@ -526,7 +642,7 @@ class ShreddingInventoryItem(models.Model):
             }
         )
 
-        self.message_post(body=_("Item approved for destruction"))
+    self.message_post(body=_("Item approved for destruction"))
 
         return {
             "type": "ir.actions.client",
@@ -543,6 +659,7 @@ class ShreddingInventoryItem(models.Model):
 
     def action_mark_retrieved(self):
         """Mark item as retrieved"""
+
         self.ensure_one()
         self.write(
             {
@@ -567,6 +684,7 @@ class ShreddingInventoryItem(models.Model):
 
     def action_mark_destroyed(self):
         """Mark item as destroyed"""
+
         self.ensure_one()
         self.write(
             {
@@ -591,6 +709,7 @@ class ShreddingInventoryItem(models.Model):
 
     def action_mark_not_found(self):
         """Mark item as not found"""
+
         self.ensure_one()
         self.write({"status": "not_found"})
 
@@ -609,19 +728,20 @@ class ShreddingInventoryItem(models.Model):
 
     def action_issue_certificate(self):
         """Issue destruction certificate"""
+
         self.ensure_one()
         if not self.destruction_date:
             raise UserError(_("Cannot issue certificate before destruction."))
 
-        if not self.destruction_certificate_number:
+    if not self.destruction_certificate_number:
             # Generate certificate number
             sequence = self.env["ir.sequence"].next_by_code("destruction.certificate")
             if not sequence:
                 _logger.warning(
                     "Sequence 'destruction.certificate' not found. Using fallback certificate number generation."
-                )
-                today = fields.Date.today().strftime("%Y%m%d")
-                count = (
+                ),
+    today = fields.Date.today().strftime("%Y%m%d")
+        count = (
                     self.search_count([("destruction_certificate_number", "!=", False)])
                     + 1
                 )
@@ -640,8 +760,6 @@ class ShreddingInventoryItem(models.Model):
                 "Destruction certificate issued: %s",
                 self.destruction_certificate_number,
             )
-        )
-
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -655,10 +773,11 @@ class ShreddingInventoryItem(models.Model):
 
     def action_audit_item(self):
         """Audit this shredding inventory item"""
+
         self.ensure_one()
         self.write({"last_audit_date": fields.Date.today()})
 
-        self.message_post(body=_("Audit completed for this item"))
+    self.message_post(body=_("Audit completed for this item"))
 
         return {
             "type": "ir.actions.client",
@@ -673,6 +792,7 @@ class ShreddingInventoryItem(models.Model):
 
     def action_track_chain_of_custody(self):
         """Track chain of custody"""
+
         self.ensure_one()
 
         return {
@@ -687,6 +807,7 @@ class ShreddingInventoryItem(models.Model):
 
     def action_generate_certificate(self):
         """Generate destruction certificate"""
+
         self.ensure_one()
 
         return {
@@ -698,6 +819,7 @@ class ShreddingInventoryItem(models.Model):
 
     def action_audit_compliance(self):
         """Audit compliance status"""
+
         self.ensure_one()
 
         self.write({"last_audit_date": fields.Date.today()})
@@ -716,6 +838,7 @@ class ShreddingInventoryItem(models.Model):
 
     def action_supervisor_approve(self):
         """Supervisor approval action"""
+
         self.ensure_one()
 
         self.write(
@@ -740,6 +863,7 @@ class ShreddingInventoryItem(models.Model):
 
     def action_verify_destruction_method(self):
         """Verify destruction method"""
+
         self.ensure_one()
 
         self.write({"destruction_method_verified": True})
@@ -834,7 +958,7 @@ class ShreddingInventoryItem(models.Model):
         """Create chain of custody entry"""
         self.ensure_one()
 
-        if "custody.log" in self.env:
+    if "custody.log" in self.env:
             self.env["custody.log"].create(
                 {
                     "item_id": self.id,

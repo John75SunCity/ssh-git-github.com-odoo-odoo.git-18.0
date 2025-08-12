@@ -30,10 +30,12 @@ import logging
 from datetime import timedelta
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
 
-_logger = logging.getLogger(__name__)
 
+
+_logger = logging.getLogger(__name__)
 
 class RecordsAccessLog(models.Model):
     _name = "records.access.log"
@@ -47,25 +49,31 @@ class RecordsAccessLog(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Log Entry Name",
+    )
         required=True,
         tracking=True,
         index=True,
-        help="Unique identifier for the access log entry",
-    )
+
+    help="Unique identifier for the access log entry",
+
+        )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="Accessing User",
+    )
         default=lambda self: self.env.user,
         required=True,
         tracking=True,
-        help="User who accessed the document",
-    )
+
+    help="User who accessed the document",
+
+        )
     active = fields.Boolean(
         string="Active", default=True, help="Active status of the log entry"
     )
@@ -76,28 +84,38 @@ class RecordsAccessLog(models.Model):
     document_id = fields.Many2one(
         "records.document",
         string="Document",
+    )
         required=True,
         ondelete="cascade",
         tracking=True,
-        help="Document that was accessed",
-    )
+
+    help="Document that was accessed",
+
+        )
     container_id = fields.Many2one(
         "records.container",
         string="Container",
         related="document_id.container_id",
         store=True,
-        help="Container holding the accessed document",
-    )
+
+    help="Container holding the accessed document",
+)
+
+        )
     customer_id = fields.Many2one(
         "res.partner",
         string="Customer",
         related="document_id.customer_id",
         store=True,
-        help="Customer who owns the document",
-    )
+
+    help="Customer who owns the document",
+)
+
+        )
     location_id = fields.Many2one(
         "records.location",
         string="Location",
+    )
         related="document_id.location_id",
         store=True,
         help="Physical location of the document",
@@ -108,11 +126,14 @@ class RecordsAccessLog(models.Model):
     # ============================================================================
     access_date = fields.Datetime(
         string="Access Date",
-        default=fields.Datetime.now,
+    default=fields.Datetime.now,
+)
         required=True,
         tracking=True,
+
         help="Date and time when document was accessed",
-    )
+
+        )
     access_type = fields.Selection(
         [
             ("view", "View"),
@@ -125,10 +146,13 @@ class RecordsAccessLog(models.Model):
             ("retrieve", "Physical Retrieval"),
         ],
         string="Access Type",
+    )
         required=True,
         tracking=True,
-        help="Type of access performed on the document",
-    )
+
+    help="Type of access performed on the document",
+
+        )
     access_method = fields.Selection(
         [
             ("portal", "Customer Portal"),
@@ -139,13 +163,16 @@ class RecordsAccessLog(models.Model):
             ("physical", "Physical Access"),
         ],
         string="Access Method",
-        required=True,
-        help="Method used to access the document",
     )
+        required=True,
+
+    help="Method used to access the document",
+
+        )
     ip_address = fields.Char(
         string="IP Address", help="IP address of the accessing device"
-    )
-    user_agent = fields.Text(string="User Agent", help="Browser/device information")
+    ),
+    user_agent = fields.Text(string="User Agent", help="Browser/device information"),
     session_id = fields.Char(string="Session ID", help="User session identifier")
 
     # ============================================================================
@@ -160,13 +187,16 @@ class RecordsAccessLog(models.Model):
         ],
         string="Access Result",
         default="success",
+    )
         required=True,
         tracking=True,
-        help="Result of the access attempt",
-    )
+
+    help="Result of the access attempt",
+
+        )
     error_message = fields.Text(
         string="Error Message", help="Error message if access failed"
-    )
+    ),
     permission_level = fields.Selection(
         [
             ("read", "Read Only"),
@@ -175,12 +205,16 @@ class RecordsAccessLog(models.Model):
             ("owner", "Owner Access"),
         ],
         string="Permission Level",
-        help="Permission level used for access",
     )
+
+    help="Permission level used for access",
+
+        )
     authorized_by_id = fields.Many2one(
         "res.users",
         string="Authorized By",
-        help="User who authorized the access if different from accessing user",
+    )
+        help="User who authorized the access if different from accessing user"
     )
 
     # ============================================================================
@@ -188,37 +222,48 @@ class RecordsAccessLog(models.Model):
     # ============================================================================
     audit_trail_id = fields.Many2one(
         "naid.audit.log", string="NAID Audit Trail", help="Related NAID audit log entry"
-    )
+    ),
     compliance_required = fields.Boolean(
         string="Compliance Required",
         compute="_compute_compliance_flags",
         store=True,
-        help="Whether this access requires compliance documentation",
-    )
+
+    help="Whether this access requires compliance documentation",
+)
+
+        )
     security_level = fields.Selection(
         string="Security Level",
         related="document_id.security_level",
         store=True,
-        help="Security level of the accessed document",
-    )
+
+    help="Security level of the accessed document",
+)
+
+        )
     risk_score = fields.Integer(
         string="Risk Score",
+    )
         compute="_compute_risk_score",
         store=True,
-        help="Risk score for this access event (0-100)",
-    )
+
+    help="Risk score for this access event (0-100)",
+
+        )
 
     # ============================================================================
     # DOCUMENTATION AND NOTES
     # ============================================================================
     description = fields.Text(
         string="Description", help="Description of the access event"
-    )
-    notes = fields.Text(string="Notes", help="Additional notes about the access")
+    ),
+    notes = fields.Text(string="Notes", help="Additional notes about the access"),
     business_justification = fields.Text(
         string="Business Justification",
-        help="Business reason for accessing the document",
-    )
+
+        help="Business reason for accessing the document"
+
+        )
     supervisor_notes = fields.Text(
         string="Supervisor Notes", help="Notes from supervisor regarding this access"
     )
@@ -228,17 +273,20 @@ class RecordsAccessLog(models.Model):
     # ============================================================================
     sequence = fields.Integer(
         string="Sequence", default=10, help="Sequence for ordering log entries"
-    )
+    ),
     duration_seconds = fields.Integer(
         string="Access Duration (seconds)", help="How long the document was accessed"
-    )
+    ),
     file_size_accessed = fields.Integer(
         string="File Size Accessed (bytes)", help="Size of the file accessed"
-    )
+    ),
     checksum_verified = fields.Boolean(
         string="Checksum Verified",
-        help="Whether document integrity was verified during access",
     )
+
+        help="Whether document integrity was verified during access"
+
+        )
 
     # ============================================================================
     # RELATIONSHIP COMPATIBILITY FIELDS
@@ -246,6 +294,7 @@ class RecordsAccessLog(models.Model):
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
+    )
         related="customer_id",
         store=True,
         help="Related partner field for One2many relationships compatibility"
@@ -258,18 +307,21 @@ class RecordsAccessLog(models.Model):
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
+        domain=lambda self: [("res_model", "=", self._name)],
+    ),
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
+        domain=lambda self: [("res_model", "=", self._name)],
+    ),
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
+    )
         domain=lambda self: [("model", "=", self._name)],
     )
 
@@ -397,11 +449,15 @@ class RecordsAccessLog(models.Model):
     # ============================================================================
     def action_mark_reviewed(self):
         """Mark access log as reviewed"""
+
+        self.ensure_one()
         self.message_post(body=_("Access log reviewed by %s", self.env.user.name))
         return True
 
     def action_flag_suspicious(self):
         """Flag access as suspicious for investigation"""
+
+        self.ensure_one()
         for record in self:
             try:
                 activity_type = self.env.ref("mail.mail_activity_data_todo")
@@ -420,6 +476,7 @@ class RecordsAccessLog(models.Model):
 
     def action_create_audit_trail(self):
         """Create formal audit trail entry"""
+
         self.ensure_one()
         if self.audit_trail_id:
             raise UserError(_("An audit trail already exists for this log."))
@@ -482,7 +539,7 @@ class RecordsAccessLog(models.Model):
         return result
 
     @api.model
-    def _name_search(self, name="", args=None, operator="ilike", limit=100, name_get_uid=None):
+    def _search_name(self, name="", args=None, operator="ilike", limit=100, name_get_uid=None):
         """Enhanced search by name, document, or user"""
         args = args or []
         domain = []
@@ -503,7 +560,7 @@ class RecordsAccessLog(models.Model):
         if group_by not in ['access_type', 'user_id', 'risk_level', 'security_level']:
             raise UserError(_("Invalid group_by parameter."))
 
-        if group_by == 'risk_level':
+    if group_by == 'risk_level':
             low = self.search_count(domain + [('risk_score', '<=', 30)])
             medium = self.search_count(domain + [('risk_score', '>', 30), ('risk_score', '<=', 70)])
             high = self.search_count(domain + [('risk_score', '>', 70)])
@@ -518,8 +575,8 @@ class RecordsAccessLog(models.Model):
     @api.model
     def cleanup_old_logs(self, days=365):
         """Clean up old access logs based on retention policy"""
-        _logger.info("Starting cleanup of old access logs older than %d days.", days)
-        cutoff_date = fields.Datetime.now() - timedelta(days=days)
+        _logger.info("Starting cleanup of old access logs older than %d days.", days),
+    cutoff_date = fields.Datetime.now() - timedelta(days=days)
         domain = [("access_date", "<", cutoff_date), ("compliance_required", "=", False)]
 
         # Use search_count for performance, then search and unlink if necessary

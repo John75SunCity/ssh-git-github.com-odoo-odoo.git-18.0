@@ -77,8 +77,12 @@ License: LGPL-3
 """
 
 from datetime import timedelta
+
 from odoo import api, fields, models, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class CustomerInventoryReport(models.Model):
@@ -300,6 +304,7 @@ class CustomerInventoryReport(models.Model):
 
     def action_generate_report(self):
         """Generate the inventory report"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft reports can be generated"))
@@ -317,6 +322,7 @@ class CustomerInventoryReport(models.Model):
 
     def action_send_report(self):
         """Send report to customer"""
+
         self.ensure_one()
         if self.state != "ready":
             raise UserError(_("Only ready reports can be sent"))
@@ -335,6 +341,7 @@ class CustomerInventoryReport(models.Model):
 
     def action_regenerate(self):
         """Regenerate the report"""
+
         self.ensure_one()
         self.write({"state": "draft"})
         self.report_line_ids.unlink()

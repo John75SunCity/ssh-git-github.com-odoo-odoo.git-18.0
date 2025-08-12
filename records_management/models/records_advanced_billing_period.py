@@ -13,7 +13,10 @@ License: LGPL-3
 # Import handling for disconnected development environment
 try:
     from odoo import api, fields, models, _
+
     from odoo.exceptions import ValidationError
+
+
 except ImportError:
     # Fallback for development environments without Odoo installed
     # These will be properly imported when deployed to Odoo.sh
@@ -154,6 +157,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
     # ============================================================================
     def action_generate_storage_lines(self):
         """Generate Storage Lines - Generate report"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.report",
@@ -165,6 +169,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
 
     def action_generate_service_lines(self):
         """Generate Service Lines - Generate report"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.report",
@@ -176,6 +181,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
 
     def action_activate_period(self):
         """Activate billing period"""
+
         self.ensure_one()
         if self.state != "draft":
             raise ValidationError(_("Only draft periods can be activated"))
@@ -185,6 +191,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
 
     def action_close_period(self):
         """Close billing period"""
+
         self.ensure_one()
         if self.state != "active":
             raise ValidationError(_("Only active periods can be closed"))
@@ -194,6 +201,7 @@ class RecordsAdvancedBillingPeriod(models.Model):
 
     def action_view_billings(self):
         """View period billings"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

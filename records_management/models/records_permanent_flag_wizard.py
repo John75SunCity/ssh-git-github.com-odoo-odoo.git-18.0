@@ -53,12 +53,15 @@ License: LGPL-3
 """
 
 import logging
-import traceback
-import textwrap
 from datetime import datetime
 
 from odoo import _, api, fields, models
+
+import traceback
+import textwrap
 from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -382,6 +385,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     # ============================================================================
     def action_apply_criteria(self):
         """Apply criteria to select documents"""
+
         self.ensure_one()
         if self.selection_method != "criteria":
             raise UserError(
@@ -407,6 +411,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
     def action_execute(self):
         """Execute the permanent flag operation"""
+
         self.ensure_one()
 
         if self.approval_required and self.approval_status != "approved":
@@ -539,6 +544,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
     def action_request_approval(self):
         """Request approval for the operation"""
+
         self.ensure_one()
 
         if self.approval_status != "draft":
@@ -584,6 +590,7 @@ Description:
 
     def action_approve(self):
         """Approve the operation"""
+
         self.ensure_one()
 
         if self.approval_status != "pending":
@@ -617,6 +624,7 @@ Description:
 
     def action_reject(self):
         """Reject the operation"""
+
         self.ensure_one()
 
         if self.approval_status != "pending":
@@ -635,6 +643,7 @@ Description:
 
     def action_cancel(self):
         """Cancel the operation"""
+
         self.ensure_one()
 
         if self.state in ["completed", "completed_with_errors"]:
@@ -657,6 +666,7 @@ Description:
 
     def action_view_documents(self):
         """View selected documents"""
+
         self.ensure_one()
 
         return {

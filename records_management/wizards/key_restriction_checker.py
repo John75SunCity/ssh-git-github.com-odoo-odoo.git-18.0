@@ -5,7 +5,10 @@ For technicians to quickly check if a customer can receive keys
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError
+
+
 
 
 class KeyRestrictionChecker(models.TransientModel):
@@ -51,8 +54,9 @@ class KeyRestrictionChecker(models.TransientModel):
     # ACTIONS
     # ==========================================
 
-    def action_check_customer(self):
+    def __check__check_customer(self):
         """Check customer key restriction status"""
+
         self.ensure_one()
 
         if not self.customer_id:
@@ -139,6 +143,7 @@ class KeyRestrictionChecker(models.TransientModel):
 
     def action_create_unlock_service(self):
         """Create bin unlock service for restricted customer"""
+
         self.ensure_one()
 
         if not self.customer_id:
@@ -183,6 +188,8 @@ class KeyRestrictionChecker(models.TransientModel):
 
     def action_reset(self):
         """Reset the checker"""
+
+        self.ensure_one()
         self.write({
             'customer_name': False,
             'customer_id': False,

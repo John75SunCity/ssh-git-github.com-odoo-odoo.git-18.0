@@ -68,13 +68,17 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-import base64
-import hashlib
 import re
 from datetime import datetime, timedelta
-from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
 import logging
+
+from odoo import _, api, fields, models
+
+import base64
+import hashlib
+from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -304,6 +308,7 @@ class NaidCertificate(models.Model):
     # ============================================================================
     def action_generate_certificate(self):
         """Generate certificate document"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft certificates can be generated"))
@@ -314,6 +319,7 @@ class NaidCertificate(models.Model):
 
     def action_issue_certificate(self):
         """Issue the certificate"""
+
         self.ensure_one()
         if self.state != "generated":
             raise UserError(_("Only generated certificates can be issued"))
@@ -329,6 +335,7 @@ class NaidCertificate(models.Model):
 
     def action_deliver_certificate(self):
         """Mark certificate as delivered"""
+
         self.ensure_one()
         if self.state != "issued":
             raise UserError(_("Only issued certificates can be delivered"))
@@ -345,6 +352,7 @@ class NaidCertificate(models.Model):
 
     def action_archive_certificate(self):
         """Archive the certificate"""
+
         self.ensure_one()
         self.write(
             {
@@ -357,6 +365,7 @@ class NaidCertificate(models.Model):
 
     def action_apply_digital_signature(self):
         """Apply digital signature to certificate"""
+
         self.ensure_one()
         if not self.certificate_data:
             raise UserError(_("Certificate document must be generated before signing"))
@@ -377,6 +386,7 @@ class NaidCertificate(models.Model):
 
     def action_validate_signature(self):
         """Validate digital signature integrity"""
+
         self.ensure_one()
         if not self.is_digitally_signed:
             raise UserError(_("Certificate is not digitally signed"))
@@ -394,6 +404,7 @@ class NaidCertificate(models.Model):
 
     def action_send_certificate(self):
         """Send certificate to customer"""
+
         self.ensure_one()
         if self.state not in ["issued", "delivered"]:
             raise UserError(_("Only issued certificates can be sent"))

@@ -42,7 +42,10 @@ License: LGPL-3
 """
 
 from odoo import _, api, fields, models
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class RecordsDocument(models.Model):
@@ -252,6 +255,7 @@ class RecordsDocument(models.Model):
     # ============================================================================
     def action_archive_document(self):
         """Archive the document"""
+
         self.ensure_one()
         if self.permanent_flag:
             raise UserError(_("Cannot archive document with permanent flag applied"))
@@ -260,12 +264,14 @@ class RecordsDocument(models.Model):
 
     def action_activate_document(self):
         """Activate the document"""
+
         self.ensure_one()
         self.write({"state": "active"})
         self.message_post(body=_("Document activated by %s", self.env.user.name))
 
     def action_flag_permanent(self):
         """Apply permanent flag to document - opens wizard"""
+
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
@@ -281,6 +287,7 @@ class RecordsDocument(models.Model):
 
     def action_remove_permanent_flag(self):
         """Remove permanent flag from document"""
+
         self.ensure_one()
         if not self.permanent_flag:
             raise UserError(_("Document does not have a permanent flag applied"))
@@ -296,6 +303,7 @@ class RecordsDocument(models.Model):
 
     def action_view_audit_trail(self):
         """View document audit trail"""
+
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',

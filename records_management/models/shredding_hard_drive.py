@@ -29,7 +29,9 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
 
 
 class ShreddingHardDrive(models.Model):
@@ -44,24 +46,36 @@ class ShreddingHardDrive(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Reference Number",
+    )
         required=True,
         tracking=True,
         index=True,
-        help="Unique hard drive destruction reference",
-    )
+
+    help="Unique hard drive destruction reference",
+
+        )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
+    )
         default=lambda self: self.env.user,
         tracking=True,
-        help="User responsible for this destruction",
+
+    help="User responsible for this destruction",
+
+        )
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
     )
+        help="Associated partner for this record",
+    ),
     active = fields.Boolean(string="Active", default=True, tracking=True)
 
     # ============================================================================
@@ -78,6 +92,7 @@ class ShreddingHardDrive(models.Model):
         ],
         string="Status",
         default="draft",
+    )
         tracking=True,
         help="Current processing status",
     )
@@ -90,23 +105,30 @@ class ShreddingHardDrive(models.Model):
         required=True,
         tracking=True,
         index=True,
-        help="Hardware serial number of the hard drive",
-    )
+
+    help="Hardware serial number of the hard drive",
+
+        )
     asset_tag = fields.Char(
         string="Asset Tag", tracking=True, help="Customer asset tag or identifier"
-    )
+    ),
     make_model = fields.Char(
         string="Make/Model",
         tracking=True,
+
         help="Manufacturer and model of the hard drive",
-    )
+
+        )
     capacity_gb = fields.Float(
         string="Capacity (GB)", digits=(10, 2), help="Storage capacity in gigabytes"
-    )
+    ),
     hashed_serial = fields.Char(
         string="Hashed Serial Number",
-        help="Cryptographically hashed serial for security",
     )
+
+        help="Cryptographically hashed serial for security"
+
+        )
 
     # ============================================================================
     # CUSTOMER INFORMATION
@@ -116,40 +138,47 @@ class ShreddingHardDrive(models.Model):
         string="Customer",
         required=True,
         tracking=True,
-        help="Customer who owns the hard drive",
-    )
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner", 
-        related="customer_id",
-        store=True,
-        help="Related partner field for One2many relationships compatibility"
-    )
+
+    help="Customer who owns the hard drive",
+
+        )
     customer_location_notes = fields.Text(
         string="Customer Location Notes",
-        help="Notes about customer location and pickup conditions",
     )
+
+        help="Notes about customer location and pickup conditions"
+
+        )
 
     # ============================================================================
     # SCANNING AND VERIFICATION
     # ============================================================================
     scanned_at_customer = fields.Boolean(
         string="Scanned at Customer Location",
+    )
         default=False,
         tracking=True,
-        help="Whether the hard drive was scanned at customer location",
-    )
+
+    help="Whether the hard drive was scanned at customer location",
+
+        )
     scanned_at_customer_by_id = fields.Many2one(
         "res.users",
         string="Scanned by (Customer)",
-        tracking=True,
-        help="User who performed scanning at customer location",
     )
+        tracking=True,
+
+    help="User who performed scanning at customer location",
+
+        )
     scanned_at_customer_date = fields.Datetime(
         string="Customer Scan Date",
-        tracking=True,
-        help="Date and time when scanned at customer location",
     )
+        tracking=True,
+
+        help="Date and time when scanned at customer location",
+
+        )
 
     # ============================================================================
     # PHYSICAL CONDITION
@@ -165,12 +194,18 @@ class ShreddingHardDrive(models.Model):
         string="Physical Condition",
         default="good",
         tracking=True,
-        help="Physical condition assessment",
-    )
+
+    help="Physical condition assessment",
+)
+
+        )
     facility_verification_notes = fields.Text(
         string="Facility Verification Notes",
-        help="Notes from facility verification and inspection",
     )
+
+        help="Notes from facility verification and inspection"
+
+        )
 
     # ============================================================================
     # SECURITY AND CLASSIFICATION
@@ -184,11 +219,14 @@ class ShreddingHardDrive(models.Model):
             ("top_secret", "Top Secret"),
         ],
         string="Data Classification",
+    )
         default="internal",
         required=True,
         tracking=True,
-        help="Security classification of data on drive",
-    )
+
+    help="Security classification of data on drive",
+
+        )
     encryption_level = fields.Selection(
         [
             ("none", "None"),
@@ -197,6 +235,7 @@ class ShreddingHardDrive(models.Model):
             ("military", "Military Grade"),
         ],
         string="Encryption Level",
+    )
         default="none",
         tracking=True,
         help="Level of encryption on the drive",
@@ -215,31 +254,46 @@ class ShreddingHardDrive(models.Model):
             ("disintegration", "Disintegration"),
         ],
         string="Destruction Method",
+    )
         tracking=True,
-        help="Method used for physical destruction",
-    ),
+
+    help="Method used for physical destruction",
+
+        )
     destruction_date = fields.Date(
         string="Destruction Date",
+    )
         tracking=True,
+
         help="Date when destruction was completed",
-    ),
+
+        )
     destruction_witness_required = fields.Boolean(
         string="Destruction Witness Required",
+    )
         default=False,
+
         help="Whether witness is required for destruction",
-    ),
+
+        )
     destruction_method_verified = fields.Boolean(
         string="Destruction Method Verified",
+    )
         default=False,
         tracking=True,
-        help="Whether destruction method has been verified",
-    ),
+
+    help="Whether destruction method has been verified",
+
+        )
     destroyed = fields.Boolean(
         string="Destroyed",
+    )
         default=False,
         tracking=True,
-        help="Whether the hard drive has been destroyed",
-    ),
+
+    help="Whether the hard drive has been destroyed",
+
+        )
 
     # ============================================================================
     # COMPLIANCE AND STANDARDS
@@ -254,8 +308,11 @@ class ShreddingHardDrive(models.Model):
         string="Sanitization Standard",
         default="nist_800_88",
         tracking=True,
-        help="Applied sanitization standard",
-    ),
+
+    help="Applied sanitization standard",
+)
+
+        )
     physical_destruction_level = fields.Selection(
         [
             ("level_1", "Level 1 - Basic"),
@@ -266,25 +323,37 @@ class ShreddingHardDrive(models.Model):
         string="Physical Destruction Level",
         default="level_2",
         tracking=True,
-        help="Level of physical destruction required",
-    ),
+
+    help="Level of physical destruction required",
+)
+
+        )
     nist_compliance_verified = fields.Boolean(
         string="NIST Compliance Verified",
         default=False,
+    )
         tracking=True,
-        help="Whether NIST compliance has been verified",
-    ),
+
+    help="Whether NIST compliance has been verified",
+
+        )
     degaussing_required = fields.Boolean(
         string="Degaussing Required",
+    )
         default=False,
+
         help="Whether degaussing is required before destruction",
-    ),
+
+        )
     chain_of_custody_verified = fields.Boolean(
         string="Chain of Custody Verified",
+    )
         default=False,
         tracking=True,
-        help="Whether chain of custody has been verified",
-    ),
+
+    help="Whether chain of custody has been verified",
+
+        )
 
     # ============================================================================
     # PROCESSING AND ANALYSIS
@@ -293,8 +362,11 @@ class ShreddingHardDrive(models.Model):
         string="Forensic Analysis Completed",
         default=False,
         tracking=True,
-        help="Whether forensic analysis has been completed",
-    ),
+
+    help="Whether forensic analysis has been completed",
+)
+
+        )
     forensic_analysis_notes = fields.Text(
         string="Forensic Analysis Notes", help="Detailed notes from forensic analysis"
     )
@@ -304,19 +376,28 @@ class ShreddingHardDrive(models.Model):
     # ============================================================================
     certificate_number = fields.Char(
         string="Certificate Number",
+    )
         tracking=True,
+
         help="Associated destruction certificate number",
-    ),
+
+        )
     certificate_line_text = fields.Text(
         string="Certificate Line Text",
-        help="Text that appears on the destruction certificate",
-    ),
+    )
+
+        help="Text that appears on the destruction certificate"
+
+        )
     included_in_certificate = fields.Boolean(
         string="Included in Certificate",
         default=True,
+    )
         tracking=True,
-        help="Whether this hard drive is included in the destruction certificate",
-    ),
+
+    help="Whether this hard drive is included in the destruction certificate",
+
+        )
 
     # ============================================================================
     # SERVICE AND WORKFLOW
@@ -325,22 +406,29 @@ class ShreddingHardDrive(models.Model):
         "shredding.service",
         string="Service Request",
         tracking=True,
-        help="Related shredding service request",
-    ),
+
+    help="Related shredding service request",
+
+        )
     approved_by_id = (
         fields.Many2one(
             "res.users",
             string="Approved By",
+        )
             tracking=True,
-            help="User who approved the destruction",
-        ),
-    )
+
+    help="User who approved the destruction",
+
+            )
     completed = fields.Boolean(
         string="Process Completed",
+    )
         default=False,
         tracking=True,
-        help="Whether the complete process has been finished",
-    ),
+
+    help="Whether the complete process has been finished",
+
+        )
 
     # ============================================================================
     # OPERATIONAL DETAILS
@@ -353,10 +441,13 @@ class ShreddingHardDrive(models.Model):
     ),
     created_date = fields.Date(
         string="Created Date",
-        default=fields.Date.today,
+    )
+    default=fields.Date.today,
         tracking=True,
-        help="Date when record was created",
-    ),
+
+        help="Date when record was created"
+
+        )
     updated_date = fields.Date(
         string="Updated Date", tracking=True, help="Date when record was last updated"
     ),
@@ -376,18 +467,21 @@ class ShreddingHardDrive(models.Model):
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
+        domain=lambda self: [("res_model", "=", self._name)],
+    ),
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
+        domain=lambda self: [("res_model", "=", self._name)],
+    ),
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
+    )
         domain=lambda self: [("model", "=", self._name)],
     )
 
@@ -415,8 +509,8 @@ class ShreddingHardDrive(models.Model):
                 sequence = self.env["ir.sequence"].next_by_code("shredding.hard_drive")
                 if not sequence:
                     # Fallback sequence generation
-                    today = fields.Date.today().strftime("%Y%m%d")
-                    count = self.search_count([]) + 1
+    today = fields.Date.today().strftime("%Y%m%d")
+        count = self.search_count([]) + 1
                     sequence = f"HD-{today}-{count:04d}"
                 vals["name"] = sequence
 
@@ -435,6 +529,7 @@ class ShreddingHardDrive(models.Model):
     # ============================================================================
     def action_scan_at_customer(self):
         """Mark as scanned at customer location"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Can only scan items in draft state"))
@@ -451,6 +546,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_mark_transported(self):
         """Mark as in transit"""
+
         self.ensure_one()
         if self.state not in ["scanned"]:
             raise UserError(_("Can only transport scanned items"))
@@ -460,6 +556,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_receive_at_facility(self):
         """Mark as received at facility"""
+
         self.ensure_one()
         if self.state not in ["transported"]:
             raise UserError(_("Can only receive transported items"))
@@ -474,11 +571,12 @@ class ShreddingHardDrive(models.Model):
 
     def action_complete_destruction(self):
         """Complete the destruction process"""
+
         self.ensure_one()
         if self.state not in ["received"]:
             raise UserError(_("Can only destroy items received at facility"))
 
-        if not self.destruction_method:
+    if not self.destruction_method:
             raise UserError(_("Destruction method must be specified"))
 
         self.write(
@@ -496,20 +594,19 @@ class ShreddingHardDrive(models.Model):
                     self.destruction_method
                 ),
             )
-        )
-
     def action_generate_certificate(self):
         """Generate destruction certificate"""
+
         self.ensure_one()
         if self.state not in ["destroyed"]:
             raise UserError(_("Can only generate certificates for destroyed items"))
 
         # Generate certificate number if not exists
-        if not self.certificate_number:
+    if not self.certificate_number:
             sequence = self.env["ir.sequence"].next_by_code("destruction.certificate")
             if not sequence:
-                today = fields.Date.today().strftime("%Y%m%d")
-                count = self.search_count([("certificate_number", "!=", False)]) + 1
+    today = fields.Date.today().strftime("%Y%m%d")
+        count = self.search_count([("certificate_number", "!=", False)]) + 1
                 sequence = f"CERT-HD-{today}-{count:04d}"
 
             self.certificate_number = sequence
@@ -525,13 +622,12 @@ class ShreddingHardDrive(models.Model):
                 "Destruction certificate generated: %s",
                 self.certificate_number,
             )
-        )
-
     # ============================================================================
     # COMPLIANCE AND VERIFICATION METHODS
     # ============================================================================
     def action_verify_chain_of_custody(self):
         """Verify chain of custody"""
+
         self.ensure_one()
 
         self.write({"chain_of_custody_verified": True})
@@ -539,6 +635,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_complete_forensic_analysis(self):
         """Complete forensic analysis"""
+
         self.ensure_one()
 
         self.write({"forensic_analysis_completed": True})
@@ -546,6 +643,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_verify_nist_compliance(self):
         """Verify NIST compliance"""
+
         self.ensure_one()
 
         self.write({"nist_compliance_verified": True})
@@ -553,9 +651,10 @@ class ShreddingHardDrive(models.Model):
 
     def action_verify_destruction_method(self):
         """Verify destruction method"""
+
         self.ensure_one()
 
-        if not self.destruction_method:
+    if not self.destruction_method:
             raise UserError(_("Destruction method must be specified first"))
 
         self.write({"destruction_method_verified": True})
@@ -566,8 +665,6 @@ class ShreddingHardDrive(models.Model):
                     self.destruction_method
                 ),
             )
-        )
-
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
@@ -590,8 +687,6 @@ class ShreddingHardDrive(models.Model):
                             record.serial_number,
                             record.customer_id.name,
                         )
-                    )
-
     @api.constrains("capacity_gb", "weight")
     def _check_positive_values(self):
         """Ensure capacity and weight are positive"""

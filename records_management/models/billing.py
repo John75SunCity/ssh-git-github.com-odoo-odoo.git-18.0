@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError
+
+
 
 class Billing(models.Model):
     _name = "records.billing"
@@ -123,6 +126,7 @@ class Billing(models.Model):
     # ==========================================
     def action_send_invoice(self):
         """Send invoice to customer"""
+
         self.ensure_one()
         if self.state != 'draft':
             raise ValidationError(_('Only draft invoices can be sent'))
@@ -131,6 +135,7 @@ class Billing(models.Model):
 
     def action_mark_paid(self):
         """Mark invoice as paid"""
+
         self.ensure_one()
         if self.state not in ['sent', 'partial', 'overdue']:
             raise ValidationError(_('Cannot mark this invoice as paid'))
@@ -142,6 +147,7 @@ class Billing(models.Model):
 
     def action_cancel(self):
         """Cancel the billing record"""
+
         self.ensure_one()
         if self.state == 'paid':
             raise ValidationError(_('Cannot cancel paid invoices'))

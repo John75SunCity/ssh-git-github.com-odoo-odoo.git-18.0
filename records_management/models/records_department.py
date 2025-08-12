@@ -46,7 +46,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class RecordsDepartment(models.Model):
@@ -423,6 +426,8 @@ class RecordsDepartment(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activate the department"""
+
+        self.ensure_one()
         for department in self:
             if department.state != "draft":
                 raise UserError(_("Only draft departments can be activated"))
@@ -432,6 +437,8 @@ class RecordsDepartment(models.Model):
 
     def action_deactivate(self):
         """Deactivate the department"""
+
+        self.ensure_one()
         for department in self:
             if department.state not in ["active"]:
                 raise UserError(_("Only active departments can be deactivated"))
@@ -450,6 +457,8 @@ class RecordsDepartment(models.Model):
 
     def action_archive(self):
         """Archive the department"""
+
+        self.ensure_one()
         for department in self:
             if department.state != "inactive":
                 raise UserError(_("Only inactive departments can be archived"))
@@ -459,6 +468,7 @@ class RecordsDepartment(models.Model):
 
     def action_view_users(self):
         """View users assigned to this department"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -471,6 +481,7 @@ class RecordsDepartment(models.Model):
 
     def action_view_customers(self):
         """View customers assigned to this department"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -572,7 +583,7 @@ class RecordsDepartment(models.Model):
         return result
 
     @api.model
-    def _name_search(
+    def _search_name(
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
     ):
         """Enhanced search by name or code"""

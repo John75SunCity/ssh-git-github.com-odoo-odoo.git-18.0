@@ -48,9 +48,13 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError
 import re
+
+from odoo import api, fields, models, _
+
+from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class RecordsManagementBaseMenus(models.Model):
@@ -416,6 +420,7 @@ class RecordsManagementBaseMenus(models.Model):
     # ============================================================================
     def action_activate_menu(self):
         """Activate the menu"""
+
         self.ensure_one()
         self.write(
             {
@@ -438,6 +443,7 @@ class RecordsManagementBaseMenus(models.Model):
 
     def action_deactivate_menu(self):
         """Deactivate the menu"""
+
         self.ensure_one()
         self.write(
             {
@@ -459,6 +465,7 @@ class RecordsManagementBaseMenus(models.Model):
 
     def action_publish_menu(self):
         """Publish the menu"""
+
         self.ensure_one()
 
         if self.state != "confirmed":
@@ -477,6 +484,7 @@ class RecordsManagementBaseMenus(models.Model):
 
     def action_archive_menu(self):
         """Archive the menu"""
+
         self.ensure_one()
         self.write(
             {
@@ -490,6 +498,7 @@ class RecordsManagementBaseMenus(models.Model):
 
     def action_view_child_menus(self):
         """View child menus"""
+
         self.ensure_one()
 
         return {
@@ -503,6 +512,7 @@ class RecordsManagementBaseMenus(models.Model):
 
     def action_duplicate_menu(self):
         """Duplicate the menu with new name"""
+
         self.ensure_one()
 
         new_name = _("%s (Copy)", self.name)
@@ -589,7 +599,7 @@ class RecordsManagementBaseMenus(models.Model):
         return result
 
     @api.model
-    def _name_search(
+    def _search_name(
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
     ):
         """Enhanced search by name, description, or menu key"""

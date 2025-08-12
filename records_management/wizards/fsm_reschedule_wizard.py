@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 # FSM Reschedule Wizard - Temporarily disabled until industry_fsm is available
 
-from odoo import models, fields, api, _
 import logging
+
+from odoo import models, fields, api, _
+
+
 
 _logger = logging.getLogger(__name__)
 

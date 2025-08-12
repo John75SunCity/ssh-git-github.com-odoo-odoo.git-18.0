@@ -5,6 +5,8 @@ NAID Chain of Custody
 
 from odoo import models, fields, api, _
 
+
+
 class NAIDChainOfCustody(models.Model):
     """
     NAID Chain of Custody
@@ -35,8 +37,12 @@ class NAIDChainOfCustody(models.Model):
 
     def action_confirm(self):
         """Confirm the record"""
+
+        self.ensure_one()
         self.write({'state': 'confirmed'})
 
     def action_done(self):
         """Mark as done"""
+
+        self.ensure_one()
         self.write({'state': 'done'})

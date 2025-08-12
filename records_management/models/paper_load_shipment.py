@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 class PaperLoadShipment(models.Model):
     _name = "paper.load.shipment"
@@ -177,6 +180,7 @@ class PaperLoadShipment(models.Model):
     # ============================================================================
     def action_confirm(self):
         """Confirm the shipment"""
+
         self.ensure_one()
         if not self.bale_ids:
             raise UserError("Cannot confirm shipment without bales")
@@ -186,6 +190,7 @@ class PaperLoadShipment(models.Model):
 
     def action_start_transit(self):
         """Start transit"""
+
         self.ensure_one()
         self.state = 'in_transit'
         self.status = 'shipped'
@@ -194,6 +199,7 @@ class PaperLoadShipment(models.Model):
 
     def action_deliver(self):
         """Mark as delivered"""
+
         self.ensure_one()
         self.state = 'delivered'
         self.status = 'delivered'
@@ -202,6 +208,7 @@ class PaperLoadShipment(models.Model):
 
     def action_complete(self):
         """Complete the shipment"""
+
         self.ensure_one()
         if not self.actual_delivery_date:
             raise UserError("Cannot complete shipment without delivery confirmation")
@@ -210,6 +217,7 @@ class PaperLoadShipment(models.Model):
 
     def action_cancel(self):
         """Cancel the shipment"""
+
         self.ensure_one()
         if self.state in ['delivered', 'completed']:
             raise UserError("Cannot cancel delivered or completed shipment")
@@ -291,7 +299,7 @@ class PaperLoadShipment(models.Model):
         return result
 
     @api.model
-    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+    def _search_name(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
         """Enhanced search by name, shipment number, or reference"""
         args = args or []
         domain = []
@@ -314,6 +322,7 @@ class PaperLoadShipment(models.Model):
     # ============================================================================
     def action_add_bales_to_load(self):
         """Add Bales To Load - Action method"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -325,6 +334,7 @@ class PaperLoadShipment(models.Model):
         }
     def action_create_invoice(self):
         """Create Invoice - Action method"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -336,6 +346,7 @@ class PaperLoadShipment(models.Model):
         }
     def action_generate_manifest(self):
         """Generate Manifest - Generate report"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.report",
@@ -346,24 +357,28 @@ class PaperLoadShipment(models.Model):
         }
     def action_mark_delivered(self):
         """Mark Delivered - Update field"""
+
         self.ensure_one()
         self.write({"delivered": True})
         self.message_post(body=_("Mark Delivered"))
         return True
     def action_mark_in_transit(self):
         """Mark In Transit - Update field"""
+
         self.ensure_one()
         self.write({"in_transit": True})
         self.message_post(body=_("Mark In Transit"))
         return True
     def action_mark_paid(self):
         """Mark Paid - Update field"""
+
         self.ensure_one()
         self.write({"paid": True})
         self.message_post(body=_("Mark Paid"))
         return True
     def action_ready_for_pickup(self):
         """Ready For Pickup - Action method"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -375,6 +390,7 @@ class PaperLoadShipment(models.Model):
         }
     def action_schedule_pickup(self):
         """Schedule Pickup - Action method"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -386,6 +402,7 @@ class PaperLoadShipment(models.Model):
         }
     def action_view_manifest(self):
         """View Manifest - View related records"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -397,6 +414,7 @@ class PaperLoadShipment(models.Model):
         }
     def action_view_weight_breakdown(self):
         """View Weight Breakdown - View related records"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

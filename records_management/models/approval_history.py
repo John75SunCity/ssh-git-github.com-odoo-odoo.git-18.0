@@ -20,7 +20,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError
+
+
 
 
 class ApprovalHistory(models.Model):
@@ -259,6 +262,7 @@ class ApprovalHistory(models.Model):
     # ============================================================================
     def action_approve(self):
         """Approve the request"""
+
         self.ensure_one()
         if self.approval_status != "pending":
             raise UserError(_("Only pending approvals can be approved."))
@@ -277,6 +281,7 @@ class ApprovalHistory(models.Model):
 
     def action_reject(self):
         """Reject the request"""
+
         self.ensure_one()
         if self.approval_status != "pending":
             raise UserError(_("Only pending approvals can be rejected."))
@@ -295,6 +300,7 @@ class ApprovalHistory(models.Model):
 
     def action_cancel(self):
         """Cancel the request"""
+
         self.ensure_one()
         if self.approval_status in ["approved", "rejected"]:
             raise UserError(_("Cannot cancel completed approvals."))

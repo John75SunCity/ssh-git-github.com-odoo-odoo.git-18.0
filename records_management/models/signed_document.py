@@ -19,7 +19,9 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
 
 
 class SignedDocument(models.Model):
@@ -34,9 +36,10 @@ class SignedDocument(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Document Name",
+    )
         required=True,
         tracking=True,
-        index=True,
+        index=True,)
         help="Name of the signed document"
     )
 
@@ -49,32 +52,30 @@ class SignedDocument(models.Model):
         default=lambda self: self.env.company,
         required=True,
         help="Company associated with this signed document"
-    )
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this signed document"
+    ),
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record",
     )
+    ),
     active = fields.Boolean(
         string="Active",
         default=True,
-        tracking=True,
+        tracking=True,)
         help="Active status of the signed document"
     )
 
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        required=True,
-        tracking=True,
-        help="Associated partner for this record"
-    )
-
     request_id = fields.Many2one(
         "portal.request",
         string="Portal Request",
@@ -106,26 +107,26 @@ class SignedDocument(models.Model):
     signature_date = fields.Datetime(
         string="Signature Date",
         tracking=True,
-        index=True,
+        index=True,)
         help="Date and time when document was signed"
-    )
+    ),
     signatory_name = fields.Char(
         string="Signatory Name",
-        tracking=True,
+        tracking=True,)
         help="Full name of the person who signed"
-    )
+    ),
     signatory_email = fields.Char(
         string="Signatory Email",
-        tracking=True,
+        tracking=True,)
         help="Email address of the signatory"
-    )
+    ),
     signatory_title = fields.Char(
         string="Signatory Title",
-        tracking=True,
+        tracking=True,)
         help="Job title or position of the signatory"
-    )
+    ),
     signatory_ip_address = fields.Char(
-        string="Signatory IP Address",
+        string="Signatory IP Address",)
         help="IP address from which document was signed"
     )
 
@@ -134,20 +135,20 @@ class SignedDocument(models.Model):
     # ============================================================================
     pdf_document = fields.Binary(
         string="PDF Document",
-        attachment=True,
+        attachment=True,)
         help="Signed PDF document file"
-    )
+    ),
     pdf_filename = fields.Char(
-        string="PDF Filename",
+        string="PDF Filename",)
         help="Original filename of the PDF document"
-    )
+    ),
     original_document = fields.Binary(
         string="Original Document",
-        attachment=True,
+        attachment=True,)
         help="Original unsigned document for comparison"
-    )
+    ),
     original_filename = fields.Char(
-        string="Original Filename",
+        string="Original Filename",)
         help="Filename of the original document"
     )
 
@@ -163,6 +164,7 @@ class SignedDocument(models.Model):
         ("rejected", "Rejected"),
     ], string="Status",
        default="draft",
+   )
        tracking=True,
        required=True,
        help="Current status of the signed document")
@@ -171,13 +173,13 @@ class SignedDocument(models.Model):
     # SECURITY AND VERIFICATION
     # ============================================================================
     signature_hash = fields.Char(
-        string="Signature Hash",
+        string="Signature Hash",)
         help="Cryptographic hash of the signature for verification"
-    )
+    ),
     document_hash = fields.Char(
-        string="Document Hash",
+        string="Document Hash",)
         help="Hash of the complete signed document"
-    )
+    ),
     verification_status = fields.Selection([
         ("pending", "Pending"),
         ("valid", "Valid"),
@@ -186,16 +188,16 @@ class SignedDocument(models.Model):
     ], string="Verification Status",
        default="pending",
        tracking=True,
-       help="Status of signature verification")
-
+       help="Status of signature verification"),
     verification_date = fields.Datetime(
-        string="Verification Date",
+        string="Verification Date",)
         help="Date when signature was last verified"
-    )
+    ),
     verified_by_id = fields.Many2one(
         "res.users",
         string="Verified By",
-        help="User who verified the signature"
+    )
+        help="User who verified the signature",
     )
 
     # ============================================================================
@@ -203,17 +205,18 @@ class SignedDocument(models.Model):
     # ============================================================================
     legal_validity_period = fields.Integer(
         string="Legal Validity Period (Days)",
-        default=2555,  # 7 years default
-        help="Number of days the signature remains legally valid"
     )
+        default=2555,  # 7 years default
+        help="Number of days the signature remains legally valid",
+    ),
     expiry_date = fields.Date(
         string="Signature Expiry Date",
         compute="_compute_expiry_date",
-        store=True,
+        store=True,)
         help="Date when signature expires"
-    )
+    ),
     compliance_notes = fields.Text(
-        string="Compliance Notes",
+        string="Compliance Notes",)
         help="Notes related to legal compliance and requirements"
     )
 
@@ -222,13 +225,15 @@ class SignedDocument(models.Model):
     # ============================================================================
     naid_compliant = fields.Boolean(
         string="NAID Compliant",
-        default=True,
-        help="Whether this signature meets NAID requirements"
     )
+        default=True,)
+        help="Whether this signature meets NAID requirements"
+    ),
     audit_trail_ids = fields.One2many(
         "signed.document.audit",
         "document_id",
         string="Audit Trail",
+    )
         help="Complete audit trail for this signed document"
     )
 
@@ -238,18 +243,19 @@ class SignedDocument(models.Model):
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
-        store=True,
+        store=True,)
         help="Display name for this signed document"
-    )
+    ),
     is_expired = fields.Boolean(
         string="Is Expired",
-        compute="_compute_is_expired",
+        compute="_compute_is_expired",)
         help="Whether the signature has expired"
-    )
+    ),
     signature_age_days = fields.Integer(
         string="Signature Age (Days)",
+    )
         compute="_compute_signature_age_days",
-        help="Number of days since signature"
+        help="Number of days since signature",
     )
 
     # ============================================================================
@@ -259,18 +265,21 @@ class SignedDocument(models.Model):
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
+        domain=lambda self: [("res_model", "=", self._name)],
+    ),
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
+        domain=lambda self: [("res_model", "=", self._name)],
+    ),
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
+    )
         domain=lambda self: [("model", "=", self._name)],
     )
 
@@ -278,11 +287,11 @@ class SignedDocument(models.Model):
     # DOCUMENTATION
     # ============================================================================
     notes = fields.Text(
-        string="Notes",
+        string="Notes",)
         help="Additional notes or comments about the signed document"
-    )
+    ),
     internal_notes = fields.Text(
-        string="Internal Notes",
+        string="Internal Notes",)
         help="Internal notes not visible to customers"
     )
 
@@ -305,8 +314,8 @@ class SignedDocument(models.Model):
         """Compute signature expiry date"""
         for record in self:
             if record.signature_date and record.legal_validity_period:
-                signature_date = fields.Datetime.from_string(record.signature_date)
-                expiry_datetime = signature_date + fields.timedelta(days=record.legal_validity_period)
+    signature_date = fields.Datetime.from_string(record.signature_date)
+        expiry_datetime = signature_date + fields.timedelta(days=record.legal_validity_period)
                 record.expiry_date = expiry_datetime.date()
             else:
                 record.expiry_date = False
@@ -314,18 +323,18 @@ class SignedDocument(models.Model):
     @api.depends("expiry_date")
     def _compute_is_expired(self):
         """Check if signature has expired"""
-        today = fields.Date.today()
+    today = fields.Date.today()
         for record in self:
             record.is_expired = record.expiry_date and record.expiry_date < today
 
     @api.depends("signature_date")
     def _compute_signature_age_days(self):
         """Compute age of signature in days"""
-        today = fields.Date.today()
+    today = fields.Date.today()
         for record in self:
             if record.signature_date:
-                signature_date = fields.Datetime.from_string(record.signature_date).date()
-                delta = today - signature_date
+    signature_date = fields.Datetime.from_string(record.signature_date).date()
+        delta = today - signature_date
                 record.signature_age_days = delta.days
             else:
                 record.signature_age_days = 0
@@ -335,6 +344,7 @@ class SignedDocument(models.Model):
     # ============================================================================
     def action_request_signature(self):
         """Request signature from signatory"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft documents can be sent for signature"))
@@ -345,11 +355,12 @@ class SignedDocument(models.Model):
 
     def action_mark_signed(self):
         """Mark document as signed"""
+
         self.ensure_one()
         if self.state != "pending_signature":
             raise UserError(_("Only pending documents can be marked as signed"))
 
-        if not self.signatory_name:
+    if not self.signatory_name:
             raise UserError(_("Please specify the signatory name"))
 
         self.write({
@@ -361,6 +372,7 @@ class SignedDocument(models.Model):
 
     def action_verify_signature(self):
         """Verify document signature"""
+
         self.ensure_one()
         if self.state != "signed":
             raise UserError(_("Only signed documents can be verified"))
@@ -368,7 +380,7 @@ class SignedDocument(models.Model):
         # Perform signature verification logic
         verification_result = self._perform_signature_verification()
 
-        if verification_result:
+    if verification_result:
             self.write({
                 "state": "verified",
                 "verification_status": "valid",
@@ -388,6 +400,7 @@ class SignedDocument(models.Model):
 
     def action_archive_document(self):
         """Archive the signed document"""
+
         self.ensure_one()
         if self.state not in ["signed", "verified"]:
             raise UserError(_("Only signed or verified documents can be archived"))
@@ -398,6 +411,7 @@ class SignedDocument(models.Model):
 
     def action_reject_signature(self):
         """Reject the signature"""
+
         self.ensure_one()
         if self.state not in ["pending_signature", "signed"]:
             raise UserError(_("Cannot reject document in current state"))
@@ -411,6 +425,7 @@ class SignedDocument(models.Model):
 
     def action_download_signed_document(self):
         """Download the signed PDF document"""
+
         self.ensure_one()
         if not self.pdf_document:
             raise UserError(_("No signed document available for download"))
@@ -418,7 +433,7 @@ class SignedDocument(models.Model):
         return {
             'type': 'ir.actions.act_url',
             'url': _('/web/content/?model=%s&id=%d&field=pdf_document&download=true&filename=%s',
-                     self._name, self.id, self.pdf_filename or _('signed_document.pdf')),
+                self._name, self.id, self.pdf_filename or _('signed_document.pdf')),
             'target': 'self',
         }
 
@@ -494,7 +509,7 @@ class SignedDocument(models.Model):
         
         documents = super().create(vals_list)
         
-        for document in documents:
+    for document in documents:
             document._create_audit_log('document_created')
         
         return documents
@@ -503,7 +518,7 @@ class SignedDocument(models.Model):
         """Override write to track changes"""
         result = super().write(vals)
         
-        if 'state' in vals:
+    if 'state' in vals:
             for record in self:
                 record._create_audit_log('state_changed')
         
@@ -515,7 +530,7 @@ class SignedDocument(models.Model):
     @api.model
     def get_expiring_signatures(self, days_ahead=30):
         """Get signatures expiring within specified days"""
-        expiry_date = fields.Date.today() + fields.timedelta(days=days_ahead)
+    expiry_date = fields.Date.today() + fields.timedelta(days=days_ahead)
         return self.search([
             ('state', 'in', ['signed', 'verified']),
             ('expiry_date', '<=', expiry_date),
@@ -530,10 +545,9 @@ class SignedDocument(models.Model):
             ('is_expired', '=', True),
         ])
         
-        for doc in expired:
+    for doc in expired:
             doc.message_post(body=_("Signature expired - document archived"))
             doc.write({'state': 'archived'})
-
 
 # ============================================================================
 # AUDIT TRAIL MODEL
@@ -551,28 +565,35 @@ class SignedDocumentAudit(models.Model):
         string="Signed Document",
         required=True,
         ondelete="cascade"
-    )
+    ),
     action = fields.Char(
         string="Action",
-        required=True,
+        required=True,)
         help="Action performed on the document"
-    )
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="User",
         required=True,
         help="User who performed the action"
+    ),
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
     )
+        help="Associated partner for this record",
+    ),
     timestamp = fields.Datetime(
         string="Timestamp",
-        required=True,
+    )
+        required=True,)
         help="When the action was performed"
-    )
+    ),
     ip_address = fields.Char(
-        string="IP Address",
+        string="IP Address",)
         help="IP address from which action was performed"
-    )
+    ),
     details = fields.Text(
-        string="Details",
+        string="Details",)
         help="Detailed information about the action"
     )

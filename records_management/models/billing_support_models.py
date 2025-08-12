@@ -3,6 +3,8 @@
 
 from odoo import fields, models, api
 
+
+
 # Note: Individual models have been moved to separate files following Odoo standards:
 # - InvoiceGenerationLog -> invoice_generation_log.py
 # - DiscountRule -> discount_rule.py  

@@ -30,7 +30,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class PickupRequestItem(models.Model):
@@ -349,6 +352,7 @@ class PickupRequestItem(models.Model):
     # ============================================================================
     def action_confirm(self):
         """Confirm the pickup item"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft items can be confirmed"))
@@ -361,6 +365,7 @@ class PickupRequestItem(models.Model):
 
     def action_pick_up(self):
         """Mark item as picked up"""
+
         self.ensure_one()
         if self.state not in ["confirmed"]:
             raise UserError(_("Only confirmed items can be picked up"))
@@ -373,6 +378,7 @@ class PickupRequestItem(models.Model):
 
     def action_mark_in_transit(self):
         """Mark item as in transit"""
+
         self.ensure_one()
         if self.state != "picked":
             raise UserError(_("Only picked up items can be marked in transit"))
@@ -382,6 +388,7 @@ class PickupRequestItem(models.Model):
 
     def action_deliver(self):
         """Mark item as delivered"""
+
         self.ensure_one()
         if self.state != "in_transit":
             raise UserError(_("Only items in transit can be delivered"))
@@ -394,12 +401,14 @@ class PickupRequestItem(models.Model):
 
     def action_mark_exception(self):
         """Mark item as having an exception"""
+
         self.ensure_one()
         self.write({"state": "exception"})
         self.message_post(body=_("Item marked as exception - requires attention"))
 
     def action_cancel(self):
         """Cancel the pickup item"""
+
         self.ensure_one()
         if self.state in ["delivered"]:
             raise UserError(_("Delivered items cannot be cancelled"))
@@ -409,6 +418,7 @@ class PickupRequestItem(models.Model):
 
     def action_reset_to_draft(self):
         """Reset item to draft state"""
+
         self.ensure_one()
         if self.state in ["delivered"]:
             raise UserError(_("Delivered items cannot be reset to draft"))

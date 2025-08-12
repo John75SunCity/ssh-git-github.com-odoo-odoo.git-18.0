@@ -8,6 +8,8 @@ Model for managing compliance alerts for NAID compliance management.
 from odoo import _, api, fields, models
 
 
+
+
 class NaidComplianceAlert(models.Model):
     """Compliance alerts for NAID compliance management"""
 
@@ -135,12 +137,14 @@ class NaidComplianceAlert(models.Model):
 
     def action_acknowledge(self):
         """Acknowledge alert"""
+
         self.ensure_one()
         self.write({"status": "acknowledged"})
         self.message_post(body=_("Alert acknowledged by %s", self.env.user.name))
 
     def action_resolve(self):
         """Resolve alert"""
+
         self.ensure_one()
         self.write(
             {
@@ -153,6 +157,7 @@ class NaidComplianceAlert(models.Model):
 
     def action_dismiss(self):
         """Dismiss alert"""
+
         self.ensure_one()
         self.write({"status": "dismissed"})
         self.message_post(body=_("Alert dismissed by %s", self.env.user.name))

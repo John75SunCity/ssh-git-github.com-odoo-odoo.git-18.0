@@ -8,6 +8,8 @@ Model for individual checklist items for NAID compliance.
 from odoo import fields, models
 
 
+
+
 class NaidComplianceChecklistItem(models.Model):
     """Individual checklist items for NAID compliance"""
 

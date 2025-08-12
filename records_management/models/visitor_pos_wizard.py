@@ -29,7 +29,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class VisitorPosWizard(models.TransientModel):
@@ -574,8 +577,9 @@ class VisitorPosWizard(models.TransientModel):
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    def action_check_in_visitor(self):
+    def __check__check_in_visitor(self):
         """Check in visitor"""
+
         self.ensure_one()
 
         self.write(
@@ -596,8 +600,9 @@ class VisitorPosWizard(models.TransientModel):
             },
         }
 
-    def action_check_out_visitor(self):
+    def __check__check_out_visitor(self):
         """Check out visitor"""
+
         self.ensure_one()
 
         self.write(
@@ -619,6 +624,7 @@ class VisitorPosWizard(models.TransientModel):
 
     def action_print_visitor_badge(self):
         """Print visitor badge"""
+
         self.ensure_one()
 
         return {
@@ -630,6 +636,7 @@ class VisitorPosWizard(models.TransientModel):
 
     def action_log_security_event(self):
         """Log security event"""
+
         self.ensure_one()
 
         return {
@@ -645,6 +652,7 @@ class VisitorPosWizard(models.TransientModel):
 
     def action_process_visitor(self):
         """Process visitor request"""
+
         self.ensure_one()
 
         self.write(
@@ -667,6 +675,7 @@ class VisitorPosWizard(models.TransientModel):
 
     def action_create_pos_order(self):
         """Create POS order for visitor services"""
+
         self.ensure_one()
 
         if self.pos_order_created:
@@ -693,6 +702,7 @@ class VisitorPosWizard(models.TransientModel):
 
     def action_link_existing_order(self):
         """Link to existing order"""
+
         self.ensure_one()
 
         return {
@@ -708,6 +718,7 @@ class VisitorPosWizard(models.TransientModel):
 
     def action_create_customer_record(self):
         """Create new customer record"""
+
         self.ensure_one()
 
         if self.customer_record_created:
@@ -737,6 +748,7 @@ class VisitorPosWizard(models.TransientModel):
 
     def action_generate_invoice(self):
         """Generate invoice for services"""
+
         self.ensure_one()
 
         if self.invoice_generated:
@@ -761,6 +773,7 @@ class VisitorPosWizard(models.TransientModel):
 
     def action_cancel(self):
         """Cancel wizard operation"""
+
         self.ensure_one()
 
         self.write(

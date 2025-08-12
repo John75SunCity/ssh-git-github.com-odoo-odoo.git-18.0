@@ -9,6 +9,8 @@ and workload management capabilities.
 from odoo import models, fields, api
 
 
+
+
 class DocumentRetrievalTeam(models.Model):
     """Teams responsible for document retrieval operations"""
 

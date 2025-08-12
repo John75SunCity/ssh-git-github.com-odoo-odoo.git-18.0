@@ -6,7 +6,10 @@ Model for action plans for NAID compliance improvements.
 """
 
 from odoo import _, api, fields, models
+
 from odoo.exceptions import ValidationError
+
+
 
 
 class NaidComplianceActionPlan(models.Model):
@@ -135,6 +138,7 @@ class NaidComplianceActionPlan(models.Model):
 
     def action_approve(self):
         """Approve action plan"""
+
         self.ensure_one()
         self.write(
             {
@@ -147,6 +151,7 @@ class NaidComplianceActionPlan(models.Model):
 
     def action_start(self):
         """Start action plan execution"""
+
         self.ensure_one()
         self.write(
             {
@@ -158,6 +163,7 @@ class NaidComplianceActionPlan(models.Model):
 
     def action_complete(self):
         """Mark action plan as completed"""
+
         self.ensure_one()
         self.write(
             {

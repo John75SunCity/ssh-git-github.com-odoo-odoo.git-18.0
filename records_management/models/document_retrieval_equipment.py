@@ -9,6 +9,8 @@ carts, tablets, and maintenance tracking.
 from odoo import models, fields
 
 
+
+
 class DocumentRetrievalEquipment(models.Model):
     """Equipment used for document retrieval operations"""
 

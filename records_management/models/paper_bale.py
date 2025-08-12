@@ -20,7 +20,9 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
 
 
 class PaperBale(models.Model):
@@ -35,32 +37,33 @@ class PaperBale(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Bale Number",
+    )
         required=True,
         tracking=True,
-        index=True,
+        index=True,)
         help="Unique bale identifier"
-    )
+    ),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    )
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this bale"
-    )
+    ),
     active = fields.Boolean(
         string="Active",
-        default=True,
+        default=True,)
         help="Active status of the bale record"
-    )
+    ),
     sequence = fields.Integer(
         string="Sequence",
-        default=10,
+        default=10,)
         help="Sequence for ordering"
     )
 
@@ -68,15 +71,15 @@ class PaperBale(models.Model):
     # REFERENCE AND EXTERNAL TRACKING
     # ============================================================================
     reference_number = fields.Char(
-        string="Reference Number",
+        string="Reference Number",)
         help="Internal reference number"
-    )
+    ),
     external_reference = fields.Char(
-        string="External Reference",
+        string="External Reference",)
         help="External system reference"
-    )
+    ),
     barcode = fields.Char(
-        string="Barcode",
+        string="Barcode",)
         help="Barcode for tracking"
     )
 
@@ -104,11 +107,11 @@ class PaperBale(models.Model):
     # PAPER AND BALE SPECIFICATIONS
     # ============================================================================
     weight = fields.Float(
-        string="Weight",
+        string="Weight",)
         digits=(10, 2),
         tracking=True,
         help="Weight of the bale"
-    )
+    ),
     weight_unit = fields.Selection([
         ("lb", "Pounds"),
         ("kg", "Kilograms"),
@@ -117,8 +120,7 @@ class PaperBale(models.Model):
         string="Weight Unit",
         default="lb",
         help="Unit of measurement for weight"
-    )
-    
+    ),
     paper_type = fields.Selection([
         ("mixed", "Mixed Paper"),
         ("office", "Office Paper"),
@@ -131,8 +133,7 @@ class PaperBale(models.Model):
         string="Paper Type",
         tracking=True,
         help="Type of paper in the bale"
-    )
-    
+    ),
     bale_type = fields.Selection([
         ("standard", "Standard Bale"),
         ("compacted", "Compacted Bale"),
@@ -141,8 +142,7 @@ class PaperBale(models.Model):
         string="Bale Type",
         default="standard",
         help="Physical type of bale"
-    )
-    
+    ),
     paper_grade = fields.Selection([
         ("high", "High Grade"),
         ("medium", "Medium Grade"),
@@ -150,8 +150,7 @@ class PaperBale(models.Model):
     ],
         string="Paper Grade",
         help="Quality grade of paper"
-    )
-    
+    ),
     contamination_level = fields.Selection([
         ("none", "No Contamination"),
         ("low", "Low Contamination"),
@@ -169,26 +168,28 @@ class PaperBale(models.Model):
     pickup_location_id = fields.Many2one(
         "records.location",
         string="Pickup Location",
-        help="Location where bale was picked up"
+        help="Location where bale was picked up",
     )
+    ),
     current_location_id = fields.Many2one(
         "records.location",
         string="Current Location",
         tracking=True,
         help="Current physical location of the bale"
-    )
+    ),
     destination_location_id = fields.Many2one(
         "records.location",
         string="Destination Location",
-        help="Final destination for the bale"
     )
-    
+        help="Final destination for the bale",
+    ),
     transportation_method = fields.Selection([
         ("truck", "Truck"),
         ("rail", "Rail"),
         ("ship", "Ship"),
     ],
         string="Transportation Method",
+    )
         default="truck",
         help="Method of transportation"
     )
@@ -198,29 +199,30 @@ class PaperBale(models.Model):
     # ============================================================================
     creation_date = fields.Date(
         string="Creation Date",
-        default=fields.Date.today,
+    default=fields.Date.today,
+)
         required=True,
-        tracking=True,
+        tracking=True,)
         help="Date when bale was created"
-    )
+    ),
     weigh_date = fields.Date(
-        string="Weigh Date",
+        string="Weigh Date",)
         help="Date when bale was weighed"
-    )
+    ),
     quality_check_date = fields.Date(
-        string="Quality Check Date",
+        string="Quality Check Date",)
         help="Date of quality inspection"
-    )
+    ),
     pickup_date = fields.Date(
-        string="Pickup Date",
+        string="Pickup Date",)
         help="Date when bale was picked up"
-    )
+    ),
     delivery_date = fields.Date(
-        string="Delivery Date",
+        string="Delivery Date",)
         help="Date when bale was delivered"
-    )
+    ),
     recycling_date = fields.Date(
-        string="Recycling Date",
+        string="Recycling Date",)
         help="Date when bale was recycled"
     )
 
@@ -230,24 +232,27 @@ class PaperBale(models.Model):
     customer_id = fields.Many2one(
         "res.partner",
         string="Customer",
+    )
         domain=[("is_company", "=", True)],
         help="Customer who provided the paper"
-    )
+    ),
     recycling_vendor_id = fields.Many2one(
         "res.partner",
         string="Recycling Vendor",
         domain=[("supplier_rank", ">", 0)],
         help="Vendor who will recycle the paper"
-    )
+    ),
     driver_id = fields.Many2one(
         "res.partner",
         string="Driver",
-        help="Driver assigned for transportation"
+        help="Driver assigned for transportation",
     )
+    ),
     trailer_id = fields.Many2one(
         "records.trailer",
         string="Trailer",
-        help="Trailer used for transportation"
+    )
+        help="Trailer used for transportation",
     )
 
     # ============================================================================
@@ -260,24 +265,26 @@ class PaperBale(models.Model):
         ("restricted", "Restricted"),
     ],
         string="Confidentiality Level",
+    )
         default="internal",
         help="Security level of documents in bale"
-    )
-    
+    ),
     certificate_of_destruction = fields.Boolean(
         string="Certificate of Destruction",
-        default=False,
-        help="Whether certificate of destruction is required"
     )
+        default=False,)
+        help="Whether certificate of destruction is required"
+    ),
     chain_of_custody_verified = fields.Boolean(
         string="Chain of Custody Verified",
-        default=False,
-        tracking=True,
-        help="Whether chain of custody has been verified"
     )
+        default=False,
+        tracking=True,)
+        help="Whether chain of custody has been verified"
+    ),
     naid_compliant = fields.Boolean(
         string="NAID Compliant",
-        default=False,
+        default=False,)
         help="Whether bale meets NAID standards"
     )
 
@@ -289,27 +296,30 @@ class PaperBale(models.Model):
         string="Currency",
         related="company_id.currency_id",
         store=True
-    )
+    ),
     sale_price = fields.Monetary(
         string="Sale Price",
         currency_field="currency_id",
-        help="Price received for the bale"
+        help="Price received for the bale",
     )
+         )
     processing_cost = fields.Monetary(
         string="Processing Cost",
         currency_field="currency_id",
-        help="Cost to process the bale"
-    )
+        help="Cost to process the bale",
+         )
     transportation_cost = fields.Monetary(
         string="Transportation Cost",
-        currency_field="currency_id",
-        help="Cost of transportation"
     )
+        currency_field="currency_id",
+        help="Cost of transportation",
+         )
     net_value = fields.Monetary(
         string="Net Value",
+    )
         currency_field="currency_id",
         compute="_compute_net_value",
-        store=True,
+        store=True,)
         help="Net value after costs"
     )
 
@@ -322,16 +332,19 @@ class PaperBale(models.Model):
         ("mixed", "Mixed"),
     ],
         string="Recycling Category",
-        help="Environmental recycling category"
     )
+        help="Environmental recycling category"
+    ),
     carbon_footprint = fields.Float(
         string="Carbon Footprint (kg CO2)",
-        help="Estimated carbon footprint reduction"
+        help="Estimated carbon footprint reduction",
     )
+    ),
     trees_saved = fields.Float(
         string="Trees Saved",
+    )
         compute="_compute_environmental_impact",
-        store=True,
+        store=True,)
         help="Estimated number of trees saved"
     )
 
@@ -339,19 +352,21 @@ class PaperBale(models.Model):
     # QUALITY CONTROL
     # ============================================================================
     quality_grade = fields.Char(
-        string="Quality Grade",
+        string="Quality Grade",)
         help="Assigned quality grade"
-    )
+    ),
     quality_notes = fields.Text(
-        string="Quality Notes",
+        string="Quality Notes",)
         help="Notes from quality inspection"
-    )
+    ),
     moisture_content = fields.Float(
         string="Moisture Content (%)",
-        help="Moisture content percentage"
     )
+        help="Moisture content percentage",
+    ),
     density = fields.Float(
         string="Density (kg/m³)",
+    )
         compute="_compute_density",
         store=True,
         help="Calculated bale density"
@@ -362,11 +377,13 @@ class PaperBale(models.Model):
     # ============================================================================
     total_volume = fields.Float(
         string="Total Volume (m³)",
-        help="Estimated volume of the bale"
     )
+        help="Estimated volume of the bale",
+    ),
     document_count = fields.Integer(
         string="Document Count",
-        compute="_compute_document_count",
+    )
+        compute="_compute_document_count",)
         help="Number of source documents"
     )
     
@@ -374,15 +391,15 @@ class PaperBale(models.Model):
     # DESCRIPTIVE FIELDS
     # ============================================================================
     description = fields.Text(
-        string="Description",
+        string="Description",)
         help="Detailed description of the bale"
-    )
+    ),
     notes = fields.Text(
-        string="Internal Notes",
+        string="Internal Notes",)
         help="Internal processing notes"
-    )
+    ),
     special_instructions = fields.Text(
-        string="Special Instructions",
+        string="Special Instructions",)
         help="Special handling instructions"
     )
 
@@ -394,17 +411,19 @@ class PaperBale(models.Model):
         "bale_id",
         string="Source Documents",
         help="Documents that were processed into this bale"
-    )
+    ),
     movement_ids = fields.One2many(
         "paper.bale.movement",
         "bale_id",
         string="Movements",
-        help="Movement history of the bale"
     )
+        help="Movement history of the bale"
+    ),
     inspection_ids = fields.One2many(
         "paper.bale.inspection",
         "bale_id",
         string="Inspections",
+    )
         help="Quality inspection records"
     )
 
@@ -424,18 +443,21 @@ class PaperBale(models.Model):
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)]
     )
+        domain=lambda self: [("res_model", "=", self._name)]
+    ),
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)]
     )
+        domain=lambda self: [("res_model", "=", self._name)]
+    ),
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
+    )
         domain=lambda self: [("model", "=", self._name)]
     )
 
@@ -525,6 +547,7 @@ class PaperBale(models.Model):
     # ============================================================================
     def action_weigh_bale(self):
         """Weigh the bale"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -537,6 +560,7 @@ class PaperBale(models.Model):
 
     def action_quality_inspection(self):
         """Perform quality inspection"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -549,6 +573,7 @@ class PaperBale(models.Model):
 
     def action_load_on_trailer(self):
         """Load bale on trailer"""
+
         self.ensure_one()
         if self.state != "approved":
             raise UserError(_("Only approved bales can be loaded"))
@@ -561,6 +586,7 @@ class PaperBale(models.Model):
 
     def action_ship_bale(self):
         """Ship the bale"""
+
         self.ensure_one()
         if self.state != "loaded":
             raise UserError(_("Only loaded bales can be shipped"))
@@ -570,6 +596,7 @@ class PaperBale(models.Model):
 
     def action_confirm_delivery(self):
         """Confirm bale delivery"""
+
         self.ensure_one()
         if self.state != "shipped":
             raise UserError(_("Only shipped bales can be delivered"))
@@ -582,6 +609,7 @@ class PaperBale(models.Model):
 
     def action_mark_recycled(self):
         """Mark bale as recycled"""
+
         self.ensure_one()
         if self.state != "delivered":
             raise UserError(_("Only delivered bales can be marked as recycled"))
@@ -594,17 +622,20 @@ class PaperBale(models.Model):
 
     def action_reject_bale(self):
         """Reject the bale"""
+
         self.ensure_one()
         self.write({"state": "rejected"})
         self.message_post(body=_("Bale rejected"))
 
     def action_print_label(self):
         """Print bale label"""
+
         self.ensure_one()
         return self.env.ref("records_management.action_report_bale_label").report_action(self)
 
     def action_view_source_documents(self):
         """View source documents"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -617,6 +648,7 @@ class PaperBale(models.Model):
 
     def action_view_movements(self):
         """View bale movements"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -629,6 +661,7 @@ class PaperBale(models.Model):
 
     def action_view_inspections(self):
         """View quality inspections"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -660,7 +693,7 @@ class PaperBale(models.Model):
         if not self.weight:
             return 0.0
         
-        if self.weight_unit == "kg":
+    if self.weight_unit == "kg":
             return self.weight
         elif self.weight_unit == "lb":
             pass
@@ -743,7 +776,7 @@ class PaperBale(models.Model):
         return result
 
     @api.model
-    def _name_search(self, name, args=None, operator="ilike", limit=100, name_get_uid=None):
+    def _search_name(self, name, args=None, operator="ilike", limit=100, name_get_uid=None):
         """Enhanced search by name, reference, or paper type"""
         args = args or []
         domain = []
@@ -757,7 +790,6 @@ class PaperBale(models.Model):
             ]
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
-
 class PaperBaleSourceDocument(models.Model):
     """Source documents that were processed into paper bales"""
 
@@ -768,23 +800,24 @@ class PaperBaleSourceDocument(models.Model):
     bale_id = fields.Many2one(
         "paper.bale",
         string="Paper Bale",
+    )
         required=True,
         ondelete="cascade"
-    )
+    ),
     document_reference = fields.Char(
-        string="Document Reference",
+        string="Document Reference",)
         required=True
-    )
+    ),
     document_type = fields.Char(
         string="Document Type"
-    )
+    ),
     customer_id = fields.Many2one(
         "res.partner",
         string="Customer"
-    )
+    ),
     estimated_weight = fields.Float(
         string="Estimated Weight"
-    )
+    ),
     confidentiality_level = fields.Selection([
         ("public", "Public"),
         ("internal", "Internal"),
@@ -793,15 +826,14 @@ class PaperBaleSourceDocument(models.Model):
     ],
         string="Confidentiality Level",
         default="internal"
-    )
+    ),
     destruction_required = fields.Boolean(
-        string="Destruction Required",
+        string="Destruction Required",)
         default=False
-    )
+    ),
     notes = fields.Text(
         string="Notes"
     )
-
 
 class PaperBaleMovement(models.Model):
     """Track movements of paper bales"""
@@ -813,22 +845,23 @@ class PaperBaleMovement(models.Model):
     bale_id = fields.Many2one(
         "paper.bale",
         string="Paper Bale",
+    )
         required=True,
         ondelete="cascade"
-    )
+    ),
     movement_date = fields.Datetime(
         string="Movement Date",
-        required=True,
-        default=fields.Datetime.now
-    )
+        required=True,)
+    default=fields.Datetime.now
+    ),
     from_location_id = fields.Many2one(
         "records.location",
         string="From Location"
-    )
+    ),
     to_location_id = fields.Many2one(
         "records.location",
         string="To Location"
-    )
+    ),
     movement_type = fields.Selection([
         ("transfer", "Transfer"),
         ("pickup", "Pickup"),
@@ -837,17 +870,16 @@ class PaperBaleMovement(models.Model):
     ],
         string="Movement Type",
         required=True
-    )
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="Moved By",
         required=True,
         default=lambda self: self.env.user
-    )
+    ),
     notes = fields.Text(
         string="Notes"
     )
-
 
 class PaperBaleInspection(models.Model):
     """Quality inspection records for paper bales"""
@@ -861,18 +893,20 @@ class PaperBaleInspection(models.Model):
         string="Paper Bale",
         required=True,
         ondelete="cascade"
-    )
+    ),
     inspection_date = fields.Datetime(
         string="Inspection Date",
-        required=True,
-        default=fields.Datetime.now
     )
+        required=True,)
+    default=fields.Datetime.now
+    ),
     inspector_id = fields.Many2one(
         "res.users",
         string="Inspector",
+    )
         required=True,
         default=lambda self: self.env.user
-    )
+    ),
     inspection_type = fields.Selection([
         ("quality", "Quality Inspection"),
         ("weight", "Weight Check"),
@@ -881,22 +915,23 @@ class PaperBaleInspection(models.Model):
     ],
         string="Inspection Type",
         required=True
-    )
+    ),
     result = fields.Selection([
         ("pass", "Pass"),
         ("fail", "Fail"),
         ("conditional", "Conditional Pass"),
     ],
         string="Result",
-        required=True
     )
+        required=True
+    ),
     quality_grade = fields.Selection([
         ("high", "High Grade"),
         ("medium", "Medium Grade"),
         ("low", "Low Grade"),
     ],
         string="Quality Grade"
-    )
+    ),
     contamination_level = fields.Selection([
         ("none", "No Contamination"),
         ("low", "Low Contamination"),
@@ -904,15 +939,14 @@ class PaperBaleInspection(models.Model):
         ("high", "High Contamination"),
     ],
         string="Contamination Level"
-    )
+    ),
     notes = fields.Text(
-        string="Inspection Notes",
+        string="Inspection Notes",)
         required=True
-    )
+    ),
     recommendations = fields.Text(
         string="Recommendations"
     )
-
 
 class PaperBaleWeighWizard(models.TransientModel):
     """Wizard for weighing paper bales"""
@@ -923,13 +957,15 @@ class PaperBaleWeighWizard(models.TransientModel):
     bale_id = fields.Many2one(
         "paper.bale",
         string="Paper Bale",
-        required=True
     )
+        required=True
+    ),
     weight = fields.Float(
         string="Weight",
-        required=True,
-        digits=(10, 2)
     )
+        required=True,)
+        digits=(10, 2)
+    ),
     weight_unit = fields.Selection([
         ("lb", "Pounds"),
         ("kg", "Kilograms"),
@@ -938,13 +974,14 @@ class PaperBaleWeighWizard(models.TransientModel):
         string="Weight Unit",
         default="lb",
         required=True
-    )
+    ),
     notes = fields.Text(
         string="Notes"
     )
 
     def action_confirm_weight(self):
         """Confirm weight and update bale"""
+
         self.ensure_one()
         
         self.bale_id.write({
@@ -960,7 +997,6 @@ class PaperBaleWeighWizard(models.TransientModel):
         
         return {"type": "ir.actions.act_window_close"}
 
-
 class PaperBaleInspectionWizard(models.TransientModel):
     """Wizard for quality inspection of paper bales"""
 
@@ -971,7 +1007,7 @@ class PaperBaleInspectionWizard(models.TransientModel):
         "paper.bale",
         string="Paper Bale",
         required=True
-    )
+    ),
     inspection_type = fields.Selection([
         ("quality", "Quality Inspection"),
         ("contamination", "Contamination Check"),
@@ -980,22 +1016,23 @@ class PaperBaleInspectionWizard(models.TransientModel):
         string="Inspection Type",
         required=True,
         default="quality"
-    )
+    ),
     result = fields.Selection([
         ("pass", "Pass"),
         ("fail", "Fail"),
         ("conditional", "Conditional Pass"),
     ],
         string="Result",
-        required=True
     )
+        required=True
+    ),
     quality_grade = fields.Selection([
         ("high", "High Grade"),
         ("medium", "Medium Grade"),
         ("low", "Low Grade"),
     ],
         string="Quality Grade"
-    )
+    ),
     contamination_level = fields.Selection([
         ("none", "No Contamination"),
         ("low", "Low Contamination"),
@@ -1003,20 +1040,21 @@ class PaperBaleInspectionWizard(models.TransientModel):
         ("high", "High Contamination"),
     ],
         string="Contamination Level"
-    )
+    ),
     moisture_content = fields.Float(
         string="Moisture Content (%)"
-    )
+    ),
     notes = fields.Text(
-        string="Inspection Notes",
+        string="Inspection Notes",)
         required=True
-    )
+    ),
     recommendations = fields.Text(
         string="Recommendations"
     )
 
     def action_complete_inspection(self):
         """Complete inspection and update bale"""
+
         self.ensure_one()
         
         # Create inspection record
@@ -1037,10 +1075,10 @@ class PaperBaleInspectionWizard(models.TransientModel):
             "contamination_level": self.contamination_level,
         }
         
-        if self.moisture_content:
+    if self.moisture_content:
             vals["moisture_content"] = self.moisture_content
         
-        if self.result == "pass":
+    if self.result == "pass":
             vals["state"] = "approved"
         elif self.result == "fail":
             pass

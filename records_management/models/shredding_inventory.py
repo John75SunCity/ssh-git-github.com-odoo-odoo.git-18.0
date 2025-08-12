@@ -26,7 +26,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class ShreddingInventoryBatch(models.Model):
@@ -214,6 +217,7 @@ class ShreddingInventoryBatch(models.Model):
 
     def action_confirm(self):
         """Confirm batch for processing"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft batches can be confirmed."))
@@ -232,6 +236,7 @@ class ShreddingInventoryBatch(models.Model):
 
     def action_start_processing(self):
         """Start processing the batch"""
+
         self.ensure_one()
         if self.state != "confirmed":
             raise UserError(_("Only confirmed batches can be processed."))
@@ -250,6 +255,7 @@ class ShreddingInventoryBatch(models.Model):
 
     def action_done(self):
         """Mark batch as completed"""
+
         self.ensure_one()
         if self.state not in ["confirmed", "processing"]:
             raise UserError(_("Only confirmed or processing batches can be completed."))
@@ -268,6 +274,7 @@ class ShreddingInventoryBatch(models.Model):
 
     def action_cancel(self):
         """Cancel the batch"""
+
         self.ensure_one()
         if self.state == "done":
             raise UserError(_("Completed batches cannot be cancelled."))
@@ -441,6 +448,7 @@ class ShreddingPicklistItem(models.Model):
     # ============================================================================
     def action_mark_picked(self):
         """Mark item as picked"""
+
         self.ensure_one()
         if self.status != "pending_pickup":
             raise UserError(_("Only pending items can be marked as picked."))
@@ -465,6 +473,7 @@ class ShreddingPicklistItem(models.Model):
 
     def action_mark_verified(self):
         """Mark item as verified"""
+
         self.ensure_one()
         if self.status != "picked":
             raise UserError(_("Only picked items can be verified."))
@@ -489,6 +498,7 @@ class ShreddingPicklistItem(models.Model):
 
     def action_mark_not_found(self):
         """Mark item as not found"""
+
         self.ensure_one()
         if self.status not in ["pending_pickup", "picked"]:
             raise UserError(
@@ -509,6 +519,7 @@ class ShreddingPicklistItem(models.Model):
 
     def action_confirm(self):
         """Confirm item for pickup"""
+
         self.ensure_one()
         if self.status != "draft":
             raise UserError(_("Only draft items can be confirmed."))
@@ -527,6 +538,7 @@ class ShreddingPicklistItem(models.Model):
 
     def action_reset_to_draft(self):
         """Reset item to draft status"""
+
         self.ensure_one()
         if self.status == "verified":
             raise UserError(_("Verified items cannot be reset to draft."))

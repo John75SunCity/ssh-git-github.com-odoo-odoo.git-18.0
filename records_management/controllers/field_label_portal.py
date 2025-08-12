@@ -4,9 +4,13 @@ Field Label Customization Portal Controller
 Provides API endpoints for getting custom field labels in portal
 """
 
-from odoo import http
 from odoo.http import request
+
+from odoo import http
+
 from odoo.addons.portal.controllers.portal import CustomerPortal
+
+
 
 
 class FieldLabelPortalController(CustomerPortal):

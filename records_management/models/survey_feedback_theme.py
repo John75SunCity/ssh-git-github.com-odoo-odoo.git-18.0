@@ -5,6 +5,8 @@ Survey Feedback Theme
 
 from odoo import models, fields, api, _
 
+
+
 class SurveyFeedbackTheme(models.Model):
     """
     Survey Feedback Theme
@@ -35,8 +37,12 @@ class SurveyFeedbackTheme(models.Model):
 
     def action_confirm(self):
         """Confirm the record"""
+
+        self.ensure_one()
         self.write({'state': 'confirmed'})
 
     def action_done(self):
         """Mark as done"""
+
+        self.ensure_one()
         self.write({'state': 'done'})

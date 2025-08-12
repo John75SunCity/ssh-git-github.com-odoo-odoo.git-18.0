@@ -20,7 +20,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class RecordsDepartmentBillingContact(models.Model):
@@ -248,6 +251,7 @@ class RecordsDepartmentBillingContact(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activate the billing contact"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft contacts can be activated"))
@@ -259,6 +263,7 @@ class RecordsDepartmentBillingContact(models.Model):
 
     def action_suspend(self):
         """Suspend the billing contact"""
+
         self.ensure_one()
         if self.state != "active":
             raise UserError(_("Only active contacts can be suspended"))
@@ -270,6 +275,7 @@ class RecordsDepartmentBillingContact(models.Model):
 
     def action_deactivate(self):
         """Deactivate the billing contact"""
+
         self.ensure_one()
 
         self.write({"state": "inactive", "end_date": fields.Date.today()})
@@ -279,6 +285,7 @@ class RecordsDepartmentBillingContact(models.Model):
 
     def action_view_approvals(self):
         """View approval history"""
+
         self.ensure_one()
 
         return {
@@ -292,6 +299,7 @@ class RecordsDepartmentBillingContact(models.Model):
 
     def action_budget_report(self):
         """Generate budget report"""
+
         self.ensure_one()
 
         return {
@@ -304,6 +312,7 @@ class RecordsDepartmentBillingContact(models.Model):
 
     def action_send_bill_notification(self):
         """Send billing notification"""
+
         self.ensure_one()
 
         return {
@@ -398,7 +407,7 @@ class RecordsDepartmentBillingContact(models.Model):
         return result
 
     @api.model
-    def _name_search(
+    def _search_name(
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
     ):
         """Enhanced search by partner name, department, or role"""

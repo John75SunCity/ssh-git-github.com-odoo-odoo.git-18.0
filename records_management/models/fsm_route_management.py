@@ -18,11 +18,15 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
 from datetime import datetime, timedelta, date
 import logging
 import json
+
+from odoo import models, fields, api, _
+
+from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -328,6 +332,7 @@ class FsmRouteManagement(models.Model):
     # ============================================================================
     def action_optimize_route(self):
         """Launch route optimizer - integrates with existing route.optimizer model"""
+
         self.ensure_one()
         
         # Check if route optimizer model exists and call it
@@ -344,6 +349,7 @@ class FsmRouteManagement(models.Model):
 
     def action_reschedule_route(self):
         """Launch reschedule wizard - integrates with existing fsm.reschedule.wizard"""
+
         self.ensure_one()
         
         return {
@@ -361,6 +367,7 @@ class FsmRouteManagement(models.Model):
 
     def action_send_notifications(self):
         """Send route notifications - integrates with existing fsm.notification model"""
+
         self.ensure_one()
         
         # Create notifications for driver and customers
@@ -403,6 +410,7 @@ class FsmRouteManagement(models.Model):
 
     def action_assign_driver(self):
         """Smart driver assignment based on availability and location"""
+
         self.ensure_one()
         
         # This would integrate with driver scheduling system
@@ -423,6 +431,7 @@ class FsmRouteManagement(models.Model):
 
     def action_start_route(self):
         """Start the route - updates state and tracking"""
+
         self.ensure_one()
         
         if not self.driver_id:
@@ -446,6 +455,7 @@ class FsmRouteManagement(models.Model):
 
     def action_complete_route(self):
         """Complete the route and update all related records"""
+
         self.ensure_one()
         
         self.write({
@@ -468,6 +478,7 @@ class FsmRouteManagement(models.Model):
 
     def action_view_route_dashboard(self):
         """Open unified route dashboard view"""
+
         self.ensure_one()
         
         return {

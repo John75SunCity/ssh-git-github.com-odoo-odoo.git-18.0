@@ -4,6 +4,8 @@
 from odoo import fields, models
 
 
+
+
 class RecordsUsageTracking(models.Model):
     """Usage tracking for billing configuration"""
 

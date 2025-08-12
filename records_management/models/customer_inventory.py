@@ -7,9 +7,13 @@ for the Records Management System. It enables real-time visibility into customer
 automated reporting, and advanced analytics with complete audit trails.
 """
 
-from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError
 import logging
+
+from odoo import api, fields, models, _
+
+from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -251,6 +255,7 @@ class CustomerInventory(models.Model):
     # ============================================================================
     def action_confirm_report(self):
         """Confirm the inventory report"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft reports can be confirmed"))
@@ -259,6 +264,7 @@ class CustomerInventory(models.Model):
 
     def action_generate_pdf_report(self):
         """Generate PDF inventory report"""
+
         self.ensure_one()
         return self.env.ref(
             "records_management.action_customer_inventory_report"
@@ -266,6 +272,7 @@ class CustomerInventory(models.Model):
 
     def action_send_to_customer(self):
         """Send inventory report to customer"""
+
         self.ensure_one()
         if not self.customer_id.email:
             raise UserError(_("Customer has no email address"))
@@ -280,6 +287,7 @@ class CustomerInventory(models.Model):
 
     def action_view_boxes(self):
         """View customer containers"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -292,6 +300,7 @@ class CustomerInventory(models.Model):
 
     def action_view_documents(self):
         """View customer documents"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -304,6 +313,7 @@ class CustomerInventory(models.Model):
 
     def action_view_locations(self):
         """View customer locations"""
+
         self.ensure_one()
         container_locations = (
             self.env["records.container"]
@@ -323,6 +333,7 @@ class CustomerInventory(models.Model):
 
     def action_refresh_data(self):
         """Refresh inventory data"""
+
         self.ensure_one()
         # Force recompute of all computed fields
         self._compute_inventory_totals()

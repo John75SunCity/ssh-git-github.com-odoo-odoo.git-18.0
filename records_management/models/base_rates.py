@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
+
 from odoo.exceptions import ValidationError
+
+
 
 
 class BaseRates(models.Model):
@@ -497,6 +500,7 @@ class BaseRates(models.Model):
     # Action methods
     def action_activate(self):
         """Activate rate set and make it current"""
+
         self.ensure_one()
         if self.state != "draft":
             raise ValidationError(_("Can only activate draft rate sets"))
@@ -511,6 +515,7 @@ class BaseRates(models.Model):
 
     def action_expire(self):
         """Mark rate set as expired"""
+
         self.ensure_one()
         self.write(
             {
@@ -522,16 +527,19 @@ class BaseRates(models.Model):
 
     def action_cancel(self):
         """Cancel rate set"""
+
         self.ensure_one()
         self.write({"state": "cancelled", "is_current": False})
 
     def action_reset_to_draft(self):
         """Reset to draft state"""
+
         self.ensure_one()
         self.write({"state": "draft", "is_current": False})
 
     def action_duplicate_rates(self):
         """Create new version of current rates"""
+
         self.ensure_one()
         new_version = float(self.version) + 0.1
 
@@ -571,6 +579,7 @@ class BaseRates(models.Model):
 
     def action_apply_scenario(self):
         """Apply rate scenario changes."""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -586,6 +595,7 @@ class BaseRates(models.Model):
 
     def action_approve_changes(self):
         """Approve rate changes."""
+
         self.ensure_one()
         if self.state != "draft":
             raise ValidationError(_("Only draft rates can be approved."))
@@ -596,6 +606,7 @@ class BaseRates(models.Model):
 
     def action_cancel_implementation(self):
         """Cancel implementation of rate changes."""
+
         self.ensure_one()
         if self.state == "confirmed":
             self.write({"state": "cancelled"})
@@ -604,6 +615,7 @@ class BaseRates(models.Model):
 
     def action_export_forecast(self):
         """Export rate forecast analysis."""
+
         self.ensure_one()
         return {
             "type": "ir.actions.report",
@@ -614,6 +626,7 @@ class BaseRates(models.Model):
 
     def action_implement_changes(self):
         """Implement approved rate changes."""
+
         self.ensure_one()
         if self.state != "confirmed":
             raise ValidationError(_("Only confirmed rates can be implemented."))
@@ -637,6 +650,7 @@ class BaseRates(models.Model):
 
     def action_run_forecast(self):
         """Run revenue forecast analysis."""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -652,6 +666,7 @@ class BaseRates(models.Model):
 
     def action_view_customers_using_rate(self):
         """View customers using this rate."""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -667,6 +682,7 @@ class BaseRates(models.Model):
 
     def action_view_negotiated_rates(self):
         """View negotiated rates based on this base rate."""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

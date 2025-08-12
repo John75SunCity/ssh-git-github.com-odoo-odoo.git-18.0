@@ -10,7 +10,10 @@ records management access controls for the Records Management System.
 import datetime
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError
+
+
 
 
 class HREmployeeNAID(models.Model):
@@ -222,6 +225,7 @@ class HREmployeeNAID(models.Model):
 
     def action_submit_for_approval(self):
         """Submit NAID profile for approval"""
+
         self.ensure_one()
         if self.state != 'draft':
             return
@@ -230,6 +234,7 @@ class HREmployeeNAID(models.Model):
 
     def action_approve_profile(self):
         """Approve NAID compliance profile"""
+
         self.ensure_one()
         if self.state != 'pending_approval':
             return
@@ -241,6 +246,7 @@ class HREmployeeNAID(models.Model):
 
     def action_suspend_profile(self):
         """Suspend NAID compliance profile"""
+
         self.ensure_one()
         if self.state not in ['active', 'pending_approval']:
             return
@@ -249,6 +255,7 @@ class HREmployeeNAID(models.Model):
 
     def action_reactivate_profile(self):
         """Reactivate suspended NAID profile"""
+
         self.ensure_one()
         if self.state != 'suspended':
             return
@@ -257,12 +264,14 @@ class HREmployeeNAID(models.Model):
 
     def action_expire_profile(self):
         """Mark NAID profile as expired"""
+
         self.ensure_one()
         self.write({'state': 'expired'})
         self.message_post(body="NAID profile expired - renewal required")
 
     def action_schedule_review(self):
         """Schedule next compliance review"""
+
         self.ensure_one()
 
         # Calculate next review date (typically annual)

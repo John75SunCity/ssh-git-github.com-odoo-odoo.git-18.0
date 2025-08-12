@@ -9,9 +9,11 @@ operational flexibility and compliance requirements.
 # Python stdlib imports
 import logging
 
-# Odoo core imports
 from odoo import api, fields, models, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -343,6 +345,7 @@ class RecordsContainerTypeConverter(models.Model):
     # ============================================================================
     def action_validate(self):
         """Validate the conversion setup."""
+
         self.ensure_one()
         if self._validate_conversion():
             self.write({"state": "validated"})
@@ -350,6 +353,7 @@ class RecordsContainerTypeConverter(models.Model):
 
     def action_convert(self):
         """Convert containers with proper validation and tracking."""
+
         self.ensure_one()
         self._validate_conversion()
         self.write({"state": "in_progress", "conversion_date": fields.Datetime.now()})
@@ -389,6 +393,8 @@ class RecordsContainerTypeConverter(models.Model):
 
     def action_cancel(self):
         """Cancel the conversion process."""
+
+        self.ensure_one()
         if any(rec.state == "completed" for rec in self):
             raise UserError(_("Cannot cancel a completed conversion."))
         self.write({"state": "cancelled"})
@@ -396,6 +402,8 @@ class RecordsContainerTypeConverter(models.Model):
 
     def action_reset_to_draft(self):
         """Reset conversion to draft state."""
+
+        self.ensure_one()
         if any(rec.state == "completed" for rec in self):
             raise UserError(_("Cannot reset a completed conversion."))
         self.write(

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError
+
+
 
 
 class TransitoryItem(models.Model):
@@ -114,6 +117,7 @@ class TransitoryItem(models.Model):
     # ============================================================================
     def action_confirm(self):
         """Confirm the transitory item"""
+
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft items can be confirmed"))
@@ -123,6 +127,7 @@ class TransitoryItem(models.Model):
 
     def action_complete(self):
         """Mark the transitory item as done"""
+
         self.ensure_one()
         if self.state != 'confirmed':
             raise UserError(_("Only confirmed items can be completed"))
@@ -132,6 +137,7 @@ class TransitoryItem(models.Model):
 
     def action_cancel(self):
         """Cancel the transitory item"""
+
         self.ensure_one()
         if self.state in ('done', 'cancelled'):
             raise UserError(_("Cannot cancel items that are already done or cancelled"))
@@ -141,6 +147,7 @@ class TransitoryItem(models.Model):
 
     def action_reset_to_draft(self):
         """Reset the transitory item to draft state"""
+
         self.ensure_one()
         if self.state == 'draft':
             raise UserError(_("Item is already in draft state"))

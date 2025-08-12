@@ -3,6 +3,7 @@
 from odoo import models, fields
 
 
+
 class BarcodeGenerationHistory(models.Model):
     _name = "barcode.generation.history"
     _description = "Barcode Generation History"
@@ -97,18 +98,21 @@ class BarcodeGenerationHistory(models.Model):
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
+    # ADDITIONAL RELATIONSHIP FIELDS
+    # ============================================================================
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record",
+    )
+
+    # ============================================================================
     # ACTION METHODS
     # ============================================================================
     def action_generate(self):
         """Mark as generated"""
         self.ensure_one()
         self.write({"state": "generated", "generation_date": fields.Datetime.now()})
-
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
 
     def action_print(self):
         """Mark as printed"""

@@ -28,11 +28,15 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
-import hashlib
 import secrets
 from datetime import datetime, timedelta
+
+from odoo import models, fields, api, _
+
+from odoo.exceptions import UserError, ValidationError
+import hashlib
+
+
 
 
 class ShreddingHardDrive(models.Model):
@@ -786,6 +790,7 @@ class ShreddingHardDrive(models.Model):
     # ============================================================================
     def action_scan_at_customer(self):
         """Mark as scanned at customer location"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Can only scan items in draft state"))
@@ -807,6 +812,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_mark_transported(self):
         """Mark as in transit"""
+
         self.ensure_one()
         if self.state not in ["scanned"]:
             raise UserError(_("Can only transport scanned items"))
@@ -823,6 +829,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_receive_at_facility(self):
         """Mark as received at facility"""
+
         self.ensure_one()
         if self.state not in ["transported"]:
             raise UserError(_("Can only receive transported items"))
@@ -850,6 +857,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_start_forensic_analysis(self):
         """Start forensic analysis process"""
+
         self.ensure_one()
         if self.state not in ["received"]:
             raise UserError(_("Can only start forensic analysis for received items"))
@@ -872,6 +880,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_complete_forensic_analysis(self):
         """Complete forensic analysis"""
+
         self.ensure_one()
         if self.state not in ["analyzed"]:
             raise UserError(_("Can only complete analysis for items in analysis state"))
@@ -901,6 +910,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_complete_destruction(self):
         """Complete the destruction process"""
+
         self.ensure_one()
         if self.state not in ["received", "analyzed"]:
             raise UserError(_("Can only destroy items received at facility or analyzed"))
@@ -942,6 +952,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_generate_certificate(self):
         """Generate destruction certificate"""
+
         self.ensure_one()
         if self.state not in ["destroyed"]:
             raise UserError(_("Can only generate certificates for destroyed items"))
@@ -978,6 +989,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_archive_record(self):
         """Archive the record"""
+
         self.ensure_one()
         if self.state != "certified":
             raise UserError(_("Can only archive certified records"))
@@ -997,6 +1009,7 @@ class ShreddingHardDrive(models.Model):
     # ============================================================================
     def action_verify_chain_of_custody(self):
         """Verify chain of custody"""
+
         self.ensure_one()
 
         # Check custody events
@@ -1012,6 +1025,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_verify_nist_compliance(self):
         """Verify NIST compliance"""
+
         self.ensure_one()
 
         if not self.destroyed:
@@ -1034,6 +1048,7 @@ class ShreddingHardDrive(models.Model):
 
     def action_verify_destruction_method(self):
         """Verify destruction method"""
+
         self.ensure_one()
 
         if not self.destruction_method:

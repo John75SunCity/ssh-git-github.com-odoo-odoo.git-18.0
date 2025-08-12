@@ -49,7 +49,10 @@ import logging
 from datetime import timedelta
 
 from odoo import _, api, fields, models
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -442,6 +445,7 @@ class MaintenanceEquipment(models.Model):
     # ============================================================================
     def action_renew_certification(self):
         """Action to renew NAID certification"""
+
         self.ensure_one()
 
         return {
@@ -465,6 +469,7 @@ class MaintenanceEquipment(models.Model):
 
     def action_schedule_maintenance(self):
         """Schedule maintenance request for this equipment"""
+
         self.ensure_one()
 
         return {
@@ -483,6 +488,7 @@ class MaintenanceEquipment(models.Model):
 
     def action_record_usage(self):
         """Record equipment usage statistics"""
+
         self.ensure_one()
 
         return {
@@ -498,6 +504,7 @@ class MaintenanceEquipment(models.Model):
 
     def action_blade_change_complete(self):
         """Mark blade change as completed"""
+
         self.ensure_one()
 
         self.write(
@@ -522,6 +529,7 @@ class MaintenanceEquipment(models.Model):
 
     def action_lubrication_complete(self):
         """Mark lubrication as completed"""
+
         self.ensure_one()
 
         self.write(
@@ -546,6 +554,7 @@ class MaintenanceEquipment(models.Model):
 
     def action_view_services(self):
         """View shredding services performed with this equipment"""
+
         self.ensure_one()
 
         return {
@@ -559,6 +568,7 @@ class MaintenanceEquipment(models.Model):
 
     def action_view_certificates(self):
         """View destruction certificates for this equipment"""
+
         self.ensure_one()
 
         return {

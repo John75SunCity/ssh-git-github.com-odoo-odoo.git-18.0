@@ -2,6 +2,8 @@
 
 from odoo import models, fields
 
+
+
 class StockLotAttributeOption(models.Model):
     """Stock Lot Attribute Selection Options"""
 

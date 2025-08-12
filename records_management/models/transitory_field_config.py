@@ -29,8 +29,12 @@ License: LGPL-3
 """
 
 from datetime import timedelta
+
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class TransitoryFieldConfig(models.Model):
@@ -431,6 +435,7 @@ class TransitoryFieldConfig(models.Model):
     # ============================================================================
     def action_confirm(self):
         """Confirm field configuration"""
+
         self.ensure_one()
         self._validate_configuration()
         self.write({"state": "confirmed"})
@@ -438,6 +443,7 @@ class TransitoryFieldConfig(models.Model):
 
     def action_deploy(self):
         """Deploy field configuration"""
+
         self.ensure_one()
         if self.state != "confirmed":
             raise UserError(_("Only confirmed configurations can be deployed."))
@@ -459,6 +465,7 @@ class TransitoryFieldConfig(models.Model):
 
     def action_rollback(self):
         """Rollback field configuration"""
+
         self.ensure_one()
         if not self.is_deployed:
             raise UserError(_("Only deployed configurations can be rolled back."))
@@ -475,6 +482,7 @@ class TransitoryFieldConfig(models.Model):
 
     def action_duplicate(self):
         """Create a copy of the configuration"""
+
         self.ensure_one()
         copy_vals = {
             "name": f"{self.name} (Copy)",
@@ -487,6 +495,7 @@ class TransitoryFieldConfig(models.Model):
 
     def action_setup_field_labels(self):
         """Setup field labels wizard"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -502,6 +511,7 @@ class TransitoryFieldConfig(models.Model):
 
     def action_view_dependencies(self):
         """View configuration dependencies"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -513,6 +523,7 @@ class TransitoryFieldConfig(models.Model):
 
     def action_view_child_configs(self):
         """View child configurations"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -525,6 +536,7 @@ class TransitoryFieldConfig(models.Model):
 
     def action_analyze_impact(self):
         """Analyze configuration impact"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -537,6 +549,7 @@ class TransitoryFieldConfig(models.Model):
 
     def action_generate_migration_script(self):
         """Generate migration script"""
+
         self.ensure_one()
         script = self._generate_migration_script()
         self.write({"migration_script": script})
@@ -544,6 +557,7 @@ class TransitoryFieldConfig(models.Model):
 
     def action_test_deployment(self):
         """Test deployment in sandbox environment"""
+
         self.ensure_one()
         if self.state != "confirmed":
             raise UserError(_("Only confirmed configurations can be tested."))

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError
+
+
 
 
 class VisitorPosWizard(models.TransientModel):
@@ -57,6 +60,7 @@ class VisitorPosWizard(models.TransientModel):
 
     def action_execute(self):
         """Execute the wizard action: create customer, create order, and process payment."""
+
         self.ensure_one()
 
         partner = self._find_or_create_customer()
@@ -137,4 +141,6 @@ class VisitorPosWizard(models.TransientModel):
 
     def action_cancel(self):
         """Cancel the wizard."""
+
+        self.ensure_one()
         return {"type": "ir.actions.act_window_close"}

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class BinUnlockService(models.Model):
@@ -174,12 +177,14 @@ class BinUnlockService(models.Model):
     # ============================================================================
     def action_schedule(self):
         self.ensure_one()
+        self.ensure_one()
         if not self.scheduled_date:
             raise UserError(_("Please set a scheduled date first."))
         self.write({"state": "active"})
         self.message_post(body=_("Service scheduled"))
 
     def action_start_service(self):
+        self.ensure_one()
         self.ensure_one()
         if self.state != "active":
             raise UserError(_("Only active services can be started."))
@@ -191,6 +196,7 @@ class BinUnlockService(models.Model):
 
     def action_complete(self):
         self.ensure_one()
+        self.ensure_one()
         if not self.completion_notes:
             raise UserError(_("Please add completion notes before completing the service."))
         self.write({
@@ -201,10 +207,12 @@ class BinUnlockService(models.Model):
 
     def action_cancel(self):
         self.ensure_one()
+        self.ensure_one()
         self.write({"state": "inactive"})
         self.message_post(body=_("Service cancelled"))
 
     def action_generate_certificate(self):
+        self.ensure_one()
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -217,6 +225,7 @@ class BinUnlockService(models.Model):
 
     def action_create_invoice(self):
         """Create Invoice for the unlock service"""
+
         self.ensure_one()
         
         if self.invoice_id:
@@ -248,6 +257,7 @@ class BinUnlockService(models.Model):
 
     def action_mark_completed(self):
         """Mark service as completed"""
+
         self.ensure_one()
         
         if self.state != "active":

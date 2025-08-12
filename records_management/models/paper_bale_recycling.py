@@ -36,7 +36,9 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
 
 
 class PaperBaleRecycling(models.Model):
@@ -52,21 +54,17 @@ class PaperBaleRecycling(models.Model):
     name = fields.Char(string="Name", required=True, tracking=True, index=True)
 
     # Partner Relationship
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
-    description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10)
-    active = fields.Boolean(string="Active", default=True)
+    description = fields.Text(string="Description"),
+    sequence = fields.Integer(string="Sequence", default=10),
+    active = fields.Boolean(string="Active", default=True),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
+    )
         default=lambda self: self.env.company,
         required=True,
         index=True,
-    )
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
@@ -75,6 +73,12 @@ class PaperBaleRecycling(models.Model):
         index=True,
     )
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record",
+    )
+    ),
     # ============================================================================
     # STATE MANAGEMENT
     # ============================================================================
@@ -87,6 +91,7 @@ class PaperBaleRecycling(models.Model):
         ],
         string="Status",
         default="draft",
+    )
         tracking=True,
     )
 
@@ -95,17 +100,23 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     bale_id = fields.Char(
         string="Bale ID",
+    )
         required=True,
         index=True,
         tracking=True,
-        help="Unique identifier for the paper bale",
-    )
+
+    help="Unique identifier for the paper bale",
+
+        )
     bale_weight = fields.Float(
         string="Bale Weight (lbs)",
         required=True,
         tracking=True,
-        help="Total weight of the bale in pounds",
-    )
+
+    help="Total weight of the bale in pounds",
+)
+
+        )
     paper_type = fields.Selection(
         [
             ("mixed", "Mixed Paper"),
@@ -116,11 +127,11 @@ class PaperBaleRecycling(models.Model):
             ("confidential", "Confidential Documents"),
         ],
         string="Paper Type",
+    )
         required=True,
         default="mixed",
         tracking=True,
-    )
-
+    ),
     grade_quality = fields.Selection(
         [
             ("grade_1", "Grade 1 - Highest"),
@@ -129,33 +140,37 @@ class PaperBaleRecycling(models.Model):
             ("grade_4", "Grade 4 - Low"),
         ],
         string="Grade Quality",
+    )
         default="grade_3",
         tracking=True,
-    )
-
+    ),
     contamination_level = fields.Float(
         string="Contamination Level (%)",
         default=0.0,
+
         help="Percentage of non-paper contamination",
     )
+
+        )
     moisture_content = fields.Float(
         string="Moisture Content (%)",
+    )
         default=0.0,
-        help="Moisture percentage in the bale",
+        help="Moisture percentage in the bale"
     )
 
     # ============================================================================
     # RECYCLING PROCESS
     # ============================================================================
-    processing_date = fields.Date(string="Processing Date", tracking=True)
+    processing_date = fields.Date(string="Processing Date", tracking=True),
     recycling_facility_id = fields.Many2one(
         "res.partner",
         string="Recycling Facility",
+    )
         domain=[("is_company", "=", True)],
         tracking=True,
-    )
-
-    collection_date = fields.Date(string="Collection Date", tracking=True)
+    ),
+    collection_date = fields.Date(string="Collection Date", tracking=True),
     transport_method = fields.Selection(
         [
             ("truck", "Truck Transport"),
@@ -165,8 +180,7 @@ class PaperBaleRecycling(models.Model):
         ],
         string="Transport Method",
         default="truck",
-    )
-
+    ),
     processing_status = fields.Selection(
         [
             ("pending", "Pending Processing"),
@@ -184,21 +198,26 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     carbon_footprint_reduction = fields.Float(
         string="Carbon Footprint Reduction (tons CO2)",
-        help="Estimated carbon footprint reduction from recycling",
-    )
-    water_savings = fields.Float(
-        string="Water Savings (gallons)", help="Estimated water savings from recycling"
-    )
-    energy_savings = fields.Float(
-        string="Energy Savings (kWh)", help="Estimated energy savings from recycling"
-    )
-    landfill_diversion = fields.Float(
-        string="Landfill Diversion (lbs)",
-        help="Weight of material diverted from landfill",
     )
 
-    environmental_certificate = fields.Binary(string="Environmental Certificate")
-    recycling_certificate = fields.Binary(string="Recycling Certificate")
+        help="Estimated carbon footprint reduction from recycling"
+
+        )
+    water_savings = fields.Float(
+        string="Water Savings (gallons)", help="Estimated water savings from recycling"
+    ),
+    energy_savings = fields.Float(
+        string="Energy Savings (kWh)", help="Estimated energy savings from recycling"
+    ),
+    landfill_diversion = fields.Float(
+        string="Landfill Diversion (lbs)",
+    )
+
+        help="Weight of material diverted from landfill"
+
+        )
+    environmental_certificate = fields.Binary(string="Environmental Certificate"),
+    recycling_certificate = fields.Binary(string="Recycling Certificate"),
     chain_of_custody = fields.Text(string="Chain of Custody Documentation")
 
     # ============================================================================
@@ -209,26 +228,27 @@ class PaperBaleRecycling(models.Model):
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True,
-    )
+    ),
     market_price_per_ton = fields.Monetary(
         string="Market Price per Ton", currency_field="currency_id"
-    )
+    ),
     total_revenue = fields.Monetary(
         string="Total Revenue",
-        currency_field="currency_id",
-        compute="_compute_total_revenue",
-        store=True,
     )
+        currency_field="currency_id",
+        compute="_compute_total_revenue",)
+        store=True,
+    ),
     processing_cost = fields.Monetary(
         string="Processing Cost", currency_field="currency_id"
-    )
+    ),
     transport_cost = fields.Monetary(
         string="Transport Cost", currency_field="currency_id"
-    )
+    ),
     net_profit = fields.Monetary(
         string="Net Profit",
         currency_field="currency_id",
-        compute="_compute_net_profit",
+        compute="_compute_net_profit",)
         store=True,
     )
 
@@ -237,7 +257,7 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     source_paper_bale_ids = fields.Many2many(
         "paper.bale", string="Source Paper Bales"
-    )
+    ),
     shredding_service_ids = fields.One2many(
         "shredding.service", "recycling_bale_id", string="Related Shredding Services"
     )
@@ -248,20 +268,22 @@ class PaperBaleRecycling(models.Model):
     source_bale_count = fields.Integer(
         compute="_compute_source_bale_count",
         string="Source Bales",
+
         help="Number of source bales used for this recycling batch",
-    )
+
+        )
 
     # Additional status tracking fields
-    contamination = fields.Char(string="Contamination Notes", tracking=True)
-    mobile_entry = fields.Boolean(string="Mobile Entry", default=False, tracking=True)
-    paper_grade = fields.Char(string="Paper Grade Classification", tracking=True)
+    contamination = fields.Char(string="Contamination Notes", tracking=True),
+    mobile_entry = fields.Boolean(string="Mobile Entry", default=False, tracking=True),
+    paper_grade = fields.Char(string="Paper Grade Classification", tracking=True),
     production_date = fields.Date(string="Production Date", tracking=True)
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance),
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
+    ),
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
@@ -308,6 +330,7 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     def action_start_processing(self):
         """Start the recycling processing workflow"""
+
         self.ensure_one()
         if self.state != "active":
             raise UserError(_("Only active bales can be processed."))
@@ -320,6 +343,7 @@ class PaperBaleRecycling(models.Model):
 
     def action_complete_processing(self):
         """Complete the recycling processing workflow"""
+
         self.ensure_one()
         if self.processing_status != "in_process":
             raise UserError(_("Only bales in process can be completed."))
@@ -331,6 +355,7 @@ class PaperBaleRecycling(models.Model):
 
     def action_reject_bale(self):
         """Reject the bale for processing"""
+
         self.ensure_one()
         self.write({"processing_status": "rejected"})
         self.message_post(
@@ -339,6 +364,7 @@ class PaperBaleRecycling(models.Model):
 
     def action_view_source_bales(self):
         """View source paper bales used in this recycling batch"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -350,6 +376,7 @@ class PaperBaleRecycling(models.Model):
 
     def action_generate_certificate(self):
         """Generate environmental certificate for this recycling batch"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -362,6 +389,7 @@ class PaperBaleRecycling(models.Model):
 
     def action_assign_to_load(self):
         """Assign bale to transportation load"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -374,6 +402,7 @@ class PaperBaleRecycling(models.Model):
 
     def action_mark_delivered(self):
         """Mark bale as delivered to recycling facility"""
+
         self.ensure_one()
         self.write({"state": "active"})
         self.message_post(body=_("Bale %s marked as delivered", self.bale_id))
@@ -381,13 +410,15 @@ class PaperBaleRecycling(models.Model):
 
     def action_mark_paid(self):
         """Mark recycling payment as received"""
+
         self.ensure_one()
         # This would typically create an account.move entry
-        self.message_post(body=_("Payment received for bale %s", self.bale_id))
+    self.message_post(body=_("Payment received for bale %s", self.bale_id))
         return True
 
     def action_ready_to_ship(self):
         """Mark bale as ready for shipping"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -400,6 +431,7 @@ class PaperBaleRecycling(models.Model):
 
     def action_ship_bale(self):
         """Process bale shipment to recycling facility"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -412,6 +444,7 @@ class PaperBaleRecycling(models.Model):
 
     def action_store_bale(self):
         """Store bale in temporary storage before processing"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

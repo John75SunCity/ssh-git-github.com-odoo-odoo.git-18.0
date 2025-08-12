@@ -22,7 +22,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class PortalRequest(models.Model):
@@ -331,6 +334,7 @@ class PortalRequest(models.Model):
     # ============================================================================
     def action_submit(self):
         """Submit the portal request for processing."""
+
         self.ensure_one()
         self._check_required_fields()
         self.write({"state": "submitted", "requested_date": fields.Datetime.now()})
@@ -338,6 +342,7 @@ class PortalRequest(models.Model):
 
     def action_review(self):
         """Set the portal request to under review state."""
+
         self.ensure_one()
         if self.state != "submitted":
             raise UserError(_("Only submitted requests can be reviewed."))
@@ -345,6 +350,7 @@ class PortalRequest(models.Model):
 
     def action_approve(self):
         """Approve the portal request and create associated work order."""
+
         self.ensure_one()
         self.write(
             {
@@ -358,12 +364,14 @@ class PortalRequest(models.Model):
 
     def action_reject(self):
         """Reject the portal request."""
+
         self.ensure_one()
         self.write({"state": "rejected"})
         self._send_rejection_notification()
 
     def action_start_progress(self):
         """Start processing the approved portal request."""
+
         self.ensure_one()
         if self.state != "approved":
             raise UserError(_("Only approved requests can be started."))
@@ -371,6 +379,7 @@ class PortalRequest(models.Model):
 
     def action_complete(self):
         """Complete the portal request and finalize billing."""
+
         self.ensure_one()
         self.write({"state": "completed", "completion_date": fields.Datetime.now()})
         self._finalize_billing()
@@ -378,6 +387,7 @@ class PortalRequest(models.Model):
 
     def action_cancel(self):
         """Cancel the portal request if not already completed."""
+
         self.ensure_one()
         if self.state in ["completed"]:
             raise UserError(_("Completed requests cannot be cancelled."))
@@ -385,11 +395,13 @@ class PortalRequest(models.Model):
 
     def action_duplicate(self):
         """Create a duplicate of the portal request in draft state."""
+
         self.ensure_one()
         return self.copy({"name": False, "state": "draft"})
 
     def action_view_attachments(self):
         """Open the attachments view for this portal request."""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -402,6 +414,7 @@ class PortalRequest(models.Model):
 
     def action_start_processing(self):
         """Start Processing - State management action"""
+
         self.ensure_one()
 
         # Validate current state allows processing to start
@@ -457,6 +470,7 @@ class PortalRequest(models.Model):
 
     def action_escalate(self):
         """Escalate - Action method"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

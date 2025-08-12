@@ -28,9 +28,12 @@ License: LGPL-3
 
 # Standard library imports first
 import logging
-import traceback
 import os
 from datetime import datetime, timedelta
+
+import traceback
+
+
 
 # Third-party imports
 try:
@@ -42,7 +45,6 @@ except ImportError:
 # Odoo imports
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-
 
 class ProcessingLog(models.Model):
     _name = "processing.log"
@@ -56,24 +58,30 @@ class ProcessingLog(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Log Entry",
+    )
         required=True,
         tracking=True,
         index=True,
-        help="Unique identifier for log entry",
-    )
+
+    help="Unique identifier for log entry",
+
+        )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="User",
+    )
         default=lambda self: self.env.user,
         tracking=True,
-        help="User who initiated the process",
-    )
+
+    help="User who initiated the process",
+
+        )
     active = fields.Boolean(
         string="Active", default=True, help="Active status of log entry"
     )
@@ -82,7 +90,8 @@ class ProcessingLog(models.Model):
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
-        help="Associated partner for this record"
+    )
+        help="Associated partner for this record",
     )
 
     # ============================================================================
@@ -90,11 +99,14 @@ class ProcessingLog(models.Model):
     # ============================================================================
     timestamp = fields.Datetime(
         string="Timestamp",
-        default=fields.Datetime.now,
+    )
+    default=fields.Datetime.now,
         required=True,
         index=True,
+
         help="When the log entry was created",
-    )
+
+        )
     process_type = fields.Selection(
         [
             ("pickup", "Pickup Process"),
@@ -113,8 +125,11 @@ class ProcessingLog(models.Model):
         string="Process Type",
         required=True,
         index=True,
-        help="Type of process being logged",
-    )
+
+    help="Type of process being logged",
+)
+
+        )
     log_level = fields.Selection(
         [
             ("debug", "Debug"),
@@ -124,6 +139,7 @@ class ProcessingLog(models.Model):
             ("critical", "Critical"),
         ],
         string="Log Level",
+    )
         default="info",
         required=True,
         index=True,
@@ -135,33 +151,39 @@ class ProcessingLog(models.Model):
     # ============================================================================
     res_model = fields.Char(
         string="Related Model", index=True, help="Model name of related record"
-    )
-    res_id = fields.Integer(string="Related Record ID", help="ID of related record")
+    ),
+    res_id = fields.Integer(string="Related Record ID", help="ID of related record"),
     res_name = fields.Char(
         string="Related Record Name",
+    )
         compute="_compute_reference",
         store=True,
-        help="Name of related record",
-    )
+
+    help="Name of related record",
+
+        )
     reference = fields.Char(
         string="Reference",
+    )
         compute="_compute_reference",
         store=True,
-        help="Full reference to related record",
-    )
+
+    help="Full reference to related record",
+
+        )
 
     # ============================================================================
     # LOG CONTENT
     # ============================================================================
     message = fields.Text(
         string="Log Message", required=True, help="Main log message content"
-    )
+    ),
     details = fields.Text(
         string="Additional Details", help="Additional details about the process"
-    )
+    ),
     error_code = fields.Char(
         string="Error Code", index=True, help="System error code if applicable"
-    )
+    ),
     stack_trace = fields.Text(string="Stack Trace", help="Full stack trace for errors")
 
     # ============================================================================
@@ -169,11 +191,11 @@ class ProcessingLog(models.Model):
     # ============================================================================
     session_id = fields.Char(
         string="Session ID", index=True, help="User session identifier"
-    )
+    ),
     request_id = fields.Char(
         string="Request ID", index=True, help="HTTP request identifier"
-    )
-    ip_address = fields.Char(string="IP Address", help="Client IP address")
+    ),
+    ip_address = fields.Char(string="IP Address", help="Client IP address"),
     user_agent = fields.Char(string="User Agent", help="Client browser/application")
 
     # ============================================================================
@@ -181,14 +203,20 @@ class ProcessingLog(models.Model):
     # ============================================================================
     processing_time = fields.Float(
         string="Processing Time (ms)",
-        default=0.0,
-        help="Time taken to complete process in milliseconds",
     )
+        default=0.0,
+
+        help="Time taken to complete process in milliseconds",
+
+        )
     memory_usage = fields.Float(
         string="Memory Usage (MB)",
-        default=0.0,
-        help="Memory usage during process in megabytes",
     )
+        default=0.0,
+
+        help="Memory usage during process in megabytes",
+
+        )
     cpu_usage = fields.Float(
         string="CPU Usage (%)", default=0.0, help="CPU usage percentage during process"
     )
@@ -206,6 +234,7 @@ class ProcessingLog(models.Model):
             ("retrying", "Retrying"),
         ],
         string="Status",
+    )
         default="pending",
         tracking=True,
         help="Current status of the process",
@@ -217,16 +246,21 @@ class ProcessingLog(models.Model):
     records_container_id = fields.Many2one(
         "records.container",
         string="Related Container",
+
         help="Related records container",
-    )
+
+        )
     pickup_request_id = fields.Many2one(
         "pickup.request", string="Related Pickup", help="Related pickup request"
-    )
+    ),
     shredding_service_id = fields.Many2one(
         "shredding.service",
         string="Related Shredding",
-        help="Related shredding service",
     )
+
+        help="Related shredding service",
+
+        )
     portal_request_id = fields.Many2one(
         "portal.request", string="Related Portal Request", help="Related portal request"
     )
@@ -236,22 +270,28 @@ class ProcessingLog(models.Model):
     # ============================================================================
     escalated = fields.Boolean(
         string="Escalated",
+    )
         default=False,
         tracking=True,
-        help="Whether this log has been escalated",
-    )
+
+    help="Whether this log has been escalated",
+
+        )
     escalated_date = fields.Datetime(
         string="Escalated Date", help="When the log was escalated"
-    )
+    ),
     resolved = fields.Boolean(
         string="Resolved",
+    )
         default=False,
         tracking=True,
-        help="Whether this log has been resolved",
-    )
+
+    help="Whether this log has been resolved",
+
+        )
     resolved_date = fields.Datetime(
         string="Resolved Date", help="When the log was resolved"
-    )
+    ),
     resolution_notes = fields.Text(
         string="Resolution Notes", help="Notes about how the issue was resolved"
     )
@@ -263,18 +303,21 @@ class ProcessingLog(models.Model):
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=[("res_model", "=", "processing.log")],
     )
+        domain=[("res_model", "=", "processing.log")],
+    ),
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=[("res_model", "=", "processing.log")],
     )
+        domain=[("res_model", "=", "processing.log")],
+    ),
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
+    )
         domain=[("model", "=", "processing.log")],
     )
 
@@ -283,22 +326,31 @@ class ProcessingLog(models.Model):
     # ============================================================================
     severity_score = fields.Integer(
         string="Severity Score",
+    )
         compute="_compute_severity_score",
         store=True,
-        help="Numeric severity score for sorting",
-    )
+
+    help="Numeric severity score for sorting",
+
+        )
     display_name = fields.Char(
         string="Display Name",
+    )
         compute="_compute_display_name",
         store=True,
-        help="Display name for log entry",
-    )
+
+    help="Display name for log entry",
+
+        )
     is_pickup_task = fields.Boolean(
         string="Is Pickup Task",
+    )
         compute="_compute_is_pickup_task",
         store=True,
-        help="Whether the related task is a pickup task",
-    )
+
+    help="Whether the related task is a pickup task",
+
+        )
 
     # ============================================================================
     # COMPUTE METHODS
@@ -364,9 +416,9 @@ class ProcessingLog(models.Model):
         """Override create to generate sequence numbers and capture metrics"""
         for vals in vals_list:
             if not vals.get("name"):
-                process_type = vals.get("process_type", "system")
-                timestamp = fields.Datetime.to_string(datetime.now())
-                vals["name"] = _("%s-%s", process_type, timestamp)
+                process_type = vals.get("process_type", "system"),
+    timestamp = fields.Datetime.to_string(datetime.now())
+        vals["name"] = _("%s-%s", process_type, timestamp)
             # Capture performance metrics if not provided
             if "memory_usage" not in vals and PSUTIL_AVAILABLE:
                 try:
@@ -382,6 +434,7 @@ class ProcessingLog(models.Model):
     # ============================================================================
     def action_mark_resolved(self):
         """Mark log entry as resolved"""
+
         self.ensure_one()
         self.write(
             {
@@ -394,6 +447,7 @@ class ProcessingLog(models.Model):
 
     def action_escalate(self):
         """Escalate log entry for review"""
+
         self.ensure_one()
         self.write(
             {
@@ -425,10 +479,11 @@ class ProcessingLog(models.Model):
                 user_id=self.env.user.id,
             )
 
-        self.message_post(body=_("Log entry escalated for management review"))
+    self.message_post(body=_("Log entry escalated for management review"))
 
     def action_retry_process(self):
         """Retry failed process"""
+
         self.ensure_one()
         if self.status != "failed":
             raise UserError(_("Only failed processes can be retried"))
@@ -437,6 +492,7 @@ class ProcessingLog(models.Model):
 
     def action_cancel_process(self):
         """Cancel pending or processing entry"""
+
         self.ensure_one()
         if self.status in ["completed", "cancelled"]:
             raise UserError(_("Cannot cancel completed or already cancelled processes"))
@@ -445,6 +501,7 @@ class ProcessingLog(models.Model):
 
     def action_view_related_record(self):
         """View the related record"""
+
         self.ensure_one()
         if not self.res_model or not self.res_id:
             raise UserError(_("No related record to display"))
@@ -458,6 +515,7 @@ class ProcessingLog(models.Model):
 
     def action_add_resolution_notes(self):
         """Add resolution notes wizard"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -632,7 +690,7 @@ class ProcessingLog(models.Model):
     @api.model
     def cleanup_old_logs(self, days=30):
         """Cleanup old log entries"""
-        cutoff_date = fields.Datetime.now() - timedelta(days=days)
+    cutoff_date = fields.Datetime.now() - timedelta(days=days)
         old_logs = self.search(
             [
                 ("timestamp", "<", cutoff_date),
@@ -653,7 +711,7 @@ class ProcessingLog(models.Model):
     @api.model
     def archive_critical_logs(self, days=90):
         """Archive critical logs to prevent deletion"""
-        cutoff_date = fields.Datetime.now() - timedelta(days=days)
+    cutoff_date = fields.Datetime.now() - timedelta(days=days)
         critical_logs = self.search(
             [
                 ("timestamp", "<", cutoff_date),
@@ -664,25 +722,27 @@ class ProcessingLog(models.Model):
         critical_logs.write({"active": False})
         return len(critical_logs)
 
-
 class ProcessingLogResolutionWizard(models.TransientModel):
     """Wizard for adding resolution notes to log entries"""
 
     _name = "processing.log.resolution.wizard"
     _description = "Processing Log Resolution Wizard"
 
-    log_id = fields.Many2one("processing.log", string="Log Entry", required=True)
+    log_id = fields.Many2one("processing.log", string="Log Entry", required=True),
     resolution_notes = fields.Text(
         string="Resolution Notes",
         required=True,
+
         help="Describe how the issue was resolved",
-    )
+
+        )
     mark_resolved = fields.Boolean(
         string="Mark as Resolved", default=True, help="Mark the log entry as resolved"
     )
 
     def action_add_notes(self):
         """Add resolution notes to log entry"""
+
         self.ensure_one()
         vals = {"resolution_notes": self.resolution_notes}
         if self.mark_resolved:

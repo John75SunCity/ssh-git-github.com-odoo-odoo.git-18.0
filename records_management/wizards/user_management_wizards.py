@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 
+
+
 class RecordsUserInvitationWizard(models.TransientModel):
     """Wizard for inviting new users to access records management portal"""
     _name = 'records.user.invitation.wizard'
@@ -32,6 +34,7 @@ class RecordsUserInvitationWizard(models.TransientModel):
 
     def action_send_invitation(self):
         """Send invitation to user"""
+
         self.ensure_one()
 
         # Create or find partner
@@ -128,6 +131,7 @@ class RecordsBulkUserImport(models.TransientModel):
 
     def action_import_users(self):
         """Process the bulk import"""
+
         self.ensure_one()
 
         # This would contain the actual import logic

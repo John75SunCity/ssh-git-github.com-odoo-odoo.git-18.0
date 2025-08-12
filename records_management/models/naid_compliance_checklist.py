@@ -5,6 +5,8 @@ NAID Compliance Checklist
 
 from odoo import models, fields, api, _
 
+
+
 class NAIDComplianceChecklist(models.Model):
     """
     NAID Compliance Checklist
@@ -36,8 +38,12 @@ class NAIDComplianceChecklist(models.Model):
 
     def action_confirm(self):
         """Confirm the record"""
+
+        self.ensure_one()
         self.write({'state': 'confirmed'})
 
     def action_done(self):
         """Mark as done"""
+
+        self.ensure_one()
         self.write({'state': 'done'})

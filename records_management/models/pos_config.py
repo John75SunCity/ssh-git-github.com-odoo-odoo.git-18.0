@@ -2,6 +2,8 @@
 from odoo import models, fields, api, _
 
 
+
+
 class PosConfig(models.Model):
     """
     Extension of POS Configuration for records management integration.
@@ -71,18 +73,21 @@ class PosConfig(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activate the POS configuration."""
+
         self.ensure_one()
         self.write({"active": True})
         return True
 
     def action_deactivate(self):
         """Deactivate the POS configuration."""
+
         self.ensure_one()
         self.write({"active": False})
         return True
 
     def action_close_session(self):
         """Close current POS session."""
+
         self.ensure_one()
 
         # Update notes with session closure
@@ -120,6 +125,7 @@ class PosConfig(models.Model):
 
     def action_force_close_session(self):
         """Force close POS session with administrative override."""
+
         self.ensure_one()
 
         # Update notes with forced closure
@@ -162,6 +168,7 @@ class PosConfig(models.Model):
 
     def action_open_session(self):
         """Open new POS session."""
+
         self.ensure_one()
 
         # Update notes with session opening
@@ -199,6 +206,7 @@ class PosConfig(models.Model):
 
     def action_view_orders(self):
         """View all orders for this POS configuration."""
+
         self.ensure_one()
 
         # Create activity to track order viewing
@@ -225,6 +233,7 @@ class PosConfig(models.Model):
 
     def action_view_sales_report(self):
         """View sales report for this POS configuration."""
+
         self.ensure_one()
 
         # Create activity for sales report review
@@ -257,6 +266,7 @@ class PosConfig(models.Model):
 
     def action_view_sessions(self):
         """View all sessions for this POS configuration."""
+
         self.ensure_one()
 
         # Create activity to track session viewing

@@ -1,5 +1,7 @@
 from odoo import models, fields, api
 
+
+
 class RecordsTag(models.Model):
     _name = 'records.tag'
     _description = 'Records Management Tag'

@@ -29,8 +29,12 @@ License: LGPL-3
 """
 
 from datetime import datetime, timedelta
+
 from odoo import _, api, fields, models
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class ShreddingService(models.Model):
@@ -434,6 +438,7 @@ class ShreddingService(models.Model):
     # ============================================================================
     def action_schedule(self):
         """Schedule the shredding service"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft services can be scheduled"))
@@ -443,6 +448,7 @@ class ShreddingService(models.Model):
 
     def action_start_service(self):
         """Start the shredding service"""
+
         self.ensure_one()
         if self.state != "scheduled":
             raise UserError(_("Only scheduled services can be started"))
@@ -454,6 +460,7 @@ class ShreddingService(models.Model):
 
     def action_complete_service(self):
         """Complete the shredding service"""
+
         self.ensure_one()
         if self.state != "in_progress":
             raise UserError(_("Only in-progress services can be completed"))
@@ -471,6 +478,7 @@ class ShreddingService(models.Model):
 
     def action_cancel(self):
         """Cancel the shredding service"""
+
         self.ensure_one()
         if self.state in ("completed", "invoiced"):
             raise UserError(_("Cannot cancel completed or invoiced services"))
@@ -479,6 +487,7 @@ class ShreddingService(models.Model):
 
     def action_create_invoice(self):
         """Create invoice for the service"""
+
         self.ensure_one()
         if self.state != "completed":
             raise UserError(_("Only completed services can be invoiced"))
@@ -489,6 +498,7 @@ class ShreddingService(models.Model):
 
     def action_reschedule(self):
         """Reschedule the service"""
+
         self.ensure_one()
         if self.state not in ("draft", "scheduled"):
             raise UserError(_("Only draft or scheduled services can be rescheduled"))

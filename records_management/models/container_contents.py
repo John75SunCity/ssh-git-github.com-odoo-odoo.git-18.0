@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 class ContainerContents(models.Model):
     _name = 'container.contents'
@@ -52,6 +55,8 @@ class ContainerContents(models.Model):
     
     def action_activate(self):
         """Activate the record."""
+
+        self.ensure_one()
         self.write({'state': 'active'})
 
     partner_id = fields.Many2one(
@@ -62,10 +67,14 @@ class ContainerContents(models.Model):
     
     def action_deactivate(self):
         """Deactivate the record."""
+
+        self.ensure_one()
         self.write({'state': 'inactive'})
     
     def action_archive(self):
         """Archive the record."""
+
+        self.ensure_one()
         self.write({'state': 'archived', 'active': False})
     
     @api.model_create_multi

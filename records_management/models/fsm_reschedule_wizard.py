@@ -24,7 +24,10 @@ import logging
 from datetime import timedelta
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -361,6 +364,7 @@ class FsmRescheduleWizard(models.TransientModel):
     # ============================================================================
     def action_submit_request(self):
         """Submit the reschedule request"""
+
         self.ensure_one()
 
         if self.requires_approval:
@@ -374,6 +378,7 @@ class FsmRescheduleWizard(models.TransientModel):
 
     def action_approve_request(self):
         """Approve the reschedule request (manager action)"""
+
         self.ensure_one()
 
         if not self.env.user.has_group('records_management.group_records_manager'):
@@ -389,6 +394,7 @@ class FsmRescheduleWizard(models.TransientModel):
 
     def action_reject_request(self):
         """Reject the reschedule request"""
+
         self.ensure_one()
 
         if not self.env.user.has_group('records_management.group_records_manager'):
@@ -405,6 +411,7 @@ class FsmRescheduleWizard(models.TransientModel):
 
     def action_execute_reschedule(self):
         """Execute the approved reschedule"""
+
         self.ensure_one()
 
         if self.state != 'approved':
@@ -451,6 +458,7 @@ class FsmRescheduleWizard(models.TransientModel):
 
     def action_cancel_request(self):
         """Cancel the reschedule request"""
+
         self.ensure_one()
         self.write({'state': 'cancelled'})
         return {'type': 'ir.actions.act_window_close'}
@@ -588,6 +596,7 @@ Details: %(details)s""", {
 
     def action_return_wizard(self):
         """Return action to keep wizard open"""
+
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',

@@ -3,8 +3,11 @@
 Records Approval Step Management
 """
 
-from odoo import models, fields, api, _
 import logging
+
+from odoo import models, fields, api, _
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -91,6 +94,7 @@ class RecordsApprovalStep(models.Model):
     # ==========================================
     def action_approve(self):
         """Approve this step"""
+
         self.ensure_one()
         if self.state != 'pending':
             return
@@ -100,6 +104,7 @@ class RecordsApprovalStep(models.Model):
 
     def action_reject(self):
         """Reject this step"""
+
         self.ensure_one()
         if self.state != 'pending':
             return
@@ -109,6 +114,7 @@ class RecordsApprovalStep(models.Model):
 
     def action_skip(self):
         """Skip this step"""
+
         self.ensure_one()
         if self.is_mandatory:
             return

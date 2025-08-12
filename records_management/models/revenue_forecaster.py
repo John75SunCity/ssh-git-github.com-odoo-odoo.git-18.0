@@ -28,7 +28,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class RevenueForecaster(models.Model):
@@ -215,6 +218,7 @@ class RevenueForecaster(models.Model):
     # ============================================================================
     def action_confirm_forecast(self):
         """Confirm the revenue forecast"""
+
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft forecasts can be confirmed"))
@@ -227,6 +231,7 @@ class RevenueForecaster(models.Model):
 
     def action_complete_forecast(self):
         """Complete the revenue forecast"""
+
         self.ensure_one()
         if self.state != 'confirmed':
             raise UserError(_("Only confirmed forecasts can be completed"))
@@ -236,6 +241,7 @@ class RevenueForecaster(models.Model):
 
     def action_cancel_forecast(self):
         """Cancel the revenue forecast"""
+
         self.ensure_one()
         if self.state == 'done':
             raise UserError(_("Cannot cancel completed forecasts"))

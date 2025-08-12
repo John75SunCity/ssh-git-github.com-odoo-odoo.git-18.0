@@ -9,6 +9,8 @@ priority multipliers, and customer-specific rates.
 from odoo import models, fields
 
 
+
+
 class DocumentRetrievalPricing(models.Model):
     """Pricing rules for document retrieval services"""
 

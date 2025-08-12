@@ -32,12 +32,14 @@ License: LGPL-3
 """
 
 # Python stdlib imports
-import hashlib
 import time
 
-# Odoo core imports
 from odoo import models, fields, api, _
+
+import hashlib
 from odoo.exceptions import ValidationError
+
+
 
 
 class RecordsChainOfCustody(models.Model):
@@ -500,6 +502,7 @@ class RecordsChainOfCustody(models.Model):
     # ============================================================================
     def action_confirm_custody(self):
         """Confirm custody event"""
+
         self.ensure_one()
         
         if self.state != "draft":
@@ -522,6 +525,7 @@ class RecordsChainOfCustody(models.Model):
 
     def action_complete_custody(self):
         """Complete custody transfer"""
+
         self.ensure_one()
         
         if self.state not in ["confirmed", "in_progress"]:
@@ -542,6 +546,7 @@ class RecordsChainOfCustody(models.Model):
 
     def action_verify_custody(self):
         """Verify custody record by supervisor"""
+
         self.ensure_one()
         
         if self.state != "completed":
@@ -564,6 +569,7 @@ class RecordsChainOfCustody(models.Model):
 
     def action_cancel_custody(self):
         """Cancel custody record"""
+
         self.ensure_one()
         
         if self.state in ["completed", "verified"]:
@@ -580,6 +586,7 @@ class RecordsChainOfCustody(models.Model):
 
     def action_reset_to_draft(self):
         """Reset custody record to draft"""
+
         self.ensure_one()
         
         if self.state == "verified":
@@ -596,6 +603,7 @@ class RecordsChainOfCustody(models.Model):
 
     def action_view_custody_history(self):
         """View complete custody history for document"""
+
         self.ensure_one()
 
         domain = []

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
+
+
 class LocationReportWizard(models.TransientModel):
     _name = 'location.report.wizard'
     _description = 'Location Report Wizard'
@@ -11,4 +13,6 @@ class LocationReportWizard(models.TransientModel):
     # Action method
     def action_execute(self):
         """Execute the wizard action."""
+
+        self.ensure_one()
         return {'type': 'ir.actions.act_window_close'}

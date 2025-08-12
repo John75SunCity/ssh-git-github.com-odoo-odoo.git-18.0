@@ -36,7 +36,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class RecordsContainerType(models.Model):
@@ -540,6 +543,7 @@ class RecordsContainerType(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activate the container type"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft container types can be activated"))
@@ -549,6 +553,7 @@ class RecordsContainerType(models.Model):
 
     def action_archive(self):
         """Archive the container type"""
+
         self.ensure_one()
         if self.state != "active":
             raise UserError(_("Only active container types can be archived"))
@@ -570,6 +575,7 @@ class RecordsContainerType(models.Model):
 
     def action_view_containers(self):
         """View all containers of this type"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -582,6 +588,7 @@ class RecordsContainerType(models.Model):
 
     def action_create_container(self):
         """Create a new container of this type"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

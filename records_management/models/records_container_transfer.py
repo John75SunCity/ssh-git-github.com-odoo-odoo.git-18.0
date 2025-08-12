@@ -5,6 +5,8 @@ Records Container Transfer Log
 
 from odoo import models, fields, api, _
 
+
+
 class RecordsContainerTransfer(models.Model):
     """
     Records Container Transfer Log
@@ -35,8 +37,12 @@ class RecordsContainerTransfer(models.Model):
 
     def action_confirm(self):
         """Confirm the record"""
+
+        self.ensure_one()
         self.write({'state': 'confirmed'})
 
     def action_done(self):
         """Mark as done"""
+
+        self.ensure_one()
         self.write({'state': 'done'})

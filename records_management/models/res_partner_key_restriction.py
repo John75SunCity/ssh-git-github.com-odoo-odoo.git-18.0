@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
+
+
 class ResPartnerKeyRestriction(models.Model):
     _name = 'res.partner.key.restriction'
     _description = 'Res Partner Key Restriction'
@@ -34,6 +36,7 @@ class ResPartnerKeyRestriction(models.Model):
     
     # Action methods
     def action_confirm(self):
+        self.ensure_one()
         self.write({'state': 'confirmed'})
 
     partner_id = fields.Many2one(
@@ -43,7 +46,9 @@ class ResPartnerKeyRestriction(models.Model):
     )
     
     def action_cancel(self):
+        self.ensure_one()
         self.write({'state': 'cancelled'})
     
     def action_reset_to_draft(self):
+        self.ensure_one()
         self.write({'state': 'draft'})

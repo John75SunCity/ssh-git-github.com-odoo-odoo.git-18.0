@@ -27,7 +27,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 class WorkOrderShredding(models.Model):
     _name = "work.order.shredding"
@@ -437,6 +440,8 @@ class WorkOrderShredding(models.Model):
     # ============================================================================
     def action_confirm(self):
         """Confirm the work order"""
+
+        self.ensure_one()
         for order in self:
             if order.state != "draft":
                 raise UserError(_("Only draft work orders can be confirmed"))
@@ -446,6 +451,8 @@ class WorkOrderShredding(models.Model):
 
     def action_assign_team(self):
         """Assign team to work order"""
+
+        self.ensure_one()
         for order in self:
             if order.state not in ["confirmed"]:
                 raise UserError(
@@ -463,6 +470,8 @@ class WorkOrderShredding(models.Model):
 
     def action_start_work(self):
         """Start work order execution"""
+
+        self.ensure_one()
         for order in self:
             if order.state != "assigned":
                 raise UserError(_("Work order must be assigned before starting"))
@@ -472,6 +481,8 @@ class WorkOrderShredding(models.Model):
 
     def action_complete_work(self):
         """Complete work order"""
+
+        self.ensure_one()
         for order in self:
             if order.state != "in_progress":
                 raise UserError(_("Only in-progress work orders can be completed"))
@@ -488,6 +499,8 @@ class WorkOrderShredding(models.Model):
 
     def action_verify_completion(self):
         """Verify work order completion"""
+
+        self.ensure_one()
         for order in self:
             if order.state != "completed":
                 raise UserError(_("Only completed work orders can be verified"))
@@ -503,6 +516,8 @@ class WorkOrderShredding(models.Model):
 
     def action_cancel(self):
         """Cancel work order"""
+
+        self.ensure_one()
         for order in self:
             if order.state in ["completed", "verified"]:
                 raise UserError(_("Cannot cancel completed or verified work orders"))
@@ -512,6 +527,8 @@ class WorkOrderShredding(models.Model):
 
     def action_reset_to_draft(self):
         """Reset work order to draft"""
+
+        self.ensure_one()
         for order in self:
             if order.state == "verified":
                 raise UserError(_("Cannot reset verified work orders to draft"))
@@ -521,6 +538,7 @@ class WorkOrderShredding(models.Model):
 
     def action_view_certificate(self):
         """View associated destruction certificate"""
+
         self.ensure_one()
         if not self.certificate_id:
             raise UserError(_("No certificate associated with this work order"))
@@ -650,7 +668,7 @@ class WorkOrderShredding(models.Model):
         return result
 
     @api.model
-    def _name_search(
+    def _search_name(
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
     ):
         """Enhanced search by name or customer, returns name_get results for consistency"""

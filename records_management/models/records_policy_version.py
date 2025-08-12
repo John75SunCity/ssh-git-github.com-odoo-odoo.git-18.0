@@ -70,6 +70,8 @@ License: LGPL-3
 
 from odoo import models, fields
 
+
+
 class RecordsPolicyVersion(models.Model):
     """
     Records Retention Policy Version History - Complete version control for retention policies
@@ -140,6 +142,8 @@ class RecordsPolicyVersion(models.Model):
         This method may trigger additional actions such as notifications or workflow transitions
         in future extensions.
         """
+
+        self.ensure_one()
         self.write({"state": "confirmed"})
 
     def action_done(self):
@@ -150,4 +154,6 @@ class RecordsPolicyVersion(models.Model):
         indicating that all approvals are complete, the policy is in effect, and no further changes
         are expected for this version.
         """
+
+        self.ensure_one()
         self.write({"state": "done"})

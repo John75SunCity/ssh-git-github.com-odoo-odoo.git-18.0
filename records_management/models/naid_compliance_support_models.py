@@ -11,7 +11,10 @@ It can be safely removed.
 import logging
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -143,12 +146,14 @@ class NaidComplianceAlert(models.Model):
 
     def action_acknowledge(self):
         """Acknowledge alert"""
+
         self.ensure_one()
         self.write({"status": "acknowledged"})
         self.message_post(body=_("Alert acknowledged by %s", self.env.user.name))
 
     def action_resolve(self):
         """Resolve alert"""
+
         self.ensure_one()
         self.write(
             {
@@ -161,6 +166,7 @@ class NaidComplianceAlert(models.Model):
 
     def action_dismiss(self):
         """Dismiss alert"""
+
         self.ensure_one()
         self.write({"status": "dismissed"})
         self.message_post(body=_("Alert dismissed by %s", self.env.user.name))
@@ -573,6 +579,7 @@ class NaidComplianceActionPlan(models.Model):
 
     def action_approve(self):
         """Approve action plan"""
+
         self.ensure_one()
         self.write(
             {
@@ -585,6 +592,7 @@ class NaidComplianceActionPlan(models.Model):
 
     def action_start(self):
         """Start action plan execution"""
+
         self.ensure_one()
         self.write(
             {
@@ -596,6 +604,7 @@ class NaidComplianceActionPlan(models.Model):
 
     def action_complete(self):
         """Mark action plan as completed"""
+
         self.ensure_one()
         self.write(
             {

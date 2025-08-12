@@ -20,7 +20,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError
+
+
 
 
 class ProductTemplate(models.Model):

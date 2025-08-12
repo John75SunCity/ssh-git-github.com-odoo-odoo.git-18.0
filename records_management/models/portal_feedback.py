@@ -20,7 +20,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class PortalFeedback(models.Model):
@@ -445,6 +448,7 @@ class PortalFeedback(models.Model):
     # ============================================================================
     def action_mark_reviewed(self):
         """Mark feedback as reviewed"""
+
         self.ensure_one()
         if self.status != "new":
             raise UserError(_("Can only mark new feedback as reviewed"))
@@ -460,6 +464,7 @@ class PortalFeedback(models.Model):
 
     def action_respond(self):
         """Mark feedback as responded"""
+
         self.ensure_one()
         if self.status not in ["new", "reviewed"]:
             raise UserError(_("Can only respond to new or reviewed feedback"))
@@ -473,6 +478,7 @@ class PortalFeedback(models.Model):
 
     def action_escalate(self):
         """Escalate feedback to higher priority"""
+
         self.ensure_one()
         if self.status in ["closed"]:
             raise UserError(_("Cannot escalate closed feedback"))
@@ -480,6 +486,7 @@ class PortalFeedback(models.Model):
 
     def action_close(self):
         """Close feedback"""
+
         self.ensure_one()
         if self.status not in ["responded", "escalated"]:
             raise UserError(_("Can only close responded or escalated feedback"))
@@ -487,6 +494,7 @@ class PortalFeedback(models.Model):
 
     def action_reopen(self):
         """Reopen closed feedback"""
+
         self.ensure_one()
         if self.status != "closed":
             raise UserError(_("Can only reopen closed feedback"))
@@ -494,6 +502,7 @@ class PortalFeedback(models.Model):
 
     def action_view_related_records(self):
         """View related service requests and records"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -506,6 +515,7 @@ class PortalFeedback(models.Model):
 
     def action_create_improvement_action(self):
         """Create improvement action based on feedback"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -638,6 +648,7 @@ class FeedbackImprovementArea(models.Model):
     # ============================================================================
     def action_view_related_feedback(self):
         """View feedback related to this improvement area"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

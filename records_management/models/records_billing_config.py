@@ -39,7 +39,10 @@ License: LGPL-3
 from datetime import datetime
 
 from odoo import _, api, fields, models
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class RecordsBillingConfig(models.Model):
@@ -363,6 +366,7 @@ class RecordsBillingConfig(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activate billing configuration"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft configurations can be activated"))
@@ -377,6 +381,7 @@ class RecordsBillingConfig(models.Model):
 
     def action_suspend(self):
         """Suspend billing configuration"""
+
         self.ensure_one()
         if self.state != "active":
             raise UserError(_("Only active configurations can be suspended"))
@@ -391,6 +396,7 @@ class RecordsBillingConfig(models.Model):
 
     def action_archive(self):
         """Archive billing configuration"""
+
         self.ensure_one()
         self._log_audit_trail("Configuration Archived")
         self.write(
@@ -404,6 +410,7 @@ class RecordsBillingConfig(models.Model):
 
     def action_duplicate(self):
         """Duplicate configuration"""
+
         self.ensure_one()
         copy = self.copy(
             {
@@ -423,6 +430,7 @@ class RecordsBillingConfig(models.Model):
 
     def action_configure_rates(self):
         """Open rate configuration wizard"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -436,6 +444,7 @@ class RecordsBillingConfig(models.Model):
 
     def action_view_customers(self):
         """View assigned customers"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -448,6 +457,7 @@ class RecordsBillingConfig(models.Model):
 
     def action_generate_report(self):
         """Generate billing configuration report"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.report",
@@ -459,6 +469,7 @@ class RecordsBillingConfig(models.Model):
 
     def action_test_billing(self):
         """Test billing calculation"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

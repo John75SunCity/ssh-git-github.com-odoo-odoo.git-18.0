@@ -29,7 +29,10 @@ License: LGPL-3
 import json
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError
+
+
 
 
 class RMModuleConfigurator(models.Model):
@@ -401,6 +404,7 @@ class RMModuleConfigurator(models.Model):
     # ============================================================================
     def action_apply_configuration(self):
         """Apply configuration changes"""
+
         self.ensure_one()
 
         # Trigger cache clear for field visibility
@@ -423,6 +427,7 @@ class RMModuleConfigurator(models.Model):
 
     def action_restore_defaults(self):
         """Reset configuration to default values"""
+
         self.ensure_one()
 
         default_values = {
@@ -472,6 +477,8 @@ class RecordsConfigurationWizard(models.TransientModel):
 
     def action_execute(self):
         """Execute the bulk configuration action"""
+
+        self.ensure_one()
         configs = self.env['rm.module.configurator'].search([
             ('category', '=', self.category)
         ])

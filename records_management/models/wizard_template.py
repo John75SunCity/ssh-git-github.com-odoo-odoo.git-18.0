@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
+
+
 class WizardTemplate(models.TransientModel):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _name = 'wizard.template'
@@ -12,5 +14,6 @@ class WizardTemplate(models.TransientModel):
     # Action method
     def action_execute(self):
         """Execute the wizard action."""
+
         self.ensure_one()
         return {'type': 'ir.actions.act_window_close'}

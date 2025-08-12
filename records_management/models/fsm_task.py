@@ -28,7 +28,10 @@ FUTURE ENHANCEMENT OPTIONS:
 import logging
 
 from odoo import _, api, fields, models
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -336,6 +339,7 @@ class FsmTask(models.Model):
     # ============================================================================
     def action_start_task(self):
         """Start the task"""
+
         self.ensure_one()
         if self.status != "scheduled":
             raise UserError(_("Only scheduled tasks can be started"))
@@ -344,6 +348,7 @@ class FsmTask(models.Model):
 
     def action_complete_task(self):
         """Complete the task"""
+
         self.ensure_one()
         if self.status != "in_progress":
             raise UserError(_("Only in-progress tasks can be completed"))
@@ -358,6 +363,7 @@ class FsmTask(models.Model):
 
     def action_cancel_task(self):
         """Cancel the task"""
+
         self.ensure_one()
         if self.status == "completed":
             raise UserError(_("Cannot cancel completed tasks"))
@@ -366,6 +372,7 @@ class FsmTask(models.Model):
 
     def action_reschedule_task(self):
         """Open reschedule wizard"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -378,6 +385,7 @@ class FsmTask(models.Model):
 
     def action_view_work_orders(self):
         """View related work orders"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -390,6 +398,7 @@ class FsmTask(models.Model):
 
     def action_add_service_on_site(self):
         """Add service while technician is on-site"""
+
         self.ensure_one()
         if self.status not in ["scheduled", "in_progress"]:
             raise UserError(
@@ -411,6 +420,7 @@ class FsmTask(models.Model):
 
     def action_modify_service_scope(self):
         """Modify service scope during task execution"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -423,6 +433,7 @@ class FsmTask(models.Model):
 
     def action_customer_approval_required(self):
         """Request customer approval for additional services"""
+
         self.ensure_one()
         # Send notification/email to customer for approval
         template = self.env.ref(
@@ -635,6 +646,7 @@ class FsmTaskServiceLine(models.Model):
     # ============================================================================
     def action_request_approval(self):
         """Request customer approval for this service addition"""
+
         self.ensure_one()
         if self.customer_approved:
             raise UserError(_("Service already approved"))
@@ -647,6 +659,7 @@ class FsmTaskServiceLine(models.Model):
 
     def action_approve_service(self):
         """Approve the additional service"""
+
         self.ensure_one()
         self.write({"status": "approved", "customer_approved": True})
         self.task_id.message_post(

@@ -2,6 +2,8 @@
 from odoo import models, fields, api
 
 
+
+
 class BinKeyHistory(models.Model):
     _name = "bin.key.history"
     _description = "Bin Key History"

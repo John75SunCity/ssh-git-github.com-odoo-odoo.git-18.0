@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError
+
+
 
 
 class FieldLabelCustomization(models.Model):
@@ -553,6 +556,7 @@ class FieldLabelCustomization(models.Model):
     # ============================================================================
     def action_apply_corporate_preset(self):
         """Apply Corporate Preset - Action method"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -565,6 +569,7 @@ class FieldLabelCustomization(models.Model):
 
     def action_apply_financial_preset(self):
         """Apply Financial Preset - Action method"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -577,6 +582,7 @@ class FieldLabelCustomization(models.Model):
 
     def action_apply_healthcare_preset(self):
         """Apply Healthcare Preset - Action method"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -589,6 +595,7 @@ class FieldLabelCustomization(models.Model):
 
     def action_apply_legal_preset(self):
         """Apply Legal Preset - Action method"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -601,6 +608,7 @@ class FieldLabelCustomization(models.Model):
 
     def action_restore_defaults(self):
         """Restore default settings - Action method"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

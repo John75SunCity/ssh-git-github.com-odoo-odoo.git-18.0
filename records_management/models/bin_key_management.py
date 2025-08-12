@@ -3,7 +3,10 @@
 # Import handling for disconnected development environment
 try:
     from odoo import models, fields, api, _
+
     from odoo.exceptions import UserError
+
+
 except ImportError:
     # Fallback for development environments without Odoo installed
     # These will be properly imported when deployed to Odoo.sh
@@ -121,18 +124,25 @@ class BinKeyManagement(models.Model):
 
     def action_activate(self):
         """Activate the record."""
+
+        self.ensure_one()
         self.write({"state": "active"})
 
     def action_deactivate(self):
         """Deactivate the record."""
+
+        self.ensure_one()
         self.write({"state": "inactive"})
 
     def action_archive(self):
         """Archive the record."""
+
+        self.ensure_one()
         self.write({"state": "archived", "active": False})
 
     def action_create_invoice(self):
         """Create invoice for key services."""
+
         self.ensure_one()
         if not self.user_id:
             raise UserError(_("Cannot create invoice without assigned user."))
@@ -167,6 +177,7 @@ class BinKeyManagement(models.Model):
 
     def action_mark_completed(self):
         """Mark key service as completed."""
+
         self.ensure_one()
         if self.state == "archived":
             raise UserError(_("Cannot complete archived key service."))
@@ -200,6 +211,7 @@ class BinKeyManagement(models.Model):
 
     def action_mark_lost(self):
         """Mark key as lost and require replacement."""
+
         self.ensure_one()
         if self.state == "archived":
             raise UserError(_("Cannot mark archived key as lost."))
@@ -387,6 +399,7 @@ class BinKeyManagement(models.Model):
         This method marks the current key as archived, creates a new replacement key,
         and schedules activities for key handover and notification.
         """
+
         self.ensure_one()
         self.ensure_one()
 
@@ -436,6 +449,7 @@ class BinKeyManagement(models.Model):
 
     def action_return_key(self):
         """Process key return and update availability."""
+
         self.ensure_one()
         if self.state == "archived":
             raise UserError(_("Cannot return archived key."))
@@ -478,6 +492,7 @@ class BinKeyManagement(models.Model):
 
     def action_view_unlock_services(self):
         """View all unlock services related to this key."""
+
         self.ensure_one()
 
         # Create activity to track service viewing

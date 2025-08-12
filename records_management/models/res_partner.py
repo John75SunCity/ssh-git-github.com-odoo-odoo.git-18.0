@@ -26,8 +26,12 @@ License: LGPL-3
 """
 
 import logging
+
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -283,6 +287,7 @@ class ResPartner(models.Model):
     # ============================================================================
     def action_view_portal_requests(self):
         """View all portal requests for this partner."""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -298,6 +303,7 @@ class ResPartner(models.Model):
 
     def action_view_customer_feedback(self):
         """View all customer feedback for this partner."""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -313,6 +319,7 @@ class ResPartner(models.Model):
 
     def action_view_containers(self):
         """View all containers for this partner."""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -331,6 +338,7 @@ class ResPartner(models.Model):
     # ============================================================================
     def action_allow_key_issuance(self):
         """Allow bin key issuance for this partner"""
+
         self.ensure_one()
         try:
             # Find or create key restriction record
@@ -371,6 +379,7 @@ class ResPartner(models.Model):
 
     def action_restrict_key_issuance(self):
         """Restrict bin key issuance for this partner"""
+
         self.ensure_one()
         try:
             # Find or create key restriction record
@@ -411,6 +420,7 @@ class ResPartner(models.Model):
 
     def action_confirm(self):
         """Confirm partner as records management customer"""
+
         self.ensure_one()
         self.write({"is_records_customer": True})
 
@@ -434,6 +444,7 @@ class ResPartner(models.Model):
 
     def action_issue_new_key(self):
         """Issue new bin key for this partner"""
+
         self.ensure_one()
         try:
             # Check if key issuance is allowed
@@ -476,6 +487,7 @@ class ResPartner(models.Model):
 
     def action_report_lost_key(self):
         """Report lost key for this partner"""
+
         self.ensure_one()
         try:
             # Check if bin.key.management model exists
@@ -512,6 +524,7 @@ class ResPartner(models.Model):
 
     def action_return_key(self):
         """Process key return for this partner"""
+
         self.ensure_one()
         try:
             # Check if bin.key.management model exists
@@ -555,6 +568,7 @@ class ResPartner(models.Model):
 
     def action_view_active_key(self):
         """View active key for this partner"""
+
         self.ensure_one()
         try:
             # Check if bin.key.management model exists
@@ -593,6 +607,7 @@ class ResPartner(models.Model):
 
     def action_view_bin_keys(self):
         """View all bin keys for this partner"""
+
         self.ensure_one()
         try:
             # Check if bin.key.management model exists
@@ -622,6 +637,7 @@ class ResPartner(models.Model):
 
     def action_view_unlock_services(self):
         """View unlock services for this partner"""
+
         self.ensure_one()
         try:
             # Check if bin.unlock.service model exists

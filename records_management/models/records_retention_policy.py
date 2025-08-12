@@ -30,12 +30,13 @@ License: LGPL-3
 
 # Python stdlib imports
 from datetime import datetime
-# Third-party imports
 from dateutil.relativedelta import relativedelta
 
-# Odoo core imports
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class RecordsRetentionPolicy(models.Model):
@@ -412,6 +413,7 @@ class RecordsRetentionPolicy(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activate the policy"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft policies can be activated."))
@@ -420,6 +422,7 @@ class RecordsRetentionPolicy(models.Model):
 
     def action_deactivate(self):
         """Deactivate the policy"""
+
         self.ensure_one()
         if self.state != "active":
             raise UserError(_("Only active policies can be deactivated."))
@@ -428,6 +431,7 @@ class RecordsRetentionPolicy(models.Model):
 
     def action_review(self):
         """Mark policy as reviewed"""
+
         self.ensure_one()
         today_str = fields.Date.to_string(fields.Date.today())
         self.write({"last_review_date": fields.Date.today(), "review_notes": ""})
@@ -435,6 +439,7 @@ class RecordsRetentionPolicy(models.Model):
 
     def action_view_affected_documents(self):
         """View documents affected by this policy"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -447,6 +452,7 @@ class RecordsRetentionPolicy(models.Model):
 
     def action_view_rules(self):
         """View policy rules"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

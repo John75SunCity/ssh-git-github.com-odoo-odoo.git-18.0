@@ -25,7 +25,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError
+
+
 
 
 class TempInventoryMovement(models.Model):
@@ -134,6 +137,7 @@ class TempInventoryMovement(models.Model):
     # ============================================================================
     def action_confirm_movement(self):
         """Confirm the movement and update related inventory"""
+
         self.ensure_one()
         # Update parent inventory counts
         if self.inventory_id:

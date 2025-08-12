@@ -12,7 +12,10 @@ License: LGPL-3
 
 # Standard Odoo imports
 from odoo import api, fields, models, _
+
 from odoo.exceptions import ValidationError
+
+
 
 
 class AdvancedBilling(models.Model):
@@ -133,6 +136,7 @@ class AdvancedBilling(models.Model):
     # ============================================================================
     def action_confirm(self):
         """Confirm billing"""
+
         self.ensure_one()
         if self.state != "draft":
             raise ValidationError(_("Only draft billing can be confirmed"))
@@ -142,6 +146,7 @@ class AdvancedBilling(models.Model):
 
     def action_generate_invoice(self):
         """Generate invoice"""
+
         self.ensure_one()
         if self.state != "confirmed":
             raise ValidationError(_("Only confirmed billing can be invoiced"))
@@ -178,6 +183,7 @@ class AdvancedBilling(models.Model):
 
     def action_done(self):
         """Mark billing as done"""
+
         self.ensure_one()
         if self.state != "invoiced":
             raise ValidationError(_("Only invoiced billing can be marked as done"))
@@ -187,6 +193,7 @@ class AdvancedBilling(models.Model):
 
     def action_cancel(self):
         """Cancel billing"""
+
         self.ensure_one()
         if self.state in ["invoiced", "done"]:
             raise ValidationError(_("Cannot cancel invoiced or completed billing"))

@@ -25,9 +25,12 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api
 import json
 import logging
+
+from odoo import models, fields, api
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -563,6 +566,8 @@ class SystemDiagramData(models.TransientModel):
     # ============================================================================
     def action_refresh_diagram(self):
         """Refresh the diagram data"""
+
+        self.ensure_one()
         self._compute_diagram_data()
         self._compute_diagram_config()
 
@@ -573,6 +578,7 @@ class SystemDiagramData(models.TransientModel):
 
     def action_export_diagram_data(self):
         """Export diagram data for external use"""
+
         self.ensure_one()
 
         export_data = {

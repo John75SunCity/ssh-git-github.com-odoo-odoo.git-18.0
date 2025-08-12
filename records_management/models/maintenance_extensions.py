@@ -3,6 +3,8 @@
 from odoo import models, fields, api
 
 
+
+
 class MaintenanceEquipment(models.Model):
     """Extend Odoo's standard maintenance.equipment for Records Management"""
 

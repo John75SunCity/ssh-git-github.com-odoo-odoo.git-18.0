@@ -1,7 +1,11 @@
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
 import logging
 from dateutil.relativedelta import relativedelta
+
+from odoo import models, fields, api, _
+
+from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -236,6 +240,7 @@ class CustomerBillingProfile(models.Model):
     # ============================================================================
     def action_activate_profile(self):
         """Activate billing profile"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Can only activate draft profiles"))
@@ -243,6 +248,7 @@ class CustomerBillingProfile(models.Model):
 
     def action_suspend_profile(self):
         """Suspend billing profile"""
+
         self.ensure_one()
         if self.state != "active":
             raise UserError(_("Can only suspend active profiles"))
@@ -250,6 +256,7 @@ class CustomerBillingProfile(models.Model):
 
     def action_reactivate_profile(self):
         """Reactivate suspended profile"""
+
         self.ensure_one()
         if self.state != "suspended":
             raise UserError(_("Can only reactivate suspended profiles"))
@@ -257,6 +264,7 @@ class CustomerBillingProfile(models.Model):
 
     def action_generate_invoice(self):
         """Generate invoice based on billing profile configuration"""
+
         self.ensure_one()
         if self.state != "active":
             raise UserError(_("Can only generate invoices for active profiles"))
@@ -275,6 +283,7 @@ class CustomerBillingProfile(models.Model):
 
     def action_view_invoices(self):
         """View all invoices for this billing profile"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

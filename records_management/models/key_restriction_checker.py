@@ -19,7 +19,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class KeyRestrictionChecker(models.Model):
@@ -227,8 +230,9 @@ class KeyRestrictionChecker(models.Model):
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    def action_audit_checker(self):
+    def __check_audit_checker(self):
         """Audit this key restriction checker"""
+
         self.ensure_one()
         self.write({"last_audit_date": fields.Date.today(), "check_performed": True})
 
@@ -247,8 +251,9 @@ class KeyRestrictionChecker(models.Model):
             },
         }
 
-    def action_check_customer(self):
+    def __check__check_customer(self):
         """Check customer restrictions"""
+
         self.ensure_one()
 
         self.write({"last_check_date": fields.Date.today(), "check_performed": True})
@@ -271,6 +276,7 @@ class KeyRestrictionChecker(models.Model):
 
     def action_reset(self):
         """Reset checker to initial state"""
+
         self.ensure_one()
 
         self.write(
@@ -300,6 +306,7 @@ class KeyRestrictionChecker(models.Model):
 
     def action_create_unlock_service(self):
         """Create unlock service request"""
+
         self.ensure_one()
 
         # Create related service request or work order
@@ -322,6 +329,7 @@ class KeyRestrictionChecker(models.Model):
 
     def action_approve_access(self):
         """Approve access request"""
+
         self.ensure_one()
         if self.state not in ["draft", "in_progress"]:
             raise UserError(_("Can only approve draft or in-progress requests"))
@@ -342,6 +350,7 @@ class KeyRestrictionChecker(models.Model):
 
     def action_deny_access(self):
         """Deny access request"""
+
         self.ensure_one()
 
         self.write(
@@ -359,6 +368,7 @@ class KeyRestrictionChecker(models.Model):
 
     def action_escalate_security_violation(self):
         """Escalate security violation to management"""
+
         self.ensure_one()
 
         self.write(
@@ -473,7 +483,7 @@ class KeyRestrictionChecker(models.Model):
         return color_map.get(self.state, "secondary")
 
     @api.model
-    def check_expiring_restrictions(self):
+    def _check_expiring_restrictions(self):
         """Cron job to check for expiring restrictions"""
         expiring_soon = self.search(
             [

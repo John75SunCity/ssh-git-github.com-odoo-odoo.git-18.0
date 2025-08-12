@@ -3,9 +3,13 @@
 Partner Bin Key Management - Simple Key Tracking
 """
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
 import logging
+
+from odoo import models, fields, api, _
+
+from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -209,6 +213,7 @@ class PartnerBinKey(models.Model):
     # ============================================================================
     def action_assign_key(self):
         """Assign key to contact"""
+
         self.ensure_one()
         if self.state != "available":
             raise UserError(_("Only available keys can be assigned"))
@@ -220,6 +225,7 @@ class PartnerBinKey(models.Model):
 
     def action_return_key(self):
         """Return key"""
+
         self.ensure_one()
         if self.state != "assigned":
             raise UserError(_("Only assigned keys can be returned"))
@@ -229,12 +235,14 @@ class PartnerBinKey(models.Model):
 
     def action_report_lost(self):
         """Report key as lost"""
+
         self.ensure_one()
         self.write({"state": "lost"})
         self.message_post(body=_("Key reported as lost"))
 
     def action_make_available(self):
         """Make key available again"""
+
         self.ensure_one()
         self.write(
             {
@@ -248,6 +256,7 @@ class PartnerBinKey(models.Model):
 
     def action_issue_new_key(self):
         """Issue new key to customer"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -260,6 +269,7 @@ class PartnerBinKey(models.Model):
 
     def action_view_active_keys(self):
         """View active bin keys"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -271,6 +281,7 @@ class PartnerBinKey(models.Model):
 
     def action_view_unlock_services(self):
         """View unlock service history"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -282,6 +293,7 @@ class PartnerBinKey(models.Model):
 
     def action_view_key_history(self):
         """View bin key history"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

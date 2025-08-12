@@ -18,7 +18,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class SystemFlowchartWizard(models.TransientModel):
@@ -267,6 +270,7 @@ class SystemFlowchartWizard(models.TransientModel):
     # ============================================================================
     def action_next_step(self):
         """Move to next wizard step"""
+
         self.ensure_one()
 
         if self.step == "welcome":
@@ -289,6 +293,7 @@ class SystemFlowchartWizard(models.TransientModel):
 
     def action_previous_step(self):
         """Move to previous wizard step"""
+
         self.ensure_one()
 
         if self.step == "complete":
@@ -309,6 +314,7 @@ class SystemFlowchartWizard(models.TransientModel):
 
     def action_open_flowchart(self):
         """Open the system flowchart with configured parameters"""
+
         self.ensure_one()
 
         # Create system diagram data record with configuration
@@ -350,6 +356,7 @@ class SystemFlowchartWizard(models.TransientModel):
 
     def action_reset_wizard(self):
         """Reset wizard to default values"""
+
         self.ensure_one()
 
         self.write(
@@ -381,6 +388,7 @@ class SystemFlowchartWizard(models.TransientModel):
 
     def action_apply_scenario(self):
         """Apply selected scenario configuration"""
+
         self.ensure_one()
 
         # Configure based on scenario

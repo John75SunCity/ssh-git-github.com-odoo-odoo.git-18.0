@@ -15,13 +15,16 @@ Key Features:
 - Operational efficiency metrics
 """
 
-import csv
-import io
 import logging
 from datetime import datetime, timedelta
+from odoo.http import request
 
 from odoo import http
-from odoo.http import request
+
+import csv
+import io
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -184,6 +187,8 @@ class RecordsManagementController(http.Controller):
         Bulk update operations for containers.
         Supports location changes, status updates, and batch processing.
         """
+
+        self.ensure_one()
         # Note: This is a controller method handling multiple containers, not a model method
         # so self.ensure_one() is not applicable here
         if not request.env.user.has_group('records_management.group_records_user'):

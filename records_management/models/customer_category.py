@@ -4,6 +4,8 @@
 from odoo import api, fields, models
 
 
+
+
 class CustomerCategory(models.Model):
     """Customer categories for billing segmentation"""
 

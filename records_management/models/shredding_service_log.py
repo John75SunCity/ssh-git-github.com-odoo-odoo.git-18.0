@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class ShreddingServiceLog(models.Model):
@@ -232,6 +235,7 @@ class ShreddingServiceLog(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activate the log entry."""
+
         self.ensure_one()
         if self.state == 'active':
             return  # Already active
@@ -241,6 +245,7 @@ class ShreddingServiceLog(models.Model):
 
     def action_deactivate(self):
         """Deactivate the log entry."""
+
         self.ensure_one()
         if self.state == 'inactive':
             return  # Already inactive
@@ -250,6 +255,7 @@ class ShreddingServiceLog(models.Model):
 
     def action_archive(self):
         """Archive the log entry."""
+
         self.ensure_one()
         if self.state == 'archived':
             return  # Already archived
@@ -259,6 +265,7 @@ class ShreddingServiceLog(models.Model):
 
     def action_complete_operation(self):
         """Mark the operation as complete"""
+
         self.ensure_one()
         if not self.start_time:
             raise UserError(_("Please set start time before completing operation"))
@@ -271,6 +278,7 @@ class ShreddingServiceLog(models.Model):
 
     def action_record_witness_signature(self):
         """Open wizard to record witness signature"""
+
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',

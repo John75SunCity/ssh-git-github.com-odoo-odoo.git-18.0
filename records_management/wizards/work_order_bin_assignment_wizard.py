@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError
+
+
 
 class WorkOrderBinAssignmentWizard(models.TransientModel):
     _name = 'work.order.bin.assignment.wizard'
@@ -20,8 +23,12 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
     
     def action_execute(self):
         """Execute the wizard action."""
+
+        self.ensure_one()
         return {'type': 'ir.actions.act_window_close'}
     
     def action_cancel(self):
         """Cancel the wizard."""
+
+        self.ensure_one()
         return {'type': 'ir.actions.act_window_close'}

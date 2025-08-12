@@ -2,6 +2,8 @@
 from odoo import models, fields
 
 
+
+
 class HrEmployee(models.Model):
     _inherit = "hr.employee"
     _description = "Hr Employee Records Management Extension"
@@ -40,12 +42,14 @@ class HrEmployee(models.Model):
     # Action methods
     def action_grant_records_access(self):
         """Grant enhanced records access to employee"""
+
         self.ensure_one()
         if self.records_access_level == "read":
             self.records_access_level = "write"
 
     def action_revoke_records_access(self):
         """Revoke records access from employee"""
+
         self.ensure_one()
         self.records_access_level = "read"
         """_summary_

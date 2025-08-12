@@ -6,8 +6,11 @@ This module provides comprehensive photo attachment management for the Records
 Management System with integration to mobile workflows and partner relationships.
 """
 
-import io
 import logging
+
+import io
+
+
 
 try:
     from PIL import Image
@@ -240,6 +243,7 @@ class Photo(models.Model):
     # ============================================================================
     def action_validate_photo(self):
         """Validate the photo and move to validated state"""
+
         self.ensure_one()
         if not self.image:
             raise UserError(_("Cannot validate a photo without an image."))
@@ -251,6 +255,7 @@ class Photo(models.Model):
 
     def action_archive_photo(self):
         """Archive the photo"""
+
         self.ensure_one()
         if self.state == "archived":
             raise UserError(_("This photo is already archived."))
@@ -260,6 +265,7 @@ class Photo(models.Model):
 
     def action_unarchive_photo(self):
         """Unarchive the photo"""
+
         self.ensure_one()
         if self.state != "archived":
             raise UserError(_("Only archived photos can be unarchived."))
@@ -269,6 +275,7 @@ class Photo(models.Model):
 
     def action_download_photo(self):
         """Download the photo"""
+
         self.ensure_one()
         if not self.image:
             raise UserError(_("There is no image to download."))
@@ -282,6 +289,7 @@ class Photo(models.Model):
 
     def action_view_metadata(self):
         """View detailed photo metadata"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -294,6 +302,7 @@ class Photo(models.Model):
 
     def action_set_category(self):
         """Open wizard to set photo category"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -306,6 +315,7 @@ class Photo(models.Model):
 
     def action_bulk_tag_photos(self):
         """Bulk tag multiple photos"""
+
         self.ensure_one()
         # This action operates on a recordset, but the wizard is launched for one context
         return {

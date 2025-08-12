@@ -7,8 +7,12 @@ and quality control capabilities.
 """
 
 import logging
+
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -698,6 +702,7 @@ class DocumentRetrievalItem(models.Model):
             - Updates status, retrieval date, and retrieved by fields.
             - Posts a notification message to the chatter.
         """
+
         self.ensure_one()
         if self.status != "pending":
             raise UserError(_("Only pending items can be located"))
@@ -723,6 +728,7 @@ class DocumentRetrievalItem(models.Model):
             - Updates status, retrieval date, and retrieved by fields.
             - Posts a notification message to the chatter.
         """
+
         self.ensure_one()
         if self.status != "located":
             raise UserError(_("Item must be located before retrieval"))
@@ -748,6 +754,7 @@ class DocumentRetrievalItem(models.Model):
             - Updates status field.
             - Posts a notification message to the chatter.
         """
+
         self.ensure_one()
         if self.status != "retrieved":
             raise UserError(_("Item must be retrieved before packaging"))
@@ -771,6 +778,7 @@ class DocumentRetrievalItem(models.Model):
             - Updates status field.
             - Posts a notification message to the chatter.
         """
+
         self.ensure_one()
         if self.status != "packaged":
             raise UserError(_("Item must be packaged before delivery"))
@@ -790,6 +798,7 @@ class DocumentRetrievalItem(models.Model):
             - Updates status and return date fields.
             - Posts a notification message to the chatter.
         """
+
         self.ensure_one()
         if self.status != "delivered":
             raise UserError(_("Item must be delivered before return"))
@@ -809,6 +818,7 @@ class DocumentRetrievalItem(models.Model):
     # === SEARCH WORKFLOW ACTION METHODS ===
     def action_begin_search_process(self):
         """Start the search process for this file - RENAMED from action_start_search"""
+
         self.ensure_one()
         if self.status != "pending":
             raise UserError(_("Only pending items can start search process"))
@@ -821,6 +831,7 @@ class DocumentRetrievalItem(models.Model):
 
     def action_record_container_search(self, container_id, found=False, notes=""):
         """Add a container to the searched list and create search attempt record - RENAMED"""
+
         self.ensure_one()
 
         # Add to searched containers 
@@ -853,6 +864,7 @@ class DocumentRetrievalItem(models.Model):
 
     def action_mark_not_found(self, reason="not_in_container", notes=""):
         """Mark file as not found after search completion"""
+
         self.ensure_one()
 
         # Use simple default notes if none provided
@@ -880,6 +892,7 @@ class DocumentRetrievalItem(models.Model):
 
     def action_barcode_discovered_file(self, barcode, document_vals=None):
         """Barcode a newly discovered file and add it to the system"""
+
         self.ensure_one()
 
         if not self.file_discovered:

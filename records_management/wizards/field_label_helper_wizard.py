@@ -2,6 +2,8 @@
 from odoo import models, fields, api, _
 
 
+
+
 class FieldLabelHelperWizard(models.TransientModel):
     _name = "field.label.helper.wizard"
     _description = "Field Label Helper Wizard"
@@ -31,6 +33,7 @@ class FieldLabelHelperWizard(models.TransientModel):
 
     def action_select_field(self):
         """Return selected model and field to the customization form"""
+
         self.ensure_one()
         if not self.model_id or not self.field_id:
             return {"type": "ir.actions.act_window_close"}

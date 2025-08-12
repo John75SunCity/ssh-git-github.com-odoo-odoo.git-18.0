@@ -8,6 +8,8 @@ Track individual search attempts for files during document retrieval operations.
 from odoo import models, fields, api
 
 
+
+
 class DocumentSearchAttempt(models.Model):
     """Track individual search attempts for files"""
 

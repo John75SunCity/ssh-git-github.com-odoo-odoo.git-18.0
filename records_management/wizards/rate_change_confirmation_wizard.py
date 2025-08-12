@@ -4,7 +4,10 @@ Rate Change Confirmation Wizard
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError
+
+
 
 
 class RateChangeConfirmationWizard(models.TransientModel):
@@ -39,7 +42,7 @@ class RateChangeConfirmationWizard(models.TransientModel):
 
     # Approval requirements
     requires_approval = fields.Boolean(string='Requires Management Approval', default=True)
-    approved_by = fields.Many2one('res.users', string='Approved By')
+    approved_by_id = fields.Many2one('res.users', string='Approved By')
     approval_date = fields.Date(string='Approval Date')
     approval_notes = fields.Text(string='Approval Notes')
 
@@ -73,6 +76,7 @@ Sincerely,
 
     def action_approve_changes(self):
         """Approve the rate changes"""
+
         self.ensure_one()
 
         if not self.env.user.has_group('records_management.group_records_manager'):
@@ -95,6 +99,7 @@ Sincerely,
 
     def action_implement_changes(self):
         """Implement the approved rate changes"""
+
         self.ensure_one()
 
         if self.requires_approval and not self.approved_by:
@@ -234,6 +239,7 @@ Rate Change Implementation:
 
     def action_generate_implementation_report(self):
         """Generate detailed implementation report"""
+
         self.ensure_one()
 
         return {
@@ -249,6 +255,7 @@ Rate Change Implementation:
 
     def action_cancel_implementation(self):
         """Cancel the rate change implementation"""
+
         self.ensure_one()
 
         return {

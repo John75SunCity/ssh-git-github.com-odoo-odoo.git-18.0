@@ -35,9 +35,11 @@ License: LGPL-3
 # Python stdlib imports
 from datetime import datetime
 
-# Odoo core imports
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError, UserError
+
+
 
 
 class ShredBin(models.Model):
@@ -399,6 +401,7 @@ class ShredBin(models.Model):
     # ============================================================================
     def action_deploy(self):
         """Deploy the bin to customer location"""
+
         self.ensure_one()
         if self.state != "deployed":
             raise ValidationError(_("Bin must be in deployed state"))
@@ -411,6 +414,7 @@ class ShredBin(models.Model):
 
     def action_mark_full(self):
         """Mark bin as full and needing collection"""
+
         self.ensure_one()
         if self.state != "in_service":
             raise ValidationError(_("Only in-service bins can be marked as full"))
@@ -434,6 +438,7 @@ class ShredBin(models.Model):
 
     def action_start_collection(self):
         """Mark bin as being collected"""
+
         self.ensure_one()
         if self.state != "full":
             raise ValidationError(_("Only full bins can be collected"))
@@ -446,6 +451,7 @@ class ShredBin(models.Model):
 
     def action_complete_service(self):
         """Complete service and return bin to service"""
+
         self.ensure_one()
         if self.state != "collecting":
             raise ValidationError(_("Only bins being collected can complete service"))
@@ -458,6 +464,7 @@ class ShredBin(models.Model):
 
     def action_customer_mark_full(self):
         """Customer portal action to mark bin as full"""
+
         self.ensure_one()
         if not self.env.user.has_group("base.group_portal"):
             raise ValidationError(_("This action is only available to portal users"))
@@ -502,6 +509,7 @@ class ShredBin(models.Model):
 
     def action_schedule_pickup(self):
         """Create a pickup request for this bin"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -518,6 +526,7 @@ class ShredBin(models.Model):
 
     def action_view_services(self):
         """View shredding services for this bin"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -771,6 +780,7 @@ class ShredBin(models.Model):
 
     def action_swap_bin(self, new_bin_id):
         """Swap full bin with empty bin - charges only for new bin service"""
+
         self.ensure_one()
         if not new_bin_id:
             raise ValidationError(_("New bin must be specified for swap operation"))
@@ -814,6 +824,7 @@ class ShredBin(models.Model):
 
     def action_upsize_bin(self, new_bin_id):
         """Replace smaller bin with larger bin"""
+
         self.ensure_one()
         new_bin = self.env["shred.bin"].browse(new_bin_id)
 
@@ -825,6 +836,7 @@ class ShredBin(models.Model):
 
     def action_downsize_bin(self, new_bin_id):
         """Replace larger bin with smaller bin"""
+
         self.ensure_one()
         new_bin = self.env["shred.bin"].browse(new_bin_id)
 

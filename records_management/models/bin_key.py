@@ -73,6 +73,8 @@ License: LGPL-3
 from odoo import models, fields
 
 
+
+
 class BinKey(models.Model):
     _name = "bin.key"
     _description = "Bin Access Key"

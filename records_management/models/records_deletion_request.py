@@ -4,7 +4,10 @@ Records Deletion Request
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError
+
+
 
 class RecordsDeletionRequest(models.Model):
     """
@@ -54,12 +57,16 @@ class RecordsDeletionRequest(models.Model):
 
     def action_confirm(self):
         """Confirm the record"""
+
+        self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft requests can be confirmed"))
         self.write({"state": "confirmed"})
 
     def action_done(self):
         """Mark as done"""
+
+        self.ensure_one()
         if self.state != "confirmed":
             raise UserError(_("Only confirmed requests can be marked as done"))
         self.write({"state": "done"})

@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime, timedelta
+
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import UserError
-from datetime import datetime, timedelta
+
+
 
 
 class TestHardDriveScanning(TransactionCase):

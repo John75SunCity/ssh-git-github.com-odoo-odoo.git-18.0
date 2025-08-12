@@ -13,7 +13,10 @@ License: LGPL-3
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class RecordsContainer(models.Model):
@@ -320,6 +323,7 @@ class RecordsContainer(models.Model):
 
     def action_activate(self):
         """Activate container for storage"""
+
         self.ensure_one()
         if not self.partner_id:
             raise UserError(_("Customer must be specified before activation"))
@@ -336,12 +340,14 @@ class RecordsContainer(models.Model):
 
     def action_mark_full(self):
         """Mark container as full"""
+
         self.ensure_one()
         self.write({"is_full": True})
         self.message_post(body=_("Container marked as full"))
 
     def action_schedule_destruction(self):
         """Schedule container for destruction"""
+
         self.ensure_one()
         if self.permanent_retention:
             raise UserError(
@@ -353,6 +359,7 @@ class RecordsContainer(models.Model):
 
     def action_destroy(self):
         """Mark container as destroyed"""
+
         self.ensure_one()
         if self.state != "pending_destruction":
             raise UserError(_("Only containers pending destruction can be destroyed"))
@@ -366,6 +373,7 @@ class RecordsContainer(models.Model):
 
     def action_view_documents(self):
         """View all documents in this container"""
+
         self.ensure_one()
         return {
             "name": _("Documents in Container %s", self.name),
@@ -380,6 +388,7 @@ class RecordsContainer(models.Model):
         Generates a barcode if one doesn't exist and returns an action to print it.
         This assumes a report with the external ID 'records_management.report_container_barcode' exists.
         """
+
         self.ensure_one()
         if not self.barcode:
             # Generate barcode if not exists
@@ -392,6 +401,7 @@ class RecordsContainer(models.Model):
 
     def action_index_container(self):
         """Index container - change state from received to indexed"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft containers can be indexed"))
@@ -400,6 +410,7 @@ class RecordsContainer(models.Model):
 
     def action_store_container(self):
         """Store container - change state from indexed to stored"""
+
         self.ensure_one()
         if self.state != "active":
             raise UserError(_("Only active containers can be stored"))
@@ -415,6 +426,7 @@ class RecordsContainer(models.Model):
 
     def action_retrieve_container(self):
         """Retrieve container from storage"""
+
         self.ensure_one()
         if self.state not in ["stored", "active"]:
             raise UserError(_("Only stored or active containers can be retrieved"))
@@ -423,6 +435,7 @@ class RecordsContainer(models.Model):
 
     def action_destroy_container(self):
         """Prepare container for destruction"""
+
         self.ensure_one()
         if self.permanent_retention:
             raise UserError(_("Cannot destroy containers with permanent retention"))
@@ -430,6 +443,7 @@ class RecordsContainer(models.Model):
 
     def action_bulk_convert_container_type(self):
         """Bulk convert container types"""
+
         self.ensure_one()
         return {
             "name": _("Bulk Convert Container Types"),

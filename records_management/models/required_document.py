@@ -2,6 +2,8 @@
 
 from odoo import models, fields, api
 
+
+
 class RequiredDocument(models.Model):
     _name = "required.document"
     _description = "Required Document"
@@ -74,6 +76,7 @@ class RequiredDocument(models.Model):
 
     def action_mark_provided(self):
         """Mark document as provided"""
+
         self.ensure_one()
         self.write({"state": "provided", "is_provided": True})
 
@@ -85,6 +88,7 @@ class RequiredDocument(models.Model):
 
     def action_verify_document(self):
         """Verify document"""
+
         self.ensure_one()
         self.write(
             {

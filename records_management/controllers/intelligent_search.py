@@ -11,11 +11,14 @@ Provides advanced search capabilities including:
 
 import logging
 import time
-from collections import defaultdict
 from datetime import datetime
+from odoo.http import request
 
 from odoo import http
-from odoo.http import request
+
+from collections import defaultdict
+
+
 
 _logger = logging.getLogger(__name__)
 

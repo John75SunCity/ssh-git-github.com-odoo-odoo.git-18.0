@@ -18,12 +18,15 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
 import logging
 
-_logger = logging.getLogger(__name__)
+from odoo import models, fields, api, _
 
+from odoo.exceptions import UserError, ValidationError
+
+
+
+_logger = logging.getLogger(__name__)
 
 class PortalFeedbackResolution(models.Model):
     _name = "portal.feedback.resolution"
@@ -40,17 +43,17 @@ class PortalFeedbackResolution(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    ),
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user, tracking=True
     )
 
-    # Partner Relationship
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
-        help="Associated partner for this record"
-    )
+        help="Associated partner for this record",
+    ),
+    # Partner Relationship
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -59,23 +62,24 @@ class PortalFeedbackResolution(models.Model):
     feedback_id = fields.Many2one(
         "portal.feedback",
         string="Feedback",
+    )
         required=True,
         ondelete="cascade",
         index=True,
-    )
+    ),
     resolution_date = fields.Datetime(
         string="Resolution Date",
         required=True,
-        default=fields.Datetime.now,
+    default=fields.Datetime.now,)
         tracking=True,
-    )
+    ),
     resolved_by_id = fields.Many2one(
         "res.users",
         string="Resolved By",
         required=True,
         default=lambda self: self.env.user,
         tracking=True,
-    )
+    ),
     resolution_type = fields.Selection(
         [
             ("immediate", "Immediate Resolution"),
@@ -88,8 +92,8 @@ class PortalFeedbackResolution(models.Model):
         string="Resolution Type",
         required=True,
         tracking=True,
-    )
-    resolution_description = fields.Text(string="Resolution Description", required=True)
+    ),
+    resolution_description = fields.Text(string="Resolution Description", required=True),
     customer_notified = fields.Boolean(
         string="Customer Notified", default=False, tracking=True
     )
@@ -114,7 +118,7 @@ class PortalFeedbackResolution(models.Model):
     # ============================================================================
     cost_of_resolution = fields.Monetary(
         string="Cost of Resolution", currency_field="currency_id"
-    )
+    ),
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
@@ -122,11 +126,11 @@ class PortalFeedbackResolution(models.Model):
         required=True,
     )
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance),
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
+    ),
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
@@ -134,6 +138,7 @@ class PortalFeedbackResolution(models.Model):
     # ============================================================================
     def action_notify_customer(self):
         """Notify customer about the resolution"""
+
         self.ensure_one()
         if not self.feedback_id.customer_id:
             raise UserError(_("No customer found for this feedback."))
@@ -146,6 +151,7 @@ class PortalFeedbackResolution(models.Model):
 
     def action_update_satisfaction(self):
         """Open wizard to update customer satisfaction"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -155,7 +161,6 @@ class PortalFeedbackResolution(models.Model):
             "target": "new",
             "context": {"default_resolution_id": self.id},
         }
-
 
 class PortalFeedbackEscalation(models.Model):
     _name = "portal.feedback.escalation"
@@ -172,10 +177,16 @@ class PortalFeedbackEscalation(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    ),
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user, tracking=True
+    ),
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record",
     )
+    ),
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -187,24 +198,24 @@ class PortalFeedbackEscalation(models.Model):
         required=True,
         ondelete="cascade",
         index=True,
-    )
+    ),
     escalation_date = fields.Datetime(
         string="Escalation Date",
         required=True,
-        default=fields.Datetime.now,
+    default=fields.Datetime.now,)
         tracking=True,
-    )
+    ),
     escalated_by_id = fields.Many2one(
         "res.users",
         string="Escalated By",
         required=True,
         default=lambda self: self.env.user,
         tracking=True,
-    )
+    ),
     escalated_to_id = fields.Many2one(
         "res.users", string="Escalated To", required=True, tracking=True
-    )
-    escalation_reason = fields.Text(string="Escalation Reason", required=True)
+    ),
+    escalation_reason = fields.Text(string="Escalation Reason", required=True),
     escalation_level = fields.Selection(
         [
             ("level_1", "Level 1 - Supervisor"),
@@ -215,7 +226,7 @@ class PortalFeedbackEscalation(models.Model):
         string="Escalation Level",
         required=True,
         tracking=True,
-    )
+    ),
     urgency = fields.Selection(
         [
             ("low", "Low"),
@@ -225,9 +236,10 @@ class PortalFeedbackEscalation(models.Model):
         ],
         string="Urgency",
         default="medium",
-        tracking=True,
     )
-    deadline = fields.Datetime(string="Response Deadline")
+        tracking=True,
+    ),
+    deadline = fields.Datetime(string="Response Deadline"),
     status = fields.Selection(
         [
             ("pending", "Pending"),
@@ -236,15 +248,16 @@ class PortalFeedbackEscalation(models.Model):
             ("resolved", "Resolved"),
         ],
         string="Status",
+    )
         default="pending",
         tracking=True,
     )
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance),
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
+    ),
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
@@ -252,6 +265,7 @@ class PortalFeedbackEscalation(models.Model):
     # ============================================================================
     def action_acknowledge(self):
         """Acknowledge the escalation"""
+
         self.ensure_one()
         if self.status != "pending":
             raise UserError(_("Only pending escalations can be acknowledged."))
@@ -263,6 +277,7 @@ class PortalFeedbackEscalation(models.Model):
 
     def action_start_progress(self):
         """Start working on the escalation"""
+
         self.ensure_one()
         if self.status not in ["pending", "acknowledged"]:
             raise UserError(
@@ -276,12 +291,12 @@ class PortalFeedbackEscalation(models.Model):
 
     def action_resolve(self):
         """Mark escalation as resolved"""
+
         self.ensure_one()
         self.write({"status": "resolved"})
         self.message_post(
             body=_("Escalation has been resolved."), message_type="notification"
         )
-
 
 class PortalFeedbackAction(models.Model):
     _name = "portal.feedback.action"
@@ -293,16 +308,22 @@ class PortalFeedbackAction(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Action Name", required=True, tracking=True)
+    name = fields.Char(string="Action Name", required=True, tracking=True),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    ),
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user, tracking=True
+    ),
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
     )
+        help="Associated partner for this record",
+    ),
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -311,11 +332,12 @@ class PortalFeedbackAction(models.Model):
     feedback_id = fields.Many2one(
         "portal.feedback",
         string="Feedback",
+    )
         required=True,
         ondelete="cascade",
         index=True,
-    )
-    description = fields.Text(string="Action Description")
+    ),
+    description = fields.Text(string="Action Description"),
     action_type = fields.Selection(
         [
             ("training", "Training"),
@@ -326,19 +348,21 @@ class PortalFeedbackAction(models.Model):
             ("follow_up", "Follow-up"),
         ],
         string="Action Type",
+    )
         required=True,
         tracking=True,
-    )
+    ),
     assigned_to_id = fields.Many2one(
         "res.users", string="Assigned To", required=True, tracking=True
-    )
-    due_date = fields.Date(string="Due Date", required=True, tracking=True)
+    ),
+    due_date = fields.Date(string="Due Date", required=True, tracking=True),
     priority = fields.Selection(
         [("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")],
         string="Priority",
+    )
         default="medium",
         tracking=True,
-    )
+    ),
     status = fields.Selection(
         [
             ("not_started", "Not Started"),
@@ -347,23 +371,24 @@ class PortalFeedbackAction(models.Model):
             ("cancelled", "Cancelled"),
         ],
         string="Status",
+    )
         default="not_started",
         tracking=True,
-    )
-    completion_date = fields.Date(string="Completion Date", tracking=True)
+    ),
+    completion_date = fields.Date(string="Completion Date", tracking=True),
     completion_notes = fields.Text(string="Completion Notes")
 
     # ============================================================================
     # TIME TRACKING
     # ============================================================================
-    estimated_hours = fields.Float(string="Estimated Hours", digits=(8, 2))
+    estimated_hours = fields.Float(string="Estimated Hours", digits=(8, 2)),
     actual_hours = fields.Float(string="Actual Hours", digits=(8, 2))
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance),
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
+    ),
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
@@ -372,13 +397,19 @@ class PortalFeedbackAction(models.Model):
     is_overdue = fields.Boolean(
         string="Is Overdue",
         compute="_compute_is_overdue",
+
         help="True if action is past due date and not completed",
     )
+
+        )
     days_remaining = fields.Integer(
         string="Days Remaining",
-        compute="_compute_days_remaining",
-        help="Days remaining until due date",
     )
+        compute="_compute_days_remaining",
+
+        help="Days remaining until due date",
+
+        )
 
     # ============================================================================
     # COMPUTE METHODS
@@ -386,7 +417,7 @@ class PortalFeedbackAction(models.Model):
     @api.depends("due_date", "status")
     def _compute_is_overdue(self):
         """Check if action is overdue"""
-        today = fields.Date.today()
+    today = fields.Date.today()
         for record in self:
             record.is_overdue = (
                 record.due_date
@@ -397,7 +428,7 @@ class PortalFeedbackAction(models.Model):
     @api.depends("due_date")
     def _compute_days_remaining(self):
         """Calculate days remaining until due date"""
-        today = fields.Date.today()
+    today = fields.Date.today()
         for record in self:
             if record.due_date:
                 delta = record.due_date - today
@@ -410,6 +441,7 @@ class PortalFeedbackAction(models.Model):
     # ============================================================================
     def action_start(self):
         """Start working on the action"""
+
         self.ensure_one()
         if self.status != "not_started":
             raise UserError(_("Can only start actions that haven't been started yet."))
@@ -421,6 +453,7 @@ class PortalFeedbackAction(models.Model):
 
     def action_complete(self):
         """Mark action as completed"""
+
         self.ensure_one()
         if self.status == "completed":
             raise UserError(_("Action is already completed."))
@@ -432,6 +465,7 @@ class PortalFeedbackAction(models.Model):
 
     def action_cancel(self):
         """Cancel the action"""
+
         self.ensure_one()
         if self.status == "completed":
             raise UserError(_("Cannot cancel a completed action."))
@@ -466,7 +500,6 @@ class PortalFeedbackAction(models.Model):
                     _("Due date cannot be in the past for new actions.")
                 )
 
-
 class PortalFeedbackCommunication(models.Model):
     _name = "portal.feedback.communication"
     _description = "Portal Feedback Communication"
@@ -477,16 +510,22 @@ class PortalFeedbackCommunication(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    subject = fields.Char(string="Subject", required=True, tracking=True)
+    subject = fields.Char(string="Subject", required=True, tracking=True),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
+    )
         default=lambda self: self.env.company,
         required=True,
-    )
+    ),
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user, tracking=True
-    )
+    ),
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record",
+    ),
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -495,16 +534,18 @@ class PortalFeedbackCommunication(models.Model):
     feedback_id = fields.Many2one(
         "portal.feedback",
         string="Feedback",
+    )
         required=True,
         ondelete="cascade",
         index=True,
-    )
+    ),
     communication_date = fields.Datetime(
         string="Communication Date",
-        required=True,
-        default=fields.Datetime.now,
-        tracking=True,
     )
+        required=True,
+    default=fields.Datetime.now,)
+        tracking=True,
+    ),
     communication_type = fields.Selection(
         [
             ("email", "Email"),
@@ -515,21 +556,23 @@ class PortalFeedbackCommunication(models.Model):
             ("chat", "Live Chat"),
         ],
         string="Communication Type",
+    )
         required=True,
         tracking=True,
-    )
+    ),
     direction = fields.Selection(
         [
             ("inbound", "Inbound (from Customer)"),
             ("outbound", "Outbound (to Customer)"),
         ],
         string="Direction",
+    )
         required=True,
         tracking=True,
-    )
-    message = fields.Text(string="Message Content", required=True)
-    sender_id = fields.Many2one("res.users", string="Sender")
-    recipient_id = fields.Many2one("res.partner", string="Recipient")
+    ),
+    message = fields.Text(string="Message Content", required=True),
+    sender_id = fields.Many2one("res.users", string="Sender"),
+    recipient_id = fields.Many2one("res.partner", string="Recipient"),
     channel = fields.Char(string="Communication Channel")
 
     # ============================================================================
@@ -537,14 +580,14 @@ class PortalFeedbackCommunication(models.Model):
     # ============================================================================
     response_required = fields.Boolean(
         string="Response Required", default=False, tracking=True
-    )
+    ),
     response_deadline = fields.Datetime(string="Response Deadline")
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance),
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
+    ),
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
@@ -552,6 +595,7 @@ class PortalFeedbackCommunication(models.Model):
     # ============================================================================
     def action_mark_responded(self):
         """Mark communication as responded"""
+
         self.ensure_one()
         self.write({"response_required": False})
         self.message_post(
@@ -560,6 +604,7 @@ class PortalFeedbackCommunication(models.Model):
 
     def action_send_followup(self):
         """Send a follow-up communication"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -569,7 +614,6 @@ class PortalFeedbackCommunication(models.Model):
             "target": "new",
             "context": {"default_original_communication_id": self.id},
         }
-
 
 class PortalFeedbackAnalytics(models.Model):
     _name = "portal.feedback.analytics"
@@ -581,22 +625,28 @@ class PortalFeedbackAnalytics(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Analytics Period", required=True, tracking=True)
+    name = fields.Char(string="Analytics Period", required=True, tracking=True),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
+    )
         default=lambda self: self.env.company,
         required=True,
-    )
+    ),
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user, tracking=True
-    )
+    ),
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record",
+    ),
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
     # PERIOD DEFINITION
     # ============================================================================
-    period_start = fields.Date(string="Period Start", required=True)
+    period_start = fields.Date(string="Period Start", required=True),
     period_end = fields.Date(string="Period End", required=True)
 
     # ============================================================================
@@ -604,64 +654,68 @@ class PortalFeedbackAnalytics(models.Model):
     # ============================================================================
     total_feedback_count = fields.Integer(
         string="Total Feedback", compute="_compute_analytics", store=True
-    )
+    ),
     positive_feedback_count = fields.Integer(
         string="Positive Feedback", compute="_compute_analytics", store=True
-    )
+    ),
     negative_feedback_count = fields.Integer(
         string="Negative Feedback", compute="_compute_analytics", store=True
-    )
+    ),
     average_rating = fields.Float(
         string="Average Rating", digits=(3, 2), compute="_compute_analytics", store=True
-    )
+    ),
     average_response_time = fields.Float(
         string="Avg Response Time (Hours)",
+    )
         digits=(8, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    ),
     average_resolution_time = fields.Float(
         string="Avg Resolution Time (Hours)",
+    )
         digits=(8, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    ),
     sla_compliance_rate = fields.Float(
         string="SLA Compliance Rate (%)",
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    ),
     nps_score = fields.Float(
-        string="Net Promoter Score",
+        string="Net Promoter Score",)
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    ),
     customer_satisfaction_index = fields.Float(
-        string="Customer Satisfaction Index",
+        string="Customer Satisfaction Index",)
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    ),
     escalation_rate = fields.Float(
         string="Escalation Rate (%)",
+    )
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    ),
     repeat_feedback_rate = fields.Float(
         string="Repeat Feedback Rate (%)",
+    )
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
     )
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance),
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
+    ),
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
@@ -777,7 +831,6 @@ class PortalFeedbackAnalytics(models.Model):
                             feedback_records.filtered(
                                 lambda f: f.customer_id == customer
                             )
-                        )
                         if customer_feedback_count > 1:
                             repeat_customers.append(customer)
 
@@ -808,6 +861,8 @@ class PortalFeedbackAnalytics(models.Model):
     # ============================================================================
     def action_refresh_analytics(self):
         """Manually refresh analytics data"""
+
+        self.ensure_one()
         self._compute_analytics()
         return {
             "type": "ir.actions.client",
@@ -821,6 +876,7 @@ class PortalFeedbackAnalytics(models.Model):
 
     def action_view_period_feedback(self):
         """View feedback records for this analytics period"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

@@ -7,9 +7,13 @@ for the Records Management System. It implements AI-ready sentiment analysis, au
 assignment, and complete feedback lifecycle management with customer portal integration.
 """
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
 import logging
+
+from odoo import models, fields, api, _
+
+from odoo.exceptions import UserError, ValidationError
+
+
 
 _logger = logging.getLogger(__name__)
 
@@ -330,6 +334,7 @@ class CustomerFeedback(models.Model):
     # ============================================================================
     def action_acknowledge(self):
         """Acknowledge feedback and move to acknowledged state"""
+
         self.ensure_one()
         if self.state != "new":
             raise UserError(_("Only new feedback can be acknowledged"))
@@ -338,6 +343,7 @@ class CustomerFeedback(models.Model):
 
     def action_start_progress(self):
         """Start working on feedback"""
+
         self.ensure_one()
         if self.state not in ["new", "acknowledged"]:
             raise UserError(_("Only new or acknowledged feedback can be started"))
@@ -346,6 +352,7 @@ class CustomerFeedback(models.Model):
 
     def action_resolve(self):
         """Mark feedback as resolved"""
+
         self.ensure_one()
         if self.state != "in_progress":
             raise UserError(_("Only in-progress feedback can be resolved"))
@@ -354,6 +361,7 @@ class CustomerFeedback(models.Model):
 
     def action_close(self):
         """Close feedback after customer confirmation"""
+
         self.ensure_one()
         if self.state != "resolved":
             raise UserError(_("Only resolved feedback can be closed"))
@@ -362,6 +370,7 @@ class CustomerFeedback(models.Model):
 
     def action_reopen(self):
         """Reopen closed feedback if needed"""
+
         self.ensure_one()
         if self.state != "closed":
             raise UserError(_("Only closed feedback can be reopened"))

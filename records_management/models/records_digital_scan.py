@@ -3,9 +3,13 @@
 Digital Scan of Document
 """
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
 from datetime import datetime
+
+from odoo import models, fields, api, _
+
+from odoo.exceptions import UserError, ValidationError
+
+
 
 class RecordsDigitalScan(models.Model):
     """
@@ -126,6 +130,7 @@ class RecordsDigitalScan(models.Model):
     # ============================================================================
     def action_confirm(self):
         """Confirm the digital scan record"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Can only confirm draft scans"))
@@ -146,6 +151,7 @@ class RecordsDigitalScan(models.Model):
 
     def action_done(self):
         """Mark the digital scan as completed"""
+
         self.ensure_one()
         if self.state not in ["draft", "confirmed"]:
             raise UserError(_("Can only complete draft or confirmed scans"))
@@ -160,6 +166,7 @@ class RecordsDigitalScan(models.Model):
 
     def action_reset_to_draft(self):
         """Reset to draft state"""
+
         self.ensure_one()
         self.write(
             {

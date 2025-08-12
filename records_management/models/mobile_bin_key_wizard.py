@@ -6,6 +6,8 @@ Mobile Bin Key Management Wizard
 from odoo import models, fields, _
 
 
+
+
 class MobileBinKeyWizard(models.Model):
     """
     Mobile Bin Key Management Wizard
@@ -111,10 +113,14 @@ class MobileBinKeyWizard(models.Model):
     # ============================================================================
     def action_confirm(self):
         """Confirm the record by updating its workflow state to 'confirmed'."""
+
+        self.ensure_one()
         self.write({"state": "confirmed"})
 
     def action_done(self):
         """Mark the record as done."""
+
+        self.ensure_one()
         self.write({"state": "done"})
 
     def action_execute_wizard(self):
@@ -124,6 +130,7 @@ class MobileBinKeyWizard(models.Model):
         For 'quick_lookup', posts a message and refreshes the form view.
         For other action types, marks the record as done, posts a message, and closes the window.
         """
+
         self.ensure_one()
         action_type = self.action_type or "quick_lookup"
         if action_type == "quick_lookup":
@@ -144,6 +151,7 @@ class MobileBinKeyWizard(models.Model):
         """
         Open a window to select or view the action type for the mobile bin key wizard.
         """
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",

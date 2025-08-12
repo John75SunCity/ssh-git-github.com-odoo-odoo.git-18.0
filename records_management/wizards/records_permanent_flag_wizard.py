@@ -6,6 +6,8 @@ Records Permanent Flag Wizard
 from odoo import models, fields, api, _
 
 
+
+
 class RecordsPermanentFlagWizard(models.TransientModel):
     """
     Records Permanent Flag Wizard
@@ -22,6 +24,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
     def action_apply_flag(self):
         """Apply the permanent flag to selected records"""
+
         self.ensure_one()
         for record in self.record_ids:
             record.write(

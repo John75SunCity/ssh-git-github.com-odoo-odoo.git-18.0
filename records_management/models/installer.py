@@ -2,6 +2,8 @@
 from odoo import models, fields, api, _
 
 
+
+
 class RecordsInstaller(models.Model):
     _name = "records.installer"
     _description = "Records Installer"
@@ -42,6 +44,8 @@ class RecordsInstaller(models.Model):
 
     def action_confirm(self):
         """Set the record's state to 'confirmed'."""
+
+        self.ensure_one()
         self.write({"state": "confirmed"})
 
     partner_id = fields.Many2one(
@@ -52,8 +56,12 @@ class RecordsInstaller(models.Model):
 
     def action_cancel(self):
         """Set the record's state to 'cancelled'."""
+
+        self.ensure_one()
         self.write({"state": "cancelled"})
 
     def action_reset_to_draft(self):
         """Reset the record's state to 'draft'."""
+
+        self.ensure_one()
         self.write({"state": "draft"})

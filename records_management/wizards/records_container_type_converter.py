@@ -14,7 +14,10 @@ Key Features:
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError
+
+
 
 
 class RecordsContainerTypeConverterWizard(models.TransientModel):
@@ -281,6 +284,7 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
     # ============================================================================
     def action_preview_conversion(self):
         """Preview containers that will be converted"""
+
         self.ensure_one()
         
         if not self.source_container_type:
@@ -302,6 +306,7 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
 
     def action_execute_conversion(self):
         """Execute the container type conversion"""
+
         self.ensure_one()
         
         # Validation
@@ -367,6 +372,7 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
 
     def action_cancel(self):
         """Cancel the wizard"""
+
         self.ensure_one()
         return {'type': 'ir.actions.act_window_close'}
 
@@ -424,6 +430,6 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
                 return {
                     'warning': {
                         'title': _("Cost Impact"),
-                        'message': _("Converting container type will cause a monthly cost %s of %.2f. Review pricing details.") % (cost_direction, abs(cost_change))
+                        'message': _("Converting container type will cause a monthly cost %s of %.2f. Review pricing details.", (cost_direction), abs(cost_change))
                     }
                 }

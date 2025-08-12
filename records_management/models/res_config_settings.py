@@ -20,7 +20,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
+
 
 
 class ResConfigSettings(models.TransientModel):
@@ -367,6 +370,7 @@ class ResConfigSettings(models.TransientModel):
     # ============================================================================
     def action_enable_full_compliance(self):
         """Enable complete NAID AAA compliance configuration"""
+
         self.ensure_one()
         
         self.write({
@@ -393,6 +397,7 @@ class ResConfigSettings(models.TransientModel):
     
     def action_configure_billing_defaults(self):
         """Configure comprehensive billing default settings"""
+
         self.ensure_one()
         
         return {
@@ -411,6 +416,7 @@ class ResConfigSettings(models.TransientModel):
     
     def action_test_barcode_generation(self):
         """Test the barcode generation system with current settings"""
+
         self.ensure_one()
         
         if not self.auto_barcode_generation:
@@ -438,6 +444,7 @@ class ResConfigSettings(models.TransientModel):
     
     def action_setup_fsm_integration(self):
         """Setup and validate Field Service Management integration"""
+
         self.ensure_one()
         
         if not self.fsm_integration_enabled:
@@ -475,6 +482,7 @@ class ResConfigSettings(models.TransientModel):
     
     def action_validate_system_configuration(self):
         """Validate complete system configuration and provide recommendations"""
+
         self.ensure_one()
         
         issues = []

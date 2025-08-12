@@ -28,7 +28,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError
+
+
 
 class StockLot(models.Model):
     """Stock Lot Extensions for Records Management"""
@@ -133,6 +136,7 @@ class StockLot(models.Model):
     # ============================================================================
     def action_print_label(self):
         """Print lot identification label"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.report",
@@ -143,6 +147,7 @@ class StockLot(models.Model):
 
     def action_schedule_quality_check(self):
         """Schedule quality check for this lot"""
+
         self.ensure_one()
 
         # Create quality check activity
@@ -167,6 +172,7 @@ class StockLot(models.Model):
 
     def action_approve_quality(self):
         """Approve lot quality status"""
+
         self.ensure_one()
         if self.quality_status == "approved":
             raise UserError(_("Lot is already approved."))
@@ -181,6 +187,7 @@ class StockLot(models.Model):
 
     def action_reject_quality(self):
         """Reject lot quality status"""
+
         self.ensure_one()
         if self.quality_status == "rejected":
             raise UserError(_("Lot is already rejected."))
@@ -196,6 +203,7 @@ class StockLot(models.Model):
 
     def action_mark_destruction_eligible(self):
         """Mark lot as eligible for destruction"""
+
         self.ensure_one()
         if self.quality_status != "approved":
             raise UserError(_("Only approved lots can be marked for destruction."))
@@ -205,6 +213,7 @@ class StockLot(models.Model):
 
     def action_schedule_destruction(self):
         """Schedule destruction for this lot"""
+
         self.ensure_one()
         if not self.destruction_eligible:
             raise UserError(_("Lot must be eligible for destruction."))
@@ -224,6 +233,7 @@ class StockLot(models.Model):
 
     def action_track_history(self):
         """View movement history of this lot"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -239,6 +249,7 @@ class StockLot(models.Model):
 
     def action_view_location(self):
         """View current location of this lot"""
+
         self.ensure_one()
         quants = self.env["stock.quant"].search(
             [("lot_id", "=", self.id), ("quantity", ">", 0)]
@@ -258,6 +269,7 @@ class StockLot(models.Model):
 
     def action_view_documents(self):
         """View associated documents"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -270,6 +282,7 @@ class StockLot(models.Model):
 
     def action_open_quality_checks(self):
         """View quality checks for this lot"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -285,6 +298,7 @@ class StockLot(models.Model):
 
     def action_view_custody_events(self):
         """View chain of custody events"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -300,6 +314,7 @@ class StockLot(models.Model):
 
     def action_create_custody_event(self):
         """Create new chain of custody event"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -315,6 +330,7 @@ class StockLot(models.Model):
 
     def action_generate_compliance_report(self):
         """Generate compliance report for this lot"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.report",

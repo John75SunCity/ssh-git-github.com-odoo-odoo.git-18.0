@@ -30,7 +30,9 @@ License: LGPL-3
 from datetime import timedelta
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import UserError, ValidationError
+
 
 
 class TempInventory(models.Model):
@@ -45,25 +47,22 @@ class TempInventory(models.Model):
     # ============================================================================
     name = fields.Char(
         string="Inventory Reference",
+    )
         required=True,
         tracking=True,
         index=True,
-        help="Unique temporary inventory reference",
-    )
+
+    help="Unique temporary inventory reference",
+
+        )
 
     # Partner Relationship
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
-
     description = fields.Text(
         string="Description", help="Detailed description of temporary inventory"
-    )
+    ),
     sequence = fields.Integer(
         string="Sequence", default=10, help="Display order sequence"
-    )
+    ),
     active = fields.Boolean(
         string="Active", default=True, help="Active status of inventory record"
     )
@@ -76,7 +75,7 @@ class TempInventory(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    ),
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
@@ -84,7 +83,14 @@ class TempInventory(models.Model):
         tracking=True,
         help="User responsible for this temporary inventory",
     )
+    )
 
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+    )
+        help="Associated partner for this record",
+    ),
     # ============================================================================
     # STATE MANAGEMENT
     # ============================================================================
@@ -100,8 +106,11 @@ class TempInventory(models.Model):
         string="Status",
         default="draft",
         tracking=True,
-        help="Current inventory status",
-    )
+
+    help="Current inventory status",
+)
+
+        )
     priority = fields.Selection(
         [
             ("low", "Low"),
@@ -110,6 +119,7 @@ class TempInventory(models.Model):
             ("urgent", "Urgent"),
         ],
         string="Priority",
+    )
         default="normal",
         tracking=True,
         help="Priority level for processing",
@@ -121,8 +131,11 @@ class TempInventory(models.Model):
     location_id = fields.Many2one(
         "records.location",
         string="Storage Location",
-        help="Physical location where inventory is stored",
     )
+
+        help="Physical location where inventory is stored",
+
+        )
     storage_type = fields.Selection(
         [
             ("boxes", "Document Boxes"),
@@ -131,32 +144,47 @@ class TempInventory(models.Model):
             ("mixed", "Mixed Storage"),
         ],
         string="Storage Type",
-        default="boxes",
-        help="Type of items stored",
     )
+        default="boxes",
+
+    help="Type of items stored",
+
+        )
     capacity_limit = fields.Integer(
         string="Capacity Limit",
-        default=100,
-        help="Maximum number of items that can be stored",
     )
+        default=100,
+
+        help="Maximum number of items that can be stored",
+
+        )
     current_count = fields.Integer(
         string="Current Count",
+    )
         compute="_compute_current_count",
         store=True,
-        help="Current number of items stored",
-    )
+
+    help="Current number of items stored",
+
+        )
     available_capacity = fields.Integer(
         string="Available Capacity",
+    )
         compute="_compute_available_capacity",
         store=True,
-        help="Remaining storage capacity",
-    )
+
+    help="Remaining storage capacity",
+
+        )
     utilization_percent = fields.Float(
         string="Utilization %",
+    )
         compute="_compute_utilization_percent",
         store=True,
-        help="Percentage of capacity utilized",
-    )
+
+    help="Percentage of capacity utilized",
+
+        )
 
     # ============================================================================
     # DOCUMENT RELATIONSHIPS
@@ -165,71 +193,94 @@ class TempInventory(models.Model):
         "records.document",
         "temp_inventory_id",
         string="Associated Documents",
-        help="Documents stored in this temporary inventory",
-    )
+
+    help="Documents stored in this temporary inventory",
+)
+
+        )
     container_ids = fields.One2many(
         "records.container",
         "temp_inventory_id",
         string="Associated Containers",
-        help="Containers stored in this temporary inventory",
     )
+
+    help="Containers stored in this temporary inventory",
+
+        )
     document_count = fields.Integer(
         string="Document Count",
         compute="_compute_document_count",
         store=True,
-        help="Total number of associated documents",
-    )
+
+    help="Total number of associated documents",
+)
+
+        )
     container_count = fields.Integer(
         string="Container Count",
+    )
         compute="_compute_container_count",
         store=True,
-        help="Total number of associated containers",
-    )
+
+    help="Total number of associated containers",
+
+        )
 
     # ============================================================================
     # TEMPORAL FIELDS
     # ============================================================================
     date_created = fields.Datetime(
         string="Created Date",
-        default=fields.Datetime.now,
-        required=True,
-        help="When inventory record was created",
     )
+    default=fields.Datetime.now,
+        required=True,
+
+        help="When inventory record was created"
+
+        )
     date_modified = fields.Datetime(
         string="Last Modified", help="When inventory was last modified"
-    )
+    ),
     date_activated = fields.Datetime(
         string="Activation Date", help="When inventory was activated"
-    )
+    ),
     date_archived = fields.Datetime(
         string="Archive Date", help="When inventory was archived"
-    )
+    ),
     retention_period = fields.Integer(
         string="Retention Period (Days)",
-        default=30,
-        help="How long items can stay in temporary inventory",
     )
+        default=30,
+
+        help="How long items can stay in temporary inventory",
+
+        )
     expiry_date = fields.Date(
         string="Expiry Date",
         compute="_compute_expiry_date",
         store=True,
-        help="When temporary storage expires",
-    )
+
+    help="When temporary storage expires",
+
+        )
 
     # ============================================================================
     # WORKFLOW AND APPROVAL
     # ============================================================================
     approval_required = fields.Boolean(
         string="Approval Required",
-        default=False,
-        help="Whether approval is required for this inventory",
     )
+        default=False,
+
+        help="Whether approval is required for this inventory",
+
+        )
     approved_by_id = fields.Many2one(
         "res.users", string="Approved By", help="User who approved this inventory"
-    )
+    ),
     approval_date = fields.Datetime(
         string="Approval Date", help="When inventory was approved"
-    )
+    ),
     rejection_reason = fields.Text(
         string="Rejection Reason", help="Reason for rejection if applicable"
     )
@@ -245,9 +296,12 @@ class TempInventory(models.Model):
             ("processing", "Processing Queue"),
         ],
         string="Inventory Type",
-        default="temporary",
-        help="Type of temporary inventory",
     )
+        default="temporary",
+
+    help="Type of temporary inventory",
+
+        )
     access_level = fields.Selection(
         [
             ("public", "Public Access"),
@@ -255,19 +309,28 @@ class TempInventory(models.Model):
             ("confidential", "Confidential"),
         ],
         string="Access Level",
-        default="restricted",
-        help="Security access level",
     )
+        default="restricted",
+
+    help="Security access level",
+
+        )
     temperature_controlled = fields.Boolean(
         string="Temperature Controlled",
-        default=False,
-        help="Whether storage is temperature controlled",
     )
+        default=False,
+
+        help="Whether storage is temperature controlled",
+
+        )
     humidity_controlled = fields.Boolean(
         string="Humidity Controlled",
-        default=False,
-        help="Whether storage is humidity controlled",
     )
+        default=False,
+
+        help="Whether storage is humidity controlled",
+
+        )
 
     # ============================================================================
     # MOVEMENT AND TRACKING
@@ -276,20 +339,29 @@ class TempInventory(models.Model):
         "temp.inventory.movement",
         "inventory_id",
         string="Inventory Movements",
-        help="History of inventory movements",
     )
+
+    help="History of inventory movements",
+
+        )
     last_movement_date = fields.Datetime(
         string="Last Movement",
         compute="_compute_last_movement_date",
         store=True,
-        help="Date of last inventory movement",
-    )
+
+    help="Date of last inventory movement",
+)
+
+        )
     movement_count = fields.Integer(
         string="Movement Count",
         compute="_compute_movement_count",
         store=True,
-        help="Total number of movements",
-    )
+
+    help="Total number of movements",
+)
+
+        )
 
     # ============================================================================
     # COMPLIANCE AND AUDIT
@@ -297,24 +369,36 @@ class TempInventory(models.Model):
     compliance_required = fields.Boolean(
         string="Compliance Required",
         default=True,
+
         help="Whether compliance tracking is required",
     )
+
+        )
     audit_trail_ids = fields.One2many(
         "temp.inventory.audit",
         "inventory_id",
         string="Audit Trail",
-        help="Complete audit trail for this inventory",
-    )
+
+    help="Complete audit trail for this inventory",
+)
+
+        )
     chain_of_custody_required = fields.Boolean(
         string="Chain of Custody Required",
         default=False,
+
         help="Whether chain of custody tracking is required",
     )
+
+        )
     naid_compliant = fields.Boolean(
         string="NAID Compliant",
         default=False,
+
         help="Whether inventory meets NAID standards",
     )
+
+        )
 
     # ============================================================================
     # FINANCIAL FIELDS
@@ -322,38 +406,51 @@ class TempInventory(models.Model):
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
+    )
         default=lambda self: self.env.company.currency_id,
         required=True,
-    )
+    ),
     storage_cost = fields.Monetary(
         string="Storage Cost",
+    )
         currency_field="currency_id",
         default=0.0,
-        help="Cost of temporary storage",
-    )
+
+    help="Cost of temporary storage",
+
+        )
     handling_cost = fields.Monetary(
         string="Handling Cost",
+    )
         currency_field="currency_id",
         default=0.0,
-        help="Cost of handling and processing",
-    )
+
+    help="Cost of handling and processing",
+
+        )
     total_cost = fields.Monetary(
         string="Total Cost",
         currency_field="currency_id",
         compute="_compute_total_cost",
         store=True,
-        help="Total cost including storage and handling",
-    )
+
+    help="Total cost including storage and handling",
+)
+
+        )
 
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
     display_name = fields.Char(
         string="Display Name",
+    )
         compute="_compute_display_name",
         store=True,
-        help="Display name for this inventory record",
-    )
+
+    help="Display name for this inventory record",
+
+        )
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -362,14 +459,16 @@ class TempInventory(models.Model):
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
+        domain=lambda self: [("res_model", "=", self._name)],
+    ),
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
     )
+        domain=lambda self: [("res_model", "=", self._name)],
+    ),
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -464,6 +563,7 @@ class TempInventory(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activate the temporary inventory"""
+
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft inventories can be activated"))
@@ -478,6 +578,7 @@ class TempInventory(models.Model):
 
     def action_deactivate(self):
         """Deactivate the temporary inventory"""
+
         self.ensure_one()
         if self.state not in ("active", "in_use"):
             raise UserError(_("Only active or in-use inventories can be deactivated"))
@@ -487,6 +588,7 @@ class TempInventory(models.Model):
 
     def action_archive(self):
         """Archive the temporary inventory"""
+
         self.ensure_one()
         if self.current_count > 0:
             raise UserError(
@@ -494,8 +596,6 @@ class TempInventory(models.Model):
                     "Cannot archive inventory with items. "
                     "Please remove all items before archiving."
                 )
-            )
-
         self.write(
             {
                 "state": "archived",
@@ -507,6 +607,7 @@ class TempInventory(models.Model):
 
     def action_approve(self):
         """Approve the temporary inventory"""
+
         self.ensure_one()
         if not self.approval_required:
             raise UserError(_("This inventory does not require approval"))
@@ -521,6 +622,7 @@ class TempInventory(models.Model):
 
     def action_reject(self):
         """Reject the temporary inventory"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -533,6 +635,7 @@ class TempInventory(models.Model):
 
     def action_view_documents(self):
         """View associated documents"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -545,6 +648,7 @@ class TempInventory(models.Model):
 
     def action_view_containers(self):
         """View associated containers"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -557,6 +661,7 @@ class TempInventory(models.Model):
 
     def action_view_movements(self):
         """View inventory movements"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -569,6 +674,7 @@ class TempInventory(models.Model):
 
     def action_create_movement(self):
         """Create new inventory movement"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -584,9 +690,10 @@ class TempInventory(models.Model):
 
     def action_check_capacity_status(self):
         """Check capacity status and update state if needed - Business method"""
+
         self.ensure_one()
 
-        if self.utilization_percent >= 100:
+    if self.utilization_percent >= 100:
             self.write({"state": "full"})
             message = _("Inventory is at full capacity")
             message_type = "warning"
@@ -691,7 +798,7 @@ class TempInventory(models.Model):
         vals["date_modified"] = fields.Datetime.now()
 
         # Handle state changes
-        if "state" in vals:
+    if "state" in vals:
             for record in self:
                 if vals["state"] != record.state:
                     old_state = dict(record._fields["state"].selection)[record.state]
@@ -713,7 +820,6 @@ class TempInventory(models.Model):
                         record.name,
                         record.current_count,
                     )
-                )
         return super().unlink()
 
     # ============================================================================

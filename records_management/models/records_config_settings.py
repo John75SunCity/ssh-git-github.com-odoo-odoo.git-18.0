@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
+
 from odoo.exceptions import UserError
+
+
 
 
 class RecordsConfigSettings(models.TransientModel):
@@ -464,6 +467,7 @@ class RecordsConfigSettings(models.TransientModel):
     
     def action_test_notification_settings(self):
         """Test notification configuration by sending test messages"""
+
         self.ensure_one()
         
         if self.notification_email_enabled:
@@ -492,6 +496,7 @@ class RecordsConfigSettings(models.TransientModel):
     
     def action_run_compliance_audit(self):
         """Run a comprehensive compliance audit"""
+
         self.ensure_one()
         
         audit_results = {
@@ -538,6 +543,7 @@ class RecordsConfigSettings(models.TransientModel):
     
     def action_reset_all_settings(self):
         """Reset all settings to recommended defaults"""
+
         self.ensure_one()
         
         default_values = {

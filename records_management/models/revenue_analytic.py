@@ -4,6 +4,8 @@
 from odoo import api, fields, models
 
 
+
+
 class RevenueAnalytic(models.Model):
     """Revenue analytics for billing configurations"""
 

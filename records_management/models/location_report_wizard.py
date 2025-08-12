@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
+
 from odoo.exceptions import UserError
+
+
 
 RECORDS_MANAGER_GROUP_XMLID = "records_management.group_records_manager"
 
@@ -467,6 +470,7 @@ class LocationReportWizard(models.Model):
         SECURITY NOTE: This method respects all privacy controls and only
         shows data the current user is authorized to view.
         """
+
         self.ensure_one()
 
         # Validate user has access to requested data
@@ -494,6 +498,7 @@ class LocationReportWizard(models.Model):
 
     def action_print_report(self):
         """Generate PDF report with privacy-filtered data."""
+
         self.ensure_one()
 
         # Ensure report data is current
@@ -512,6 +517,7 @@ class LocationReportWizard(models.Model):
         - Internal users: Export based on access permissions
         - Data masking: Sensitive fields may be hidden based on user level
         """
+
         self.ensure_one()
 
         # Generate CSV data respecting privacy controls
@@ -544,6 +550,8 @@ class LocationReportWizard(models.Model):
 
     def action_confirm(self):
         """Confirm the report and generate final data."""
+
+        self.ensure_one()
         for record in self:
             if record.state != "draft":
                 raise UserError(_("Only draft reports can be confirmed."))
@@ -552,12 +560,16 @@ class LocationReportWizard(models.Model):
 
     def action_set_to_draft(self):
         """Reset report to draft state for modifications."""
+
+        self.ensure_one()
         for record in self:
             record.write({"state": "draft"})
         return True
 
     def action_cancel(self):
         """Cancel the report generation."""
+
+        self.ensure_one()
         for record in self:
             record.write({"state": "cancelled"})
         return True

@@ -9,6 +9,8 @@ tracking, cost analysis, and quality metrics.
 from odoo import models, fields, api
 
 
+
+
 class DocumentRetrievalMetric(models.Model):
     """Performance metrics for document retrieval operations"""
 

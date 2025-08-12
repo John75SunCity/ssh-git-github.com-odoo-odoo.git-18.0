@@ -19,7 +19,10 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+
 from odoo.exceptions import ValidationError
+
+
 
 
 class PaymentSplit(models.Model):
@@ -444,6 +447,7 @@ class PaymentSplit(models.Model):
     # ============================================================================
     def action_submit_for_approval(self):
         """Submit payment split for approval"""
+
         self.ensure_one()
         if self.state != "draft":
             raise ValidationError(_("Only draft splits can be submitted for approval"))
@@ -453,6 +457,7 @@ class PaymentSplit(models.Model):
 
     def action_approve(self):
         """Approve payment split"""
+
         self.ensure_one()
         if self.state != "pending":
             raise ValidationError(_("Only pending splits can be approved"))
@@ -468,6 +473,7 @@ class PaymentSplit(models.Model):
 
     def action_reject(self):
         """Reject payment split"""
+
         self.ensure_one()
         if self.state != "pending":
             raise ValidationError(_("Only pending splits can be rejected"))
@@ -477,6 +483,7 @@ class PaymentSplit(models.Model):
 
     def action_start_processing(self):
         """Start processing payment split"""
+
         self.ensure_one()
         if self.state not in ["approved", "draft"]:
             raise ValidationError(_("Only approved or draft splits can be processed"))
@@ -491,6 +498,7 @@ class PaymentSplit(models.Model):
 
     def action_complete(self):
         """Complete payment split processing"""
+
         self.ensure_one()
         if self.state != "processing":
             raise ValidationError(_("Only processing splits can be completed"))
@@ -505,6 +513,7 @@ class PaymentSplit(models.Model):
 
     def action_fail(self):
         """Mark payment split as failed"""
+
         self.ensure_one()
         if self.state != "processing":
             raise ValidationError(_("Only processing splits can be marked as failed"))
@@ -514,6 +523,7 @@ class PaymentSplit(models.Model):
 
     def action_cancel(self):
         """Cancel payment split"""
+
         self.ensure_one()
         if self.state in ["completed"]:
             raise ValidationError(_("Completed splits cannot be cancelled"))
@@ -523,6 +533,7 @@ class PaymentSplit(models.Model):
 
     def action_reset_to_draft(self):
         """Reset payment split to draft state"""
+
         self.ensure_one()
         if self.state in ["completed"]:
             raise ValidationError(_("Completed splits cannot be reset to draft"))
@@ -539,6 +550,7 @@ class PaymentSplit(models.Model):
 
     def action_create_split_lines(self):
         """Create split lines based on configuration"""
+
         self.ensure_one()
 
         # Clear existing lines
@@ -585,6 +597,7 @@ class PaymentSplit(models.Model):
 
     def action_view_split_lines(self):
         """View split lines"""
+
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -695,7 +708,7 @@ class PaymentSplit(models.Model):
         return result
 
     @api.model
-    def _name_search(
+    def _search_name(
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
     ):
         """Enhanced search by name, reference, or customer"""
@@ -760,6 +773,7 @@ class PaymentSplitLine(models.Model):
 
     def action_mark_processed(self):
         """Mark split line as processed"""
+
         self.ensure_one()
         self.write(
             {
@@ -770,6 +784,7 @@ class PaymentSplitLine(models.Model):
 
     def action_unmark_processed(self):
         """Unmark split line as processed"""
+
         self.ensure_one()
         self.write(
             {
