@@ -15,46 +15,6 @@ Key Features:
 - Integration with inventory management and location tracking systems
 - Automated movement notifications and alerts for stakeholders
 
-Business Processes:
-1. Movement Initiation: Starting container movement with authorization and reason documentation
-2. Transit Tracking: Real-time tracking during container transport and relocation
-3. Location Updates: Automatic location updates when containers arrive at destinations
-4. Transfer Verification: Multi-party verification for high-security container movements
-5. Movement Completion: Final movement confirmation and audit trail closure
-6. Exception Handling: Management of delayed, lost, or unauthorized movements
-7. Audit Trail Maintenance: Complete movement history and compliance documentation
-
-Movement Types:
-- Inbound Movements: Containers entering the facility from customer locations
-- Internal Movements: Container relocations within the storage facility
-- Outbound Movements: Container removal for destruction, retrieval, or return
-- Maintenance Movements: Temporary movements for container inspection or repair
-- Emergency Movements: Priority movements for compliance or security reasons
-- Bulk Movements: Large-scale container relocations during facility reorganization
-
-Location Integration:
-- Real-time integration with storage location management systems
-- GPS tracking for mobile containers and transit operations
-- Barcode and QR code scanning for accurate location updates
-- Integration with facility layout and capacity management
-- Automated location availability checking and optimization
-- Movement route planning and optimization for operational efficiency
-
-Security and Compliance:
-- Movement authorization based on user roles and security clearance
-- Chain of custody tracking for NAID AAA compliance requirements
-- Movement audit trails with tamper-proof logging and verification
-- Integration with security camera systems for visual movement verification
-- Unauthorized movement detection and automated alert systems
-- Compliance reporting for regulatory and certification requirements
-
-Technical Implementation:
-- Modern Odoo 18.0 architecture with mail thread integration
-- Real-time GPS tracking and location services integration
-- Performance optimized for high-volume movement operations
-- Integration with barcode scanning and mobile data collection systems
-- Comprehensive audit logging with encryption and security controls
-
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
@@ -63,50 +23,42 @@ License: LGPL-3
 import logging
 
 from odoo import models, fields, api, _
-
 from odoo.exceptions import UserError, ValidationError
 
-
-
 _logger = logging.getLogger(__name__)
+
 
 class RecordsContainerMovement(models.Model):
     _name = "records.container.movement"
     _description = "Records Container Movement"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "movement_date desc, name"
-    _rec_name = "name"
+    _rec_name = "display_name"
 
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(
         string="Movement Reference",
-    )
         required=True,
         tracking=True,
         index=True,
-
-    help="Unique reference for this movement record",
-
-        )
+        help="Unique reference for this movement record",
+    )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    ),
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Movement Initiated By",
-    )
         default=lambda self: self.env.user,
         required=True,
         tracking=True,
-
-    help="User who initiated the movement",
-
-        )
+        help="User who initiated the movement",
+    )
     active = fields.Boolean(
         string="Active", default=True, help="Whether this movement record is active"
     )
@@ -117,7 +69,6 @@ class RecordsContainerMovement(models.Model):
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
-    )
         help="Associated partner for this record",
     )
 
@@ -129,34 +80,24 @@ class RecordsContainerMovement(models.Model):
         string="Container",
         required=True,
         tracking=True,
-
-    help="Container being moved",
-)
-
-        )
+        help="Container being moved",
+    )
     from_location_id = fields.Many2one(
         "records.location",
         string="From Location",
         tracking=True,
-
-    help="Source location of the movement",
-)
-
-        )
+        help="Source location of the movement",
+    )
     to_location_id = fields.Many2one(
         "records.location",
         string="To Location",
         required=True,
         tracking=True,
-
-    help="Destination location of the movement",
-)
-
-        )
+        help="Destination location of the movement",
+    )
     current_location_id = fields.Many2one(
         "records.location",
         string="Current Location",
-    )
         related="container_id.location_id",
         store=True,
         help="Current location of the container",
@@ -167,14 +108,11 @@ class RecordsContainerMovement(models.Model):
     # ============================================================================
     movement_date = fields.Datetime(
         string="Movement Date",
-    )
-    default=fields.Datetime.now,
+        default=fields.Datetime.now,
         required=True,
         tracking=True,
-
         help="Date and time when the movement occurred",
-
-        )
+    )
     movement_type = fields.Selection(
         [
             ("inbound", "Inbound"),
@@ -186,13 +124,10 @@ class RecordsContainerMovement(models.Model):
             ("bulk", "Bulk Move"),
         ],
         string="Movement Type",
-    )
         required=True,
         tracking=True,
-
-    help="Type of container movement",
-
-        )
+        help="Type of container movement",
+    )
     movement_reason = fields.Selection(
         [
             ("storage", "Storage"),
@@ -206,12 +141,9 @@ class RecordsContainerMovement(models.Model):
             ("emergency", "Emergency Move"),
         ],
         string="Movement Reason",
-    )
         required=True,
-
-    help="Reason for the container movement",
-
-        )
+        help="Reason for the container movement",
+    )
     priority = fields.Selection(
         [
             ("low", "Low"),
@@ -220,7 +152,6 @@ class RecordsContainerMovement(models.Model):
             ("urgent", "Urgent"),
         ],
         string="Priority",
-    )
         default="normal",
         help="Priority level of the movement",
     )
@@ -231,23 +162,25 @@ class RecordsContainerMovement(models.Model):
     assigned_technician_id = fields.Many2one(
         "hr.employee",
         string="Assigned Technician",
-    )
-
         help="Employee assigned to perform the movement",
-
-        )
+    )
     authorized_by_id = fields.Many2one(
-        "res.users", string="Authorized By", help="User who authorized this movement"
-    ),
+        "res.users",
+        string="Authorized By",
+        help="User who authorized this movement",
+    )
     authorization_date = fields.Datetime(
         string="Authorization Date", help="Date when movement was authorized"
-    ),
-    start_time = fields.Datetime(string="Start Time", help="Time when movement started"),
-    end_time = fields.Datetime(string="End Time", help="Time when movement completed"),
-    actual_start_time = fields.Datetime(string='Actual Start Time'),
+    )
+    start_time = fields.Datetime(
+        string="Start Time", help="Time when movement started"
+    )
+    end_time = fields.Datetime(
+        string="End Time", help="Time when movement completed"
+    )
+    actual_start_time = fields.Datetime(string="Actual Start Time")
     duration_hours = fields.Float(
         string="Duration (Hours)",
-    )
         compute="_compute_duration",
         store=True,
         help="Duration of movement in hours",
@@ -268,21 +201,16 @@ class RecordsContainerMovement(models.Model):
         string="Status",
         default="draft",
         tracking=True,
-
-    help="Current status of the movement",
-
-        )
+        help="Current status of the movement",
+    )
     completion_verified = fields.Boolean(
         string="Completion Verified",
-    )
         default=False,
-
         help="Whether movement completion has been verified",
-
-        )
+    )
     verification_date = fields.Datetime(
         string="Verification Date", help="Date when movement was verified"
-    ),
+    )
     verified_by_id = fields.Many2one(
         "res.users", string="Verified By", help="User who verified the movement"
     )
@@ -293,20 +221,18 @@ class RecordsContainerMovement(models.Model):
     barcode_scanned = fields.Boolean(
         string="Barcode Scanned",
         default=False,
-
         help="Whether container barcode was scanned",
     )
-
-        )
     gps_start_coordinates = fields.Char(
-        string="GPS Start Coordinates", help="GPS coordinates at movement start"
-    ),
+        string="GPS Start Coordinates",
+        help="GPS coordinates at movement start",
+    )
     gps_end_coordinates = fields.Char(
         string="GPS End Coordinates", help="GPS coordinates at movement end"
-    ),
+    )
     distance_km = fields.Float(
         string="Distance (KM)", help="Distance traveled during movement"
-    ),
+    )
     route_taken = fields.Text(
         string="Route Taken", help="Route description or waypoints"
     )
@@ -317,23 +243,20 @@ class RecordsContainerMovement(models.Model):
     custody_transferred = fields.Boolean(
         string="Custody Transferred",
         default=False,
-
         help="Whether custody was properly transferred",
-
-        )
+    )
     custody_transfer_date = fields.Datetime(
         string="Custody Transfer Date", help="Date custody was transferred"
-    ),
+    )
     receiving_party_id = fields.Many2one(
         "res.partner",
         string="Receiving Party",
-
         help="Party receiving custody of container",
-
-        )
+    )
     receiving_signature = fields.Binary(
-        string="Receiving Signature", help="Digital signature of receiving party"
-    ),
+        string="Receiving Signature",
+        help="Digital signature of receiving party",
+    )
     transfer_notes = fields.Text(
         string="Transfer Notes", help="Notes about the custody transfer"
     )
@@ -342,14 +265,15 @@ class RecordsContainerMovement(models.Model):
     # DOCUMENTATION AND NOTES
     # ============================================================================
     movement_description = fields.Text(
-        string="Movement Description", help="Detailed description of the movement"
-    ),
+        string="Movement Description",
+        help="Detailed description of the movement",
+    )
     notes = fields.Text(
         string="Internal Notes", help="Internal notes about the movement"
-    ),
+    )
     exception_notes = fields.Text(
         string="Exception Notes", help="Notes about any exceptions or issues"
-    ),
+    )
     special_instructions = fields.Text(
         string="Special Instructions", help="Special handling instructions"
     )
@@ -361,24 +285,30 @@ class RecordsContainerMovement(models.Model):
         string="Requires Authorization",
         compute="_compute_authorization_required",
         store=True,
-
-    help="Whether this movement requires special authorization",
-)
-
-        )
+        help="Whether this movement requires special authorization",
+    )
     compliance_verified = fields.Boolean(
         string="Compliance Verified",
-    )
         default=False,
-
         help="Whether compliance requirements are verified",
-
-        )
+    )
     audit_trail_id = fields.Many2one(
-        "naid.audit.log", string="Audit Trail", help="Related NAID audit trail entry"
-    ),
+        "naid.audit.log",
+        string="Audit Trail",
+        help="Related NAID audit trail entry",
+    )
     certificate_required = fields.Boolean(
         string="Certificate Required", help="Whether movement certificate is required"
+    )
+
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
+    display_name = fields.Char(
+        string="Display Name",
+        compute="_compute_display_name",
+        store=True,
+        help="Formatted display name",
     )
 
     # ============================================================================
@@ -388,26 +318,23 @@ class RecordsContainerMovement(models.Model):
         "mail.activity",
         "res_id",
         string="Activities",
-    )
         domain=[("res_model", "=", "records.container.movement")],
-    ),
+    )
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-    )
         domain=[("res_model", "=", "records.container.movement")],
-    ),
+    )
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
-    )
         domain=lambda self: [("res_model", "=", self._name)],
     )
 
     # ============================================================================
-    # COMPUTED FIELDS
+    # COMPUTE METHODS
     # ============================================================================
     @api.depends("start_time", "end_time")
     def _compute_duration(self):
@@ -423,21 +350,16 @@ class RecordsContainerMovement(models.Model):
     def _compute_authorization_required(self):
         """Determine if movement requires special authorization"""
         for record in self:
-            # High priority or secure containers require authorization
             auth_required = False
-
             if record.priority in ["high", "urgent"]:
                 auth_required = True
-
             if record.movement_type in ["emergency", "outbound"]:
                 auth_required = True
-
             if record.container_id and record.container_id.security_level in [
                 "high",
                 "restricted",
             ]:
                 auth_required = True
-
             record.requires_authorization = auth_required
 
     @api.depends("name", "container_id.name", "movement_type")
@@ -445,23 +367,11 @@ class RecordsContainerMovement(models.Model):
         """Compute display name for movement"""
         for record in self:
             parts = [record.name or "New"]
-
             if record.container_id:
                 parts.append(f"({record.container_id.name})")
-
             if record.movement_type:
                 parts.append(f"- {record.movement_type.title()}")
-
-            record.display_name = " ".join(parts),
-    display_name = fields.Char(
-        string="Display Name",
-    )
-        compute="_compute_display_name",
-        store=True,
-
-    help="Formatted display name",
-
-        )
+            record.display_name = " ".join(parts)
 
     # ============================================================================
     # ORM OVERRIDES
@@ -469,7 +379,6 @@ class RecordsContainerMovement(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to set sequence and defaults"""
-        # Prefetch all containers needed for from_location assignment
         container_ids = [
             vals["container_id"]
             for vals in vals_list
@@ -477,91 +386,82 @@ class RecordsContainerMovement(models.Model):
         ]
         containers = self.env["records.container"].browse(container_ids)
         container_location_map = {
-            c.id: c.location_id.id if c.location_id else False for c in containers
+            c.id: c.location_id.id for c in containers if c.location_id
         }
 
-    for vals in vals_list:
+        for vals in vals_list:
             if not vals.get("name"):
                 vals["name"] = (
-                    self.env["ir.sequence"].next_by_code("records.container.movement")
+                    self.env["ir.sequence"].next_by_code(
+                        "records.container.movement"
+                    )
                     or "MOVE-NEW"
                 )
-
-            # Set from_location from container's current location using prefetch map
             if vals.get("container_id") and not vals.get("from_location_id"):
                 vals["from_location_id"] = container_location_map.get(
                     vals["container_id"]
                 )
-
         return super().create(vals_list)
 
     def write(self, vals):
         """Override write to handle location updates"""
-        result = super().write(vals)
-
-        # Update container location only if state is being changed to "completed"
-    if vals.get("state") == "completed":
+        res = super().write(vals)
+        if vals.get("state") == "completed":
             for record in self:
-                if record.state == "completed" and record._origin.state != "completed":
-                    if record.container_id and record.to_location_id:
-                        record.container_id.write(
-                            {"location_id": record.to_location_id.id}
-                        )
-
-                    # Create audit trail entry
-                    if not record.audit_trail_id:
-                        record._create_audit_trail()
-
-        return result
+                if record.container_id and record.to_location_id:
+                    record.container_id.location_id = record.to_location_id
+                if not record.audit_trail_id:
+                    record._create_audit_trail()
+        return res
 
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================
     def _create_audit_trail(self):
         """Create audit trail entry for movement"""
-        self.ensure_one()
-
-        audit_vals = {
-            "event_type": "container_movement",
-            "description": f"Container {self.container_id.name} moved from {self.from_location_id.name or 'Unknown'} to {self.to_location_id.name}",
-            "user_id": self.user_id.id,
-            "container_id": self.container_id.id,
-            "movement_id": self.id,
-            "event_date": self.movement_date,
-        }
-
-        try:
-            audit_log = self.env["naid.audit.log"].create(audit_vals)
-            self.write({"audit_trail_id": audit_log.id})
-        except Exception as e:
-            _logger.exception(
-                "Failed to create NAID audit trail entry for movement %s: %s",
-                self.id,
-                e,
-            )
+        for record in self:
+            audit_vals = {
+                "event_type": "container_movement",
+                "description": _(
+                    "Container %s moved from %s to %s",
+                    record.container_id.name,
+                    record.from_location_id.name or "Unknown",
+                    record.to_location_id.name,
+                ),
+                "user_id": record.user_id.id,
+                "container_id": record.container_id.id,
+                "movement_id": record.id,
+                "event_date": record.movement_date,
+            }
+            try:
+                audit_log = self.env["naid.audit.log"].create(audit_vals)
+                record.audit_trail_id = audit_log.id
+            except Exception as e:
+                _logger.exception(
+                    "Failed to create NAID audit trail entry for movement %s: %s",
+                    record.id,
+                    e,
+                )
 
     def update_container_location(self):
         """Update container's current location"""
         self.ensure_one()
-
-    if self.container_id and self.to_location_id:
-            self.container_id.write({"location_id": self.to_location_id.id})
-
-            # Log location change
+        if self.container_id and self.to_location_id:
+            self.container_id.location_id = self.to_location_id.id
             self.container_id.message_post(
                 body=_(
                     "Location updated to %s via movement %s",
                     self.to_location_id.name,
                     self.name,
                 )
+            )
+
     def scan_barcode(self, barcode):
         """Process barcode scan for movement verification"""
         self.ensure_one()
-
-    if self.container_id.barcode == barcode:
+        if self.container_id.barcode == barcode:
             self.write({"barcode_scanned": True})
             return True
-
         raise UserError(_("Scanned barcode does not match container"))
 
     # ============================================================================
@@ -569,12 +469,9 @@ class RecordsContainerMovement(models.Model):
     # ============================================================================
     def action_authorize(self):
         """Authorize the movement"""
-
         self.ensure_one()
-
-    if self.state != "draft":
+        if self.state != "draft":
             raise UserError(_("Only draft movements can be authorized"))
-
         self.write(
             {
                 "state": "authorized",
@@ -582,9 +479,9 @@ class RecordsContainerMovement(models.Model):
                 "authorization_date": fields.Datetime.now(),
             }
         )
-
-        self.message_post(body=_("Movement authorized by %s", self.env.user.name))
-
+        self.message_post(
+            body=_("Movement authorized by %s", self.env.user.name)
+        )
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -597,47 +494,27 @@ class RecordsContainerMovement(models.Model):
 
     def action_start_movement(self):
         """Start the movement execution"""
-
         self.ensure_one()
-
-    if self.state not in ["draft", "authorized"]:
+        if self.state not in ["draft", "authorized"]:
             raise UserError(_("Movement cannot be started from current state"))
-
-        # Check authorization requirement
-    if self.requires_authorization and self.state != "authorized":
+        if self.requires_authorization and self.state != "authorized":
             raise UserError(_("This movement requires authorization before starting"))
-
         self.write(
-            {
-                "state": "in_progress",
-                "start_time": fields.Datetime.now(),
-            }
+            {"state": "in_progress", "start_time": fields.Datetime.now()}
         )
-
         self.message_post(body=_("Movement started by %s", self.env.user.name))
-
         return True
 
     def action_complete_movement(self):
         """Complete the movement"""
-
         self.ensure_one()
-
-    if self.state != "in_progress":
+        if self.state != "in_progress":
             raise UserError(_("Only movements in progress can be completed"))
-
-        self.write(
-            {
-                "state": "completed",
-                "end_time": fields.Datetime.now(),
-            }
-        )
-
-        # Update container location
+        self.write({"state": "completed", "end_time": fields.Datetime.now()})
         self.update_container_location()
-
-        self.message_post(body=_("Movement completed by %s", self.env.user.name))
-
+        self.message_post(
+            body=_("Movement completed by %s", self.env.user.name)
+        )
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -650,12 +527,9 @@ class RecordsContainerMovement(models.Model):
 
     def action_verify_movement(self):
         """Verify movement completion"""
-
         self.ensure_one()
-
-    if self.state != "completed":
+        if self.state != "completed":
             raise UserError(_("Only completed movements can be verified"))
-
         self.write(
             {
                 "completion_verified": True,
@@ -663,33 +537,27 @@ class RecordsContainerMovement(models.Model):
                 "verified_by_id": self.env.user.id,
             }
         )
-
-        self.message_post(body=_("Movement verified by %s", self.env.user.name))
-
+        self.message_post(
+            body=_("Movement verified by %s", self.env.user.name)
+        )
         return True
 
     def action_cancel_movement(self):
         """Cancel the movement"""
-
         self.ensure_one()
-
-    if self.state in ["completed"]:
+        if self.state in ["completed"]:
             raise UserError(_("Completed movements cannot be cancelled"))
-
         self.write({"state": "cancelled"})
-
-        self.message_post(body=_("Movement cancelled by %s", self.env.user.name))
-
+        self.message_post(
+            body=_("Movement cancelled by %s", self.env.user.name)
+        )
         return True
 
     def action_reset_to_draft(self):
         """Reset movement to draft state"""
-
         self.ensure_one()
-
-    if self.state in ["completed"]:
+        if self.state in ["completed"]:
             raise UserError(_("Completed movements cannot be reset"))
-
         self.write(
             {
                 "state": "draft",
@@ -699,17 +567,12 @@ class RecordsContainerMovement(models.Model):
                 "end_time": False,
             }
         )
-
         return True
 
     def action_report_exception(self):
         """Report movement exception"""
-
         self.ensure_one()
-
         self.write({"state": "exception"})
-
-        # Create activity for investigation
         try:
             activity_type = self.env.ref("mail.mail_activity_data_todo")
             self.activity_schedule(
@@ -719,13 +582,11 @@ class RecordsContainerMovement(models.Model):
                 user_id=self.user_id.id,
             )
         except Exception:
-            pass  # Continue if activity creation fails
-
+            pass
         self.message_post(
             body=_("Movement exception reported by %s", self.env.user.name),
             message_type="comment",
         )
-
         return True
 
     # ============================================================================
@@ -751,16 +612,20 @@ class RecordsContainerMovement(models.Model):
     def _check_movement_date(self):
         """Validate movement date is not in future"""
         for record in self:
-            if record.movement_date:
-    now = fields.Datetime.context_timestamp(self, fields.Datetime.now()),
-    movement_date = fields.Datetime.context_timestamp(
-        record, record.movement_date
+            if record.movement_date and record.state != "draft":
+                now = fields.Datetime.context_timestamp(
+                    self, fields.Datetime.now()
                 )
-                if movement_date > now and record.state != "draft":
+                movement_date = fields.Datetime.context_timestamp(
+                    record, record.movement_date
+                )
+                if movement_date > now:
                     raise ValidationError(
                         _(
                             "Movement date cannot be in the future for confirmed movements"
                         )
+                    )
+
     # ============================================================================
     # UTILITY METHODS
     # ============================================================================
@@ -769,38 +634,51 @@ class RecordsContainerMovement(models.Model):
         result = []
         for record in self:
             name_parts = [record.name]
-
             if record.container_id:
                 name_parts.append(f"({record.container_id.name})")
-
             if record.movement_type:
                 name_parts.append(f"- {record.movement_type.title()}")
-
             if record.state != "draft":
                 name_parts.append(f"[{record.state.title()}]")
-
             result.append((record.id, " ".join(name_parts)))
-
         return result
 
     @api.model
-    def _search_container_movement(
-        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
+    def _search(
+        self,
+        args,
+        offset=0,
+        limit=None,
+        order=None,
+        count=False,
+        access_rights_uid=None,
     ):
         """Enhanced search by name, container, or location"""
-        args = args or []
-        domain = []
-        if name:
-            domain = [
+        if self.env.context.get("search_default_name"):
+            args = [
                 "|",
                 "|",
                 "|",
-                ("name", operator, name),
-                ("container_id.name", operator, name),
-                ("from_location_id.name", operator, name),
-                ("to_location_id.name", operator, name),
-            ]
-        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
+                ("name", "ilike", self.env.context["search_default_name"]),
+                (
+                    "container_id.name",
+                    "ilike",
+                    self.env.context["search_default_name"],
+                ),
+                (
+                    "from_location_id.name",
+                    "ilike",
+                    self.env.context["search_default_name"],
+                ),
+                (
+                    "to_location_id.name",
+                    "ilike",
+                    self.env.context["search_default_name"],
+                ),
+            ] + (args or [])
+        return super()._search(
+            args, offset, limit, order, count, access_rights_uid
+        )
 
     @api.model
     def get_movement_statistics(self, date_from=None, date_to=None):
@@ -811,38 +689,32 @@ class RecordsContainerMovement(models.Model):
         if date_to:
             domain.append(("movement_date", "<=", date_to))
 
-        movements = self.search(domain)
+        read_group_res_type = self.read_group(
+            domain, ["movement_type"], ["movement_type"]
+        )
+        read_group_res_state = self.read_group(domain, ["state"], ["state"])
 
         stats = {
-            "total_movements": len(movements),
-            "by_type": {},
-            "by_state": {},
+            "total_movements": sum(
+                res["movement_type_count"] for res in read_group_res_type
+            ),
+            "by_type": {
+                res["movement_type"][1]: res["movement_type_count"]
+                for res in read_group_res_type
+            },
+            "by_state": {
+                res["state"][1]: res["state_count"]
+                for res in read_group_res_state
+            },
             "avg_duration": 0,
         }
 
-        # Statistics by type - use list comprehension to avoid cell variable issues
-        movement_types = ["inbound", "outbound", "internal", "transfer", "maintenance"]
-        for mv_type in movement_types:
-            count = len(
-                movements.filtered(lambda m, t=mv_type: m.movement_type == t)
-            )
-            stats["by_type"][mv_type] = count
-
-        # Statistics by state - use list comprehension to avoid cell variable issues
-        state_values = ["draft", "authorized", "in_progress", "completed", "cancelled"]
-        for state_val in state_values:
-            count = len(
-                movements.filtered(lambda m, s=state_val: m.state == s)
-            )
-            stats["by_state"][state_val] = count
-
-        # Average duration
-        completed = movements.filtered(
-            lambda m: m.state == "completed" and m.duration_hours > 0
+        completed_movements = self.search(
+            domain + [("state", "=", "completed"), ("duration_hours", ">", 0)]
         )
-        if completed:
-            stats["avg_duration"] = sum(completed.mapped("duration_hours")) / len(
-                completed
-            )
+        if completed_movements:
+            stats["avg_duration"] = sum(
+                completed_movements.mapped("duration_hours")
+            ) / len(completed_movements)
 
         return stats

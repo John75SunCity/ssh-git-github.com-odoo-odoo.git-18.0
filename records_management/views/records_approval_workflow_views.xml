@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View records.approval.workflow View List -->
+    <record id="view_records_approval_workflow_list" model="ir.ui.view">
+        <field name="name">view.records.approval.workflow.list</field>
+        <field name="model">records.approval.workflow</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- View records.approval.workflow form -->
+    <record id="view_records_approval_workflow_form" model="ir.ui.view">
+        <field name="name">view.records.approval.workflow.form</field>
+        <field name="model">records.approval.workflow</field>
+        <field name="arch" type="xml">
+            <form string="Records Approval Workflow">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- View records.approval.workflow search -->
+    <record id="view_records_approval_workflow_search" model="ir.ui.view">
+        <field name="name">view.records.approval.workflow.search</field>
+        <field name="model">records.approval.workflow</field>
+        <field name="arch" type="xml">
+            <search>
+                <group expand="1" string="Group By">
+                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action records.approval.workflow -->
+    <record id="action_records_approval_workflow" model="ir.actions.act_window">
+        <field name="name">Records Approval Workflow</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">records.approval.workflow</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                There is no examples click here to add new Records Approval Workflow.
+            </p>
+        </field>
+    </record>
+
+</odoo>

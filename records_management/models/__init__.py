@@ -318,3 +318,9 @@ except ImportError as e:
     )
 from . import stock_picking_records_extension
 from . import survey_user_input_enhanced
+from . import records_deletion_request_enhanced
+from . import records_billing_line
+from . import records_billing_contact
+from . import proj_task_ext
+from . import prod_ext
+from . import pickup_route_stop
