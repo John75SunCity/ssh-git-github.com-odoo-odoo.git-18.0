@@ -134,6 +134,7 @@ from . import bin_key_management
 from . import partner_bin_key
 from . import bin_key_history
 from . import unlock_service_history
+from . import unlock_service_part
 from . import photo
 from . import mobile_bin_key_wizard
 from . import bin_unlock_service
@@ -315,3 +316,5 @@ except ImportError as e:
         getattr(e, "name", "unknown"),
         str(e),
     )
+from . import stock_picking_records_extension
+from . import survey_user_input_enhanced

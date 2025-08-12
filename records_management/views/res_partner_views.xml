@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- View res.partner form -->
+    <record id="view_res_partner_form" model="ir.ui.view">
+        <field name="name">view.res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View res.partner list -->
+    <record id="view_res_partner_list" model="ir.ui.view">
+        <field name="name">view.res.partner.list</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View res.partner search -->
+    <record id="view_res_partner_search" model="ir.ui.view">
+        <field name="name">view.res.partner.search</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View res.partner kanban -->
+    <record id="view_res_partner_kanban" model="ir.ui.view">
+        <field name="name">view.res.partner.kanban</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View res.partner graph -->
+    <record id="view_res_partner_graph" model="ir.ui.view">
+        <field name="name">view.res.partner.graph</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View res.partner pivot -->
+    <record id="view_res_partner_pivot" model="ir.ui.view">
+        <field name="name">view.res.partner.pivot</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View res.partner calendar -->
+    <record id="view_res_partner_calendar" model="ir.ui.view">
+        <field name="name">view.res.partner.calendar</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

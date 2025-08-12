@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_revenue_analytic" model="ir.actions.report">
-        <field name="name">Revenue Analytic</field>
-        <field name="model">revenue.analytic</field>
+    <record id="report_records_permanent_flag_wizard" model="ir.actions.report">
+        <field name="name">Records Permanent Flag Wizard</field>
+        <field name="model">records.permanent.flag.wizard</field>
         <field name="report_type">qweb-html</field>
-        <field name="report_name">addon.report_revenue_analytic_view</field>
-        <field name="report_file">addon.report_revenue_analytic</field>
+        <field name="report_name">addon.report_records_permanent_flag_wizard_view</field>
+        <field name="report_file">addon.report_records_permanent_flag_wizard</field>
         <field name="print_report_name">'%s' % object.name</field>
-        <field name="binding_model_id" ref="model_revenue_analytic"/>
+        <field name="binding_model_id" ref="model_records_permanent_flag_wizard"/>
         <field name="binding_type">report</field>
     </record>
 
-    <template id="report_revenue_analytic_view">
+    <template id="report_records_permanent_flag_wizard_view">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
