@@ -142,6 +142,10 @@ from . import bin_key
 from . import bale
 from . import paper_bale
 from . import paper_bale_source_document
+from . import paper_bale_movement
+from . import paper_bale_inspection
+from . import paper_bale_weigh_wizard
+from . import paper_bale_inspection_wizard
 from . import load
 
 # =============================================================================

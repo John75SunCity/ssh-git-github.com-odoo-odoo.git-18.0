@@ -24,10 +24,7 @@ import logging
 from datetime import timedelta
 
 from odoo import models, fields, api, _
-
 from odoo.exceptions import UserError, ValidationError
-
-
 
 _logger = logging.getLogger(__name__)
 
@@ -656,3 +653,5 @@ Details: %(details)s""", {
             if record.state == 'completed':
                 raise UserError(_("Cannot delete completed reschedule records. They are required for audit trail."))
         return super().unlink()
+        """_summary_
+        """
