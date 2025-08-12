@@ -95,6 +95,10 @@ from . import shred_bins
 from . import paper_bale_recycling
 from . import paper_load_shipment
 
+# Advanced billing system
+from . import advanced_billing
+from . import records_advanced_billing_period
+
 # Work orders
 from . import work_order_shredding
 from . import document_retrieval_work_order
@@ -176,12 +180,9 @@ from . import billing_automation
 from . import department_billing
 
 # Advanced billing features
-from . import advanced_billing
+from . import advanced_billing_line
 from . import customer_billing_profile
 from . import revenue_forecaster
-
-# Billing support models (consolidated system)
-from . import billing_support_models
 
 # =============================================================================
 # PORTAL AND CUSTOMER INTERACTION
@@ -260,6 +261,7 @@ from . import required_document
 # BUSINESS LOGIC AND CRM
 # =============================================================================
 
+from . import customer_category
 from . import scrm_records_management
 from . import records_deletion_request
 
@@ -307,5 +309,4 @@ except ImportError as e:
         getattr(e, "name", "unknown"),
         str(e),
     )
-
 from . import customer_category

@@ -10,8 +10,23 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
+# Import handling for disconnected development environment
+try:
+    from odoo import api, fields, models, _
+    from odoo.exceptions import ValidationError
+except ImportError:
+    # Fallback for development environments without Odoo installed
+    # These will be properly imported when deployed to Odoo.sh
+    models = None
+    fields = None
+    api = None
+
+    # Fallback _() only handles string formatting, not translation.
+    def _(s, *a):
+        return s % a if a else s  # Fallback for translation with formatting
+
+    class ValidationError(Exception):
+        pass
 
 
 class AdvancedBilling(models.Model):
@@ -26,16 +41,16 @@ class AdvancedBilling(models.Model):
     # ============================================================================
     name = fields.Char(string="Name", required=True, tracking=True, index=True)
     company_id = fields.Many2one(
-        "res.company", 
-        string="Company", 
+        "res.company",
+        string="Company",
         default=lambda self: self.env.company,
-        required=True
+        required=True,
     )
     user_id = fields.Many2one(
-        "res.users", 
-        string="User", 
+        "res.users",
+        string="User",
         default=lambda self: self.env.user,
-        tracking=True
+        tracking=True,
     )
     active = fields.Boolean(string="Active", default=True)
 
@@ -43,26 +58,21 @@ class AdvancedBilling(models.Model):
     # BILLING FIELDS
     # ============================================================================
     partner_id = fields.Many2one(
-        "res.partner", 
-        string="Customer", 
-        required=True,
-        tracking=True
+        "res.partner", string="Customer", required=True, tracking=True
     )
     billing_period_id = fields.Many2one(
-        "records.advanced.billing.period", 
+        "records.advanced.billing.period",
         string="Billing Period",
-        tracking=True
+        tracking=True,
     )
     currency_id = fields.Many2one(
-        "res.currency", 
+        "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
-        required=True
+        required=True,
     )
     invoice_id = fields.Many2one(
-        "account.move", 
-        string="Invoice",
-        tracking=True
+        "account.move", string="Invoice", tracking=True
     )
     payment_terms = fields.Selection(
         [
@@ -98,19 +108,17 @@ class AdvancedBilling(models.Model):
     # RELATIONSHIP FIELDS
     # ============================================================================
     line_ids = fields.One2many(
-        "advanced.billing.line", 
-        "billing_id", 
-        string="Billing Lines"
+        "advanced.billing.line", "billing_id", string="Billing Lines"
     )
 
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
     total_amount = fields.Monetary(
-        string="Total Amount", 
-        compute="_compute_total_amount", 
+        string="Total Amount",
+        compute="_compute_total_amount",
         store=True,
-        currency_field="currency_id"
+        currency_field="currency_id",
     )
 
     # ============================================================================
@@ -142,7 +150,7 @@ class AdvancedBilling(models.Model):
         self.ensure_one()
         if self.state != "draft":
             raise ValidationError(_("Only draft billing can be confirmed"))
-        
+
         self.write({"state": "confirmed"})
         self.message_post(body=_("Advanced billing confirmed"))
 
@@ -151,7 +159,7 @@ class AdvancedBilling(models.Model):
         self.ensure_one()
         if self.state != "confirmed":
             raise ValidationError(_("Only confirmed billing can be invoiced"))
-        
+
         # Create invoice from billing lines
         invoice_vals = {
             'partner_id': self.partner_id.id,
@@ -164,15 +172,15 @@ class AdvancedBilling(models.Model):
                 'price_unit': line.price_unit,
             }) for line in self.line_ids],
         }
-        
+
         invoice = self.env['account.move'].create(invoice_vals)
         self.write({
             "state": "invoiced",
             "invoice_id": invoice.id,
         })
-        
+
         self.message_post(body=_("Invoice generated: %s", invoice.name))
-        
+
         return {
             'type': 'ir.actions.act_window',
             'name': _('Generated Invoice'),
@@ -187,7 +195,7 @@ class AdvancedBilling(models.Model):
         self.ensure_one()
         if self.state != "invoiced":
             raise ValidationError(_("Only invoiced billing can be marked as done"))
-        
+
         self.write({"state": "done"})
         self.message_post(body=_("Advanced billing completed"))
 
@@ -196,7 +204,7 @@ class AdvancedBilling(models.Model):
         self.ensure_one()
         if self.state in ["invoiced", "done"]:
             raise ValidationError(_("Cannot cancel invoiced or completed billing"))
-        
+
         self.write({"state": "cancelled"})
         self.message_post(body=_("Advanced billing cancelled"))
 
@@ -208,330 +216,3 @@ class AdvancedBilling(models.Model):
         for record in self:
             if record.total_amount < 0:
                 raise ValidationError(_("Total amount cannot be negative"))
-
-
-class AdvancedBillingLine(models.Model):
-    _name = "advanced.billing.line"
-    _description = "Advanced Billing Line"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "sequence, name"
-
-    # ============================================================================
-    # CORE IDENTIFICATION FIELDS
-    # ============================================================================
-    name = fields.Char(
-        string="Line Description", 
-        compute="_compute_name", 
-        store=True, 
-        index=True
-    )
-    sequence = fields.Integer(string="Sequence", default=10)
-    company_id = fields.Many2one(
-        "res.company", 
-        default=lambda self: self.env.company, 
-        required=True
-    )
-    user_id = fields.Many2one(
-        "res.users", 
-        default=lambda self: self.env.user, 
-        tracking=True
-    )
-    active = fields.Boolean(string="Active", default=True)
-
-    # ============================================================================
-    # BILLING DETAILS
-    # ============================================================================
-    billing_id = fields.Many2one(
-        "advanced.billing", 
-        string="Billing", 
-        required=True, 
-        ondelete="cascade",
-        index=True
-    )
-    product_id = fields.Many2one(
-        "product.product", 
-        string="Product",
-        tracking=True
-    )
-    quantity = fields.Float(
-        string="Quantity", 
-        default=1.0,
-        digits='Product Unit of Measure'
-    )
-    price_unit = fields.Float(
-        string="Unit Price",
-        digits='Product Price'
-    )
-    price_total = fields.Float(
-        string="Total", 
-        compute="_compute_price_total", 
-        store=True,
-        digits='Product Price'
-    )
-
-    # Container tracking for Records Management
-    container_type = fields.Selection(
-        [
-            ('type_01', 'TYPE 01: Standard Box (1.2 CF)'),
-            ('type_02', 'TYPE 02: Legal/Banker Box (2.4 CF)'),
-            ('type_03', 'TYPE 03: Map Box (0.875 CF)'),
-            ('type_04', 'TYPE 04: Odd Size/Temp Box (5.0 CF)'),
-            ('type_06', 'TYPE 06: Pathology Box (0.042 CF)'),
-        ],
-        string="Container Type",
-        help="Container type for Records Management billing"
-    )
-    
-    # Service tracking
-    service_type = fields.Selection(
-        [
-            ('storage', 'Storage Service'),
-            ('pickup', 'Pickup Service'),
-            ('shredding', 'Shredding Service'),
-            ('retrieval', 'Document Retrieval'),
-            ('destruction', 'Destruction Service'),
-        ],
-        string="Service Type",
-        help="Type of Records Management service"
-    )
-
-    # ============================================================================
-    # MAIL FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many(
-        "mail.activity", "res_id", string="Activities"
-    )
-    message_ids = fields.One2many(
-        "mail.message", "res_id", string="Messages"
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-
-    # ============================================================================
-    # COMPUTE METHODS
-    # ============================================================================
-    @api.depends("product_id", "quantity", "container_type", "service_type")
-    def _compute_name(self):
-        for line in self:
-            if line.product_id:
-                name_parts = [line.product_id.name]
-                if line.container_type:
-                    container_name = dict(line._fields['container_type'].selection).get(
-                        line.container_type, line.container_type
-                    )
-                    name_parts.append(_("(%s)", container_name))
-                if line.service_type:
-                    service_name = dict(line._fields['service_type'].selection).get(
-                        line.service_type, line.service_type
-                    )
-                    name_parts.append(_("- %s", service_name))
-                line.name = _("%s x %s", " ".join(name_parts), line.quantity)
-            else:
-                line.name = _("Billing Line %s", line.sequence)
-
-    @api.depends("quantity", "price_unit")
-    def _compute_price_total(self):
-        for line in self:
-            line.price_total = line.quantity * line.price_unit
-
-    # ============================================================================
-    # VALIDATION METHODS
-    # ============================================================================
-    @api.constrains("quantity", "price_unit")
-    def _check_positive_values(self):
-        for line in self:
-            if line.quantity < 0:
-                raise ValidationError(_("Quantity cannot be negative"))
-            if line.price_unit < 0:
-                raise ValidationError(_("Unit price cannot be negative"))
-
-
-class RecordsAdvancedBillingPeriod(models.Model):
-    _name = "records.advanced.billing.period"
-    _description = "Advanced Billing Period"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "start_date desc"
-
-    # ============================================================================
-    # CORE IDENTIFICATION FIELDS
-    # ============================================================================
-    name = fields.Char(
-        string="Period Name", 
-        compute="_compute_name", 
-        store=True, 
-        index=True
-    )
-    company_id = fields.Many2one(
-        "res.company", 
-        default=lambda self: self.env.company, 
-        required=True
-    )
-    user_id = fields.Many2one(
-        "res.users", 
-        default=lambda self: self.env.user, 
-        tracking=True
-    )
-    active = fields.Boolean(string="Active", default=True)
-
-    # ============================================================================
-    # PERIOD DETAILS
-    # ============================================================================
-    start_date = fields.Date(
-        string="Start Date", 
-        required=True,
-        tracking=True
-    )
-    end_date = fields.Date(
-        string="End Date", 
-        required=True,
-        tracking=True
-    )
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("active", "Active"),
-            ("closed", "Closed"),
-        ],
-        string="State",
-        default="draft",
-        tracking=True,
-    )
-
-    # Period type for different billing cycles
-    period_type = fields.Selection(
-        [
-            ('monthly', 'Monthly'),
-            ('quarterly', 'Quarterly'),
-            ('yearly', 'Yearly'),
-            ('custom', 'Custom Period'),
-        ],
-        string="Period Type",
-        default='monthly',
-        tracking=True
-    )
-
-    # ============================================================================
-    # RELATIONSHIP FIELDS
-    # ============================================================================
-    billing_ids = fields.One2many(
-        "advanced.billing", 
-        "billing_period_id", 
-        string="Billings"
-    )
-
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    billing_count = fields.Integer(
-        string="Billing Count",
-        compute="_compute_billing_count",
-        store=True
-    )
-    
-    total_period_amount = fields.Float(
-        string="Total Period Amount",
-        compute="_compute_total_period_amount",
-        store=True
-    )
-
-    # ============================================================================
-    # MAIL FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many(
-        "mail.activity", "res_id", string="Activities"
-    )
-    message_ids = fields.One2many(
-        "mail.message", "res_id", string="Messages"
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    )
-
-    # ============================================================================
-    # COMPUTE METHODS
-    # ============================================================================
-    @api.depends("start_date", "end_date", "period_type")
-    def _compute_name(self):
-        for period in self:
-            if period.start_date and period.end_date:
-                period.name = _("Billing Period %s - %s", 
-                              period.start_date, 
-                              period.end_date)
-            else:
-                period.name = _("Billing Period %s", period.id or 'New')
-
-    @api.depends("billing_ids")
-    def _compute_billing_count(self):
-        for period in self:
-            period.billing_count = len(period.billing_ids)
-
-    @api.depends("billing_ids.total_amount")
-    def _compute_total_period_amount(self):
-        for period in self:
-            period.total_period_amount = sum(period.billing_ids.mapped("total_amount"))
-
-    # ============================================================================
-    # VALIDATION METHODS
-    # ============================================================================
-    @api.constrains("start_date", "end_date")
-    def _check_date_range(self):
-        for record in self:
-            if record.start_date and record.end_date:
-                if record.start_date >= record.end_date:
-                    raise ValidationError(_("Start date must be before end date"))
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_generate_storage_lines(self):
-        """Generate Storage Lines - Generate report"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.action_generate_storage_lines_report",
-            "report_type": "qweb-pdf",
-            "data": {"ids": [self.id]},
-            "context": self.env.context,
-        }
-
-    def action_generate_service_lines(self):
-        """Generate Service Lines - Generate report"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.action_generate_service_lines_report",
-            "report_type": "qweb-pdf",
-            "data": {"ids": [self.id]},
-            "context": self.env.context,
-        }
-
-    def action_activate_period(self):
-        """Activate billing period"""
-        self.ensure_one()
-        if self.state != "draft":
-            raise ValidationError(_("Only draft periods can be activated"))
-        
-        self.write({"state": "active"})
-        self.message_post(body=_("Billing period activated"))
-
-    def action_close_period(self):
-        """Close billing period"""
-        self.ensure_one()
-        if self.state != "active":
-            raise ValidationError(_("Only active periods can be closed"))
-        
-        self.write({"state": "closed"})
-        self.message_post(body=_("Billing period closed"))
-
-    def action_view_billings(self):
-        """View period billings"""
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Period Billings - %s', self.name),
-            'res_model': 'advanced.billing',
-            'view_mode': 'tree,form',
-            'domain': [('billing_period_id', '=', self.id)],
-            'context': {'default_billing_period_id': self.id},
-        }
