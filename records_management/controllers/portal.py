@@ -17,13 +17,11 @@ Key Features:
 
 import csv
 import io
-import json
 import logging
 from datetime import datetime, timedelta
 
 from odoo import http
 from odoo.http import request
-from odoo.exceptions import ValidationError, UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -50,13 +48,13 @@ class RecordsManagementController(http.Controller):
 
         # Get comprehensive dashboard data
         dashboard_data = self._get_dashboard_data()
-        
+
         # Get recent activities
         recent_activities = self._get_recent_activities()
-        
+
         # Get performance metrics
         performance_metrics = self._get_performance_metrics()
-        
+
         # Get alerts and notifications
         system_alerts = self._get_system_alerts()
 
@@ -79,28 +77,28 @@ class RecordsManagementController(http.Controller):
         """
         try:
             data_type = post.get('data_type', 'overview')
-            
+
             if data_type == 'overview':
                 return {
                     'success': True,
                     'data': self._get_dashboard_data()
                 }
-            elif data_type == 'metrics':
+            if data_type == 'metrics':
                 return {
                     'success': True,
                     'data': self._get_performance_metrics()
                 }
-            elif data_type == 'activities':
+            if data_type == 'activities':
                 return {
                     'success': True,
                     'data': self._get_recent_activities()
                 }
-            
+
             return {
                 'success': False,
                 'error': 'Invalid data type requested'
             }
-            
+
         except Exception as e:
             _logger.error("Error fetching dashboard data: %s", e)
             return {
@@ -143,10 +141,10 @@ class RecordsManagementController(http.Controller):
         date_to = get.get('date_to')
         partner_id = get.get('partner_id')
         location_id = get.get('location_id')
-        
+
         # Build domain for filtering
         domain = [('active', '=', True)]
-        
+
         if partner_id:
             domain.append(('partner_id', '=', int(partner_id)))
         if location_id:
@@ -158,10 +156,10 @@ class RecordsManagementController(http.Controller):
 
         # Get containers with applied filters
         containers = request.env['records.container'].search(domain, order='create_date desc')
-        
+
         # Calculate summary statistics
         summary_stats = self._calculate_container_summary(containers)
-        
+
         context = {
             'containers': containers,
             'summary_stats': summary_stats,
@@ -176,7 +174,6 @@ class RecordsManagementController(http.Controller):
         }
 
         return request.render('records_management.container_summary_report', context)
-
     # ============================================================================
     # CONTAINER MANAGEMENT ROUTES
     # ============================================================================
@@ -187,6 +184,8 @@ class RecordsManagementController(http.Controller):
         Bulk update operations for containers.
         Supports location changes, status updates, and batch processing.
         """
+        # Note: This is a controller method handling multiple containers, not a model method
+        # so self.ensure_one() is not applicable here
         if not request.env.user.has_group('records_management.group_records_user'):
             return {'success': False, 'error': 'Insufficient permissions'}
 
@@ -199,34 +198,34 @@ class RecordsManagementController(http.Controller):
                 return {'success': False, 'error': 'No containers selected'}
 
             containers = request.env['records.container'].browse(container_ids)
-            
+
             # Validate user can access these containers
             for container in containers:
                 if not container.can_user_access():
                     return {
-                        'success': False, 
+                        'success': False,
                         'error': f'Access denied for container {container.name}'
                     }
 
             updated_count = 0
-            
+
             if action_type == 'change_location':
                 new_location_id = values.get('location_id')
                 if new_location_id:
                     containers.write({'location_id': int(new_location_id)})
                     updated_count = len(containers)
-                    
+
                     # Create movement records for audit trail
                     for container in containers:
                         self._create_movement_record(container, new_location_id)
-                        
-            elif action_type == 'update_status':
+
+            if action_type == 'update_status':
                 new_status = values.get('status')
                 if new_status:
                     containers.write({'state': new_status})
                     updated_count = len(containers)
-                    
-            elif action_type == 'add_tags':
+
+            if action_type == 'add_tags':
                 tag_ids = values.get('tag_ids', [])
                 if tag_ids:
                     containers.write({'tag_ids': [(6, 0, tag_ids)]})
@@ -271,13 +270,13 @@ class RecordsManagementController(http.Controller):
         # Create CSV content
         output = io.StringIO()
         writer = csv.writer(output)
-        
+
         # Write header
         writer.writerow([
             'Container Number', 'Customer', 'Location', 'Container Type',
             'Volume (CF)', 'Weight (lbs)', 'Status', 'Created Date'
         ])
-        
+
         # Write data rows
         for container in containers:
             writer.writerow([
@@ -299,7 +298,7 @@ class RecordsManagementController(http.Controller):
                 ('Content-Disposition', f'attachment; filename=containers_export_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv')
             ]
         )
-        
+
         return response
 
     # ============================================================================
@@ -313,7 +312,7 @@ class RecordsManagementController(http.Controller):
         """
         container_number = post.get('container_number')
         customer_id = post.get('customer_id')
-        
+
         if not container_number or not customer_id:
             return {'success': False, 'error': 'Missing required parameters'}
 
@@ -322,20 +321,20 @@ class RecordsManagementController(http.Controller):
             ('name', '=', container_number),
             ('partner_id', '=', int(customer_id))
         ], limit=1)
-        
+
         if existing_container:
             # Generate suggestions
             suggestions = self._generate_container_number_suggestions(
                 container_number, customer_id
             )
-            
+
             return {
                 'success': True,
                 'available': False,
                 'existing_container': existing_container.name,
                 'suggestions': suggestions
             }
-        
+
         return {
             'success': True,
             'available': True,
@@ -347,7 +346,7 @@ class RecordsManagementController(http.Controller):
     # ============================================================================
 
     @http.route("/records/system/health", type="json", auth="user", methods=["POST"])
-    def check_system_health(self, **post):
+    def _check_system_health(self, **post):
         """
         System health check endpoint for monitoring.
         """
@@ -362,20 +361,20 @@ class RecordsManagementController(http.Controller):
                 'backup_status': self._check_backup_status(),
                 'compliance_status': self._check_compliance_status(),
             }
-            
+
             # Determine overall health
             all_healthy = all(
-                status.get('status') == 'healthy' 
+                status.get('status') == 'healthy'
                 for status in health_data.values()
             )
-            
+
             return {
                 'success': True,
                 'overall_status': 'healthy' if all_healthy else 'warning',
                 'health_data': health_data,
                 'last_check': datetime.now().isoformat()
             }
-            
+
         except Exception as e:
             _logger.error("System health check failed: %s", e)
             return {
@@ -394,10 +393,10 @@ class RecordsManagementController(http.Controller):
         Container = request.env['records.container']
         PickupRequest = request.env['pickup.request']
         ShredService = request.env['shredding.service']
-        
+
         # Get current company containers
         company_domain = [('company_id', '=', request.env.company.id)]
-        
+
         # Container statistics
         total_containers = Container.search_count(company_domain + [('active', '=', True)])
         containers_by_type = Container.read_group(
@@ -405,23 +404,23 @@ class RecordsManagementController(http.Controller):
             ['container_type'],
             ['container_type']
         )
-        
+
         # Active requests
         pending_pickups = PickupRequest.search_count([('state', 'in', ['draft', 'confirmed'])])
-        
+
         # Recent destruction services
         recent_destructions = ShredService.search_count([
             ('completion_date', '>=', (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d'))
         ])
-        
+
         # Calculate total volume and capacity utilization
         container_data = Container.search_read(
             company_domain + [('active', '=', True)],
             ['volume', 'location_id']
         )
-        
+
         total_volume = sum(c['volume'] or 0 for c in container_data)
-        
+
         # Location utilization
         location_utilization = {}
         for container in container_data:
@@ -433,26 +432,26 @@ class RecordsManagementController(http.Controller):
 
         return {
             'total_containers': total_containers,
-            'containers_by_type': {item['container_type']: item['container_type_count'] 
+            'containers_by_type': {item['container_type']: item['__count']
                                  for item in containers_by_type},
             'total_volume_cf': round(total_volume, 2),
             'pending_pickups': pending_pickups,
             'recent_destructions': recent_destructions,
             'location_utilization': location_utilization,
-            'active_customers': Container.search([('active', '=', True)]).mapped('partner_id').__len__(),
+            'active_customers': len(Container.search([('active', '=', True)]).mapped('partner_id')),
         }
 
     def _get_recent_activities(self, limit=10):
         """Get recent system activities for dashboard display."""
         activities = []
-        
+
         # Recent container creations
         recent_containers = request.env['records.container'].search(
             [('create_date', '>=', (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d'))],
             order='create_date desc',
             limit=5
         )
-        
+
         for container in recent_containers:
             activities.append({
                 'type': 'container_created',
@@ -461,14 +460,14 @@ class RecordsManagementController(http.Controller):
                 'icon': 'fa-box',
                 'color': 'success'
             })
-        
+
         # Recent pickup requests
         recent_pickups = request.env['pickup.request'].search(
             [('create_date', '>=', (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d'))],
             order='create_date desc',
             limit=5
         )
-        
+
         for pickup in recent_pickups:
             activities.append({
                 'type': 'pickup_requested',
@@ -477,7 +476,7 @@ class RecordsManagementController(http.Controller):
                 'icon': 'fa-truck',
                 'color': 'info'
             })
-        
+
         # Sort by timestamp and limit
         activities.sort(key=lambda x: x['timestamp'], reverse=True)
         return activities[:limit]
@@ -487,28 +486,28 @@ class RecordsManagementController(http.Controller):
         now = datetime.now()
         last_month = now - timedelta(days=30)
         last_week = now - timedelta(days=7)
-        
+
         # Container growth metrics
         containers_this_month = request.env['records.container'].search_count([
             ('create_date', '>=', last_month.strftime('%Y-%m-%d'))
         ])
-        
+
         containers_last_week = request.env['records.container'].search_count([
             ('create_date', '>=', last_week.strftime('%Y-%m-%d'))
         ])
-        
+
         # Pickup efficiency
         completed_pickups = request.env['pickup.request'].search_count([
             ('state', '=', 'completed'),
             ('completion_date', '>=', last_month.strftime('%Y-%m-%d'))
         ])
-        
+
         total_pickups = request.env['pickup.request'].search_count([
             ('create_date', '>=', last_month.strftime('%Y-%m-%d'))
         ])
-        
+
         pickup_completion_rate = (completed_pickups / total_pickups * 100) if total_pickups else 0
-        
+
         return {
             'containers_growth_month': containers_this_month,
             'containers_growth_week': containers_last_week,
@@ -520,36 +519,36 @@ class RecordsManagementController(http.Controller):
     def _get_system_alerts(self):
         """Get system alerts and notifications."""
         alerts = []
-        
+
         # Check for overdue pickups
         overdue_pickups = request.env['pickup.request'].search_count([
             ('state', 'in', ['confirmed', 'in_progress']),
             ('scheduled_date', '<', datetime.now().strftime('%Y-%m-%d'))
         ])
-        
-        if overdue_pickups > 0:
+
+        if overdue_pickups:
             alerts.append({
                 'type': 'warning',
                 'message': f'{overdue_pickups} pickup requests are overdue',
                 'action_url': '/records/pickups?filter=overdue'
             })
-        
+
         # Check storage capacity
         location_capacity = self._check_location_capacity_warnings()
         if location_capacity:
             alerts.extend(location_capacity)
-        
+
         # Check compliance issues
         compliance_issues = self._check_compliance_warnings()
         if compliance_issues:
             alerts.extend(compliance_issues)
-        
+
         return alerts
 
     def _get_user_dashboard_permissions(self):
         """Get user permissions for dashboard functionality."""
         user = request.env.user
-        
+
         return {
             'can_view_analytics': user.has_group('records_management.group_records_manager'),
             'can_bulk_update': user.has_group('records_management.group_records_user'),
@@ -562,28 +561,28 @@ class RecordsManagementController(http.Controller):
         """Calculate summary statistics for container report."""
         if not containers:
             return {}
-        
+
         total_containers = len(containers)
         total_volume = sum(c.volume or 0 for c in containers)
         total_weight = sum(c.weight or 0 for c in containers)
-        
+
         # Group by container type
         type_breakdown = {}
         for container in containers:
             container_type = container.container_type or 'Unknown'
             if container_type not in type_breakdown:
                 type_breakdown[container_type] = {'count': 0, 'volume': 0, 'weight': 0}
-            
+
             type_breakdown[container_type]['count'] += 1
             type_breakdown[container_type]['volume'] += container.volume or 0
             type_breakdown[container_type]['weight'] += container.weight or 0
-        
+
         # Group by status
         status_breakdown = {}
         for container in containers:
             status = container.state or 'Unknown'
             status_breakdown[status] = status_breakdown.get(status, 0) + 1
-        
+
         return {
             'total_containers': total_containers,
             'total_volume': round(total_volume, 2),
@@ -618,22 +617,23 @@ class RecordsManagementController(http.Controller):
     def _generate_container_number_suggestions(self, base_number, customer_id):
         """Generate alternative container number suggestions."""
         suggestions = []
-        
+
         # Try with suffix patterns
         suffixes = ['-A', '-B', '-C', '-1', '-2', '-3']
-        
+
         for suffix in suffixes:
             suggested_number = base_number + suffix
             exists = request.env['records.container'].search([
                 ('name', '=', suggested_number),
                 ('partner_id', '=', int(customer_id))
             ], limit=1)
-            
+
             if not exists:
                 suggestions.append(suggested_number)
-                if len(suggestions) >= 3:  # Limit suggestions
+                # Limit suggestions to exactly 3
+                if len(suggestions) == 3:
                     break
-        
+
         return suggestions
 
     # Additional helper methods for system monitoring
@@ -655,7 +655,7 @@ class RecordsManagementController(http.Controller):
         recent_logs = request.env['naid.audit.log'].search_count([
             ('timestamp', '>=', (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d'))
         ])
-        
+
         if recent_logs > 0:
             return {'status': 'healthy', 'message': f'{recent_logs} audit entries in last 24h'}
         return {'status': 'warning', 'message': 'No recent audit activity'}
@@ -673,7 +673,7 @@ class RecordsManagementController(http.Controller):
     def _calculate_total_cubic_feet(self):
         """Calculate total cubic feet under management."""
         total = request.env['records.container'].search_read(
-            [('active', '=', True)], 
+            [('active', '=', True)],
             ['volume']
         )
         return round(sum(c['volume'] or 0 for c in total), 2)
@@ -688,6 +688,10 @@ class RecordsManagementController(http.Controller):
         # Implementation would check actual location capacity limits
         return []  # Placeholder
 
+    def _check_compliance_warnings(self):
+        """Check for compliance-related warnings."""
+        # Implementation would check for compliance violations
+        return []  # Placeholder
     def _check_compliance_warnings(self):
         """Check for compliance-related warnings."""
         # Implementation would check for compliance violations
