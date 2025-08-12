@@ -273,7 +273,7 @@ class Photo(models.Model):
         if not self.image:
             raise UserError(_("There is no image to download."))
 
-        filename = self.image_filename or _("photo_%s.jpg") % self.id
+        filename = self.image_filename or _("photo_%s.jpg", self.id)
         return {
             "type": "ir.actions.act_url",
             "url": f"/web/content/photo/{self.id}/image?download=true&filename={filename}",
@@ -338,9 +338,11 @@ class Photo(models.Model):
     def duplicate_photo(self):
         """Create a duplicate of this photo, including its image."""
         self.ensure_one()
-        new_photo = self.copy({
-            "name": _("%s (Copy)") % self.name,
-        })
+        new_photo = self.copy(
+            {
+                "name": _("%s (Copy)", self.name),
+            }
+        )
         new_photo.message_post(body=_("Duplicated from photo %s") % self.name)
         return new_photo
 
