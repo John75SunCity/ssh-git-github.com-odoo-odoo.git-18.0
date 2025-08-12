@@ -157,6 +157,7 @@
         "reports/approval_history_report.xml",
         "reports/barcode_generation_history_report.xml",
         "reports/barcode_models_enhanced_report.xml",
+        "reports/records_location_report.xml",
         "reports/records_management_bale_report.xml",
         "reports/revenue_analytic_report.xml",
         "reports/revenue_forecaster_report.xml",
