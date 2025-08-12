@@ -3,8 +3,8 @@
     <!-- Document Retrieval Work Order Views -->
 
     <!-- Tree View -->
-    <record id="view_document_retrieval_work_order_list" model="ir.ui.view">
-        <field name="name">view.document.retrieval.work.order.list</field>
+<record id="document_retrieval_work_order_view_tree" model="ir.ui.view">
+    <field name="name">document.retrieval.work.order.view.tree</field>
         <field name="model">document.retrieval.work.order</field>
         <field name="arch" type="xml">
             <tree string="Document Retrieval Work Orders" decoration-info="state=='draft'" decoration-warning="state=='confirmed'" decoration-success="state=='completed'">
@@ -22,8 +22,8 @@
     </record>
 
     <!-- Form View -->
-    <record id="view_document_retrieval_work_order_form" model="ir.ui.view">
-        <field name="name">view.document.retrieval.work.order.form</field>
+<record id="document_retrieval_work_order_view_form" model="ir.ui.view">
+    <field name="name">document.retrieval.work.order.view.form</field>
         <field name="model">document.retrieval.work.order</field>
         <field name="arch" type="xml">
             <form string="Document Retrieval Work Order">
@@ -153,7 +153,7 @@
     </record>
 
     <!-- Kanban View -->
-    <record id="view_document_retrieval_work_order_kanban" model="ir.ui.view">
+<record id="document_retrieval_work_order_view_kanban" model="ir.ui.view">
         <field name="name">document.retrieval.work.order.kanban</field>
         <field name="model">document.retrieval.work.order</field>
         <field name="arch" type="xml">
@@ -215,8 +215,8 @@
     </record>
 
     <!-- Search View -->
-    <record id="view_document_retrieval_work_order_search" model="ir.ui.view">
-        <field name="name">view.document.retrieval.work.order.search</field>
+<record id="document_retrieval_work_order_view_search" model="ir.ui.view">
+    <field name="name">document.retrieval.work.order.view.search</field>
         <field name="model">document.retrieval.work.order</field>
         <field name="arch" type="xml">
             <search string="Document Retrieval Work Orders">
@@ -252,8 +252,9 @@
         <field name="name">Document Retrieval Work Order</field>
         <field name="res_model">document.retrieval.work.order</field>
         <field name="view_mode">kanban,tree,form</field>
-        <field name="view_id" ref="view_document_retrieval_work_order_kanban"/>
-        <field name="search_view_id" ref="view_document_retrieval_work_order_search"/>
+<field name="view_id" ref="document_retrieval_work_order_view_kanban"/>
+<field name="search_view_id" ref="document_retrieval_work_order_view_search"/>
+
         <field name="context">{}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

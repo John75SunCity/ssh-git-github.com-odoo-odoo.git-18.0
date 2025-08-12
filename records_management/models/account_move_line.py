@@ -10,7 +10,7 @@ from odoo import models, fields
 
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
-    
+
     work_order_id = fields.Reference(
         selection=[
             ('container.retrieval.work.order', 'Container Retrieval'),
@@ -22,7 +22,7 @@ class AccountMoveLine(models.Model):
         string='Related Work Order',
         help="Work order that generated this invoice line"
     )
-    
+
     work_order_coordinator_id = fields.Many2one(
         "work.order.coordinator",
         string="Work Order Coordinator",

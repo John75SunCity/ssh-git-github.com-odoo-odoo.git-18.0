@@ -2,84 +2,101 @@
 <odoo>
     
     <!-- View hr.employee form -->
-    <record id="view_hr_employee_form" model="ir.ui.view">
-        <field name="name">view.hr.employee.form</field>
+    <record id="hr_employee_view_form" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.inherit.records_management</field>
         <field name="model">hr.employee</field>
-        <field name="inherit_id" ref=""/>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
+            <xpath expr="//field[@name='department_id']" position="after">
+                <field name="records_department_id" string="Records Department"/>
+                <field name="records_access_level" string="Records Access Level"/>
+                <field name="naid_certified" string="NAID Certified"/>
             </xpath>
         </field>
     </record>
-
 
     <!-- View hr.employee list -->
-    <record id="view_hr_employee_list" model="ir.ui.view">
-        <field name="name">view.hr.employee.list</field>
+    <record id="hr_employee_view_tree" model="ir.ui.view">
+        <field name="name">hr.employee.view.tree.inherit.records_management</field>
         <field name="model">hr.employee</field>
-        <field name="inherit_id" ref=""/>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
+            <xpath expr="//field[@name='department_id']" position="after">
+                <field name="records_department_id" optional="hide"/>
+                <field name="records_access_level" optional="hide"/>
             </xpath>
         </field>
     </record>
-
 
     <!-- View hr.employee search -->
-    <record id="view_hr_employee_search" model="ir.ui.view">
-        <field name="name">view.hr.employee.search</field>
+    <record id="hr_employee_view_search" model="ir.ui.view">
+        <field name="name">hr.employee.view.search.inherit.records_management</field>
         <field name="model">hr.employee</field>
-        <field name="inherit_id" ref=""/>
+        <field name="inherit_id" ref="hr.view_employee_filter"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
+            <xpath expr="//field[@name='department_id']" position="after">
+                <field name="records_department_id" string="Records Department"/>
+                <field name="records_access_level" string="Access Level"/>
+            </xpath>
+            <xpath expr="//group[@name='group_by']" position="inside">
+                <filter name="group_by_records_department" string="Records Department" 
+                        context="{'group_by': 'records_department_id'}"/>
+                <filter name="group_by_access_level" string="Records Access Level" 
+                        context="{'group_by': 'records_access_level'}"/>
             </xpath>
         </field>
     </record>
-
 
     <!-- View hr.employee kanban -->
-    <record id="view_hr_employee_kanban" model="ir.ui.view">
-        <field name="name">view.hr.employee.kanban</field>
+    <record id="hr_employee_view_kanban" model="ir.ui.view">
+        <field name="name">hr.employee.view.kanban.inherit.records_management</field>
         <field name="model">hr.employee</field>
-        <field name="inherit_id" ref=""/>
+        <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
+            <xpath expr="//div[contains(@class,'oe_kanban_details')]" position="inside">
+                <div t-if="record.records_department_id.value">
+                    <i class="fa fa-archive"/> <field name="records_department_id"/>
+                </div>
+                <div t-if="record.naid_certified.value" class="text-success">
+                    <i class="fa fa-certificate"/> NAID Certified
+                </div>
             </xpath>
         </field>
     </record>
-
 
     <!-- View hr.employee graph -->
-    <record id="view_hr_employee_graph" model="ir.ui.view">
-        <field name="name">view.hr.employee.graph</field>
+    <record id="hr_employee_view_graph" model="ir.ui.view">
+        <field name="name">hr.employee.view.graph.inherit.records_management</field>
         <field name="model">hr.employee</field>
-        <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
-            </xpath>
+            <graph string="Employee Records Analysis">
+                <field name="records_department_id" type="row"/>
+                <field name="records_access_level" type="col"/>
+            </graph>
         </field>
     </record>
-
 
     <!-- View hr.employee pivot -->
-    <record id="view_hr_employee_pivot" model="ir.ui.view">
-        <field name="name">view.hr.employee.pivot</field>
+    <record id="hr_employee_view_pivot" model="ir.ui.view">
+        <field name="name">hr.employee.view.pivot.inherit.records_management</field>
         <field name="model">hr.employee</field>
-        <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
-            </xpath>
+            <pivot string="Employee Records Pivot">
+                <field name="records_department_id" type="row"/>
+                <field name="records_access_level" type="col"/>
+                <field name="naid_certified" type="measure"/>
+            </pivot>
         </field>
     </record>
 
-
     <!-- View hr.employee calendar -->
-    <record id="view_hr_employee_calendar" model="ir.ui.view">
-        <field name="name">view.hr.employee.calendar</field>
+    <record id="hr_employee_view_calendar" model="ir.ui.view">
+        <field name="name">hr.employee.view.calendar.inherit.records_management</field>
         <field name="model">hr.employee</field>
-        <field name="inherit_id" ref=""/>
+        <field name="inherit_id" ref="hr.hr_employee_view_calendar"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
+            <xpath expr="//calendar" position="attributes">
+                <attribute name="color">records_access_level</attribute>
             </xpath>
         </field>
     </record>

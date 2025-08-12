@@ -2,8 +2,8 @@
 <odoo>
 
     <!-- View container.destruction.work.order View List -->
-    <record id="view_container_destruction_work_order_list" model="ir.ui.view">
-        <field name="name">view.container.destruction.work.order.list</field>
+<record id="container_destruction_work_order_view_tree" model="ir.ui.view">
+    <field name="name">container.destruction.work.order.view.tree</field>
         <field name="model">container.destruction.work.order</field>
         <field name="arch" type="xml">
             <list>
@@ -13,8 +13,8 @@
     </record>
 
     <!-- View container.destruction.work.order form -->
-    <record id="view_container_destruction_work_order_form" model="ir.ui.view">
-        <field name="name">view.container.destruction.work.order.form</field>
+<record id="container_destruction_work_order_view_form" model="ir.ui.view">
+    <field name="name">container.destruction.work.order.view.form</field>
         <field name="model">container.destruction.work.order</field>
         <field name="arch" type="xml">
             <form string="Container Destruction Work Order">
@@ -31,8 +31,8 @@
     </record>
 
     <!-- View container.destruction.work.order search -->
-    <record id="view_container_destruction_work_order_search" model="ir.ui.view">
-        <field name="name">view.container.destruction.work.order.search</field>
+<record id="container_destruction_work_order_view_search" model="ir.ui.view">
+    <field name="name">container.destruction.work.order.view.search</field>
         <field name="model">container.destruction.work.order</field>
         <field name="arch" type="xml">
             <search>

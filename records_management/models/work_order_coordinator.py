@@ -23,9 +23,9 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 
 
 class WorkOrderCoordinator(models.Model):
@@ -191,13 +191,25 @@ class WorkOrderCoordinator(models.Model):
     # ============================================================================
     # MAIL THREAD FRAMEWORK
     # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    activity_ids = fields.One2many(
+        "mail.activity", 
+        "res_id", 
+        string="Activities",
+        domain=lambda self: [('res_model', '=', self._name)]
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=lambda self: [('res_model', '=', self._name)]
+    )
+    message_ids = fields.One2many(
+        "mail.message", 
+        "res_id", 
+        string="Messages",
+        domain=lambda self: [('res_model', '=', self._name)]
+    )
 
-    # ============================================================================
-    # MODEL CREATE WITH SEQUENCE
-    # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -250,8 +262,7 @@ class WorkOrderCoordinator(models.Model):
                 order.employee_ids = [(6, 0, self.employee_ids.ids)]
         
         self.message_post(
-            body=_("Coordination started for %s work orders", len(all_orders)),
-            message_type='notification'
+            body=_("Coordination started for %s work orders", len(all_orders))
         )
 
     def action_create_fsm_tasks(self):
@@ -276,8 +287,7 @@ class WorkOrderCoordinator(models.Model):
                 task_count += 1
         
         self.message_post(
-            body=_("Created %s FSM tasks for coordinated work orders", task_count),
-            message_type='notification'
+            body=_("Created %s FSM tasks for coordinated work orders", task_count)
         )
 
     def action_consolidate_billing(self):
@@ -308,8 +318,7 @@ class WorkOrderCoordinator(models.Model):
         
         self.invoice_id = invoice.id
         self.message_post(
-            body=_("Consolidated invoice created with %s lines", line_count),
-            message_type='notification'
+            body=_("Consolidated invoice created with %s lines", line_count)
         )
         
         return {
@@ -424,8 +433,6 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
         
         if not project_id:
             # Create default FSM project
-            # pylint: disable=no-member
-
             project = self.env['project.project'].create({
                 'name': _("Records Management - %s", self.partner_id.name),
                 'is_fsm': True,
@@ -437,7 +444,7 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
             'name': _("%s: %s", self._description, self.display_name or self.name),
             'project_id': project_id,
             'partner_id': self.partner_id.id,
-            'planned_date_begin': getattr(self, 'scheduled_date', fields.Datetime.now()),
+            'planned_date_begin': self.scheduled_date or fields.Datetime.now(),
             'description': getattr(self, 'description', ''),
         }
         
@@ -477,8 +484,8 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
         if self.portal_visible and self.partner_id:
             # Send portal notification
             self.message_notify(
-                partner_ids=[self.partner_id.id],
+                partner_ids=self.partner_id.ids,
                 subject=_("Update: %s", self.display_name),
-                body=_("Your work order %s has been updated. Status: %s", 
+                body=_('Your work order %s has been updated. Status: %s', 
                        self.display_name, self.state)
             )

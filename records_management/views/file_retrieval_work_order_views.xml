@@ -2,8 +2,8 @@
 <odoo>
 
     <!-- View file.retrieval.work.order View List -->
-    <record id="view_file_retrieval_work_order_list" model="ir.ui.view">
-        <field name="name">view.file.retrieval.work.order.list</field>
+<record id="file_retrieval_work_order_view_tree" model="ir.ui.view">
+    <field name="name">file.retrieval.work.order.view.tree</field>
         <field name="model">file.retrieval.work.order</field>
         <field name="arch" type="xml">
             <list>
@@ -13,8 +13,8 @@
     </record>
 
     <!-- View file.retrieval.work.order form -->
-    <record id="view_file_retrieval_work_order_form" model="ir.ui.view">
-        <field name="name">view.file.retrieval.work.order.form</field>
+<record id="file_retrieval_work_order_view_form" model="ir.ui.view">
+    <field name="name">file.retrieval.work.order.view.form</field>
         <field name="model">file.retrieval.work.order</field>
         <field name="arch" type="xml">
             <form string="File Retrieval Work Order">
@@ -31,8 +31,8 @@
     </record>
 
     <!-- View file.retrieval.work.order search -->
-    <record id="view_file_retrieval_work_order_search" model="ir.ui.view">
-        <field name="name">view.file.retrieval.work.order.search</field>
+<record id="file_retrieval_work_order_view_search" model="ir.ui.view">
+    <field name="name">file.retrieval.work.order.view.search</field>
         <field name="model">file.retrieval.work.order</field>
         <field name="arch" type="xml">
             <search>

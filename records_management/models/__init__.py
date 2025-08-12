@@ -90,7 +90,6 @@ from . import shredding_equipment
 from . import shredding_certificate
 from . import shredding_service
 from . import shredding_hard_drive
-from . import shredding_inventory
 from . import shredding_inventory_item
 from . import shredding_service_log
 from . import destruction_item
@@ -168,12 +167,10 @@ from . import load
 # Core NAID compliance
 from . import naid_compliance
 from . import naid_compliance_support_models
-from . import naid_audit
 from . import naid_custody
 from . import naid_custody_event
 from . import naid_audit_log
 from . import naid_certificate
-from . import naid_compliance_checklist
 from . import naid_compliance_checklist_item
 from . import naid_compliance_action_plan
 from . import naid_compliance_alert
@@ -217,7 +214,6 @@ from . import customer_feedback
 from . import customer_portal_diagram
 
 # Portal feedback support models (comprehensive system)
-from . import portal_feedback_resolution
 from . import portal_feedback_escalation
 from . import portal_feedback_action
 from . import portal_feedback_communication
@@ -296,9 +292,6 @@ from . import installer
 from . import records_management_base_menus
 from . import location_report_wizard
 
-# Module configurator (MOVED HERE to avoid circular imports)
-from . import rm_module_configurator
-
 # =============================================================================
 # WIZARDS AND UTILITIES
 # =============================================================================
@@ -339,39 +332,13 @@ except (ImportError, AttributeError) as e:
 # CONDITIONAL IMPORTS FOR EXTENSION MODELS
 # =============================================================================
 
-# Import extension models conditionally to avoid circular import issues
-try:
-    from . import survey_user_input_enhanced
-    _logger.info("Survey user input enhancements loaded successfully")
-except (ImportError, AttributeError) as e:
-    _logger.warning("Survey enhancements not available: %s", str(e))
-
-try:
-    from . import stock_picking_records_extension
-    _logger.info("Stock picking records extensions loaded successfully")
-except (ImportError, AttributeError) as e:
-    _logger.warning("Stock picking extensions not available: %s", str(e))
-
-try:
-    from . import proj_task_ext
-    _logger.info("Project task extensions loaded successfully")
-except (ImportError, AttributeError) as e:
-    _logger.warning("Project task extensions not available: %s", str(e))
-
-try:
-    from . import prod_ext
-    _logger.info("Product extensions loaded successfully")
-except (ImportError, AttributeError) as e:
-    _logger.warning("Product extensions not available: %s", str(e))
-
+# Enhanced deletion and user management models
 try:
     from . import records_deletion_request_enhanced
     _logger.info("Records deletion request enhancements loaded successfully")
 except (ImportError, AttributeError) as e:
     _logger.warning("Records deletion enhancements not available: %s", str(e))
 
-# Enhanced deletion and user management models
-from . import records_deletion_request_enhanced
 from . import records_user_invitation_wizard
 from . import records_bulk_user_import
 
@@ -385,3 +352,38 @@ from . import container_access_work_order
 # Model extensions for work order integration (project_task already imported above)
 from . import account_move_line
 from . import container_retrieval_work_order
+
+# =============================================================================
+# MISSING MODELS THAT NEED TO BE IMPORTED
+# =============================================================================
+
+# Add any missing models that were causing the self-import issues
+try:
+    from . import shredding_inventory
+    _logger.info("Shredding inventory loaded successfully")
+except (ImportError, AttributeError) as e:
+    _logger.warning("Shredding inventory not available: %s", str(e))
+
+try:
+    from . import naid_audit
+    _logger.info("NAID audit loaded successfully") 
+except (ImportError, AttributeError) as e:
+    _logger.warning("NAID audit not available: %s", str(e))
+
+try:
+    from . import naid_compliance_checklist
+    _logger.info("NAID compliance checklist loaded successfully")
+except (ImportError, AttributeError) as e:
+    _logger.warning("NAID compliance checklist not available: %s", str(e))
+
+try:
+    from . import portal_feedback_resolution
+    _logger.info("Portal feedback resolution loaded successfully")
+except (ImportError, AttributeError) as e:
+    _logger.warning("Portal feedback resolution not available: %s", str(e))
+
+try:
+    from . import rm_module_configurator
+    _logger.info("RM module configurator loaded successfully")
+except (ImportError, AttributeError) as e:
+    _logger.warning("RM module configurator not available: %s", str(e))
