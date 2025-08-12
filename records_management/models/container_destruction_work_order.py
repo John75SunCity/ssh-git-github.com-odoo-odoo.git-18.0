@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Container Destruction Work Order Module
+Containeclass ContainerDestructionWorkOrder(models.Model):
+    _name = "container.destruction.work.order"
+    _description = "Container Destruction Work Order"
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'work.order.integration.mixin']
+    _order = "priority desc, scheduled_date asc, name"
+    _rec_name = "display_name"ruction Work Order Module
 
 This module manages work orders for secure destruction of records containers and their contents.
 Ensures NAID AAA compliance with complete chain of custody documentation and certificate generation.

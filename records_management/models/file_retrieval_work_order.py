@@ -35,7 +35,7 @@ from odoo.exceptions import UserError, ValidationError
 class FileRetrievalWorkOrder(models.Model):
     _name = "file.retrieval.work.order"
     _description = "File Retrieval Work Order"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'work.order.integration.mixin']
     _order = "priority desc, scheduled_date asc, name"
     _rec_name = "display_name"
 

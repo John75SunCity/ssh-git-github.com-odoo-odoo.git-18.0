@@ -36,7 +36,7 @@ from odoo.exceptions import UserError, ValidationError
 class ScanRetrievalWorkOrder(models.Model):
     _name = "scan.retrieval.work.order"
     _description = "Scan Retrieval Work Order"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'work.order.integration.mixin']
     _order = "priority desc, scheduled_date asc, name"
     _rec_name = "display_name"
 

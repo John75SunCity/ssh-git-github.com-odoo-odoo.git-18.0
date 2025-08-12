@@ -374,8 +374,14 @@ except (ImportError, AttributeError) as e:
 from . import records_deletion_request_enhanced
 from . import records_user_invitation_wizard
 from . import records_bulk_user_import
+
+# Work Order Integration System (load mixin first)
+from . import work_order_coordinator
 from . import scan_retrieval_work_order
 from . import scan_retrieval_item
 from . import container_destruction_work_order
 from . import container_access_work_order
+
+# Model extensions for work order integration (project_task already imported above)
+from . import account_move_line
 from . import container_retrieval_work_order

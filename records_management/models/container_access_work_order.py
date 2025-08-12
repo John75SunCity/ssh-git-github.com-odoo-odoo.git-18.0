@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Container Access Work Order Module
+Containeclass ContainerAccessWorkOrder(models.Model):
+    _name = "container.access.work.order"
+    _description = "Container Access Work Order"
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'work.order.integration.mixin']
+    _order = "priority desc, scheduled_date asc, name"
+    _rec_name = "display_name"ss Work Order Module
 
 This module manages work orders for temporary on-site access to records containers.
 Supports various access scenarios including audits, inspections, relabeling, and
