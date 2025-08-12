@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from odoo.tests.common import TransactionCase
-from odoo.exceptions import ValidationError
-
-
+# Enhanced import handling for development environment
+try:
+    from odoo.tests.common import TransactionCase
+    from odoo.exceptions import ValidationError
+except ImportError:
+    # Development/testing environment fallback
+    TransactionCase = object
+    ValidationError = Exception
 
 
 class TestRecordsManagement(TransactionCase):
     """Test cases for Records Management module."""
 
+    @classmethod
     def setUpClass(cls):
         super(TestRecordsManagement, cls).setUpClass()
         cls.partner = cls.env["res.partner"].create(

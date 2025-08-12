@@ -35,10 +35,8 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
-
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
-
 
 
 class PaperBaleRecycling(models.Model):
@@ -52,19 +50,16 @@ class PaperBaleRecycling(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Name", required=True, tracking=True, index=True)
-
-    # Partner Relationship
-    description = fields.Text(string="Description"),
-    sequence = fields.Integer(string="Sequence", default=10),
-    active = fields.Boolean(string="Active", default=True),
+    description = fields.Text(string="Description")
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
     company_id = fields.Many2one(
         "res.company",
         string="Company",
-    )
         default=lambda self: self.env.company,
         required=True,
         index=True,
-    ),
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
@@ -72,13 +67,12 @@ class PaperBaleRecycling(models.Model):
         tracking=True,
         index=True,
     )
-
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         help="Associated partner for this record",
     )
-    ),
+
     # ============================================================================
     # STATE MANAGEMENT
     # ============================================================================
@@ -91,7 +85,6 @@ class PaperBaleRecycling(models.Model):
         ],
         string="Status",
         default="draft",
-    )
         tracking=True,
     )
 
@@ -100,23 +93,19 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     bale_id = fields.Char(
         string="Bale ID",
-    )
         required=True,
         index=True,
         tracking=True,
-
-    help="Unique identifier for the paper bale",
-
-        )
+        help="Unique identifier for the paper bale",
+    )
+    gross_weight = fields.Float(string="Gross Weight (lbs)", required=True, tracking=True)
     bale_weight = fields.Float(
         string="Bale Weight (lbs)",
         required=True,
         tracking=True,
-
-    help="Total weight of the bale in pounds",
-)
-
-        )
+        help="Total weight of the bale in pounds",
+    )
+    net_weight = fields.Float(string='Net Weight (lbs)', compute='_compute_net_weight', store=True)
     paper_type = fields.Selection(
         [
             ("mixed", "Mixed Paper"),
@@ -127,11 +116,10 @@ class PaperBaleRecycling(models.Model):
             ("confidential", "Confidential Documents"),
         ],
         string="Paper Type",
-    )
         required=True,
         default="mixed",
         tracking=True,
-    ),
+    )
     grade_quality = fields.Selection(
         [
             ("grade_1", "Grade 1 - Highest"),
@@ -140,37 +128,33 @@ class PaperBaleRecycling(models.Model):
             ("grade_4", "Grade 4 - Low"),
         ],
         string="Grade Quality",
-    )
         default="grade_3",
         tracking=True,
-    ),
+    )
     contamination_level = fields.Float(
         string="Contamination Level (%)",
         default=0.0,
-
         help="Percentage of non-paper contamination",
     )
-
-        )
     moisture_content = fields.Float(
         string="Moisture Content (%)",
-    )
         default=0.0,
-        help="Moisture percentage in the bale"
+        help="Moisture percentage in the bale",
     )
+    production_date = fields.Date(string="Production Date", tracking=True)
+    paper_grade = fields.Char(string="Paper Grade Classification", tracking=True)
 
     # ============================================================================
     # RECYCLING PROCESS
     # ============================================================================
-    processing_date = fields.Date(string="Processing Date", tracking=True),
+    processing_date = fields.Date(string="Processing Date", tracking=True)
     recycling_facility_id = fields.Many2one(
         "res.partner",
         string="Recycling Facility",
-    )
         domain=[("is_company", "=", True)],
         tracking=True,
-    ),
-    collection_date = fields.Date(string="Collection Date", tracking=True),
+    )
+    collection_date = fields.Date(string="Collection Date", tracking=True)
     transport_method = fields.Selection(
         [
             ("truck", "Truck Transport"),
@@ -180,7 +164,7 @@ class PaperBaleRecycling(models.Model):
         ],
         string="Transport Method",
         default="truck",
-    ),
+    )
     processing_status = fields.Selection(
         [
             ("pending", "Pending Processing"),
@@ -198,26 +182,20 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     carbon_footprint_reduction = fields.Float(
         string="Carbon Footprint Reduction (tons CO2)",
+        help="Estimated carbon footprint reduction from recycling",
     )
-
-        help="Estimated carbon footprint reduction from recycling"
-
-        )
     water_savings = fields.Float(
         string="Water Savings (gallons)", help="Estimated water savings from recycling"
-    ),
+    )
     energy_savings = fields.Float(
         string="Energy Savings (kWh)", help="Estimated energy savings from recycling"
-    ),
+    )
     landfill_diversion = fields.Float(
         string="Landfill Diversion (lbs)",
+        help="Weight of material diverted from landfill",
     )
-
-        help="Weight of material diverted from landfill"
-
-        )
-    environmental_certificate = fields.Binary(string="Environmental Certificate"),
-    recycling_certificate = fields.Binary(string="Recycling Certificate"),
+    environmental_certificate = fields.Binary(string="Environmental Certificate")
+    recycling_certificate = fields.Binary(string="Recycling Certificate")
     chain_of_custody = fields.Text(string="Chain of Custody Documentation")
 
     # ============================================================================
@@ -228,27 +206,26 @@ class PaperBaleRecycling(models.Model):
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True,
-    ),
+    )
     market_price_per_ton = fields.Monetary(
         string="Market Price per Ton", currency_field="currency_id"
-    ),
+    )
     total_revenue = fields.Monetary(
         string="Total Revenue",
-    )
         currency_field="currency_id",
-        compute="_compute_total_revenue",)
+        compute="_compute_total_revenue",
         store=True,
-    ),
+    )
     processing_cost = fields.Monetary(
         string="Processing Cost", currency_field="currency_id"
-    ),
+    )
     transport_cost = fields.Monetary(
         string="Transport Cost", currency_field="currency_id"
-    ),
+    )
     net_profit = fields.Monetary(
         string="Net Profit",
         currency_field="currency_id",
-        compute="_compute_net_profit",)
+        compute="_compute_net_profit",
         store=True,
     )
 
@@ -256,11 +233,17 @@ class PaperBaleRecycling(models.Model):
     # RELATIONSHIP FIELDS
     # ============================================================================
     source_paper_bale_ids = fields.Many2many(
-        "paper.bale", string="Source Paper Bales"
-    ),
+        "paper.bale", "paper_bale_recycling_rel", "recycling_id", "bale_id", string="Source Paper Bales"
+    )
     shredding_service_ids = fields.One2many(
         "shredding.service", "recycling_bale_id", string="Related Shredding Services"
     )
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -268,28 +251,13 @@ class PaperBaleRecycling(models.Model):
     source_bale_count = fields.Integer(
         compute="_compute_source_bale_count",
         string="Source Bales",
-
         help="Number of source bales used for this recycling batch",
-
-        )
-
-    # Additional status tracking fields
-    contamination = fields.Char(string="Contamination Notes", tracking=True),
-    mobile_entry = fields.Boolean(string="Mobile Entry", default=False, tracking=True),
-    paper_grade = fields.Char(string="Paper Grade Classification", tracking=True),
-    production_date = fields.Date(string="Production Date", tracking=True)
-
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance),
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities"),
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-    ),
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    )
+    contamination = fields.Char(string="Contamination Notes", tracking=True)
+    mobile_entry = fields.Boolean(string="Mobile Entry", default=False, tracking=True)
 
     # ============================================================================
-    gross_weight = fields.Float(string='Gross Weight (lbs)', required=True)
     # COMPUTE METHODS
-    net_weight = fields.Float(string='Net Weight (lbs)', compute='_compute_net_weight', store=True)
     # ============================================================================
     @api.depends("bale_weight", "market_price_per_ton")
     def _compute_total_revenue(self):
@@ -307,11 +275,15 @@ class PaperBaleRecycling(models.Model):
                 record.total_revenue - record.processing_cost - record.transport_cost
             )
 
-    @api.depends("source_paper_bales")
+    @api.depends("source_paper_bale_ids")
     def _compute_source_bale_count(self):
         for record in self:
-            record.source_bale_count = len(record.source_paper_bales)
+            record.source_bale_count = len(record.source_paper_bale_ids)
 
+    def _compute_net_weight(self):
+        # This method needs to be implemented
+        for record in self:
+            record.net_weight = record.gross_weight # Placeholder
     # ============================================================================
     # OVERRIDE METHODS
     # ============================================================================
@@ -413,7 +385,7 @@ class PaperBaleRecycling(models.Model):
 
         self.ensure_one()
         # This would typically create an account.move entry
-    self.message_post(body=_("Payment received for bale %s", self.bale_id))
+        self.message_post(body=_("Payment received for bale %s", self.bale_id))
         return True
 
     def action_ready_to_ship(self):

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View naid.certificate View List -->
+    <record id="view_naid_certificate_list" model="ir.ui.view">
+        <field name="name">view.naid.certificate.list</field>
+        <field name="model">naid.certificate</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- View naid.certificate form -->
+    <record id="view_naid_certificate_form" model="ir.ui.view">
+        <field name="name">view.naid.certificate.form</field>
+        <field name="model">naid.certificate</field>
+        <field name="arch" type="xml">
+            <form string="Naid Certificate">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- View naid.certificate search -->
+    <record id="view_naid_certificate_search" model="ir.ui.view">
+        <field name="name">view.naid.certificate.search</field>
+        <field name="model">naid.certificate</field>
+        <field name="arch" type="xml">
+            <search>
+                <group expand="1" string="Group By">
+                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action naid.certificate -->
+    <record id="action_naid_certificate" model="ir.actions.act_window">
+        <field name="name">Naid Certificate</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">naid.certificate</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                There is no examples click here to add new Naid Certificate.
+            </p>
+        </field>
+    </record>
+
+</odoo>

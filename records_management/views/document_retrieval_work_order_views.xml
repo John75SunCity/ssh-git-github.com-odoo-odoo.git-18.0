@@ -3,8 +3,8 @@
     <!-- Document Retrieval Work Order Views -->
 
     <!-- Tree View -->
-    <record id="view_document_retrieval_work_order_tree" model="ir.ui.view">
-        <field name="name">document.retrieval.work.order.tree</field>
+    <record id="view_document_retrieval_work_order_list" model="ir.ui.view">
+        <field name="name">view.document.retrieval.work.order.list</field>
         <field name="model">document.retrieval.work.order</field>
         <field name="arch" type="xml">
             <tree string="Document Retrieval Work Orders" decoration-info="state=='draft'" decoration-warning="state=='confirmed'" decoration-success="state=='completed'">
@@ -23,7 +23,7 @@
 
     <!-- Form View -->
     <record id="view_document_retrieval_work_order_form" model="ir.ui.view">
-        <field name="name">document.retrieval.work.order.form</field>
+        <field name="name">view.document.retrieval.work.order.form</field>
         <field name="model">document.retrieval.work.order</field>
         <field name="arch" type="xml">
             <form string="Document Retrieval Work Order">
@@ -216,7 +216,7 @@
 
     <!-- Search View -->
     <record id="view_document_retrieval_work_order_search" model="ir.ui.view">
-        <field name="name">document.retrieval.work.order.search</field>
+        <field name="name">view.document.retrieval.work.order.search</field>
         <field name="model">document.retrieval.work.order</field>
         <field name="arch" type="xml">
             <search string="Document Retrieval Work Orders">
@@ -249,7 +249,7 @@
 
     <!-- Action for Document Retrieval Work Orders -->
     <record id="action_document_retrieval_work_order" model="ir.actions.act_window">
-        <field name="name">Document Retrieval Work Orders</field>
+        <field name="name">Document Retrieval Work Order</field>
         <field name="res_model">document.retrieval.work.order</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="view_id" ref="view_document_retrieval_work_order_kanban"/>

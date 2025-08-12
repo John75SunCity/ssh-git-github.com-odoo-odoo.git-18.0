@@ -10,18 +10,15 @@ certification tracking, and compliance monitoring with enterprise-grade security
 import datetime
 from datetime import timedelta
 
-from odoo import _, api, fields, models
-
-from odoo.exceptions import UserError, ValidationError
-
-
-
 try:
     from dateutil.relativedelta import relativedelta
 except ImportError:
     # Fallback for systems without dateutil
     def relativedelta(months=0):
         return timedelta(days=months * 30)
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 
 class NaidCompliance(models.Model):

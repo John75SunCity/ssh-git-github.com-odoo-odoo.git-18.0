@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- View res.config.settings form -->
+    <record id="view_res_config_settings_form" model="ir.ui.view">
+        <field name="name">view.res.config.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View res.config.settings list -->
+    <record id="view_res_config_settings_list" model="ir.ui.view">
+        <field name="name">view.res.config.settings.list</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View res.config.settings search -->
+    <record id="view_res_config_settings_search" model="ir.ui.view">
+        <field name="name">view.res.config.settings.search</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View res.config.settings kanban -->
+    <record id="view_res_config_settings_kanban" model="ir.ui.view">
+        <field name="name">view.res.config.settings.kanban</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View res.config.settings graph -->
+    <record id="view_res_config_settings_graph" model="ir.ui.view">
+        <field name="name">view.res.config.settings.graph</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View res.config.settings pivot -->
+    <record id="view_res_config_settings_pivot" model="ir.ui.view">
+        <field name="name">view.res.config.settings.pivot</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View res.config.settings calendar -->
+    <record id="view_res_config_settings_calendar" model="ir.ui.view">
+        <field name="name">view.res.config.settings.calendar</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

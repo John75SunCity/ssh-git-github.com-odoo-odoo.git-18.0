@@ -1,54 +1,138 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+"""
+Partner Key Restriction Management Module
 
+This module provides key access restrictions for partners in the Records Management System.
+It manages partner-specific key issuance permissions and access controls with full audit trails.
+"""
+
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 
 class ResPartnerKeyRestriction(models.Model):
     _name = 'res.partner.key.restriction'
-    _description = 'Res Partner Key Restriction'
+    _description = 'Partner Key Access Restriction'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
     _rec_name = 'name'
-    
-    # Core fields
-    name = fields.Char(string='Name', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", string="Assigned User", default=lambda self: self.env.user)
+
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(string='Name', required=True, tracking=True, index=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
+    user_id = fields.Many2one('res.users', string='Assigned User', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string='Active', default=True)
-    
-    # State management
+
+    # ============================================================================
+    # BUSINESS SPECIFIC FIELDS
+    # ============================================================================
+    partner_id = fields.Many2one(
+        'res.partner',
+        string='Partner',
+        required=True,
+        tracking=True,
+        help='Associated partner for this key restriction'
+    )
+
+    key_issuance_allowed = fields.Boolean(
+        string='Key Issuance Allowed',
+        default=True,
+        tracking=True,
+        help='Whether key issuance is allowed for this partner'
+    )
+
+    restriction_reason = fields.Text(
+        string='Restriction Reason',
+        help='Reason for key access restriction'
+    )
+
+    effective_date = fields.Date(
+        string='Effective Date',
+        default=fields.Date.context_today,
+        tracking=True,
+        help='Date when restriction becomes effective'
+    )
+
+    expiry_date = fields.Date(
+        string='Expiry Date',
+        tracking=True,
+        help='Date when restriction expires'
+    )
+
+    # ============================================================================
+    # STATE MANAGEMENT
+    # ============================================================================
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('done', 'Done'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
-    
-    # Documentation
+    ], string='Status', default='draft', tracking=True, required=True)
+
+    # ============================================================================
+    # DOCUMENTATION FIELDS
+    # ============================================================================
     notes = fields.Text(string='Notes')
-    
-    # Computed fields    key_issuance_allowed = fields.Boolean(string='Key Issuance Allowed', default=True)
-    
+
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
     @api.depends('name')
     def _compute_display_name(self):
         for record in self:
-            record.display_name = record.name or 'New'
-    
-    # Action methods
-    def action_confirm(self):
-        self.ensure_one()
-        self.write({'state': 'confirmed'})
+            record.display_name = record.name or _('New')
 
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
-    
-    def action_cancel(self):
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_confirm(self):
+        """Confirm the key restriction"""
         self.ensure_one()
+        if self.state != 'draft':
+            raise ValidationError(_('Can only confirm draft restrictions'))
+        self.write({'state': 'confirmed'})
+        self.message_post(body=_('Key restriction confirmed'))
+
+    def action_complete(self):
+        """Mark restriction as complete"""
+        self.ensure_one()
+        if self.state != 'confirmed':
+            raise ValidationError(_('Can only complete confirmed restrictions'))
+        self.write({'state': 'done'})
+        self.message_post(body=_('Key restriction completed'))
+
+    def action_cancel(self):
+        """Cancel the key restriction"""
+        self.ensure_one()
+        if self.state == 'done':
+            raise ValidationError(_('Cannot cancel completed restrictions'))
         self.write({'state': 'cancelled'})
-    
+        self.message_post(body=_('Key restriction cancelled'))
+
     def action_reset_to_draft(self):
+        """Reset restriction to draft state"""
         self.ensure_one()
         self.write({'state': 'draft'})
+        self.message_post(body=_('Key restriction reset to draft'))
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains('effective_date', 'expiry_date')
+    def _check_dates(self):
+        """Validate date consistency"""
+        for record in self:
+            if record.effective_date and record.expiry_date:
+                if record.effective_date > record.expiry_date:
+                    raise ValidationError(_(
+                        'Effective date cannot be later than expiry date'
+                    ))

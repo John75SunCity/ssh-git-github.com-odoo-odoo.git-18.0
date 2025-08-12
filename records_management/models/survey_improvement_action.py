@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 
-from odoo.exceptions import UserError, ValidationError
-
-
 
 class SurveyImprovementAction(models.Model):
     _name = 'survey.improvement.action'
     _description = 'Survey Improvement Action'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name desc'
-    _rec_name = 'name'
-    
+    _rec_name = 'name'  # Changed to 'name' as display_name is for display purposes
+
     # Basic Information
     name = fields.Char(string='Name', required=True, tracking=True, index=True)
     description = fields.Text(string='Description')
     sequence = fields.Integer(string='Sequence', default=10)
-    
+
     # State Management
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -24,65 +21,54 @@ class SurveyImprovementAction(models.Model):
         ('inactive', 'Inactive'),
         ('archived', 'Archived')
     ], string='Status', default='draft', tracking=True)
-    
+
     # Company and User
-    company_id = fields.Many2one('res.company', string='Company', 
+    company_id = fields.Many2one('res.company', string='Company',
                                  default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", string="Assigned User", 
+    user_id = fields.Many2one("res.users", string="Assigned User",
                               default=lambda self: self.env.user)
-    
-    # Timestamps
-    date_created = fields.Datetime(string='Created Date', default=fields.Datetime.now)
-    date_modified = fields.Datetime(string='Modified Date')
-    
-    # Control Fields
-    active = fields.Boolean(string='Active', default=True)
-    notes = fields.Text(string='Internal Notes')
-    
-    # Computed Fields    @api.depends('name')
-    def _compute_display_name(self):
-        """Compute display name."""
-        for record in self:
-            record.display_name = record.name or _('New')
-    
-    def write(self, vals):
-        """Override write to update modification date."""
-        vals['date_modified'] = fields.Datetime.now()
-        return super().write(vals)
-    
-    def action_activate(self):
-        """Activate the record."""
 
-        self.ensure_one()
-        self.write({'state': 'active'})
-
+    # Partner Relationship
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         help="Associated partner for this record"
     )
-    
-    def action_deactivate(self):
-        """Deactivate the record."""
 
-        self.ensure_one()
-        self.write({'state': 'inactive'})
-    
-    def action_archive(self):
-        """Archive the record."""
+    # Timestamps
+    date_created = fields.Datetime(string='Created Date', default=fields.Datetime.now, readonly=True)
+    date_modified = fields.Datetime(string='Modified Date', readonly=True)
 
-        self.ensure_one()
-        self.write({'state': 'archived', 'active': False})
-    
+    # Control Fields
+    active = fields.Boolean(string='Active', default=True)
+    notes = fields.Text(string='Internal Notes')
+
+    # ORM Overrides
+    def write(self, vals):
+        """Override write to update modification date."""
+        vals['date_modified'] = fields.Datetime.now()
+        return super().write(vals)
+
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create to set default values."""
-        # Handle both single dict and list of dicts
-        if not isinstance(vals_list, list):
-            vals_list = [vals_list]
-        
+        """Override create to set a default name if not provided."""
         for vals in vals_list:
             if not vals.get('name'):
-                vals['name'] = _('New Record')
-        
+                vals['name'] = self.env['ir.sequence'].next_by_code('survey.improvement.action') or _('New')
         return super().create(vals_list)
+
+    # Action Methods
+    def action_activate(self):
+        """Activate the record."""
+        self.ensure_one()
+        self.write({'state': 'active'})
+
+    def action_deactivate(self):
+        """Deactivate the record."""
+        self.ensure_one()
+        self.write({'state': 'inactive'})
+
+    def action_archive(self):
+        """Archive the record."""
+        self.ensure_one()
+        self.write({'state': 'archived', 'active': False})

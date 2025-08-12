@@ -68,17 +68,14 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-import re
-from datetime import datetime, timedelta
-import logging
-
-from odoo import _, api, fields, models
-
 import base64
 import hashlib
+import logging
+import re
+from datetime import datetime, timedelta
+
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
-
-
 
 _logger = logging.getLogger(__name__)
 
@@ -549,12 +546,13 @@ class NaidCertificate(models.Model):
     @api.model
     def _check_certificate_expiration(self):
         """Scheduled action to check for expiring certificates"""
+        today = fields.Date.today()
         # Check for certificates expiring in 30 days
-        warning_date = fields.Date.today() + timedelta(days=30)
+        warning_date = today + timedelta(days=30)
         expiring_certificates = self.search(
             [
                 ("expiration_date", "<=", warning_date),
-                ("expiration_date", ">", fields.Date.today()),
+                ("expiration_date", ">", today),
                 ("state", "in", ["issued", "delivered"]),
             ]
         )
@@ -568,7 +566,7 @@ class NaidCertificate(models.Model):
         # Archive expired certificates
         expired_certificates = self.search(
             [
-                ("expiration_date", "<", fields.Date.today()),
+                ("expiration_date", "<", today),
                 ("state", "in", ["issued", "delivered"]),
             ]
         )
@@ -577,7 +575,7 @@ class NaidCertificate(models.Model):
             cert.action_archive_certificate()
         expired_certificates = self.search(
             [
-                ("expiration_date", "<", fields.Date.today()),
+                ("expiration_date", "<", today),
                 ("state", "in", ["issued", "delivered"]),
             ]
         )

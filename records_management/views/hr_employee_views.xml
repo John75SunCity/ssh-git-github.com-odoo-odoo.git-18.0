@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- View hr.employee form -->
+    <record id="view_hr_employee_form" model="ir.ui.view">
+        <field name="name">view.hr.employee.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View hr.employee list -->
+    <record id="view_hr_employee_list" model="ir.ui.view">
+        <field name="name">view.hr.employee.list</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View hr.employee search -->
+    <record id="view_hr_employee_search" model="ir.ui.view">
+        <field name="name">view.hr.employee.search</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View hr.employee kanban -->
+    <record id="view_hr_employee_kanban" model="ir.ui.view">
+        <field name="name">view.hr.employee.kanban</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View hr.employee graph -->
+    <record id="view_hr_employee_graph" model="ir.ui.view">
+        <field name="name">view.hr.employee.graph</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View hr.employee pivot -->
+    <record id="view_hr_employee_pivot" model="ir.ui.view">
+        <field name="name">view.hr.employee.pivot</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View hr.employee calendar -->
+    <record id="view_hr_employee_calendar" model="ir.ui.view">
+        <field name="name">view.hr.employee.calendar</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

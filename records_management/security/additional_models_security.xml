@@ -5,7 +5,7 @@
         <!-- These rules will be added after the models are registered -->
 
         <!-- Records Deletion Request Access -->
-        <record model="ir.model.access" id="access_records_deletion_request_user">
+        <record id="access_records_deletion_request_user" model="ir.model.access">
             <field name="name">rec.del.req.user</field>
             <field name="model_id" ref="model_records_deletion_request_enhanced"/>
             <field name="group_id" ref="records_management.group_records_user"/>
@@ -15,7 +15,7 @@
             <field name="perm_unlink">0</field>
         </record>
 
-        <record model="ir.model.access" id="access_records_deletion_request_manager">
+        <record id="access_records_deletion_request_manager" model="ir.model.access">
             <field name="name">rec.del.req.manager</field>
             <field name="model_id" ref="model_records_deletion_request_enhanced"/>
             <field name="group_id" ref="records_management.group_records_manager"/>
@@ -26,7 +26,7 @@
         </record>
 
         <!-- User Management Wizards Access -->
-        <record model="ir.model.access" id="access_records_user_invitation_wizard_manager">
+        <record id="access_records_user_invitation_wizard_manager" model="ir.model.access">
             <field name="name">records.user.invitation.wizard.manager</field>
             <field name="model_id" ref="model_records_user_invitation_wizard"/>
             <field name="group_id" ref="records_management.group_records_manager"/>
@@ -36,7 +36,7 @@
             <field name="perm_unlink">1</field>
         </record>
 
-        <record model="ir.model.access" id="access_records_bulk_user_import_manager">
+        <record id="access_records_bulk_user_import_manager" model="ir.model.access">
             <field name="name">records.bulk.user.import.manager</field>
             <field name="model_id" ref="model_records_bulk_user_import"/>
             <field name="group_id" ref="records_management.group_records_manager"/>
@@ -47,7 +47,7 @@
         </record>
 
         <!-- Billing Models Access -->
-        <record model="ir.model.access" id="access_records_billing_config_user">
+        <record id="access_records_billing_config_user" model="ir.model.access">
             <field name="name">records.billing.config.user</field>
             <field name="model_id" ref="model_records_billing_config"/>
             <field name="group_id" ref="records_management.group_records_user"/>
@@ -57,7 +57,7 @@
             <field name="perm_unlink">0</field>
         </record>
 
-        <record model="ir.model.access" id="access_records_billing_config_manager">
+        <record id="access_records_billing_config_manager" model="ir.model.access">
             <field name="name">records.billing.config.manager</field>
             <field name="model_id" ref="model_records_billing_config"/>
             <field name="group_id" ref="records_management.group_records_manager"/>

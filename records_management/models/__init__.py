@@ -113,6 +113,8 @@ from . import records_advanced_billing_period
 # Work orders
 from . import work_order_shredding
 from . import document_retrieval_work_order
+from . import records_retrieval_work_order
+from . import work_order_retrieval
 
 # Document retrieval support models (separate files following Odoo standards)
 from . import document_retrieval_item
@@ -208,6 +210,7 @@ from . import revenue_forecaster
 # Portal requests and feedback
 from . import portal_request
 from . import signed_document
+from . import signed_document_audit
 from . import portal_feedback
 from . import customer_feedback
 
@@ -215,7 +218,11 @@ from . import customer_feedback
 from . import customer_portal_diagram
 
 # Portal feedback support models (comprehensive system)
-from . import portal_feedback_support_models
+from . import portal_feedback_resolution
+from . import portal_feedback_escalation
+from . import portal_feedback_action
+from . import portal_feedback_communication
+from . import portal_feedback_analytic
 
 # Survey and improvement tracking
 from . import survey_user_input
@@ -287,7 +294,6 @@ from . import records_deletion_request
 
 # Module management
 from . import installer
-
 from . import records_management_base_menus
 from . import location_report_wizard
 
@@ -305,6 +311,13 @@ from . import stock_lot_attribute
 from . import stock_lot_attribute_option
 from . import stock_lot_attribute_value
 
+# Final models
+from . import payment_split
+from . import records_usage_tracking
+from . import maintenance_equipment
+from . import shredding_inventory_batch
+from . import wizard_template
+
 # =============================================================================
 # OPTIONAL EXTENSIONS AND INTEGRATIONS
 # =============================================================================
@@ -314,10 +327,9 @@ try:
     from . import fsm_route_management
     from . import fsm_notification
     _logger.info("Additional FSM modules loaded successfully")
-except ImportError as e:
+except (ImportError, AttributeError) as e:
     _logger.warning(
-        "FSM module '%s' not available, skipping FSM extensions: %s",
-        getattr(e, "name", "unknown"),
+        "FSM extensions not available, skipping: %s",
         str(e),
     )
 
@@ -329,29 +341,34 @@ except ImportError as e:
 try:
     from . import survey_user_input_enhanced
     _logger.info("Survey user input enhancements loaded successfully")
-except ImportError as e:
+except (ImportError, AttributeError) as e:
     _logger.warning("Survey enhancements not available: %s", str(e))
 
 try:
     from . import stock_picking_records_extension
     _logger.info("Stock picking records extensions loaded successfully")
-except ImportError as e:
+except (ImportError, AttributeError) as e:
     _logger.warning("Stock picking extensions not available: %s", str(e))
 
 try:
     from . import proj_task_ext
     _logger.info("Project task extensions loaded successfully")
-except ImportError as e:
+except (ImportError, AttributeError) as e:
     _logger.warning("Project task extensions not available: %s", str(e))
 
 try:
     from . import prod_ext
     _logger.info("Product extensions loaded successfully")
-except ImportError as e:
+except (ImportError, AttributeError) as e:
     _logger.warning("Product extensions not available: %s", str(e))
 
 try:
     from . import records_deletion_request_enhanced
     _logger.info("Records deletion request enhancements loaded successfully")
-except ImportError as e:
+except (ImportError, AttributeError) as e:
     _logger.warning("Records deletion enhancements not available: %s", str(e))
+
+# Enhanced deletion and user management models
+from . import records_deletion_request_enhanced
+from . import records_user_invitation_wizard
+from . import records_bulk_user_import
