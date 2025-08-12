@@ -60,8 +60,12 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
+import logging
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
+
+_logger = logging.getLogger(__name__)
 
 
 class RecordsContainerMovement(models.Model):
@@ -469,9 +473,7 @@ class RecordsContainerMovement(models.Model):
             "movement_id": self.id,
             "event_date": self.movement_date,
         }
-        import logging
 
-        _logger = logging.getLogger(__name__)
         try:
             audit_log = self.env["naid.audit.log"].create(audit_vals)
             self.write({"audit_trail_id": audit_log.id})
@@ -481,7 +483,6 @@ class RecordsContainerMovement(models.Model):
                 self.id,
                 e,
             )
-            pass
 
     def update_container_location(self):
         """Update container's current location"""
@@ -492,7 +493,11 @@ class RecordsContainerMovement(models.Model):
 
             # Log location change
             self.container_id.message_post(
-                body=_("Location updated to %s via movement %s", (self.to_location_id.name), self.name)
+                body=_(
+                    "Location updated to %s via movement %s",
+                    self.to_location_id.name,
+                    self.name,
+                )
             )
 
     def scan_barcode(self, barcode):
@@ -502,8 +507,8 @@ class RecordsContainerMovement(models.Model):
         if self.container_id.barcode == barcode:
             self.write({"barcode_scanned": True})
             return True
-        else:
-            raise UserError(_("Scanned barcode does not match container"))
+
+        raise UserError(_("Scanned barcode does not match container"))
 
     # ============================================================================
     # ACTION METHODS
@@ -653,7 +658,7 @@ class RecordsContainerMovement(models.Model):
                 user_id=self.user_id.id,
             )
         except Exception:
-            pass
+            pass  # Continue if activity creation fails
 
         self.message_post(
             body=_("Movement exception reported by %s", self.env.user.name),
@@ -720,7 +725,7 @@ class RecordsContainerMovement(models.Model):
         return result
 
     @api.model
-    def _name_search(
+    def _search_container_movement(
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
     ):
         """Enhanced search by name, container, or location"""
@@ -756,17 +761,21 @@ class RecordsContainerMovement(models.Model):
             "avg_duration": 0,
         }
 
-        # Statistics by type - avoid cell variable issue by using different variable names
+        # Statistics by type - use list comprehension to avoid cell variable issues
         movement_types = ["inbound", "outbound", "internal", "transfer", "maintenance"]
-        for movement_type_value in movement_types:
-            count = movements.filtered(lambda m: m.movement_type == movement_type_value)
-            stats["by_type"][movement_type_value] = len(count)
+        for mv_type in movement_types:
+            count = len(
+                movements.filtered(lambda m, t=mv_type: m.movement_type == t)
+            )
+            stats["by_type"][mv_type] = count
 
-        # Statistics by state - avoid cell variable issue by using different variable names
+        # Statistics by state - use list comprehension to avoid cell variable issues
         state_values = ["draft", "authorized", "in_progress", "completed", "cancelled"]
-        for state_value in state_values:
-            count = movements.filtered(lambda m: m.state == state_value)
-            stats["by_state"][state_value] = len(count)
+        for state_val in state_values:
+            count = len(
+                movements.filtered(lambda m, s=state_val: m.state == s)
+            )
+            stats["by_state"][state_val] = count
 
         # Average duration
         completed = movements.filtered(

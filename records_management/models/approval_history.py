@@ -3,7 +3,7 @@
 Approval History Module
 
 This module manages the complete approval workflow history for the Records
-Management System, providing comprehensive tracking of budget, expense, 
+Management System, providing comprehensive tracking of budget, expense,
 invoice, and payment approvals with detailed audit trails and performance metrics.
 
 Key Features:
@@ -26,7 +26,7 @@ from odoo.exceptions import UserError
 class ApprovalHistory(models.Model):
     """
     Approval History Model
-    
+
     Manages comprehensive approval workflow history for the Records Management System
     with detailed tracking of approval types, status, performance metrics, and audit trails.
     """
@@ -41,25 +41,25 @@ class ApprovalHistory(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(
-        string="Name", 
-        required=True, 
+        string="Name",
+        required=True,
         tracking=True,
         index=True,
-        help="Unique identifier for approval history record"
+        help="Unique identifier for approval history record",
     )
     company_id = fields.Many2one(
-        "res.company", 
+        "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-        help="Company context for approval"
+        help="Company context for approval",
     )
     user_id = fields.Many2one(
-        "res.users", 
+        "res.users",
         string="Requested By",
         default=lambda self: self.env.user,
         tracking=True,
-        help="User who requested the approval"
+        help="User who requested the approval",
     )
     active = fields.Boolean(
         string="Active",
@@ -89,7 +89,7 @@ class ApprovalHistory(models.Model):
         tracking=True,
         help="Date and time when approval was processed"
     )
-    
+
     approval_type = fields.Selection(
         [
             ("budget", "Budget Approval"),
@@ -104,7 +104,7 @@ class ApprovalHistory(models.Model):
         tracking=True,
         help="Type of approval being requested"
     )
-    
+
     approval_status = fields.Selection(
         [
             ("pending", "Pending"),
@@ -118,7 +118,7 @@ class ApprovalHistory(models.Model):
         tracking=True,
         help="Current status of the approval request"
     )
-    
+
     approved_by_id = fields.Many2one(
         "res.users",
         string="Approved By",
@@ -152,7 +152,7 @@ class ApprovalHistory(models.Model):
         store=True,
         help="Time taken to respond to the approval request"
     )
-    
+
     request_date = fields.Datetime(
         string="Request Date",
         required=True,
@@ -160,7 +160,7 @@ class ApprovalHistory(models.Model):
         tracking=True,
         help="Date and time when approval was requested"
     )
-    
+
     completed_date = fields.Datetime(
         string="Completed Date",
         tracking=True,
@@ -171,19 +171,19 @@ class ApprovalHistory(models.Model):
     # DOCUMENTATION FIELDS
     # ============================================================================
     description = fields.Text(
-        string="Description", 
+        string="Description",
         tracking=True,
-        help="Detailed description of the approval request"
+        help="Detailed description of the approval request",
     )
     approval_notes = fields.Text(
-        string="Approval Notes", 
+        string="Approval Notes",
         tracking=True,
-        help="Additional notes from the approver"
+        help="Additional notes from the approver",
     )
     reference_document = fields.Char(
-        string="Reference Document", 
+        string="Reference Document",
         tracking=True,
-        help="Reference to related document or transaction"
+        help="Reference to related document or transaction",
     )
     priority = fields.Selection(
         [
@@ -202,25 +202,25 @@ class ApprovalHistory(models.Model):
     # MAIL FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance)
     # ============================================================================
     activity_ids = fields.One2many(
-        "mail.activity", 
-        "res_id", 
+        "mail.activity",
+        "res_id",
         string="Activities",
         domain=[("res_model", "=", "approval.history")],
-        help="Related activities for this approval"
+        help="Related activities for this approval",
     )
     message_follower_ids = fields.One2many(
-        "mail.followers", 
-        "res_id", 
+        "mail.followers",
+        "res_id",
         string="Followers",
         domain=[("res_model", "=", "approval.history")],
-        help="Users following this approval"
+        help="Users following this approval",
     )
     message_ids = fields.One2many(
-        "mail.message", 
-        "res_id", 
+        "mail.message",
+        "res_id",
         string="Messages",
         domain=[("model", "=", "approval.history")],
-        help="Communication history for this approval"
+        help="Communication history for this approval",
     )
 
     # ============================================================================
@@ -271,7 +271,7 @@ class ApprovalHistory(models.Model):
             }
         )
         self.message_post(
-            body=_("Approval request approved by %s") % self.env.user.name,
+            body=_("Approval request approved by %s", self.env.user.name),
             message_type="notification",
         )
 
@@ -289,7 +289,7 @@ class ApprovalHistory(models.Model):
             }
         )
         self.message_post(
-            body=_("Approval request rejected by %s") % self.env.user.name,
+            body=_("Approval request rejected by %s", self.env.user.name),
             message_type="notification",
         )
 
@@ -307,15 +307,13 @@ class ApprovalHistory(models.Model):
         )
 
         self.message_post(
-            body=_("Approval request cancelled by %s") % self.env.user.name,
+            body=_("Approval request cancelled by %s", self.env.user.name),
             message_type="notification",
         )
 
     # ============================================================================
     # UTILITY METHODS
     # ============================================================================
-    def name_get(self):
-        """Custom display name"""
     def name_get(self):
         """Custom display name"""
         result = []
@@ -331,25 +329,26 @@ class ApprovalHistory(models.Model):
                     record.currency_id.symbol,
                     "{:.2f}".format(record.approval_amount)
                 ))
-            
+
             result.append((record.id, " ".join(name_parts)))
         return result
+
     def get_approval_statistics(self):
         """Get approval statistics for dashboard"""
         stats = {}
         for status in ["pending", "approved", "rejected", "cancelled"]:
             stats[status] = self.search_count([("approval_status", "=", status)])
-        
+
         # Average response time for completed approvals
         completed_approvals = self.search([
             ("approval_status", "in", ["approved", "rejected"]),
             ("response_time_hours", ">", 0)
         ])
-        
+
         if completed_approvals:
             avg_response_time = sum(completed_approvals.mapped("response_time_hours")) / len(completed_approvals)
             stats["avg_response_time_hours"] = round(avg_response_time, 2)
         else:
             stats["avg_response_time_hours"] = 0.0
-            
+
         return stats

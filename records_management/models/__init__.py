@@ -98,6 +98,7 @@ from . import paper_load_shipment
 
 # Advanced billing system
 from . import advanced_billing
+from . import advanced_billing_line
 from . import records_advanced_billing_period
 
 # Work orders
@@ -181,7 +182,6 @@ from . import billing_automation
 from . import department_billing
 
 # Advanced billing features
-from . import advanced_billing_line
 from . import customer_billing_profile
 from . import revenue_forecaster
 
