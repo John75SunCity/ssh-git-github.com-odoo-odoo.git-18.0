@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View barcode.generation.history View List -->
+    <record id="view_barcode_generation_history_list" model="ir.ui.view">
+        <field name="name">view.barcode.generation.history.list</field>
+        <field name="model">barcode.generation.history</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- View barcode.generation.history form -->
+    <record id="view_barcode_generation_history_form" model="ir.ui.view">
+        <field name="name">view.barcode.generation.history.form</field>
+        <field name="model">barcode.generation.history</field>
+        <field name="arch" type="xml">
+            <form string="Barcode Generation History">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- View barcode.generation.history search -->
+    <record id="view_barcode_generation_history_search" model="ir.ui.view">
+        <field name="name">view.barcode.generation.history.search</field>
+        <field name="model">barcode.generation.history</field>
+        <field name="arch" type="xml">
+            <search>
+                <group expand="1" string="Group By">
+                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action barcode.generation.history -->
+    <record id="action_barcode_generation_history" model="ir.actions.act_window">
+        <field name="name">Barcode Generation History</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">barcode.generation.history</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                There is no examples click here to add new Barcode Generation History.
+            </p>
+        </field>
+    </record>
+
+</odoo>

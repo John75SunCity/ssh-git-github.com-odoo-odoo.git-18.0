@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
+import uuid
+
 from odoo import models, fields, api, _
-
-import uuid  # Move import to top level
 from odoo.exceptions import UserError, ValidationError
-
 
 
 class RecordsLocation(models.Model):
@@ -17,47 +16,47 @@ class RecordsLocation(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Location Name", required=True, tracking=True, index=True)
-
-    # Partner Relationship
-    code = fields.Char(string="Location Code", required=True, index=True, tracking=True),
-    description = fields.Text(string="Description"),
-    sequence = fields.Integer(string="Sequence", default=10, tracking=True),
-    active = fields.Boolean(string="Active", default=True, tracking=True),
+    code = fields.Char(
+        string="Location Code", required=True, index=True, tracking=True
+    )
+    description = fields.Text(string="Description")
+    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
+    active = fields.Boolean(string="Active", default=True, tracking=True)
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    ),
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Location Manager",
         default=lambda self: self.env.user,
         tracking=True,
     )
-
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         help="Associated partner for this record",
-    ),
+    )
+
     # ============================================================================
     # PHYSICAL LOCATION DETAILS
     # ============================================================================
-    building = fields.Char(string="Building", tracking=True),
-    floor = fields.Char(string="Floor", tracking=True),
-    zone = fields.Char(string="Zone", tracking=True),
-    aisle = fields.Char(string="Aisle", tracking=True),
-    rack = fields.Char(string="Rack", tracking=True),
-    shelf = fields.Char(string="Shelf", tracking=True),
+    building = fields.Char(string="Building", tracking=True)
+    floor = fields.Char(string="Floor", tracking=True)
+    zone = fields.Char(string="Zone", tracking=True)
+    aisle = fields.Char(string="Aisle", tracking=True)
+    rack = fields.Char(string="Rack", tracking=True)
+    shelf = fields.Char(string="Shelf", tracking=True)
     position = fields.Char(string="Position", tracking=True)
 
     # Address Information
-    street = fields.Char(string="Street"),
-    street2 = fields.Char(string="Street 2"),
-    city = fields.Char(string="City"),
-    state = fields.Char(string="State/Province"),
-    zip = fields.Char(string="ZIP Code"),
+    street = fields.Char(string="Street")
+    street2 = fields.Char(string="Street 2")
+    city = fields.Char(string="City")
+    state_id = fields.Many2one("res.country.state", string="State/Province")
+    zip = fields.Char(string="ZIP Code")
     country_id = fields.Many2one("res.country", string="Country")
 
     # ============================================================================
@@ -73,36 +72,39 @@ class RecordsLocation(models.Model):
             ("offsite", "Off-site"),
         ],
         string="Location Type",
-    )
         required=True,
         default="warehouse",
         tracking=True,
-    ),
-    storage_capacity = fields.Integer(string="Storage Capacity (boxes)"),
-    max_capacity = fields.Integer(string='Maximum Capacity', default=1000),
+    )
+    storage_capacity = fields.Integer(string="Storage Capacity (boxes)")
+    max_capacity = fields.Integer(string="Maximum Capacity", default=1000)
     current_utilization = fields.Integer(
         string="Current Utilization", compute="_compute_current_utilization"
-    ),
+    )
     available_spaces = fields.Integer(
         string="Available Spaces", compute="_compute_available_spaces"
-    ),
-    available_space = fields.Integer(string='Available Space', compute='_compute_available_space'),
+    )
+    available_space = fields.Integer(
+        string="Available Space", compute="_compute_available_space"
+    )
     utilization_percentage = fields.Float(
         string="Utilization %", compute="_compute_utilization_percentage"
-    ),
+    )
     box_count = fields.Integer(
-        string="Box Count", 
-        compute="_compute_box_count",)
-        help="Number of boxes at this location"
+        string="Box Count",
+        compute="_compute_box_count",
+        help="Number of boxes at this location",
     )
 
     # Physical constraints
-    max_weight_capacity = fields.Float(string="Max Weight Capacity (lbs)"),
+    max_weight_capacity = fields.Float(string="Max Weight Capacity (lbs)")
     temperature_controlled = fields.Boolean(
         string="Temperature Controlled", default=False
-    ),
-    humidity_controlled = fields.Boolean(string="Humidity Controlled", default=False),
-    fire_suppression = fields.Boolean(string="Fire Suppression", default=False),
+    )
+    humidity_controlled = fields.Boolean(
+        string="Humidity Controlled", default=False
+    )
+    fire_suppression = fields.Boolean(string="Fire Suppression", default=False)
     security_level = fields.Selection(
         [("standard", "Standard"), ("high", "High"), ("maximum", "Maximum")],
         string="Security Level",
@@ -113,10 +115,12 @@ class RecordsLocation(models.Model):
     # ============================================================================
     # ACCESS & SECURITY
     # ============================================================================
-    access_restrictions = fields.Text(string="Access Restrictions"),
-    authorized_user_ids = fields.Many2many("res.users", string="Authorized Users")  # Fixed naming convention
-    requires_escort = fields.Boolean(string="Requires Escort", default=False),
-    security_camera = fields.Boolean(string="Security Camera", default=False),
+    access_restrictions = fields.Text(string="Access Restrictions")
+    authorized_user_ids = fields.Many2many(
+        "res.users", string="Authorized Users"
+    )
+    requires_escort = fields.Boolean(string="Requires Escort", default=False)
+    security_camera = fields.Boolean(string="Security Camera", default=False)
     access_card_required = fields.Boolean(string="Access Card Required", default=False)
 
     # ============================================================================
@@ -132,34 +136,36 @@ class RecordsLocation(models.Model):
         string="Operational Status",
         default="active",
         tracking=True,
-    ),
-    availability_schedule = fields.Text(string="Availability Schedule"),
-    last_inspection_date = fields.Date(string="Last Inspection Date"),
+    )
+    availability_schedule = fields.Text(string="Availability Schedule")
+    last_inspection_date = fields.Date(string="Last Inspection Date")
     next_inspection_date = fields.Date(string="Next Inspection Date")
 
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    # Records and containers at this location
     container_ids = fields.One2many(
         "records.container", "location_id", string="Records Containers"
-    ),
-    box_ids = fields.One2many('records.container', 'location_id', string='Stored Boxes'),
-    parent_location_id = fields.Many2one("records.location", string="Parent Location"),
+    )
+    box_ids = fields.One2many(
+        "records.container", "location_id", string="Stored Boxes"
+    )
+    parent_location_id = fields.Many2one(
+        "records.location", string="Parent Location"
+    )
     child_location_ids = fields.One2many(
         "records.location", "parent_location_id", string="Child Locations"
     )
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance),
     activity_ids = fields.One2many(
         "mail.activity",
         "res_id",
         string="Activities",
         domain=[("res_model", "=", "records.location")],
-    ),
+    )
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    ),
+    )
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -170,7 +176,9 @@ class RecordsLocation(models.Model):
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
-    child_count = fields.Integer(compute="_compute_child_count", string="Child Count"),
+    child_count = fields.Integer(
+        compute="_compute_child_count", string="Child Count"
+    )
     is_available = fields.Boolean(
         compute="_compute_is_available", string="Available for Storage"
     )
@@ -242,7 +250,6 @@ class RecordsLocation(models.Model):
                 if seq_code:
                     vals["code"] = seq_code
                 else:
-                    # Generate a unique fallback using UUID (now imported at top)
                     vals["code"] = "LOC/%s" % uuid.uuid4().hex[:8]
         return super().create(vals_list)
 
@@ -251,7 +258,6 @@ class RecordsLocation(models.Model):
     # ============================================================================
     def action_view_containers(self):
         self.ensure_one()
-        self.ensure_one()  # Added ensure_one() call
         return {
             "type": "ir.actions.act_window",
             "name": _("Records Containers"),
@@ -263,7 +269,6 @@ class RecordsLocation(models.Model):
 
     def action_location_report(self):
         """Generate location utilization and capacity report"""
-
         self.ensure_one()
         return {
             "type": "ir.actions.report",
@@ -275,16 +280,14 @@ class RecordsLocation(models.Model):
 
     def action_maintenance_mode(self):
         self.ensure_one()
-        self.ensure_one()
         self.write({"operational_status": "maintenance"})
         self.message_post(
             body=_("Location %s set to maintenance mode", self.name),
-            message_type="notification"
+            message_type="notification",
         )
 
     def action_reserve_space(self):
         """Open a form to schedule an inspection if the location is available for reservation."""
-
         self.ensure_one()
         if not self.is_available:
             raise UserError(_("Location is not available for reservations"))

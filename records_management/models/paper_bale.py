@@ -21,6 +21,7 @@ License: LGPL-3
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
+from odoo.osv import expression
 
 
 class PaperBale(models.Model):
@@ -711,18 +712,27 @@ class PaperBale(models.Model):
         return result
 
     @api.model
-    def _search(
-        self,
-        args,
-        offset=0,
-        limit=None,
-        order=None,
-        count=False,
-        access_rights_uid=None,
+    def _name_search(
+        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
     ):
-        """Enhanced search by name, reference, or paper type"""
-        # This override is for custom search logic, if needed.
-        # For simple search, name_search is often better.
-        return super()._search(
-            args, offset, limit, order, count, access_rights_uid
-        )
+        """Enhanced search by name, reference, barcode, or paper type"""
+        args = list(args or [])
+
+        if name:
+            # Search in multiple fields: name, reference_number, barcode, external_reference
+            domain = [
+                "|",
+                "|",
+                "|",
+                ("name", operator, name),
+                ("reference_number", operator, name),
+                ("barcode", operator, name),
+                ("external_reference", operator, name),
+            ]
+            return self._search(
+                expression.AND([domain, args]),
+                limit=limit,
+                access_rights_uid=name_get_uid,
+            )
+
+        return super()._name_search(name, args, operator, limit, name_get_uid)

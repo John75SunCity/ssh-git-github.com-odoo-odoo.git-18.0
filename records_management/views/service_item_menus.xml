@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Main Menu for Records Management -->
+        <menuitem id="menu_records_management_root" name="Records Management" web_icon="records_management,static/description/icon.png" sequence="1"/>
+
+        <!-- Configuration Menu -->
+        <menuitem id="menu_records_configuration" name="Configuration" parent="menu_records_management_root" sequence="100"/>
+
+        <!-- Service Items Menu -->
+        <menuitem id="menu_service_item_main" name="Service Items" parent="menu_records_configuration" sequence="30"/>
+
+        <menuitem id="menu_service_item_list" name="All Service Items" parent="menu_service_item_main" action="records_management.action_service_item" sequence="10"/>
+
+    </data>
+</odoo>

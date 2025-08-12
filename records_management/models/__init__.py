@@ -64,6 +64,7 @@ from . import customer_inventory_report
 from . import temp_inventory
 from . import temp_inventory_movement
 from . import temp_inventory_audit
+from . import temp_inventory_reject_wizard
 
 # Pickup and transportation
 from . import pickup_request_item
@@ -314,3 +315,5 @@ except ImportError as e:
         getattr(e, "name", "unknown"),
         str(e),
     )
+from . import records_management_bale
+from . import barcode_models_enhanced

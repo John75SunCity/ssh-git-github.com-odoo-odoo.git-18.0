@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_service_item_utilization_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Utilization Report for <span t-field="o.name"/>
+                        </h2>
+
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Item:</strong>
+                                <span t-field="o.name"/>
+                                <br/>
+                                <strong>Category:</strong>
+                                <span t-field="o.category"/>
+                                <br/>
+                                <strong>Service Type:</strong>
+                                <span t-field="o.service_type"/>
+                                <br/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Status:</strong>
+                                <span t-field="o.state"/>
+                                <br/>
+                                <strong>Utilization Rate:</strong>
+                                <span t-field="o.utilization_rate"/>
+%                                <br/>
+                                <strong>Efficiency:</strong>
+                                <span t-field="o.efficiency_rating"/>
+                                <br/>
+                            </div>
+                        </div>
+
+                        <h3>Performance Metrics</h3>
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th name="th_metric" class="text-left">Metric</th>
+                                    <th name="th_value" class="text-left">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Age (Months)</td>
+                                    <td>
+                                        <span t-field="o.age_months"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Capacity</td>
+                                    <td>
+                                        <span t-field="o.capacity"/>
+                                        <span t-field="o.capacity_unit"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Maintenance Due</td>
+                                    <td>
+                                        <span t-field="o.maintenance_due"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_maintenance_schedule_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Maintenance Schedule for <span t-field="o.name"/>
+                        </h2>
+
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Item:</strong>
+                                <span t-field="o.name"/>
+                                <br/>
+                                <strong>Serial Number:</strong>
+                                <span t-field="o.serial_number"/>
+                                <br/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Last Maintenance:</strong>
+                                <span t-field="o.last_maintenance"/>
+                                <br/>
+                                <strong>Next Maintenance:</strong>
+                                <span t-field="o.next_maintenance"/>
+                                <br/>
+                            </div>
+                        </div>
+
+                        <h3>Maintenance History</h3>
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th name="th_request" class="text-left">Request</th>
+                                    <th name="th_date" class="text-left">Date</th>
+                                    <th name="th_type" class="text-left">Type</th>
+                                    <th name="th_status" class="text-left">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.maintenance_request_ids" t-as="req">
+                                    <td>
+                                        <span t-field="req.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="req.request_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="req.maintenance_type"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="req.stage_id.name"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

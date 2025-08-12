@@ -24,12 +24,9 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-import threading
 from datetime import timedelta
 
 from odoo import models, fields, api, _
-
-
 
 
 class TempInventoryAudit(models.Model):
@@ -73,13 +70,16 @@ class TempInventoryAudit(models.Model):
         "res.users",
         string="User",
         required=True,
-        default=lambda self: self.env.user,
+        default=lambda self: self.env.uid,
         help="User who triggered the event",
     )
     details = fields.Text(
         string="Details", help="Detailed information about the audit event"
     )
     ip_address = fields.Char(string="IP Address", help="IP address of the user")
+    active = fields.Boolean(
+        default=True, help="Active status for audit record"
+    )
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -98,9 +98,9 @@ class TempInventoryAudit(models.Model):
     def _compute_display_name(self):
         """Compute display name"""
         for record in self:
-            event_label = dict(record._fields["event_type"].selection)[
-                record.event_type
-            ]
+            event_label = dict(record._fields["event_type"].selection).get(
+                record.event_type, record.event_type
+            )
             user_name = record.user_id.name if record.user_id else "Unknown"
             record.display_name = _("%s by %s", event_label, user_name)
 
@@ -120,14 +120,18 @@ class TempInventoryAudit(models.Model):
         }
 
     @api.model
-    def create_audit_log(self, inventory_id, event_type, details=None, ip_address=None):
+    def create_audit_log(
+        self, inventory_id, event_type, details=None, ip_address=None
+    ):
         """Create audit log entry"""
-        return self.create({
-            "inventory_id": inventory_id,
-            "event_type": event_type,
-            "details": details,
-            "ip_address": ip_address,
-        })
+        return self.create(
+            {
+                "inventory_id": inventory_id,
+                "event_type": event_type,
+                "details": details,
+                "ip_address": ip_address,
+            }
+        )
 
     # ============================================================================
     # UTILITY METHODS
@@ -136,34 +140,34 @@ class TempInventoryAudit(models.Model):
     def get_user_activity(self, user_id=None, date_from=None, date_to=None):
         """Get user activity for specified period"""
         domain = []
-        
+
         if user_id:
             domain.append(("user_id", "=", user_id))
-        
+
         if date_from:
             domain.append(("date", ">=", date_from))
-        
+
         if date_to:
             domain.append(("date", "<=", date_to))
-        
+
         return self.search(domain, order="date desc")
 
     @api.model
     def get_inventory_audit_trail(self, inventory_id):
         """Get complete audit trail for specific inventory"""
-        return self.search([
-            ("inventory_id", "=", inventory_id)
-        ], order="date desc")
+        return self.search(
+            [("inventory_id", "=", inventory_id)], order="date desc"
+        )
 
     @api.model
     def cleanup_old_audit_logs(self, days_to_keep=365):
         """Cleanup old audit logs (automated method)"""
         cutoff_date = fields.Datetime.now() - timedelta(days=days_to_keep)
         old_logs = self.search([("date", "<", cutoff_date)])
-        
+
         # Archive instead of delete for compliance
         old_logs.write({"active": False})
-        
+
         return len(old_logs)
 
     # ============================================================================
@@ -172,16 +176,22 @@ class TempInventoryAudit(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to ensure IP address capture"""
+        ip_address = "Unknown"
+        try:
+            from odoo import http
+
+            if hasattr(http, "request") and http.request:
+                req = http.request
+                forwarded_for = req.httprequest.headers.get("X-Forwarded-For")
+                if forwarded_for:
+                    ip_address = forwarded_for.split(",")[0].strip()
+                else:
+                    ip_address = req.httprequest.remote_addr
+        except Exception:
+            ip_address = "Unknown"
+
         for vals in vals_list:
-            if not vals.get("ip_address"):
-                # Try to capture IP address from request context
-                try:
-                    request = threading.current_thread().environ.get("HTTP_X_FORWARDED_FOR")
-                    if request:
-                        vals["ip_address"] = request.split(",")[0].strip()
-                    else:
-                        vals["ip_address"] = threading.current_thread().environ.get("REMOTE_ADDR", "Unknown")
-                except Exception:
-                    vals["ip_address"] = "Unknown"
-        
+            if "ip_address" not in vals:
+                vals["ip_address"] = ip_address
+
         return super().create(vals_list)

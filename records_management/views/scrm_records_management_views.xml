@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View scrm.records.management View List -->
+    <record id="view_scrm_records_management_list" model="ir.ui.view">
+        <field name="name">view.scrm.records.management.list</field>
+        <field name="model">scrm.records.management</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- View scrm.records.management form -->
+    <record id="view_scrm_records_management_form" model="ir.ui.view">
+        <field name="name">view.scrm.records.management.form</field>
+        <field name="model">scrm.records.management</field>
+        <field name="arch" type="xml">
+            <form string="Scrm Records Management">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- View scrm.records.management search -->
+    <record id="view_scrm_records_management_search" model="ir.ui.view">
+        <field name="name">view.scrm.records.management.search</field>
+        <field name="model">scrm.records.management</field>
+        <field name="arch" type="xml">
+            <search>
+                <group expand="1" string="Group By">
+                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action scrm.records.management -->
+    <record id="action_scrm_records_management" model="ir.actions.act_window">
+        <field name="name">Scrm Records Management</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">scrm.records.management</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                There is no examples click here to add new Scrm Records Management.
+            </p>
+        </field>
+    </record>
+
+</odoo>
