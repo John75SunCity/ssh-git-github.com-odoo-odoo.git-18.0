@@ -2,7 +2,19 @@
 """
 Bin Access Key Management Module
 
-This module provides comprehensive management of physical access keys used for secure containers,
+This module provides comprehensive management of physical access keys used    #     # ============================================================================
+    # OWNERSHIP & ASSIGNMENT
+    # ============================================================================
+    # 'assigned_to_id' refers to the partner (department, company, or external entity) responsible for the key.
+    assigned_to_id = fields.Many2one("res.partner", string="Assigned To")
+    # 'current_holder_id' refers to the internal user (employee) who currently possesses the key.
+    current_holder_id = fields.Many2one("res.users", string="Current Holder")=====================================================================
+    # OWNERSHIP & ASSIGNMENT
+    # ============================================================================
+    # 'assigned_to_id' refers to the partner (department, company, or external entity) responsible for the key.
+    assigned_to_id = fields.Many2one("res.partner", string="Assigned To")
+    # 'current_holder_id' refers to the internal user (employee) who currently possesses the key.
+    current_holder_id = fields.Many2one("res.users", string="Current Holder")cure containers,
 bins, and storage locations within the Records Management System. It implements complete key
 lifecycle management with security tracking, access control, and audit trail maintenance.
 

@@ -1,71 +1,13 @@
 {
-    "Odoo.selectedProfile": "default",
-    "chat.agent.maxRequests": 300,
-    
-    // GitHub Copilot Settings - Enhanced for Multi-Extension Odoo Integration
-    "github.copilot.enable": {
-        "*": true,
-        "yaml": true,
-        "python": true,
-        "xml": true,
-        "json": true,
-        "plaintext": false,
-        "scminput": false
-    },
-    "github.copilot.editor.enableAutoCompletions": true,
-    "github.copilot.chat.localeOverride": "auto",
-    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-    
-    // RM SYSTEM INTEGRITY - Reference instruction files for AI assistants
-    "github.copilot.chat.instructionFiles": [
-        ".github/copilot-instructions.md"
-    ],
-    
-    // Enhanced Copilot workspace context settings with Odoo extension integration
-    "github.copilot.chat.welcomeMessage": "always",
-    "github.copilot.chat.followUps": "on", 
-    "github.copilot.referencesInChat": true,
-    "github.copilot.prompt.showPromptHints": true,
-    "github.copilot.inlineSuggest.enable": true,
-    
-    // Enable Copilot for all relevant file types in Records Management with extension context
-    "github.copilot.editor.enableCodeActions": true,
-    "github.copilot.conversationAdditionalContextEnabled": true,
-    
-    // Force Copilot to reference workspace instructions + Odoo extensions + training materials
-    "github.copilot.conversations.contextEnabled": true,
-    "github.copilot.chat.experimentalContext": true,
-    "github.copilot.chat.enableOdooPatterns": true,
-    "github.copilot.chat.useExtensionContext": true,
-    "github.copilot.advanced": {
-        "debug.overrideEngine": "copilot-chat",
-        "debug.useGitHub": false,
-        "length": 8192,
-        "temperature": "1",
-        "top_p": "1",
-        "listCount": 10,
-        "odooContextEnabled": true,
-        "extensionPackIntegration": true,
-        "systemIntegrityChecklist": true,
-        "rmModuleConfiguratorIntegration": true
-    },
-    
-    // Odoo-specific VS Code settings to reduce noise from false positive warnings
+    "odoo.selectedProfile": "",
+    "odoo.serverLogLevel": "error",
+    "odooServer.trace.server": "off",
+    "odoo.disablePythonLanguageServerPopup": true,
     "python.analysis.disabled": [
         "reportMissingImports",
-        "reportMissingModuleSource", 
+        "reportMissingModuleSource",
         "reportAttributeAccessIssue"
     ],
-    
-    // Enhanced pylint configuration - Disable translation format warnings
-    "python.linting.pylintArgs": [
-        "--disable=import-error",
-        "--disable=no-name-in-module", 
-        "--disable=no-member",
-        "--disable=consider-using-f-string",
-        "--init-hook=import sys; sys.path.append('./addons'); sys.path.append('./records_management')"
-    ],
-    
-    // Git settings
-    "git.openRepositoryInParentFolders": "never"
+    "python.linting.enabled": false,
+    "python.languageServer": "None"
 }
