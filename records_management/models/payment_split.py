@@ -226,7 +226,7 @@ class PaymentSplit(models.Model):
         default=False,
         help="Whether this split requires approval",
     )
-    approved_by = fields.Many2one(
+    approved_by_id = fields.Many2one(
         "res.users", string="Approved By", help="User who approved the split"
     )
     approval_date = fields.Datetime(

@@ -32,7 +32,7 @@ class CustomerFeedback(models.Model):
         string="Feedback Reference",
         required=True,
         tracking=True,
-        default=lambda self: _("New"),
+        default="New",
         copy=False,
     )
     company_id = fields.Many2one(
@@ -55,7 +55,7 @@ class CustomerFeedback(models.Model):
     customer_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
     )
-    contact_person = fields.Many2one(
+    contact_person_id = fields.Many2one(
         "res.partner", string="Contact Person", tracking=True
     )
 

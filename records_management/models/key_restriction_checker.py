@@ -103,7 +103,9 @@ class KeyRestrictionChecker(models.Model):
     # ============================================================================
     # AUTHORIZATION & SECURITY
     # ============================================================================
-    authorized_by = fields.Many2one("res.users", string="Authorized By", tracking=True)
+    authorized_by_id = fields.Many2one(
+        "res.users", string="Authorized By", tracking=True
+    )
     access_level_verified = fields.Boolean(
         string="Access Level Verified", default=False, tracking=True
     )

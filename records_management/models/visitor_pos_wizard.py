@@ -374,19 +374,25 @@ class VisitorPosWizard(models.TransientModel):
     collected = fields.Boolean(
         string="Collected", default=False, help="Whether items have been collected"
     )
-    processed_by = fields.Many2one(
-        "res.users", string="Processed By", help="User who processed this request"
+    processed_by_id = fields.Many2one(
+        "res.users",
+        string="Processed By",
+        help="User who processed this request",
     )
-    quality_check_by = fields.Many2one(
-        "res.users", string="Quality Check By", help="User who performed quality check"
+    quality_check_by_id = fields.Many2one(
+        "res.users",
+        string="Quality Check By",
+        help="User who performed quality check",
     )
-    final_verification_by = fields.Many2one(
+    final_verification_by_id = fields.Many2one(
         "res.users",
         string="Final Verification By",
         help="User who performed final verification",
     )
-    compliance_officer = fields.Many2one(
-        "res.users", string="Compliance Officer", help="Compliance officer assigned"
+    compliance_officer_id = fields.Many2one(
+        "res.users",
+        string="Compliance Officer",
+        help="Compliance officer assigned",
     )
     supervisor_approval = fields.Boolean(
         string="Supervisor Approval", default=False, help="Supervisor approval status"

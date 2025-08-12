@@ -55,7 +55,7 @@ class FsmTask(models.Model):
         required=True,
         tracking=True,
         index=True,
-        default=lambda self: _("New"),
+        default="New",
     )
     company_id = fields.Many2one(
         "res.company",

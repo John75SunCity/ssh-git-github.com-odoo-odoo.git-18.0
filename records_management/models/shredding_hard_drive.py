@@ -327,12 +327,14 @@ class ShreddingHardDrive(models.Model):
         tracking=True,
         help="Related shredding service request",
     ),
-    approved_by = fields.Many2one(
-        "res.users",
-        string="Approved By",
-        tracking=True,
-        help="User who approved the destruction",
-    ),
+    approved_by_id = (
+        fields.Many2one(
+            "res.users",
+            string="Approved By",
+            tracking=True,
+            help="User who approved the destruction",
+        ),
+    )
     completed = fields.Boolean(
         string="Process Completed",
         default=False,
@@ -488,7 +490,12 @@ class ShreddingHardDrive(models.Model):
             }
         )
         self.message_post(
-            body=_("Hard drive destruction completed using %s") % dict(self._fields["destruction_method"].selection).get(self.destruction_method)
+            body=_(
+                "Hard drive destruction completed using %s",
+                dict(self._fields["destruction_method"].selection).get(
+                    self.destruction_method
+                ),
+            )
         )
 
     def action_generate_certificate(self):
@@ -513,7 +520,12 @@ class ShreddingHardDrive(models.Model):
                 "completed": True,
             }
         )
-        self.message_post(body=_("Destruction certificate generated: %s") % self.certificate_number)
+        self.message_post(
+            body=_(
+                "Destruction certificate generated: %s",
+                self.certificate_number,
+            )
+        )
 
     # ============================================================================
     # COMPLIANCE AND VERIFICATION METHODS
@@ -548,7 +560,12 @@ class ShreddingHardDrive(models.Model):
 
         self.write({"destruction_method_verified": True})
         self.message_post(
-            body=_("Destruction method verified: %s") % dict(self._fields["destruction_method"].selection).get(self.destruction_method)
+            body=_(
+                "Destruction method verified: %s",
+                dict(self._fields["destruction_method"].selection).get(
+                    self.destruction_method
+                ),
+            )
         )
 
     # ============================================================================
@@ -568,7 +585,11 @@ class ShreddingHardDrive(models.Model):
                 )
                 if duplicate:
                     raise ValidationError(
-                        _("Serial number %s already exists for customer %s") % (record.serial_number, record.customer_id.name)
+                        _(
+                            "Serial number %s already exists for customer %s",
+                            record.serial_number,
+                            record.customer_id.name,
+                        )
                     )
 
     @api.constrains("capacity_gb", "weight")

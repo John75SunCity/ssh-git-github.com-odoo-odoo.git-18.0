@@ -34,7 +34,7 @@ class NaidComplianceAlert(models.Model):
         required=True,
         tracking=True,
         index=True,
-        default=lambda self: _("New Alert"),
+        default="New Alert",
     )
 
     title = fields.Char(string="Alert Title", required=True, tracking=True)

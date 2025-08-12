@@ -37,7 +37,7 @@ class FsmNotificationManager(models.Model):
     Provides automated and manual notification capabilities with multi-channel
     delivery support.
     """
-    
+
     _name = "fsm.notification.manager"
     _description = "FSM Notification Manager"
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -88,7 +88,7 @@ class FsmNotificationManager(models.Model):
         ('reschedule_confirmation', 'Reschedule Confirmation'),
     ], string="Notification Type", required=True, tracking=True,
     help="Type of FSM notification to send")
-    
+
     delivery_method = fields.Selection([
         ('email', 'Email'),
         ('sms', 'SMS'),
@@ -193,7 +193,7 @@ class FsmNotificationManager(models.Model):
         ('urgent', 'Urgent'),
     ], string="Priority", default='normal',
     help="Notification priority level")
-    
+
     delivery_status = fields.Text(
         string="Delivery Status",
         readonly=True,
@@ -244,7 +244,7 @@ class FsmNotificationManager(models.Model):
                 base_name = f"FSM-{record.pickup_request_id.name}"
             else:
                 base_name = f"FSM-{record.id or 'NEW'}"
-            
+
             type_abbrev = {
                 'day_of_service': 'DOS',
                 'driver_proximity': 'PROX',
@@ -255,7 +255,7 @@ class FsmNotificationManager(models.Model):
                 'delay_notification': 'DELAY',
                 'reschedule_confirmation': 'RESCHED',
             }.get(record.notification_type, 'GEN')
-            
+
             record.name = f"{base_name}-{type_abbrev}"
 
     @api.depends('estimated_arrival', 'proximity_radius')
@@ -271,22 +271,22 @@ class FsmNotificationManager(models.Model):
     def action_send_notification(self):
         """Send the notification using configured delivery method"""
         self.ensure_one()
-        
+
         if self.state == 'sent':
             raise UserError(_("This notification has already been sent."))
-            
+
         try:
             success = False
-            
+
             if self.delivery_method in ['email', 'all']:
                 success = self._send_email_notification() or success
-                
+
             if self.delivery_method in ['sms', 'all']:
                 success = self._send_sms_notification() or success
-                
+
             if self.delivery_method in ['portal', 'all']:
                 success = self._send_portal_notification() or success
-                
+
             if success:
                 self.write({
                     'state': 'sent',
@@ -296,52 +296,52 @@ class FsmNotificationManager(models.Model):
                 self._log_notification_sent()
             else:
                 self._handle_send_failure()
-                
+
         except Exception as e:
             _logger.error(f"Failed to send notification {self.name}: {str(e)}")
             self._handle_send_failure(str(e))
-            
+
         return True
 
     def action_schedule_notification(self):
         """Schedule notification for automatic sending"""
         self.ensure_one()
-        
+
         if not self.scheduled_datetime:
             raise UserError(_("Please set a scheduled send time first."))
-            
+
         self.write({'state': 'scheduled'})
-        
+
         # Create scheduled action for automatic sending
         self._create_scheduled_action()
-        
+
         self.message_post(
-            body=_("Notification scheduled for %s") % self.scheduled_datetime
+            body=_("Notification scheduled for %s", self.scheduled_datetime)
         )
-        
+
         return True
 
     def action_cancel_notification(self):
         """Cancel the notification"""
         self.ensure_one()
-        
+
         self.write({'state': 'cancelled'})
         self.message_post(body=_("Notification cancelled by user"))
-        
+
         return True
 
     def action_retry_send(self):
         """Retry sending failed notification"""
         self.ensure_one()
-        
+
         if self.retry_count >= self.max_retries:
             raise UserError(_("Maximum retry attempts reached."))
-            
+
         self.write({
             'retry_count': self.retry_count + 1,
             'state': 'draft'
         })
-        
+
         return self.action_send_notification()
 
     # ============================================================================
@@ -373,9 +373,9 @@ class FsmNotificationManager(models.Model):
             if not self.partner_id.mobile:
                 _logger.warning(f"No mobile number for partner {self.partner_id.name}")
                 return False
-                
+
             sms_content = self.sms_template or self.subject
-            
+
             # Use SMS gateway if available
             sms_composer = self.env['sms.composer'].create({
                 'numbers': self.partner_id.mobile,
@@ -421,10 +421,10 @@ class FsmNotificationManager(models.Model):
             'message_body': self._get_day_of_service_template(pickup_request),
             'scheduled_datetime': pickup_request.pickup_date - timedelta(days=1, hours=18),  # 6 PM day before
         })
-        
+
         if notification.auto_send:
             notification.action_schedule_notification()
-            
+
         return notification
 
     @api.model
@@ -439,7 +439,7 @@ class FsmNotificationManager(models.Model):
             'message_body': self._get_proximity_template(pickup_request, driver_location),
             'priority': 'high',
         })
-        
+
         notification.action_send_notification()
         return notification
 
@@ -453,7 +453,7 @@ class FsmNotificationManager(models.Model):
             'subject': _('Service Completed Successfully'),
             'message_body': self._get_completion_template(pickup_request),
         })
-        
+
         notification.action_send_notification()
         return notification
 
@@ -524,21 +524,24 @@ class FsmNotificationManager(models.Model):
             'state': 'failed',
             'delivery_status': error_msg or _('Notification send failed'),
         })
-        
+
         # Create activity for manual follow-up
         self.activity_schedule(
-            'mail.mail_activity_data_todo',
-            summary=_('Failed Notification Needs Attention'),
-            note=_('Notification send failed: %s') % (error_msg or 'Unknown error'),
+            "mail.mail_activity_data_todo",
+            summary=_("Failed Notification Needs Attention"),
+            note=_(
+                "Notification send failed: %s", error_msg or "Unknown error"
+            ),
             user_id=self.user_id.id,
         )
 
     def _log_notification_sent(self):
         """Log successful notification send"""
         self.message_post(
-            body=_("Notification sent via %s to %s") % (
-                self.delivery_method, 
-                self.partner_id.name
+            body=_(
+                "Notification sent via %s to %s",
+                self.delivery_method,
+                self.partner_id.name,
             )
         )
 
@@ -575,7 +578,7 @@ class FsmNotificationManager(models.Model):
             ('state', '=', 'scheduled'),
             ('scheduled_datetime', '<=', fields.Datetime.now()),
         ])
-        
+
         for notification in notifications:
             try:
                 notification.action_send_notification()
@@ -591,5 +594,5 @@ class FsmNotificationManager(models.Model):
             ('sent_datetime', '<', cutoff_date),
         ])
         old_notifications.unlink()
-        
+
         return len(old_notifications)

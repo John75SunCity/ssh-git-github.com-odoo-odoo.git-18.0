@@ -84,7 +84,7 @@ class NaidComplianceActionPlan(models.Model):
 
     approval_required = fields.Boolean(string="Approval Required", default=False)
 
-    approved_by = fields.Many2one("res.users", string="Approved By")
+    approved_by_id = fields.Many2one("res.users", string="Approved By")
 
     approval_date = fields.Date(string="Approval Date")
 

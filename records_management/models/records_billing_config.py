@@ -197,7 +197,7 @@ class RecordsBillingConfig(models.Model):
         default=lambda self: fields.Datetime.now(),
         readonly=True,
     )
-    last_modified_by = fields.Many2one(
+    last_modified_by_id = fields.Many2one(
         "res.users", string="Last Modified By", readonly=True
     )
 

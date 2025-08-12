@@ -112,7 +112,7 @@ class DocumentRetrievalItem(models.Model):
     # PROCESSING DETAILS FIELDS
     # ============================================================================
     retrieval_date = fields.Datetime(string="Retrieved Date", tracking=True)
-    retrieved_by = fields.Many2one("hr.employee", string="Retrieved By")
+    retrieved_by_id = fields.Many2one("hr.employee", string="Retrieved By")
     condition_notes = fields.Text(string="Condition Notes")
     special_handling = fields.Boolean(string="Special Handling Required", default=False)
 
@@ -516,7 +516,7 @@ class DocumentRetrievalEquipment(models.Model):
     )
 
     location_id = fields.Many2one("records.location", string="Current Location")
-    assigned_to = fields.Many2one("hr.employee", string="Assigned To")
+    assigned_to_id = fields.Many2one("hr.employee", string="Assigned To")
 
     # ============================================================================
     # SPECIFICATION FIELDS

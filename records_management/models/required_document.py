@@ -52,7 +52,7 @@ class RequiredDocument(models.Model):
     )
 
     # Verification Fields
-    verified_by = fields.Many2one("res.users", string="Verified By")
+    verified_by_id = fields.Many2one("res.users", string="Verified By")
     verification_date = fields.Datetime(string="Verification Date")
     verification_notes = fields.Text(string="Verification Notes")
 

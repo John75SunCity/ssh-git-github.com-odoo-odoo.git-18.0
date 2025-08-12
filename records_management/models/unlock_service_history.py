@@ -50,7 +50,7 @@ class UnlockServiceHistory(models.Model):
         index=True,
         help="Unique service reference number",
     )
-    
+
     active = fields.Boolean(
         string="Active", 
         default=True, 
@@ -66,7 +66,7 @@ class UnlockServiceHistory(models.Model):
         default=lambda self: self.env.company,
         required=True,
     )
-    
+
     technician_id = fields.Many2one(
         "res.users",
         string="Technician",
@@ -74,7 +74,7 @@ class UnlockServiceHistory(models.Model):
         tracking=True,
         help="Technician performing the service",
     )
-    
+
     customer_id = fields.Many2one(
         "res.partner",
         string="Customer",
@@ -92,7 +92,7 @@ class UnlockServiceHistory(models.Model):
         tracking=True,
         help="Related partner bin key",
     )
-    
+
     service_type = fields.Selection(
         [
             ("unlock", "Standard Unlock"),
@@ -118,7 +118,7 @@ class UnlockServiceHistory(models.Model):
         tracking=True,
         help="Date and time service was performed",
     )
-    
+
     scheduled_date = fields.Datetime(
         string="Scheduled Date", help="Originally scheduled service date"
     )
@@ -131,7 +131,7 @@ class UnlockServiceHistory(models.Model):
         store=True,
         help="Service duration in minutes",
     )
-    
+
     location_id = fields.Many2one(
         "records.location",
         string="Service Location",
@@ -149,7 +149,7 @@ class UnlockServiceHistory(models.Model):
     notes = fields.Text(
         string="Service Notes", help="Additional notes about the service"
     )
-    
+
     priority = fields.Selection(
         [
             ("low", "Low"),
@@ -189,19 +189,19 @@ class UnlockServiceHistory(models.Model):
         default=lambda self: self.env.company.currency_id,
         required=True,
     )
-    
+
     cost = fields.Monetary(
         string="Service Cost", currency_field="currency_id", help="Total service cost"
     )
-    
+
     billable = fields.Boolean(
         string="Billable", default=True, help="Whether service is billable to customer"
     )
-    
+
     invoice_id = fields.Many2one(
         "account.move", string="Invoice", help="Related invoice if billed"
     )
-    
+
     billing_status = fields.Selection(
         [
             ("not_billed", "Not Billed"),
@@ -223,7 +223,7 @@ class UnlockServiceHistory(models.Model):
         string="Equipment Used",
         help="Equipment and tools used during service",
     )
-    
+
     parts_used_ids = fields.One2many(
         "unlock.service.part",
         "service_history_id",
@@ -239,7 +239,7 @@ class UnlockServiceHistory(models.Model):
         default=False,
         help="Whether quality check was performed",
     )
-    
+
     quality_rating = fields.Selection(
         [
             ("1", "Poor"),
@@ -251,11 +251,11 @@ class UnlockServiceHistory(models.Model):
         string="Quality Rating",
         help="Service quality rating",
     )
-    
+
     customer_signature = fields.Binary(
         string="Customer Signature", help="Customer signature for service completion"
     )
-    
+
     verification_code = fields.Char(
         string="Verification Code", help="Service verification code"
     )
@@ -268,21 +268,21 @@ class UnlockServiceHistory(models.Model):
         default=False,
         help="Whether follow-up service is required",
     )
-    
+
     follow_up_date = fields.Date(
         string="Follow-up Date", help="Scheduled follow-up date"
     )
-    
+
     warranty_expiry = fields.Date(
         string="Warranty Expiry", help="Service warranty expiration date"
     )
-    
+
     repeat_service = fields.Boolean(
         string="Repeat Service", default=False, help="Whether this is a repeat service"
     )
 
     # ============================================================================
-    # RELATIONSHIP FIELDS  
+    # RELATIONSHIP FIELDS
     # ============================================================================
     partner_id = fields.Many2one(
         "res.partner",
@@ -311,14 +311,14 @@ class UnlockServiceHistory(models.Model):
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)],
     )
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
     )
-    
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -395,7 +395,7 @@ class UnlockServiceHistory(models.Model):
                 "start_time": fields.Datetime.now(),
             }
         )
-        
+
         self.message_post(body=_("Service started"))
 
     def action_complete_service(self):
@@ -410,7 +410,7 @@ class UnlockServiceHistory(models.Model):
                 "end_time": fields.Datetime.now(),
             }
         )
-        
+
         self.message_post(body=_("Service completed successfully"))
 
         # Handle completion tasks
@@ -463,7 +463,7 @@ class UnlockServiceHistory(models.Model):
             }
         )
 
-        self.message_post(body=_("Invoice created: %s") % invoice.name)
+        self.message_post(body=_("Invoice created: %s", invoice.name))
 
         return {
             "type": "ir.actions.act_window",
@@ -482,7 +482,7 @@ class UnlockServiceHistory(models.Model):
         template = self.env.ref(
             "records_management.unlock_service_completion_email_template"
         )
-        
+
         if template:
             template.send_mail(self.id, force_send=True)
             self.message_post(body=_("Completion notification sent to customer"))
@@ -536,7 +536,7 @@ class UnlockServiceHistory(models.Model):
             try:
                 self.action_create_invoice()
             except Exception as e:
-                self.message_post(body=_("Auto-billing failed: %s") % str(e))
+                self.message_post(body=_("Auto-billing failed: %s", str(e)))
 
     def _handle_service_cancellation(self):
         """Handle tasks when service is cancelled"""

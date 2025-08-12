@@ -138,9 +138,9 @@ class BinKey(models.Model):
     # OWNERSHIP & ASSIGNMENT
     # ============================================================================
     # 'assigned_to' refers to the partner (department, company, or external entity) responsible for the key.
-    assigned_to = fields.Many2one("res.partner", string="Assigned To")
+    assigned_to_id = fields.Many2one("res.partner", string="Assigned To")
     # 'current_holder' refers to the internal user (employee) who currently possesses the key.
-    current_holder = fields.Many2one("res.users", string="Current Holder")
+    current_holder_id = fields.Many2one("res.users", string="Current Holder")
 
     # ============================================================================
     # RELATIONSHIP FIELDS

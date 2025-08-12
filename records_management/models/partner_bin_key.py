@@ -51,7 +51,7 @@ class PartnerBinKey(models.Model):
         tracking=True,
         domain=[("is_company", "=", True)],
     )
-    assigned_to_contact = fields.Many2one(
+    assigned_to_contact_id = fields.Many2one(
         "res.partner",
         string="Assigned To",
         domain=[("is_company", "=", False)],

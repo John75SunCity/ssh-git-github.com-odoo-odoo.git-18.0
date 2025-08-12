@@ -894,10 +894,8 @@ class PickupScheduleWizard(models.TransientModel):
         default=fields.Datetime.now
     )
 
-    assigned_technician = fields.Many2one(
-        "res.users",
-        string="Assigned Technician",
-        required=True
+    assigned_technician_id = fields.Many2one(
+        "res.users", string="Assigned Technician", required=True
     )
 
     vehicle_id = fields.Many2one(

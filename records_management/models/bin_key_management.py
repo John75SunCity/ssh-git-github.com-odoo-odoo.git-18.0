@@ -245,7 +245,7 @@ class BinKeyManagement(models.Model):
         [("full", "Full Access"), ("limited", "Limited"), ("restricted", "Restricted")],
         string="Access Level",
     )
-    authorized_by = fields.Many2one("res.users", string="Authorized By")
+    authorized_by_id = fields.Many2one("res.users", string="Authorized By")
     updated_date = fields.Datetime(string="Updated Date")
     created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
     # Use date_modified for tracking modifications instead of updated_date

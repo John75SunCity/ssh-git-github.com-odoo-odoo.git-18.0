@@ -158,7 +158,9 @@ class PortalFeedback(models.Model):
         tracking=True,
     )
 
-    assigned_to = fields.Many2one("res.users", string="Assigned To", tracking=True)
+    assigned_to_id = fields.Many2one(
+        "res.users", string="Assigned To", tracking=True
+    )
     submission_date = fields.Datetime(
         string="Submission Date", default=fields.Datetime.now, required=True
     )
@@ -257,7 +259,7 @@ class PortalFeedback(models.Model):
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    improvement_areas = fields.Many2many(
+    improvement_area_ids = fields.Many2many(
         "feedback.improvement.area", string="Improvement Areas"
     )
     related_service_ids = fields.Many2many(

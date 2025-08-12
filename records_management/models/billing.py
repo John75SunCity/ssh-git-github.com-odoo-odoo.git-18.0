@@ -13,8 +13,9 @@ class Billing(models.Model):
     # ==========================================
     # CORE FIELDS
     # ==========================================
-    name = fields.Char(string='Billing Reference', required=True, tracking=True,
-                    default=lambda self: _('New'))
+    name = fields.Char(
+        string="Billing Reference", required=True, tracking=True, default="New"
+    )
     company_id = fields.Many2one('res.company', string='Company',
                                 default=lambda self: self.env.company, required=True)
     user_id = fields.Many2one('res.users', string='Billing Manager',

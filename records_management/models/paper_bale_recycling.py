@@ -235,7 +235,9 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    source_paper_bales = fields.Many2many("paper.bale", string="Source Paper Bales")
+    source_paper_bale_ids = fields.Many2many(
+        "paper.bale", string="Source Paper Bales"
+    )
     shredding_service_ids = fields.One2many(
         "shredding.service", "recycling_bale_id", string="Related Shredding Services"
     )

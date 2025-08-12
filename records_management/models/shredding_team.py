@@ -137,7 +137,7 @@ class ShreddingTeam(models.Model):
         required=True,
         help="Primary specialization of the team",
     )
-    secondary_specializations = fields.Many2many(
+    secondary_specialization_ids = fields.Many2many(
         "shredding.specialization",
         string="Secondary Specializations",
         help="Additional capabilities of the team",
@@ -321,7 +321,7 @@ class ShreddingTeam(models.Model):
         string="Base Location",
         help="Team's base operating location",
     )
-    service_areas = fields.Many2many(
+    service_area_ids = fields.Many2many(
         "records.location",
         string="Service Areas",
         help="Geographic areas this team can service",

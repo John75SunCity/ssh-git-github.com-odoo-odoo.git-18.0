@@ -377,11 +377,11 @@ class ShreddingService(models.Model):
         string="Customer Signature",
         help="Customer signature for service completion"
     )
-    photos = fields.One2many(
+    photo_ids = fields.One2many(
         "shredding.service.photo",
         "service_id",
         string="Photos",
-        help="Photos taken during service"
+        help="Photos taken during service",
     )
 
     # ============================================================================
@@ -482,7 +482,7 @@ class ShreddingService(models.Model):
         self.ensure_one()
         if self.state != "completed":
             raise UserError(_("Only completed services can be invoiced"))
-        
+
         # Invoice creation logic would go here
         self.write({"state": "invoiced"})
         self.message_post(body=_("Service invoiced"))
@@ -492,7 +492,7 @@ class ShreddingService(models.Model):
         self.ensure_one()
         if self.state not in ("draft", "scheduled"):
             raise UserError(_("Only draft or scheduled services can be rescheduled"))
-        
+
         return {
             "type": "ir.actions.act_window",
             "name": _("Reschedule Service"),
@@ -704,9 +704,9 @@ class ShreddingServicePhoto(models.Model):
         default="during",
         help="Type of photo for categorization"
     )
-    taken_by = fields.Many2one(
+    taken_by_id = fields.Many2one(
         "res.users",
         string="Taken By",
         default=lambda self: self.env.user,
-        help="User who took the photo"
+        help="User who took the photo",
     )

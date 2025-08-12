@@ -126,7 +126,9 @@ class NaidRiskAssessment(models.Model):
 
     mitigation_measures = fields.Text(string="Mitigation Measures")
 
-    responsible_person = fields.Many2one("res.users", string="Responsible Person")
+    responsible_person_id = fields.Many2one(
+        "res.users", string="Responsible Person"
+    )
 
     target_completion_date = fields.Date(string="Target Completion Date")
 

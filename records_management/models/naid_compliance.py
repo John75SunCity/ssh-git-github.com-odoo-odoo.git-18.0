@@ -46,7 +46,7 @@ class NaidCompliance(models.Model):
         required=True,
         tracking=True,
         index=True,
-        default=lambda self: _("New"),
+        default="New",
         help="Unique reference identifier for this compliance record",
     )
 

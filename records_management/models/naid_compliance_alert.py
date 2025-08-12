@@ -26,7 +26,7 @@ class NaidComplianceAlert(models.Model):
         required=True,
         tracking=True,
         index=True,
-        default=lambda self: _("New Alert"),
+        default="New Alert",
     )
 
     title = fields.Char(string="Alert Title", required=True, tracking=True)
@@ -105,7 +105,7 @@ class NaidComplianceAlert(models.Model):
 
     resolved_date = fields.Datetime(string="Resolved Date")
 
-    resolved_by = fields.Many2one("res.users", string="Resolved By")
+    resolved_by_id = fields.Many2one("res.users", string="Resolved By")
 
     resolution_notes = fields.Text(string="Resolution Notes")
 

@@ -59,7 +59,7 @@ class NaidComplianceChecklistItem(models.Model):
 
     compliance_date = fields.Date(string="Compliance Date")
 
-    verified_by = fields.Many2one("res.users", string="Verified By")
+    verified_by_id = fields.Many2one("res.users", string="Verified By")
 
     evidence_attachment = fields.Binary(string="Evidence")
 

@@ -69,7 +69,7 @@ class PortalFeedbackResolution(models.Model):
         default=fields.Datetime.now,
         tracking=True,
     )
-    resolved_by = fields.Many2one(
+    resolved_by_id = fields.Many2one(
         "res.users",
         string="Resolved By",
         required=True,
@@ -194,14 +194,14 @@ class PortalFeedbackEscalation(models.Model):
         default=fields.Datetime.now,
         tracking=True,
     )
-    escalated_by = fields.Many2one(
+    escalated_by_id = fields.Many2one(
         "res.users",
         string="Escalated By",
         required=True,
         default=lambda self: self.env.user,
         tracking=True,
     )
-    escalated_to = fields.Many2one(
+    escalated_to_id = fields.Many2one(
         "res.users", string="Escalated To", required=True, tracking=True
     )
     escalation_reason = fields.Text(string="Escalation Reason", required=True)
@@ -329,7 +329,7 @@ class PortalFeedbackAction(models.Model):
         required=True,
         tracking=True,
     )
-    assigned_to = fields.Many2one(
+    assigned_to_id = fields.Many2one(
         "res.users", string="Assigned To", required=True, tracking=True
     )
     due_date = fields.Date(string="Due Date", required=True, tracking=True)
@@ -528,8 +528,8 @@ class PortalFeedbackCommunication(models.Model):
         tracking=True,
     )
     message = fields.Text(string="Message Content", required=True)
-    sender = fields.Many2one("res.users", string="Sender")
-    recipient = fields.Many2one("res.partner", string="Recipient")
+    sender_id = fields.Many2one("res.users", string="Sender")
+    recipient_id = fields.Many2one("res.partner", string="Recipient")
     channel = fields.Char(string="Communication Channel")
 
     # ============================================================================

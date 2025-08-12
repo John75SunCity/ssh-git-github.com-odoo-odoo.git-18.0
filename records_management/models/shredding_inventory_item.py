@@ -636,7 +636,10 @@ class ShreddingInventoryItem(models.Model):
         )
 
         self.message_post(
-            body=_("Destruction certificate issued: %s") % self.destruction_certificate_number
+            body=_(
+                "Destruction certificate issued: %s",
+                self.destruction_certificate_number,
+            )
         )
 
         return {

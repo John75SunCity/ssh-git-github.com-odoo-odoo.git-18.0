@@ -97,7 +97,7 @@ class RecordsDigitalScan(models.Model):
         string="Scanner ID",
         help="Identifier of the scanner device used for this digital scan.",
     )
-    scanned_by = fields.Many2one(
+    scanned_by_id = fields.Many2one(
         "res.users",
         string="Scanned By",
         default=lambda self: self.env.user,

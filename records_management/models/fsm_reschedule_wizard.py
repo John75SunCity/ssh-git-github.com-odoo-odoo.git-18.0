@@ -47,9 +47,9 @@ class FsmRescheduleWizard(models.TransientModel):
     name = fields.Char(
         string="Reschedule Reference",
         required=True,
-        default=lambda self: _("New Reschedule Request"),
+        default="New Reschedule Request",
         tracking=True,
-        index=True
+        index=True,
     )
     company_id = fields.Many2one(
         "res.company",

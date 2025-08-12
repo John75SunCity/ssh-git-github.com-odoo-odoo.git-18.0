@@ -350,13 +350,13 @@ class ShreddingPicklistItem(models.Model):
     # ============================================================================
     # PICKING DETAILS
     # ============================================================================
-    picked_by = fields.Many2one(
+    picked_by_id = fields.Many2one(
         "res.users", string="Picked By", help="User who picked this item"
     )
     picked_date = fields.Datetime(
         string="Picked Date", help="Date and time when item was picked"
     )
-    verified_by = fields.Many2one(
+    verified_by_id = fields.Many2one(
         "res.users", string="Verified By", help="User who verified the pick"
     )
     verified_date = fields.Datetime(

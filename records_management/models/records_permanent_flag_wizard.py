@@ -75,7 +75,7 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     name = fields.Char(
         string="Operation Name",
         required=True,
-        default=lambda self: _("Permanent Flag Operation %s", fields.Date.today()),
+        default="Permanent Flag Operation",
     )
     description = fields.Text(
         string="Description",
@@ -156,7 +156,9 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         default=True,
         help="Whether this operation requires approval",
     )
-    approved_by = fields.Many2one("res.users", string="Approved By", readonly=True)
+    approved_by_id = fields.Many2one(
+        "res.users", string="Approved By", readonly=True
+    )
     approval_date = fields.Datetime(string="Approval Date", readonly=True)
     rejection_reason = fields.Text(string="Rejection Reason", readonly=True)
 

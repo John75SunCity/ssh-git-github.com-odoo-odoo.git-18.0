@@ -341,7 +341,7 @@ class Photo(models.Model):
         new_photo = self.copy({
             "name": _("%s (Copy)", self.name),
         })
-        new_photo.message_post(body=_("Duplicated from photo %s") % self.name)
+        new_photo.message_post(body=_("Duplicated from photo %s", self.name))
         return new_photo
 
     def get_image_thumbnail(self, size=(150, 150)):
@@ -377,7 +377,7 @@ class Photo(models.Model):
                 vals["name"] = self.env["ir.sequence"].next_by_code("photo") or _("New Photo")
         photos = super().create(vals_list)
         for photo in photos:
-            photo.message_post(body=_("Photo created: %s") % photo.name)
+            photo.message_post(body=_("Photo created: %s", photo.name))
         return photos
 
     def write(self, vals):
@@ -394,19 +394,37 @@ class Photo(models.Model):
             if 'state' in vals and old_values[record.id]['state'] != record.state:
                 old_state_label = state_label_map.get(old_values[record.id]['state'], _('N/A'))
                 new_state_label = state_label_map.get(record.state, _('N/A'))
-                record.message_post(body=_("State changed from %s to %s.") % (old_state_label, new_state_label))
+                record.message_post(
+                    body=_(
+                        "State changed from %s to %s.",
+                        old_state_label,
+                        new_state_label,
+                    )
+                )
 
             if 'category' in vals and old_values[record.id]['category'] != record.category:
                 old_cat_label = category_label_map.get(old_values[record.id]['category'], _('N/A'))
                 new_cat_label = category_label_map.get(record.category, _('N/A'))
-                record.message_post(body=_("Category changed from %s to %s.") % (old_cat_label, new_cat_label))
+                record.message_post(
+                    body=_(
+                        "Category changed from %s to %s.",
+                        old_cat_label,
+                        new_cat_label,
+                    )
+                )
         return True
 
     def unlink(self):
         """Override unlink to prevent deletion of validated or archived photos."""
         for photo in self:
             if photo.state in ["validated", "archived"]:
-                raise UserError(_("Cannot delete photo '%s' because it is in the '%s' state. Please reset it to draft first.") % (photo.name, photo.state))
+                raise UserError(
+                    _(
+                        "Cannot delete photo '%s' because it is in the '%s' state. Please reset it to draft first.",
+                        photo.name,
+                        photo.state,
+                    )
+                )
         return super().unlink()
 
     def name_get(self):
@@ -466,7 +484,12 @@ class Photo(models.Model):
             if record.image_filename:
                 file_extension = record.image_filename.split(".")[-1].lower()
                 if file_extension not in allowed_extensions:
-                    raise ValidationError(_("The image file must be one of the following types: %s.") % ", ".join(allowed_extensions))
+                    raise ValidationError(
+                        _(
+                            "The image file must be one of the following types: %s.",
+                            ", ".join(allowed_extensions),
+                        )
+                    )
 
     # ============================================================================
     # UTILITY & SEARCH METHODS

@@ -142,7 +142,7 @@ class MaintenanceTeam(models.Model):
         default="general",
     )
 
-    service_locations = fields.Many2many(
+    service_location_ids = fields.Many2many(
         "records.location",
         string="Service Locations",
         help="Locations this team can service",
