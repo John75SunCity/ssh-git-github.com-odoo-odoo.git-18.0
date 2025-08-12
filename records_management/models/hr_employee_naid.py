@@ -200,13 +200,13 @@ class HREmployeeNAID(models.Model):
         string="Activities",
         auto_join=True,
         groups="base.group_user"
-    ),
+    )
     message_follower_ids = fields.One2many(
         "mail.followers", 
         "res_id", 
         string="Followers", 
         groups="base.group_user"
-    ),
+    )
     message_ids = fields.One2many(
         "mail.message", 
         "res_id", 
