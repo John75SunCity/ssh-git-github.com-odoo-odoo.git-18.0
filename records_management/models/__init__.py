@@ -104,9 +104,9 @@ from . import shred_bin
 from . import paper_bale_recycling
 from . import paper_load_shipment
 
-# Advanced billing system
+# Advanced billing system (base model first)
 from . import advanced_billing
-from . import advanced_billing_line
+# Note: advanced_billing_line imported later to avoid circular dependency
 from . import records_advanced_billing_period
 
 # Work orders
@@ -353,6 +353,13 @@ from . import container_access_work_order
 # Model extensions for work order integration (project_task already imported above)
 from . import account_move_line
 from . import container_retrieval_work_order
+
+# =============================================================================
+# LATE-LOADING MODELS (to avoid circular dependencies)
+# =============================================================================
+
+# Advanced billing line (loaded after advanced_billing is fully initialized)
+from . import advanced_billing_line
 
 # =============================================================================
 # MISSING MODELS THAT NEED TO BE IMPORTED
