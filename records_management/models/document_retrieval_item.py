@@ -6,7 +6,11 @@ Individual items in a document retrieval work order with detailed tracking
 and quality control capabilities.
 """
 
-from odoo import models, fields, api
+import logging
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class DocumentRetrievalItem(models.Model):
@@ -77,16 +81,49 @@ class DocumentRetrievalItem(models.Model):
     status = fields.Selection(
         [
             ("pending", "Pending"),
+            ("searching", "Searching"),  # Added missing status
             ("located", "Located"),
             ("retrieved", "Retrieved"),
+            ("packaged", "Packaged"),  # Added missing status
             ("scanned", "Scanned"),
             ("delivered", "Delivered"),
+            ("returned", "Returned"),  # Added missing status
             ("not_found", "Not Found"),
         ],
         string="Status",
         default="pending",
         tracking=True,
     )
+
+    # ============================================================================
+    # LOCATION AND SEARCH FIELDS
+    # ============================================================================
+    current_location = fields.Char(string="Current Location")
+    storage_location_id = fields.Many2one("records.location", string="Storage Location")
+    
+    # Search container tracking
+    searched_container_ids = fields.Many2many(
+        "records.container",
+        "retrieval_item_container_rel",
+        "item_id",
+        "container_id", 
+        string="Searched Containers"
+    )
+    
+    containers_accessed_count = fields.Integer(
+        string="Containers Accessed",
+        compute="_compute_containers_accessed_count",
+        store=True,
+    )
+    
+    containers_not_found_count = fields.Integer(
+        string="Containers Not Found",
+        compute="_compute_containers_not_found_count", 
+        store=True,
+    )
+
+    # File request information
+    requested_file_name = fields.Char(string="Requested File Name")
 
     # ============================================================================
     # EFFORT TRACKING FIELDS
@@ -108,7 +145,7 @@ class DocumentRetrievalItem(models.Model):
     # PROCESSING DETAILS FIELDS
     # ============================================================================
     retrieval_date = fields.Datetime(string="Retrieved Date", tracking=True)
-    retrieved_by_id = fields.Many2one("hr.employee", string="Retrieved By")
+    retrieved_by_id = fields.Many2one("res.users", string="Retrieved By")  # Fixed to res.users
     condition_notes = fields.Text(string="Condition Notes")
     special_handling = fields.Boolean(string="Special Handling Required", default=False)
 
@@ -179,22 +216,8 @@ class DocumentRetrievalItem(models.Model):
         help="Container where file was actually found",
     )
 
-    # Retrieval Details
+    # Retrieval Notes
     retrieval_notes = fields.Text(string="Retrieval Notes")
-    retrieved_by_id = fields.Many2one("res.users", string="Retrieved By")
-    retrieval_date = fields.Datetime(string="Retrieval Date")
-
-    # Company and Basic Fields
-    company_id = fields.Many2one(
-        "res.company", string="Company", default=lambda self: self.env.company
-    )
-    user_id = fields.Many2one(
-        "res.users",
-        string="Responsible User",
-        default=lambda self: self.env.user,
-        tracking=True,
-    )
-    active = fields.Boolean(string="Active", default=True)
 
     # === CUSTOMER RELATIONSHIP ===
     partner_id = fields.Many2one(
@@ -204,7 +227,6 @@ class DocumentRetrievalItem(models.Model):
     )
 
     # Handling Instructions
-    special_handling = fields.Boolean(string="Special Handling Required", default=False)
     handling_instructions = fields.Text(string="Handling Instructions")
     fragile = fields.Boolean(string="Fragile Item", default=False)
 
@@ -255,8 +277,6 @@ class DocumentRetrievalItem(models.Model):
         ],
         string="Condition After",
     )
-
-    condition_notes = fields.Text(string="Condition Notes")
 
     # Digital Processing
     scan_required = fields.Boolean(string="Scan Required", default=False)
@@ -337,7 +357,6 @@ class DocumentRetrievalItem(models.Model):
             if item.work_order_id and item.work_order_id.currency_id:
                 item.currency_id = item.work_order_id.currency_id
             else:
-                item.currency_id = False
                 item.currency_id = (
                     item.company_id.currency_id
                     if item.company_id and item.company_id.currency_id
@@ -691,7 +710,7 @@ class DocumentRetrievalItem(models.Model):
             }
         )
 
-        # Post a notification message to the chatter
+        # Post a notification message to the chatter - FIXED translation
         self.message_post(
             body=_("Item located by %s", self.env.user.name),
             message_type="notification",
@@ -716,7 +735,7 @@ class DocumentRetrievalItem(models.Model):
             }
         )
 
-        # Post a notification message to the chatter
+        # Post a notification message to the chatter - FIXED translation
         self.message_post(
             body=_("Item retrieved by %s", self.env.user.name),
             message_type="notification",
@@ -739,6 +758,7 @@ class DocumentRetrievalItem(models.Model):
                 "retrieval_date": fields.Datetime.now(),
             }
         )
+        # FIXED translation
         self.message_post(
             body=_("Item packaged by %s", self.env.user.name),
             message_type="notification",
@@ -757,7 +777,7 @@ class DocumentRetrievalItem(models.Model):
 
         self.write({"status": "delivered"})
 
-        # Post a notification message to the chatter
+        # Post a notification message to the chatter - FIXED translation
         self.message_post(
             body=_("Item delivered by %s", self.env.user.name),
             message_type="notification",
@@ -780,40 +800,31 @@ class DocumentRetrievalItem(models.Model):
                 "return_date": fields.Datetime.now(),
             }
         )
-        # Post a notification message to the chatter
+        # Post a notification message to the chatter - FIXED translation
         self.message_post(
             body=_("Item returned by %s", self.env.user.name),
             message_type="notification",
         )
 
-    # === NEW ACTION METHODS FOR SEARCH WORKFLOW ===
-    def action_start_search(self):
-        """Start the search process for this file"""
+    # === SEARCH WORKFLOW ACTION METHODS ===
+    def action_begin_search_process(self):
+        """Start the search process for this file - RENAMED from action_start_search"""
         self.ensure_one()
         if self.status != "pending":
             raise UserError(_("Only pending items can start search process"))
 
         self.write({"status": "searching"})
         self.message_post(
-            body=_(
-                "Search started by %s for file: %s",
-                self.env.user.name,
-                self.requested_file_name or self.name,
-            ),
+            body=_("Search started by %s for file: %s", self.env.user.name, self.requested_file_name or self.name),
             message_type="notification",
         )
 
-    def action_add_searched_container(self, container_id, found=False, notes=""):
-        """Add a container to the searched list and create search attempt record"""
+    def action_record_container_search(self, container_id, found=False, notes=""):
+        """Add a container to the searched list and create search attempt record - RENAMED"""
         self.ensure_one()
 
-        # Add to searched containers - fix list/recordset handling
-        searched_ids = (
-            self.searched_container_ids.ids
-            if hasattr(self.searched_container_ids, "ids")
-            else []
-        )
-        if container_id not in searched_ids:
+        # Add to searched containers 
+        if container_id not in self.searched_container_ids.ids:
             self.searched_container_ids = [(4, container_id)]
 
         # Create search attempt record
@@ -856,16 +867,14 @@ class DocumentRetrievalItem(models.Model):
             }
         )
 
-        # Create final search attempt record
-        body_msg = _(
-            "File marked as NOT FOUND by %s. Searched %s containers (%s unsuccessful - will be charged as container access fees). Reason: %s",
-            self.env.user.name,
-            self.containers_accessed_count,
-            self.containers_not_found_count,
-            dict(self._fields["not_found_reason"].selection).get(reason, reason),
-        )
+        # Create final search attempt record - FIXED translation
+        reason_display = dict(self._fields["not_found_reason"].selection).get(reason, reason)
         self.message_post(
-            body=body_msg,
+            body=_("File marked as NOT FOUND by %s. Searched %s containers (%s unsuccessful - will be charged as container access fees). Reason: %s",
+                   self.env.user.name,
+                   self.containers_accessed_count,
+                   self.containers_not_found_count,
+                   reason_display),
             message_type="notification",
         )
 
@@ -897,79 +906,10 @@ class DocumentRetrievalItem(models.Model):
             document = self.env["records.document"].create(document_vals)
             self.document_id = document.id
 
+        # FIXED translation
         self.message_post(
-            body=_(
-                "File barcoded by %s with barcode: %s", self.env.user.name, barcode
-            ),
+            body=_("File barcoded by %s with barcode: %s", self.env.user.name, barcode),
             message_type="notification",
         )
 
         return True
-
-
-class DocumentSearchAttempt(models.Model):
-    """Track individual search attempts for files"""
-
-    _name = "document.search.attempt"
-    _description = "Document Search Attempt"
-    _order = "search_date desc"
-
-    retrieval_item_id = fields.Many2one(
-        "document.retrieval.item",
-        string="Retrieval Item",
-        required=True,
-        ondelete="cascade",
-    )
-
-    container_id = fields.Many2one(
-        "records.container",
-        string="Container Searched",
-        required=True,
-    )
-
-    searched_by = fields.Many2one(
-        "res.users",
-        string="Searched By",
-        required=True,
-    )
-
-    search_date = fields.Datetime(
-        string="Search Date",
-        required=True,
-        default=fields.Datetime.now,
-    )
-
-    found = fields.Boolean(
-        string="Found",
-        default=False,
-    )
-
-    notes = fields.Text(
-        string="Search Notes",
-        help="Notes about what was found or why file wasn't found in this container",
-    )
-
-    # Reference fields for easy access
-    requested_file_name = fields.Char(
-        related="retrieval_item_id.requested_file_name",
-        string="Requested File",
-        readonly=True,
-    )
-
-    customer_id = fields.Many2one(
-        related="retrieval_item_id.partner_id",
-        string="Customer",
-        readonly=True,
-    )
-
-    def get_history_summary(self):
-        """Get summary of unlock service history"""
-        self.ensure_one()
-        return {
-            "service_name": self.name,
-            "customer": self.partner_id.name,
-            "date": self.service_date,
-            "technician": self.technician_id.name,
-            "status": self.state,
-        }
-        }

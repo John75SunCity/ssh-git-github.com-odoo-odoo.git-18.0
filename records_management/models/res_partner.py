@@ -100,16 +100,6 @@ class ResPartner(models.Model):
     )
 
     # ============================================================================
-    # USER RELATIONSHIP INTEGRATION
-    # ============================================================================
-    records_department_user_ids = fields.One2many(
-        "res.users",
-        "partner_id",
-        string="Department Users (Records)",
-        help="Users associated with this partner for records management",
-    )
-
-    # ============================================================================
     # FIELD CONFIGURATION INTEGRATION
     # ============================================================================
     transitory_field_config_id = fields.Many2one(

@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+Document Search Attempt Model
+
+Track individual search attempts for files during document retrieval operations.
+"""
+
 from odoo import models, fields, api
 
 
@@ -22,7 +28,7 @@ class DocumentSearchAttempt(models.Model):
         required=True,
     )
 
-    searched_by_id = fields.Many2one(
+    searched_by_id = fields.Many2one(  # FIXED: Added _id suffix
         "res.users",
         string="Searched By",
         required=True,
@@ -58,12 +64,13 @@ class DocumentSearchAttempt(models.Model):
     )
 
     def get_history_summary(self):
-        """Get summary of unlock service history"""
+        """Get summary of search attempt history"""
         self.ensure_one()
         return {
-            "service_name": self.name,
-            "customer": self.partner_id.name,
-            "date": self.service_date,
-            "technician": self.technician_id.name,
-            "status": self.state,
+            "container": self.container_id.name if self.container_id else "Unknown",
+            "customer": self.customer_id.name if self.customer_id else "Unknown",
+            "date": self.search_date,
+            "searched_by": self.searched_by_id.name if self.searched_by_id else "Unknown",
+            "found": self.found,
+            "notes": self.notes or "",
         }
