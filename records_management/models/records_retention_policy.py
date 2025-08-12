@@ -312,6 +312,16 @@ class RecordsRetentionPolicy(models.Model):
     )
 
     # ============================================================================
+    # RELATED RULES
+    # ============================================================================
+    policy_rule_ids = fields.One2many(
+        "records.retention.rule",
+        "policy_id", 
+        string="Retention Rules",
+        help="Individual rules within this retention policy"
+    )
+
+    # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
     activity_ids = fields.One2many(

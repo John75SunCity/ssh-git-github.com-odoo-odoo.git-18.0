@@ -107,3 +107,11 @@ access_temp_inventory_movement_user,access_temp_inventory_movement_user,model_te
 access_temp_inventory_movement_manager,access_temp_inventory_movement_manager,model_temp_inventory_movement,records_management.group_records_manager,1,1,1,1
 access_temp_inventory_audit_user,access_temp_inventory_audit_user,model_temp_inventory_audit,records_management.group_records_user,1,0,0,0
 access_temp_inventory_audit_manager,access_temp_inventory_audit_manager,model_temp_inventory_audit,records_management.group_records_manager,1,1,1,1
+
+# ============================================================================
+# RETENTION POLICY AND RULES ACCESS RULES
+# ============================================================================
+access_records_retention_policy_user,access_records_retention_policy_user,model_records_retention_policy,records_management.group_records_user,1,1,1,0
+access_records_retention_policy_manager,access_records_retention_policy_manager,model_records_retention_policy,records_management.group_records_manager,1,1,1,1
+access_records_retention_rule_user,access_records_retention_rule_user,model_records_retention_rule,records_management.group_records_user,1,1,1,0
+access_records_retention_rule_manager,access_records_retention_rule_manager,model_records_retention_rule,records_management.group_records_manager,1,1,1,1

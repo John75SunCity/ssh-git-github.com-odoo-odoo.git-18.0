@@ -205,18 +205,21 @@ class ApprovalHistory(models.Model):
         "mail.activity", 
         "res_id", 
         string="Activities",
+        domain=[("res_model", "=", "approval.history")],
         help="Related activities for this approval"
     )
     message_follower_ids = fields.One2many(
         "mail.followers", 
         "res_id", 
         string="Followers",
+        domain=[("res_model", "=", "approval.history")],
         help="Users following this approval"
     )
     message_ids = fields.One2many(
         "mail.message", 
         "res_id", 
         string="Messages",
+        domain=[("model", "=", "approval.history")],
         help="Communication history for this approval"
     )
 
@@ -242,9 +245,12 @@ class ApprovalHistory(models.Model):
         for vals in vals_list:
             if not vals.get("name"):
                 approval_type = vals.get("approval_type", "other")
-                sequence = (
-                    self.env["ir.sequence"].next_by_code("approval.history") or "/"
-                )
+                sequence = self.env["ir.sequence"].next_by_code("approval.history")
+                if not sequence:
+                    # Raise error or provide a descriptive fallback
+                    raise ValueError(
+                        "Sequence code 'approval.history' does not exist. Please configure the sequence in Odoo."
+                    )
                 vals["name"] = "%s-%s" % (approval_type.upper(), sequence)
         return super().create(vals_list)
 
@@ -264,9 +270,8 @@ class ApprovalHistory(models.Model):
                 "completed_date": fields.Datetime.now(),
             }
         )
-
         self.message_post(
-            body=_("Approval request approved by %s", self.env.user.name),
+            body=_("Approval request approved by %s") % self.env.user.name,
             message_type="notification",
         )
 
@@ -283,9 +288,8 @@ class ApprovalHistory(models.Model):
                 "completed_date": fields.Datetime.now(),
             }
         )
-
         self.message_post(
-            body=_("Approval request rejected by %s", self.env.user.name),
+            body=_("Approval request rejected by %s") % self.env.user.name,
             message_type="notification",
         )
 
@@ -303,13 +307,15 @@ class ApprovalHistory(models.Model):
         )
 
         self.message_post(
-            body=_("Approval request cancelled"),
+            body=_("Approval request cancelled by %s") % self.env.user.name,
             message_type="notification",
         )
 
     # ============================================================================
     # UTILITY METHODS
     # ============================================================================
+    def name_get(self):
+        """Custom display name"""
     def name_get(self):
         """Custom display name"""
         result = []
@@ -321,12 +327,13 @@ class ApprovalHistory(models.Model):
                 )
                 name_parts.append("(%s)" % type_label)
             if record.approval_amount:
-                name_parts.append("- %s%s" % (record.currency_id.symbol, record.approval_amount))
+                name_parts.append("- %s%s" % (
+                    record.currency_id.symbol,
+                    "{:.2f}".format(record.approval_amount)
+                ))
             
             result.append((record.id, " ".join(name_parts)))
         return result
-
-    @api.model
     def get_approval_statistics(self):
         """Get approval statistics for dashboard"""
         stats = {}
