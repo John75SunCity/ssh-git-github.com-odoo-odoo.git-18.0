@@ -322,9 +322,9 @@ class BarcodePricingTier(models.Model):
     def _onchange_tier_level(self):
         """Set default values based on tier level"""
         if self.tier_level:
-            defaults = self._get_tier_defaults()
+            defaults = self._default_tier_level_config()
             tier_config = defaults.get(self.tier_level, {})
-            
+
             for field, value in tier_config.items():
                 setattr(self, field, value)
 
@@ -389,16 +389,16 @@ class BarcodePricingTier(models.Model):
     def action_duplicate_tier(self):
         """Create a copy of this pricing tier"""
         self.ensure_one()
-        
+
         copy_vals = {
             "name": _("%s (Copy)", self.name),
             "state": "draft",
             "valid_from": fields.Date.today(),
             "valid_to": False,
         }
-        
+
         new_tier = self.copy(copy_vals)
-        
+
         return {
             "type": "ir.actions.act_window",
             "name": _("Pricing Tier Copy"),
@@ -433,13 +433,13 @@ class BarcodePricingTier(models.Model):
                 "Quantity %s is below minimum quantity %s for tier %s",
                 quantity, self.minimum_quantity, self.name
             ))
-        
+
         if quantity > self.maximum_quantity:
             raise UserError(_(
-                "Quantity %s exceeds maximum quantity %s for tier %s", 
+                "Quantity %s exceeds maximum quantity %s for tier %s",
                 quantity, self.maximum_quantity, self.name
             ))
-        
+
         return self.discounted_price * quantity
 
     def is_valid_for_date(self, date):
@@ -451,10 +451,10 @@ class BarcodePricingTier(models.Model):
         
         if self.valid_to and date > self.valid_to:
             return False
-        
+
         return True
 
-    def _get_tier_defaults(self):
+    def _default_tier_level_config(self):
         """Get default configuration for each tier level"""
         return {
             "basic": {
@@ -502,7 +502,7 @@ class BarcodePricingTier(models.Model):
             raise ValidationError(_("Valid to date must be after valid from date"))
 
     @api.model
-    def check_expired_tiers(self):
+    def _check_expired_tiers(self):
         """Cron job to check and mark expired tiers"""
         today = fields.Date.today()
         expired_tiers = self.search([
@@ -559,7 +559,7 @@ class BarcodePricingTier(models.Model):
                 level_name = dict(tier._fields["tier_level"].selection).get(tier.tier_level)
                 name = _("%s (%s)", name, level_name)
             if tier.discounted_price:
-                name = _("%s - %s", name, 
+                name = _("%s - %s", name,
                         tier.currency_id.format(tier.discounted_price))
             result.append((tier.id, name))
         return result
@@ -572,5 +572,5 @@ class BarcodePricingTier(models.Model):
                 tier_level = vals.get("tier_level", "standard")
                 level_name = dict(self._fields["tier_level"].selection).get(tier_level, "Standard")
                 vals["name"] = _("%s Pricing Tier", level_name)
-        
+
         return super().create(vals_list)
