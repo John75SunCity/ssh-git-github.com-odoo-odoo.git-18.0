@@ -179,3 +179,6 @@ access_records_access_log_manager,records_access_log_manager,model_records_acces
 access_processing_log_manager,processing_log_manager,model_processing_log,,1,1,1,1
 access_pickup_route_manager,pickup_route_manager,model_pickup_route,,1,1,1,1
 access_pickup_route_stop_manager,pickup_route_stop_manager,model_pickup_route_stop,,1,1,1,1
+access_shredding_team_manager,shredding_team_manager,model_shredding_team,,1,1,1,1
+access_shredding_service_log_manager,shredding_service_log_manager,model_shredding_service_log,,1,1,1,1
+access_shredding_service_manager,shredding_service_manager,model_shredding_service,,1,1,1,1
