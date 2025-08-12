@@ -98,7 +98,15 @@ from . import paper_load_shipment
 # Work orders
 from . import work_order_shredding
 from . import document_retrieval_work_order
+
+# Document retrieval support models (separate files following Odoo standards)
 from . import document_retrieval_item
+from . import document_retrieval_team
+from . import document_retrieval_pricing
+from . import document_retrieval_equipment
+from . import document_retrieval_metric
+from . import document_retrieval_support_models
+
 from . import document_search_attempt
 from . import file_retrieval_work_order
 
@@ -106,6 +114,13 @@ from . import file_retrieval_work_order
 from . import base_rates
 from . import customer_negotiated_rates
 from . import records_billing_config
+
+# Individual billing support models
+from . import invoice_generation_log
+from . import discount_rule
+from . import revenue_analytic
+from . import records_promotional_discount
+from . import billing_support_models
 
 # Key management services
 from . import bin_key_management
@@ -165,7 +180,7 @@ from . import advanced_billing
 from . import customer_billing_profile
 from . import revenue_forecaster
 
-# Billing support models (new comprehensive system)
+# Billing support models (consolidated system)
 from . import billing_support_models
 
 # =============================================================================
@@ -292,3 +307,5 @@ except ImportError as e:
         getattr(e, "name", "unknown"),
         str(e),
     )
+
+from . import customer_category

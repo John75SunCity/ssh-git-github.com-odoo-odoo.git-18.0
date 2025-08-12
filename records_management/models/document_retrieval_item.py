@@ -1,132 +1,132 @@
 # -*- coding: utf-8 -*-
-import logging
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+"""
+Document Retrieval Item Model
 
-_logger = logging.getLogger(__name__)
+Individual items in a document retrieval work order with detailed tracking
+and quality control capabilities.
+"""
+
+from odoo import models, fields, api
 
 
 class DocumentRetrievalItem(models.Model):
+    """Individual items in a document retrieval work order"""
+
     _name = "document.retrieval.item"
     _description = "Document Retrieval Item"
     _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "sequence, name"
-    _rec_name = "name"
+    _order = "work_order_id, sequence"
+    _rec_name = "description"
 
-    # Core identification
-    name = fields.Char(string="Name", required=True, tracking=True)
-    sequence = fields.Integer(string="Sequence", default=10)
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Item Reference", required=True, tracking=True, index=True
+    )
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+    )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Assigned User",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+    active = fields.Boolean(string="Active", default=True, tracking=True)
 
-    # Work Order Relationship
+    # ============================================================================
+    # WORK ORDER RELATIONSHIP FIELDS
+    # ============================================================================
     work_order_id = fields.Many2one(
         "document.retrieval.work.order",
         string="Work Order",
         required=True,
         ondelete="cascade",
     )
+    sequence = fields.Integer(string="Sequence", default=10)
 
-    # Item Type and References
+    # ============================================================================
+    # DOCUMENT REFERENCE FIELDS
+    # ============================================================================
+    document_id = fields.Many2one("records.document", string="Document")
+    container_id = fields.Many2one("records.container", string="Container")
+    location_id = fields.Many2one("records.location", string="Storage Location")
+
     item_type = fields.Selection(
         [
-            ("file", "File"),
             ("document", "Single Document"),
-            ("container", "Entire Container"),
+            ("folder", "Document Folder"),
+            ("container", "Full Container"),
+            ("box", "Storage Box"),
         ],
         string="Item Type",
         required=True,
-        default="file",
-        help="File: Complete file folder (most common), Document: Single document from file, Container: Entire container",
+        default="document",
     )
 
-    container_id = fields.Many2one(
-        "records.container",
-        string="Container Location",
-        help="Container where the file is stored (for location purposes)",
-        tracking=True,
-    )
+    description = fields.Text(string="Item Description")
+    barcode = fields.Char(string="Barcode/ID", tracking=True)
 
-    box_number = fields.Char(
-        string="Customer Box Number",
-        help="Customer's own box numbering system for the container",
-    )
-
-    document_id = fields.Many2one(
-        "records.document",
-        string="Specific Document",
-        help="Only used when retrieving a single document from a file",
-    )
-
-    # Barcode and Identification
-    barcode = fields.Char(string="Barcode", help="Item barcode for tracking")
-    description = fields.Text(string="Description")
-
-    # Location Information
-    current_location = fields.Char(
-        string="Current Location", help="Current storage location"
-    )
-    storage_location_id = fields.Many2one("records.location", string="Storage Location")
-
-    # Status and Processing - ENHANCED for Not Found tracking
+    # ============================================================================
+    # STATUS TRACKING FIELDS
+    # ============================================================================
     status = fields.Selection(
         [
             ("pending", "Pending"),
-            ("searching", "Searching"),
             ("located", "Located"),
             ("retrieved", "Retrieved"),
-            ("packaged", "Packaged"),
+            ("scanned", "Scanned"),
             ("delivered", "Delivered"),
-            ("returned", "Returned"),
             ("not_found", "Not Found"),
-            ("cancelled", "Cancelled"),
         ],
         string="Status",
         default="pending",
         tracking=True,
     )
 
-    # === NEW FIELDS FOR SEARCH TRACKING ===
-    # File Search Information
-    requested_file_name = fields.Char(
-        string="Requested File Name",
-        help="Original file name requested by customer",
-        tracking=True,
+    # ============================================================================
+    # EFFORT TRACKING FIELDS
+    # ============================================================================
+    estimated_time = fields.Float(string="Estimated Time (hours)", digits=(5, 2))
+    actual_time = fields.Float(string="Actual Time (hours)", digits=(5, 2))
+    difficulty_level = fields.Selection(
+        [
+            ("easy", "Easy"),
+            ("medium", "Medium"),
+            ("hard", "Hard"),
+            ("very_hard", "Very Hard"),
+        ],
+        string="Difficulty",
+        default="medium",
     )
 
-    search_criteria = fields.Text(
-        string="Search Criteria",
-        help="Criteria used to identify potential containers (date ranges, sequence, etc.)",
+    # ============================================================================
+    # PROCESSING DETAILS FIELDS
+    # ============================================================================
+    retrieval_date = fields.Datetime(string="Retrieved Date", tracking=True)
+    retrieved_by_id = fields.Many2one("hr.employee", string="Retrieved By")
+    condition_notes = fields.Text(string="Condition Notes")
+    special_handling = fields.Boolean(string="Special Handling Required", default=False)
+
+    # ============================================================================
+    # QUALITY CONTROL FIELDS
+    # ============================================================================
+    quality_checked = fields.Boolean(string="Quality Checked", default=False)
+    quality_issues = fields.Text(string="Quality Issues")
+    completeness_verified = fields.Boolean(
+        string="Completeness Verified", default=False
     )
 
-    potential_container_ids = fields.Many2many(
-        "records.container",
-        "retrieval_item_potential_container_rel",
-        "item_id",
-        "container_id",
-        string="Potential Containers",
-        help="Containers that might contain this file based on search criteria",
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
     )
-
-    searched_container_ids = fields.Many2many(
-        "records.container",
-        "retrieval_item_searched_container_rel",
-        "item_id",
-        "container_id",
-        string="Searched Containers",
-        help="Containers that have been physically searched for this file",
-    )
-
-    containers_accessed_count = fields.Integer(
-        string="Containers Accessed",
-        compute="_compute_containers_accessed_count",
-        store=True,
-        help="Total number of containers accessed during search",
-    )
-
-    containers_not_found_count = fields.Integer(
-        string="Unsuccessful Container Searches",
-        compute="_compute_containers_not_found_count",
-        store=True,
-        help="Number of containers where file was NOT found (for container access billing)",
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
     )
 
     # Search Results and History

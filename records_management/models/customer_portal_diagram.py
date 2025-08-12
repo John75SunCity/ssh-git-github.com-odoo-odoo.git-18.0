@@ -224,7 +224,7 @@ class CustomerPortalDiagram(models.TransientModel):
 
         companies = self.env["res.company"].sudo().search(company_domain)
         for company in companies:
-            node_id = _("company_%s", company.id)
+            node_id = "company_%s" % company.id
             nodes.append(
                 {
                     "id": node_id,
@@ -249,7 +249,7 @@ class CustomerPortalDiagram(models.TransientModel):
 
         departments = self.env["records.department"].sudo().search(dept_domain)
         for dept in departments:
-            node_id = _("dept_%s", dept.id)
+            node_id = "dept_%s" % dept.id
             company_name = dept.company_id.name if dept.company_id else _("N/A")
             
             nodes.append(
@@ -270,7 +270,7 @@ class CustomerPortalDiagram(models.TransientModel):
                 edges.append(
                     {
                         "from": node_id,
-                        "to": _("company_%s", dept.company_id.id),
+                        "to": "company_%s" % dept.company_id.id,
                         "label": _("Belongs to"),
                         "color": {"color": "#808080"},
                         "arrows": {"to": {"enabled": True}},
@@ -302,7 +302,7 @@ class CustomerPortalDiagram(models.TransientModel):
 
         users = self.env["res.users"].sudo().search(user_domain)
         for user in users:
-            node_id = _("user_%s", user.id)
+            node_id = "user_%s" % user.id
             is_portal = user.has_group("portal.group_portal")
             is_current = user.id == current_user.id
 
@@ -343,7 +343,7 @@ class CustomerPortalDiagram(models.TransientModel):
                     edges.append(
                         {
                             "from": node_id,
-                            "to": _("dept_%s", dept.id),
+                            "to": "dept_%s" % dept.id,
                             "label": _("Assigned to"),
                             "color": {"color": "#9E9E9E"},
                             "arrows": {"to": {"enabled": True}},
@@ -355,7 +355,7 @@ class CustomerPortalDiagram(models.TransientModel):
                 edges.append(
                     {
                         "from": node_id,
-                        "to": _("company_%s", user.company_id.id),
+                        "to": "company_%s" % user.company_id.id,
                         "label": _("Employee"),
                         "color": {"color": "#9E9E9E"},
                         "arrows": {"to": {"enabled": True}},
@@ -379,7 +379,7 @@ class CustomerPortalDiagram(models.TransientModel):
         users = self.env["res.users"].sudo().search(user_domain)
 
         for model in ir_models:
-            model_node_id = _("model_%s", model.id)
+            model_node_id = "model_%s" % model.id
             short_name = model.name.split(".")[-1]  # Short name
             
             nodes.append(
@@ -540,7 +540,7 @@ class CustomerPortalDiagram(models.TransientModel):
         
         return {
             "type": "ir.actions.act_url",
-            "url": _("data:application/json;base64,%s", encoded_data),
+            "url": "data:application/json;base64,%s" % encoded_data,
             "target": "self",
         }
 
