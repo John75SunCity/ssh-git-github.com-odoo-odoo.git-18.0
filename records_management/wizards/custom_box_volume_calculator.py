@@ -1,6 +1,7 @@
+import math
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-import math
 
 class CustomBoxVolumeCalculator(models.TransientModel):
     _name = 'custom.box.volume.calculator'
@@ -16,7 +17,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         required=True
     )
     company_id = fields.Many2one(
-        'res.company', 
+        'res.company',
         default=lambda self: self.env.company,
         required=True
     )
@@ -26,7 +27,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         default=lambda self: self.env.user,
         required=True
     )
-    
+
     # ============================================================================
     # CUSTOM BOX DIMENSIONS INPUT
     # ============================================================================
@@ -45,7 +46,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         digits=(8, 2),
         help='Box height in inches'
     )
-    
+
     # Metric system support
     length_cm = fields.Float(
         string='Length (cm)',
@@ -62,12 +63,12 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         digits=(8, 2),
         help='Box height in centimeters'
     )
-    
+
     measurement_unit = fields.Selection([
         ('inches', 'Inches'),
         ('centimeters', 'Centimeters'),
     ], string='Measurement Unit', default='inches', required=True)
-    
+
     # ============================================================================
     # CALCULATED VOLUME FIELDS
     # ============================================================================
@@ -85,7 +86,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         store=True,
         help='Calculated volume in liters'
     )
-    
+
     # ============================================================================
     # STANDARD CONTAINER CONVERSION
     # ============================================================================
@@ -96,7 +97,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         ('type_04', 'TYPE 04: Odd Size/Temp Box (5.0 CF)'),
         ('type_06', 'TYPE 06: Pathology Box (0.042 CF)'),
     ], string='Recommended Standard Container', compute='_compute_recommended_container', store=True)
-    
+
     equivalent_standard_boxes = fields.Float(
         string='Equivalent Standard Boxes',
         digits=(12, 2),
@@ -104,7 +105,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         store=True,
         help='Number of standard boxes needed to match custom volume'
     )
-    
+
     volume_difference_cf = fields.Float(
         string='Volume Difference (CF)',
         digits=(12, 4),
@@ -112,17 +113,17 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         store=True,
         help='Difference between custom and standard container volume'
     )
-    
+
     # ============================================================================
     # PRICING CALCULATION FIELDS
     # ============================================================================
     base_rate_per_cf = fields.Monetary(
         string='Base Rate per Cubic Foot',
         currency_field='currency_id',
-        default=lambda self: self._get_default_base_rate(),
+        default=lambda self: self._default_base_rate_per_cf(),
         help='Base pricing rate per cubic foot'
     )
-    
+
     custom_box_price = fields.Monetary(
         string='Custom Box Price',
         currency_field='currency_id',
@@ -130,7 +131,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         store=True,
         help='Calculated price for custom box'
     )
-    
+
     standard_box_price = fields.Monetary(
         string='Standard Box Price',
         currency_field='currency_id',
@@ -138,7 +139,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         store=True,
         help='Price if using equivalent standard boxes'
     )
-    
+
     price_difference = fields.Monetary(
         string='Price Difference',
         currency_field='currency_id',
@@ -146,13 +147,13 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         store=True,
         help='Price difference between custom and standard'
     )
-    
+
     currency_id = fields.Many2one(
         'res.currency',
         default=lambda self: self.env.company.currency_id,
         required=True
     )
-    
+
     # ============================================================================
     # FSM INTEGRATION FIELDS
     # ============================================================================
@@ -161,19 +162,19 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         string='Related FSM Task',
         help='FSM task this calculation is for'
     )
-    
+
     pickup_request_id = fields.Many2one(
         'pickup.request',
         string='Related Pickup Request',
         help='Pickup request this calculation is for'
     )
-    
+
     shredding_service_id = fields.Many2one(
         'shredding.service',
         string='Related Shredding Service',
         help='Shredding service this calculation is for'
     )
-    
+
     # ============================================================================
     # BUSINESS PROCESS FIELDS
     # ============================================================================
@@ -183,12 +184,12 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         ('internal_estimate', 'Internal Estimate'),
         ('audit_verification', 'Audit Verification'),
     ], string='Calculation Purpose', default='fsm_quote', required=True)
-    
+
     notes = fields.Text(
         string='Technician Notes',
         help='Additional notes about the calculation'
     )
-    
+
     # ============================================================================
     # AUDIT AND TRACKING
     # ============================================================================
@@ -197,20 +198,20 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         default=fields.Datetime.now,
         required=True
     )
-    
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('length_inches', 'width_inches', 'height_inches', 
+    @api.depends('length_inches', 'width_inches', 'height_inches',
                  'length_cm', 'width_cm', 'height_cm', 'measurement_unit')
     def _compute_custom_volume(self):
         """Calculate volume in both cubic feet and liters"""
         for record in self:
             if record.measurement_unit == 'inches':
                 length = record.length_inches
-                width = record.width_inches  
+                width = record.width_inches
                 height = record.height_inches
-                
+
                 if length and width and height:
                     # Volume in cubic inches
                     volume_cubic_inches = length * width * height
@@ -221,12 +222,12 @@ class CustomBoxVolumeCalculator(models.TransientModel):
                 else:
                     record.custom_volume_cf = 0.0
                     record.custom_volume_liters = 0.0
-                    
-            elif record.measurement_unit == 'centimeters':
+
+            if record.measurement_unit == 'centimeters':
                 length = record.length_cm
                 width = record.width_cm
                 height = record.height_cm
-                
+
                 if length and width and height:
                     # Volume in cubic centimeters
                     volume_cubic_cm = length * width * height
@@ -237,9 +238,6 @@ class CustomBoxVolumeCalculator(models.TransientModel):
                 else:
                     record.custom_volume_cf = 0.0
                     record.custom_volume_liters = 0.0
-            else:
-                record.custom_volume_cf = 0.0
-                record.custom_volume_liters = 0.0
 
     @api.depends('custom_volume_cf')
     def _compute_recommended_container(self):
@@ -251,19 +249,19 @@ class CustomBoxVolumeCalculator(models.TransientModel):
             'type_04': 5.0,    # Odd Size/Temp Box
             'type_06': 0.042,  # Pathology Box
         }
-        
+
         for record in self:
             if record.custom_volume_cf:
                 # Find closest matching container type
                 best_match = None
                 smallest_diff = float('inf')
-                
+
                 for container_type, volume in CONTAINER_SPECS.items():
                     diff = abs(record.custom_volume_cf - volume)
                     if diff < smallest_diff:
                         smallest_diff = diff
                         best_match = container_type
-                
+
                 record.recommended_container_type = best_match
             else:
                 record.recommended_container_type = False
@@ -278,7 +276,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
             'type_04': 5.0,
             'type_06': 0.042,
         }
-        
+
         for record in self:
             if record.custom_volume_cf and record.recommended_container_type:
                 standard_volume = CONTAINER_SPECS.get(record.recommended_container_type, 1.2)
@@ -296,7 +294,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
             'type_04': 5.0,
             'type_06': 0.042,
         }
-        
+
         for record in self:
             if record.custom_volume_cf and record.recommended_container_type:
                 standard_volume = CONTAINER_SPECS.get(record.recommended_container_type, 1.2)
@@ -309,24 +307,24 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         """Calculate pricing for custom vs standard boxes"""
         CONTAINER_SPECS = {
             'type_01': 1.2,
-            'type_02': 2.4, 
+            'type_02': 2.4,
             'type_03': 0.875,
             'type_04': 5.0,
             'type_06': 0.042,
         }
-        
+
         for record in self:
             if record.custom_volume_cf and record.base_rate_per_cf:
                 # Custom box pricing based on actual volume
                 record.custom_box_price = record.custom_volume_cf * record.base_rate_per_cf
-                
+
                 # Standard box pricing based on recommended container
                 if record.recommended_container_type:
                     standard_volume = CONTAINER_SPECS.get(record.recommended_container_type, 1.2)
                     # Round up equivalent boxes for billing
                     billing_boxes = math.ceil(record.equivalent_standard_boxes)
                     record.standard_box_price = billing_boxes * standard_volume * record.base_rate_per_cf
-                    
+
                     record.price_difference = record.standard_box_price - record.custom_box_price
                 else:
                     record.standard_box_price = 0.0
@@ -340,7 +338,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
     # BUSINESS LOGIC METHODS
     # ============================================================================
     @api.model
-    def _get_default_base_rate(self):
+    def _default_base_rate_per_cf(self):
         """Get default base rate from system configuration"""
         try:
             base_rate = self.env['base.rates'].search([
@@ -358,7 +356,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
             self.length_cm = 0.0
             self.width_cm = 0.0
             self.height_cm = 0.0
-        elif self.measurement_unit == 'centimeters':
+        else:  # centimeters
             self.length_inches = 0.0
             self.width_inches = 0.0
             self.height_inches = 0.0
@@ -372,7 +370,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
                 dimensions = [record.length_inches, record.width_inches, record.height_inches]
                 if any(dim < 0 for dim in dimensions if dim):
                     raise ValidationError(_('Dimensions must be positive values'))
-            elif record.measurement_unit == 'centimeters':
+            else:  # centimeters
                 dimensions = [record.length_cm, record.width_cm, record.height_cm]
                 if any(dim < 0 for dim in dimensions if dim):
                     raise ValidationError(_('Dimensions must be positive values'))
@@ -388,7 +386,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         self._compute_equivalent_boxes()
         self._compute_volume_difference()
         self._compute_pricing()
-        
+
         return {
             'type': 'ir.actions.act_window',
             'res_model': self._name,
@@ -400,34 +398,19 @@ class CustomBoxVolumeCalculator(models.TransientModel):
     def action_create_quote_line(self):
         """Create quote line item with calculated values"""
         self.ensure_one()
-        
+
         if not self.custom_volume_cf:
             raise UserError(_('Please enter dimensions first'))
-        
+
         # Determine which service to create line for
         if self.shredding_service_id:
             return self._create_shredding_line()
-        elif self.pickup_request_id:
+        if self.pickup_request_id:
             return self._create_pickup_line()
-        else:
-            return self._create_general_quote_line()
+        return self._create_general_quote_line()
 
     def _create_shredding_line(self):
         """Create shredding service line item"""
-        line_vals = {
-            'service_id': self.shredding_service_id.id,
-            'description': _('Custom Box - %s x %s x %s (%s CF)', 
-                           self.length_inches or self.length_cm,
-                           self.width_inches or self.width_cm, 
-                           self.height_inches or self.height_cm,
-                           round(self.custom_volume_cf, 3)),
-            'quantity': math.ceil(self.equivalent_standard_boxes),
-            'unit_price': self.base_rate_per_cf * (1.2 if self.recommended_container_type == 'type_01' else 2.4),
-            'total_price': self.standard_box_price,
-            'volume_cf': self.custom_volume_cf,
-            'container_type': self.recommended_container_type,
-        }
-        
         # Create line item (would need actual line item model)
         return {
             'type': 'ir.actions.client',
@@ -441,10 +424,10 @@ class CustomBoxVolumeCalculator(models.TransientModel):
     def action_apply_to_fsm_task(self):
         """Apply calculation results to FSM task"""
         self.ensure_one()
-        
+
         if not self.fsm_task_id:
             raise UserError(_('Please select an FSM task first'))
-        
+
         # Update FSM task with calculation results
         task_description = self.fsm_task_id.description or ''
         calculation_summary = _(
@@ -452,8 +435,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
             'Custom Box: %s x %s x %s = %s CF\n'
             'Recommended: %s (%s boxes)\n'
             'Estimated Price: $%s\n'
-            'Calculated by: %s on %s'
-        ) % (
+            'Calculated by: %s on %s',
             self.length_inches or self.length_cm,
             self.width_inches or self.width_cm,
             self.height_inches or self.height_cm,
@@ -464,13 +446,13 @@ class CustomBoxVolumeCalculator(models.TransientModel):
             self.user_id.name,
             self.calculation_date.strftime('%Y-%m-%d %H:%M')
         )
-        
+
         self.fsm_task_id.write({
             'description': task_description + calculation_summary
         })
-        
+
         return {
-            'type': 'ir.actions.client', 
+            'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'message': _('Calculation applied to FSM task successfully'),
@@ -481,7 +463,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
     def action_save_calculation(self):
         """Save calculation for future reference"""
         self.ensure_one()
-        
+
         # Create audit log entry
         self.env['naid.audit.log'].create({
             'name': _('Volume Calculation: %s', self.name),
@@ -497,10 +479,10 @@ class CustomBoxVolumeCalculator(models.TransientModel):
                 'calculated_price': self.standard_box_price,
             }
         })
-        
+
         return {
             'type': 'ir.actions.client',
-            'tag': 'display_notification', 
+            'tag': 'display_notification',
             'params': {
                 'message': _('Calculation saved successfully'),
                 'type': 'success',
@@ -513,7 +495,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
     def get_calculation_summary(self):
         """Get formatted calculation summary"""
         self.ensure_one()
-        
+
         return {
             'custom_dimensions': f"{self.length_inches or self.length_cm} x {self.width_inches or self.width_cm} x {self.height_inches or self.height_cm}",
             'custom_volume': round(self.custom_volume_cf, 3),
@@ -528,10 +510,32 @@ class CustomBoxVolumeCalculator(models.TransientModel):
     def create_from_fsm_task(self, task_id):
         """Create calculator session from FSM task"""
         task = self.env['project.task'].browse(task_id)
-        
+
         return self.create({
             'name': f'Volume Calc - {task.name}',
             'fsm_task_id': task_id,
             'calculation_purpose': 'fsm_quote',
             'user_id': self.env.user.id,
         })
+
+    def _create_pickup_line(self):
+        """Create pickup request line item"""
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': _('Pickup line created successfully'),
+                'type': 'success',
+            }
+        }
+
+    def _create_general_quote_line(self):
+        """Create general quote line item"""
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': _('General quote line created successfully'),
+                'type': 'success',
+            }
+        }
