@@ -44,7 +44,7 @@ from . import records_approval_step
 # Container and storage models (in dependency order)
 from . import customer_inventory
 from . import records_container_type
-from . import container_contents
+from . import container_content
 from . import records_container_type_converter
 
 # =============================================================================
@@ -315,5 +315,3 @@ except ImportError as e:
         getattr(e, "name", "unknown"),
         str(e),
     )
-from . import records_management_bale
-from . import barcode_models_enhanced
