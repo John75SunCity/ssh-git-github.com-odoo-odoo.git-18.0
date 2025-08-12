@@ -34,24 +34,24 @@ class HREmployeeNAID(models.Model):
         required=True, 
         tracking=True,
         help="NAID compliance profile name for this employee"
-    ),
+    )
     company_id = fields.Many2one(
         'res.company', 
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    ),
+    )
     user_id = fields.Many2one(
         'res.users', 
         string="User",
         default=lambda self: self.env.user,
         tracking=True
-    ),
+    )
     active = fields.Boolean(
         string="Active", 
         default=True,
         help="Uncheck to archive this NAID profile"
-    ),
+    )
 
     # ============================================================================
     # EMPLOYEE RELATIONSHIP
@@ -64,7 +64,7 @@ class HREmployeeNAID(models.Model):
         ondelete='cascade',
         tracking=True,
         help="Related HR employee record"
-    ),
+    )
 
     # ============================================================================
     # NAID COMPLIANCE FIELDS
@@ -79,30 +79,30 @@ class HREmployeeNAID(models.Model):
     ], string="NAID Security Clearance", 
        default='none', 
        tracking=True,
-       help="Current NAID security clearance level"),
+       help="Current NAID security clearance level")
 
     clearance_date = fields.Date(
         string="Clearance Date",
         tracking=True,
         help="Date when security clearance was granted"
-    ),
+    )
     clearance_expiry = fields.Date(
         string="Clearance Expiry",
         tracking=True,
         help="Date when security clearance expires"
-    ),
+    )
     background_check_completed = fields.Boolean(
         string="Background Check Completed",
         default=False,
         tracking=True,
         help="Background screening completed for NAID compliance"
-    ),
+    )
     training_completed = fields.Boolean(
         string="NAID Training Completed",
         default=False,
         tracking=True,
         help="Required NAID training completed"
-    ),
+    )
 
     # ============================================================================
     # RECORDS ACCESS MANAGEMENT
@@ -117,25 +117,25 @@ class HREmployeeNAID(models.Model):
     ], string="Records Access Level",
        default='none',
        tracking=True,
-       help="Access level for records management system"),
+       help="Access level for records management system")
 
     records_department_ids = fields.Many2many(
         'records.department',
         string="Authorized Departments",
         help="Departments this employee can access"
-    ),
+    )
     can_witness_destruction = fields.Boolean(
         string="Can Witness Destruction",
         default=False,
         tracking=True,
         help="Authorized to witness document destruction"
-    ),
+    )
     can_transport_documents = fields.Boolean(
         string="Can Transport Documents",
         default=False,
         tracking=True,
         help="Authorized to transport secure documents"
-    ),
+    )
 
     # ============================================================================
     # STATE MANAGEMENT
@@ -150,7 +150,7 @@ class HREmployeeNAID(models.Model):
     ], string='Status', 
        default='draft', 
        tracking=True,
-       help="Current status of NAID compliance profile"),
+       help="Current status of NAID compliance profile")
 
     # ============================================================================
     # DOCUMENTATION FIELDS
@@ -159,15 +159,15 @@ class HREmployeeNAID(models.Model):
     description = fields.Text(
         string="Description",
         help="Additional details about employee's NAID profile"
-    ),
+    )
     notes = fields.Text(
         string="Internal Notes",
         help="Internal notes and observations"
-    ),
+    )
     compliance_notes = fields.Text(
         string="Compliance Notes",
         help="Notes related to NAID compliance and certifications"
-    ),
+    )
 
     # ============================================================================
     # DATES & TRACKING
@@ -178,17 +178,17 @@ class HREmployeeNAID(models.Model):
         default=fields.Date.today,
         required=True,
         help="Date when NAID profile was created"
-    ),
+    )
     last_review_date = fields.Date(
         string="Last Review Date",
         tracking=True,
         help="Date of last compliance review"
-    ),
+    )
     next_review_date = fields.Date(
         string="Next Review Date",
         tracking=True,
         help="Date when next compliance review is due"
-    ),
+    )
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -212,7 +212,7 @@ class HREmployeeNAID(models.Model):
         "res_id", 
         string="Messages", 
         groups="base.group_user"
-    ),
+    )
 
     # ============================================================================
     # ACTION METHODS
