@@ -5,7 +5,7 @@ from odoo.exceptions import ValidationError
 
 
 class BaseRates(models.Model):
-    _name = "base.rates"
+    _name = "base.rate"
     _description = "System Base Rates"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "effective_date desc, name"

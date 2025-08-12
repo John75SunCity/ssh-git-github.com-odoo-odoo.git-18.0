@@ -127,7 +127,6 @@ class DocumentRetrievalItem(models.Model):
         "mail.followers", "res_id", string="Followers"
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    )
 
     # Search Results and History
     search_attempt_ids = fields.One2many(
@@ -972,4 +971,5 @@ class DocumentSearchAttempt(models.Model):
             "date": self.service_date,
             "technician": self.technician_id.name,
             "status": self.state,
+        }
         }

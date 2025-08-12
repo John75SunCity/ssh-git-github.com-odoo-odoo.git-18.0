@@ -10,7 +10,9 @@ except ImportError:
     models = None
     fields = None
     api = None
-    _ = lambda x: x  # Simple fallback for translation function
+    # Fallback _() only handles string formatting, not translation.
+    def _(s, *a):
+        return s % a if a else s  # Fallback for translation with formatting
 
     class UserError(Exception):
         pass
@@ -168,7 +170,10 @@ class BinKeyManagement(models.Model):
             {
                 "state": "active",
                 "notes": (self.notes or "")
-                + _("\nService completed on %s", fields.Datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
+                + _(
+                    "\nService completed on %s",
+                    fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                ),
             }
         )
 
@@ -198,7 +203,10 @@ class BinKeyManagement(models.Model):
             {
                 "state": "inactive",
                 "notes": (self.notes or "")
-                + _("\nKey marked as lost on %s", fields.Datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
+                + _(
+                    "\nKey marked as lost on %s",
+                    fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                ),
             }
         )
 
@@ -232,18 +240,15 @@ class BinKeyManagement(models.Model):
         }
 
     # === BUSINESS CRITICAL FIELDS ===
-    partner_id = fields.Many2one("res.partner", string="Customer", tracking=True)
     bin_number = fields.Char(string="Bin Number")
     access_level = fields.Selection(
         [("full", "Full Access"), ("limited", "Limited"), ("restricted", "Restricted")],
         string="Access Level",
     )
-    expiration_date = fields.Date(string="Expiration Date")
-    last_check_date = fields.Date(string="Last Check Date")
     authorized_by = fields.Many2one("res.users", string="Authorized By")
-    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
     updated_date = fields.Datetime(string="Updated Date")
-
+    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+    # Use date_modified for tracking modifications instead of updated_date
     # ============================================================================
     # MISSING FIELDS FROM SMART GAP ANALYSIS - BIN KEY MANAGEMENT ENHANCEMENT
     # ============================================================================
@@ -330,7 +335,7 @@ class BinKeyManagement(models.Model):
     bin_location = fields.Char("Bin Location")
     bin_locations = fields.Text("Multiple Bin Locations")
     charge_amount = fields.Monetary("Charge Amount", currency_field="currency_id")
-    emergency_contact = fields.Many2one("res.partner", "Emergency Contact")
+    emergency_contact_id = fields.Many2one("res.partner", "Emergency Contact")
     access_authorization_level = fields.Selection(
         [("basic", "Basic"), ("elevated", "Elevated"), ("admin", "Admin")],
         default="basic",
@@ -370,7 +375,13 @@ class BinKeyManagement(models.Model):
     )
 
     def action_replace_key(self):
-        """Create replacement key and update records."""
+        """
+        Archive the current key and create a new replacement key record.
+
+        This method marks the current key as archived, creates a new replacement key,
+        and schedules activities for key handover and notification.
+        """
+        self.ensure_one()
         self.ensure_one()
 
         # Archive current key
@@ -379,7 +390,7 @@ class BinKeyManagement(models.Model):
                 "state": "archived",
                 "active": False,
                 "notes": (self.notes or "")
-                + _("\nKey replaced on %s", fields.Datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
+                + _("\nKey replaced on %s", fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
             }
         )
 
@@ -479,13 +490,17 @@ class BinKeyManagement(models.Model):
             "domain": [("user_id", "=", self.user_id.id), ("state", "!=", "archived")],
             "context": {
                 "default_user_id": self.user_id.id,
-                "search_default_user_id": self.user_id.id,
             },
-            "target": "current",
         }
 
     @api.model_create_multi
     def create(self, vals_list):
+        """Override create to set default values."""
+        for vals in vals_list:
+            if not vals.get("name"):
+                vals["name"] = _("New Record")
+        return super().create(vals_list)
+        return super().create(vals_list)
         """Override create to set default values."""
         for vals in vals_list:
             if not vals.get("name"):
