@@ -10,23 +10,9 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-# Import handling for disconnected development environment
-try:
-    from odoo import api, fields, models, _
-    from odoo.exceptions import ValidationError
-except ImportError:
-    # Fallback for development environments without Odoo installed
-    # These will be properly imported when deployed to Odoo.sh
-    models = None
-    fields = None
-    api = None
-
-    # Fallback _() only handles string formatting, not translation.
-    def _(s, *a):
-        return s % a if a else s  # Fallback for translation with formatting
-
-    class ValidationError(Exception):
-        pass
+# Standard Odoo imports
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
 class AdvancedBilling(models.Model):
