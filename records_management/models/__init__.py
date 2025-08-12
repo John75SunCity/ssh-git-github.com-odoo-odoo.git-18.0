@@ -95,7 +95,7 @@ from . import shredding_inventory
 from . import shredding_inventory_item
 from . import shredding_service_log
 from . import destruction_item
-from . import shred_bins
+from . import shred_bin
 
 # =============================================================================
 # PAPER RECYCLING AND BALING MODELS (After shredding services)
