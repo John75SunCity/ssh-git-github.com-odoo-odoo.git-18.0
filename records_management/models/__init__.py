@@ -3,14 +3,22 @@
 Records Management Models Import Order
 
 Import order follows Odoo 18.0 best practices:
-1. Base models with Many2one fields first (comodels for inverse relationships)
-2. Core business models
-3. Compliance and audit models
-4. Extensions and integrations
-5. Wizards and utilities last
+1. Standard library imports first
+2. Base models with Many2one fields first (comodels for inverse relationships)
+3. Core business models
+4. Compliance and audit models
+5. Extensions and integrations
+6. Wizards and utilities last
 
 This ensures proper ORM setup and prevents KeyError exceptions during module loading.
 """
+
+# =============================================================================
+# STANDARD LIBRARY IMPORTS
+# =============================================================================
+import logging
+
+_logger = logging.getLogger(__name__)
 
 # =============================================================================
 # BASE MODELS (Many2one targets - must be loaded first)
@@ -70,6 +78,7 @@ from . import temp_inventory_reject_wizard
 from . import pickup_request_item
 from . import pickup_request
 from . import pickup_route
+from . import pickup_route_stop
 from . import records_vehicle
 
 # =============================================================================
@@ -85,7 +94,6 @@ from . import shredding_hard_drive
 from . import shredding_inventory
 from . import shredding_inventory_item
 from . import shredding_service_log
-from . import shredding_bin_models
 from . import destruction_item
 from . import shred_bins
 
@@ -121,6 +129,8 @@ from . import file_retrieval_work_order
 from . import base_rates
 from . import customer_negotiated_rates
 from . import records_billing_config
+from . import records_billing_line
+from . import records_billing_contact
 
 # Individual billing support models
 from . import invoice_generation_log
@@ -209,11 +219,11 @@ from . import portal_feedback_support_models
 
 # Survey and improvement tracking
 from . import survey_user_input
+from . import survey_user_input_enhanced
 from . import survey_feedback_theme
 from . import survey_improvement_action
 
 # Transitory items and field customization
-from . import transitory_items
 from . import transitory_field_config
 from . import field_label_customization
 
@@ -228,10 +238,12 @@ from . import res_partner_key_restriction
 # Stock and inventory extensions
 from . import stock_move_sms_validation
 from . import stock_picking
+from . import stock_picking_records_extension
 
 # Project and FSM integration
 from . import project_task
 from . import fsm_task
+from . import proj_task_ext
 
 # POS integration
 from . import pos_config
@@ -246,6 +258,7 @@ from . import hremployee_naid
 
 from . import product
 from . import product_template
+from . import prod_ext
 from . import barcode_product
 from . import barcode_models
 
@@ -271,6 +284,7 @@ from . import required_document
 from . import customer_category
 from . import scrm_records_management
 from . import records_deletion_request
+from . import records_deletion_request_enhanced
 
 # =============================================================================
 # CONFIGURATION AND UTILITIES (Load last)
@@ -300,15 +314,10 @@ from . import stock_lot_attribute_value
 # OPTIONAL EXTENSIONS AND INTEGRATIONS
 # =============================================================================
 
-import logging
-
-_logger = logging.getLogger(__name__)
-
 try:
     # Check if we can import additional FSM models without errors
     from . import fsm_route_management
     from . import fsm_notification
-
     _logger.info("Additional FSM modules loaded successfully")
 except ImportError as e:
     _logger.warning(
@@ -316,11 +325,3 @@ except ImportError as e:
         getattr(e, "name", "unknown"),
         str(e),
     )
-from . import stock_picking_records_extension
-from . import survey_user_input_enhanced
-from . import records_deletion_request_enhanced
-from . import records_billing_line
-from . import records_billing_contact
-from . import proj_task_ext
-from . import prod_ext
-from . import pickup_route_stop

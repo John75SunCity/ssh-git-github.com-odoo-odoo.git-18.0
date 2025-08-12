@@ -6,7 +6,6 @@ This module provides comprehensive team management for shredding operations with
 the Records Management System. It handles team organization, capacity planning,
 specialization tracking, and service assignment with complete workflow integration.
 """
-from datetime import timedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -566,4 +565,5 @@ class ShreddingTeam(models.Model):
                 and t.team_leader_id not in t.member_ids
             ):
                 team.write({"member_ids": [(4, team.team_leader_id.id)]})
+        return res
         return res
