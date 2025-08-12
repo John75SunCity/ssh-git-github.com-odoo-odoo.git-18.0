@@ -2,7 +2,8 @@
 """
 Records Management Models Import Order
 
-Import order follows Odoo 18.0 best practices:
+Import order follows Odoo 18.0 best p# Advanced Billing System  
+from . import advanced_billingtices:
 1. Standard library imports first
 2. Base models with Many2one fields first (comodels for inverse relationships)
 3. Core business models
@@ -357,33 +358,9 @@ from . import container_retrieval_work_order
 # MISSING MODELS THAT NEED TO BE IMPORTED
 # =============================================================================
 
-# Add any missing models that were causing the self-import issues
+# RM Module Configurator (if not already imported)
 try:
-    from . import shredding_inventory
-    _logger.info("Shredding inventory loaded successfully")
-except (ImportError, AttributeError) as e:
-    _logger.warning("Shredding inventory not available: %s", str(e))
-
-try:
-    from . import naid_audit
-    _logger.info("NAID audit loaded successfully") 
-except (ImportError, AttributeError) as e:
-    _logger.warning("NAID audit not available: %s", str(e))
-
-try:
-    from . import naid_compliance_checklist
-    _logger.info("NAID compliance checklist loaded successfully")
-except (ImportError, AttributeError) as e:
-    _logger.warning("NAID compliance checklist not available: %s", str(e))
-
-try:
-    from . import portal_feedback_resolution
-    _logger.info("Portal feedback resolution loaded successfully")
-except (ImportError, AttributeError) as e:
-    _logger.warning("Portal feedback resolution not available: %s", str(e))
-
-try:
-    from . import rm_module_configurator
+    from . import rmmodule_configurator
     _logger.info("RM module configurator loaded successfully")
 except (ImportError, AttributeError) as e:
     _logger.warning("RM module configurator not available: %s", str(e))
