@@ -611,12 +611,13 @@ class FsmRescheduleWizard(models.TransientModel):
     # ============================================================================
     # LIFECYCLE METHODS
     # ============================================================================
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Enhanced create with sequence number"""
-        if vals.get('name', _('New Reschedule Request')) == _('New Reschedule Request'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('fsm.reschedule.wizard') or _('New Reschedule Request')
-        return super().create(vals)
+        for vals in vals_list:
+            if vals.get('name', _('New Reschedule Request')) == _('New Reschedule Request'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('fsm.reschedule.wizard') or _('New Reschedule Request')
+        return super().create(vals_list)
 
     def unlink(self):
         """Prevent deletion of completed reschedules for audit trail"""

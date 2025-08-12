@@ -564,12 +564,13 @@ class BarcodePricingTier(models.Model):
             result.append((tier.id, name))
         return result
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set default name if not provided"""
-        if vals.get("name", "New") == "New":
-            tier_level = vals.get("tier_level", "standard")
-            level_name = dict(self._fields["tier_level"].selection).get(tier_level, "Standard")
-            vals["name"] = _("%s Pricing Tier", level_name)
+        for vals in vals_list:
+            if vals.get("name", "New") == "New":
+                tier_level = vals.get("tier_level", "standard")
+                level_name = dict(self._fields["tier_level"].selection).get(tier_level, "Standard")
+                vals["name"] = _("%s Pricing Tier", level_name)
         
-        return super().create(vals)
+        return super().create(vals_list)

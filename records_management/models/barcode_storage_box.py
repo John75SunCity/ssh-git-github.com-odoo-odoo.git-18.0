@@ -445,17 +445,18 @@ class BarcodeStorageBox(models.Model):
             result.append((container.id, name))
         return result
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to set default barcode if needed"""
-        if vals.get("name", "New") == "New":
-            vals["name"] = self.env["ir.sequence"].next_by_code("barcode.storage.box")
+        for vals in vals_list:
+            if vals.get("name", "New") == "New":
+                vals["name"] = self.env["ir.sequence"].next_by_code("barcode.storage.box")
+            
+            # Auto-generate barcode if not provided
+            if not vals.get("barcode"):
+                vals["barcode"] = self.env["ir.sequence"].next_by_code("barcode.storage.box.barcode")
         
-        # Auto-generate barcode if not provided
-        if not vals.get("barcode"):
-            vals["barcode"] = self.env["ir.sequence"].next_by_code("barcode.storage.box.barcode")
-        
-        return super().create(vals)
+        return super().create(vals_list)
 
     def write(self, vals):
         """Override write to handle state changes"""
