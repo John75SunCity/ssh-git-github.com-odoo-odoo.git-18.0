@@ -2,15 +2,15 @@
 <odoo>
     <!-- Minimal Records Tag Views - Phase 1 Deployment -->
     
-    <!-- Simple List View (was Tree in older Odoo versions) -->
+    <!-- Tree view for (was -->
     <record id="records_tag_tree_view_simple" model="ir.ui.view">
-        <field name="name">records.tag.list.simple</field>
+        <field name="name">records.tag.tree.simple</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
-            <list string="Records Tags">
+            <tree string="Records Tags">
                 <field name="name"/>
                 <field name="color"/>
-            </list>
+            </tree>
         </field>
     </record>
 

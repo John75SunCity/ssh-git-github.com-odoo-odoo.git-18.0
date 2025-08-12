@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.deletion.request.enhanced View List -->
-    <record id="view_records_deletion_request_enhanced_list" model="ir.ui.view">
-        <field name="name">view.records.deletion.request.enhanced.list</field>
+    <!-- Tree view for records.deletion.request.enhanced -->
+    <record id="view_records_deletion_request_enhanced_tree" model="ir.ui.view">
+        <field name="name">records.deletion.request.enhanced.tree</field>
         <field name="model">records.deletion.request.enhanced</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.deletion.request.enhanced form -->
+    <!-- Form view for records.deletion.request.enhanced -->
     <record id="view_records_deletion_request_enhanced_form" model="ir.ui.view">
-        <field name="name">view.records.deletion.request.enhanced.form</field>
+        <field name="name">records.deletion.request.enhanced.form</field>
         <field name="model">records.deletion.request.enhanced</field>
         <field name="arch" type="xml">
             <form string="Records Deletion Request Enhanced">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.deletion.request.enhanced search -->
+    <!-- Search view for records.deletion.request.enhanced -->
     <record id="view_records_deletion_request_enhanced_search" model="ir.ui.view">
-        <field name="name">view.records.deletion.request.enhanced.search</field>
+        <field name="name">records.deletion.request.enhanced.search</field>
         <field name="model">records.deletion.request.enhanced</field>
         <field name="arch" type="xml">
             <search>

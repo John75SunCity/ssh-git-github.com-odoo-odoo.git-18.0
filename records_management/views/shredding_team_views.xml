@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View shredding.team View List -->
+    <!-- Tree view for shredding.team -->
 <record id="shredding_team_view_list" model="ir.ui.view">
-    <field name="name">shredding.team.view.list</field>
+    <field name="name">shredding.team.view.tree</field>
         <field name="model">shredding.team</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View shredding.team form -->
+    <!-- Form view for shredding.team -->
 <record id="shredding_team_view_form" model="ir.ui.view">
     <field name="name">shredding.team.view.form</field>
         <field name="model">shredding.team</field>
@@ -30,7 +30,7 @@
         </field>
     </record>
 
-    <!-- View shredding.team search -->
+    <!-- Search view for shredding.team -->
 <record id="shredding_team_view_search" model="ir.ui.view">
     <field name="name">shredding.team.view.search</field>
         <field name="model">shredding.team</field>

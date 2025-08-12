@@ -51,10 +51,10 @@
 
     <!-- List View -->
     <record id="view_shredding_service_tree" model="ir.ui.view">
-        <field name="name">shredding.service.list</field>
+        <field name="name">shredding.service.tree</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
-            <list decoration-warning="status=='scheduled'" decoration-success="status=='completed'" decoration-danger="status=='cancelled'">
+            <tree decoration-warning="status=='scheduled'" decoration-success="status=='completed'" decoration-danger="status=='cancelled'">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="service_type"/>
@@ -65,7 +65,7 @@
                 <field name="certificate_required" widget="boolean_toggle"/>
                 <field name="witness_required" widget="boolean_toggle"/>
                 <field name="total_weight"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -119,13 +119,13 @@
                     <notebook>
                         <page string="Destruction Items">
                             <field name="destruction_item_ids" mode="list">
-                                <list editable="bottom">
+                                <tree editable="bottom">
                                     <field name="item_description"/>
                                     <field name="quantity"/>
                                     <field name="weight"/>
                                     <field name="container_type"/>
                                     <field name="destruction_status"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Service Details">
@@ -144,12 +144,12 @@
                             <group>
                                 <field name="certificate_id" readonly="1"/>
                                 <field name="chain_of_custody_ids" mode="list">
-                                    <list>
+                                    <tree>
                                         <field name="event_type"/>
                                         <field name="event_date"/>
                                         <field name="responsible_person"/>
                                         <field name="location"/>
-                                    </list>
+                                    </tree>
                                 </field>
                             </group>
                         </page>

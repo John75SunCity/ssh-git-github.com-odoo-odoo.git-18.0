@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View pickup.route View List -->
-    <record id="view_pickup_route_list" model="ir.ui.view">
-        <field name="name">view.pickup.route.list</field>
+    <!-- Tree view for pickup.route -->
+    <record id="view_pickup_route_tree" model="ir.ui.view">
+        <field name="name">pickup.route.tree</field>
         <field name="model">pickup.route</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View pickup.route form -->
+    <!-- Form view for pickup.route -->
     <record id="view_pickup_route_form" model="ir.ui.view">
-        <field name="name">view.pickup.route.form</field>
+        <field name="name">pickup.route.form</field>
         <field name="model">pickup.route</field>
         <field name="arch" type="xml">
             <form string="Pickup Route">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View pickup.route search -->
+    <!-- Search view for pickup.route -->
     <record id="view_pickup_route_search" model="ir.ui.view">
-        <field name="name">view.pickup.route.search</field>
+        <field name="name">pickup.route.search</field>
         <field name="model">pickup.route</field>
         <field name="arch" type="xml">
             <search>

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View hard.drive.scan.wizard View List -->
-    <record id="view_hard_drive_scan_wizard_list" model="ir.ui.view">
-        <field name="name">view.hard.drive.scan.wizard.list</field>
+    <!-- Tree view for hard.drive.scan.wizard -->
+    <record id="view_hard_drive_scan_wizard_tree" model="ir.ui.view">
+        <field name="name">hard.drive.scan.wizard.tree</field>
         <field name="model">hard.drive.scan.wizard</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View hard.drive.scan.wizard form -->
+    <!-- Form view for hard.drive.scan.wizard -->
     <record id="view_hard_drive_scan_wizard_form" model="ir.ui.view">
-        <field name="name">view.hard.drive.scan.wizard.form</field>
+        <field name="name">hard.drive.scan.wizard.form</field>
         <field name="model">hard.drive.scan.wizard</field>
         <field name="arch" type="xml">
             <form string="Hard Drive Scan Wizard">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View hard.drive.scan.wizard search -->
+    <!-- Search view for hard.drive.scan.wizard -->
     <record id="view_hard_drive_scan_wizard_search" model="ir.ui.view">
-        <field name="name">view.hard.drive.scan.wizard.search</field>
+        <field name="name">hard.drive.scan.wizard.search</field>
         <field name="model">hard.drive.scan.wizard</field>
         <field name="arch" type="xml">
             <search>

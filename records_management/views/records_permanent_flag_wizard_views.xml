@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.permanent.flag.wizard View List -->
-    <record id="view_records_permanent_flag_wizard_list" model="ir.ui.view">
-        <field name="name">view.records.permanent.flag.wizard.list</field>
+    <!-- Tree view for records.permanent.flag.wizard -->
+    <record id="view_records_permanent_flag_wizard_tree" model="ir.ui.view">
+        <field name="name">records.permanent.flag.wizard.tree</field>
         <field name="model">records.permanent.flag.wizard</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.permanent.flag.wizard form -->
+    <!-- Form view for records.permanent.flag.wizard -->
     <record id="view_records_permanent_flag_wizard_form" model="ir.ui.view">
-        <field name="name">view.records.permanent.flag.wizard.form</field>
+        <field name="name">records.permanent.flag.wizard.form</field>
         <field name="model">records.permanent.flag.wizard</field>
         <field name="arch" type="xml">
             <form string="Records Permanent Flag Wizard">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.permanent.flag.wizard search -->
+    <!-- Search view for records.permanent.flag.wizard -->
     <record id="view_records_permanent_flag_wizard_search" model="ir.ui.view">
-        <field name="name">view.records.permanent.flag.wizard.search</field>
+        <field name="name">records.permanent.flag.wizard.search</field>
         <field name="model">records.permanent.flag.wizard</field>
         <field name="arch" type="xml">
             <search>

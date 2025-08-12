@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View field.label.helper.wizard View List -->
-    <record id="view_field_label_helper_wizard_list" model="ir.ui.view">
-        <field name="name">view.field.label.helper.wizard.list</field>
+    <!-- Tree view for field.label.helper.wizard -->
+    <record id="view_field_label_helper_wizard_tree" model="ir.ui.view">
+        <field name="name">field.label.helper.wizard.tree</field>
         <field name="model">field.label.helper.wizard</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View field.label.helper.wizard form -->
+    <!-- Form view for field.label.helper.wizard -->
     <record id="view_field_label_helper_wizard_form" model="ir.ui.view">
-        <field name="name">view.field.label.helper.wizard.form</field>
+        <field name="name">field.label.helper.wizard.form</field>
         <field name="model">field.label.helper.wizard</field>
         <field name="arch" type="xml">
             <form string="Field Label Helper Wizard">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View field.label.helper.wizard search -->
+    <!-- Search view for field.label.helper.wizard -->
     <record id="view_field_label_helper_wizard_search" model="ir.ui.view">
-        <field name="name">view.field.label.helper.wizard.search</field>
+        <field name="name">field.label.helper.wizard.search</field>
         <field name="model">field.label.helper.wizard</field>
         <field name="arch" type="xml">
             <search>

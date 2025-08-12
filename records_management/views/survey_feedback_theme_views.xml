@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View survey.feedback.theme View List -->
-    <record id="view_survey_feedback_theme_list" model="ir.ui.view">
-        <field name="name">view.survey.feedback.theme.list</field>
+    <!-- Tree view for survey.feedback.theme -->
+    <record id="view_survey_feedback_theme_tree" model="ir.ui.view">
+        <field name="name">survey.feedback.theme.tree</field>
         <field name="model">survey.feedback.theme</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View survey.feedback.theme form -->
+    <!-- Form view for survey.feedback.theme -->
     <record id="view_survey_feedback_theme_form" model="ir.ui.view">
-        <field name="name">view.survey.feedback.theme.form</field>
+        <field name="name">survey.feedback.theme.form</field>
         <field name="model">survey.feedback.theme</field>
         <field name="arch" type="xml">
             <form string="Survey Feedback Theme">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View survey.feedback.theme search -->
+    <!-- Search view for survey.feedback.theme -->
     <record id="view_survey_feedback_theme_search" model="ir.ui.view">
-        <field name="name">view.survey.feedback.theme.search</field>
+        <field name="name">survey.feedback.theme.search</field>
         <field name="model">survey.feedback.theme</field>
         <field name="arch" type="xml">
             <search>

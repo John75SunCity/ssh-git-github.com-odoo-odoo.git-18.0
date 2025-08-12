@@ -40,16 +40,16 @@
 
     <!-- List View -->
     <record id="view_customer_inventory_tree" model="ir.ui.view">
-        <field name="name">customer.inventory.list</field>
+        <field name="name">customer.inventory.tree</field>
         <field name="model">customer.inventory</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="partner_id"/>
                 <field name="total_containers"/>
                 <field name="total_documents"/>
                 <field name="status" widget="badge"/>
                 <field name="last_updated" widget="date"/>
-            </list>
+            </tree>
         </field>
     </record>
 

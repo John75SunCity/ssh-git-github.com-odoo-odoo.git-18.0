@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View visitor View List -->
-    <record id="view_visitor_list" model="ir.ui.view">
-        <field name="name">view.visitor.list</field>
+    <!-- Tree view for visitor -->
+    <record id="view_visitor_tree" model="ir.ui.view">
+        <field name="name">visitor.tree</field>
         <field name="model">visitor</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View visitor form -->
+    <!-- Form view for visitor -->
     <record id="view_visitor_form" model="ir.ui.view">
-        <field name="name">view.visitor.form</field>
+        <field name="name">visitor.form</field>
         <field name="model">visitor</field>
         <field name="arch" type="xml">
             <form string="Visitor">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View visitor search -->
+    <!-- Search view for visitor -->
     <record id="view_visitor_search" model="ir.ui.view">
-        <field name="name">view.visitor.search</field>
+        <field name="name">visitor.search</field>
         <field name="model">visitor</field>
         <field name="arch" type="xml">
             <search>

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.security.audit View List -->
-    <record id="view_records_security_audit_list" model="ir.ui.view">
-        <field name="name">view.records.security.audit.list</field>
+    <!-- Tree view for records.security.audit -->
+    <record id="view_records_security_audit_tree" model="ir.ui.view">
+        <field name="name">records.security.audit.tree</field>
         <field name="model">records.security.audit</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.security.audit form -->
+    <!-- Form view for records.security.audit -->
     <record id="view_records_security_audit_form" model="ir.ui.view">
-        <field name="name">view.records.security.audit.form</field>
+        <field name="name">records.security.audit.form</field>
         <field name="model">records.security.audit</field>
         <field name="arch" type="xml">
             <form string="Records Security Audit">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.security.audit search -->
+    <!-- Search view for records.security.audit -->
     <record id="view_records_security_audit_search" model="ir.ui.view">
-        <field name="name">view.records.security.audit.search</field>
+        <field name="name">records.security.audit.search</field>
         <field name="model">records.security.audit</field>
         <field name="arch" type="xml">
             <search>

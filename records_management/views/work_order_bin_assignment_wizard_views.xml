@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View work.order.bin.assignment.wizard View List -->
-    <record id="view_work_order_bin_assignment_wizard_list" model="ir.ui.view">
-        <field name="name">view.work.order.bin.assignment.wizard.list</field>
+    <!-- Tree view for work.order.bin.assignment.wizard -->
+    <record id="view_work_order_bin_assignment_wizard_tree" model="ir.ui.view">
+        <field name="name">work.order.bin.assignment.wizard.tree</field>
         <field name="model">work.order.bin.assignment.wizard</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View work.order.bin.assignment.wizard form -->
+    <!-- Form view for work.order.bin.assignment.wizard -->
     <record id="view_work_order_bin_assignment_wizard_form" model="ir.ui.view">
-        <field name="name">view.work.order.bin.assignment.wizard.form</field>
+        <field name="name">work.order.bin.assignment.wizard.form</field>
         <field name="model">work.order.bin.assignment.wizard</field>
         <field name="arch" type="xml">
             <form string="Work Order Bin Assignment Wizard">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View work.order.bin.assignment.wizard search -->
+    <!-- Search view for work.order.bin.assignment.wizard -->
     <record id="view_work_order_bin_assignment_wizard_search" model="ir.ui.view">
-        <field name="name">view.work.order.bin.assignment.wizard.search</field>
+        <field name="name">work.order.bin.assignment.wizard.search</field>
         <field name="model">work.order.bin.assignment.wizard</field>
         <field name="arch" type="xml">
             <search>

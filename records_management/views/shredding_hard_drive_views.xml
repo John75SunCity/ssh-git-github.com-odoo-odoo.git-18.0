@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View shredding.hard_drive View List -->
-    <record id="view_shredding_hard_drive_list" model="ir.ui.view">
-        <field name="name">view.shredding.hard_drive.list</field>
+    <!-- Tree view for shredding.hard_drive -->
+    <record id="view_shredding_hard_drive_tree" model="ir.ui.view">
+        <field name="name">shredding.hard_drive.tree</field>
         <field name="model">shredding.hard_drive</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View shredding.hard_drive form -->
+    <!-- Form view for shredding.hard_drive -->
     <record id="view_shredding_hard_drive_form" model="ir.ui.view">
-        <field name="name">view.shredding.hard_drive.form</field>
+        <field name="name">shredding.hard_drive.form</field>
         <field name="model">shredding.hard_drive</field>
         <field name="arch" type="xml">
             <form string="Shredding Hard_drive">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View shredding.hard_drive search -->
+    <!-- Search view for shredding.hard_drive -->
     <record id="view_shredding_hard_drive_search" model="ir.ui.view">
-        <field name="name">view.shredding.hard_drive.search</field>
+        <field name="name">shredding.hard_drive.search</field>
         <field name="model">shredding.hard_drive</field>
         <field name="arch" type="xml">
             <search>

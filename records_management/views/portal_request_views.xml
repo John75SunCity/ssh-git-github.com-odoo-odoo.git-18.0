@@ -51,10 +51,10 @@
 
     <!-- List View -->
     <record id="view_portal_request_tree" model="ir.ui.view">
-        <field name="name">portal.request.list</field>
+        <field name="name">portal.request.tree</field>
         <field name="model">portal.request</field>
         <field name="arch" type="xml">
-            <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="status=='completed'">
+            <tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="status=='completed'">
                 <field name="name"/>
                 <field name="request_type"/>
                 <field name="partner_id"/>
@@ -63,7 +63,7 @@
                 <field name="status" widget="badge"/>
                 <field name="assigned_to" widget="many2one_avatar_user"/>
                 <field name="due_date" widget="date"/>
-            </list>
+            </tree>
         </field>
     </record>
 

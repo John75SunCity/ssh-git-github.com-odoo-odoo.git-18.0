@@ -84,10 +84,10 @@
 
     <!-- 📋 Enhanced Tree View with Budget Tracking -->
     <record id="view_department_billing_contact_tree" model="ir.ui.view">
-        <field name="name">records.department.billing.contact.list</field>
+        <field name="name">records.department.billing.contact.tree</field>
         <field name="model">records.department.billing.contact</field>
         <field name="arch" type="xml">
-            <list decoration-danger="budget_utilization &gt; 90" decoration-warning="budget_utilization &gt; 75" decoration-success="budget_utilization &lt;= 50">
+            <tree decoration-danger="budget_utilization &gt; 90" decoration-warning="budget_utilization &gt; 75" decoration-success="budget_utilization &lt;= 50">
                 <field name="contact_name" string="💼 Contact"/>
                 <field name="department_id" string="🏢 Department"/>
                 <field name="billing_role" string="🎯 Role"/>
@@ -99,7 +99,7 @@
                 <field name="approval_authority" string="✅ Approver" widget="boolean_toggle"/>
                 <field name="active" string="🔄 Active" widget="boolean_toggle"/>
                 <button name="action_budget_report" type="object" string="Budget Report" icon="fa-file-pdf-o" class="btn-link"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -149,13 +149,13 @@
                     <notebook>
                         <page string="✅ Approval History" name="approvals">
                             <field name="approval_history_ids" mode="list">
-                                <list>
+                                <tree>
                                     <field name="approval_date"/>
                                     <field name="charge_amount"/>
                                     <field name="service_description"/>
                                     <field name="vendor"/>
                                     <field name="approval_notes"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="📋 Budget Analysis" name="budget">

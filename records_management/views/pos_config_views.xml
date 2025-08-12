@@ -74,10 +74,10 @@
 
     <!-- TREE VIEW: POS Configuration List -->
     <record id="view_pos_config_tree" model="ir.ui.view">
-        <field name="name">pos.config.list</field>
+        <field name="name">pos.config.tree</field>
         <field name="model">pos.config</field>
         <field name="arch" type="xml">
-            <list string="POS Configuration Management" decoration-success="state=='active'" decoration-muted="state=='inactive'" decoration-danger="state=='deprecated'" multi_edit="1" sample="1">
+            <tree string="POS Configuration Management" decoration-success="state=='active'" decoration-muted="state=='inactive'" decoration-danger="state=='deprecated'" multi_edit="1" sample="1">
                 <header>
                     <button name="action_activate" type="object" string="Activate"/>
                     <button name="action_deactivate" type="object" string="Deactivate"/>
@@ -93,7 +93,7 @@
                 <field name="last_session_closing_date" string="Last Closed" widget="datetime"/>
                 <field name="state" string="Status" widget="badge" decoration-success="state=='active'" decoration-muted="state=='inactive'" decoration-danger="state=='deprecated'"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -189,14 +189,14 @@
                             </group>
                             <separator string="Service Products"/>
                             <field name="service_product_ids" mode="list" states="enable_walk_in_service=True">
-                                <list string="Available Services" editable="bottom">
+                                <tree string="Available Services" editable="bottom">
                                     <field name="product_id"/>
                                     <field name="pos_category_id"/>
                                     <field name="list_price" widget="monetary"/>
                                     <field name="available_in_pos" widget="boolean_toggle"/>
                                     <field name="service_type"/>
                                     <field name="requires_appointment" widget="boolean_toggle"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Interface Settings" name="interface_settings">
@@ -237,14 +237,14 @@
                         </page>
                         <page string="Payment Methods" name="payment_methods">
                             <field name="payment_method_ids" mode="list">
-                                <list string="Payment Methods" editable="bottom">
+                                <tree string="Payment Methods" editable="bottom">
                                     <field name="name"/>
                                     <field name="journal_id"/>
                                     <field name="type"/>
                                     <field name="use_payment_terminal"/>
                                     <field name="split_transactions" widget="boolean_toggle"/>
                                     <field name="open_session_ids" invisible="1"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Inventory" name="inventory">
@@ -280,14 +280,14 @@
                             </group>
                             <separator string="Recent Performance Data"/>
                             <field name="performance_data_ids" mode="list">
-                                <list string="Performance Metrics">
+                                <tree string="Performance Metrics">
                                     <field name="date"/>
                                     <field name="session_count"/>
                                     <field name="total_sales" widget="monetary"/>
                                     <field name="transaction_count"/>
                                     <field name="avg_transaction_value" widget="monetary"/>
                                     <field name="customer_count"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                     </notebook>

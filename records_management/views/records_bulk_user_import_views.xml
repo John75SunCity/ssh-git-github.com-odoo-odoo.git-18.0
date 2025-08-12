@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.bulk.user.import View List -->
-    <record id="view_records_bulk_user_import_list" model="ir.ui.view">
-        <field name="name">view.records.bulk.user.import.list</field>
+    <!-- Tree view for records.bulk.user.import -->
+    <record id="view_records_bulk_user_import_tree" model="ir.ui.view">
+        <field name="name">records.bulk.user.import.tree</field>
         <field name="model">records.bulk.user.import</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.bulk.user.import form -->
+    <!-- Form view for records.bulk.user.import -->
     <record id="view_records_bulk_user_import_form" model="ir.ui.view">
-        <field name="name">view.records.bulk.user.import.form</field>
+        <field name="name">records.bulk.user.import.form</field>
         <field name="model">records.bulk.user.import</field>
         <field name="arch" type="xml">
             <form string="Records Bulk User Import">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.bulk.user.import search -->
+    <!-- Search view for records.bulk.user.import -->
     <record id="view_records_bulk_user_import_search" model="ir.ui.view">
-        <field name="name">view.records.bulk.user.import.search</field>
+        <field name="name">records.bulk.user.import.search</field>
         <field name="model">records.bulk.user.import</field>
         <field name="arch" type="xml">
             <search>

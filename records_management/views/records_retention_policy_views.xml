@@ -3,10 +3,10 @@
     <data>
         <!-- Records Retention Policy List View -->
         <record id="view_records_retention_policy_tree" model="ir.ui.view">
-            <field name="name">records.retention.policy.list</field>
+            <field name="name">records.retention.policy.tree</field>
             <field name="model">records.retention.policy</field>
             <field name="arch" type="xml">
-                <list string="Retention Policies">
+                <tree string="Retention Policies">
                     <field name="name"/>
                     <field name="retention_years"/>
                     <field name="policy_type"/>
@@ -14,7 +14,7 @@
                     <field name="review_date"/>
                     <field name="policy_status"/>
                     <field name="document_count"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -62,13 +62,13 @@
                             </page>
                             <page string="Version History">
                                 <field name="version_history_ids">
-                                    <list>
+                                    <tree>
                                         <field name="version_number"/>
                                         <field name="version_date"/>
                                         <field name="changed_by"/>
                                         <field name="approval_status"/>
                                         <field name="is_current_version"/>
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                             <page string="Analytics" groups="base.group_system">

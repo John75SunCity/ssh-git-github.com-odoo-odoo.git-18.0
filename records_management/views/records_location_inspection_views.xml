@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.location.inspection View List -->
-    <record id="view_records_location_inspection_list" model="ir.ui.view">
-        <field name="name">view.records.location.inspection.list</field>
+    <!-- Tree view for records.location.inspection -->
+    <record id="view_records_location_inspection_tree" model="ir.ui.view">
+        <field name="name">records.location.inspection.tree</field>
         <field name="model">records.location.inspection</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.location.inspection form -->
+    <!-- Form view for records.location.inspection -->
     <record id="view_records_location_inspection_form" model="ir.ui.view">
-        <field name="name">view.records.location.inspection.form</field>
+        <field name="name">records.location.inspection.form</field>
         <field name="model">records.location.inspection</field>
         <field name="arch" type="xml">
             <form string="Records Location Inspection">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.location.inspection search -->
+    <!-- Search view for records.location.inspection -->
     <record id="view_records_location_inspection_search" model="ir.ui.view">
-        <field name="name">view.records.location.inspection.search</field>
+        <field name="name">records.location.inspection.search</field>
         <field name="model">records.location.inspection</field>
         <field name="arch" type="xml">
             <search>

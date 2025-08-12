@@ -77,10 +77,10 @@
 
     <!-- 📋 Enhanced Tree with Weight Analytics -->
     <record id="view_paper_bale_tree" model="ir.ui.view">
-        <field name="name">paper.bale.list</field>
+        <field name="name">paper.bale.tree</field>
         <field name="model">paper.bale</field>
         <field name="arch" type="xml">
-            <list decoration-success="bale_status == 'shipped' and loaded_on_trailer == True" 
+            <tree decoration-success="bale_status == 'shipped' and loaded_on_trailer == True" 
                   decoration-warning="bale_status == 'ready_for_loading'"
                   decoration-info="quality_grade == 'A'">
                 <field name="name" string="📦 Bale ID"/>
@@ -99,7 +99,7 @@
                 <button name="action_load_trailer" type="object" string="Load" 
                         icon="fa-truck" class="btn-link" 
                         invisible="loaded_on_trailer"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -171,7 +171,7 @@
                     <notebook>
                         <page string="📄 Source Documents" name="source_documents">
                             <field name="source_document_ids" mode="list">
-                                <list>
+                                <tree>
                                     <field name="document_type"/>
                                     <field name="document_name"/>
                                     <field name="confidentiality_level"/>
@@ -179,7 +179,7 @@
                                     <field name="customer_name"/>
                                     <field name="weight_contributed"/>
                                     <field name="naid_compliance_verified"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="🚚 Trailer Loading" name="trailer_loading">
@@ -198,18 +198,18 @@
                                 </group>
                             </group>
                             <field name="loading_history_ids" mode="list">
-                                <list>
+                                <tree>
                                     <field name="action_date"/>
                                     <field name="action_type"/>
                                     <field name="performed_by"/>
                                     <field name="trailer_info"/>
                                     <field name="notes"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="🔍 Quality Inspections" name="quality">
                             <field name="quality_inspection_ids" mode="list">
-                                <list>
+                                <tree>
                                     <field name="inspection_date"/>
                                     <field name="inspector"/>
                                     <field name="inspection_type"/>
@@ -218,12 +218,12 @@
                                     <field name="grade_assigned"/>
                                     <field name="passed_inspection"/>
                                     <button name="action_view_inspection_details" type="object" string="Details" icon="fa-eye" class="btn-link"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="⚖️ Weight History" name="weight_history">
                             <field name="weight_measurement_ids" mode="list">
-                                <list>
+                                <tree>
                                     <field name="measurement_date"/>
                                     <field name="weight_recorded"/>
                                     <field name="scale_used"/>
@@ -231,7 +231,7 @@
                                     <field name="measurement_type"/>
                                     <field name="variance_from_previous"/>
                                     <field name="notes"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="📊 Analytics" name="analytics">

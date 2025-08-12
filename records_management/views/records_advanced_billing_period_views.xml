@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.advanced.billing.period View List -->
-    <record id="view_records_advanced_billing_period_list" model="ir.ui.view">
-        <field name="name">view.records.advanced.billing.period.list</field>
+    <!-- Tree view for records.advanced.billing.period -->
+    <record id="view_records_advanced_billing_period_tree" model="ir.ui.view">
+        <field name="name">records.advanced.billing.period.tree</field>
         <field name="model">records.advanced.billing.period</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.advanced.billing.period form -->
+    <!-- Form view for records.advanced.billing.period -->
     <record id="view_records_advanced_billing_period_form" model="ir.ui.view">
-        <field name="name">view.records.advanced.billing.period.form</field>
+        <field name="name">records.advanced.billing.period.form</field>
         <field name="model">records.advanced.billing.period</field>
         <field name="arch" type="xml">
             <form string="Records Advanced Billing Period">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.advanced.billing.period search -->
+    <!-- Search view for records.advanced.billing.period -->
     <record id="view_records_advanced_billing_period_search" model="ir.ui.view">
-        <field name="name">view.records.advanced.billing.period.search</field>
+        <field name="name">records.advanced.billing.period.search</field>
         <field name="model">records.advanced.billing.period</field>
         <field name="arch" type="xml">
             <search>

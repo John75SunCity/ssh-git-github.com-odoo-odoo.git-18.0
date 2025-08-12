@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.policy.version View List -->
-    <record id="view_records_policy_version_list" model="ir.ui.view">
-        <field name="name">view.records.policy.version.list</field>
+    <!-- Tree view for records.policy.version -->
+    <record id="view_records_policy_version_tree" model="ir.ui.view">
+        <field name="name">records.policy.version.tree</field>
         <field name="model">records.policy.version</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.policy.version form -->
+    <!-- Form view for records.policy.version -->
     <record id="view_records_policy_version_form" model="ir.ui.view">
-        <field name="name">view.records.policy.version.form</field>
+        <field name="name">records.policy.version.form</field>
         <field name="model">records.policy.version</field>
         <field name="arch" type="xml">
             <form string="Records Policy Version">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.policy.version search -->
+    <!-- Search view for records.policy.version -->
     <record id="view_records_policy_version_search" model="ir.ui.view">
-        <field name="name">view.records.policy.version.search</field>
+        <field name="name">records.policy.version.search</field>
         <field name="model">records.policy.version</field>
         <field name="arch" type="xml">
             <search>

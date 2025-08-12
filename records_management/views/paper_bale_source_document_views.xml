@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View paper.bale.source.document View List -->
-    <record id="view_paper_bale_source_document_list" model="ir.ui.view">
-        <field name="name">view.paper.bale.source.document.list</field>
+    <!-- Tree view for paper.bale.source.document -->
+    <record id="view_paper_bale_source_document_tree" model="ir.ui.view">
+        <field name="name">paper.bale.source.document.tree</field>
         <field name="model">paper.bale.source.document</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View paper.bale.source.document form -->
+    <!-- Form view for paper.bale.source.document -->
     <record id="view_paper_bale_source_document_form" model="ir.ui.view">
-        <field name="name">view.paper.bale.source.document.form</field>
+        <field name="name">paper.bale.source.document.form</field>
         <field name="model">paper.bale.source.document</field>
         <field name="arch" type="xml">
             <form string="Paper Bale Source Document">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View paper.bale.source.document search -->
+    <!-- Search view for paper.bale.source.document -->
     <record id="view_paper_bale_source_document_search" model="ir.ui.view">
-        <field name="name">view.paper.bale.source.document.search</field>
+        <field name="name">paper.bale.source.document.search</field>
         <field name="model">paper.bale.source.document</field>
         <field name="arch" type="xml">
             <search>

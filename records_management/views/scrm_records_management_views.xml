@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View scrm.records.management View List -->
-    <record id="view_scrm_records_management_list" model="ir.ui.view">
-        <field name="name">view.scrm.records.management.list</field>
+    <!-- Tree view for scrm.records.management -->
+    <record id="view_scrm_records_management_tree" model="ir.ui.view">
+        <field name="name">scrm.records.management.tree</field>
         <field name="model">scrm.records.management</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View scrm.records.management form -->
+    <!-- Form view for scrm.records.management -->
     <record id="view_scrm_records_management_form" model="ir.ui.view">
-        <field name="name">view.scrm.records.management.form</field>
+        <field name="name">scrm.records.management.form</field>
         <field name="model">scrm.records.management</field>
         <field name="arch" type="xml">
             <form string="Scrm Records Management">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View scrm.records.management search -->
+    <!-- Search view for scrm.records.management -->
     <record id="view_scrm_records_management_search" model="ir.ui.view">
-        <field name="name">view.scrm.records.management.search</field>
+        <field name="name">scrm.records.management.search</field>
         <field name="model">scrm.records.management</field>
         <field name="arch" type="xml">
             <search>

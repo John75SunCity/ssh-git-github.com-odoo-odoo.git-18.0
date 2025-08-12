@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View naid.compliance.checklist View List -->
-    <record id="view_naid_compliance_checklist_list" model="ir.ui.view">
-        <field name="name">view.naid.compliance.checklist.list</field>
+    <!-- Tree view for naid.compliance.checklist -->
+    <record id="view_naid_compliance_checklist_tree" model="ir.ui.view">
+        <field name="name">naid.compliance.checklist.tree</field>
         <field name="model">naid.compliance.checklist</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View naid.compliance.checklist form -->
+    <!-- Form view for naid.compliance.checklist -->
     <record id="view_naid_compliance_checklist_form" model="ir.ui.view">
-        <field name="name">view.naid.compliance.checklist.form</field>
+        <field name="name">naid.compliance.checklist.form</field>
         <field name="model">naid.compliance.checklist</field>
         <field name="arch" type="xml">
             <form string="Naid Compliance Checklist">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View naid.compliance.checklist search -->
+    <!-- Search view for naid.compliance.checklist -->
     <record id="view_naid_compliance_checklist_search" model="ir.ui.view">
-        <field name="name">view.naid.compliance.checklist.search</field>
+        <field name="name">naid.compliance.checklist.search</field>
         <field name="model">naid.compliance.checklist</field>
         <field name="arch" type="xml">
             <search>

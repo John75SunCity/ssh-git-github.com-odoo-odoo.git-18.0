@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View portal.feedback.action View List -->
-    <record id="view_portal_feedback_action_list" model="ir.ui.view">
-        <field name="name">view.portal.feedback.action.list</field>
+    <!-- Tree view for portal.feedback.action -->
+    <record id="view_portal_feedback_action_tree" model="ir.ui.view">
+        <field name="name">portal.feedback.action.tree</field>
         <field name="model">portal.feedback.action</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View portal.feedback.action form -->
+    <!-- Form view for portal.feedback.action -->
     <record id="view_portal_feedback_action_form" model="ir.ui.view">
-        <field name="name">view.portal.feedback.action.form</field>
+        <field name="name">portal.feedback.action.form</field>
         <field name="model">portal.feedback.action</field>
         <field name="arch" type="xml">
             <form string="Portal Feedback Action">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View portal.feedback.action search -->
+    <!-- Search view for portal.feedback.action -->
     <record id="view_portal_feedback_action_search" model="ir.ui.view">
-        <field name="name">view.portal.feedback.action.search</field>
+        <field name="name">portal.feedback.action.search</field>
         <field name="model">portal.feedback.action</field>
         <field name="arch" type="xml">
             <search>

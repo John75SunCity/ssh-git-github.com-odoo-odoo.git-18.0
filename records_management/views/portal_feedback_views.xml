@@ -62,10 +62,10 @@
 
     <!-- List View -->
     <record id="view_portal_feedback_tree" model="ir.ui.view">
-        <field name="name">portal.feedback.list</field>
+        <field name="name">portal.feedback.tree</field>
         <field name="model">portal.feedback</field>
         <field name="arch" type="xml">
-            <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="status=='responded'" decoration-muted="status=='closed'" multi_edit="1">
+            <tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="status=='responded'" decoration-muted="status=='closed'" multi_edit="1">
                 <header>
                     <button name="action_mark_reviewed" type="object" string="Mark Reviewed"/>
                     <button name="action_respond" type="object" string="Respond"/>
@@ -84,7 +84,7 @@
                 <field name="status" widget="badge"/>
                 <field name="assigned_to" widget="many2one_avatar_user"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
-            </list>
+            </tree>
         </field>
     </record>
 

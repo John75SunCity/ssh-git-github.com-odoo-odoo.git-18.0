@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View proj.task.ext View List -->
-    <record id="view_proj_task_ext_list" model="ir.ui.view">
-        <field name="name">view.proj.task.ext.list</field>
+    <!-- Tree view for proj.task.ext -->
+    <record id="view_proj_task_ext_tree" model="ir.ui.view">
+        <field name="name">proj.task.ext.tree</field>
         <field name="model">proj.task.ext</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View proj.task.ext form -->
+    <!-- Form view for proj.task.ext -->
     <record id="view_proj_task_ext_form" model="ir.ui.view">
-        <field name="name">view.proj.task.ext.form</field>
+        <field name="name">proj.task.ext.form</field>
         <field name="model">proj.task.ext</field>
         <field name="arch" type="xml">
             <form string="Proj Task Ext">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View proj.task.ext search -->
+    <!-- Search view for proj.task.ext -->
     <record id="view_proj_task_ext_search" model="ir.ui.view">
-        <field name="name">view.proj.task.ext.search</field>
+        <field name="name">proj.task.ext.search</field>
         <field name="model">proj.task.ext</field>
         <field name="arch" type="xml">
             <search>

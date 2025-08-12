@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View fsm.reschedule.wizard.placeholder View List -->
-    <record id="view_fsm_reschedule_wizard_placeholder_list" model="ir.ui.view">
-        <field name="name">view.fsm.reschedule.wizard.placeholder.list</field>
+    <!-- Tree view for fsm.reschedule.wizard.placeholder -->
+    <record id="view_fsm_reschedule_wizard_placeholder_tree" model="ir.ui.view">
+        <field name="name">fsm.reschedule.wizard.placeholder.tree</field>
         <field name="model">fsm.reschedule.wizard.placeholder</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View fsm.reschedule.wizard.placeholder form -->
+    <!-- Form view for fsm.reschedule.wizard.placeholder -->
     <record id="view_fsm_reschedule_wizard_placeholder_form" model="ir.ui.view">
-        <field name="name">view.fsm.reschedule.wizard.placeholder.form</field>
+        <field name="name">fsm.reschedule.wizard.placeholder.form</field>
         <field name="model">fsm.reschedule.wizard.placeholder</field>
         <field name="arch" type="xml">
             <form string="Fsm Reschedule Wizard Placeholder">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View fsm.reschedule.wizard.placeholder search -->
+    <!-- Search view for fsm.reschedule.wizard.placeholder -->
     <record id="view_fsm_reschedule_wizard_placeholder_search" model="ir.ui.view">
-        <field name="name">view.fsm.reschedule.wizard.placeholder.search</field>
+        <field name="name">fsm.reschedule.wizard.placeholder.search</field>
         <field name="model">fsm.reschedule.wizard.placeholder</field>
         <field name="arch" type="xml">
             <search>

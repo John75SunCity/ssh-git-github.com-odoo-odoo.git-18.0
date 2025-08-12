@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View barcode.storage.box View List -->
-    <record id="view_barcode_storage_box_list" model="ir.ui.view">
-        <field name="name">view.barcode.storage.box.list</field>
+    <!-- Tree view for barcode.storage.box -->
+    <record id="view_barcode_storage_box_tree" model="ir.ui.view">
+        <field name="name">barcode.storage.box.tree</field>
         <field name="model">barcode.storage.box</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View barcode.storage.box form -->
+    <!-- Form view for barcode.storage.box -->
     <record id="view_barcode_storage_box_form" model="ir.ui.view">
-        <field name="name">view.barcode.storage.box.form</field>
+        <field name="name">barcode.storage.box.form</field>
         <field name="model">barcode.storage.box</field>
         <field name="arch" type="xml">
             <form string="Barcode Storage Box">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View barcode.storage.box search -->
+    <!-- Search view for barcode.storage.box -->
     <record id="view_barcode_storage_box_search" model="ir.ui.view">
-        <field name="name">view.barcode.storage.box.search</field>
+        <field name="name">barcode.storage.box.search</field>
         <field name="model">barcode.storage.box</field>
         <field name="arch" type="xml">
             <search>

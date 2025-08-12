@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.user.invitation.wizard View List -->
-    <record id="view_records_user_invitation_wizard_list" model="ir.ui.view">
-        <field name="name">view.records.user.invitation.wizard.list</field>
+    <!-- Tree view for records.user.invitation.wizard -->
+    <record id="view_records_user_invitation_wizard_tree" model="ir.ui.view">
+        <field name="name">records.user.invitation.wizard.tree</field>
         <field name="model">records.user.invitation.wizard</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.user.invitation.wizard form -->
+    <!-- Form view for records.user.invitation.wizard -->
     <record id="view_records_user_invitation_wizard_form" model="ir.ui.view">
-        <field name="name">view.records.user.invitation.wizard.form</field>
+        <field name="name">records.user.invitation.wizard.form</field>
         <field name="model">records.user.invitation.wizard</field>
         <field name="arch" type="xml">
             <form string="Records User Invitation Wizard">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.user.invitation.wizard search -->
+    <!-- Search view for records.user.invitation.wizard -->
     <record id="view_records_user_invitation_wizard_search" model="ir.ui.view">
-        <field name="name">view.records.user.invitation.wizard.search</field>
+        <field name="name">records.user.invitation.wizard.search</field>
         <field name="model">records.user.invitation.wizard</field>
         <field name="arch" type="xml">
             <search>

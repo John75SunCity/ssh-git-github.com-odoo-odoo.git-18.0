@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View unlock.service.part View List -->
-    <record id="view_unlock_service_part_list" model="ir.ui.view">
-        <field name="name">view.unlock.service.part.list</field>
+    <!-- Tree view for unlock.service.part -->
+    <record id="view_unlock_service_part_tree" model="ir.ui.view">
+        <field name="name">unlock.service.part.tree</field>
         <field name="model">unlock.service.part</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View unlock.service.part form -->
+    <!-- Form view for unlock.service.part -->
     <record id="view_unlock_service_part_form" model="ir.ui.view">
-        <field name="name">view.unlock.service.part.form</field>
+        <field name="name">unlock.service.part.form</field>
         <field name="model">unlock.service.part</field>
         <field name="arch" type="xml">
             <form string="Unlock Service Part">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View unlock.service.part search -->
+    <!-- Search view for unlock.service.part -->
     <record id="view_unlock_service_part_search" model="ir.ui.view">
-        <field name="name">view.unlock.service.part.search</field>
+        <field name="name">unlock.service.part.search</field>
         <field name="model">unlock.service.part</field>
         <field name="arch" type="xml">
             <search>

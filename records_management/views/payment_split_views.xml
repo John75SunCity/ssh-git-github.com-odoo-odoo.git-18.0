@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View payment.split View List -->
-    <record id="view_payment_split_list" model="ir.ui.view">
-        <field name="name">view.payment.split.list</field>
+    <!-- Tree view for payment.split -->
+    <record id="view_payment_split_tree" model="ir.ui.view">
+        <field name="name">payment.split.tree</field>
         <field name="model">payment.split</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View payment.split form -->
+    <!-- Form view for payment.split -->
     <record id="view_payment_split_form" model="ir.ui.view">
-        <field name="name">view.payment.split.form</field>
+        <field name="name">payment.split.form</field>
         <field name="model">payment.split</field>
         <field name="arch" type="xml">
             <form string="Payment Split">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View payment.split search -->
+    <!-- Search view for payment.split -->
     <record id="view_payment_split_search" model="ir.ui.view">
-        <field name="name">view.payment.split.search</field>
+        <field name="name">payment.split.search</field>
         <field name="model">payment.split</field>
         <field name="arch" type="xml">
             <search>

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View transitory.field.config View List -->
-    <record id="view_transitory_field_config_list" model="ir.ui.view">
-        <field name="name">view.transitory.field.config.list</field>
+    <!-- Tree view for transitory.field.config -->
+    <record id="view_transitory_field_config_tree" model="ir.ui.view">
+        <field name="name">transitory.field.config.tree</field>
         <field name="model">transitory.field.config</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View transitory.field.config form -->
+    <!-- Form view for transitory.field.config -->
     <record id="view_transitory_field_config_form" model="ir.ui.view">
-        <field name="name">view.transitory.field.config.form</field>
+        <field name="name">transitory.field.config.form</field>
         <field name="model">transitory.field.config</field>
         <field name="arch" type="xml">
             <form string="Transitory Field Config">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View transitory.field.config search -->
+    <!-- Search view for transitory.field.config -->
     <record id="view_transitory_field_config_search" model="ir.ui.view">
-        <field name="name">view.transitory.field.config.search</field>
+        <field name="name">transitory.field.config.search</field>
         <field name="model">transitory.field.config</field>
         <field name="arch" type="xml">
             <search>

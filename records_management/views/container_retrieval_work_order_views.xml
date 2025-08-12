@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View container.retrieval.work.order View List -->
+    <!-- Tree view for container.retrieval.work.order -->
 <record id="container_retrieval_work_order_view_tree" model="ir.ui.view">
     <field name="name">container.retrieval.work.order.view.tree</field>
         <field name="model">container.retrieval.work.order</field>
@@ -12,7 +12,7 @@
         </field>
     </record>
 
-    <!-- View container.retrieval.work.order form -->
+    <!-- Form view for container.retrieval.work.order -->
 <record id="container_retrieval_work_order_view_form" model="ir.ui.view">
     <field name="name">container.retrieval.work.order.view.form</field>
         <field name="model">container.retrieval.work.order</field>
@@ -30,7 +30,7 @@
         </field>
     </record>
 
-    <!-- View container.retrieval.work.order search -->
+    <!-- Search view for container.retrieval.work.order -->
 <record id="container_retrieval_work_order_view_search" model="ir.ui.view">
     <field name="name">container.retrieval.work.order.view.search</field>
         <field name="model">container.retrieval.work.order</field>

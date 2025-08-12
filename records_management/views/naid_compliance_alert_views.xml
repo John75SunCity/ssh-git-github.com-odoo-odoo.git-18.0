@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View naid.compliance.alert View List -->
-    <record id="view_naid_compliance_alert_list" model="ir.ui.view">
-        <field name="name">view.naid.compliance.alert.list</field>
+    <!-- Tree view for naid.compliance.alert -->
+    <record id="view_naid_compliance_alert_tree" model="ir.ui.view">
+        <field name="name">naid.compliance.alert.tree</field>
         <field name="model">naid.compliance.alert</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View naid.compliance.alert form -->
+    <!-- Form view for naid.compliance.alert -->
     <record id="view_naid_compliance_alert_form" model="ir.ui.view">
-        <field name="name">view.naid.compliance.alert.form</field>
+        <field name="name">naid.compliance.alert.form</field>
         <field name="model">naid.compliance.alert</field>
         <field name="arch" type="xml">
             <form string="Naid Compliance Alert">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View naid.compliance.alert search -->
+    <!-- Search view for naid.compliance.alert -->
     <record id="view_naid_compliance_alert_search" model="ir.ui.view">
-        <field name="name">view.naid.compliance.alert.search</field>
+        <field name="name">naid.compliance.alert.search</field>
         <field name="model">naid.compliance.alert</field>
         <field name="arch" type="xml">
             <search>

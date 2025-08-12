@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View barcode.models.enhanced View List -->
-    <record id="view_barcode_models_enhanced_list" model="ir.ui.view">
-        <field name="name">view.barcode.models.enhanced.list</field>
+    <!-- Tree view for barcode.models.enhanced -->
+    <record id="view_barcode_models_enhanced_tree" model="ir.ui.view">
+        <field name="name">barcode.models.enhanced.tree</field>
         <field name="model">barcode.models.enhanced</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View barcode.models.enhanced form -->
+    <!-- Form view for barcode.models.enhanced -->
     <record id="view_barcode_models_enhanced_form" model="ir.ui.view">
-        <field name="name">view.barcode.models.enhanced.form</field>
+        <field name="name">barcode.models.enhanced.form</field>
         <field name="model">barcode.models.enhanced</field>
         <field name="arch" type="xml">
             <form string="Barcode Models Enhanced">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View barcode.models.enhanced search -->
+    <!-- Search view for barcode.models.enhanced -->
     <record id="view_barcode_models_enhanced_search" model="ir.ui.view">
-        <field name="name">view.barcode.models.enhanced.search</field>
+        <field name="name">barcode.models.enhanced.search</field>
         <field name="model">barcode.models.enhanced</field>
         <field name="arch" type="xml">
             <search>

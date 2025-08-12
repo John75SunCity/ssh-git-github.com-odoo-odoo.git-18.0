@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View naid.compliance.action.plan View List -->
-    <record id="view_naid_compliance_action_plan_list" model="ir.ui.view">
-        <field name="name">view.naid.compliance.action.plan.list</field>
+    <!-- Tree view for naid.compliance.action.plan -->
+    <record id="view_naid_compliance_action_plan_tree" model="ir.ui.view">
+        <field name="name">naid.compliance.action.plan.tree</field>
         <field name="model">naid.compliance.action.plan</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View naid.compliance.action.plan form -->
+    <!-- Form view for naid.compliance.action.plan -->
     <record id="view_naid_compliance_action_plan_form" model="ir.ui.view">
-        <field name="name">view.naid.compliance.action.plan.form</field>
+        <field name="name">naid.compliance.action.plan.form</field>
         <field name="model">naid.compliance.action.plan</field>
         <field name="arch" type="xml">
             <form string="Naid Compliance Action Plan">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View naid.compliance.action.plan search -->
+    <!-- Search view for naid.compliance.action.plan -->
     <record id="view_naid_compliance_action_plan_search" model="ir.ui.view">
-        <field name="name">view.naid.compliance.action.plan.search</field>
+        <field name="name">naid.compliance.action.plan.search</field>
         <field name="model">naid.compliance.action.plan</field>
         <field name="arch" type="xml">
             <search>

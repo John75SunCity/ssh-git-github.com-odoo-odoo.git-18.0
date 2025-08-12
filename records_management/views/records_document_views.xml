@@ -84,10 +84,10 @@
 
     <!-- 📋 Enhanced Tree with Compliance Columns -->
     <record id="view_records_document_tree" model="ir.ui.view">
-        <field name="name">records.document.list</field>
+        <field name="name">records.document.tree</field>
         <field name="model">records.document</field>
         <field name="arch" type="xml">
-            <list decoration-danger="destruction_eligible_date &lt;= context_today()" decoration-warning="destruction_eligible_date &lt;= (context_today() + relativedelta(days=30))" decoration-success="permanent_flag == True">
+            <tree decoration-danger="destruction_eligible_date &lt;= context_today()" decoration-warning="destruction_eligible_date &lt;= (context_today() + relativedelta(days=30))" decoration-success="permanent_flag == True">
                 <field name="name" string="📄 Document"/>
                 <field name="document_type_id" string="📂 Type"/>
                 <field name="partner_id" string="👤 Customer"/>
@@ -100,7 +100,7 @@
                 <button name="action_mark_permanent" type="object" string="Mark Permanent" icon="fa-shield" class="btn-link" invisible="permanent_flag" groups="records_management.group_records_user"/>
                 <button name="action_unmark_permanent" type="object" string="Remove Permanent" icon="fa-shield" class="btn-link" invisible="not permanent_flag" groups="base.group_system"/>
                 <button name="action_schedule_destruction" type="object" string="Destroy" icon="fa-trash" class="btn-link" invisible="not destruction_eligible_date or permanent_flag"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -175,25 +175,25 @@
                         </page>
                         <page string="🔗 Chain of Custody" name="custody_chain">
                             <field name="chain_of_custody_ids" mode="list">
-                                <list>
+                                <tree>
                                     <field name="event_date"/>
                                     <field name="event_type"/>
                                     <field name="responsible_person"/>
                                     <field name="location"/>
                                     <field name="signature_verified"/>
                                     <field name="notes"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="📋 Audit Trail" name="audit">
                             <field name="audit_trail_ids" mode="list">
-                                <list>
+                                <tree>
                                     <field name="timestamp"/>
                                     <field name="action_type"/>
                                     <field name="user_id"/>
                                     <field name="description"/>
                                     <field name="compliance_verified"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="💥 Destruction Record" name="destruction" invisible="state != 'destroyed'">
@@ -214,14 +214,14 @@
                         </page>
                         <page string="📷 Digital Scans" name="digital">
                             <field name="digital_scan_ids" mode="list">
-                                <list>
+                                <tree>
                                     <field name="scan_date"/>
                                     <field name="file_format"/>
                                     <field name="resolution"/>
                                     <field name="file_size"/>
                                     <field name="storage_location"/>
                                     <button name="action_download" type="object" string="Download" icon="fa-download" class="btn-link"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                     </notebook>

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View work.order.coordinator View List -->
-    <record id="view_work_order_coordinator_list" model="ir.ui.view">
-        <field name="name">view.work.order.coordinator.list</field>
+    <!-- Tree view for work.order.coordinator -->
+    <record id="view_work_order_coordinator_tree" model="ir.ui.view">
+        <field name="name">work.order.coordinator.tree</field>
         <field name="model">work.order.coordinator</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View work.order.coordinator form -->
+    <!-- Form view for work.order.coordinator -->
     <record id="view_work_order_coordinator_form" model="ir.ui.view">
-        <field name="name">view.work.order.coordinator.form</field>
+        <field name="name">work.order.coordinator.form</field>
         <field name="model">work.order.coordinator</field>
         <field name="arch" type="xml">
             <form string="Work Order Coordinator">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View work.order.coordinator search -->
+    <!-- Search view for work.order.coordinator -->
     <record id="view_work_order_coordinator_search" model="ir.ui.view">
-        <field name="name">view.work.order.coordinator.search</field>
+        <field name="name">work.order.coordinator.search</field>
         <field name="model">work.order.coordinator</field>
         <field name="arch" type="xml">
             <search>

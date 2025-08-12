@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View stock.lot.attribute.value View List -->
-    <record id="view_stock_lot_attribute_value_list" model="ir.ui.view">
-        <field name="name">view.stock.lot.attribute.value.list</field>
+    <!-- Tree view for stock.lot.attribute.value -->
+    <record id="view_stock_lot_attribute_value_tree" model="ir.ui.view">
+        <field name="name">stock.lot.attribute.value.tree</field>
         <field name="model">stock.lot.attribute.value</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View stock.lot.attribute.value form -->
+    <!-- Form view for stock.lot.attribute.value -->
     <record id="view_stock_lot_attribute_value_form" model="ir.ui.view">
-        <field name="name">view.stock.lot.attribute.value.form</field>
+        <field name="name">stock.lot.attribute.value.form</field>
         <field name="model">stock.lot.attribute.value</field>
         <field name="arch" type="xml">
             <form string="Stock Lot Attribute Value">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View stock.lot.attribute.value search -->
+    <!-- Search view for stock.lot.attribute.value -->
     <record id="view_stock_lot_attribute_value_search" model="ir.ui.view">
-        <field name="name">view.stock.lot.attribute.value.search</field>
+        <field name="name">stock.lot.attribute.value.search</field>
         <field name="model">stock.lot.attribute.value</field>
         <field name="arch" type="xml">
             <search>

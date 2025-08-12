@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View file.retrieval.work.order View List -->
+    <!-- Tree view for file.retrieval.work.order -->
 <record id="file_retrieval_work_order_view_tree" model="ir.ui.view">
     <field name="name">file.retrieval.work.order.view.tree</field>
         <field name="model">file.retrieval.work.order</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View file.retrieval.work.order form -->
+    <!-- Form view for file.retrieval.work.order -->
 <record id="file_retrieval_work_order_view_form" model="ir.ui.view">
     <field name="name">file.retrieval.work.order.view.form</field>
         <field name="model">file.retrieval.work.order</field>
@@ -30,7 +30,7 @@
         </field>
     </record>
 
-    <!-- View file.retrieval.work.order search -->
+    <!-- Search view for file.retrieval.work.order -->
 <record id="file_retrieval_work_order_view_search" model="ir.ui.view">
     <field name="name">file.retrieval.work.order.view.search</field>
         <field name="model">file.retrieval.work.order</field>

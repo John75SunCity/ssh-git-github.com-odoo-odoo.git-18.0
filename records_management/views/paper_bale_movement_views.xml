@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View paper.bale.movement View List -->
-    <record id="view_paper_bale_movement_list" model="ir.ui.view">
-        <field name="name">view.paper.bale.movement.list</field>
+    <!-- Tree view for paper.bale.movement -->
+    <record id="view_paper_bale_movement_tree" model="ir.ui.view">
+        <field name="name">paper.bale.movement.tree</field>
         <field name="model">paper.bale.movement</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View paper.bale.movement form -->
+    <!-- Form view for paper.bale.movement -->
     <record id="view_paper_bale_movement_form" model="ir.ui.view">
-        <field name="name">view.paper.bale.movement.form</field>
+        <field name="name">paper.bale.movement.form</field>
         <field name="model">paper.bale.movement</field>
         <field name="arch" type="xml">
             <form string="Paper Bale Movement">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View paper.bale.movement search -->
+    <!-- Search view for paper.bale.movement -->
     <record id="view_paper_bale_movement_search" model="ir.ui.view">
-        <field name="name">view.paper.bale.movement.search</field>
+        <field name="name">paper.bale.movement.search</field>
         <field name="model">paper.bale.movement</field>
         <field name="arch" type="xml">
             <search>

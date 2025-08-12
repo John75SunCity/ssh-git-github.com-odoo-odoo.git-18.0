@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View work.order.shredding View List -->
-    <record id="view_work_order_shredding_list" model="ir.ui.view">
-        <field name="name">view.work.order.shredding.list</field>
+    <!-- Tree view for work.order.shredding -->
+    <record id="view_work_order_shredding_tree" model="ir.ui.view">
+        <field name="name">work.order.shredding.tree</field>
         <field name="model">work.order.shredding</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View work.order.shredding form -->
+    <!-- Form view for work.order.shredding -->
     <record id="view_work_order_shredding_form" model="ir.ui.view">
-        <field name="name">view.work.order.shredding.form</field>
+        <field name="name">work.order.shredding.form</field>
         <field name="model">work.order.shredding</field>
         <field name="arch" type="xml">
             <form string="Work Order Shredding">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View work.order.shredding search -->
+    <!-- Search view for work.order.shredding -->
     <record id="view_work_order_shredding_search" model="ir.ui.view">
-        <field name="name">view.work.order.shredding.search</field>
+        <field name="name">work.order.shredding.search</field>
         <field name="model">work.order.shredding</field>
         <field name="arch" type="xml">
             <search>

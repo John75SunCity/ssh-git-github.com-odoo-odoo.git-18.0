@@ -93,10 +93,10 @@
 
     <!-- 📋 Enhanced List View with Smart Columns and Bulk Actions -->
     <record id="view_records_container_tree" model="ir.ui.view">
-        <field name="name">records.container.list</field>
+        <field name="name">records.container.tree</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-            <list decoration-success="state == 'stored'" decoration-info="state == 'indexed'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'received'" multi_edit="1">
+            <tree decoration-success="state == 'stored'" decoration-info="state == 'indexed'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'received'" multi_edit="1">
                 <header>
                     <button name="action_bulk_convert_container_type" type="object" string="🔄 Bulk Convert Types" class="btn-primary"/>
                 </header>
@@ -113,7 +113,7 @@
                 <field name="document_count" string="💾 Documents" sum="Total Documents"/>
                 <button name="action_view_documents" type="object" string="View Docs" icon="fa-file-text-o" class="btn-link"/>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fa-barcode" class="btn-link"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -158,23 +158,23 @@
                     <notebook>
                         <page string="📄 Documents" name="documents">
                             <field name="document_ids" mode="list">
-                                <list>
+                                <tree>
                                     <field name="name"/>
                                     <field name="document_type_id"/>
                                     <field name="state"/>
                                     <field name="create_date"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="🚚 Movement History" name="movements">
                             <field name="movement_ids" mode="list">
-                                <list>
+                                <tree>
                                     <field name="movement_date"/>
                                     <field name="from_location_id"/>
                                     <field name="to_location_id"/>
                                     <field name="movement_type"/>
                                     <field name="user_id"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="📝 Notes &amp; Details" name="details">

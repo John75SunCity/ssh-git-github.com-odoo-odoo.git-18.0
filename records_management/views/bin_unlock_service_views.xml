@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View bin.unlock.service View List -->
-    <record id="view_bin_unlock_service_list" model="ir.ui.view">
-        <field name="name">view.bin.unlock.service.list</field>
+    <!-- Tree view for bin.unlock.service -->
+    <record id="view_bin_unlock_service_tree" model="ir.ui.view">
+        <field name="name">bin.unlock.service.tree</field>
         <field name="model">bin.unlock.service</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View bin.unlock.service form -->
+    <!-- Form view for bin.unlock.service -->
     <record id="view_bin_unlock_service_form" model="ir.ui.view">
-        <field name="name">view.bin.unlock.service.form</field>
+        <field name="name">bin.unlock.service.form</field>
         <field name="model">bin.unlock.service</field>
         <field name="arch" type="xml">
             <form string="Bin Unlock Service">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View bin.unlock.service search -->
+    <!-- Search view for bin.unlock.service -->
     <record id="view_bin_unlock_service_search" model="ir.ui.view">
-        <field name="name">view.bin.unlock.service.search</field>
+        <field name="name">bin.unlock.service.search</field>
         <field name="model">bin.unlock.service</field>
         <field name="arch" type="xml">
             <search>

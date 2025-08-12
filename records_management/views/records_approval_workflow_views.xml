@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.approval.workflow View List -->
-    <record id="view_records_approval_workflow_list" model="ir.ui.view">
-        <field name="name">view.records.approval.workflow.list</field>
+    <!-- Tree view for records.approval.workflow -->
+    <record id="view_records_approval_workflow_tree" model="ir.ui.view">
+        <field name="name">records.approval.workflow.tree</field>
         <field name="model">records.approval.workflow</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.approval.workflow form -->
+    <!-- Form view for records.approval.workflow -->
     <record id="view_records_approval_workflow_form" model="ir.ui.view">
-        <field name="name">view.records.approval.workflow.form</field>
+        <field name="name">records.approval.workflow.form</field>
         <field name="model">records.approval.workflow</field>
         <field name="arch" type="xml">
             <form string="Records Approval Workflow">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.approval.workflow search -->
+    <!-- Search view for records.approval.workflow -->
     <record id="view_records_approval_workflow_search" model="ir.ui.view">
-        <field name="name">view.records.approval.workflow.search</field>
+        <field name="name">records.approval.workflow.search</field>
         <field name="model">records.approval.workflow</field>
         <field name="arch" type="xml">
             <search>

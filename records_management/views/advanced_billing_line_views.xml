@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View advanced.billing.line View List -->
-    <record id="view_advanced_billing_line_list" model="ir.ui.view">
-        <field name="name">view.advanced.billing.line.list</field>
+    <!-- Tree view for advanced.billing.line -->
+    <record id="view_advanced_billing_line_tree" model="ir.ui.view">
+        <field name="name">advanced.billing.line.tree</field>
         <field name="model">advanced.billing.line</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View advanced.billing.line form -->
+    <!-- Form view for advanced.billing.line -->
     <record id="view_advanced_billing_line_form" model="ir.ui.view">
-        <field name="name">view.advanced.billing.line.form</field>
+        <field name="name">advanced.billing.line.form</field>
         <field name="model">advanced.billing.line</field>
         <field name="arch" type="xml">
             <form string="Advanced Billing Line">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View advanced.billing.line search -->
+    <!-- Search view for advanced.billing.line -->
     <record id="view_advanced_billing_line_search" model="ir.ui.view">
-        <field name="name">view.advanced.billing.line.search</field>
+        <field name="name">advanced.billing.line.search</field>
         <field name="model">advanced.billing.line</field>
         <field name="arch" type="xml">
             <search>

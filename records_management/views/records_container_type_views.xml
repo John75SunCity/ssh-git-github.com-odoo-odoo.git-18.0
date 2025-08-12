@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.container.type View List -->
-    <record id="view_records_container_type_list" model="ir.ui.view">
-        <field name="name">view.records.container.type.list</field>
+    <!-- Tree view for records.container.type -->
+    <record id="view_records_container_type_tree" model="ir.ui.view">
+        <field name="name">records.container.type.tree</field>
         <field name="model">records.container.type</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.container.type form -->
+    <!-- Form view for records.container.type -->
     <record id="view_records_container_type_form" model="ir.ui.view">
-        <field name="name">view.records.container.type.form</field>
+        <field name="name">records.container.type.form</field>
         <field name="model">records.container.type</field>
         <field name="arch" type="xml">
             <form string="Records Container Type">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.container.type search -->
+    <!-- Search view for records.container.type -->
     <record id="view_records_container_type_search" model="ir.ui.view">
-        <field name="name">view.records.container.type.search</field>
+        <field name="name">records.container.type.search</field>
         <field name="model">records.container.type</field>
         <field name="arch" type="xml">
             <search>

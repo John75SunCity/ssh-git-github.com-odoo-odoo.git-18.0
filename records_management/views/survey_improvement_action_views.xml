@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View survey.improvement.action View List -->
-    <record id="view_survey_improvement_action_list" model="ir.ui.view">
-        <field name="name">view.survey.improvement.action.list</field>
+    <!-- Tree view for survey.improvement.action -->
+    <record id="view_survey_improvement_action_tree" model="ir.ui.view">
+        <field name="name">survey.improvement.action.tree</field>
         <field name="model">survey.improvement.action</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View survey.improvement.action form -->
+    <!-- Form view for survey.improvement.action -->
     <record id="view_survey_improvement_action_form" model="ir.ui.view">
-        <field name="name">view.survey.improvement.action.form</field>
+        <field name="name">survey.improvement.action.form</field>
         <field name="model">survey.improvement.action</field>
         <field name="arch" type="xml">
             <form string="Survey Improvement Action">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View survey.improvement.action search -->
+    <!-- Search view for survey.improvement.action -->
     <record id="view_survey_improvement_action_search" model="ir.ui.view">
-        <field name="name">view.survey.improvement.action.search</field>
+        <field name="name">survey.improvement.action.search</field>
         <field name="model">survey.improvement.action</field>
         <field name="arch" type="xml">
             <search>

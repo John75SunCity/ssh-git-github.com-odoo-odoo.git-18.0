@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View bin.key.history View List -->
-    <record id="view_bin_key_history_list" model="ir.ui.view">
-        <field name="name">view.bin.key.history.list</field>
+    <!-- Tree view for bin.key.history -->
+    <record id="view_bin_key_history_tree" model="ir.ui.view">
+        <field name="name">bin.key.history.tree</field>
         <field name="model">bin.key.history</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View bin.key.history form -->
+    <!-- Form view for bin.key.history -->
     <record id="view_bin_key_history_form" model="ir.ui.view">
-        <field name="name">view.bin.key.history.form</field>
+        <field name="name">bin.key.history.form</field>
         <field name="model">bin.key.history</field>
         <field name="arch" type="xml">
             <form string="Bin Key History">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View bin.key.history search -->
+    <!-- Search view for bin.key.history -->
     <record id="view_bin_key_history_search" model="ir.ui.view">
-        <field name="name">view.bin.key.history.search</field>
+        <field name="name">bin.key.history.search</field>
         <field name="model">bin.key.history</field>
         <field name="arch" type="xml">
             <search>

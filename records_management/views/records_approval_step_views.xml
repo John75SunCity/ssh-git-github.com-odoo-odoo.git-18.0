@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.approval.step View List -->
-    <record id="view_records_approval_step_list" model="ir.ui.view">
-        <field name="name">view.records.approval.step.list</field>
+    <!-- Tree view for records.approval.step -->
+    <record id="view_records_approval_step_tree" model="ir.ui.view">
+        <field name="name">records.approval.step.tree</field>
         <field name="model">records.approval.step</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.approval.step form -->
+    <!-- Form view for records.approval.step -->
     <record id="view_records_approval_step_form" model="ir.ui.view">
-        <field name="name">view.records.approval.step.form</field>
+        <field name="name">records.approval.step.form</field>
         <field name="model">records.approval.step</field>
         <field name="arch" type="xml">
             <form string="Records Approval Step">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.approval.step search -->
+    <!-- Search view for records.approval.step -->
     <record id="view_records_approval_step_search" model="ir.ui.view">
-        <field name="name">view.records.approval.step.search</field>
+        <field name="name">records.approval.step.search</field>
         <field name="model">records.approval.step</field>
         <field name="arch" type="xml">
             <search>

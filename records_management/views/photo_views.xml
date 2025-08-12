@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View photo View List -->
-    <record id="view_photo_list" model="ir.ui.view">
-        <field name="name">view.photo.list</field>
+    <!-- Tree view for photo -->
+    <record id="view_photo_tree" model="ir.ui.view">
+        <field name="name">photo.tree</field>
         <field name="model">photo</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View photo form -->
+    <!-- Form view for photo -->
     <record id="view_photo_form" model="ir.ui.view">
-        <field name="name">view.photo.form</field>
+        <field name="name">photo.form</field>
         <field name="model">photo</field>
         <field name="arch" type="xml">
             <form string="Photo">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View photo search -->
+    <!-- Search view for photo -->
     <record id="view_photo_search" model="ir.ui.view">
-        <field name="name">view.photo.search</field>
+        <field name="name">photo.search</field>
         <field name="model">photo</field>
         <field name="arch" type="xml">
             <search>

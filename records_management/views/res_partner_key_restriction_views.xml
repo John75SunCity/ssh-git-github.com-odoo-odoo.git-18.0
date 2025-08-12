@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View res.partner.key.restriction View List -->
-    <record id="view_res_partner_key_restriction_list" model="ir.ui.view">
-        <field name="name">view.res.partner.key.restriction.list</field>
+    <!-- Tree view for res.partner.key.restriction -->
+    <record id="view_res_partner_key_restriction_tree" model="ir.ui.view">
+        <field name="name">res.partner.key.restriction.tree</field>
         <field name="model">res.partner.key.restriction</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View res.partner.key.restriction form -->
+    <!-- Form view for res.partner.key.restriction -->
     <record id="view_res_partner_key_restriction_form" model="ir.ui.view">
-        <field name="name">view.res.partner.key.restriction.form</field>
+        <field name="name">res.partner.key.restriction.form</field>
         <field name="model">res.partner.key.restriction</field>
         <field name="arch" type="xml">
             <form string="Res Partner Key Restriction">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View res.partner.key.restriction search -->
+    <!-- Search view for res.partner.key.restriction -->
     <record id="view_res_partner_key_restriction_search" model="ir.ui.view">
-        <field name="name">view.res.partner.key.restriction.search</field>
+        <field name="name">res.partner.key.restriction.search</field>
         <field name="model">res.partner.key.restriction</field>
         <field name="arch" type="xml">
             <search>

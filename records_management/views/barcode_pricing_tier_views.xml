@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View barcode.pricing.tier View List -->
-    <record id="view_barcode_pricing_tier_list" model="ir.ui.view">
-        <field name="name">view.barcode.pricing.tier.list</field>
+    <!-- Tree view for barcode.pricing.tier -->
+    <record id="view_barcode_pricing_tier_tree" model="ir.ui.view">
+        <field name="name">barcode.pricing.tier.tree</field>
         <field name="model">barcode.pricing.tier</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View barcode.pricing.tier form -->
+    <!-- Form view for barcode.pricing.tier -->
     <record id="view_barcode_pricing_tier_form" model="ir.ui.view">
-        <field name="name">view.barcode.pricing.tier.form</field>
+        <field name="name">barcode.pricing.tier.form</field>
         <field name="model">barcode.pricing.tier</field>
         <field name="arch" type="xml">
             <form string="Barcode Pricing Tier">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View barcode.pricing.tier search -->
+    <!-- Search view for barcode.pricing.tier -->
     <record id="view_barcode_pricing_tier_search" model="ir.ui.view">
-        <field name="name">view.barcode.pricing.tier.search</field>
+        <field name="name">barcode.pricing.tier.search</field>
         <field name="model">barcode.pricing.tier</field>
         <field name="arch" type="xml">
             <search>

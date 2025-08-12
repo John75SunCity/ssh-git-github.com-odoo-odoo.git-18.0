@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View revenue.forecaster View List -->
-    <record id="view_revenue_forecaster_list" model="ir.ui.view">
-        <field name="name">view.revenue.forecaster.list</field>
+    <!-- Tree view for revenue.forecaster -->
+    <record id="view_revenue_forecaster_tree" model="ir.ui.view">
+        <field name="name">revenue.forecaster.tree</field>
         <field name="model">revenue.forecaster</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View revenue.forecaster form -->
+    <!-- Form view for revenue.forecaster -->
     <record id="view_revenue_forecaster_form" model="ir.ui.view">
-        <field name="name">view.revenue.forecaster.form</field>
+        <field name="name">revenue.forecaster.form</field>
         <field name="model">revenue.forecaster</field>
         <field name="arch" type="xml">
             <form string="Revenue Forecaster">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View revenue.forecaster search -->
+    <!-- Search view for revenue.forecaster -->
     <record id="view_revenue_forecaster_search" model="ir.ui.view">
-        <field name="name">view.revenue.forecaster.search</field>
+        <field name="name">revenue.forecaster.search</field>
         <field name="model">revenue.forecaster</field>
         <field name="arch" type="xml">
             <search>

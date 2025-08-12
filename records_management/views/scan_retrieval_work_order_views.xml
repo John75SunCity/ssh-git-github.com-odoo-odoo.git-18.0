@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View scan.retrieval.work.order View List -->
-    <record id="view_scan_retrieval_work_order_list" model="ir.ui.view">
-        <field name="name">view.scan.retrieval.work.order.list</field>
+    <!-- Tree view for scan.retrieval.work.order -->
+    <record id="view_scan_retrieval_work_order_tree" model="ir.ui.view">
+        <field name="name">scan.retrieval.work.order.tree</field>
         <field name="model">scan.retrieval.work.order</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View scan.retrieval.work.order form -->
+    <!-- Form view for scan.retrieval.work.order -->
     <record id="view_scan_retrieval_work_order_form" model="ir.ui.view">
-        <field name="name">view.scan.retrieval.work.order.form</field>
+        <field name="name">scan.retrieval.work.order.form</field>
         <field name="model">scan.retrieval.work.order</field>
         <field name="arch" type="xml">
             <form string="Scan Retrieval Work Order">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View scan.retrieval.work.order search -->
+    <!-- Search view for scan.retrieval.work.order -->
     <record id="view_scan_retrieval_work_order_search" model="ir.ui.view">
-        <field name="name">view.scan.retrieval.work.order.search</field>
+        <field name="name">scan.retrieval.work.order.search</field>
         <field name="model">scan.retrieval.work.order</field>
         <field name="arch" type="xml">
             <search>

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.department.billing.contact View List -->
-    <record id="view_records_department_billing_contact_list" model="ir.ui.view">
-        <field name="name">view.records.department.billing.contact.list</field>
+    <!-- Tree view for records.department.billing.contact -->
+    <record id="view_records_department_billing_contact_tree" model="ir.ui.view">
+        <field name="name">records.department.billing.contact.tree</field>
         <field name="model">records.department.billing.contact</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.department.billing.contact form -->
+    <!-- Form view for records.department.billing.contact -->
     <record id="view_records_department_billing_contact_form" model="ir.ui.view">
-        <field name="name">view.records.department.billing.contact.form</field>
+        <field name="name">records.department.billing.contact.form</field>
         <field name="model">records.department.billing.contact</field>
         <field name="arch" type="xml">
             <form string="Records Department Billing Contact">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.department.billing.contact search -->
+    <!-- Search view for records.department.billing.contact -->
     <record id="view_records_department_billing_contact_search" model="ir.ui.view">
-        <field name="name">view.records.department.billing.contact.search</field>
+        <field name="name">records.department.billing.contact.search</field>
         <field name="model">records.department.billing.contact</field>
         <field name="arch" type="xml">
             <search>

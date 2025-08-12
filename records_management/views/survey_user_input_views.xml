@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
-    <!-- View survey.user.input form -->
+    <!-- Form view for survey.user.input -->
     <record id="view_survey_user_input_form" model="ir.ui.view">
-        <field name="name">view.survey.user.input.form</field>
+        <field name="name">survey.user.input.form</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -13,9 +13,9 @@
     </record>
 
 
-    <!-- View survey.user.input list -->
-    <record id="view_survey_user_input_list" model="ir.ui.view">
-        <field name="name">view.survey.user.input.list</field>
+    <!-- Tree view for survey.user.input -->
+    <record id="view_survey_user_input_tree" model="ir.ui.view">
+        <field name="name">survey.user.input.tree</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -25,9 +25,9 @@
     </record>
 
 
-    <!-- View survey.user.input search -->
+    <!-- Search view for survey.user.input -->
     <record id="view_survey_user_input_search" model="ir.ui.view">
-        <field name="name">view.survey.user.input.search</field>
+        <field name="name">survey.user.input.search</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -39,7 +39,7 @@
 
     <!-- View survey.user.input kanban -->
     <record id="view_survey_user_input_kanban" model="ir.ui.view">
-        <field name="name">view.survey.user.input.kanban</field>
+        <field name="name">survey.user.input.kanban</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -51,7 +51,7 @@
 
     <!-- View survey.user.input graph -->
     <record id="view_survey_user_input_graph" model="ir.ui.view">
-        <field name="name">view.survey.user.input.graph</field>
+        <field name="name">survey.user.input.graph</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -63,7 +63,7 @@
 
     <!-- View survey.user.input pivot -->
     <record id="view_survey_user_input_pivot" model="ir.ui.view">
-        <field name="name">view.survey.user.input.pivot</field>
+        <field name="name">survey.user.input.pivot</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -75,7 +75,7 @@
 
     <!-- View survey.user.input calendar -->
     <record id="view_survey_user_input_calendar" model="ir.ui.view">
-        <field name="name">view.survey.user.input.calendar</field>
+        <field name="name">survey.user.input.calendar</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">

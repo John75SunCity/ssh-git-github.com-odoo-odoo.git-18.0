@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View prod.ext View List -->
-    <record id="view_prod_ext_list" model="ir.ui.view">
-        <field name="name">view.prod.ext.list</field>
+    <!-- Tree view for prod.ext -->
+    <record id="view_prod_ext_tree" model="ir.ui.view">
+        <field name="name">prod.ext.tree</field>
         <field name="model">prod.ext</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View prod.ext form -->
+    <!-- Form view for prod.ext -->
     <record id="view_prod_ext_form" model="ir.ui.view">
-        <field name="name">view.prod.ext.form</field>
+        <field name="name">prod.ext.form</field>
         <field name="model">prod.ext</field>
         <field name="arch" type="xml">
             <form string="Prod Ext">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View prod.ext search -->
+    <!-- Search view for prod.ext -->
     <record id="view_prod_ext_search" model="ir.ui.view">
-        <field name="name">view.prod.ext.search</field>
+        <field name="name">prod.ext.search</field>
         <field name="model">prod.ext</field>
         <field name="arch" type="xml">
             <search>

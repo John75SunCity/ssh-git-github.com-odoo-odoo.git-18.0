@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View base.rate View List -->
-    <record id="view_base_rate_list" model="ir.ui.view">
-        <field name="name">view.base.rate.list</field>
+    <!-- Tree view for base.rate -->
+    <record id="view_base_rate_tree" model="ir.ui.view">
+        <field name="name">base.rate.tree</field>
         <field name="model">base.rate</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View base.rate form -->
+    <!-- Form view for base.rate -->
     <record id="view_base_rate_form" model="ir.ui.view">
-        <field name="name">view.base.rate.form</field>
+        <field name="name">base.rate.form</field>
         <field name="model">base.rate</field>
         <field name="arch" type="xml">
             <form string="Base Rate">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View base.rate search -->
+    <!-- Search view for base.rate -->
     <record id="view_base_rate_search" model="ir.ui.view">
-        <field name="name">view.base.rate.search</field>
+        <field name="name">base.rate.search</field>
         <field name="model">base.rate</field>
         <field name="arch" type="xml">
             <search>

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View stock.picking.records.extension View List -->
-    <record id="view_stock_picking_records_extension_list" model="ir.ui.view">
-        <field name="name">view.stock.picking.records.extension.list</field>
+    <!-- Tree view for stock.picking.records.extension -->
+    <record id="view_stock_picking_records_extension_tree" model="ir.ui.view">
+        <field name="name">stock.picking.records.extension.tree</field>
         <field name="model">stock.picking.records.extension</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View stock.picking.records.extension form -->
+    <!-- Form view for stock.picking.records.extension -->
     <record id="view_stock_picking_records_extension_form" model="ir.ui.view">
-        <field name="name">view.stock.picking.records.extension.form</field>
+        <field name="name">stock.picking.records.extension.form</field>
         <field name="model">stock.picking.records.extension</field>
         <field name="arch" type="xml">
             <form string="Stock Picking Records Extension">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View stock.picking.records.extension search -->
+    <!-- Search view for stock.picking.records.extension -->
     <record id="view_stock_picking_records_extension_search" model="ir.ui.view">
-        <field name="name">view.stock.picking.records.extension.search</field>
+        <field name="name">stock.picking.records.extension.search</field>
         <field name="model">stock.picking.records.extension</field>
         <field name="arch" type="xml">
             <search>

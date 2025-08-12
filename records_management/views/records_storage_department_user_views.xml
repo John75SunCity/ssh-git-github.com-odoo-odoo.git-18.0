@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.storage.department.user View List -->
-    <record id="view_records_storage_department_user_list" model="ir.ui.view">
-        <field name="name">view.records.storage.department.user.list</field>
+    <!-- Tree view for records.storage.department.user -->
+    <record id="view_records_storage_department_user_tree" model="ir.ui.view">
+        <field name="name">records.storage.department.user.tree</field>
         <field name="model">records.storage.department.user</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.storage.department.user form -->
+    <!-- Form view for records.storage.department.user -->
     <record id="view_records_storage_department_user_form" model="ir.ui.view">
-        <field name="name">view.records.storage.department.user.form</field>
+        <field name="name">records.storage.department.user.form</field>
         <field name="model">records.storage.department.user</field>
         <field name="arch" type="xml">
             <form string="Records Storage Department User">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.storage.department.user search -->
+    <!-- Search view for records.storage.department.user -->
     <record id="view_records_storage_department_user_search" model="ir.ui.view">
-        <field name="name">view.records.storage.department.user.search</field>
+        <field name="name">records.storage.department.user.search</field>
         <field name="model">records.storage.department.user</field>
         <field name="arch" type="xml">
             <search>

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View rate.change.confirmation.wizard View List -->
-    <record id="view_rate_change_confirmation_wizard_list" model="ir.ui.view">
-        <field name="name">view.rate.change.confirmation.wizard.list</field>
+    <!-- Tree view for rate.change.confirmation.wizard -->
+    <record id="view_rate_change_confirmation_wizard_tree" model="ir.ui.view">
+        <field name="name">rate.change.confirmation.wizard.tree</field>
         <field name="model">rate.change.confirmation.wizard</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View rate.change.confirmation.wizard form -->
+    <!-- Form view for rate.change.confirmation.wizard -->
     <record id="view_rate_change_confirmation_wizard_form" model="ir.ui.view">
-        <field name="name">view.rate.change.confirmation.wizard.form</field>
+        <field name="name">rate.change.confirmation.wizard.form</field>
         <field name="model">rate.change.confirmation.wizard</field>
         <field name="arch" type="xml">
             <form string="Rate Change Confirmation Wizard">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View rate.change.confirmation.wizard search -->
+    <!-- Search view for rate.change.confirmation.wizard -->
     <record id="view_rate_change_confirmation_wizard_search" model="ir.ui.view">
-        <field name="name">view.rate.change.confirmation.wizard.search</field>
+        <field name="name">rate.change.confirmation.wizard.search</field>
         <field name="model">rate.change.confirmation.wizard</field>
         <field name="arch" type="xml">
             <search>

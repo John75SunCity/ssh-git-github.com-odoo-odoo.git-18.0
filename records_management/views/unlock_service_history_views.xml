@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View unlock.service.history View List -->
-    <record id="view_unlock_service_history_list" model="ir.ui.view">
-        <field name="name">view.unlock.service.history.list</field>
+    <!-- Tree view for unlock.service.history -->
+    <record id="view_unlock_service_history_tree" model="ir.ui.view">
+        <field name="name">unlock.service.history.tree</field>
         <field name="model">unlock.service.history</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View unlock.service.history form -->
+    <!-- Form view for unlock.service.history -->
     <record id="view_unlock_service_history_form" model="ir.ui.view">
-        <field name="name">view.unlock.service.history.form</field>
+        <field name="name">unlock.service.history.form</field>
         <field name="model">unlock.service.history</field>
         <field name="arch" type="xml">
             <form string="Unlock Service History">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View unlock.service.history search -->
+    <!-- Search view for unlock.service.history -->
     <record id="view_unlock_service_history_search" model="ir.ui.view">
-        <field name="name">view.unlock.service.history.search</field>
+        <field name="name">unlock.service.history.search</field>
         <field name="model">unlock.service.history</field>
         <field name="arch" type="xml">
             <search>

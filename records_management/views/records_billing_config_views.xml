@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View records.billing.config View List -->
-    <record id="view_records_billing_config_list" model="ir.ui.view">
-        <field name="name">view.records.billing.config.list</field>
+    <!-- Tree view for records.billing.config -->
+    <record id="view_records_billing_config_tree" model="ir.ui.view">
+        <field name="name">records.billing.config.tree</field>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View records.billing.config form -->
+    <!-- Form view for records.billing.config -->
     <record id="view_records_billing_config_form" model="ir.ui.view">
-        <field name="name">view.records.billing.config.form</field>
+        <field name="name">records.billing.config.form</field>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
             <form string="Records Billing Config">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View records.billing.config search -->
+    <!-- Search view for records.billing.config -->
     <record id="view_records_billing_config_search" model="ir.ui.view">
-        <field name="name">view.records.billing.config.search</field>
+        <field name="name">records.billing.config.search</field>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
             <search>

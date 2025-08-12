@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View signed.document.audit View List -->
-    <record id="view_signed_document_audit_list" model="ir.ui.view">
-        <field name="name">view.signed.document.audit.list</field>
+    <!-- Tree view for signed.document.audit -->
+    <record id="view_signed_document_audit_tree" model="ir.ui.view">
+        <field name="name">signed.document.audit.tree</field>
         <field name="model">signed.document.audit</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View signed.document.audit form -->
+    <!-- Form view for signed.document.audit -->
     <record id="view_signed_document_audit_form" model="ir.ui.view">
-        <field name="name">view.signed.document.audit.form</field>
+        <field name="name">signed.document.audit.form</field>
         <field name="model">signed.document.audit</field>
         <field name="arch" type="xml">
             <form string="Signed Document Audit">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View signed.document.audit search -->
+    <!-- Search view for signed.document.audit -->
     <record id="view_signed_document_audit_search" model="ir.ui.view">
-        <field name="name">view.signed.document.audit.search</field>
+        <field name="name">signed.document.audit.search</field>
         <field name="model">signed.document.audit</field>
         <field name="arch" type="xml">
             <search>

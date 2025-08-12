@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
-    <!-- View hr.employee form -->
+    <!-- Form view for hr.employee -->
     <record id="hr_employee_view_form" model="ir.ui.view">
         <field name="name">hr.employee.view.form.inherit.records_management</field>
         <field name="model">hr.employee</field>
@@ -15,7 +15,7 @@
         </field>
     </record>
 
-    <!-- View hr.employee list -->
+    <!-- Tree view for hr.employee -->
     <record id="hr_employee_view_tree" model="ir.ui.view">
         <field name="name">hr.employee.view.tree.inherit.records_management</field>
         <field name="model">hr.employee</field>
@@ -28,7 +28,7 @@
         </field>
     </record>
 
-    <!-- View hr.employee search -->
+    <!-- Search view for hr.employee -->
     <record id="hr_employee_view_search" model="ir.ui.view">
         <field name="name">hr.employee.view.search.inherit.records_management</field>
         <field name="model">hr.employee</field>

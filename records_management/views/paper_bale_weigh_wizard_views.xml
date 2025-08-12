@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View paper.bale.weigh.wizard View List -->
-    <record id="view_paper_bale_weigh_wizard_list" model="ir.ui.view">
-        <field name="name">view.paper.bale.weigh.wizard.list</field>
+    <!-- Tree view for paper.bale.weigh.wizard -->
+    <record id="view_paper_bale_weigh_wizard_tree" model="ir.ui.view">
+        <field name="name">paper.bale.weigh.wizard.tree</field>
         <field name="model">paper.bale.weigh.wizard</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View paper.bale.weigh.wizard form -->
+    <!-- Form view for paper.bale.weigh.wizard -->
     <record id="view_paper_bale_weigh_wizard_form" model="ir.ui.view">
-        <field name="name">view.paper.bale.weigh.wizard.form</field>
+        <field name="name">paper.bale.weigh.wizard.form</field>
         <field name="model">paper.bale.weigh.wizard</field>
         <field name="arch" type="xml">
             <form string="Paper Bale Weigh Wizard">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View paper.bale.weigh.wizard search -->
+    <!-- Search view for paper.bale.weigh.wizard -->
     <record id="view_paper_bale_weigh_wizard_search" model="ir.ui.view">
-        <field name="name">view.paper.bale.weigh.wizard.search</field>
+        <field name="name">paper.bale.weigh.wizard.search</field>
         <field name="model">paper.bale.weigh.wizard</field>
         <field name="arch" type="xml">
             <search>

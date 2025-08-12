@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View pickup.request.item View List -->
-    <record id="view_pickup_request_item_list" model="ir.ui.view">
-        <field name="name">view.pickup.request.item.list</field>
+    <!-- Tree view for pickup.request.item -->
+    <record id="view_pickup_request_item_tree" model="ir.ui.view">
+        <field name="name">pickup.request.item.tree</field>
         <field name="model">pickup.request.item</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View pickup.request.item form -->
+    <!-- Form view for pickup.request.item -->
     <record id="view_pickup_request_item_form" model="ir.ui.view">
-        <field name="name">view.pickup.request.item.form</field>
+        <field name="name">pickup.request.item.form</field>
         <field name="model">pickup.request.item</field>
         <field name="arch" type="xml">
             <form string="Pickup Request Item">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View pickup.request.item search -->
+    <!-- Search view for pickup.request.item -->
     <record id="view_pickup_request_item_search" model="ir.ui.view">
-        <field name="name">view.pickup.request.item.search</field>
+        <field name="name">pickup.request.item.search</field>
         <field name="model">pickup.request.item</field>
         <field name="arch" type="xml">
             <search>

@@ -52,10 +52,10 @@
 
     <!-- List View -->
     <record id="view_fsm_task_tree" model="ir.ui.view">
-        <field name="name">fsm.task.list</field>
+        <field name="name">fsm.task.tree</field>
         <field name="model">fsm.task</field>
         <field name="arch" type="xml">
-            <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="task_status=='completed'">
+            <tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="task_status=='completed'">
                 <field name="name"/>
                 <field name="task_type"/>
                 <field name="partner_id"/>
@@ -64,7 +64,7 @@
                 <field name="priority" widget="priority"/>
                 <field name="task_status" widget="badge"/>
                 <field name="estimated_duration"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -126,12 +126,12 @@
                         </page>
                         <page string="Work Orders">
                             <field name="work_order_ids" mode="list">
-                                <list>
+                                <tree>
                                     <field name="name"/>
                                     <field name="work_order_type"/>
                                     <field name="status"/>
                                     <field name="assigned_date"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Completion Notes">

@@ -3,11 +3,11 @@
     <!-- 📋 DOCUMENT TYPES - Records Management Classification -->
 
     <!-- Document Type List View -->
-    <record id="view_records_document_type_list" model="ir.ui.view">
-        <field name="name">records.document.type.list</field>
+    <record id="view_records_document_type_tree" model="ir.ui.view">
+        <field name="name">records.document.type.tree</field>
         <field name="model">records.document.type</field>
         <field name="arch" type="xml">
-            <list string="Document Types">
+            <tree string="Document Types">
                 <field name="name"/>
                 <field name="security_classification"/>
                 <field name="risk_level"/>
@@ -15,7 +15,7 @@
                 <field name="audit_required"/>
                 <field name="active"/>
                 <field name="document_count"/>
-            </list>
+            </tree>
         </field>
     </record>
 

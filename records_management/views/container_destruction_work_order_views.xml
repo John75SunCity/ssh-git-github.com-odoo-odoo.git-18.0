@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View container.destruction.work.order View List -->
+    <!-- Tree view for container.destruction.work.order -->
 <record id="container_destruction_work_order_view_tree" model="ir.ui.view">
     <field name="name">container.destruction.work.order.view.tree</field>
         <field name="model">container.destruction.work.order</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View container.destruction.work.order form -->
+    <!-- Form view for container.destruction.work.order -->
 <record id="container_destruction_work_order_view_form" model="ir.ui.view">
     <field name="name">container.destruction.work.order.view.form</field>
         <field name="model">container.destruction.work.order</field>
@@ -30,7 +30,7 @@
         </field>
     </record>
 
-    <!-- View container.destruction.work.order search -->
+    <!-- Search view for container.destruction.work.order -->
 <record id="container_destruction_work_order_view_search" model="ir.ui.view">
     <field name="name">container.destruction.work.order.view.search</field>
         <field name="model">container.destruction.work.order</field>

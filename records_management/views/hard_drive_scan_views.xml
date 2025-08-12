@@ -57,10 +57,10 @@
 
     <!-- Hard Drive List View -->
     <record id="view_shredding_hard_drive_tree" model="ir.ui.view">
-        <field name="name">shredding.hard_drive.list</field>
+        <field name="name">shredding.hard_drive.tree</field>
         <field name="model">shredding.hard_drive</field>
         <field name="arch" type="xml">
-            <list string="Hard Drives for Shredding" decoration-success="destroyed" 
+            <tree string="Hard Drives for Shredding" decoration-success="destroyed" 
                   decoration-warning="verified_before_destruction and not destroyed"
                   decoration-info="scanned_at_customer and not verified_before_destruction">
                 <field name="serial_number"/>
@@ -74,7 +74,7 @@
                 <field name="destruction_date"/>
                 <field name="destruction_method"/>
                 <field name="included_in_certificate" widget="boolean_toggle"/>
-            </list>
+            </tree>
         </field>
     </record>
 

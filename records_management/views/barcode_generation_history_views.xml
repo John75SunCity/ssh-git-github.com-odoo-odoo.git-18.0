@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View barcode.generation.history View List -->
-    <record id="view_barcode_generation_history_list" model="ir.ui.view">
-        <field name="name">view.barcode.generation.history.list</field>
+    <!-- Tree view for barcode.generation.history -->
+    <record id="view_barcode_generation_history_tree" model="ir.ui.view">
+        <field name="name">barcode.generation.history.tree</field>
         <field name="model">barcode.generation.history</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 
-    <!-- View barcode.generation.history form -->
+    <!-- Form view for barcode.generation.history -->
     <record id="view_barcode_generation_history_form" model="ir.ui.view">
-        <field name="name">view.barcode.generation.history.form</field>
+        <field name="name">barcode.generation.history.form</field>
         <field name="model">barcode.generation.history</field>
         <field name="arch" type="xml">
             <form string="Barcode Generation History">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- View barcode.generation.history search -->
+    <!-- Search view for barcode.generation.history -->
     <record id="view_barcode_generation_history_search" model="ir.ui.view">
-        <field name="name">view.barcode.generation.history.search</field>
+        <field name="name">barcode.generation.history.search</field>
         <field name="model">barcode.generation.history</field>
         <field name="arch" type="xml">
             <search>

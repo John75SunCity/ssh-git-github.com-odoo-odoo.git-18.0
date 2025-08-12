@@ -34,7 +34,7 @@
                         </group>
                     </group>
 
-                    <group string="Search & Filters">
+                    <group string="Search &amp; Filters">
                         <group>
                             <field name="search_query" placeholder="Search nodes and edges..."/>
                             <field name="search_user_id" domain="[('company_id', '=', company_id)]"/>

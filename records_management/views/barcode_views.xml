@@ -80,10 +80,10 @@
 </record>
 <!-- TREE VIEW: Barcode Product Management List -->
 <record id="view_barcode_product_tree" model="ir.ui.view">
-    <field name="name">barcode.product.list</field>
+    <field name="name">barcode.product.tree</field>
     <field name="model">barcode.product</field>
     <field name="arch" type="xml">
-        <list string="Barcode Product Management" decoration-success="active==True" decoration-muted="active==False" multi_edit="1" sample="1">
+        <tree string="Barcode Product Management" decoration-success="active==True" decoration-muted="active==False" multi_edit="1" sample="1">
             <header>
                 <button name="action_activate" type="object" string="Activate"/>
                 <button name="action_deactivate" type="object" string="Deactivate"/>
@@ -101,7 +101,7 @@
             <field name="monthly_volume" string="Monthly Volume" sum="Total Volume"/>
             <field name="active" string="Active" widget="boolean_toggle"/>
             <field name="activity_exception_decoration" widget="activity_exception"/>
-        </list>
+        </tree>
     </field>
 </record>
 
@@ -235,7 +235,7 @@
                         </group>
                         <separator string="🗑️ Shred Bin Inventory"/>
                         <field name="shred_bin_ids" mode="list">
-                            <list string="Shred Bins" editable="bottom">
+                            <tree string="Shred Bins" editable="bottom">
                                 <field name="barcode"/>
                                 <field name="customer_location_id"/>
                                 <field name="bin_status"/>
@@ -243,13 +243,13 @@
                                 <field name="last_pickup_date" widget="date"/>
                                 <field name="next_pickup_date" widget="date"/>
                                 <field name="service_rate" widget="monetary"/>
-                            </list>
+                            </tree>
                         </field>
                     </page>
                     <page string="Pricing Rules" name="pricing_rules">
                         <separator string="💰 Pricing Tier Configuration"/>
                         <field name="pricing_tier_ids" mode="list">
-                            <list string="Pricing Tiers" editable="bottom">
+                            <tree string="Pricing Tiers" editable="bottom">
                                 <field name="tier_name"/>
                                 <field name="min_quantity"/>
                                 <field name="max_quantity"/>
@@ -257,17 +257,17 @@
                                 <field name="discount_percentage" widget="percentage"/>
                                 <field name="effective_date" widget="date"/>
                                 <field name="expiry_date" widget="date"/>
-                            </list>
+                            </tree>
                         </field>
                         <separator string="📅 Seasonal Pricing"/>
                         <field name="seasonal_pricing_ids" mode="list">
-                            <list string="Seasonal Rates" editable="bottom">
+                            <tree string="Seasonal Rates" editable="bottom">
                                 <field name="season_name"/>
                                 <field name="start_date" widget="date"/>
                                 <field name="end_date" widget="date"/>
                                 <field name="price_multiplier" widget="float"/>
                                 <field name="active" widget="boolean_toggle"/>
-                            </list>
+                            </tree>
                         </field>
                     </page>
                     <page string="Barcode Generation" name="barcode_generation">
@@ -287,14 +287,14 @@
                         </group>
                         <separator string="📝 Generation History"/>
                         <field name="generation_history_ids" mode="list" readonly="1">
-                            <list string="Generation History">
+                            <tree string="Generation History">
                                 <field name="generation_date" widget="datetime"/>
                                 <field name="batch_id"/>
                                 <field name="quantity_generated"/>
                                 <field name="start_barcode"/>
                                 <field name="end_barcode"/>
                                 <field name="generated_by"/>
-                            </list>
+                            </tree>
                         </field>
                     </page>
                 </notebook>

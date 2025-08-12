@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
-    <!-- View account.move.line form -->
+    <!-- Form view for account.move.line -->
     <record id="view_account_move_line_form" model="ir.ui.view">
-        <field name="name">view.account.move.line.form</field>
+        <field name="name">account.move.line.form</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -13,9 +13,9 @@
     </record>
 
 
-    <!-- View account.move.line list -->
-    <record id="view_account_move_line_list" model="ir.ui.view">
-        <field name="name">view.account.move.line.list</field>
+    <!-- Tree view for account.move.line -->
+    <record id="view_account_move_line_tree" model="ir.ui.view">
+        <field name="name">account.move.line.tree</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -25,9 +25,9 @@
     </record>
 
 
-    <!-- View account.move.line search -->
+    <!-- Search view for account.move.line -->
     <record id="view_account_move_line_search" model="ir.ui.view">
-        <field name="name">view.account.move.line.search</field>
+        <field name="name">account.move.line.search</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -39,7 +39,7 @@
 
     <!-- View account.move.line kanban -->
     <record id="view_account_move_line_kanban" model="ir.ui.view">
-        <field name="name">view.account.move.line.kanban</field>
+        <field name="name">account.move.line.kanban</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -51,7 +51,7 @@
 
     <!-- View account.move.line graph -->
     <record id="view_account_move_line_graph" model="ir.ui.view">
-        <field name="name">view.account.move.line.graph</field>
+        <field name="name">account.move.line.graph</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -63,7 +63,7 @@
 
     <!-- View account.move.line pivot -->
     <record id="view_account_move_line_pivot" model="ir.ui.view">
-        <field name="name">view.account.move.line.pivot</field>
+        <field name="name">account.move.line.pivot</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -75,7 +75,7 @@
 
     <!-- View account.move.line calendar -->
     <record id="view_account_move_line_calendar" model="ir.ui.view">
-        <field name="name">view.account.move.line.calendar</field>
+        <field name="name">account.move.line.calendar</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
