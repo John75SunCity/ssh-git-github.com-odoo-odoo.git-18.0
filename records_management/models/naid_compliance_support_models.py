@@ -8,6 +8,9 @@ checklists, audit history, risk assessment, and action plans.
 This file is deprecated and its models have been moved to their respective files.
 It can be safely removed.
 """
+import logging
+
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -110,7 +113,7 @@ class NaidComplianceAlert(models.Model):
 
     resolved_date = fields.Datetime(string="Resolved Date")
 
-    resolved_by = fields.Many2one("res.users", string="Resolved By")
+    resolved_by_id = fields.Many2one("res.users", string="Resolved By")
 
     resolution_notes = fields.Text(string="Resolution Notes")
 
@@ -151,7 +154,7 @@ class NaidComplianceAlert(models.Model):
             {
                 "status": "resolved",
                 "resolved_date": fields.Datetime.now(),
-                "resolved_by": self.env.user.id,
+                "resolved_by_id": self.env.user.id,
             }
         )
         self.message_post(body=_("Alert resolved by %s", self.env.user.name))
@@ -214,7 +217,7 @@ class NaidComplianceChecklistItem(models.Model):
 
     compliance_date = fields.Date(string="Compliance Date")
 
-    verified_by = fields.Many2one("res.users", string="Verified By")
+    verified_by_id = fields.Many2one("res.users", string="Verified By")
 
     evidence_attachment = fields.Binary(string="Evidence")
 
@@ -373,7 +376,7 @@ class NaidRiskAssessment(models.Model):
 
     mitigation_measures = fields.Text(string="Mitigation Measures")
 
-    responsible_person = fields.Many2one("res.users", string="Responsible Person")
+    responsible_person_id = fields.Many2one("res.users", string="Responsible Person")
 
     target_completion_date = fields.Date(string="Target Completion Date")
 
@@ -519,7 +522,7 @@ class NaidComplianceActionPlan(models.Model):
 
     approval_required = fields.Boolean(string="Approval Required", default=False)
 
-    approved_by = fields.Many2one("res.users", string="Approved By")
+    approved_by_id = fields.Many2one("res.users", string="Approved By")
 
     approval_date = fields.Date(string="Approval Date")
 
@@ -574,7 +577,7 @@ class NaidComplianceActionPlan(models.Model):
         self.write(
             {
                 "status": "approved",
-                "approved_by": self.env.user.id,
+                "approved_by_id": self.env.user.id,
                 "approval_date": fields.Date.today(),
             }
         )
