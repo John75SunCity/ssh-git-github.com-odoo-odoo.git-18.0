@@ -24,10 +24,9 @@ _logger = logging.getLogger(__name__)
 # BASE MODELS (Many2one targets - must be loaded first)
 # =============================================================================
 
-# Configuration settings (foundational)
+# Configuration settings (foundational - but avoid circular imports)
 from . import res_config_settings
 from . import records_config_settings
-from . import rm_module_configurator
 
 # System diagram data (for interactive visualization)
 from . import system_diagram_data
@@ -289,13 +288,16 @@ from . import scrm_records_management
 from . import records_deletion_request
 
 # =============================================================================
-# CONFIGURATION AND UTILITIES (Load last)
+# CONFIGURATION AND UTILITIES (Load last to avoid circular imports)
 # =============================================================================
 
 # Module management
 from . import installer
 from . import records_management_base_menus
 from . import location_report_wizard
+
+# Module configurator (MOVED HERE to avoid circular imports)
+from . import rm_module_configurator
 
 # =============================================================================
 # WIZARDS AND UTILITIES
