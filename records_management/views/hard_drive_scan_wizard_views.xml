@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View shredding.team View List -->
-<record id="shredding_team_view_list" model="ir.ui.view">
-    <field name="name">shredding.team.view.list</field>
-        <field name="model">shredding.team</field>
+    <!-- View hard.drive.scan.wizard View List -->
+    <record id="view_hard_drive_scan_wizard_list" model="ir.ui.view">
+        <field name="name">view.hard.drive.scan.wizard.list</field>
+        <field name="model">hard.drive.scan.wizard</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -12,12 +12,12 @@
         </field>
     </record>
 
-    <!-- View shredding.team form -->
-<record id="shredding_team_view_form" model="ir.ui.view">
-    <field name="name">shredding.team.view.form</field>
-        <field name="model">shredding.team</field>
+    <!-- View hard.drive.scan.wizard form -->
+    <record id="view_hard_drive_scan_wizard_form" model="ir.ui.view">
+        <field name="name">view.hard.drive.scan.wizard.form</field>
+        <field name="model">hard.drive.scan.wizard</field>
         <field name="arch" type="xml">
-            <form string="Shredding Team">
+            <form string="Hard Drive Scan Wizard">
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
@@ -30,10 +30,10 @@
         </field>
     </record>
 
-    <!-- View shredding.team search -->
-<record id="shredding_team_view_search" model="ir.ui.view">
-    <field name="name">shredding.team.view.search</field>
-        <field name="model">shredding.team</field>
+    <!-- View hard.drive.scan.wizard search -->
+    <record id="view_hard_drive_scan_wizard_search" model="ir.ui.view">
+        <field name="name">view.hard.drive.scan.wizard.search</field>
+        <field name="model">hard.drive.scan.wizard</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -43,17 +43,17 @@
         </field>
     </record>
 
-    <!-- Action shredding.team -->
-    <record id="action_shredding_team" model="ir.actions.act_window">
-        <field name="name">Shredding Team</field>
+    <!-- Action hard.drive.scan.wizard -->
+    <record id="action_hard_drive_scan_wizard" model="ir.actions.act_window">
+        <field name="name">Hard Drive Scan Wizard</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">shredding.team</field>
+        <field name="res_model">hard.drive.scan.wizard</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Shredding Team.
+                There is no examples click here to add new Hard Drive Scan Wizard.
             </p>
         </field>
     </record>

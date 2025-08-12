@@ -219,7 +219,6 @@ from . import portal_feedback_support_models
 
 # Survey and improvement tracking
 from . import survey_user_input
-from . import survey_user_input_enhanced
 from . import survey_feedback_theme
 from . import survey_improvement_action
 
@@ -238,12 +237,10 @@ from . import res_partner_key_restriction
 # Stock and inventory extensions
 from . import stock_move_sms_validation
 from . import stock_picking
-from . import stock_picking_records_extension
 
 # Project and FSM integration
 from . import project_task
 from . import fsm_task
-from . import proj_task_ext
 
 # POS integration
 from . import pos_config
@@ -258,7 +255,6 @@ from . import hremployee_naid
 
 from . import product
 from . import product_template
-from . import prod_ext
 from . import barcode_product
 from . import barcode_models
 
@@ -284,7 +280,6 @@ from . import required_document
 from . import customer_category
 from . import scrm_records_management
 from . import records_deletion_request
-from . import records_deletion_request_enhanced
 
 # =============================================================================
 # CONFIGURATION AND UTILITIES (Load last)
@@ -325,3 +320,38 @@ except ImportError as e:
         getattr(e, "name", "unknown"),
         str(e),
     )
+
+# =============================================================================
+# CONDITIONAL IMPORTS FOR EXTENSION MODELS
+# =============================================================================
+
+# Import extension models conditionally to avoid circular import issues
+try:
+    from . import survey_user_input_enhanced
+    _logger.info("Survey user input enhancements loaded successfully")
+except ImportError as e:
+    _logger.warning("Survey enhancements not available: %s", str(e))
+
+try:
+    from . import stock_picking_records_extension
+    _logger.info("Stock picking records extensions loaded successfully")
+except ImportError as e:
+    _logger.warning("Stock picking extensions not available: %s", str(e))
+
+try:
+    from . import proj_task_ext
+    _logger.info("Project task extensions loaded successfully")
+except ImportError as e:
+    _logger.warning("Project task extensions not available: %s", str(e))
+
+try:
+    from . import prod_ext
+    _logger.info("Product extensions loaded successfully")
+except ImportError as e:
+    _logger.warning("Product extensions not available: %s", str(e))
+
+try:
+    from . import records_deletion_request_enhanced
+    _logger.info("Records deletion request enhancements loaded successfully")
+except ImportError as e:
+    _logger.warning("Records deletion enhancements not available: %s", str(e))
