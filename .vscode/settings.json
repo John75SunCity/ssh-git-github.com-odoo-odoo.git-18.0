@@ -53,7 +53,7 @@
     // Odoo-specific VS Code settings to reduce noise from false positive warnings
     "python.analysis.disabled": [
         "reportMissingImports",
-        "reportMissingModuleSource",
+        "reportMissingModuleSource", 
         "reportAttributeAccessIssue"
     ],
     

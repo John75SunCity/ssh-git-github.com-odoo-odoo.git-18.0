@@ -71,7 +71,7 @@ class RecordsDepartment(models.Model):
         index=True,
         help="Name of the department",
     )
-
+    
     code = fields.Char(
         string="Department Code",
         required=True,
@@ -79,14 +79,14 @@ class RecordsDepartment(models.Model):
         index=True,
         help="Unique code for the department",
     )
-
+    
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
     )
-
+    
     user_id = fields.Many2one(
         "res.users",
         string="Created By",
@@ -100,7 +100,7 @@ class RecordsDepartment(models.Model):
         tracking=True,
         help="Whether this department is active",
     )
-
+    
     sequence = fields.Integer(
         string="Sequence", 
         default=10, 
@@ -125,7 +125,7 @@ class RecordsDepartment(models.Model):
         tracking=True,
         help="Type of department for workflow classification",
     )
-
+    
     description = fields.Text(
         string="Department Description",
         tracking=True,
@@ -142,21 +142,21 @@ class RecordsDepartment(models.Model):
         domain=[("is_company", "=", True)],
         help="Parent organization that owns this department",
     )
-
+    
     parent_department_id = fields.Many2one(
         "records.department",
         string="Parent Department",
         tracking=True,
         help="Parent department in organizational hierarchy",
     )
-
+    
     child_department_ids = fields.One2many(
         "records.department",
         "parent_department_id",
         string="Child Departments",
         help="Sub-departments under this department",
     )
-
+    
     department_level = fields.Integer(
         string="Department Level",
         compute="_compute_department_level",
@@ -173,14 +173,14 @@ class RecordsDepartment(models.Model):
         tracking=True,
         help="Manager responsible for this department",
     )
-
+    
     records_coordinator_id = fields.Many2one(
         "res.users",
         string="Records Coordinator",
         tracking=True,
         help="Records management coordinator for the department",
     )
-
+    
     assistant_manager_id = fields.Many2one(
         "res.users",
         string="Assistant Manager",
@@ -199,7 +199,7 @@ class RecordsDepartment(models.Model):
         string="Department Users",
         help="Users assigned to this department",
     )
-
+    
     user_count = fields.Integer(
         string="User Count",
         compute="_compute_user_count",
@@ -215,13 +215,13 @@ class RecordsDepartment(models.Model):
         tracking=True,
         help="Primary email address for the department",
     )
-
+    
     phone = fields.Char(
         string="Department Phone",
         tracking=True,
         help="Primary phone number for the department",
     )
-
+    
     website = fields.Char(
         string="Department Website", 
         help="Department website or portal URL"
@@ -261,13 +261,13 @@ class RecordsDepartment(models.Model):
         tracking=True,
         help="Cost center code for financial reporting",
     )
-
+    
     budget_limit = fields.Monetary(
         string="Budget Limit",
         currency_field="currency_id",
         help="Annual budget limit for the department",
     )
-
+    
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
@@ -286,14 +286,14 @@ class RecordsDepartment(models.Model):
         domain=[("is_company", "=", True)],
         help="Customers assigned to this department",
     )
-
+    
     customer_count = fields.Integer(
         string="Customer Count",
         compute="_compute_customer_count",
         store=True,
         help="Number of customers assigned to department",
     )
-
+    
     service_area_ids = fields.Many2many(
         "records.location",
         string="Service Areas",
@@ -309,7 +309,7 @@ class RecordsDepartment(models.Model):
         store=True,
         help="Overall department performance score",
     )
-
+    
     customer_satisfaction = fields.Float(
         string="Customer Satisfaction",
         compute="_compute_performance_metrics",
@@ -336,14 +336,14 @@ class RecordsDepartment(models.Model):
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)],
     )
-
+    
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
     )
-
+    
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -442,10 +442,7 @@ class RecordsDepartment(models.Model):
             )
             if active_children:
                 raise UserError(
-                    _(
-                        "Cannot deactivate department with active child departments: %s",
-                        ", ".join(active_children.mapped("name")),
-                    )
+                    _("Cannot deactivate department with active child departments: %s", ", ".join(active_children.mapped("name")))
                 )
 
             department.write({"state": "inactive"})
