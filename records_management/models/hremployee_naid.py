@@ -2,19 +2,21 @@
 """
 HR Employee NAID Compliance Extension Module
 
-This module extends HR Employee functionality with NAID (National Association for 
-Information Destruction) compliance features, security clearance tracking, and 
+This module extends HR Employee functionality with NAID (National Association for
+Information Destruction) compliance features, security clearance tracking, and
 records management access controls for the Records Management System.
 """
 
-from odoo import models, fields, _
 import datetime
+
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 
 class HREmployeeNAID(models.Model):
     """
     HR Employee NAID Compliance Extension
-    
+
     Extends hr.employee with NAID security clearance levels, records management
     access permissions, and compliance tracking for document destruction services.
     """
@@ -28,27 +30,27 @@ class HREmployeeNAID(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    
+
     name = fields.Char(
-        string="Employee NAID Profile", 
-        required=True, 
+        string="Employee NAID Profile",
+        required=True,
         tracking=True,
         help="NAID compliance profile name for this employee"
     )
     company_id = fields.Many2one(
-        'res.company', 
+        'res.company',
         string="Company",
         default=lambda self: self.env.company,
         required=True
     )
     user_id = fields.Many2one(
-        'res.users', 
+        'res.users',
         string="User",
         default=lambda self: self.env.user,
         tracking=True
     )
     active = fields.Boolean(
-        string="Active", 
+        string="Active",
         default=True,
         help="Uncheck to archive this NAID profile"
     )
@@ -56,7 +58,7 @@ class HREmployeeNAID(models.Model):
     # ============================================================================
     # EMPLOYEE RELATIONSHIP
     # ============================================================================
-    
+
     employee_id = fields.Many2one(
         'hr.employee',
         string="Employee",
@@ -69,15 +71,15 @@ class HREmployeeNAID(models.Model):
     # ============================================================================
     # NAID COMPLIANCE FIELDS
     # ============================================================================
-    
+
     naid_security_clearance = fields.Selection([
         ('none', 'No Clearance'),
         ('basic', 'Basic Security'),
         ('advanced', 'Advanced Security'),
         ('certified', 'NAID Certified'),
         ('aaa_certified', 'NAID AAA Certified')
-    ], string="NAID Security Clearance", 
-       default='none', 
+    ], string="NAID Security Clearance",
+       default='none',
        tracking=True,
        help="Current NAID security clearance level")
 
@@ -107,7 +109,7 @@ class HREmployeeNAID(models.Model):
     # ============================================================================
     # RECORDS ACCESS MANAGEMENT
     # ============================================================================
-    
+
     records_access_level = fields.Selection([
         ('none', 'No Access'),
         ('read', 'Read Only'),
@@ -140,22 +142,22 @@ class HREmployeeNAID(models.Model):
     # ============================================================================
     # STATE MANAGEMENT
     # ============================================================================
-    
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('pending_approval', 'Pending Approval'),
         ('active', 'Active'),
         ('suspended', 'Suspended'),
         ('expired', 'Expired')
-    ], string='Status', 
-       default='draft', 
+    ], string='Status',
+       default='draft',
        tracking=True,
        help="Current status of NAID compliance profile")
 
     # ============================================================================
     # DOCUMENTATION FIELDS
     # ============================================================================
-    
+
     description = fields.Text(
         string="Description",
         help="Additional details about employee's NAID profile"
@@ -172,7 +174,7 @@ class HREmployeeNAID(models.Model):
     # ============================================================================
     # DATES & TRACKING
     # ============================================================================
-    
+
     profile_date = fields.Date(
         string="Profile Date",
         default=fields.Date.today,
@@ -193,31 +195,31 @@ class HREmployeeNAID(models.Model):
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
-    
+
     activity_ids = fields.One2many(
-        "mail.activity", 
-        "res_id", 
+        "mail.activity",
+        "res_id",
         string="Activities",
         auto_join=True,
         groups="base.group_user"
     )
     message_follower_ids = fields.One2many(
-        "mail.followers", 
-        "res_id", 
-        string="Followers", 
+        "mail.followers",
+        "res_id",
+        string="Followers",
         groups="base.group_user"
     )
     message_ids = fields.One2many(
-        "mail.message", 
-        "res_id", 
-        string="Messages", 
+        "mail.message",
+        "res_id",
+        string="Messages",
         groups="base.group_user"
     )
 
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    
+
     def action_submit_for_approval(self):
         """Submit NAID profile for approval"""
         self.ensure_one()
@@ -262,18 +264,17 @@ class HREmployeeNAID(models.Model):
     def action_schedule_review(self):
         """Schedule next compliance review"""
         self.ensure_one()
-        
+
         # Calculate next review date (typically annual)
-        import datetime
         next_review = fields.Date.today() + datetime.timedelta(days=365)
-        
+
         self.write({'next_review_date': next_review})
-        
+
         # Create activity for review
         self.activity_schedule(
             'mail.mail_activity_data_todo',
-            summary=f"NAID Compliance Review - {self.name}",
-            note=f"Annual NAID compliance review for {self.employee_id.name}",
+            summary=_("NAID Compliance Review - %s", self.name),
+            note=_("Annual NAID compliance review for %s", self.employee_id.name),
             user_id=self.user_id.id,
             date_deadline=next_review
         )
@@ -281,14 +282,15 @@ class HREmployeeNAID(models.Model):
     # ============================================================================
     # COMPUTED METHODS
     # ============================================================================
-    
+
+    @api.depends('employee_id.name', 'name')
     def _compute_display_name(self):
         """Compute display name with employee context"""
         for record in self:
             if record.employee_id:
-                record.display_name = f"NAID Profile - {record.employee_id.name}"
+                record.display_name = _("NAID Profile - %s", record.employee_id.name)
             else:
-                record.display_name = record.name or "New NAID Profile"
+                record.display_name = record.name or _("New NAID Profile")
 
     display_name = fields.Char(
         string="Display Name",
@@ -299,43 +301,44 @@ class HREmployeeNAID(models.Model):
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
-    
+
+    @api.constrains('clearance_date', 'clearance_expiry')
     def _check_clearance_dates(self):
         """Validate clearance date logic"""
         for record in self:
             if record.clearance_date and record.clearance_expiry:
                 if record.clearance_date >= record.clearance_expiry:
-                    from odoo.exceptions import ValidationError
                     raise ValidationError(
-                        "Clearance date must be before expiry date"
+                        _("Clearance date must be before expiry date")
                     )
 
     # ============================================================================
     # LIFECYCLE METHODS
     # ============================================================================
-    
+
+    @api.model_create_multi
     def create(self, vals_list):
         records = super().create(vals_list)
-        
+
         for record in records:
             # Create initial activity for profile setup
             today_date = fields.Date.to_date(fields.Date.today())
             deadline_date = today_date + datetime.timedelta(days=7)
             record.activity_schedule(
                 'mail.mail_activity_data_todo',
-                summary=f"Complete NAID Profile Setup - {record.name}",
-                note="Complete NAID compliance profile setup and documentation",
+                summary=_("Complete NAID Profile Setup - %s", record.name),
+                note=_("Complete NAID compliance profile setup and documentation"),
                 user_id=record.user_id.id,
                 date_deadline=deadline_date
             )
-            
+
             record.message_post(
                 body=_(
                     "NAID compliance profile created for %s",
                     record.employee_id.name if record.employee_id else 'employee'
                 )
             )
-        
+
         return records
 
     def write(self, vals):
@@ -349,8 +352,8 @@ class HREmployeeNAID(models.Model):
                     record.message_post(
                         body=_("NAID security clearance changed from %s to %s", old_level, new_level)
                     )
-        
-        # Track access level changes  
+
+        # Track access level changes
         if 'records_access_level' in vals:
             for record in self:
                 old_access = record.records_access_level
@@ -359,5 +362,5 @@ class HREmployeeNAID(models.Model):
                     record.message_post(
                         body=_("Records access level changed from %s to %s", old_access, new_access)
                     )
-        
+
         return super().write(vals)

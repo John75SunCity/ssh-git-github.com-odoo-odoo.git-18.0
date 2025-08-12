@@ -215,7 +215,7 @@ from . import pos_config
 
 # HR integration
 from . import hr_employee
-from . import hr_employee_naid
+from . import hremployee_naid
 
 # =============================================================================
 # PRODUCTS AND BARCODE MANAGEMENT
