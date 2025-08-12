@@ -76,6 +76,12 @@ class BinKeyManagement(models.Model):
     )
 
     # Partner and Location Management
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        tracking=True,
+        help="Partner associated with this key management record",
+    )
     partner_company = fields.Char(
         string="Partner Company", help="Name of the company that issued/owns the key"
     )

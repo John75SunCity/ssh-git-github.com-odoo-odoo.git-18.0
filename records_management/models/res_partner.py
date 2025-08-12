@@ -154,7 +154,7 @@ class ResPartner(models.Model):
     # RATE MANAGEMENT RELATIONSHIPS
     # ============================================================================
     negotiated_rates_ids = fields.One2many(
-        "customer.negotiated.rates",
+        "customer.negotiated.rate",
         "partner_id",
         string="Negotiated Rate Agreements",
         help="Customer-specific negotiated rate agreements",

@@ -52,6 +52,9 @@ class CustomerFeedback(models.Model):
     # ============================================================================
     # CUSTOMER INFORMATION FIELDS
     # ============================================================================
+    partner_id = fields.Many2one(
+        "res.partner", string="Customer", required=True, tracking=True
+    )
     customer_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
     )
