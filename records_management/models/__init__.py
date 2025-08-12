@@ -98,7 +98,7 @@ from . import paper_load_shipment
 
 # Advanced billing system
 from . import advanced_billing
-from . import advanced_billing_line
+# from . import advanced_billing_line  # TEMPORARY: Commented out to test circular import
 from . import records_advanced_billing_period
 
 # Work orders
