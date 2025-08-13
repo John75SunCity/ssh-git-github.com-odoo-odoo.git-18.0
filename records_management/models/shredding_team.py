@@ -119,11 +119,12 @@ class ShreddingTeam(models.Model):
         required=True,
         help="Primary specialization of the team",
     )
-    secondary_specialization_ids = fields.Many2many(
-        "shredding.specialization",
-        string="Secondary Specializations",
-        help="Additional capabilities of the team",
-    )
+    # TODO: Implement shredding.specialization model for team capabilities
+    # secondary_specialization_ids = fields.Many2many(
+    #     "shredding.specialization",
+    #     string="Secondary Specializations",
+    #     help="Additional capabilities of the team",
+    # )
     certification_level = fields.Selection(
         [
             ("basic", "Basic"),
