@@ -5,14 +5,35 @@ Pickup Route Management Module
 This module provides comprehensive route planning and optimization for pickup operations within
 the Records Management System. It implements intelligent route management, GPS tracking, and
 operational efficiency optimization for document collection and service delivery operations.
+
+Features:
+- Route optimization with GPS tracking
+- Driver assignment and vehicle management
+- Integration with FSM for field service operations
+- Real-time route status tracking
+- Cost and time estimation
+- Performance analytics and reporting
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
 """
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
 
 class PickupRoute(models.Model):
+    """
+    Pickup Route Management for optimizing pickup schedules and operations.
+    
+    This model handles the complete lifecycle of pickup routes including planning,
+    execution, tracking, and performance analysis. It integrates with FSM for
+    field service operations and provides real-time visibility into route status.
+    """
+    
     _name = "pickup.route"
-    _description = "Pickup Route"
+    _description = "Pickup Route Management"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "route_date desc, name"
     _rec_name = "name"
@@ -21,810 +42,406 @@ class PickupRoute(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(
-        string="Route Name",
-        required=True,
+        string="Route Name", 
+        required=True, 
         tracking=True,
         index=True,
-        help="Unique identifier for the pickup route",
+        help="Unique route identifier"
     )
     company_id = fields.Many2one(
-        "res.company",
-        string="Company",
-        default=lambda self: self.env.company,
-        required=True,
+        "res.company", 
+        default=lambda self: self.env.company, 
+        required=True
     )
     user_id = fields.Many2one(
-        "res.users",
-        string="Route Manager",
-        default=lambda self: self.env.user,
+        "res.users", 
+        default=lambda self: self.env.user, 
         tracking=True,
-        help="User responsible for route management",
+        string="Created By"
     )
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record",
-    )
-    active = fields.Boolean(
-        string="Active", default=True, help="Active status of the route"
-    )
-    sequence = fields.Integer(
-        string="Sequence", default=10, help="Sequence for ordering routes"
-    )
+    active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
-    # ROUTE SCHEDULING AND TIMING
+    # ROUTE PLANNING FIELDS
     # ============================================================================
     route_date = fields.Date(
-        string="Route Date",
-        required=True,
+        string="Route Date", 
+        required=True, 
         default=fields.Date.today,
         tracking=True,
-        help="Scheduled date for the route",
+        index=True
     )
-    start_time = fields.Datetime(
-        string="Start Time",
-        tracking=True,
-        help="Scheduled start time for the route",
+    planned_start_time = fields.Datetime(
+        string="Planned Start Time",
+        help="When the route is scheduled to begin"
     )
-    end_time = fields.Datetime(
-        string="End Time", help="Scheduled end time for the route"
+    planned_end_time = fields.Datetime(
+        string="Planned End Time", 
+        help="When the route is scheduled to complete"
     )
     actual_start_time = fields.Datetime(
         string="Actual Start Time",
-        help="Actual time when route execution started",
+        tracking=True
     )
     actual_end_time = fields.Datetime(
         string="Actual End Time",
-        help="Actual time when route execution completed",
-    )
-    estimated_duration = fields.Float(
-        string="Estimated Duration (hours)",
-        help="Estimated time to complete the route",
-    )
-    actual_duration = fields.Float(
-        string="Actual Duration (hours)",
-        compute="_compute_actual_duration",
-        store=True,
-        help="Actual time taken to complete the route",
-    )
-
-    # ============================================================================
-    # ROUTE TYPE AND CLASSIFICATION
-    # ============================================================================
-    route_type = fields.Selection(
-        [
-            ("regular", "Regular Route"),
-            ("on_demand", "On-Demand Route"),
-            ("bulk", "Bulk Collection"),
-            ("express", "Express Route"),
-            ("maintenance", "Maintenance Route"),
-            ("emergency", "Emergency Route"),
-        ],
-        string="Route Type",
-        default="regular",
-        required=True,
-        tracking=True,
-        help="Classification of the pickup route",
-    )
-    priority = fields.Selection(
-        [
-            ("0", "Very Low"),
-            ("1", "Low"),
-            ("2", "Normal"),
-            ("3", "High"),
-            ("4", "Very High"),
-        ],
-        string="Priority",
-        default="2",
-        help="Route execution priority",
-    )
-    service_level = fields.Selection(
-        [
-            ("standard", "Standard Service"),
-            ("premium", "Premium Service"),
-            ("express", "Express Service"),
-            ("white_glove", "White Glove Service"),
-        ],
-        string="Service Level",
-        default="standard",
-        help="Level of service for this route",
-    )
-
-    # ============================================================================
-    # STATUS AND WORKFLOW MANAGEMENT
-    # ============================================================================
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("planned", "Planned"),
-            ("confirmed", "Confirmed"),
-            ("in_progress", "In Progress"),
-            ("completed", "Completed"),
-            ("cancelled", "Cancelled"),
-        ],
-        string="Status",
-        default="draft",
-        tracking=True,
-        help="Current status of the pickup route",
-    )
-    completion_status = fields.Selection(
-        [
-            ("pending", "Pending"),
-            ("partial", "Partially Completed"),
-            ("complete", "Fully Completed"),
-            ("failed", "Failed"),
-        ],
-        string="Completion Status",
-        default="pending",
-        help="Route completion status",
+        tracking=True
     )
 
     # ============================================================================
     # PERSONNEL AND VEHICLE ASSIGNMENT
     # ============================================================================
     driver_id = fields.Many2one(
-        "res.partner",
-        string="Driver",
+        "res.users", 
+        string="Driver", 
+        required=True,
         tracking=True,
-        help="Driver assigned to this route",
-    )
-    assistant_driver_id = fields.Many2one(
-        "res.partner",
-        string="Assistant Driver",
-        help="Assistant driver for the route",
+        domain="[('groups_id', 'in', [ref('records_management.group_driver')])]"
     )
     vehicle_id = fields.Many2one(
-        "records.vehicle",
-        string="Vehicle",
-        tracking=True,
-        help="Vehicle assigned to this route",
+        "records.vehicle", 
+        string="Vehicle", 
+        required=True,
+        tracking=True
     )
-    backup_vehicle_id = fields.Many2one(
-        "records.vehicle", string="Backup Vehicle", help="Backup vehicle for this route"
-    )
-
-    # ============================================================================
-    # ROUTE OPTIMIZATION AND TRACKING
-    # ============================================================================
-    start_location_id = fields.Many2one(
-        "records.location",
-        string="Start Location",
-        help="Starting location for the route",
-    )
-    end_location_id = fields.Many2one(
-        "records.location",
-        string="End Location",
-        help="Ending location for the route",
-    )
-    total_distance = fields.Float(
-        string="Total Distance (miles)", help="Total distance of the route"
-    )
-    estimated_fuel_cost = fields.Monetary(
-        string="Estimated Fuel Cost",
-        currency_field="currency_id",
-        help="Estimated fuel cost for the route",
-    )
-    actual_fuel_cost = fields.Monetary(
-        string="Actual Fuel Cost",
-        currency_field="currency_id",
-        help="Actual fuel cost for the route",
-    )
-    currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        related="company_id.currency_id",
-        store=True,
+    supervisor_id = fields.Many2one(
+        "res.users",
+        string="Route Supervisor",
+        domain="[('groups_id', 'in', [ref('records_management.group_records_manager')])]",
+        help="Supervisor responsible for route oversight"
     )
 
     # ============================================================================
-    # ROUTE PERFORMANCE METRICS
+    # STATE MANAGEMENT
     # ============================================================================
-    total_stops = fields.Integer(
-        string="Total Stops",
-        compute="_compute_route_metrics",
-        store=True,
-        help="Total number of stops on the route",
-    )
-    completed_stops = fields.Integer(
-        string="Completed Stops",
-        compute="_compute_route_metrics",
-        store=True,
-        help="Number of completed stops",
-    )
-    efficiency_score = fields.Float(
-        string="Efficiency Score",
-        compute="_compute_efficiency_score",
-        store=True,
-        help="Route efficiency score (0-100)",
-    )
-    on_time_performance = fields.Float(
-        string="On-Time Performance (%)",
-        compute="_compute_performance_metrics",
-        store=True,
-        help="Percentage of on-time deliveries",
-    )
+    state = fields.Selection([
+        ("draft", "Draft"),
+        ("planned", "Planned"),
+        ("in_progress", "In Progress"),
+        ("completed", "Completed"),
+        ("cancelled", "Cancelled"),
+    ], string="State", default="draft", required=True, tracking=True)
 
-    # ============================================================================
-    # DOCUMENTATION AND COMMUNICATION
-    # ============================================================================
-    description = fields.Text(
-        string="Description", help="Detailed description of the route"
-    )
-    route_instructions = fields.Text(
-        string="Route Instructions",
-        help="Special instructions for route execution",
-    )
-    driver_notes = fields.Text(
-        string="Driver Notes",
-        help="Notes from the driver during route execution",
-    )
-    completion_notes = fields.Text(
-        string="Completion Notes", help="Notes upon route completion"
-    )
+    priority = fields.Selection([
+        ("0", "Low"),
+        ("1", "Normal"), 
+        ("2", "High"),
+        ("3", "Critical"),
+    ], string="Priority", default="1", tracking=True)
 
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
     pickup_request_ids = fields.One2many(
-        "pickup.request",
-        "route_id",
+        "pickup.request", 
+        "route_id", 
         string="Pickup Requests",
-        help="Pickup requests assigned to this route",
+        help="Pickup requests assigned to this route"
     )
     route_stop_ids = fields.One2many(
         "pickup.route.stop",
         "route_id",
         string="Route Stops",
-        help="Individual stops on this route",
+        help="Ordered stops along this route"
     )
 
     # ============================================================================
-    # MAIL THREAD FRAMEWORK FIELDS
+    # PERFORMANCE AND METRICS
     # ============================================================================
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
+    total_distance = fields.Float(
+        string="Total Distance (km)",
+        compute="_compute_route_metrics",
+        store=True,
+        help="Total planned distance for the route"
     )
-    message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
+    estimated_duration = fields.Float(
+        string="Estimated Duration (hours)",
+        compute="_compute_route_metrics", 
+        store=True
     )
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-        domain=lambda self: [("model", "=", self._name)],
+    actual_duration = fields.Float(
+        string="Actual Duration (hours)",
+        compute="_compute_actual_duration",
+        store=True
+    )
+    fuel_cost = fields.Monetary(
+        string="Estimated Fuel Cost",
+        currency_field="currency_id",
+        compute="_compute_costs",
+        store=True
+    )
+    total_cost = fields.Monetary(
+        string="Total Route Cost",
+        currency_field="currency_id",
+        compute="_compute_costs",
+        store=True
+    )
+    currency_id = fields.Many2one(
+        "res.currency",
+        default=lambda self: self.env.company.currency_id,
+        required=True
     )
 
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
-    display_name = fields.Char(
-        string="Display Name", compute="_compute_display_name", store=True
+    request_count = fields.Integer(
+        string="Request Count",
+        compute="_compute_request_count",
+        help="Number of pickup requests on this route"
     )
+    completion_percentage = fields.Float(
+        string="Completion %",
+        compute="_compute_completion_percentage",
+        help="Percentage of route completed"
+    )
+    efficiency_score = fields.Float(
+        string="Efficiency Score",
+        compute="_compute_efficiency_score", 
+        help="Route efficiency rating (0-100)"
+    )
+
+    # ============================================================================
+    # NOTES AND COMMUNICATION
+    # ============================================================================
+    notes = fields.Text(string="Route Notes")
+    special_instructions = fields.Text(
+        string="Special Instructions",
+        help="Special handling or route instructions"
+    )
+
+    # Mail framework fields
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends("name", "route_date", "route_type")
-    def _compute_display_name(self):
-        """Compute display name with route date and type"""
-        for record in self:
-            parts = []
-            if record.name:
-                parts.append(record.name)
-            if record.route_date:
-                parts.append(f"({record.route_date})")
-            if record.route_type:
-                route_type_label = dict(
-                    record._fields["route_type"].selection
-                ).get(record.route_type, "")
-                parts.append(f"- {route_type_label}")
-            record.display_name = " ".join(parts) or "Pickup Route"
+    @api.depends("pickup_request_ids")
+    def _compute_request_count(self):
+        for route in self:
+            route.request_count = len(route.pickup_request_ids)
+
+    @api.depends("route_stop_ids", "route_stop_ids.distance")
+    def _compute_route_metrics(self):
+        for route in self:
+            total_distance = sum(route.route_stop_ids.mapped("distance"))
+            route.total_distance = total_distance
+            
+            # Estimate duration based on distance and average speed
+            average_speed = 40  # km/hour
+            if total_distance > 0:
+                route.estimated_duration = total_distance / average_speed
+            else:
+                route.estimated_duration = 0.0
 
     @api.depends("actual_start_time", "actual_end_time")
     def _compute_actual_duration(self):
-        """Calculate actual duration in hours"""
-        for record in self:
-            if record.actual_start_time and record.actual_end_time:
-                delta = record.actual_end_time - record.actual_start_time
-                record.actual_duration = delta.total_seconds() / 3600
+        for route in self:
+            if route.actual_start_time and route.actual_end_time:
+                delta = route.actual_end_time - route.actual_start_time
+                route.actual_duration = delta.total_seconds() / 3600.0  # Convert to hours
             else:
-                record.actual_duration = 0.0
+                route.actual_duration = 0.0
 
-    @api.depends("route_stop_ids", "route_stop_ids.status")
-    def _compute_route_metrics(self):
-        """Compute route performance metrics"""
-        for record in self:
-            stops = record.route_stop_ids
-            record.total_stops = len(stops)
-            record.completed_stops = len(
-                stops.filtered(lambda s: s.status == "completed")
+    @api.depends("total_distance", "vehicle_id")
+    def _compute_costs(self):
+        for route in self:
+            fuel_cost = 0.0
+            if route.total_distance and route.vehicle_id:
+                # Example calculation - adjust based on actual vehicle fuel efficiency
+                fuel_per_km = 0.08  # 8 liters per 100km = 0.08 L/km
+                fuel_price = 1.50   # Price per liter
+                fuel_cost = route.total_distance * fuel_per_km * fuel_price
+            
+            route.fuel_cost = fuel_cost
+            route.total_cost = fuel_cost  # Add other costs as needed
+
+    @api.depends("pickup_request_ids", "pickup_request_ids.state")
+    def _compute_completion_percentage(self):
+        for route in self:
+            if not route.pickup_request_ids:
+                route.completion_percentage = 0.0
+                continue
+            
+            completed_requests = route.pickup_request_ids.filtered(
+                lambda r: r.state in ["completed", "delivered"]
             )
+            total_requests = len(route.pickup_request_ids)
+            route.completion_percentage = (len(completed_requests) / total_requests) * 100
 
-    @api.depends("estimated_duration", "actual_duration", "total_distance")
+    @api.depends("actual_duration", "estimated_duration", "completion_percentage")
     def _compute_efficiency_score(self):
-        """Calculate route efficiency score"""
-        for record in self:
-            if record.estimated_duration and record.actual_duration > 0:
-                time_efficiency = min(
-                    100,
-                    (record.estimated_duration / record.actual_duration) * 100,
-                )
-                record.efficiency_score = time_efficiency
-            else:
-                record.efficiency_score = 0.0
-
-    @api.depends(
-        "route_stop_ids",
-        "route_stop_ids.scheduled_time",
-        "route_stop_ids.actual_arrival_time",
-    )
-    def _compute_performance_metrics(self):
-        """Calculate on-time performance metrics"""
-        for record in self:
-            stops_with_times = record.route_stop_ids.filtered(
-                lambda s: s.scheduled_time and s.actual_arrival_time
-            )
-            if stops_with_times:
-                on_time_stops = stops_with_times.filtered(
-                    lambda s: s.actual_arrival_time <= s.scheduled_time
-                )
-                record.on_time_performance = (
-                    len(on_time_stops) / len(stops_with_times)
-                ) * 100
-            else:
-                record.on_time_performance = 0.0
-
-    # ============================================================================
-    # ORM OVERRIDES
-    # ============================================================================
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Override create to set sequence and defaults"""
-        for vals in vals_list:
-            if not vals.get("name") or vals.get("name") == "/":
-                vals["name"] = (
-                    self.env["ir.sequence"].next_by_code("pickup.route") or "ROUTE-NEW"
-                )
-        return super().create(vals_list)
-
-    def write(self, vals):
-        """Override write for state change tracking"""
-        if "state" in vals:
-            for record in self:
-                old_state = record.state
-                new_state = vals["state"]
-                if old_state != new_state:
-                    record.message_post(
-                        body=_("Route status changed from %s to %s", old_state, new_state)
-                    )
-        return super().write(vals)
+        for route in self:
+            score = 0.0
+            if route.estimated_duration > 0 and route.actual_duration > 0:
+                # Time efficiency (50% weight)
+                time_efficiency = min(route.estimated_duration / route.actual_duration, 1.0) * 50
+                
+                # Completion efficiency (50% weight)  
+                completion_efficiency = route.completion_percentage * 0.5
+                
+                score = time_efficiency + completion_efficiency
+            
+            route.efficiency_score = min(score, 100.0)
 
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    def action_confirm(self):
-        """Confirm the route"""
+    def action_plan_route(self):
+        """Plan the route and set to planned state"""
         self.ensure_one()
-        if self.state != "planned":
-            raise UserError(_("Only planned routes can be confirmed"))
-        if not self.driver_id:
-            raise UserError(
-                _("Driver must be assigned before confirming route")
-            )
-        if not self.vehicle_id:
-            raise UserError(
-                _("Vehicle must be assigned before confirming route")
-            )
-        self.write({"state": "confirmed"})
-        self.message_post(body=_("Route confirmed and ready for execution"))
+        if self.state != "draft":
+            raise UserError(_("Can only plan draft routes"))
+        
+        if not self.pickup_request_ids:
+            raise UserError(_("Cannot plan route without pickup requests"))
+        
+        # Auto-generate route stops based on pickup requests
+        self._generate_route_stops()
+        
+        self.write({"state": "planned"})
+        self.message_post(body=_("Route planned with %d stops", len(self.route_stop_ids)))
 
     def action_start_route(self):
         """Start route execution"""
         self.ensure_one()
-        if self.state != "confirmed":
-            raise UserError(_("Only confirmed routes can be started"))
-        self.write(
-            {
-                "state": "in_progress",
-                "actual_start_time": fields.Datetime.now(),
-            }
-        )
-        self.message_post(body=_("Route execution started"))
+        if self.state != "planned":
+            raise UserError(_("Can only start planned routes"))
+        
+        self.write({
+            "state": "in_progress",
+            "actual_start_time": fields.Datetime.now()
+        })
+        self.message_post(body=_("Route started by %s", self.env.user.name))
 
     def action_complete_route(self):
-        """Complete route execution"""
+        """Complete the route"""
         self.ensure_one()
         if self.state != "in_progress":
-            raise UserError(_("Only in-progress routes can be completed"))
-        incomplete_stops = self.route_stop_ids.filtered(
-            lambda s: s.status != "completed"
+            raise UserError(_("Can only complete routes in progress"))
+        
+        # Check if all requests are completed
+        incomplete_requests = self.pickup_request_ids.filtered(
+            lambda r: r.state not in ["completed", "delivered", "cancelled"]
         )
-        if incomplete_stops:
-            raise UserError(
-                _("Cannot complete route with incomplete stops: %s", ", ".join(incomplete_stops.mapped("name")))
-            )
-        self.write(
-            {
-                "state": "completed",
-                "actual_end_time": fields.Datetime.now(),
-                "completion_status": "complete",
-            }
-        )
-        self.message_post(body=_("Route execution completed successfully"))
+        if incomplete_requests:
+            raise UserError(_(
+                "Cannot complete route with incomplete requests: %s",
+                ", ".join(incomplete_requests.mapped("name"))
+            ))
+        
+        self.write({
+            "state": "completed",
+            "actual_end_time": fields.Datetime.now()
+        })
+        self.message_post(body=_("Route completed"))
 
     def action_cancel_route(self):
         """Cancel the route"""
         self.ensure_one()
         if self.state in ["completed"]:
-            raise UserError(_("Completed routes cannot be cancelled"))
+            raise UserError(_("Cannot cancel completed routes"))
+        
         self.write({"state": "cancelled"})
         self.message_post(body=_("Route cancelled"))
 
-    def action_reset_to_draft(self):
-        """Reset route to draft state"""
-        self.ensure_one()
-        if self.state in ["completed"]:
-            raise UserError(_("Completed routes cannot be reset"))
-        self.write(
-            {
-                "state": "draft",
-                "actual_start_time": False,
-                "actual_end_time": False,
-            }
-        )
-        self.message_post(body=_("Route reset to draft"))
-
-    def action_optimize_route(self):
-        """Optimize route stops for efficiency"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Optimize Route"),
-            "res_model": "pickup.route.optimize.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {"default_route_id": self.id},
-        }
-
-    def action_view_route_stops(self):
-        """View route stops"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Route Stops"),
-            "res_model": "pickup.route.stop",
-            "view_mode": "tree,form",
-            "domain": [("route_id", "=", self.id)],
-            "context": {"default_route_id": self.id},
-        }
-
     def action_view_pickup_requests(self):
-        """View associated pickup requests"""
+        """View pickup requests for this route"""
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Pickup Requests"),
+            "name": _("Pickup Requests - Route %s", self.name),
             "res_model": "pickup.request",
             "view_mode": "tree,form",
             "domain": [("route_id", "=", self.id)],
-            "context": {"default_route_id": self.id},
+            "context": {"default_route_id": self.id}
         }
 
-    def action_generate_route_sheet(self):
-        """Generate route sheet report"""
+    def action_optimize_route(self):
+        """Optimize route order for efficiency"""
         self.ensure_one()
-        return self.env.ref(
-            "records_management.action_report_route_sheet"
-        ).report_action(self)
+        if not self.route_stop_ids:
+            raise UserError(_("No route stops to optimize"))
+        
+        # Simple optimization - order by geographic proximity
+        # In a real implementation, you might use a more sophisticated algorithm
+        self._optimize_stop_order()
+        self.message_post(body=_("Route optimized"))
 
     # ============================================================================
-    # BUSINESS METHODS
+    # BUSINESS LOGIC METHODS
     # ============================================================================
-    def calculate_route_efficiency(self):
-        """Calculate overall route efficiency"""
+    def _generate_route_stops(self):
+        """Generate route stops based on pickup requests"""
         self.ensure_one()
-        efficiency_factors = {
-            "time_efficiency": 0.4,
-            "distance_efficiency": 0.3,
-            "fuel_efficiency": 0.2,
-            "completion_rate": 0.1,
-        }
-        total_score = 0.0
-        if self.estimated_duration and self.actual_duration > 0:
-            time_score = min(
-                100, (self.estimated_duration / self.actual_duration) * 100
-            )
-            total_score += time_score * efficiency_factors["time_efficiency"]
-        distance_score = 85.0
-        total_score += distance_score * efficiency_factors["distance_efficiency"]
-        if self.estimated_fuel_cost and self.actual_fuel_cost > 0:
-            fuel_score = min(
-                100, (self.estimated_fuel_cost / self.actual_fuel_cost) * 100
-            )
-            total_score += fuel_score * efficiency_factors["fuel_efficiency"]
-        if self.total_stops > 0:
-            completion_score = (self.completed_stops / self.total_stops) * 100
-            total_score += (
-                completion_score * efficiency_factors["completion_rate"]
-            )
-        return total_score
+        
+        # Clear existing stops
+        self.route_stop_ids.unlink()
+        
+        stop_vals = []
+        sequence = 10
+        for request in self.pickup_request_ids:
+            stop_vals.append({
+                "route_id": self.id,
+                "sequence": sequence,
+                "partner_id": request.partner_id.id,
+                "pickup_request_id": request.id,
+                "planned_arrival": request.pickup_date,
+                "address": request.pickup_address or request.partner_id.contact_address,
+                "notes": request.notes
+            })
+            sequence += 10
+        
+        if stop_vals:
+            self.env["pickup.route.stop"].create(stop_vals)
 
-    def assign_pickup_requests(self, pickup_request_ids):
-        """Assign pickup requests to this route"""
+    def _optimize_stop_order(self):
+        """Optimize the order of route stops"""
         self.ensure_one()
-        pickup_requests = self.env["pickup.request"].browse(pickup_request_ids)
-        for request in pickup_requests:
-            if request.state not in ["confirmed", "scheduled"]:
-                raise UserError(
-                    _(
-                        "Pickup request %s is not in a valid state for route assignment",
-                        request.name,
-                    )
-                )
-        pickup_requests.write({"route_id": self.id})
-        next_sequence = max(self.route_stop_ids.mapped("sequence") or [0]) + 1
-        for request in pickup_requests:
-            self.env["pickup.route.stop"].create(
-                {
-                    "route_id": self.id,
-                    "pickup_request_id": request.id,
-                    "location_id": request.pickup_location_id.id,
-                    "scheduled_time": request.scheduled_pickup_date,
-                    "sequence": next_sequence,
-                }
-            )
-            next_sequence += 1
-        self.message_post(
-            body=_(
-                "Assigned %d pickup requests to route", len(pickup_requests)
-            )
-        )
-
-    def get_route_summary(self):
-        """Get route summary for reporting"""
-        self.ensure_one()
-        return {
-            "route_name": self.name,
-            "route_date": self.route_date,
-            "driver": self.driver_id.name if self.driver_id else None,
-            "vehicle": self.vehicle_id.name if self.vehicle_id else None,
-            "total_stops": self.total_stops,
-            "completed_stops": self.completed_stops,
-            "efficiency_score": self.efficiency_score,
-            "on_time_performance": self.on_time_performance,
-            "status": self.state,
-        }
+        # This is a simplified optimization
+        # In practice, you might use geographic coordinates and routing algorithms
+        
+        stops = self.route_stop_ids.sorted(lambda s: s.partner_id.name)
+        sequence = 10
+        for stop in stops:
+            stop.sequence = sequence
+            sequence += 10
 
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
-    @api.constrains("start_time", "end_time")
-    def _check_route_times(self):
-        """Validate route start and end times"""
-        for record in self:
-            if (
-                record.start_time
-                and record.end_time
-                and record.start_time >= record.end_time
-            ):
-                raise ValidationError(_("Start time must be before end time"))
+    @api.constrains("planned_start_time", "planned_end_time")
+    def _check_planned_times(self):
+        for route in self:
+            if route.planned_start_time and route.planned_end_time:
+                if route.planned_start_time >= route.planned_end_time:
+                    raise ValidationError(_("Planned end time must be after start time"))
 
     @api.constrains("actual_start_time", "actual_end_time")
     def _check_actual_times(self):
-        """Validate actual start and end times"""
-        for record in self:
-            if (
-                record.actual_start_time
-                and record.actual_end_time
-                and record.actual_start_time >= record.actual_end_time
-            ):
-                raise ValidationError(
-                    _("Actual start time must be before actual end time")
-                )
+        for route in self:
+            if route.actual_start_time and route.actual_end_time:
+                if route.actual_start_time >= route.actual_end_time:
+                    raise ValidationError(_("Actual end time must be after start time"))
 
-    @api.constrains("total_distance")
-    def _check_distance(self):
-        """Validate total distance is positive"""
-        for record in self:
-            if record.total_distance and record.total_distance <= 0:
-                raise ValidationError(_("Total distance must be positive"))
+    @api.constrains("pickup_request_ids")
+    def _check_pickup_requests_same_date(self):
+        for route in self:
+            if route.pickup_request_ids:
+                request_dates = route.pickup_request_ids.mapped("pickup_date")
+                if len(set(request_dates)) > 1:
+                    raise ValidationError(_(
+                        "All pickup requests on a route must have the same pickup date"
+                    ))
 
     # ============================================================================
-    # UTILITY METHODS
+    # OVERRIDE METHODS
     # ============================================================================
-    def name_get(self):
-        """Custom name display"""
-        result = []
-        for record in self:
-            name_parts = [record.name]
-            if record.route_date:
-                name_parts.append(f"({record.route_date})")
-            if record.driver_id:
-                name_parts.append(f"- {record.driver_id.name}")
-            result.append((record.id, " ".join(name_parts)))
-        return result
-
-    @api.model
-    def _search_name(
-        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
-        """Enhanced search by name, driver, or vehicle"""
-        args = args or []
-        domain = []
-        if name:
-            domain = [
-                "|",
-                "|",
-                ("name", operator, name),
-                ("driver_id.name", operator, name),
-                ("vehicle_id.name", operator, name),
-            ]
-        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
-
-
-class PickupRouteStop(models.Model):
-    """Individual stops within a pickup route"""
-
-    _name = "pickup.route.stop"
-    _description = "Pickup Route Stop"
-    _order = "route_id, sequence, id"
-
-    route_id = fields.Many2one(
-        "pickup.route", string="Route", required=True, ondelete="cascade"
-    )
-    pickup_request_id = fields.Many2one(
-        "pickup.request",
-        string="Pickup Request",
-        help="Associated pickup request",
-    )
-    sequence = fields.Integer(string="Sequence", default=10)
-    name = fields.Char(string="Stop Name", compute="_compute_name", store=True)
-    location_id = fields.Many2one(
-        "records.location", string="Location", required=True
-    )
-    address = fields.Text(string="Address", related="location_id.full_address")
-    scheduled_time = fields.Datetime(
-        string="Scheduled Time", help="Scheduled arrival time"
-    )
-    actual_arrival_time = fields.Datetime(
-        string="Actual Arrival Time", help="Actual arrival time at stop"
-    )
-    departure_time = fields.Datetime(
-        string="Departure Time", help="Time of departure from stop"
-    )
-    status = fields.Selection(
-        [
-            ("pending", "Pending"),
-            ("in_progress", "In Progress"),
-            ("completed", "Completed"),
-            ("skipped", "Skipped"),
-            ("failed", "Failed"),
-        ],
-        string="Status",
-        default="pending",
-    )
-    estimated_service_time = fields.Float(
-        string="Estimated Service Time (minutes)",
-        help="Estimated time to complete service at stop",
-    )
-    actual_service_time = fields.Float(
-        string="Actual Service Time (minutes)",
-        compute="_compute_actual_service_time",
-        store=True,
-    )
-    notes = fields.Text(string="Notes")
-
-    @api.depends("pickup_request_id", "location_id")
-    def _compute_name(self):
-        """Compute stop name"""
-        for record in self:
-            if record.pickup_request_id:
-                record.name = _("Stop: %s", record.pickup_request_id.name)
-            elif record.location_id:
-                record.name = _("Stop: %s", record.location_id.name)
-            else:
-                record.name = _("Stop %s", record.id)
-
-    @api.depends("actual_arrival_time", "departure_time")
-    def _compute_actual_service_time(self):
-        """Calculate actual service time in minutes"""
-        for record in self:
-            if record.actual_arrival_time and record.departure_time:
-                delta = record.departure_time - record.actual_arrival_time
-                record.actual_service_time = delta.total_seconds() / 60
-            else:
-                record.actual_service_time = 0.0
-
-    def action_start_service(self):
-        """Start service at this stop"""
-
-        self.ensure_one()
-        self.write(
-            {
-                "status": "in_progress",
-                "actual_arrival_time": fields.Datetime.now(),
-            }
-        )
-
-    def action_complete_service(self):
-        """Complete service at this stop"""
-
-        self.ensure_one()
-        self.write(
-            {
-                "status": "completed",
-                "departure_time": fields.Datetime.now(),
-            }
-        )
-
-    def action_skip_stop(self):
-        """Skip this stop"""
-
-        self.ensure_one()
-        self.write({"status": "skipped"})
-
-
-class PickupRouteOptimizeWizard(models.TransientModel):
-    """Wizard for optimizing pickup routes"""
-
-    _name = "pickup.route.optimize.wizard"
-    _description = "Pickup Route Optimization Wizard"
-
-    route_id = fields.Many2one("pickup.route", string="Route", required=True)
-    optimization_method = fields.Selection(
-        [
-            ("distance", "Minimize Distance"),
-            ("time", "Minimize Time"),
-            ("fuel", "Minimize Fuel Cost"),
-            ("balanced", "Balanced Optimization"),
-        ],
-        string="Optimization Method",
-        default="balanced",
-        required=True,
-    )
-    consider_traffic = fields.Boolean(
-        string="Consider Traffic",
-        default=True,
-        help="Include traffic conditions in optimization",
-    )
-    consider_time_windows = fields.Boolean(
-        string="Consider Time Windows",
-        default=True,
-        help="Respect customer time windows",
-    )
-    notes = fields.Text(string="Optimization Notes")
-
-    def action_optimize_route(self):
-        """Optimize the route stops"""
-
-        self.ensure_one()
-
-        # This would integrate with external routing APIs
-        # For now, implement a simple distance-based optimization
-
-        stops = self.route_id.route_stop_ids.sorted("sequence")
-
-        # Placeholder optimization logic
-        # In real implementation, this would call external routing services
-        optimized_sequence = 1
-        for stop in stops:
-            stop.write({"sequence": optimized_sequence})
-            optimized_sequence += 1
-
-        self.route_id.message_post(
-            body=_(
-                "Route optimized using %s method",
-                dict(self._fields["optimization_method"].selection)[
-                    self.optimization_method
-                ],
-            )
-        )
-
-        return {"type": "ir.actions.act_window_close"}
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("name", "New") == "New":
+                vals["name"] = self.env["ir.sequence"].next_by_code("pickup.route") or "New"
+        return super().create(vals_list)

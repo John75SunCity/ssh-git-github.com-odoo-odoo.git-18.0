@@ -843,60 +843,6 @@ class PickupRequestItem(models.Model):
                 raise ValidationError(_("Actual quantity must be positive"))
 
 
-class PickupRoute(models.Model):
-    """Pickup routes for optimizing pickup schedules"""
-
-    _name = "pickup.route"
-    _description = "Pickup Route"
-    _order = "route_date desc, name"
-
-    name = fields.Char(string="Route Name", required=True)
-    route_date = fields.Date(
-        string="Route Date", required=True, default=fields.Date.today
-    )
-
-    driver_id = fields.Many2one("res.users", string="Driver", required=True)
-    vehicle_id = fields.Many2one("records.vehicle", string="Vehicle", required=True)
-    state = fields.Selection(
-        [
-            ("planned", "Planned"),
-            ("in_progress", "In Progress"),
-            ("completed", "Completed"),
-            ("cancelled", "Cancelled"),
-        ],
-        string="Status",
-        default="planned",
-    )
-
-    pickup_request_ids = fields.One2many(
-        "pickup.request", "route_id", string="Pickup Requests"
-    )
-
-    estimated_duration = fields.Float(string="Estimated Duration (hours)")
-    actual_duration = fields.Float(string="Actual Duration (hours)")
-    notes = fields.Text(string="Route Notes")
-
-    def action_start_route(self):
-        """Start route execution"""
-
-        self.ensure_one()
-        if self.state != "planned":
-            raise UserError(_("Only planned routes can be started"))
-
-        self.write({"state": "in_progress"})
-        self.message_post(body=_("Route started"))
-
-    def action_complete_route(self):
-        """Complete route execution"""
-
-        self.ensure_one()
-        if self.state != "in_progress":
-            raise UserError(_("Only in-progress routes can be completed"))
-
-        self.write({"state": "completed"})
-        self.message_post(body=_("Route completed"))
-
-
 class PickupScheduleWizard(models.TransientModel):
     """Wizard for scheduling pickup requests"""
 
