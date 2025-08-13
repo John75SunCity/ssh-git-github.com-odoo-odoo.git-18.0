@@ -6,8 +6,6 @@ import logging
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
-
-
 _logger = logging.getLogger(__name__)
 
 
@@ -27,9 +25,8 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
             "FSM Reschedule Wizard is disabled - industry_fsm module not available"
         )
 
-
-# TODO: When industry_fsm is available, restore the original FSM reschedule wizard code
-# The code includes task_id Many2one field and action_confirm_reschedule method
+    # NOTE: When industry_fsm is available, restore the original FSM reschedule wizard code
+    # The code includes task_id Many2one field and action_confirm_reschedule method
 
     def _compute_route_impact(self):
         """Analyze impact on routes and other scheduled tasks"""
@@ -50,8 +47,9 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
 
                 # Check for route optimization impact
                 if record.task_id.partner_id:
+                    # Fix: Use task parameter instead of cell variable
                     nearby_tasks = same_day_tasks.filtered(
-                        lambda t: t.partner_id and t.partner_id.city == record.task_id.partner_id.city
+                        lambda task: task.partner_id and task.partner_id.city == record.task_id.partner_id.city
                     )
                     if nearby_tasks:
                         impact_notes.append(_("Route optimization possible with %d nearby tasks", len(nearby_tasks)))
@@ -60,7 +58,6 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
 
     def action_reject_request(self):
         """Reject the reschedule request"""
-
         self.ensure_one()
 
         if not self.env.user.has_group('records_management.group_records_manager'):
@@ -77,7 +74,6 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
 
     def action_execute_reschedule(self):
         """Execute the reschedule action"""
-
         self.ensure_one()
 
         original_date = self.task_id.planned_date_begin
@@ -122,7 +118,7 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
         formatted_original_date = original_date.strftime('%m/%d %I:%M %p') if original_date else _("Not specified")
         formatted_new_date = self.new_date.strftime('%m/%d %I:%M %p')
 
-        # Email body
+        # Email body with proper translation
         email_body = _("""
             Dear Customer,
 
@@ -137,7 +133,7 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
 
             Best regards,
             Your Service Team
-        """) % (formatted_original_date, formatted_new_date, subject, self.reason_details)
+        """, formatted_original_date, formatted_new_date, subject, self.reason_details)
 
         # Send email
         self.partner_id.message_post(
@@ -174,8 +170,6 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
         }
 
         self.env['fsm.notification.manager'].create(notification_data)
-
-    # ============================================================================
 
     def _create_audit_log(self, original_date):
         """Create comprehensive audit log for the reschedule"""
@@ -226,6 +220,12 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
                 vals['name'] = self.env['ir.sequence'].next_by_code('fsm.reschedule.wizard') or _('New Reschedule Request')
         return super().create(vals_list)
 
+    def unlink(self):
+        """Prevent deletion of completed reschedule records"""
+        for record in self:
+            if record.state == 'completed':
+                raise UserError(_("Cannot delete completed reschedule records. They are required for audit trail."))
+        return super().unlink()
     def unlink(self):
         """Prevent deletion of completed reschedule records"""
         for record in self:

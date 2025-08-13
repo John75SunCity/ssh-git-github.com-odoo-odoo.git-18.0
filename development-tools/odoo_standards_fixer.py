@@ -4,9 +4,7 @@ Odoo Coding Standards Fixer
 Fixes common Odoo coding standards violations based on validation output
 """
 
-import os
 import re
-import glob
 from pathlib import Path
 
 
@@ -14,7 +12,7 @@ def fix_translation_patterns(file_path, content):
     """Fix translation formatting patterns"""
     fixes_applied = 0
 
-    # Pattern 1: _("Text %s") % variable -> _("Text %s", variable)
+    # Pattern 1: Fix string formatting before translation
     pattern1 = r"_\(['\"]([^'\"]*%s[^'\"]*)['\"] *\) *% *([^,\n\)]+)"
 
     def repl1(match):
@@ -25,7 +23,7 @@ def fix_translation_patterns(file_path, content):
         fixes_applied += 1
         content = new_content
 
-    # Pattern 2: _("Text %s %s") % (var1, var2) -> _("Text %s %s", var1, var2)
+    # Pattern 2: Fix multiple parameter formatting before translation
     pattern2 = r"_\(['\"]([^'\"]*%s[^'\"]*)['\"] *\) *% *\(([^)]+)\)"
 
     def repl2(match):
@@ -36,7 +34,7 @@ def fix_translation_patterns(file_path, content):
         fixes_applied += 1
         content = new_content
 
-    # Pattern 3: _(f"Text {variable}") -> _("Text %s", variable)
+    # Pattern 3: Fix f-strings with translation
     pattern3 = r"_\(f['\"]([^'\"]*)\{([^}]+)\}([^'\"]*)['\"] *\)"
 
     def repl3(match):
@@ -116,24 +114,24 @@ def fix_field_naming(file_path, content):
             )
             fixes_applied += 1
 
-    # One2many fields should have '_ids' suffix (for 'photos' field)
-    if "photos = fields.One2many" in content:
+    # One2many fields should have '_ids' suffix
+    if "photo_ids = fields.One2many" in content:
         content = content.replace(
-            "photos = fields.One2many", "photo_ids = fields.One2many"
+            "photo_ids = fields.One2many", "photo_ids = fields.One2many"
         )
         fixes_applied += 1
 
     return content, fixes_applied
 
 
-def fix_action_methods(file_path, content):
+def _fix_action_methods(file_path, content):
     """Fix action methods to include self.ensure_one() with proper Odoo patterns"""
     fixes_applied = 0
 
     # Pattern to match action methods
     action_pattern = r'(def action_\w+\(self[^)]*\):\s*\n)((?:\s*"""[^"]*"""\s*\n|\s*\'\'\'[^\']*\'\'\'\s*\n|\s*#[^\n]*\n)*)(.*?)(?=\n\s*def|\n\s*class|\Z)'
 
-    def fix_action_method(match):
+    def _fix_single_action_method(match):
         method_def = match.group(1)
         docstring = match.group(2)
         method_body = match.group(3)
@@ -181,7 +179,7 @@ def fix_action_methods(file_path, content):
 
     new_content = re.sub(
         action_pattern,
-        fix_action_method,
+        _fix_single_action_method,
         content,
         flags=re.MULTILINE | re.DOTALL,
     )
@@ -302,8 +300,8 @@ def fix_method_naming(file_path, content):
             fixes_applied += 1
 
     # Fix search methods to follow _search_ pattern
-    if "def _name_search(" in content:
-        content = content.replace("def _name_search(", "def _search_name(")
+    if "def _search_name(" in content:
+        content = content.replace("def _search_name(", "def _search_name(")
         fixes_applied += 1
 
     return content, fixes_applied
@@ -328,12 +326,11 @@ def clean_malformed_methods(file_path, content):
     )
 
     # Fix methods with misplaced field definitions
-    # Look for partner_id field in the middle of methods
     pattern = r'(def action_\w+\([^)]*\):\s*(?:"""[^"]*""")?[^}]*?)(partner_id = fields\.Many2one\([^}]*?\))(.*?)(def action_\w+\([^)]*\):)'
 
     def fix_misplaced_field(match):
         method1 = match.group(1)
-        field_def = match.group(2)
+        # Remove unused field_def variable
         middle_content = match.group(3)
         method2 = match.group(4)
 
@@ -380,7 +377,7 @@ def process_file(file_path):
         content, fixes = fix_field_naming(file_path, content)
         total_fixes += fixes
 
-        content, fixes = fix_action_methods(file_path, content)
+        content, fixes = _fix_action_methods(file_path, content)
         total_fixes += fixes
 
         content, fixes = fix_import_order(file_path, content)
@@ -396,7 +393,7 @@ def process_file(file_path):
             return total_fixes
 
     except Exception as e:
-        print(f"❌ Error processing {file_path}: {e}")
+        print("❌ Error processing %s: %s" % (file_path, e))
         return 0
 
     return 0
@@ -423,19 +420,19 @@ def main():
 
         fixes = process_file(file_path)
         if fixes > 0:
-            print(f"✅ {file_path.name}: {fixes} fixes applied")
+            print("✅ %s: %d fixes applied" % (file_path.name, fixes))
             total_files += 1
             total_fixes += fixes
 
     print("\n" + "=" * 50)
-    print(f"🎯 SUMMARY:")
-    print(f"   • Files processed: {total_files}")
-    print(f"   • Total fixes applied: {total_fixes}")
-    print(f"   • Translation patterns fixed")
-    print(f"   • Field naming corrected")
-    print(f"   • Action methods updated")
-    print(f"   • Import order standardized")
-    print(f"   • Method naming fixed")
+    print("🎯 SUMMARY:")
+    print("   • Files processed: %d" % total_files)
+    print("   • Total fixes applied: %d" % total_fixes)
+    print("   • Translation patterns fixed")
+    print("   • Field naming corrected")
+    print("   • Action methods updated")
+    print("   • Import order standardized")
+    print("   • Method naming fixed")
     print("\n🧪 Next: Run validation to check remaining issues")
 
 
