@@ -47,11 +47,11 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
-
 import pytz
+
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
-from odoo.tools import email_validate
+from odoo.tools.misc import email_normalize
 
 
 
@@ -643,7 +643,12 @@ class RecordsBillingContact(models.Model):
         """Validate email format using Odoo's utility"""
         for record in self:
             if record.email:
-                if not email_validate(record.email):
+                # Use email_normalize to validate and normalize email
+                try:
+                    normalized = email_normalize(record.email)
+                    if not normalized:
+                        raise ValidationError(_("Invalid email format: %s", record.email))
+                except Exception:
                     raise ValidationError(_("Invalid email format: %s", record.email))
 
     @api.constrains("preferred_method", "email", "phone")

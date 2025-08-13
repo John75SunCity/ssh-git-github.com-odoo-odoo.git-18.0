@@ -532,14 +532,15 @@ class SurveyUserInput(models.Model):
                 'timestamp': fields.Datetime.now(),
             })
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """
         Override create to add audit logging
         """
-        record = super().create(vals)
-        record._create_naid_audit_log('survey_response_created')
-        return record
+        records = super().create(vals_list)
+        for record in records:
+            record._create_naid_audit_log('survey_response_created')
+        return records
 
     def write(self, vals):
         """
