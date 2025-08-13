@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_location">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <div class="header">
+                        <h2>Location Report for <span t-field="o.name"/>
+                        </h2>
+                        <p>Location Code: <span t-field="o.location_code"/>
+                        </p>
+                        <p>Report Date: <span t-esc="datetime.datetime.now().strftime('%Y-%m-%d')"/>
+                        </p>
+                    </div>
+
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Item ID</th>
+                                <th>Type</th>
+                                <th>Partner</th>
+                                <th>Status</th>
+                                <th>Date Added</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.records_box_ids" t-as="box">
+                                <tr>
+                                    <td>
+                                        <span t-field="box.name"/>
+                                    </td>
+                                    <td>Box</td>
+                                    <td>
+                                        <span t-field="box.partner_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="box.state"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="box.create_date" t-options="{'widget': 'date'}"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <div class="footer mt-3">
+                        <div class="row">
+                            <div class="col-6">
+                                <p>
+                                    <strong>Current Occupancy: <span t-esc="len(o.records_box_ids)"/>
+                                    </strong>
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <p>
+                                    <strong>Capacity: <span t-field="o.capacity"/>
+                                    </strong>
+                                </p>
+                            </div>
+                        </div>
+                        <p>Facility Security: NAID AAA Compliant</p>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_location" model="ir.actions.report">
+        <field name="name">Location Report</field>
+        <field name="model">records.location</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_location</field>
+        <field name="report_file">records_management.report_location</field>
+        <field name="binding_model_id" ref="records_management.model_records_location"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

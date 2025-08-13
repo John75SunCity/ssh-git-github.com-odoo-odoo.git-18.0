@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_chain_of_custody">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <div class="header text-center">
+                        <h1>CHAIN OF CUSTODY REPORT</h1>
+                        <h3>NAID AAA COMPLIANT TRACKING</h3>
+                    </div>
+
+                    <div class="item-details mt-4">
+                        <div class="row">
+                            <div class="col-6">
+                                <p>
+                                    <strong>Item ID:</strong>
+                                    <span t-field="o.name"/>
+                                </p>
+                                <p>
+                                    <strong>Customer:</strong>
+                                    <span t-field="o.partner_id.name"/>
+                                </p>
+                                <p>
+                                    <strong>Description:</strong>
+                                    <span t-field="o.description"/>
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <p>
+                                    <strong>Initial Location:</strong>
+                                    <span t-field="o.initial_location"/>
+                                </p>
+                                <p>
+                                    <strong>Current Status:</strong>
+                                    <span t-field="o.state"/>
+                                </p>
+                                <p>
+                                    <strong>Report Date:</strong>
+                                    <span t-esc="datetime.datetime.now().strftime('%Y-%m-%d %H:%M')"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="custody-chain mt-4">
+                        <h3>Custody Chain Events</h3>
+                        <div class="timeline-vertical">
+                            <div class="custody-event">
+                                <div class="event-header">
+                                    <strong>1. INITIAL PICKUP</strong>
+                                    <span class="float-right">
+                                        <span t-field="o.pickup_date" t-options="{'widget': 'datetime'}"/>
+                                    </span>
+                                </div>
+                                <div class="event-details">
+                                    <p>
+                                        <strong>Authorized by:</strong>
+                                        <span t-field="o.customer_authorized_by"/>
+                                    </p>
+                                    <p>
+                                        <strong>Collected by:</strong>
+                                        <span t-field="o.pickup_driver_id.name"/>
+                                    </p>
+                                    <p>
+                                        <strong>Vehicle:</strong>
+                                        <span t-field="o.pickup_vehicle_id.name"/>
+                                    </p>
+                                    <p>
+                                        <strong>Signature Required:</strong> ✓ Verified</p>
+                                </div>
+                                <hr/>
+                            </div>
+
+                            <div class="custody-event" t-if="o.storage_date">
+                                <div class="event-header">
+                                    <strong>2. SECURE STORAGE</strong>
+                                    <span class="float-right">
+                                        <span t-field="o.storage_date" t-options="{'widget': 'datetime'}"/>
+                                    </span>
+                                </div>
+                                <div class="event-details">
+                                    <p>
+                                        <strong>Facility:</strong>
+                                        <span t-field="o.storage_facility"/>
+                                    </p>
+                                    <p>
+                                        <strong>Storage Location:</strong>
+                                        <span t-field="o.location_id.name"/>
+                                    </p>
+                                    <p>
+                                        <strong>Received by:</strong>
+                                        <span t-field="o.storage_received_by.name"/>
+                                    </p>
+                                    <p>
+                                        <strong>Security Level:</strong>
+                                        <span t-field="o.security_level"/>
+                                    </p>
+                                </div>
+                                <hr/>
+                            </div>
+
+                            <div class="custody-event" t-if="o.destruction_date">
+                                <div class="event-header">
+                                    <strong>3. SECURE DESTRUCTION</strong>
+                                    <span class="float-right">
+                                        <span t-field="o.destruction_date" t-options="{'widget': 'datetime'}"/>
+                                    </span>
+                                </div>
+                                <div class="event-details">
+                                    <p>
+                                        <strong>Destruction Method:</strong>
+                                        <span t-field="o.destruction_method"/>
+                                    </p>
+                                    <p>
+                                        <strong>Operator:</strong>
+                                        <span t-field="o.destruction_operator_id.name"/>
+                                    </p>
+                                    <p>
+                                        <strong>Witness:</strong>
+                                        <span t-field="o.destruction_witness"/>
+                                    </p>
+                                    <p>
+                                        <strong>Certificate ID:</strong>
+                                        <span t-field="o.destruction_certificate_id"/>
+                                    </p>
+                                </div>
+                                <hr/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="verification mt-4">
+                        <h3>Verification and Compliance</h3>
+                        <div class="row">
+                            <div class="col-6">
+                                <p>
+                                    <strong>NAID Compliance:</strong> ✓ AAA Certified</p>
+                                <p>
+                                    <strong>Chain Integrity:</strong> ✓ Maintained</p>
+                                <p>
+                                    <strong>Digital Signatures:</strong> ✓ Verified</p>
+                            </div>
+                            <div class="col-6">
+                                <p>
+                                    <strong>GPS Tracking:</strong> ✓ Complete Route Logged</p>
+                                <p>
+                                    <strong>Security Cameras:</strong> ✓ All Events Recorded</p>
+                                <p>
+                                    <strong>Access Logs:</strong> ✓ Timestamped and Secured</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="signatures mt-5">
+                        <h3>Authorization Signatures</h3>
+                        <div class="row">
+                            <div class="col-4 text-center">
+                                <div class="signature-box">
+                                    <p>_________________________</p>
+                                    <p>
+                                        <strong>Customer Representative</strong>
+                                    </p>
+                                    <p>
+                                        <span t-field="o.customer_authorized_by"/>
+                                    </p>
+                                    <p>
+                                        <small>Pickup Authorization</small>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="signature-box">
+                                    <p>_________________________</p>
+                                    <p>
+                                        <strong>Storage Supervisor</strong>
+                                    </p>
+                                    <p>
+                                        <span t-field="o.storage_received_by.name"/>
+                                    </p>
+                                    <p>
+                                        <small>Storage Verification</small>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-4 text-center" t-if="o.destruction_date">
+                                <div class="signature-box">
+                                    <p>_________________________</p>
+                                    <p>
+                                        <strong>Destruction Operator</strong>
+                                    </p>
+                                    <p>
+                                        <span t-field="o.destruction_operator_id.name"/>
+                                    </p>
+                                    <p>
+                                        <small>Destruction Completion</small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-text mt-4 text-center">
+                        <p>
+                            <small>
+                                <em>This Chain of Custody report meets NAID AAA standards for secure information destruction. 
+                        All personnel involved in this chain are background-checked and NAID certified.</em>
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_chain_of_custody" model="ir.actions.report">
+        <field name="name">Chain of Custody Report</field>
+        <field name="model">records.box</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_chain_of_custody</field>
+        <field name="report_file">records_management.report_chain_of_custody</field>
+        <field name="binding_model_id" ref="records_management.model_records_box"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

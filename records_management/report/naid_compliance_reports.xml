@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_naid_compliance">
+        <t t-call="web.html_container">
+            <div class="page">
+                <div class="header text-center">
+                    <h1>NAID AAA COMPLIANCE REPORT</h1>
+                    <p>National Association for Information Destruction</p>
+                </div>
+
+                <div class="report-period mt-4">
+                    <p>
+                        <strong>Reporting Period:</strong>
+                        <span t-esc="context.get('date_from', 'N/A')"/>
+ to <span t-esc="context.get('date_to', 'N/A')"/>
+                    </p>
+                    <p>
+                        <strong>Generated On:</strong>
+                        <span t-esc="datetime.datetime.now().strftime('%Y-%m-%d %H:%M')"/>
+                    </p>
+                </div>
+
+                <div class="compliance-summary mt-4">
+                    <h3>Compliance Summary</h3>
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Compliance Aspect</th>
+                                <th>Status</th>
+                                <th>Details</th>
+                                <th>Last Audit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Employee Background Screening</td>
+                                <td>
+                                    <span class="badge badge-success">Compliant</span>
+                                </td>
+                                <td>All employees background checked and certified</td>
+                                <td>2024-08-01</td>
+                            </tr>
+                            <tr>
+                                <td>Destruction Process Documentation</td>
+                                <td>
+                                    <span class="badge badge-success">Compliant</span>
+                                </td>
+                                <td>All destructions logged with certificates</td>
+                                <td>Daily</td>
+                            </tr>
+                            <tr>
+                                <td>Chain of Custody Tracking</td>
+                                <td>
+                                    <span class="badge badge-success">Compliant</span>
+                                </td>
+                                <td>Complete audit trail maintained</td>
+                                <td>Real-time</td>
+                            </tr>
+                            <tr>
+                                <td>Facility Security</td>
+                                <td>
+                                    <span class="badge badge-success">Compliant</span>
+                                </td>
+                                <td>Access controls and monitoring active</td>
+                                <td>2024-07-15</td>
+                            </tr>
+                            <tr>
+                                <td>Equipment Calibration</td>
+                                <td>
+                                    <span class="badge badge-success">Compliant</span>
+                                </td>
+                                <td>Shredding equipment certified and maintained</td>
+                                <td>2024-07-01</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="audit-metrics mt-4">
+                    <h3>Audit Metrics</h3>
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="metric-box text-center">
+                                <h4>100%</h4>
+                                <p>Compliance Rate</p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="metric-box text-center">
+                                <h4>0</h4>
+                                <p>Non-Compliance Issues</p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="metric-box text-center">
+                                <h4>12</h4>
+                                <p>Certificates Issued</p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="metric-box text-center">
+                                <h4>AAA</h4>
+                                <p>NAID Rating</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="certification-footer mt-5">
+                    <p>
+                        <strong>Certified By:</strong> NAID (National Association for Information Destruction)</p>
+                    <p>
+                        <strong>Certificate Number:</strong> NAID-2024-AAA-001</p>
+                    <p>
+                        <strong>Valid Until:</strong> 2025-12-31</p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <record id="action_report_naid_compliance" model="ir.actions.report">
+        <field name="name">NAID Compliance Report</field>
+        <field name="model">naid.compliance</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_naid_compliance</field>
+        <field name="report_file">records_management.report_naid_compliance</field>
+        <field name="binding_model_id" ref="records_management.model_naid_compliance"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

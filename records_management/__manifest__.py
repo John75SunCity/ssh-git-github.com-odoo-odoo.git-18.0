@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.10.0.1",  # Bumped version to trigger module reload
+    "version": "18.0.11.0.0",  # Bumped for comprehensive reports implementation
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": """
@@ -411,7 +411,13 @@
         "#Viewsviews/records_management_base_menus.xml",
         "report/bale_label_report.xml",
         "report/customer_inventory_report.xml",
+        "report/location_report.xml",
         "report/destruction_certificate_report.xml",
+        "report/naid_compliance_report.xml",
+        "report/container_movement_report.xml",
+        "report/revenue_forecasting_report.xml",
+        "report/chain_of_custody_report.xml",
+        "report/additional_reports.xml",
         "report/portal_audit_report.xml",
         "templates/my_portal_inventory.xml",
         "templates/portal_billing_template.xml",
@@ -419,7 +425,7 @@
         "templates/portal_document_retrieval.xml",
         "templates/portal_feedback_template.xml",
         "templates/portal_inventory_template.xml",
-        "templates/portal_quote_template.xml"
+        "templates/portal_quote_template.xml",
     ],
     "demo": [
         "demo/demo_records.xml",
