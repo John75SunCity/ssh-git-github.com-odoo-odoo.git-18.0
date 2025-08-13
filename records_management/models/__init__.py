@@ -371,3 +371,6 @@ try:
     _logger.info("RM module configurator loaded successfully")
 except (ImportError, AttributeError) as e:
     _logger.warning("RM module configurator not available: %s", str(e))
+from . import file_retrieval_item
+from . import file_retrieveal_work_order_item_py
+from . import file_retrieval_work_order_item

@@ -4,12 +4,8 @@ Survey User Input Extension for Records Management
 Extends Odoo's survey functionality to integrate with customer feedback system
 """
 
-import logging
-
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
-
-_logger = logging.getLogger(__name__)
 
 
 class SurveyUserInput(models.Model):
@@ -323,10 +319,9 @@ class SurveyUserInput(models.Model):
     @api.depends('user_input_line_ids', 'user_input_line_ids.suggested_answer_id')
     def _compute_satisfaction_metrics(self):
         """
-        Compute detailed satisfaction metrics from survey responses
+        Compute satisfaction metrics: overall satisfaction, service quality, timeliness, and communication ratings from survey responses.
         """
         for record in self:
-            # ...existing code for satisfaction metrics computation...
             record.overall_satisfaction = self._calculate_overall_satisfaction(record)
             record.service_quality_rating = self._calculate_service_quality(record)
             record.timeliness_rating = self._calculate_timeliness(record)
@@ -354,18 +349,68 @@ class SurveyUserInput(models.Model):
         return sum(ratings) / len(ratings) if ratings else 0.0
 
     def _calculate_service_quality(self, record):
-        """Calculate service quality rating"""
-        # Implementation for service quality calculation
+        """Calculate service quality rating from specific questions"""
+        for line in record.user_input_line_ids:
+            if line.question_id.question_type in [
+                "simple_choice",
+                "multiple_choice",
+            ]:
+                if line.suggested_answer_id and line.suggested_answer_id.value:
+                    try:
+                        rating = float(line.suggested_answer_id.value)
+                        if 1 <= rating <= 5:
+                            question_title = line.question_id.title.lower()
+                            if (
+                                "quality" in question_title
+                                or "service" in question_title
+                            ):
+                                return rating
+                    except (ValueError, TypeError):
+                        pass
         return 0.0
 
     def _calculate_timeliness(self, record):
-        """Calculate timeliness rating"""
-        # Implementation for timeliness calculation
+        """Calculate timeliness rating from specific questions"""
+        for line in record.user_input_line_ids:
+            if line.question_id.question_type in [
+                "simple_choice",
+                "multiple_choice",
+            ]:
+                if line.suggested_answer_id and line.suggested_answer_id.value:
+                    try:
+                        rating = float(line.suggested_answer_id.value)
+                        if 1 <= rating <= 5:
+                            question_title = line.question_id.title.lower()
+                            if (
+                                "time" in question_title
+                                or "prompt" in question_title
+                                or "schedule" in question_title
+                            ):
+                                return rating
+                    except (ValueError, TypeError):
+                        pass
         return 0.0
 
     def _calculate_communication(self, record):
-        """Calculate communication rating"""
-        # Implementation for communication calculation
+        """Calculate communication rating from specific questions"""
+        for line in record.user_input_line_ids:
+            if line.question_id.question_type in [
+                "simple_choice",
+                "multiple_choice",
+            ]:
+                if line.suggested_answer_id and line.suggested_answer_id.value:
+                    try:
+                        rating = float(line.suggested_answer_id.value)
+                        if 1 <= rating <= 5:
+                            question_title = line.question_id.title.lower()
+                            if (
+                                "communication" in question_title
+                                or "staff" in question_title
+                                or "support" in question_title
+                            ):
+                                return rating
+                    except (ValueError, TypeError):
+                        pass
         return 0.0
 
     # ============================================================================

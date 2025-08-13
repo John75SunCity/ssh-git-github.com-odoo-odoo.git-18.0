@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_file_retrieval_work_order" model="ir.actions.report">
-        <field name="name">File Retrieval Work Order</field>
-        <field name="model">file.retrieval.work.order</field>
+    <record id="report_field_label_customization" model="ir.actions.report">
+        <field name="name">Field Label Customization</field>
+        <field name="model">field.label.customization</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">addon.report_file_retrieval_work_order_view</field>
-        <field name="report_file">addon.report_file_retrieval_work_order</field>
+        <field name="report_name">addon.report_field_label_customization_view</field>
+        <field name="report_file">addon.report_field_label_customization</field>
         <field name="print_report_name">'%s' % object.name</field>
-        <field name="binding_model_id" ref="model_file_retrieval_work_order"/>
+        <field name="binding_model_id" ref="model_field_label_customization"/>
         <field name="binding_type">report</field>
     </record>
 
-    <template id="report_file_retrieval_work_order_view">
+    <template id="report_field_label_customization_view">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">

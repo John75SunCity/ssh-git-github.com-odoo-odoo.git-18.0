@@ -6,22 +6,6 @@ This module manages work orders for retrieving specific physical files from with
 It handles the complete lifecycle from file identification to customer delivery,
 including file location tracking, quality control, and customer notifications.
 
-Key Features:
-- Specific file identification and retrieval from containers
-- File condition assessment and quality control
-- Integration with container management system
-- Customer delivery coordination and tracking
-- File handling equipment and team management
-- Detailed pricing and cost tracking for file-level services
-
-Business Processes:
-1. Work Order Creation: Generate from customer requests for specific files
-2. File Location: Identify specific files within containers using detailed records
-3. Container Access: Coordinate access to containers containing requested files
-4. File Retrieval: Carefully extract specific files with quality checks
-5. Delivery Preparation: Package and prepare files for customer delivery
-6. Customer Delivery: Handle delivery logistics and customer confirmation
-
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
@@ -35,7 +19,7 @@ from odoo.exceptions import UserError, ValidationError
 class FileRetrievalWorkOrder(models.Model):
     _name = "file.retrieval.work.order"
     _description = "File Retrieval Work Order"
-    _inherit = ['mail.thread', 'mail.activity.mixin', 'work.order.integration.mixin']
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "priority desc, scheduled_date asc, name"
     _rec_name = "display_name"
 
@@ -125,10 +109,10 @@ class FileRetrievalWorkOrder(models.Model):
     # FILE RETRIEVAL ITEMS
     # ============================================================================
     retrieval_item_ids = fields.One2many(
-        "file.retrieval.item",
+        "file.retrieval.work.order.item",
         "work_order_id",
         string="Retrieval Items",
-        help="Specific files to be retrieved"
+        help="Specific files to be retrieved",
     )
     item_count = fields.Integer(
         string="Item Count",
@@ -205,7 +189,7 @@ class FileRetrievalWorkOrder(models.Model):
         ('hand_delivery', 'Hand Delivery'),
     ], string='Delivery Method', default='pickup', required=True,
        help="Method for delivering files to customer")
-    
+
     packaging_type = fields.Selection([
         ('folder', 'File Folder'),
         ('box', 'Document Box'),
@@ -214,7 +198,7 @@ class FileRetrievalWorkOrder(models.Model):
         ('secure_case', 'Secure Case'),
     ], string='Packaging Type', default='folder',
        help="Type of packaging for retrieved files")
-    
+
     delivery_address_id = fields.Many2one(
         "res.partner",
         string="Delivery Address",
@@ -249,9 +233,24 @@ class FileRetrievalWorkOrder(models.Model):
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        domain="[('res_model', '=', 'file.retrieval.work.order')]",
+        string="Activities",
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        domain="[('res_model', '=', 'file.retrieval.work.order')]",
+        string="Followers",
+    )
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        domain="[('res_model', '=', 'file.retrieval.work.order')]",
+        string="Messages",
+    )
 
     # ============================================================================
     # MODEL CREATE WITH SEQUENCE
@@ -311,7 +310,7 @@ class FileRetrievalWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft work orders can be confirmed"))
-        
+
         self.write({'state': 'confirmed'})
         self.message_post(
             body=_("File retrieval work order confirmed for %s", self.partner_id.name),
@@ -324,7 +323,7 @@ class FileRetrievalWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'confirmed':
             raise UserError(_("Only confirmed work orders can start file location"))
-        
+
         self.write({
             'state': 'locating',
             'actual_start_date': fields.Datetime.now()
@@ -340,7 +339,7 @@ class FileRetrievalWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'delivered':
             raise UserError(_("Only delivered work orders can be completed"))
-        
+
         self.write({
             'state': 'completed',
             'actual_completion_date': fields.Datetime.now()
@@ -351,83 +350,63 @@ class FileRetrievalWorkOrder(models.Model):
         )
         return True
 
-
-class FileRetrievalItem(models.Model):
-    """Individual file items to be retrieved"""
-    _name = "file.retrieval.item"
-    _description = "File Retrieval Item"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = "work_order_id, sequence"
-    _rec_name = "description"
-
-    # Core fields
-    name = fields.Char(string="Item Reference", required=True, tracking=True, index=True)
-    description = fields.Text(string="File Description", required=True)
-    sequence = fields.Integer(string="Sequence", default=10)
-    
-    # Work order relationship
-    work_order_id = fields.Many2one(
-        "file.retrieval.work.order",
-        string="Work Order",
-        required=True,
-        ondelete='cascade'
-    )
-    
-    # File details
-    file_name = fields.Char(string="File Name")
-    estimated_pages = fields.Integer(string="Estimated Pages", default=1)
-    file_type = fields.Selection([
-        ('document', 'Document'),
-        ('photo', 'Photograph'),
-        ('blueprint', 'Blueprint'),
-        ('legal', 'Legal Document'),
-        ('medical', 'Medical Record'),
-        ('other', 'Other'),
-    ], string='File Type', default='document')
-    
-    # Location information
-    container_id = fields.Many2one("records.container", string="Source Container")
-    location_notes = fields.Text(string="Location Notes")
-    
-    # Status tracking
-    status = fields.Selection([
-        ('pending', 'Pending'),
-        ('located', 'Located'),
-        ('retrieved', 'Retrieved'),
-        ('quality_checked', 'Quality Checked'),
-        ('packaged', 'Packaged'),
-        ('not_found', 'Not Found'),
-    ], string='Status', default='pending', tracking=True)
-    
-    # Quality and condition
-    condition = fields.Selection([
-        ('excellent', 'Excellent'),
-        ('good', 'Good'),
-        ('fair', 'Fair'),
-        ('poor', 'Poor'),
-        ('damaged', 'Damaged'),
-    ], string='Condition')
-    
-    quality_notes = fields.Text(string="Quality Notes")
-    actual_pages = fields.Integer(string="Actual Pages")
-    
-    # Mail thread fields
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-
-    def action_mark_located(self):
-        """Mark item as located"""
+    def action_view_retrieval_items(self):
+        """View retrieval items in a separate window"""
         self.ensure_one()
-        self.status = 'located'
-        # Update work order progress
-        located_count = len(self.work_order_id.retrieval_item_ids.filtered(lambda r: r.status == 'located'))
-        self.work_order_id.files_located_count = located_count
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Retrieval Items"),
+            "res_model": "file.retrieval.work.order.item",
+            "view_mode": "tree,form",
+            "domain": [("work_order_id", "=", self.id)],
+            "context": {"default_work_order_id": self.id},
+            "target": "current",
+        }
 
-    def action_mark_retrieved(self):
-        """Mark item as retrieved"""
-        self.ensure_one()
-        self.status = 'retrieved'
-        # Update work order progress
-        retrieved_count = len(self.work_order_id.retrieval_item_ids.filtered(lambda r: r.status == 'retrieved'))
-        self.work_order_id.files_retrieved_count = retrieved_count
+    # ============================================================================
+    # BUSINESS WORKFLOW METHODS
+    # ============================================================================
+    def _update_progress_metrics(self):
+        """Update progress metrics based on item status"""
+        for record in self:
+            items = record.retrieval_item_ids
+            if items:
+                record.files_located_count = len(
+                    items.filtered(
+                        lambda r: r.status
+                        in [
+                            "located",
+                            "retrieved",
+                            "quality_checked",
+                            "packaged",
+                        ]
+                    )
+                )
+                record.files_retrieved_count = len(
+                    items.filtered(
+                        lambda r: r.status
+                        in ["retrieved", "quality_checked", "packaged"]
+                    )
+                )
+                record.files_quality_approved_count = len(
+                    items.filtered(
+                        lambda r: r.status in ["quality_checked", "packaged"]
+                    )
+                )
+
+    def _create_naid_audit_log(self, event_type):
+        """Create NAID audit log for work order events"""
+        if self.env["ir.module.module"].search(
+            [("name", "=", "records_management"), ("state", "=", "installed")]
+        ):
+            self.env["naid.audit.log"].create(
+                {
+                    "event_type": event_type,
+                    "model_name": self._name,
+                    "record_id": self.id,
+                    "partner_id": self.partner_id.id,
+                    "description": _("Work order: %s", self.name),
+                    "user_id": self.env.user.id,
+                    "timestamp": fields.Datetime.now(),
+                }
+            )

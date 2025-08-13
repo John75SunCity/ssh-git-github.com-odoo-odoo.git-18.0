@@ -47,12 +47,11 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
+import re
 import pytz
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
-from odoo.tools.misc import email_normalize
-
 
 
 class RecordsBillingContact(models.Model):
@@ -72,14 +71,14 @@ class RecordsBillingContact(models.Model):
         index=True,
         help="Name of the billing contact",
     )
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
     )
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
@@ -87,7 +86,7 @@ class RecordsBillingContact(models.Model):
         tracking=True,
         help="User responsible for this contact",
     )
-    
+
     active = fields.Boolean(
         string="Active", 
         default=True, 
@@ -97,7 +96,6 @@ class RecordsBillingContact(models.Model):
     sequence = fields.Integer(
         string="Sequence", default=10, help="Order of contact in listings"
     )
-    
 
     # ============================================================================
     # CONTACT INFORMATION
@@ -108,7 +106,7 @@ class RecordsBillingContact(models.Model):
         tracking=True,
         help="Primary email address for billing communications",
     )
-    
+
     phone = fields.Char(string="Phone", tracking=True, help="Primary phone number")
     mobile = fields.Char(string="Mobile", tracking=True, help="Mobile phone number")
     job_title = fields.Char(string="Job Title", help="Job title or position")
@@ -125,7 +123,7 @@ class RecordsBillingContact(models.Model):
         ondelete="cascade",
         help="Associated billing profile",
     )
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Customer",
@@ -133,7 +131,6 @@ class RecordsBillingContact(models.Model):
         store=True,
         help="Customer associated with this contact",
     )
-    
 
     # ============================================================================
     # COMMUNICATION PREFERENCES
@@ -143,37 +140,36 @@ class RecordsBillingContact(models.Model):
         default=True,
         help="Contact will receive storage billing invoices",
     )
-    
+
     receive_service_invoices = fields.Boolean(
         string="Receive Service Invoices",
         default=True,
         help="Contact will receive service billing invoices",
     )
-    
+
     receive_statements = fields.Boolean(
         string="Receive Statements",
         default=True,
         help="Contact will receive account statements",
     )
-    
+
     receive_overdue_notices = fields.Boolean(
         string="Receive Overdue Notices",
         default=True,
         help="Contact will receive overdue payment notices",
     )
-    
+
     receive_promotional = fields.Boolean(
         string="Receive Promotional Materials",
         default=False,
         help="Contact will receive promotional communications",
     )
-    
+
     receive_service_updates = fields.Boolean(
         string="Receive Service Updates",
         default=True,
         help="Contact will receive service notifications and updates",
     )
-    
 
     # ============================================================================
     # CONTACT HIERARCHY
@@ -183,11 +179,11 @@ class RecordsBillingContact(models.Model):
         default=False,
         help="This is the primary billing contact",
     )
-    
+
     backup_contact = fields.Boolean(
         string="Backup Contact", default=False, help="This is a backup billing contact"
     )
-    
+
     contact_type = fields.Selection(
         [
             ("primary", "Primary Billing Contact"),
@@ -201,7 +197,6 @@ class RecordsBillingContact(models.Model):
         default="primary",
         help="Type of billing contact",
     )
-    
 
     # ============================================================================
     # COMMUNICATION METHOD
@@ -218,7 +213,7 @@ class RecordsBillingContact(models.Model):
         default="email",
         help="Preferred method for billing communications",
     )
-    
+
     secondary_method = fields.Selection(
         [
             ("email", "Email"),
@@ -230,7 +225,6 @@ class RecordsBillingContact(models.Model):
         string="Secondary Communication Method",
         help="Secondary method for billing communications",
     )
-    
 
     # ============================================================================
     # DELIVERY PREFERENCES
@@ -245,7 +239,7 @@ class RecordsBillingContact(models.Model):
         default="pdf",
         help="Preferred email format for invoices",
     )
-    
+
     delivery_schedule = fields.Selection(
         [
             ("immediate", "Immediate"),
@@ -257,7 +251,6 @@ class RecordsBillingContact(models.Model):
         default="immediate",
         help="Schedule for invoice delivery",
     )
-    
 
     # ============================================================================
     # CONTACT DETAILS
@@ -268,13 +261,13 @@ class RecordsBillingContact(models.Model):
         default="en_US",
         help="Preferred language for communications",
     )
-    
+
     timezone = fields.Selection(
         selection="_get_timezones",
         string="Timezone",
         help="Contact's timezone for scheduling",
     )
-    
+
     notes = fields.Text(string="Notes", help="Internal notes about this contact")
 
     # ============================================================================
@@ -283,18 +276,17 @@ class RecordsBillingContact(models.Model):
     last_contact_date = fields.Datetime(
         string="Last Contact Date", help="Date of last communication with this contact"
     )
-    
+
     last_invoice_sent = fields.Datetime(
         string="Last Invoice Sent",
         help="Date when last invoice was sent to this contact",
     )
-    
+
     communication_count = fields.Integer(
         string="Communication Count",
         default=0,
         help="Number of communications sent to this contact",
     )
-    
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -305,21 +297,20 @@ class RecordsBillingContact(models.Model):
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)],
     )
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
     )
-    
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)],
     )
-    
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -358,7 +349,6 @@ class RecordsBillingContact(models.Model):
         store=True,
         help="Types of invoices this contact receives",
     )
-    
 
     @api.depends("primary_contact", "backup_contact", "contact_type")
     def _compute_contact_priority(self):
@@ -381,7 +371,6 @@ class RecordsBillingContact(models.Model):
         store=True,
         help="Priority level for contact sorting",
     )
-    
 
     # ============================================================================
     # ORM OVERRIDES
@@ -436,7 +425,6 @@ class RecordsBillingContact(models.Model):
             raise ValidationError(
                 _("No email address specified for email communication.")
             )
-            
 
         # Update activity tracking
         self.write(
@@ -445,7 +433,6 @@ class RecordsBillingContact(models.Model):
                 "communication_count": self.communication_count + 1,
             }
         )
-        
 
         # Log the test communication
         self.message_post(
@@ -455,8 +442,6 @@ class RecordsBillingContact(models.Model):
                 dict(self._fields["preferred_method"].selection)[self.preferred_method],
             )
         )
-        
-        
 
         return True
 
@@ -470,7 +455,6 @@ class RecordsBillingContact(models.Model):
                 "communication_count": self.communication_count + 1,
             }
         )
-        
 
     # ============================================================================
     # ACTION METHODS
@@ -487,7 +471,7 @@ class RecordsBillingContact(models.Model):
                 ("id", "!=", self.id),
             ]
         )
-        
+
         other_contacts.write({"primary_contact": False})
 
         # Set this contact as primary
@@ -497,7 +481,6 @@ class RecordsBillingContact(models.Model):
                 "contact_type": "primary",
             }
         )
-        
 
         self.message_post(body=_("Contact set as primary billing contact"))
 
@@ -583,7 +566,6 @@ class RecordsBillingContact(models.Model):
                 ],
                 limit=1,
             )
-            
 
             if backup_contacts:
                 backup_contacts.write(
@@ -593,12 +575,10 @@ class RecordsBillingContact(models.Model):
                         "contact_type": "primary",
                     }
                 )
-                
 
                 self.message_post(
                     body=_("Primary contact role transferred to %s", backup_contacts[0].name)
                 )
-                
 
         self.write({"active": False})
 
@@ -627,7 +607,7 @@ class RecordsBillingContact(models.Model):
                         ("id", "!=", record.id),
                     ]
                 )
-                
+
                 if existing:
                     raise ValidationError(
                         _(
@@ -636,19 +616,14 @@ class RecordsBillingContact(models.Model):
                             existing[0].name,
                         )
                     )
-                    
 
     @api.constrains("email")
     def _check_email_format(self):
-        """Validate email format using Odoo's utility"""
+        """Validate email format using regex pattern"""
+        email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         for record in self:
             if record.email:
-                # Use email_normalize to validate and normalize email
-                try:
-                    normalized = email_normalize(record.email)
-                    if not normalized:
-                        raise ValidationError(_("Invalid email format: %s", record.email))
-                except Exception:
+                if not re.match(email_pattern, record.email):
                     raise ValidationError(_("Invalid email format: %s", record.email))
 
     @api.constrains("preferred_method", "email", "phone")
@@ -661,7 +636,6 @@ class RecordsBillingContact(models.Model):
                         "Email address is required when email is the preferred communication method"
                     )
                 )
-                
 
             if record.preferred_method == "phone" and not (
                 record.phone or record.mobile
@@ -671,7 +645,6 @@ class RecordsBillingContact(models.Model):
                         "Phone number is required when phone is the preferred communication method"
                     )
                 )
-                
 
     # ============================================================================
     # UTILITY METHODS
@@ -724,7 +697,6 @@ class RecordsBillingContact(models.Model):
             ],
             limit=1,
         )
-        
 
     @api.model
     def get_contacts_for_invoice_type(self, billing_profile_id, invoice_type="storage"):
