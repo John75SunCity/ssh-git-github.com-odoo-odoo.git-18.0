@@ -1,61 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+<!-- Tree view for Records Storage Department User -->
     <record id="records_storage_department_user_view_tree" model="ir.ui.view">
         <field name="name">records.storage.department.user.view.tree</field>
         <field name="model">records.storage.department.user</field>
         <field name="arch" type="xml">
-            <tree>
+<tree decoration-success="state=='done'" decoration-info="state=='confirmed'" decoration-muted="state=='draft'">
                 <field name="name"/>
+<field name="user_id"/>
+<field name="date"/>
+<field name="state" widget="badge" decoration-success="state=='done'" decoration-info="state=='confirmed'" decoration-muted="state=='draft'"/>
+<field name="company_id" groups="base.group_multi_company"/>
+
             </tree>
         </field>
     </record>
 
-    <!-- Form view for base.rate -->
+<!-- Form view for Records Storage Department User -->
     <record id="records_storage_department_user_view_form" model="ir.ui.view">
         <field name="name">records.storage.department.user.view.form</field>
         <field name="model">records.storage.department.user</field>
         <field name="arch" type="xml">
             <form string="Records Storage Department User">
+<header>
+    <button name="action_confirm" type="object" string="Confirm" class="oe_highlight" states="draft"/>
+    <button name="action_done" type="object" string="Mark as Done" class="oe_highlight" states="confirmed"/>
+    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+</header>
                 <sheet>
                     <div class="oe_title">
-                        <label for="name"/>
+<label for="name" class="oe_edit_only"/>
+
                         <h1>
-                            <field name="name" placeholder="Name..."/>
+<field name="name" placeholder="Department User Assignment Name..."/>
+
                         </h1>
                     </div>
+<group>
+    <group name="basic_info" string="Basic Information">
+        <field name="user_id" required="1"/>
+        <field name="date"/>
+        <field name="active"/>
+    </group>
+    <group name="company_info" string="Company Information">
+        <field name="company_id" groups="base.group_multi_company"/>
+    </group>
+</group>
+<notebook>
+    <page string="Description" name="description">
+        <group>
+            <field name="description" nolabel="1" placeholder="Description of the department user assignment..."/>
+        </group>
+    </page>
+    <page string="Notes" name="notes">
+        <group>
+            <field name="notes" nolabel="1" placeholder="Additional notes and comments..."/>
+        </group>
+    </page>
+</notebook>
                 </sheet>
+<div class="oe_chatter">
+    <field name="message_follower_ids"/>
+    <field name="activity_ids"/>
+    <field name="message_ids"/>
+</div>
             </form>
         </field>
     </record>
 
-    <!-- Search view for base.rate -->
+<!-- Search view for Records Storage Department User -->
     <record id="records_storage_department_user_view_search" model="ir.ui.view">
         <field name="name">records.storage.department.user.view.search</field>
         <field name="model">records.storage.department.user</field>
         <field name="arch" type="xml">
             <search>
+<field name="name" string="Assignment Name"/>
+<field name="user_id" string="User"/>
+<field name="date" string="Date"/>
+<separator/>
+<filter string="Active" name="active" domain="[('active', '=', True)]"/>
+<filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+<separator/>
+<filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+<filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+<filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+<separator/>
+<filter string="This Month" name="this_month" domain="[('date', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%%Y-%%m-%%d'))]"/>
+<filter string="This Week" name="this_week" domain="[('date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%%Y-%%m-%%d'))]"/>
+<separator/>
+
                 <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+<filter string="User" name="group_by_user" domain="[]" context="{'group_by':'user_id'}"/>
+<filter string="State" name="group_by_state" domain="[]" context="{'group_by':'state'}"/>
+<filter string="Date" name="group_by_date" domain="[]" context="{'group_by':'date:month'}"/>
+<filter string="Company" name="group_by_company" domain="[]" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+<!-- Window Action for Records Storage Department User -->
     <record id="action_records_storage_department_user" model="ir.actions.act_window">
-        <field name="name">Records Storage Department User</field>
+<field name="name">Records Storage Department Users</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.storage.department.user</field>
         <field name="view_mode">tree,form</field>
+<field name="search_view_id" ref="records_storage_department_user_view_search"/>
+
         <field name="domain">[]</field>
-        <field name="context">{}</field>
+<field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Records Storage Department User.
+<p class="o_view_nocontent_smiling_face">
+                Create your first Storage Department User Assignment
+</p>
+<p>
+                Track user assignments to storage departments for proper access control and workflow management within the Records Management System.
+</p>
+<p>
+    <strong>Key Features:</strong>
+    <br/>
+                • User-department relationship management<br/>
+                • State tracking (Draft → Confirmed → Done)<br/>
+                • Integration with mail threading for audit trails<br/>
+                • Company-specific assignments for multi-tenant support
             </p>
         </field>
     </record>
+
+<!-- Menu Items -->
+<menuitem id="menu_records_storage_department_user" name="Department Users" parent="records_management.menu_records_configuration" action="action_records_storage_department_user" sequence="20"/>
 
 </odoo>

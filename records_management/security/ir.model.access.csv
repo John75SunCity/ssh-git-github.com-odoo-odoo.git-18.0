@@ -37,6 +37,10 @@ access_customer_feedback_user,access_customer_feedback_user,model_customer_feedb
 access_customer_feedback_manager,access_customer_feedback_manager,model_customer_feedback,records_management.group_records_manager,1,1,1,1
 access_customer_feedback_portal,access_customer_feedback_portal,model_customer_feedback,base.group_portal,1,1,1,0
 
+access_records_survey_user_input_user,access_records_survey_user_input_user,model_records_survey_user_input,records_management.group_records_user,1,1,1,0
+access_records_survey_user_input_manager,access_records_survey_user_input_manager,model_records_survey_user_input,records_management.group_records_manager,1,1,1,1
+access_records_survey_user_input_portal,access_records_survey_user_input_portal,model_records_survey_user_input,base.group_portal,1,1,1,0
+
 # ============================================================================
 # SHRED BIN AND BIN KEY MANAGEMENT ACCESS RULES
 # ============================================================================

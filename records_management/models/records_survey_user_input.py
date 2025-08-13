@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Survey User Input for Records Management
+Records Survey User Input for Records Management
 Creates a new model to capture customer feedback via surveys integrated with Records Management system
 """
 
@@ -64,10 +64,8 @@ class RecordsSurveyUserInput(models.Model):
     # SURVEY INTEGRATION FIELDS (Optional - if survey module exists)
     # ============================================================================
 
-    survey_id = fields.Many2one(
-        "survey.survey",
-        string="Related Survey",
-        help="Optional: Link to Odoo survey if module is available",
+    survey_title = fields.Char(
+        string="Survey Title", help="Title of the survey responded to"
     )
 
     response_date = fields.Datetime(
@@ -210,6 +208,18 @@ class RecordsSurveyUserInput(models.Model):
     )
 
     # ============================================================================
+    # SIMPLE TEXT RESPONSES (Since we're not inheriting from survey models)
+    # ============================================================================
+
+    text_responses = fields.Text(
+        string="Text Responses", help="Combined text responses from survey"
+    )
+
+    rating_responses = fields.Char(
+        string="Rating Responses", help="Combined rating responses (1-5 scale)"
+    )
+
+    # ============================================================================
     # NAID COMPLIANCE & AUDIT FIELDS
     # ============================================================================
 
@@ -230,27 +240,27 @@ class RecordsSurveyUserInput(models.Model):
     )
 
     # ============================================================================
-    # MAIL THREAD FRAMEWORK FIELDS
+    # MAIL THREAD FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance)
     # ============================================================================
 
     activity_ids = fields.One2many(
         "mail.activity",
         "res_id",
-        domain="[('res_model', '=', 'survey.user.input')]",
+        domain="[('res_model', '=', 'records.survey.user.input')]",
         string="Activities",
     )
 
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
-        domain="[('res_model', '=', 'survey.user.input')]",
+        domain="[('res_model', '=', 'records.survey.user.input')]",
         string="Followers",
     )
 
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
-        domain="[('res_model', '=', 'survey.user.input')]",
+        domain="[('res_model', '=', 'records.survey.user.input')]",
         string="Messages",
     )
 
@@ -258,11 +268,7 @@ class RecordsSurveyUserInput(models.Model):
     # COMPUTE METHODS
     # ============================================================================
 
-    @api.depends(
-        "user_input_line_ids",
-        "user_input_line_ids.suggested_answer_id",
-        "user_input_line_ids.value_text",
-    )
+    @api.depends("text_responses", "rating_responses")
     def _compute_sentiment_analysis(self):
         """
         Compute sentiment analysis from survey responses
@@ -272,15 +278,12 @@ class RecordsSurveyUserInput(models.Model):
             sentiment_score = 0.0
             sentiment_category = "neutral"
 
-            if not record.user_input_line_ids:
+            if not record.text_responses and not record.rating_responses:
                 record.sentiment_score = sentiment_score
                 record.sentiment_category = sentiment_category
                 continue
 
             # Analyze text responses for sentiment keywords
-            text_responses = record.user_input_line_ids.filtered(
-                lambda l: l.value_text
-            ).mapped("value_text")
             positive_keywords = [
                 "excellent",
                 "great",
@@ -311,15 +314,14 @@ class RecordsSurveyUserInput(models.Model):
             positive_count = 0
             negative_count = 0
 
-            for text in text_responses:
-                if text:
-                    text_lower = text.lower()
-                    positive_count += sum(
-                        1 for word in positive_keywords if word in text_lower
-                    )
-                    negative_count += sum(
-                        1 for word in negative_keywords if word in text_lower
-                    )
+            if record.text_responses:
+                text_lower = record.text_responses.lower()
+                positive_count += sum(
+                    1 for word in positive_keywords if word in text_lower
+                )
+                negative_count += sum(
+                    1 for word in negative_keywords if word in text_lower
+                )
 
             # Consider numerical ratings (assuming 1-5 scale)
             numerical_ratings = self._extract_numerical_ratings(record)
@@ -346,18 +348,16 @@ class RecordsSurveyUserInput(models.Model):
     def _extract_numerical_ratings(self, record):
         """Extract numerical ratings from survey responses"""
         numerical_ratings = []
-        for line in record.user_input_line_ids:
-            if line.question_id.question_type in [
-                "simple_choice",
-                "multiple_choice",
-            ]:
-                if line.suggested_answer_id and line.suggested_answer_id.value:
-                    try:
-                        rating = float(line.suggested_answer_id.value)
-                        if 1 <= rating <= 5:
-                            numerical_ratings.append(rating)
-                    except (ValueError, TypeError):
-                        pass
+        if record.rating_responses:
+            # Parse rating responses (expecting format like "4,5,3")
+            try:
+                ratings = record.rating_responses.split(",")
+                for rating in ratings:
+                    rating_val = float(rating.strip())
+                    if 1 <= rating_val <= 5:
+                        numerical_ratings.append(rating_val)
+            except (ValueError, TypeError):
+                pass
         return numerical_ratings
 
     def _calculate_rating_sentiment(self, numerical_ratings):
@@ -443,114 +443,25 @@ class RecordsSurveyUserInput(models.Model):
 
             record.requires_followup = requires_followup
 
-    @api.depends(
-        "user_input_line_ids", "user_input_line_ids.suggested_answer_id"
-    )
+    @api.depends("rating_responses")
     def _compute_satisfaction_metrics(self):
         """
-        Compute satisfaction metrics: overall satisfaction, service quality, timeliness, and communication ratings from survey responses.
+        Compute satisfaction metrics: overall satisfaction, service quality, timeliness, and communication ratings
         """
         for record in self:
-            record.overall_satisfaction = self._calculate_overall_satisfaction(
-                record
-            )
-            record.service_quality_rating = self._calculate_service_quality(
-                record
-            )
-            record.timeliness_rating = self._calculate_timeliness(record)
-            record.communication_rating = self._calculate_communication(record)
-
-    def _calculate_overall_satisfaction(self, record):
-        """Calculate overall satisfaction from survey responses"""
-        if not record.user_input_line_ids:
-            return 0.0
-
-        ratings = []
-        for line in record.user_input_line_ids:
-            if line.question_id.question_type in [
-                "simple_choice",
-                "multiple_choice",
-            ]:
-                if line.suggested_answer_id and line.suggested_answer_id.value:
-                    try:
-                        rating = float(line.suggested_answer_id.value)
-                        if 1 <= rating <= 5:
-                            question_title = line.question_id.title.lower()
-                            if (
-                                "overall" in question_title
-                                or "satisfaction" in question_title
-                            ):
-                                return rating
-                            ratings.append(rating)
-                    except (ValueError, TypeError):
-                        pass
-
-        return sum(ratings) / len(ratings) if ratings else 0.0
-
-    def _calculate_service_quality(self, record):
-        """Calculate service quality rating from specific questions"""
-        for line in record.user_input_line_ids:
-            if line.question_id.question_type in [
-                "simple_choice",
-                "multiple_choice",
-            ]:
-                if line.suggested_answer_id and line.suggested_answer_id.value:
-                    try:
-                        rating = float(line.suggested_answer_id.value)
-                        if 1 <= rating <= 5:
-                            question_title = line.question_id.title.lower()
-                            if (
-                                "quality" in question_title
-                                or "service" in question_title
-                            ):
-                                return rating
-                    except (ValueError, TypeError):
-                        pass
-        return 0.0
-
-    def _calculate_timeliness(self, record):
-        """Calculate timeliness rating from specific questions"""
-        for line in record.user_input_line_ids:
-            if line.question_id.question_type in [
-                "simple_choice",
-                "multiple_choice",
-            ]:
-                if line.suggested_answer_id and line.suggested_answer_id.value:
-                    try:
-                        rating = float(line.suggested_answer_id.value)
-                        if 1 <= rating <= 5:
-                            question_title = line.question_id.title.lower()
-                            if (
-                                "time" in question_title
-                                or "prompt" in question_title
-                                or "schedule" in question_title
-                            ):
-                                return rating
-                    except (ValueError, TypeError):
-                        pass
-        return 0.0
-
-    def _calculate_communication(self, record):
-        """Calculate communication rating from specific questions"""
-        for line in record.user_input_line_ids:
-            if line.question_id.question_type in [
-                "simple_choice",
-                "multiple_choice",
-            ]:
-                if line.suggested_answer_id and line.suggested_answer_id.value:
-                    try:
-                        rating = float(line.suggested_answer_id.value)
-                        if 1 <= rating <= 5:
-                            question_title = line.question_id.title.lower()
-                            if (
-                                "communication" in question_title
-                                or "staff" in question_title
-                                or "support" in question_title
-                            ):
-                                return rating
-                    except (ValueError, TypeError):
-                        pass
-        return 0.0
+            numerical_ratings = self._extract_numerical_ratings(record)
+            if numerical_ratings:
+                # For simplicity, use average of all ratings
+                avg_rating = sum(numerical_ratings) / len(numerical_ratings)
+                record.overall_satisfaction = avg_rating
+                record.service_quality_rating = avg_rating
+                record.timeliness_rating = avg_rating
+                record.communication_rating = avg_rating
+            else:
+                record.overall_satisfaction = 0.0
+                record.service_quality_rating = 0.0
+                record.timeliness_rating = 0.0
+                record.communication_rating = 0.0
 
     # ============================================================================
     # ACTION METHODS
@@ -591,11 +502,9 @@ class RecordsSurveyUserInput(models.Model):
                 ),
             )
 
+        assignee_name = assigned_user.name if assigned_user else "Unassigned"
         self.message_post(
-            body=_(
-                "Follow-up assigned to %s",
-                assigned_user.name if assigned_user else "Unassigned",
-            ),
+            body=_("Follow-up assigned to %s", assignee_name),
             message_type="notification",
         )
 
@@ -655,11 +564,10 @@ class RecordsSurveyUserInput(models.Model):
                 _("Customer must be specified to create feedback record")
             )
 
+        survey_title = self.survey_title or "Unknown Survey"
         # Create customer feedback record
         feedback_vals = {
-            "name": _(
-                "Survey Feedback: %s", self.survey_id.title or "Unknown Survey"
-            ),
+            "name": _("Survey Feedback: %s", survey_title),
             "partner_id": self.records_partner_id.id,
             "feedback_type": "survey",
             "service_type": self.records_service_type or "general",
@@ -668,7 +576,7 @@ class RecordsSurveyUserInput(models.Model):
                 if self.overall_satisfaction
                 else "3"
             ),
-            "comments": self._extract_text_responses(),
+            "comments": self.text_responses or "",
             "sentiment_category": self.sentiment_category,
             "sentiment_score": self.sentiment_score,
             "priority": self.feedback_priority,
@@ -727,16 +635,6 @@ class RecordsSurveyUserInput(models.Model):
         # Assign to customer service
         return self.env.ref("records_management.group_records_user").users[:1]
 
-    def _extract_text_responses(self):
-        """
-        Extract all text responses from the survey
-        """
-        text_responses = []
-        for line in self.user_input_line_ids:
-            if line.value_text:
-                text_responses.append(line.value_text)
-        return "\n\n".join(text_responses)
-
     # ============================================================================
     # NAID AUDIT INTEGRATION
     # ============================================================================
@@ -745,6 +643,7 @@ class RecordsSurveyUserInput(models.Model):
         """
         Create NAID audit log for survey response
         """
+        survey_title = self.survey_title or "Unknown"
         if self.env["ir.module.module"].search(
             [("name", "=", "records_management"), ("state", "=", "installed")]
         ):
@@ -758,10 +657,7 @@ class RecordsSurveyUserInput(models.Model):
                         if self.records_partner_id
                         else False
                     ),
-                    "description": _(
-                        "Survey response: %s",
-                        self.survey_id.title or "Unknown",
-                    ),
+                    "description": _("Survey response: %s", survey_title),
                     "user_id": self.env.user.id,
                     "timestamp": fields.Datetime.now(),
                 }
@@ -770,8 +666,16 @@ class RecordsSurveyUserInput(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """
-        Override create to add audit logging
+        Override create to add audit logging and sequence
         """
+        for vals in vals_list:
+            if vals.get("name", _("New Survey Response")) == _(
+                "New Survey Response"
+            ):
+                vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "records.survey.user.input"
+                ) or _("New Survey Response")
+
         records = super().create(vals_list)
         for record in records:
             record._create_naid_audit_log("survey_response_created")

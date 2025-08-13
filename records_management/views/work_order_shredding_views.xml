@@ -1,61 +1,387 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+<!-- ============================================================================ -->
+<!-- WORK ORDER SHREDDING - TREE VIEW -->
+<!-- ============================================================================ -->
     <record id="work_order_shredding_view_tree" model="ir.ui.view">
         <field name="name">work.order.shredding.view.tree</field>
         <field name="model">work.order.shredding</field>
         <field name="arch" type="xml">
-            <tree>
+<tree string="Shredding Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'" decoration-danger="priority=='urgent'">
+    <header>
+        <button name="action_bulk_confirm" string="Bulk Confirm" type="object" class="btn-primary"/>
+        <button name="action_bulk_start" string="Bulk Start" type="object" class="btn-warning"/>
+    </header>
+    <field name="priority" widget="priority"/>
+
                 <field name="name"/>
+<field name="partner_id"/>
+<field name="coordinator_id"/>
+<field name="scheduled_date"/>
+<field name="container_count" string="Containers"/>
+<field name="total_weight" string="Weight (lbs)" sum="Total Weight"/>
+<field name="estimated_duration" widget="timesheet_uom"/>
+<field name="state" widget="badge" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'"/>
+<field name="completion_percentage" widget="progressbar"/>
+<field name="company_id" groups="base.group_multi_company"/>
+
             </tree>
         </field>
     </record>
 
-    <!-- Form view for base.rate -->
+<!-- ============================================================================ -->
+<!-- WORK ORDER SHREDDING - FORM VIEW -->
+<!-- ============================================================================ -->
     <record id="work_order_shredding_view_form" model="ir.ui.view">
         <field name="name">work.order.shredding.view.form</field>
         <field name="model">work.order.shredding</field>
         <field name="arch" type="xml">
-            <form string="Work Order Shredding">
+<form string="Shredding Work Order">
+    <header>
+        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" states="draft"/>
+        <button name="action_start" string="Start Shredding" type="object" class="btn-warning" states="confirmed"/>
+        <button name="action_pause" string="Pause" type="object" class="btn-secondary" states="in_progress"/>
+        <button name="action_resume" string="Resume" type="object" class="btn-warning" states="paused"/>
+        <button name="action_complete" string="Complete" type="object" class="btn-success" states="in_progress"/>
+        <button name="action_cancel" string="Cancel" type="object" states="draft,confirmed"/>
+        <button name="action_reset_to_draft" string="Reset to Draft" type="object" states="cancelled"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
+    </header>
+                
                 <sheet>
+<div class="oe_button_box" name="button_box">
+    <button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-archive">
+        <field string="Containers" name="container_count" widget="statinfo"/>
+    </button>
+    <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o">
+        <field string="Documents" name="document_count" widget="statinfo"/>
+    </button>
+    <button class="oe_stat_button" type="object" name="action_view_certificates" icon="fa-certificate">
+        <field string="Certificates" name="certificate_count" widget="statinfo"/>
+    </button>
+    <button class="oe_stat_button" type="object" name="action_view_audit_logs" icon="fa-history">
+        <field string="Audit Logs" name="audit_log_count" widget="statinfo"/>
+    </button>
+</div>
+
+<widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
                     <div class="oe_title">
-                        <label for="name"/>
+<label for="name" class="oe_edit_only"/>
+
                         <h1>
-                            <field name="name" placeholder="Name..."/>
+<field name="name" placeholder="Work Order Number..."/>
+
                         </h1>
-                    </div>
+<div class="o_row" name="priority_row">
+    <field name="priority" widget="priority" class="mr16"/>
+    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+
+</div>
+</div>
+
+<group>
+<group name="order_info" string="📋 Order Information">
+    <field name="partner_id" options="{'no_create': True}"/>
+    <field name="coordinator_id" options="{'no_create': True}"/>
+    <field name="department_id"/>
+    <field name="shredding_type"/>
+    <field name="service_location"/>
+    <field name="scheduled_date"/>
+    <field name="deadline_date"/>
+    <field name="active"/>
+</group>
+<group name="progress_info" string="⚡ Progress & Status">
+    <field name="started_date" readonly="1"/>
+    <field name="completed_date" readonly="1"/>
+    <field name="estimated_duration"/>
+    <field name="actual_duration" readonly="1"/>
+    <field name="completion_percentage" widget="progressbar"/>
+    <field name="naid_compliant" widget="boolean_toggle"/>
+</group>
+</group>
+
+<notebook>
+<page name="containers" string="📦 Containers & Items">
+    <field name="container_ids">
+        <tree editable="bottom" decoration-muted="is_shredded">
+            <field name="name"/>
+            <field name="container_type"/>
+            <field name="location_id"/>
+            <field name="weight"/>
+            <field name="estimated_volume"/>
+            <field name="shredding_priority" widget="priority"/>
+            <field name="is_shredded" widget="boolean_toggle"/>
+            <field name="shredded_date"/>
+        </tree>
+    </field>
+    <group class="oe_subtotal_footer">
+        <field name="total_weight" class="oe_subtotal_footer_separator"/>
+        <field name="total_volume"/>
+        <field name="container_count"/>
+    </group>
+</page>
+
+<page name="equipment" string="🔧 Equipment & Resources">
+    <group>
+        <group name="equipment_info" string="Shredding Equipment">
+            <field name="shredding_equipment_id"/>
+            <field name="equipment_operator_id"/>
+            <field name="equipment_status"/>
+            <field name="maintenance_due_date"/>
+        </group>
+        <group name="resource_allocation" string="Resource Allocation">
+            <field name="assigned_technicians" widget="many2many_tags"/>
+            <field name="vehicle_id"/>
+            <field name="bin_location_id"/>
+            <field name="witness_required" widget="boolean_toggle"/>
+        </group>
+    </group>
+</page>
+
+<page name="compliance" string="🛡️ NAID Compliance">
+    <group>
+        <group name="naid_info" string="NAID Requirements">
+            <field name="naid_level"/>
+            <field name="certificate_required" widget="boolean_toggle"/>
+            <field name="witness_name" attrs="{'required': [('witness_required', '=', True)]}"/>
+            <field name="witness_signature"/>
+            <field name="chain_of_custody_id"/>
+        </group>
+        <group name="security_info" string="Security Measures">
+            <field name="security_level"/>
+            <field name="access_restrictions"/>
+            <field name="video_recording" widget="boolean_toggle"/>
+            <field name="documentation_level"/>
+        </group>
+    </group>
+    <separator string="📋 Compliance Checklist"/>
+    <field name="compliance_checklist_ids">
+        <tree editable="bottom">
+            <field name="check_item"/>
+            <field name="is_completed" widget="boolean_toggle"/>
+            <field name="completed_by"/>
+            <field name="completion_date"/>
+            <field name="notes"/>
+        </tree>
+    </field>
+</page>
+
+<page name="timeline" string="⏱️ Timeline & Tracking">
+    <field name="timeline_ids">
+        <tree create="false" delete="false">
+            <field name="timestamp"/>
+            <field name="event_type"/>
+            <field name="description"/>
+            <field name="user_id"/>
+            <field name="duration"/>
+        </tree>
+    </field>
+</page>
+
+<page name="notes" string="📝 Notes & Instructions">
+    <group>
+        <field name="description" placeholder="Special instructions for this shredding work order..."/>
+    </group>
+    <separator string="📋 Internal Notes"/>
+    <field name="internal_notes" placeholder="Internal notes for coordination team..."/>
+</page>
+</notebook>
                 </sheet>
+<div class="oe_chatter">
+    <field name="message_follower_ids"/>
+    <field name="activity_ids"/>
+    <field name="message_ids"/>
+</div>
             </form>
         </field>
     </record>
 
-    <!-- Search view for base.rate -->
+<!-- ============================================================================ -->
+<!-- WORK ORDER SHREDDING - KANBAN VIEW -->
+<!-- ============================================================================ -->
+<record id="work_order_shredding_view_kanban" model="ir.ui.view">
+    <field name="name">work.order.shredding.view.kanban</field>
+    <field name="model">work.order.shredding</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="state" class="o_kanban_small_column">
+            <field name="name"/>
+            <field name="partner_id"/>
+            <field name="coordinator_id"/>
+            <field name="state"/>
+            <field name="priority"/>
+            <field name="scheduled_date"/>
+            <field name="completion_percentage"/>
+            <field name="container_count"/>
+            <field name="total_weight"/>
+            <templates>
+                <t t-name="kanban-box">
+                    <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                        <div class="o_kanban_image">
+                            <i class="fa fa-scissors fa-2x text-primary"/>
+                        </div>
+                        <div class="oe_kanban_content">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <br/>
+                                    <small class="text-muted">
+                                        <field name="partner_id"/>
+                                    </small>
+                                </div>
+                                <span class="float-right">
+                                    <field name="priority" widget="priority"/>
+                                </span>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small>📅                                            <field name="scheduled_date"/>
+                                        </small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small>👤                                            <field name="coordinator_id"/>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="progress mt8">
+                                    <div class="progress-bar" role="progressbar" t-attf-style="width: #{record.completion_percentage.raw_value}%"/>
+                                </div>
+                                <small>
+                                    <field name="completion_percentage"/>
+% Complete</small>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <span class="badge badge-secondary">
+                                        <field name="container_count"/>
+ containers
+                                    </span>
+                                    <span class="badge badge-info">
+                                        <field name="total_weight"/>
+ lbs
+                                    </span>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="activity_ids" widget="kanban_activity"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="oe_clear"/>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+<!-- ============================================================================ -->
+<!-- WORK ORDER SHREDDING - SEARCH VIEW -->
+<!-- ============================================================================ -->
     <record id="work_order_shredding_view_search" model="ir.ui.view">
         <field name="name">work.order.shredding.view.search</field>
         <field name="model">work.order.shredding</field>
         <field name="arch" type="xml">
             <search>
+<field name="name" string="Work Order" filter_domain="['|', '|', ('name', 'ilike', self), ('partner_id', 'ilike', self), ('coordinator_id', 'ilike', self)]"/>
+<field name="partner_id"/>
+<field name="coordinator_id"/>
+<field name="department_id"/>
+<separator/>
+<filter string="My Orders" name="my_orders" domain="[('coordinator_id.user_id', '=', uid)]"/>
+<filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+<filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+<filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+<filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+<separator/>
+<filter string="Urgent" name="urgent" domain="[('priority', '=', 'urgent')]"/>
+<filter string="High Priority" name="high_priority" domain="[('priority', 'in', ['urgent', 'high'])]"/>
+<filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
+<filter string="Certificate Required" name="certificate_required" domain="[('certificate_required', '=', True)]"/>
+<separator/>
+<filter string="Today" name="today" domain="[('scheduled_date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('scheduled_date', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
+<filter string="This Week" name="this_week" domain="[('scheduled_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+<filter string="Overdue" name="overdue" domain="[('deadline_date', '&lt;', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')), ('state', 'not in', ['completed', 'cancelled'])]"/>
+<separator/>
+<filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+
                 <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+<filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+<filter string="Coordinator" name="group_coordinator" context="{'group_by': 'coordinator_id'}"/>
+<filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
+<filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+<filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+<filter string="Shredding Type" name="group_shredding_type" context="{'group_by': 'shredding_type'}"/>
+<filter string="Scheduled Date" name="group_scheduled_date" context="{'group_by': 'scheduled_date'}"/>
+
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+<!-- ============================================================================ -->
+<!-- WORK ORDER SHREDDING - ACTIONS -->
+<!-- ============================================================================ -->
     <record id="action_work_order_shredding" model="ir.actions.act_window">
-        <field name="name">Work Order Shredding</field>
+<field name="name">Shredding Work Orders</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">work.order.shredding</field>
-        <field name="view_mode">tree,form</field>
+<field name="view_mode">kanban,tree,form</field>
         <field name="domain">[]</field>
-        <field name="context">{}</field>
+<field name="context">{'search_default_in_progress': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Work Order Shredding.
+Click to create a new Shredding Work Order.
+</p>
+<p>
+                Shredding Work Orders manage the secure destruction of documents and materials
+                in compliance with NAID standards. Track containers, equipment, progress,
+                and generate compliance certificates automatically.
             </p>
         </field>
     </record>
+
+<!-- My Shredding Orders Action -->
+<record id="action_work_order_shredding_my" model="ir.actions.act_window">
+    <field name="name">My Shredding Orders</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">work.order.shredding</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="domain">[('coordinator_id.user_id', '=', uid)]</field>
+    <field name="context">{'search_default_in_progress': 1}</field>
+</record>
+
+<!-- Urgent Shredding Orders Action -->
+<record id="action_work_order_shredding_urgent" model="ir.actions.act_window">
+    <field name="name">Urgent Shredding Orders</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">work.order.shredding</field>
+    <field name="view_mode">tree,form,kanban</field>
+    <field name="domain">[('priority', '=', 'urgent'), ('state', 'not in', ['completed', 'cancelled'])]</field>
+    <field name="context">{'default_priority': 'urgent'}</field>
+</record>
+
+<!-- NAID Compliance Dashboard Action -->
+<record id="action_work_order_shredding_naid" model="ir.actions.act_window">
+    <field name="name">NAID Compliance Orders</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">work.order.shredding</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[('naid_compliant', '=', True)]</field>
+    <field name="context">{'search_default_group_state': 1}</field>
+</record>
+
+<!-- Scheduled Orders Today Action -->
+<record id="action_work_order_shredding_today" model="ir.actions.act_window">
+    <field name="name">Today's Shredding Orders</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">work.order.shredding</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="domain">[('scheduled_date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('scheduled_date', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]</field>
+    <field name="context">{'search_default_group_coordinator': 1}</field>
+</record>
 
 </odoo>

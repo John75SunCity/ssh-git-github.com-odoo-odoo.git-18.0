@@ -1,61 +1,329 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+<!-- ============================================================================ -->
+<!-- SYSTEM DIAGRAM DATA - TREE VIEW -->
+<!-- ============================================================================ -->
     <record id="system_diagram_data_view_tree" model="ir.ui.view">
         <field name="name">system.diagram.data.view.tree</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
-            <tree>
+<tree string="System Diagrams" decoration-info="search_type=='user'" decoration-success="search_type=='model'" decoration-warning="search_type=='company'">
                 <field name="name"/>
+<field name="search_type" widget="badge"/>
+<field name="search_query"/>
+<field name="show_access_only" widget="boolean_toggle"/>
+<field name="node_count" string="Nodes"/>
+<field name="edge_count" string="Edges"/>
+<field name="create_date" string="Created"/>
+<field name="company_id" groups="base.group_multi_company"/>
+<button name="action_generate_diagram" type="object" string="Generate" class="btn-primary" icon="fa-refresh"/>
+
             </tree>
         </field>
     </record>
 
-    <!-- Form view for base.rate -->
+<!-- ============================================================================ -->
+<!-- SYSTEM DIAGRAM DATA - FORM VIEW -->
+<!-- ============================================================================ -->
     <record id="system_diagram_data_view_form" model="ir.ui.view">
         <field name="name">system.diagram.data.view.form</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
             <form string="System Diagram Data">
+<header>
+    <button name="action_generate_diagram" type="object" string="🔄 Generate Diagram" class="btn-primary"/>
+    <button name="action_export_data" type="object" string="📤 Export Data" class="btn-secondary"/>
+    <button name="action_clear_cache" type="object" string="🗑️ Clear Cache" class="btn-warning"/>
+    <field name="state" widget="statusbar" statusbar_visible="draft,generated,cached"/>
+</header>
                 <sheet>
+<div class="oe_button_box" name="button_box">
+    <button class="oe_stat_button" type="action" icon="fa-sitemap">
+        <field string="Nodes" name="node_count" widget="statinfo"/>
+    </button>
+    <button class="oe_stat_button" type="action" icon="fa-link">
+        <field string="Edges" name="edge_count" widget="statinfo"/>
+    </button>
+</div>
+
                     <div class="oe_title">
-                        <label for="name"/>
+<label for="name" class="oe_edit_only"/>
+
                         <h1>
-                            <field name="name" placeholder="Name..."/>
+<field name="name" placeholder="System Diagram Name..."/>
+
                         </h1>
                     </div>
+<group>
+    <group name="search_config" string="🎯 Search Configuration">
+        <field name="search_type" widget="radio"/>
+        <field name="search_query" placeholder="Enter search target (user, model, or company)"/>
+        <field name="show_access_only" string="Access Rights Focus"/>
+        <field name="include_inactive" string="Include Inactive Records"/>
+    </group>
+    <group name="system_info" string="📊 System Information">
+        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="user_id" string="Created by"/>
+        <field name="create_date" string="Generated Date"/>
+        <field name="cache_timestamp" string="Cache Updated" widget="datetime"/>
+    </group>
+</group>
+
+<notebook>
+    <page name="diagram_preview" string="🖼️ Diagram Preview">
+        <group>
+            <field name="diagram_html" widget="html" nolabel="1"/>
+        </group>
+    </page>
+
+    <page name="nodes_data" string="🔵 Nodes Data">
+        <group>
+            <field name="nodes_data" widget="ace" options="{'mode': 'json'}" nolabel="1"/>
+        </group>
+    </page>
+
+    <page name="edges_data" string="🔗 Edges Data">
+        <group>
+            <field name="edges_data" widget="ace" options="{'mode': 'json'}" nolabel="1"/>
+        </group>
+    </page>
+
+    <page name="advanced_config" string="⚙️ Advanced Configuration">
+        <group>
+            <group name="layout_settings" string="Layout Settings">
+                <field name="layout_algorithm" string="Layout Algorithm"/>
+                <field name="node_spacing" string="Node Spacing"/>
+                <field name="edge_length" string="Edge Length"/>
+            </group>
+            <group name="filter_settings" string="Filter Settings">
+                <field name="max_depth" string="Maximum Depth"/>
+                <field name="exclude_system_models" string="Exclude System Models"/>
+                <field name="group_by_module" string="Group by Module"/>
+            </group>
+        </group>
+    </page>
+
+    <page name="performance_stats" string="📈 Performance Statistics">
+        <group>
+            <field name="generation_time" string="Generation Time (ms)" readonly="1"/>
+            <field name="cache_size" string="Cache Size (KB)" readonly="1"/>
+            <field name="last_access" string="Last Accessed" readonly="1"/>
+        </group>
+    </page>
+</notebook>
                 </sheet>
+<div class="oe_chatter">
+    <field name="message_follower_ids"/>
+    <field name="activity_ids"/>
+    <field name="message_ids"/>
+</div>
             </form>
         </field>
     </record>
 
-    <!-- Search view for base.rate -->
+<!-- ============================================================================ -->
+<!-- SYSTEM DIAGRAM DATA - SEARCH VIEW -->
+<!-- ============================================================================ -->
     <record id="system_diagram_data_view_search" model="ir.ui.view">
         <field name="name">system.diagram.data.view.search</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
-            <search>
-                <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+<search string="System Diagrams Search">
+    <field name="name" string="Diagram Name" filter_domain="[('name', 'ilike', self)]"/>
+    <field name="search_query" string="Search Target"/>
+    <field name="search_type" string="Diagram Type"/>
+
+    <separator/>
+
+    <!-- Filters -->
+    <filter name="user_diagrams" string="🧑 User Analysis" domain="[('search_type', '=', 'user')]"/>
+    <filter name="model_diagrams" string="🏗️ Model Structure" domain="[('search_type', '=', 'model')]"/>
+    <filter name="company_diagrams" string="🏢 Company Overview" domain="[('search_type', '=', 'company')]"/>
+
+    <separator/>
+
+    <filter name="access_focus" string="🔒 Access Rights Focus" domain="[('show_access_only', '=', True)]"/>
+    <filter name="include_inactive" string="📋 Include Inactive" domain="[('include_inactive', '=', True)]"/>
+
+    <separator/>
+
+    <filter name="recent" string="🕐 Recent (Last 7 days)" domain="[('create_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+    <filter name="my_diagrams" string="👤 My Diagrams" domain="[('user_id', '=', uid)]"/>
+
+    <group expand="0" string="📊 Group By">
+        <filter name="group_by_type" string="Diagram Type" context="{'group_by': 'search_type'}"/>
+        <filter name="group_by_user" string="Created By" context="{'group_by': 'user_id'}"/>
+        <filter name="group_by_date" string="Creation Date" context="{'group_by': 'create_date'}"/>
+        <filter name="group_by_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+<!-- ============================================================================ -->
+<!-- SYSTEM DIAGRAM DATA - KANBAN VIEW -->
+<!-- ============================================================================ -->
+<record id="system_diagram_data_view_kanban" model="ir.ui.view">
+    <field name="name">system.diagram.data.view.kanban</field>
+    <field name="model">system.diagram.data</field>
+    <field name="arch" type="xml">
+        <kanban string="System Architecture Diagrams" class="o_kanban_dashboard">
+            <field name="name"/>
+            <field name="search_type"/>
+            <field name="search_query"/>
+            <field name="show_access_only"/>
+            <field name="node_count"/>
+            <field name="edge_count"/>
+            <field name="create_date"/>
+            <field name="state"/>
+
+            <templates>
+                <t t-name="kanban-box">
+                    <div class="oe_kanban_card oe_kanban_global_click">
+                        <div class="oe_kanban_content">
+                            <!-- Header -->
+                            <div class="o_kanban_record_top mb16">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <span class="badge badge-pill float-right" t-attf-class="badge-{{record.search_type.raw_value == 'user' and 'primary' or record.search_type.raw_value == 'model' and 'success' or 'info'}}">
+                                        <t t-if="record.search_type.raw_value == 'user'">🧑 User</t>
+                                        <t t-elif="record.search_type.raw_value == 'model'">🏗️ Model</t>
+                                        <t t-else="">🏢 Company</t>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="o_kanban_record_body">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <span class="text-muted">Target: </span>
+                                        <strong>
+                                            <field name="search_query"/>
+                                        </strong>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <field name="show_access_only" widget="boolean_toggle"/>
+                                    </div>
+                                </div>
+
+                                <!-- Statistics -->
+                                <div class="mt8">
+                                    <span class="badge badge-light mr8">
+                                        <i class="fa fa-circle-o text-primary"/>
+                                        <field name="node_count"/>
+ Nodes
+                                    </span>
+                                    <span class="badge badge-light">
+                                        <i class="fa fa-link text-success"/>
+                                        <field name="edge_count"/>
+ Edges
+                                    </span>
+                                </div>
+
+                                <!-- Status indicators -->
+                                <div class="mt8">
+                                    <t t-if="record.state.raw_value == 'cached'">
+                                        <span class="badge badge-success">
+                                            <i class="fa fa-check"/>
+ Cached
+                                        </span>
+                                    </t>
+                                    <t t-elif="record.state.raw_value == 'generated'">
+                                        <span class="badge badge-info">
+                                            <i class="fa fa-cog"/>
+ Generated
+                                        </span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="badge badge-warning">
+                                            <i class="fa fa-clock-o"/>
+ Draft
+                                        </span>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <!-- Footer with actions -->
+                            <div class="o_kanban_record_bottom mt16">
+                                <div class="oe_kanban_bottom_left">
+                                    <small class="text-muted">
+                                        <field name="create_date" widget="relative"/>
+                                    </small>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <button name="action_generate_diagram" type="object" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-refresh"/>
+ Generate
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+<!-- ============================================================================ -->
+<!-- WINDOW ACTIONS -->
+<!-- ============================================================================ -->
     <record id="action_system_diagram_data" model="ir.actions.act_window">
-        <field name="name">System Diagram Data</field>
+<field name="name">📊 System Diagrams</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">tree,form</field>
+<field name="view_mode">kanban,tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-                There is no examples click here to add new System Diagram Data.
+<p class="o_view_nocontent_create">
+    <strong>🎯 Create Your First System Diagram</strong>
+</p>
+<p>
+                System diagrams help visualize your Odoo architecture, user access patterns, and model relationships.
+                Click the "New" button to create your first interactive system diagram.
+</p>
+<p>
+    <strong>Diagram Types:</strong>
+    <br/>
+                🧑    <strong>User Analysis:</strong> Shows user access rights and permissions<br/>
+                🏗️<strong>Model Structure:</strong> Displays model relationships and dependencies<br/>
+                🏢<strong>Company Overview:</strong> Complete system architecture for your company
             </p>
         </field>
     </record>
+
+<!-- Specialized actions for different diagram types -->
+<record id="action_system_diagram_user_analysis" model="ir.actions.act_window">
+    <field name="name">🧑 User Access Analysis</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">system.diagram.data</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="domain">[('search_type', '=', 'user')]</field>
+    <field name="context">{'default_search_type': 'user', 'default_show_access_only': True}</field>
+</record>
+
+<record id="action_system_diagram_model_explorer" model="ir.actions.act_window">
+    <field name="name">🏗️ Model Structure Explorer</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">system.diagram.data</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="domain">[('search_type', '=', 'model')]</field>
+    <field name="context">{'default_search_type': 'model'}</field>
+</record>
+
+<record id="action_system_diagram_company_overview" model="ir.actions.act_window">
+    <field name="name">🏢 Company System Overview</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">system.diagram.data</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="domain">[('search_type', '=', 'company')]</field>
+    <field name="context">{'default_search_type': 'company'}</field>
+</record>
 
 </odoo>

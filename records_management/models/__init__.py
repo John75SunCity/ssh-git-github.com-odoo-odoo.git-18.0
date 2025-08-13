@@ -220,7 +220,7 @@ from . import portal_feedback_communication
 from . import portal_feedback_analytic
 
 # Survey and improvement tracking
-from . import survey_user_input
+from . import records_survey_user_input
 from . import survey_feedback_theme
 from . import survey_improvement_action
 
