@@ -252,10 +252,10 @@ from . import hr_employee
 from . import hremployee_naid
 
 # =============================================================================
+# =============================================================================
 # PRODUCTS AND BARCODE MANAGEMENT
 # =============================================================================
 
-from . import product
 from . import product_template
 from . import product_product
 from . import barcode_product
