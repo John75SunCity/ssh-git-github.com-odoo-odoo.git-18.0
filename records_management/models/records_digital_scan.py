@@ -25,7 +25,7 @@ class RecordsDigitalScan(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(
-        string="Name", required=True, tracking=True, index=True, unique=True
+        string="Name", required=True, tracking=True, index=True
     )
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True

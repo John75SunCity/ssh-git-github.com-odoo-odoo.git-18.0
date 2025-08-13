@@ -410,7 +410,7 @@ class DocumentRetrievalItem(models.Model):
                     retrieval_rate = 0.0
 
             # Fall back to base rates
-            base_rate = self.env["base.rates"].search(
+            base_rate = self.env["base.rate"].search(
                 [
                     ("service_type", "=", "retrieval"),
                     ("state", "=", "confirmed"),
@@ -468,7 +468,7 @@ class DocumentRetrievalItem(models.Model):
                     )
                 else:
                     # Fall back to base rates
-                    base_rate = self.env["base.rates"].search(
+                    base_rate = self.env["base.rate"].search(
                         [
                             ("service_type", "=", "container_access"),
                             ("state", "=", "confirmed"),

@@ -209,7 +209,7 @@ class RecordsContainerType(models.Model):
         help="Link to existing billing configuration for this container type",
     )
     base_rate_id = fields.Many2one(
-        "base.rates", string="Base Rate", help="Link to existing base rates model"
+        "base.rate", string="Base Rate", help="Link to existing base rates model"
     )
 
     # Remove redundant pricing fields and compute from existing billing models
@@ -743,7 +743,7 @@ class RecordsContainerType(models.Model):
             }
 
         # Third priority: Search base rates by container type code
-        base_rates = self.env["base.rates"].search(
+        base_rates = self.env["base.rate"].search(
             [("container_type_code", "=", self.code)], limit=1
         )
 
@@ -757,7 +757,7 @@ class RecordsContainerType(models.Model):
 
         # Fourth priority: Search base rates by standard type
         if self.standard_type and self.standard_type != "custom":
-            base_rates = self.env["base.rates"].search(
+            base_rates = self.env["base.rate"].search(
                 [("container_type", "=", self.standard_type)], limit=1
             )
 

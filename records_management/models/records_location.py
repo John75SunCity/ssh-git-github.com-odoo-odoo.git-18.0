@@ -58,6 +58,12 @@ class RecordsLocation(models.Model):
     state_id = fields.Many2one("res.country.state", string="State/Province")
     zip = fields.Char(string="ZIP Code")
     country_id = fields.Many2one("res.country", string="Country")
+    full_address = fields.Text(
+        string="Full Address",
+        compute="_compute_full_address",
+        store=True,
+        help="Complete formatted address"
+    )
 
     # ============================================================================
     # CAPACITY & SPECIFICATIONS
@@ -186,6 +192,27 @@ class RecordsLocation(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    # COMPUTE METHODS  
+    # ============================================================================
+    @api.depends("street", "street2", "city", "state_id", "zip", "country_id")
+    def _compute_full_address(self):
+        """Compute full formatted address"""
+        for record in self:
+            address_parts = []
+            if record.street:
+                address_parts.append(record.street)
+            if record.street2:
+                address_parts.append(record.street2)
+            if record.city:
+                address_parts.append(record.city)
+            if record.state_id:
+                address_parts.append(record.state_id.name)
+            if record.zip:
+                address_parts.append(record.zip)
+            if record.country_id:
+                address_parts.append(record.country_id.name)
+            record.full_address = ", ".join(address_parts) if address_parts else ""
+
     @api.depends("container_ids")
     def _compute_current_utilization(self):
         for record in self:

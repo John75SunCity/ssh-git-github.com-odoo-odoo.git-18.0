@@ -45,7 +45,7 @@ class CustomerNegotiatedRate(models.Model):
 
     # Base Rate Reference
     base_rate_id = fields.Many2one(
-        "base.rates",
+        "base.rate",
         string="Base Rate Set",
         required=True,
         tracking=True,
