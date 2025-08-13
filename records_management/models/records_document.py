@@ -88,6 +88,14 @@ class RecordsDocument(models.Model):
     active = fields.Boolean(
         string="Active", default=True, help="Whether this document is active"
     )
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Customer",
+        required=True,
+        tracking=True,
+        index=True,
+        help="Customer who owns this document"
+    )
 
     # ============================================================================
     # DOCUMENT DETAILS
