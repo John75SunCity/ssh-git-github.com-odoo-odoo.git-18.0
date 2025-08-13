@@ -2,8 +2,7 @@
 """
 Records Management Models Import Order
 
-Import order follows Odoo 18.0 best p# Advanced Billing System  
-from . import advanced_billingtices:
+Import order follows Odoo 18.0 best practices:
 1. Standard library imports first
 2. Base models with Many2one fields first (comodels for inverse relationships)
 3. Core business models
@@ -333,12 +332,7 @@ except (ImportError, AttributeError) as e:
 # CONDITIONAL IMPORTS FOR EXTENSION MODELS
 # =============================================================================
 
-# Enhanced deletion and user management models
-try:
-    from . import records_deletion_request_enhanced
-    _logger.info("Records deletion request enhancements loaded successfully")
-except (ImportError, AttributeError) as e:
-    _logger.warning("Records deletion enhancements not available: %s", str(e))
+# Note: records_deletion_request already imported at line 285
 
 from . import records_user_invitation_wizard
 from . import records_bulk_user_import
@@ -358,8 +352,7 @@ from . import container_retrieval_work_order
 # LATE-LOADING MODELS (to avoid circular dependencies)
 # =============================================================================
 
-# Advanced billing line (loaded after advanced_billing is fully initialized)
-from . import advanced_billing_line
+# Note: records_billing_line already imported at line 133
 
 # =============================================================================
 # MISSING MODELS THAT NEED TO BE IMPORTED
@@ -371,6 +364,6 @@ try:
     _logger.info("RM module configurator loaded successfully")
 except (ImportError, AttributeError) as e:
     _logger.warning("RM module configurator not available: %s", str(e))
-from . import file_retrieval_item
-from . import file_retrieveal_work_order_item_py
+
+# File retrieval work order item (correct name)
 from . import file_retrieval_work_order_item
