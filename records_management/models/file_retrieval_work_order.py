@@ -246,11 +246,14 @@ class FileRetrievalWorkOrder(models.Model):
         string="Followers",
     )
     message_ids = fields.One2many(
-    coordinator_id = fields.Many2one('work.order.coordinator', string='Coordinator')
         "mail.message",
         "res_id",
         domain="[('res_model', '=', 'file.retrieval.work.order')]",
         string="Messages",
+    )
+
+    coordinator_id = fields.Many2one(
+        "work.order.coordinator", string="Coordinator"
     )
 
     # ============================================================================

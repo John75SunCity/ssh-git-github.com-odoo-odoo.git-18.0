@@ -35,8 +35,6 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 
-
-
 class ShreddingService(models.Model):
     _name = "shredding.service"
     _description = "Shredding Service Management"
@@ -397,12 +395,13 @@ class ShreddingService(models.Model):
     # COMPUTED FIELDS
     # ============================================================================
     duration_hours = fields.Float(
-    shred_bin_id = fields.Many2one('shred.bin', string='Shred Bin')
         string="Actual Duration (Hours)",
         compute="_compute_duration_hours",
         store=True,
-        help="Actual service duration in hours"
+        help="Actual service duration in hours",
     )
+
+    shred_bin_id = fields.Many2one("shred.bin", string="Shred Bin")
 
     # ============================================================================
     # COMPUTE METHODS

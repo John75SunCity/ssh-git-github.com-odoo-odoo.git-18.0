@@ -2,48 +2,116 @@
 """
 Barcode Product Management Module
 
-This module provides comprehensive barcode product management for the Records Management System.
-It implements intelligent barcode generation, validation, and management with support for multiple
-barcode formats and enterprise-grade tracking capabilities.
+Intelligent barcode generation and validation system for Records Management.
+Handles automatic product categorization, barcode format validation, and
+integration with container specifications.
 
-Key Features:
-- Multi-format barcode support (EAN-13, EAN-8, UPC-A, Code 128, Code 39, Custom)
-- Intelligent barcode generation with batch processing and sequence management
-- Format validation with regex pattern matching and check digit verification
-- Uniqueness validation across the entire system preventing duplicates
-- Product categorization with storage requirements and lifecycle management
-- Comprehensive audit trails with usage tracking and performance analytics
-- Integration with physical storage systems and location management
-- Pricing and billing integration with cost tracking and rate management
+Features:
+- Intelligent barcode classification (5,6,7,10,14,15 digit patterns)
+- Container type integration with business specifications
+- Automatic product categorization based on barcode length
+- NAID compliance tracking and audit trails
+- Real-time validation and error prevention
 
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-import re
-
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
 
 class BarcodeProduct(models.Model):
+    """
+    Barcode Product Management with intelligent classification system.
+
+    This model handles the complete lifecycle of barcode-enabled products
+    with automatic categorization based on barcode length patterns used
+    in the Records Management business operations.
+    """
+
     _name = "barcode.product"
     _description = "Barcode Product Management"
     _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name desc"
+    _order = "sequence, name"
     _rec_name = "name"
 
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(
-        string="Product Name", required=True, tracking=True, index=True
+        string="Product Name",
+        required=True,
+        tracking=True,
+        index=True,
+        help="Descriptive name for the barcode product",
     )
-    code = fields.Char(string="Product Code", index=True, tracking=True)
-    description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10)
-    active = fields.Boolean(string="Active", default=True)
+    code = fields.Char(
+        string="Product Code",
+        index=True,
+        tracking=True,
+        help="Internal reference code for the product",
+    )
+    barcode = fields.Char(
+        string="Barcode",
+        required=True,
+        index=True,
+        tracking=True,
+        help="Actual barcode value - automatically classified by length",
+    )
+    description = fields.Text(
+        string="Description",
+        help="Detailed description of the product and its use",
+    )
+    sequence = fields.Integer(
+        string="Sequence",
+        default=10,
+        help="Order sequence for display purposes",
+    )
+    active = fields.Boolean(
+        string="Active",
+        default=True,
+        help="Whether this product is active in the system",
+    )
+
+    # ============================================================================
+    # BUSINESS CLASSIFICATION FIELDS
+    # ============================================================================
+    product_category = fields.Selection(
+        [
+            ("location", "Location Assignment"),
+            ("container_box", "Container Box"),
+            ("permanent_folder", "Permanent File Folder"),
+            ("temp_folder", "Temporary File Folder"),
+            ("shred_item", "Shred Bin Item"),
+            ("equipment", "Equipment/Asset"),
+            ("other", "Other"),
+        ],
+        string="Product Category",
+        compute="_compute_product_category",
+        store=True,
+        help="Automatically determined based on barcode length",
+    )
+
+    barcode_length = fields.Integer(
+        string="Barcode Length",
+        compute="_compute_barcode_length",
+        store=True,
+        help="Length of the barcode for classification",
+    )
+
+    container_type = fields.Selection(
+        [
+            ("type_01", "TYPE 01 - Standard Box (1.2 CF)"),
+            ("type_02", "TYPE 02 - Legal/Banker Box (2.4 CF)"),
+            ("type_03", "TYPE 03 - Map Box (0.875 CF)"),
+            ("type_04", "TYPE 04 - Odd Size/Temp Box (5.0 CF)"),
+            ("type_06", "TYPE 06 - Pathology Box (0.042 CF)"),
+        ],
+        string="Container Type",
+        help="Container type if this is a container product",
+    )
 
     # ============================================================================
     # FRAMEWORK FIELDS
@@ -57,469 +125,404 @@ class BarcodeProduct(models.Model):
     )
     user_id = fields.Many2one(
         "res.users",
-        string="Product Manager",
+        string="Created By",
         default=lambda self: self.env.user,
         tracking=True,
-        index=True,
-    )
-    currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        default=lambda self: self.env.company.currency_id,
-        required=True,
-    )
-
-    # Partner Relationship
-    partner_id = fields.Many2one(
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record",
     )
 
     # ============================================================================
-    # STATE MANAGEMENT
+    # BUSINESS INTEGRATION FIELDS
     # ============================================================================
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("active", "Active"),
-            ("inactive", "Inactive"),
-            ("archived", "Archived"),
-        ],
-        string="Status",
-        default="draft",
-        tracking=True,
-    )
-
-    # ============================================================================
-    # BARCODE CONFIGURATION
-    # ============================================================================
-    barcode = fields.Char(
-        string="Base Barcode",
-        tracking=True,
-        index=True,
-        help="Primary barcode for this product",
-    )
-    barcode_format = fields.Selection(
-        [
-            ("ean13", "EAN-13"),
-            ("ean8", "EAN-8"),
-            ("upca", "UPC-A"),
-            ("code128", "Code 128"),
-            ("code39", "Code 39"),
-            ("custom", "Custom Format"),
-        ],
-        string="Barcode Format",
-        default="code128",
-        required=True,
-    )
-
-    # Barcode Generation Settings
-    start_barcode = fields.Char(
-        string="Start Barcode", help="Starting barcode for range generation"
-    )
-    end_barcode = fields.Char(
-        string="End Barcode", help="End barcode for range generation"
-    )
-    next_sequence_number = fields.Integer(
-        string="Next Sequence", default=1, help="Next sequence number for generation"
-    )
-    generation_batch_size = fields.Integer(
-        string="Batch Size",
-        default=100,
-        help="Number of barcodes to generate per batch",
-    )
-
-    # Validation Configuration
-    validate_format = fields.Boolean(
-        string="Validate Format",
-        default=True,
-        help="Validate barcode format on creation",
-    )
-    validate_uniqueness = fields.Boolean(
-        string="Validate Uniqueness",
-        default=True,
-        help="Ensure barcode uniqueness across system",
-    )
-    validate_check_digit = fields.Boolean(
-        string="Validate Check Digit", default=True, help="Validate barcode check digit"
-    )
-
-    # ============================================================================
-    # PRODUCT CATEGORIZATION
-    # ============================================================================
-    product_category = fields.Selection(
-        [
-            ("container", "Storage Container"),
-            ("folder", "File Folder"),
-            ("document", "Document Item"),
-            ("location", "Location Marker"),
-            ("equipment", "Equipment Asset"),
-        ],
-        string="Product Category",
-        default="container",
-    )
-    product_type = fields.Selection(
-        [
-            ("physical", "Physical Product"),
-            ("service", "Service Item"),
-            ("digital", "Digital Asset"),
-        ],
-        string="Product Type",
-        default="physical",
-    )
-
-    # ============================================================================
-    # STORAGE & LOCATION
-    # ============================================================================
-    default_location_id = fields.Many2one(
+    location_id = fields.Many2one(
         "records.location",
-        string="Default Storage Location",
-        help="Default location for this product type",
+        string="Assigned Location",
+        help="Location assigned to this barcode (for location barcodes)",
     )
-    storage_requirements = fields.Text(
-        string="Storage Requirements", help="Special storage requirements or conditions"
+    container_id = fields.Many2one(
+        "records.container",
+        string="Related Container",
+        help="Container related to this barcode (for container barcodes)",
+    )
+
+    # Usage tracking
+    scan_count = fields.Integer(
+        string="Scan Count",
+        default=0,
+        help="Number of times this barcode has been scanned",
+    )
+    last_scanned = fields.Datetime(
+        string="Last Scanned", help="Date and time of last scan"
     )
 
     # ============================================================================
-    # PRICING & BILLING
+    # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
-    standard_price = fields.Monetary(
-        string="Standard Cost",
-        currency_field="currency_id",
-        help="Standard cost for this product",
-    )
-    list_price = fields.Monetary(
-        string="List Price",
-        currency_field="currency_id",
-        help="Standard selling price",
-    )
-    storage_rate = fields.Monetary(
-        string="Storage Rate",
-        currency_field="currency_id",
-        help="Monthly storage rate for this product type",
-    )
-
-    # ============================================================================
-    # OPERATIONAL FIELDS
-    # ============================================================================
-    monthly_volume = fields.Integer(
-        string="Monthly Volume",
-        help="Expected monthly volume for this product",
-    )
-    naid_compliant = fields.Boolean(
-        string="NAID Compliant",
-        default=False,
-        help="Whether this product meets NAID compliance standards",
-    )
-
-    # Lifecycle Management
-    creation_date = fields.Datetime(
-        string="Creation Date", default=fields.Datetime.now, readonly=True
-    )
-    last_used_date = fields.Datetime(string="Last Used", readonly=True)
-    usage_count = fields.Integer(string="Usage Count", default=0, readonly=True)
-
-    # ============================================================================
-    # RELATIONSHIP FIELDS
-    # ============================================================================
-    barcode_line_ids = fields.One2many(
-        "barcode.product.line", "product_id", string="Generated Barcodes"
-    )
-
-    # Mail Framework Fields
     activity_ids = fields.One2many(
         "mail.activity",
         "res_id",
+        domain="[('res_model', '=', 'barcode.product')]",
         string="Activities",
-        auto_join=True,
-        groups="base.group_user",
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        domain="[('res_model', '=', 'barcode.product')]",
+        string="Followers",
     )
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
+        domain="[('res_model', '=', 'barcode.product')]",
         string="Messages",
-        domain="[('model', '=', _name)]",
-        groups="base.group_user",
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
     )
 
     # ============================================================================
-    # COMPUTED FIELDS
+    # COMPUTE METHODS
     # ============================================================================
-    display_name = fields.Char(
-        string="Display Name", compute="_compute_display_name", store=True
-    )
-    barcode_count = fields.Integer(
-        string="Generated Barcodes Count",
-        compute="_compute_barcode_count",
-        store=True,
-    )
-    barcode_range_size = fields.Integer(
-    storage_box_id = fields.Many2one('barcode.storage.box', string='Storage Box')
-        string="Barcode Range Size",
-        compute="_compute_barcode_range_size",
-        store=True,
-    )
-
-    @api.depends("name", "code")
-    def _compute_display_name(self):
+    @api.depends("barcode")
+    def _compute_barcode_length(self):
+        """Compute barcode length for classification"""
         for record in self:
-            if record.code:
-                record.display_name = _("[%s] %s", record.code, record.name)
+            record.barcode_length = (
+                len(record.barcode.strip()) if record.barcode else 0
+            )
+
+    @api.depends("barcode_length")
+    def _compute_product_category(self):
+        """
+        Intelligent barcode classification based on business rules.
+
+        Classification Rules:
+        - 5 or 15 digits: Location barcodes
+        - 6 digits: Container boxes (file storage)
+        - 7 digits: File folders (permanent)
+        - 10 digits: Shred bin items
+        - 14 digits: Temporary file folders (portal-created)
+        """
+        for record in self:
+            length = record.barcode_length
+
+            if length in [5, 15]:
+                record.product_category = "location"
+            elif length == 6:
+                record.product_category = "container_box"
+            elif length == 7:
+                record.product_category = "permanent_folder"
+            elif length == 10:
+                record.product_category = "shred_item"
+            elif length == 14:
+                record.product_category = "temp_folder"
             else:
-                record.display_name = record.name
+                record.product_category = "other"
 
-    @api.depends("barcode_line_ids")
-    def _compute_barcode_count(self):
-        for record in self:
-            record.barcode_count = len(record.barcode_line_ids)
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_process_barcode(self):
+        """
+        Process barcode according to business rules and create appropriate records.
 
-    @api.depends("start_barcode", "end_barcode")
-    def _compute_barcode_range_size(self):
-        for record in self:
-            if record.start_barcode and record.end_barcode:
-                try:
-                    start_num = int(record.start_barcode)
-                    end_num = int(record.end_barcode)
-                    record.barcode_range_size = max(0, end_num - start_num + 1)
-                except (ValueError, TypeError):
-                    record.barcode_range_size = 0
-            else:
-                record.barcode_range_size = 0
+        This method implements the intelligent barcode classification system
+        that automatically creates the correct type of record based on barcode length.
+        """
+        self.ensure_one()
+
+        if not self.barcode:
+            raise UserError(_("Please enter a barcode before processing"))
+
+        # Update scan tracking
+        self.write(
+            {
+                "scan_count": self.scan_count + 1,
+                "last_scanned": fields.Datetime.now(),
+            }
+        )
+
+        # Process based on category
+        if self.product_category == "location":
+            return self._process_location_barcode()
+        elif self.product_category == "container_box":
+            return self._process_container_barcode()
+        elif self.product_category == "permanent_folder":
+            return self._process_permanent_folder_barcode()
+        elif self.product_category == "temp_folder":
+            return self._process_temp_folder_barcode()
+        elif self.product_category == "shred_item":
+            return self._process_shred_item_barcode()
+        else:
+            raise UserError(
+                _(
+                    "Barcode category '%s' is not supported for automatic processing",
+                    self.product_category,
+                )
+            )
+
+    def action_view_related_records(self):
+        """View records related to this barcode"""
+        self.ensure_one()
+
+        if self.product_category == "container_box" and self.container_id:
+            return {
+                "type": "ir.actions.act_window",
+                "name": _("Related Container"),
+                "res_model": "records.container",
+                "res_id": self.container_id.id,
+                "view_mode": "form",
+                "target": "current",
+            }
+        elif self.product_category == "location" and self.location_id:
+            return {
+                "type": "ir.actions.act_window",
+                "name": _("Related Location"),
+                "res_model": "records.location",
+                "res_id": self.location_id.id,
+                "view_mode": "form",
+                "target": "current",
+            }
+        else:
+            return self._get_related_records_action()
+
+    # ============================================================================
+    # BUSINESS LOGIC METHODS
+    # ============================================================================
+    def _process_location_barcode(self):
+        """Process location barcode (5 or 15 digits)"""
+        location = self.env["records.location"].search(
+            [("barcode", "=", self.barcode)], limit=1
+        )
+
+        if not location:
+            # Create new location
+            location = self.env["records.location"].create(
+                {
+                    "name": _("Location %s", self.barcode),
+                    "barcode": self.barcode,
+                    "location_type": "warehouse",
+                }
+            )
+
+        self.location_id = location.id
+        self.message_post(
+            body=_("Location barcode processed: %s", location.name)
+        )
+
+        return self._return_location_action(location)
+
+    def _process_container_barcode(self):
+        """Process container barcode (6 digits)"""
+        container = self.env["records.container"].search(
+            [("barcode", "=", self.barcode)], limit=1
+        )
+
+        if not container:
+            # Create new container with default specifications
+            container = self.env["records.container"].create(
+                {
+                    "name": self.barcode,
+                    "barcode": self.barcode,
+                    "container_type": "type_01",  # Default to most common type
+                    "state": "draft",
+                }
+            )
+
+        self.container_id = container.id
+        self.message_post(
+            body=_("Container barcode processed: %s", container.name)
+        )
+
+        return self._return_container_action(container)
+
+    def _process_permanent_folder_barcode(self):
+        """Process permanent folder barcode (7 digits)"""
+        # Create document folder record
+        folder = self.env["records.document.folder"].create(
+            {
+                "name": _("Folder %s", self.barcode),
+                "barcode": self.barcode,
+                "folder_type": "permanent",
+                "state": "active",
+            }
+        )
+
+        self.message_post(body=_("Permanent folder created: %s", folder.name))
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Document Folder"),
+            "res_model": "records.document.folder",
+            "res_id": folder.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def _process_temp_folder_barcode(self):
+        """Process temporary folder barcode (14 digits)"""
+        # Create temporary document folder
+        folder = self.env["records.document.folder"].create(
+            {
+                "name": _("Temp Folder %s", self.barcode),
+                "barcode": self.barcode,
+                "folder_type": "temporary",
+                "state": "active",
+                "auto_expire_date": fields.Date.add(
+                    fields.Date.today(), days=90
+                ),
+            }
+        )
+
+        self.message_post(
+            body=_(
+                "Temporary folder created: %s (expires in 90 days)",
+                folder.name,
+            )
+        )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Temporary Document Folder"),
+            "res_model": "records.document.folder",
+            "res_id": folder.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def _process_shred_item_barcode(self):
+        """Process shred bin item barcode (10 digits)"""
+        # Create shred bin item
+        shred_item = self.env["shred.bin.item"].create(
+            {
+                "name": _("Shred Item %s", self.barcode),
+                "barcode": self.barcode,
+                "state": "pending",
+                "estimated_weight": 1.0,  # Default weight
+            }
+        )
+
+        self.message_post(
+            body=_("Shred bin item created: %s", shred_item.name)
+        )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Shred Bin Item"),
+            "res_model": "shred.bin.item",
+            "res_id": shred_item.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def _get_related_records_action(self):
+        """Get action for viewing all related records"""
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Barcode Usage History"),
+            "res_model": "barcode.scan.history",
+            "domain": [("barcode", "=", self.barcode)],
+            "view_mode": "tree,form",
+            "target": "current",
+        }
+
+    def _return_location_action(self, location):
+        """Return action to view location"""
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Location"),
+            "res_model": "records.location",
+            "res_id": location.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def _return_container_action(self, container):
+        """Return action to view container"""
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Container"),
+            "res_model": "records.container",
+            "res_id": container.id,
+            "view_mode": "form",
+            "target": "current",
+        }
 
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
     @api.constrains("barcode")
     def _check_barcode_format(self):
+        """Validate barcode format and length"""
         for record in self:
-            if record.barcode and record.validate_format:
-                if not record._validate_barcode_format(record.barcode):
-                    raise ValidationError(
-                        _("Invalid barcode format for %s", record.barcode_format)
+            if not record.barcode:
+                continue
+
+            barcode = record.barcode.strip()
+            length = len(barcode)
+
+            # Check for valid barcode lengths
+            valid_lengths = [5, 6, 7, 10, 14, 15]
+            if length not in valid_lengths:
+                raise ValidationError(
+                    _(
+                        "Invalid barcode length: %d. Valid lengths are: %s",
+                        length,
+                        ", ".join(map(str, valid_lengths)),
                     )
+                )
 
-    @api.constrains("start_barcode", "end_barcode")
-    def _check_barcode_range(self):
-        for record in self:
-            if record.start_barcode and record.end_barcode:
-                try:
-                    start_num = int(record.start_barcode)
-                    end_num = int(record.end_barcode)
-                    if start_num >= end_num:
-                        raise ValidationError(
-                            _("Start barcode must be less than end barcode")
-                        )
-                except (ValueError, TypeError):
-                    raise ValidationError(
-                        _("Barcode range must contain numeric values")
-                    )
-
-    @api.constrains("generation_batch_size")
-    def _check_batch_size(self):
-        for record in self:
-            if record.generation_batch_size <= 0:
-                raise ValidationError(_("Batch size must be greater than 0"))
-            if record.generation_batch_size > 10000:
-                raise ValidationError(_("Batch size cannot exceed 10,000"))
-
-    # ============================================================================
-    # BUSINESS METHODS
-    # ============================================================================
-    def _validate_barcode_format(self, barcode):
-        """Validate barcode format based on configured type"""
-        if not barcode:
-            return True
-
-        format_patterns = {
-            "ean13": r"^\d{13}$",
-            "ean8": r"^\d{8}$",
-            "upca": r"^\d{12}$",
-            "code128": r"^[\x00-\x7F]+$",
-            "code39": r"^[A-Z0-9\-\.\s\+\%\$\/]+$",
-            "custom": r".*",  # Allow any format for custom
-        }
-
-        pattern = format_patterns.get(self.barcode_format, r".*")
-        return bool(re.match(pattern, barcode))
-
-    def _generate_next_barcode(self):
-        """Generate next barcode in sequence"""
-        self.ensure_one()
-        if self.start_barcode:
-            try:
-                start_num = int(self.start_barcode)
-                next_barcode = str(start_num + self.next_sequence_number - 1)
-                self.next_sequence_number += 1
-                return next_barcode.zfill(len(self.start_barcode))
-            except (ValueError, TypeError):
-                return False
-        return False
-
-    def _check_barcode_uniqueness(self, barcode):
-        """Check if barcode is unique across system"""
-        if not self.validate_uniqueness:
-            return True
-
-        existing = self.search(
-            [("barcode_line_ids.barcode", "=", barcode), ("id", "!=", self.id)], limit=1
-        )
-
-        return not bool(existing)
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_activate(self):
-        """Activate product"""
-        self.ensure_one()
-        if self.state != "draft":
-            raise UserError(_("Only draft products can be activated"))
-
-        self.write({"state": "active", "last_used_date": fields.Datetime.now()})
-        self.message_post(body=_("Product activated"))
-
-    def action_deactivate(self):
-        """Deactivate product"""
-        self.ensure_one()
-        if self.state != "active":
-            raise UserError(_("Only active products can be deactivated"))
-
-        self.write({"state": "inactive"})
-        self.message_post(body=_("Product deactivated"))
-
-    def action_archive(self):
-        """Archive product"""
-        self.ensure_one()
-        self.write({"state": "archived", "active": False})
-        self.message_post(body=_("Product archived"))
-
-    def action_generate_barcodes(self):
-        """Open barcode generation wizard"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Generate Barcodes"),
-            "res_model": "barcode.generation.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {"default_product_id": self.id},
-        }
-
-    def action_view_barcodes(self):
-        """View generated barcodes"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Generated Barcodes"),
-            "res_model": "barcode.product.line",
-            "view_mode": "tree,form",
-            "domain": [("product_id", "=", self.id)],
-            "context": {"default_product_id": self.id},
-        }
-
-    def action_validate_all_barcodes(self):
-        """Validate all generated barcodes"""
-        self.ensure_one()
-        invalid_count = 0
-
-        for line in self.barcode_line_ids:
-            if not self._validate_barcode_format(line.barcode):
-                invalid_count += 1
-
-        if invalid_count > 0:
-            raise UserError(_("Found %d invalid barcodes", invalid_count))
-        else:
-            self.message_post(
-                body=_("All %d barcodes validated successfully", len(self.barcode_line_ids))
-            )
-
-    def action_export_barcodes(self):
-        """Export barcodes to CSV"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.report",
-            "report_name": "records_management.barcode_export_report",
-            "report_type": "csv",
-            "data": {"product_id": self.id},
-        }
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Override create to set a sequence for the 'name' field only if it is not provided."""
-        for vals in vals_list:
-            if not vals.get("name"):
-                vals["name"] = self.env["ir.sequence"].next_by_code(
-                    "barcode.product"
-                ) or _("New")
-        return super().create(vals_list)
-
-    def write(self, vals):
-        """Override write to post a message when the state changes."""
-        if "state" in vals:
-            for record in self:
-                old_state = dict(record._fields["state"].selection).get(record.state)
-                new_state = dict(record._fields["state"].selection).get(vals["state"])
-                if old_state != new_state:
-                    record.message_post(
-                        body=_("State changed from %s to %s", old_state, new_state)
-                    )
-        return super().write(vals)
-
-    def unlink(self):
-        """Override unlink to prevent deletion of active products."""
-        if any(record.state == "active" for record in self):
-            raise UserError(
-                _("Cannot delete active barcode products. Please archive them first.")
-            )
-        return super().unlink()
-
-
-class BarcodeProductLine(models.Model):
-    _name = "barcode.product.line"
-    _description = "Generated Barcode Line"
-    _order = "sequence, barcode"
-
-    product_id = fields.Many2one(
-        "barcode.product",
-        string="Product",
-        required=True,
-        ondelete="cascade",
-        index=True,
-    )
-    barcode = fields.Char(
-        string="Barcode",
-        required=True,
-        index=True,
-        help="Generated barcode value",
-    )
-    sequence = fields.Integer(string="Sequence", default=10)
-    is_used = fields.Boolean(
-        string="Used",
-        default=False,
-        help="Whether this barcode has been assigned",
-    )
-    usage_date = fields.Datetime(string="Usage Date", readonly=True)
-    assigned_to = fields.Char(
-        string="Assigned To", help="Record this barcode was assigned to"
-    )
-    notes = fields.Text(string="Notes")
+            # Check for numeric-only barcodes
+            if not barcode.isdigit():
+                raise ValidationError(
+                    _("Barcode must contain only numeric digits: %s", barcode)
+                )
 
     @api.constrains("barcode")
-    def _check_barcode_unique(self):
+    def _check_barcode_uniqueness(self):
+        """Ensure barcode uniqueness"""
         for record in self:
-            existing = self.search(
-                [("barcode", "=", record.barcode), ("id", "!=", record.id)], limit=1
-            )
-            if existing:
-                raise ValidationError(_("Barcode %s already exists", record.barcode))
+            if record.barcode:
+                existing = self.search(
+                    [("barcode", "=", record.barcode), ("id", "!=", record.id)]
+                )
+                if existing:
+                    raise ValidationError(
+                        _(
+                            "Barcode %s already exists in product: %s",
+                            record.barcode,
+                            existing.name,
+                        )
+                    )
 
-    def name_get(self):
-        result = []
-        for record in self:
-            name = _("%s (%s)", record.barcode, record.product_id.name)
-            result.append((record.id, name))
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to handle barcode processing"""
+        records = super().create(vals_list)
+
+        # Log creation for audit trail
+        for record in records:
+            record.message_post(
+                body=_(
+                    "Barcode product created with category: %s",
+                    record.product_category,
+                )
+            )
+
+        return records
+
+    def write(self, vals):
+        """Override write to track changes"""
+        result = super().write(vals)
+
+        # Log important changes
+        if "barcode" in vals:
+            for record in self:
+                record.message_post(
+                    body=_(
+                        "Barcode updated to: %s (Category: %s)",
+                        record.barcode,
+                        record.product_category,
+                    )
+                )
+
         return result

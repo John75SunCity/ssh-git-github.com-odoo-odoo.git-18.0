@@ -406,13 +406,16 @@ class PaperBale(models.Model):
         domain=lambda self: [("res_model", "=", self._name)],
     )
     message_ids = fields.One2many(
-    load_shipment_id = fields.Many2one('paper.load.shipment', string='Load Shipment')
-    load_id = fields.Many2one('load', string='Load')
         "mail.message",
         "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)],
     )
+
+    load_shipment_id = fields.Many2one(
+        "paper.load.shipment", string="Load Shipment"
+    )
+    load_id = fields.Many2one("load", string="Load")
 
     # ============================================================================
     # COMPUTE METHODS

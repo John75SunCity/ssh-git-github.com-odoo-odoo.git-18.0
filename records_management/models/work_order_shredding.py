@@ -31,7 +31,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
 
-
 class WorkOrderShredding(models.Model):
     _name = "work.order.shredding"
     _description = "Shredding Work Order Management"
@@ -363,12 +362,13 @@ class WorkOrderShredding(models.Model):
         domain="[('res_model', '=', 'work.order.shredding')]",
     )
     message_ids = fields.One2many(
-    batch_id = fields.Many2one('shredding.inventory.batch', string='Batch')
         "mail.message",
         "res_id",
         string="Messages",
         domain="[('model', '=', 'work.order.shredding')]",
     )
+
+    batch_id = fields.Many2one("shredding.inventory.batch", string="Batch")
 
     # ============================================================================
     # COMPUTED FIELDS
