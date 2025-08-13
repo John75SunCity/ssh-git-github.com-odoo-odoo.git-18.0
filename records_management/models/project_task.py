@@ -30,7 +30,7 @@ class ProjectTask(models.Model):
         ('container_destruction', 'Container Destruction'),
         ('container_access', 'Container Access'),
     ], string='Work Order Type', help="Type of work order related to this task")
-    
+
     # Reference field for direct work order links
     work_order_reference = fields.Reference(
         selection=[
@@ -58,10 +58,14 @@ class ProjectTask(models.Model):
         help="The pickup request that generated this task.",
     )
     task_type = fields.Selection(
-        selection_add=[
+        [
             ("pickup", "Pickup"),
             ("delivery", "Delivery"),
             ("destruction", "Destruction"),
+            ("storage", "Storage"),
+            ("retrieval", "Document Retrieval"),
+            ("audit", "Audit Task"),
+            ("maintenance", "Maintenance"),
         ],
         string="Records Task Type",
         help="Specific type of records management task.",
