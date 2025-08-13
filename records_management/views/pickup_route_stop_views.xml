@@ -7,19 +7,18 @@
     <field name="model">pickup.route.stop</field>
     <field name="arch" type="xml">
         <kanban default_group_by="state" class="o_kanban_pickup_route_stop">
-            <field name="name"/>
-            <field name="pickup_route_id"/>
+            <field name="display_name"/>
+            <field name="route_id"/>
             <field name="partner_id"/>
             <field name="address"/>
-            <field name="scheduled_time"/>
-            <field name="actual_time"/>
+            <field name="planned_arrival"/>
+            <field name="actual_arrival"/>
             <field name="state"/>
-            <field name="priority"/>
-            <field name="stop_sequence"/>
-            <field name="estimated_duration"/>
+            <field name="sequence"/>
+            <field name="planned_duration"/>
             <field name="actual_duration"/>
             <field name="pickup_request_id"/>
-            <field name="color"/>
+            <field name="completion_status"/>
             <templates>
                 <t t-name="kanban-box">
                     <div t-attf-class="oe_kanban_card oe_kanban_global_click oe_kanban_color_#{kanban_getcolor(record.color.raw_value)}">
@@ -27,7 +26,7 @@
                             <div class="o_kanban_card_header_title">
                                 <div class="o_primary">
                                     <strong>
-                                        <field name="name"/>
+                                        <field name="display_name"/>
                                     </strong>
                                 </div>
                                 <div class="o_secondary">

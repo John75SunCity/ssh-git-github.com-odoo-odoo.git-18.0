@@ -13,9 +13,12 @@
             <field name="vehicle_id"/>
             <field name="state"/>
             <field name="priority"/>
-            <field name="total_stops"/>
             <field name="estimated_duration"/>
             <field name="actual_duration"/>
+            <field name="total_distance"/>
+            <field name="completion_percentage"/>
+            <field name="efficiency_score"/>
+            <field name="request_count"/>
             <field name="color"/>
             <templates>
                 <t t-name="kanban-box">
@@ -160,17 +163,17 @@
 </page>
 <page string="Route Details" name="route_details">
     <group>
-        <group string="Navigation">
+        <group string="Route Planning">
             <field name="total_distance"/>
-            <field name="total_stops"/>
-            <field name="route_optimization"/>
-            <field name="gps_tracking_enabled"/>
+            <field name="estimated_duration" widget="float_time"/>
+            <field name="actual_duration" widget="float_time"/>
+            <field name="request_count"/>
         </group>
-        <group string="Performance">
-            <field name="fuel_consumption"/>
-            <field name="average_stop_time" widget="float_time"/>
-            <field name="on_time_percentage"/>
-            <field name="customer_satisfaction_rating" widget="float" digits="[3, 1]"/>
+        <group string="Performance Metrics">
+            <field name="completion_percentage" widget="progressbar"/>
+            <field name="efficiency_score"/>
+            <field name="planned_start_time"/>
+            <field name="actual_start_time"/>
         </group>
     </group>
     <separator string="Route Notes"/>

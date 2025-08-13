@@ -99,6 +99,97 @@ git push origin main  # Deploy latest changes
 
 ---
 
+## 🚨 **CRITICAL SYSTEM INTEGRITY CHECKLIST - MANDATORY FOR ALL CHANGES**
+
+**⚠️ ABSOLUTE REQUIREMENT**: When creating new models, fields, views, or any functionality, AI coding assistants MUST systematically update ALL interconnected files. Failing to follow this checklist will break the Records Management system and cause deployment failures.
+
+### **🔥 STEP-BY-STEP MANDATORY PROCESS:**
+
+#### **🆕 WHEN CREATING/MODIFYING MODELS:**
+
+**1. 📝 PYTHON MODEL FILE** - Create/update the model in `models/` directory
+**2. 📊 MODELS INIT** - Add import to `models/__init__.py` (proper dependency order)
+**3. 🔐 SECURITY ACCESS** - Add access rules to `security/ir.model.access.csv`:
+```csv
+# ALWAYS add both user and manager access
+access_model_name_user,model.name.user,model_model_name,records_management.group_records_user,1,1,1,0
+access_model_name_manager,model.name.manager,model_model_name,records_management.group_records_manager,1,1,1,1
+```
+
+**4. 👀 VIEW FILES** - Create/update XML views in `views/` directory:
+   - List view (tree)
+   - Form view 
+   - Kanban view (if applicable)
+   - Search view with filters
+   - Menu items
+
+**5. 📋 REPORTS** - Update/create report files in `report/` directory if applicable
+
+**6. 🎯 WIZARDS** - Update any wizards that interact with the model
+
+**7. ⚙️ RM MODULE CONFIGURATOR** - Add configuration controls:
+   - Field visibility toggles
+   - Feature enable/disable switches
+   - UI customization options
+
+**8. 📦 MANIFEST CHECK** - Update `__manifest__.py` if new dependencies added
+
+#### **🌐 WHEN CREATING/MODIFYING VIEWS:**
+
+**1. 📝 XML VIEW FILE** - Create the view definition with all model fields
+**2. 🔐 SECURITY VALIDATION** - Ensure all referenced fields exist in models
+**3. 🎯 MENU INTEGRATION** - Add to appropriate menus
+**4. ⚙️ CONFIGURATOR CONTROLS** - Add visibility toggles
+**5. 📱 RESPONSIVE DESIGN** - Ensure mobile compatibility
+
+#### **🔧 WHEN ADDING NEW FUNCTIONALITY:**
+
+**1. 🏗️ CORE IMPLEMENTATION** - Implement the feature/method
+**2. 🔐 SECURITY RULES** - Update access permissions  
+**3. 👀 UI INTEGRATION** - Add to relevant views
+**4. ⚙️ CONFIGURATION** - Add toggles in RM Module Configurator
+**5. 📋 MENU/ACTION** - Create actions and menu items
+**6. 🧪 TESTING** - Add demo data if needed
+
+### **❌ COMMON MISTAKES TO AVOID:**
+
+- ❌ **Creating models without security access rules** → Module won't load
+- ❌ **Adding fields to views without checking model exists** → ParseError
+- ❌ **Missing imports in models/__init__.py** → ImportError  
+- ❌ **Forgetting to update view files after model changes** → Missing fields
+- ❌ **Not adding RM Module Configurator controls** → Feature not configurable
+- ❌ **Skipping menu integration** → Features not accessible
+
+### **✅ VALIDATION CHECKLIST BEFORE COMMITTING:**
+
+```bash
+# 1. Syntax validation
+python development-tools/find_syntax_errors.py
+
+# 2. Import validation  
+grep -r "from . import" records_management/models/__init__.py
+
+# 3. Security rules check
+grep "model_new_model_name" records_management/security/ir.model.access.csv
+
+# 4. View files exist
+ls records_management/views/*new_model*.xml
+
+# 5. All fields in views exist in models
+# Manual check: Compare view field references to model definitions
+```
+
+### **🎯 SYSTEM INTEGRATION REQUIREMENTS:**
+
+When adding new functionality, ALWAYS consider these integration points:
+
+1. **RM Module Configurator** - All features must be configurable
+2. **Security Framework** - Multi-level access controls
+3. **Portal Integration** - Customer-facing features
+4. **FSM Integration** - Field service compatibility  
+5. **NAID Compliance** - Audit trail requirements
+6. **Mobile Support** - Responsive design patterns
+
 ## � **SYSTEM INTEGRITY CHECKLIST - ALWAYS FOLLOW WHEN MAKING CHANGES**
 
 **⚠️ CRITICAL**: When adding new functionality, models, fields, or views, AI coding assistants MUST update ALL interconnected files to maintain system integrity. Missing components will break the Records Management system.
