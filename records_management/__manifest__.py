@@ -44,11 +44,14 @@
         "hr",
         "hr_timesheet",
         "hr_payroll",
+        # Project & Maintenance
+        "project",
+        "maintenance",
         # Advanced Business Features
         "sale_management",
         "website_sale",
         "industry_fsm",
-        "quality_control",
+        "quality",
         "website_slides",
         "sale_subscription",
         "sale_renting",
