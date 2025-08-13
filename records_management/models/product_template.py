@@ -42,6 +42,39 @@ class ProductTemplate(models.Model):
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
+    # CONTAINER SPECIFICATIONS
+    # ============================================================================
+    is_records_container = fields.Boolean(
+        string="Records Container",
+        default=False,
+        help="Whether this product is a records management container",
+    )
+    container_type = fields.Selection(
+        [
+            ("type_01", "TYPE 01: Standard Box (1.2 CF)"),
+            ("type_02", "TYPE 02: Legal/Banker Box (2.4 CF)"),
+            ("type_03", "TYPE 03: Map Box (0.875 CF)"),
+            ("type_04", "TYPE 04: Odd Size/Temp Box (5.0 CF)"),
+            ("type_06", "TYPE 06: Pathology Box (0.042 CF)"),
+        ],
+        string="Container Type",
+        help="Business container type specification",
+    )
+    container_volume_cf = fields.Float(
+        string="Container Volume (Cubic Feet)",
+        digits=(12, 3),
+        help="Container volume in cubic feet for capacity planning",
+    )
+    container_weight_lbs = fields.Float(
+        string="Container Weight (lbs)",
+        help="Average container weight in pounds",
+    )
+    container_dimensions = fields.Char(
+        string="Container Dimensions",
+        help="Physical dimensions of the container",
+    )
+
+    # ============================================================================
     # SERVICE CONFIGURATION
     # ============================================================================
     is_template_service = fields.Boolean(
@@ -387,6 +420,24 @@ class ProductTemplate(models.Model):
     # ============================================================================
     # ONCHANGE METHODS
     # ============================================================================
+    @api.onchange("container_type")
+    def _onchange_container_type(self):
+        """Set container specifications based on container type"""
+        container_specs = {
+            "type_01": {"volume": 1.2, "weight": 35, "dimensions": '12" x 15" x 10"'},
+            "type_02": {"volume": 2.4, "weight": 65, "dimensions": '24" x 15" x 10"'},
+            "type_03": {"volume": 0.875, "weight": 35, "dimensions": '42" x 6" x 6"'},
+            "type_04": {"volume": 5.0, "weight": 75, "dimensions": "Variable"},
+            "type_06": {"volume": 0.042, "weight": 40, "dimensions": '12" x 6" x 10"'},
+        }
+        
+        if self.container_type and self.container_type in container_specs:
+            specs = container_specs[self.container_type]
+            self.container_volume_cf = specs["volume"]
+            self.container_weight_lbs = specs["weight"]
+            self.container_dimensions = specs["dimensions"]
+            self.is_records_container = True
+
     @api.onchange("template_category")
     def _onchange_template_category(self):
         """Set default values based on template category"""
@@ -494,11 +545,6 @@ class ProductTemplate(models.Model):
         if self.setup_fee:
             total_price += self.setup_fee
 
-        # Apply minimum charge
-        if self.minimum_charge:
-            total_price = max(total_price, self.minimum_charge)
-
-        return total_price
         # Apply minimum charge
         if self.minimum_charge:
             total_price = max(total_price, self.minimum_charge)
