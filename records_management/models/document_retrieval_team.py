@@ -109,6 +109,13 @@ class DocumentRetrievalTeam(models.Model):
         default="weekdays",
     )
 
+    # Document Retrieval Items (inverse relationship)
+    retrieval_item_ids = fields.One2many(
+        "document.retrieval.item", "team_id",
+        string="Assigned Retrieval Items",
+        help="Retrieval items assigned to this team"
+    )
+
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(

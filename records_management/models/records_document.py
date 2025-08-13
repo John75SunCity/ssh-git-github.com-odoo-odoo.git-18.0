@@ -138,6 +138,14 @@ class RecordsDocument(models.Model):
         string="Location",
         help="Physical location of the document",
     )
+    
+    # Document Retrieval Items (inverse relationship)
+    retrieval_item_ids = fields.One2many(
+        "document.retrieval.item", "document_id",
+        string="Document Retrieval Items",
+        help="Retrieval items that reference this document"
+    )
+    
     temp_inventory_id = fields.Many2one(
         "temp.inventory",
         string="Temporary Inventory",

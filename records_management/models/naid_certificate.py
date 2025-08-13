@@ -258,6 +258,13 @@ class NaidCertificate(models.Model):
         string="Days Until Expiration", compute="_compute_days_until_expiration"
     )
 
+    # NAID Destruction Records (inverse relationship)
+    destruction_record_ids = fields.One2many(
+        "naid.destruction.record", "certificate_id",
+        string="Associated Destruction Records",
+        help="Destruction records that reference this certificate"
+    )
+
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many(
