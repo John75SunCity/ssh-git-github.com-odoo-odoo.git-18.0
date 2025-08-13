@@ -9,8 +9,6 @@ tracking, cost analysis, and quality metrics.
 from odoo import models, fields, api
 
 
-
-
 class DocumentRetrievalMetric(models.Model):
     """Performance metrics for document retrieval operations"""
 
@@ -45,7 +43,7 @@ class DocumentRetrievalMetric(models.Model):
         string="Retrieval Date", required=True, default=fields.Date.today, tracking=True
     )
     work_order_id = fields.Many2one(
-        "document.retrieval.work.order", string="Work Order"
+        "file.retrieval.work.order", string="Work Order"
     )
     team_id = fields.Many2one("document.retrieval.team", string="Team")
     employee_id = fields.Many2one("hr.employee", string="Employee")

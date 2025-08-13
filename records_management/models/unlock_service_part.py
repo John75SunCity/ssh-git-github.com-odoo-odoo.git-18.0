@@ -41,20 +41,20 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    
+
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
         store=True,
         help="Computed display name for the service part"
     )
-    
+
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Sequence order for parts list"
     )
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
@@ -62,7 +62,7 @@ class UnlockServicePart(models.Model):
         required=True,
         index=True
     )
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Created By",
@@ -70,7 +70,7 @@ class UnlockServicePart(models.Model):
         tracking=True,
         help="User who added this part to the service"
     )
-    
+
     active = fields.Boolean(
         string="Active",
         default=True,
@@ -81,7 +81,7 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # SERVICE RELATIONSHIP FIELDS
     # ============================================================================
-    
+
     service_history_id = fields.Many2one(
         "unlock.service.history",
         string="Service History",
@@ -91,7 +91,7 @@ class UnlockServicePart(models.Model):
         index=True,
         help="Related unlock service history record"
     )
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         related="service_history_id.partner_id",
@@ -100,7 +100,7 @@ class UnlockServicePart(models.Model):
         readonly=True,
         help="Customer for this service"
     )
-    
+
     technician_id = fields.Many2one(
         "hr.employee",
         related="service_history_id.technician_id",
@@ -113,7 +113,7 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # PRODUCT AND INVENTORY FIELDS
     # ============================================================================
-    
+
     product_id = fields.Many2one(
         "product.product",
         string="Product/Part",
@@ -122,28 +122,28 @@ class UnlockServicePart(models.Model):
         domain=[('type', 'in', ['product', 'consu'])],
         help="Product or part used in the service"
     )
-    
+
     name = fields.Char(
         related="product_id.name",
         string="Product Name",
         readonly=True,
         store=True
     )
-    
+
     product_code = fields.Char(
         related="product_id.default_code",
         string="Product Code",
         readonly=True,
         store=True
     )
-    
+
     product_category_id = fields.Many2one(
         related="product_id.categ_id",
         string="Product Category",
         readonly=True,
         store=True
     )
-    
+
     uom_id = fields.Many2one(
         related="product_id.uom_id",
         string="Unit of Measure",
@@ -154,7 +154,7 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # QUANTITY AND USAGE FIELDS
     # ============================================================================
-    
+
     quantity_planned = fields.Float(
         string="Planned Quantity",
         default=1.0,
@@ -162,14 +162,14 @@ class UnlockServicePart(models.Model):
         tracking=True,
         help="Planned quantity to be used"
     )
-    
+
     quantity_used = fields.Float(
         string="Actual Quantity Used",
         digits="Product Unit of Measure",
         tracking=True,
         help="Actual quantity used in the service"
     )
-    
+
     quantity = fields.Float(
         string="Quantity",
         compute="_compute_quantity",
@@ -177,14 +177,14 @@ class UnlockServicePart(models.Model):
         digits="Product Unit of Measure",
         help="Final quantity (uses actual if set, otherwise planned)"
     )
-    
+
     quantity_available = fields.Float(
         related="product_id.qty_available",
         string="Available Stock",
         readonly=True,
         help="Current available stock for this product"
     )
-    
+
     quantity_reserved = fields.Float(
         string="Reserved Quantity",
         digits="Product Unit of Measure",
@@ -194,15 +194,14 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # PRICING AND COST FIELDS
     # ============================================================================
-    
-    unit_cost = fields.Monetary(
+
+    unit_cost = fields.Float(
         string="Unit Cost",
         related="product_id.standard_price",
-        currency_field="currency_id",
         readonly=True,
-        help="Standard cost per unit"
+        help="Standard cost per unit from product",
     )
-    
+
     unit_price = fields.Monetary(
         string="Unit Sale Price",
         related="product_id.list_price",
@@ -210,14 +209,14 @@ class UnlockServicePart(models.Model):
         readonly=True,
         help="Standard sale price per unit"
     )
-    
+
     markup_percentage = fields.Float(
         string="Markup %",
         default=20.0,
         tracking=True,
         help="Markup percentage for service pricing"
     )
-    
+
     service_price = fields.Monetary(
         string="Service Price",
         compute="_compute_service_price",
@@ -225,7 +224,7 @@ class UnlockServicePart(models.Model):
         currency_field="currency_id",
         help="Final service price including markup"
     )
-    
+
     total_cost = fields.Monetary(
         string="Total Cost",
         compute="_compute_total_amounts",
@@ -233,7 +232,7 @@ class UnlockServicePart(models.Model):
         currency_field="currency_id",
         help="Total cost (quantity × unit cost)"
     )
-    
+
     total_price = fields.Monetary(
         string="Total Price",
         compute="_compute_total_amounts",
@@ -241,7 +240,7 @@ class UnlockServicePart(models.Model):
         currency_field="currency_id",
         help="Total service price (quantity × service price)"
     )
-    
+
     currency_id = fields.Many2one(
         "res.currency",
         related="company_id.currency_id",
@@ -252,7 +251,7 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # STATUS AND WORKFLOW FIELDS
     # ============================================================================
-    
+
     state = fields.Selection([
         ('planned', 'Planned'),
         ('reserved', 'Reserved'),
@@ -261,17 +260,17 @@ class UnlockServicePart(models.Model):
         ('cancelled', 'Cancelled')
     ], string="Status", default='planned', tracking=True, required=True,
        help="Current status of this part in the service")
-    
+
     is_critical = fields.Boolean(
         string="Critical Part",
         help="Mark as critical if this part is essential for service completion"
     )
-    
+
     is_warranty_covered = fields.Boolean(
         string="Warranty Covered",
         help="Indicates if this part is covered under warranty"
     )
-    
+
     warranty_date = fields.Date(
         string="Warranty Expiry",
         help="Date when warranty coverage expires"
@@ -280,24 +279,24 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # VENDOR AND PROCUREMENT FIELDS
     # ============================================================================
-    
+
     vendor_id = fields.Many2one(
         "res.partner",
         string="Preferred Vendor",
         domain=[('is_company', '=', True), ('supplier_rank', '>', 0)],
         help="Preferred vendor for this part"
     )
-    
+
     procurement_date = fields.Date(
         string="Procurement Date",
         help="Date when part was procured"
     )
-    
+
     batch_number = fields.Char(
         string="Batch/Serial Number",
         help="Batch or serial number for traceability"
     )
-    
+
     expiry_date = fields.Date(
         string="Expiry Date",
         help="Expiry date for time-sensitive parts"
@@ -306,22 +305,22 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # NOTES AND DOCUMENTATION FIELDS
     # ============================================================================
-    
+
     usage_notes = fields.Text(
         string="Usage Notes",
         help="Notes about part usage or installation"
     )
-    
+
     replacement_reason = fields.Text(
         string="Replacement Reason",
         help="Reason why this part needed replacement"
     )
-    
+
     quality_notes = fields.Text(
         string="Quality Notes",
         help="Quality inspection notes"
     )
-    
+
     internal_notes = fields.Text(
         string="Internal Notes",
         help="Internal notes for technicians"
@@ -330,21 +329,21 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
-    
+
     activity_ids = fields.One2many(
         "mail.activity",
         "res_id",
         string="Activities",
         domain=[('res_model', '=', 'unlock.service.part')]
     )
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=[('res_model', '=', 'unlock.service.part')]
     )
-    
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -355,7 +354,7 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    
+
     @api.depends('product_id', 'quantity', 'service_history_id')
     def _compute_display_name(self):
         """Compute display name for the part record"""
@@ -369,13 +368,13 @@ class UnlockServicePart(models.Model):
                 record.display_name = record.product_id.name
             else:
                 record.display_name = _("New Service Part")
-    
+
     @api.depends('quantity_used', 'quantity_planned')
     def _compute_quantity(self):
         """Compute final quantity based on actual or planned"""
         for record in self:
             record.quantity = record.quantity_used or record.quantity_planned
-    
+
     @api.depends('unit_price', 'markup_percentage')
     def _compute_service_price(self):
         """Compute service price with markup"""
@@ -384,7 +383,7 @@ class UnlockServicePart(models.Model):
                 record.service_price = record.unit_price * (1 + record.markup_percentage / 100)
             else:
                 record.service_price = record.unit_price
-    
+
     @api.depends('quantity', 'unit_cost', 'service_price')
     def _compute_total_amounts(self):
         """Compute total cost and price amounts"""
@@ -395,7 +394,7 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # ONCHANGE METHODS
     # ============================================================================
-    
+
     @api.onchange('product_id')
     def _onchange_product_id(self):
         """Update related fields when product changes"""
@@ -410,7 +409,7 @@ class UnlockServicePart(models.Model):
                         )
                     }
                 }
-    
+
     @api.onchange('quantity_planned')
     def _onchange_quantity_planned(self):
         """Validate planned quantity against stock"""
@@ -428,39 +427,39 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # CONSTRAINT METHODS
     # ============================================================================
-    
+
     @api.constrains('quantity_planned', 'quantity_used')
     def _check_quantities(self):
         """Validate quantity values"""
         for record in self:
             if record.quantity_planned < 0:
                 raise ValidationError(_("Planned quantity cannot be negative"))
-            
+
             if record.quantity_used < 0:
                 raise ValidationError(_("Used quantity cannot be negative"))
-            
+
             if record.quantity_used and record.quantity_used > record.quantity_planned:
                 raise ValidationError(_(
                     "Used quantity (%s) cannot exceed planned quantity (%s) for %s"
                 ) % (record.quantity_used, record.quantity_planned, record.product_id.name))
-    
+
     @api.constrains('markup_percentage')
     def _check_markup_percentage(self):
         """Validate markup percentage"""
         for record in self:
             if record.markup_percentage < 0:
                 raise ValidationError(_("Markup percentage cannot be negative"))
-            
+
             if record.markup_percentage > 1000:
                 raise ValidationError(_("Markup percentage cannot exceed 1000%"))
-    
+
     @api.constrains('expiry_date', 'warranty_date')
     def _check_dates(self):
         """Validate date fields"""
         for record in self:
             if record.expiry_date and record.expiry_date < fields.Date.today():
                 raise ValidationError(_("Expiry date cannot be in the past"))
-            
+
             if record.warranty_date and record.warranty_date < fields.Date.today():
                 # Warning only, don't prevent saving
                 record.message_post(
@@ -471,35 +470,35 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    
+
     def action_reserve_stock(self):
         """Reserve stock for this service part"""
         self.ensure_one()
-        
+
         if self.state != 'planned':
             raise UserError(_("Can only reserve stock for planned parts"))
-        
+
         if self.quantity_planned > self.product_id.qty_available:
             raise UserError(_(
                 "Cannot reserve %s units of %s. Only %s available."
             ) % (self.quantity_planned, self.product_id.name, self.product_id.qty_available))
-        
+
         self.write({
             'state': 'reserved',
             'quantity_reserved': self.quantity_planned
         })
-        
+
         self._create_audit_log('stock_reserved')
-        
+
         return True
-    
+
     def action_mark_used(self):
         """Mark part as used in service"""
         self.ensure_one()
-        
+
         if self.state not in ['planned', 'reserved']:
             raise UserError(_("Part must be planned or reserved to mark as used"))
-        
+
         # Open wizard to enter actual quantity used
         return {
             'type': 'ir.actions.act_window',
@@ -512,50 +511,50 @@ class UnlockServicePart(models.Model):
                 'default_quantity_used': self.quantity_planned
             }
         }
-    
+
     def action_return_unused(self):
         """Return unused parts to stock"""
         self.ensure_one()
-        
+
         if self.state != 'reserved':
             raise UserError(_("Can only return reserved parts"))
-        
+
         unused_quantity = self.quantity_reserved - (self.quantity_used or 0)
-        
+
         if unused_quantity > 0:
             self.write({
                 'state': 'returned',
                 'quantity_reserved': self.quantity_used or 0
             })
-            
+
             self._create_audit_log('stock_returned', {
                 'returned_quantity': unused_quantity
             })
-            
+
             self.message_post(
                 body=_("Returned %s units of %s to stock") % (
                     unused_quantity, self.product_id.name
                 )
             )
-        
+
         return True
-    
+
     def action_cancel_part(self):
         """Cancel this service part"""
         self.ensure_one()
-        
+
         if self.state == 'used':
             raise UserError(_("Cannot cancel parts that have been used"))
-        
+
         self.write({'state': 'cancelled'})
         self._create_audit_log('part_cancelled')
-        
+
         return True
 
     # ============================================================================
     # BUSINESS LOGIC METHODS
     # ============================================================================
-    
+
     def _create_audit_log(self, event_type, additional_data=None):
         """Create audit log entry"""
         audit_data = {
@@ -567,23 +566,23 @@ class UnlockServicePart(models.Model):
             'description': _('Service part %s: %s') % (self.product_id.name, event_type),
             'additional_data': additional_data or {}
         }
-        
+
         # Add to related service history audit
         if self.service_history_id:
             audit_data['related_service_id'] = self.service_history_id.id
-        
+
         return self.env['unlock.service.audit'].create(audit_data)
-    
+
     def _calculate_total_service_cost(self):
         """Calculate total cost for billing integration"""
         return self.total_price
-    
+
     def _check_warranty_status(self):
         """Check if part is still under warranty"""
         if self.warranty_date:
             return self.warranty_date >= fields.Date.today()
         return False
-    
+
     def _get_replacement_recommendations(self):
         """Get recommended replacement parts"""
         # Business logic to suggest alternative parts
@@ -597,7 +596,7 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # INTEGRATION METHODS
     # ============================================================================
-    
+
     @api.model
     def create_from_service_template(self, service_history_id, template_parts):
         """Create parts from service template"""
@@ -612,7 +611,7 @@ class UnlockServicePart(models.Model):
             }
             parts.append(self.create(part_vals))
         return parts
-    
+
     def export_to_billing(self):
         """Export part costs to billing system"""
         billing_data = {
@@ -624,23 +623,23 @@ class UnlockServicePart(models.Model):
             'description': _('Service part: %s') % self.product_id.name
         }
         return billing_data
-    
+
     # ============================================================================
     # REPORTING METHODS
     # ============================================================================
-    
+
     @api.model
     def get_usage_analytics(self, date_from=None, date_to=None):
         """Get parts usage analytics"""
         domain = [('state', '=', 'used')]
-        
+
         if date_from:
             domain.append(('create_date', '>=', date_from))
         if date_to:
             domain.append(('create_date', '<=', date_to))
-        
+
         used_parts = self.search(domain)
-        
+
         analytics = {
             'total_parts_used': len(used_parts),
             'total_cost': sum(used_parts.mapped('total_cost')),
@@ -648,9 +647,9 @@ class UnlockServicePart(models.Model):
             'most_used_products': self._get_most_used_products(used_parts),
             'cost_by_category': self._get_cost_by_category(used_parts)
         }
-        
+
         return analytics
-    
+
     def _get_most_used_products(self, parts):
         """Get most frequently used products"""
         product_usage = {}
@@ -664,9 +663,9 @@ class UnlockServicePart(models.Model):
                     'quantity': part.quantity,
                     'count': 1
                 }
-        
+
         return sorted(product_usage.values(), key=lambda x: x['quantity'], reverse=True)[:10]
-    
+
     def _get_cost_by_category(self, parts):
         """Get cost breakdown by product category"""
         category_costs = {}
@@ -676,5 +675,5 @@ class UnlockServicePart(models.Model):
                 category_costs[category] += part.total_cost
             else:
                 category_costs[category] = part.total_cost
-        
+
         return category_costs
