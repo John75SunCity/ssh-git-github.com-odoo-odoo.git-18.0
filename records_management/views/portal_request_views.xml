@@ -1,46 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for PORTAL -->
-
-    <!-- Kanban view for Kanban -->
+<!-- Enhanced Kanban view for Portal Requests -->
     <record id="portal_request_view_kanban" model="ir.ui.view">
         <field name="name">portal.request.view.kanban</field>
         <field name="model">portal.request</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="status" class="o_kanban_portal_request">
+<kanban default_group_by="state" class="o_kanban_portal_request">
                 <field name="name"/>
                 <field name="request_type"/>
                 <field name="partner_id"/>
-                <field name="status"/>
+<field name="state"/>
+
                 <field name="priority"/>
-                <field name="submission_date"/>
-                <field name="assigned_to"/>
+<field name="requested_date"/>
+<field name="user_id"/>
+<field name="active"/>
+
                 <templates>
-                    <t t-name="card">
+<t t-name="kanban-box">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_card_header">
-                                <strong>📋                                    <field name="name"/>
-                                </strong>
+<strong>📋    <field name="name"/>
+</strong>
                                 <span class="float-end">
                                     <field name="priority" widget="priority"/>
                                 </span>
-                                <div class="text-muted">👤                                    <field name="partner_id"/>
-                                </div>
+<div class="text-muted">👤    <field name="partner_id"/>
+</div>
                             </div>
                             <div class="o_kanban_card_content">
                                 <div class="mb-2">
-                                    <strong>Type:</strong>
-                                    <field name="request_type"/>
+<strong>Type:</strong>
+<field name="request_type"/>
+
                                     <br/>
-                                    <strong>Submitted:</strong>
-                                    <field name="submission_date" widget="date"/>
+<strong>Requested:</strong>
+<field name="requested_date" widget="date"/>
+
                                     <br/>
-                                    <strong>Assigned:</strong>
-                                    <field name="assigned_to"/>
+<strong>Assigned:</strong>
+<field name="user_id"/>
+
                                 </div>
                                 <div t-if="record.priority.raw_value == 'high'">
                                     <span class="badge badge-danger">🔥 High Priority</span>
                                 </div>
+<div t-if="record.state.raw_value == 'submitted'">
+    <span class="badge badge-warning">⏳ Awaiting Approval</span>
+</div>
                             </div>
                         </div>
                     </t>
@@ -49,39 +56,47 @@
         </field>
     </record>
 
-    <!-- Tree view for List -->
+<!-- Enhanced Tree view for Portal Requests -->
     <record id="portal_request_view_tree" model="ir.ui.view">
         <field name="name">portal.request.view.tree</field>
         <field name="model">portal.request</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="status=='completed'">
+<tree decoration-muted="not active" decoration-info="state == 'draft'" decoration-warning="state == 'submitted'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
                 <field name="name"/>
-                <field name="request_type"/>
-                <field name="partner_id"/>
-                <field name="submission_date" widget="date"/>
-                <field name="priority" widget="priority"/>
-                <field name="status" widget="badge"/>
-                <field name="assigned_to" widget="many2one_avatar_user"/>
-                <field name="due_date" widget="date"/>
+<field name="partner_id" optional="show"/>
+<field name="request_type" optional="show"/>
+<field name="priority" widget="priority" optional="show"/>
+<field name="state" decoration-info="state == 'draft'" decoration-warning="state == 'submitted'" decoration-success="state == 'approved'"/>
+<field name="requested_date" optional="show"/>
+<field name="user_id" widget="many2one_avatar_user" optional="show"/>
+<field name="active" invisible="1"/>
+<field name="company_id" groups="base.group_multi_company" optional="hide"/>
+
             </tree>
         </field>
     </record>
 
-    <!-- Form view for base.rate -->
+<!-- Enhanced Form view for Portal Requests -->
     <record id="portal_request_view_form" model="ir.ui.view">
         <field name="name">portal.request.view.form</field>
         <field name="model">portal.request</field>
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_assign" type="object" string="Assign" states="new" class="btn-primary"/>
-                    <button name="action_start_processing" type="object" string="Start Processing" states="assigned" class="btn-success"/>
-                    <button name="action_complete" type="object" string="Complete" states="in_progress" class="btn-success"/>
-                    <button name="action_escalate" type="object" string="Escalate" states="assigned,in_progress" class="btn-warning"/>
-                    <field name="status" widget="statusbar" statusbar_visible="new,assigned,in_progress,completed"/>
+<button name="action_submit" string="Submit Request" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+<button name="action_approve" string="Approve" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'submitted')]}" groups="records_management.group_records_manager"/>
+<button name="action_reject" string="Reject" type="object" attrs="{'invisible': [('state', '!=', 'submitted')]}" groups="records_management.group_records_manager"/>
+<button name="action_reset_to_draft" string="Reset to Draft" type="object" attrs="{'invisible': [('state', 'in', ['draft', 'approved'])]}"/>
+<field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved"/>
+
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
+<button class="oe_stat_button" type="action" icon="fa-tasks" attrs="{'invisible': [('related_tasks_count', '=', 0)]}" context="{'default_portal_request_id': id}">
+    <div class="o_stat_info">
+        <field name="related_tasks_count" widget="statinfo" string="Tasks"/>
+    </div>
+</button>
                         <button class="oe_stat_button" type="object" name="action_view_related_documents" icon="fa-file-text-o">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">Documents</span>
@@ -99,14 +114,19 @@
                         <group>
                             <field name="request_type"/>
                             <field name="partner_id"/>
-                            <field name="submission_date"/>
+<field name="requested_date"/>
+
                             <field name="priority"/>
                         </group>
                         <group>
-                            <field name="assigned_to"/>
+<field name="user_id"/>
+
                             <field name="due_date"/>
                             <field name="estimated_hours"/>
                             <field name="actual_hours"/>
+<field name="active"/>
+<field name="company_id" groups="base.group_multi_company"/>
+
                         </group>
                     </group>
 
@@ -125,7 +145,7 @@
                                 <field name="customer_feedback" placeholder="Customer feedback on completed request..."/>
                             </group>
                         </page>
-                        <page string="Signatures &amp;amp; Approvals">
+<page string="Signatures &amp; Approvals">
                             <group>
                                 <field name="customer_signature" widget="signature"/>
                                 <field name="staff_signature" widget="signature"/>
@@ -144,7 +164,7 @@
         </field>
     </record>
 
-    <!-- Search view for base.rate -->
+<!-- Enhanced Search view for Portal Requests -->
     <record id="portal_request_view_search" model="ir.ui.view">
         <field name="name">portal.request.view.search</field>
         <field name="model">portal.request</field>
@@ -153,38 +173,66 @@
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="request_type"/>
-                <field name="assigned_to"/>
+<field name="user_id"/>
 
-                <filter string="New" name="new" domain="[('status', '=', 'new')]"/>
-                <filter string="Assigned" name="assigned" domain="[('status', '=', 'assigned')]"/>
-                <filter string="In Progress" name="in_progress" domain="[('status', '=', 'in_progress')]"/>
+<!-- State-based filters -->
+<filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+<filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
+<filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
+<filter string="Rejected" name="rejected" domain="[('state', '=', 'rejected')]"/>
+                
+<!-- Priority and date filters -->
                 <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
-                <filter string="Overdue" name="overdue" domain="[('due_date', '&amp;lt;', context_today())]"/>
+<filter string="Overdue" name="overdue" domain="[('due_date', '&lt;', context_today())]"/>
+<filter string="Active" name="active" domain="[('active', '=', True)]"/>
+
 
                 <separator/>
-                <filter string="My Requests" name="my_requests" domain="[('assigned_to', '=', uid)]"/>
+<filter string="My Requests" name="my_requests" domain="[('user_id', '=', uid)]"/>
+
 
                 <group expand="0" string="Group By">
-                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
-                    <filter string="Type" name="group_type" context="{'group_by': 'request_type'}"/>
-                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
-                    <filter string="Assigned To" name="group_assigned" context="{'group_by': 'assigned_to'}"/>
+<filter string="Customer" name="customer" context="{'group_by': 'partner_id'}"/>
+<filter string="Request Type" name="request_type" context="{'group_by': 'request_type'}"/>
+<filter string="Status" name="state" context="{'group_by': 'state'}"/>
+<filter string="Priority" name="priority" context="{'group_by': 'priority'}"/>
+<filter string="Assigned User" name="user" context="{'group_by': 'user_id'}"/>
+<separator/>
+<filter string="Request Date" name="request_date" context="{'group_by': 'requested_date:month'}"/>
+
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+<!-- Enhanced Action for Portal Requests -->
     <record id="action_portal_request" model="ir.actions.act_window">
         <field name="name">Portal Requests</field>
         <field name="res_model">portal.request</field>
         <field name="view_mode">kanban,tree,form</field>
-        <field name="context">{'search_default_new': 1, 'search_default_assigned': 1}</field>
+<field name="domain">[]</field>
+<field name="context">{
+            'default_user_id': uid,
+            'search_default_active': 1,
+            'search_default_my_requests': 1
+        }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                📋 No customer requests yet!
+🌐 Create your first Portal Request!
             </p>
-            <p>Customer service requests will appear here when submitted through the portal.</p>
+<p>
+    <b>Enterprise Portal Request Management:</b>
+    <br/>
+                • 📝 Streamlined customer request processing<br/>
+                • 🔄 Advanced workflow automation and approvals<br/>
+                • 📊 Real-time status tracking and notifications<br/>
+                • 🔗 Full integration with Records Management system<br/>
+                • 👥 Collaborative request handling with activity tracking<br/>
+                • 📈 Comprehensive analytics and reporting<br/>
+                • ⚡ Automated notifications and escalations<br/>
+                • 🔒 NAID compliance and audit trail management<br/>
+                • 📱 Mobile-friendly portal access and management
+</p>
         </field>
     </record>
 

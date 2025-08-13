@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Product Template Extension for Records Management Services
+Product Template Extension for Records Management
 
-This module extends the standard product.template model to support comprehensive
-records management service offerings. It provides specialized fields for service
-configuration, compliance tracking, scheduling, and performance management.
+This module extends the product.template model to integrate Records Management
+container specifications, service offerings, and billing configurations.
+Supports the actual business container types used in operations.
 
 Key Features:
-- Service configuration and categorization
-- Compliance and security tracking (NAID, HIPAA, SOX, ISO)
-- Capacity and resource management
-- Advanced pricing models with bulk discounts
-- Scheduling and availability management
-- Quality metrics and customer feedback integration
+- Container type specifications (TYPE 01-06) with actual business dimensions
+- Service product definitions for shredding, storage, and retrieval
+- Integration with Records Management billing system
+- NAID compliance tracking for destruction services
 
 Author: Records Management System
 Version: 18.0.6.0.0
@@ -20,10 +18,7 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
-
 from odoo.exceptions import ValidationError
-
-
 
 
 class ProductTemplate(models.Model):
@@ -499,6 +494,11 @@ class ProductTemplate(models.Model):
         if self.setup_fee:
             total_price += self.setup_fee
 
+        # Apply minimum charge
+        if self.minimum_charge:
+            total_price = max(total_price, self.minimum_charge)
+
+        return total_price
         # Apply minimum charge
         if self.minimum_charge:
             total_price = max(total_price, self.minimum_charge)

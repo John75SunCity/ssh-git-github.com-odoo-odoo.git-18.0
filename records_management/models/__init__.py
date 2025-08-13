@@ -257,6 +257,7 @@ from . import hremployee_naid
 
 from . import product
 from . import product_template
+from . import product_product
 from . import barcode_product
 from . import barcode_models
 
