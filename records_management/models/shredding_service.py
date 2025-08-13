@@ -397,6 +397,7 @@ class ShreddingService(models.Model):
     # COMPUTED FIELDS
     # ============================================================================
     duration_hours = fields.Float(
+    shred_bin_id = fields.Many2one('shred.bin', string='Shred Bin')
         string="Actual Duration (Hours)",
         compute="_compute_duration_hours",
         store=True,

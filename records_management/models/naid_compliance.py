@@ -482,7 +482,7 @@ class NaidCompliance(models.Model):
     # Core NAID relationships
     certificate_ids = fields.One2many(
         "naid.certificate",
-        "compliance_id",
+        "naid_compliance_id",
         string="Certificates",
         help="NAID certificates issued under this compliance framework",
     )

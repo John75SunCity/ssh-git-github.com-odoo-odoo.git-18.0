@@ -414,6 +414,7 @@ class PickupRequest(models.Model):
     )
 
     days_until_pickup = fields.Integer(
+    shred_bin_id = fields.Many2one('shred.bin', string='Shred Bin')
         string="Days Until Pickup",
         compute="_compute_days_until_pickup",
         help="Number of days until scheduled pickup",

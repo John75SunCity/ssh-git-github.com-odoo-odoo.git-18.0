@@ -372,6 +372,7 @@ class ContainerDestructionWorkOrder(models.Model):
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    coordinator_id = fields.Many2one('work.order.coordinator', string='Coordinator')
 
     # ============================================================================
     # MODEL CREATE WITH SEQUENCE

@@ -105,6 +105,7 @@ class NAIDCustodyEvent(models.Model):
     description = fields.Text()
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
+    hard_drive_id = fields.Many2one('hard.drive.scan.wizard', string='Related Hard Drive')
 
     def action_confirm(self):
         """Confirm the record"""

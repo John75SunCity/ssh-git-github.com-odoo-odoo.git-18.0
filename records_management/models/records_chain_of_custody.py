@@ -309,6 +309,7 @@ class RecordsChainOfCustody(models.Model):
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    compliance_id = fields.Many2one('naid.compliance', string='Related NAID Compliance')
 
     # ============================================================================
     # COMPUTED FIELDS

@@ -258,6 +258,7 @@ class BarcodeProduct(models.Model):
         store=True,
     )
     barcode_range_size = fields.Integer(
+    storage_box_id = fields.Many2one('barcode.storage.box', string='Storage Box')
         string="Barcode Range Size",
         compute="_compute_barcode_range_size",
         store=True,

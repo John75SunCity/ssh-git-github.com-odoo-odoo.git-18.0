@@ -363,6 +363,7 @@ class WorkOrderShredding(models.Model):
         domain="[('res_model', '=', 'work.order.shredding')]",
     )
     message_ids = fields.One2many(
+    batch_id = fields.Many2one('shredding.inventory.batch', string='Batch')
         "mail.message",
         "res_id",
         string="Messages",

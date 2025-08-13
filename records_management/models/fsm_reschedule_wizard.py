@@ -655,3 +655,5 @@ Details: %(details)s""", {
         return super().unlink()
         """_summary_
         """
+
+    route_management_id = fields.Many2one('fsm.route.management', string='Route Management')
