@@ -129,6 +129,11 @@ class ShreddingService(models.Model):
         string="Service Location",
         help="Location where service will be performed"
     )
+    container_type_id = fields.Many2one(
+        "records.container.type",
+        string="Container Type",
+        help="Associated container type for shredding service"
+    )
 
     # ============================================================================
     # SERVICE CONFIGURATION

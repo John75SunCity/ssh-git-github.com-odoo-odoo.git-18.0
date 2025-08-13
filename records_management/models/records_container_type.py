@@ -297,13 +297,13 @@ class RecordsContainerType(models.Model):
         string="Shredding Services",
         help="Shredding services for this container type",
     )
-    # Link to existing barcode management
-    barcode_sequence_ids = fields.One2many(
-        "barcode.sequence",
-        "container_type_id",
-        string="Barcode Sequences",
-        help="Barcode sequences for this container type",
-    )
+    # TODO: Implement barcode.sequence model for barcode management
+    # barcode_sequence_ids = fields.One2many(
+    #     "barcode.sequence", 
+    #     "container_type_id",
+    #     string="Barcode Sequences",
+    #     help="Barcode sequences for this container type",
+    # )
 
     container_count = fields.Integer(
         string="Container Count",
