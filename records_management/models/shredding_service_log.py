@@ -5,8 +5,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
 
-
-
 class ShreddingServiceLog(models.Model):
     _name = 'shredding.service.log'
     _description = 'Shredding Service Log'
@@ -113,9 +111,9 @@ class ShreddingServiceLog(models.Model):
         help="Employee who performed the shredding operation"
     )
     equipment_id = fields.Many2one(
-        'shredding.equipment',
-        string='Equipment Used',
-        help="Equipment used for shredding operation"
+        "maintenance.equipment",
+        string="Equipment Used",
+        help="Equipment used for shredding operation",
     )
 
     # ============================================================================
@@ -239,7 +237,7 @@ class ShreddingServiceLog(models.Model):
         self.ensure_one()
         if self.state == 'active':
             return  # Already active
-        
+
         self.write({'state': 'active'})
         self.message_post(body=_("Log entry activated"))
 
@@ -249,7 +247,7 @@ class ShreddingServiceLog(models.Model):
         self.ensure_one()
         if self.state == 'inactive':
             return  # Already inactive
-        
+
         self.write({'state': 'inactive'})
         self.message_post(body=_("Log entry deactivated"))
 
@@ -259,7 +257,7 @@ class ShreddingServiceLog(models.Model):
         self.ensure_one()
         if self.state == 'archived':
             return  # Already archived
-        
+
         self.write({'state': 'archived', 'active': False})
         self.message_post(body=_("Log entry archived"))
 
@@ -269,10 +267,10 @@ class ShreddingServiceLog(models.Model):
         self.ensure_one()
         if not self.start_time:
             raise UserError(_("Please set start time before completing operation"))
-        
+
         if not self.end_time:
             self.end_time = fields.Datetime.now()
-        
+
         self.write({'state': 'active'})
         self.message_post(body=_("Shredding operation completed"))
 
@@ -332,24 +330,24 @@ class ShreddingServiceLog(models.Model):
             if not vals.get('name') or vals['name'] == 'New':
                 vals['name'] = self.env['ir.sequence'].next_by_code('shredding.service.log') or _('New Log')
             vals['date_created'] = fields.Datetime.now()
-        
+
         logs = super().create(vals_list)
-        
+
         for log in logs:
             log.create_naid_audit_entry()
-        
+
         return logs
 
     def write(self, vals):
         """Override write to update modification date and audit trail."""
         vals['date_modified'] = fields.Datetime.now()
         result = super().write(vals)
-        
+
         # Create audit entries for significant changes
         if any(key in vals for key in ['state', 'weight_processed', 'quality_check_passed']):
             for record in self:
                 record.create_naid_audit_entry()
-        
+
         return result
 
     # ============================================================================
@@ -385,13 +383,13 @@ class ShreddingServiceLog(models.Model):
         """Get summary of operations for a specific date"""
         if not date:
             date = fields.Date.today()
-        
+
         logs = self.search([
             ('start_time', '>=', date),
             ('start_time', '<', date + fields.timedelta(days=1)),
             ('state', '=', 'active')
         ])
-        
+
         return {
             'date': date,
             'total_operations': len(logs),

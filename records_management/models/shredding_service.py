@@ -260,9 +260,7 @@ class ShreddingService(models.Model):
         help="Containers being shredded"
     )
     bin_ids = fields.Many2many(
-        "shredding.bin",
-        string="Shredding Bins",
-        help="Bins used for shredding"
+        "shred.bin", string="Shredding Bins", help="Bins used for shredding"
     )
 
     # ============================================================================

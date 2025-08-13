@@ -16,8 +16,6 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
-
-
 class AdvancedBilling(models.Model):
     _name = "advanced.billing"
     _description = "Advanced Billing"
@@ -97,7 +95,7 @@ class AdvancedBilling(models.Model):
     # RELATIONSHIP FIELDS
     # ============================================================================
     line_ids = fields.One2many(
-        "advanced.billing.line", "billing_id", string="Billing Lines"
+        "records.billing.line", "billing_id", string="Billing Lines"
     )
 
     # ============================================================================

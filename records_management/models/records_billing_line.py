@@ -4,8 +4,6 @@
 from odoo import fields, models, api
 
 
-
-
 class RecordsBillingLine(models.Model):
     """Billing line items for detailed billing tracking"""
 
@@ -34,6 +32,11 @@ class RecordsBillingLine(models.Model):
         string="Billing Config",
         required=True,
         ondelete="cascade",
+    )
+    billing_id = fields.Many2one(
+        "advanced.billing",
+        string="Advanced Billing",
+        help="Reference to advanced billing record",
     )
     contact_id = fields.Many2one(
         "records.department.billing.contact",

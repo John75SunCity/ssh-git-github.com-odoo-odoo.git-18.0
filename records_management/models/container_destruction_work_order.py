@@ -129,7 +129,7 @@ class ContainerDestructionWorkOrder(models.Model):
         required=True,
         help="Business reason for requesting destruction"
     )
-    
+
     # Customer authorization
     customer_authorized = fields.Boolean(
         string="Customer Authorized",
@@ -231,9 +231,9 @@ class ContainerDestructionWorkOrder(models.Model):
         help="Facility where destruction will take place"
     )
     shredding_equipment_id = fields.Many2one(
-        "shredding.equipment",
+        "maintenance.equipment",
         string="Shredding Equipment",
-        help="Specific equipment used for destruction"
+        help="Specific equipment used for destruction",
     )
     destruction_method = fields.Selection([
         ('shredding', 'Paper Shredding'),
@@ -418,11 +418,11 @@ class ContainerDestructionWorkOrder(models.Model):
                     'incineration': 30,   # 30 minutes per container
                     'disintegration': 25, # 25 minutes per container
                 }.get(record.destruction_method, 15)
-                
+
                 total_minutes = record.container_count * base_minutes
                 # Add setup and documentation time
                 total_minutes += 60  # 1 hour for setup/documentation
-                
+
                 record.estimated_duration_hours = total_minutes / 60.0
             else:
                 record.estimated_duration_hours = 0.0
@@ -452,10 +452,10 @@ class ContainerDestructionWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft work orders can be confirmed"))
-        
+
         if not self.container_ids:
             raise UserError(_("Please select containers for destruction"))
-        
+
         self.write({'state': 'confirmed'})
         self.message_post(
             body=_("Container destruction work order confirmed"),
@@ -468,7 +468,7 @@ class ContainerDestructionWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'confirmed':
             raise UserError(_("Can only authorize confirmed work orders"))
-        
+
         self.write({
             'state': 'authorized',
             'customer_authorized': True,
@@ -485,7 +485,7 @@ class ContainerDestructionWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'authorized':
             raise UserError(_("Can only schedule authorized work orders"))
-        
+
         self.write({'state': 'scheduled'})
         self.message_post(
             body=_("Destruction scheduled for %s", self.scheduled_destruction_date.strftime('%Y-%m-%d %H:%M')),
@@ -498,7 +498,7 @@ class ContainerDestructionWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'scheduled':
             raise UserError(_("Can only complete pickup from scheduled state"))
-        
+
         self.write({
             'state': 'picked_up',
             'pickup_date': fields.Datetime.now()
@@ -514,7 +514,7 @@ class ContainerDestructionWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'picked_up':
             raise UserError(_("Can only arrive at facility after pickup"))
-        
+
         self.write({
             'state': 'in_facility',
             'transport_arrival_time': fields.Datetime.now()
@@ -530,10 +530,10 @@ class ContainerDestructionWorkOrder(models.Model):
         self.ensure_one()
         if self.state not in ['in_facility', 'pre_destruction']:
             raise UserError(_("Can only start destruction from facility or pre-destruction state"))
-        
+
         if not self.destruction_verified:
             raise UserError(_("Pre-destruction verification must be completed first"))
-        
+
         self.write({
             'state': 'destroying',
             'destruction_start_time': fields.Datetime.now()
@@ -549,7 +549,7 @@ class ContainerDestructionWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'destroying':
             raise UserError(_("Can only complete destruction from destroying state"))
-        
+
         self.write({
             'state': 'destroyed',
             'destruction_end_time': fields.Datetime.now(),
@@ -566,21 +566,21 @@ class ContainerDestructionWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'destroyed':
             raise UserError(_("Can only generate certificate after destruction completion"))
-        
+
         # Generate certificate number if not exists
         if not self.certificate_number:
             self.certificate_number = self.env['ir.sequence'].next_by_code(
                 'destruction.certificate') or 'CERT-NEW'
-        
+
         self.write({
             'state': 'certificate_generated',
             'certificate_generated': True,
             'certificate_date': fields.Date.today()
         })
-        
+
         # Generate PDF certificate (implementation would go here)
         self._generate_certificate_pdf()
-        
+
         self.message_post(
             body=_("Certificate of destruction generated: %s", self.certificate_number),
             message_type='notification'
@@ -592,7 +592,7 @@ class ContainerDestructionWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'certificate_generated':
             raise UserError(_("Only work orders with generated certificates can be completed"))
-        
+
         self.write({'state': 'completed'})
         self.message_post(
             body=_("Container destruction work order completed successfully"),
