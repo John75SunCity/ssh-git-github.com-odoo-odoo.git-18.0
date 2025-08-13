@@ -31,6 +31,28 @@ class DestructionItem(models.Model):
     user_id = fields.Many2one("res.users", string="Assigned User", 
                               default=lambda self: self.env.user)
     
+    # ============================================================================
+    # RELATIONSHIP FIELDS (Inverse Fields for One2many relationships)
+    # ============================================================================
+    destruction_record_id = fields.Many2one(
+        "naid.destruction.record",
+        string="Destruction Record",
+        help="Associated NAID destruction record"
+    )
+    certificate_id = fields.Many2one(
+        "shredding.certificate", 
+        string="Shredding Certificate",
+        help="Associated shredding certificate"
+    )
+    shredding_service_id = fields.Many2one(
+        "shredding.service",
+        string="Shredding Service", 
+        help="Associated shredding service"
+    )
+    
+    # ============================================================================
+    # TIMESTAMPS & CONTROL
+    # ============================================================================
     # Timestamps
     date_created = fields.Datetime(string='Created Date', default=fields.Datetime.now)
     date_modified = fields.Datetime(string='Modified Date')

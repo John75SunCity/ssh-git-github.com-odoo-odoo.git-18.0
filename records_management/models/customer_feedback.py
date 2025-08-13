@@ -65,6 +65,11 @@ class CustomerFeedback(models.Model):
     contact_person_id = fields.Many2one(
         "res.partner", string="Contact Person", tracking=True
     )
+    team_id = fields.Many2one(
+        "shredding.team",
+        string="Shredding Team",
+        help="Team associated with this feedback"
+    )
 
     # ============================================================================
     # FEEDBACK DETAILS FIELDS
