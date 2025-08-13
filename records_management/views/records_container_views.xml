@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 📦 ENTERPRISE STORAGE BOXES - Advanced Warehouse Management -->
+    <!-- Tree view for ENTERPRISE -->
 
-    <!-- 🎨 Kanban Board for Visual Box Management -->
-    <record id="view_records_container_kanban" model="ir.ui.view">
-        <field name="name">records.container.kanban</field>
+    <!-- Kanban view for Kanban -->
+    <record id="records_container_view_kanban" model="ir.ui.view">
+        <field name="name">records.container.view.kanban</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" class="o_kanban_container_dashboard">
@@ -91,9 +91,9 @@
         </field>
     </record>
 
-    <!-- 📋 Enhanced List View with Smart Columns and Bulk Actions -->
-    <record id="view_records_container_tree" model="ir.ui.view">
-        <field name="name">records.container.tree</field>
+    <!-- Tree view for Enhanced -->
+    <record id="records_container_view_tree" model="ir.ui.view">
+        <field name="name">records.container.view.tree</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
             <tree decoration-success="state == 'stored'" decoration-info="state == 'indexed'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'received'" multi_edit="1">
@@ -117,9 +117,9 @@
         </field>
     </record>
 
-    <!-- 📝 Enhanced Form View with Advanced Features -->
-    <record id="view_records_container_form" model="ir.ui.view">
-        <field name="name">records.container.form</field>
+    <!-- Form view for Enhanced -->
+    <record id="records_container_view_form" model="ir.ui.view">
+        <field name="name">records.container.view.form</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
             <form>
@@ -147,7 +147,7 @@
                             <field name="department_id"/>
                             <field name="barcode" placeholder="Auto-generated on save"/>
                         </group>
-                        <group string="📍 Location &amp; Status">
+                        <group string="📍 Location &amp;amp; Status">
                             <field name="location_id"/>
                             <field name="state"/>
                             <field name="create_date"/>
@@ -177,7 +177,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="📝 Notes &amp; Details" name="details">
+                        <page string="📝 Notes &amp;amp; Details" name="details">
                             <group>
                                 <field name="description" placeholder="Container contents, special instructions, or notes..."/>
                                 <field name="retention_policy_id"/>
@@ -196,9 +196,9 @@
         </field>
     </record>
 
-    <!-- 📅 Calendar View for Container Management -->
-    <record id="view_records_container_calendar" model="ir.ui.view">
-        <field name="name">records.container.calendar</field>
+    <!-- Tree view for Calendar -->
+    <record id="records_container_view_calendar" model="ir.ui.view">
+        <field name="name">records.container.view.calendar</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
             <calendar string="📅 Container Storage Calendar" date_start="create_date" date_stop="destruction_date" color="partner_id">
@@ -209,9 +209,9 @@
         </field>
     </record>
 
-    <!-- 📈 Graph View for Analytics -->
-    <record id="view_records_container_graph" model="ir.ui.view">
-        <field name="name">records.container.graph</field>
+    <!-- Tree view for Graph -->
+    <record id="records_container_view_graph" model="ir.ui.view">
+        <field name="name">records.container.view.graph</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
             <graph string="📊 Container Analytics">
@@ -221,9 +221,9 @@
         </field>
     </record>
 
-    <!-- 🔍 Enhanced Search with Smart Filters -->
-    <record id="view_records_container_search" model="ir.ui.view">
-        <field name="name">records.container.search</field>
+    <!-- Search view for Enhanced -->
+    <record id="records_container_view_search" model="ir.ui.view">
+        <field name="name">records.container.view.search</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
             <search>
@@ -239,9 +239,9 @@
                 <filter string="💥 Destroyed" name="destroyed" domain="[('state', '=', 'destroyed')]"/>
 
                 <separator/>
-                <filter string="📅 Stored This Month" name="this_month" domain="[('create_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
-                <filter string="🗓️ Stored This Year" name="this_year" domain="[('create_date', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
-                <filter string="⚠️ Near Destruction" name="near_destruction" domain="[('destruction_date', '&lt;=', (context_today() + relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
+                <filter string="📅 Stored This Month" name="this_month" domain="[('create_date', '&amp;gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                <filter string="🗓️ Stored This Year" name="this_year" domain="[('create_date', '&amp;gt;=', context_today().strftime('%Y-01-01'))]"/>
+                <filter string="⚠️ Near Destruction" name="near_destruction" domain="[('destruction_date', '&amp;lt;=', (context_today() + relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="📊 Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
@@ -254,11 +254,11 @@
         </field>
     </record>
 
-    <!-- 🚀 ENTERPRISE ACTION - Complete Container Management -->
+    <!-- Tree view for ENTERPRISE -->
     <record id="action_records_container" model="ir.actions.act_window">
         <field name="name">📦 Storage Containers</field>
         <field name="res_model">records.container</field>
-        <field name="view_mode">kanban,list,form,calendar,graph</field>
+        <field name="view_mode">kanban,tree,form,calendar,graph</field>
         <field name="search_view_id" ref="view_records_container_search"/>
         <field name="context">{
             'search_default_stored': 1,

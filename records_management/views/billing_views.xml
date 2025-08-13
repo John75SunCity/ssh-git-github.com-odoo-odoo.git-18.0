@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 💳 ENTERPRISE BILLING CONFIGURATION - Advanced Revenue Management -->
+    <!-- Tree view for ENTERPRISE -->
     
-    <!-- 🎨 Billing Config Kanban Dashboard -->
-    <record id="view_billing_config_kanban" model="ir.ui.view">
-        <field name="name">records.billing.config.kanban</field>
+    <!-- Kanban view for Billing -->
+    <record id="records_billing_config_view_kanban" model="ir.ui.view">
+        <field name="name">records.billing.config.view.kanban</field>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
             <kanban default_group_by="billing_model" class="o_kanban_billing_config_dashboard">
@@ -76,9 +76,9 @@
         </field>
     </record>
 
-    <!-- 📋 Enhanced Tree with Revenue Analytics -->
-    <record id="view_billing_config_tree" model="ir.ui.view">
-        <field name="name">records.billing.config.tree</field>
+    <!-- Tree view for Enhanced -->
+    <record id="records_billing_config_view_tree" model="ir.ui.view">
+        <field name="name">records.billing.config.view.tree</field>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
             <tree decoration-success="active == True and auto_billing == True" 
@@ -101,9 +101,9 @@
         </field>
     </record>
 
-    <!-- 📝 Enhanced Form with Complete Billing Management -->
-    <record id="view_billing_config_form" model="ir.ui.view">
-        <field name="name">records.billing.config.form</field>
+    <!-- Form view for Enhanced -->
+    <record id="records_billing_config_view_form" model="ir.ui.view">
+        <field name="name">records.billing.config.view.form</field>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
             <form>
@@ -233,7 +233,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="🎯 Discounts &amp; Promotions" name="discounts">
+                        <page string="🎯 Discounts &amp;amp; Promotions" name="discounts">
                             <field name="discount_rule_ids" mode="list">
                                 <tree editable="bottom">
                                     <field name="rule_name"/>
@@ -273,7 +273,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="🔔 Notifications &amp; Alerts" name="notifications">
+                        <page string="🔔 Notifications &amp;amp; Alerts" name="notifications">
                             <group>
                                 <group string="📱 Alert Settings">
                                     <field name="billing_failure_alerts"/>
@@ -297,7 +297,7 @@
                                     <field name="tax_calculation_method"/>
                                     <field name="multi_currency_support"/>
                                 </group>
-                                <group string="🔐 Security &amp; Compliance">
+                                <group string="🔐 Security &amp;amp; Compliance">
                                     <field name="audit_trail_enabled"/>
                                     <field name="data_retention_period"/>
                                     <field name="encryption_enabled"/>
@@ -316,9 +316,9 @@
         </field>
     </record>
 
-    <!-- 📅 Calendar View for Billing Schedule -->
-    <record id="view_billing_config_calendar" model="ir.ui.view">
-        <field name="name">records.billing.config.calendar</field>
+    <!-- Tree view for Calendar -->
+    <record id="records_billing_config_view_calendar" model="ir.ui.view">
+        <field name="name">records.billing.config.view.calendar</field>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
             <calendar string="📅 Billing Schedule" 
@@ -333,9 +333,9 @@
         </field>
     </record>
 
-    <!-- 🔍 Enhanced Search with Billing Filters -->
-    <record id="view_billing_config_search" model="ir.ui.view">
-        <field name="name">records.billing.config.search</field>
+    <!-- Search view for Enhanced -->
+    <record id="records_billing_config_view_search" model="ir.ui.view">
+        <field name="name">records.billing.config.view.search</field>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
             <search>
@@ -357,9 +357,9 @@
                 <filter string="🗓️ Annual" name="annual" domain="[('billing_frequency', '=', 'annual')]"/>
                 
                 <separator/>
-                <filter string="💰 High Value (&gt;$1000)" name="high_value" domain="[('base_rate', '&gt;', 1000)]"/>
+                <filter string="💰 High Value (&amp;gt;$1000)" name="high_value" domain="[('base_rate', '&amp;gt;', 1000)]"/>
                 <filter string="⚡ Due This Week" name="due_this_week" 
-                        domain="[('next_billing_date', '&gt;=', context_today()), ('next_billing_date', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                        domain="[('next_billing_date', '&amp;gt;=', context_today()), ('next_billing_date', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
                 
                 <group expand="0" string="📊 Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
@@ -372,11 +372,11 @@
         </field>
     </record>
 
-    <!-- 🚀 ENTERPRISE ACTION - Billing Configuration Management -->
+    <!-- Tree view for ENTERPRISE -->
     <record id="action_billing_config" model="ir.actions.act_window">
         <field name="name">💳 Billing Configuration</field>
         <field name="res_model">records.billing.config</field>
-        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
         <field name="search_view_id" ref="view_billing_config_search"/>
         <field name="context">{
             'search_default_active': 1

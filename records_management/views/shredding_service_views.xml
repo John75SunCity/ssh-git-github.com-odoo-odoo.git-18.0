@@ -2,9 +2,9 @@
 <odoo>
     <data>
 
-        <!-- Search View for Shredding Service -->
-        <record id="shredding_service_search" model="ir.ui.view">
-            <field name="name">shredding.service.search</field>
+        <!-- Search view for base.rate -->
+        <record id="shredding_service_view_search" model="ir.ui.view">
+            <field name="name">shredding.service.view.search</field>
             <field name="model">shredding.service</field>
             <field name="arch" type="xml">
                 <search string="Search Shredding Services">

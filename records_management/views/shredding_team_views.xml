@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for shredding.team -->
-<record id="shredding_team_view_list" model="ir.ui.view">
+    <!-- Tree view for base.rate -->
+<record id="shredding_team_view_tree" model="ir.ui.view">
     <field name="name">shredding.team.view.tree</field>
         <field name="model">shredding.team</field>
         <field name="arch" type="xml">
@@ -12,7 +12,7 @@
         </field>
     </record>
 
-    <!-- Form view for shredding.team -->
+    <!-- Form view for base.rate -->
 <record id="shredding_team_view_form" model="ir.ui.view">
     <field name="name">shredding.team.view.form</field>
         <field name="model">shredding.team</field>
@@ -30,7 +30,7 @@
         </field>
     </record>
 
-    <!-- Search view for shredding.team -->
+    <!-- Search view for base.rate -->
 <record id="shredding_team_view_search" model="ir.ui.view">
     <field name="name">shredding.team.view.search</field>
         <field name="model">shredding.team</field>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action shredding.team -->
+    <!-- Tree view for Action -->
     <record id="action_shredding_team" model="ir.actions.act_window">
         <field name="name">Shredding Team</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">shredding.team</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

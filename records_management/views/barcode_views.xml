@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- ENTERPRISE BARCODE MANAGEMENT - Storage Box Types and Shred Bin Configuration -->
+    <!-- Tree view for ENTERPRISE -->
 
-    <!-- KANBAN VIEW: Barcode Product Configuration Dashboard -->
-    <record id="view_barcode_product_kanban" model="ir.ui.view">
-        <field name="name">barcode.product.kanban</field>
+    <!-- Kanban view for KANBAN -->
+<record id="barcode_product_view_kanban" model="ir.ui.view">
+    <field name="name">barcode.product.view.kanban</field>
         <field name="model">barcode.product</field>
         <field name="arch" type="xml">
             <kanban default_group_by="product_category" sample="1" quick_create="false" class="o_kanban_small_column">
@@ -79,8 +79,8 @@
     </field>
 </record>
 <!-- TREE VIEW: Barcode Product Management List -->
-<record id="view_barcode_product_tree" model="ir.ui.view">
-    <field name="name">barcode.product.tree</field>
+<record id="barcode_product_view_tree" model="ir.ui.view">
+    <field name="name">barcode.product.view.tree</field>
     <field name="model">barcode.product</field>
     <field name="arch" type="xml">
         <tree string="Barcode Product Management" decoration-success="active==True" decoration-muted="active==False" multi_edit="1" sample="1">
@@ -106,8 +106,8 @@
 </record>
 
 <!-- FORM VIEW: Detailed Barcode Product Configuration -->
-<record id="view_barcode_product_form" model="ir.ui.view">
-    <field name="name">barcode.product.form</field>
+<record id="barcode_product_view_form" model="ir.ui.view">
+    <field name="name">barcode.product.view.form</field>
     <field name="model">barcode.product</field>
     <field name="arch" type="xml">
         <form string="Barcode Product Configuration">
@@ -309,8 +309,8 @@
 </record>
 
 <!-- SEARCH VIEW: Advanced Barcode Product Search -->
-<record id="view_barcode_product_search" model="ir.ui.view">
-    <field name="name">barcode.product.search</field>
+<record id="barcode_product_view_search" model="ir.ui.view">
+    <field name="name">barcode.product.view.search</field>
     <field name="model">barcode.product</field>
     <field name="arch" type="xml">
         <search string="Search Barcode Products">
@@ -327,8 +327,8 @@
             <filter string="Shred Bins" name="shred_bins" domain="[('product_category', '=', 'shred_bin')]"/>
 
             <separator/>
-            <filter string="High Volume" name="high_volume" domain="[('monthly_volume', '&gt;', 100)]"/>
-            <filter string="Premium Pricing" name="premium" domain="[('storage_rate', '&gt;', 50)]"/>
+            <filter string="High Volume" name="high_volume" domain="[('monthly_volume', '&amp;gt;', 100)]"/>
+            <filter string="Premium Pricing" name="premium" domain="[('storage_rate', '&amp;gt;', 50)]"/>
             <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
 
             <group expand="0" string="Group By">
@@ -342,8 +342,8 @@
 </record>
 
 <!-- GRAPH VIEW: Barcode Product Analytics -->
-<record id="view_barcode_product_graph" model="ir.ui.view">
-    <field name="name">barcode.product.graph</field>
+<record id="barcode_product_view_graph" model="ir.ui.view">
+    <field name="name">barcode.product.view.graph</field>
     <field name="model">barcode.product</field>
     <field name="arch" type="xml">
         <graph string="Product Analytics" type="bar" sample="1">
@@ -355,8 +355,8 @@
 </record>
 
 <!-- PIVOT VIEW: Barcode Product Analysis -->
-<record id="view_barcode_product_pivot" model="ir.ui.view">
-    <field name="name">barcode.product.pivot</field>
+<record id="barcode_product_view_pivot" model="ir.ui.view">
+    <field name="name">barcode.product.view.pivot</field>
     <field name="model">barcode.product</field>
     <field name="arch" type="xml">
         <pivot string="Product Analysis" sample="1">
@@ -372,8 +372,9 @@
 <record id="action_barcode_scanner" model="ir.actions.act_window">
     <field name="name">📦 Barcode Product Management</field>
     <field name="res_model">barcode.product</field>
-    <field name="view_mode">kanban,list,form,graph,pivot</field>
-    <field name="search_view_id" ref="view_barcode_product_search"/>
+    <field name="view_mode">kanban,tree,form,graph,pivot</field>
+<field name="search_view_id" ref="barcode_product_view_search"/>
+
     <field name="context">{
             'search_default_active': 1,
             'search_default_storage_boxes': 1

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 💼 ENTERPRISE RECORDS MANAGEMENT PRODUCTS - Service Catalog -->
+    <!-- Tree view for ENTERPRISE -->
 
-    <!-- 🎨 Product Template Kanban Dashboard -->
-    <record id="view_product_template_records_kanban" model="ir.ui.view">
-        <field name="name">product.template.records.kanban</field>
+    <!-- Kanban view for Product -->
+    <record id="product_template_view_kanban" model="ir.ui.view">
+        <field name="name">product.template.view.kanban</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
             <kanban default_group_by="categ_id" class="o_kanban_product_template_dashboard">
@@ -93,9 +93,9 @@
         </field>
     </record>
 
-    <!-- 📋 Enhanced Tree with Service Analytics -->
-    <record id="view_product_template_records_tree" model="ir.ui.view">
-        <field name="name">product.template.records.tree</field>
+    <!-- Tree view for Enhanced -->
+    <record id="product_template_view_tree" model="ir.ui.view">
+        <field name="name">product.template.view.tree</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
             <tree decoration-success="sale_ok == True and active == True" decoration-warning="type == 'service'" decoration-info="purchase_ok == True">
@@ -115,9 +115,9 @@
         </field>
     </record>
 
-    <!-- 📝 Enhanced Form with Complete Product Management -->
-    <record id="view_product_template_records_form" model="ir.ui.view">
-        <field name="name">product.template.records.form</field>
+    <!-- Form view for Enhanced -->
+    <record id="product_template_view_form" model="ir.ui.view">
+        <field name="name">product.template.view.form</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
             <form>
@@ -172,7 +172,7 @@
                             </group>
                             <field name="description" placeholder="Detailed description of the records management service..."/>
                         </page>
-                        <page string="💰 Sales &amp; Pricing" name="sales">
+                        <page string="💰 Sales &amp;amp; Pricing" name="sales">
                             <group>
                                 <group string="💵 Pricing Information">
                                     <field name="list_price" widget="monetary"/>
@@ -180,7 +180,7 @@
                                     <field name="currency_id" invisible="1"/>
                                     <field name="price_margin"/>
                                 </group>
-                                <group string="📏 Units &amp; Measurements">
+                                <group string="📏 Units &amp;amp; Measurements">
                                     <field name="uom_id"/>
                                     <field name="uom_po_id"/>
                                     <field name="weight" invisible="type != 'product'"/>
@@ -304,9 +304,9 @@
         </field>
     </record>
 
-    <!-- 🔍 Enhanced Search with Service Filters -->
-    <record id="view_product_template_records_search" model="ir.ui.view">
-        <field name="name">product.template.records.search</field>
+    <!-- Search view for Enhanced -->
+    <record id="product_template_view_search" model="ir.ui.view">
+        <field name="name">product.template.view.search</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
             <search>
@@ -331,8 +331,8 @@
                 <filter string="🗑️ Destruction Services" name="destruction_services" domain="[('shredding_included', '=', True)]"/>
 
                 <separator/>
-                <filter string="💰 High Value (&gt;$100)" name="high_value" domain="[('list_price', '&gt;', 100)]"/>
-                <filter string="📊 Top Performers" name="top_performers" domain="[('total_sales_ytd', '&gt;', 0)]"/>
+                <filter string="💰 High Value (&amp;gt;$100)" name="high_value" domain="[('list_price', '&amp;gt;', 100)]"/>
+                <filter string="📊 Top Performers" name="top_performers" domain="[('total_sales_ytd', '&amp;gt;', 0)]"/>
 
                 <group expand="0" string="📊 Group By">
                     <filter string="Category" name="group_by_category" context="{'group_by': 'categ_id'}"/>
@@ -345,11 +345,11 @@
         </field>
     </record>
 
-    <!-- 🚀 ENTERPRISE ACTION - Product Template Management -->
+    <!-- Tree view for ENTERPRISE -->
     <record id="action_product_template_records" model="ir.actions.act_window">
         <field name="name">💼 Records Management Products</field>
         <field name="res_model">product.template</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="search_view_id" ref="view_product_template_records_search"/>
         <field name="context">{
             'search_default_active': 1,

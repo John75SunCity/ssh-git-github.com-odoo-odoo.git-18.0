@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 📦 ENTERPRISE INVENTORY TRACKING - Serial Number & Lot Management -->
+    <!-- Tree view for ENTERPRISE -->
     
-    <!-- 🎨 Stock Lot Kanban Dashboard -->
-    <record id="view_stock_lot_kanban" model="ir.ui.view">
-        <field name="name">stock.lot.kanban</field>
+    <!-- Kanban view for Stock -->
+    <record id="stock_lot_view_kanban" model="ir.ui.view">
+        <field name="name">stock.lot.view.kanban</field>
         <field name="model">stock.lot</field>
         <field name="arch" type="xml">
             <kanban default_group_by="product_id" class="o_kanban_stock_lot_dashboard">
@@ -69,13 +69,13 @@
         </field>
     </record>
 
-    <!-- 📋 Enhanced Tree with Inventory Analytics -->
-    <record id="view_stock_lot_tree" model="ir.ui.view">
-        <field name="name">stock.lot.tree</field>
+    <!-- Tree view for Enhanced -->
+    <record id="stock_lot_view_tree" model="ir.ui.view">
+        <field name="name">stock.lot.view.tree</field>
         <field name="model">stock.lot</field>
         <field name="arch" type="xml">
-            <tree decoration-success="product_qty &gt; 0" 
-                  decoration-warning="expiration_date &lt; context_today()"
+            <tree decoration-success="product_qty &amp;gt; 0" 
+                  decoration-warning="expiration_date &amp;lt; context_today()"
                   decoration-info="ref != False">
                 <field name="name" string="📦 Serial/Lot Number"/>
                 <field name="product_id" string="🏷️ Product"/>
@@ -93,9 +93,9 @@
         </field>
     </record>
 
-    <!-- 📝 Enhanced Form with Complete Lot Tracking -->
-    <record id="view_stock_lot_form" model="ir.ui.view">
-        <field name="name">stock.lot.form</field>
+    <!-- Form view for Enhanced -->
+    <record id="stock_lot_view_form" model="ir.ui.view">
+        <field name="name">stock.lot.view.form</field>
         <field name="model">stock.lot</field>
         <field name="arch" type="xml">
             <form>
@@ -205,7 +205,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="📋 Attributes &amp; Properties" name="attributes">
+                        <page string="📋 Attributes &amp;amp; Properties" name="attributes">
                             <field name="attribute_ids" mode="list">
                                 <tree editable="bottom">
                                     <field name="attribute_name"/>
@@ -217,7 +217,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="📈 Analytics &amp; Reports" name="analytics">
+                        <page string="📈 Analytics &amp;amp; Reports" name="analytics">
                             <group>
                                 <group string="📊 Inventory Metrics">
                                     <field name="total_movements" readonly="1"/>
@@ -244,9 +244,9 @@
         </field>
     </record>
 
-    <!-- 🔍 Enhanced Search with Inventory Filters -->
-    <record id="view_stock_lot_search" model="ir.ui.view">
-        <field name="name">stock.lot.search</field>
+    <!-- Search view for Enhanced -->
+    <record id="stock_lot_view_search" model="ir.ui.view">
+        <field name="name">stock.lot.view.search</field>
         <field name="model">stock.lot</field>
         <field name="arch" type="xml">
             <search>
@@ -255,25 +255,25 @@
                 <field name="ref"/>
                 <field name="create_date"/>
                 
-                <filter string="📦 In Stock" name="in_stock" domain="[('product_qty', '&gt;', 0)]"/>
+                <filter string="📦 In Stock" name="in_stock" domain="[('product_qty', '&amp;gt;', 0)]"/>
                 <filter string="📤 Out of Stock" name="out_of_stock" domain="[('product_qty', '=', 0)]"/>
                 
                 <separator/>
-                <filter string="⚠️ Expired" name="expired" domain="[('expiration_date', '&lt;', context_today())]"/>
+                <filter string="⚠️ Expired" name="expired" domain="[('expiration_date', '&amp;lt;', context_today())]"/>
                 <filter string="🔔 Expiring Soon (30 days)" name="expiring_soon" 
-                        domain="[('expiration_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiration_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter string="🕒 Valid" name="valid" domain="[('expiration_date', '&gt;=', context_today())]"/>
+                        domain="[('expiration_date', '&amp;lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiration_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="🕒 Valid" name="valid" domain="[('expiration_date', '&amp;gt;=', context_today())]"/>
                 
                 <separator/>
                 <filter string="🔗 With Reference" name="with_reference" domain="[('ref', '!=', False)]"/>
-                <filter string="🔍 Quality Checked" name="quality_checked" domain="[('quality_check_count', '&gt;', 0)]"/>
+                <filter string="🔍 Quality Checked" name="quality_checked" domain="[('quality_check_count', '&amp;gt;', 0)]"/>
                 
                 <separator/>
-                <filter string="📅 Created Today" name="created_today" domain="[('create_date', '&gt;=', context_today())]"/>
+                <filter string="📅 Created Today" name="created_today" domain="[('create_date', '&amp;gt;=', context_today())]"/>
                 <filter string="📆 Created This Week" name="created_this_week" 
-                        domain="[('create_date', '&gt;=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                        domain="[('create_date', '&amp;gt;=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
                 <filter string="🗓️ Created This Month" name="created_this_month" 
-                        domain="[('create_date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+                        domain="[('create_date', '&amp;gt;=', context_today().strftime('%Y-%m-01'))]"/>
                 
                 <group expand="0" string="📊 Group By">
                     <filter string="Product" name="group_by_product" context="{'group_by': 'product_id'}"/>
@@ -285,11 +285,11 @@
         </field>
     </record>
 
-    <!-- 🚀 ENTERPRISE ACTION - Stock Lot Management -->
+    <!-- Tree view for ENTERPRISE -->
     <record id="action_stock_lot" model="ir.actions.act_window">
         <field name="name">📦 Serial Numbers / Lots</field>
         <field name="res_model">stock.lot</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="search_view_id" ref="view_stock_lot_search"/>
         <field name="context">{
             'search_default_in_stock': 1

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for shredding.service.log -->
-<record id="shredding_service_log_view_list" model="ir.ui.view">
+    <!-- Tree view for base.rate -->
+<record id="shredding_service_log_view_tree" model="ir.ui.view">
     <field name="name">shredding.service.log.view.tree</field>
         <field name="model">shredding.service.log</field>
         <field name="arch" type="xml">
@@ -12,7 +12,7 @@
         </field>
     </record>
 
-    <!-- Form view for shredding.service.log -->
+    <!-- Form view for base.rate -->
 <record id="shredding_service_log_view_form" model="ir.ui.view">
     <field name="name">shredding.service.log.view.form</field>
         <field name="model">shredding.service.log</field>
@@ -30,7 +30,7 @@
         </field>
     </record>
 
-    <!-- Search view for shredding.service.log -->
+    <!-- Search view for base.rate -->
 <record id="shredding_service_log_view_search" model="ir.ui.view">
     <field name="name">shredding.service.log.view.search</field>
         <field name="model">shredding.service.log</field>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action shredding.service.log -->
+    <!-- Tree view for Action -->
     <record id="action_shredding_service_log" model="ir.actions.act_window">
         <field name="name">Shredding Service Log</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">shredding.service.log</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Department Billing Menus - Loaded after main menu structure -->
+    <!-- Tree view for Department -->
     
-    <!-- Menu Item for Department Billing Contacts -->
+    <!-- Tree view for Menu -->
     <menuitem id="menu_department_billing_contacts" 
               name="Department Billing Contacts" 
               parent="menu_records_configuration"

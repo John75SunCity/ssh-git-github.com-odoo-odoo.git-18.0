@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for revenue.forecaster -->
-    <record id="view_revenue_forecaster_tree" model="ir.ui.view">
-        <field name="name">revenue.forecaster.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="revenue_forecaster_view_tree" model="ir.ui.view">
+        <field name="name">revenue.forecaster.view.tree</field>
         <field name="model">revenue.forecaster</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for revenue.forecaster -->
-    <record id="view_revenue_forecaster_form" model="ir.ui.view">
-        <field name="name">revenue.forecaster.form</field>
+    <!-- Form view for base.rate -->
+    <record id="revenue_forecaster_view_form" model="ir.ui.view">
+        <field name="name">revenue.forecaster.view.form</field>
         <field name="model">revenue.forecaster</field>
         <field name="arch" type="xml">
             <form string="Revenue Forecaster">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for revenue.forecaster -->
-    <record id="view_revenue_forecaster_search" model="ir.ui.view">
-        <field name="name">revenue.forecaster.search</field>
+    <!-- Search view for base.rate -->
+    <record id="revenue_forecaster_view_search" model="ir.ui.view">
+        <field name="name">revenue.forecaster.view.search</field>
         <field name="model">revenue.forecaster</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action revenue.forecaster -->
+    <!-- Tree view for Action -->
     <record id="action_revenue_forecaster" model="ir.actions.act_window">
         <field name="name">Revenue Forecaster</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">revenue.forecaster</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

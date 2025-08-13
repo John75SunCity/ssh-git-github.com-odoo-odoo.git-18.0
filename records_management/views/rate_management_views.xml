@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Base Rates Views -->
+        <!-- Tree view for Base -->
         <record id="base_rates_view_tree" model="ir.ui.view">
             <field name="name">base.rates.view.tree</field>
             <field name="model">base.rates</field>
@@ -75,7 +75,7 @@
                                     </group>
                                 </group>
                                 <group>
-                                    <group string="Pickup &amp; Delivery">
+                                    <group string="Pickup &amp;amp; Delivery">
                                         <field name="pickup_rate" widget="monetary"/>
                                         <field name="delivery_rate" widget="monetary"/>
                                         <field name="emergency_pickup_rate" widget="monetary"/>
@@ -89,7 +89,7 @@
                                 </group>
                             </page>
 
-                            <page string="Container &amp; Access Rates" name="container_rates">
+                            <page string="Container &amp;amp; Access Rates" name="container_rates">
                                 <group>
                                     <group string="Container Access">
                                         <field name="container_access_rate" widget="monetary"/>
@@ -109,7 +109,7 @@
                                         <field name="digital_storage_rate_gb" widget="monetary"/>
                                         <field name="data_conversion_rate" widget="monetary"/>
                                     </group>
-                                    <group string="Setup &amp; Processing">
+                                    <group string="Setup &amp;amp; Processing">
                                         <field name="setup_fee_new_client" widget="monetary"/>
                                         <field name="processing_fee_batch" widget="monetary"/>
                                         <field name="verification_fee" widget="monetary"/>
@@ -118,27 +118,27 @@
                                 </group>
                             </page>
 
-                            <page string="Compliance &amp; Special" name="compliance_rates">
+                            <page string="Compliance &amp;amp; Special" name="compliance_rates">
                                 <group>
                                     <group string="NAID Compliance">
                                         <field name="naid_witness_fee" widget="monetary"/>
                                         <field name="naid_certificate_fee" widget="monetary"/>
                                         <field name="compliance_audit_rate" widget="monetary"/>
                                     </group>
-                                    <group string="Consultation &amp; Support">
+                                    <group string="Consultation &amp;amp; Support">
                                         <field name="consultation_rate_hourly" widget="monetary"/>
                                         <field name="training_rate_hourly" widget="monetary"/>
                                         <field name="support_rate_hourly" widget="monetary"/>
                                     </group>
                                 </group>
                                 <group>
-                                    <group string="Penalties &amp; Fees">
+                                    <group string="Penalties &amp;amp; Fees">
                                         <field name="late_fee_rate" widget="monetary"/>
                                         <field name="cancellation_fee" widget="monetary"/>
                                         <field name="returned_item_fee" widget="monetary"/>
                                         <field name="restocking_fee_rate" widget="percentage"/>
                                     </group>
-                                    <group string="Travel &amp; Logistics">
+                                    <group string="Travel &amp;amp; Logistics">
                                         <field name="travel_rate_per_mile" widget="monetary"/>
                                         <field name="fuel_surcharge_rate" widget="percentage"/>
                                         <field name="weekend_service_multiplier"/>
@@ -147,7 +147,7 @@
                                 </group>
                             </page>
 
-                            <page string="Computation &amp; Statistics" name="computed_fields">
+                            <page string="Computation &amp;amp; Statistics" name="computed_fields">
                                 <group>
                                     <group string="Rate Analysis">
                                         <field name="average_service_rate" widget="monetary" readonly="1"/>
@@ -164,7 +164,7 @@
                                 </group>
                             </page>
 
-                            <page string="Description &amp; Notes" name="description">
+                            <page string="Description &amp;amp; Notes" name="description">
                                 <group>
                                     <field name="description" placeholder="Describe this rate set and when it applies..." nolabel="1"/>
                                 </group>
@@ -183,7 +183,7 @@
             </field>
         </record>
 
-        <!-- Revenue Forecaster Views -->
+        <!-- Tree view for Revenue -->
         <record id="revenue_forecaster_view_form" model="ir.ui.view">
             <field name="name">revenue.forecaster.view.form</field>
             <field name="model">revenue.forecaster</field>
@@ -201,7 +201,7 @@
                             Configure your scenario parameters below and click "Run Forecast Analysis" to see the potential revenue impact.
                         </div>
 
-                        <!-- Results Summary (only show after analysis) -->
+                        <!-- Tree view for Results -->
                         <div class="o_form_sheet_bg" attrs="{'invisible': [('analysis_complete', '=', False)]}">
                             <div class="row">
                                 <div class="col-md-3">
@@ -284,11 +284,11 @@
                             </group>
                         </group>
 
-                        <!-- Detailed Results -->
+                        <!-- Tree view for Detailed -->
                         <notebook attrs="{'invisible': [('analysis_complete', '=', False)]}">
                             <page string="Customer Impact Analysis">
                                 <field name="forecast_line_ids" readonly="1">
-                                    <tree decoration-success="revenue_change &lt; 0" decoration-danger="revenue_change &gt; 0">
+                                    <tree decoration-success="revenue_change &amp;lt; 0" decoration-danger="revenue_change &amp;gt; 0">
                                         <field name="partner_id"/>
                                         <field name="customer_segment"/>
                                         <field name="container_count"/>
@@ -306,7 +306,7 @@
             </field>
         </record>
 
-        <!-- Rate Change Confirmation Wizard -->
+        <!-- Tree view for Rate -->
         <record id="rate_change_confirmation_wizard_view_form" model="ir.ui.view">
             <field name="name">rate.change.confirmation.wizard.view.form</field>
             <field name="model">rate.change.confirmation.wizard</field>
@@ -372,7 +372,7 @@
             </field>
         </record>
 
-        <!-- Menu Actions -->
+        <!-- Tree view for Menu -->
         <record id="action_base_rates" model="ir.actions.act_window">
             <field name="name">Base Service Rates</field>
             <field name="res_model">base.rates</field>
@@ -405,19 +405,19 @@
             <field name="context">{}</field>
         </record>
 
-        <!-- Rate Management Menu Structure -->
+        <!-- Tree view for Rate -->
         <menuitem id="menu_rate_management" name="Rate Management" parent="records_management.menu_records_configuration" sequence="30" groups="records_management.group_records_manager"/>
 
-        <!-- Base Rates Menu -->
+        <!-- Tree view for Base -->
         <menuitem id="menu_base_rates" name="Base Service Rates" parent="menu_rate_management" action="action_base_rates" sequence="10" groups="records_management.group_records_manager"/>
 
-        <!-- Customer Negotiated Rates Menu -->
+        <!-- Tree view for Customer -->
         <menuitem id="menu_customer_negotiated_rates" name="Customer Negotiated Rates" parent="menu_rate_management" action="action_customer_negotiated_rates" sequence="20" groups="records_management.group_records_manager"/>
 
-        <!-- Revenue Forecaster Menu -->
+        <!-- Tree view for Revenue -->
         <menuitem id="menu_revenue_forecaster" name="Revenue Forecaster" parent="menu_rate_management" action="action_revenue_forecaster" sequence="30" groups="records_management.group_records_manager"/>
 
-        <!-- Rate Analysis Tools Menu -->
+        <!-- Tree view for Rate -->
         <menuitem id="menu_rate_analysis" name="Rate Analysis Tools" parent="menu_rate_management" action="action_rate_analysis_wizard" sequence="40" groups="records_management.group_records_manager"/>
 
     </data>

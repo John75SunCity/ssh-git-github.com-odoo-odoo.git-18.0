@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- � PAPER BALE LOAD MANAGEMENT - Post-Shredding Paper Market Sales -->
+    <!-- Tree view for PAPER -->
     
-    <!-- KANBAN VIEW: Paper Bale Load Dashboard -->
-    <record id="view_load_kanban" model="ir.ui.view">
-        <field name="name">load.kanban</field>
+    <!-- Kanban view for KANBAN -->
+    <record id="load_view_kanban" model="ir.ui.view">
+        <field name="name">load.view.kanban</field>
         <field name="model">load</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" sample="1" quick_create="false" class="o_kanban_small_column">
@@ -67,9 +67,9 @@
         </field>
     </record>
 
-    <!-- TREE VIEW: Paper Bale Load List -->
-    <record id="view_load_tree" model="ir.ui.view">
-        <field name="name">load.tree</field>
+    <!-- Tree view for TREE -->
+    <record id="load_view_tree" model="ir.ui.view">
+        <field name="name">load.view.tree</field>
         <field name="model">load</field>
         <field name="arch" type="xml">
             <tree string="Paper Bale Load Management" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'" decoration-muted="state=='cancelled'" multi_edit="1" sample="1">
@@ -93,9 +93,9 @@
         </field>
     </record>
 
-    <!-- FORM VIEW: Detailed Paper Bale Load Management -->
-    <record id="view_load_form" model="ir.ui.view">
-        <field name="name">load.form</field>
+    <!-- Form view for FORM -->
+    <record id="load_view_form" model="ir.ui.view">
+        <field name="name">load.view.form</field>
         <field name="model">load</field>
         <field name="arch" type="xml">
             <form string="Paper Bale Load Management">
@@ -283,9 +283,9 @@
         </field>
     </record>
 
-    <!-- SEARCH VIEW: Advanced Load Search -->
-    <record id="view_load_search" model="ir.ui.view">
-        <field name="name">load.search</field>
+    <!-- Search view for SEARCH -->
+    <record id="load_view_search" model="ir.ui.view">
+        <field name="name">load.view.search</field>
         <field name="model">load</field>
         <field name="arch" type="xml">
             <search string="Search Loads">
@@ -297,7 +297,7 @@
                 
                 <filter string="My Loads" name="my_loads" domain="[('driver_id.user_id', '=', uid)]"/>
                 <filter string="Today's Loads" name="today" domain="[('load_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter string="This Week" name="week" domain="[('load_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('load_date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="week" domain="[('load_date', '&amp;gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('load_date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
                 
                 <separator/>
                 <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
@@ -312,8 +312,8 @@
                 <filter string="High Priority" name="high_priority" domain="[('priority', '=', '3')]"/>
                 
                 <separator/>
-                <filter string="Overdue" name="overdue" domain="[('scheduled_departure', '&lt;', datetime.datetime.now()), ('state', 'in', ['draft', 'planned', 'loading'])]"/>
-                <filter string="Late Delivery" name="late_delivery" domain="[('estimated_delivery', '&lt;', datetime.datetime.now()), ('state', '=', 'in_transit')]"/>
+                <filter string="Overdue" name="overdue" domain="[('scheduled_departure', '&amp;lt;', datetime.datetime.now()), ('state', 'in', ['draft', 'planned', 'loading'])]"/>
+                <filter string="Late Delivery" name="late_delivery" domain="[('estimated_delivery', '&amp;lt;', datetime.datetime.now()), ('state', '=', 'in_transit')]"/>
                 
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
@@ -327,9 +327,9 @@
         </field>
     </record>
 
-    <!-- CALENDAR VIEW: Load Schedule -->
-    <record id="view_load_calendar" model="ir.ui.view">
-        <field name="name">load.calendar</field>
+    <!-- Tree view for CALENDAR -->
+    <record id="load_view_calendar" model="ir.ui.view">
+        <field name="name">load.view.calendar</field>
         <field name="model">load</field>
         <field name="arch" type="xml">
             <calendar string="Load Schedule" date_start="scheduled_departure" date_stop="estimated_delivery" color="driver_id" quick_add="False" mode="month">
@@ -342,9 +342,9 @@
         </field>
     </record>
 
-    <!-- GRAPH VIEW: Load Analytics -->
-    <record id="view_load_graph" model="ir.ui.view">
-        <field name="name">load.graph</field>
+    <!-- Tree view for GRAPH -->
+    <record id="load_view_graph" model="ir.ui.view">
+        <field name="name">load.view.graph</field>
         <field name="model">load</field>
         <field name="arch" type="xml">
             <graph string="Load Analytics" type="bar" sample="1">
@@ -355,9 +355,9 @@
         </field>
     </record>
 
-    <!-- PIVOT VIEW: Load Performance Analysis -->
-    <record id="view_load_pivot" model="ir.ui.view">
-        <field name="name">load.pivot</field>
+    <!-- Form view for PIVOT -->
+    <record id="load_view_pivot" model="ir.ui.view">
+        <field name="name">load.view.pivot</field>
         <field name="model">load</field>
         <field name="arch" type="xml">
             <pivot string="Load Performance" sample="1">
@@ -369,11 +369,11 @@
         </field>
     </record>
 
-    <!-- ACTION: Paper Bale Load Management -->
+    <!-- Tree view for ACTION -->
     <record id="action_load" model="ir.actions.act_window">
         <field name="name">� Paper Bale Load Management</field>
         <field name="res_model">load</field>
-        <field name="view_mode">kanban,list,form,calendar,graph,pivot</field>
+        <field name="view_mode">kanban,tree,form,calendar,graph,pivot</field>
         <field name="search_view_id" ref="view_load_search"/>
         <field name="context">{
             'search_default_today': 1,

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Enhanced Partner Tree View with Key Indicators -->
-    <record id="view_res_partner_tree_key_management" model="ir.ui.view">
-        <field name="name">res.partner.tree.key.management</field>
+    <!-- Tree view for Enhanced -->
+    <record id="res_partner_view_tree" model="ir.ui.view">
+        <field name="name">res.partner.view.tree</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
@@ -14,14 +14,14 @@
         </field>
     </record>
 
-    <!-- Enhanced Partner Form View with Key Management -->
-    <record id="view_res_partner_form_key_management" model="ir.ui.view">
-        <field name="name">res.partner.form.key.management</field>
+    <!-- Form view for Enhanced -->
+    <record id="res_partner_view_form" model="ir.ui.view">
+        <field name="name">res.partner.view.form</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
 
-            <!-- Add Key Management button box -->
+            <!-- Tree view for Add -->
             <div name="button_box" position="inside">
                 <button name="action_view_bin_keys" type="object" class="oe_stat_button" icon="fa-key" attrs="{'invisible': [('has_bin_key', '=', False)]}">
                     <div class="o_field_widget o_stat_info">
@@ -42,7 +42,7 @@
                 </button>
             </div>
 
-            <!-- Add key status indicators near name -->
+            <!-- Tree view for Add -->
             <h1 position="after">
                 <div class="o_row" attrs="{'invisible': [('has_bin_key', '=', False)]}">
                     <span class="badge badge-success">🔑 Has Bin Key</span>
@@ -52,11 +52,11 @@
                 </div>
             </h1>
 
-            <!-- Add Bin Key Management tab -->
+            <!-- Tree view for Add -->
             <page string="Internal Notes" position="after">
                 <page string="🔑 Bin Key Management" attrs="{'invisible': [('is_company', '=', True)]}">
 
-                    <!-- Quick Actions -->
+                    <!-- Tree view for Quick -->
                     <div class="row mb-3">
                         <div class="col-12">
                             <div class="alert alert-info" role="alert" attrs="{'invisible': [('has_bin_key', '=', True)]}">
@@ -77,7 +77,7 @@
                         </div>
                     </div>
 
-                    <!-- Key Status Summary -->
+                    <!-- Tree view for Key -->
                     <group string="Key Status Summary">
                         <group>
                             <field name="has_bin_key" readonly="1"/>
@@ -92,7 +92,7 @@
                         </group>
                     </group>
 
-                    <!-- Key History -->
+                    <!-- Tree view for Key -->
                     <separator string="🗂️ Key Assignment History"/>
                     <field name="bin_key_history_ids" readonly="1">
                         <tree>
@@ -105,7 +105,7 @@
                         </tree>
                     </field>
 
-                    <!-- Unlock Service History -->
+                    <!-- Tree view for Unlock -->
                     <separator string="🔓 Unlock Service History" attrs="{'invisible': [('unlock_service_count', '=', 0)]}"/>
                     <field name="unlock_service_history_ids" readonly="1" attrs="{'invisible': [('unlock_service_count', '=', 0)]}">
                         <tree>
@@ -125,21 +125,21 @@
         </field>
     </record>
 
-    <!-- Enhanced Partner Kanban View with Key Indicators -->
-    <record id="view_res_partner_kanban_key_management" model="ir.ui.view">
-        <field name="name">res.partner.kanban.key.management</field>
+    <!-- Kanban view for Enhanced -->
+    <record id="res_partner_view_kanban" model="ir.ui.view">
+        <field name="name">res.partner.view.kanban</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.res_partner_kanban_view"/>
         <field name="arch" type="xml">
 
-            <!-- Add key-related fields to kanban -->
+            <!-- Kanban view for Add -->
             <field name="country_id" position="after">
                 <field name="has_bin_key"/>
                 <field name="is_emergency_key_contact"/>
                 <field name="active_bin_key_count"/>
             </field>
 
-            <!-- Add key indicators to kanban card -->
+            <!-- Kanban view for Add -->
             <div class="oe_kanban_details" position="before">
                 <div class="o_kanban_tags_section" t-if="record.has_bin_key.raw_value or record.is_emergency_key_contact.raw_value">
                     <span t-if="record.has_bin_key.raw_value" class="badge badge-success">🔑 Key</span>
@@ -150,7 +150,7 @@
         </field>
     </record>
 
-    <!-- Quick Key Assignment Action -->
+    <!-- Tree view for Quick -->
     <record id="action_quick_key_assignment" model="ir.actions.act_window">
         <field name="name">Quick Key Assignment</field>
         <field name="res_model">mobile.bin.key.wizard</field>
@@ -159,7 +159,7 @@
         <field name="context">{'default_action_type': 'issue_new', 'default_contact_id': active_id}</field>
     </record>
 
-    <!-- Add Quick Key Assignment to Partner Action Menu -->
+    <!-- Tree view for Add -->
     <record id="action_partner_key_assignment" model="ir.actions.act_window">
         <field name="name">Assign Bin Key</field>
         <field name="res_model">mobile.bin.key.wizard</field>
@@ -170,14 +170,14 @@
         <field name="binding_view_types">form,list</field>
     </record>
 
-    <!-- Partner Search View with Key Filters -->
-    <record id="view_res_partner_filter_key_management" model="ir.ui.view">
-        <field name="name">res.partner.search.key.management</field>
+    <!-- Search view for Partner -->
+    <record id="res_partner_view_search" model="ir.ui.view">
+        <field name="name">res.partner.view.search</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_res_partner_filter"/>
         <field name="arch" type="xml">
 
-            <!-- Add key-related filters -->
+            <!-- Tree view for Add -->
             <filter name="customer" position="after">
                 <separator/>
                 <filter name="has_bin_key" string="Has Bin Key" domain="[('has_bin_key', '=', True)]"/>
@@ -185,7 +185,7 @@
                 <filter name="no_bin_key" string="No Bin Key" domain="[('has_bin_key', '=', False)]"/>
             </filter>
 
-            <!-- Add key-related search fields -->
+            <!-- Search view for Add -->
             <field name="category_id" position="after">
                 <field name="key_issue_date"/>
                 <field name="active_bin_key_count"/>

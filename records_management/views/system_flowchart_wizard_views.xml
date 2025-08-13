@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- System Flowchart Wizard Form Views -->
+    <!-- Form view for System -->
 
-    <!-- Welcome Step -->
-    <record id="view_system_flowchart_wizard_welcome" model="ir.ui.view">
-        <field name="name">system.flowchart.wizard.welcome</field>
+    <!-- Tree view for Welcome -->
+    <record id="system_flowchart_wizard_view_tree" model="ir.ui.view">
+        <field name="name">system.flowchart.wizard.view.tree</field>
         <field name="model">system.flowchart.wizard</field>
         <field name="arch" type="xml">
             <form string="System Flowchart - Welcome">
@@ -84,9 +84,9 @@
         </field>
     </record>
 
-    <!-- Configuration Step -->
-    <record id="view_system_flowchart_wizard_configure" model="ir.ui.view">
-        <field name="name">system.flowchart.wizard.configure</field>
+    <!-- Tree view for Configuration -->
+    <record id="system_flowchart_wizard_view_tree" model="ir.ui.view">
+        <field name="name">system.flowchart.wizard.view.tree</field>
         <field name="model">system.flowchart.wizard</field>
         <field name="arch" type="xml">
             <form string="System Flowchart - Configure">
@@ -160,9 +160,9 @@
         </field>
     </record>
 
-    <!-- Preview Step -->
-    <record id="view_system_flowchart_wizard_preview" model="ir.ui.view">
-        <field name="name">system.flowchart.wizard.preview</field>
+    <!-- Tree view for Preview -->
+    <record id="system_flowchart_wizard_view_tree" model="ir.ui.view">
+        <field name="name">system.flowchart.wizard.view.tree</field>
         <field name="model">system.flowchart.wizard</field>
         <field name="arch" type="xml">
             <form string="System Flowchart - Preview">
@@ -273,9 +273,9 @@
         </field>
     </record>
 
-    <!-- Complete Step -->
-    <record id="view_system_flowchart_wizard_complete" model="ir.ui.view">
-        <field name="name">system.flowchart.wizard.complete</field>
+    <!-- Tree view for Complete -->
+    <record id="system_flowchart_wizard_view_tree" model="ir.ui.view">
+        <field name="name">system.flowchart.wizard.view.tree</field>
         <field name="model">system.flowchart.wizard</field>
         <field name="arch" type="xml">
             <form string="System Flowchart - Complete">
@@ -337,9 +337,9 @@
         </field>
     </record>
 
-    <!-- Main Wizard Form (Dynamic based on step) -->
-    <record id="view_system_flowchart_wizard_form" model="ir.ui.view">
-        <field name="name">system.flowchart.wizard.form</field>
+    <!-- Form view for Main -->
+    <record id="system_flowchart_wizard_view_form" model="ir.ui.view">
+        <field name="name">system.flowchart.wizard.view.form</field>
         <field name="model">system.flowchart.wizard</field>
         <field name="arch" type="xml">
             <form string="System Flowchart Configuration">
@@ -350,7 +350,7 @@
                     <field name="step" widget="statusbar"/>
                 </header>
                 <sheet>
-                    <!-- Welcome Step Content -->
+                    <!-- Tree view for Welcome -->
                     <div attrs="{'invisible': [('step', '!=', 'welcome')]}">
                         <div class="oe_title">
                             <h1>
@@ -361,7 +361,7 @@
                         <p>Configure your interactive system visualization</p>
                     </div>
 
-                    <!-- Configure Step Content -->
+                    <!-- Tree view for Configure -->
                     <div attrs="{'invisible': [('step', '!=', 'configure')]}">
                         <group>
                             <field name="search_scenario"/>
@@ -370,14 +370,14 @@
                         </group>
                     </div>
 
-                    <!-- Preview Step Content -->
+                    <!-- Tree view for Preview -->
                     <div attrs="{'invisible': [('step', '!=', 'preview')]}">
                         <group>
                             <field name="preview_data" readonly="1" widget="text"/>
                         </group>
                     </div>
 
-                    <!-- Complete Step Content -->
+                    <!-- Tree view for Complete -->
                     <div attrs="{'invisible': [('step', '!=', 'complete')]}">
                         <div class="alert alert-success">
                             <h4>Ready to Launch!</h4>
@@ -389,7 +389,7 @@
         </field>
     </record>
 
-    <!-- Wizard Action -->
+    <!-- Tree view for Wizard -->
     <record id="action_system_flowchart_wizard" model="ir.actions.act_window">
         <field name="name">System Flowchart Configuration</field>
         <field name="res_model">system.flowchart.wizard</field>
@@ -398,7 +398,7 @@
         <field name="view_id" ref="view_system_flowchart_wizard_form"/>
     </record>
 
-    <!-- Menu Item for Wizard -->
+    <!-- Tree view for Menu -->
     <menuitem id="menu_system_flowchart_wizard" name="Configure Flowchart" parent="menu_system_analysis" action="action_system_flowchart_wizard" sequence="5"/>
 
 </odoo>

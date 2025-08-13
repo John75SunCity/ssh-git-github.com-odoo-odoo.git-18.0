@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 🏪 ENTERPRISE POS CONFIGURATION - Advanced Point-of-Sale & Walk-In Service Integration -->
+    <!-- Tree view for ENTERPRISE -->
     
-    <!-- KANBAN VIEW: POS Configuration Dashboard -->
-    <record id="view_pos_config_kanban" model="ir.ui.view">
-        <field name="name">pos.config.kanban</field>
+    <!-- Kanban view for KANBAN -->
+    <record id="pos_config_view_kanban" model="ir.ui.view">
+        <field name="name">pos.config.view.kanban</field>
         <field name="model">pos.config</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" sample="1" quick_create="false" class="o_kanban_small_column">
@@ -72,9 +72,9 @@
         </field>
     </record>
 
-    <!-- TREE VIEW: POS Configuration List -->
-    <record id="view_pos_config_tree" model="ir.ui.view">
-        <field name="name">pos.config.tree</field>
+    <!-- Tree view for TREE -->
+    <record id="pos_config_view_tree" model="ir.ui.view">
+        <field name="name">pos.config.view.tree</field>
         <field name="model">pos.config</field>
         <field name="arch" type="xml">
             <tree string="POS Configuration Management" decoration-success="state=='active'" decoration-muted="state=='inactive'" decoration-danger="state=='deprecated'" multi_edit="1" sample="1">
@@ -97,9 +97,9 @@
         </field>
     </record>
 
-    <!-- FORM VIEW: Detailed POS Configuration -->
-    <record id="view_pos_config_form" model="ir.ui.view">
-        <field name="name">pos.config.form</field>
+    <!-- Form view for FORM -->
+    <record id="pos_config_view_form" model="ir.ui.view">
+        <field name="name">pos.config.view.form</field>
         <field name="model">pos.config</field>
         <field name="arch" type="xml">
             <form string="POS Configuration">
@@ -301,9 +301,9 @@
         </field>
     </record>
 
-    <!-- SEARCH VIEW: Advanced POS Configuration Search -->
-    <record id="view_pos_config_search" model="ir.ui.view">
-        <field name="name">pos.config.search</field>
+    <!-- Search view for SEARCH -->
+    <record id="pos_config_view_search" model="ir.ui.view">
+        <field name="name">pos.config.view.search</field>
         <field name="model">pos.config</field>
         <field name="arch" type="xml">
             <search string="Search POS Configurations">
@@ -324,7 +324,7 @@
                 
                 <separator/>
                 <filter string="My Sessions" name="my_sessions" domain="[('session_user_id', '=', uid)]"/>
-                <filter string="Today's Sales" name="today_sales" domain="[('current_session_id.start_at', '&gt;=', datetime.datetime.combine(context_today(), datetime.time.min))]"/>
+                <filter string="Today's Sales" name="today_sales" domain="[('current_session_id.start_at', '&amp;gt;=', datetime.datetime.combine(context_today(), datetime.time.min))]"/>
                 
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
@@ -336,9 +336,9 @@
         </field>
     </record>
 
-    <!-- GRAPH VIEW: POS Performance Analytics -->
-    <record id="view_pos_config_graph" model="ir.ui.view">
-        <field name="name">pos.config.graph</field>
+    <!-- Form view for GRAPH -->
+    <record id="pos_config_view_graph" model="ir.ui.view">
+        <field name="name">pos.config.view.graph</field>
         <field name="model">pos.config</field>
         <field name="arch" type="xml">
             <graph string="POS Performance" type="bar" sample="1">
@@ -349,9 +349,9 @@
         </field>
     </record>
 
-    <!-- PIVOT VIEW: POS Analysis -->
-    <record id="view_pos_config_pivot" model="ir.ui.view">
-        <field name="name">pos.config.pivot</field>
+    <!-- Tree view for PIVOT -->
+    <record id="pos_config_view_pivot" model="ir.ui.view">
+        <field name="name">pos.config.view.pivot</field>
         <field name="model">pos.config</field>
         <field name="arch" type="xml">
             <pivot string="POS Analysis" sample="1">
@@ -363,11 +363,11 @@
         </field>
     </record>
 
-    <!-- ACTION: POS Configuration Management -->
+    <!-- Tree view for ACTION -->
     <record id="action_pos_config_records" model="ir.actions.act_window">
         <field name="name">🏪 POS Configuration</field>
         <field name="res_model">pos.config</field>
-        <field name="view_mode">kanban,list,form,graph,pivot</field>
+        <field name="view_mode">kanban,tree,form,graph,pivot</field>
         <field name="search_view_id" ref="view_pos_config_search"/>
         <field name="context">{
             'search_default_active': 1

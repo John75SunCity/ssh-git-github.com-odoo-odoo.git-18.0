@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Vehicle Views -->
+    <!-- Tree view for Vehicle -->
 
-    <!-- Tree View -->
-    <record id="view_records_vehicle_tree" model="ir.ui.view">
-        <field name="name">records.vehicle.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="records_vehicle_view_tree" model="ir.ui.view">
+        <field name="name">records.vehicle.view.tree</field>
         <field name="model">records.vehicle</field>
         <field name="arch" type="xml">
             <tree string="Vehicles">
@@ -19,9 +19,9 @@
         </field>
     </record>
 
-    <!-- Form View -->
-    <record id="view_records_vehicle_form" model="ir.ui.view">
-        <field name="name">records.vehicle.form</field>
+    <!-- Form view for base.rate -->
+    <record id="records_vehicle_view_form" model="ir.ui.view">
+        <field name="name">records.vehicle.view.form</field>
         <field name="model">records.vehicle</field>
         <field name="arch" type="xml">
             <form string="Vehicle">
@@ -95,9 +95,9 @@
         </field>
     </record>
 
-    <!-- Search View -->
-    <record id="view_records_vehicle_search" model="ir.ui.view">
-        <field name="name">records.vehicle.search</field>
+    <!-- Search view for base.rate -->
+    <record id="records_vehicle_view_search" model="ir.ui.view">
+        <field name="name">records.vehicle.view.search</field>
         <field name="model">records.vehicle</field>
         <field name="arch" type="xml">
             <search string="Vehicles">
@@ -118,7 +118,7 @@
         </field>
     </record>
 
-    <!-- Action -->
+    <!-- Tree view for Action -->
     <record id="action_records_vehicle" model="ir.actions.act_window">
         <field name="name">Vehicles</field>
         <field name="res_model">records.vehicle</field>
@@ -134,7 +134,7 @@
         </field>
     </record>
 
-    <!-- Menu Item -->
+    <!-- Tree view for Menu -->
     <menuitem id="menu_records_vehicle" name="Vehicles" action="action_records_vehicle" parent="records_management.menu_records_management_configuration" sequence="50"/>
 
 </odoo>

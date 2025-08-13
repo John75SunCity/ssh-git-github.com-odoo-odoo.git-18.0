@@ -4,9 +4,9 @@
                             <group>
                                 <group string="Audit Trail Configuration">g & Audit Integration -->
     
-    <!-- FORM VIEW: Visitor POS Processing Wizard -->
-    <record id="view_visitor_pos_wizard_form" model="ir.ui.view">
-        <field name="name">visitor.pos.wizard.form</field>
+    <!-- Form view for FORM -->
+    <record id="visitor_pos_wizard_view_form" model="ir.ui.view">
+        <field name="name">visitor.pos.wizard.view.form</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
             <form string="Visitor POS Processing Wizard">
@@ -217,9 +217,9 @@
         </field>
     </record>
 
-    <!-- TREE VIEW: Visitor POS Processing History -->
-    <record id="view_visitor_pos_wizard_tree" model="ir.ui.view">
-        <field name="name">visitor.pos.wizard.tree</field>
+    <!-- Tree view for TREE -->
+    <record id="visitor_pos_wizard_view_tree" model="ir.ui.view">
+        <field name="name">visitor.pos.wizard.view.tree</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
             <tree string="Visitor POS Processing History" decoration-success="pos_order_created=True" decoration-info="customer_record_created=True" decoration-warning="audit_required=True" sample="1">
@@ -238,9 +238,9 @@
         </field>
     </record>
 
-    <!-- SEARCH VIEW: Visitor POS Wizard Search -->
-    <record id="view_visitor_pos_wizard_search" model="ir.ui.view">
-        <field name="name">visitor.pos.wizard.search</field>
+    <!-- Search view for SEARCH -->
+    <record id="visitor_pos_wizard_view_search" model="ir.ui.view">
+        <field name="name">visitor.pos.wizard.view.search</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
             <search string="Search Visitor POS Processing">
@@ -249,8 +249,8 @@
                 <field name="cashier_id" string="Cashier"/>
                 <field name="service_type" string="Service Type"/>
                 
-                <filter string="Today" name="today" domain="[('wizard_start_time', '&gt;=', datetime.datetime.combine(context_today(), datetime.time.min)), ('wizard_start_time', '&lt;=', datetime.datetime.combine(context_today(), datetime.time.max))]"/>
-                <filter string="This Week" name="week" domain="[('wizard_start_time', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('wizard_start_time', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <filter string="Today" name="today" domain="[('wizard_start_time', '&amp;gt;=', datetime.datetime.combine(context_today(), datetime.time.min)), ('wizard_start_time', '&lt;=', datetime.datetime.combine(context_today(), datetime.time.max))]"/>
+                <filter string="This Week" name="week" domain="[('wizard_start_time', '&amp;gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('wizard_start_time', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
                 <filter string="My Processing" name="my_processing" domain="[('processed_by', '=', uid)]"/>
                 
                 <separator/>
@@ -277,9 +277,9 @@
         </field>
     </record>
 
-    <!-- GRAPH VIEW: Visitor POS Analytics -->
-    <record id="view_visitor_pos_wizard_graph" model="ir.ui.view">
-        <field name="name">visitor.pos.wizard.graph</field>
+    <!-- Tree view for GRAPH -->
+    <record id="visitor_pos_wizard_view_graph" model="ir.ui.view">
+        <field name="name">visitor.pos.wizard.view.graph</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
             <graph string="Visitor POS Analytics" type="bar" sample="1">
@@ -290,9 +290,9 @@
         </field>
     </record>
 
-    <!-- PIVOT VIEW: Visitor POS Performance Analysis -->
-    <record id="view_visitor_pos_wizard_pivot" model="ir.ui.view">
-        <field name="name">visitor.pos.wizard.pivot</field>
+    <!-- Form view for PIVOT -->
+    <record id="visitor_pos_wizard_view_pivot" model="ir.ui.view">
+        <field name="name">visitor.pos.wizard.view.pivot</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
             <pivot string="Visitor POS Performance" sample="1">
@@ -304,11 +304,11 @@
         </field>
     </record>
 
-    <!-- ACTION: Visitor POS Wizard Management -->
+    <!-- Tree view for ACTION -->
     <record id="action_visitor_pos_wizard" model="ir.actions.act_window">
         <field name="name">Visitor POS Processing</field>
         <field name="res_model">visitor.pos.wizard</field>
-        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
         <field name="search_view_id" ref="view_visitor_pos_wizard_search"/>
         <field name="context">{
             'search_default_today': 1,
@@ -334,7 +334,7 @@
         </field>
     </record>
 
-    <!-- ACTION: Visitor POS Processing Wizard (Wizard Mode) -->
+    <!-- Tree view for ACTION -->
     <record id="action_visitor_pos_processing_wizard" model="ir.actions.act_window">
         <field name="name">Process Walk-In Visitor</field>
         <field name="res_model">visitor.pos.wizard</field>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Records Management Configuration Settings Form View -->
-        <record id="records_config_settings_view_form" model="ir.ui.view">
+        <!-- Form view for Records -->
+        <record id="records_config_setting_view_form" model="ir.ui.view">
             <field name="name">records.config.setting.view.form</field>
             <field name="model">records.config.setting</field>
             <field name="arch" type="xml">
@@ -28,7 +28,7 @@
                     
                     <sheet>
                         <div class="row mt16 o_settings_container">
-                            <!-- Dashboard Statistics -->
+                            <!-- Tree view for Dashboard -->
                             <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_left_pane"/>
                                 <div class="o_setting_right_pane">
@@ -63,7 +63,7 @@
                             </div>
                         </div>
 
-                        <!-- Records Management Settings -->
+                        <!-- Tree view for Records -->
                         <h2>Records Management</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -163,7 +163,7 @@
                             </div>
                         </div>
 
-                        <!-- NAID Compliance Settings -->
+                        <!-- Tree view for NAID -->
                         <h2>NAID Compliance &amp; Security</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -263,7 +263,7 @@
                             </div>
                         </div>
 
-                        <!-- Pickup and Field Service Settings -->
+                        <!-- Tree view for Pickup -->
                         <h2>Pickup &amp; Field Service</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -327,7 +327,7 @@
                             </div>
                         </div>
 
-                        <!-- Billing Settings -->
+                        <!-- Tree view for Billing -->
                         <h2>Billing &amp; Pricing</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -391,7 +391,7 @@
                             </div>
                         </div>
 
-                        <!-- Portal Settings -->
+                        <!-- Tree view for Portal -->
                         <h2>Customer Portal</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -467,7 +467,7 @@
                             </div>
                         </div>
 
-                        <!-- Notifications -->
+                        <!-- Tree view for Notifications -->
                         <h2>Notifications</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -519,7 +519,7 @@
                             </div>
                         </div>
 
-                        <!-- Analytics and Reporting -->
+                        <!-- Tree view for Analytics -->
                         <h2>Analytics &amp; Reporting</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -571,7 +571,7 @@
                             </div>
                         </div>
 
-                        <!-- Integration Settings -->
+                        <!-- Tree view for Integration -->
                         <h2>System Integration</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -627,7 +627,7 @@
             </field>
         </record>
 
-        <!-- Action to Open Records Management Configuration -->
+        <!-- Tree view for Action -->
         <record id="action_records_config_settings" model="ir.actions.act_window">
             <field name="name">Records Management Configuration</field>
             <field name="type">ir.actions.act_window</field>
@@ -637,7 +637,7 @@
             <field name="context">{'module': 'records_management'}</field>
         </record>
 
-        <!-- Menu Item for Configuration -->
+        <!-- Tree view for Menu -->
         <menuitem id="menu_records_config_settings"
                   name="Configuration"
                   parent="records_management.menu_records_config"

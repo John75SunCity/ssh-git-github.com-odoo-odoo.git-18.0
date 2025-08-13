@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for processing.log -->
-    <record id="view_processing_log_tree" model="ir.ui.view">
-        <field name="name">processing.log.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="processing_log_view_tree" model="ir.ui.view">
+        <field name="name">processing.log.view.tree</field>
         <field name="model">processing.log</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for processing.log -->
-    <record id="view_processing_log_form" model="ir.ui.view">
-        <field name="name">processing.log.form</field>
+    <!-- Form view for base.rate -->
+    <record id="processing_log_view_form" model="ir.ui.view">
+        <field name="name">processing.log.view.form</field>
         <field name="model">processing.log</field>
         <field name="arch" type="xml">
             <form string="Processing Log">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for processing.log -->
-    <record id="view_processing_log_search" model="ir.ui.view">
-        <field name="name">processing.log.search</field>
+    <!-- Search view for base.rate -->
+    <record id="processing_log_view_search" model="ir.ui.view">
+        <field name="name">processing.log.view.search</field>
         <field name="model">processing.log</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action processing.log -->
+    <!-- Tree view for Action -->
     <record id="action_processing_log" model="ir.actions.act_window">
         <field name="name">Processing Log</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">processing.log</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for wizard.template -->
-    <record id="view_wizard_template_tree" model="ir.ui.view">
-        <field name="name">wizard.template.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="wizard_template_view_tree" model="ir.ui.view">
+        <field name="name">wizard.template.view.tree</field>
         <field name="model">wizard.template</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for wizard.template -->
-    <record id="view_wizard_template_form" model="ir.ui.view">
-        <field name="name">wizard.template.form</field>
+    <!-- Form view for base.rate -->
+    <record id="wizard_template_view_form" model="ir.ui.view">
+        <field name="name">wizard.template.view.form</field>
         <field name="model">wizard.template</field>
         <field name="arch" type="xml">
             <form string="Wizard Template">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for wizard.template -->
-    <record id="view_wizard_template_search" model="ir.ui.view">
-        <field name="name">wizard.template.search</field>
+    <!-- Search view for base.rate -->
+    <record id="wizard_template_view_search" model="ir.ui.view">
+        <field name="name">wizard.template.view.search</field>
         <field name="model">wizard.template</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action wizard.template -->
+    <!-- Tree view for Action -->
     <record id="action_wizard_template" model="ir.actions.act_window">
         <field name="name">Wizard Template</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">wizard.template</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

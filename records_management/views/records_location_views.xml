@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 🏢 ENTERPRISE STORAGE LOCATIONS - Hierarchical Location Management -->
+    <!-- Tree view for ENTERPRISE -->
 
-    <!-- 🎨 Enhanced Kanban View for Visual Location Management -->
-    <record id="view_records_location_kanban" model="ir.ui.view">
-        <field name="name">records.location.kanban</field>
+    <!-- Kanban view for Enhanced -->
+    <record id="records_location_view_kanban" model="ir.ui.view">
+        <field name="name">records.location.view.kanban</field>
         <field name="model">records.location</field>
         <field name="arch" type="xml">
             <kanban default_group_by="location_type" class="o_kanban_location_dashboard">
@@ -79,12 +79,12 @@
         </field>
     </record>
 
-    <!-- 📋 Enhanced List View with Smart Columns -->
-    <record id="view_records_location_tree" model="ir.ui.view">
-        <field name="name">records.location.tree</field>
+    <!-- Tree view for Enhanced -->
+    <record id="records_location_view_tree" model="ir.ui.view">
+        <field name="name">records.location.view.tree</field>
         <field name="model">records.location</field>
         <field name="arch" type="xml">
-            <tree decoration-success="current_utilization &lt; storage_capacity * 0.8" decoration-warning="current_utilization &gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &gt;= storage_capacity">
+            <tree decoration-success="current_utilization &amp;lt; storage_capacity * 0.8" decoration-warning="current_utilization &amp;gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &amp;gt;= storage_capacity">
                 <field name="name" string="🏢 Location Name"/>
                 <field name="location_type" string="📂 Type"/>
                 <field name="storage_capacity" string="🔢 Capacity"/>
@@ -97,9 +97,9 @@
         </field>
     </record>
 
-    <!-- 📝 Enhanced Form View with Smart Layout -->
-    <record id="view_records_location_form" model="ir.ui.view">
-        <field name="name">records.location.form</field>
+    <!-- Form view for Enhanced -->
+    <record id="records_location_view_form" model="ir.ui.view">
+        <field name="name">records.location.view.form</field>
         <field name="model">records.location</field>
         <field name="arch" type="xml">
             <form>
@@ -137,7 +137,7 @@
                             <field name="location_type"/>
                             <field name="parent_location_id" string="Parent Location"/>
                         </group>
-                        <group string="📊 Capacity &amp; Usage">
+                        <group string="📊 Capacity &amp;amp; Usage">
                             <field name="storage_capacity"/>
                             <field name="current_utilization"/>
                             <field name="available_spaces"/>
@@ -156,7 +156,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="📋 Details &amp; Notes" name="details">
+                        <page string="📋 Details &amp;amp; Notes" name="details">
                             <group>
                                 <field name="description" placeholder="Location description and special instructions..."/>
                                 <field name="access_instructions"/>
@@ -174,22 +174,22 @@
         </field>
     </record>
 
-    <!-- 🔍 Enhanced Search View with Smart Filters -->
-    <record id="view_records_location_search" model="ir.ui.view">
-        <field name="name">records.location.search</field>
+    <!-- Search view for Enhanced -->
+    <record id="records_location_view_search" model="ir.ui.view">
+        <field name="name">records.location.view.search</field>
         <field name="model">records.location</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
                 <field name="location_type"/>
 
-                <filter string="🟢 Available Space" name="available_space" domain="[('available_spaces', '&gt;', 0)]"/>
-                <filter string="🟡 Near Capacity" name="near_capacity" domain="[('utilization_percentage', '&gt;=', 80)]"/>
-                <filter string="🔴 At Capacity" name="at_capacity" domain="[('current_utilization', '&gt;=', 'storage_capacity')]"/>
+                <filter string="🟢 Available Space" name="available_space" domain="[('available_spaces', '&amp;gt;', 0)]"/>
+                <filter string="🟡 Near Capacity" name="near_capacity" domain="[('utilization_percentage', '&amp;gt;=', 80)]"/>
+                <filter string="🔴 At Capacity" name="at_capacity" domain="[('current_utilization', '&amp;gt;=', 'storage_capacity')]"/>
 
                 <separator/>
-                <filter string="🎯 Optimal Load (20-80%)" name="optimal_load" domain="[('utilization_percentage', '&gt;=', 20), ('utilization_percentage', '&lt;=', 80)]"/>
-                <filter string="🆓 Lots of Space (&gt;10)" name="lots_of_space" domain="[('available_spaces', '&gt;', 10)]"/>
+                <filter string="🎯 Optimal Load (20-80%)" name="optimal_load" domain="[('utilization_percentage', '&amp;gt;=', 20), ('utilization_percentage', '&lt;=', 80)]"/>
+                <filter string="🆓 Lots of Space (&amp;gt;10)" name="lots_of_space" domain="[('available_spaces', '&amp;gt;', 10)]"/>
 
                 <separator/>
                 <filter string="📦 Active Locations" name="active" domain="[('active', '=', True)]"/>
@@ -203,11 +203,11 @@
         </field>
     </record>
 
-    <!-- 🚀 ENTERPRISE ACTION - Multiple View Modes with Smart Defaults -->
+    <!-- Tree view for ENTERPRISE -->
     <record id="action_records_location" model="ir.actions.act_window">
         <field name="name">🏢 Storage Locations</field>
         <field name="res_model">records.location</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="search_view_id" ref="view_records_location_search"/>
         <field name="context">{
             'search_default_active': 1,

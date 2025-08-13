@@ -1,60 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Customer Key Restriction Form Enhancement -->
-    <record id="view_partner_form_key_restriction" model="ir.ui.view">
-        <field name="name">res.partner.form.key.restriction</field>
+<!-- Customer Partner Form View Extension for Key Restrictions -->
+<record id="res_partner_view_form_key_restrictions" model="ir.ui.view">
+    <field name="name">res.partner.form.inherit.key.restrictions</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
+<!-- Add Key Restrictions tab -->
             <xpath expr="//page[@name='internal_notes']" position="after">
                 <page name="key_restrictions" string="Key Restrictions" groups="records_management.group_records_manager">
                     <group>
                         <group name="key_restriction_status">
-                            <field name="key_restriction_status" widget="badge" decoration-success="key_restriction_status == 'allowed'" decoration-danger="key_restriction_status == 'restricted'"/>
+<field name="key_restriction_status" widget="badge" decoration-success="key_restriction_status == 'allowed'" decoration-danger="key_restriction_status == 'restricted'"/>
+
                             <field name="key_issuance_allowed"/>
                         </group>
-                        <group name="key_restriction_details" invisible="key_issuance_allowed">
-                            <field name="key_restriction_reason" required="not key_issuance_allowed"/>
+<group name="key_restriction_details" attrs="{'invisible': [('key_issuance_allowed', '=', True)]}">
+    <field name="key_restriction_reason" attrs="{'required': [('key_issuance_allowed', '=', False)]}"/>
+
                             <field name="key_restriction_date"/>
                             <field name="key_restriction_approved_by"/>
                             <field name="restricted_unlock_count"/>
                         </group>
                     </group>
-
-                    <group name="key_restriction_notes" invisible="key_issuance_allowed">
+<group name="key_restriction_notes" attrs="{'invisible': [('key_issuance_allowed', '=', True)]}">
                         <field name="key_restriction_notes" nolabel="1" placeholder="Additional notes about key restrictions..."/>
                     </group>
+<group name="key_restriction_buttons" attrs="{'invisible': [('key_issuance_allowed', '=', True)]}">
+    <button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt"/>
+</group>
+<div class="oe_button_box" name="key_restriction_buttons">
+    <button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt"/>
+    <field name="restricted_unlock_count" widget="statinfo" string="Unlock Services"/>
 
-                    <div class="oe_button_box" name="key_restriction_buttons" invisible="key_issuance_allowed">
-                        <button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt">
-                            <field name="restricted_unlock_count" widget="statinfo" string="Unlock Services"/>
-                        </button>
                     </div>
+<field name="key_restriction_date"/>
+<!-- Key Restriction History -->
+<group string="Restriction History" attrs="{'invisible': [('key_issuance_allowed', '=', True)]}">
+    <field name="key_restriction_history_ids" nolabel="1" mode="tree">
+        <tree>
+            <field name="action"/>
+            <field name="reason"/>
+            <field name="approved_by"/>
+        </tree>
+    </field>
+</group>
                 </page>
             </xpath>
 
-            <!-- Add key restriction warning to the top of form -->
+<!-- Add warning alert at top of form -->
             <xpath expr="//sheet" position="before">
-                <div class="alert alert-warning" role="alert" invisible="key_issuance_allowed or not id">
-                    <strong>Key Restriction Warning:</strong> 
+<div class="alert alert-warning" role="alert" attrs="{'invisible': ['|', ('key_issuance_allowed', '=', True), ('id', '=', False)]}">
+    <strong>🚨 Key Restriction Warning:</strong> 
                     This customer is restricted from receiving bin keys. 
                     Use bin unlock service instead.
-                    <br/>
-                    <strong>Reason:</strong>
+<br/>
+
                     <field name="key_restriction_reason" readonly="1" nolabel="1"/>
                 </div>
             </xpath>
 
-            <!-- Add action buttons to button box -->
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="action_restrict_key_issuance" type="object" class="oe_stat_button" icon="fa-ban" invisible="not key_issuance_allowed" groups="records_management.group_records_manager">
+<button name="action_restrict_key_issuance" type="object" class="oe_stat_button" icon="fa-ban" attrs="{'invisible': [('key_issuance_allowed', '=', True)]}" groups="records_management.group_records_manager">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_text">Restrict</span>
                         <span class="o_stat_text">Keys</span>
                     </div>
                 </button>
-
-                <button name="action_allow_key_issuance" type="object" class="oe_stat_button" icon="fa-key" invisible="key_issuance_allowed" groups="records_management.group_records_manager">
+<button name="action_view_key_history" type="object" class="oe_stat_button" icon="fa-history" attrs="{'invisible': [('key_restriction_history_count', '=', 0)]}">
+    <field name="key_restriction_history_count" widget="statinfo" string="Key History"/>
+</button>
+<button name="action_allow_key_issuance" type="object" class="oe_stat_button" icon="fa-key" attrs="{'invisible': [('key_issuance_allowed', '=', True)]}" groups="records_management.group_records_manager">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_text">Allow</span>
                         <span class="o_stat_text">Keys</span>
@@ -64,45 +80,59 @@
         </field>
     </record>
 
-    <!-- Customer List View Enhancement -->
-    <record id="view_partner_tree_key_restriction" model="ir.ui.view">
-        <field name="name">res.partner.tree.key.restriction</field>
+<!-- Customer Partner Tree View Extension for Key Restrictions -->
+<record id="res_partner_view_tree_key_restrictions" model="ir.ui.view">
+    <field name="name">res.partner.tree.inherit.key.restrictions</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='phone']" position="after">
-                <field name="key_restriction_status" widget="badge" decoration-success="key_restriction_status == 'allowed'" decoration-danger="key_restriction_status == 'restricted'" optional="hide"/>
+<xpath expr="//field[@name='name']" position="after">
+    <field name="key_restriction_status" widget="badge" decoration-success="key_restriction_status == 'allowed'" decoration-danger="key_restriction_status == 'restricted'" optional="hide"/>
+    <field name="restricted_unlock_count" optional="hide"/>
+
             </xpath>
         </field>
     </record>
 
-    <!-- Key Restriction Wizard Form -->
-    <record id="view_key_restriction_wizard_form" model="ir.ui.view">
-        <field name="name">key.restriction.wizard.form</field>
-        <field name="model">key.restriction.wizard</field>
+<!-- Key Restriction Management Wizard Form View -->
+<record id="key_restriction_management_wizard_view_form" model="ir.ui.view">
+    <field name="name">key.restriction.management.wizard.view.form</field>
+    <field name="model">key.restriction.management.wizard</field>
         <field name="arch" type="xml">
             <form string="Key Restriction Management">
                 <sheet>
                     <group>
                         <field name="partner_id"/>
                         <field name="action"/>
-                    </group>
+<field name="current_status" readonly="1" attrs="{'invisible': [('partner_id', '=', False)]}"/>
 
-                    <group name="restriction_details" invisible="action != 'restrict'">
+                    </group>
+<group name="restriction_details" attrs="{'invisible': [('action', '!=', 'restrict')]}">
                         <group>
-                            <field name="restriction_reason" required="action == 'restrict'"/>
+<field name="restriction_reason" attrs="{'required': [('action', '=', 'restrict')]}"/>
+
                             <field name="effective_date"/>
                         </group>
+<field name="unlock_services_count" readonly="1"/>
+
                         <group>
-                            <field name="restriction_notes" nolabel="1" placeholder="Enter detailed notes about the key restriction..."/>
-                        </group>
-                    </group>
+<field name="restriction_notes" nolabel="1"/>
+<field name="restriction_notes_placeholder" invisible="1"/>
 
-                    <group name="allow_details" invisible="action != 'allow'">
-                        <field name="allow_reason" nolabel="1" placeholder="Enter reason for removing key restriction..."/>
+</group>
                     </group>
-                </sheet>
-
+<group name="allow_details" attrs="{'invisible': [('action', '!=', 'allow')]}">
+    <field name="allow_reason" nolabel="1" placeholder="Enter reason for removing key restriction..."/>
+    <field name="notify_customer" string="Notify Customer of Change"/>
+</group>
+<group name="impact_analysis" attrs="{'invisible': [('partner_id', '=', False)]}">
+    <group string="Impact Analysis">
+        <field name="active_keys_count" readonly="1"/>
+        <field name="pending_requests_count" readonly="1"/>
+        <field name="recent_unlock_services_count" readonly="1"/>
+    </group>
+                    </group>
+</sheet>
                 <footer>
                     <button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
@@ -111,20 +141,22 @@
         </field>
     </record>
 
-    <!-- Bin Unlock Service Form Enhancement -->
-    <record id="view_bin_unlock_service_form_key_restriction" model="ir.ui.view">
-        <field name="name">bin.unlock.service.form.key.restriction</field>
+<!-- Bin Unlock Service Form View Extension -->
+<record id="bin_unlock_service_view_form_key_restrictions" model="ir.ui.view">
+    <field name="name">bin.unlock.service.form.inherit.key.restrictions</field>
         <field name="model">bin.unlock.service</field>
         <field name="inherit_id" ref="records_management.view_bin_unlock_service_form"/>
         <field name="arch" type="xml">
-            <!-- Add key restriction warning -->
+<!-- Add customer restriction alert -->
             <xpath expr="//sheet" position="before">
-                <div class="alert alert-info" role="alert" invisible="not customer_key_restricted">
-                    <strong>Key Restricted Customer:</strong> 
+<div class="alert alert-info" role="alert" attrs="{'invisible': [('customer_key_restricted', '=', False)]}">
+    <strong>🔑 Key Restricted Customer:</strong> 
                     This customer is not allowed to receive bin keys.
                     <br/>
                     <strong>Restriction Reason:</strong>
                     <field name="key_restriction_reason" readonly="1" nolabel="1"/>
+<br/>
+<strong>Alternative:</strong> This unlock service provides temporary access.
                 </div>
             </xpath>
 
@@ -133,49 +165,72 @@
                 <field name="unlock_reason_code"/>
                 <field name="customer_key_restricted" invisible="1"/>
                 <field name="key_restriction_reason" invisible="1"/>
+<field name="auto_created_for_restriction" attrs="{'invisible': [('auto_created_for_restriction', '=', False)]}"/>
+
             </xpath>
         </field>
     </record>
 
-    <!-- Bin Unlock Service Tree View Enhancement -->
-    <record id="view_bin_unlock_service_tree_key_restriction" model="ir.ui.view">
-        <field name="name">bin.unlock.service.tree.key.restriction</field>
+<!-- Partner Search View Extension for Key Restrictions -->
+<record id="res_partner_view_search_key_restrictions" model="ir.ui.view">
+    <field name="name">res.partner.search.inherit.key.restrictions</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_res_partner_filter"/>
+    <field name="arch" type="xml">
+        <xpath expr="//filter[@name='supplier']" position="after">
+            <separator/>
+            <filter name="key_restricted" string="Key Restricted" domain="[('key_issuance_allowed', '=', False)]"/>
+            <filter name="recent_restrictions" string="Recently Restricted" domain="[('key_restriction_date', '>=', (context_today()-relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+        </xpath>
+    </field>
+</record>
+
+<!-- Bin Unlock Service Tree View Extension -->
+<record id="bin_unlock_service_view_tree_key_restrictions" model="ir.ui.view">
+    <field name="name">bin.unlock.service.tree.inherit.key.restrictions</field>
         <field name="model">bin.unlock.service</field>
         <field name="inherit_id" ref="records_management.view_bin_unlock_service_tree"/>
         <field name="arch" type="xml">
+<!-- Add key restriction fields after urgency -->
             <xpath expr="//field[@name='urgency']" position="after">
                 <field name="unlock_reason_code" optional="hide"/>
                 <field name="customer_key_restricted" widget="boolean_toggle" optional="hide"/>
+<field name="auto_created_for_restriction" optional="hide"/>
+
+            </xpath>
+<xpath expr="//field[@name='name']" position="after">
+    <field name="key_restriction_reason" string="Restriction Reason" optional="hide"/>
+    <field name="key_restriction_approved_by" string="Approved By" optional="hide"/>
+
             </xpath>
         </field>
     </record>
 
-    <!-- Search view for key-restricted customers -->
-    <record id="view_partner_search_key_restriction" model="ir.ui.view">
-        <field name="name">res.partner.search.key.restriction</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_res_partner_filter"/>
-        <field name="arch" type="xml">
-            <xpath expr="//filter[@name='supplier']" position="after">
-                <separator/>
-                <filter name="key_restricted" string="Key Restricted" domain="[('key_issuance_allowed', '=', False)]"/>
-                <filter name="key_allowed" string="Key Allowed" domain="[('key_issuance_allowed', '=', True)]"/>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- Search view for bin unlock services -->
-    <record id="view_bin_unlock_service_search_key_restriction" model="ir.ui.view">
-        <field name="name">bin.unlock.service.search.key.restriction</field>
+<!-- Bin Unlock Service Search View Extension -->
+<record id="bin_unlock_service_view_search_key_restrictions" model="ir.ui.view">
+    <field name="name">bin.unlock.service.search.inherit.key.restrictions</field>
         <field name="model">bin.unlock.service</field>
         <field name="inherit_id" ref="records_management.view_bin_unlock_service_search"/>
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='my_services']" position="after">
                 <separator/>
-                <filter name="key_restriction" string="Key Restriction Services" domain="[('unlock_reason_code', '=', 'key_restriction')]"/>
-                <filter name="key_restricted_customers" string="Key Restricted Customers" domain="[('customer_key_restricted', '=', True)]"/>
+<filter name="key_restriction" string="Key Restriction Services" domain="[('unlock_reason_code', '=', 'key_restriction')]"/>
+<filter name="key_restricted_customers" string="Key Restricted Customers" domain="[('customer_key_restricted', '=', True)]"/>
+<filter name="auto_created_restrictions" string="Auto-Created for Restrictions" domain="[('auto_created_for_restriction', '=', True)]"/>
+</xpath>
+<!-- Add search fields -->
+<xpath expr="//field[@name='name']" position="after">
+<field name="key_restriction_reason" string="Restriction Reason"/>
+<field name="key_restriction_approved_by" string="Approved By"/>
+</xpath>
+<!-- Add groupby options -->
+<xpath expr="//group[@expand='0']" position="inside">
+<filter string="Key Status" name="group_key_status" context="{'group_by': 'key_restriction_status'}"/>
+<filter string="Restriction Status" name="group_restriction_status" context="{'group_by': 'customer_key_restricted'}"/>
+<filter string="Unlock Reason" name="group_unlock_reason" context="{'group_by': 'unlock_reason_code'}"/>
+<filter string="Restriction Date" name="group_restriction_date" context="{'group_by': 'key_restriction_date'}"/>
+
             </xpath>
         </field>
-    </record>
-
+</record>
 </odoo>

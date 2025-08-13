@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Paper Bale Recycling Views -->
+    <!-- Tree view for Paper -->
 
-    <!-- Tree View -->
-    <record id="view_paper_bale_recycling_tree" model="ir.ui.view">
-        <field name="name">paper.bale.recycling.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="paper_bale_recycling_view_tree" model="ir.ui.view">
+        <field name="name">paper.bale.recycling.view.tree</field>
         <field name="model">paper.bale.recycling</field>
         <field name="arch" type="xml">
             <tree string="Paper Bales" decoration-success="status=='paid'" decoration-info="status=='shipped'" decoration-warning="status=='assigned_load'" decoration-muted="status=='produced'" sample="1">
@@ -20,9 +20,9 @@
         </field>
     </record>
 
-    <!-- Form View -->
-    <record id="view_paper_bale_recycling_form" model="ir.ui.view">
-        <field name="name">paper.bale.recycling.form</field>
+    <!-- Form view for base.rate -->
+    <record id="paper_bale_recycling_view_form" model="ir.ui.view">
+        <field name="name">paper.bale.recycling.view.form</field>
         <field name="model">paper.bale.recycling</field>
         <field name="arch" type="xml">
             <form string="Paper Bale">
@@ -97,9 +97,9 @@
         </field>
     </record>
 
-    <!-- Kanban View -->
-    <record id="view_paper_bale_recycling_kanban" model="ir.ui.view">
-        <field name="name">paper.bale.recycling.kanban</field>
+    <!-- Kanban view for Kanban -->
+    <record id="paper_bale_recycling_view_kanban" model="ir.ui.view">
+        <field name="name">paper.bale.recycling.view.kanban</field>
         <field name="model">paper.bale.recycling</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column" sample="1">
@@ -149,9 +149,9 @@
         </field>
     </record>
 
-    <!-- Search View -->
-    <record id="view_paper_bale_recycling_search" model="ir.ui.view">
-        <field name="name">paper.bale.recycling.search</field>
+    <!-- Search view for base.rate -->
+    <record id="paper_bale_recycling_view_search" model="ir.ui.view">
+        <field name="name">paper.bale.recycling.view.search</field>
         <field name="model">paper.bale.recycling</field>
         <field name="arch" type="xml">
             <search string="Paper Bales">
@@ -180,8 +180,8 @@
 
                 <separator/>
                 <filter string="Today" name="today" domain="[('production_date', '=', context_today())]"/>
-                <filter string="This Week" name="this_week" domain="[('production_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                <filter string="This Month" name="this_month" domain="[('production_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="this_week" domain="[('production_date', '&amp;gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" domain="[('production_date', '&amp;gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Paper Grade" name="group_paper_grade" context="{'group_by': 'paper_grade'}"/>
@@ -194,7 +194,7 @@
         </field>
     </record>
 
-    <!-- Action -->
+    <!-- Tree view for Action -->
     <record id="action_paper_bale_recycling" model="ir.actions.act_window">
         <field name="name">Paper Bales</field>
         <field name="res_model">paper.bale.recycling</field>

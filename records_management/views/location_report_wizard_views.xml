@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 📊 LOCATION UTILIZATION REPORT WIZARD -->
+    <!-- Tree view for LOCATION -->
     
-    <!-- Wizard Form View -->
-    <record id="view_location_report_wizard_form" model="ir.ui.view">
-        <field name="name">records.location.report.wizard.form</field>
+    <!-- Form view for Wizard -->
+    <record id="records_location_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">records.location.report.wizard.view.form</field>
         <field name="model">records.location.report.wizard</field>
         <field name="arch" type="xml">
             <form>

@@ -2,8 +2,8 @@
 <odoo>
 
     <!-- Tree view for base.rate -->
-    <record id="view_base_rate_tree" model="ir.ui.view">
-        <field name="name">base.rate.tree</field>
+<record id="base_rate_view_tree" model="ir.ui.view">
+    <field name="name">base.rate.view.tree</field>
         <field name="model">base.rate</field>
         <field name="arch" type="xml">
             <tree>
@@ -13,8 +13,8 @@
     </record>
 
     <!-- Form view for base.rate -->
-    <record id="view_base_rate_form" model="ir.ui.view">
-        <field name="name">base.rate.form</field>
+<record id="base_rate_view_form" model="ir.ui.view">
+    <field name="name">base.rate.view.form</field>
         <field name="model">base.rate</field>
         <field name="arch" type="xml">
             <form string="Base Rate">
@@ -31,8 +31,8 @@
     </record>
 
     <!-- Search view for base.rate -->
-    <record id="view_base_rate_search" model="ir.ui.view">
-        <field name="name">base.rate.search</field>
+<record id="base_rate_view_search" model="ir.ui.view">
+    <field name="name">base.rate.view.search</field>
         <field name="model">base.rate</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action base.rate -->
+    <!-- Tree view for Action -->
     <record id="action_base_rate" model="ir.actions.act_window">
         <field name="name">Base Rate</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">base.rate</field>
-        <field name="view_mode">list,form</field>
+<field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

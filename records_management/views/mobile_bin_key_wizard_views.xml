@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Mobile Bin Key Management Wizard Form -->
-    <record id="view_mobile_bin_key_wizard_form" model="ir.ui.view">
-        <field name="name">mobile.bin.key.wizard.form</field>
+    <!-- Form view for Mobile -->
+    <record id="mobile_bin_key_wizard_view_form" model="ir.ui.view">
+        <field name="name">mobile.bin.key.wizard.view.form</field>
         <field name="model">mobile.bin.key.wizard</field>
         <field name="arch" type="xml">
             <form string="Mobile Bin Key Management">
                 <div class="o_form_sheet" style="max-width: 100%; padding: 10px;">
 
-                    <!-- Header with action type selector -->
+                    <!-- Tree view for Header -->
                     <div class="row">
                         <div class="col-12">
                             <div class="alert alert-info" role="alert">
@@ -18,24 +18,24 @@
                         </div>
                     </div>
 
-                    <!-- Action Type Selection -->
+                    <!-- Tree view for Action -->
                     <group string="🎯 Select Action">
                         <field name="action_type" widget="radio" options="{'horizontal': false}"/>
                     </group>
 
-                    <!-- Customer Company Selection -->
+                    <!-- Tree view for Customer -->
                     <group string="🏢 Customer Company" attrs="{'invisible': [('action_type', '=', False)]}">
                         <field name="customer_company_id" options="{'no_create_edit': True}" placeholder="Search for customer company..."/>
                     </group>
 
-                    <!-- Contact Selection (for existing contacts) -->
+                    <!-- Tree view for Contact -->
                     <group string="👤 Contact Selection" attrs="{'invisible': ['|', 
                                     ('action_type', 'not in', ['update_existing', 'create_unlock_service']),
                                     ('customer_company_id', '=', False)]}">
                         <field name="contact_id" options="{'no_create_edit': True}" attrs="{'required': [('action_type', 'in', ['update_existing', 'create_unlock_service'])]}" placeholder="Search for contact..."/>
                     </group>
 
-                    <!-- New Contact Creation -->
+                    <!-- Tree view for New -->
                     <group string="➕ Create New Contact" attrs="{'invisible': ['|', 
                                     ('action_type', 'not in', ['issue_new']),
                                     ('customer_company_id', '=', False)]}">
@@ -48,7 +48,7 @@
                         <field name="contact_title" attrs="{'invisible': [('create_new_contact', '=', False)]}" placeholder="Job title or position"/>
                     </group>
 
-                    <!-- Key Assignment Details -->
+                    <!-- Tree view for Key -->
                     <group string="🔑 Key Assignment Details" attrs="{'invisible': [('show_key_assignment', '=', False)]}">
                         <field name="issue_location" placeholder="Where is the key being issued? (e.g., loading dock, main office)"/>
                         <field name="bin_locations" placeholder="List the bin locations this key provides access to..."/>
@@ -56,7 +56,7 @@
                         <field name="key_notes" placeholder="Additional notes about this key assignment..."/>
                     </group>
 
-                    <!-- Unlock Service Details -->
+                    <!-- Tree view for Unlock -->
                     <group string="🔓 Unlock Service Details" attrs="{'invisible': [('show_unlock_service', '=', False)]}">
                         <field name="unlock_reason" attrs="{'required': [('action_type', '=', 'create_unlock_service')]}"/>
                         <field name="unlock_reason_description" placeholder="Describe why the unlock was needed..."/>
@@ -66,19 +66,19 @@
                         <field name="billable"/>
                     </group>
 
-                    <!-- Service Documentation -->
+                    <!-- Tree view for Service -->
                     <group string="📸 Service Documentation" attrs="{'invisible': [('action_type', 'not in', ['create_unlock_service'])]}">
                         <field name="photo_ids" widget="many2many_binary" options="{'accepted_file_extensions': '.jpg,.jpeg,.png,.gif'}"/>
                         <field name="service_notes" placeholder="Additional notes about the service..."/>
                     </group>
 
-                    <!-- Key Lookup Results -->
+                    <!-- Tree view for Key -->
                     <div attrs="{'invisible': [('show_lookup_results', '=', False)]}">
                         <separator string="🔍 Key Holders Lookup"/>
                         <field name="key_lookup_results" widget="html" readonly="1"/>
                     </div>
 
-                    <!-- Hidden computed fields -->
+                    <!-- Tree view for Hidden -->
                     <field name="show_contact_creation" invisible="1"/>
                     <field name="show_key_assignment" invisible="1"/>
                     <field name="show_unlock_service" invisible="1"/>
@@ -86,7 +86,7 @@
 
                 </div>
 
-                <!-- Footer with action buttons -->
+                <!-- Tree view for Footer -->
                 <footer>
                     <div class="row">
                         <div class="col-6">
@@ -102,7 +102,7 @@
         </field>
     </record>
 
-    <!-- Mobile Action to open wizard -->
+    <!-- Tree view for Mobile -->
     <record id="action_mobile_bin_key_wizard" model="ir.actions.act_window">
         <field name="name">Mobile Key Management</field>
         <field name="res_model">mobile.bin.key.wizard</field>
@@ -111,10 +111,10 @@
         <field name="context">{}</field>
     </record>
 
-    <!-- Menu item for mobile users -->
+    <!-- Tree view for Menu -->
     <menuitem id="menu_mobile_bin_key_wizard" name="📱 Mobile Key Manager" parent="records_management.menu_records_management_root" action="action_mobile_bin_key_wizard" sequence="5" groups="records_management.group_records_user"/>
 
-    <!-- Shortcut action for quick access -->
+    <!-- Tree view for Shortcut -->
     <record id="action_mobile_key_shortcut" model="ir.actions.server">
         <field name="name">🔑 Quick Key Access</field>
         <field name="model_id" ref="model_mobile_bin_key_wizard"/>

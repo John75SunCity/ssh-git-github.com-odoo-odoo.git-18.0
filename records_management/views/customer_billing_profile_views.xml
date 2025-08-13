@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Customer Billing Profile Views -->
+    <!-- Tree view for Customer -->
 
-    <!-- Tree View -->
-    <record id="view_customer_billing_profile_tree" model="ir.ui.view">
-        <field name="name">records.customer.billing.profile.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="records_customer_billing_profile_view_tree" model="ir.ui.view">
+        <field name="name">records.customer.billing.profile.view.tree</field>
         <field name="model">records.customer.billing.profile</field>
         <field name="arch" type="xml">
             <tree string="Customer Billing Profiles" decoration-success="state=='active'" decoration-muted="state=='suspended'">
@@ -20,9 +20,9 @@
         </field>
     </record>
 
-    <!-- Form View -->
-    <record id="view_customer_billing_profile_form" model="ir.ui.view">
-        <field name="name">records.customer.billing.profile.form</field>
+    <!-- Form view for base.rate -->
+    <record id="records_customer_billing_profile_view_form" model="ir.ui.view">
+        <field name="name">records.customer.billing.profile.view.form</field>
         <field name="model">records.customer.billing.profile</field>
         <field name="arch" type="xml">
             <form string="Customer Billing Profile">
@@ -139,9 +139,9 @@
         </field>
     </record>
 
-    <!-- Search View -->
-    <record id="view_customer_billing_profile_search" model="ir.ui.view">
-        <field name="name">records.customer.billing.profile.search</field>
+    <!-- Search view for base.rate -->
+    <record id="records_customer_billing_profile_view_search" model="ir.ui.view">
+        <field name="name">records.customer.billing.profile.view.search</field>
         <field name="model">records.customer.billing.profile</field>
         <field name="arch" type="xml">
             <search string="Search Billing Profiles">
@@ -166,7 +166,7 @@
         </field>
     </record>
 
-    <!-- Actions -->
+    <!-- Tree view for Actions -->
     <record id="action_customer_billing_profile" model="ir.actions.act_window">
         <field name="name">Customer Billing Profiles</field>
         <field name="res_model">records.customer.billing.profile</field>
@@ -183,11 +183,11 @@
         </field>
     </record>
 
-    <!-- Billing Contact Views -->
+    <!-- Tree view for Billing -->
 
-    <!-- Tree View -->
-    <record id="view_billing_contact_tree" model="ir.ui.view">
-        <field name="name">records.billing.contact.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="records_billing_contact_view_tree" model="ir.ui.view">
+        <field name="name">records.billing.contact.view.tree</field>
         <field name="model">records.billing.contact</field>
         <field name="arch" type="xml">
             <tree string="Billing Contacts" editable="bottom">
@@ -205,9 +205,9 @@
         </field>
     </record>
 
-    <!-- Form View -->
-    <record id="view_billing_contact_form" model="ir.ui.view">
-        <field name="name">records.billing.contact.form</field>
+    <!-- Form view for base.rate -->
+    <record id="records_billing_contact_view_form" model="ir.ui.view">
+        <field name="name">records.billing.contact.view.form</field>
         <field name="model">records.billing.contact</field>
         <field name="arch" type="xml">
             <form string="Billing Contact">
@@ -245,7 +245,7 @@
         </field>
     </record>
 
-    <!-- Actions -->
+    <!-- Tree view for Actions -->
     <record id="action_billing_contact" model="ir.actions.act_window">
         <field name="name">Billing Contacts</field>
         <field name="res_model">records.billing.contact</field>

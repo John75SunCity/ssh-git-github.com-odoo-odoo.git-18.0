@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
-    <!-- Form view for res.partner -->
-    <record id="view_res_partner_form" model="ir.ui.view">
-        <field name="name">res.partner.form</field>
+    <!-- Form view for base.rate -->
+    <record id="res_partner_view_form" model="ir.ui.view">
+        <field name="name">res.partner.view.form</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -13,9 +13,9 @@
     </record>
 
 
-    <!-- Tree view for res.partner -->
-    <record id="view_res_partner_tree" model="ir.ui.view">
-        <field name="name">res.partner.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="res_partner_view_tree" model="ir.ui.view">
+        <field name="name">res.partner.view.tree</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -25,9 +25,9 @@
     </record>
 
 
-    <!-- Search view for res.partner -->
-    <record id="view_res_partner_search" model="ir.ui.view">
-        <field name="name">res.partner.search</field>
+    <!-- Search view for base.rate -->
+    <record id="res_partner_view_search" model="ir.ui.view">
+        <field name="name">res.partner.view.search</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -37,9 +37,9 @@
     </record>
 
 
-    <!-- View res.partner kanban -->
-    <record id="view_res_partner_kanban" model="ir.ui.view">
-        <field name="name">res.partner.kanban</field>
+    <!-- Kanban view for View -->
+    <record id="res_partner_view_kanban" model="ir.ui.view">
+        <field name="name">res.partner.view.kanban</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -49,9 +49,9 @@
     </record>
 
 
-    <!-- View res.partner graph -->
-    <record id="view_res_partner_graph" model="ir.ui.view">
-        <field name="name">res.partner.graph</field>
+    <!-- Tree view for View -->
+    <record id="res_partner_view_graph" model="ir.ui.view">
+        <field name="name">res.partner.view.graph</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -61,9 +61,9 @@
     </record>
 
 
-    <!-- View res.partner pivot -->
-    <record id="view_res_partner_pivot" model="ir.ui.view">
-        <field name="name">res.partner.pivot</field>
+    <!-- Tree view for View -->
+    <record id="res_partner_view_pivot" model="ir.ui.view">
+        <field name="name">res.partner.view.pivot</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -73,9 +73,9 @@
     </record>
 
 
-    <!-- View res.partner calendar -->
-    <record id="view_res_partner_calendar" model="ir.ui.view">
-        <field name="name">res.partner.calendar</field>
+    <!-- Tree view for View -->
+    <record id="res_partner_view_calendar" model="ir.ui.view">
+        <field name="name">res.partner.view.calendar</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">

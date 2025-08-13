@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Paper Load Shipment Views -->
+    <!-- Tree view for Paper -->
 
-    <!-- Tree View -->
-    <record id="view_paper_load_shipment_tree" model="ir.ui.view">
-        <field name="name">paper.load.shipment.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="paper_load_shipment_view_tree" model="ir.ui.view">
+        <field name="name">paper.load.shipment.view.tree</field>
         <field name="model">paper.load.shipment</field>
         <field name="arch" type="xml">
             <tree string="Load Shipments" decoration-success="status=='paid'" decoration-info="status=='delivered'" decoration-warning="status=='in_transit'" decoration-primary="status=='ready_pickup'" sample="1">
@@ -25,9 +25,9 @@
         </field>
     </record>
 
-    <!-- Form View with Truck Widget Integration -->
-    <record id="view_paper_load_shipment_form" model="ir.ui.view">
-        <field name="name">paper.load.shipment.form</field>
+    <!-- Form view for base.rate -->
+    <record id="paper_load_shipment_view_form" model="ir.ui.view">
+        <field name="name">paper.load.shipment.view.form</field>
         <field name="model">paper.load.shipment</field>
         <field name="arch" type="xml">
             <form string="Load Shipment">
@@ -79,14 +79,14 @@
                         </div>
                     </div>
 
-                    <!-- Truck Loading Visualization with Custom Widget -->
+                    <!-- Tree view for Truck -->
                     <div class="row" name="truck_visualization" invisible="bale_count == 0">
                         <div class="col-12">
                             <div class="o_group">
                                 <div class="o_group_header">
                                     <h5>Load Progress Visualization</h5>
                                 </div>
-                                <!-- Custom Paper Load Truck Widget -->
+                                <!-- Tree view for Custom -->
                                 <field name="bale_count" widget="paper_load_progress" nolabel="1"/>
                             </div>
                         </div>
@@ -194,9 +194,9 @@
         </field>
     </record>
 
-    <!-- Kanban View with Load Progress -->
-    <record id="view_paper_load_shipment_kanban" model="ir.ui.view">
-        <field name="name">paper.load.shipment.kanban</field>
+    <!-- Kanban view for Kanban -->
+    <record id="paper_load_shipment_view_kanban" model="ir.ui.view">
+        <field name="name">paper.load.shipment.view.kanban</field>
         <field name="model">paper.load.shipment</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column" sample="1">
@@ -226,7 +226,7 @@
                                 </span>
                             </div>
                             <div class="o_kanban_record_body">
-                                <!-- Load Progress Visualization -->
+                                <!-- Tree view for Load -->
                                 <div class="mb-2">
                                     <div class="d-flex justify-content-between">
                                         <small>
@@ -263,9 +263,9 @@
         </field>
     </record>
 
-    <!-- Search View -->
-    <record id="view_paper_load_shipment_search" model="ir.ui.view">
-        <field name="name">paper.load.shipment.search</field>
+    <!-- Search view for base.rate -->
+    <record id="paper_load_shipment_view_search" model="ir.ui.view">
+        <field name="name">paper.load.shipment.view.search</field>
         <field name="model">paper.load.shipment</field>
         <field name="arch" type="xml">
             <search string="Load Shipments">
@@ -287,8 +287,8 @@
 
                 <separator/>
                 <filter string="Today" name="today" domain="[('pickup_date', '=', context_today())]"/>
-                <filter string="This Week" name="this_week" domain="[('pickup_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                <filter string="This Month" name="this_month" domain="[('pickup_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="this_week" domain="[('pickup_date', '&amp;gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" domain="[('pickup_date', '&amp;gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
@@ -300,7 +300,7 @@
         </field>
     </record>
 
-    <!-- Action -->
+    <!-- Tree view for Action -->
     <record id="action_paper_load_shipment" model="ir.actions.act_window">
         <field name="name">Load Shipments</field>
         <field name="res_model">paper.load.shipment</field>

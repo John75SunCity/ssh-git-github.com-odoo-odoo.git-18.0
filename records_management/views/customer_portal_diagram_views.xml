@@ -2,12 +2,12 @@
 <odoo>
 
     <!-- ============================================================================= -->
-    <!-- Customer Portal Diagram Views -->
+    <!-- Tree view for Customer -->
     <!-- ============================================================================= -->
 
-    <!-- Form View for Configuration -->
+    <!-- Form view for base.rate -->
     <record id="customer_portal_diagram_view_form" model="ir.ui.view">
-        <field name="name">customer.portal.diagram.form</field>
+        <field name="name">customer.portal.diagram.view.form</field>
         <field name="model">customer.portal.diagram</field>
         <field name="arch" type="xml">
             <form string="Portal Organization Diagram">
@@ -34,7 +34,7 @@
                         </group>
                     </group>
 
-                    <group string="Search &amp; Filters">
+                    <group string="Search &amp;amp; Filters">
                         <group>
                             <field name="search_query" placeholder="Search nodes and edges..."/>
                             <field name="search_user_id" domain="[('company_id', '=', company_id)]"/>
@@ -66,9 +66,9 @@
         </field>
     </record>
 
-    <!-- Custom Portal Diagram View -->
-    <record id="customer_portal_diagram_view" model="ir.ui.view">
-        <field name="name">customer.portal.diagram.portal.view</field>
+    <!-- Tree view for Custom -->
+    <record id="customer_portal_diagram_view_tree" model="ir.ui.view">
+        <field name="name">customer.portal.diagram.view.tree</field>
         <field name="model">customer.portal.diagram</field>
         <field name="arch" type="xml">
             <customer_portal_diagram>
@@ -81,9 +81,9 @@
         </field>
     </record>
 
-    <!-- Tree View -->
+    <!-- Tree view for base.rate -->
     <record id="customer_portal_diagram_view_tree" model="ir.ui.view">
-        <field name="name">customer.portal.diagram.tree</field>
+        <field name="name">customer.portal.diagram.view.tree</field>
         <field name="model">customer.portal.diagram</field>
         <field name="arch" type="xml">
             <tree string="Portal Diagrams" create="true" delete="true">
@@ -97,9 +97,9 @@
         </field>
     </record>
 
-    <!-- Search View -->
+    <!-- Search view for base.rate -->
     <record id="customer_portal_diagram_view_search" model="ir.ui.view">
-        <field name="name">customer.portal.diagram.search</field>
+        <field name="name">customer.portal.diagram.view.search</field>
         <field name="model">customer.portal.diagram</field>
         <field name="arch" type="xml">
             <search string="Search Portal Diagrams">
@@ -127,10 +127,10 @@
     </record>
 
     <!-- ============================================================================= -->
-    <!-- Actions -->
+    <!-- Tree view for Actions -->
     <!-- ============================================================================= -->
 
-    <!-- Main Action for Portal Users -->
+    <!-- Tree view for Main -->
     <record id="action_customer_portal_diagram" model="ir.actions.act_window">
         <field name="name">Organization Diagram</field>
         <field name="res_model">customer.portal.diagram</field>
@@ -163,7 +163,7 @@
         </field>
     </record>
 
-    <!-- Action for Admin Configuration -->
+    <!-- Tree view for Action -->
     <record id="action_customer_portal_diagram_admin" model="ir.actions.act_window">
         <field name="name">Portal Diagram Configuration</field>
         <field name="res_model">customer.portal.diagram</field>
@@ -181,7 +181,7 @@
         </field>
     </record>
 
-    <!-- Simplified Action for Quick Portal Access -->
+    <!-- Tree view for Simplified -->
     <record id="action_customer_portal_diagram_simple" model="ir.actions.client">
         <field name="name">My Organization</field>
         <field name="tag">customer_portal_diagram</field>
@@ -194,13 +194,13 @@
     </record>
 
     <!-- ============================================================================= -->
-    <!-- Menu Items (Internal) -->
+    <!-- Tree view for Menu -->
     <!-- ============================================================================= -->
 
-    <!-- Main menu item for managers -->
+    <!-- Tree view for Main -->
     <menuitem id="menu_customer_portal_diagram" name="Portal Organization" parent="records_management.menu_root" action="action_customer_portal_diagram_admin" sequence="7" groups="records_management.group_records_manager"/>
 
-    <!-- Submenu for configuration -->
+    <!-- Tree view for Submenu -->
     <menuitem id="menu_customer_portal_diagram_config" name="Diagram Configuration" parent="records_management.menu_configuration" action="action_customer_portal_diagram_admin" sequence="50" groups="records_management.group_records_manager"/>
 
 </odoo>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for transitory.field.config -->
-    <record id="view_transitory_field_config_tree" model="ir.ui.view">
-        <field name="name">transitory.field.config.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="transitory_field_config_view_tree" model="ir.ui.view">
+        <field name="name">transitory.field.config.view.tree</field>
         <field name="model">transitory.field.config</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for transitory.field.config -->
-    <record id="view_transitory_field_config_form" model="ir.ui.view">
-        <field name="name">transitory.field.config.form</field>
+    <!-- Form view for base.rate -->
+    <record id="transitory_field_config_view_form" model="ir.ui.view">
+        <field name="name">transitory.field.config.view.form</field>
         <field name="model">transitory.field.config</field>
         <field name="arch" type="xml">
             <form string="Transitory Field Config">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for transitory.field.config -->
-    <record id="view_transitory_field_config_search" model="ir.ui.view">
-        <field name="name">transitory.field.config.search</field>
+    <!-- Search view for base.rate -->
+    <record id="transitory_field_config_view_search" model="ir.ui.view">
+        <field name="name">transitory.field.config.view.search</field>
         <field name="model">transitory.field.config</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action transitory.field.config -->
+    <!-- Tree view for Action -->
     <record id="action_transitory_field_config" model="ir.actions.act_window">
         <field name="name">Transitory Field Config</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">transitory.field.config</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

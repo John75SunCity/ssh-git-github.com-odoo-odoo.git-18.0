@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Shredding Inventory Item Views -->
-        <record id="view_shredding_inventory_item_tree" model="ir.ui.view">
-            <field name="name">shredding.inventory.item.tree</field>
+        <!-- Tree view for Shredding -->
+        <record id="shredding_inventory_item_view_tree" model="ir.ui.view">
+            <field name="name">shredding.inventory.item.view.tree</field>
             <field name="model">shredding.inventory.item</field>
             <field name="arch" type="xml">
                 <tree string="Shredding Inventory Items">
@@ -18,8 +18,8 @@
             </field>
         </record>
 
-        <record id="view_shredding_inventory_item_form" model="ir.ui.view">
-            <field name="name">shredding.inventory.item.form</field>
+        <record id="shredding_inventory_item_view_form" model="ir.ui.view">
+            <field name="name">shredding.inventory.item.view.form</field>
             <field name="model">shredding.inventory.item</field>
             <field name="arch" type="xml">
                 <form string="Shredding Inventory Item">
@@ -55,7 +55,7 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="Approval &amp; Tracking">
+                            <page string="Approval &amp;amp; Tracking">
                                 <group>
                                     <group>
                                         <field name="customer_approved"/>
@@ -92,9 +92,9 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <!-- Shredding Picklist Item Views -->
-        <record id="view_shredding_picklist_item_tree" model="ir.ui.view">
-            <field name="name">shredding.picklist.item.tree</field>
+        <!-- Tree view for Shredding -->
+        <record id="shredding_picklist_item_view_tree" model="ir.ui.view">
+            <field name="name">shredding.picklist.item.view.tree</field>
             <field name="model">shredding.picklist.item</field>
             <field name="arch" type="xml">
                 <tree string="Picklist Items" editable="bottom">
@@ -112,8 +112,8 @@
             </field>
         </record>
 
-        <record id="view_shredding_picklist_item_form" model="ir.ui.view">
-            <field name="name">shredding.picklist.item.form</field>
+        <record id="shredding_picklist_item_view_form" model="ir.ui.view">
+            <field name="name">shredding.picklist.item.view.form</field>
             <field name="model">shredding.picklist.item</field>
             <field name="arch" type="xml">
                 <form string="Picklist Item">
@@ -156,7 +156,7 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <!-- Menu Items -->
+        <!-- Tree view for Menu -->
         <menuitem id="menu_shredding_inventory_root" name="Shredding Inventory" parent="records_management.menu_records_main" sequence="35"/>
 
         <menuitem id="menu_shredding_inventory_items" name="Inventory Items" parent="menu_shredding_inventory_root" action="action_shredding_inventory_item" sequence="10"/>

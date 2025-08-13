@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
-    <!-- Form view for project.task -->
-    <record id="view_project_task_form" model="ir.ui.view">
-        <field name="name">project.task.form</field>
+    <!-- Form view for base.rate -->
+    <record id="project_task_view_form" model="ir.ui.view">
+        <field name="name">project.task.view.form</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -13,9 +13,9 @@
     </record>
 
 
-    <!-- Tree view for project.task -->
-    <record id="view_project_task_tree" model="ir.ui.view">
-        <field name="name">project.task.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="project_task_view_tree" model="ir.ui.view">
+        <field name="name">project.task.view.tree</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -25,9 +25,9 @@
     </record>
 
 
-    <!-- Search view for project.task -->
-    <record id="view_project_task_search" model="ir.ui.view">
-        <field name="name">project.task.search</field>
+    <!-- Search view for base.rate -->
+    <record id="project_task_view_search" model="ir.ui.view">
+        <field name="name">project.task.view.search</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -37,9 +37,9 @@
     </record>
 
 
-    <!-- View project.task kanban -->
-    <record id="view_project_task_kanban" model="ir.ui.view">
-        <field name="name">project.task.kanban</field>
+    <!-- Kanban view for View -->
+    <record id="project_task_view_kanban" model="ir.ui.view">
+        <field name="name">project.task.view.kanban</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -49,9 +49,9 @@
     </record>
 
 
-    <!-- View project.task graph -->
-    <record id="view_project_task_graph" model="ir.ui.view">
-        <field name="name">project.task.graph</field>
+    <!-- Tree view for View -->
+    <record id="project_task_view_graph" model="ir.ui.view">
+        <field name="name">project.task.view.graph</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -61,9 +61,9 @@
     </record>
 
 
-    <!-- View project.task pivot -->
-    <record id="view_project_task_pivot" model="ir.ui.view">
-        <field name="name">project.task.pivot</field>
+    <!-- Tree view for View -->
+    <record id="project_task_view_pivot" model="ir.ui.view">
+        <field name="name">project.task.view.pivot</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -73,9 +73,9 @@
     </record>
 
 
-    <!-- View project.task calendar -->
-    <record id="view_project_task_calendar" model="ir.ui.view">
-        <field name="name">project.task.calendar</field>
+    <!-- Tree view for View -->
+    <record id="project_task_view_calendar" model="ir.ui.view">
+        <field name="name">project.task.view.calendar</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">

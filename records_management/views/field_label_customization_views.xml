@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Field Label Customization Form View -->
-        <record id="view_field_label_customization_form" model="ir.ui.view">
-            <field name="name">field.label.customization.form</field>
+        <!-- Form view for Field -->
+        <record id="field_label_customization_view_form" model="ir.ui.view">
+            <field name="name">field.label.customization.view.form</field>
             <field name="model">field.label.customization</field>
             <field name="arch" type="xml">
                 <form string="Field Label Customization">
@@ -50,7 +50,7 @@
                                 </group>
                             </page>
 
-                            <page string="Date &amp; Sequence Fields" name="date_fields">
+                            <page string="Date &amp;amp; Sequence Fields" name="date_fields">
                                 <group>
                                     <group string="Date Range Fields">
                                         <field name="label_date_from" placeholder="Date From"/>
@@ -85,7 +85,7 @@
                                         <field name="label_created_by_dept" placeholder="Created By Department"/>
                                         <field name="label_authorized_by" placeholder="Authorized By"/>
                                     </group>
-                                    <group string="Handling &amp; Compliance">
+                                    <group string="Handling &amp;amp; Compliance">
                                         <field name="label_special_handling" placeholder="Special Handling Instructions"/>
                                         <field name="label_compliance_notes" placeholder="Compliance Notes"/>
                                     </group>
@@ -94,7 +94,7 @@
 
                             <page string="Physical Properties" name="physical_fields">
                                 <group>
-                                    <group string="Size &amp; Weight Estimates">
+                                    <group string="Size &amp;amp; Weight Estimates">
                                         <field name="label_weight_estimate" placeholder="Estimated Weight"/>
                                         <field name="label_size_estimate" placeholder="Estimated Size"/>
                                     </group>
@@ -112,9 +112,9 @@
             </field>
         </record>
 
-        <!-- Field Label Customization Tree View -->
-        <record id="view_field_label_customization_tree" model="ir.ui.view">
-            <field name="name">field.label.customization.tree</field>
+        <!-- Tree view for Field -->
+        <record id="field_label_customization_view_tree" model="ir.ui.view">
+            <field name="name">field.label.customization.view.tree</field>
             <field name="model">field.label.customization</field>
             <field name="arch" type="xml">
                 <tree string="Field Label Customizations">
@@ -129,9 +129,9 @@
             </field>
         </record>
 
-        <!-- Field Label Customization Search View -->
-        <record id="view_field_label_customization_search" model="ir.ui.view">
-            <field name="name">field.label.customization.search</field>
+        <!-- Search view for Field -->
+        <record id="field_label_customization_view_search" model="ir.ui.view">
+            <field name="name">field.label.customization.view.search</field>
             <field name="model">field.label.customization</field>
             <field name="arch" type="xml">
                 <search string="Search Field Label Customizations">
@@ -154,7 +154,7 @@
             </field>
         </record>
 
-        <!-- Field Label Customization Action -->
+        <!-- Tree view for Field -->
         <record id="action_field_label_customization" model="ir.actions.act_window">
             <field name="name">Field Label Customizations</field>
             <field name="res_model">field.label.customization</field>
@@ -178,9 +178,9 @@
             </field>
         </record>
 
-        <!-- Enhanced Transitory Field Configuration Form View -->
-        <record id="view_transitory_field_config_form_enhanced" model="ir.ui.view">
-            <field name="name">transitory.field.config.form.enhanced</field>
+        <!-- Form view for Enhanced -->
+        <record id="transitory_field_config_view_form" model="ir.ui.view">
+            <field name="name">transitory.field.config.view.form</field>
             <field name="model">transitory.field.config</field>
             <field name="arch" type="xml">
                 <form string="Transitory Field Configuration">
@@ -215,7 +215,7 @@
                                         <field name="show_description"/>
                                         <field name="show_content_description"/>
                                     </group>
-                                    <group string="Date &amp; Sequence">
+                                    <group string="Date &amp;amp; Sequence">
                                         <field name="show_date_ranges"/>
                                         <field name="show_sequence_ranges"/>
                                         <field name="show_destruction_date"/>
@@ -273,9 +273,9 @@
             </field>
         </record>
 
-        <!-- Enhanced Partner Form View for Field Customization -->
-        <record id="view_partner_form_field_customization" model="ir.ui.view">
-            <field name="name">res.partner.form.field.customization</field>
+        <!-- Form view for Enhanced -->
+        <record id="res_partner_view_form" model="ir.ui.view">
+            <field name="name">res.partner.view.form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
@@ -305,7 +305,7 @@
             </field>
         </record>
 
-        <!-- Menu Items -->
+        <!-- Tree view for Menu -->
         <menuitem id="menu_field_label_customization" name="Field Label Customization" parent="records_management.menu_configuration" action="action_field_label_customization" sequence="15"/>
 
     </data>

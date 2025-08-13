@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- System Flowchart View Definition -->
-    <record id="view_system_flowchart" model="ir.ui.view">
-        <field name="name">system.diagram.data.flowchart</field>
+    <!-- Tree view for System -->
+    <record id="system_diagram_data_view_tree" model="ir.ui.view">
+        <field name="name">system.diagram.data.view.tree</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
             <system_flowchart>
@@ -17,9 +17,9 @@
         </field>
     </record>
 
-    <!-- Form View for System Diagram Configuration -->
-    <record id="view_system_diagram_form" model="ir.ui.view">
-        <field name="name">system.diagram.data.form</field>
+    <!-- Form view for base.rate -->
+    <record id="system_diagram_data_view_form" model="ir.ui.view">
+        <field name="name">system.diagram.data.view.form</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
             <form string="System Diagram Configuration">
@@ -53,7 +53,7 @@
         </field>
     </record>
 
-    <!-- Action for System Flowchart -->
+    <!-- Tree view for Action -->
     <record id="action_system_flowchart" model="ir.actions.act_window">
         <field name="name">System Architecture Flowchart</field>
         <field name="res_model">system.diagram.data</field>
@@ -81,22 +81,22 @@
         </field>
     </record>
 
-    <!-- Simplified Action for Quick Access -->
+    <!-- Tree view for Simplified -->
     <record id="action_system_flowchart_simple" model="ir.actions.client">
         <field name="name">System Flowchart</field>
         <field name="tag">records_management.system_flowchart</field>
         <field name="target">current</field>
     </record>
 
-    <!-- Menu Item -->
+    <!-- Tree view for Menu -->
     <menuitem id="menu_system_flowchart" name="System Architecture" parent="records_management.menu_root" action="action_system_flowchart" sequence="5" groups="records_management.group_records_manager"/>
 
-    <!-- Submenu for Advanced Features -->
+    <!-- Tree view for Submenu -->
     <menuitem id="menu_system_analysis" name="System Analysis" parent="records_management.menu_root" sequence="6" groups="records_management.group_records_manager"/>
 
     <menuitem id="menu_system_flowchart_detailed" name="Interactive Flowchart" parent="menu_system_analysis" action="action_system_flowchart" sequence="10"/>
 
-    <!-- Quick Access Menu for Users -->
+    <!-- Tree view for Quick -->
     <menuitem id="menu_system_overview" name="System Overview" parent="records_management.menu_root" action="action_system_flowchart" sequence="1" groups="records_management.group_records_user"/>
 
 </odoo>

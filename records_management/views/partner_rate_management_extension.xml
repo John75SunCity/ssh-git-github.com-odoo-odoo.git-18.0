@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Partner Form Extension for Rate Management -->
-        <record id="res_partner_view_form_rate_management" model="ir.ui.view">
-            <field name="name">res.partner.view.form.inherit.rate.management</field>
+        <!-- Form view for Partner -->
+        <record id="res_partner_view_form" model="ir.ui.view">
+            <field name="name">res.partner.view.form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">

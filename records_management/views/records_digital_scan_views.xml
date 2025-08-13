@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Digital Scan Views -->
+    <!-- Tree view for Digital -->
 
-    <!-- Tree View -->
-    <record id="view_records_digital_scan_tree" model="ir.ui.view">
-        <field name="name">records.digital.scan.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="records_digital_scan_view_tree" model="ir.ui.view">
+        <field name="name">records.digital.scan.view.tree</field>
         <field name="model">records.digital.scan</field>
         <field name="arch" type="xml">
             <tree string="Digital Scans">
@@ -20,9 +20,9 @@
         </field>
     </record>
 
-    <!-- Form View -->
-    <record id="view_records_digital_scan_form" model="ir.ui.view">
-        <field name="name">records.digital.scan.form</field>
+    <!-- Form view for base.rate -->
+    <record id="records_digital_scan_view_form" model="ir.ui.view">
+        <field name="name">records.digital.scan.view.form</field>
         <field name="model">records.digital.scan</field>
         <field name="arch" type="xml">
             <form string="Digital Scan">
@@ -69,9 +69,9 @@
         </field>
     </record>
 
-    <!-- Search View -->
-    <record id="view_records_digital_scan_search" model="ir.ui.view">
-        <field name="name">records.digital.scan.search</field>
+    <!-- Search view for base.rate -->
+    <record id="records_digital_scan_view_search" model="ir.ui.view">
+        <field name="name">records.digital.scan.view.search</field>
         <field name="model">records.digital.scan</field>
         <field name="arch" type="xml">
             <search string="Digital Scans">
@@ -93,7 +93,7 @@
         </field>
     </record>
 
-    <!-- Action -->
+    <!-- Tree view for Action -->
     <record id="action_records_digital_scan" model="ir.actions.act_window">
         <field name="name">Digital Scans</field>
         <field name="res_model">records.digital.scan</field>
@@ -109,7 +109,7 @@
         </field>
     </record>
 
-    <!-- Menu Item -->
+    <!-- Tree view for Menu -->
     <menuitem id="menu_records_digital_scan" name="Digital Scans" action="action_records_digital_scan" parent="records_management.menu_records_management_documents" sequence="30"/>
 
 </odoo>

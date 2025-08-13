@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Customer Negotiated Rates Views -->
-        <record id="view_customer_negotiated_rates_tree" model="ir.ui.view">
-            <field name="name">customer.negotiated.rates.tree</field>
+        <!-- Tree view for Customer -->
+        <record id="customer_negotiated_rates_view_tree" model="ir.ui.view">
+            <field name="name">customer.negotiated.rates.view.tree</field>
             <field name="model">customer.negotiated.rates</field>
             <field name="arch" type="xml">
                 <tree decoration-info="state == 'draft'" decoration-warning="state == 'negotiating'" decoration-success="state == 'active'" decoration-danger="state == 'expired'" decoration-muted="state == 'cancelled'">
@@ -22,8 +22,8 @@
             </field>
         </record>
 
-        <record id="view_customer_negotiated_rates_form" model="ir.ui.view">
-            <field name="name">customer.negotiated.rates.form</field>
+        <record id="customer_negotiated_rates_view_form" model="ir.ui.view">
+            <field name="name">customer.negotiated.rates.view.form</field>
             <field name="model">customer.negotiated.rates</field>
             <field name="arch" type="xml">
                 <form string="Customer Negotiated Rates">
@@ -123,7 +123,7 @@
                                 <group string="Approval Notes">
                                     <field name="approval_notes" placeholder="Management approval notes..."/>
                                 </group>
-                                <group string="Terms &amp; Conditions">
+                                <group string="Terms &amp;amp; Conditions">
                                     <field name="terms_conditions" placeholder="Special terms and conditions for this agreement..."/>
                                 </group>
                             </page>
@@ -138,9 +138,9 @@
             </field>
         </record>
 
-        <!-- Search View -->
-        <record id="view_customer_negotiated_rates_search" model="ir.ui.view">
-            <field name="name">customer.negotiated.rates.search</field>
+        <!-- Search view for base.rate -->
+        <record id="customer_negotiated_rates_view_search" model="ir.ui.view">
+            <field name="name">customer.negotiated.rates.view.search</field>
             <field name="model">customer.negotiated.rates</field>
             <field name="arch" type="xml">
                 <search string="Customer Negotiated Rates">
@@ -158,9 +158,9 @@
                     <filter string="Expired" name="expired" domain="[('state', '=', 'expired')]"/>
 
                     <separator/>
-                    <filter string="Expiring Soon" name="expiring_soon" domain="[('days_until_expiry', '&lt;=', 30), ('days_until_expiry', '&gt;', 0)]"/>
-                    <filter string="With Global Discount" name="has_global_discount" domain="[('global_discount_percent', '&gt;', 0)]"/>
-                    <filter string="Volume Discounts" name="has_volume_discount" domain="[('volume_discount_percent', '&gt;', 0)]"/>
+                    <filter string="Expiring Soon" name="expiring_soon" domain="[('days_until_expiry', '&amp;lt;=', 30), ('days_until_expiry', '&gt;', 0)]"/>
+                    <filter string="With Global Discount" name="has_global_discount" domain="[('global_discount_percent', '&amp;gt;', 0)]"/>
+                    <filter string="Volume Discounts" name="has_volume_discount" domain="[('volume_discount_percent', '&amp;gt;', 0)]"/>
 
                     <group expand="0" string="Group By">
                         <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
@@ -173,7 +173,7 @@
             </field>
         </record>
 
-        <!-- Actions -->
+        <!-- Tree view for Actions -->
         <record id="action_customer_negotiated_rates" model="ir.actions.act_window">
             <field name="name">Customer Negotiated Rates</field>
             <field name="res_model">customer.negotiated.rates</field>
@@ -193,7 +193,7 @@
             </field>
         </record>
 
-        <!-- Customer-specific action from partner record -->
+        <!-- Tree view for Customer -->
         <record id="action_partner_negotiated_rates" model="ir.actions.act_window">
             <field name="name">Negotiated Rates</field>
             <field name="res_model">customer.negotiated.rates</field>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for paper.bale.weigh.wizard -->
-    <record id="view_paper_bale_weigh_wizard_tree" model="ir.ui.view">
-        <field name="name">paper.bale.weigh.wizard.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="paper_bale_weigh_wizard_view_tree" model="ir.ui.view">
+        <field name="name">paper.bale.weigh.wizard.view.tree</field>
         <field name="model">paper.bale.weigh.wizard</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for paper.bale.weigh.wizard -->
-    <record id="view_paper_bale_weigh_wizard_form" model="ir.ui.view">
-        <field name="name">paper.bale.weigh.wizard.form</field>
+    <!-- Form view for base.rate -->
+    <record id="paper_bale_weigh_wizard_view_form" model="ir.ui.view">
+        <field name="name">paper.bale.weigh.wizard.view.form</field>
         <field name="model">paper.bale.weigh.wizard</field>
         <field name="arch" type="xml">
             <form string="Paper Bale Weigh Wizard">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for paper.bale.weigh.wizard -->
-    <record id="view_paper_bale_weigh_wizard_search" model="ir.ui.view">
-        <field name="name">paper.bale.weigh.wizard.search</field>
+    <!-- Search view for base.rate -->
+    <record id="paper_bale_weigh_wizard_view_search" model="ir.ui.view">
+        <field name="name">paper.bale.weigh.wizard.view.search</field>
         <field name="model">paper.bale.weigh.wizard</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action paper.bale.weigh.wizard -->
+    <!-- Tree view for Action -->
     <record id="action_paper_bale_weigh_wizard" model="ir.actions.act_window">
         <field name="name">Paper Bale Weigh Wizard</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">paper.bale.weigh.wizard</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

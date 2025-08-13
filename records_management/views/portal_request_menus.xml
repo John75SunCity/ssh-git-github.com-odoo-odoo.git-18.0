@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Portal Request Menus - Loaded after main menu structure -->
+    <!-- Tree view for Portal -->
     
     <menuitem id="portal_request_menu" 
               name="Portal Requests" 

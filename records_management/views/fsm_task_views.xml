@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 🔧 FSM TASK MANAGEMENT - Streamlined Views -->
+    <!-- Tree view for FSM -->
 
-    <!-- Kanban View -->
-    <record id="view_fsm_task_kanban" model="ir.ui.view">
-        <field name="name">fsm.task.kanban</field>
+    <!-- Kanban view for Kanban -->
+    <record id="fsm_task_view_kanban" model="ir.ui.view">
+        <field name="name">fsm.task.view.kanban</field>
         <field name="model">fsm.task</field>
         <field name="arch" type="xml">
             <kanban default_group_by="task_status" class="o_kanban_fsm_task_dashboard">
@@ -50,9 +50,9 @@
         </field>
     </record>
 
-    <!-- List View -->
-    <record id="view_fsm_task_tree" model="ir.ui.view">
-        <field name="name">fsm.task.tree</field>
+    <!-- Tree view for List -->
+    <record id="fsm_task_view_tree" model="ir.ui.view">
+        <field name="name">fsm.task.view.tree</field>
         <field name="model">fsm.task</field>
         <field name="arch" type="xml">
             <tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="task_status=='completed'">
@@ -68,9 +68,9 @@
         </field>
     </record>
 
-    <!-- Form View -->
-    <record id="view_fsm_task_form" model="ir.ui.view">
-        <field name="name">fsm.task.form</field>
+    <!-- Form view for base.rate -->
+    <record id="fsm_task_view_form" model="ir.ui.view">
+        <field name="name">fsm.task.view.form</field>
         <field name="model">fsm.task</field>
         <field name="arch" type="xml">
             <form>
@@ -152,9 +152,9 @@
         </field>
     </record>
 
-    <!-- Search View -->
-    <record id="view_fsm_task_search" model="ir.ui.view">
-        <field name="name">fsm.task.search</field>
+    <!-- Search view for base.rate -->
+    <record id="fsm_task_view_search" model="ir.ui.view">
+        <field name="name">fsm.task.view.search</field>
         <field name="model">fsm.task</field>
         <field name="arch" type="xml">
             <search>
@@ -166,7 +166,7 @@
                 <filter string="Scheduled" name="scheduled" domain="[('task_status', '=', 'scheduled')]"/>
                 <filter string="In Progress" name="in_progress" domain="[('task_status', '=', 'in_progress')]"/>
                 <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
-                <filter string="Today" name="today" domain="[('scheduled_date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Today" name="today" domain="[('scheduled_date', '&amp;gt;=', context_today().strftime('%Y-%m-%d')), ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
 
                 <separator/>
                 <filter string="My Tasks" name="my_tasks" domain="[('assigned_technician', '=', uid)]"/>
@@ -181,9 +181,9 @@
         </field>
     </record>
 
-    <!-- Calendar View -->
-    <record id="view_fsm_task_calendar" model="ir.ui.view">
-        <field name="name">fsm.task.calendar</field>
+    <!-- Tree view for Calendar -->
+    <record id="fsm_task_view_calendar" model="ir.ui.view">
+        <field name="name">fsm.task.view.calendar</field>
         <field name="model">fsm.task</field>
         <field name="arch" type="xml">
             <calendar date_start="scheduled_date" color="assigned_technician" quick_add="false">
@@ -195,11 +195,11 @@
         </field>
     </record>
 
-    <!-- Action -->
+    <!-- Tree view for Action -->
     <record id="action_fsm_task" model="ir.actions.act_window">
         <field name="name">FSM Tasks</field>
         <field name="res_model">fsm.task</field>
-        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
         <field name="context">{'search_default_scheduled': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for stock.move.sms.validation -->
-    <record id="view_stock_move_sms_validation_tree" model="ir.ui.view">
-        <field name="name">stock.move.sms.validation.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="stock_move_sms_validation_view_tree" model="ir.ui.view">
+        <field name="name">stock.move.sms.validation.view.tree</field>
         <field name="model">stock.move.sms.validation</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for stock.move.sms.validation -->
-    <record id="view_stock_move_sms_validation_form" model="ir.ui.view">
-        <field name="name">stock.move.sms.validation.form</field>
+    <!-- Form view for base.rate -->
+    <record id="stock_move_sms_validation_view_form" model="ir.ui.view">
+        <field name="name">stock.move.sms.validation.view.form</field>
         <field name="model">stock.move.sms.validation</field>
         <field name="arch" type="xml">
             <form string="Stock Move Sms Validation">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for stock.move.sms.validation -->
-    <record id="view_stock_move_sms_validation_search" model="ir.ui.view">
-        <field name="name">stock.move.sms.validation.search</field>
+    <!-- Search view for base.rate -->
+    <record id="stock_move_sms_validation_view_search" model="ir.ui.view">
+        <field name="name">stock.move.sms.validation.view.search</field>
         <field name="model">stock.move.sms.validation</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action stock.move.sms.validation -->
+    <!-- Tree view for Action -->
     <record id="action_stock_move_sms_validation" model="ir.actions.act_window">
         <field name="name">Stock Move Sms Validation</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">stock.move.sms.validation</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

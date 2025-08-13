@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Customer Billing Profile Views -->
-        <record id="view_records_customer_billing_profile_tree" model="ir.ui.view">
-            <field name="name">records.customer.billing.profile.tree</field>
+        <!-- Tree view for Customer -->
+<record id="records_customer_billing_profile_view_tree" model="ir.ui.view">
+    <field name="name">records.customer.billing.profile.view.tree</field>
             <field name="model">records.customer.billing.profile</field>
             <field name="arch" type="xml">
                 <tree string="Customer Billing Profiles">
@@ -18,8 +18,8 @@
             </field>
         </record>
 
-        <record id="view_records_customer_billing_profile_form" model="ir.ui.view">
-            <field name="name">records.customer.billing.profile.form</field>
+<record id="records_customer_billing_profile_view_form" model="ir.ui.view">
+    <field name="name">records.customer.billing.profile.view.form</field>
             <field name="model">records.customer.billing.profile</field>
             <field name="arch" type="xml">
                 <form string="Customer Billing Profile">
@@ -115,9 +115,9 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <!-- Advanced Billing Period Views -->
-        <record id="view_records_advanced_billing_period_tree" model="ir.ui.view">
-            <field name="name">records.advanced.billing.period.tree</field>
+        <!-- Tree view for Advanced -->
+<record id="records_advanced_billing_period_view_tree" model="ir.ui.view">
+    <field name="name">records.advanced.billing.period.view.tree</field>
             <field name="model">records.advanced.billing.period</field>
             <field name="arch" type="xml">
                 <tree string="Advanced Billing Periods" decoration-info="state == 'draft'" 
@@ -137,8 +137,8 @@
             </field>
         </record>
 
-        <record id="view_records_advanced_billing_period_form" model="ir.ui.view">
-            <field name="name">records.advanced.billing.period.form</field>
+<record id="records_advanced_billing_period_view_form" model="ir.ui.view">
+    <field name="name">records.advanced.billing.period.view.form</field>
             <field name="model">records.advanced.billing.period</field>
             <field name="arch" type="xml">
                 <form string="Advanced Billing Period">
@@ -228,9 +228,9 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <!-- Billing Service Wizard -->
-        <record id="view_records_billing_service_form" model="ir.ui.view">
-            <field name="name">records.billing.service.form</field>
+        <!-- Tree view for Billing -->
+<record id="records_billing_service_view_form" model="ir.ui.view">
+    <field name="name">records.billing.service.view.form</field>
             <field name="model">records.billing.service</field>
             <field name="arch" type="xml">
                 <form string="Billing Generation Service">
@@ -259,8 +259,8 @@
             <field name="target">new</field>
         </record>
 
-        <!-- Menu Items -->
-        <!-- Ensure that 'records_management.menu_records_configuration' is defined and loaded before this file -->
+        <!-- Tree view for Menu -->
+        <!-- Tree view for Ensure -->
         <menuitem id="menu_advanced_billing_root" 
                   name="Advanced Billing" 
                   parent="records_management.menu_records_configuration"

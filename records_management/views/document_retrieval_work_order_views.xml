@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Document Retrieval Work Order Views -->
+    <!-- Tree view for Document -->
 
-    <!-- Tree View -->
+    <!-- Tree view for base.rate -->
 <record id="document_retrieval_work_order_view_tree" model="ir.ui.view">
     <field name="name">document.retrieval.work.order.view.tree</field>
         <field name="model">document.retrieval.work.order</field>
@@ -21,7 +21,7 @@
         </field>
     </record>
 
-    <!-- Form View -->
+    <!-- Form view for base.rate -->
 <record id="document_retrieval_work_order_view_form" model="ir.ui.view">
     <field name="name">document.retrieval.work.order.view.form</field>
         <field name="model">document.retrieval.work.order</field>
@@ -78,7 +78,7 @@
                         </group>
                     </group>
 
-                    <!-- Pricing Breakdown -->
+                    <!-- Tree view for Pricing -->
                     <group string="Cost Breakdown" name="pricing_breakdown">
                         <group>
                             <field name="base_retrieval_cost" widget="monetary" readonly="1"/>
@@ -93,7 +93,7 @@
                         </group>
                     </group>
 
-                    <!-- Items to Retrieve -->
+                    <!-- Tree view for Items -->
                     <notebook>
                         <page string="Items to Retrieve" name="items">
                             <field name="retrieval_item_ids">
@@ -152,9 +152,9 @@
         </field>
     </record>
 
-    <!-- Kanban View -->
+    <!-- Kanban view for Kanban -->
 <record id="document_retrieval_work_order_view_kanban" model="ir.ui.view">
-        <field name="name">document.retrieval.work.order.kanban</field>
+        <field name="name">document.retrieval.work.order.view.kanban</field>
         <field name="model">document.retrieval.work.order</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" quick_create="false">
@@ -214,7 +214,7 @@
         </field>
     </record>
 
-    <!-- Search View -->
+    <!-- Search view for base.rate -->
 <record id="document_retrieval_work_order_view_search" model="ir.ui.view">
     <field name="name">document.retrieval.work.order.view.search</field>
         <field name="model">document.retrieval.work.order</field>
@@ -233,8 +233,8 @@
                 <filter string="Custom Rates" name="custom_rates" domain="[('has_custom_rates', '=', True)]"/>
 
                 <separator/>
-                <filter string="Today" name="today" domain="[('request_date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
-                <filter string="This Week" name="this_week" domain="[('request_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <filter string="Today" name="today" domain="[('request_date', '&amp;gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <filter string="This Week" name="this_week" domain="[('request_date', '&amp;gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
@@ -247,7 +247,7 @@
         </field>
     </record>
 
-    <!-- Action for Document Retrieval Work Orders -->
+    <!-- Tree view for Action -->
     <record id="action_document_retrieval_work_order" model="ir.actions.act_window">
         <field name="name">Document Retrieval Work Order</field>
         <field name="res_model">document.retrieval.work.order</field>

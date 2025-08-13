@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 🏆 ENTERPRISE NAID COMPLIANCE - AAA Certification Management -->
+    <!-- Tree view for ENTERPRISE -->
     
-    <!-- 🎨 NAID Compliance Kanban Dashboard -->
-    <record id="view_naid_compliance_kanban" model="ir.ui.view">
-        <field name="name">naid.compliance.kanban</field>
+    <!-- Kanban view for NAID -->
+    <record id="naid_compliance_view_kanban" model="ir.ui.view">
+        <field name="name">naid.compliance.view.kanban</field>
         <field name="model">naid.compliance</field>
         <field name="arch" type="xml">
             <kanban default_group_by="compliance_status" class="o_kanban_naid_dashboard">
@@ -75,14 +75,14 @@
         </field>
     </record>
 
-    <!-- 📋 Enhanced Tree with Certification Tracking -->
-    <record id="view_naid_compliance_tree" model="ir.ui.view">
-        <field name="name">naid.compliance.tree</field>
+    <!-- Tree view for Enhanced -->
+    <record id="naid_compliance_view_tree" model="ir.ui.view">
+        <field name="name">naid.compliance.view.tree</field>
         <field name="model">naid.compliance</field>
         <field name="arch" type="xml">
             <tree decoration-success="compliance_status == 'certified' and certificate_valid == True" 
                   decoration-warning="compliance_status == 'pending_audit'"
-                  decoration-danger="certificate_valid == False or expiry_date &lt; context_today()"
+                  decoration-danger="certificate_valid == False or expiry_date &amp;lt; context_today()"
                   decoration-info="naid_level == 'AAA'">
                 <field name="name" string="🏆 Compliance Record"/>
                 <field name="facility_name" string="🏢 Facility"/>
@@ -102,9 +102,9 @@
         </field>
     </record>
 
-    <!-- 📝 Enhanced Form with Complete NAID AAA Management -->
-    <record id="view_naid_compliance_form" model="ir.ui.view">
-        <field name="name">naid.compliance.form</field>
+    <!-- Form view for Enhanced -->
+    <record id="naid_compliance_view_form" model="ir.ui.view">
+        <field name="name">naid.compliance.view.form</field>
         <field name="model">naid.compliance</field>
         <field name="arch" type="xml">
             <form>
@@ -303,9 +303,9 @@
         </field>
     </record>
 
-    <!-- 📅 Calendar View for Audit Schedule -->
-    <record id="view_naid_compliance_calendar" model="ir.ui.view">
-        <field name="name">naid.compliance.calendar</field>
+    <!-- Tree view for Calendar -->
+    <record id="naid_compliance_view_calendar" model="ir.ui.view">
+        <field name="name">naid.compliance.view.calendar</field>
         <field name="model">naid.compliance</field>
         <field name="arch" type="xml">
             <calendar string="📅 NAID Audit Schedule" 
@@ -321,9 +321,9 @@
         </field>
     </record>
 
-    <!-- 🔍 Enhanced Search with NAID Filters -->
-    <record id="view_naid_compliance_search" model="ir.ui.view">
-        <field name="name">naid.compliance.search</field>
+    <!-- Search view for Enhanced -->
+    <record id="naid_compliance_view_search" model="ir.ui.view">
+        <field name="name">naid.compliance.view.search</field>
         <field name="model">naid.compliance</field>
         <field name="arch" type="xml">
             <search>
@@ -349,9 +349,9 @@
                 
                 <separator/>
                 <filter string="📅 Expiring Soon (30 days)" name="expiring_soon" 
-                        domain="[('expiry_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiry_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                        domain="[('expiry_date', '&amp;lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiry_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter string="⚠️ Overdue Audit" name="overdue_audit" 
-                        domain="[('next_audit_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                        domain="[('next_audit_date', '&amp;lt;', context_today().strftime('%Y-%m-%d'))]"/>
                 
                 <group expand="0" string="📊 Group By">
                     <filter string="NAID Level" name="group_by_naid_level" context="{'group_by': 'naid_level'}"/>
@@ -364,11 +364,11 @@
         </field>
     </record>
 
-    <!-- 🚀 ENTERPRISE ACTION - NAID Compliance Management -->
+    <!-- Tree view for ENTERPRISE -->
     <record id="action_naid_compliance" model="ir.actions.act_window">
         <field name="name">🏆 NAID Compliance</field>
         <field name="res_model">naid.compliance</field>
-        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
         <field name="search_view_id" ref="view_naid_compliance_search"/>
         <field name="context">{
             'search_default_certified': 1,

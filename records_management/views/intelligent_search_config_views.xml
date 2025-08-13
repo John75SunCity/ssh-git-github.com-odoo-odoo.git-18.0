@@ -3,10 +3,10 @@
     <data>
 
         <!-- =============================================================== -->
-        <!-- INTELLIGENT SEARCH CONFIGURATION MENU -->
+        <!-- Search view for INTELLIGENT -->
         <!-- =============================================================== -->
 
-        <!-- Search Configuration Menu Item -->
+        <!-- Search view for base.rate -->
         <record id="menu_intelligent_search_config" model="ir.ui.menu">
             <field name="name">Search Configuration</field>
             <field name="parent_id" ref="base.menu_administration"/>
@@ -14,7 +14,7 @@
             <field name="groups_id" eval="[(4, ref('group_search_admin'))]"/>
         </record>
 
-        <!-- Field Label Customization Menu (with Search Protection) -->
+        <!-- Search view for Field -->
         <record id="menu_field_label_customization" model="ir.ui.menu">
             <field name="name">Field Label Customization</field>
             <field name="parent_id" ref="menu_intelligent_search_config"/>
@@ -24,10 +24,10 @@
         </record>
 
         <!-- =============================================================== -->
-        <!-- SEARCH CONFIGURATION ACTIONS -->
+        <!-- Search view for SEARCH -->
         <!-- =============================================================== -->
 
-        <!-- Field Label Customization Action -->
+        <!-- Tree view for Field -->
         <record id="action_field_label_customization" model="ir.actions.act_window">
             <field name="name">Field Label Customization</field>
             <field name="res_model">field.label.customization</field>
@@ -46,7 +46,7 @@
             </field>
         </record>
 
-        <!-- Search Performance Monitor Action -->
+        <!-- Form view for Search -->
         <record id="action_search_performance_monitor" model="ir.actions.server">
             <field name="name">Search Performance Monitor</field>
             <field name="model_id" ref="base.model_ir_config_parameter"/>
@@ -68,12 +68,12 @@ action = {
         </record>
 
         <!-- =============================================================== -->
-        <!-- SEARCH CONFIGURATION VIEWS -->
+        <!-- Search view for SEARCH -->
         <!-- =============================================================== -->
 
-        <!-- Enhanced Field Label Customization Tree View -->
-        <record id="view_field_label_customization_tree" model="ir.ui.view">
-            <field name="name">field.label.customization.tree</field>
+        <!-- Tree view for Enhanced -->
+        <record id="field_label_customization_view_tree" model="ir.ui.view">
+            <field name="name">field.label.customization.view.tree</field>
             <field name="model">field.label.customization</field>
             <field name="arch" type="xml">
                 <tree string="Field Label Customizations" decoration-danger="state=='failed'" decoration-success="state=='active'">
@@ -89,9 +89,9 @@ action = {
             </field>
         </record>
 
-        <!-- Enhanced Field Label Customization Form View -->
-        <record id="view_field_label_customization_form" model="ir.ui.view">
-            <field name="name">field.label.customization.form</field>
+        <!-- Form view for Enhanced -->
+        <record id="field_label_customization_view_form" model="ir.ui.view">
+            <field name="name">field.label.customization.view.form</field>
             <field name="model">field.label.customization</field>
             <field name="arch" type="xml">
                 <form string="Field Label Customization">

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for barcode.models.enhanced -->
-    <record id="view_barcode_models_enhanced_tree" model="ir.ui.view">
-        <field name="name">barcode.models.enhanced.tree</field>
+    <!-- Tree view for base.rate -->
+<record id="barcode_models_enhanced_view_tree" model="ir.ui.view">
+    <field name="name">barcode.models.enhanced.view.tree</field>
         <field name="model">barcode.models.enhanced</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for barcode.models.enhanced -->
-    <record id="view_barcode_models_enhanced_form" model="ir.ui.view">
-        <field name="name">barcode.models.enhanced.form</field>
+    <!-- Form view for base.rate -->
+<record id="barcode_models_enhanced_view_form" model="ir.ui.view">
+    <field name="name">barcode.models.enhanced.view.form</field>
         <field name="model">barcode.models.enhanced</field>
         <field name="arch" type="xml">
             <form string="Barcode Models Enhanced">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for barcode.models.enhanced -->
-    <record id="view_barcode_models_enhanced_search" model="ir.ui.view">
-        <field name="name">barcode.models.enhanced.search</field>
+    <!-- Search view for base.rate -->
+<record id="barcode_models_enhanced_view_search" model="ir.ui.view">
+    <field name="name">barcode.models.enhanced.view.search</field>
         <field name="model">barcode.models.enhanced</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action barcode.models.enhanced -->
+    <!-- Tree view for Action -->
     <record id="action_barcode_models_enhanced" model="ir.actions.act_window">
         <field name="name">Barcode Models Enhanced</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">barcode.models.enhanced</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

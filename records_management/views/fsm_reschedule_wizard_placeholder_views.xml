@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for fsm.reschedule.wizard.placeholder -->
-    <record id="view_fsm_reschedule_wizard_placeholder_tree" model="ir.ui.view">
-        <field name="name">fsm.reschedule.wizard.placeholder.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="fsm_reschedule_wizard_placeholder_view_tree" model="ir.ui.view">
+        <field name="name">fsm.reschedule.wizard.placeholder.view.tree</field>
         <field name="model">fsm.reschedule.wizard.placeholder</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for fsm.reschedule.wizard.placeholder -->
-    <record id="view_fsm_reschedule_wizard_placeholder_form" model="ir.ui.view">
-        <field name="name">fsm.reschedule.wizard.placeholder.form</field>
+    <!-- Form view for base.rate -->
+    <record id="fsm_reschedule_wizard_placeholder_view_form" model="ir.ui.view">
+        <field name="name">fsm.reschedule.wizard.placeholder.view.form</field>
         <field name="model">fsm.reschedule.wizard.placeholder</field>
         <field name="arch" type="xml">
             <form string="Fsm Reschedule Wizard Placeholder">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for fsm.reschedule.wizard.placeholder -->
-    <record id="view_fsm_reschedule_wizard_placeholder_search" model="ir.ui.view">
-        <field name="name">fsm.reschedule.wizard.placeholder.search</field>
+    <!-- Search view for base.rate -->
+    <record id="fsm_reschedule_wizard_placeholder_view_search" model="ir.ui.view">
+        <field name="name">fsm.reschedule.wizard.placeholder.view.search</field>
         <field name="model">fsm.reschedule.wizard.placeholder</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action fsm.reschedule.wizard.placeholder -->
+    <!-- Tree view for Action -->
     <record id="action_fsm_reschedule_wizard_placeholder" model="ir.actions.act_window">
         <field name="name">Fsm Reschedule Wizard Placeholder</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">fsm.reschedule.wizard.placeholder</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

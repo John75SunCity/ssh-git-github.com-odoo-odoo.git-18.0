@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Bin Key Management Tree View -->
-    <record id="view_bin_key_management_tree" model="ir.ui.view">
-        <field name="name">bin.key.management.tree</field>
+    <!-- Tree view for Bin -->
+    <record id="bin_key_management_view_tree" model="ir.ui.view">
+        <field name="name">bin.key.management.view.tree</field>
         <field name="model">bin.key.management</field>
         <field name="arch" type="xml">
             <tree string="Bin Key Management" decoration-success="status == 'issued'" decoration-warning="status == 'lost'" decoration-danger="status == 'replaced'">
@@ -20,9 +20,9 @@
         </field>
     </record>
 
-    <!-- Bin Key Management Form View -->
-    <record id="view_bin_key_management_form" model="ir.ui.view">
-        <field name="name">bin.key.management.form</field>
+    <!-- Form view for Bin -->
+    <record id="bin_key_management_view_form" model="ir.ui.view">
+        <field name="name">bin.key.management.view.form</field>
         <field name="model">bin.key.management</field>
         <field name="arch" type="xml">
             <form string="Bin Key Management">
@@ -69,7 +69,7 @@
                     </group>
 
                     <notebook>
-                        <page string="Notes &amp; Details">
+                        <page string="Notes &amp;amp; Details">
                             <field name="notes" placeholder="Additional notes about this key assignment..."/>
                         </page>
                         <page string="Unlock Services" attrs="{'invisible': [('unlock_service_count', '=', 0)]}">
@@ -96,9 +96,9 @@
         </field>
     </record>
 
-    <!-- Bin Key Management Kanban View -->
-    <record id="view_bin_key_management_kanban" model="ir.ui.view">
-        <field name="name">bin.key.management.kanban</field>
+    <!-- Kanban view for Bin -->
+    <record id="bin_key_management_view_kanban" model="ir.ui.view">
+        <field name="name">bin.key.management.view.kanban</field>
         <field name="model">bin.key.management</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column">
@@ -140,9 +140,9 @@
         </field>
     </record>
 
-    <!-- Bin Unlock Service Tree View -->
-    <record id="view_bin_unlock_service_tree" model="ir.ui.view">
-        <field name="name">bin.unlock.service.tree</field>
+    <!-- Tree view for Bin -->
+    <record id="bin_unlock_service_view_tree" model="ir.ui.view">
+        <field name="name">bin.unlock.service.view.tree</field>
         <field name="model">bin.unlock.service</field>
         <field name="arch" type="xml">
             <tree string="Bin Unlock Services" decoration-success="billable == True" decoration-warning="billable == False">
@@ -159,9 +159,9 @@
         </field>
     </record>
 
-    <!-- Bin Unlock Service Form View -->
-    <record id="view_bin_unlock_service_form" model="ir.ui.view">
-        <field name="name">bin.unlock.service.form</field>
+    <!-- Form view for Bin -->
+    <record id="bin_unlock_service_view_form" model="ir.ui.view">
+        <field name="name">bin.unlock.service.view.form</field>
         <field name="model">bin.unlock.service</field>
         <field name="arch" type="xml">
             <form string="Bin Unlock Service">
@@ -219,7 +219,7 @@
         </field>
     </record>
 
-    <!-- Actions -->
+    <!-- Tree view for Actions -->
     <record id="action_bin_key_management" model="ir.actions.act_window">
         <field name="name">Bin Key Management</field>
         <field name="res_model">bin.key.management</field>
@@ -250,7 +250,7 @@
         </field>
     </record>
 
-    <!-- Menu Items -->
+    <!-- Tree view for Menu -->
     <menuitem id="menu_bin_key_management" name="🔑 Bin Key Management" parent="records_management.menu_records_management_root" action="action_bin_key_management" sequence="10"/>
 
     <menuitem id="menu_bin_unlock_services" name="🔓 Unlock Services" parent="records_management.menu_records_management_root" action="action_bin_unlock_service" sequence="11"/>

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Base Menu Structure - Parent menus only (no actions) -->
-        <!-- These load early so they can be referenced by other files -->
+        <!-- Tree view for Base -->
+        <!-- Tree view for These -->
         
-        <!-- Root Menu for Records Management -->
+        <!-- Tree view for Root -->
         <menuitem id="menu_records_management_root"
                   name="Records Management"
                   web_icon="records_management,static/description/icon.png"
                   sequence="50"
                   groups="records_management.group_records_user"/>
 
-        <!-- ==== MAIN SECTIONS (Parent Menus Only) ==== -->
+        <!-- Tree view for MAIN -->
         <menuitem id="menu_records_operations"
                   name="Operations"
                   parent="menu_records_management_root"
@@ -36,7 +36,7 @@
                   sequence="100"
                   groups="records_management.group_records_manager"/>
 
-        <!-- Configuration Sub-menus -->
+        <!-- Tree view for Configuration -->
         <menuitem id="menu_records_master_data"
                   name="Master Data"
                   parent="menu_records_configuration"

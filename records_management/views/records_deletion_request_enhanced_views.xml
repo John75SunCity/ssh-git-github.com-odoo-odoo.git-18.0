@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for records.deletion.request.enhanced -->
-    <record id="view_records_deletion_request_enhanced_tree" model="ir.ui.view">
-        <field name="name">records.deletion.request.enhanced.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="records_deletion_request_enhanced_view_tree" model="ir.ui.view">
+        <field name="name">records.deletion.request.enhanced.view.tree</field>
         <field name="model">records.deletion.request.enhanced</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for records.deletion.request.enhanced -->
-    <record id="view_records_deletion_request_enhanced_form" model="ir.ui.view">
-        <field name="name">records.deletion.request.enhanced.form</field>
+    <!-- Form view for base.rate -->
+    <record id="records_deletion_request_enhanced_view_form" model="ir.ui.view">
+        <field name="name">records.deletion.request.enhanced.view.form</field>
         <field name="model">records.deletion.request.enhanced</field>
         <field name="arch" type="xml">
             <form string="Records Deletion Request Enhanced">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for records.deletion.request.enhanced -->
-    <record id="view_records_deletion_request_enhanced_search" model="ir.ui.view">
-        <field name="name">records.deletion.request.enhanced.search</field>
+    <!-- Search view for base.rate -->
+    <record id="records_deletion_request_enhanced_view_search" model="ir.ui.view">
+        <field name="name">records.deletion.request.enhanced.view.search</field>
         <field name="model">records.deletion.request.enhanced</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action records.deletion.request.enhanced -->
+    <!-- Tree view for Action -->
     <record id="action_records_deletion_request_enhanced" model="ir.actions.act_window">
         <field name="name">Records Deletion Request Enhanced</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.deletion.request.enhanced</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

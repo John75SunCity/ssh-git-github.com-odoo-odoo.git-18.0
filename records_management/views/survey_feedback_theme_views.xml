@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for survey.feedback.theme -->
-    <record id="view_survey_feedback_theme_tree" model="ir.ui.view">
-        <field name="name">survey.feedback.theme.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="survey_feedback_theme_view_tree" model="ir.ui.view">
+        <field name="name">survey.feedback.theme.view.tree</field>
         <field name="model">survey.feedback.theme</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for survey.feedback.theme -->
-    <record id="view_survey_feedback_theme_form" model="ir.ui.view">
-        <field name="name">survey.feedback.theme.form</field>
+    <!-- Form view for base.rate -->
+    <record id="survey_feedback_theme_view_form" model="ir.ui.view">
+        <field name="name">survey.feedback.theme.view.form</field>
         <field name="model">survey.feedback.theme</field>
         <field name="arch" type="xml">
             <form string="Survey Feedback Theme">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for survey.feedback.theme -->
-    <record id="view_survey_feedback_theme_search" model="ir.ui.view">
-        <field name="name">survey.feedback.theme.search</field>
+    <!-- Search view for base.rate -->
+    <record id="survey_feedback_theme_view_search" model="ir.ui.view">
+        <field name="name">survey.feedback.theme.view.search</field>
         <field name="model">survey.feedback.theme</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action survey.feedback.theme -->
+    <!-- Tree view for Action -->
     <record id="action_survey_feedback_theme" model="ir.actions.act_window">
         <field name="name">Survey Feedback Theme</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">survey.feedback.theme</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

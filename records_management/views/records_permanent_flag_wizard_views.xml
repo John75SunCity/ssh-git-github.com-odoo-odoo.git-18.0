@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for records.permanent.flag.wizard -->
-    <record id="view_records_permanent_flag_wizard_tree" model="ir.ui.view">
-        <field name="name">records.permanent.flag.wizard.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="records_permanent_flag_wizard_view_tree" model="ir.ui.view">
+        <field name="name">records.permanent.flag.wizard.view.tree</field>
         <field name="model">records.permanent.flag.wizard</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for records.permanent.flag.wizard -->
-    <record id="view_records_permanent_flag_wizard_form" model="ir.ui.view">
-        <field name="name">records.permanent.flag.wizard.form</field>
+    <!-- Form view for base.rate -->
+    <record id="records_permanent_flag_wizard_view_form" model="ir.ui.view">
+        <field name="name">records.permanent.flag.wizard.view.form</field>
         <field name="model">records.permanent.flag.wizard</field>
         <field name="arch" type="xml">
             <form string="Records Permanent Flag Wizard">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for records.permanent.flag.wizard -->
-    <record id="view_records_permanent_flag_wizard_search" model="ir.ui.view">
-        <field name="name">records.permanent.flag.wizard.search</field>
+    <!-- Search view for base.rate -->
+    <record id="records_permanent_flag_wizard_view_search" model="ir.ui.view">
+        <field name="name">records.permanent.flag.wizard.view.search</field>
         <field name="model">records.permanent.flag.wizard</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action records.permanent.flag.wizard -->
+    <!-- Tree view for Action -->
     <record id="action_records_permanent_flag_wizard" model="ir.actions.act_window">
         <field name="name">Records Permanent Flag Wizard</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.permanent.flag.wizard</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

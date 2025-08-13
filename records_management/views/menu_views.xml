@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Main Menu -->
+    <!-- Tree view for Main -->
     <menuitem id="menu_records_management_root" name="Records Management" sequence="100"/>
 
-    <!-- Records Container Menu -->
+    <!-- Tree view for Records -->
     <record id="action_records_box" model="ir.actions.act_window">
         <field name="name">Records Boxes</field>
         <field name="res_model">records.container</field>

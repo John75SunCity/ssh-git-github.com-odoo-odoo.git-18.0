@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
-    <!-- Form view for res.config.settings -->
-    <record id="view_res_config_settings_form" model="ir.ui.view">
-        <field name="name">res.config.settings.form</field>
+    <!-- Form view for base.rate -->
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -13,9 +13,9 @@
     </record>
 
 
-    <!-- Tree view for res.config.settings -->
-    <record id="view_res_config_settings_tree" model="ir.ui.view">
-        <field name="name">res.config.settings.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="res_config_settings_view_tree" model="ir.ui.view">
+        <field name="name">res.config.settings.view.tree</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -25,9 +25,9 @@
     </record>
 
 
-    <!-- Search view for res.config.settings -->
-    <record id="view_res_config_settings_search" model="ir.ui.view">
-        <field name="name">res.config.settings.search</field>
+    <!-- Search view for base.rate -->
+    <record id="res_config_settings_view_search" model="ir.ui.view">
+        <field name="name">res.config.settings.view.search</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -37,9 +37,9 @@
     </record>
 
 
-    <!-- View res.config.settings kanban -->
-    <record id="view_res_config_settings_kanban" model="ir.ui.view">
-        <field name="name">res.config.settings.kanban</field>
+    <!-- Kanban view for View -->
+    <record id="res_config_settings_view_kanban" model="ir.ui.view">
+        <field name="name">res.config.settings.view.kanban</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -49,9 +49,9 @@
     </record>
 
 
-    <!-- View res.config.settings graph -->
-    <record id="view_res_config_settings_graph" model="ir.ui.view">
-        <field name="name">res.config.settings.graph</field>
+    <!-- Tree view for View -->
+    <record id="res_config_settings_view_graph" model="ir.ui.view">
+        <field name="name">res.config.settings.view.graph</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -61,9 +61,9 @@
     </record>
 
 
-    <!-- View res.config.settings pivot -->
-    <record id="view_res_config_settings_pivot" model="ir.ui.view">
-        <field name="name">res.config.settings.pivot</field>
+    <!-- Tree view for View -->
+    <record id="res_config_settings_view_pivot" model="ir.ui.view">
+        <field name="name">res.config.settings.view.pivot</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">
@@ -73,9 +73,9 @@
     </record>
 
 
-    <!-- View res.config.settings calendar -->
-    <record id="view_res_config_settings_calendar" model="ir.ui.view">
-        <field name="name">res.config.settings.calendar</field>
+    <!-- Tree view for View -->
+    <record id="res_config_settings_view_calendar" model="ir.ui.view">
+        <field name="name">res.config.settings.view.calendar</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">

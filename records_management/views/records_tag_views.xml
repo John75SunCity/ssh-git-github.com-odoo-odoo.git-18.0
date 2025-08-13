@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Minimal Records Tag Views - Phase 1 Deployment -->
+    <!-- Tree view for Minimal -->
     
-    <!-- Tree view for (was -->
-    <record id="records_tag_tree_view_simple" model="ir.ui.view">
-        <field name="name">records.tag.tree.simple</field>
+    <!-- Tree view for base.rate -->
+    <record id="records_tag_view_tree" model="ir.ui.view">
+        <field name="name">records.tag.view.tree</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
             <tree string="Records Tags">
@@ -14,9 +14,9 @@
         </field>
     </record>
 
-    <!-- Simple Form View -->
-    <record id="records_tag_form_view_simple" model="ir.ui.view">
-        <field name="name">records.tag.form.simple</field>
+    <!-- Form view for Simple -->
+    <record id="records_tag_view_form" model="ir.ui.view">
+        <field name="name">records.tag.view.form</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
             <form string="Record Tag">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Simple Search View -->
-    <record id="records_tag_search_view_simple" model="ir.ui.view">
-        <field name="name">records.tag.search.simple</field>
+    <!-- Search view for Simple -->
+    <record id="records_tag_view_search" model="ir.ui.view">
+        <field name="name">records.tag.view.search</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
             <search string="Search Records Tags">
@@ -41,11 +41,11 @@
         </field>
     </record>
 
-    <!-- Simple Action -->
+    <!-- Tree view for Simple -->
     <record id="action_records_tag_simple" model="ir.actions.act_window">
         <field name="name">Records Tags</field>
         <field name="res_model">records.tag</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="view_id" ref="records_tag_tree_view_simple"/>
         <field name="search_view_id" ref="records_tag_search_view_simple"/>
         <field name="help" type="html">

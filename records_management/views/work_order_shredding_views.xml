@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for work.order.shredding -->
-    <record id="view_work_order_shredding_tree" model="ir.ui.view">
-        <field name="name">work.order.shredding.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="work_order_shredding_view_tree" model="ir.ui.view">
+        <field name="name">work.order.shredding.view.tree</field>
         <field name="model">work.order.shredding</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for work.order.shredding -->
-    <record id="view_work_order_shredding_form" model="ir.ui.view">
-        <field name="name">work.order.shredding.form</field>
+    <!-- Form view for base.rate -->
+    <record id="work_order_shredding_view_form" model="ir.ui.view">
+        <field name="name">work.order.shredding.view.form</field>
         <field name="model">work.order.shredding</field>
         <field name="arch" type="xml">
             <form string="Work Order Shredding">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for work.order.shredding -->
-    <record id="view_work_order_shredding_search" model="ir.ui.view">
-        <field name="name">work.order.shredding.search</field>
+    <!-- Search view for base.rate -->
+    <record id="work_order_shredding_view_search" model="ir.ui.view">
+        <field name="name">work.order.shredding.view.search</field>
         <field name="model">work.order.shredding</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action work.order.shredding -->
+    <!-- Tree view for Action -->
     <record id="action_work_order_shredding" model="ir.actions.act_window">
         <field name="name">Work Order Shredding</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">work.order.shredding</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

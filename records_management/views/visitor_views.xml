@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for visitor -->
-    <record id="view_visitor_tree" model="ir.ui.view">
-        <field name="name">visitor.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="visitor_view_tree" model="ir.ui.view">
+        <field name="name">visitor.view.tree</field>
         <field name="model">visitor</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for visitor -->
-    <record id="view_visitor_form" model="ir.ui.view">
-        <field name="name">visitor.form</field>
+    <!-- Form view for base.rate -->
+    <record id="visitor_view_form" model="ir.ui.view">
+        <field name="name">visitor.view.form</field>
         <field name="model">visitor</field>
         <field name="arch" type="xml">
             <form string="Visitor">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for visitor -->
-    <record id="view_visitor_search" model="ir.ui.view">
-        <field name="name">visitor.search</field>
+    <!-- Search view for base.rate -->
+    <record id="visitor_view_search" model="ir.ui.view">
+        <field name="name">visitor.view.search</field>
         <field name="model">visitor</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action visitor -->
+    <!-- Tree view for Action -->
     <record id="action_visitor" model="ir.actions.act_window">
         <field name="name">Visitor</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">visitor</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

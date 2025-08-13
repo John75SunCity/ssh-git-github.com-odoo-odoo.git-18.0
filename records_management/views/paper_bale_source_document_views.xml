@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for paper.bale.source.document -->
-    <record id="view_paper_bale_source_document_tree" model="ir.ui.view">
-        <field name="name">paper.bale.source.document.tree</field>
+    <!-- Tree view for base.rate -->
+    <record id="paper_bale_source_document_view_tree" model="ir.ui.view">
+        <field name="name">paper.bale.source.document.view.tree</field>
         <field name="model">paper.bale.source.document</field>
         <field name="arch" type="xml">
             <tree>
@@ -12,9 +12,9 @@
         </field>
     </record>
 
-    <!-- Form view for paper.bale.source.document -->
-    <record id="view_paper_bale_source_document_form" model="ir.ui.view">
-        <field name="name">paper.bale.source.document.form</field>
+    <!-- Form view for base.rate -->
+    <record id="paper_bale_source_document_view_form" model="ir.ui.view">
+        <field name="name">paper.bale.source.document.view.form</field>
         <field name="model">paper.bale.source.document</field>
         <field name="arch" type="xml">
             <form string="Paper Bale Source Document">
@@ -30,9 +30,9 @@
         </field>
     </record>
 
-    <!-- Search view for paper.bale.source.document -->
-    <record id="view_paper_bale_source_document_search" model="ir.ui.view">
-        <field name="name">paper.bale.source.document.search</field>
+    <!-- Search view for base.rate -->
+    <record id="paper_bale_source_document_view_search" model="ir.ui.view">
+        <field name="name">paper.bale.source.document.view.search</field>
         <field name="model">paper.bale.source.document</field>
         <field name="arch" type="xml">
             <search>
@@ -43,12 +43,12 @@
         </field>
     </record>
 
-    <!-- Action paper.bale.source.document -->
+    <!-- Tree view for Action -->
     <record id="action_paper_bale_source_document" model="ir.actions.act_window">
         <field name="name">Paper Bale Source Document</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">paper.bale.source.document</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

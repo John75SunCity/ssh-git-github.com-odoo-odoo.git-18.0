@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 📊 PORTAL FEEDBACK - Streamlined Views -->
+    <!-- Tree view for PORTAL -->
     
-    <!-- Kanban View -->
-    <record id="view_portal_feedback_kanban" model="ir.ui.view">
-        <field name="name">portal.feedback.kanban</field>
+    <!-- Kanban view for Kanban -->
+    <record id="portal_feedback_view_kanban" model="ir.ui.view">
+        <field name="name">portal.feedback.view.kanban</field>
         <field name="model">portal.feedback</field>
         <field name="arch" type="xml">
             <kanban default_group_by="satisfaction_level" quick_create="false" class="o_kanban_small_column">
@@ -60,9 +60,9 @@
         </field>
     </record>
 
-    <!-- List View -->
-    <record id="view_portal_feedback_tree" model="ir.ui.view">
-        <field name="name">portal.feedback.tree</field>
+    <!-- Tree view for List -->
+    <record id="portal_feedback_view_tree" model="ir.ui.view">
+        <field name="name">portal.feedback.view.tree</field>
         <field name="model">portal.feedback</field>
         <field name="arch" type="xml">
             <tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="status=='responded'" decoration-muted="status=='closed'" multi_edit="1">
@@ -88,9 +88,9 @@
         </field>
     </record>
 
-    <!-- Form View -->
-    <record id="view_portal_feedback_form" model="ir.ui.view">
-        <field name="name">portal.feedback.form</field>
+    <!-- Form view for base.rate -->
+    <record id="portal_feedback_view_form" model="ir.ui.view">
+        <field name="name">portal.feedback.view.form</field>
         <field name="model">portal.feedback</field>
         <field name="arch" type="xml">
             <form>
@@ -138,7 +138,7 @@
                                 <field name="internal_notes" groups="base.group_user" placeholder="Internal notes (not visible to customer)..."/>
                             </group>
                         </page>
-                        <page string="Response &amp; Resolution">
+                        <page string="Response &amp;amp; Resolution">
                             <group>
                                 <field name="response_text" placeholder="Response to customer..."/>
                                 <field name="resolution_notes" placeholder="Resolution details..."/>
@@ -165,9 +165,9 @@
         </field>
     </record>
 
-    <!-- Search View -->
-    <record id="view_portal_feedback_search" model="ir.ui.view">
-        <field name="name">portal.feedback.search</field>
+    <!-- Search view for base.rate -->
+    <record id="portal_feedback_view_search" model="ir.ui.view">
+        <field name="name">portal.feedback.view.search</field>
         <field name="model">portal.feedback</field>
         <field name="arch" type="xml">
             <search>
@@ -195,11 +195,11 @@
         </field>
     </record>
 
-    <!-- Action -->
+    <!-- Tree view for Action -->
     <record id="action_portal_feedback" model="ir.actions.act_window">
         <field name="name">Customer Feedback</field>
         <field name="res_model">portal.feedback</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="search_view_id" ref="view_portal_feedback_search"/>
         <field name="context">{'search_default_needs_response': 1}</field>
         <field name="help" type="html">
@@ -210,7 +210,7 @@
         </field>
     </record>
 
-    <!-- Menu -->
+    <!-- Tree view for Menu -->
     <menuitem id="menu_portal_feedback" 
               name="Customer Feedback" 
               parent="records_management.menu_portal_root" 

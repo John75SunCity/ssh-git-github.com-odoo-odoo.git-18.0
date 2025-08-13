@@ -1,43 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
-    <!-- Form view for hr.employee -->
+<!-- HR Employee Form View Extension for Records Management -->
     <record id="hr_employee_view_form" model="ir.ui.view">
-        <field name="name">hr.employee.view.form.inherit.records_management</field>
+<field name="name">hr.employee.form.inherit.records</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
+<!-- Add Records Management section after department -->
             <xpath expr="//field[@name='department_id']" position="after">
-                <field name="records_department_id" string="Records Department"/>
-                <field name="records_access_level" string="Records Access Level"/>
-                <field name="naid_certified" string="NAID Certified"/>
+<group string="Records Management" col="2">
+<field name="records_department_id" string="Records Department"/>
+<field name="records_access_level" string="Records Access Level"/>
+<field name="naid_certified" string="NAID Certified"/>
+
+<field name="key_management_level" string="Key Management Level" attrs="{'invisible': [('records_access_level', '=', 'none')]}"/>
+</group>
             </xpath>
         </field>
     </record>
 
-    <!-- Tree view for hr.employee -->
+<!-- HR Employee Tree View Extension for Records Management -->
     <record id="hr_employee_view_tree" model="ir.ui.view">
-        <field name="name">hr.employee.view.tree.inherit.records_management</field>
+<field name="name">hr.employee.tree.inherit.records</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='department_id']" position="after">
                 <field name="records_department_id" optional="hide"/>
                 <field name="records_access_level" optional="hide"/>
+<field name="naid_certified" optional="hide" widget="boolean_toggle"/>
+
             </xpath>
         </field>
     </record>
 
-    <!-- Search view for hr.employee -->
+<!-- HR Employee Search View Extension for Records Management -->
     <record id="hr_employee_view_search" model="ir.ui.view">
-        <field name="name">hr.employee.view.search.inherit.records_management</field>
+<field name="name">hr.employee.search.inherit.records</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_filter"/>
         <field name="arch" type="xml">
+<!-- Add Records Management search fields -->
             <xpath expr="//field[@name='department_id']" position="after">
-                <field name="records_department_id" string="Records Department"/>
+<field name="records_department_id" string="Records Department" filter_domain="[('records_department_id', 'ilike', self)]"/>
+
                 <field name="records_access_level" string="Access Level"/>
             </xpath>
+<!-- Add Records Management filters -->
+<xpath expr="//filter[@name='inactive']" position="before">
+    <separator/>
+    <filter name="naid_certified" string="NAID Certified" domain="[('naid_certified', '=', True)]"/>
+    <filter name="has_records_access" string="Has Records Access" domain="[('records_access_level', '!=', 'none')]"/>
+</xpath>
+
+<!-- Add groupby options -->
             <xpath expr="//group[@name='group_by']" position="inside">
                 <filter name="group_by_records_department" string="Records Department" 
                         context="{'group_by': 'records_department_id'}"/>
@@ -47,41 +64,50 @@
         </field>
     </record>
 
-    <!-- View hr.employee kanban -->
+<!-- HR Employee Kanban View Extension for Records Management -->
     <record id="hr_employee_view_kanban" model="ir.ui.view">
-        <field name="name">hr.employee.view.kanban.inherit.records_management</field>
+<field name="name">hr.employee.kanban.inherit.records</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
         <field name="arch" type="xml">
             <xpath expr="//div[contains(@class,'oe_kanban_details')]" position="inside">
-                <div t-if="record.records_department_id.value">
-                    <i class="fa fa-archive"/> <field name="records_department_id"/>
-                </div>
-                <div t-if="record.naid_certified.value" class="text-success">
-                    <i class="fa fa-certificate"/> NAID Certified
+<div class="o_kanban_tags_section">
+    <span t-if="record.records_department_id.raw_value" class="badge badge-info">
+        <i class="fa fa-archive"/>
+        <field name="records_department_id"/>
+    </span>
+    <span t-if="record.naid_certified.raw_value" class="badge badge-success">
+        <i class="fa fa-certificate"/>
+ NAID Certified
+</span>
+<span t-if="record.records_access_level.raw_value and record.records_access_level.raw_value != 'none'" class="badge badge-primary">
+                        Access: <field name="records_access_level"/>
+</span>
                 </div>
             </xpath>
         </field>
     </record>
 
-    <!-- View hr.employee graph -->
+<!-- HR Employee Graph View for Records Management Analytics -->
     <record id="hr_employee_view_graph" model="ir.ui.view">
-        <field name="name">hr.employee.view.graph.inherit.records_management</field>
+<field name="name">hr.employee.view.graph.records</field>
         <field name="model">hr.employee</field>
         <field name="arch" type="xml">
-            <graph string="Employee Records Analysis">
+<graph string="Employee Records Management Analysis" type="bar">
                 <field name="records_department_id" type="row"/>
                 <field name="records_access_level" type="col"/>
+<field name="id" type="measure"/>
+
             </graph>
         </field>
     </record>
 
-    <!-- View hr.employee pivot -->
+<!-- HR Employee Pivot View for Records Management Analytics -->
     <record id="hr_employee_view_pivot" model="ir.ui.view">
-        <field name="name">hr.employee.view.pivot.inherit.records_management</field>
+<field name="name">hr.employee.view.pivot.records</field>
         <field name="model">hr.employee</field>
         <field name="arch" type="xml">
-            <pivot string="Employee Records Pivot">
+<pivot string="Employee Records Management Pivot" disable_linking="True">
                 <field name="records_department_id" type="row"/>
                 <field name="records_access_level" type="col"/>
                 <field name="naid_certified" type="measure"/>
@@ -89,9 +115,9 @@
         </field>
     </record>
 
-    <!-- View hr.employee calendar -->
+<!-- HR Employee Calendar View Extension for Records Management -->
     <record id="hr_employee_view_calendar" model="ir.ui.view">
-        <field name="name">hr.employee.view.calendar.inherit.records_management</field>
+<field name="name">hr.employee.calendar.inherit.records</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.hr_employee_view_calendar"/>
         <field name="arch" type="xml">

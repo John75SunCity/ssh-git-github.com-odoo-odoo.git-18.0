@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 💥 SHREDDING SERVICES - NAID AAA Certified -->
+    <!-- Tree view for SHREDDING -->
 
-    <!-- Kanban View -->
-    <record id="view_shredding_service_kanban" model="ir.ui.view">
-        <field name="name">shredding.service.kanban</field>
+    <!-- Kanban view for Kanban -->
+    <record id="shredding_service_view_kanban" model="ir.ui.view">
+        <field name="name">shredding.service.view.kanban</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_shredding_dashboard">
@@ -49,9 +49,9 @@
         </field>
     </record>
 
-    <!-- List View -->
-    <record id="view_shredding_service_tree" model="ir.ui.view">
-        <field name="name">shredding.service.tree</field>
+    <!-- Tree view for List -->
+    <record id="shredding_service_view_tree" model="ir.ui.view">
+        <field name="name">shredding.service.view.tree</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
             <tree decoration-warning="status=='scheduled'" decoration-success="status=='completed'" decoration-danger="status=='cancelled'">
@@ -69,9 +69,9 @@
         </field>
     </record>
 
-    <!-- Form View -->
-    <record id="view_shredding_service_form" model="ir.ui.view">
-        <field name="name">shredding.service.form</field>
+    <!-- Form view for base.rate -->
+    <record id="shredding_service_view_form" model="ir.ui.view">
+        <field name="name">shredding.service.view.form</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
             <form>
@@ -140,7 +140,7 @@
                                 <field name="completion_notes" placeholder="Service completion notes..."/>
                             </group>
                         </page>
-                        <page string="Compliance &amp; Certification">
+                        <page string="Compliance &amp;amp; Certification">
                             <group>
                                 <field name="certificate_id" readonly="1"/>
                                 <field name="chain_of_custody_ids" mode="list">
@@ -164,9 +164,9 @@
         </field>
     </record>
 
-    <!-- Search View -->
-    <record id="view_shredding_service_search" model="ir.ui.view">
-        <field name="name">shredding.service.search</field>
+    <!-- Search view for base.rate -->
+    <record id="shredding_service_view_search" model="ir.ui.view">
+        <field name="name">shredding.service.view.search</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
             <search>
@@ -181,7 +181,7 @@
                 <filter string="Witness Required" name="witness_required" domain="[('witness_required', '=', True)]"/>
                 
                 <separator/>
-                <filter string="This Week" name="this_week" domain="[('scheduled_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="this_week" domain="[('scheduled_date', '&amp;gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
                 
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
@@ -193,11 +193,11 @@
         </field>
     </record>
 
-    <!-- Action -->
+    <!-- Tree view for Action -->
     <record id="action_shredding_service" model="ir.actions.act_window">
         <field name="name">Shredding Services</field>
         <field name="res_model">shredding.service</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="context">{'search_default_scheduled': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Temporary Inventory Tree View -->
-        <record id="view_temp_inventory_tree" model="ir.ui.view">
-            <field name="name">temp.inventory.tree</field>
+        <!-- Tree view for Temporary -->
+        <record id="temp_inventory_view_tree" model="ir.ui.view">
+            <field name="name">temp.inventory.view.tree</field>
             <field name="model">temp.inventory</field>
             <field name="arch" type="xml">
                 <tree string="Temporary Inventory" decoration-bf="state=='active'" decoration-warning="state=='full'" decoration-danger="state=='archived'">
@@ -23,9 +23,9 @@
             </field>
         </record>
 
-        <!-- Temporary Inventory Form View -->
-        <record id="view_temp_inventory_form" model="ir.ui.view">
-            <field name="name">temp.inventory.form</field>
+        <!-- Form view for Temporary -->
+        <record id="temp_inventory_view_form" model="ir.ui.view">
+            <field name="name">temp.inventory.view.form</field>
             <field name="model">temp.inventory</field>
             <field name="arch" type="xml">
                 <form string="Temporary Inventory">
@@ -77,7 +77,7 @@
                                 <field name="retention_period"/>
                                 <field name="expiry_date"/>
                             </group>
-                            <group string="Approval &amp; Security">
+                            <group string="Approval &amp;amp; Security">
                                 <field name="approval_required"/>
                                 <field name="approved_by_id" attrs="{'invisible': [('approved_by_id', '=', False)]}"/>
                                 <field name="approval_date" attrs="{'invisible': [('approval_date', '=', False)]}"/>
@@ -155,9 +155,9 @@
             </field>
         </record>
 
-        <!-- Temporary Inventory Search View -->
-        <record id="view_temp_inventory_search" model="ir.ui.view">
-            <field name="name">temp.inventory.search</field>
+        <!-- Search view for Temporary -->
+        <record id="temp_inventory_view_search" model="ir.ui.view">
+            <field name="name">temp.inventory.view.search</field>
             <field name="model">temp.inventory</field>
             <field name="arch" type="xml">
                 <search>
@@ -167,7 +167,7 @@
                     <field name="user_id"/>
                     <filter name="active_inventories" string="Active" domain="[('state', '=', 'active')]"/>
                     <filter name="full_inventories" string="Full" domain="[('state', '=', 'full')]"/>
-                    <filter name="nearly_full" string="Nearly Full" domain="[('utilization_percent', '&gt;=', 90)]"/>
+                    <filter name="nearly_full" string="Nearly Full" domain="[('utilization_percent', '&amp;gt;=', 90)]"/>
                     <separator/>
                     <filter name="temporary" string="Temporary" domain="[('inventory_type', '=', 'temporary')]"/>
                     <filter name="staging" string="Staging" domain="[('inventory_type', '=', 'staging')]"/>
@@ -184,9 +184,9 @@
             </field>
         </record>
 
-        <!-- Temporary Inventory Movement Tree View -->
-        <record id="view_temp_inventory_movement_tree" model="ir.ui.view">
-            <field name="name">temp.inventory.movement.tree</field>
+        <!-- Tree view for Temporary -->
+        <record id="temp_inventory_movement_view_tree" model="ir.ui.view">
+            <field name="name">temp.inventory.movement.view.tree</field>
             <field name="model">temp.inventory.movement</field>
             <field name="arch" type="xml">
                 <tree string="Inventory Movements" create="false" edit="false">
@@ -200,9 +200,9 @@
             </field>
         </record>
 
-        <!-- Temporary Inventory Movement Form View -->
-        <record id="view_temp_inventory_movement_form" model="ir.ui.view">
-            <field name="name">temp.inventory.movement.form</field>
+        <!-- Form view for Temporary -->
+        <record id="temp_inventory_movement_view_form" model="ir.ui.view">
+            <field name="name">temp.inventory.movement.view.form</field>
             <field name="model">temp.inventory.movement</field>
             <field name="arch" type="xml">
                 <form string="Inventory Movement">
@@ -221,9 +221,9 @@
             </field>
         </record>
 
-        <!-- Temporary Inventory Audit Tree View -->
-        <record id="view_temp_inventory_audit_tree" model="ir.ui.view">
-            <field name="name">temp.inventory.audit.tree</field>
+        <!-- Tree view for Temporary -->
+        <record id="temp_inventory_audit_view_tree" model="ir.ui.view">
+            <field name="name">temp.inventory.audit.view.tree</field>
             <field name="model">temp.inventory.audit</field>
             <field name="arch" type="xml">
                 <tree string="Inventory Audit Trail" create="false" edit="false">
@@ -236,7 +236,7 @@
             </field>
         </record>
 
-        <!-- Actions -->
+        <!-- Tree view for Actions -->
         <record id="action_temp_inventory" model="ir.actions.act_window">
             <field name="name">Temporary Inventory</field>
             <field name="res_model">temp.inventory</field>
@@ -264,7 +264,7 @@
             <field name="view_mode">tree</field>
         </record>
 
-        <!-- Menu Items -->
+        <!-- Tree view for Menu -->
         <menuitem id="menu_temp_inventory_root" 
                   name="Temporary Inventory" 
                   parent="records_management.menu_records_root" 
