@@ -116,7 +116,7 @@ class RecordsBillingContact(models.Model):
     # BILLING PROFILE RELATIONSHIP
     # ============================================================================
     billing_profile_id = fields.Many2one(
-        "records.customer.billing.profile",
+        "customer.billing.profile",
         string="Billing Profile",
         required=True,
         tracking=True,

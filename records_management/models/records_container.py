@@ -17,8 +17,6 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 
-
-
 class RecordsContainer(models.Model):
     """
     Records Container Management
@@ -95,6 +93,11 @@ class RecordsContainer(models.Model):
         "temp.inventory",
         string="Temporary Inventory",
         help="Temporary inventory location for this container",
+    )
+    customer_inventory_id = fields.Many2one(
+        "customer.inventory",
+        string="Customer Inventory",
+        help="Customer inventory record for this container",
     )
 
     # Barcode Product Relationship (for barcoded containers)

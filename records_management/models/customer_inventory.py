@@ -14,7 +14,6 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
 
-
 _logger = logging.getLogger(__name__)
 
 
@@ -170,14 +169,14 @@ class CustomerInventory(models.Model):
     # ============================================================================
     container_ids = fields.One2many(
         "records.container",
-        "partner_id",
+        "customer_inventory_id",
         string="Containers",
         help="Containers belonging to this customer",
         readonly=True,
     )
     document_ids = fields.One2many(
         "records.document",
-        "partner_id",
+        "customer_inventory_id",
         string="Documents",
         help="Documents belonging to this customer",
         readonly=True,

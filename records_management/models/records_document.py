@@ -46,8 +46,6 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 
-
-
 class RecordsDocument(models.Model):
     """
     Core Records Document Model
@@ -95,6 +93,11 @@ class RecordsDocument(models.Model):
         tracking=True,
         index=True,
         help="Customer who owns this document"
+    )
+    customer_inventory_id = fields.Many2one(
+        "customer.inventory",
+        string="Customer Inventory",
+        help="Customer inventory record for this document",
     )
 
     # ============================================================================

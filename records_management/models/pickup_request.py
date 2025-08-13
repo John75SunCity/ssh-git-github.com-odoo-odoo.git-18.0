@@ -296,6 +296,11 @@ class PickupRequest(models.Model):
     route_id = fields.Many2one(
         "pickup.route", string="Pickup Route", help="Route assignment for pickup"
     )
+    fsm_route_id = fields.Many2one(
+        "fsm.route.management",
+        string="FSM Route",
+        help="FSM route assignment for pickup",
+    )
 
     # ============================================================================
     # DOCUMENTATION AND COMMUNICATION

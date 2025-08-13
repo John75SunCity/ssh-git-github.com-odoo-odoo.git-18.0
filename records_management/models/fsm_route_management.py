@@ -27,7 +27,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
 
-
 _logger = logging.getLogger(__name__)
 
 
@@ -102,7 +101,7 @@ class FsmRouteManagement(models.Model):
     )
 
     # ============================================================================
-    # DRIVER & VEHICLE ASSIGNMENT  
+    # DRIVER & VEHICLE ASSIGNMENT
     # ============================================================================
     driver_id = fields.Many2one(
         "res.users",
@@ -181,11 +180,11 @@ class FsmRouteManagement(models.Model):
     # ============================================================================
     pickup_request_ids = fields.One2many(
         "pickup.request",
-        "route_id", 
+        "fsm_route_id",
         string="Pickup Requests",
-        help="Customer pickup requests assigned to this route"
+        help="Customer pickup requests assigned to this route",
     )
-    
+
     # Integration with existing FSM tools
     optimization_result_ids = fields.One2many(
         "route.optimizer",
@@ -193,14 +192,14 @@ class FsmRouteManagement(models.Model):
         string="Route Optimizations",
         help="Route optimization results"
     )
-    
+
     reschedule_history_ids = fields.One2many(
         "fsm.reschedule.wizard",
         "route_management_id", 
         string="Reschedule History",
         help="History of route reschedules"
     )
-    
+
     notification_ids = fields.One2many(
         "fsm.notification",
         "route_management_id",
@@ -226,7 +225,7 @@ class FsmRouteManagement(models.Model):
         string="Service Areas",
         help="Geographic areas covered by this route"
     )
-    
+
     # Route notes and special instructions
     route_notes = fields.Text(
         string="Route Notes",
@@ -298,10 +297,10 @@ class FsmRouteManagement(models.Model):
                 record.completion_rate = 0.0
                 record.on_time_rate = 0.0
                 continue
-                
+
             completed = requests.filtered(lambda r: r.state == "completed")
             record.completion_rate = (len(completed) / len(requests)) * 100 if requests else 0.0
-            
+
             # On-time calculation would need time tracking on pickup requests
             record.on_time_rate = 85.0  # Placeholder
 
@@ -334,7 +333,7 @@ class FsmRouteManagement(models.Model):
         """Launch route optimizer - integrates with existing route.optimizer model"""
 
         self.ensure_one()
-        
+
         # Check if route optimizer model exists and call it
         if "route.optimizer" in self.env:
             optimizer = self.env["route.optimizer"].create({
@@ -351,7 +350,7 @@ class FsmRouteManagement(models.Model):
         """Launch reschedule wizard - integrates with existing fsm.reschedule.wizard"""
 
         self.ensure_one()
-        
+
         return {
             "type": "ir.actions.act_window",
             "name": _("Reschedule Route"),
@@ -369,10 +368,10 @@ class FsmRouteManagement(models.Model):
         """Send route notifications - integrates with existing fsm.notification model"""
 
         self.ensure_one()
-        
+
         # Create notifications for driver and customers
         notification_vals = []
-        
+
         # Driver notification
         if self.driver_id:
             notification_vals.append({
@@ -385,7 +384,7 @@ class FsmRouteManagement(models.Model):
                 "send_sms": True,
                 "send_email": True
             })
-        
+
         # Customer notifications for each pickup
         for pickup in self.pickup_request_ids:
             if pickup.partner_id:
@@ -397,12 +396,12 @@ class FsmRouteManagement(models.Model):
                     "message": _("Your pickup has been scheduled for %s", self.scheduled_date),
                     "send_email": True
                 })
-        
+
         # Create notifications using existing model
         if notification_vals and "fsm.notification" in self.env:
             notifications = self.env["fsm.notification"].create(notification_vals)
             notifications.action_send_all()
-        
+
         self.message_post(
             body=_("Route notifications sent to driver and customers (%d notifications)", 
                  len(notification_vals))
@@ -412,13 +411,13 @@ class FsmRouteManagement(models.Model):
         """Smart driver assignment based on availability and location"""
 
         self.ensure_one()
-        
+
         # This would integrate with driver scheduling system
         available_drivers = self.env["res.users"].search([
             ("groups_id", "in", []),  # Driver group - to be configured
             # Add availability constraints
         ])
-        
+
         if available_drivers:
             # Simple assignment - can be enhanced with AI/ML
             self.driver_id = available_drivers[0]
@@ -433,21 +432,21 @@ class FsmRouteManagement(models.Model):
         """Start the route - updates state and tracking"""
 
         self.ensure_one()
-        
+
         if not self.driver_id:
             raise UserError(_("Cannot start route without assigned driver"))
-            
+
         if not self.vehicle_id:
             raise UserError(_("Cannot start route without assigned vehicle"))
-        
+
         self.write({
             "state": "in_progress",
             "actual_start_time": fields.Datetime.now()
         })
-        
+
         # Update pickup requests to in_progress
         self.pickup_request_ids.write({"state": "in_progress"})
-        
+
         self.message_post(
             body=_("Route started by driver %s at %s", 
                  self.driver_id.name, fields.Datetime.now())
@@ -457,20 +456,20 @@ class FsmRouteManagement(models.Model):
         """Complete the route and update all related records"""
 
         self.ensure_one()
-        
+
         self.write({
             "state": "completed", 
             "actual_end_time": fields.Datetime.now()
         })
-        
+
         # Update pickup requests based on completion
         completed_pickups = self.pickup_request_ids.filtered(lambda r: r.state == "completed")
         remaining_pickups = self.pickup_request_ids - completed_pickups
-        
+
         if remaining_pickups:
             # Auto-reschedule incomplete pickups
             self._auto_reschedule_remaining(remaining_pickups)
-        
+
         self.message_post(
             body=_("Route completed. %d/%d pickups successful", 
                  len(completed_pickups), len(self.pickup_request_ids))
@@ -480,7 +479,7 @@ class FsmRouteManagement(models.Model):
         """Open unified route dashboard view"""
 
         self.ensure_one()
-        
+
         return {
             "type": "ir.actions.act_window",
             "name": _("Route Dashboard: %s", self.name),
@@ -503,25 +502,25 @@ class FsmRouteManagement(models.Model):
             sorted_requests = self.pickup_request_ids.sorted(lambda r: r.partner_id.name)
             for i, request in enumerate(sorted_requests):
                 request.sequence = i + 1
-        
+
         self.state = "optimized"
         return True
 
     def _auto_reschedule_remaining(self, remaining_pickups):
         """Auto-reschedule incomplete pickups to next business day"""
         next_date = self._get_next_business_day(self.scheduled_date)
-        
-        # Create new route for remaining pickups  
+
+        # Create new route for remaining pickups
         new_route = self.copy({
             "name": _("%s - Rescheduled", self.name),
             "scheduled_date": next_date,
             "state": "scheduled",
             "pickup_request_ids": [(6, 0, remaining_pickups.ids)]
         })
-        
+
         # Clear pickup requests from current route
         remaining_pickups.write({"route_id": new_route.id})
-        
+
         return new_route
 
     def _get_next_business_day(self, current_date):
@@ -555,7 +554,7 @@ class FsmRouteManagement(models.Model):
                     len(record.pickup_request_ids), record.max_stops_per_route)
                 )
 
-    # ============================================================================  
+    # ============================================================================
     # SEARCH METHODS
     # ============================================================================
     @api.model
@@ -563,7 +562,7 @@ class FsmRouteManagement(models.Model):
         """Enhanced search by route name, driver, or date"""
         args = args or []
         domain = []
-        
+
         if name:
             domain = [
                 "|", "|", "|",
@@ -572,11 +571,11 @@ class FsmRouteManagement(models.Model):
                 ("route_type", operator, name),
                 ("scheduled_date", operator, name)
             ]
-            
+
         return self._search(domain + args, limit=limit)
 
     # ============================================================================
-    # REPORTING METHODS  
+    # REPORTING METHODS
     # ============================================================================
     @api.model
     def get_route_analytics(self, date_from=None, date_to=None):
@@ -586,9 +585,9 @@ class FsmRouteManagement(models.Model):
             domain.append(("scheduled_date", ">=", date_from))
         if date_to:
             domain.append(("scheduled_date", "<=", date_to))
-            
+
         routes = self.search(domain)
-        
+
         return {
             "total_routes": len(routes),
             "completed_routes": len(routes.filtered(lambda r: r.state == "completed")),

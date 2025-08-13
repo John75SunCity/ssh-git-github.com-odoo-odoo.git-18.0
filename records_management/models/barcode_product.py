@@ -175,6 +175,9 @@ class BarcodeProduct(models.Model):
         domain="[('res_model', '=', 'barcode.product')]",
         string="Messages",
     )
+    storage_box_id = fields.Many2one(
+        "barcode.storage.box", string="Storage Box"
+    )
 
     # ============================================================================
     # COMPUTE METHODS
