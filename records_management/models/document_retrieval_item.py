@@ -13,7 +13,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
 
-
 _logger = logging.getLogger(__name__)
 
 
@@ -50,7 +49,7 @@ class DocumentRetrievalItem(models.Model):
     # WORK ORDER RELATIONSHIP FIELDS
     # ============================================================================
     work_order_id = fields.Many2one(
-        "document.retrieval.work.order",
+        "file.retrieval.work.order",
         string="Work Order",
         required=True,
         ondelete="cascade",
@@ -104,7 +103,7 @@ class DocumentRetrievalItem(models.Model):
     # ============================================================================
     current_location = fields.Char(string="Current Location")
     storage_location_id = fields.Many2one("records.location", string="Storage Location")
-    
+
     # Search container tracking
     searched_container_ids = fields.Many2many(
         "records.container",
@@ -113,13 +112,13 @@ class DocumentRetrievalItem(models.Model):
         "container_id", 
         string="Searched Containers"
     )
-    
+
     containers_accessed_count = fields.Integer(
         string="Containers Accessed",
         compute="_compute_containers_accessed_count",
         store=True,
     )
-    
+
     containers_not_found_count = fields.Integer(
         string="Containers Not Found",
         compute="_compute_containers_not_found_count", 
@@ -834,7 +833,7 @@ class DocumentRetrievalItem(models.Model):
 
         self.ensure_one()
 
-        # Add to searched containers 
+        # Add to searched containers
         if container_id not in self.searched_container_ids.ids:
             self.searched_container_ids = [(4, container_id)]
 

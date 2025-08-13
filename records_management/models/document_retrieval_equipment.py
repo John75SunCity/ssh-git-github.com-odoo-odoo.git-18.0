@@ -9,8 +9,6 @@ carts, tablets, and maintenance tracking.
 from odoo import models, fields
 
 
-
-
 class DocumentRetrievalEquipment(models.Model):
     """Equipment used for document retrieval operations"""
 
@@ -96,7 +94,7 @@ class DocumentRetrievalEquipment(models.Model):
     # ============================================================================
     usage_hours = fields.Float(string="Total Usage Hours", digits=(10, 2))
     current_work_order_id = fields.Many2one(
-        "document.retrieval.work.order", string="Current Work Order"
+        "file.retrieval.work.order", string="Current Work Order"
     )
 
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)

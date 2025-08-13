@@ -40,8 +40,6 @@ import hashlib
 from odoo.exceptions import ValidationError
 
 
-
-
 class RecordsChainOfCustody(models.Model):
     _name = "records.chain.of.custody"
     _description = "Records Chain of Custody"
@@ -108,8 +106,8 @@ class RecordsChainOfCustody(models.Model):
         ondelete="cascade",
         help="Container holding the documents",
     )
-    work_order_id = fields.Many2one(
-        "document.retrieval.work.order",
+    related_work_order_id = fields.Many2one(
+        "file.retrieval.work.order",
         string="Work Order",
         help="Associated work order if applicable",
     )
@@ -296,7 +294,7 @@ class RecordsChainOfCustody(models.Model):
     external_reference = fields.Char(
         string="External Reference", help="External system reference number"
     )
-    
+
     # ============================================================================
     # ADDITIONAL FIELDS
     # ============================================================================
@@ -505,7 +503,7 @@ class RecordsChainOfCustody(models.Model):
         """Confirm custody event"""
 
         self.ensure_one()
-        
+
         if self.state != "draft":
             raise ValidationError(_("Only draft custody records can be confirmed"))
 
@@ -528,7 +526,7 @@ class RecordsChainOfCustody(models.Model):
         """Complete custody transfer"""
 
         self.ensure_one()
-        
+
         if self.state not in ["confirmed", "in_progress"]:
             raise ValidationError(
                 _("Only confirmed or in-progress custody records can be completed")
@@ -549,7 +547,7 @@ class RecordsChainOfCustody(models.Model):
         """Verify custody record by supervisor"""
 
         self.ensure_one()
-        
+
         if self.state != "completed":
             raise ValidationError(
                 _("Only completed custody records can be verified")
@@ -572,7 +570,7 @@ class RecordsChainOfCustody(models.Model):
         """Cancel custody record"""
 
         self.ensure_one()
-        
+
         if self.state in ["completed", "verified"]:
             raise ValidationError(
                 _("Cannot cancel completed or verified custody records")
@@ -589,7 +587,7 @@ class RecordsChainOfCustody(models.Model):
         """Reset custody record to draft"""
 
         self.ensure_one()
-        
+
         if self.state == "verified":
             raise ValidationError(
                 _("Cannot reset verified custody records to draft")

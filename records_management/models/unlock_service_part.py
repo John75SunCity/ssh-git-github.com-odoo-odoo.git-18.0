@@ -202,12 +202,11 @@ class UnlockServicePart(models.Model):
         help="Standard cost per unit from product",
     )
 
-    unit_price = fields.Monetary(
+    unit_price = fields.Float(
         string="Unit Sale Price",
         related="product_id.list_price",
-        currency_field="currency_id",
         readonly=True,
-        help="Standard sale price per unit"
+        help="Standard sale price per unit",
     )
 
     markup_percentage = fields.Float(

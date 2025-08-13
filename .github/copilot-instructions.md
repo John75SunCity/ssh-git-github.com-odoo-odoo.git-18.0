@@ -159,6 +159,8 @@ access_model_name_manager,model.name.manager,model_model_name,records_management
 - ❌ **Forgetting to update view files after model changes** → Missing fields
 - ❌ **Not adding RM Module Configurator controls** → Feature not configurable
 - ❌ **Skipping menu integration** → Features not accessible
+- ❌ **Field type inconsistencies in related fields** → TypeError during module loading
+- ❌ **Using Monetary fields to relate to Float fields** → Critical deployment errors
 
 ### **✅ VALIDATION CHECKLIST BEFORE COMMITTING:**
 
@@ -1470,6 +1472,50 @@ class RecordsDocument(models.Model):
         string='Retention Policy'
     )  # This field MUST exist for the One2many to work
 ```
+
+**🚨 CRITICAL: Field Type Consistency for Related Fields:**
+```python
+# ❌ WRONG - Field type inconsistencies cause TypeError during module loading
+unit_cost = fields.Monetary(
+    string="Unit Cost",
+    related="product_id.standard_price",  # standard_price is Float field
+    currency_field="currency_id"  # ❌ Monetary trying to relate to Float
+)
+
+unit_price = fields.Monetary(
+    string="Unit Price", 
+    related="product_id.list_price",     # list_price is Float field
+    currency_field="currency_id"  # ❌ Monetary trying to relate to Float
+)
+
+# ✅ CORRECT - Field types must match the target field type
+unit_cost = fields.Float(
+    string="Unit Cost",
+    related="product_id.standard_price",  # Both are Float - consistent
+    readonly=True,
+    help="Standard cost per unit from product"
+)
+
+unit_price = fields.Float(
+    string="Unit Price",
+    related="product_id.list_price",     # Both are Float - consistent  
+    readonly=True,
+    help="Standard sale price per unit"
+)
+
+# ✅ CORRECT - Product integration field type patterns
+# product.product core fields are Float, not Monetary:
+# - standard_price = fields.Float (cost)
+# - list_price = fields.Float (sale price)
+# - weight = fields.Float 
+# - volume = fields.Float
+```
+
+**🔍 Field Type Validation Rules:**
+1. **Related Field Types**: Must match the target field type exactly
+2. **Product Integration**: All product.product price fields are Float, not Monetary
+3. **Currency Fields**: Only use Monetary when the target field is also Monetary
+4. **Validation Method**: Check target model field definitions before creating related fields
 
 #### **💡 CODE EXPLANATION STANDARDS**
 

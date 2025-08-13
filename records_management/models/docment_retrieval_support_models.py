@@ -13,7 +13,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
 
-
 _logger = logging.getLogger(__name__)
 
 
@@ -50,7 +49,7 @@ class DocumentRetrievalItem(models.Model):
     # WORK ORDER RELATIONSHIP FIELDS
     # ============================================================================
     work_order_id = fields.Many2one(
-        "document.retrieval.work.order",
+        "file.retrieval.work.order",
         string="Work Order",
         required=True,
         ondelete="cascade",
@@ -252,11 +251,16 @@ class DocumentRetrievalTeam(models.Model):
         """Compute order counts for the team"""
         for team in self:
             team_member_ids = team.member_ids.mapped("user_id.id")
-            active_count = self.env["document.retrieval.work.order"].search_count(
+            active_count = self.env["file.retrieval.work.order"].search_count(
                 [("user_id", "in", team_member_ids), ("state", "=", "active")]
             )
-            completed_count = self.env["document.retrieval.work.order"].search_count(
-                [("user_id", "in", team_member_ids), ("state", "=", "inactive")]
+            completed_count = self.env[
+                "file.retrieval.work.order"
+            ].search_count(
+                [
+                    ("user_id", "in", team_member_ids),
+                    ("state", "=", "inactive"),
+                ]
             )
 
             team.active_orders_count = active_count
@@ -268,7 +272,9 @@ class DocumentRetrievalTeam(models.Model):
         for team in self:
             if team.member_ids:
                 team_member_ids = team.member_ids.mapped("user_id.id")
-                completed_orders = self.env["document.retrieval.work.order"].search(
+                completed_orders = self.env[
+                    "file.retrieval.work.order"
+                ].search(
                     [
                         ("user_id", "in", team_member_ids),
                         ("state", "=", "inactive"),
@@ -542,7 +548,7 @@ class DocumentRetrievalEquipment(models.Model):
     # ============================================================================
     usage_hours = fields.Float(string="Total Usage Hours", digits=(10, 2))
     current_work_order_id = fields.Many2one(
-        "document.retrieval.work.order", string="Current Work Order"
+        "file.retrieval.work.order", string="Current Work Order"
     )
 
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
@@ -587,7 +593,7 @@ class DocumentRetrievalMetrics(models.Model):
         string="Retrieval Date", required=True, default=fields.Date.today, tracking=True
     )
     work_order_id = fields.Many2one(
-        "document.retrieval.work.order", string="Work Order"
+        "file.retrieval.work.order", string="Work Order"
     )
     team_id = fields.Many2one("document.retrieval.team", string="Team")
     employee_id = fields.Many2one("hr.employee", string="Employee")

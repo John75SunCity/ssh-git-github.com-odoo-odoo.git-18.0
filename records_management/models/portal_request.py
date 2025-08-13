@@ -26,8 +26,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
 
-
-
 class PortalRequest(models.Model):
     _name = "portal.request"
     _description = "Portal Customer Request"
@@ -207,7 +205,7 @@ class PortalRequest(models.Model):
         "pickup.request", string="Related Pickup Request"
     )
     work_order_id = fields.Many2one(
-        "document.retrieval.work.order", string="Related Work Order"
+        "file.retrieval.work.order", string="Related Work Order"
     )
 
     # Parent-child request relationships
@@ -537,7 +535,7 @@ class PortalRequest(models.Model):
         """Create a work order for service-type requests."""
         if self.request_type in ["destruction", "retrieval", "shredding"]:
             work_order_name = "WO-%s" % self.name
-            work_order = self.env["document.retrieval.work.order"].create(
+            work_order = self.env["file.retrieval.work.order"].create(
                 {
                     "name": work_order_name,
                     "partner_id": self.partner_id.id,

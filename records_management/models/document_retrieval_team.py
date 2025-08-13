@@ -9,8 +9,6 @@ and workload management capabilities.
 from odoo import models, fields, api
 
 
-
-
 class DocumentRetrievalTeam(models.Model):
     """Teams responsible for document retrieval operations"""
 
@@ -126,11 +124,20 @@ class DocumentRetrievalTeam(models.Model):
         """Compute order counts for the team"""
         for team in self:
             team_member_ids = team.member_ids.mapped("user_id.id")
-            active_count = self.env["document.retrieval.work.order"].search_count(
-                [("user_id", "in", team_member_ids), ("state", "=", "active")]
+            # Count active work orders
+            active_count = self.env["file.retrieval.work.order"].search_count(
+                [
+                    ("state", "in", ["draft", "in_progress"]),
+                    ("team_id", "=", team.id),
+                ]
             )
-            completed_count = self.env["document.retrieval.work.order"].search_count(
-                [("user_id", "in", team_member_ids), ("state", "=", "inactive")]
+            completed_count = self.env[
+                "file.retrieval.work.order"
+            ].search_count(
+                [
+                    ("user_id", "in", team_member_ids),
+                    ("state", "=", "inactive"),
+                ]
             )
 
             team.active_orders_count = active_count
@@ -142,7 +149,9 @@ class DocumentRetrievalTeam(models.Model):
         for team in self:
             if team.member_ids:
                 team_member_ids = team.member_ids.mapped("user_id.id")
-                completed_orders = self.env["document.retrieval.work.order"].search(
+                completed_orders = self.env[
+                    "file.retrieval.work.order"
+                ].search(
                     [
                         ("user_id", "in", team_member_ids),
                         ("state", "=", "inactive"),
