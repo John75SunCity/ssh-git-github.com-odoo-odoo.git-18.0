@@ -114,6 +114,7 @@
         "views/departmental_billing_menus.xml",
         "views/departmental_billing_views.xml",
         "views/document_retrieval_menus.xml",
+        "views/document_retrieval_team_views.xml",
         "views/document_retrieval_work_order_views.xml",
         "views/document_search_attempt_views.xml",
         "views/field_label_customization_views.xml",

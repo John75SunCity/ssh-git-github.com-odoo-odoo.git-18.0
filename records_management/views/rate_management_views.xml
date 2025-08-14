@@ -3,8 +3,8 @@
     <data>
         <!-- Tree view for Base -->
         <record id="base_rates_view_tree" model="ir.ui.view">
-            <field name="name">base.rates.view.tree</field>
-            <field name="model">base.rates</field>
+            <field name="name">base.rate.view.tree</field>
+            <field name="model">base.rate</field>
             <field name="arch" type="xml">
                 <tree decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-warning="state == 'confirmed'" decoration-muted="state in ['superseded', 'expired', 'cancelled']">
                     <field name="name"/>
@@ -23,8 +23,8 @@
         </record>
 
         <record id="base_rates_view_form" model="ir.ui.view">
-            <field name="name">base.rates.view.form</field>
-            <field name="model">base.rates</field>
+            <field name="name">base.rate.view.form</field>
+            <field name="model">base.rate</field>
             <field name="arch" type="xml">
                 <form string="Base Rates">
                     <header>
@@ -375,7 +375,7 @@
         <!-- Tree view for Menu -->
         <record id="action_base_rates" model="ir.actions.act_window">
             <field name="name">Base Service Rates</field>
-            <field name="res_model">base.rates</field>
+            <field name="res_model">base.rate</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>

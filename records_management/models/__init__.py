@@ -368,3 +368,8 @@ except (ImportError, AttributeError) as e:
 
 # File retrieval work order item (correct name)
 from . import file_retrieval_work_order_item
+from . import records_location_report_wizard
+from . import records_inventory_dashboard
+from . import customer_negotiated_rate
+from . import base_rate
+from . import product_container_type

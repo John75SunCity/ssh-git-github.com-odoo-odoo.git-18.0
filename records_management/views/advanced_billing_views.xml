@@ -3,8 +3,8 @@
     <data>
         <!-- Tree view for Customer -->
 <record id="records_customer_billing_profile_view_tree" model="ir.ui.view">
-    <field name="name">records.customer.billing.profile.view.tree</field>
-            <field name="model">records.customer.billing.profile</field>
+    <field name="name">customer.billing.profile.view.tree</field>
+            <field name="model">customer.billing.profile</field>
             <field name="arch" type="xml">
                 <tree string="Customer Billing Profiles">
                     <field name="name"/>
@@ -19,8 +19,8 @@
         </record>
 
 <record id="records_customer_billing_profile_view_form" model="ir.ui.view">
-    <field name="name">records.customer.billing.profile.view.form</field>
-            <field name="model">records.customer.billing.profile</field>
+    <field name="name">customer.billing.profile.view.form</field>
+            <field name="model">customer.billing.profile</field>
             <field name="arch" type="xml">
                 <form string="Customer Billing Profile">
                     <sheet>
@@ -111,7 +111,7 @@
         <record id="action_records_customer_billing_profile" model="ir.actions.act_window">
             <field name="name">Customer Billing Profiles</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">records.customer.billing.profile</field>
+            <field name="res_model">customer.billing.profile</field>
             <field name="view_mode">tree,form</field>
         </record>
 

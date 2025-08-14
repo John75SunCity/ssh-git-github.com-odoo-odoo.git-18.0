@@ -9,9 +9,7 @@ and quality control capabilities.
 import logging
 
 from odoo import models, fields, api, _
-
 from odoo.exceptions import UserError
-
 
 _logger = logging.getLogger(__name__)
 
@@ -109,8 +107,8 @@ class DocumentRetrievalItem(models.Model):
         "records.container",
         "retrieval_item_container_rel",
         "item_id",
-        "container_id", 
-        string="Searched Containers"
+        "container_id",
+        string="Searched Containers",
     )
 
     containers_accessed_count = fields.Integer(
@@ -816,7 +814,7 @@ class DocumentRetrievalItem(models.Model):
 
     # === SEARCH WORKFLOW ACTION METHODS ===
     def action_begin_search_process(self):
-        """Start the search process for this file - RENAMED from action_start_search"""
+        """Start the search process for this file"""
 
         self.ensure_one()
         if self.status != "pending":
@@ -829,7 +827,7 @@ class DocumentRetrievalItem(models.Model):
         )
 
     def action_record_container_search(self, container_id, found=False, notes=""):
-        """Add a container to the searched list and create search attempt record - RENAMED"""
+        """Add a container to the searched list and create search attempt record"""
 
         self.ensure_one()
 

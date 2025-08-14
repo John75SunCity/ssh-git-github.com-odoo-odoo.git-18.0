@@ -4,8 +4,8 @@
 
     <!-- Tree view for base.rate -->
     <record id="records_customer_billing_profile_view_tree" model="ir.ui.view">
-        <field name="name">records.customer.billing.profile.view.tree</field>
-        <field name="model">records.customer.billing.profile</field>
+        <field name="name">customer.billing.profile.view.tree</field>
+        <field name="model">customer.billing.profile</field>
         <field name="arch" type="xml">
             <tree string="Customer Billing Profiles" decoration-success="state=='active'" decoration-muted="state=='suspended'">
                 <field name="name"/>
@@ -22,8 +22,8 @@
 
     <!-- Form view for base.rate -->
     <record id="records_customer_billing_profile_view_form" model="ir.ui.view">
-        <field name="name">records.customer.billing.profile.view.form</field>
-        <field name="model">records.customer.billing.profile</field>
+        <field name="name">customer.billing.profile.view.form</field>
+        <field name="model">customer.billing.profile</field>
         <field name="arch" type="xml">
             <form string="Customer Billing Profile">
                 <header>
@@ -141,8 +141,8 @@
 
     <!-- Search view for base.rate -->
     <record id="records_customer_billing_profile_view_search" model="ir.ui.view">
-        <field name="name">records.customer.billing.profile.view.search</field>
-        <field name="model">records.customer.billing.profile</field>
+        <field name="name">customer.billing.profile.view.search</field>
+        <field name="model">customer.billing.profile</field>
         <field name="arch" type="xml">
             <search string="Search Billing Profiles">
                 <field name="name"/>
@@ -169,7 +169,7 @@
     <!-- Tree view for Actions -->
     <record id="action_customer_billing_profile" model="ir.actions.act_window">
         <field name="name">Customer Billing Profiles</field>
-        <field name="res_model">records.customer.billing.profile</field>
+        <field name="res_model">customer.billing.profile</field>
         <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="view_customer_billing_profile_search"/>
         <field name="help" type="html">
