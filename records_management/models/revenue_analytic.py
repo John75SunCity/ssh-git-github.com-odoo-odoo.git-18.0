@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 # Revenue Analytic Model
 
-from odoo import api, fields, models
-
-
-
+from odoo import api, fields, models, _
 
 class RevenueAnalytic(models.Model):
     """Revenue analytics for billing configurations"""
@@ -12,6 +9,7 @@ class RevenueAnalytic(models.Model):
     _name = "revenue.analytic"
     _description = "Revenue Analytic"
     _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "config_id, period_start desc"
 
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
@@ -46,17 +44,8 @@ class RevenueAnalytic(models.Model):
     ], string='Status', default='draft', tracking=True, required=True)
 
     # ============================================================================
-    # ORM METHODS
+    # BUSINESS SPECIFIC FIELDS
     # ============================================================================
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Override create to add auto-numbering"""
-        for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('revenue.analytic') or _('New')
-        return super().create(vals_list)
-    _order = "config_id, period_start desc"
-
     config_id = fields.Many2one(
         "records.billing.config",
         string="Billing Config",
@@ -87,6 +76,34 @@ class RevenueAnalytic(models.Model):
         compute="_compute_average_revenue",
     )
 
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many(
+        "mail.activity", "res_id", string="Activities"
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # ORM METHODS
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to add auto-numbering"""
+        for vals in vals_list:
+            if vals.get("name", _("New")) == _("New"):
+                vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "revenue.analytic"
+                ) or _("New")
+        return super().create(vals_list)
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
     @api.depends("total_revenue", "actual_costs")
     def _compute_profit_margin(self):
         for record in self:

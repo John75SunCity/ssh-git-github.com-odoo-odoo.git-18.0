@@ -86,6 +86,15 @@ class PortalFeedbackAnalytic(models.Model):
         store=True,
     )
     repeat_feedback_rate = fields.Float(
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
         string="Repeat Feedback Rate (%)",
         digits=(5, 2),
         compute="_compute_analytics",

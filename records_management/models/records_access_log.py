@@ -531,6 +531,15 @@ class RecordsAccessLog(models.Model):
             "Starting cleanup of old access logs older than %d days.", days
         )
         cutoff_date = fields.Datetime.now() - timedelta(days=days)
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
         domain = [("access_date", "<", cutoff_date), ("compliance_required", "=", False)]
 
         # Use search_count for performance, then search and unlink if necessary

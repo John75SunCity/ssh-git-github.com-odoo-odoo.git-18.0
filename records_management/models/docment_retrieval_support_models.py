@@ -645,6 +645,15 @@ class DocumentRetrievalMetrics(models.Model):
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

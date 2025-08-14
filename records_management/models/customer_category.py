@@ -38,3 +38,12 @@ class CustomerCategory(models.Model):
     )
     sla_hours = fields.Integer(string="SLA Response Hours", default=24)
     active = fields.Boolean(string="Active", default=True)
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')

@@ -97,6 +97,17 @@ class DestructionItem(models.Model):
     date_destroyed = fields.Datetime(string="Destruction Date")
     date_verified = fields.Datetime(string="Verification Date")
 
+    # Workflow state management
+    state = fields.Selection([
+        ('pending', 'Pending'),
+        ('scheduled', 'Scheduled'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('verified', 'Verified'),
+        ('cancelled', 'Cancelled'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

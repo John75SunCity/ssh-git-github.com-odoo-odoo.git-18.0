@@ -627,6 +627,15 @@ class FeedbackImprovementArea(models.Model):
     # ANALYTICS FIELDS
     # ============================================================================
     feedback_count = fields.Integer(
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
         string="Feedback Count",
         compute="_compute_feedback_count",
         help="Number of feedback entries related to this area",

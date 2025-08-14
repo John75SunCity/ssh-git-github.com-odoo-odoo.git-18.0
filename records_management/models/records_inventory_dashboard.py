@@ -333,6 +333,15 @@ class RecordsInventoryDashboard(models.Model):
             return self.date_from or fields.Date.today(), self.date_to or fields.Date.today()
         
         today = fields.Date.today()
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
         
         if self.date_range == 'today':
             return today, today

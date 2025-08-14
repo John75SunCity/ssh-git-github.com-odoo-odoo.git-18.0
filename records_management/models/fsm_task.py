@@ -621,6 +621,15 @@ class FsmTaskServiceLine(models.Model):
     # STATUS TRACKING
     # ============================================================================
     status = fields.Selection(
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
         [
             ("pending", "Pending Approval"),
             ("approved", "Approved"),

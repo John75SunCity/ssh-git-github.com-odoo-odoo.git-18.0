@@ -302,6 +302,15 @@ class BaseRate(models.Model):
         help='Number of customers using these base rates'
     )
     containers_at_base_rates = fields.Integer(
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
         string='Containers at Base Rates',
         compute='_compute_usage_stats',
         help='Number of containers billed at these base rates'

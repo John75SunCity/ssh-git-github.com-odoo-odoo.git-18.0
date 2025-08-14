@@ -208,6 +208,17 @@ class RecordsCustomerBillingProfile(models.Model):
         domain=lambda self: [("res_model", "=", self._name)],
     )
     message_ids = fields.One2many(
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('sent', 'Sent'),
+        ('paid', 'Paid'),
+        ('overdue', 'Overdue'),
+        ('cancelled', 'Cancelled'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
         "mail.message",
         "res_id",
         string="Messages",

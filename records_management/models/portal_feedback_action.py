@@ -121,6 +121,15 @@ class PortalFeedbackAction(models.Model):
     def _compute_days_remaining(self):
         """Calculate days remaining until due date"""
         today = fields.Date.today()
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
         for record in self:
             if record.due_date:
                 delta = record.due_date - today

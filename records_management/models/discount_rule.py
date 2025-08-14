@@ -45,3 +45,12 @@ class DiscountRule(models.Model):
     end_date = fields.Date(string="End Date")
     active = fields.Boolean(string="Active", default=True)
     priority = fields.Integer(string="Priority", default=10)
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')

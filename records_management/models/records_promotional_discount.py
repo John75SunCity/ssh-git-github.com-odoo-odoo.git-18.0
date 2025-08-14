@@ -52,3 +52,12 @@ class RecordsPromotionalDiscount(models.Model):
     usage_limit = fields.Integer(string="Usage Limit")
     times_used = fields.Integer(string="Times Used", default=0)
     active = fields.Boolean(string="Active", default=True)
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')

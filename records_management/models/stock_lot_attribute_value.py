@@ -38,6 +38,15 @@ class StockLotAttributeValue(models.Model):
         string="Boolean Value", help="Boolean attribute value"
     )
     value_selection = fields.Char(
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
         string="Selection Value", help="Selected option value"
     )
 

@@ -647,6 +647,15 @@ class DocumentRetrievalMetrics(models.Model):
 
     # ============================================================================
     item_count = fields.Integer(string='Item Count', default=1)
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
     # COMPUTE METHODS
     # ============================================================================
     @api.depends("documents_retrieved", "hours_worked")

@@ -186,6 +186,15 @@ class RecordsLocation(models.Model):
         compute="_compute_child_count", string="Child Count"
     )
     is_available = fields.Boolean(
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
         compute="_compute_is_available", string="Available for Storage"
     )
 

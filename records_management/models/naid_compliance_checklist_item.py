@@ -98,5 +98,14 @@ class NaidComplianceChecklistItem(models.Model):
     )
 
     message_ids = fields.One2many(
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
         "mail.message", "res_id", string="Messages", groups="base.group_user"
     )

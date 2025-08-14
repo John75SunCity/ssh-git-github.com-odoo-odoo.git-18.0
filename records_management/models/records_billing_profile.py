@@ -244,6 +244,17 @@ class RecordsBillingProfile(models.Model):
             record.service_count = len(record.billing_service_ids)
 
     service_count = fields.Integer(
+
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('sent', 'Sent'),
+        ('paid', 'Paid'),
+        ('overdue', 'Overdue'),
+        ('cancelled', 'Cancelled'),
+    ], string='Status', default='draft', tracking=True, required=True, index=True,
+       help='Current status of the record')
         string="Service Count",
         compute="_compute_service_count",
         store=True,
