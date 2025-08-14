@@ -241,6 +241,29 @@ class RecordsBillingConfig(models.Model):
     )
 
     # ============================================================================
+    # MAIL FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance)
+    # ============================================================================
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=lambda self: [("res_model", "=", self._name)]
+    )
+    
+    message_follower_ids = fields.One2many(
+        "mail.followers", 
+        "res_id",
+        string="Followers",
+        domain=lambda self: [("res_model", "=", self._name)]
+    )
+    
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id", 
+        string="Messages",
+        domain=lambda self: [("model", "=", self._name)]
+    )
+    # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
     @api.depends("partner_ids")
