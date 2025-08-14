@@ -8,15 +8,7 @@ _logger = logging.getLogger(__name__)
 # REPORTS MODULE INITIALIZATION - RECORDS MANAGEMENT SYSTEM
 # =============================================================================
 
-# Import existing Python report models
-try:
-    from . import records_tag_reports
 
-    _imported_reports = ["records_tag_reports"]
-    _logger.info("Successfully imported records_tag_reports")
-except ImportError as e:
-    _logger.warning("Could not import records_tag_reports: %s", str(e))
-    _imported_reports = []
 
 # Import revenue forecasting report
 try:
